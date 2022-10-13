@@ -31,15 +31,13 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 }) => {
 	const [t] = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Assignment_Response_v2 | null>();
 	const assignmentId = match.params.assignmentId;
 	const assignmentResponseId = match.params.responseId;
 
 	const fetchAssignmentResponse = useCallback(
-		async (
-			tempAssignment: Avo.Assignment.Assignment_v2
-		): Promise<Assignment_Response_v2 | null> => {
+		async (tempAssignment: Assignment_v2): Promise<Assignment_Response_v2 | null> => {
 			const canViewAssignmentResponses = await PermissionService.hasPermissions(
 				[
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
@@ -139,7 +137,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 						<BlockList
 							blocks={
 								(assignmentResponse?.pupil_collection_blocks ||
-									[]) as Avo.Core.BlockItemBase[]
+									[]) as BaseBlockWithMeta[]
 							}
 							config={{
 								ITEM: {

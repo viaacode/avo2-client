@@ -31,7 +31,7 @@ type publishOption = 'private' | 'public' | 'timebound';
 
 interface PublishContentPageModalProps {
 	isOpen: boolean;
-	onClose: (contentPage?: Partial<ContentPageInfo>) => void;
+	onClose: (contentPage?: ContentPageInfo) => void;
 	contentPage: ContentPageInfo;
 }
 
@@ -53,7 +53,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 	const onSave = async () => {
 		try {
 			const now = new Date();
-			const newContent: Partial<ContentPageInfo> = {
+			const newContent: ContentPageInfo = {
 				is_public:
 					selectedOption === 'public' ||
 					(selectedOption === 'timebound' &&
@@ -66,7 +66,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 					publishedAt || (selectedOption === 'public' ? now.toISOString() : null),
 				publish_at: selectedOption === 'timebound' ? publishAt : null,
 				depublish_at: selectedOption === 'timebound' ? depublishAt : null,
-			} as Partial<ContentPageInfo>;
+			} as ContentPageInfo;
 			setValidationError(undefined);
 			closeModal(newContent);
 		} catch (err) {
@@ -84,7 +84,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 		setDepublishAt(contentPage.depublish_at);
 	};
 
-	const closeModal = (newContent?: Partial<ContentPageInfo>) => {
+	const closeModal = (newContent?: ContentPageInfo) => {
 		if (!newContent) {
 			resetModal();
 		} else {

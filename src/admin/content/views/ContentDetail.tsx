@@ -207,7 +207,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		}
 	}
 
-	const handleShareModalClose = async (newContentPage?: Partial<ContentPageInfo>) => {
+	const handleShareModalClose = async (newContentPage?: ContentPageInfo) => {
 		try {
 			if (newContentPage) {
 				await ContentService.updateContentPage({

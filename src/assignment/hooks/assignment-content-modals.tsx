@@ -10,7 +10,7 @@ import { ItemTrimInfo } from '../../item/item.types';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
-import { AssignmentBlockType } from '../assignment.types';
+import { AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
 import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal, {
@@ -20,8 +20,8 @@ import AddCollectionModal, { AddCollectionModalProps } from '../modals/AddCollec
 import ConfirmSliceModal, { ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
 
 export function useBlockListModals(
-	blocks: Avo.Core.BlockItemBase[],
-	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
+	blocks: BaseBlockWithMeta[],
+	setBlocks: (newBlocks: BaseBlockWithMeta[]) => void,
 	config?: {
 		confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
 		addBlockConfig?: Partial<AddBlockModalProps>;

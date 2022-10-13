@@ -8,7 +8,7 @@ import CollectionFragmentTitle, {
 
 export interface CollectionFragmentTypeTextProps {
 	title?: CollectionFragmentTitleProps;
-	block?: Avo.Core.BlockItemBase;
+	block?: BaseBlockWithMeta;
 }
 
 const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({ title, block }) => {

@@ -11,7 +11,7 @@ import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-ass
 
 export type DeleteAssignmentButtonProps = DefaultProps &
 	Partial<UserProps> & {
-		assignment?: Avo.Assignment.Assignment_v2;
+		assignment?: Assignment_v2;
 		button?: Partial<ButtonProps>;
 		modal?: Partial<ConfirmModalProps>;
 	};

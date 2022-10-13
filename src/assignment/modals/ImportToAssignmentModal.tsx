@@ -139,10 +139,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	};
 
 	// very similar to table in assignment overview, but with differences
-	const renderCell = (
-		assignment: Avo.Assignment.Assignment_v2,
-		colKey: AssignmentOverviewTableColumns
-	) => {
+	const renderCell = (assignment: Assignment_v2, colKey: AssignmentOverviewTableColumns) => {
 		const cellData: any = (assignment as any)[colKey];
 
 		switch (
@@ -239,7 +236,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
 								  )
 						}
-						renderCell={(rowData: Avo.Assignment.Assignment_v2, colKey: string) =>
+						renderCell={(rowData: Assignment_v2, colKey: string) =>
 							renderCell(rowData, colKey as AssignmentOverviewTableColumns)
 						}
 						rowKey="id"

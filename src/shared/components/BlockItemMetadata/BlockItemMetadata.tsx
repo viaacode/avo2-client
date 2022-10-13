@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '../../helpers';
 
 export type BlockItemMetadataProps = {
-	block: Avo.Core.BlockItemBase;
+	block: BaseBlockWithMeta;
 	buildSeriesLink?: (series: string) => ReactNode | string;
 };
 

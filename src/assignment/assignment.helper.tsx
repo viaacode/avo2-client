@@ -23,7 +23,7 @@ export class AssignmentHelper {
 	}
 
 	public static getLabels(
-		assignment: Avo.Assignment.Assignment_v2,
+		assignment: Assignment_v2,
 		type: string
 	): { assignment_label: AssignmentLabel_v2 }[] {
 		return (

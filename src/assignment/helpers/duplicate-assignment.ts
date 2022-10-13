@@ -7,8 +7,8 @@ import { AssignmentService } from '../assignment.service';
 
 export async function duplicateAssignment(
 	t: TFunction,
-	assignment?: Avo.Assignment.Assignment_v2
-): Promise<Avo.Assignment.Assignment_v2 | undefined> {
+	assignment?: Assignment_v2
+): Promise<Assignment_v2 | undefined> {
 	try {
 		if (!assignment) {
 			throw new CustomError(

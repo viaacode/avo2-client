@@ -66,7 +66,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [original, setOriginal] = useState<Assignment_v2 | null>(null);
 	const [assignmentLoading, setAssigmentLoading] = useState(false);
 	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
@@ -87,7 +87,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
-	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+	const updateBlocksInAssignmentState = (newBlocks: BaseBlockWithMeta[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
 		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
 	};
@@ -398,7 +398,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					return (
 						<div className="c-assignment-details-tab">
 							<AssignmentDetailsFormReadonly
-								assignment={assignment as Avo.Assignment.Assignment_v2}
+								assignment={assignment as Assignment_v2}
 							/>
 						</div>
 					);
@@ -406,12 +406,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={assignment as Avo.Assignment.Assignment_v2}
-							setAssignment={
-								setAssignment as Dispatch<
-									SetStateAction<Avo.Assignment.Assignment_v2>
-								>
-							}
+							assignment={assignment as Assignment_v2}
+							setAssignment={setAssignment as Dispatch<SetStateAction<Assignment_v2>>}
 							setValue={setValue}
 						/>
 					</div>

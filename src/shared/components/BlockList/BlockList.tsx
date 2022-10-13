@@ -17,7 +17,7 @@ import { BlockListProps } from './BlockList.types';
 import AssignmentBlockTypeSearch from './blocks/AssignmentBlockTypeSearch';
 
 const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
-	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
+	const renderCollectionFragment = (block: BaseBlockWithMeta) => {
 		const layout = (children?: ReactNode, background?: ContainerPropsSchema['background']) => (
 			<Container
 				mode="horizontal"

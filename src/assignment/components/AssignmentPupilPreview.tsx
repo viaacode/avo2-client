@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import { isMobileWidth } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { AssignmentFormState } from '../assignment.types';
+import { Assignment_Response_v2, AssignmentFormState } from '../assignment.types';
 import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
 export type AssignmentPupilPreviewProps = {
@@ -27,7 +27,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 		collection_title: '',
 		pupil_collection_blocks: [],
 		assignment_id: assignment.id as string,
-		assignment,
+		assignment: assignment as unknown as Assignment_Response_v2['assignment'],
 		owner: {
 			full_name: t('assignment/components/assignment-pupil-preview___naam-leerling'),
 		},
@@ -61,7 +61,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 			/>
 			{assignmentResponse && (
 				<AssignmentResponseEdit
-					assignment={assignment as Avo.Assignment.Assignment_v2}
+					assignment={assignment as Assignment_v2}
 					assignmentResponse={assignmentResponse}
 					setAssignmentResponse={
 						setAssignmentResponse as Dispatch<SetStateAction<Assignment_Response_v2>>

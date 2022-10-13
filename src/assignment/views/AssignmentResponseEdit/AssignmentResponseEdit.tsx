@@ -47,8 +47,11 @@ import {
 import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
+	Assignment_Response_v2,
 	AssignmentResponseFormState,
+	AssignmentResponseInfo,
 	AssignmentType,
+	BaseBlockWithMeta,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../assignment.types';
@@ -68,8 +71,8 @@ import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
 interface AssignmentResponseEditProps {
-	assignment: Avo.Assignment.Assignment_v2;
-	assignmentResponse: Assignment_Response_v2;
+	assignment: Assignment_v2;
+	assignmentResponse: AssignmentResponseInfo;
 	setAssignmentResponse: Dispatch<SetStateAction<Assignment_Response_v2>>;
 	showBackButton: boolean;
 	isPreview?: boolean;
@@ -91,7 +94,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	// Data
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
-		useState<Assignment_Response_v2>(assignmentResponse);
+		useState<AssignmentResponseInfo>(assignmentResponse);
 
 	const {
 		control,
@@ -246,7 +249,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		}
 	};
 
-	const appendBlockToPupilCollection = (newBlock: Avo.Core.BlockItemBase) => {
+	const appendBlockToPupilCollection = (newBlock: BaseBlockWithMeta) => {
 		const newBlocks = setPositionToIndex([
 			...(assignmentResponse.pupil_collection_blocks || []),
 			newBlock,

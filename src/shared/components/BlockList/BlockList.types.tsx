@@ -5,7 +5,7 @@ import { CollectionFragmentTypeItemProps } from './blocks/CollectionFragmentType
 import { CollectionFragmentTypeTextProps } from './blocks/CollectionFragmentTypeText';
 
 export interface BlockListProps {
-	blocks: Avo.Core.BlockItemBase[];
+	blocks: BaseBlockWithMeta[];
 	config?: {
 		TEXT?: Partial<CollectionFragmentTypeTextProps>;
 		ITEM?: Partial<CollectionFragmentTypeItemProps>;

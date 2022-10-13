@@ -17,7 +17,7 @@ import {
 	AssignmentBlockItemDescriptionType,
 } from '../AssignmentBlockDescriptionButtons';
 
-function getBlockEditMode(block: Avo.Core.BlockItemBase | EditableBlockItem) {
+function getBlockEditMode(block: BaseBlockWithMeta | EditableBlockItem) {
 	if ((block as EditableBlockItem).editMode) {
 		return (block as EditableBlockItem).editMode;
 	}

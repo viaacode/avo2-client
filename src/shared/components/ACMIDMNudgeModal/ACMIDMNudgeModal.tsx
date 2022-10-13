@@ -17,10 +17,8 @@ import { selectShowNudgingModal } from '../../../uistate/store/selectors';
 import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
-import {
-	ProfilePreferenceKey,
-	ProfilePreferencesService,
-} from '../../services/profile-preferences.service';
+import { ProfilePreferencesService } from '../../services/profile-preferences.service';
+import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
 
 import './ACMIDMNudgeModal.scss';
 

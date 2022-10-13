@@ -1,16 +1,16 @@
+import { Flex, Spacer } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import Select, { Props } from 'react-select';
 
-import { Flex, Spacer } from '@viaa/avo2-components';
-
+import { Lookup_Enum_Colors_Enum } from '../../../../../shared/generated/graphql-db-types';
 import { ReactSelectOption } from '../../../../../shared/types';
 
 import './ColorSelect.scss';
 
 export interface ColorOption {
 	label: string;
-	value: string;
+	value: Lookup_Enum_Colors_Enum;
 	color?: string; // Defaults to value for the hex color code
 }
 

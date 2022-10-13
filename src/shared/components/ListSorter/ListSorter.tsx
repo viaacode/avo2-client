@@ -140,4 +140,4 @@ export const ListSorter: ListSorterType = ({
 };
 
 // TODO: use this pattern for CollectionOrBundle to reduce overhead
-export const BlockListSorter = ListSorter as ListSorterType<Avo.Core.BlockItemBase>;
+export const BlockListSorter = ListSorter as ListSorterType<BaseBlockWithMeta>;

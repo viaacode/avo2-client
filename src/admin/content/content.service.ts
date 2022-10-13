@@ -15,7 +15,6 @@ import {
 	GetContentTypesDocument,
 	GetContentTypesQuery,
 	GetPublicContentPagesByTitleDocument,
-	GetPublicContentPagesByTitleQuery,
 	GetPublicProjectContentPagesByTitleDocument,
 	GetPublicProjectContentPagesByTitleQuery,
 	GetPublicProjectContentPagesDocument,
@@ -24,6 +23,9 @@ import {
 	InsertContentLabelLinksDocument,
 	InsertContentLabelLinksMutation,
 	InsertContentMutation,
+	SoftDeleteContentDocument,
+	SoftDeleteContentMutation,
+	SoftDeleteContentMutationVariables,
 	UpdateContentByIdDocument,
 	UpdateContentByIdMutation,
 } from '../../shared/generated/graphql-db-types';
@@ -43,7 +45,7 @@ import {
 	RichEditorStateKey,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './content.const';
-import { ContentOverviewTableCols, ContentPageInfo } from './content.types';
+import { ContentOverviewTableCols, ContentPageDb, ContentPageInfo } from './content.types';
 import {
 	convertToContentPageInfo,
 	convertToContentPageInfos,
@@ -93,7 +95,7 @@ export class ContentService {
 	public static async getPublicContentItemsByTitle(
 		title: string,
 		limit?: number
-	): Promise<ContentPageInfo[]> {
+	): Promise<ContentPageDb[]> {
 		const query = {
 			query: GetPublicContentPagesByTitleDocument,
 			variables: {
@@ -108,7 +110,7 @@ export class ContentService {
 		};
 
 		return (
-			(await performQuery<GetPublicContentPagesByTitleQuery['app_content']>(
+			(await performQuery<ContentPageDb[]>(
 				query,
 				'app_content',
 				'Failed to retrieve content pages by title.'
@@ -335,7 +337,7 @@ export class ContentService {
 	}
 
 	public static async insertContentPage(
-		contentPage: Partial<ContentPageInfo>
+		contentPage: ContentPageInfo
 	): Promise<Partial<ContentPageInfo> | null> {
 		try {
 			const dbContentPage = this.cleanupBeforeInsert(
@@ -381,7 +383,7 @@ export class ContentService {
 	}
 
 	public static async updateContentPage(
-		contentPage: Partial<ContentPageInfo>,
+		contentPage: ContentPageInfo,
 		initialContentPage?: Partial<ContentPageInfo>
 	): Promise<Partial<ContentPageInfo> | null> {
 		try {
@@ -557,9 +559,10 @@ export class ContentService {
 
 	public static async deleteContentPage(id: number) {
 		try {
-			await dataService.query({
-				variables: { id },
-				query: SOFT_DELETE_CONTENT,
+			const variables: SoftDeleteContentMutationVariables = { id };
+			await dataService.query<SoftDeleteContentMutation>({
+				variables,
+				query: SoftDeleteContentDocument,
 				update: ApolloCacheManager.clearContentCache,
 			});
 		} catch (err) {

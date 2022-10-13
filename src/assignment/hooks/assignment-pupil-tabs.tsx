@@ -9,7 +9,7 @@ import { AssignmentType } from '../assignment.types';
 import { useAssignmentPastDeadline } from './assignment-past-deadline';
 
 export function useAssignmentPupilTabs(
-	assignment: Avo.Assignment.Assignment_v2 | null,
+	assignment: Assignment_v2 | null,
 	numOfPupilCollectionFragments: number,
 	activeTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	setTab: (newTab: string) => void

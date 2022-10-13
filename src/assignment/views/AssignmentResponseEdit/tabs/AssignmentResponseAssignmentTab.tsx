@@ -8,7 +8,7 @@ import BlockList from '../../../../shared/components/BlockList/BlockList';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 
 interface AssignmentResponseAssignmentTabProps {
-	blocks: Avo.Assignment.Assignment_v2['blocks'] | null;
+	blocks: Assignment_v2['blocks'] | null;
 	pastDeadline: boolean;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 	buildSearchLink: (props: Partial<FilterState>) => ReactNode | string;
@@ -36,7 +36,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 		}
 		return (
 			<BlockList
-				blocks={(blocks || []) as Avo.Core.BlockItemBase[]}
+				blocks={(blocks || []) as BaseBlockWithMeta[]}
 				config={{
 					TEXT: {
 						title: {

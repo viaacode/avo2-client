@@ -14,7 +14,7 @@ import { AssignmentSchemaLabel_v2 } from '../assignment.types';
 import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
-export type AssignmentLabelsProps = Pick<Avo.Assignment.Assignment_v2, 'labels'> & {
+export type AssignmentLabelsProps = Pick<Assignment_v2, 'labels'> & {
 	id?: string;
 	onChange: (changed: AssignmentSchemaLabel_v2[]) => void;
 	user: Avo.User.User;
@@ -40,7 +40,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Label_v2[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
@@ -53,7 +53,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: Avo.Assignment.Label_v2[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: Label_v2[]): TagOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -68,7 +68,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		setIsManageLabelsModalOpen(false);
 	};
 
-	const getColorOptions = (labels: Avo.Assignment.Label_v2[]): ColorOption[] => {
+	const getColorOptions = (labels: Label_v2[]): ColorOption[] => {
 		return labels
 			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({

@@ -5,9 +5,9 @@ import i18n from '../../translations/i18n';
 
 export const BLOCK_ITEM_ICONS: () => Record<
 	Avo.Core.BlockItemType,
-	(block?: Avo.Core.BlockItemBase) => IconName
+	(block?: BaseBlockWithMeta) => IconName
 > = () => ({
-	ITEM: (block: Avo.Core.BlockItemBase | undefined): IconName => {
+	ITEM: (block: BaseBlockWithMeta | undefined): IconName => {
 		if (block?.item_meta) {
 			switch (block?.item_meta?.type?.label) {
 				case 'audio':

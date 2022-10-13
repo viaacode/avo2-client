@@ -1,8 +1,3 @@
-import { noop } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -13,10 +8,15 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { APP_PATH } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError } from '../../../shared/helpers';
 
 interface DeleteCollectionModalProps {
@@ -35,14 +35,15 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	const [t] = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignments, setAssignments] = useState<Partial<Avo.Assignment.Assignment_v2>[] | null>(
-		null
-	);
+	const [assignments, setAssignments] = useState<Partial<Assignment_v2>[] | null>(null);
 
 	const fetchAssignmentsUsedByCollection = useCallback(async () => {
 		try {
 			setAssignments(
-				await AssignmentService.fetchAssignmentByContentIdAndType(collectionId, 'COLLECTIE')
+				await AssignmentService.fetchAssignmentByContentIdAndType(
+					collectionId,
+					Lookup_Enum_Assignment_Content_Labels_Enum.Collectie
+				)
 			);
 		} catch (err) {
 			console.error(

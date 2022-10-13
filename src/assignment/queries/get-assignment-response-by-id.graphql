@@ -5,6 +5,19 @@ query getAssignmentResponseById($assignmentResponseId: uuid!) {
 		owner_profile_id
 		assignment_id
 		collection_title
+		updated_at
+		owner {
+			full_name
+		}
+		assignment {
+			id
+			title
+			deadline_at
+			owner {
+				full_name
+			}
+			owner_profile_id
+		}
 		pupil_collection_blocks(
 			where: { is_deleted: { _eq: false } }
 			order_by: { position: asc }
@@ -22,9 +35,6 @@ query getAssignmentResponseById($assignmentResponseId: uuid!) {
 			type
 			thumbnail_path
 			assignment_response_id
-		}
-		owner {
-			full_name
 		}
 	}
 }

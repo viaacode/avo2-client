@@ -9,11 +9,11 @@ import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockE
 import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText';
 
 export function useEditBlocks(
-	setBlock: (updatedBlock: Avo.Core.BlockItemBase) => void,
+	setBlock: (updatedBlock: BaseBlockWithMeta) => void,
 	buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string,
 	AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[]
-): (block: Avo.Core.BlockItemBase) => ReactNode | null {
-	return function useEditBlocks(block: Avo.Core.BlockItemBase) {
+): (block: BaseBlockWithMeta) => ReactNode | null {
+	return function useEditBlocks(block: BaseBlockWithMeta) {
 		switch (block.type) {
 			case AssignmentBlockType.TEXT:
 				return <AssignmentBlockEditText setBlock={setBlock} block={block} />;

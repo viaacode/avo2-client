@@ -34,12 +34,27 @@ query getAssignmentsByOwner(
 			id
 		}
 		assignment_type
+		available_at
 		deadline_at
 		is_deleted
 		title
 		owner_profile_id
 		updated_at
 		created_at
+		profile {
+			user: usersByuserId {
+				first_name
+				last_name
+				id
+			}
+			avatar
+			organisation {
+				logo_url
+				name
+				or_id
+			}
+			id
+		}
 		owner {
 			full_name
 		}

@@ -34,11 +34,13 @@ query getAssignmentsByResponseOwnerId(
 			id
 		}
 		assignment_type
+		available_at
 		deadline_at
 		is_deleted
 		title
-		created_at
 		owner_profile_id
+		updated_at
+		created_at
 		profile {
 			user: usersByuserId {
 				first_name

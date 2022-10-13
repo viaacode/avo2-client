@@ -1,13 +1,16 @@
 import { TableColumn } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock, AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
+import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 
 import { FilterState } from '../search/search.types';
 import {
+	GetAssignmentBlocksQuery,
 	GetAssignmentLabelsByProfileIdQuery,
 	GetAssignmentResponseByIdQuery,
 	GetAssignmentsByOwnerQuery,
 	GetAssignmentsByResponseOwnerIdQuery,
+	GetPupilCollectionsAdminOverviewQuery,
+	Lookup_Enum_Colors_Enum,
 } from '../shared/generated/graphql-db-types';
 
 import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
@@ -15,10 +18,22 @@ import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlock
 export type Assignment_v2 = (
 	| GetAssignmentsByOwnerQuery
 	| GetAssignmentsByResponseOwnerIdQuery
-)['app_assignments_v2'];
+)['app_assignments_v2'][0];
 
 export type Assignment_Response_v2 =
-	GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0];
+	| GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0]
+	| GetPupilCollectionsAdminOverviewQuery['app_assignment_responses_v2'][0];
+
+export type AssignmentResponseInfo = Omit<Assignment_Response_v2, 'pupil_collection_blocks'> & {
+	pupil_collection_blocks: BaseBlockWithMeta[];
+};
+
+export type PupilCollectionFragment =
+	| GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0]['pupil_collection_blocks'][0]
+	| GetAssignmentBlocksQuery['app_assignment_blocks_v2'][0];
+
+export type BaseBlockWithMeta = (PupilCollectionFragment | AssignmentBlock) &
+	Pick<BlockItemBaseSchema, 'item_meta'> & { type: string };
 
 export type Label_v2 = GetAssignmentLabelsByProfileIdQuery['app_assignment_labels_v2'][0];
 
@@ -82,7 +97,7 @@ export enum AssignmentRetrieveError {
 
 export interface AssignmentLabelColor {
 	label: string; // #FF0000
-	value: string; // BRIGHT_RED
+	value: Lookup_Enum_Colors_Enum; // BRIGHT_RED
 }
 
 /// Zoek & bouw
@@ -90,11 +105,8 @@ export interface AssignmentLabelColor {
 // Omit avoids a typescript error here
 export type AssignmentSchemaLabel_v2 = { assignment_label: Omit<AssignmentLabel_v2, 'profile'> };
 
-export type AssignmentFormState = Pick<Avo.Assignment.Assignment_v2, 'title'> &
-	Pick<
-		Partial<Avo.Assignment.Assignment_v2>,
-		'id' | 'available_at' | 'deadline_at' | 'answer_url'
-	> & {
+export type AssignmentFormState = Pick<Assignment_v2, 'title'> &
+	Pick<Partial<Assignment_v2>, 'id' | 'available_at' | 'deadline_at' | 'answer_url'> & {
 		labels: AssignmentSchemaLabel_v2[];
 		blocks: Omit<AssignmentBlock, 'item_meta'>[]; // avoid circular reference ts error
 	};
@@ -112,18 +124,12 @@ export interface PupilSearchFilterState extends FilterState {
 	focus?: string; // Search result that should be scrolled into view
 }
 
-export interface PupilCollectionFragment extends Avo.Core.BlockItemBase {
-	assignment_response_id: string;
-	fragment_id: string;
-	is_deleted: boolean;
-}
-
 export interface EditBlockProps {
 	block: EditableBlockItem;
 	setBlock: (updatedBlock: EditableBlockItem) => void;
 }
 
-export interface EditableBlockItem extends Avo.Core.BlockItemBase {
+export interface EditableBlockItem extends BaseBlockWithMeta {
 	ownTitle?: string;
 	ownDescription?: string;
 	noTitle?: string;

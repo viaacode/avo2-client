@@ -9,7 +9,7 @@ import { formatTimestamp } from '../../shared/helpers';
 import './AssignmentDetailsForm.scss';
 
 export interface AssignmentDetailsFormReadonlyProps {
-	assignment: Avo.Assignment.Assignment_v2;
+	assignment: Assignment_v2;
 }
 
 const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & DefaultProps> = ({

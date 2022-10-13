@@ -41178,7 +41178,7 @@ export type DeletePermissionGroupByIdMutation = { __typename?: 'mutation_root', 
 export type GetAllPermissionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllPermissionsQuery = { __typename?: 'query_root', users_permissions: Array<{ __typename?: 'users_permissions', id: number, label: string, description?: string | null }> };
+export type GetAllPermissionsQuery = { __typename?: 'query_root', users_permissions: Array<{ __typename?: 'users_permissions', id: number, label: string, description?: string | null, created_at: any, updated_at: any }> };
 
 export type GetPermissionGroupByIdQueryVariables = Exact<{
   id: Scalars['Int'];
@@ -41350,7 +41350,7 @@ export type GetUserByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', profile_id?: any | null, user_id?: any | null, first_name?: string | null, last_name?: string | null, business_category?: string | null, last_access_at?: any | null, mail?: string | null, is_blocked?: boolean | null, is_deleted?: boolean | null, is_exception?: boolean | null, stamboek?: string | null, acc_updated_at?: any | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, company_id?: string | null, idps: Array<{ __typename?: 'users_idp_map', id: number, idp: Users_Idps_Enum, idp_user_id: string }>, profile?: { __typename?: 'users_profiles', avatar?: string | null, alias?: string | null, title?: string | null, business_category?: string | null, updated_at: any, created_at: any, bio?: string | null, alternative_email?: string | null, user_id?: any | null, usersByuserId?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null } | null, profile_organizations: Array<{ __typename?: 'users_profile_organizations', unit_id?: string | null, organization_id: string }>, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', created_at: any, description?: string | null, id: number, label: string, ldap_role?: string | null, updated_at: any, group_user_permission_groups: Array<{ __typename?: 'users_group_user_permission_groups', group: { __typename?: 'users_groups', label: string, id: number }, permission_group: { __typename?: 'users_permission_groups', label: string, id: number, permission_group_user_permissions: Array<{ __typename?: 'users_permission_group_user_permissions', permission: { __typename?: 'users_permissions', label: string, id: number } }> } }> } } | null } | null, contexts: Array<{ __typename?: 'users_profile_contexts', id: any, key: string }>, blocked_at?: { __typename?: 'shared_user_last_blocked', max?: any | null } | null, unblocked_at?: { __typename?: 'shared_user_last_unblocked', max?: any | null } | null, classifications: Array<{ __typename?: 'users_profile_classifications', id: any, key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', from?: any | null, until: any, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }> };
+export type GetUserByIdQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', profile_id?: any | null, user_id?: any | null, first_name?: string | null, last_name?: string | null, business_category?: string | null, last_access_at?: any | null, mail?: string | null, is_blocked?: boolean | null, is_deleted?: boolean | null, is_exception?: boolean | null, stamboek?: string | null, acc_updated_at?: any | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, company_id?: string | null, idps: Array<{ __typename?: 'users_idp_map', id: number, idp: Users_Idps_Enum, idp_user_id: string }>, profile?: { __typename?: 'users_profiles', avatar?: string | null, alias?: string | null, title?: string | null, business_category?: string | null, updated_at: any, created_at: any, bio?: string | null, alternative_email?: string | null, user_id?: any | null, usersByuserId?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null } | null, profile_organizations: Array<{ __typename?: 'users_profile_organizations', unit_id?: string | null, organization_id: string }>, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', created_at: any, description?: string | null, id: number, label: string, ldap_role?: string | null, updated_at: any, group_user_permission_groups: Array<{ __typename?: 'users_group_user_permission_groups', group: { __typename?: 'users_groups', label: string, id: number }, permission_group: { __typename?: 'users_permission_groups', label: string, id: number, permission_group_user_permissions: Array<{ __typename?: 'users_permission_group_user_permissions', permission: { __typename?: 'users_permissions', label: string, id: number } }> } }> } } | null } | null, contexts: Array<{ __typename?: 'users_profile_contexts', id: any, key: string }>, last_blocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, last_unblocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, classifications: Array<{ __typename?: 'users_profile_classifications', id: any, key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', from?: any | null, until: any, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }> };
 
 export type GetUserTempAccessQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -41368,7 +41368,7 @@ export type GetUsersInSameCompanyQueryVariables = Exact<{
 }>;
 
 
-export type GetUsersInSameCompanyQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, blocked_at?: { __typename?: 'shared_user_last_blocked', date?: any | null } | null, unblocked_at?: { __typename?: 'shared_user_last_unblocked', date?: any | null } | null, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count?: number | null } | null } };
+export type GetUsersInSameCompanyQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, last_blocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, last_unblocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count?: number | null } | null } };
 
 export type GetUsersQueryVariables = Exact<{
   offset: Scalars['Int'];
@@ -41378,7 +41378,7 @@ export type GetUsersQueryVariables = Exact<{
 }>;
 
 
-export type GetUsersQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, blocked_at?: { __typename?: 'shared_user_last_blocked', date?: any | null } | null, unblocked_at?: { __typename?: 'shared_user_last_unblocked', date?: any | null } | null, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count?: number | null } | null } };
+export type GetUsersQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, last_blocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, last_unblocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count?: number | null } | null } };
 
 export type UpdateUserTempAccessByIdMutationVariables = Exact<{
   user_id: Scalars['uuid'];
@@ -41460,7 +41460,7 @@ export type GetAssignmentResponseByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentResponseByIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
+export type GetAssignmentResponseByIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, updated_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }> }> };
 
 export type GetAssignmentResponseQueryVariables = Exact<{
   profileId: Scalars['uuid'];
@@ -41516,7 +41516,7 @@ export type GetAssignmentsByOwnerQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsByOwnerQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, owner_profile_id: any, updated_at: any, created_at: any, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
+export type GetAssignmentsByOwnerQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, available_at?: any | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, owner_profile_id: any, updated_at: any, created_at: any, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
 
 export type GetAssignmentsByResponseOwnerIdQueryVariables = Exact<{
   owner_profile_id: Scalars['uuid'];
@@ -41527,7 +41527,7 @@ export type GetAssignmentsByResponseOwnerIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsByResponseOwnerIdQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, created_at: any, owner_profile_id: any, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
+export type GetAssignmentsByResponseOwnerIdQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, available_at?: any | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, owner_profile_id: any, updated_at: any, created_at: any, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
 
 export type GetMaxPositionAssignmentBlocksQueryVariables = Exact<{
   assignmentId: Scalars['uuid'];
@@ -41555,7 +41555,7 @@ export type InsertAssignmentResponseMutationVariables = Exact<{
 }>;
 
 
-export type InsertAssignmentResponseMutation = { __typename?: 'mutation_root', insert_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, updated_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null }> } | null };
+export type InsertAssignmentResponseMutation = { __typename?: 'mutation_root', insert_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, updated_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }> }> } | null };
 
 export type InsertAssignmentMutationVariables = Exact<{
   assignment: App_Assignments_V2_Insert_Input;
@@ -44024,6 +44024,8 @@ export const GetAllPermissionsDocument = `
     id
     label
     description
+    created_at
+    updated_at
   }
 }
     `;
@@ -44656,11 +44658,19 @@ export const GetUserByIdDocument = `
     group_name
     company_name
     company_id
-    blocked_at {
-      max
+    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
     }
-    unblocked_at {
-      max
+    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
     }
     classifications {
       id
@@ -44742,11 +44752,19 @@ export const GetUsersInSameCompanyDocument = `
     mail
     last_access_at
     is_blocked
-    blocked_at {
-      date: max
+    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
     }
-    unblocked_at {
-      date: max
+    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
     }
     profile_id
     stamboek
@@ -44818,11 +44836,19 @@ export const GetUsersDocument = `
     mail
     last_access_at
     is_blocked
-    blocked_at {
-      date: max
+    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
     }
-    unblocked_at {
-      date: max
+    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
     }
     profile_id
     stamboek
@@ -45150,6 +45176,19 @@ export const GetAssignmentResponseByIdDocument = `
     owner_profile_id
     assignment_id
     collection_title
+    updated_at
+    owner {
+      full_name
+    }
+    assignment {
+      id
+      title
+      deadline_at
+      owner {
+        full_name
+      }
+      owner_profile_id
+    }
     pupil_collection_blocks(
       where: {is_deleted: {_eq: false}}
       order_by: {position: asc}
@@ -45167,9 +45206,6 @@ export const GetAssignmentResponseByIdDocument = `
       type
       thumbnail_path
       assignment_response_id
-    }
-    owner {
-      full_name
     }
   }
 }
@@ -45489,12 +45525,27 @@ export const GetAssignmentsByOwnerDocument = `
       id
     }
     assignment_type
+    available_at
     deadline_at
     is_deleted
     title
     owner_profile_id
     updated_at
     created_at
+    profile {
+      user: usersByuserId {
+        first_name
+        last_name
+        id
+      }
+      avatar
+      organisation {
+        logo_url
+        name
+        or_id
+      }
+      id
+    }
     owner {
       full_name
     }
@@ -45547,11 +45598,13 @@ export const GetAssignmentsByResponseOwnerIdDocument = `
       id
     }
     assignment_type
+    available_at
     deadline_at
     is_deleted
     title
-    created_at
     owner_profile_id
+    updated_at
+    created_at
     profile {
       user: usersByuserId {
         first_name
@@ -45658,10 +45711,40 @@ export const InsertAssignmentResponseDocument = `
     returning {
       id
       created_at
-      updated_at
       owner_profile_id
       assignment_id
       collection_title
+      updated_at
+      owner {
+        full_name
+      }
+      assignment {
+        id
+        title
+        deadline_at
+        owner {
+          full_name
+        }
+        owner_profile_id
+      }
+      pupil_collection_blocks(
+        where: {is_deleted: {_eq: false}}
+        order_by: {position: asc}
+      ) {
+        id
+        fragment_id
+        use_custom_fields
+        custom_title
+        custom_description
+        start_oc
+        end_oc
+        position
+        created_at
+        updated_at
+        type
+        thumbnail_path
+        assignment_response_id
+      }
     }
   }
 }

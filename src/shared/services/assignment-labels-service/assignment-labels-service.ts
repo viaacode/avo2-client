@@ -11,6 +11,7 @@ import {
 	GetAssignmentLabelsByProfileIdQuery,
 	InsertAssignmentLabelsDocument,
 	InsertAssignmentLabelsMutation,
+	InsertAssignmentLabelsMutationVariables,
 	LinkAssignmentLabelsToAssignmentDocument,
 	LinkAssignmentLabelsToAssignmentMutation,
 	UnlinkAssignmentLabelsFromAssignmentDocument,
@@ -41,8 +42,8 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static async insertLabels(labels: Avo.Assignment.Label_v2[]): Promise<number[]> {
-		let variables;
+	public static async insertLabels(labels: Label_v2[]): Promise<number[]> {
+		let variables: InsertAssignmentLabelsMutationVariables | null = null;
 		try {
 			variables = {
 				objects: labels.map((labelObj) =>
@@ -181,12 +182,10 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static getLabelsFromAssignment(
-		assignment: Partial<Avo.Assignment.Assignment_v2>
-	): Avo.Assignment.Label_v2[] {
+	public static getLabelsFromAssignment(assignment: Partial<Assignment_v2>): Label_v2[] {
 		return (
 			get(assignment, 'tags', []) as {
-				assignment_tag: Avo.Assignment.Label_v2;
+				assignment_tag: Label_v2;
 			}[]
 		).map((assignmentLabelLink) => assignmentLabelLink.assignment_tag);
 	}

@@ -44,10 +44,7 @@ export async function deleteAssignment(
 	}
 }
 
-export function deleteAssignmentWarning(
-	t: TFunction,
-	assignment?: Avo.Assignment.Assignment_v2
-): string {
+export function deleteAssignmentWarning(t: TFunction, assignment?: Assignment_v2): string {
 	if (assignment?.assignment_type === AssignmentType.BOUW) {
 		return t(
 			'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'

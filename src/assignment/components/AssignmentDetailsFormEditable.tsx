@@ -35,8 +35,8 @@ export const AssignmentDetailsFormIds = {
 };
 
 export interface AssignmentDetailsFormEditableProps {
-	assignment: Avo.Assignment.Assignment_v2;
-	setAssignment: Dispatch<SetStateAction<Avo.Assignment.Assignment_v2>>;
+	assignment: Assignment_v2;
+	setAssignment: Dispatch<SetStateAction<Assignment_v2>>;
 	setValue: UseFormSetValue<AssignmentFormState>;
 }
 

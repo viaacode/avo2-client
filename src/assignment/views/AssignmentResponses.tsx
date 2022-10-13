@@ -55,6 +55,7 @@ import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Response_v2,
 	AssignmentOverviewTableColumns,
+	AssignmentResponseInfo,
 	AssignmentResponseTableColumns,
 	AssignmentType,
 	PupilCollectionFragment,
@@ -81,8 +82,8 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const [t] = useTranslation();
 
 	// Data
-	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentResponses, setAssignmentResponses] = useState<Assignment_Response_v2[] | null>(
+	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
+	const [assignmentResponses, setAssignmentResponses] = useState<AssignmentResponseInfo[] | null>(
 		null
 	);
 	const [assignmentResponsesCount, setAssigmentResponsesCount] = useState<number>(0);

@@ -7,8 +7,8 @@ import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 export type DuplicateAssignmentButtonProps = DefaultProps &
 	Omit<ButtonProps, 'onClick'> & {
-		assignment?: Avo.Assignment.Assignment_v2;
-		onClick?(event: MouseEvent<HTMLElement>, duplicated?: Avo.Assignment.Assignment_v2): void;
+		assignment?: Assignment_v2;
+		onClick?(event: MouseEvent<HTMLElement>, duplicated?: Assignment_v2): void;
 	};
 
 const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps> = ({

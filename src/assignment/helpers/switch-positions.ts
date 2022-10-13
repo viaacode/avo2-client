@@ -5,7 +5,7 @@ import { setPositionToIndex } from '../assignment.helper';
 
 type Positioned = { id: string | number; position: number };
 
-export function switchAssignmentBlockPositions<T extends Positioned = Avo.Core.BlockItemBase>(
+export function switchAssignmentBlockPositions<T extends Positioned = BaseBlockWithMeta>(
 	list: T[],
 	block: T,
 	delta: number

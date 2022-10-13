@@ -70,7 +70,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		formState: { isDirty },
 	} = form;
 
-	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+	const updateBlocksInAssignmentState = (newBlocks: BaseBlockWithMeta[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
 		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
 	};
@@ -269,12 +269,8 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={assignment as Avo.Assignment.Assignment_v2}
-							setAssignment={
-								setAssignment as Dispatch<
-									SetStateAction<Avo.Assignment.Assignment_v2>
-								>
-							}
+							assignment={assignment as Assignment_v2}
+							setAssignment={setAssignment as Dispatch<SetStateAction<Assignment_v2>>}
 							setValue={setValue}
 						/>
 					</div>

@@ -44,7 +44,7 @@ import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignm
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const [t] = useTranslation();
 
-	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment_v2[] | null>(null);
+	const [assignments, setAssignments] = useState<Assignment_v2[] | null>(null);
 	const [assignmentCount, setAssignmentCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<AssignmentsOverviewTableState>>({
@@ -277,7 +277,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	};
 
 	const renderTableCell = (
-		assignment: Partial<Avo.Assignment.Assignment_v2>,
+		assignment: Partial<Assignment_v2>,
 		columnId: AssignmentOverviewTableColumns
 	) => {
 		const { id, created_at, updated_at, deadline_at } = assignment;
@@ -374,10 +374,9 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					columns={columns}
 					data={assignments}
 					dataCount={assignmentCount}
-					renderCell={(
-						rowData: Partial<Avo.Assignment.Assignment_v2>,
-						columnId: string
-					) => renderTableCell(rowData, columnId as AssignmentOverviewTableColumns)}
+					renderCell={(rowData: Partial<Assignment_v2>, columnId: string) =>
+						renderTableCell(rowData, columnId as AssignmentOverviewTableColumns)
+					}
 					searchTextPlaceholder={t(
 						'admin/assignments/views/assignments-overview-admin___zoeken-op-titel-en-auteur'
 					)}

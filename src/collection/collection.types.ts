@@ -73,5 +73,5 @@ export type EditCollectionTab =
 export type MarcomEntry = GetCollectionMarcomEntriesQuery['app_collection_marcom_log'][0];
 
 export interface BlockItemComponent {
-	block?: Avo.Core.BlockItemBase;
+	block?: BaseBlockWithMeta;
 }

@@ -43,9 +43,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	const [t] = useTranslation();
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Label_v2[]>([]);
-	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<
-		Avo.Assignment.Label_v2[]
-	>([]);
+	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Label_v2[]>([]);
 	const [assignmentLabelColors, setAssignmentLabelColors] = useState<AssignmentLabelColor[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
@@ -106,7 +104,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	};
 
 	const handleRowColorChanged = (
-		assignmentLabel: Avo.Assignment.Label_v2,
+		assignmentLabel: Label_v2,
 		newColor: ValueType<AssignmentLabelColor, any>
 	) => {
 		if (!newColor) {
@@ -116,7 +114,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		setAssignmentLabels([...assignmentLabels]);
 	};
 
-	const handleRowLabelChanged = (assignmentLabel: Avo.Assignment.Label_v2, newLabel: string) => {
+	const handleRowLabelChanged = (assignmentLabel: Label_v2, newLabel: string) => {
 		assignmentLabel.label = newLabel;
 		setAssignmentLabels([...assignmentLabels]);
 	};
@@ -187,7 +185,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	};
 
 	const renderCell = (rowData: any, columnId: string) => {
-		const assignmentLabel = rowData as Avo.Assignment.Label_v2;
+		const assignmentLabel = rowData as Label_v2;
 		const colorOptions = assignmentLabelColors.map((assignmentLabelColor) => ({
 			label: '',
 			value: assignmentLabelColor.value,

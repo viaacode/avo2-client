@@ -16,7 +16,7 @@ import './AssignmentBlockTypeSearch.scss';
 import { CollectionFragmentRichText } from '../../../../collection/components';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
-	block: Avo.Core.BlockItemBase;
+	block: BaseBlockWithMeta;
 	showCollectionButton: boolean;
 	pastDeadline: boolean;
 	onSearchButtonClicked: () => void;

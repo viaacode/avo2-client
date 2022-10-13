@@ -6,9 +6,9 @@ import { GetContentPagesQuery } from '../../../shared/generated/graphql-db-types
 import { parseContentBlocks } from '../../content-block/helpers';
 import { ContentPageDb, ContentPageInfo, ContentWidth } from '../content.types';
 
-export function convertToContentPageInfo(dbContentPage: Avo.ContentPage.Page): ContentPageInfo {
+export function convertToContentPageInfo(dbContentPage: ContentPageDb): ContentPageInfo {
 	const labels = (dbContentPage.content_content_labels || []).map(
-		(labelLink: Avo.ContentPage.LabelLink) => labelLink.content_label
+		(labelLink) => labelLink.content_label
 	);
 	const contentBlockConfigs = dbContentPage.contentBlockssBycontentId
 		? parseContentBlocks(dbContentPage.contentBlockssBycontentId)
@@ -18,17 +18,17 @@ export function convertToContentPageInfo(dbContentPage: Avo.ContentPage.Page): C
 		labels,
 		contentBlockConfigs,
 		id: dbContentPage.id,
-		thumbnail_path: dbContentPage.thumbnail_path,
+		thumbnail_path: dbContentPage.thumbnail_path || null,
 		title: dbContentPage.title,
 		description_html: dbContentPage.description || '',
 		description_state: undefined,
 		seo_description: dbContentPage.seo_description || '',
 		meta_description: dbContentPage.meta_description || '',
 		is_protected: dbContentPage.is_protected,
-		is_public: dbContentPage.is_public,
-		path: dbContentPage.path,
+		is_public: dbContentPage.is_public || false,
+		path: dbContentPage.path || null,
 		content_type: dbContentPage.content_type as Avo.ContentPage.Type,
-		content_width: dbContentPage.content_width || ContentWidth.REGULAR,
+		content_width: (dbContentPage.content_width || ContentWidth.REGULAR) as ContentWidth,
 		publish_at: dbContentPage.publish_at || null,
 		depublish_at: dbContentPage.depublish_at || null,
 		published_at: dbContentPage.published_at || null,
@@ -40,17 +40,12 @@ export function convertToContentPageInfo(dbContentPage: Avo.ContentPage.Page): C
 	};
 }
 
-export function convertToContentPageInfos(
-	dbContentPages: GetContentPagesQuery['app_content']
-): ContentPageInfo[] {
+export function convertToContentPageInfos(dbContentPages: ContentPageDb[]): ContentPageInfo[] {
 	return (dbContentPages || []).map(convertToContentPageInfo);
 }
 
 export function convertToDatabaseContentPage(
-	contentPageInfo: ContentPageDb & {
-		description_state?: any;
-		description_html?: string;
-	}
+	contentPageInfo: ContentPageInfo
 ): Avo.ContentPage.Page {
 	return {
 		id: contentPageInfo.id,
@@ -69,8 +64,8 @@ export function convertToDatabaseContentPage(
 		content_width: contentPageInfo.content_width as ContentWidthSchema,
 		publish_at: contentPageInfo.publish_at || null,
 		depublish_at: contentPageInfo.depublish_at || null,
-		published_at: contentPageInfo.published_at || null,
-		created_at: contentPageInfo.created_at || null,
+		published_at: contentPageInfo.published_at,
+		created_at: contentPageInfo.created_at,
 		updated_at: contentPageInfo.updated_at || null,
 		user_group_ids: contentPageInfo.user_group_ids,
 		profile: contentPageInfo.profile as unknown as UserProfile,

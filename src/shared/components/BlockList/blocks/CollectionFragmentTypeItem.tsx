@@ -21,7 +21,7 @@ import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';
 import './CollectionFragmentTypeItem.scss';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
-	block: Avo.Core.BlockItemBase;
+	block: BaseBlockWithMeta;
 	flowPlayer?: CollectionFragmentFlowPlayerProps;
 	meta?: Omit<BlockItemMetadataProps, 'block'>; // TODO @Ian cleanup configs and having to pass block multiple times
 	title?: CollectionFragmentTitleProps;
