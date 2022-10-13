@@ -206,8 +206,8 @@ export const INSERT_CONTENT = gql`
 `;
 
 export const SOFT_DELETE_CONTENT = gql`
-	mutation softDeleteContent($id: Int!) {
-		update_app_content(where: { id: { _eq: $id } }, _set: { is_deleted: true }) {
+	mutation softDeleteContent($id: Int!, $path: String!) {
+		update_app_content(where: { id: { _eq: $id } }, _set: { is_deleted: true, path: $path }) {
 			affected_rows
 		}
 	}
