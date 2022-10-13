@@ -28,8 +28,7 @@ import { FileUpload, LoadingErrorLoadedComponent, LoadingInfo } from '../../../s
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { stringToTagInfo } from '../../../shared/helpers/string-to-select-options';
-import { useCompanies } from '../../../shared/hooks/useCompanies';
-import { useSubjects } from '../../../shared/hooks/useSubjects';
+import { useCompanies, useSubjects } from '../../../shared/hooks';
 import { ToastService } from '../../../shared/services';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
