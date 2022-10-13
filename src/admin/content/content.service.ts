@@ -15,6 +15,7 @@ import { ContentBlockConfig } from '../shared/types';
 import {
 	CONTENT_RESULT_PATH,
 	CONTENT_TYPES_LOOKUP_PATH,
+	DELETED_CONTENT_PAGE_PATH_PREFIX,
 	ITEMS_PER_PAGE,
 	RichEditorStateKey,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
@@ -572,7 +573,7 @@ export class ContentService {
 	public static async deleteContentPage(id: number) {
 		try {
 			const response = await dataService.mutate({
-				variables: { id },
+				variables: { id, path: `${DELETED_CONTENT_PAGE_PATH_PREFIX}${id}` },
 				mutation: SOFT_DELETE_CONTENT,
 				update: ApolloCacheManager.clearContentCache,
 			});
