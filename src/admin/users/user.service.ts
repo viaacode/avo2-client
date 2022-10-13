@@ -85,7 +85,7 @@ export class UserService {
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {
 				profileId,
-				query: 'GET_USER_BY_ID',
+				query: 'GET_USER_TEMP_ACCESS_BY_ID',
 			});
 		}
 	}

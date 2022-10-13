@@ -247,10 +247,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				ToastService.danger(
 					isCollection
 						? t(
-								'collection/components/collection-or-bundle-overview___collectie-kon-niet-verwijderd-worden'
+								'Er was geen collectie geselecteerd, gelieve opnieuw te proberen na het herladen van de pagina.'
 						  )
 						: t(
-								'collection/components/collection-or-bundle-overview___bundel-kon-niet-verwijderd-worden'
+								'Er was geen bundel geselecteerd, gelieve opnieuw te proberen na het herladen van de pagina.'
 						  )
 				);
 				return;

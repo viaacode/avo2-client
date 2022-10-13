@@ -12,11 +12,19 @@ query getUsers(
 		mail
 		last_access_at
 		is_blocked
-		blocked_at {
-			date: max
+		last_blocked_at: audits_aggregate(where: { event: { _eq: "BLOCKED" } }) {
+			aggregate {
+				max {
+					created_at
+				}
+			}
 		}
-		unblocked_at {
-			date: max
+		last_unblocked_at: audits_aggregate(where: { event: { _eq: "UNBLOCKED" } }) {
+			aggregate {
+				max {
+					created_at
+				}
+			}
 		}
 		profile_id
 		stamboek

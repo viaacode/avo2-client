@@ -202,7 +202,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		filterProps: {
 			options: [
 				...educationLevels,
-				{ label: i18n.t('Andere'), id: 'Andere' },
+				{ label: i18n.t('admin/users/user___andere'), id: 'Andere' },
 				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
@@ -258,13 +258,21 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 		is_blocked: order,
 	}),
 	blocked_at: (order: Avo.Search.OrderDirection) => ({
-		blocked_at: {
-			max: order,
+		last_blocked_at: {
+			aggregate: {
+				max: {
+					created_at: order,
+				},
+			},
 		},
 	}),
 	unblocked_at: (order: Avo.Search.OrderDirection) => ({
-		unblocked_at: {
-			max: order,
+		last_unblocked_at: {
+			aggregate: {
+				max: {
+					created_at: order,
+				},
+			},
 		},
 	}),
 	stamboek: (order: Avo.Search.OrderDirection) => ({

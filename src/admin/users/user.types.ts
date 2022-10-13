@@ -93,11 +93,19 @@ export interface UserSummaryView {
 		temp_access: UserTempAccess | null;
 	};
 	is_blocked: boolean;
-	blocked_at: {
-		date: string;
+	last_blocked_at: {
+		aggregate: {
+			max: {
+				created_at: string | null;
+			};
+		};
 	};
-	unblocked_at: {
-		date: string;
+	last_unblocked_at: {
+		aggregate: {
+			max: {
+				created_at: string | null;
+			};
+		};
 	};
 	profile_id: string;
 	stamboek: string | null;
