@@ -16,6 +16,7 @@ import {
 	AssignmentResponseFormState,
 	AssignmentResponseTableColumns,
 	AssignmentType,
+	BaseBlockWithMeta,
 } from './assignment.types';
 
 export const ITEMS_PER_PAGE = 20;

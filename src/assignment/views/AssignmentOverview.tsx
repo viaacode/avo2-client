@@ -76,11 +76,11 @@ import {
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
+	Assignment_Label_v2,
 	Assignment_v2,
 	AssignmentOverviewTableColumns,
 	AssignmentSchemaLabel_v2,
 	AssignmentView,
-	Label_v2,
 } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
@@ -117,7 +117,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignments, setAssignments] = useState<Assignment_v2[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Label_v2[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
@@ -568,8 +568,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const getLabelOptions = (labelType: AssignmentLabelType): CheckboxOption[] => {
 		return compact(
 			allAssignmentLabels
-				.filter((labelObj: Label_v2) => labelObj.type === labelType)
-				.map((labelObj: Label_v2): CheckboxOption | null => {
+				.filter((labelObj: Assignment_Label_v2) => labelObj.type === labelType)
+				.map((labelObj: Assignment_Label_v2): CheckboxOption | null => {
 					if (!labelObj.label) {
 						return null;
 					}

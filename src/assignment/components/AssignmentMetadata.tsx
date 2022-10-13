@@ -1,14 +1,14 @@
 import { Flex } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { formatTimestamp } from '../../shared/helpers';
+import { Assignment_Response_v2, SimplifiedAssignment } from '../assignment.types';
 
 import './AssignmentMetadata.scss';
 
 type AssignmentMetadataProps = {
-	assignment: Assignment_v2;
+	assignment: SimplifiedAssignment;
 	assignmentResponse?: Assignment_Response_v2 | null;
 	who: 'teacher' | 'pupil';
 };

@@ -2,6 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 import { formatDate } from '../../helpers';
 
 export type BlockItemMetadataProps = {

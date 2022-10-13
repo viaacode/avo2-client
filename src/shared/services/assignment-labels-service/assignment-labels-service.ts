@@ -1,7 +1,6 @@
-import { Avo } from '@viaa/avo2-types';
 import { get, omit } from 'lodash-es';
 
-import { AssignmentLabelColor, Label_v2 } from '../../../assignment/assignment.types';
+import { Assignment_Label_v2, AssignmentLabelColor } from '../../../assignment/assignment.types';
 import {
 	DeleteAssignmentLabelDocument,
 	DeleteAssignmentLabelMutation,
@@ -23,7 +22,10 @@ import { CustomError } from '../../helpers';
 import { ApolloCacheManager, dataService } from '../data-service';
 
 export class AssignmentLabelsService {
-	public static async getLabelsForProfile(profileId: string, type?: string): Promise<Label_v2[]> {
+	public static async getLabelsForProfile(
+		profileId: string,
+		type?: string
+	): Promise<Assignment_Label_v2[]> {
 		try {
 			const response = await dataService.query<GetAssignmentLabelsByProfileIdQuery>({
 				query: GetAssignmentLabelsByProfileIdDocument,
@@ -42,7 +44,7 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static async insertLabels(labels: Label_v2[]): Promise<number[]> {
+	public static async insertLabels(labels: Assignment_Label_v2[]): Promise<number[]> {
 		let variables: InsertAssignmentLabelsMutationVariables | null = null;
 		try {
 			variables = {
@@ -180,13 +182,5 @@ export class AssignmentLabelsService {
 				query: 'GET_ALL_ASSIGNMENT_LABEL_COLORS',
 			});
 		}
-	}
-
-	public static getLabelsFromAssignment(assignment: Partial<Assignment_v2>): Label_v2[] {
-		return (
-			get(assignment, 'tags', []) as {
-				assignment_tag: Label_v2;
-			}[]
-		).map((assignmentLabelLink) => assignmentLabelLink.assignment_tag);
 	}
 }

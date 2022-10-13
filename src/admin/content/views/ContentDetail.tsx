@@ -1,4 +1,3 @@
-import { QueryClient } from '@tanstack/react-query';
 import {
 	Blankslate,
 	Button,
@@ -38,7 +37,6 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { getMoreOptionsLabel } from '../../../shared/constants';
-import { useSoftDeleteContentMutation } from '../../../shared/generated/graphql-db-types';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -88,8 +86,6 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
-
-	const { mutateAsync: triggerContentDelete } = useSoftDeleteContentMutation();
 
 	const [currentTab, setCurrentTab, tabs] = useTabs(
 		GET_CONTENT_DETAIL_TABS(),
@@ -166,35 +162,31 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		}
 	}, [contentPageInfo, setLoadingInfo]);
 
-	const handleDelete = () => {
-		setIsConfirmModalOpen(false);
-		triggerContentDelete(
-			{
-				id: parseInt(id),
-			},
-			{
-				onSuccess: async () => {
-					const queryClient = new QueryClient();
-					await queryClient.invalidateQueries(['softDeleteContent']);
-				},
-			}
-		)
-			.then(() => {
-				history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
-				ToastService.success(
-					t(
-						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
-					)
-				);
-			})
-			.catch((err) => {
-				console.error(err);
+	const handleDelete = async () => {
+		try {
+			setIsConfirmModalOpen(false);
+			if (!contentPageInfo) {
 				ToastService.danger(
 					t(
 						'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
 					)
 				);
-			});
+				return;
+			}
+			await ContentService.deleteContentPage(contentPageInfo);
+
+			history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
+			ToastService.success(
+				t('admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd')
+			);
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(
+				t(
+					'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
+				)
+			);
+		}
 	};
 
 	function handlePreviewClicked() {

@@ -1,6 +1,6 @@
-import { Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 
+import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionFragmentRichText } from '../../../../collection/components';
 import CollectionFragmentTitle, {
 	CollectionFragmentTitleProps,

@@ -4,7 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, ReactNode } from 'react';
 
-import { AssignmentBlockType } from '../../../assignment/assignment.types';
+import { AssignmentBlockType, BaseBlockWithMeta } from '../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../collection/collection.const';
 import {
 	CollectionFragmentTypeItem,
@@ -30,7 +30,9 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 					<div className="u-padding-top-l u-padding-bottom-l">
 						<IconBar
 							icon={{
-								name: BLOCK_ITEM_ICONS()[block.type](block),
+								name: BLOCK_ITEM_ICONS()[block.type as Avo.Core.BlockItemType](
+									block
+								),
 							}}
 						>
 							{children}

@@ -2,7 +2,6 @@ import { Avo } from '@viaa/avo2-types';
 import { ContentWidthSchema } from '@viaa/avo2-types/types/content-page';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
-import { GetContentPagesQuery } from '../../../shared/generated/graphql-db-types';
 import { parseContentBlocks } from '../../content-block/helpers';
 import { ContentPageDb, ContentPageInfo, ContentWidth } from '../content.types';
 

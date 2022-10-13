@@ -2,11 +2,9 @@ import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { endOfDay, isBefore } from 'date-fns';
-import { DocumentNode } from 'graphql';
 import { compact, flatten, get, isNil } from 'lodash-es';
 import moment from 'moment';
 
-import { CustomError, getEnv } from '../../shared/helpers';
 import {
 	BulkAddSubjectsToProfilesDocument,
 	BulkAddSubjectsToProfilesMutation,
@@ -32,6 +30,7 @@ import {
 	UpdateUserTempAccessByIdDocument,
 	UpdateUserTempAccessByIdMutation,
 } from '../../shared/generated/graphql-db-types';
+import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';

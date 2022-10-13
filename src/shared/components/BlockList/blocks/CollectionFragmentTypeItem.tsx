@@ -1,10 +1,10 @@
 import { DefaultProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import classNames from 'classnames';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import CollectionFragmentFlowPlayer, {
 	CollectionFragmentFlowPlayerProps,

@@ -41506,7 +41506,7 @@ export type GetAssignmentsAdminOverviewQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, created_at: any, updated_at: any, deadline_at?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count?: number | null } | null } }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
+export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, available_at?: any | null, answer_url?: string | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, owner_profile_id: any, updated_at: any, created_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count?: number | null } | null } }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
 
 export type GetAssignmentsByOwnerQueryVariables = Exact<{
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
@@ -41517,7 +41517,7 @@ export type GetAssignmentsByOwnerQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsByOwnerQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, available_at?: any | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, owner_profile_id: any, updated_at: any, created_at: any, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
+export type GetAssignmentsByOwnerQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, available_at?: any | null, answer_url?: string | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, owner_profile_id: any, updated_at: any, created_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }> }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
 
 export type GetAssignmentsByResponseOwnerIdQueryVariables = Exact<{
   owner_profile_id: Scalars['uuid'];
@@ -41528,7 +41528,7 @@ export type GetAssignmentsByResponseOwnerIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsByResponseOwnerIdQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, available_at?: any | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, owner_profile_id: any, updated_at: any, created_at: any, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
+export type GetAssignmentsByResponseOwnerIdQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, assignment_type?: string | null, available_at?: any | null, answer_url?: string | null, deadline_at?: any | null, is_deleted: boolean, title?: string | null, owner_profile_id: any, updated_at: any, created_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }> }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count?: number | null } | null } };
 
 export type GetMaxPositionAssignmentBlocksQueryVariables = Exact<{
   assignmentId: Scalars['uuid'];
@@ -45474,10 +45474,18 @@ export const GetAssignmentsAdminOverviewDocument = `
     where: $where
   ) {
     id
-    title
-    created_at
-    updated_at
+    assignment_type
+    available_at
+    answer_url
     deadline_at
+    is_deleted
+    title
+    owner_profile_id
+    updated_at
+    created_at
+    owner {
+      full_name
+    }
     owner {
       full_name
       profile_id
@@ -45519,31 +45527,21 @@ export const GetAssignmentsByOwnerDocument = `
     order_by: $order
   ) {
     id
-    labels(order_by: {assignment_label: {label: asc}}) {
-      assignment_label {
-        color_enum_value
-        color_override
-        enum_color {
-          label
-          value
-        }
-        id
-        label
-        type
-        owner_profile_id
-      }
-    }
-    responses {
-      id
-    }
     assignment_type
     available_at
+    answer_url
     deadline_at
     is_deleted
     title
     owner_profile_id
     updated_at
     created_at
+    owner {
+      full_name
+    }
+    responses {
+      id
+    }
     profile {
       user: usersByuserId {
         first_name
@@ -45558,8 +45556,19 @@ export const GetAssignmentsByOwnerDocument = `
       }
       id
     }
-    owner {
-      full_name
+    labels(order_by: {assignment_label: {label: asc}}) {
+      assignment_label {
+        color_enum_value
+        color_override
+        enum_color {
+          label
+          value
+        }
+        id
+        label
+        type
+        owner_profile_id
+      }
     }
   }
   count: app_assignments_v2_aggregate(
@@ -45592,31 +45601,21 @@ export const GetAssignmentsByResponseOwnerIdDocument = `
     order_by: $order
   ) {
     id
-    labels {
-      assignment_label {
-        color_enum_value
-        color_override
-        enum_color {
-          label
-          value
-        }
-        id
-        label
-        type
-        owner_profile_id
-      }
-    }
-    responses {
-      id
-    }
     assignment_type
     available_at
+    answer_url
     deadline_at
     is_deleted
     title
     owner_profile_id
     updated_at
     created_at
+    owner {
+      full_name
+    }
+    responses {
+      id
+    }
     profile {
       user: usersByuserId {
         first_name
@@ -45631,8 +45630,19 @@ export const GetAssignmentsByResponseOwnerIdDocument = `
       }
       id
     }
-    owner {
-      full_name
+    labels {
+      assignment_label {
+        color_enum_value
+        color_override
+        enum_color {
+          label
+          value
+        }
+        id
+        label
+        type
+        owner_profile_id
+      }
     }
   }
   count: app_assignments_v2_aggregate(

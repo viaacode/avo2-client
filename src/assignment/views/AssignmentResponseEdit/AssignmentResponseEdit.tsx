@@ -10,7 +10,6 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, {
 	Dispatch,
@@ -48,6 +47,7 @@ import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	Assignment_Response_v2,
+	Assignment_v2,
 	AssignmentResponseFormState,
 	AssignmentResponseInfo,
 	AssignmentType,

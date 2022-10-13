@@ -1,5 +1,4 @@
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
 import React, {
 	Dispatch,
@@ -25,7 +24,12 @@ import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ToastService } from '../../../shared/services';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
-import { Assignment_Response_v2, AssignmentRetrieveError } from '../../assignment.types';
+import {
+	Assignment_Response_v2,
+	Assignment_v2,
+	AssignmentRetrieveError,
+	SimplifiedAssignment,
+} from '../../assignment.types';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 
@@ -42,7 +46,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 	// Data
 	const assignmentId = match.params.assignmentId;
 	const assignmentResponseId = match.params.responseId;
-	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
+	const [assignment, setAssignment] = useState<SimplifiedAssignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<any | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Assignment_Response_v2 | null>(
@@ -81,7 +85,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 				return;
 			}
 
-			const assignmentOrError: Assignment_v2 | string =
+			const assignmentOrError: SimplifiedAssignment | string =
 				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
 
 			if (isString(assignmentOrError)) {

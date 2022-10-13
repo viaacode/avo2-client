@@ -1,5 +1,4 @@
 import { convertToHtml } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FC, ReactNode } from 'react';
@@ -11,7 +10,7 @@ import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm'
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
-import { EditableBlockItem, EditBlockProps } from '../../assignment.types';
+import { BaseBlockWithMeta, EditableBlockItem, EditBlockProps } from '../../assignment.types';
 import {
 	AssignmentBlockDescriptionButtons,
 	AssignmentBlockItemDescriptionType,

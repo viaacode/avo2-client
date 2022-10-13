@@ -16,7 +16,6 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classNames from 'classnames';
 import { cloneDeep, get, isNil, noop, uniq } from 'lodash-es';
@@ -59,6 +58,7 @@ import {
 	AssignmentResponseTableColumns,
 	AssignmentType,
 	PupilCollectionFragment,
+	SimplifiedAssignment,
 } from '../assignment.types';
 import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
 import { isItemWithMeta } from '../helpers/is-item-with-meta';
@@ -82,7 +82,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const [t] = useTranslation();
 
 	// Data
-	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
+	const [assignment, setAssignment] = useState<SimplifiedAssignment | null>(null);
 	const [assignmentResponses, setAssignmentResponses] = useState<AssignmentResponseInfo[] | null>(
 		null
 	);

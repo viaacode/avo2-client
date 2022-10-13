@@ -1,10 +1,9 @@
 import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
-import { AssignmentType } from '../assignment.types';
+import { Assignment_v2, AssignmentType } from '../assignment.types';
 
 import { useAssignmentPastDeadline } from './assignment-past-deadline';
 

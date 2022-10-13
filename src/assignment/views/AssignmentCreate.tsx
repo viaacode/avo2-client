@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, {
 	Dispatch,
@@ -30,7 +29,7 @@ import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentFormState } from '../assignment.types';
+import { AssignmentFormState, BaseBlockWithMeta } from '../assignment.types';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentHeading from '../components/AssignmentHeading';

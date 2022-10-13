@@ -8,13 +8,12 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
-import { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BLOCK_ITEM_ICONS } from '../../shared/components/BlockList/BlockList.consts';
-import { AssignmentBlockType } from '../assignment.types';
+import { AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
 
 import './AddBlockModal.scss';
 

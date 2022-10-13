@@ -1,6 +1,7 @@
-import { Avo } from '@viaa/avo2-types';
 import { cloneDeep } from 'lodash-es';
 import { useCallback } from 'react';
+
+import { BaseBlockWithMeta } from '../assignment.types';
 
 export function useAssignmentBlockChangeHandler(
 	blocks: BaseBlockWithMeta[],

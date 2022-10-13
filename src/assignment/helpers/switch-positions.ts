@@ -1,7 +1,7 @@
-import { Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 
 import { setPositionToIndex } from '../assignment.helper';
+import { BaseBlockWithMeta } from '../assignment.types';
 
 type Positioned = { id: string | number; position: number };
 

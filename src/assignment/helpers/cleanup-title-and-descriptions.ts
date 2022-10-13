@@ -1,6 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
-
-import { AssignmentBlockType, EditableBlockItem } from '../assignment.types';
+import { AssignmentBlockType, BaseBlockWithMeta, EditableBlockItem } from '../assignment.types';
 import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
 
 /**

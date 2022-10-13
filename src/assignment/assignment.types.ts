@@ -4,9 +4,11 @@ import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 
 import { FilterState } from '../search/search.types';
 import {
+	App_Assignments_V2_Assignment_Labels_V2,
 	GetAssignmentBlocksQuery,
 	GetAssignmentLabelsByProfileIdQuery,
 	GetAssignmentResponseByIdQuery,
+	GetAssignmentsAdminOverviewQuery,
 	GetAssignmentsByOwnerQuery,
 	GetAssignmentsByResponseOwnerIdQuery,
 	GetPupilCollectionsAdminOverviewQuery,
@@ -18,7 +20,13 @@ import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlock
 export type Assignment_v2 = (
 	| GetAssignmentsByOwnerQuery
 	| GetAssignmentsByResponseOwnerIdQuery
+	| GetAssignmentsAdminOverviewQuery
 )['app_assignments_v2'][0];
+
+export type SimplifiedAssignment = Assignment_v2 & {
+	blocks: AssignmentBlock[];
+	labels: App_Assignments_V2_Assignment_Labels_V2[];
+};
 
 export type Assignment_Response_v2 =
 	| GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0]
@@ -35,7 +43,8 @@ export type PupilCollectionFragment =
 export type BaseBlockWithMeta = (PupilCollectionFragment | AssignmentBlock) &
 	Pick<BlockItemBaseSchema, 'item_meta'> & { type: string };
 
-export type Label_v2 = GetAssignmentLabelsByProfileIdQuery['app_assignment_labels_v2'][0];
+export type Assignment_Label_v2 =
+	GetAssignmentLabelsByProfileIdQuery['app_assignment_labels_v2'][0];
 
 export type AssignmentOverviewTableColumns =
 	| 'title'

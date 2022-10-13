@@ -10,7 +10,6 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,11 +17,12 @@ import { useTranslation } from 'react-i18next';
 import { APP_PATH } from '../../constants';
 import { buildLink, copyToClipboard } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
+import { SimplifiedAssignment } from '../assignment.types';
 
 import './ShareAssignmentWithPupil.scss';
 
 export type ShareAssignmentWithPupilProps = {
-	assignment?: Assignment_v2;
+	assignment?: SimplifiedAssignment;
 	onDetailLinkClicked?: () => void;
 	onContentLinkClicked?: () => void;
 	button?: Partial<ButtonProps>;

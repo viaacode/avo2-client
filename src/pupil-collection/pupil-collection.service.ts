@@ -2,7 +2,11 @@ import { Avo } from '@viaa/avo2-types';
 import { get, without } from 'lodash-es';
 
 import { isNewAssignmentBlock } from '../assignment/assignment.const';
-import { Assignment_Response_v2, PupilCollectionFragment } from '../assignment/assignment.types';
+import {
+	Assignment_Response_v2,
+	BaseBlockWithMeta,
+	PupilCollectionFragment,
+} from '../assignment/assignment.types';
 import { ItemTrimInfo } from '../item/item.types';
 import {
 	BulkUpdateAuthorForPupilCollectionsDocument,
@@ -40,7 +44,7 @@ export class PupilCollectionService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[PupilCollections, number]> {
+	): Promise<[Assignment_Response_v2[], number]> {
 		let variables;
 		try {
 			variables = {
@@ -60,7 +64,8 @@ export class PupilCollectionService {
 				query: GetPupilCollectionsAdminOverviewDocument,
 			});
 
-			const pupilCollections: Assignment_Response_v2 = response?.app_assignment_responses_v2;
+			const pupilCollections: Assignment_Response_v2[] =
+				response?.app_assignment_responses_v2;
 
 			const assignmentCount =
 				response?.app_assignment_responses_v2_aggregate?.aggregate?.count || 0;
@@ -175,7 +180,7 @@ export class PupilCollectionService {
 				!created.map((d) => d.id).includes(block.id)
 		);
 
-		const cleanup = (block: PupilCollectionFragment) => {
+		const cleanup = (block: BaseBlockWithMeta) => {
 			delete block.item_meta;
 			delete (block as any).icon;
 			delete (block as any).onSlice;

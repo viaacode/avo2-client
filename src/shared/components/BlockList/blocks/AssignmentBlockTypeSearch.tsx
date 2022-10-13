@@ -6,13 +6,13 @@ import {
 	Flex,
 	Spacer,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
 import './AssignmentBlockTypeSearch.scss';
+import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionFragmentRichText } from '../../../../collection/components';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {

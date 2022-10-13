@@ -29,6 +29,7 @@ import {
 import { AssignmentService } from '../../../assignment.service';
 import {
 	Assignment_Response_v2,
+	Assignment_v2,
 	BaseBlockWithMeta,
 	PupilSearchFilterState,
 } from '../../../assignment.types';

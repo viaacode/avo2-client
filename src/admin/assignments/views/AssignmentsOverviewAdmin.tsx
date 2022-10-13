@@ -15,12 +15,16 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
-import { AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
+import {
+	Assignment_v2,
+	AssignmentOverviewTableColumns,
+} from '../../../assignment/assignment.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import Html from '../../../shared/components/Html/Html';
+import { GetAssignmentsAdminOverviewQuery } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
@@ -337,7 +341,10 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			}
 
 			case 'views':
-				return assignment?.view_count?.count || '0';
+				return (
+					(assignment as GetAssignmentsAdminOverviewQuery['app_assignments_v2'][0])
+						?.view_count?.count || '0'
+				);
 
 			case 'actions':
 			default:

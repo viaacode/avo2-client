@@ -1,6 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
+import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 import i18n from '../../translations/i18n';
 
 export const BLOCK_ITEM_ICONS: () => Record<

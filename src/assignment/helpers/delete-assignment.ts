@@ -1,4 +1,3 @@
-import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { TFunction } from 'i18next';
 import { isNil } from 'lodash';
@@ -6,7 +5,7 @@ import { isNil } from 'lodash';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentType } from '../assignment.types';
+import { Assignment_v2, AssignmentType } from '../assignment.types';
 
 export async function deleteAssignment(
 	t: TFunction,

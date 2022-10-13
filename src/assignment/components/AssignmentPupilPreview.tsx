@@ -1,5 +1,4 @@
 import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { Dispatch, FC, FunctionComponent, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import { isMobileWidth } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { Assignment_Response_v2, AssignmentFormState } from '../assignment.types';
+import { Assignment_Response_v2, Assignment_v2, AssignmentFormState } from '../assignment.types';
 import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
 export type AssignmentPupilPreviewProps = {

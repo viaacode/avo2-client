@@ -1,5 +1,5 @@
 {
 	"*.{ts,tsx}": [
-		"git add"
+		"echo lint stage disabled"
 	]
 }

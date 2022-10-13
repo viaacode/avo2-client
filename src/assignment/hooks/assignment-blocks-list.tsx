@@ -6,6 +6,7 @@ import {
 	BLOCK_ITEM_ICONS,
 	BLOCK_ITEM_LABELS,
 } from '../../shared/components/BlockList/BlockList.consts';
+import { BaseBlockWithMeta } from '../assignment.types';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 
 export function useBlocksList(
@@ -21,7 +22,7 @@ export function useBlocksList(
 			const mapped: BaseBlockWithMeta & ListSorterItem = {
 				...block,
 				...config?.listSorterItem,
-				icon: BLOCK_ITEM_ICONS()[block.type](block),
+				icon: BLOCK_ITEM_ICONS()[block.type as Avo.Core.BlockItemType](block),
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(
 						blocks,
@@ -40,7 +41,7 @@ export function useBlocksList(
 		() => (
 			<BlockListSorter
 				{...config?.listSorter}
-				heading={(item) => item && BLOCK_ITEM_LABELS()[item.type]}
+				heading={(item) => item && BLOCK_ITEM_LABELS()[item.type as Avo.Core.BlockItemType]}
 				items={items}
 			/>
 		),

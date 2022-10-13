@@ -8,7 +8,6 @@ import {
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { isPast } from 'date-fns';
 import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
@@ -18,7 +17,7 @@ import { compose } from 'redux';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
-import { AssignmentFormState } from '../assignment.types';
+import { Assignment_v2, AssignmentFormState, SimplifiedAssignment } from '../assignment.types';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 
@@ -35,7 +34,7 @@ export const AssignmentDetailsFormIds = {
 };
 
 export interface AssignmentDetailsFormEditableProps {
-	assignment: Assignment_v2;
+	assignment: SimplifiedAssignment;
 	setAssignment: Dispatch<SetStateAction<Assignment_v2>>;
 	setValue: UseFormSetValue<AssignmentFormState>;
 }

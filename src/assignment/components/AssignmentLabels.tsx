@@ -8,13 +8,20 @@ import { ValueType } from 'react-select';
 
 import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
+import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
-import { AssignmentSchemaLabel_v2 } from '../assignment.types';
+import {
+	Assignment_Label_v2,
+	AssignmentSchemaLabel_v2,
+	SimplifiedAssignment,
+} from '../assignment.types';
 
 import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
-export type AssignmentLabelsProps = Pick<Assignment_v2, 'labels'> & {
+import Label_v2 = Avo.Assignment.Label_v2;
+
+export type AssignmentLabelsProps = Pick<SimplifiedAssignment, 'labels'> & {
 	id?: string;
 	onChange: (changed: AssignmentSchemaLabel_v2[]) => void;
 	user: Avo.User.User;
@@ -40,7 +47,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Label_v2[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
@@ -73,7 +80,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({
 				label: labelObj.label || '',
-				value: String(labelObj.id),
+				value: String(labelObj.id) as Lookup_Enum_Colors_Enum,
 				// labelObj.enum_color.label contains hex code (graphql enum quirk)
 				// The value of the enum has to be uppercase text, so the value contains the color name
 				color: labelObj.color_override || get(labelObj, 'enum_color.label'),

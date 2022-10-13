@@ -7,7 +7,7 @@ import { parsePickerItem } from '../helpers/parse-picker';
 // Fetch content items from GQL
 export const retrieveContentPages = async (
 	title: string | null,
-	limit: number = 5
+	limit = 5
 ): Promise<PickerSelectItem[]> => {
 	try {
 		const contentItems: ContentPageInfo[] | null = title
@@ -26,7 +26,7 @@ export const retrieveContentPages = async (
 // Fetch content items of type PROJECT from GQL
 export const retrieveProjectContentPages = async (
 	title: string | null,
-	limit: number = 5
+	limit = 5
 ): Promise<PickerSelectItem[]> => {
 	const contentItems: Partial<ContentPageInfo>[] | null = title
 		? await ContentService.getPublicProjectContentItemsByTitle(`%${title}%`, limit)

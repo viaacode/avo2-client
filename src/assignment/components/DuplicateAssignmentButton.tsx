@@ -1,8 +1,8 @@
 import { Button, ButtonProps, DefaultProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { FC, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Assignment_v2 } from '../assignment.types';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 export type DuplicateAssignmentButtonProps = DefaultProps &

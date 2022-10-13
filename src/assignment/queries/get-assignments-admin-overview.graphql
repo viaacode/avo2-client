@@ -6,10 +6,18 @@ query getAssignmentsAdminOverview(
 ) {
 	app_assignments_v2(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
 		id
-		title
-		created_at
-		updated_at
+		assignment_type
+		available_at
+		answer_url
 		deadline_at
+		is_deleted
+		title
+		owner_profile_id
+		updated_at
+		created_at
+		owner {
+			full_name
+		}
 		owner {
 			full_name
 			profile_id

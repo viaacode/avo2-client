@@ -7,13 +7,13 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
+import { Assignment_v2 } from '../../../assignment/assignment.types';
 import { APP_PATH } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../../shared/generated/graphql-db-types';

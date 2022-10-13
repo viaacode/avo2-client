@@ -9,13 +9,12 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
-import { AssignmentBlockType } from '../assignment.types';
+import { Assignment_Response_v2, AssignmentBlockType } from '../assignment.types';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
 	responses?: Assignment_Response_v2[];

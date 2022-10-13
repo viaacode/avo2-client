@@ -16,31 +16,21 @@ query getAssignmentsByOwner(
 		order_by: $order
 	) {
 		id
-		labels(order_by: { assignment_label: { label: asc } }) {
-			assignment_label {
-				color_enum_value
-				color_override
-				enum_color {
-					label
-					value
-				}
-				id
-				label
-				type
-				owner_profile_id
-			}
-		}
-		responses {
-			id
-		}
 		assignment_type
 		available_at
+		answer_url
 		deadline_at
 		is_deleted
 		title
 		owner_profile_id
 		updated_at
 		created_at
+		owner {
+			full_name
+		}
+		responses {
+			id
+		}
 		profile {
 			user: usersByuserId {
 				first_name
@@ -55,8 +45,19 @@ query getAssignmentsByOwner(
 			}
 			id
 		}
-		owner {
-			full_name
+		labels(order_by: { assignment_label: { label: asc } }) {
+			assignment_label {
+				color_enum_value
+				color_override
+				enum_color {
+					label
+					value
+				}
+				id
+				label
+				type
+				owner_profile_id
+			}
 		}
 	}
 	count: app_assignments_v2_aggregate(

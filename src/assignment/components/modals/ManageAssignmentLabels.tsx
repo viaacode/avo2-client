@@ -20,11 +20,12 @@ import { useTranslation } from 'react-i18next';
 import { ValueType } from 'react-select';
 
 import { ColorSelect } from '../../../admin/content-block/components/fields';
+import { ColorOption } from '../../../admin/content-block/components/fields/ColorSelect/ColorSelect';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { UserProps } from '../../../shared/hocs/withUser';
 import { AssignmentLabelsService, ToastService } from '../../../shared/services';
-import { AssignmentLabelColor, Label_v2 } from '../../assignment.types';
+import { Assignment_Label_v2, AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
 
@@ -42,8 +43,10 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 }) => {
 	const [t] = useTranslation();
 
-	const [assignmentLabels, setAssignmentLabels] = useState<Label_v2[]>([]);
-	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Label_v2[]>([]);
+	const [assignmentLabels, setAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
+	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Assignment_Label_v2[]>(
+		[]
+	);
 	const [assignmentLabelColors, setAssignmentLabelColors] = useState<AssignmentLabelColor[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
@@ -104,7 +107,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	};
 
 	const handleRowColorChanged = (
-		assignmentLabel: Label_v2,
+		assignmentLabel: Assignment_Label_v2,
 		newColor: ValueType<AssignmentLabelColor, any>
 	) => {
 		if (!newColor) {
@@ -114,7 +117,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		setAssignmentLabels([...assignmentLabels]);
 	};
 
-	const handleRowLabelChanged = (assignmentLabel: Label_v2, newLabel: string) => {
+	const handleRowLabelChanged = (assignmentLabel: Assignment_Label_v2, newLabel: string) => {
 		assignmentLabel.label = newLabel;
 		setAssignmentLabels([...assignmentLabels]);
 	};
@@ -185,7 +188,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	};
 
 	const renderCell = (rowData: any, columnId: string) => {
-		const assignmentLabel = rowData as Label_v2;
+		const assignmentLabel = rowData as Assignment_Label_v2;
 		const colorOptions = assignmentLabelColors.map((assignmentLabelColor) => ({
 			label: '',
 			value: assignmentLabelColor.value,
@@ -202,7 +205,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 									colorOption.value === assignmentLabel.color_enum_value
 							)}
 							onChange={(newColor) =>
-								handleRowColorChanged(assignmentLabel, newColor)
+								handleRowColorChanged(assignmentLabel, newColor as ColorOption)
 							}
 						/>
 					</Spacer>

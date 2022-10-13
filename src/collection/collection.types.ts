@@ -1,7 +1,6 @@
 import { DutchContentType, EnglishContentType } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { invert } from 'lodash-es';
 
+import { BaseBlockWithMeta } from '../assignment/assignment.types';
 import {
 	GetCollectionMarcomEntriesQuery,
 	GetPublicCollectionsByIdQuery,
@@ -42,10 +41,6 @@ const CONTENT_TYPE_TRANSLATIONS = {
 
 export function toEnglishContentType(label: DutchContentType): EnglishContentType {
 	return CONTENT_TYPE_TRANSLATIONS[label] as EnglishContentType;
-}
-
-export function toDutchContentType(label: EnglishContentType): DutchContentType {
-	return invert(CONTENT_TYPE_TRANSLATIONS)[label] as DutchContentType;
 }
 
 export type CollectionLabelLookup = { [id: string]: string };

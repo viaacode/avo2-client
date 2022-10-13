@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { isPast } from 'date-fns';
 import React, {
@@ -33,7 +32,12 @@ import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentFormState } from '../assignment.types';
+import {
+	Assignment_v2,
+	AssignmentFormState,
+	BaseBlockWithMeta,
+	SimplifiedAssignment,
+} from '../assignment.types';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
@@ -66,7 +70,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<Assignment_v2 | null>(null);
+	const [original, setOriginal] = useState<SimplifiedAssignment | null>(null);
 	const [assignmentLoading, setAssigmentLoading] = useState(false);
 	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null

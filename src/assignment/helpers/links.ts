@@ -1,9 +1,8 @@
-import { Avo } from '@viaa/avo2-types';
-
 import { APP_PATH } from '../../constants';
 import { ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS } from '../../shared/constants';
 import { buildLink } from '../../shared/helpers';
 import { ASSIGNMENTS_ID } from '../../workspace/workspace.const';
+import { Assignment_v2 } from '../assignment.types';
 
 export function backToOverview(): string {
 	return buildLink(

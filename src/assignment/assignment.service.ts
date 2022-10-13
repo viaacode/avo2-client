@@ -14,7 +14,6 @@ import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
-	App_Assignment_Responses_V2,
 	AssignmentPupilBlocksDocument,
 	AssignmentPupilBlocksQuery,
 	BulkUpdateAuthorForAssignmentsDocument,
@@ -108,7 +107,7 @@ import {
 	AssignmentType,
 	BaseBlockWithMeta,
 	PupilCollectionFragment,
-	PupilCollectionFragment,
+	SimplifiedAssignment,
 } from './assignment.types';
 import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
 import { isItemWithMeta } from './helpers/is-item-with-meta';
@@ -229,7 +228,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchAssignmentById(assignmentId: string): Promise<Assignment_v2> {
+	static async fetchAssignmentById(assignmentId: string): Promise<SimplifiedAssignment> {
 		try {
 			// Get the assignment from graphql
 			const variables: GetAssignmentsByUuidQueryVariables = { id: assignmentId };
@@ -322,7 +321,7 @@ export class AssignmentService {
 	 * This will be used by the Assignments view and the AssignmentEdit view
 	 * @param assignment
 	 */
-	private static transformAssignment(assignment: Partial<Assignment_v2>): Assignment_v2 {
+	private static transformAssignment(assignment: Partial<SimplifiedAssignment>): Assignment_v2 {
 		const assignmentToSave = cloneDeep(assignment);
 
 		if (
@@ -741,7 +740,7 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<Assignment_v2 | string> {
+	): Promise<SimplifiedAssignment | string> {
 		try {
 			// Load assignment
 			const variables: GetAssignmentWithResponseQueryVariables = {
