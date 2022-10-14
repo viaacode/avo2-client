@@ -9,6 +9,11 @@ $multiRangeInputWidth: 87px;
 	.c-cut-overlay {
 		display: none;
 	}
+
+	// Hide cuepoint during cut of a video
+	.fp-cuepoint {
+		display: none !important;
+	}
 }
 
 .m-time-crop-controls {
