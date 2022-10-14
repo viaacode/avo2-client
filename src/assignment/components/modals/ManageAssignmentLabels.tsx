@@ -27,8 +27,9 @@ import { AssignmentLabelsService, ToastService } from '../../../shared/services'
 import { AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
+import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
 
-interface ManageAssignmentLabelsProps extends UserProps {
+export interface ManageAssignmentLabelsProps extends UserProps {
 	isOpen: boolean;
 	onClose: () => void;
 	type?: AssignmentLabelType;
@@ -41,6 +42,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	user,
 }) => {
 	const [t] = useTranslation();
+	const translations = getManageAssignmentLabelsTranslations(t, type);
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
 	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<
@@ -242,11 +244,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	return (
 		<Modal
 			className="m-manage-assignment-labels"
-			title={
-				type === 'LABEL'
-					? t('assignment/components/modals/manage-assignment-labels___beheer-labels')
-					: t('assignment/components/modals/manage-assignment-labels___beheer-klassen')
-			}
+			title={translations.modal.title}
 			size="large"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -255,15 +253,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			<ModalBody>
 				<Spacer margin="bottom-large">
 					<Button
-						label={
-							type === 'LABEL'
-								? t(
-										'assignment/components/modals/manage-assignment-labels___voeg-een-label-toe'
-								  )
-								: t(
-										'assignment/components/modals/manage-assignment-labels___voeg-een-klas-toe'
-								  )
-						}
+						label={translations.buttons.addLabel}
 						icon="plus"
 						onClick={handleAddLabelClick}
 						type="secondary"
@@ -272,39 +262,17 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				<Table
 					columns={[
 						{
-							label:
-								type === 'LABEL'
-									? t(
-											'assignment/components/modals/manage-assignment-labels___label-kleur'
-									  )
-									: t(
-											'assignment/components/modals/manage-assignment-labels___klas-kleur'
-									  ),
+							label: translations.columns.color,
 							id: 'color',
 							col: '2',
 						},
 						{
-							label:
-								type === 'LABEL'
-									? t(
-											'assignment/components/modals/manage-assignment-labels___label'
-									  )
-									: t(
-											'assignment/components/modals/manage-assignment-labels___klas'
-									  ),
+							label: translations.columns.type,
 							id: 'label',
 						},
 						{ label: '', id: 'actions' },
 					]}
-					emptyStateMessage={
-						type === 'LABEL'
-							? t(
-									'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-labels-aangemaakt'
-							  )
-							: t(
-									'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-klassen-aangemaakt'
-							  )
-					}
+					emptyStateMessage={translations.emptyState}
 					data={assignmentLabels}
 					renderCell={renderCell}
 					rowKey="id"
