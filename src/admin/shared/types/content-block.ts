@@ -13,6 +13,8 @@ import {
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
+import { Lookup_Enum_Content_Block_Types_Enum } from '../../../shared/generated/graphql-db-types';
+
 // OPTIONS
 export type AlignOption = 'left' | 'right' | 'center';
 
@@ -89,32 +91,7 @@ export interface ContentBlockComponentsLimits {
 }
 
 // must match the lookup enumeration `content_block_types` on GraphQL.
-export enum ContentBlockType {
-	AnchorLinks = 'ANCHOR_LINKS',
-	Buttons = 'BUTTONS',
-	CTAs = 'CTAS',
-	Heading = 'HEADING',
-	IFrame = 'IFRAME',
-	Image = 'IMAGE',
-	ImageGrid = 'IMAGE_GRID',
-	Intro = 'INTRO',
-	Klaar = 'KLAAR',
-	MediaGrid = 'MEDIA_GRID',
-	MediaPlayer = 'MEDIA_PLAYER',
-	MediaPlayerTitleTextButton = 'MEDIA_PLAYER_TITLE_TEXT_BUTTON',
-	Quote = 'QUOTE',
-	RichText = 'RICH_TEXT',
-	RichTextTwoColumns = 'RICH_TEXT_TWO_COLUMNS',
-	PageOverview = 'PAGE_OVERVIEW',
-	ProjectsSpotlight = 'PROJECTS_SPOTLIGHT',
-	Spotlight = 'SPOTLIGHT',
-	Hero = 'HERO',
-	Search = 'SEARCH',
-	ContentPageMeta = 'CONTENT_PAGE_META',
-	LogoGrid = 'LOGO_GRID',
-	UspGrid = 'USP_GRID',
-	Eventbrite = 'EVENTBRITE',
-}
+export { Lookup_Enum_Content_Block_Types_Enum as ContentBlockType };
 
 export enum ContentBlockEditor {
 	AlignSelect = 'AlignSelect',
@@ -256,7 +233,7 @@ export interface IntroBlockComponentState {
 	align: AlignOption;
 }
 
-export interface IFrameBlockComponentState {
+export interface IframeBlockComponentState {
 	title: string;
 	src: string;
 }
@@ -336,7 +313,7 @@ export type RepeatedContentBlockComponentState =
 export type SingleContentBlockComponentState =
 	| HeadingBlockComponentState
 	| Partial<BlockHeroProps>
-	| IFrameBlockComponentState
+	| IframeBlockComponentState
 	| ImageBlockComponentState
 	| IntroBlockComponentState
 	| KlaarBlockComponentState
@@ -345,7 +322,9 @@ export type SingleContentBlockComponentState =
 	| PageOverviewBlockComponentStateFields
 	| QuoteBlockComponentState
 	| RichTextBlockComponentState
-	| {}; // Search block & content page meta
+	| {
+			/* empty object */
+	  }; // Search block & content page meta
 
 export type ContentBlockComponentState =
 	| RepeatedContentBlockComponentState[]
@@ -371,7 +350,7 @@ export interface ContentBlockConfig {
 	name: string;
 	components: ContentBlockComponentsConfig;
 	block: ContentBlockBlockConfig;
-	type: ContentBlockType;
+	type: Lookup_Enum_Content_Block_Types_Enum;
 	anchor?: string;
 	position: number;
 }

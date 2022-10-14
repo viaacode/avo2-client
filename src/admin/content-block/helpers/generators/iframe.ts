@@ -4,12 +4,12 @@ import {
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-	IFrameBlockComponentState,
+	IframeBlockComponentState,
 } from '../../../shared/types';
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_IFRAME_COMPONENTS_STATE = (): IFrameBlockComponentState => ({
+export const INITIAL_IFRAME_COMPONENTS_STATE = (): IframeBlockComponentState => ({
 	title: '',
 	src: '',
 });
@@ -22,7 +22,7 @@ export const INITIAL_IFRAME_BLOCK_STATE = (): DefaultContentBlockState =>
 		},
 	});
 
-export const IFRAME_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const IFRAME_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/iframe___i-frame'),
 	type: ContentBlockType.IFrame,

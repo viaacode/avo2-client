@@ -25,7 +25,7 @@ import {
 	AlignOption,
 	BlockGridFormatOption,
 	Color,
-	ContentBlockComponentState,
+	ContentBlockConfig,
 	ContentBlockType,
 	FillOption,
 	HeadingTypeOption,
@@ -139,11 +139,11 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___2-ct-as'),
-		value: ContentBlockType.CTAs,
+		value: ContentBlockType.Ctas,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___i-frame'),
-		value: ContentBlockType.IFrame,
+		value: ContentBlockType.Iframe,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___klaar'),
@@ -233,13 +233,18 @@ export const EDITOR_TYPES_MAP = {
 	WYSIWYG: WYSIWYGWrapper,
 };
 
-export const CONTENT_BLOCK_CONFIG_MAP = {
+type ContentBlockConfigLookup = Partial<
+	Record<ContentBlockType, (position: number) => ContentBlockConfig>
+>;
+
+// TODO see if partial is needed, or if the missing properties should be added
+export const CONTENT_BLOCK_CONFIG_MAP: ContentBlockConfigLookup = {
 	[ContentBlockType.AnchorLinks]: ANCHOR_LINKS_BLOCK_CONFIG,
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
-	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
+	[ContentBlockType.Ctas]: CTAS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
 	[ContentBlockType.Hero]: HERO_BLOCK_CONFIG,
-	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.Iframe]: IFRAME_BLOCK_CONFIG,
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
@@ -260,17 +265,15 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Eventbrite]: EVENTBRITE_BLOCK_CONFIG,
 };
 
-export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
-	/* eslint-disable @typescript-eslint/no-unused-vars */
-	[type in ContentBlockType]: (position?: number) => ContentBlockComponentState;
-	/* eslint-enable @typescript-eslint/no-unused-vars */
-} = {
+type ContentBlockInitialConfigLookup = Partial<Record<ContentBlockType, () => any>>;
+
+export const CONTENT_BLOCK_INITIAL_STATE_MAP: ContentBlockInitialConfigLookup = {
 	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_COMPONENTS_STATE,
-	[ContentBlockType.CTAs]: INITIAL_CTAS_COMPONENTS_STATE,
+	[ContentBlockType.Ctas]: INITIAL_CTAS_COMPONENTS_STATE,
 	[ContentBlockType.Heading]: INITIAL_HEADING_COMPONENTS_STATE,
 	[ContentBlockType.Hero]: INITIAL_HERO_COMPONENTS_STATE,
-	[ContentBlockType.IFrame]: INITIAL_IFRAME_COMPONENTS_STATE,
+	[ContentBlockType.Iframe]: INITIAL_IFRAME_COMPONENTS_STATE,
 	[ContentBlockType.Image]: INITIAL_IMAGE_COMPONENTS_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_COMPONENTS_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_COMPONENTS_STATE,

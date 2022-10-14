@@ -21,8 +21,8 @@ const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (pro
 			cuePoints={
 				block
 					? {
-							start: block.start_oc,
-							end: block.end_oc,
+							start: block.start_oc || null,
+							end: block.end_oc || null,
 					  }
 					: undefined
 			}

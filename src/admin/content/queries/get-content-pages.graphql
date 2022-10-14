@@ -7,44 +7,44 @@ query getContentPages(
 	app_content(where: $where, limit: $limit, offset: $offset, order_by: $orderBy) {
 		id
 		content_type
+		title
+		path
 		created_at
+		updated_at
+		publish_at
 		depublish_at
+		published_at
+		content_width
 		description
 		seo_description
 		meta_description
 		thumbnail_path
 		is_protected
 		is_public
-		path
-		content_width
 		user_profile_id
+		user_group_ids
 		profile {
 			organisation {
-				or_id
 				logo_url
 				name
+				or_id
 			}
 			profile_user_group {
 				group {
-					id
 					label
+					id
 				}
 			}
 			user: usersByuserId {
 				id
 				full_name
+				mail
 			}
 		}
-		publish_at
-		published_at
-		title
-		updated_at
-		user_group_ids
-		user_profile_id
 		content_content_labels {
 			content_label {
-				id
 				label
+				id
 				link_to
 			}
 		}

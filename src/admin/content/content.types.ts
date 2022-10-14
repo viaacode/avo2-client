@@ -2,7 +2,7 @@ import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
-import { GetContentPagesQuery } from '../../shared/generated/graphql-db-types';
+import { GetContentByIdQuery, GetContentPagesQuery } from '../../shared/generated/graphql-db-types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { ContentBlockConfig } from '../shared/types';
 
@@ -45,15 +45,16 @@ export interface ContentTableState extends FilterableTableState {
 }
 
 // Content Detail
+export type ContentPageWithBlocksDb = GetContentByIdQuery['app_content'][0];
+
+export type ContentPageDb = GetContentPagesQuery['app_content'][0] | ContentPageWithBlocksDb;
+
 /**
  * Convenience type with certain fields converted to be easier to manipulate
  * eg:
  * - contentBlockConfigs: ContentBlockConfig[]; instead of contentBlockssBycontentId: ContentBlockSchema[];
  * - labels: Avo.ContentPage.Label[] instead of content_content_labels: ContentLabelLinkSchema[];
  */
-
-export type ContentPageDb = GetContentPagesQuery['app_content'][0];
-
 export interface ContentPageInfo {
 	id: number;
 	thumbnail_path: string | null;

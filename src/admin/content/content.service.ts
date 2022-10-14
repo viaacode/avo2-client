@@ -6,6 +6,8 @@ import {
 	DeleteContentLabelLinksDocument,
 	DeleteContentLabelLinksMutation,
 	GetContentByIdDocument,
+	GetContentByIdQuery,
+	GetContentByIdQueryVariables,
 	GetContentLabelsByContentTypeDocument,
 	GetContentLabelsByContentTypeQuery,
 	GetContentLabelsByContentTypeQueryVariables,
@@ -15,6 +17,8 @@ import {
 	GetContentTypesDocument,
 	GetContentTypesQuery,
 	GetPublicContentPagesByTitleDocument,
+	GetPublicContentPagesByTitleQuery,
+	GetPublicContentPagesByTitleQueryVariables,
 	GetPublicProjectContentPagesByTitleDocument,
 	GetPublicProjectContentPagesByTitleQuery,
 	GetPublicProjectContentPagesDocument,
@@ -23,6 +27,7 @@ import {
 	InsertContentLabelLinksDocument,
 	InsertContentLabelLinksMutation,
 	InsertContentMutation,
+	Order_By,
 	SoftDeleteContentDocument,
 	SoftDeleteContentMutation,
 	SoftDeleteContentMutationVariables,
@@ -96,27 +101,23 @@ export class ContentService {
 	public static async getPublicContentItemsByTitle(
 		title: string,
 		limit?: number
-	): Promise<ContentPageDb[]> {
-		const query = {
-			query: GetPublicContentPagesByTitleDocument,
-			variables: {
-				limit: limit || null,
-				orderBy: { title: 'asc' },
-				where: {
-					title: { _ilike: `%${title}%` },
-					is_public: { _eq: true },
-					is_deleted: { _eq: false },
-				},
+	): Promise<Pick<ContentPageDb, 'path' | 'title'>[]> {
+		const variables: GetPublicContentPagesByTitleQueryVariables = {
+			limit: limit || null,
+			orderBy: { title: Order_By.Asc },
+			where: {
+				title: { _ilike: `%${title}%` },
+				is_public: { _eq: true },
+				is_deleted: { _eq: false },
 			},
 		};
 
-		return (
-			(await performQuery<ContentPageDb[]>(
-				query,
-				'app_content',
-				'Failed to retrieve content pages by title.'
-			)) || []
-		);
+		const response = await dataService.query<GetPublicContentPagesByTitleQuery>({
+			query: GetPublicContentPagesByTitleDocument,
+			variables,
+		});
+
+		return response.app_content;
 	}
 
 	public static async getPublicProjectContentItemsByTitle(
@@ -139,19 +140,18 @@ export class ContentService {
 		);
 	}
 
-	public static async getContentPageById(id: number | string): Promise<ContentPageInfo> {
-		const query = {
-			query: GetContentByIdDocument,
-			variables: {
-				id,
-			},
+	public static async getContentPageById(id: number): Promise<ContentPageInfo> {
+		const variables: GetContentByIdQueryVariables = {
+			id,
 		};
 
-		const dbContentPage: Avo.ContentPage.Page | null = await performQuery(
-			query,
-			`${CONTENT_RESULT_PATH.GET}[0]`,
-			`Failed to retrieve content page by id: ${id}.`
-		);
+		const response = await dataService.query<GetContentByIdQuery>({
+			query: GetContentByIdDocument,
+			variables,
+		});
+
+		const dbContentPage = response?.app_content?.[0];
+
 		if (!dbContentPage) {
 			throw new CustomError('No content page found with provided id', null, {
 				id,
@@ -298,17 +298,8 @@ export class ContentService {
 				variables,
 			});
 
-			const dbContentPages: Avo.ContentPage.Page[] | null = get(
-				response,
-				'data.app_content',
-				[]
-			);
-
-			const dbContentPageCount: number = get(
-				response,
-				'data.app_content_aggregate.aggregate.count',
-				0
-			);
+			const dbContentPages = response.app_content;
+			const dbContentPageCount: number = response.app_content_aggregate.aggregate?.count || 0;
 
 			if (!dbContentPages) {
 				throw new CustomError('Response did not contain any content pages', null, {

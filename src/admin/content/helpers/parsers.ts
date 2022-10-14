@@ -3,14 +3,19 @@ import { ContentWidthSchema } from '@viaa/avo2-types/types/content-page';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { parseContentBlocks } from '../../content-block/helpers';
-import { ContentPageDb, ContentPageInfo, ContentWidth } from '../content.types';
+import {
+	ContentPageDb,
+	ContentPageInfo,
+	ContentPageWithBlocksDb,
+	ContentWidth,
+} from '../content.types';
 
 export function convertToContentPageInfo(dbContentPage: ContentPageDb): ContentPageInfo {
 	const labels = (dbContentPage.content_content_labels || []).map(
 		(labelLink) => labelLink.content_label
 	);
-	const contentBlockConfigs = dbContentPage.contentBlockssBycontentId
-		? parseContentBlocks(dbContentPage.contentBlockssBycontentId)
+	const contentBlockConfigs = (dbContentPage as ContentPageWithBlocksDb).contentBlockssBycontentId
+		? parseContentBlocks((dbContentPage as ContentPageWithBlocksDb).contentBlockssBycontentId)
 		: [];
 
 	return {

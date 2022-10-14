@@ -1,17 +1,23 @@
 query getContentById($id: Int!) {
 	app_content(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
+		id
 		content_type
-		content_width
+		title
+		path
 		created_at
+		publish_at
+		published_at
+		updated_at
+		content_width
 		depublish_at
 		description
 		seo_description
 		meta_description
-		id
 		thumbnail_path
 		is_protected
 		is_public
-		path
+		user_profile_id
+		user_group_ids
 		user_profile_id
 		profile {
 			organisation {
@@ -31,12 +37,6 @@ query getContentById($id: Int!) {
 				mail
 			}
 		}
-		publish_at
-		published_at
-		title
-		updated_at
-		user_group_ids
-		user_profile_id
 		content_content_labels {
 			content_label {
 				label
