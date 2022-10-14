@@ -3,12 +3,12 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { formatTimestamp } from '../../shared/helpers';
-import { Assignment_Response_v2, SimplifiedAssignment } from '../assignment.types';
+import { Assignment_Response_v2, Assignment_v2 } from '../assignment.types';
 
 import './AssignmentMetadata.scss';
 
 type AssignmentMetadataProps = {
-	assignment: SimplifiedAssignment;
+	assignment: Assignment_v2;
 	assignmentResponse?: Assignment_Response_v2 | null;
 	who: 'teacher' | 'pupil';
 };

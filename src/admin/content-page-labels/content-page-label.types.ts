@@ -1,3 +1,7 @@
+import {
+	GetContentLabelsByContentTypeQuery,
+	GetContentPageLabelByIdQuery,
+} from '../../shared/generated/graphql-db-types';
 import { ContentPageDb, ContentPageType } from '../content/content.types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { PickerItem } from '../shared/types';
@@ -10,7 +14,12 @@ export type ContentPageLabelOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
-export type ContentPageLabel = ContentPageDb['content_content_labels'][0]['content_label'];
+export type ContentPageLabel = Exclude<
+	| ContentPageDb['content_content_labels'][0]['content_label']
+	| GetContentPageLabelByIdQuery['app_content_labels'][0]
+	| GetContentLabelsByContentTypeQuery['app_content_labels'][0],
+	null | undefined
+>;
 
 export interface ContentPageLabelEditFormErrorState {
 	label?: string;

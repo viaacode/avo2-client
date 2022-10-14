@@ -27,9 +27,9 @@ import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	Assignment_Response_v2,
+	Assignment_v2,
 	AssignmentResponseInfo,
 	AssignmentRetrieveError,
-	SimplifiedAssignment,
 } from '../../assignment.types';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
@@ -47,7 +47,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 	// Data
 	const assignmentId = match.params.id;
-	const [assignment, setAssignment] = useState<SimplifiedAssignment | null>(null);
+	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<any | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo | null>(
@@ -100,7 +100,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
-			const assignmentOrError: SimplifiedAssignment | string =
+			const assignmentOrError: Assignment_v2 | string =
 				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
 
 			if (isString(assignmentOrError)) {

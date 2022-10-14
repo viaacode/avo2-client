@@ -17,12 +17,12 @@ import { useTranslation } from 'react-i18next';
 import { APP_PATH } from '../../constants';
 import { buildLink, copyToClipboard } from '../../shared/helpers';
 import { ToastService } from '../../shared/services';
-import { SimplifiedAssignment } from '../assignment.types';
+import { Assignment_v2 } from '../assignment.types';
 
 import './ShareAssignmentWithPupil.scss';
 
 export type ShareAssignmentWithPupilProps = {
-	assignment?: SimplifiedAssignment;
+	assignment?: Assignment_v2;
 	onDetailLinkClicked?: () => void;
 	onContentLinkClicked?: () => void;
 	button?: Partial<ButtonProps>;

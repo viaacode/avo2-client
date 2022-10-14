@@ -291,14 +291,14 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 		pupilCollection: Partial<Assignment_Response_v2>,
 		columnId: PupilCollectionOverviewTableColumns
 	) => {
-		const { id, created_at, updated_at, assignment } = pupilCollection;
+		const { id, created_at, updated_at, assignment_id, assignment } = pupilCollection;
 
 		switch (columnId) {
 			case 'title':
 				return (
 					<Link
 						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
-							assignmentId: assignment?.id,
+							assignmentId: assignment_id,
 							responseId: id,
 						})}
 					>
@@ -311,7 +311,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 
 			case 'assignmentTitle':
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment?.id })}>
+					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment_id })}>
 						{truncateTableValue(assignment?.title || '-')}
 					</Link>
 				);

@@ -1,8 +1,10 @@
 query getContentLabelsByContentType($contentType: String!) {
 	app_content_labels(where: { content_type: { _eq: $contentType } }) {
-		id
 		label
+		id
 		content_type
 		link_to
+		created_at
+		updated_at
 	}
 }

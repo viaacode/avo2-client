@@ -33,10 +33,11 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assign
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2,
+	Assignment_v2,
+	Assignment_v2_With_Blocks,
 	AssignmentBlock,
 	AssignmentFormState,
 	BaseBlockWithMeta,
-	SimplifiedAssignment,
 } from '../assignment.types';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
@@ -70,7 +71,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<SimplifiedAssignment | null>(null);
+	const [original, setOriginal] = useState<Assignment_v2_With_Blocks | null>(null);
 	const [assignmentLoading, setAssigmentLoading] = useState(false);
 	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
@@ -120,7 +121,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			setAssigmentLoading(true);
 			setAssigmentError(null);
 			const id = match.params.id;
-			let tempAssignment;
+			let tempAssignment: Assignment_v2_With_Blocks | null = null;
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
@@ -237,10 +238,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				{
 					...original,
 					owner_profile_id: user.profile?.id,
+					blocks: [],
+					responses: [],
+					labels: [],
 				},
 				{
 					...original,
 					...assignment,
+					labels: undefined,
 					blocks: cleanupTitleAndDescriptions(assignment.blocks) as AssignmentBlock[],
 				}
 			);

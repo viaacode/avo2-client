@@ -2,6 +2,7 @@ import { ContentWidthSchema } from '@viaa/avo2-types/types/content-page';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
 import { parseContentBlocks } from '../../content-block/helpers';
+import { ContentPageLabel } from '../../content-page-labels/content-page-label.types';
 import {
 	ContentPageDb,
 	ContentPageInfo,
@@ -11,7 +12,7 @@ import {
 } from '../content.types';
 
 export function convertToContentPageInfo(dbContentPage: ContentPageDb): ContentPageInfo {
-	const labels = (dbContentPage.content_content_labels || []).map(
+	const labels: ContentPageLabel[] = (dbContentPage.content_content_labels || []).map(
 		(labelLink) => labelLink.content_label
 	);
 	const contentBlockConfigs = (dbContentPage as ContentPageWithBlocksDb).contentBlockssBycontentId
@@ -39,7 +40,7 @@ export function convertToContentPageInfo(dbContentPage: ContentPageDb): ContentP
 		created_at: dbContentPage.created_at,
 		updated_at: dbContentPage.updated_at || dbContentPage.created_at || null,
 		user_group_ids: dbContentPage.user_group_ids,
-		profile: dbContentPage.profile,
+		profile: (dbContentPage.profile || null) as UserProfile | null,
 		user_profile_id: dbContentPage.user_profile_id,
 	};
 }
@@ -63,7 +64,6 @@ export function convertToDatabaseContentPage(
 		meta_description: contentPageInfo.meta_description || null,
 		is_protected: contentPageInfo.is_protected,
 		is_public: contentPageInfo.is_public || false,
-		is_deleted: false,
 		path: contentPageInfo.path || null,
 		content_type: contentPageInfo.content_type,
 		content_width: contentPageInfo.content_width as ContentWidthSchema,
@@ -73,7 +73,7 @@ export function convertToDatabaseContentPage(
 		created_at: contentPageInfo.created_at,
 		updated_at: contentPageInfo.updated_at || null,
 		user_group_ids: contentPageInfo.user_group_ids,
-		profile: contentPageInfo.profile as unknown as UserProfile,
+		profile: contentPageInfo.profile as ContentPageDb['profile'],
 		user_profile_id: contentPageInfo.user_profile_id,
 		contentBlockssBycontentId: [],
 		content_content_labels: [],

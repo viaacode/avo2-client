@@ -7,6 +7,7 @@ import {
 	GetContentPagesQuery,
 	Lookup_Enum_Content_Types_Enum,
 } from '../../shared/generated/graphql-db-types';
+import { ContentPageLabel } from '../content-page-labels/content-page-label.types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { ContentBlockConfig } from '../shared/types';
 
@@ -79,11 +80,11 @@ export interface ContentPageInfo {
 	is_protected: boolean;
 	content_type: Lookup_Enum_Content_Types_Enum;
 	content_width: Avo.ContentPage.Width;
-	profile: Avo.User.Profile;
+	profile: Avo.User.Profile | null;
 	user_profile_id: string | null;
 	user_group_ids: number[] | null;
 	contentBlockConfigs: ContentBlockConfig[];
-	labels: Partial<Avo.ContentPage.Label>[];
+	labels: ContentPageLabel[];
 }
 
 export type ContentDetailParams = { id: string };

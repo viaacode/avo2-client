@@ -1,6 +1,6 @@
 import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabel, AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
+import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,19 +10,15 @@ import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
 import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
-import {
-	Assignment_Label_v2,
-	AssignmentSchemaLabel_v2,
-	SimplifiedAssignment,
-} from '../assignment.types';
+import { Assignment_Label_v2, Assignment_Label_v2, Assignment_v2 } from '../assignment.types';
 
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
 import './AssignmentLabels.scss';
 
-export type AssignmentLabelsProps = Pick<SimplifiedAssignment, 'labels'> & {
+export type AssignmentLabelsProps = Pick<Assignment_v2, 'labels'> & {
 	id?: string;
-	onChange: (changed: AssignmentSchemaLabel_v2[]) => void;
+	onChange: (changed: Assignment_Label_v2[]) => void;
 	user: Avo.User.User;
 	dictionary?: {
 		placeholder: string;
@@ -59,7 +55,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: AssignmentLabel[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: Assignment_Label_v2[]): TagOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -74,7 +70,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		setIsManageLabelsModalOpen(false);
 	};
 
-	const getColorOptions = (labels: AssignmentLabel[]): ColorOption[] => {
+	const getColorOptions = (labels: Assignment_Label_v2[]): ColorOption[] => {
 		return labels
 			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({
@@ -86,7 +82,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 			}));
 	};
 
-	const addAssignmentLabel = (labelOption: ValueType<ColorOption, any>) => {
+	const addAssignmentLabel = (labelOption: ValueType<{ label: string; value: string }, any>) => {
 		if (!labelOption) {
 			ToastService.danger(
 				t(

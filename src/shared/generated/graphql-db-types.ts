@@ -40876,14 +40876,14 @@ export type GetContentByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetContentByIdQuery = { __typename?: 'query_root', app_content: Array<{ __typename?: 'app_content', id: number, content_type: Lookup_Enum_Content_Types_Enum, title: string, path?: string | null, created_at: any, publish_at?: any | null, published_at?: any | null, updated_at?: any | null, content_width: string, depublish_at?: any | null, description?: string | null, seo_description?: string | null, meta_description?: string | null, thumbnail_path?: string | null, is_protected: boolean, is_public?: boolean | null, user_profile_id?: any | null, user_group_ids?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null, user?: { __typename?: 'shared_users', id: number, full_name?: string | null, mail?: string | null } | null } | null, content_content_labels: Array<{ __typename?: 'app_content_content_labels', content_label: { __typename?: 'app_content_labels', label: string, id: number, link_to?: any | null } }>, contentBlockssBycontentId: Array<{ __typename?: 'app_content_blocks', content_block_type: Lookup_Enum_Content_Block_Types_Enum, content_id: number, created_at: any, id: number, position: number, updated_at: any, variables?: any | null, enum_content_block_type: { __typename?: 'lookup_enum_content_block_types', description?: string | null, value: string } }> }> };
+export type GetContentByIdQuery = { __typename?: 'query_root', app_content: Array<{ __typename?: 'app_content', id: number, content_type: Lookup_Enum_Content_Types_Enum, title: string, path?: string | null, created_at: any, publish_at?: any | null, published_at?: any | null, updated_at?: any | null, content_width: string, depublish_at?: any | null, description?: string | null, seo_description?: string | null, meta_description?: string | null, thumbnail_path?: string | null, is_protected: boolean, is_public?: boolean | null, user_profile_id?: any | null, user_group_ids?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null, user?: { __typename?: 'shared_users', id: number, full_name?: string | null, mail?: string | null } | null } | null, content_content_labels: Array<{ __typename?: 'app_content_content_labels', content_label: { __typename?: 'app_content_labels', label: string, id: number, content_type: string, link_to?: any | null, created_at: any, updated_at: any } }>, contentBlockssBycontentId: Array<{ __typename?: 'app_content_blocks', content_block_type: Lookup_Enum_Content_Block_Types_Enum, content_id: number, created_at: any, id: number, position: number, updated_at: any, variables?: any | null, enum_content_block_type: { __typename?: 'lookup_enum_content_block_types', description?: string | null, value: string } }> }> };
 
 export type GetContentLabelsByContentTypeQueryVariables = Exact<{
   contentType: Scalars['String'];
 }>;
 
 
-export type GetContentLabelsByContentTypeQuery = { __typename?: 'query_root', app_content_labels: Array<{ __typename?: 'app_content_labels', id: number, label: string, content_type: string, link_to?: any | null }> };
+export type GetContentLabelsByContentTypeQuery = { __typename?: 'query_root', app_content_labels: Array<{ __typename?: 'app_content_labels', label: string, id: number, content_type: string, link_to?: any | null, created_at: any, updated_at: any }> };
 
 export type GetContentPagesQueryVariables = Exact<{
   where?: InputMaybe<App_Content_Bool_Exp>;
@@ -40893,7 +40893,7 @@ export type GetContentPagesQueryVariables = Exact<{
 }>;
 
 
-export type GetContentPagesQuery = { __typename?: 'query_root', app_content: Array<{ __typename?: 'app_content', id: number, content_type: Lookup_Enum_Content_Types_Enum, title: string, path?: string | null, created_at: any, updated_at?: any | null, publish_at?: any | null, depublish_at?: any | null, published_at?: any | null, content_width: string, description?: string | null, seo_description?: string | null, meta_description?: string | null, thumbnail_path?: string | null, is_protected: boolean, is_public?: boolean | null, user_profile_id?: any | null, user_group_ids?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null, user?: { __typename?: 'shared_users', id: number, full_name?: string | null, mail?: string | null } | null } | null, content_content_labels: Array<{ __typename?: 'app_content_content_labels', content_label: { __typename?: 'app_content_labels', label: string, id: number, link_to?: any | null } }> }>, app_content_aggregate: { __typename?: 'app_content_aggregate', aggregate?: { __typename?: 'app_content_aggregate_fields', count?: number | null } | null } };
+export type GetContentPagesQuery = { __typename?: 'query_root', app_content: Array<{ __typename?: 'app_content', id: number, content_type: Lookup_Enum_Content_Types_Enum, title: string, path?: string | null, created_at: any, updated_at?: any | null, publish_at?: any | null, depublish_at?: any | null, published_at?: any | null, content_width: string, description?: string | null, seo_description?: string | null, meta_description?: string | null, thumbnail_path?: string | null, is_protected: boolean, is_public?: boolean | null, user_profile_id?: any | null, user_group_ids?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null, user?: { __typename?: 'shared_users', id: number, full_name?: string | null, mail?: string | null } | null } | null, content_content_labels: Array<{ __typename?: 'app_content_content_labels', content_label: { __typename?: 'app_content_labels', label: string, id: number, content_type: string, link_to?: any | null, created_at: any, updated_at: any } }> }>, app_content_aggregate: { __typename?: 'app_content_aggregate', aggregate?: { __typename?: 'app_content_aggregate_fields', count?: number | null } | null } };
 
 export type GetContentTypesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -41470,7 +41470,7 @@ export type GetAssignmentResponseByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentResponseByIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, updated_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_response_id: any }> }> };
+export type GetAssignmentResponseByIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }> };
 
 export type GetAssignmentResponseQueryVariables = Exact<{
   profileId: Scalars['uuid'];
@@ -41489,7 +41489,7 @@ export type GetAssignmentResponsesByAssignmentIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentResponsesByAssignmentIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, collection_title?: string | null, updated_at: any, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, type: string, fragment_id?: string | null }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }>, count: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count?: number | null } | null } };
+export type GetAssignmentResponsesByAssignmentIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }>, count: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count?: number | null } | null } };
 
 export type GetAssignmentResponsesQueryVariables = Exact<{
   profileId: Scalars['uuid'];
@@ -41505,7 +41505,7 @@ export type GetAssignmentWithResponseQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentWithResponseQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, assignment_type?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> }> };
+export type GetAssignmentWithResponseQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, assignment_type?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }> }> };
 
 export type GetAssignmentsAdminOverviewQueryVariables = Exact<{
   offset: Scalars['Int'];
@@ -42959,7 +42959,10 @@ export const GetContentByIdDocument = `
       content_label {
         label
         id
+        content_type
         link_to
+        created_at
+        updated_at
       }
     }
     contentBlockssBycontentId(order_by: {position: asc}) {
@@ -42993,10 +42996,12 @@ export const useGetContentByIdQuery = <
 export const GetContentLabelsByContentTypeDocument = `
     query getContentLabelsByContentType($contentType: String!) {
   app_content_labels(where: {content_type: {_eq: $contentType}}) {
-    id
     label
+    id
     content_type
     link_to
+    created_at
+    updated_at
   }
 }
     `;
@@ -43055,7 +43060,10 @@ export const GetContentPagesDocument = `
       content_label {
         label
         id
+        content_type
         link_to
+        created_at
+        updated_at
       }
     }
   }
@@ -45230,11 +45238,11 @@ export const GetAssignmentResponseByIdDocument = `
     query getAssignmentResponseById($assignmentResponseId: uuid!) {
   app_assignment_responses_v2(where: {id: {_eq: $assignmentResponseId}}) {
     id
-    created_at
-    owner_profile_id
     assignment_id
     collection_title
+    created_at
     updated_at
+    owner_profile_id
     owner {
       full_name
     }
@@ -45263,7 +45271,6 @@ export const GetAssignmentResponseByIdDocument = `
       fragment_id
       start_oc
       end_oc
-      is_deleted
       assignment_response_id
     }
   }
@@ -45337,15 +45344,37 @@ export const GetAssignmentResponsesByAssignmentIdDocument = `
     order_by: $order
   ) {
     id
+    assignment_id
     collection_title
+    created_at
     updated_at
-    pupil_collection_blocks(where: {type: {_eq: "ITEM"}}) {
-      id
-      type
-      fragment_id
-    }
+    owner_profile_id
     owner {
       full_name
+    }
+    assignment {
+      id
+      title
+      deadline_at
+      owner {
+        full_name
+      }
+      owner_profile_id
+    }
+    pupil_collection_blocks(where: {type: {_eq: "ITEM"}}) {
+      id
+      position
+      type
+      custom_title
+      thumbnail_path
+      use_custom_fields
+      custom_description
+      created_at
+      updated_at
+      fragment_id
+      start_oc
+      end_oc
+      assignment_response_id
     }
   }
   count: app_assignment_responses_v2_aggregate(
@@ -45473,30 +45502,40 @@ export const GetAssignmentWithResponseDocument = `
     }
     responses(where: {owner_profile_id: {_eq: $pupilUuid}}) {
       id
-      created_at
-      owner_profile_id
       assignment_id
       collection_title
+      created_at
+      updated_at
+      owner_profile_id
+      owner {
+        full_name
+      }
+      assignment {
+        id
+        title
+        deadline_at
+        owner {
+          full_name
+        }
+        owner_profile_id
+      }
       pupil_collection_blocks(
         where: {is_deleted: {_eq: false}}
         order_by: {position: asc}
       ) {
         id
-        fragment_id
-        use_custom_fields
-        custom_title
-        custom_description
-        start_oc
-        end_oc
         position
+        type
+        custom_title
+        thumbnail_path
+        use_custom_fields
+        custom_description
         created_at
         updated_at
-        type
-        thumbnail_path
+        fragment_id
+        start_oc
+        end_oc
         assignment_response_id
-      }
-      owner {
-        full_name
       }
     }
   }

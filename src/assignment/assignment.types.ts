@@ -3,16 +3,15 @@ import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 
 import { FilterState } from '../search/search.types';
 import {
-	App_Assignments_V2_Assignment_Labels_V2,
 	GetAssignmentBlocksQuery,
 	GetAssignmentByUuidQuery,
 	GetAssignmentLabelsByProfileIdQuery,
 	GetAssignmentResponseByIdQuery,
+	GetAssignmentResponsesByAssignmentIdQuery,
 	GetAssignmentsAdminOverviewQuery,
 	GetAssignmentsByOwnerQuery,
 	GetAssignmentsByResponseOwnerIdQuery,
 	GetAssignmentWithResponseQuery,
-	GetPupilCollectionsAdminOverviewQuery,
 	Lookup_Enum_Colors_Enum,
 	UpdateAssignmentBlockMutation,
 } from '../shared/generated/graphql-db-types';
@@ -32,19 +31,10 @@ export type Assignment_v2 =
 	  )['app_assignments_v2'][0]
 	| Assignment_v2_With_Blocks;
 
-export type SimplifiedAssignment = Assignment_v2 & {
-	blocks: AssignmentBlock[];
-	labels: App_Assignments_V2_Assignment_Labels_V2[];
-};
-
-export type Assignment_Response_v2_With_Pupil_Collection_Blocks = Exclude<
-	GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0],
-	undefined | null
->;
-
 export type Assignment_Response_v2 = Exclude<
-	| Assignment_Response_v2_With_Pupil_Collection_Blocks
-	| GetPupilCollectionsAdminOverviewQuery['app_assignment_responses_v2'][0],
+	| GetAssignmentWithResponseQuery['app_assignments_v2'][0]['responses'][0]
+	| GetAssignmentResponsesByAssignmentIdQuery['app_assignment_responses_v2'][0]
+	| GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0],
 	undefined | null
 >;
 
@@ -63,6 +53,15 @@ export type PupilCollectionFragment = Exclude<
 	GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0]['pupil_collection_blocks'][0],
 	undefined | null
 >;
+
+type EditableBlockFields = {
+	ownTitle?: string;
+	ownDescription?: string;
+	noTitle?: string;
+	editMode?: AssignmentBlockItemDescriptionType;
+};
+
+export type EditablePupilCollectionFragment = PupilCollectionFragment & EditableBlockFields;
 
 export type BaseBlockWithMeta = (PupilCollectionFragment | AssignmentBlock) &
 	Pick<BlockItemBaseSchema, 'item_meta'> & { type: string };
@@ -137,14 +136,13 @@ export interface AssignmentLabelColor {
 
 /// Zoek & bouw
 
-// Omit avoids a typescript error here
-export type AssignmentSchemaLabel_v2 = { assignment_label: Assignment_Label_v2 };
+export type AssignmentFormState = Assignment_v2_With_Blocks;
 
-export type AssignmentFormState = Pick<Assignment_v2, 'title'> &
-	Pick<Partial<Assignment_v2>, 'id' | 'available_at' | 'deadline_at' | 'answer_url'> & {
-		labels: AssignmentSchemaLabel_v2[];
-		blocks: Omit<AssignmentBlock, 'item_meta'>[]; // avoid circular reference ts error
-	};
+// export type AssignmentFormState = Pick<Assignment_v2, 'title'> &
+// 	Pick<Partial<Assignment_v2>, 'id' | 'available_at' | 'deadline_at' | 'answer_url'> & {
+// 		labels: Assignment_Label_v2[];
+// 		blocks: Omit<AssignmentBlock, 'item_meta'>[]; // avoid circular reference ts error
+// 	};
 
 export type AssignmentResponseFormState = Pick<
 	Partial<Assignment_Response_v2>,
@@ -165,9 +163,5 @@ export interface EditBlockProps {
 }
 
 export type EditableAssignmentBlock = AssignmentBlock &
-	Pick<BlockItemBaseSchema, 'item_meta'> & {
-		ownTitle?: string;
-		ownDescription?: string;
-		noTitle?: string;
-		editMode?: AssignmentBlockItemDescriptionType;
-	};
+	Pick<BlockItemBaseSchema, 'item_meta'> &
+	EditableBlockFields;

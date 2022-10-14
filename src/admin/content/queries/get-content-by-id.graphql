@@ -41,7 +41,10 @@ query getContentById($id: Int!) {
 			content_label {
 				label
 				id
+				content_type
 				link_to
+				created_at
+				updated_at
 			}
 		}
 		contentBlockssBycontentId(order_by: { position: asc }) {

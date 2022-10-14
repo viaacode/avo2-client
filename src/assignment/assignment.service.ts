@@ -95,18 +95,15 @@ import {
 import {
 	Assignment_Label_v2,
 	Assignment_Response_v2,
-	Assignment_Response_v2_With_Pupil_Collection_Blocks,
 	Assignment_v2,
 	Assignment_v2_With_Blocks,
 	AssignmentBlock,
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
 	AssignmentResponseInfo,
-	AssignmentSchemaLabel_v2,
 	AssignmentType,
 	BaseBlockWithMeta,
 	PupilCollectionFragment,
-	SimplifiedAssignment,
 } from './assignment.types';
 import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
 import { isItemWithMeta } from './helpers/is-item-with-meta';
@@ -227,7 +224,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchAssignmentById(assignmentId: string): Promise<SimplifiedAssignment> {
+	static async fetchAssignmentById(assignmentId: string): Promise<Assignment_v2_With_Blocks> {
 		try {
 			// Get the assignment from graphql
 			const variables: GetAssignmentByUuidQueryVariables = { id: assignmentId };
@@ -236,17 +233,17 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignmentResponse = response.app_assignments_v2[0];
+			const assignment = response.app_assignments_v2[0];
 
-			if (!assignmentResponse) {
-				throw new CustomError('Response does not contain any assignment response', null, {
-					assignmentResponse,
+			if (!assignment) {
+				throw new CustomError('Response does not contain an assignment', null, {
+					response,
 				});
 			}
 
 			return {
-				...assignmentResponse,
-				blocks: await this.enrichBlocksWithMeta<AssignmentBlock>(assignmentResponse.blocks),
+				...assignment,
+				blocks: await this.enrichBlocksWithMeta<AssignmentBlock>(assignment.blocks),
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get assignment by id from database', err, {
@@ -385,9 +382,9 @@ export class AssignmentService {
 	}
 
 	static async updateAssignment(
-		original: SimplifiedAssignment,
-		update: Partial<SimplifiedAssignment>
-	): Promise<SimplifiedAssignment | null> {
+		original: Assignment_v2_With_Blocks,
+		update: Partial<Assignment_v2_With_Blocks>
+	): Promise<Assignment_v2 | null> {
 		try {
 			if (isNil(original.id)) {
 				throw new CustomError(
@@ -465,7 +462,7 @@ export class AssignmentService {
 	}
 
 	static async updateAssignmentResponse(
-		original: Assignment_Response_v2_With_Pupil_Collection_Blocks,
+		original: AssignmentResponseInfo,
 		update: {
 			collection_title: string;
 			pupil_collection_blocks: PupilCollectionFragment[];
@@ -605,7 +602,7 @@ export class AssignmentService {
 
 	static async insertAssignment(
 		assignment: Partial<Assignment_v2_With_Blocks>,
-		addedLabels?: AssignmentSchemaLabel_v2[]
+		addedLabels?: Assignment_Label_v2[]
 	): Promise<Assignment_v2 | null> {
 		try {
 			const assignmentToSave = AssignmentService.transformAssignment({
@@ -634,7 +631,7 @@ export class AssignmentService {
 
 			if (addedLabels) {
 				// Update labels
-				const addedLabelIds = addedLabels.map((item) => item.assignment_label.id);
+				const addedLabelIds = addedLabels.map((item) => item.id);
 
 				await Promise.all([
 					AssignmentLabelsService.linkLabelsFromAssignment(assignmentId, addedLabelIds),
@@ -736,7 +733,7 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<SimplifiedAssignment> {
+	): Promise<Assignment_v2> {
 		try {
 			// Load assignment
 			const variables: GetAssignmentWithResponseQueryVariables = {
@@ -947,7 +944,7 @@ export class AssignmentService {
 	static async getAssignmentResponse(
 		profileId: string,
 		assignmentId: string
-	): Promise<AssignmentResponseInfo | undefined> {
+	): Promise<Omit<AssignmentResponseInfo, 'assignment'> | undefined> {
 		try {
 			const variables: GetAssignmentResponseQueryVariables = { profileId, assignmentId };
 			const response = await dataService.query<GetAssignmentResponseQuery>({
@@ -1022,16 +1019,17 @@ export class AssignmentService {
 	static async createOrFetchAssignmentResponseObject(
 		assignment: Assignment_v2,
 		user: Avo.User.User | undefined
-	): Promise<AssignmentResponseInfo | null> {
+	): Promise<Omit<AssignmentResponseInfo, 'assignment'> | null> {
 		try {
 			if (!user) {
 				return null;
 			}
-			const existingAssignmentResponse: AssignmentResponseInfo | undefined =
-				await AssignmentService.getAssignmentResponse(
-					get(user, 'profile.id'),
-					get(assignment, 'id') as unknown as string
-				);
+			const existingAssignmentResponse:
+				| Omit<AssignmentResponseInfo, 'assignment'>
+				| undefined = await AssignmentService.getAssignmentResponse(
+				get(user, 'profile.id'),
+				get(assignment, 'id') as unknown as string
+			);
 
 			if (existingAssignmentResponse) {
 				if (assignment.assignment_type === AssignmentType.BOUW) {

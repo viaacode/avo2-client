@@ -53,12 +53,12 @@ import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Response_v2,
+	Assignment_v2,
 	AssignmentOverviewTableColumns,
 	AssignmentResponseInfo,
 	AssignmentResponseTableColumns,
 	AssignmentType,
 	PupilCollectionFragment,
-	SimplifiedAssignment,
 } from '../assignment.types';
 import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
 import { isItemWithMeta } from '../helpers/is-item-with-meta';
@@ -82,7 +82,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const [t] = useTranslation();
 
 	// Data
-	const [assignment, setAssignment] = useState<SimplifiedAssignment | null>(null);
+	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
 	const [assignmentResponses, setAssignmentResponses] = useState<AssignmentResponseInfo[] | null>(
 		null
 	);

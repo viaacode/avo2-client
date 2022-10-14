@@ -17,7 +17,12 @@ import { compose } from 'redux';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
-import { Assignment_v2, AssignmentFormState, SimplifiedAssignment } from '../assignment.types';
+import {
+	Assignment_v2,
+	Assignment_v2,
+	Assignment_v2_With_Blocks,
+	AssignmentFormState,
+} from '../assignment.types';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 
@@ -34,7 +39,7 @@ export const AssignmentDetailsFormIds = {
 };
 
 export interface AssignmentDetailsFormEditableProps {
-	assignment: SimplifiedAssignment;
+	assignment: Assignment_v2;
 	setAssignment: Dispatch<SetStateAction<Assignment_v2>>;
 	setValue: UseFormSetValue<AssignmentFormState>;
 }
@@ -112,6 +117,7 @@ const AssignmentDetailsFormEditable: FC<
 							setAssignment((prev) => ({
 								...prev,
 								labels: newLabels,
+								blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
 							}));
 						}}
 					/>
@@ -146,6 +152,7 @@ const AssignmentDetailsFormEditable: FC<
 							setAssignment((prev) => ({
 								...prev,
 								labels: mergeWithOtherLabels(prev.labels, changed, 'LABEL'),
+								blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
 							}));
 						}}
 					/>

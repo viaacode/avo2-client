@@ -28,7 +28,12 @@ import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentBlock, AssignmentFormState, BaseBlockWithMeta } from '../assignment.types';
+import {
+	Assignment_v2,
+	AssignmentBlock,
+	AssignmentFormState,
+	BaseBlockWithMeta,
+} from '../assignment.types';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentHeading from '../components/AssignmentHeading';
@@ -88,7 +93,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					owner_profile_id: user.profile?.id,
 					labels: [],
 				},
-				assignment.labels
+				assignment.labels.map((label) => label.assignment_label)
 			);
 
 			if (created) {

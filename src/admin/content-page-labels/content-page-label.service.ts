@@ -10,6 +10,7 @@ import {
 	GetAllContentPageLabelsQueryVariables,
 	GetContentPageLabelByIdDocument,
 	GetContentPageLabelByIdQuery,
+	GetContentPageLabelByIdQueryVariables,
 	InsertContentPageLabelDocument,
 	InsertContentPageLabelMutation,
 	UpdateContentPageLabelDocument,
@@ -65,14 +66,15 @@ export class ContentPageLabelService {
 		}
 	}
 
-	public static async fetchContentPageLabel(id: string): Promise<ContentPageLabel> {
+	public static async fetchContentPageLabel(id: number): Promise<ContentPageLabel> {
 		try {
+			const variables: GetContentPageLabelByIdQueryVariables = { id };
 			const response = await dataService.query<GetContentPageLabelByIdQuery>({
 				query: GetContentPageLabelByIdDocument,
-				variables: { id },
+				variables,
 			});
 
-			const contentPageLabelObj = get(response, 'data.app_content_labels[0]');
+			const contentPageLabelObj = response.app_content_labels[0];
 
 			if (!contentPageLabelObj) {
 				throw new CustomError('Failed to find content page label by id', null, {
@@ -80,14 +82,7 @@ export class ContentPageLabelService {
 				});
 			}
 
-			return {
-				id: contentPageLabelObj.id,
-				label: contentPageLabelObj.label,
-				content_type: contentPageLabelObj.content_type,
-				link_to: contentPageLabelObj.link_to,
-				created_at: contentPageLabelObj.created_at,
-				updated_at: contentPageLabelObj.updated_at,
-			};
+			return contentPageLabelObj;
 		} catch (err) {
 			throw new CustomError('Failed to get content page label by id', err, {
 				query: 'GET_CONTENT_PAGE_LABEL_BY_ID',

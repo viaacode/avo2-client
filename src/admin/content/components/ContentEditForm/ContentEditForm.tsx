@@ -124,7 +124,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		changeContentPageProp('labels', []);
 	};
 
-	const mapLabelsToTags = (contentLabels: Partial<Avo.ContentPage.Label>[]): TagInfo[] => {
+	const mapLabelsToTags = (contentLabels: ContentPageLabel[]): TagInfo[] => {
 		return (contentLabels || []).map((contentLabel) => ({
 			label: contentLabel.label as string,
 			value: String(contentLabel.id as number),

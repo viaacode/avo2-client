@@ -4,12 +4,12 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { formatTimestamp } from '../../shared/helpers';
-import { SimplifiedAssignment } from '../assignment.types';
+import { Assignment_v2 } from '../assignment.types';
 
 import './AssignmentDetailsForm.scss';
 
 export interface AssignmentDetailsFormReadonlyProps {
-	assignment: SimplifiedAssignment;
+	assignment: Assignment_v2;
 }
 
 const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & DefaultProps> = ({

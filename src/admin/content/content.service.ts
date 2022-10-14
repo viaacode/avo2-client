@@ -29,12 +29,14 @@ import {
 	InsertContentLabelLinksDocument,
 	InsertContentLabelLinksMutation,
 	InsertContentMutation,
+	InsertContentMutationVariables,
 	Order_By,
 	SoftDeleteContentDocument,
 	SoftDeleteContentMutation,
 	SoftDeleteContentMutationVariables,
 	UpdateContentByIdDocument,
 	UpdateContentByIdMutation,
+	UpdateContentByIdMutationVariables,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError, sanitizeHtml } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -43,6 +45,7 @@ import { ApolloCacheManager, dataService, ToastService } from '../../shared/serv
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ContentBlockService } from '../content-block/services/content-block.service';
+import { ContentPageLabel } from '../content-page-labels/content-page-label.types';
 import { mapDeep } from '../shared/helpers/map-deep';
 import { ContentBlockConfig } from '../shared/types';
 
@@ -58,6 +61,7 @@ import {
 	ContentPageDb,
 	ContentPageInfo,
 	ContentPageType,
+	ContentPageWithBlocksDb,
 } from './content.types';
 import {
 	convertToContentPageInfo,
@@ -182,9 +186,7 @@ export class ContentService {
 		}
 	}
 
-	public static async fetchLabelsByContentType(
-		contentType: string
-	): Promise<Avo.ContentPage.Label[]> {
+	public static async fetchLabelsByContentType(contentType: string): Promise<ContentPageLabel[]> {
 		let variables: GetContentLabelsByContentTypeQueryVariables | null = null;
 
 		try {
@@ -314,9 +316,11 @@ export class ContentService {
 	}
 
 	private static cleanupBeforeInsert(
-		dbContentPage: Partial<Avo.ContentPage.Page>
-	): Partial<Avo.ContentPage.Page> {
-		return omit(dbContentPage, [
+		contentPageInfo: ContentPageWithBlocksDb
+	):
+		| InsertContentMutationVariables['contentPage']
+		| UpdateContentByIdMutationVariables['contentPage'] {
+		return omit(contentPageInfo, [
 			'contentBlockssBycontentId',
 			'profile',
 			'__typename',
@@ -332,11 +336,12 @@ export class ContentService {
 			const dbContentPage = this.cleanupBeforeInsert(
 				convertToDatabaseContentPage(contentPage)
 			);
+			const variables: InsertContentMutationVariables = {
+				contentPage: dbContentPage,
+			};
 			const response = await dataService.query<InsertContentMutation>({
 				query: InsertContentDocument,
-				variables: {
-					contentPage: dbContentPage,
-				},
+				variables,
 				update: ApolloCacheManager.clearContentCache,
 			});
 
@@ -379,12 +384,13 @@ export class ContentService {
 			const dbContentPage = this.cleanupBeforeInsert(
 				convertToDatabaseContentPage(contentPage)
 			);
+			const variables: UpdateContentByIdMutationVariables = {
+				contentPage: dbContentPage,
+				id: contentPage.id,
+			};
 			const response = await dataService.query<UpdateContentByIdMutation>({
 				query: UpdateContentByIdDocument,
-				variables: {
-					contentPage: dbContentPage,
-					id: contentPage.id,
-				},
+				variables,
 				update: ApolloCacheManager.clearContentCache,
 			});
 

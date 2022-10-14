@@ -47,7 +47,7 @@ import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	Assignment_Response_v2,
-	Assignment_v2,
+	Assignment_v2_With_Blocks,
 	AssignmentResponseFormState,
 	AssignmentResponseInfo,
 	AssignmentType,
@@ -71,7 +71,7 @@ import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
 interface AssignmentResponseEditProps {
-	assignment: Assignment_v2;
+	assignment: Assignment_v2_With_Blocks;
 	assignmentResponse: AssignmentResponseInfo;
 	setAssignmentResponse: Dispatch<SetStateAction<Assignment_Response_v2>>;
 	showBackButton: boolean;
@@ -256,7 +256,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		]);
 		setAssignmentResponse({
 			...assignmentResponse,
-			pupil_collection_blocks: newBlocks,
+			pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
 		});
 		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
 			shouldDirty: true,

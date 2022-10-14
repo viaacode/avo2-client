@@ -2,6 +2,7 @@ import {
 	AssignmentBlockType,
 	BaseBlockWithMeta,
 	EditableAssignmentBlock,
+	EditablePupilCollectionFragment,
 } from '../assignment.types';
 import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
 
@@ -22,7 +23,7 @@ import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBloc
  * @param blocks
  */
 export function cleanupTitleAndDescriptions(
-	blocks: EditableAssignmentBlock[] = []
+	blocks: (EditablePupilCollectionFragment | EditableAssignmentBlock)[] = []
 ): BaseBlockWithMeta[] {
 	return blocks.map((block) => {
 		if (block.type === AssignmentBlockType.ITEM) {

@@ -15,9 +15,9 @@ import { CustomError } from '../../shared/helpers';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2,
+	Assignment_v2,
 	AssignmentResponseInfo,
 	BaseBlockWithMeta,
-	SimplifiedAssignment,
 } from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentMetadata from '../components/AssignmentMetadata';
@@ -35,7 +35,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 }) => {
 	const [t] = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignment, setAssignment] = useState<SimplifiedAssignment | null>(null);
+	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo | null>();
 	const assignmentId = match.params.assignmentId;
 	const assignmentResponseId = match.params.responseId;
@@ -66,8 +66,9 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 
 	const fetchAssignment = useCallback(async () => {
 		try {
-			const tempAssignment: SimplifiedAssignment =
-				await AssignmentService.fetchAssignmentById(assignmentId);
+			const tempAssignment: Assignment_v2 = await AssignmentService.fetchAssignmentById(
+				assignmentId
+			);
 
 			setAssignmentResponse(await fetchAssignmentResponse(tempAssignment));
 

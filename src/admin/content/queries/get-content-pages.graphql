@@ -45,7 +45,10 @@ query getContentPages(
 			content_label {
 				label
 				id
+				content_type
 				link_to
+				created_at
+				updated_at
 			}
 		}
 	}

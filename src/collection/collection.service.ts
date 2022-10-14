@@ -66,6 +66,7 @@ import {
 	InsertMarcomEntryMutationVariables,
 	InsertMarcomNoteDocument,
 	InsertMarcomNoteMutation,
+	InsertMarcomNoteMutationVariables,
 	Lookup_Enum_Collection_Management_Qc_Label_Enum,
 	Lookup_Enum_Relation_Types_Enum,
 	SoftDeleteCollectionByIdDocument,
@@ -1447,7 +1448,7 @@ export class CollectionService {
 	}
 
 	static async insertMarcomNote(collectionId: string, note: string): Promise<number | undefined> {
-		let variables: any;
+		let variables: InsertMarcomNoteMutationVariables | null = null;
 		try {
 			variables = {
 				collectionId,
@@ -1461,8 +1462,8 @@ export class CollectionService {
 			return response?.insert_app_collection_marcom_notes?.returning?.[0]?.id;
 		} catch (err) {
 			throw new CustomError('Failed to insert marcom note into the database', err, {
-				variables,
 				query: 'INSERT_MARCOM_NOTE',
+				variables,
 			});
 		}
 	}

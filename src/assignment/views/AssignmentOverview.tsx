@@ -78,9 +78,9 @@ import {
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Label_v2,
+	Assignment_Label_v2,
 	Assignment_v2,
 	AssignmentOverviewTableColumns,
-	AssignmentSchemaLabel_v2,
 	AssignmentView,
 } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
@@ -404,7 +404,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: AssignmentSchemaLabel_v2[], label: string) => {
+	const renderLabels = (labels: Assignment_Label_v2[], label: string) => {
 		if (!labels.length) {
 			return '-';
 		}
@@ -481,7 +481,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT }
 		);
 
-		const labels = (assignment.labels as AssignmentSchemaLabel_v2[]).filter(
+		const labels = (assignment.labels as Assignment_Label_v2[]).filter(
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 

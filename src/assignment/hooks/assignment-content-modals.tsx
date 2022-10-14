@@ -8,6 +8,7 @@ import { AddToAssignmentModal } from '../../item/components';
 import { ItemTrimInfo } from '../../item/item.types';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
+import { Positioned } from '../../shared/types';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlock, AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
 import { insertMultipleAtPosition } from '../helpers/insert-at-position';
@@ -41,7 +42,7 @@ export function useBlockListModals(
 	const {
 		isOpen: isAddBlockModalOpen,
 		setOpen: setAddBlockModalOpen,
-		entity: getAddBlockModalPosition,
+		entity: blockPosition,
 	} = block;
 
 	const [isAddFragmentModalOpen, setIsAddFragmentModalOpen] = useState<boolean>(false);
@@ -75,7 +76,7 @@ export function useBlockListModals(
 						blocks={blocks}
 						onClose={() => setAddBlockModalOpen(false)}
 						onConfirm={(type) => {
-							if (getAddBlockModalPosition === undefined) {
+							if (blockPosition === undefined) {
 								return;
 							}
 
@@ -92,13 +93,17 @@ export function useBlockListModals(
 
 								case AssignmentBlockType.TEXT:
 								case AssignmentBlockType.ZOEK: {
-									const newBlocks = insertMultipleAtPosition(blocks, {
+									const assignmentBlock = {
 										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
-										position: getAddBlockModalPosition,
-									} as AssignmentBlock); // TODO: avoid cast
+										position: blockPosition,
+									};
+									const newBlocks = insertMultipleAtPosition(
+										blocks,
+										assignmentBlock
+									);
 
-									setBlocks(newBlocks);
+									setBlocks(newBlocks as BaseBlockWithMeta[]);
 									break;
 								}
 
@@ -115,7 +120,7 @@ export function useBlockListModals(
 						isOpen={isAddFragmentModalOpen}
 						onClose={() => setIsAddFragmentModalOpen(false)}
 						addFragmentCallback={async (id) => {
-							if (getAddBlockModalPosition === undefined) {
+							if (blockPosition === undefined) {
 								return;
 							}
 
@@ -134,21 +139,22 @@ export function useBlockListModals(
 								setIsTrimItemModalOpen(false);
 							}}
 							onAddToAssignmentCallback={async (itemTrimInfo: ItemTrimInfo) => {
-								const newBlocks = insertMultipleAtPosition(blocks, {
+								const assignmentBlock: Partial<BaseBlockWithMeta> & Positioned = {
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 									item_meta: item,
 									type: AssignmentBlockType.ITEM,
 									fragment_id: item.external_id,
-									position: getAddBlockModalPosition,
+									position: blockPosition || 0,
 									start_oc: itemTrimInfo.hasCut
 										? itemTrimInfo.fragmentStartTime
 										: null,
 									end_oc: itemTrimInfo.hasCut
 										? itemTrimInfo.fragmentEndTime
 										: null,
-								} as AssignmentBlock);
+								};
+								const newBlocks = insertMultipleAtPosition(blocks, assignmentBlock);
 
-								setBlocks(newBlocks);
+								setBlocks(newBlocks as BaseBlockWithMeta[]);
 
 								// Finish by triggering any configured callback
 								const callback =
@@ -164,7 +170,7 @@ export function useBlockListModals(
 						isOpen={isAddCollectionModalOpen}
 						onClose={() => setIsAddCollectionModalOpen(false)}
 						addCollectionCallback={async (id, withDescription) => {
-							if (getAddBlockModalPosition === undefined) {
+							if (blockPosition === undefined) {
 								return;
 							}
 
@@ -187,17 +193,17 @@ export function useBlockListModals(
 
 							if (collection.collection_fragments) {
 								const mapped = collection.collection_fragments.map(
-									(collectionItem, index): Partial<AssignmentBlock> => {
+									(collectionItem, index): Partial<BaseBlockWithMeta> => {
 										// Note: logic almost identical as in AssignmentService.importCollectionToAssignment
 										// But with minor differences (id, item_meta, ..)
-										const block: Partial<AssignmentBlock> = {
+										const block: Partial<BaseBlockWithMeta> = {
 											id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${
 												new Date().valueOf() + index
 											}`,
 											item_meta: collectionItem.item_meta,
 											type: collectionItem.type,
 											fragment_id: collectionItem.external_id,
-											position: getAddBlockModalPosition + index,
+											position: blockPosition + index,
 											original_title: collectionItem.custom_title,
 											original_description: collectionItem.custom_description,
 											custom_title: null,
@@ -233,10 +239,10 @@ export function useBlockListModals(
 
 								const newBlocks = insertMultipleAtPosition(
 									blocks,
-									...(mapped as AssignmentBlock[])
+									...(mapped as Positioned[])
 								);
 
-								setBlocks(newBlocks);
+								setBlocks(newBlocks as BaseBlockWithMeta[]);
 
 								// Finish by triggering any configured callback
 								const callback = config?.addCollectionConfig?.addCollectionCallback;
