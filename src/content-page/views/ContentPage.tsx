@@ -1,15 +1,16 @@
+import { BlockImageProps } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { cloneDeep, compact, intersection, noop, set } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { BlockImageProps } from '@viaa/avo2-components';
+import MetaTags from 'react-meta-tags';
 
 import { ContentBlockPreview } from '../../admin/content-block/components';
 import { ContentService } from '../../admin/content/content.service';
 import { BlockClickHandler, ContentPageInfo } from '../../admin/content/content.types';
 import { ContentBlockConfig, ContentBlockType } from '../../admin/shared/types';
 import { getUserGroupIds } from '../../authentication/authentication.service';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -69,7 +70,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 	}, [fetchContentPage]);
 
 	useEffect(() => {
-		if (contentPageInfo && loadingInfo.state !== 'loaded') {
+		if (contentPageInfo) {
 			setLoadingInfo({ state: 'loaded' });
 			scrollTo({ top: 0 });
 		}
@@ -153,7 +154,32 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 	const renderContentPage = () => {
 		return (
 			<>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							contentPageInfo?.title,
+							t(
+								'admin/content/views/content-detail___content-beheer-detail-pagina-titel'
+							)
+						)}
+					</title>
+
+					<meta
+						name="description"
+						content={
+							contentPageInfo?.seo_description ||
+							contentPageInfo?.meta_description ||
+							''
+						}
+					/>
+
+					{contentPageInfo?.thumbnail_path && (
+						<meta property="og:image" content={contentPageInfo?.thumbnail_path} />
+					)}
+				</MetaTags>
+
 				<InteractiveTour showButton={false} />
+
 				{getContentBlocks(contentPageInfo as ContentPageInfo).map(
 					(contentBlockConfig: ContentBlockConfig) => {
 						return (
