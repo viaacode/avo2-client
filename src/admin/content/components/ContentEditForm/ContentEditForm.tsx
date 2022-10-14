@@ -64,7 +64,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	// Hooks
 	const [t] = useTranslation();
 
-	const [contentTypeLabels, setContentTypeLabels] = useState<Avo.ContentPage.Label[]>([]);
+	const [contentTypeLabels, setContentTypeLabels] = useState<ContentPageLabel[]>([]);
 
 	const changeContentPageProp = useCallback(
 		(propName: keyof ContentPageInfo, propValue: ValueOf<ContentPageInfo>) =>

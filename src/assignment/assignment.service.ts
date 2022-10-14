@@ -97,6 +97,8 @@ import {
 	Assignment_Response_v2,
 	Assignment_v2,
 	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Labels,
+	Assignment_v2_With_Responses,
 	AssignmentBlock,
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
@@ -122,7 +124,7 @@ export class AssignmentService {
 		classIds: string[] | undefined,
 		limit: number | null = ITEMS_PER_PAGE
 	): Promise<{
-		assignments: Assignment_v2[];
+		assignments: Assignment_v2_With_Labels[];
 		count: number;
 	}> {
 		let variables:
@@ -224,7 +226,9 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchAssignmentById(assignmentId: string): Promise<Assignment_v2_With_Blocks> {
+	static async fetchAssignmentById(
+		assignmentId: string
+	): Promise<Assignment_v2_With_Blocks & Assignment_v2_With_Labels> {
 		try {
 			// Get the assignment from graphql
 			const variables: GetAssignmentByUuidQueryVariables = { id: assignmentId };
@@ -733,7 +737,7 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<Assignment_v2> {
+	): Promise<Assignment_v2_With_Labels & Assignment_v2_With_Responses> {
 		try {
 			// Load assignment
 			const variables: GetAssignmentWithResponseQueryVariables = {

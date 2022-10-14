@@ -18,9 +18,8 @@ import { compose } from 'redux';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { ToastService } from '../../shared/services';
 import {
-	Assignment_v2,
-	Assignment_v2,
 	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Labels,
 	AssignmentFormState,
 } from '../assignment.types';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
@@ -39,8 +38,8 @@ export const AssignmentDetailsFormIds = {
 };
 
 export interface AssignmentDetailsFormEditableProps {
-	assignment: Assignment_v2;
-	setAssignment: Dispatch<SetStateAction<Assignment_v2>>;
+	assignment: Assignment_v2_With_Labels & Assignment_v2_With_Blocks;
+	setAssignment: Dispatch<SetStateAction<Assignment_v2_With_Labels & Assignment_v2_With_Blocks>>;
 	setValue: UseFormSetValue<AssignmentFormState>;
 }
 

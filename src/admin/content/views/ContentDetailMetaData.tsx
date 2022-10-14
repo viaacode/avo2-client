@@ -1,8 +1,3 @@
-import { compact, get } from 'lodash';
-import moment from 'moment';
-import React, { FunctionComponent } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Container,
@@ -13,6 +8,10 @@ import {
 	TagOption,
 	Thumbnail,
 } from '@viaa/avo2-components';
+import { compact, get } from 'lodash';
+import moment from 'moment';
+import React, { FunctionComponent } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import Html from '../../../shared/components/Html/Html';
@@ -172,13 +171,13 @@ export const ContentDetailMetaData: FunctionComponent<ContentDetailMetaDataProps
 							t('admin/content/views/content-detail___breedte')
 						)}
 						{renderDetailRow(
-							!!get(contentPageInfo, 'profile.user')
+							get(contentPageInfo, 'profile.user')
 								? getFullName(get(contentPageInfo, 'profile'), false, false)
 								: '-',
 							t('admin/content/views/content-detail___auteur')
 						)}
 						{renderDetailRow(
-							getUserGroupLabel(contentPageInfo) || '-',
+							getUserGroupLabel(contentPageInfo.profile) || '-',
 							t('admin/content/views/content-detail___auteur-rol')
 						)}
 						{renderDateDetailRows(contentPageInfo, [

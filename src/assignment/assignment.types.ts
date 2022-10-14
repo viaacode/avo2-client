@@ -18,18 +18,32 @@ import {
 
 import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
 
-export type Assignment_v2_With_Blocks = GetAssignmentByUuidQuery['app_assignments_v2'][0];
+export type Assignment_v2_With_Blocks = Exclude<
+	GetAssignmentByUuidQuery['app_assignments_v2'][0],
+	undefined | null
+>;
 
-export type Assignment_v2_With_Responses = GetAssignmentWithResponseQuery['app_assignments_v2'][0];
+export type Assignment_v2_With_Responses = Exclude<
+	GetAssignmentWithResponseQuery['app_assignments_v2'][0],
+	undefined | null
+>;
 
-export type Assignment_v2 =
-	| (
-			| GetAssignmentsByOwnerQuery
-			| GetAssignmentsByResponseOwnerIdQuery
-			| GetAssignmentsAdminOverviewQuery
-			| GetAssignmentWithResponseQuery
-	  )['app_assignments_v2'][0]
-	| Assignment_v2_With_Blocks;
+export type Assignment_v2_With_Labels = Exclude<
+	| GetAssignmentByUuidQuery['app_assignments_v2'][0]
+	| GetAssignmentsByOwnerQuery['app_assignments_v2'][0]
+	| GetAssignmentsByResponseOwnerIdQuery['app_assignments_v2'][0]
+	| GetAssignmentWithResponseQuery['app_assignments_v2'][0],
+	undefined | null
+>;
+
+export type Assignment_v2 = Exclude<
+	| GetAssignmentsByOwnerQuery['app_assignments_v2'][0]
+	| GetAssignmentsByResponseOwnerIdQuery['app_assignments_v2'][0]
+	| GetAssignmentsAdminOverviewQuery['app_assignments_v2'][0]
+	| GetAssignmentWithResponseQuery['app_assignments_v2'][0]
+	| GetAssignmentByUuidQuery['app_assignments_v2'][0],
+	undefined | null
+>;
 
 export type Assignment_Response_v2 = Exclude<
 	| GetAssignmentWithResponseQuery['app_assignments_v2'][0]['responses'][0]
@@ -137,12 +151,6 @@ export interface AssignmentLabelColor {
 /// Zoek & bouw
 
 export type AssignmentFormState = Assignment_v2_With_Blocks;
-
-// export type AssignmentFormState = Pick<Assignment_v2, 'title'> &
-// 	Pick<Partial<Assignment_v2>, 'id' | 'available_at' | 'deadline_at' | 'answer_url'> & {
-// 		labels: Assignment_Label_v2[];
-// 		blocks: Omit<AssignmentBlock, 'item_meta'>[]; // avoid circular reference ts error
-// 	};
 
 export type AssignmentResponseFormState = Pick<
 	Partial<Assignment_Response_v2>,

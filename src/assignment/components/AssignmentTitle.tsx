@@ -26,6 +26,7 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 							<>
 								<ContentInput
 									{...field}
+									value={field.value ?? undefined}
 									placeholder={t(
 										'assignment/views/assignment-create___placeholder'
 									)}

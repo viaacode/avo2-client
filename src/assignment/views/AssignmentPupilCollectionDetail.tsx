@@ -15,7 +15,7 @@ import { CustomError } from '../../shared/helpers';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2,
-	Assignment_v2,
+	Assignment_v2_With_Labels,
 	AssignmentResponseInfo,
 	BaseBlockWithMeta,
 } from '../assignment.types';
@@ -35,7 +35,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 }) => {
 	const [t] = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
+	const [assignment, setAssignment] = useState<Assignment_v2_With_Labels | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo | null>();
 	const assignmentId = match.params.assignmentId;
 	const assignmentResponseId = match.params.responseId;

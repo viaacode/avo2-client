@@ -6,7 +6,7 @@ import { Positioned } from '../shared/types';
 
 import {
 	Assignment_Label_v2,
-	Assignment_v2,
+	Assignment_v2_With_Labels,
 	AssignmentLayout,
 	AssignmentRetrieveError,
 } from './assignment.types';
@@ -26,12 +26,10 @@ export class AssignmentHelper {
 	}
 
 	public static getLabels(
-		assignment: Assignment_v2,
+		assignment: Assignment_v2_With_Labels,
 		type: string
 	): { assignment_label: Assignment_Label_v2 }[] {
-		return (
-			assignment?.labels?.filter((label: any) => label.assignment_label.type === type) || []
-		);
+		return assignment?.labels?.filter((label) => label.assignment_label.type === type) || [];
 	}
 }
 

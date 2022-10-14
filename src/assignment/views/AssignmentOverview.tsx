@@ -78,8 +78,8 @@ import {
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Label_v2,
-	Assignment_Label_v2,
 	Assignment_v2,
+	Assignment_v2_With_Labels,
 	AssignmentOverviewTableColumns,
 	AssignmentView,
 } from '../assignment.types';
@@ -404,7 +404,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: Assignment_Label_v2[], label: string) => {
+	const renderLabels = (labels: { assignment_label: Assignment_Label_v2 }[], label: string) => {
 		if (!labels.length) {
 			return '-';
 		}
@@ -470,7 +470,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderCell = (assignment: Assignment_v2, colKey: AssignmentOverviewTableColumns) => {
+	const renderCell = (
+		assignment: Assignment_v2_With_Labels,
+		colKey: AssignmentOverviewTableColumns
+	) => {
 		const cellData: any = (assignment as any)[colKey];
 		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id });
 		const detailLink = buildLink(
@@ -481,7 +484,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT }
 		);
 
-		const labels = (assignment.labels as Assignment_Label_v2[]).filter(
+		const labels = assignment.labels.filter(
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
@@ -515,9 +518,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'class_room':
 				return renderLabels(
-					(assignment.labels as any[]).filter(
-						({ assignment_label: item }) => item.type === 'CLASS'
-					),
+					assignment.labels.filter(({ assignment_label: item }) => item.type === 'CLASS'),
 					t('assignment/views/assignment-overview___klas')
 				);
 
@@ -832,7 +833,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
 							  )
 					}
-					renderCell={(rowData: Assignment_v2, colKey: string) =>
+					renderCell={(rowData: Assignment_v2_With_Labels, colKey: string) =>
 						renderCell(rowData, colKey as AssignmentOverviewTableColumns)
 					}
 					rowKey="id"

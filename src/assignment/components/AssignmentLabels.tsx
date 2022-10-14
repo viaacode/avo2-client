@@ -10,15 +10,16 @@ import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
 import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import { AssignmentLabelsService, ToastService } from '../../shared/services';
-import { Assignment_Label_v2, Assignment_Label_v2, Assignment_v2 } from '../assignment.types';
+import { Assignment_Label_v2 } from '../assignment.types';
 
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
 import './AssignmentLabels.scss';
 
-export type AssignmentLabelsProps = Pick<Assignment_v2, 'labels'> & {
+export type AssignmentLabelsProps = {
+	labels: { assignment_label: Assignment_Label_v2 }[];
 	id?: string;
-	onChange: (changed: Assignment_Label_v2[]) => void;
+	onChange: (changed: { assignment_label: Assignment_Label_v2 }[]) => void;
 	user: Avo.User.User;
 	dictionary?: {
 		placeholder: string;

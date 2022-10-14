@@ -111,7 +111,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	const dbToPageOverviewContentPage = (contentPageInfo: ContentPageInfo): PageInfo => {
 		return {
 			thumbnail_path: contentPageInfo.thumbnail_path || placeholderWide,
-			labels: ((contentPageInfo.labels || []) as Avo.ContentPage.Label[]).map((labelObj) => ({
+			labels: ((contentPageInfo.labels || []) as ContentPageLabel[]).map((labelObj) => ({
 				id: labelObj.id,
 				label: labelObj.label,
 			})),

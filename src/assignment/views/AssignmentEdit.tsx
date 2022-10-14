@@ -1,15 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
 import { isPast } from 'date-fns';
-import React, {
-	Dispatch,
-	FunctionComponent,
-	SetStateAction,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -32,9 +24,8 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
-	Assignment_v2,
-	Assignment_v2,
 	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Labels,
 	AssignmentBlock,
 	AssignmentFormState,
 	BaseBlockWithMeta,
@@ -289,7 +280,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		updateBlocksInAssignmentState,
 		{
 			confirmSliceConfig: {
-				responses: original?.responses || [],
+				responses: (original?.responses || []) as any, // TODO strong types
 			},
 			addCollectionConfig: {
 				addCollectionCallback: (id) => {
@@ -407,7 +398,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					return (
 						<div className="c-assignment-details-tab">
 							<AssignmentDetailsFormReadonly
-								assignment={assignment as Assignment_v2}
+								assignment={assignment as Assignment_v2_With_Labels}
 							/>
 						</div>
 					);
@@ -415,8 +406,8 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={assignment as Assignment_v2}
-							setAssignment={setAssignment as Dispatch<SetStateAction<Assignment_v2>>}
+							assignment={assignment as Assignment_v2_With_Labels}
+							setAssignment={setAssignment}
 							setValue={setValue}
 						/>
 					</div>

@@ -60,7 +60,7 @@ export { Lookup_Enum_Content_Types_Enum as ContentPageType };
  * Convenience type with certain fields converted to be easier to manipulate
  * eg:
  * - contentBlockConfigs: ContentBlockConfig[]; instead of contentBlockssBycontentId: ContentBlockSchema[];
- * - labels: Avo.ContentPage.Label[] instead of content_content_labels: ContentLabelLinkSchema[];
+ * - labels: ContentPageLabel[] instead of content_content_labels: ContentLabelLinkSchema[];
  */
 export interface ContentPageInfo {
 	id: number;

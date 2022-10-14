@@ -155,7 +155,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 								} as PupilCollectionFragment
 							);
 
-							updateBlocksInAssignmentResponseState(newBlocks);
+							updateBlocksInAssignmentResponseState(newBlocks as BaseBlockWithMeta[]);
 						}}
 					/>
 				),

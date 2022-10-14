@@ -8,7 +8,6 @@ import {
 	TagInfo,
 	TagsInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash';
 import { compact, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
@@ -16,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
+import { ContentPageLabel } from '../../../content-page-labels/content-page-label.types';
 import { ContentService } from '../../../content/content.service';
 import { ContentPageType } from '../../../content/content.types';
 import { useContentTypes } from '../../../content/hooks';
@@ -42,7 +42,7 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 	const [t] = useTranslation();
 
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
-	const [labels, setLabels] = useState<Avo.ContentPage.Label[]>([]);
+	const [labels, setLabels] = useState<ContentPageLabel[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {

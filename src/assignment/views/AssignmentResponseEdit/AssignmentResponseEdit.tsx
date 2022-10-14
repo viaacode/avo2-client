@@ -73,7 +73,7 @@ import './AssignmentResponseEdit.scss';
 interface AssignmentResponseEditProps {
 	assignment: Assignment_v2_With_Blocks;
 	assignmentResponse: AssignmentResponseInfo;
-	setAssignmentResponse: Dispatch<SetStateAction<Assignment_Response_v2>>;
+	setAssignmentResponse: Dispatch<SetStateAction<AssignmentResponseInfo>>;
 	showBackButton: boolean;
 	isPreview?: boolean;
 	onAssignmentChanged: () => Promise<void>;

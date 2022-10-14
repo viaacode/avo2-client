@@ -29,7 +29,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
-	Assignment_v2,
+	Assignment_v2_With_Blocks,
 	AssignmentBlock,
 	AssignmentFormState,
 	BaseBlockWithMeta,
@@ -272,8 +272,10 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={assignment as Assignment_v2}
-							setAssignment={setAssignment as Dispatch<SetStateAction<Assignment_v2>>}
+							assignment={assignment as Assignment_v2_With_Blocks}
+							setAssignment={
+								setAssignment as Dispatch<SetStateAction<Assignment_v2_With_Blocks>>
+							}
 							setValue={setValue}
 						/>
 					</div>

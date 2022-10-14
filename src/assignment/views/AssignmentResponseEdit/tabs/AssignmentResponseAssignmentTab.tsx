@@ -5,10 +5,10 @@ import { ErrorView } from '../../../../error/views';
 import { FilterState } from '../../../../search/search.types';
 import BlockList from '../../../../shared/components/BlockList/BlockList';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
-import { Assignment_v2, BaseBlockWithMeta } from '../../../assignment.types';
+import { Assignment_v2_With_Blocks, BaseBlockWithMeta } from '../../../assignment.types';
 
 interface AssignmentResponseAssignmentTabProps {
-	blocks: Assignment_v2['blocks'] | null;
+	blocks: Assignment_v2_With_Blocks['blocks'] | null;
 	pastDeadline: boolean;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 	buildSearchLink: (props: Partial<FilterState>) => ReactNode | string;

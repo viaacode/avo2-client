@@ -65,7 +65,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 		} else {
 			try {
 				const contentLabel = await ContentPageLabelService.fetchContentPageLabel(
-					match.params.id
+					parseInt(match.params.id)
 				);
 				setInitialContentPageLabel(contentLabel);
 				setContentPageLabelInfo(contentLabel);

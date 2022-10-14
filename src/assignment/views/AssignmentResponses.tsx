@@ -18,7 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classNames from 'classnames';
-import { cloneDeep, get, isNil, noop, uniq } from 'lodash-es';
+import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -58,6 +58,7 @@ import {
 	AssignmentResponseInfo,
 	AssignmentResponseTableColumns,
 	AssignmentType,
+	BaseBlockWithMeta,
 	PupilCollectionFragment,
 } from '../assignment.types';
 import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
@@ -261,15 +262,17 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			);
 
 			// Determine each response's fragments to evaluate their published-status
-			const fragments = response.assignmentResponses.flatMap((response) =>
-				((response.pupil_collection_blocks as PupilCollectionFragment[]) || []).flatMap(
-					(block) => block.fragment_id
+			const fragmentIds: string[] = compact(
+				response.assignmentResponses.flatMap((response) =>
+					((response.pupil_collection_blocks as PupilCollectionFragment[]) || []).flatMap(
+						(block) => block.fragment_id
+					)
 				)
 			);
 
 			setAssignmentResponses(response.assignmentResponses);
 			setAssigmentResponsesCount(response.count);
-			setAssignmentResponsesFragments(uniq(fragments));
+			setAssignmentResponsesFragments(uniq(fragmentIds));
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
@@ -300,7 +303,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					return {
 						...response,
 						pupil_collection_blocks:
-							await AssignmentService.enrichBlocksWithMeta<PupilCollectionFragment>(
+							await AssignmentService.enrichBlocksWithMeta<BaseBlockWithMeta>(
 								response.pupil_collection_blocks,
 								fragments
 							),

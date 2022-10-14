@@ -90,8 +90,8 @@ export const AssignmentBlockEditItem: FC<
 							duration={item.duration}
 							title={item.title}
 							cuePoints={{
-								start: editableBlock.start_oc,
-								end: editableBlock.end_oc,
+								start: editableBlock.start_oc ?? null,
+								end: editableBlock.end_oc ?? null,
 							}}
 						/>
 
@@ -102,6 +102,9 @@ export const AssignmentBlockEditItem: FC<
 							itemMetaData: item,
 							fragment: {
 								...block,
+								start_oc: block.start_oc ?? null,
+								end_oc: block.end_oc ?? null,
+								thumbnail_path: block.thumbnail_path ?? null,
 								external_id: `${editableBlock.id}`,
 							},
 							onConfirm: (update) => setBlock({ ...editableBlock, ...update }),

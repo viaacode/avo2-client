@@ -180,7 +180,7 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 		answer_url: string().nullable().optional(),
 		available_at: string().nullable().optional(),
 		deadline_at: string().nullable().optional(),
-	});
+	}) as any;
 };
 
 export const PUPIL_COLLECTION_FORM_SCHEMA = (
@@ -193,7 +193,7 @@ export const PUPIL_COLLECTION_FORM_SCHEMA = (
 	});
 };
 
-export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
+export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): Partial<AssignmentFormState> => ({
 	id: undefined,
 	title: t('assignment/assignment___titel-opdracht'),
 	labels: [],
