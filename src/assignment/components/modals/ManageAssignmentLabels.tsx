@@ -27,8 +27,9 @@ import { AssignmentLabelsService, ToastService } from '../../../shared/services'
 import { Assignment_Label_v2, AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
+import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
 
-interface ManageAssignmentLabelsProps extends UserProps {
+export interface ManageAssignmentLabelsProps extends UserProps {
 	isOpen: boolean;
 	onClose: () => void;
 	type?: AssignmentLabelType;
@@ -41,6 +42,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	user,
 }) => {
 	const [t] = useTranslation();
+	const translations = getManageAssignmentLabelsTranslations(t, type);
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
 	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Assignment_Label_v2[]>(
@@ -242,9 +244,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	return (
 		<Modal
 			className="m-manage-assignment-labels"
-			title={t(
-				'assignment/components/modals/manage-assignment-labels___beheer-vakken-en-projecten'
-			)}
+			title={translations.modal.title}
 			size="large"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -253,9 +253,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			<ModalBody>
 				<Spacer margin="bottom-large">
 					<Button
-						label={t(
-							'assignment/components/modals/manage-assignment-labels___label-toevoegen'
-						)}
+						label={translations.buttons.addLabel}
 						icon="plus"
 						onClick={handleAddLabelClick}
 						type="secondary"
@@ -264,23 +262,17 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				<Table
 					columns={[
 						{
-							label: t(
-								'assignment/components/modals/manage-assignment-labels___kleur'
-							),
+							label: translations.columns.color,
 							id: 'color',
 							col: '2',
 						},
 						{
-							label: t(
-								'assignment/components/modals/manage-assignment-labels___label'
-							),
+							label: translations.columns.type,
 							id: 'label',
 						},
 						{ label: '', id: 'actions' },
 					]}
-					emptyStateMessage={t(
-						'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-labels-aangemaakt'
-					)}
+					emptyStateMessage={translations.emptyState}
 					data={assignmentLabels}
 					renderCell={renderCell}
 					rowKey="id"

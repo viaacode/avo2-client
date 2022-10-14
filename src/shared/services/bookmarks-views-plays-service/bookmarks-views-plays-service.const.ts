@@ -2,7 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import {
-	DeleteCollectionBookmarkByProfileIdDocument,
+	DeleteCollectionBookmarksForUserDocument,
 	DeleteItemBookmarkDocument,
 	GetCollectionPlayCountDocument,
 	GetCollectionViewCountDocument,
@@ -74,7 +74,7 @@ export const EVENT_QUERIES: {
 			}),
 		},
 		collection: {
-			query: DeleteCollectionBookmarkByProfileIdDocument,
+			query: DeleteCollectionBookmarksForUserDocument,
 			variables: (collectionUuid: string, user?: Avo.User.User) => ({
 				collectionUuid,
 				profileId: get(user, 'profile.id', null),

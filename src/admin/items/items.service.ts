@@ -29,9 +29,13 @@ import {
 	GetUnpublishedItemsWithFiltersDocument,
 	GetUnpublishedItemsWithFiltersQuery,
 	GetUnpublishedItemsWithFiltersQueryVariables,
+	GetUsersWithBothBookmarksDocument,
+	GetUsersWithBothBookmarksQuery,
+	GetUsersWithBothBookmarksQueryVariables,
 	Lookup_Enum_Relation_Types_Enum,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
+	ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables,
 	SetSharedItemsStatusDocument,
 	SetSharedItemsStatusMutation,
 	UpdateItemDepublishReasonDocument,
@@ -478,14 +482,27 @@ export class ItemsService {
 		newItemExternalId: string
 	): Promise<void> {
 		try {
-			await dataService.query<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation>({
-				query: ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
-				variables: {
+			const variables: GetUsersWithBothBookmarksQueryVariables = {
+				oldItemUid,
+				newItemUid,
+			};
+			const response = await dataService.query<GetUsersWithBothBookmarksQuery>({
+				query: GetUsersWithBothBookmarksDocument,
+				variables,
+			});
+			const usersWithBothBookmarks = response.users_profiles.map((profile) => profile.id);
+
+			const variablesReplace: ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables =
+				{
 					oldItemUid,
 					oldItemExternalId,
 					newItemUid,
 					newItemExternalId,
-				},
+					usersWithBothBookmarks,
+				};
+			await dataService.query<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation>({
+				query: ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
+				variables: variablesReplace,
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 		} catch (err) {

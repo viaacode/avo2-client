@@ -5,7 +5,7 @@ import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
 import {
-	DeleteCollectionBookmarkByProfileIdMutation,
+	DeleteCollectionBookmarksForUserMutation,
 	DeleteItemBookmarkMutation,
 	GetBookmarksForUserDocument,
 	GetBookmarkStatusesDocument,
@@ -68,7 +68,7 @@ export class BookmarksViewsPlaysService {
 					| InsertItemBookmarkMutation
 					| InsertCollectionBookmarkMutation
 					| DeleteItemBookmarkMutation
-					| DeleteCollectionBookmarkByProfileIdMutation
+					| DeleteCollectionBookmarksForUserMutation
 				>({
 					query,
 					variables,

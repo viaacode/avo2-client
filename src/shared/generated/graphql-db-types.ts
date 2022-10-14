@@ -41086,11 +41086,20 @@ export type GetUnpublishedItemsWithFiltersQueryVariables = Exact<{
 
 export type GetUnpublishedItemsWithFiltersQuery = { __typename?: 'query_root', shared_items: Array<{ __typename?: 'shared_items', id: number, pid: string, updated_at: any, title?: string | null, status?: any | null, item_meta?: { __typename?: 'app_item_meta', id: number, external_id: any, uid: any, is_published?: boolean | null, is_deleted?: boolean | null } | null }>, shared_items_aggregate: { __typename?: 'shared_items_aggregate', aggregate?: { __typename?: 'shared_items_aggregate_fields', count?: number | null } | null } };
 
+export type GetUsersWithBothBookmarksQueryVariables = Exact<{
+  oldItemUid: Scalars['uuid'];
+  newItemUid: Scalars['uuid'];
+}>;
+
+
+export type GetUsersWithBothBookmarksQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any }> };
+
 export type ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables = Exact<{
   oldItemUid: Scalars['uuid'];
   oldItemExternalId: Scalars['String'];
   newItemUid: Scalars['uuid'];
   newItemExternalId: Scalars['String'];
+  usersWithBothBookmarks: Array<Scalars['uuid']> | Scalars['uuid'];
 }>;
 
 
@@ -42037,20 +42046,20 @@ export type UpdateAssignmentLabelsMutationVariables = Exact<{
 
 export type UpdateAssignmentLabelsMutation = { __typename?: 'mutation_root', update_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', affected_rows: number } | null };
 
-export type DeleteCollectionBookmarkByProfileIdMutationVariables = Exact<{
-  collectionUuid: Scalars['uuid'];
-  profileId?: InputMaybe<Scalars['uuid']>;
-}>;
-
-
-export type DeleteCollectionBookmarkByProfileIdMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
-
 export type DeleteCollectionBookmarkMutationVariables = Exact<{
   collectionUuid: Scalars['uuid'];
 }>;
 
 
 export type DeleteCollectionBookmarkMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionBookmarksForUserMutationVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type DeleteCollectionBookmarksForUserMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
 
 export type DeleteItemBookmarkMutationVariables = Exact<{
   itemUuid: Scalars['uuid'];
@@ -43770,8 +43779,29 @@ export const useGetUnpublishedItemsWithFiltersQuery = <
       fetchData<GetUnpublishedItemsWithFiltersQuery, GetUnpublishedItemsWithFiltersQueryVariables>(GetUnpublishedItemsWithFiltersDocument, variables),
       options
     );
+export const GetUsersWithBothBookmarksDocument = `
+    query getUsersWithBothBookmarks($oldItemUid: uuid!, $newItemUid: uuid!) {
+  users_profiles(
+    where: {item_bookmarks: {_or: [{item_id: {_eq: $oldItemUid}}, {item_id: {_eq: $newItemUid}}]}}
+  ) {
+    id
+  }
+}
+    `;
+export const useGetUsersWithBothBookmarksQuery = <
+      TData = GetUsersWithBothBookmarksQuery,
+      TError = unknown
+    >(
+      variables: GetUsersWithBothBookmarksQueryVariables,
+      options?: UseQueryOptions<GetUsersWithBothBookmarksQuery, TError, TData>
+    ) =>
+    useQuery<GetUsersWithBothBookmarksQuery, TError, TData>(
+      ['getUsersWithBothBookmarks', variables],
+      fetchData<GetUsersWithBothBookmarksQuery, GetUsersWithBothBookmarksQueryVariables>(GetUsersWithBothBookmarksDocument, variables),
+      options
+    );
 export const ReplaceItemInCollectionsBookmarksAndAssignmentsDocument = `
-    mutation replaceItemInCollectionsBookmarksAndAssignments($oldItemUid: uuid!, $oldItemExternalId: String!, $newItemUid: uuid!, $newItemExternalId: String!) {
+    mutation replaceItemInCollectionsBookmarksAndAssignments($oldItemUid: uuid!, $oldItemExternalId: String!, $newItemUid: uuid!, $newItemExternalId: String!, $usersWithBothBookmarks: [uuid!]!) {
   update_app_collection_fragments(
     where: {external_id: {_eq: $oldItemExternalId}}
     _set: {external_id: $newItemExternalId, start_oc: null, end_oc: null}
@@ -43779,7 +43809,7 @@ export const ReplaceItemInCollectionsBookmarksAndAssignmentsDocument = `
     affected_rows
   }
   update_app_item_bookmarks(
-    where: {item_id: {_eq: $oldItemUid}}
+    where: {item_id: {_eq: $oldItemUid}, _not: {profile_id: {_in: $usersWithBothBookmarks}}}
     _set: {item_id: $newItemUid}
   ) {
     affected_rows
@@ -47369,24 +47399,6 @@ export const useUpdateAssignmentLabelsMutation = <
       (variables?: UpdateAssignmentLabelsMutationVariables) => fetchData<UpdateAssignmentLabelsMutation, UpdateAssignmentLabelsMutationVariables>(UpdateAssignmentLabelsDocument, variables)(),
       options
     );
-export const DeleteCollectionBookmarkByProfileIdDocument = `
-    mutation deleteCollectionBookmarkByProfileId($collectionUuid: uuid!, $profileId: uuid) {
-  delete_app_collection_bookmarks(
-    where: {collection_uuid: {_eq: $collectionUuid}, profile_id: {_eq: $profileId}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteCollectionBookmarkByProfileIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteCollectionBookmarkByProfileIdMutation, TError, DeleteCollectionBookmarkByProfileIdMutationVariables, TContext>) =>
-    useMutation<DeleteCollectionBookmarkByProfileIdMutation, TError, DeleteCollectionBookmarkByProfileIdMutationVariables, TContext>(
-      ['deleteCollectionBookmarkByProfileId'],
-      (variables?: DeleteCollectionBookmarkByProfileIdMutationVariables) => fetchData<DeleteCollectionBookmarkByProfileIdMutation, DeleteCollectionBookmarkByProfileIdMutationVariables>(DeleteCollectionBookmarkByProfileIdDocument, variables)(),
-      options
-    );
 export const DeleteCollectionBookmarkDocument = `
     mutation deleteCollectionBookmark($collectionUuid: uuid!) {
   delete_app_collection_bookmarks(
@@ -47403,6 +47415,24 @@ export const useDeleteCollectionBookmarkMutation = <
     useMutation<DeleteCollectionBookmarkMutation, TError, DeleteCollectionBookmarkMutationVariables, TContext>(
       ['deleteCollectionBookmark'],
       (variables?: DeleteCollectionBookmarkMutationVariables) => fetchData<DeleteCollectionBookmarkMutation, DeleteCollectionBookmarkMutationVariables>(DeleteCollectionBookmarkDocument, variables)(),
+      options
+    );
+export const DeleteCollectionBookmarksForUserDocument = `
+    mutation deleteCollectionBookmarksForUser($collectionUuid: uuid!, $profileId: uuid) {
+  delete_app_collection_bookmarks(
+    where: {collection_uuid: {_eq: $collectionUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionBookmarksForUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionBookmarksForUserMutation, TError, DeleteCollectionBookmarksForUserMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionBookmarksForUserMutation, TError, DeleteCollectionBookmarksForUserMutationVariables, TContext>(
+      ['deleteCollectionBookmarksForUser'],
+      (variables?: DeleteCollectionBookmarksForUserMutationVariables) => fetchData<DeleteCollectionBookmarksForUserMutation, DeleteCollectionBookmarksForUserMutationVariables>(DeleteCollectionBookmarksForUserDocument, variables)(),
       options
     );
 export const DeleteItemBookmarkDocument = `

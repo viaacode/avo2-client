@@ -1,0 +1,11 @@
+query getUsersWithBothBookmarks($oldItemUid: uuid!, $newItemUid: uuid!) {
+	users_profiles(
+		where: {
+			item_bookmarks: {
+				_or: [{ item_id: { _eq: $oldItemUid } }, { item_id: { _eq: $newItemUid } }]
+			}
+		}
+	) {
+		id
+	}
+}

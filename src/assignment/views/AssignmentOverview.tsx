@@ -49,6 +49,7 @@ import {
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
@@ -699,7 +700,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const onClickCreate = () => history.push(buildLink(APP_PATH.SEARCH.route));
+	const onClickCreate = () =>
+		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
 
 	const getEmptyFallbackTitle = () => {
 		const hasFilters: boolean =
