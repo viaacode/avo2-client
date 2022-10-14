@@ -43,9 +43,6 @@ import {
 	GetAssignmentResponsesQueryVariables,
 	GetAssignmentsAdminOverviewDocument,
 	GetAssignmentsAdminOverviewQuery,
-	GetAssignmentsByContentIdAndTypeDocument,
-	GetAssignmentsByContentIdAndTypeQuery,
-	GetAssignmentsByContentIdAndTypeQueryVariables,
 	GetAssignmentsByOwnerDocument,
 	GetAssignmentsByOwnerQuery,
 	GetAssignmentsByOwnerQueryVariables,
@@ -67,7 +64,6 @@ import {
 	InsertAssignmentMutationVariables,
 	InsertAssignmentResponseDocument,
 	InsertAssignmentResponseMutation,
-	Lookup_Enum_Assignment_Content_Labels_Enum,
 	UpdateAssignmentBlockDocument,
 	UpdateAssignmentBlockMutation,
 	UpdateAssignmentByIdDocument,
@@ -273,42 +269,6 @@ export class AssignmentService {
 			variables: { assignmentId },
 		});
 		return blocks.app_assignment_blocks_v2 || [];
-	}
-
-	static async fetchAssignmentByContentIdAndType(
-		contentId: string,
-		contentType: Lookup_Enum_Assignment_Content_Labels_Enum
-	): Promise<GetAssignmentsByContentIdAndTypeQuery['app_assignments']> {
-		try {
-			const variables: GetAssignmentsByContentIdAndTypeQueryVariables = {
-				contentId,
-				contentType,
-			};
-			const response = await dataService.query<GetAssignmentsByContentIdAndTypeQuery>({
-				query: GetAssignmentsByContentIdAndTypeDocument,
-				variables,
-			});
-
-			const assignments = response.app_assignments;
-
-			if (!assignments) {
-				throw new CustomError('Response does not contain any assignments', null, {
-					response,
-				});
-			}
-
-			return assignments;
-		} catch (err) {
-			throw new CustomError(
-				'Failed to get assignment by content id and content type from database',
-				err,
-				{
-					contentId,
-					contentType,
-					query: 'GET_ASSIGNMENT_BY_CONTENT_ID_AND_TYPE',
-				}
-			);
-		}
 	}
 
 	/**

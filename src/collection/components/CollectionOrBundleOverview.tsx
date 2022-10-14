@@ -706,7 +706,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		if (isCollection) {
 			return (
 				<DeleteCollectionModal
-					collectionId={selected as string}
 					isOpen={isDeleteModalOpen}
 					onClose={() => {
 						setSelected(null);

@@ -1,15 +1,14 @@
 import { sortBy } from 'lodash-es';
 
 import { setPositionToIndex } from '../assignment.helper';
-import { BaseBlockWithMeta } from '../assignment.types';
 
 type Positioned = { id: string | number; position: number };
 
-export function switchAssignmentBlockPositions<T extends Positioned = BaseBlockWithMeta>(
-	list: T[],
-	block: T,
+export function switchAssignmentBlockPositions(
+	list: Positioned[],
+	block: Positioned,
 	delta: number
-): T[] {
+): Positioned[] {
 	if (!block) {
 		return list;
 	}

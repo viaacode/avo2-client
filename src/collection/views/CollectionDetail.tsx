@@ -40,6 +40,7 @@ import { InteractiveTour, LoadingInfo, ShareThroughEmailModal } from '../../shar
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
+import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -69,7 +70,6 @@ import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 
 import './CollectionDetail.scss';
-import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -1138,7 +1138,6 @@ const CollectionDetail: FunctionComponent<
 					/>
 				)}
 				<DeleteCollectionModal
-					collectionId={(collection as Avo.Collection.Collection).id}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
