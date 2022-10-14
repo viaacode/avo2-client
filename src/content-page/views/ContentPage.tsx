@@ -69,7 +69,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 	}, [fetchContentPage]);
 
 	useEffect(() => {
-		if (contentPageInfo) {
+		if (contentPageInfo && loadingInfo.state !== 'loaded') {
 			setLoadingInfo({ state: 'loaded' });
 			scrollTo({ top: 0 });
 		}

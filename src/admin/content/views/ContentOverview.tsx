@@ -254,7 +254,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				return;
 			}
 
-			await ContentService.deleteContentPage(contentToDelete.id);
+			await ContentService.deleteContentPage(contentToDelete);
 			fetchContentPages();
 			ToastService.success(
 				t('admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd')

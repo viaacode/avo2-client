@@ -2,6 +2,7 @@ import {
 	Accordion,
 	Button,
 	ButtonToolbar,
+	Checkbox,
 	Container,
 	MenuItemInfo,
 	MoreOptionsDropdown,
@@ -33,6 +34,7 @@ import {
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { getMoreOptionsLabel } from '../../../shared/constants';
 import {
 	buildLink,
@@ -74,6 +76,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isTempAccessModalOpen, setIsTempAccessModalOpen] = useState<boolean>(false);
 	const [userDeleteModalOpen, setUserDeleteModalOpen] = useState<boolean>(false);
+	const [isConfirmBlockUserModalVisible, setIsConfirmBlockUserModalVisible] =
+		useState<boolean>(false);
+	const [isConfirmUnblockUserModalVisible, setIsConfirmUnblockUserModalVisible] =
+		useState<boolean>(false);
+	const [shouldSendActionEmail, setShouldSendActionEmail] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 
@@ -144,7 +151,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			const isBlocked = get(storedProfile, 'is_blocked') || false;
 
 			if (profileId) {
-				await UserService.updateBlockStatusByProfileIds([profileId], !isBlocked);
+				await UserService.updateBlockStatusByProfileIds(
+					[profileId],
+					!isBlocked,
+					shouldSendActionEmail
+				);
 				await fetchProfileById();
 
 				ToastService.success(
@@ -549,7 +560,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									}
 									title={blockButtonTooltip}
 									ariaLabel={blockButtonTooltip}
-									onClick={toggleBlockedStatus}
+									onClick={() => {
+										if (isBlocked) {
+											setIsConfirmUnblockUserModalVisible(true);
+										} else {
+											setIsConfirmBlockUserModalVisible(true);
+										}
+									}}
 								/>
 							)}
 							<a
@@ -593,6 +610,75 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					isOpen={isTempAccessModalOpen}
 					onClose={() => setIsTempAccessModalOpen(false)}
 					setTempAccessCallback={onSetTempAccess}
+				/>
+				<ConfirmModal
+					className="p-user-overview__confirm-modal"
+					isOpen={isConfirmBlockUserModalVisible}
+					onClose={() => {
+						setIsConfirmBlockUserModalVisible(false);
+						setShouldSendActionEmail(false);
+					}}
+					confirmCallback={async () => {
+						setIsConfirmBlockUserModalVisible(false);
+						setShouldSendActionEmail(false);
+						await toggleBlockedStatus();
+					}}
+					title={t('admin/users/views/user-detail___bevestig')}
+					confirmLabel={t('admin/users/views/user-detail___deactiveren')}
+					size={'medium'}
+					body={
+						<>
+							<strong>
+								{t(
+									'admin/users/views/user-detail___weet-je-zeker-dat-je-deze-gebruiker-wil-deactiveren'
+								)}
+							</strong>
+							<Checkbox
+								label={t(
+									'admin/users/views/user-detail___breng-de-gebruiker-op-de-hoogte-van-deze-actie'
+								)}
+								checked={shouldSendActionEmail}
+								onChange={(newShouldSendActionEmail) =>
+									setShouldSendActionEmail(newShouldSendActionEmail)
+								}
+							/>
+						</>
+					}
+				/>
+				<ConfirmModal
+					className="p-user-overview__confirm-modal"
+					isOpen={isConfirmUnblockUserModalVisible}
+					onClose={() => {
+						setIsConfirmUnblockUserModalVisible(false);
+						setShouldSendActionEmail(false);
+					}}
+					confirmCallback={async () => {
+						setIsConfirmUnblockUserModalVisible(false);
+						setShouldSendActionEmail(false);
+						await toggleBlockedStatus();
+					}}
+					title={t('admin/users/views/user-detail___bevestig')}
+					confirmLabel={t('admin/users/views/user-detail___opnieuw-activeren')}
+					confirmButtonType={'primary'}
+					size={'medium'}
+					body={
+						<>
+							<strong>
+								{t(
+									'admin/users/views/user-detail___weet-je-zeker-dat-je-deze-gebruiker-opnieuw-wil-activeren'
+								)}
+							</strong>
+							<Checkbox
+								label={t(
+									'admin/users/views/user-detail___breng-de-gebruiker-op-de-hoogte-van-deze-actie'
+								)}
+								checked={shouldSendActionEmail}
+								onChange={(newShouldSendActionEmail) =>
+									setShouldSendActionEmail(newShouldSendActionEmail)
+								}
+							/>
+						</>
+					}
 				/>
 				<UserDeleteModal
 					selectedProfileIds={[get(storedProfile, 'profile_id')]}

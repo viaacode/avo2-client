@@ -140,7 +140,7 @@ const ItemVideoDescription: FunctionComponent<
 	const renderDescription = () => {
 		return (
 			<>
-				<Toolbar>
+				<Toolbar className="c-toolbar--no-height">
 					<ToolbarLeft>
 						{showTitle ? (
 							renderTitle()
