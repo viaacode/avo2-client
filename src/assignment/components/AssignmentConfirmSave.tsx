@@ -4,6 +4,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ConfirmModal, { ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
+import Html from '../../shared/components/Html/Html';
 
 type AssignmentConfirmSaveProps = DefaultProps & {
 	hasBlocks?: boolean;
@@ -18,22 +19,22 @@ const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	let body = t(
+	let bodyHtml = t(
 		'assignment/components/assignment-confirm-save___weet-je-zeker-dat-je-de-wijzigingen-wil-opslaan'
 	);
 
 	if (hasBlocks) {
-		body = t(
+		bodyHtml = t(
 			'assignment/views/assignment-edit___waarschuwing-leerlingencollecties-bestaan-reeds-verwijderen'
 		);
 	} else if (hasResponses) {
-		body = t('assignment/views/assignment-edit___waarschuwing-leerlingen-reeds-bekeken');
+		bodyHtml = t('assignment/views/assignment-edit___waarschuwing-leerlingen-reeds-bekeken');
 	}
 
 	return (
 		<ConfirmModal
 			isOpen={modal?.isOpen || false}
-			body={body}
+			body={<Html content={bodyHtml} />}
 			onClose={modal?.onClose || noop}
 			confirmCallback={modal?.confirmCallback || noop}
 			cancelLabel={t('assignment/views/assignment-edit___annuleer')}

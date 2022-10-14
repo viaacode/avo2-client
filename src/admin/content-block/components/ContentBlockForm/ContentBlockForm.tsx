@@ -285,18 +285,21 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						/>
 					</ButtonToolbar>
 				</AccordionActions>
-				<AccordionBody>
-					{renderFormGroups(components, 'components')}
-					{underLimit &&
-						REPEATABLE_CONTENT_BLOCKS.includes(config.type) &&
-						renderAddButton(label)}
-					<Spacer margin="top">
-						<BlockHeading type="h4" className="u-m-t-0">
-							Blok-opties
-						</BlockHeading>
-					</Spacer>
-					<Spacer margin="bottom-small">{renderFormGroups(block, 'block')}</Spacer>
-				</AccordionBody>
+
+				{isAccordionOpen && (
+					<AccordionBody>
+						{renderFormGroups(components, 'components')}
+						{underLimit &&
+							REPEATABLE_CONTENT_BLOCKS.includes(config.type) &&
+							renderAddButton(label)}
+						<Spacer margin="top">
+							<BlockHeading type="h4" className="u-m-t-0">
+								Blok-opties
+							</BlockHeading>
+						</Spacer>
+						<Spacer margin="bottom-small">{renderFormGroups(block, 'block')}</Spacer>
+					</AccordionBody>
+				)}
 			</Accordion>
 		);
 	};

@@ -14,7 +14,10 @@ import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { GET_MARCOM_CHANNEL_TYPE_OPTIONS } from '../../../collection/collection.const';
+import {
+	GET_MARCOM_CHANNEL_NAME_OPTIONS,
+	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
+} from '../../../collection/collection.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -113,11 +116,11 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 		[collectionLabels, t, tableState]
 	);
 
-	const channelTypeOptions = useMemo(() => {
-		const options = GET_MARCOM_CHANNEL_TYPE_OPTIONS().map((option) => ({
+	const channelNameOptions = useMemo(() => {
+		const options = GET_MARCOM_CHANNEL_NAME_OPTIONS().map((option) => ({
 			id: option.value,
 			label: option.label,
-			checked: (tableState?.marcom_last_communication_channel_type || []).includes(
+			checked: (tableState?.marcom_last_communication_channel_name || []).includes(
 				String(option.value)
 			),
 		}));
@@ -125,9 +128,9 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			{
 				id: NULL_FILTER,
 				label: t(
-					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___geen-kanaal-type'
+					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___geen-kanaal'
 				),
-				checked: (tableState?.marcom_last_communication_channel_type || []).includes(
+				checked: (tableState?.marcom_last_communication_channel_name || []).includes(
 					NULL_FILTER
 				),
 			},
@@ -162,7 +165,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			GET_COLLECTION_MARCOM_COLUMNS(
 				userGroupOptions,
 				collectionLabelOptions,
-				channelTypeOptions,
+				channelNameOptions,
 				subjects,
 				educationLevels,
 				organisationOptions

@@ -20,6 +20,7 @@ import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
 import i18n from '../../translations/i18n';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import Html from '../Html/Html';
 
 import './FileUpload.scss';
 
@@ -271,9 +272,13 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				title={t(
 					'shared/components/file-upload/file-upload___ben-je-zeker-dat-je-dit-bestand-wil-verwijderen'
 				)}
-				body={t(
-					'shared/components/file-upload/file-upload___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
-				)}
+				body={
+					<Html
+						content={t(
+							'shared/components/file-upload/file-upload___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
+						)}
+					/>
+				}
 				isOpen={isDeleteModalOpen}
 				onClose={closeDeleteModal}
 				confirmCallback={() => {

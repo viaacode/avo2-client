@@ -7,12 +7,8 @@ import {
 	HeaderButtons,
 	MoreOptionsDropdown,
 	Navbar,
-	Spacer,
 	TabProps,
 	Tabs,
-	Toolbar,
-	ToolbarItem,
-	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { cloneDeep, get, isEmpty, set } from 'lodash-es';
@@ -41,6 +37,7 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import {
 	buildLink,
@@ -111,13 +108,18 @@ type CollectionPropUpdateAction = {
 	updateInitialCollection?: boolean;
 };
 
+type CollectionResetAction = {
+	type: 'RESET_COLLECTION';
+};
+
 export type CollectionAction =
 	| FragmentPropUpdateAction
 	| FragmentSwapAction
 	| FragmentInsertAction
 	| FragmentDeleteAction
 	| CollectionUpdateAction
-	| CollectionPropUpdateAction;
+	| CollectionPropUpdateAction
+	| CollectionResetAction;
 
 interface CollectionState {
 	currentCollection: Avo.Collection.Collection | null;
@@ -182,9 +184,21 @@ const CollectionOrBundleEdit: FunctionComponent<
 	): CollectionState {
 		if (action.type === 'UPDATE_COLLECTION') {
 			updateHasUnsavedChanges(action.newCollection, action.newCollection);
+
 			return {
 				currentCollection: action.newCollection,
 				initialCollection: cloneDeep(action.newCollection),
+			};
+		}
+
+		if (action.type === 'RESET_COLLECTION') {
+			const initial = collectionState.initialCollection;
+
+			updateHasUnsavedChanges(initial, initial);
+
+			return {
+				currentCollection: initial,
+				initialCollection: initial,
 			};
 		}
 
@@ -861,16 +875,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
-	// Render functions
-	const renderSaveButton = () => (
-		<Button
-			type="primary"
-			label={t('collection/views/collection-edit___opslaan')}
-			onClick={() => executeAction('save')}
-			disabled={isSavingCollection}
-		/>
-	);
-
 	const handleAddItemById = async (id: string) => {
 		try {
 			if (isCollection) {
@@ -1131,7 +1135,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
 					onOptionClicked={executeAction}
 				/>
-				<Spacer margin="left-small">{renderSaveButton()}</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
@@ -1193,25 +1196,27 @@ const CollectionOrBundleEdit: FunctionComponent<
 					<HeaderButtons>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderButtons>
+
 					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
 				</Header>
+
 				<Navbar background="alt" placement="top" autoHeight>
 					<Container mode="horizontal">
 						<Tabs tabs={tabs} onClick={selectTab} />
 					</Container>
 				</Navbar>
-				{renderTab()}
-				<Container background="alt" mode="vertical">
-					<Container mode="horizontal">
-						<Toolbar autoHeight>
-							<ToolbarLeft>
-								<ToolbarItem>
-									<ButtonToolbar>{renderSaveButton()}</ButtonToolbar>
-								</ToolbarItem>
-							</ToolbarLeft>
-						</Toolbar>
-					</Container>
-				</Container>
+
+				<div className="c-sticky-save-bar__wrapper">
+					{renderTab()}
+
+					{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+					<StickySaveBar
+						isVisible={unsavedChanges}
+						onSave={() => executeAction('save')}
+						onCancel={() => changeCollectionState({ type: 'RESET_COLLECTION' })}
+					/>
+				</div>
+
 				{!!collectionState.currentCollection && (
 					<PublishCollectionModal
 						collection={collectionState.currentCollection}
@@ -1223,6 +1228,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						user={user}
 					/>
 				)}
+
 				<DeleteCollectionModal
 					collectionId={
 						(collectionState.currentCollection as Avo.Collection.Collection).id

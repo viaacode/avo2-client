@@ -20,6 +20,7 @@ import {
 import { APP_PATH } from '../../../../../constants';
 import { ItemVideoDescription } from '../../../../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
+import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants';
 import { buildLink, CustomError, formatDate, isMobileWidth } from '../../../../../shared/helpers';
 import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
@@ -221,7 +222,10 @@ const MediaGridWrapper: FunctionComponent<
 				meta: isItem
 					? itemDuration
 					: `${collectionItems} ${isCollection ? 'items' : 'collecties'}`,
-				src: itemOrCollection?.thumbnail_path || '',
+				src:
+					(itemLabel === 'audio'
+						? DEFAULT_AUDIO_STILL
+						: itemOrCollection?.thumbnail_path) || '',
 			},
 			src: itemOrCollection?.src,
 			item_collaterals: get(itemOrCollection, 'item_collaterals', null),
