@@ -3,12 +3,13 @@ import { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { Lookup_Enum_Content_Types_Enum } from '../../shared/generated/graphql-db-types';
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
-import { ContentOverviewTableCols, ContentWidth } from './content.types';
+import { ContentOverviewTableCols, ContentPageType, ContentWidth } from './content.types';
 
 export const RichEditorStateKey = 'RichEditorState';
 
@@ -188,10 +189,10 @@ export const GET_CONTENT_WIDTH_OPTIONS = () => [
 ];
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: Avo.ContentPage.Type[] } = {
-	[ContentWidth.REGULAR]: ['PROJECT'],
+export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: ContentPageType[] } = {
+	[ContentWidth.REGULAR]: [Lookup_Enum_Content_Types_Enum.Project],
 	[ContentWidth.LARGE]: [],
-	[ContentWidth.MEDIUM]: ['NIEUWS_ITEM'],
+	[ContentWidth.MEDIUM]: [Lookup_Enum_Content_Types_Enum.NieuwsItem],
 };
 /* eslint-enable @typescript-eslint/no-unused-vars */
 

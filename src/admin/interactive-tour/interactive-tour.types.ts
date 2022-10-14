@@ -34,18 +34,18 @@ export enum InteractiveTourEditActionType {
 	UPDATE_INTERACTIVE_TOUR_PROP = '@@admin-interactive-tour-edit/UPDATE_INTERACTIVE_TOUR_PROP',
 }
 
-export interface EditableStep extends Avo.InteractiveTour.Step {
-	contentState: RichEditorState | undefined;
-}
+export type InteractiveTour = GetInteractiveTourByIdQuery['app_interactive_tour'][0];
 
-export interface EditableInteractiveTour extends InteractiveTour {
-	steps: EditableStep[];
-}
+export type EditableInteractiveTour = Omit<InteractiveTour, 'id'> & { id?: number };
+
+export type InteractiveTourStep = Exclude<InteractiveTour['steps'][0], null | undefined>;
+
+export type EditableStep = InteractiveTourStep & {
+	contentState: RichEditorState | undefined;
+};
 
 export interface InteractiveTourState {
 	currentInteractiveTour: EditableInteractiveTour | null;
 	initialInteractiveTour: EditableInteractiveTour | null;
 	formErrors: InteractiveTourEditFormErrorState | null;
 }
-
-export type InteractiveTour = GetInteractiveTourByIdQuery['app_interactive_tour'][0];

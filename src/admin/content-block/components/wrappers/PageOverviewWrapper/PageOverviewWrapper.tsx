@@ -16,6 +16,7 @@ import placeholderWide from '../../../../../assets/images/placeholder-wide.png';
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { ROUTE_PARTS } from '../../../../../shared/constants';
+import { Lookup_Enum_Content_Types_Enum } from '../../../../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
 import { useDebounce } from '../../../../../shared/hooks';
@@ -67,7 +68,7 @@ interface PageOverviewWrapperProps {
 
 const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	contentTypeAndTabs = {
-		selectedContentType: 'PROJECT',
+		selectedContentType: Lookup_Enum_Content_Types_Enum.Project,
 		selectedLabels: null,
 	},
 	tabStyle = 'MENU_BAR',

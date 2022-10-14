@@ -26,9 +26,10 @@ import {
 import { FileUpload } from '../../../../shared/components';
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
-import { getFullName } from '../../../../shared/helpers/formatters';
+import { getFullName } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { ValueOf } from '../../../../shared/types';
+import { ContentPageLabel } from '../../../content-page-labels/content-page-label.types';
 import { UserGroupSelect } from '../../../shared/components';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../../shared/types';
@@ -38,6 +39,7 @@ import {
 	ContentEditActionType,
 	ContentEditFormErrors,
 	ContentPageInfo,
+	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
 import { ContentEditAction } from '../../helpers/reducers';
@@ -45,7 +47,7 @@ import { ContentEditAction } from '../../helpers/reducers';
 import './ContentEditForm.scss';
 
 interface ContentEditFormProps {
-	contentTypes: SelectOption<Avo.ContentPage.Type>[];
+	contentTypes: SelectOption<ContentPageType>[];
 	formErrors: ContentEditFormErrors;
 	contentPageInfo: Partial<ContentPageInfo>;
 	changeContentPageState: (action: ContentEditAction) => void;
@@ -131,8 +133,8 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 
 	const mapTagsToLabels = (
 		tags: TagInfo[],
-		contentType: Avo.ContentPage.Type | undefined
-	): Partial<Avo.ContentPage.Label>[] => {
+		contentType: ContentPageType | undefined
+	): Partial<ContentPageLabel>[] => {
 		return (tags || []).map((tag) => ({
 			label: tag.label,
 			id: tag.value as number,

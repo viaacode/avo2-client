@@ -25,7 +25,7 @@ export const INITIAL_IFRAME_BLOCK_STATE = (): DefaultContentBlockState =>
 export const IFRAME_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/iframe___i-frame'),
-	type: ContentBlockType.IFrame,
+	type: ContentBlockType.Iframe,
 	components: {
 		state: INITIAL_IFRAME_COMPONENTS_STATE(),
 		fields: {

@@ -1,6 +1,6 @@
 import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
+import { AssignmentLabel, AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,10 +16,9 @@ import {
 	SimplifiedAssignment,
 } from '../assignment.types';
 
-import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
-import Label_v2 = Avo.Assignment.Label_v2;
+import './AssignmentLabels.scss';
 
 export type AssignmentLabelsProps = Pick<SimplifiedAssignment, 'labels'> & {
 	id?: string;
@@ -60,7 +59,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: Label_v2[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: AssignmentLabel[]): TagOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -75,7 +74,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		setIsManageLabelsModalOpen(false);
 	};
 
-	const getColorOptions = (labels: Label_v2[]): ColorOption[] => {
+	const getColorOptions = (labels: AssignmentLabel[]): ColorOption[] => {
 		return labels
 			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({

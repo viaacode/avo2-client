@@ -1,4 +1,3 @@
-import { Avo } from '@viaa/avo2-types';
 import { ContentWidthSchema } from '@viaa/avo2-types/types/content-page';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 
@@ -6,6 +5,7 @@ import { parseContentBlocks } from '../../content-block/helpers';
 import {
 	ContentPageDb,
 	ContentPageInfo,
+	ContentPageType,
 	ContentPageWithBlocksDb,
 	ContentWidth,
 } from '../content.types';
@@ -31,7 +31,7 @@ export function convertToContentPageInfo(dbContentPage: ContentPageDb): ContentP
 		is_protected: dbContentPage.is_protected,
 		is_public: dbContentPage.is_public || false,
 		path: dbContentPage.path || null,
-		content_type: dbContentPage.content_type as Avo.ContentPage.Type,
+		content_type: dbContentPage.content_type as ContentPageType,
 		content_width: (dbContentPage.content_width || ContentWidth.REGULAR) as ContentWidth,
 		publish_at: dbContentPage.publish_at || null,
 		depublish_at: dbContentPage.depublish_at || null,
@@ -50,7 +50,7 @@ export function convertToContentPageInfos(dbContentPages: ContentPageDb[]): Cont
 
 export function convertToDatabaseContentPage(
 	contentPageInfo: ContentPageInfo
-): Avo.ContentPage.Page {
+): ContentPageWithBlocksDb {
 	return {
 		id: contentPageInfo.id,
 		thumbnail_path: contentPageInfo.thumbnail_path || null,
@@ -63,6 +63,7 @@ export function convertToDatabaseContentPage(
 		meta_description: contentPageInfo.meta_description || null,
 		is_protected: contentPageInfo.is_protected,
 		is_public: contentPageInfo.is_public || false,
+		is_deleted: false,
 		path: contentPageInfo.path || null,
 		content_type: contentPageInfo.content_type,
 		content_width: contentPageInfo.content_width as ContentWidthSchema,

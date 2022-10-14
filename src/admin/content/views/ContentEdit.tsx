@@ -116,7 +116,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				});
 				return;
 			}
-			const contentPageObj = await ContentService.getContentPageById(id);
+			const contentPageObj = await ContentService.getContentPageById(parseInt(id));
 			if (
 				!hasPerm(PermissionName.EDIT_ANY_CONTENT_PAGES) &&
 				contentPageObj.user_profile_id !== getProfileId(user)
@@ -448,11 +448,24 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	};
 
 	const addComponentToState = (index: number, blockType: ContentBlockType) => {
+		const getInitialContentBlockState = CONTENT_BLOCK_INITIAL_STATE_MAP[blockType];
+		if (!getInitialContentBlockState) {
+			console.error(
+				'Failed to add component to state since content block initial state was not found in CONTENT_BLOCK_INITIAL_STATE_MAP with type: ' +
+					blockType
+			);
+			ToastService.danger(
+				t(
+					'Het toevoegen van de blok is mislukt. Default instellingen van de blok konden niet worden gevonden'
+				)
+			);
+			return;
+		}
 		changeContentPageState({
 			type: ContentEditActionType.ADD_COMPONENTS_STATE,
 			payload: {
 				index,
-				formGroupState: CONTENT_BLOCK_INITIAL_STATE_MAP[blockType](),
+				formGroupState: getInitialContentBlockState(),
 			},
 		});
 	};

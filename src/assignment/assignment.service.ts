@@ -1,9 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import {
-	AssignmentBlock,
-	AssignmentLabel_v2,
-	AssignmentSchema_v2,
-} from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
@@ -27,6 +22,9 @@ import {
 	DeleteAssignmentsByIdMutation,
 	GetAssignmentBlocksDocument,
 	GetAssignmentBlocksQuery,
+	GetAssignmentByUuidDocument,
+	GetAssignmentByUuidQuery,
+	GetAssignmentByUuidQueryVariables,
 	GetAssignmentIdsDocument,
 	GetAssignmentIdsQuery,
 	GetAssignmentResponseByIdDocument,
@@ -52,9 +50,6 @@ import {
 	GetAssignmentsByResponseOwnerIdDocument,
 	GetAssignmentsByResponseOwnerIdQuery,
 	GetAssignmentsByResponseOwnerIdQueryVariables,
-	GetAssignmentsByUuidDocument,
-	GetAssignmentsByUuidQuery,
-	GetAssignmentsByUuidQueryVariables,
 	GetAssignmentWithResponseDocument,
 	GetAssignmentWithResponseQuery,
 	GetAssignmentWithResponseQueryVariables,
@@ -98,8 +93,12 @@ import {
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
 import {
+	Assignment_Label_v2,
 	Assignment_Response_v2,
+	Assignment_Response_v2_With_Pupil_Collection_Blocks,
 	Assignment_v2,
+	Assignment_v2_With_Blocks,
+	AssignmentBlock,
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
 	AssignmentResponseInfo,
@@ -231,16 +230,13 @@ export class AssignmentService {
 	static async fetchAssignmentById(assignmentId: string): Promise<SimplifiedAssignment> {
 		try {
 			// Get the assignment from graphql
-			const variables: GetAssignmentsByUuidQueryVariables = { id: assignmentId };
-			const response = await dataService.query<GetAssignmentsByUuidQuery>({
-				query: GetAssignmentsByUuidDocument,
+			const variables: GetAssignmentByUuidQueryVariables = { id: assignmentId };
+			const response = await dataService.query<GetAssignmentByUuidQuery>({
+				query: GetAssignmentByUuidDocument,
 				variables,
 			});
 
-			const assignmentResponse: Assignment_v2 | undefined = get(
-				response,
-				'data.app_assignments_v2[0]'
-			);
+			const assignmentResponse = response.app_assignments_v2[0];
 
 			if (!assignmentResponse) {
 				throw new CustomError('Response does not contain any assignment response', null, {
@@ -250,9 +246,7 @@ export class AssignmentService {
 
 			return {
 				...assignmentResponse,
-				blocks: await this.enrichBlocksWithMeta<PupilCollectionFragment[]>(
-					assignmentResponse.blocks
-				),
+				blocks: await this.enrichBlocksWithMeta<AssignmentBlock>(assignmentResponse.blocks),
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get assignment by id from database', err, {
@@ -270,9 +264,7 @@ export class AssignmentService {
 		return pupilBlocks.app_pupil_collection_blocks.length > 0;
 	}
 
-	static async fetchAssignmentBlocks(
-		assignmentId: string
-	): Promise<GetAssignmentBlocksQuery['app_assignment_blocks_v2']> {
+	static async fetchAssignmentBlocks(assignmentId: string): Promise<AssignmentBlock[]> {
 		const blocks = await dataService.query<GetAssignmentBlocksQuery>({
 			query: GetAssignmentBlocksDocument,
 			variables: { assignmentId },
@@ -321,7 +313,9 @@ export class AssignmentService {
 	 * This will be used by the Assignments view and the AssignmentEdit view
 	 * @param assignment
 	 */
-	private static transformAssignment(assignment: Partial<SimplifiedAssignment>): Assignment_v2 {
+	private static transformAssignment(
+		assignment: Partial<Assignment_v2_With_Blocks>
+	): Assignment_v2 {
 		const assignmentToSave = cloneDeep(assignment);
 
 		if (
@@ -391,9 +385,9 @@ export class AssignmentService {
 	}
 
 	static async updateAssignment(
-		original: AssignmentSchema_v2,
-		update: Partial<AssignmentSchema_v2>
-	): Promise<AssignmentSchema_v2 | null> {
+		original: SimplifiedAssignment,
+		update: Partial<SimplifiedAssignment>
+	): Promise<SimplifiedAssignment | null> {
 		try {
 			if (isNil(original.id)) {
 				throw new CustomError(
@@ -471,7 +465,7 @@ export class AssignmentService {
 	}
 
 	static async updateAssignmentResponse(
-		original: Assignment_Response_v2,
+		original: Assignment_Response_v2_With_Pupil_Collection_Blocks,
 		update: {
 			collection_title: string;
 			pupil_collection_blocks: PupilCollectionFragment[];
@@ -521,8 +515,8 @@ export class AssignmentService {
 
 	static async updateAssignmentLabels(
 		id: string,
-		original: AssignmentLabel_v2[],
-		update: AssignmentLabel_v2[]
+		original: Assignment_Label_v2[],
+		update: Assignment_Label_v2[]
 	): Promise<[void, void]> {
 		const initial = original.map((label) => label.id);
 		const updated = update.map((label) => label.id);
@@ -555,7 +549,7 @@ export class AssignmentService {
 				!created.map((d) => d.id).includes(block.id)
 		);
 
-		const cleanup = (block: AssignmentBlock) => {
+		const cleanup = (block: BaseBlockWithMeta) => {
 			delete block.item_meta;
 			delete (block as any).icon;
 
@@ -610,7 +604,7 @@ export class AssignmentService {
 	}
 
 	static async insertAssignment(
-		assignment: Partial<Assignment_v2>,
+		assignment: Partial<Assignment_v2_With_Blocks>,
 		addedLabels?: AssignmentSchemaLabel_v2[]
 	): Promise<Assignment_v2 | null> {
 		try {
@@ -696,14 +690,16 @@ export class AssignmentService {
 			);
 		}
 
-		const blocks = await AssignmentService.fetchAssignmentBlocks(initialAssignment.id);
+		const blocks: AssignmentBlock[] = await AssignmentService.fetchAssignmentBlocks(
+			initialAssignment.id
+		);
 		await AssignmentService.copyBlocksToAssignment(blocks, duplicatedAssignment.id);
 
 		return duplicatedAssignment;
 	}
 
 	static async copyBlocksToAssignment(
-		blocks: Avo.Assignment.Block[],
+		blocks: AssignmentBlock[],
 		assignmentId: string
 	): Promise<void> {
 		if (!blocks || !blocks.length) {
@@ -712,7 +708,7 @@ export class AssignmentService {
 		try {
 			const newBlocks = blocks.map((block) => {
 				// clone the block
-				const newBlock: Partial<Avo.Assignment.Block> = {
+				const newBlock: Partial<AssignmentBlock> = {
 					...cloneDeep(block),
 					assignment_id: assignmentId,
 				};
@@ -740,7 +736,7 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<SimplifiedAssignment | string> {
+	): Promise<SimplifiedAssignment> {
 		try {
 			// Load assignment
 			const variables: GetAssignmentWithResponseQueryVariables = {
@@ -752,10 +748,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const tempAssignment: Assignment_v2 | undefined | null = get(
-				response,
-				'data.assignments[0]'
-			);
+			const tempAssignment = response.app_assignments_v2[0];
 
 			if (!tempAssignment) {
 				throw new CustomError('Failed to find assignment by id');
@@ -901,19 +894,17 @@ export class AssignmentService {
 	): Promise<T[]> {
 		const enriched = await Promise.all(
 			(blocks || []).map(async (block): Promise<BaseBlockWithMeta> => {
-				const cast = block;
-
-				if (cast.fragment_id) {
+				if (block.fragment_id) {
 					try {
 						return {
 							...block,
 							item_meta:
-								items.find((item) => item?.external_id === cast.fragment_id) ||
-								(await ItemsService.fetchItemByExternalId(cast.fragment_id)) ||
+								items.find((item) => item?.external_id === block.fragment_id) ||
+								(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
 								undefined,
 						};
 					} catch (error) {
-						console.warn(`Unable to fetch meta data for ${cast.fragment_id}`, error);
+						console.warn(`Unable to fetch meta data for ${block.fragment_id}`, error);
 					}
 				}
 

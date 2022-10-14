@@ -12,7 +12,6 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { compact, get, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';

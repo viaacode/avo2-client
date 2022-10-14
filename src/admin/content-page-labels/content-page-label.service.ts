@@ -19,6 +19,7 @@ import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
 import i18n from '../../shared/translations/i18n';
+import { ContentPageType } from '../content/content.types';
 
 import { ITEMS_PER_PAGE } from './content-page-label.const';
 import { ContentPageLabel, ContentPageLabelOverviewTableCols } from './content-page-label.types';
@@ -187,7 +188,7 @@ export class ContentPageLabelService {
 	}
 
 	static async getContentPageLabelsByTypeAndLabels(
-		contentType: Avo.ContentPage.Type,
+		contentType: ContentPageType,
 		labels: string[]
 	): Promise<LabelObj[]> {
 		try {
@@ -218,7 +219,7 @@ export class ContentPageLabelService {
 	}
 
 	static async getContentPageLabelsByTypeAndIds(
-		contentType: Avo.ContentPage.Type,
+		contentType: ContentPageType,
 		labelIds: number[]
 	): Promise<LabelObj[]> {
 		try {

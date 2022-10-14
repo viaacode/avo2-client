@@ -1,8 +1,3 @@
-import { get } from 'lodash';
-import { compact, isNumber } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Column,
 	FormGroup,
@@ -14,14 +9,19 @@ import {
 	TagsInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash';
+import { compact, isNumber } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { CustomError } from '../../../../shared/helpers';
 import { ToastService } from '../../../../shared/services';
 import { ContentService } from '../../../content/content.service';
+import { ContentPageType } from '../../../content/content.types';
 import { useContentTypes } from '../../../content/hooks';
 
 export interface ContentTypeAndLabelsValue {
-	selectedContentType: Avo.ContentPage.Type;
+	selectedContentType: ContentPageType;
 	selectedLabels: number[] | null;
 }
 
@@ -33,7 +33,7 @@ export interface ContentTypeAndLabelsProps {
 
 export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsProps> = ({
 	value = {
-		selectedContentType: 'PROJECT',
+		selectedContentType: ContentPageType.Project,
 		selectedLabels: null,
 	},
 	onChange,
@@ -70,14 +70,14 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 
 	const handleContentTypeChanged = (selectedValue: string) => {
 		onChange({
-			selectedContentType: selectedValue as Avo.ContentPage.Type,
+			selectedContentType: selectedValue as ContentPageType,
 			selectedLabels: null,
 		});
 	};
 
 	const handleLabelsChanged = (newSelectedLabels: TagInfo[]) => {
 		onChange({
-			selectedContentType: get(value, 'selectedContentType') as Avo.ContentPage.Type,
+			selectedContentType: get(value, 'selectedContentType') as ContentPageType,
 			selectedLabels: (newSelectedLabels || []).map(
 				(labelOption) => labelOption.value as number
 			),

@@ -9,6 +9,12 @@ interface Query {
 	variables?: any;
 }
 
+/**
+ * @deprecated Prefer use of dataService.query() since it has better type security
+ * @param query
+ * @param subResponse
+ * @param error
+ */
 export async function performQuery<T>(
 	query: Query,
 	subResponse: string | null,

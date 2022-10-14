@@ -1,10 +1,9 @@
 import { DefaultProps } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import classNames from 'classnames';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
+import { AssignmentBlock, BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import CollectionFragmentFlowPlayer, {
 	CollectionFragmentFlowPlayerProps,
@@ -38,9 +37,9 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const cast = block as AssignmentBlock;
-	const custom = cast.use_custom_fields && cast.custom_description;
-	const original = cast.original_description || cast.item_meta?.description;
+	const custom = block.use_custom_fields && block.custom_description;
+	const original =
+		(block as AssignmentBlock).original_description || block.item_meta?.description;
 
 	const customDescription = useMemo(
 		() => (

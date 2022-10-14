@@ -1,5 +1,4 @@
 import { convertToHtml } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,15 +9,20 @@ import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm'
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
-import { BaseBlockWithMeta, EditableBlockItem, EditBlockProps } from '../../assignment.types';
+import {
+	AssignmentBlock,
+	BaseBlockWithMeta,
+	EditableAssignmentBlock,
+	EditBlockProps,
+} from '../../assignment.types';
 import {
 	AssignmentBlockDescriptionButtons,
 	AssignmentBlockItemDescriptionType,
 } from '../AssignmentBlockDescriptionButtons';
 
-function getBlockEditMode(block: BaseBlockWithMeta | EditableBlockItem) {
-	if ((block as EditableBlockItem).editMode) {
-		return (block as EditableBlockItem).editMode;
+function getBlockEditMode(block: BaseBlockWithMeta | EditableAssignmentBlock) {
+	if ((block as EditableAssignmentBlock).editMode) {
+		return (block as EditableAssignmentBlock).editMode;
 	}
 	if (!block.use_custom_fields) {
 		return AssignmentBlockItemDescriptionType.original;

@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { isPast } from 'date-fns';
 import React, {
 	Dispatch,
@@ -34,6 +33,7 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assign
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2,
+	AssignmentBlock,
 	AssignmentFormState,
 	BaseBlockWithMeta,
 	SimplifiedAssignment,

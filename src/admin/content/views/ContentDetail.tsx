@@ -114,7 +114,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				});
 				return;
 			}
-			const contentPageObj = await ContentService.getContentPageById(id);
+			const contentPageObj = await ContentService.getContentPageById(parseInt(id));
 			if (!contentPageObj) {
 				setLoadingInfo({
 					state: 'error',

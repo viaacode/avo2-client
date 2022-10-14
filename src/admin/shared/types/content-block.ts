@@ -11,9 +11,9 @@ import {
 	SpacerOption,
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
 
 import { Lookup_Enum_Content_Block_Types_Enum } from '../../../shared/generated/graphql-db-types';
+import { ContentPageType } from '../../content/content.types';
 
 // OPTIONS
 export type AlignOption = 'left' | 'right' | 'center';
@@ -190,7 +190,7 @@ export interface PageOverviewBlockComponentStateFields {
 	allowMultiple?: boolean;
 	centerHeader?: boolean;
 	headerBackgroundColor?: Color;
-	contentType: Avo.ContentPage.Type;
+	contentType: ContentPageType;
 	itemStyle?: ContentItemStyle;
 	showTitle?: boolean;
 	showDescription?: boolean;

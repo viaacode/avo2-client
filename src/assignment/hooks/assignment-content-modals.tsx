@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +9,7 @@ import { ItemTrimInfo } from '../../item/item.types';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import { ToastService } from '../../shared/services';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
-import { AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
+import { AssignmentBlock, AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
 import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal, {

@@ -1,10 +1,11 @@
 import { BlockHeading, DefaultProps, Flex, FlexItem, Icon } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 import classNames from 'classnames';
 import { truncate } from 'lodash';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { AssignmentBlock } from '../../../assignment/assignment.types';
 import { stripHtml } from '../../helpers';
 
 import { DRAGGABLE_BLOCK_ICONS } from './DraggableBlock.const';

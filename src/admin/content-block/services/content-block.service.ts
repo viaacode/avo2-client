@@ -17,9 +17,11 @@ import { CONTENT_BLOCKS_RESULT_PATH } from '../content-block.const';
 import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
-	public static async updateContentBlocks(contentBlockConfigs: ContentBlockConfig[]) {
+	public static async updateContentBlocks(
+		contentBlockConfigs: ContentBlockConfig[]
+	): Promise<void> {
 		try {
-			return Promise.all(contentBlockConfigs.map(this.updateContentBlock));
+			await Promise.all(contentBlockConfigs.map(this.updateContentBlock));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to update some content blocks', err, {
@@ -27,13 +29,12 @@ export class ContentBlockService {
 				})
 			);
 
+			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
 				)
 			);
-
-			return null;
 		}
 	}
 
@@ -59,9 +60,9 @@ export class ContentBlockService {
 	 *
 	 * @param id content block identifier
 	 */
-	public static async deleteContentBlock(id: number) {
+	public static async deleteContentBlock(id: number): Promise<void> {
 		try {
-			return await dataService.query<DeleteContentBlockMutation>({
+			await dataService.query<DeleteContentBlockMutation>({
 				query: DeleteContentBlockDocument,
 				variables: { id },
 				update: ApolloCacheManager.clearContentBlocksCache,
@@ -69,13 +70,12 @@ export class ContentBlockService {
 		} catch (err) {
 			console.error(new CustomError('Failed to delete content block', err, { id }));
 
+			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
 				)
 			);
-
-			return null;
 		}
 	}
 
@@ -97,7 +97,7 @@ export class ContentBlockService {
 	 */
 	public static async insertContentBlocks(
 		contentId: number,
-		contentBlockConfigs: Partial<ContentBlockConfig>[]
+		contentBlockConfigs: ContentBlockConfig[]
 	): Promise<Partial<ContentBlockConfig>[] | null> {
 		try {
 			const dbBlocks: Partial<Avo.ContentPage.Block>[] =
@@ -125,6 +125,7 @@ export class ContentBlockService {
 				})
 			);
 
+			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
@@ -146,7 +147,7 @@ export class ContentBlockService {
 		contentId: number,
 		initialContentBlocks: ContentBlockConfig[],
 		contentBlockConfigs: ContentBlockConfig[]
-	) {
+	): Promise<void> {
 		try {
 			const initialContentBlockIds: number[] = compact(
 				initialContentBlocks.map((contentBlock) => contentBlock.id)
@@ -205,13 +206,12 @@ export class ContentBlockService {
 				})
 			);
 
+			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
 				i18n.t(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
 				)
 			);
-
-			return null;
 		}
 	}
 }

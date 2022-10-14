@@ -6,9 +6,9 @@ import { Positioned } from '../shared/types';
 
 import {
 	Assignment_Label_v2,
-	Assignment_v2,
 	AssignmentLayout,
 	AssignmentRetrieveError,
+	SimplifiedAssignment,
 } from './assignment.types';
 
 export class AssignmentHelper {
@@ -26,7 +26,7 @@ export class AssignmentHelper {
 	}
 
 	public static getLabels(
-		assignment: Assignment_v2,
+		assignment: SimplifiedAssignment,
 		type: string
 	): { assignment_label: Assignment_Label_v2 }[] {
 		return (

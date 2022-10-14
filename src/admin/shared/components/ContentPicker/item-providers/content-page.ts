@@ -1,6 +1,6 @@
 import { CustomError } from '../../../../../shared/helpers';
 import { ContentService } from '../../../../content/content.service';
-import { ContentPageInfo } from '../../../../content/content.types';
+import { ContentPageDb, ContentPageInfo } from '../../../../content/content.types';
 import { PickerSelectItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
@@ -10,7 +10,7 @@ export const retrieveContentPages = async (
 	limit = 5
 ): Promise<PickerSelectItem[]> => {
 	try {
-		const contentItems: ContentPageInfo[] | null = title
+		const contentItems: Pick<ContentPageDb, 'path' | 'title'>[] | null = title
 			? await ContentService.getPublicContentItemsByTitle(`%${title}%`, limit)
 			: await ContentService.getPublicContentItems(limit);
 

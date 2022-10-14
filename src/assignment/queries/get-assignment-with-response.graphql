@@ -1,9 +1,44 @@
 query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
-	assignments: app_assignments_v2(
+	app_assignments_v2(
 		where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false } }
 		order_by: [{ deadline_at: desc }]
 	) {
-		labels {
+		id
+		title
+		description
+		assignment_type
+		answer_url
+		created_at
+		updated_at
+		available_at
+		deadline_at
+		is_collaborative
+		is_deleted
+		owner_profile_id
+		owner {
+			full_name
+		}
+		profile {
+			id
+			avatar
+			user: usersByuserId {
+				first_name
+				last_name
+				id
+			}
+			organisation {
+				logo_url
+				name
+				or_id
+			}
+			profile_user_group {
+				group {
+					label
+					id
+				}
+			}
+		}
+		labels(order_by: { assignment_label: { label: asc } }) {
 			id
 			assignment_label {
 				color_enum_value
@@ -45,39 +80,6 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 			owner {
 				full_name
 			}
-		}
-		assignment_type
-		deadline_at
-		available_at
-		id
-		is_deleted
-		title
-		description
-		created_at
-		updated_at
-		answer_url
-		owner_profile_id
-		profile {
-			id
-			organisation {
-				logo_url
-				name
-				or_id
-			}
-			profile_user_group {
-				group {
-					label
-					id
-				}
-			}
-			user: usersByuserId {
-				id
-				first_name
-				last_name
-			}
-		}
-		owner {
-			full_name
 		}
 	}
 }

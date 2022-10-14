@@ -56,11 +56,11 @@ import { InteractiveTourService } from '../interactive-tour.service';
 import {
 	EditableInteractiveTour,
 	EditableStep,
-	InteractiveTour,
 	InteractiveTourEditActionType,
 	InteractiveTourEditFormErrorState,
 	InteractiveTourPageType,
 	InteractiveTourState,
+	InteractiveTourStep,
 } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
@@ -130,10 +130,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					variables: { id: match.params.id },
 				});
 
-				const interactiveTourObj: EditableInteractiveTour | undefined = get(
-					response,
-					'data.app_interactive_tour[0]'
-				);
+				const interactiveTourObj = response.app_interactive_tour[0];
 
 				if (!interactiveTourObj) {
 					setLoadingInfo({
@@ -207,30 +204,32 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht'
 			);
 		}
-		get(interactiveTourState.currentInteractiveTour, 'steps', []).forEach((step, index) => {
-			if (step.title.length > MAX_STEP_TITLE_LENGTH) {
-				errors.steps = errors.steps || [];
-				errors.steps[index] = {
-					...(errors.steps[index] || {}),
-					title: t(
-						'admin/interactive-tour/views/interactive-tour-edit___de-titel-is-te-lang'
-					),
-				};
+		get(interactiveTourState.currentInteractiveTour, 'steps', []).forEach(
+			(step: InteractiveTourStep, index: number) => {
+				if (step.title.length > MAX_STEP_TITLE_LENGTH) {
+					errors.steps = errors.steps || [];
+					errors.steps[index] = {
+						...(errors.steps[index] || {}),
+						title: t(
+							'admin/interactive-tour/views/interactive-tour-edit___de-titel-is-te-lang'
+						),
+					};
+				}
+				if (step.title.length > MAX_STEP_TEXT_LENGTH) {
+					errors.steps = errors.steps || [];
+					errors.steps[index] = {
+						...(errors.steps[index] || {}),
+						content: t(
+							'admin/interactive-tour/views/interactive-tour-edit___de-tekst-is-te-lang'
+						),
+					};
+				}
 			}
-			if (step.title.length > MAX_STEP_TEXT_LENGTH) {
-				errors.steps = errors.steps || [];
-				errors.steps[index] = {
-					...(errors.steps[index] || {}),
-					content: t(
-						'admin/interactive-tour/views/interactive-tour-edit___de-tekst-is-te-lang'
-					),
-				};
-			}
-		});
+		);
 		return isEmpty(errors) ? null : errors;
 	};
 
-	const convertTourContentToHtml = (tour: EditableInteractiveTour): InteractiveTour => {
+	const convertTourContentToHtml = (tour: EditableInteractiveTour): EditableInteractiveTour => {
 		const clonedTour = cloneDeep(tour);
 		clonedTour.steps.forEach((step: EditableStep) => {
 			if (step.contentState) {
@@ -267,7 +266,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			setIsSaving(true);
 
 			// Convert rich text editor state back to html before we save to database
-			const tour = convertTourContentToHtml(interactiveTourState.currentInteractiveTour);
+			const tour: EditableInteractiveTour = convertTourContentToHtml(
+				interactiveTourState.currentInteractiveTour
+			);
 
 			let interactiveTourId: number | string;
 			if (isCreatePage) {

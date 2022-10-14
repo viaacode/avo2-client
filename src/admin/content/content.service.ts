@@ -21,8 +21,10 @@ import {
 	GetPublicContentPagesByTitleQueryVariables,
 	GetPublicProjectContentPagesByTitleDocument,
 	GetPublicProjectContentPagesByTitleQuery,
+	GetPublicProjectContentPagesByTitleQueryVariables,
 	GetPublicProjectContentPagesDocument,
 	GetPublicProjectContentPagesQuery,
+	GetPublicProjectContentPagesQueryVariables,
 	InsertContentDocument,
 	InsertContentLabelLinksDocument,
 	InsertContentLabelLinksMutation,
@@ -34,7 +36,7 @@ import {
 	UpdateContentByIdDocument,
 	UpdateContentByIdMutation,
 } from '../../shared/generated/graphql-db-types';
-import { CustomError, performQuery, sanitizeHtml } from '../../shared/helpers';
+import { CustomError, sanitizeHtml } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
@@ -51,7 +53,12 @@ import {
 	RichEditorStateKey,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './content.const';
-import { ContentOverviewTableCols, ContentPageDb, ContentPageInfo } from './content.types';
+import {
+	ContentOverviewTableCols,
+	ContentPageDb,
+	ContentPageInfo,
+	ContentPageType,
+} from './content.types';
 import {
 	convertToContentPageInfo,
 	convertToContentPageInfos,
@@ -59,43 +66,35 @@ import {
 } from './helpers/parsers';
 
 export class ContentService {
-	public static async getPublicContentItems(limit: number): Promise<ContentPageInfo[] | null> {
-		const query = {
-			query: GetContentPagesDocument,
-			variables: {
-				limit,
-				orderBy: { title: 'asc' },
-				where: { is_public: { _eq: true }, is_deleted: { _eq: false } },
-			},
+	public static async getPublicContentItems(limit: number): Promise<ContentPageInfo[]> {
+		const variables: GetContentPagesQueryVariables = {
+			limit,
+			orderBy: { title: Order_By.Asc },
+			where: { is_public: { _eq: true }, is_deleted: { _eq: false } },
 		};
 
-		return convertToContentPageInfos(
-			(await performQuery<GetContentPagesQuery['app_content']>(
-				query,
-				'app_content',
-				'Failed to retrieve content pages.'
-			)) || []
-		) as ContentPageInfo[];
+		const response = await dataService.query<GetContentPagesQuery>({
+			query: GetContentPagesDocument,
+			variables,
+		});
+
+		return convertToContentPageInfos(response.app_content);
 	}
 
 	public static async getPublicProjectContentItems(
 		limit: number
 	): Promise<GetPublicProjectContentPagesQuery['app_content']> {
-		const query = {
-			query: GetPublicProjectContentPagesDocument,
-			variables: {
-				limit,
-				orderBy: { title: 'asc' },
-			},
+		const variables: GetPublicProjectContentPagesQueryVariables = {
+			limit,
+			orderBy: { title: Order_By.Asc },
 		};
 
-		return (
-			(await performQuery<GetPublicProjectContentPagesQuery['app_content']>(
-				query,
-				'app_content',
-				'Failed to retrieve project content pages.'
-			)) || []
-		);
+		const response = await dataService.query<GetPublicProjectContentPagesQuery>({
+			query: GetPublicProjectContentPagesDocument,
+			variables,
+		});
+
+		return response.app_content;
 	}
 
 	public static async getPublicContentItemsByTitle(
@@ -124,20 +123,18 @@ export class ContentService {
 		title: string,
 		limit: number
 	): Promise<GetPublicProjectContentPagesByTitleQuery['app_content'] | null> {
-		const query = {
-			query: GetPublicProjectContentPagesByTitleDocument,
-			variables: {
-				title,
-				limit,
-				orderBy: { title: 'asc' },
-			},
+		const variables: GetPublicProjectContentPagesByTitleQueryVariables = {
+			title,
+			limit,
+			orderBy: { title: Order_By.Asc },
 		};
 
-		return performQuery(
-			query,
-			CONTENT_RESULT_PATH.GET,
-			'Failed to retrieve content pages by title.'
-		);
+		const response = await dataService.query<GetPublicProjectContentPagesByTitleQuery>({
+			query: GetPublicProjectContentPagesByTitleDocument,
+			variables,
+		});
+
+		return response.app_content;
 	}
 
 	public static async getContentPageById(id: number): Promise<ContentPageInfo> {
@@ -162,7 +159,7 @@ export class ContentService {
 	}
 
 	public static async getContentTypes(): Promise<
-		{ value: Avo.ContentPage.Type; label: string }[] | null
+		{ value: ContentPageType; label: string }[] | null
 	> {
 		try {
 			const response = await dataService.query<GetContentTypesQuery>({
@@ -170,7 +167,7 @@ export class ContentService {
 			});
 
 			return response.lookup_enum_content_types.map((obj) => ({
-				value: obj.value as Avo.ContentPage.Type,
+				value: obj.value as ContentPageType,
 				label: obj.description || 'unknown type',
 			}));
 		} catch (err) {

@@ -1,9 +1,8 @@
+import { Button } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-
-import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { getProfileName } from '../../../../../authentication/helpers/get-profile-info';
 import { navigateToContentType } from '../../../../../shared/helpers';
@@ -22,7 +21,7 @@ const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentPr
 	const [t] = useTranslation();
 
 	const renderLabel = (labelObj: Partial<Avo.ContentPage.Label>) => {
-		return !!(labelObj as any).link_to ? (
+		return (labelObj as any).link_to ? (
 			<Button
 				type="inline-link"
 				onClick={() => navigateToContentType((labelObj as any).link_to, history)}
@@ -81,4 +80,4 @@ const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentPr
 	);
 };
 
-export default withRouter(ContentPageMeta);
+export default withRouter(ContentPageMeta) as unknown as FunctionComponent<ContentPageMetaProps>;

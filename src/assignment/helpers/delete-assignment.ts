@@ -5,7 +5,7 @@ import { isNil } from 'lodash';
 import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { AssignmentService } from '../assignment.service';
-import { Assignment_v2, AssignmentType } from '../assignment.types';
+import { Assignment_v2, Assignment_v2_With_Responses, AssignmentType } from '../assignment.types';
 
 export async function deleteAssignment(
 	t: TFunction,
@@ -50,7 +50,7 @@ export function deleteAssignmentWarning(t: TFunction, assignment?: Assignment_v2
 		);
 	}
 
-	if (assignment?.responses?.length) {
+	if ((assignment as Assignment_v2_With_Responses)?.responses?.length) {
 		return t('assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds');
 	}
 
