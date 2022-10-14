@@ -26,8 +26,8 @@ export const REMOVE_ITEM_BOOKMARK = gql`
 	}
 `;
 
-export const REMOVE_COLLECTION_BOOKMARK = gql`
-	mutation deleteCollectionBookmark($collectionUuid: uuid!, $profileId: uuid) {
+export const REMOVE_COLLECTION_BOOKMARK_FOR_USER = gql`
+	mutation deleteCollectionBookmarksForUser($collectionUuid: uuid!, $profileId: uuid) {
 		delete_app_collection_bookmarks(
 			where: { collection_uuid: { _eq: $collectionUuid }, profile_id: { _eq: $profileId } }
 		) {
@@ -37,7 +37,7 @@ export const REMOVE_COLLECTION_BOOKMARK = gql`
 `;
 
 export const REMOVE_COLLECTION_BOOKMARKS = gql`
-	mutation deleteCollectionBookmark($collectionUuid: uuid!) {
+	mutation deleteCollectionBookmarks($collectionUuid: uuid!) {
 		delete_app_collection_bookmarks(where: { collection_uuid: { _eq: $collectionUuid } }) {
 			affected_rows
 		}

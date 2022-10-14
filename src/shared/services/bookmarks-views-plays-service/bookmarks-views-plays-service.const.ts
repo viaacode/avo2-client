@@ -13,7 +13,7 @@ import {
 	INCREMENT_ITEM_VIEWS,
 	INSERT_COLLECTION_BOOKMARK,
 	INSERT_ITEM_BOOKMARK,
-	REMOVE_COLLECTION_BOOKMARK,
+	REMOVE_COLLECTION_BOOKMARK_FOR_USER,
 	REMOVE_ITEM_BOOKMARK,
 } from './bookmarks-views-plays-service.gql';
 import {
@@ -74,7 +74,7 @@ export const EVENT_QUERIES: {
 			}),
 		},
 		collection: {
-			query: REMOVE_COLLECTION_BOOKMARK,
+			query: REMOVE_COLLECTION_BOOKMARK_FOR_USER,
 			variables: (collectionUuid: string, user?: Avo.User.User) => ({
 				collectionUuid,
 				profileId: get(user, 'profile.id', null),

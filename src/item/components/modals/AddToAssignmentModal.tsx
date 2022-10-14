@@ -21,6 +21,7 @@ import { compose } from 'redux';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { ItemTrimInfo } from '../../item.types';
 import ItemVideoDescription from '../ItemVideoDescription';
@@ -99,6 +100,11 @@ const AddToAssignmentModal: FunctionComponent<
 												newStartTime: number,
 												newEndTime: number
 											) => {
+												if (newStartTime !== fragmentStartTime) {
+													setModalVideoSeekTime(newStartTime);
+												} else if (newEndTime !== fragmentEndTime) {
+													setModalVideoSeekTime(newEndTime);
+												}
 												setFragmentStartTime(newStartTime);
 												setFragmentEndTime(newEndTime);
 											}}

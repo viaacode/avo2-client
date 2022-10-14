@@ -230,12 +230,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 			// Remove rich text editor states, since they are also saved as html,
 			// and we don't want those states to end up in the database
-			const blockConfigs: ContentBlockConfig[] = contentPageState.currentContentPageInfo
-				.contentBlockConfigs
-				? ContentService.convertRichTextEditorStatesToHtml(
-						contentPageState.currentContentPageInfo.contentBlockConfigs
-				  )
-				: [];
+			const blockConfigs: ContentBlockConfig[] =
+				ContentService.convertRichTextEditorStatesToHtml(
+					contentPageState?.currentContentPageInfo?.contentBlockConfigs || []
+				);
 
 			// Run validators on to check untouched inputs
 			blockConfigs.forEach((config, configIndex) => {
@@ -273,11 +271,17 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 							}
 						}
 					});
-					areConfigsValid = Object.keys(newErrors).length === 0;
-					changeContentPageState({
-						type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
-						payload: { configIndex, errors: newErrors },
-					});
+
+					const hasErrors = Object.keys(newErrors).length > 0;
+
+					if (hasErrors) {
+						changeContentPageState({
+							type: ContentEditActionType.SET_CONTENT_BLOCK_ERROR,
+							payload: { configIndex, errors: newErrors },
+						});
+
+						areConfigsValid = false;
+					}
 				}
 			});
 
