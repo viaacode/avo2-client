@@ -27,6 +27,21 @@ export interface DataQueryComponentProps {
 	actionButtons?: Avo.Auth.ErrorActionButton[];
 }
 
+/**
+ * @deprecated Use react-query functions from src/shared/generated/graphql-db-types.ts
+ * @param query
+ * @param variables
+ * @param resultPath
+ * @param renderData
+ * @param ignoreNotFound
+ * @param notFoundMessage
+ * @param showSpinner
+ * @param permissions
+ * @param user
+ * @param noPermissionsMessage
+ * @param actionButtons
+ * @constructor
+ */
 const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	query,
 	variables,
@@ -112,12 +127,12 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			);
 		}
 
-		if (isEmpty(get(result, 'data'))) {
+		if (isEmpty(result)) {
 			// Temp empty because of cache clean
 			return renderSpinner();
 		}
 
-		const data = get(result, resultPath ? `data.${resultPath}` : 'data');
+		const data = resultPath ? get(result, resultPath) : result;
 		if (data || ignoreNotFound) {
 			// We always want to wait until the current database operation finishes, before we refetch the changed data
 			return renderData(data, () => setTimeout(fetchQuery, 0));

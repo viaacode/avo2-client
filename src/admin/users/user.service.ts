@@ -25,6 +25,10 @@ import {
 	GetUserByIdQuery,
 	GetUsersDocument,
 	GetUsersInSameCompanyDocument,
+	GetUsersInSameCompanyQuery,
+	GetUsersInSameCompanyQueryVariables,
+	GetUsersQuery,
+	GetUsersQueryVariables,
 	GetUserTempAccessDocument,
 	GetUserTempAccessQuery,
 	UpdateUserTempAccessByIdDocument,
@@ -37,12 +41,7 @@ import { ApolloCacheManager, dataService } from '../../shared/services';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
-import {
-	DeleteContentCounts,
-	UserOverviewTableCol,
-	UserSummaryView,
-	UserTempAccess,
-} from './user.types';
+import { DeleteContentCounts, UserOverviewTableCol, UserTempAccess } from './user.types';
 
 export class UserService {
 	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
@@ -54,13 +53,13 @@ export class UserService {
 				},
 			});
 
-			const profile = get(userResponse, 'data.users_summary_view[0]');
+			const profile = userResponse.users_summary_view[0];
 
 			if (!profile) {
 				throw new CustomError('Failed to find profile by id', null, { userResponse });
 			}
 
-			return profile;
+			return profile as unknown as Avo.User.Profile;
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {
 				profileId,
@@ -81,7 +80,8 @@ export class UserService {
 				},
 			});
 
-			return get(tempAccessResponse, 'data.shared_users[0].temp_access');
+			return (tempAccessResponse.shared_users[0].temp_access ||
+				null) as UserTempAccess | null;
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {
 				profileId,
@@ -213,10 +213,11 @@ export class UserService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE,
-		query: string = GetUsersDocument,
-		initialVariables: any = {}
+		query: typeof GetUsersDocument | typeof GetUsersInSameCompanyDocument = GetUsersDocument,
+		initialVariables: Partial<GetUsersQueryVariables | GetUsersInSameCompanyQueryVariables> = {}
 	): Promise<[Avo.User.Profile[], number]> {
-		let variables = initialVariables;
+		let variables: Partial<GetUsersQueryVariables | GetUsersInSameCompanyQueryVariables> =
+			initialVariables;
 
 		try {
 			const whereWithoutDeleted = {
@@ -237,16 +238,16 @@ export class UserService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetUsersQuery | GetUsersInSameCompanyQuery>({
 				variables,
 				query,
 			});
 
-			const users: UserSummaryView[] = get(response, 'data.users_summary_view');
+			const users = response.users_summary_view;
 
 			// Convert user format to profile format since we initially wrote the ui to deal with profiles
 			const profiles: Partial<Avo.User.Profile>[] = users.map(
-				(user: UserSummaryView): Avo.User.Profile =>
+				(user): Avo.User.Profile =>
 					({
 						id: user.profile_id,
 						stamboek: user.stamboek,
@@ -286,13 +287,13 @@ export class UserService {
 							unblocked_at: get(user, 'unblocked_at.date'),
 							created_at: user.acc_created_at,
 							last_access_at: user.last_access_at,
-							temp_access: user.user.temp_access,
+							temp_access: user.user?.temp_access,
 							idpmaps: user.idps.map((idp) => idp.idp),
 						},
 					} as any)
 			);
 
-			const profileCount = get(response, 'data.users_summary_view_aggregate.aggregate.count');
+			const profileCount = response.users_summary_view_aggregate.aggregate?.count ?? 0;
 
 			if (!profiles) {
 				throw new CustomError('Response does not contain any profiles', null, {
@@ -452,13 +453,16 @@ export class UserService {
 				},
 			});
 
-			return get(response, 'data.users_summary_view').map((profileEntry: any) => ({
-				profile: {
-					id: profileEntry.profile_id,
-				},
-				full_name: profileEntry.full_name,
-				mail: profileEntry.mail,
-			}));
+			return response.users_summary_view.map(
+				(profileEntry): Avo.User.User =>
+					({
+						profile: {
+							id: profileEntry.profile_id,
+						},
+						full_name: profileEntry.full_name,
+						mail: profileEntry.mail,
+					} as Avo.User.User)
+			);
 		} catch (err) {
 			throw new CustomError('Failed to get profile names from the database', err, {
 				profileIds,

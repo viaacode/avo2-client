@@ -9,6 +9,8 @@ import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
+	App_Assignments_V2_Insert_Input,
+	App_Assignments_V2_Set_Input,
 	AssignmentPupilBlocksDocument,
 	AssignmentPupilBlocksQuery,
 	BulkUpdateAuthorForAssignmentsDocument,
@@ -276,7 +278,7 @@ export class AssignmentService {
 	static async fetchAssignmentByContentIdAndType(
 		contentId: string,
 		contentType: Lookup_Enum_Assignment_Content_Labels_Enum
-	): Promise<Partial<Assignment_v2>[]> {
+	): Promise<GetAssignmentsByContentIdAndTypeQuery['app_assignments']> {
 		try {
 			const variables: GetAssignmentsByContentIdAndTypeQueryVariables = {
 				contentId,
@@ -287,7 +289,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignments: Assignment_v2[] | undefined = get(response, 'data.app_assignments');
+			const assignments = response.app_assignments;
 
 			if (!assignments) {
 				throw new CustomError('Response does not contain any assignments', null, {
@@ -316,7 +318,7 @@ export class AssignmentService {
 	 */
 	private static transformAssignment(
 		assignment: Partial<Assignment_v2_With_Blocks>
-	): Assignment_v2 {
+	): App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input {
 		const assignmentToSave = cloneDeep(assignment);
 
 		if (
@@ -348,6 +350,7 @@ export class AssignmentService {
 				? (assignmentToSave as any).descriptionRichEditorState.toHTML()
 				: assignmentToSave.description || '';
 
+		delete (assignmentToSave as any).owner;
 		delete (assignmentToSave as any).responses;
 		delete (assignmentToSave as any).labels;
 		delete (assignmentToSave as any).__typename;
@@ -409,8 +412,6 @@ export class AssignmentService {
 			const assignment = AssignmentService.transformAssignment({
 				...update,
 			});
-
-			delete assignment.owner;
 
 			const variables: UpdateAssignmentByIdMutationVariables = {
 				assignment,
@@ -613,15 +614,16 @@ export class AssignmentService {
 				...assignment,
 			});
 
-			const response = await dataService.query<Assignment_v2>({
+			const variables: InsertAssignmentMutationVariables = {
+				assignment: assignmentToSave,
+			};
+			const response = await dataService.query<InsertAssignmentMutation>({
 				query: InsertAssignmentDocument,
-				variables: {
-					assignment: assignmentToSave,
-				},
+				variables,
 				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
-			const assignmentId = get(response, 'data.insert_app_assignments_v2.returning[0].id');
+			const assignmentId = response.insert_app_assignments_v2?.returning?.[0]?.id;
 
 			if (isNil(assignmentId)) {
 				throw new CustomError(

@@ -199,7 +199,7 @@ export class ContentService {
 				query: GetContentLabelsByContentTypeDocument,
 			});
 
-			const labels = get(response, 'data.app_content_labels');
+			const labels = response.app_content_labels;
 
 			if (!labels) {
 				throw new CustomError('The response does not contain any labels', null, {
@@ -394,7 +394,7 @@ export class ContentService {
 				update: ApolloCacheManager.clearContentCache,
 			});
 
-			const updatedContent = get(response, 'data.update_app_content.affected_rows', null);
+			const updatedContent = response.update_app_content?.affected_rows;
 			if (!updatedContent) {
 				throw new CustomError(
 					'Content page update returned empty response',

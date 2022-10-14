@@ -1,7 +1,6 @@
+import { Avo } from '@viaa/avo2-types';
 import { compact, findLast, forIn, fromPairs, get, last, startsWith, uniqBy } from 'lodash-es';
 import queryString from 'query-string';
-
-import { Avo } from '@viaa/avo2-types';
 
 import { APP_PATH } from '../../constants';
 import { CustomError, getEnv } from '../helpers';
@@ -20,7 +19,7 @@ export interface TourInfo {
 export class InteractiveTourService {
 	private static routeIds: string[] | null;
 
-	public static async fetchInteractiveTourRouteIds() {
+	public static async fetchInteractiveTourRouteIds(): Promise<string[]> {
 		try {
 			if (!this.routeIds) {
 				const response = await fetchWithLogout(
@@ -37,8 +36,9 @@ export class InteractiveTourService {
 						response,
 					});
 				}
-				return await response.json();
+				InteractiveTourService.routeIds = await response.json();
 			}
+			return InteractiveTourService.routeIds as string[];
 		} catch (err) {
 			throw new CustomError('Failed to get interactive tour route ids', err);
 		}
@@ -51,7 +51,7 @@ export class InteractiveTourService {
 	 * @param routeId
 	 * @param profileId
 	 * @param tourLaterDates keeps track of last display date of the tour
-	 * @return promise containing the the tour or null if no tour was found
+	 * @return promise containing the tour or null if no tour was found
 	 */
 	public static async fetchStepsForPage(
 		routeId: string,
@@ -60,7 +60,7 @@ export class InteractiveTourService {
 	): Promise<TourInfo | null> {
 		try {
 			const response = await this.fetchInteractiveTourFromProxy(routeId, profileId);
-			const tours: Partial<TourInfo>[] = get(response, 'data.app_interactive_tour', null);
+			const tours: Partial<TourInfo>[] = response.app_interactive_tour ?? null;
 
 			const seenStatuses: { key: string; through_platform: boolean }[] = this.getSeenStatuses(
 				routeId,

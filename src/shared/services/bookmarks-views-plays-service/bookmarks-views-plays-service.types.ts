@@ -29,13 +29,6 @@ export interface BookmarkViewPlayCounts {
 	isBookmarked: boolean;
 }
 
-export interface GetBookmarksForUserResponse {
-	data: {
-		app_item_bookmarks: AppItemBookmark[];
-		app_collection_bookmarks: AppCollectionBookmark[];
-	};
-}
-
 export interface AppItemBookmark {
 	bookmarkedItem?: {
 		title: string;

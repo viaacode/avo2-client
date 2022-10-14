@@ -143,12 +143,12 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		])
 			.then((response) => {
 				setTabCounts({
-					[COLLECTIONS_ID]: get(response[0], 'data.collection_counts.aggregate.count', 0),
-					[BUNDLES_ID]: get(response[0], 'data.bundle_counts.aggregate.count', 0),
-					[ASSIGNMENTS_ID]: get(response[0], 'data.assignment_counts.aggregate.count', 0),
+					[COLLECTIONS_ID]: response[0].collection_counts.aggregate?.count ?? 0,
+					[BUNDLES_ID]: response[0].bundle_counts.aggregate?.count ?? 0,
+					[ASSIGNMENTS_ID]: response[0].assignment_counts.aggregate?.count ?? 0,
 					[BOOKMARKS_ID]:
-						get(response[0], 'data.item_bookmark_counts.aggregate.count', 0) +
-						get(response[0], 'data.collection_bookmark_counts.aggregate.count', 0),
+						(response[0].item_bookmark_counts.aggregate?.count ?? 0) +
+						(response[0].collection_bookmark_counts.aggregate?.count ?? 0),
 					[ORGANISATION_CONTENT_ID]: get(
 						response[0],
 						'data.organisation_content_counts.aggregate.count',

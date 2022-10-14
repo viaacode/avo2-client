@@ -1,6 +1,6 @@
 import { LabelObj } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get, isNil } from 'lodash-es';
+import { isNil } from 'lodash-es';
 
 import {
 	DeleteContentPageLabelByIdDocument,
@@ -45,11 +45,9 @@ export class ContentPageLabelService {
 				variables,
 				query: GetAllContentPageLabelsDocument,
 			});
-			const contentPageLabel = get(response, 'data.app_content_labels');
-			const contentPageLabelCount = get(
-				response,
-				'data.app_content_labels_aggregate.aggregate.count'
-			);
+			const contentPageLabel = response.app_content_labels;
+			const contentPageLabelCount =
+				response.app_content_labels_aggregate.aggregate?.count ?? 0;
 
 			if (!contentPageLabel) {
 				throw new CustomError('Response does not contain any content page labels', null, {
@@ -105,10 +103,7 @@ export class ContentPageLabelService {
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			const contentPageLabelId = get(
-				response,
-				'data.insert_app_content_labels.returning[0].id'
-			);
+			const contentPageLabelId = response.insert_app_content_labels?.returning?.[0]?.id;
 			if (isNil(contentPageLabelId)) {
 				throw new CustomError(
 					'Response from database does not contain the id of the inserted content page label',

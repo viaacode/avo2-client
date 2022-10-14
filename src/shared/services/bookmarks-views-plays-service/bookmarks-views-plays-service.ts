@@ -8,15 +8,23 @@ import {
 	DeleteCollectionBookmarksForUserMutation,
 	DeleteItemBookmarkMutation,
 	GetBookmarksForUserDocument,
+	GetBookmarksForUserQuery,
+	GetBookmarksForUserQueryVariables,
 	GetBookmarkStatusesDocument,
 	GetBookmarkStatusesQuery,
 	GetCollectionBookmarkViewPlayCountsDocument,
 	GetCollectionBookmarkViewPlayCountsQuery,
 	GetItemBookmarksForUserDocument,
+	GetItemBookmarksForUserQuery,
+	GetItemBookmarksForUserQueryVariables,
 	GetItemBookmarkViewPlayCountsDocument,
 	GetItemBookmarkViewPlayCountsQuery,
 	GetMultipleCollectionViewCountsDocument,
+	GetMultipleCollectionViewCountsQuery,
+	GetMultipleCollectionViewCountsQueryVariables,
 	GetMultipleItemViewCountsDocument,
+	GetMultipleItemViewCountsQuery,
+	GetMultipleItemViewCountsQueryVariables,
 	IncrementCollectionPlaysMutation,
 	IncrementCollectionViewsMutation,
 	IncrementItemPlaysMutation,
@@ -39,7 +47,6 @@ import {
 	EventAction,
 	EventContentType,
 	EventContentTypeSimplified,
-	GetBookmarksForUserResponse,
 	QueryType,
 } from './bookmarks-views-plays-service.types';
 
@@ -100,10 +107,10 @@ export class BookmarksViewsPlaysService {
 			query: GetItemBookmarkViewPlayCountsDocument,
 			variables: { itemUuid, profileId: get(user, 'profile.id', null) },
 		});
-		const isBookmarked = !!get(response, 'data.app_item_bookmarks[0]');
-		const bookmarkCount = get(response, 'data.app_item_bookmarks_aggregate.aggregate.count', 0);
-		const viewCount = get(response, 'data.app_item_views[0].count', 0);
-		const playCount = get(response, 'data.app_item_plays[0].count', 0);
+		const isBookmarked = !!response.app_item_bookmarks[0];
+		const bookmarkCount = response.app_item_bookmarks_aggregate.aggregate?.count ?? 0;
+		const viewCount = response.app_item_views[0].count ?? 0;
+		const playCount = response.app_item_plays[0].count ?? 0;
 		return {
 			bookmarkCount,
 			viewCount,
@@ -120,14 +127,14 @@ export class BookmarksViewsPlaysService {
 			query: GetCollectionBookmarkViewPlayCountsDocument,
 			variables: { collectionUuid, profileId: get(user, 'profile.id', null) },
 		});
-		const isBookmarked = !!get(response, 'data.app_collection_bookmarks[0]');
+		const isBookmarked = !!response.app_collection_bookmarks[0];
 		const bookmarkCount = get(
 			response,
 			'data.app_collection_bookmarks_aggregate.aggregate.count',
 			0
 		);
-		const viewCount = get(response, 'data.app_collection_views[0].count', 0);
-		const playCount = get(response, 'data.app_collection_plays[0].count', 0);
+		const viewCount = response.app_collection_views[0].count ?? 0;
+		const playCount = response.app_collection_plays[0].count ?? 0;
 		return {
 			bookmarkCount,
 			viewCount,
@@ -184,17 +191,18 @@ export class BookmarksViewsPlaysService {
 	public static async getItemBookmarksForUser(
 		user: Avo.User.User,
 		filterString: string,
-		orderObject: Record<string, string>[]
+		orderObject: GetItemBookmarksForUserQueryVariables['order']
 	): Promise<BookmarkInfo[]> {
-		const response: GetBookmarksForUserResponse = await dataService.query({
+		const variables: GetItemBookmarksForUserQueryVariables = {
+			profileId: get(user, 'profile.id'),
+			filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
+			order: orderObject,
+		};
+		const response = await dataService.query<GetItemBookmarksForUserQuery>({
 			query: GetItemBookmarksForUserDocument,
-			variables: {
-				profileId: get(user, 'profile.id'),
-				filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
-				order: orderObject,
-			},
+			variables,
 		});
-		const itemBookmarks: AppItemBookmark[] = get(response, 'data.app_item_bookmarks', []);
+		const itemBookmarks: AppItemBookmark[] = response.app_item_bookmarks as AppItemBookmark[];
 		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
 			(itemBookmark): BookmarkInfo | null => {
 				if (!itemBookmark.bookmarkedItem) {
@@ -233,11 +241,12 @@ export class BookmarksViewsPlaysService {
 	 * @param user
 	 */
 	public static async getAllBookmarksForUser(user: Avo.User.User): Promise<BookmarkInfo[]> {
-		const response: GetBookmarksForUserResponse = await dataService.query({
+		const variables: GetBookmarksForUserQueryVariables = { profileId: user?.profile?.id };
+		const response = await dataService.query<GetBookmarksForUserQuery>({
 			query: GetBookmarksForUserDocument,
-			variables: { profileId: get(user, 'profile.id') },
+			variables,
 		});
-		const itemBookmarks: AppItemBookmark[] = get(response, 'data.app_item_bookmarks', []);
+		const itemBookmarks: AppItemBookmark[] = response.app_item_bookmarks as AppItemBookmark[];
 		const collectionBookmarks: AppCollectionBookmark[] = get(
 			response,
 			'data.app_collection_bookmarks',
@@ -333,17 +342,20 @@ export class BookmarksViewsPlaysService {
 		contentIds: string[],
 		type: EventContentTypeSimplified
 	): Promise<{ [uuid: string]: number }> {
-		const response = await dataService.query({
+		const variables:
+			| GetMultipleItemViewCountsQueryVariables
+			| GetMultipleCollectionViewCountsQueryVariables = { uuids: contentIds };
+		const response = await dataService.query<
+			GetMultipleItemViewCountsQuery | GetMultipleCollectionViewCountsQuery
+		>({
 			query:
 				type === 'item'
 					? GetMultipleItemViewCountsDocument
 					: GetMultipleCollectionViewCountsDocument,
-			variables: { uuids: contentIds },
+			variables,
 		});
-		const items = get(response, 'data.items', []);
-		return Object.fromEntries(
-			items.map((item: { id: string; count: number }) => [item.id, item.count])
-		);
+		const items = response.items;
+		return Object.fromEntries(items.map((item) => [item.id, item.count]));
 	}
 
 	private static async incrementCount(
@@ -434,10 +446,10 @@ export class BookmarksViewsPlaysService {
 				},
 			});
 			// Extract the ids of the bookmark items that were found
-			const itemBookmarkIds = get(response, 'data.app_item_bookmarks', []).map(
+			const itemBookmarkIds = (response.app_item_bookmarks ?? []).map(
 				(itemBookmark: { item_id: string }) => itemBookmark.item_id
 			);
-			const collectionBookmarkIds = get(response, 'data.app_collection_bookmarks', []).map(
+			const collectionBookmarkIds = (response.app_collection_bookmarks ?? []).map(
 				(itemBookmark: { collection_uuid: string }) => itemBookmark.collection_uuid
 			);
 			// Map the ids that were found to the original id

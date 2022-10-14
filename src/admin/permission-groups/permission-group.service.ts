@@ -76,10 +76,8 @@ export class PermissionGroupService {
 			const response = await dataService.query<GetAllPermissionGroupsQuery>({
 				query: GetAllPermissionGroupsDocument,
 			});
-			const permissionGroups: PermissionGroup[] | undefined = get(
-				response,
-				'data.users_permission_groups'
-			);
+			const permissionGroups: PermissionGroup[] | undefined =
+				response.users_permission_groups;
 
 			if (!permissionGroups) {
 				throw new CustomError('Response does not contain permissionGroups', null, {
@@ -102,7 +100,7 @@ export class PermissionGroupService {
 				variables: { id },
 			});
 
-			const permissionGroupObj = get(response, 'data.users_permission_groups[0]');
+			const permissionGroupObj = response.users_permission_groups[0];
 
 			if (!permissionGroupObj) {
 				throw new CustomError('Failed to find permission group by id', null, { response });
@@ -194,10 +192,7 @@ export class PermissionGroupService {
 				},
 				update: ApolloCacheManager.clearPermissionCache,
 			});
-			const permissionGroupId = get(
-				response,
-				'data.insert_users_permission_groups.returning[0].id'
-			);
+			const permissionGroupId = response.insert_users_permission_groups?.returning?.[0]?.id;
 			if (isNil(permissionGroupId)) {
 				throw new CustomError(
 					'Response from database does not contain the id of the inserted permission group',

@@ -70,7 +70,7 @@ export class MenuService {
 				},
 				update: ApolloCacheManager.clearNavElementsCache,
 			});
-			const id = get(response, 'data.insert_app_content_nav_elements.returning[0].id');
+			const id = response.insert_app_content_nav_elements?.returning?.[0]?.id;
 			if (isNil(id)) {
 				throw new CustomError('Response does not contain inserted id', null, { response });
 			}

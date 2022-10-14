@@ -25,6 +25,8 @@ import {
 	GetBookmarkedCollectionsByOwnerQuery,
 	GetBookmarkedCollectionsByOwnerQueryVariables,
 	GetBundleTitlesByOwnerDocument,
+	GetBundleTitlesByOwnerQuery,
+	GetBundleTitlesByOwnerQueryVariables,
 	GetCollectionByTitleOrDescriptionDocument,
 	GetCollectionByTitleOrDescriptionQuery,
 	GetCollectionMarcomEntriesDocument,
@@ -36,8 +38,11 @@ import {
 	GetCollectionsByOwnerQuery,
 	GetCollectionsByOwnerQueryVariables,
 	GetCollectionTitlesByOwnerDocument,
+	GetCollectionTitlesByOwnerQuery,
+	GetCollectionTitlesByOwnerQueryVariables,
 	GetOrganisationContentDocument,
 	GetOrganisationContentQuery,
+	GetOrganisationContentQueryVariables,
 	GetPublicCollectionsByIdDocument,
 	GetPublicCollectionsByIdQuery,
 	GetPublicCollectionsByTitleDocument,
@@ -144,10 +149,7 @@ export class CollectionService {
 			});
 
 			// retrieve inserted collection from response
-			const insertedCollection: Avo.Collection.Collection | null = get(
-				insertResponse,
-				'data.insert_app_collections.returning[0]'
-			);
+			const insertedCollection = insertResponse.insert_app_collections?.returning?.[0];
 
 			if (!insertedCollection || isNil(insertedCollection.id)) {
 				throw new CustomError('Failed to fetch inserted collection', null, {
@@ -163,7 +165,7 @@ export class CollectionService {
 			// insert fragments
 			if (fragments && fragments.length) {
 				newCollection.collection_fragments = await CollectionService.insertFragments(
-					newCollection.id,
+					newCollection.id as string,
 					fragments
 				);
 			}
@@ -779,24 +781,25 @@ export class CollectionService {
 	}
 
 	static async fetchOrganisationContent(
-		offset: number,
-		limit: number,
-		order: Record<string, 'asc' | 'desc'>,
+		offset: GetOrganisationContentQueryVariables['offset'],
+		limit: GetOrganisationContentQueryVariables['limit'],
+		order: GetOrganisationContentQueryVariables['order'],
 		companyId: string
 	): Promise<OrganisationContentItem[]> {
 		try {
 			// retrieve collections
+			const variables: GetOrganisationContentQueryVariables = {
+				offset,
+				limit,
+				order,
+				company_id: companyId,
+			};
 			const response = await dataService.query<GetOrganisationContentQuery>({
 				query: GetOrganisationContentDocument,
-				variables: {
-					offset,
-					limit,
-					order,
-					company_id: companyId,
-				},
+				variables,
 			});
 
-			return get(response, 'data.app_collections', []);
+			return response.app_collections as OrganisationContentItem[];
 		} catch (err) {
 			throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_PUBLIC_COLLECTIONS',
@@ -880,7 +883,7 @@ export class CollectionService {
 				query: GetQualityLabelsDocument,
 			});
 
-			return get(response, 'data.lookup_enum_collection_labels', []);
+			return response.lookup_enum_collection_labels as QualityLabel[];
 		} catch (err) {
 			throw new CustomError('Failed to get quality labels', err, {
 				query: 'GET_QUALITY_LABELS',
@@ -900,21 +903,23 @@ export class CollectionService {
 		type: 'collection' | 'bundle',
 		user: Avo.User.User | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
-		let queryInfo: any;
-
 		try {
 			// retrieve collections or bundles according to given type and user
-			queryInfo = {
+			const variables:
+				| GetCollectionTitlesByOwnerQueryVariables
+				| GetBundleTitlesByOwnerQueryVariables = { owner_profile_id: getProfileId(user) };
+
+			const response = await dataService.query<
+				GetCollectionTitlesByOwnerQuery | GetBundleTitlesByOwnerQuery
+			>({
 				query:
 					type === 'collection'
 						? GetCollectionTitlesByOwnerDocument
 						: GetBundleTitlesByOwnerDocument,
-				variables: { owner_profile_id: getProfileId(user) },
-			};
+				variables,
+			});
 
-			const response = await dataService.query(queryInfo);
-
-			return get(response, 'data.app_collections', []);
+			return response.app_collections;
 		} catch (err) {
 			throw new CustomError('Failed to fetch existing bundle titles by owner', err, {
 				user,
@@ -991,7 +996,7 @@ export class CollectionService {
 			variables: { id },
 		});
 
-		return get(response, 'data.app_collections', []);
+		return response.app_collections as Avo.Collection.Collection[];
 	}
 
 	static async insertFragments(
@@ -1019,13 +1024,13 @@ export class CollectionService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			const fragmentIds = get(response, 'data.insert_app_collection_fragments.returning');
+			const fragmentIds = response.insert_app_collection_fragments?.returning;
 			if (!fragmentIds) {
 				throw new CustomError('Response does not contain any fragment ids', null, {
 					response,
 				});
 			}
-			get(response, 'data.insert_app_collection_fragments.returning', []).forEach(
+			(response.insert_app_collection_fragments?.returning ?? []).forEach(
 				(f: { id: number }, index: number) => {
 					fragments[index].id = f.id;
 				}
@@ -1227,7 +1232,7 @@ export class CollectionService {
 				variables: { fragmentId },
 			});
 
-			return get(response, 'data.app_collections', []);
+			return response.app_collections as Avo.Collection.Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
@@ -1244,7 +1249,7 @@ export class CollectionService {
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined
 	): Promise<Avo.Collection.Collection[]> {
-		let variables: GetCollectionsByOwnerQueryVariables | undefined = undefined;
+		let variables: GetCollectionsByOwnerQueryVariables | null = null;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
 			const filterArray: any[] = [];
@@ -1266,7 +1271,7 @@ export class CollectionService {
 				variables,
 			});
 
-			return get(response, 'data.app_collections', []);
+			return response.app_collections as unknown as Avo.Collection.Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,

@@ -31,7 +31,7 @@ export class NotificationService {
 				},
 			});
 
-			return get(response, 'data.users_notifications[0]', null);
+			return (response.users_notifications[0] ?? null) as NotificationInfo | null;
 		} catch (err) {
 			throw new CustomError('Failed to get user notification', err, {
 				profileId,

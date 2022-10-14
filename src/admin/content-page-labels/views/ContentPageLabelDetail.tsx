@@ -1,5 +1,4 @@
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -41,7 +40,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 				variables: { id: match.params.id },
 			});
 
-			const contentPageLabelObj = get(response, 'data.app_content_labels[0]');
+			const contentPageLabelObj = response.app_content_labels[0];
 
 			if (!contentPageLabelObj) {
 				setLoadingInfo({

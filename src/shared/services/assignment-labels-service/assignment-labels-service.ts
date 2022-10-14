@@ -176,7 +176,7 @@ export class AssignmentLabelsService {
 				query: GetAllAssignmentLabelColorsDocument,
 			});
 
-			return get(response, 'data.lookup_enum_colors', []);
+			return (response.lookup_enum_colors ?? []) as AssignmentLabelColor[];
 		} catch (err) {
 			throw new CustomError('Failed to get assignment label colors', err, {
 				query: 'GET_ALL_ASSIGNMENT_LABEL_COLORS',

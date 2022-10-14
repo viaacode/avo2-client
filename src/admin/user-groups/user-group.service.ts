@@ -45,8 +45,8 @@ export class UserGroupService {
 				variables,
 				query: GetUserGroupsWithFiltersDocument,
 			});
-			const userGroups = get(response, 'data.users_groups');
-			const userGroupCount = get(response, 'data.users_groups_aggregate.aggregate.count');
+			const userGroups = response.users_groups;
+			const userGroupCount = response.users_groups_aggregate.aggregate?.count ?? 0;
 
 			if (!userGroups) {
 				throw new CustomError(
@@ -56,7 +56,7 @@ export class UserGroupService {
 				);
 			}
 
-			return [userGroups, userGroupCount];
+			return [userGroups as UserGroup[], userGroupCount];
 		} catch (err) {
 			throw new CustomError('Failed to fetch user groups from graphql', err, {
 				variables,
@@ -152,7 +152,7 @@ export class UserGroupService {
 				},
 				update: ApolloCacheManager.clearUserGroupCache,
 			});
-			const userGroupId = get(response, 'data.insert_users_groups.returning[0].id');
+			const userGroupId = response.insert_users_groups.returning[0].id;
 			if (isNil(userGroupId)) {
 				throw new CustomError(
 					'Response from database does not contain the id of the inserted user group',

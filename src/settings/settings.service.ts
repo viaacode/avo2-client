@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { get, sortBy } from 'lodash-es';
+import { sortBy } from 'lodash-es';
 
 import {
 	GetEducationLevelsDocument,
@@ -80,7 +80,7 @@ export class SettingsService {
 			});
 
 			return (
-				(get(response, 'data.lookup_enum_lom_context') || []) as {
+				(response.lookup_enum_lom_context || []) as {
 					description: string;
 				}[]
 			).map((item: { description: string }) => item.description);

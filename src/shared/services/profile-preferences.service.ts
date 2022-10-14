@@ -1,5 +1,3 @@
-import { get } from 'lodash-es';
-
 import {
 	GetProfilePreferenceDocument,
 	GetProfilePreferenceQuery,
@@ -29,7 +27,7 @@ export class ProfilePreferencesService {
 				variables: { profileId, key },
 			});
 
-			return get(response, 'data.users_profile_preferences', []);
+			return response.users_profile_preferences ?? [];
 		} catch (err) {
 			throw new CustomError('Het ophalen van de profile preference is mislukt.', err, {
 				query: 'GET_PROFILE_PREFERENCE',

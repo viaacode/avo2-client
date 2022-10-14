@@ -70,7 +70,7 @@ export class ItemsService {
 		sortColumn: ItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any
+		where: GetItemsWithFiltersQueryVariables['where']
 	): Promise<[Avo.Item.Item[], number]> {
 		let variables: GetItemsWithFiltersQueryVariables | null = null;
 		try {
@@ -91,8 +91,8 @@ export class ItemsService {
 				query: GetItemsWithFiltersDocument,
 			});
 
-			const items = get(response, 'data.app_item_meta');
-			const itemCount = get(response, 'data.app_item_meta_aggregate.aggregate.count');
+			const items = response.app_item_meta;
+			const itemCount = response.app_item_meta_aggregate.aggregate?.count ?? 0;
 
 			if (!items) {
 				throw new CustomError('Response does not contain any items', null, {
@@ -100,7 +100,7 @@ export class ItemsService {
 				});
 			}
 
-			return [items, itemCount];
+			return [items as Avo.Item.Item[], itemCount];
 		} catch (err) {
 			throw new CustomError('Failed to get items from the database', err, {
 				variables,
@@ -129,8 +129,8 @@ export class ItemsService {
 				query: GetUnpublishedItemsWithFiltersDocument,
 			});
 
-			const items = get(response, 'data.shared_items');
-			const itemCount = get(response, 'data.shared_items_aggregate.aggregate.count');
+			const items = response.shared_items;
+			const itemCount = response.shared_items_aggregate.aggregate?.count ?? 0;
 
 			if (!items) {
 				throw new CustomError('Response does not contain any items', null, {
@@ -138,7 +138,7 @@ export class ItemsService {
 				});
 			}
 
-			return [items, itemCount];
+			return [items as UnpublishedItem[], itemCount];
 		} catch (err) {
 			throw new CustomError('Failed to get shared items from the database', err, {
 				variables,
@@ -159,7 +159,7 @@ export class ItemsService {
 				query: GetItemByUuidDocument,
 			});
 
-			const rawItem = get(response, 'data.app_item_meta[0]');
+			const rawItem = response.app_item_meta[0];
 
 			if (!rawItem) {
 				throw new CustomError('Response does not contain an item', null, {
@@ -167,7 +167,7 @@ export class ItemsService {
 				});
 			}
 
-			return addDefaultAudioStillToItem(rawItem);
+			return addDefaultAudioStillToItem(rawItem as unknown as Avo.Item.Item);
 		} catch (err) {
 			throw new CustomError('Failed to get the item from the database', err, {
 				variables,
@@ -288,7 +288,7 @@ export class ItemsService {
 				},
 			});
 
-			const items: ItemSchema[] = get(response, 'data.app_item_meta', []);
+			const items: ItemSchema[] = response.app_item_meta ?? [];
 
 			return Promise.all(
 				externalIds.map((externalId) => {

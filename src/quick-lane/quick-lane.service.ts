@@ -124,10 +124,9 @@ export class QuickLaneService {
 				variables: { id },
 			});
 
-			const urls: QuickLaneUrlObject[] | undefined = get(
-				response,
-				'data.app_quick_lanes'
-			).map(quickLaneUrlRecordToObject);
+			const urls: QuickLaneUrlObject[] | undefined = response.app_quick_lanes.map(
+				quickLaneUrlRecordToObject
+			);
 
 			if (!urls || urls.length < 1) {
 				throw new CustomError('Quick lane url does not exist', null, {
@@ -177,10 +176,9 @@ export class QuickLaneService {
 				variables: { contentId, contentLabel, profileId },
 			});
 
-			const urls: QuickLaneUrlObject[] | undefined = get(
-				response,
-				'data.app_quick_lanes'
-			).map(quickLaneUrlRecordToObject);
+			const urls: QuickLaneUrlObject[] | undefined = response.app_quick_lanes.map(
+				quickLaneUrlRecordToObject
+			);
 
 			if (!urls) {
 				throw new CustomError('Quick lane url does not exist', null, {

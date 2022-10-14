@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { get, sortBy } from 'lodash-es';
+import { sortBy } from 'lodash-es';
 
 import {
 	GetAllOrganisationsDocument,
@@ -28,13 +28,13 @@ export class OrganisationService {
 					: GetAllOrganisationsDocument,
 			});
 
-			let organisations: Partial<Avo.Organization.Organization>[] | null;
+			let organisations: any[] | null;
 			if (onlyWithItems) {
-				organisations = get(response, 'data.app_item_meta', []).map(
-					(item: any) => item.organisation
-				);
+				organisations = (
+					(response as GetDistinctOrganisationsQuery).app_item_meta ?? []
+				).map((item) => item.organisation);
 			} else {
-				organisations = get(response, 'data.shared_organisations');
+				organisations = (response as GetAllOrganisationsQuery).shared_organisations;
 			}
 
 			if (!organisations) {
@@ -59,10 +59,8 @@ export class OrganisationService {
 				query: GetOrganisationsWithUsersDocument,
 			});
 
-			const organisations: Partial<Avo.Organization.Organization>[] | null = get(
-				response,
-				'data.shared_organisations_with_users'
-			);
+			const organisations: Partial<Avo.Organization.Organization>[] | null =
+				response.shared_organisations_with_users;
 
 			if (!organisations) {
 				throw new CustomError('Response does not contain any organisations', null, {
@@ -89,7 +87,7 @@ export class OrganisationService {
 				},
 			});
 
-			const users: Partial<Avo.User.Profile>[] | null = get(response, 'data.users_profiles');
+			const users: Partial<Avo.User.Profile>[] | null = response.users_profiles;
 
 			if (!users) {
 				throw new CustomError('Response does not contain any users', null, {
