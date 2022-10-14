@@ -343,6 +343,7 @@ export const REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS = gql`
 		$oldItemExternalId: String!
 		$newItemUid: uuid!
 		$newItemExternalId: String!
+		$usersWithBothBookmarks: [uuid!]!
 	) {
 		update_app_collection_fragments(
 			where: { external_id: { _eq: $oldItemExternalId } }
@@ -351,7 +352,10 @@ export const REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS = gql`
 			affected_rows
 		}
 		update_app_item_bookmarks(
-			where: { item_id: { _eq: $oldItemUid } }
+			where: {
+				item_id: { _eq: $oldItemUid }
+				_not: { profile_id: { _in: $usersWithBothBookmarks } }
+			}
 			_set: { item_id: $newItemUid }
 		) {
 			affected_rows
@@ -367,6 +371,20 @@ export const REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS = gql`
 			_set: { fragment_id: $newItemExternalId }
 		) {
 			affected_rows
+		}
+	}
+`;
+
+export const GET_USERS_WITH_BOTH_BOOKMARKS = gql`
+	query getUserWithBothBookmarks($oldItemUid: uuid!, $newItemUid: uuid!) {
+		users_profiles(
+			where: {
+				item_bookmarks: {
+					_or: [{ item_id: { _eq: $oldItemUid } }, { item_id: { _eq: $newItemUid } }]
+				}
+			}
+		) {
+			id
 		}
 	}
 `;
