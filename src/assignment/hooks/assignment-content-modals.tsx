@@ -7,7 +7,7 @@ import { CollectionService } from '../../collection/collection.service';
 import { AddToAssignmentModal } from '../../item/components';
 import { ItemTrimInfo } from '../../item/item.types';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
-import { ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services/toast-service';
 import { Positioned } from '../../shared/types';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlock, AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';

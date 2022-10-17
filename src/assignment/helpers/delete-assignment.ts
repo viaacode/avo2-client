@@ -2,8 +2,8 @@ import { UserSchema } from '@viaa/avo2-types/types/user';
 import { TFunction } from 'i18next';
 import { isNil } from 'lodash';
 
-import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
 import { Assignment_v2, Assignment_v2_With_Responses, AssignmentType } from '../assignment.types';
 

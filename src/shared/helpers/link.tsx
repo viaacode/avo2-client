@@ -10,7 +10,7 @@ import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import SmartLink from '../components/SmartLink/SmartLink';
-import { ToastService } from '../services';
+import { ToastService } from '../services/toast-service';
 import i18n from '../translations/i18n';
 
 import { getEnv } from './env';

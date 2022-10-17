@@ -93,8 +93,9 @@ import { CustomError, getEnv, performQuery } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
-import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
+import { dataService } from '../shared/services/data-service';
 import { RelationService } from '../shared/services/relation-service/relation.service';
+import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
 
@@ -147,7 +148,6 @@ export class CollectionService {
 				variables: {
 					collection: cleanedCollection,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			// retrieve inserted collection from response
@@ -268,7 +268,6 @@ export class CollectionService {
 				dataService.query<DeleteCollectionFragmentByIdMutation>({
 					query: DeleteCollectionFragmentByIdDocument,
 					variables: { id },
-					update: ApolloCacheManager.clearCollectionCache,
 				})
 			);
 
@@ -307,7 +306,6 @@ export class CollectionService {
 					return dataService.query<UpdateCollectionFragmentByIdMutation>({
 						query: UpdateCollectionFragmentByIdDocument,
 						variables,
-						update: ApolloCacheManager.clearCollectionCache,
 					});
 				})
 			);
@@ -556,7 +554,6 @@ export class CollectionService {
 					...managementData,
 					collection_id: collectionId,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to create collection management entry', err, {
@@ -578,7 +575,6 @@ export class CollectionService {
 					...managementData,
 					collection_id: collectionId,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update collection management entry', err, {
@@ -601,7 +597,6 @@ export class CollectionService {
 			await dataService.query<InsertCollectionManagementQualityCheckEntryMutation>({
 				query: InsertCollectionManagementQualityCheckEntryDocument,
 				variables,
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError(
@@ -630,7 +625,6 @@ export class CollectionService {
 			await dataService.query<UpdateCollectionByIdMutation>({
 				query: UpdateCollectionByIdDocument,
 				variables,
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update collection properties', err, {
@@ -655,7 +649,6 @@ export class CollectionService {
 					variables: {
 						id: collectionId,
 					} as SoftDeleteCollectionByIdMutationVariables,
-					update: ApolloCacheManager.clearCollectionCache,
 				}),
 				dataService.query<DeleteCollectionBookmarksMutation>({
 					query: DeleteCollectionBookmarksDocument,
@@ -1023,7 +1016,6 @@ export class CollectionService {
 			const response = await dataService.query<InsertCollectionFragmentsMutation>({
 				query: InsertCollectionFragmentsDocument,
 				variables,
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			const fragmentIds = response.insert_app_collection_fragments?.returning;
@@ -1135,7 +1127,6 @@ export class CollectionService {
 			await dataService.query<InsertCollectionLabelsMutation>({
 				query: InsertCollectionLabelsDocument,
 				variables,
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to insert collection labels in the database', err, {
@@ -1155,7 +1146,6 @@ export class CollectionService {
 			await dataService.query<DeleteCollectionLabelsMutation>({
 				query: DeleteCollectionLabelsDocument,
 				variables,
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete collection labels from the database', err, {

@@ -19,7 +19,7 @@ import {
 	UpdateAssignmentLabelsMutation,
 } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
-import { ApolloCacheManager, dataService } from '../data-service';
+import { dataService } from '../data-service';
 
 export class AssignmentLabelsService {
 	public static async getLabelsForProfile(
@@ -55,7 +55,6 @@ export class AssignmentLabelsService {
 			const response = await dataService.query<InsertAssignmentLabelsMutation>({
 				query: InsertAssignmentLabelsDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			return get(response, 'insert_app_assignment_labels.returning', []).map(
@@ -86,7 +85,6 @@ export class AssignmentLabelsService {
 			await dataService.query<UpdateAssignmentLabelsMutation>({
 				query: UpdateAssignmentLabelsDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update assignment label', err, {
@@ -106,7 +104,6 @@ export class AssignmentLabelsService {
 			await dataService.query<DeleteAssignmentLabelMutation>({
 				query: DeleteAssignmentLabelDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete assignment labels', err, {
@@ -134,7 +131,6 @@ export class AssignmentLabelsService {
 			await dataService.query<LinkAssignmentLabelsToAssignmentMutation>({
 				query: LinkAssignmentLabelsToAssignmentDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to link assignment labels to assignment', err, {
@@ -160,7 +156,6 @@ export class AssignmentLabelsService {
 			await dataService.query<UnlinkAssignmentLabelsFromAssignmentMutation>({
 				query: UnlinkAssignmentLabelsFromAssignmentDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to unlink assignment labels from assignment', err, {

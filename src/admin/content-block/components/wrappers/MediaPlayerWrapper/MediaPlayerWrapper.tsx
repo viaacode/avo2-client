@@ -1,10 +1,9 @@
+import { ButtonAction } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { ButtonAction } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import {
 	FlowPlayerWrapper,
@@ -12,7 +11,7 @@ import {
 	LoadingInfo,
 } from '../../../../../shared/components';
 import { CustomError } from '../../../../../shared/helpers';
-import { ToastService } from '../../../../../shared/services';
+import { ToastService } from '../../../../../shared/services/toast-service';
 import { ItemsService } from '../../../../items/items.service';
 
 interface MediaPlayerWrapperProps {

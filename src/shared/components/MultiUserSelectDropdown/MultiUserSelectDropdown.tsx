@@ -1,8 +1,3 @@
-import classnames from 'classnames';
-import { get, uniqBy } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	Dropdown,
@@ -15,12 +10,16 @@ import {
 	TagList,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
+import { get, uniqBy } from 'lodash-es';
+import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../../admin/shared/types';
 import { UserService } from '../../../admin/users/user.service';
 import { CustomError } from '../../helpers';
-import { ToastService } from '../../services';
+import { ToastService } from '../../services/toast-service';
 
 import './MultiUserSelectDropdown.scss';
 

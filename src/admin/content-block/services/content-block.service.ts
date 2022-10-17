@@ -10,7 +10,8 @@ import {
 	UpdateContentBlockMutation,
 } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers';
-import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
+import { dataService } from '../../../shared/services/data-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import i18n from '../../../shared/translations/i18n';
 import { ContentBlockConfig } from '../../shared/types';
 import { CONTENT_BLOCKS_RESULT_PATH } from '../content-block.const';
@@ -51,7 +52,6 @@ export class ContentBlockService {
 		return await dataService.query<UpdateContentBlockMutation>({
 			query: UpdateContentBlockDocument,
 			variables: { contentBlock, id: contentBlockConfig.id },
-			update: ApolloCacheManager.clearContentBlocksCache,
 		});
 	}
 
@@ -65,7 +65,6 @@ export class ContentBlockService {
 			await dataService.query<DeleteContentBlockMutation>({
 				query: DeleteContentBlockDocument,
 				variables: { id },
-				update: ApolloCacheManager.clearContentBlocksCache,
 			});
 		} catch (err) {
 			console.error(new CustomError('Failed to delete content block', err, { id }));
@@ -108,7 +107,6 @@ export class ContentBlockService {
 				variables: {
 					contentBlocks: this.cleanContentBlocksBeforeDatabaseInsert(dbBlocks),
 				},
-				update: ApolloCacheManager.clearContentBlocksCache,
 			});
 
 			const ids: number[] =

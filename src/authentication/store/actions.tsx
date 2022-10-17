@@ -1,14 +1,14 @@
+import { Button, Spacer } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import moment from 'moment';
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { Action, Dispatch } from 'redux';
-
-import { Button, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
-import { ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 import { LoginMessage } from '../authentication.types';
 import { logoutAndRedirectToLogin } from '../helpers/redirects';
@@ -21,7 +21,6 @@ import {
 	SetLoginLoadingAction,
 	SetLoginSuccessAction,
 } from './types';
-import { RouteComponentProps } from 'react-router-dom';
 
 let checkSessionTimeoutTimerId: number | null = null;
 

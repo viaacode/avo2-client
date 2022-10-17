@@ -1,7 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Button,
@@ -16,10 +12,13 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import i18n from '../../../shared/translations/i18n';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 import { CollectionService } from '../../collection.service';

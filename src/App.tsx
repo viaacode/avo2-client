@@ -28,7 +28,7 @@ import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
 import { insideIframe } from './shared/helpers/inside-iframe';
 import withUser, { UserProps } from './shared/hocs/withUser';
-import { ToastService } from './shared/services';
+import { ToastService } from './shared/services/toast-service';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
 import './styles/main.scss';
@@ -142,43 +142,43 @@ const Root: FunctionComponent = () => {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-				<Provider store={store}>
-					<Router
-						getUserConfirmation={(_message, callback) => {
-							setIsUnsavedChangesModalOpen(true);
-							confirmUnsavedChangesCallback = callback;
-						}}
-					>
-						<QueryParamProvider ReactRouterRoute={Route}>
-							<AppWithRouter />
-							<ConfirmModal
-								className="c-modal__unsaved-changes"
-								isOpen={isUnsavedChangesModalOpen}
-								confirmCallback={() => {
-									setIsUnsavedChangesModalOpen(false);
-									(confirmUnsavedChangesCallback || noop)(true);
-									confirmUnsavedChangesCallback = null;
-								}}
-								onClose={() => {
-									setIsUnsavedChangesModalOpen(false);
-									(confirmUnsavedChangesCallback || noop)(false);
-									confirmUnsavedChangesCallback = null;
-								}}
-								cancelLabel={t('app___blijven')}
-								confirmLabel={t('app___verlaten')}
-								title={t('app___wijzigingen-opslaan')}
-								body={
-									<Html
-										content={t(
-											'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-										)}
-									/>
-								}
-								confirmButtonType="primary"
-							/>
-						</QueryParamProvider>
-					</Router>
-				</Provider>
+			<Provider store={store}>
+				<Router
+					getUserConfirmation={(_message, callback) => {
+						setIsUnsavedChangesModalOpen(true);
+						confirmUnsavedChangesCallback = callback;
+					}}
+				>
+					<QueryParamProvider ReactRouterRoute={Route}>
+						<AppWithRouter />
+						<ConfirmModal
+							className="c-modal__unsaved-changes"
+							isOpen={isUnsavedChangesModalOpen}
+							confirmCallback={() => {
+								setIsUnsavedChangesModalOpen(false);
+								(confirmUnsavedChangesCallback || noop)(true);
+								confirmUnsavedChangesCallback = null;
+							}}
+							onClose={() => {
+								setIsUnsavedChangesModalOpen(false);
+								(confirmUnsavedChangesCallback || noop)(false);
+								confirmUnsavedChangesCallback = null;
+							}}
+							cancelLabel={t('app___blijven')}
+							confirmLabel={t('app___verlaten')}
+							title={t('app___wijzigingen-opslaan')}
+							body={
+								<Html
+									content={t(
+										'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+									)}
+								/>
+							}
+							confirmButtonType="primary"
+						/>
+					</QueryParamProvider>
+				</Router>
+			</Provider>
 		</QueryClientProvider>
 	);
 };

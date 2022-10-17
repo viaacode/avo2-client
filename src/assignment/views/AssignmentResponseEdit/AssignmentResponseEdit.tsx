@@ -38,7 +38,7 @@ import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySa
 import { formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	PUPIL_COLLECTION_FORM_SCHEMA,

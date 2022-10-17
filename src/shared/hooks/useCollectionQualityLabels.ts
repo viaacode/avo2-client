@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CollectionService } from '../../collection/collection.service';
 import { QualityLabel } from '../../collection/collection.types';
 import { CustomError } from '../helpers';
-import { ToastService } from '../services';
+import { ToastService } from '../services/toast-service';
 
 type UseCollectionQualityLabelsTuple = [QualityLabel[], boolean];
 

@@ -40,13 +40,13 @@ export interface QueryDefinition {
 	responsePath?: string;
 }
 
-export const EVENT_QUERIES: {
+export const GET_EVENT_QUERIES: () => {
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	[action in EventAction]: {
 		[contentType in EventContentTypeSimplified]: QueryDefinition;
 		/* eslint-enable @typescript-eslint/no-unused-vars */
 	};
-} = {
+} = () => ({
 	bookmark: {
 		item: {
 			query: InsertItemBookmarkDocument,
@@ -125,7 +125,7 @@ export const EVENT_QUERIES: {
 			responsePath: 'data.app_collections[0].play_counts[0].count',
 		},
 	},
-};
+});
 
 export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: {
 	[type: string]: EventContentTypeSimplified;

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { CheckboxOption } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ContentPageLabelService } from '../content-page-label.service';
 import { ContentPageLabel } from '../content-page-label.types';
 

@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 import { APP_PATH } from '../../constants';
 import { buildLink, copyToClipboard } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services/toast-service';
 import { Assignment_v2_With_Blocks, Assignment_v2_With_Labels } from '../assignment.types';
 
 import './ShareAssignmentWithPupil.scss';

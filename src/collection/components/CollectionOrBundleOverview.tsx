@@ -47,9 +47,9 @@ import {
 	navigate,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { ToastService } from '../../shared/services';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';

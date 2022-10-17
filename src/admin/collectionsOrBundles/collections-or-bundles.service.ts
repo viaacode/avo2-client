@@ -31,7 +31,7 @@ import {
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
@@ -214,7 +214,6 @@ export class CollectionsOrBundlesService {
 					updatedByProfileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			return response.update_app_collections?.affected_rows ?? 0;
@@ -245,7 +244,6 @@ export class CollectionsOrBundlesService {
 					updatedByProfileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			return response.update_app_collections?.affected_rows ?? 0;
@@ -270,7 +268,6 @@ export class CollectionsOrBundlesService {
 					updatedByProfileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			return response.update_app_collections?.affected_rows ?? 0;
@@ -308,7 +305,6 @@ export class CollectionsOrBundlesService {
 						)
 					),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			await this.bulkUpdateDateAndLastAuthorCollections(collectionIds, updatedByProfileId);
@@ -335,7 +331,6 @@ export class CollectionsOrBundlesService {
 					labels,
 					collectionIds,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			await this.bulkUpdateDateAndLastAuthorCollections(collectionIds, updatedByProfileId);
@@ -361,7 +356,6 @@ export class CollectionsOrBundlesService {
 				updatedByProfileId,
 				now: new Date().toISOString(),
 			},
-			update: ApolloCacheManager.clearCollectionCache,
 		});
 	}
 }

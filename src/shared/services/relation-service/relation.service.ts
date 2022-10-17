@@ -26,7 +26,7 @@ import {
 	Lookup_Enum_Relation_Types_Enum,
 } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
-import { ApolloCacheManager, dataService } from '../data-service';
+import { dataService } from '../data-service';
 
 export class RelationService {
 	public static async fetchRelationsByObject(
@@ -116,9 +116,6 @@ export class RelationService {
 			>({
 				variables,
 				query: isCollection ? InsertCollectionRelationDocument : InsertItemRelationDocument,
-				update: isCollection
-					? ApolloCacheManager.clearCollectionCache
-					: ApolloCacheManager.clearItemCache,
 			});
 			const relationId = get(
 				response,
@@ -184,9 +181,6 @@ export class RelationService {
 			>({
 				variables,
 				query: isCollection ? collectionQuery : itemQuery,
-				update: isCollection
-					? ApolloCacheManager.clearCollectionCache
-					: ApolloCacheManager.clearItemCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete relation from the database', err, {

@@ -27,8 +27,9 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks';
-import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { ToastService } from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 

@@ -1,15 +1,14 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import { Flex } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PermissionName } from '../authentication/helpers/permission-names';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import { LoadingErrorLoadedComponent, LoadingInfo, ResizablePanels } from '../shared/components';
 import { CustomError } from '../shared/helpers';
 import withUser from '../shared/hocs/withUser';
-import { ToastService } from '../shared/services';
+import { ToastService } from '../shared/services/toast-service';
 import { NavigationItemInfo } from '../shared/types';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { SettingsService } from '../../settings/settings.service';
 import { CustomError } from '../helpers';
-import { ToastService } from '../services';
+import { ToastService } from '../services/toast-service';
 
 type UseSubjectsTuple = [string[], boolean];
 

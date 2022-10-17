@@ -22,7 +22,7 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, dataService } from '../shared/services';
+import { dataService } from '../shared/services/data-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
@@ -123,7 +123,6 @@ export class PupilCollectionService {
 					authorId: profileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			return response?.update_app_assignment_responses_v2?.affected_rows || 0;
@@ -145,7 +144,6 @@ export class PupilCollectionService {
 			await dataService.query<DeleteAssignmentResponsesMutation>({
 				query: DeleteAssignmentResponsesDocument,
 				variables: { assignmentResponseIds },
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment responses', err, {
@@ -194,14 +192,12 @@ export class PupilCollectionService {
 					dataService.query<UpdatePupilCollectionBlockMutation>({
 						query: UpdatePupilCollectionBlockDocument,
 						variables: { blockId: block.id, update: block },
-						update: ApolloCacheManager.clearAssignmentCache,
 					})
 				),
 			...deleted.map(cleanup).map((block) =>
 				dataService.query<UpdatePupilCollectionBlockMutation>({
 					query: UpdatePupilCollectionBlockDocument,
 					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
-					update: ApolloCacheManager.clearAssignmentCache,
 				})
 			),
 		];
@@ -222,7 +218,6 @@ export class PupilCollectionService {
 								return block;
 							}),
 					},
-					update: ApolloCacheManager.clearAssignmentCache,
 				})
 			);
 		}
@@ -284,7 +279,6 @@ export class PupilCollectionService {
 			variables: {
 				pupilCollectionBlocks: [block],
 			},
-			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
 		const insertedBlock = response?.insert_app_pupil_collection_blocks?.returning?.[0];

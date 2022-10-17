@@ -18,7 +18,7 @@ import {
 import SmartLink from '../../../shared/components/SmartLink/SmartLink';
 import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import i18n from '../../../shared/translations/i18n';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';

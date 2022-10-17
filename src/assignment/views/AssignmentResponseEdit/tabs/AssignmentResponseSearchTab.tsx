@@ -19,8 +19,8 @@ import { SearchFiltersAndResults } from '../../../../search/components';
 import { FilterState } from '../../../../search/search.types';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { useScrollToSelector } from '../../../../shared/hooks/scroll-to-selector';
-import { ToastService } from '../../../../shared/services';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
+import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,

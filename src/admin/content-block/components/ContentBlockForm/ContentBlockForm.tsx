@@ -1,9 +1,3 @@
-import classnames from 'classnames';
-import { get, isEqual, isNil } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Accordion,
 	AccordionActions,
@@ -21,8 +15,13 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import classnames from 'classnames';
+import { get, isEqual, isNil } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { useTranslation } from 'react-i18next';
 
-import { ToastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { validateContentBlockField } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,

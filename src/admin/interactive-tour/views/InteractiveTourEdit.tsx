@@ -35,7 +35,8 @@ import {
 	GetInteractiveTourByIdQuery,
 } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
-import { dataService, ToastService } from '../../../shared/services';
+import { dataService } from '../../../shared/services/data-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';

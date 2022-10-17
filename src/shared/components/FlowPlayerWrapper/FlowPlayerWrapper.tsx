@@ -24,10 +24,11 @@ import {
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
-import { BookmarksViewsPlaysService, ToastService } from '../../services';
+import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service';
 import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
+import { ToastService } from '../../services/toast-service';
 
 import './FlowPlayerWrapper.scss';
 
@@ -118,11 +119,15 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 		// Only trigger once per video
 		if (item && item.uid && !triggeredForUrl[playingSrc]) {
-			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch((err) => {
-				console.error(
-					new CustomError('Failed to track item play event', err, { itemUuid: item.uid })
-				);
-			});
+			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch(
+				(err: any) => {
+					console.error(
+						new CustomError('Failed to track item play event', err, {
+							itemUuid: item.uid,
+						})
+					);
+				}
+			);
 
 			if (props.onPlay) {
 				props.onPlay(playingSrc);

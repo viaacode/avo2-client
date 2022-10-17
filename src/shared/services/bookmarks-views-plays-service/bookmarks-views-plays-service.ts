@@ -33,10 +33,10 @@ import {
 	InsertItemBookmarkMutation,
 } from '../../generated/graphql-db-types';
 import { CustomError, normalizeTimestamp } from '../../helpers';
-import { ApolloCacheManager, dataService } from '../data-service';
+import { dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';
 
-import { EVENT_QUERIES } from './bookmarks-views-plays-service.const';
+import { GET_EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
 	AppCollectionBookmark,
 	AppItemBookmark,
@@ -79,7 +79,6 @@ export class BookmarksViewsPlaysService {
 				>({
 					query,
 					variables,
-					update: ApolloCacheManager.clearBookmarksViewsPlays,
 				});
 			}
 
@@ -320,9 +319,9 @@ export class BookmarksViewsPlaysService {
 		// bundle is handled the same way as a collection
 		const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
 
-		const query = get(EVENT_QUERIES, [action, contentTypeSimplified, queryType]);
+		const query = get(GET_EVENT_QUERIES(), [action, contentTypeSimplified, queryType]);
 		const getVariablesFunc = get(
-			EVENT_QUERIES,
+			GET_EVENT_QUERIES(),
 			[action, contentTypeSimplified, 'variables'],
 			noop
 		);
@@ -330,7 +329,7 @@ export class BookmarksViewsPlaysService {
 		if (!query || !variables) {
 			throw new CustomError('Failed to find query/variables in query lookup table');
 		}
-		const responsePath = get(EVENT_QUERIES, [
+		const responsePath = get(GET_EVENT_QUERIES(), [
 			action,
 			contentTypeSimplified,
 			'responsePath',
@@ -382,7 +381,6 @@ export class BookmarksViewsPlaysService {
 			>({
 				query,
 				variables,
-				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 		} catch (err) {
 			const error = new CustomError(

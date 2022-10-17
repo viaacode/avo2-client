@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { UserService } from '../../admin/users/user.service';
 import { CustomError } from '../helpers';
-import { ToastService } from '../services';
+import { ToastService } from '../services/toast-service';
 
 type UseBusinessCategoriesTuple = [string[], boolean];
 

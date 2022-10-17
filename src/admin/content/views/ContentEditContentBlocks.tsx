@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ContentPage } from '../../../content-page/views';
 import { ResizablePanels } from '../../../shared/components';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,

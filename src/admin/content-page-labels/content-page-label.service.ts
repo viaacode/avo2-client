@@ -18,7 +18,8 @@ import {
 } from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
-import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
+import { ToastService } from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 import { ContentPageType } from '../content/content.types';
 
@@ -101,7 +102,6 @@ export class ContentPageLabelService {
 						content_type: contentPageLabel.content_type,
 					} as Partial<ContentPageLabel>,
 				},
-				update: ApolloCacheManager.clearPermissionCache,
 			});
 			const contentPageLabelId = response.insert_app_content_labels?.returning?.[0]?.id;
 			if (isNil(contentPageLabelId)) {
@@ -132,7 +132,6 @@ export class ContentPageLabelService {
 					} as Partial<ContentPageLabel>,
 					contentPageLabelId: contentPageLabelInfo.id,
 				},
-				update: ApolloCacheManager.clearPermissionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update content page label in the database', err, {
@@ -160,7 +159,6 @@ export class ContentPageLabelService {
 				variables: {
 					id: contentPageLabelId,
 				},
-				update: ApolloCacheManager.clearPermissionCache,
 			});
 		} catch (err) {
 			console.error(

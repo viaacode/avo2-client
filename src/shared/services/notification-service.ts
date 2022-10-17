@@ -8,7 +8,7 @@ import {
 } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
-import { ApolloCacheManager, dataService } from './data-service';
+import { dataService } from './data-service';
 
 export interface NotificationInfo {
 	through_email: boolean;
@@ -63,7 +63,6 @@ export class NotificationService {
 					throughEmail,
 					throughPlatform,
 				},
-				update: ApolloCacheManager.clearNotificationCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to set user notification', err, {

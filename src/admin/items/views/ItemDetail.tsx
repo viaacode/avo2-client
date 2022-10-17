@@ -36,9 +36,9 @@ import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graph
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { ToastService } from '../../../shared/services';
 import { QuickLaneContainingService } from '../../../shared/services/quick-lane-containing.service';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { QuickLaneUrlObject } from '../../../shared/types';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';

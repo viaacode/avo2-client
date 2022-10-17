@@ -41,7 +41,8 @@ import {
 import { CustomError, sanitizeHtml } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
-import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
+import { ToastService } from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ContentBlockService } from '../content-block/services/content-block.service';
@@ -236,7 +237,6 @@ export class ContentService {
 			await dataService.query<InsertContentLabelLinksMutation>({
 				query: InsertContentLabelLinksDocument,
 				variables,
-				update: ApolloCacheManager.clearContentLabels,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to insert content label links in the database', err, {
@@ -261,7 +261,6 @@ export class ContentService {
 			await dataService.query<DeleteContentLabelLinksMutation>({
 				query: DeleteContentLabelLinksDocument,
 				variables,
-				update: ApolloCacheManager.clearContentCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to insert content label links in the database', err, {
@@ -342,7 +341,6 @@ export class ContentService {
 			const response = await dataService.query<InsertContentMutation>({
 				query: InsertContentDocument,
 				variables,
-				update: ApolloCacheManager.clearContentCache,
 			});
 
 			const id: number | null = get(
@@ -391,7 +389,6 @@ export class ContentService {
 			const response = await dataService.query<UpdateContentByIdMutation>({
 				query: UpdateContentByIdDocument,
 				variables,
-				update: ApolloCacheManager.clearContentCache,
 			});
 
 			const updatedContent = response.update_app_content?.affected_rows;
@@ -561,7 +558,6 @@ export class ContentService {
 			await dataService.query<SoftDeleteContentMutation>({
 				query: SoftDeleteContentDocument,
 				variables,
-				update: ApolloCacheManager.clearContentCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete content page from the database', err, {

@@ -5,7 +5,7 @@ import {
 	UpdateTranslationsMutation,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 
 export const fetchTranslations = async (): Promise<any> => {
 	try {
@@ -35,7 +35,6 @@ export const updateTranslations = async (name: string, translations: any) => {
 				name,
 				translations,
 			},
-			update: ApolloCacheManager.clearTranslations,
 		});
 	} catch (err) {
 		const error = new CustomError('Failed to update translations', err, {

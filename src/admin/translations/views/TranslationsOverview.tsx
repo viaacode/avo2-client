@@ -7,7 +7,7 @@ import MetaTags from 'react-meta-tags';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { CustomError } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import { Translation, TranslationsState } from '../translations.types';

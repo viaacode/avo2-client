@@ -2,7 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 import { compact, get, sortBy } from 'lodash-es';
 
 import { CustomError } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ContentPageWithBlocksDb } from '../../content/content.types';
 import { ContentBlockConfig } from '../../shared/types';
 import { CONTENT_BLOCK_CONFIG_MAP } from '../content-block.const';

@@ -30,12 +30,15 @@ import {
 	isMobileWidth,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
-import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarksViewsPlaysService,
+	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
+} from '../../shared/services/bookmarks-views-plays-service';
 import {
 	BookmarkInfo,
 	EventContentType,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 const ITEMS_PER_PAGE = 5;

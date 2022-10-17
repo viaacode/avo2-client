@@ -1,16 +1,15 @@
+import { Alert, Select, Spacer } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
+import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import classnames from 'classnames';
 import { pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Alert, Select, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
-
 import { CustomError } from '../../helpers';
 import { stringsToTagList } from '../../helpers/strings-to-taglist';
-import { ToastService } from '../../services';
 import { EducationOrganisationService } from '../../services/education-organizations-service';
+import { ToastService } from '../../services/toast-service';
 
 import './EducationalOrganisationsSelect.scss';
 

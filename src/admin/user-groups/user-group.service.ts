@@ -20,7 +20,7 @@ import {
 	UpdateUserGroupMutation,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 import { Permission, PermissionGroup } from '../permission-groups/permission-group.types';
 
 import { ITEMS_PER_PAGE } from './user-group.const';
@@ -103,7 +103,6 @@ export class UserGroupService {
 						user_group_id: userGroupId,
 					})),
 				},
-				update: ApolloCacheManager.clearUserGroupCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to add permission groups to user group', err, {
@@ -127,7 +126,6 @@ export class UserGroupService {
 					permissionGroupIds,
 					userGroupId,
 				},
-				update: ApolloCacheManager.clearUserGroupCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to remove permission groups from user group', err, {
@@ -150,7 +148,6 @@ export class UserGroupService {
 						description: userGroup.description,
 					} as Partial<UserGroup>,
 				},
-				update: ApolloCacheManager.clearUserGroupCache,
 			});
 			const userGroupId = response.insert_users_groups?.returning?.[0]?.id;
 			if (isNil(userGroupId)) {
@@ -180,7 +177,6 @@ export class UserGroupService {
 					} as Partial<UserGroup>,
 					userGroupId: userGroup.id,
 				},
-				update: ApolloCacheManager.clearUserGroupCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update user group in the database', err, {
@@ -197,7 +193,6 @@ export class UserGroupService {
 				variables: {
 					userGroupId,
 				},
-				update: ApolloCacheManager.clearUserGroupCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete user group from the database', err, {

@@ -21,7 +21,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import Html from '../../../shared/components/Html/Html';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ContentPageInfo } from '../content.types';
 import { getPublishedState } from '../helpers/get-published-state';
 

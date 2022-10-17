@@ -67,7 +67,8 @@ import { buildLink, formatDate, isMobileWidth, navigate, renderAvatar } from '..
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
-import { AssignmentLabelsService, ToastService } from '../../shared/services';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';

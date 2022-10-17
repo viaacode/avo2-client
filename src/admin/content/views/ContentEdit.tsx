@@ -25,8 +25,8 @@ import {
 } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
 import { ContentPageService } from '../../../shared/services/content-page-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { validateContentBlockField } from '../../shared/helpers';

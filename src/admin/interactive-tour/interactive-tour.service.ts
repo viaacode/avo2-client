@@ -15,7 +15,7 @@ import {
 	UpdateInteractiveTourMutation,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 
 import { ITEMS_PER_PAGE } from './interactive-tour.const';
 import {
@@ -104,7 +104,6 @@ export class InteractiveTourService {
 						steps: interactiveTour.steps,
 					} as any,
 				},
-				update: ApolloCacheManager.clearInteractiveTourCache,
 			});
 			const interactiveTourId = response.insert_app_interactive_tour?.returning?.[0]?.id;
 			if (isNil(interactiveTourId)) {
@@ -135,7 +134,6 @@ export class InteractiveTourService {
 					} as any,
 					interactiveTourId: interactiveTour.id,
 				},
-				update: ApolloCacheManager.clearInteractiveTourCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update interactive tour in the database', err, {
@@ -152,7 +150,6 @@ export class InteractiveTourService {
 				variables: {
 					interactiveTourId,
 				},
-				update: ApolloCacheManager.clearInteractiveTourCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete interactive tour from the database', err, {

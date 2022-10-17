@@ -92,11 +92,14 @@ import {
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser from '../../shared/hocs/withUser';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarksViewsPlaysService,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { UnpublishableItem } from '../../shared/types';
 import { AddToAssignmentModal, AddToCollectionModal, ItemVideoDescription } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';

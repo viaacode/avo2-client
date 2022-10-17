@@ -12,7 +12,7 @@ import {
 	GetContentPageLabelByIdQuery,
 } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, navigateToContentType } from '../../../shared/helpers';
-import { dataService } from '../../../shared/services';
+import { dataService } from '../../../shared/services/data-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import {

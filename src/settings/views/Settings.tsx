@@ -21,7 +21,7 @@ import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import { buildLink } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services/toast-service';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Account, Email, Notifications, Profile } from '../components';
 import LinkedAccounts from '../components/LinkedAccounts';

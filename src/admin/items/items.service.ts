@@ -51,7 +51,7 @@ import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
 import { UnpublishableItem } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -461,7 +461,6 @@ export class ItemsService {
 					itemUid,
 					itemExternalId,
 				},
-				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 		} catch (err) {
 			throw new CustomError(
@@ -502,7 +501,6 @@ export class ItemsService {
 			await dataService.query<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation>({
 				query: ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
 				variables: variablesReplace,
-				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
 		} catch (err) {
 			throw new CustomError(
@@ -523,7 +521,6 @@ export class ItemsService {
 					pids,
 					status,
 				},
-				update: ApolloCacheManager.clearSharedItemsCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update status for shared items in the database', err, {

@@ -9,7 +9,7 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
-import { dataService } from '../shared/services';
+import { dataService } from '../shared/services/data-service';
 
 import { UpdateProfileValues } from './settings.types';
 

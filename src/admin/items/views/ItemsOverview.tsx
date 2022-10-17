@@ -22,7 +22,7 @@ import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graph
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, {

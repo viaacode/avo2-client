@@ -27,7 +27,7 @@ import { FileUpload } from '../../../../shared/components';
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import { getFullName } from '../../../../shared/helpers';
-import { ToastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { ValueOf } from '../../../../shared/types';
 import { ContentPageLabel } from '../../../content-page-labels/content-page-label.types';
 import { UserGroupSelect } from '../../../shared/components';

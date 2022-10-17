@@ -23,7 +23,8 @@ import { ColorOption } from '../../../admin/content-block/components/fields/Colo
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { UserProps } from '../../../shared/hocs/withUser';
-import { AssignmentLabelsService, ToastService } from '../../../shared/services';
+import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { Assignment_Label_v2, AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';

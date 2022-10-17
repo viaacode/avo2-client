@@ -1,3 +1,5 @@
+import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,18 +8,15 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
 import { ContentPageInfo } from '../../../admin/content/content.types';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
 import { CampaignMonitorService } from '../../../shared/services/campaign-monitor-service';
 import { ContentPageService } from '../../../shared/services/content-page-service';
 import { NotificationService } from '../../../shared/services/notification-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { AppState } from '../../../store';
 import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';

@@ -14,7 +14,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomError } from '../../../../shared/helpers';
-import { ToastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { ContentPageLabel } from '../../../content-page-labels/content-page-label.types';
 import { ContentService } from '../../../content/content.service';
 import { ContentPageType } from '../../../content/content.types';

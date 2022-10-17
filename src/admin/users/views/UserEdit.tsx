@@ -29,7 +29,7 @@ import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { stringToTagInfo } from '../../../shared/helpers/string-to-select-options';
 import { useCompanies, useSubjects } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { USER_PATH } from '../user.const';

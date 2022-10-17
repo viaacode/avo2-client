@@ -22,7 +22,7 @@ import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/E
 import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
-import { ToastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,

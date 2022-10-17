@@ -21,8 +21,8 @@ import { useTranslation } from 'react-i18next';
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import { CustomError, stripHtml } from '../../../../shared/helpers';
-import { ToastService } from '../../../../shared/services';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { ItemsService } from '../../items.service';
 

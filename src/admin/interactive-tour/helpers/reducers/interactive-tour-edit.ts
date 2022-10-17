@@ -3,7 +3,7 @@ import { Avo } from '@viaa/avo2-types';
 import produce, { Draft } from 'immer';
 import { cloneDeep } from 'lodash-es';
 
-import { ToastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services/toast-service';
 import i18n from '../../../../shared/translations/i18n';
 import { ValueOf } from '../../../../shared/types';
 import { InteractiveTourService } from '../../interactive-tour.service';

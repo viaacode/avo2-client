@@ -37,8 +37,8 @@ import {
 } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';

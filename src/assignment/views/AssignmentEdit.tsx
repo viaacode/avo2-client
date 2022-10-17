@@ -26,9 +26,9 @@ import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/B
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { ToastService } from '../../shared/services';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {

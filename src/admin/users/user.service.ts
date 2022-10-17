@@ -37,7 +37,7 @@ import {
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
@@ -107,7 +107,6 @@ export class UserService {
 					from: tempAccess.from,
 					until: tempAccess.until,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			/**
@@ -492,7 +491,6 @@ export class UserService {
 						)
 					),
 				},
-				update: ApolloCacheManager.clearUserCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to bulk add subjects to profiles', err, {
@@ -514,7 +512,6 @@ export class UserService {
 					subjects,
 					profileIds,
 				},
-				update: ApolloCacheManager.clearUserCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to bulk delete subjects from profiles', err, {

@@ -1,10 +1,3 @@
-import { get, isNull } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import ReactSelect from 'react-select';
-import AsyncSelect from 'react-select/async';
-import { ActionMeta, ValueType } from 'react-select/src/types';
-
 import {
 	Button,
 	ContentPickerType,
@@ -14,11 +7,17 @@ import {
 	LinkTarget,
 	TextInput,
 } from '@viaa/avo2-components';
+import { get, isNull } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ReactSelect from 'react-select';
+import AsyncSelect from 'react-select/async';
+import { ActionMeta, ValueType } from 'react-select/src/types';
 
 import { FileUpload } from '../../../../shared/components';
 import { CustomError } from '../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
-import { ToastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services/toast-service';
 import i18n from '../../../../shared/translations/i18n';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 

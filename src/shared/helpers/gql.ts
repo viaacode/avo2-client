@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 
-import { dataService } from '../services';
+import { dataService } from '../services/data-service';
 
 import { CustomError } from './custom-error';
 

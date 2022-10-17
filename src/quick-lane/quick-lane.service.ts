@@ -20,7 +20,7 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
-import { ApolloCacheManager, dataService } from '../shared/services';
+import { dataService } from '../shared/services/data-service';
 import { QuickLaneUrlObject, QuickLaneUrlRecord } from '../shared/types';
 
 // Mappers
@@ -218,7 +218,6 @@ export class QuickLaneService {
 						updated_at: now,
 					},
 				},
-				update: ApolloCacheManager.clearQuickLaneCache,
 			});
 
 			const success =
@@ -255,7 +254,6 @@ export class QuickLaneService {
 			const response = await dataService.query<RemoveQuickLanesMutation>({
 				query: RemoveQuickLanesDocument,
 				variables,
-				update: ApolloCacheManager.clearQuickLaneCache,
 			});
 
 			const removed = response?.delete_app_quick_lanes?.returning || [];

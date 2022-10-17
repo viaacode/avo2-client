@@ -1,7 +1,7 @@
 import { TFunction } from 'i18next';
 
 import { CustomError } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
 import { Assignment_v2 } from '../assignment.types';
 

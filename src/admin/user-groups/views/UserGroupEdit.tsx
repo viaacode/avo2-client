@@ -31,7 +31,7 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { PermissionGroupService } from '../../permission-groups/permission-group.service';
 import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';

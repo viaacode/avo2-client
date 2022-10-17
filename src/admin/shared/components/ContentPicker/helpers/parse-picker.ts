@@ -1,8 +1,7 @@
+import { ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 import queryString from 'query-string';
 
-import { ContentPickerType, LinkTarget } from '@viaa/avo2-components';
-
-import { ToastService } from '../../../../../shared/services';
+import { ToastService } from '../../../../../shared/services/toast-service';
 import i18n from '../../../../../shared/translations/i18n';
 import { PickerItem } from '../../../types';
 

@@ -78,7 +78,8 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, AssignmentLabelsService, dataService } from '../shared/services';
+import { AssignmentLabelsService } from '../shared/services/assignment-labels-service';
+import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import i18n from '../shared/translations/i18n';
@@ -325,7 +326,6 @@ export class AssignmentService {
 			await dataService.query<DeleteAssignmentByIdMutation>({
 				query: DeleteAssignmentByIdDocument,
 				variables: { assignmentId },
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment', err, { assignmentId });
@@ -339,7 +339,6 @@ export class AssignmentService {
 			await dataService.query<DeleteAssignmentsByIdMutation>({
 				query: DeleteAssignmentsByIdDocument,
 				variables: { assignmentIds },
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment', err, { assignmentIds });
@@ -380,7 +379,6 @@ export class AssignmentService {
 			await dataService.query<UpdateAssignmentByIdMutation>({
 				query: UpdateAssignmentByIdDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			await this.updateAssignmentLabels(
@@ -413,7 +411,6 @@ export class AssignmentService {
 			await dataService.query<UpdateAssignmentUpdatedAtDateMutation>({
 				query: UpdateAssignmentUpdatedAtDateDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment updated_at date', err, {
@@ -450,7 +447,6 @@ export class AssignmentService {
 			await dataService.query<UpdateAssignmentResponseMutation>({
 				query: UpdateAssignmentResponseDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			// Update blocks
@@ -528,14 +524,12 @@ export class AssignmentService {
 					dataService.query<UpdateAssignmentBlockMutation>({
 						query: UpdateAssignmentBlockDocument,
 						variables: { blockId: block.id, update: block },
-						update: ApolloCacheManager.clearAssignmentCache,
 					})
 				),
 			...deleted.map(cleanup).map((block) =>
 				dataService.query<UpdateAssignmentBlockMutation>({
 					query: UpdateAssignmentBlockDocument,
 					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
-					update: ApolloCacheManager.clearAssignmentCache,
 				})
 			),
 		];
@@ -557,7 +551,6 @@ export class AssignmentService {
 								return block;
 							}),
 					},
-					update: ApolloCacheManager.clearAssignmentCache,
 				})
 			);
 		}
@@ -580,7 +573,6 @@ export class AssignmentService {
 			const response = await dataService.query<InsertAssignmentMutation>({
 				query: InsertAssignmentDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			const assignmentId = response.insert_app_assignments_v2?.returning?.[0]?.id;
@@ -833,7 +825,6 @@ export class AssignmentService {
 			await dataService.query<DeleteAssignmentResponseByIdMutation>({
 				query: DeleteAssignmentResponseByIdDocument,
 				variables,
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment response', err, {
@@ -1112,7 +1103,6 @@ export class AssignmentService {
 						variables: {
 							assignmentBlocks: blocks,
 						},
-						update: ApolloCacheManager.clearAssignmentCache,
 					}),
 					this.updateAssignmentUpdatedAtDate(assignmentId),
 				]);
@@ -1145,7 +1135,6 @@ export class AssignmentService {
 		const assignment = await dataService.query<InsertAssignmentMutation>({
 			query: InsertAssignmentDocument,
 			variables,
-			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
 		const assignmentId = assignment.insert_app_assignments_v2?.returning?.[0]?.id;
@@ -1199,7 +1188,6 @@ export class AssignmentService {
 		const assignment = await dataService.query<InsertAssignmentMutation>({
 			query: InsertAssignmentDocument,
 			variables,
-			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
 		const assignmentId = assignment.insert_app_assignments_v2?.returning?.[0]?.id;
@@ -1229,7 +1217,6 @@ export class AssignmentService {
 			variables: {
 				assignmentBlocks: [block],
 			},
-			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
 		return assignmentId;
@@ -1277,7 +1264,6 @@ export class AssignmentService {
 				variables: {
 					assignmentBlocks: [block],
 				},
-				update: ApolloCacheManager.clearAssignmentCache,
 			}),
 			this.updateAssignmentUpdatedAtDate(assignmentId),
 		]);
@@ -1384,7 +1370,6 @@ export class AssignmentService {
 					authorId: profileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
 			return response?.update_app_assignments_v2?.affected_rows || 0;

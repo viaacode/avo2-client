@@ -23,7 +23,8 @@ import {
 	UpdatePermissionGroupMutation,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
-import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
+import { ToastService } from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
 
 import { ITEMS_PER_PAGE } from './permission-group.const';
@@ -143,7 +144,6 @@ export class PermissionGroupService {
 						user_permission_group_id: permissionGroupId,
 					})),
 				},
-				update: ApolloCacheManager.clearPermissionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to add  permissions to group', err, {
@@ -167,7 +167,6 @@ export class PermissionGroupService {
 					permissionIds,
 					permissionGroupId,
 				},
-				update: ApolloCacheManager.clearPermissionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to remove permissions from group', err, {
@@ -190,7 +189,6 @@ export class PermissionGroupService {
 						description: permissionGroup.description,
 					} as Partial<PermissionGroup>,
 				},
-				update: ApolloCacheManager.clearPermissionCache,
 			});
 			const permissionGroupId = response.insert_users_permission_groups?.returning?.[0]?.id;
 			if (isNil(permissionGroupId)) {
@@ -220,7 +218,6 @@ export class PermissionGroupService {
 					} as Partial<PermissionGroup>,
 					permissionGroupId: permissionGroup.id,
 				},
-				update: ApolloCacheManager.clearPermissionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update permission group in the database', err, {
@@ -248,7 +245,6 @@ export class PermissionGroupService {
 				variables: {
 					id: permissionGroupId,
 				},
-				update: ApolloCacheManager.clearPermissionCache,
 			});
 		} catch (err) {
 			console.error(

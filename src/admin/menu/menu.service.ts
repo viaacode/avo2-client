@@ -17,7 +17,7 @@ import {
 	UpdateMenuItemByIdMutationVariables,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 
 const MENU_RESULT_PATH = 'app_content_nav_elements';
 
@@ -68,7 +68,6 @@ export class MenuService {
 				variables: {
 					menuItem,
 				},
-				update: ApolloCacheManager.clearNavElementsCache,
 			});
 			const id = response.insert_app_content_nav_elements?.returning?.[0]?.id;
 			if (isNil(id)) {
@@ -96,7 +95,6 @@ export class MenuService {
 				return dataService.query<UpdateMenuItemByIdMutation>({
 					query: UpdateMenuItemByIdDocument,
 					variables,
-					update: ApolloCacheManager.clearNavElementsCache,
 				});
 			});
 
@@ -114,7 +112,6 @@ export class MenuService {
 			await dataService.query<DeleteMenuItemByIdMutation>({
 				query: DeleteMenuItemByIdDocument,
 				variables: { id },
-				update: ApolloCacheManager.clearNavElementsCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete menu item by id', err, {

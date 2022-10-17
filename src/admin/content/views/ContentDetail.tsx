@@ -45,7 +45,7 @@ import {
 	navigateToAbsoluteOrRelativeUrl,
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	AdminLayout,

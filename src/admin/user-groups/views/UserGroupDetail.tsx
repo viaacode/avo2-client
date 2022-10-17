@@ -27,7 +27,7 @@ import SmartLink from '../../../shared/components/SmartLink/SmartLink';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';
 import {

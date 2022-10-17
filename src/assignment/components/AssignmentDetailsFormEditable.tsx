@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services/toast-service';
 import {
 	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
