@@ -1,6 +1,5 @@
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
-import { get } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';

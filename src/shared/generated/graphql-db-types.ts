@@ -41443,14 +41443,6 @@ export type GetAssignmentBlocksQueryVariables = Exact<{
 
 export type GetAssignmentBlocksQuery = { __typename?: 'query_root', app_assignment_blocks_v2: Array<{ __typename?: 'app_assignment_blocks_v2', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, original_title?: string | null, original_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_id: any }> };
 
-export type GetAssignmentsByContentIdAndTypeQueryVariables = Exact<{
-  contentId: Scalars['String'];
-  contentType: Lookup_Enum_Assignment_Content_Labels_Enum;
-}>;
-
-
-export type GetAssignmentsByContentIdAndTypeQuery = { __typename?: 'query_root', app_assignments: Array<{ __typename?: 'app_assignments', uuid: any, title?: string | null, is_archived: boolean, profile: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null } | null } }> };
-
 export type GetAssignmentByUuidQueryVariables = Exact<{
   id: Scalars['uuid'];
 }>;
@@ -45101,36 +45093,6 @@ export const useGetAssignmentBlocksQuery = <
     useQuery<GetAssignmentBlocksQuery, TError, TData>(
       ['getAssignmentBlocks', variables],
       fetchData<GetAssignmentBlocksQuery, GetAssignmentBlocksQueryVariables>(GetAssignmentBlocksDocument, variables),
-      options
-    );
-export const GetAssignmentsByContentIdAndTypeDocument = `
-    query getAssignmentsByContentIdAndType($contentId: String!, $contentType: lookup_enum_assignment_content_labels_enum!) {
-  app_assignments(
-    where: {content_id: {_eq: $contentId}, content_label: {_eq: $contentType}, is_deleted: {_eq: false}}
-  ) {
-    uuid
-    title
-    profile {
-      user: usersByuserId {
-        id
-        first_name
-        last_name
-      }
-    }
-    is_archived
-  }
-}
-    `;
-export const useGetAssignmentsByContentIdAndTypeQuery = <
-      TData = GetAssignmentsByContentIdAndTypeQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentsByContentIdAndTypeQueryVariables,
-      options?: UseQueryOptions<GetAssignmentsByContentIdAndTypeQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentsByContentIdAndTypeQuery, TError, TData>(
-      ['getAssignmentsByContentIdAndType', variables],
-      fetchData<GetAssignmentsByContentIdAndTypeQuery, GetAssignmentsByContentIdAndTypeQueryVariables>(GetAssignmentsByContentIdAndTypeDocument, variables),
       options
     );
 export const GetAssignmentByUuidDocument = `

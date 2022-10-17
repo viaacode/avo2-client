@@ -29,7 +29,7 @@ export function useBlocksList(
 						item as BaseBlockWithMeta,
 						delta
 					);
-					setBlocks(switched);
+					setBlocks(switched as BaseBlockWithMeta[]);
 				},
 			};
 

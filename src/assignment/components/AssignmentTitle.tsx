@@ -1,5 +1,5 @@
 import { BlockHeading, ContentInput, Flex, Icon } from '@viaa/avo2-components';
-import React, { FC, useMemo } from 'react';
+import React, { Dispatch, FC, SetStateAction, useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +7,7 @@ import { AssignmentFormState } from '../assignment.types';
 
 type AssignmentTitleProps = {
 	control?: Control<AssignmentFormState>;
-	setAssignment?: React.Dispatch<React.SetStateAction<AssignmentFormState>>;
+	setAssignment?: Dispatch<SetStateAction<Partial<AssignmentFormState> | undefined>>;
 };
 
 const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) => {

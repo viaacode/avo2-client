@@ -16,6 +16,7 @@ import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2,
 	Assignment_v2_With_Labels,
+	Assignment_v2_With_Responses,
 	AssignmentResponseInfo,
 	BaseBlockWithMeta,
 } from '../assignment.types';
@@ -130,7 +131,10 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 					info={
 						assignment ? (
 							<AssignmentMetadata
-								assignment={assignment}
+								assignment={
+									assignment as Assignment_v2_With_Labels &
+										Assignment_v2_With_Responses
+								}
 								assignmentResponse={assignmentResponse}
 								who={'pupil'}
 							/>

@@ -427,12 +427,12 @@ export class AssignmentService {
 	}
 
 	static async updateAssignmentResponse(
-		original: AssignmentResponseInfo,
+		original: Omit<AssignmentResponseInfo, 'assignment'>,
 		update: {
 			collection_title: string;
 			pupil_collection_blocks: PupilCollectionFragment[];
 		}
-	): Promise<Assignment_Response_v2 | null> {
+	): Promise<Omit<Assignment_Response_v2, 'assignment'> | null> {
 		try {
 			if (isNil(original.id)) {
 				throw new CustomError(

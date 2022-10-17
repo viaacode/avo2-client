@@ -25,7 +25,6 @@ import { ToastService } from '../../../shared/services';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
-	Assignment_Response_v2,
 	Assignment_v2_With_Labels,
 	Assignment_v2_With_Responses,
 	AssignmentResponseInfo,
@@ -207,7 +206,14 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 				assignment={assignment}
 				assignmentResponse={assignmentResponse}
 				setAssignmentResponse={
-					setAssignmentResponse as Dispatch<SetStateAction<Assignment_Response_v2>>
+					setAssignmentResponse as Dispatch<
+						SetStateAction<
+							| (Omit<AssignmentResponseInfo, 'assignment' | 'id'> & {
+									id: string | undefined;
+							  })
+							| null
+						>
+					>
 				}
 				showBackButton
 				onShowPreviewClicked={() => {

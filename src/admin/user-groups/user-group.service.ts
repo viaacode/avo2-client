@@ -152,7 +152,7 @@ export class UserGroupService {
 				},
 				update: ApolloCacheManager.clearUserGroupCache,
 			});
-			const userGroupId = response.insert_users_groups.returning[0].id;
+			const userGroupId = response.insert_users_groups?.returning?.[0]?.id;
 			if (isNil(userGroupId)) {
 				throw new CustomError(
 					'Response from database does not contain the id of the inserted user group',

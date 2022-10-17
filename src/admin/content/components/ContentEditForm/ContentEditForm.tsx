@@ -131,14 +131,13 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		}));
 	};
 
-	const mapTagsToLabels = (
-		tags: TagInfo[],
-		contentType: ContentPageType | undefined
-	): Partial<ContentPageLabel>[] => {
+	const mapTagsToLabels = (tags: TagInfo[], contentType: ContentPageType): ContentPageLabel[] => {
 		return (tags || []).map((tag) => ({
 			label: tag.label,
 			id: tag.value as number,
 			content_type: contentType,
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString(),
 		}));
 	};
 
@@ -375,7 +374,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 												'labels',
 												mapTagsToLabels(
 													values,
-													contentPageInfo.content_type
+													contentPageInfo.content_type as ContentPageType
 												)
 											)
 										}

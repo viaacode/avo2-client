@@ -46,7 +46,9 @@ import { PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const [t] = useTranslation();
 
-	const [pupilCollections, setPupilCollections] = useState<Assignment_Response_v2[] | null>(null);
+	const [pupilCollections, setPupilCollections] = useState<
+		Omit<Assignment_Response_v2, 'pupil_collection_blocks'>[] | null
+	>(null);
 	const [pupilCollectionsCount, setPupilCollectionsCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<PupilCollectionsOverviewTableState>>({

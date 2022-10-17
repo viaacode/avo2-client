@@ -48,6 +48,7 @@ import { AssignmentService } from '../../assignment.service';
 import {
 	Assignment_Response_v2,
 	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Responses,
 	AssignmentResponseFormState,
 	AssignmentResponseInfo,
 	AssignmentType,
@@ -71,9 +72,15 @@ import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
 interface AssignmentResponseEditProps {
-	assignment: Assignment_v2_With_Blocks;
-	assignmentResponse: AssignmentResponseInfo;
-	setAssignmentResponse: Dispatch<SetStateAction<AssignmentResponseInfo>>;
+	assignment: Assignment_v2_With_Responses;
+	assignmentResponse:
+		| (Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined })
+		| null;
+	setAssignmentResponse: Dispatch<
+		SetStateAction<
+			(Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined }) | null
+		>
+	>;
 	showBackButton: boolean;
 	isPreview?: boolean;
 	onAssignmentChanged: () => Promise<void>;
@@ -93,8 +100,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const [t] = useTranslation();
 
 	// Data
-	const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
-		useState<AssignmentResponseInfo>(assignmentResponse);
+	const [assignmentResponseOriginal, setAssignmentResponseOriginal] = useState<Omit<
+		AssignmentResponseInfo,
+		'assignment'
+	> | null>(assignmentResponse);
 
 	const {
 		control,
@@ -104,9 +113,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		setValue,
 		trigger,
 	} = useForm<AssignmentResponseFormState>({
-		defaultValues: assignmentResponseOriginal || {
-			collection_title: '',
-			pupil_collection_blocks: [] as PupilCollectionFragment[],
+		defaultValues: {
+			collection_title: assignmentResponseOriginal?.collection_title ?? '',
+			pupil_collection_blocks: (assignmentResponseOriginal?.pupil_collection_blocks ||
+				[]) as Omit<PupilCollectionFragment, 'item_meta'>[],
 		},
 		resolver: yupResolver(PUPIL_COLLECTION_FORM_SCHEMA(t)),
 		mode: 'onChange',
@@ -251,13 +261,13 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	const appendBlockToPupilCollection = (newBlock: BaseBlockWithMeta) => {
 		const newBlocks = setPositionToIndex([
-			...(assignmentResponse.pupil_collection_blocks || []),
+			...(assignmentResponse?.pupil_collection_blocks || []),
 			newBlock,
 		]);
 		setAssignmentResponse({
 			...assignmentResponse,
 			pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
-		});
+		} as Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined });
 		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -305,7 +315,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				return (
 					<AssignmentResponseSearchTab
 						assignment={assignment}
-						assignmentResponse={assignmentResponse}
+						assignmentResponse={assignmentResponse as AssignmentResponseInfo}
 						filterState={filterState}
 						setFilterState={(
 							newFilterState: FilterState,
@@ -340,7 +350,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				return (
 					<AssignmentResponsePupilCollectionTab
 						pastDeadline={pastDeadline}
-						assignmentResponse={assignmentResponse}
+						assignmentResponse={assignmentResponse as AssignmentResponseInfo}
 						setAssignmentResponse={
 							setAssignmentResponse as Dispatch<
 								SetStateAction<Assignment_Response_v2>
@@ -359,7 +369,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return (
 					<AssignmentResponseAssignmentTab
-						blocks={assignment?.blocks || []}
+						blocks={(assignment as unknown as Assignment_v2_With_Blocks)?.blocks || []} // TODO figure out if blocks are available on this assignment, typings suggest they are not
 						pastDeadline={pastDeadline}
 						setTab={setTab}
 						buildSearchLink={buildAssignmentSearchLink(setFilterState)}

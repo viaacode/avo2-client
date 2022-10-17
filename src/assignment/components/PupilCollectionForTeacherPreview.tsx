@@ -11,7 +11,7 @@ import AssignmentHeading from './AssignmentHeading';
 
 export type PupilCollectionForTeacherPreviewProps = {
 	onClose: () => void;
-	assignmentResponse: AssignmentResponseInfo;
+	assignmentResponse: Omit<AssignmentResponseInfo, 'assignment'>;
 	metadata: ReactNode;
 };
 

@@ -59,8 +59,7 @@ export class OrganisationService {
 				query: GetOrganisationsWithUsersDocument,
 			});
 
-			const organisations: Partial<Avo.Organization.Organization>[] | null =
-				response.shared_organisations_with_users;
+			const organisations = response.shared_organisations_with_users;
 
 			if (!organisations) {
 				throw new CustomError('Response does not contain any organisations', null, {
@@ -68,7 +67,7 @@ export class OrganisationService {
 				});
 			}
 
-			return sortBy(organisations, 'name');
+			return sortBy(organisations, 'name') as Partial<Avo.Organization.Organization>[];
 		} catch (err) {
 			throw new CustomError('Failed to get organisations from the database', err, {
 				query: 'GET_ORGANISATIONS_WITH_USERS',
@@ -87,7 +86,7 @@ export class OrganisationService {
 				},
 			});
 
-			const users: Partial<Avo.User.Profile>[] | null = response.users_profiles;
+			const users = response.users_profiles;
 
 			if (!users) {
 				throw new CustomError('Response does not contain any users', null, {
@@ -95,7 +94,7 @@ export class OrganisationService {
 				});
 			}
 
-			return users;
+			return users as Partial<Avo.User.Profile>[];
 		} catch (err) {
 			throw new CustomError('Failed to get users by companyId from the database', err, {
 				query: 'GET_USERS_IN_COMPANY',

@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { get, isNil } from 'lodash-es';
+import { isNil } from 'lodash-es';
 
 import {
 	DeleteInteractiveTourDocument,
@@ -106,7 +106,7 @@ export class InteractiveTourService {
 				},
 				update: ApolloCacheManager.clearInteractiveTourCache,
 			});
-			const interactiveTourId = response.insert_app_interactive_tour.returning[0].id;
+			const interactiveTourId = response.insert_app_interactive_tour?.returning?.[0]?.id;
 			if (isNil(interactiveTourId)) {
 				throw new CustomError(
 					'Response from database does not contain the id of the inserted interactive tour',

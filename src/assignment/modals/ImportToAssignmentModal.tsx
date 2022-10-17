@@ -37,7 +37,11 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { Assignment_v2, AssignmentOverviewTableColumns } from '../assignment.types';
+import {
+	Assignment_v2,
+	Assignment_v2_With_Labels,
+	AssignmentOverviewTableColumns,
+} from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
@@ -161,12 +165,12 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				);
 			}
 			case 'labels':
-				return AssignmentHelper.getLabels(assignment, 'LABEL')
+				return AssignmentHelper.getLabels(assignment as Assignment_v2_With_Labels, 'LABEL')
 					.map((labelLink: any) => labelLink.assignment_label.label)
 					.join(', ');
 
 			case 'class_room':
-				return AssignmentHelper.getLabels(assignment, 'CLASS')
+				return AssignmentHelper.getLabels(assignment as Assignment_v2_With_Labels, 'CLASS')
 					.map((label: any) => label.assignment_label.label)
 					.join(', ');
 

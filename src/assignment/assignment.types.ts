@@ -150,10 +150,10 @@ export interface AssignmentLabelColor {
 
 /// Zoek & bouw
 
-export type AssignmentFormState = Assignment_v2_With_Blocks;
+export type AssignmentFormState = Omit<Assignment_v2_With_Blocks, 'id'> & { id: string | null };
 
 export type AssignmentResponseFormState = Pick<
-	Partial<Assignment_Response_v2>,
+	AssignmentResponseInfo,
 	'collection_title' | 'id'
 > & {
 	pupil_collection_blocks: Omit<PupilCollectionFragment, 'item_meta'>[]; // avoid circular reference ts error

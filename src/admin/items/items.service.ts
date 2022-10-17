@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { compact, get } from 'lodash-es';
 import queryString from 'query-string';
 
@@ -288,7 +287,7 @@ export class ItemsService {
 				},
 			});
 
-			const items: ItemSchema[] = response.app_item_meta ?? [];
+			const items = response.app_item_meta ?? [];
 
 			return Promise.all(
 				externalIds.map((externalId) => {
@@ -296,7 +295,7 @@ export class ItemsService {
 					const item = items.find((item) => item.external_id === externalId);
 
 					if (item) {
-						return addDefaultAudioStillToItem(item) || null;
+						return addDefaultAudioStillToItem(item as unknown as Avo.Item.Item) || null;
 					}
 
 					return this.fetchItemReplacementByExternalId(externalId);

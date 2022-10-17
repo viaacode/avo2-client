@@ -8,13 +8,14 @@ import { isMobileWidth } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import {
 	Assignment_Response_v2,
-	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Responses,
 	AssignmentFormState,
+	AssignmentResponseInfo,
 } from '../assignment.types';
 import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
 export type AssignmentPupilPreviewProps = {
-	assignment: AssignmentFormState;
+	assignment: Partial<AssignmentFormState>;
 	isPreview?: boolean;
 	onClose: () => void;
 };
@@ -26,7 +27,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 	user,
 }) => {
 	const [t] = useTranslation();
-	const [assignmentResponse, setAssignmentResponse] = useState<Assignment_Response_v2 | null>({
+	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo>({
 		collection_title: '',
 		pupil_collection_blocks: [],
 		assignment_id: assignment.id as string,
@@ -38,7 +39,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 		id: '///fake-assignment-response-id',
 		created_at: new Date().toISOString(),
 		updated_at: new Date().toISOString(),
-	} as Assignment_Response_v2);
+	} as AssignmentResponseInfo);
 
 	const renderClosePreviewButton = () => (
 		<Button
@@ -64,10 +65,17 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 			/>
 			{assignmentResponse && (
 				<AssignmentResponseEdit
-					assignment={assignment as Assignment_v2_With_Blocks}
+					assignment={assignment as Assignment_v2_With_Responses}
 					assignmentResponse={assignmentResponse}
 					setAssignmentResponse={
-						setAssignmentResponse as Dispatch<SetStateAction<Assignment_Response_v2>>
+						setAssignmentResponse as Dispatch<
+							SetStateAction<
+								| (Omit<AssignmentResponseInfo, 'assignment' | 'id'> & {
+										id: string | undefined;
+								  })
+								| null
+							>
+						>
 					}
 					isPreview={isPreview}
 					showBackButton={false}

@@ -78,7 +78,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
 	};
 	const setBlock = useAssignmentBlockChangeHandler(
-		assignment.blocks,
+		assignment?.blocks || [],
 		updateBlocksInAssignmentState
 	);
 
@@ -89,11 +89,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			const created = await AssignmentService.insertAssignment(
 				{
 					...assignment,
-					blocks: cleanupTitleAndDescriptions(assignment.blocks) as AssignmentBlock[],
+					blocks: cleanupTitleAndDescriptions(
+						assignment?.blocks || []
+					) as AssignmentBlock[],
 					owner_profile_id: user.profile?.id,
 					labels: [],
 				},
-				assignment.labels.map((label) => label.assignment_label)
+				assignment?.labels?.map((label) => label.assignment_label) || []
 			);
 
 			if (created) {
@@ -147,7 +149,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
-		assignment.blocks,
+		assignment?.blocks || [],
 		updateBlocksInAssignmentState,
 		{
 			confirmSliceConfig: {
@@ -175,12 +177,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		modal: {
-			items: assignment.blocks,
+			items: assignment?.blocks || [],
 			onClose: (update?: AssignmentBlock[]) => {
 				if (update) {
 					const blocks = update.map((item, i) => ({
 						...item,
-						position: assignment.blocks[i].position,
+						position: assignment?.blocks?.[i]?.position || 0,
 					}));
 
 					setAssignment((prev) => ({
@@ -194,27 +196,31 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		},
 	});
 
-	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
-		listSorter: {
-			content: (item) => item && renderBlockContent(item),
-			divider: (position: number) => (
-				<Button
-					icon="plus"
-					type="secondary"
-					onClick={() => {
-						addBlockModal.setEntity(position);
-						addBlockModal.setOpen(true);
-					}}
-				/>
-			),
-		},
-		listSorterItem: {
-			onSlice: (item) => {
-				confirmSliceModal.setEntity(item);
-				confirmSliceModal.setOpen(true);
+	const [renderedListSorter] = useBlocksList(
+		assignment?.blocks || [],
+		updateBlocksInAssignmentState,
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (position: number) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							addBlockModal.setEntity(position);
+							addBlockModal.setOpen(true);
+						}}
+					/>
+				),
 			},
-		},
-	});
+			listSorterItem: {
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
+				},
+			},
+		}
+	);
 
 	const renderBackButton = useMemo(
 		() => (
@@ -238,7 +244,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
 				return (
 					<div className="c-assignment-contents-tab">
-						{assignment.blocks.length > 0 && (
+						{(assignment?.blocks?.length || 0) > 0 && (
 							<Spacer
 								margin={['bottom-large']}
 								className="c-assignment-page__reorder-container"
@@ -290,9 +296,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Synchronise the React state that triggers renders with the useForm hook
 	useEffect(() => {
-		Object.keys(assignment).forEach((key) => {
+		Object.keys(assignment || {}).forEach((key) => {
 			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment[cast]);
+			setValue(cast, assignment?.[cast]);
 		});
 
 		trigger();
@@ -342,7 +348,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	);
 
 	const renderPageContent = () => {
-		if (isViewAsPupilEnabled) {
+		if (isViewAsPupilEnabled && assignment) {
 			return (
 				<AssignmentPupilPreview
 					assignment={assignment}

@@ -25,6 +25,7 @@ import { ToastService } from '../../../../../shared/services';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import i18n from '../../../../../shared/translations/i18n';
 import { ContentPageLabelService } from '../../../../content-page-labels/content-page-label.service';
+import { ContentPageLabel } from '../../../../content-page-labels/content-page-label.types';
 import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { convertToContentPageInfos } from '../../../../content/helpers/parsers';

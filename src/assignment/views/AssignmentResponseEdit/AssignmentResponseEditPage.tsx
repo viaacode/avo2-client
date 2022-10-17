@@ -1,13 +1,6 @@
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { isString } from 'lodash-es';
-import React, {
-	Dispatch,
-	FunctionComponent,
-	SetStateAction,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
@@ -26,8 +19,8 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
-	Assignment_Response_v2,
-	Assignment_v2,
+	Assignment_v2_With_Labels,
+	Assignment_v2_With_Responses,
 	AssignmentResponseInfo,
 	AssignmentRetrieveError,
 } from '../../assignment.types';
@@ -47,12 +40,15 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 	// Data
 	const assignmentId = match.params.id;
-	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
+	const [assignment, setAssignment] = useState<
+		(Assignment_v2_With_Labels & Assignment_v2_With_Responses) | null
+	>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<any | null>(null);
-	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo | null>(
-		null
-	);
+	const [assignmentResponse, setAssignmentResponse] = useState<Omit<
+		AssignmentResponseInfo,
+		'assignment'
+	> | null>(null);
 
 	// UI
 
@@ -100,7 +96,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
-			const assignmentOrError: Assignment_v2 | string =
+			const assignmentOrError: Assignment_v2_With_Labels & Assignment_v2_With_Responses =
 				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
 
 			if (isString(assignmentOrError)) {
@@ -229,9 +225,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 			<AssignmentResponseEdit
 				assignment={assignment}
 				assignmentResponse={assignmentResponse}
-				setAssignmentResponse={
-					setAssignmentResponse as Dispatch<SetStateAction<Assignment_Response_v2>>
-				}
+				setAssignmentResponse={setAssignmentResponse}
 				showBackButton
 				onShowPreviewClicked={() => {
 					setIsTeacherPreviewEnabled(true);
