@@ -7,7 +7,7 @@ import {
 	RenderLinkFunction,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { cloneDeep, get, isNumber } from 'lodash-es';
+import { cloneDeep, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
@@ -227,7 +227,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			// Set the pages on the state after removing the page that will be shown at the top (?item=/path)
 			setPages(
 				convertToContentPageInfos(response.pages).filter(
-					(page) => page.id !== get(tempFocusedPage, 'id')
+					(page) => page.id !== tempFocusedPage?.id
 				)
 			);
 			setPageCount(Math.ceil(response.count / debouncedItemsPerPage));

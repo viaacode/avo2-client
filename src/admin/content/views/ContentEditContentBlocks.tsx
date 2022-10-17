@@ -1,8 +1,7 @@
+import { Navbar, Select } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { Navbar, Select } from '@viaa/avo2-components';
 
 import { ContentPage } from '../../../content-page/views';
 import { ResizablePanels } from '../../../shared/components';
