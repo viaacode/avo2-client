@@ -616,7 +616,7 @@ export class CollectionService {
 				dataService.mutate({
 					mutation: REMOVE_COLLECTION_BOOKMARKS,
 					variables: {
-						collectionUuid: collectionId,
+						id: collectionId,
 					},
 				}),
 			]);
