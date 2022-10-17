@@ -1,10 +1,10 @@
 .m-cut-fragment-modal {
-  .c-cut-overlay {
-	display: none;
-  }
+	.c-cut-overlay {
+		display: none;
+	}
 
-  // Hide cuepoint during cut of a video
-  .fp-cuepoint {
-	display: none !important;
-  }
+	// Hide cuepoint during cut of a video
+	.fp-cuepoint {
+		display: none !important;
+	}
 }

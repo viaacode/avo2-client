@@ -8,8 +8,9 @@ import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
 import {
 	App_Collection_Marcom_Log_Insert_Input,
-	DeleteCollectionBookmarkDocument,
-	DeleteCollectionBookmarkMutation,
+	DeleteCollectionBookmarksDocument,
+	DeleteCollectionBookmarksMutation,
+	DeleteCollectionBookmarksMutationVariables,
 	DeleteCollectionFragmentByIdDocument,
 	DeleteCollectionFragmentByIdMutation,
 	DeleteCollectionLabelsDocument,
@@ -76,6 +77,7 @@ import {
 	Lookup_Enum_Relation_Types_Enum,
 	SoftDeleteCollectionByIdDocument,
 	SoftDeleteCollectionByIdMutation,
+	SoftDeleteCollectionByIdMutationVariables,
 	UpdateCollectionByIdDocument,
 	UpdateCollectionByIdMutation,
 	UpdateCollectionByIdMutationVariables,
@@ -652,14 +654,14 @@ export class CollectionService {
 					query: SoftDeleteCollectionByIdDocument,
 					variables: {
 						id: collectionId,
-					},
+					} as SoftDeleteCollectionByIdMutationVariables,
 					update: ApolloCacheManager.clearCollectionCache,
 				}),
-				dataService.query<DeleteCollectionBookmarkMutation>({
-					query: DeleteCollectionBookmarkDocument,
+				dataService.query<DeleteCollectionBookmarksMutation>({
+					query: DeleteCollectionBookmarksDocument,
 					variables: {
-						collectionUuid: collectionId,
-					},
+						id: collectionId,
+					} as DeleteCollectionBookmarksMutationVariables,
 				}),
 			]);
 		} catch (err) {

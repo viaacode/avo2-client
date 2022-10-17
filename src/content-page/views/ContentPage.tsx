@@ -23,8 +23,12 @@ type ContentPageDetailProps =
 			contentPageInfo: Partial<ContentPageInfo>;
 			activeBlockPosition?: number | null;
 			onBlockClicked?: BlockClickHandler;
+			onLoaded?: (contentPageInfo: ContentPageInfo) => void;
 	  }
-	| { path: string };
+	| {
+			path: string;
+			onLoaded?: (contentPageInfo: ContentPageInfo) => void;
+	  };
 
 const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (props) => {
 	const [t] = useTranslation();
@@ -72,7 +76,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 	useEffect(() => {
 		if (contentPageInfo) {
 			setLoadingInfo({ state: 'loaded' });
-			scrollTo({ top: 0 });
+			props.onLoaded?.(contentPageInfo);
 		}
 	}, [contentPageInfo]);
 

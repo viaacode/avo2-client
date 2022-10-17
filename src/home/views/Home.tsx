@@ -31,7 +31,10 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, use
 					content={t('home/views/home___ingelogde-start-pagina-beschrijving')}
 				/>
 			</MetaTags>
-			<ContentPage path={`/${ROUTE_PARTS.loggedInHome}`} />
+			<ContentPage
+				path={`/${ROUTE_PARTS.loggedInHome}`}
+				onLoaded={() => scrollTo({ top: 0 })}
+			/>
 		</>
 	);
 };

@@ -42039,13 +42039,6 @@ export type UpdateAssignmentLabelsMutationVariables = Exact<{
 
 export type UpdateAssignmentLabelsMutation = { __typename?: 'mutation_root', update_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', affected_rows: number } | null };
 
-export type DeleteCollectionBookmarkMutationVariables = Exact<{
-  collectionUuid: Scalars['uuid'];
-}>;
-
-
-export type DeleteCollectionBookmarkMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
-
 export type DeleteCollectionBookmarksForUserMutationVariables = Exact<{
   collectionUuid: Scalars['uuid'];
   profileId?: InputMaybe<Scalars['uuid']>;
@@ -42053,6 +42046,13 @@ export type DeleteCollectionBookmarksForUserMutationVariables = Exact<{
 
 
 export type DeleteCollectionBookmarksForUserMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionBookmarksMutationVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type DeleteCollectionBookmarksMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
 
 export type DeleteItemBookmarkMutationVariables = Exact<{
   itemUuid: Scalars['uuid'];
@@ -47401,24 +47401,6 @@ export const useUpdateAssignmentLabelsMutation = <
       (variables?: UpdateAssignmentLabelsMutationVariables) => fetchData<UpdateAssignmentLabelsMutation, UpdateAssignmentLabelsMutationVariables>(UpdateAssignmentLabelsDocument, variables)(),
       options
     );
-export const DeleteCollectionBookmarkDocument = `
-    mutation deleteCollectionBookmark($collectionUuid: uuid!) {
-  delete_app_collection_bookmarks(
-    where: {collection_uuid: {_eq: $collectionUuid}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteCollectionBookmarkMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteCollectionBookmarkMutation, TError, DeleteCollectionBookmarkMutationVariables, TContext>) =>
-    useMutation<DeleteCollectionBookmarkMutation, TError, DeleteCollectionBookmarkMutationVariables, TContext>(
-      ['deleteCollectionBookmark'],
-      (variables?: DeleteCollectionBookmarkMutationVariables) => fetchData<DeleteCollectionBookmarkMutation, DeleteCollectionBookmarkMutationVariables>(DeleteCollectionBookmarkDocument, variables)(),
-      options
-    );
 export const DeleteCollectionBookmarksForUserDocument = `
     mutation deleteCollectionBookmarksForUser($collectionUuid: uuid!, $profileId: uuid) {
   delete_app_collection_bookmarks(
@@ -47435,6 +47417,22 @@ export const useDeleteCollectionBookmarksForUserMutation = <
     useMutation<DeleteCollectionBookmarksForUserMutation, TError, DeleteCollectionBookmarksForUserMutationVariables, TContext>(
       ['deleteCollectionBookmarksForUser'],
       (variables?: DeleteCollectionBookmarksForUserMutationVariables) => fetchData<DeleteCollectionBookmarksForUserMutation, DeleteCollectionBookmarksForUserMutationVariables>(DeleteCollectionBookmarksForUserDocument, variables)(),
+      options
+    );
+export const DeleteCollectionBookmarksDocument = `
+    mutation deleteCollectionBookmarks($id: uuid!) {
+  delete_app_collection_bookmarks(where: {collection_uuid: {_eq: $id}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionBookmarksMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionBookmarksMutation, TError, DeleteCollectionBookmarksMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionBookmarksMutation, TError, DeleteCollectionBookmarksMutationVariables, TContext>(
+      ['deleteCollectionBookmarks'],
+      (variables?: DeleteCollectionBookmarksMutationVariables) => fetchData<DeleteCollectionBookmarksMutation, DeleteCollectionBookmarksMutationVariables>(DeleteCollectionBookmarksDocument, variables)(),
       options
     );
 export const DeleteItemBookmarkDocument = `

@@ -3,7 +3,9 @@ import { get } from 'lodash-es';
 
 import {
 	DeleteCollectionBookmarksForUserDocument,
+	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkDocument,
+	DeleteItemBookmarkMutationVariables,
 	GetCollectionPlayCountDocument,
 	GetCollectionViewCountDocument,
 	GetItemPlayCountDocument,
@@ -68,16 +70,22 @@ export const EVENT_QUERIES: {
 	unbookmark: {
 		item: {
 			query: DeleteItemBookmarkDocument,
-			variables: (itemUuid: string, user?: Avo.User.User) => ({
+			variables: (
+				itemUuid: string,
+				user?: Avo.User.User
+			): DeleteItemBookmarkMutationVariables => ({
 				itemUuid,
-				profileId: get(user, 'profile.id', null),
+				profileId: user?.profile?.id || null,
 			}),
 		},
 		collection: {
 			query: DeleteCollectionBookmarksForUserDocument,
-			variables: (collectionUuid: string, user?: Avo.User.User) => ({
+			variables: (
+				collectionUuid: string,
+				user?: Avo.User.User
+			): DeleteCollectionBookmarksForUserMutationVariables => ({
 				collectionUuid,
-				profileId: get(user, 'profile.id', null),
+				profileId: user?.profile?.id || null,
 			}),
 		},
 	},
