@@ -96,6 +96,7 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@graphql-codegen/add": "^3.2.1",
     "@graphql-codegen/cli": "2.13.3",
     "@graphql-codegen/introspection": "2.2.1",
     "@graphql-codegen/typed-document-node": "2.3.3",

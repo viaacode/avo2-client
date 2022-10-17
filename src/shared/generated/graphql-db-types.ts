@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
-import { fetchData } from './src/shared/services/data-service.ts';
+import { fetchData } from '../services/data-service.ts';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };

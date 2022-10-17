@@ -11,7 +11,10 @@ generates:
       - typescript
       - typescript-operations
       - typescript-react-query
+      - add:
+          content: '// @ts-nocheck'
+
     config:
-      fetcher: './src/shared/services/data-service.ts#fetchData'
+      fetcher: '../services/data-service.ts#fetchData'
 
 
