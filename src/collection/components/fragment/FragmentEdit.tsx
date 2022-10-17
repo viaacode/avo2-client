@@ -159,7 +159,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			user
 		);
 
-		if (isThisFragmentACollection) {
+		if (!isThisFragmentACollection) {
 			if (fragment.type === 'TEXT') {
 				// Text block
 				ToastService.success(
