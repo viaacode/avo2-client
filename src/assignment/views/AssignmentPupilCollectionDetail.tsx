@@ -149,7 +149,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 									},
 									meta: {
 										buildSeriesLink: (serie) =>
-											buildGlobalSearchLink({ serie: [serie] }),
+											buildGlobalSearchLink({ filters: { serie: [serie] } }),
 									},
 									canOpenOriginal: true,
 								},

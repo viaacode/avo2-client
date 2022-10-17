@@ -11,6 +11,9 @@ export function reorderDate(dateString: string | null, separator = '/'): string 
 	return (dateString || '').substring(0, 10).split('-').reverse().join(separator);
 }
 
+/**
+ * @deprecated Use date-fns functions where possible
+ */
 export function normalizeTimestamp(timestamp: DateLike): Moment {
 	if (moment.isMoment(timestamp)) {
 		return timestamp;

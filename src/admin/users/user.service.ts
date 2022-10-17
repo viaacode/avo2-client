@@ -2,11 +2,12 @@ import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { ApolloQueryResult } from 'apollo-boost';
+import { endOfDay, isBefore } from 'date-fns';
 import { DocumentNode } from 'graphql';
 import { compact, flatten, get, isNil } from 'lodash-es';
 import moment from 'moment';
 
-import { CustomError, getEnv, normalizeTimestamp } from '../../shared/helpers';
+import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
@@ -84,7 +85,7 @@ export class UserService {
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {
 				profileId,
-				query: 'GET_USER_BY_ID',
+				query: 'GET_USER_TEMP_ACCESS_BY_ID',
 			});
 		}
 	}
@@ -109,8 +110,12 @@ export class UserService {
 				update: ApolloCacheManager.clearCollectionCache,
 			});
 
+			/**
+			 * Trigger email if from day is <= updated at day
+			 * https://meemoo.atlassian.net/browse/AVO-1779
+			 */
 			const hasAccessNow =
-				!!tempAccess.from && normalizeTimestamp(tempAccess.from).isBefore(moment());
+				!!tempAccess.from && isBefore(new Date(tempAccess.from), endOfDay(new Date()));
 
 			if (hasAccessNow && tempAccess.until) {
 				const isBlocked = !hasAccessNow;
@@ -118,7 +123,8 @@ export class UserService {
 				await UserService.updateTempAccessBlockStatusByProfileIds(
 					[profileId],
 					isBlocked,
-					moment(tempAccess.until).format('DD-MM-YYYY')
+					moment(tempAccess.until).format('DD-MM-YYYY'),
+					true
 				);
 			}
 		} catch (err) {
@@ -132,7 +138,8 @@ export class UserService {
 	static async updateTempAccessBlockStatusByProfileIds(
 		profileIds: string[],
 		isBlocked: boolean,
-		tempAccessUntil: string
+		tempAccessUntil: string,
+		sendEmail: boolean
 	): Promise<void> {
 		let url: string | undefined;
 
@@ -143,6 +150,7 @@ export class UserService {
 				profileIds,
 				isBlocked,
 				tempAccessUntil,
+				sendEmail,
 			};
 
 			const response = await fetchWithLogout(url, {
@@ -341,7 +349,8 @@ export class UserService {
 
 	static async updateBlockStatusByProfileIds(
 		profileIds: string[],
-		isBlocked: boolean
+		isBlocked: boolean,
+		sendEmail: boolean
 	): Promise<void> {
 		let url: string | undefined;
 		try {
@@ -350,6 +359,7 @@ export class UserService {
 			const body: Avo.User.BulkBlockUsersBody = {
 				profileIds,
 				isBlocked,
+				sendEmail,
 			};
 
 			const response = await fetchWithLogout(url, {
@@ -382,7 +392,8 @@ export class UserService {
 	static async bulkDeleteUsers(
 		profileIds: string[],
 		deleteOption: Avo.User.UserDeleteOption,
-		transferToProfileId?: string
+		transferToProfileId: string | undefined,
+		sendEmail: boolean
 	): Promise<void> {
 		let url: string | undefined;
 		try {
@@ -391,6 +402,7 @@ export class UserService {
 				profileIds,
 				deleteOption,
 				transferToProfileId,
+				sendEmail,
 			};
 			const response = await fetchWithLogout(url, {
 				method: 'DELETE',
@@ -436,7 +448,7 @@ export class UserService {
 				privateCollections: get(response, 'data.privateCollections.aggregate.count'),
 				assignments: get(response, 'data.assignments.aggregate.count', '-'),
 				bookmarks:
-					get(response, 'data.collectionBookmarks.aggregate.count ', 0) +
+					get(response, 'data.collectionBookmarks.aggregate.count', 0) +
 					get(response, 'data.itemBookmarks.aggregate.count', 0),
 				publicContentPages: get(response, 'data.publicContentPages.aggregate.count'),
 				privateContentPages: get(response, 'data.privateContentPages.aggregate.count'),
@@ -540,7 +552,7 @@ export class UserService {
 		}
 	}
 
-	static async fetchDistinctBusinessCategories() {
+	static async fetchDistinctBusinessCategories(): Promise<string[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_DISTINCT_BUSINESS_CATEGORIES,
@@ -548,9 +560,10 @@ export class UserService {
 			if (response.errors) {
 				throw new CustomError('GraphQL query has errors', null, { response });
 			}
-			return get(response, 'data.users_profiles', []).map(
-				(profile: Partial<Avo.User.Profile>) => profile.business_category
-			);
+
+			return (get(response, 'data.users_profiles', []) as Partial<Avo.User.Profile>[])
+				.map((profile) => profile.business_category)
+				.filter((category) => !!category) as string[]; // Cast to fix infer
 		} catch (err) {
 			throw new CustomError('Failed to get distinct business categories from profiles', err, {
 				query: 'GET_DISTINCT_BUSINESS_CATEGORIES',
@@ -558,7 +571,7 @@ export class UserService {
 		}
 	}
 
-	static async fetchIdps() {
+	static async fetchIdps(): Promise<string[]> {
 		try {
 			const response = await dataService.query({
 				query: GET_IDPS,

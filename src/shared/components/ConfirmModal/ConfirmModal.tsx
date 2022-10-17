@@ -8,19 +8,20 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { ModalPropsSchema } from '@viaa/avo2-components/src/components/Modal/Modal';
 import { noop } from 'lodash';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 
 import { sanitizeHtml } from '../../helpers';
 import i18n from '../../translations/i18n';
-import Html from '../Html/Html';
 
 export interface ConfirmModalProps {
 	title?: string;
-	body?: string;
+	body?: string | ReactNode;
 	cancelLabel?: string;
 	confirmLabel?: string;
 	confirmButtonType?: ButtonType;
+	size?: ModalPropsSchema['size'];
 	isOpen: boolean;
 	onClose?: () => void;
 	confirmCallback?: () => void;
@@ -37,6 +38,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Verwijder',
 	confirmButtonType = 'danger',
+	size = 'small',
 	onClose = noop,
 	isOpen,
 	confirmCallback = noop,
@@ -47,12 +49,12 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 			className={className}
 			isOpen={isOpen}
 			title={title && sanitizeHtml(title, 'basic')}
-			size="small"
+			size={size}
 			onClose={onClose}
 			scrollable
 		>
 			<ModalBody>
-				{!!body && <Html content={body} />}
+				{!!body && body}
 				<Toolbar spaced>
 					<ToolbarRight>
 						<ToolbarItem>

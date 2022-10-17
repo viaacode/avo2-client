@@ -546,6 +546,27 @@ export const DELETE_MARCOM_ENTRY = gql`
 	}
 `;
 
+export const DELETE_MARCOM_ENTRIES_BY_PARENT_COLLECTION_ID = gql`
+	mutation deleteMarcomEntriesByParentCollectionId(
+		$collectionId: uuid
+		$channelName: String
+		$channelType: String
+		$publishDateGte: timestamptz
+		$publishDateLte: timestamptz
+	) {
+		delete_app_collection_marcom_log(
+			where: {
+				parent_collection_id: { _eq: $collectionId }
+				publish_date: { _gte: $publishDateGte, _lte: $publishDateLte }
+				channel_name: { _eq: $channelName }
+				channel_type: { _eq: $channelType }
+			}
+		) {
+			affected_rows
+		}
+	}
+`;
+
 export const INSERT_MARCOM_NOTE = gql`
 	mutation insertMarcomNote($collectionId: uuid, $note: String) {
 		insert_app_collection_marcom_notes(objects: { note: $note, collection_id: $collectionId }) {

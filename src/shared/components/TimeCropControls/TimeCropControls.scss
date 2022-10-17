@@ -1,22 +1,7 @@
 $multiRangeMargin: 15px;
 $multiRangeInputWidth: 87px;
 
-.c-modal__body-add-fragment {
-	.c-radio + div {
-		padding-left: 2.2rem;
-	}
-
-	.c-cut-overlay {
-		display: none;
-	}
-
-	// Hide cuepoint during cut of a video
-	.fp-cuepoint {
-		display: none !important;
-	}
-}
-
-.m-time-crop-controls {
+.c-time-crop-controls {
 	.c-input {
 		width: $multiRangeInputWidth;
 		display: inline-block;

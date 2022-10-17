@@ -4,6 +4,16 @@
 	opacity: 0;
 }
 
+.c-content-page-overview-block {
+	.c-page-overview-news-list,
+	.c-page-overview-project-list {
+		h2,
+		h3 {
+			font-size: 2.1rem;
+		}
+	}
+}
+
 .c-content-block {
 	position: relative;
 

@@ -20,6 +20,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
+import Html from '../../../shared/components/Html/Html';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
@@ -401,10 +402,14 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					defaultOrderDirection={'desc'}
 				/>
 				<ConfirmModal
-					body={t(
-						'admin/assignments/views/assignments-overview-admin___dit-zal-num-of-selected-assignment-opdrachten-verwijderen-deze-actie-kan-niet-ongedaan-gemaakt-worden',
-						{ numOfSelectedAssignment: selectedAssignmentIds.length }
-					)}
+					body={
+						<Html
+							content={t(
+								'admin/assignments/views/assignments-overview-admin___dit-zal-num-of-selected-assignment-opdrachten-verwijderen-deze-actie-kan-niet-ongedaan-gemaakt-worden',
+								{ numOfSelectedAssignment: selectedAssignmentIds.length }
+							)}
+						/>
+					}
 					isOpen={assignmentsDeleteModalOpen}
 					onClose={() => setAssignmentsDeleteModalOpen(false)}
 					confirmCallback={deleteSelectedAssignments}

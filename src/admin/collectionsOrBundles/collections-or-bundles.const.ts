@@ -483,16 +483,21 @@ const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
 	),
 	sortable: true,
 	visibleByDefault: true,
-	dataType: TableColumnDataType.string,
 });
 
-const getMarcomLastCommunicationChannelNameColumn = (): FilterableColumn => ({
+const getMarcomLastCommunicationChannelNameColumn = (
+	channelNameOptions: CheckboxOption[]
+): FilterableColumn => ({
 	id: 'marcom_last_communication_channel_name',
 	label: i18n.t(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-naam'
 	),
 	sortable: true,
 	visibleByDefault: true,
+	filterType: 'CheckboxDropdownModal',
+	filterProps: {
+		options: channelNameOptions,
+	},
 	dataType: TableColumnDataType.string,
 });
 
@@ -504,15 +509,6 @@ const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.dateTime,
-});
-
-const getMarcomKlascementColumn = (): FilterableColumn => ({
-	id: 'marcom_klascement',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___klas-cement'),
-	sortable: true,
-	visibleByDefault: true,
-	filterType: 'BooleanCheckboxDropdown',
-	dataType: TableColumnDataType.boolean,
 });
 
 const getMarcomLastUpdatedByColumn = (): FilterableColumn => ({
@@ -626,6 +622,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 export const GET_COLLECTION_MARCOM_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
+	channelNameOptions: CheckboxOption[],
 	subjects: string[],
 	educationLevels: string[],
 	organisations: CheckboxOption[]
@@ -637,9 +634,8 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getCollectionCreatedAtColumn(),
 	getCollectionUpdatedAtColumn(),
 	getMarcomLastCommunicationChannelTypeColumn(),
-	getMarcomLastCommunicationChannelNameColumn(),
+	getMarcomLastCommunicationChannelNameColumn(channelNameOptions),
 	getMarcomLastCommunicationAtColumn(),
-	getMarcomKlascementColumn(),
 	getCollectionIsPublicColumn(),
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),

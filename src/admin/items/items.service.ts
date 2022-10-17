@@ -1,7 +1,7 @@
+import { Avo } from '@viaa/avo2-types';
+import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { compact, get } from 'lodash-es';
 import queryString from 'query-string';
-
-import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv, performQuery } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
@@ -9,6 +9,7 @@ import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { ApolloCacheManager, dataService } from '../../shared/services';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
+import { UnpublishableItem } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
@@ -16,14 +17,15 @@ import {
 	DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
 	FETCH_ITEM_UUID_BY_EXTERNAL_ID,
 	GET_DISTINCT_SERIES,
-	GET_ITEMS_WITH_FILTERS,
-	GET_ITEMS_BY_EXTERNAL_ID,
 	GET_ITEM_BY_UUID,
 	GET_ITEM_DEPUBLISH_REASON,
+	GET_ITEMS_BY_EXTERNAL_ID,
+	GET_ITEMS_WITH_FILTERS,
 	GET_PUBLIC_ITEMS,
 	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
-	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
 	GET_UNPUBLISHED_ITEM_PIDS,
+	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
+	GET_USERS_WITH_BOTH_BOOKMARKS,
 	REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
 	UPDATE_ITEM_DEPUBLISH_REASON,
 	UPDATE_ITEM_NOTES,
@@ -35,8 +37,6 @@ import {
 	UnpublishedItem,
 	UnpublishedItemsOverviewTableCols,
 } from './items.types';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
-import { UnpublishableItem } from '../../shared/types';
 
 export class ItemsService {
 	public static async fetchItemsWithFilters(
@@ -261,10 +261,10 @@ export class ItemsService {
 	}
 
 	public static async fetchItemByExternalId(externalId: string): Promise<UnpublishableItem> {
-		return (await this.fetchItemsByExternalId([externalId]))[0] || null;
+		return (await this.fetchItemsByExternalIds([externalId]))[0] || null;
 	}
 
-	public static async fetchItemsByExternalId(
+	public static async fetchItemsByExternalIds(
 		externalIds: string[]
 	): Promise<Array<UnpublishableItem>> {
 		if (externalIds.length < 1) {
@@ -376,11 +376,25 @@ export class ItemsService {
 	}
 
 	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
-		return performQuery(
-			{ query: FETCH_ITEM_UUID_BY_EXTERNAL_ID, variables: { externalId } },
-			'data.app_item_meta[0].uid',
-			'Failed to fetch item uuid by external id (FETCH_ITEM_UUID_BY_EXTERNAL_ID)'
-		);
+		try {
+			const response = await dataService.query({
+				query: FETCH_ITEM_UUID_BY_EXTERNAL_ID,
+				variables: { externalId },
+			});
+
+			if (response.errors) {
+				if (response.errors[0].originalError?.message !== 'DEPUBLISH') {
+					throw new CustomError('GraphQL response contains errors');
+				}
+			}
+
+			return response?.data?.app_item_meta?.[0]?.uid || null;
+		} catch (err) {
+			throw new CustomError(
+				'Failed to fetch item uuid by external id (FETCH_ITEM_UUID_BY_EXTERNAL_ID)',
+				err
+			);
+		}
 	}
 
 	public static async fetchPublicItemsByTitleOrExternalId(
@@ -470,6 +484,20 @@ export class ItemsService {
 		newItemExternalId: string
 	) {
 		try {
+			const usersWithBothBookmarks = (
+				(await performQuery(
+					{
+						query: GET_USERS_WITH_BOTH_BOOKMARKS,
+						variables: {
+							oldItemUid,
+							newItemUid,
+						},
+					},
+					'data.users_profiles',
+					'Failed while checking users with both bookmarks.'
+				)) as Pick<Avo.User.Profile, 'id'>[]
+			).map((profile) => profile.id);
+
 			const response = await dataService.mutate({
 				mutation: REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
 				variables: {
@@ -477,6 +505,7 @@ export class ItemsService {
 					oldItemExternalId,
 					newItemUid,
 					newItemExternalId,
+					usersWithBothBookmarks,
 				},
 				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});

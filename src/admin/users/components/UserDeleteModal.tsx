@@ -2,6 +2,7 @@ import {
 	Alert,
 	Button,
 	ButtonToolbar,
+	Checkbox,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
@@ -25,6 +26,8 @@ import { PickerItem } from '../../shared/types';
 import { GET_DELETE_RADIO_OPTIONS } from '../user.const';
 import { UserService } from '../user.service';
 import { DeleteContentCounts } from '../user.types';
+
+import './UserDeleteModal.scss';
 
 interface UserDeleteModalProps {
 	selectedProfileIds: string[];
@@ -54,6 +57,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 	const [deleteContentCounts, setDeleteContentCounts] = useState<DeleteContentCounts | null>(
 		null
 	);
+	const [shouldSendEmail, setShouldSendEmail] = useState<boolean>(false);
 
 	const validateOptionModalAndOpenConfirm = async () => {
 		try {
@@ -109,6 +113,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 
 	const handleConfirmModalClose = () => {
 		setDeleteConfirmModalOpen(false);
+		setShouldSendEmail(false);
 		setDeleteContentCounts(null);
 		setSelectedDeleteOption('DELETE_ALL');
 		setTransferToUser(null);
@@ -134,7 +139,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						ADMIN_PATH.COLLECTIONS_OVERVIEW,
 						{},
 						{
-							is_public: '1',
+							is_public: 'true',
 							owner_profile_id: selectedProfileIds.join('~'),
 						}
 					)}
@@ -152,7 +157,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						ADMIN_PATH.COLLECTIONS_OVERVIEW,
 						{},
 						{
-							is_public: '0',
+							is_public: 'false',
 							owner_profile_id: selectedProfileIds.join('~'),
 						}
 					)}
@@ -170,7 +175,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
 						{},
 						{
-							is_public: '1',
+							is_public: 'true',
 							user_profile_id: selectedProfileIds.join('~'),
 						}
 					)}
@@ -188,7 +193,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
 						{},
 						{
-							is_public: '0',
+							is_public: 'false',
 							user_profile_id: selectedProfileIds.join('~'),
 						}
 					)}
@@ -243,6 +248,13 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 					</Spacer>
 				)}
 
+				<Checkbox
+					label={t(
+						'admin/users/components/user-delete-modal___breng-de-gebruiker-s-op-de-hoogte-van-deze-actie'
+					)}
+					checked={shouldSendEmail}
+					onChange={setShouldSendEmail}
+				/>
 				<Spacer margin="top">
 					<Alert
 						message={t(
@@ -258,10 +270,12 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 	const handleDeleteUsers = async () => {
 		try {
 			setDeleteConfirmModalOpen(false);
+			setShouldSendEmail(false);
 			await UserService.bulkDeleteUsers(
 				selectedProfileIds,
 				selectedDeleteOption,
-				transferToUser?.value
+				transferToUser?.value,
+				shouldSendEmail
 			);
 
 			ToastService.success(t('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
@@ -283,6 +297,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 				isOpen={isOpen}
 				onClose={onClose}
 				size="medium"
+				className="c-user-delete-modal"
 			>
 				<ModalBody>
 					<RadioButtonGroup
@@ -336,6 +351,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 				size="medium"
 				onClose={handleConfirmModalClose}
 				scrollable
+				className="c-user-delete-modal"
 			>
 				<ModalBody>
 					{renderConfirmDeleteMessage()}

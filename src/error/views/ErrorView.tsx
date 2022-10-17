@@ -1,10 +1,3 @@
-import { isArray, isNil, isString, omit, uniq } from 'lodash-es';
-import queryString from 'query-string';
-import React, { FunctionComponent, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { compose } from 'redux';
-
 import {
 	Blankslate,
 	Button,
@@ -18,6 +11,12 @@ import {
 	ToolbarCenter,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { isArray, isNil, isString, omit, uniq } from 'lodash-es';
+import queryString from 'query-string';
+import React, { FunctionComponent, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RouteComponentProps, withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import {
 	redirectToLoggedInHome,
@@ -137,7 +136,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 	return (
 		<Container mode="vertical" background="alt" className="m-error-view">
 			<Container size="medium" mode="horizontal">
-				<Blankslate body="" icon={errorIcon} title={errorMessage}>
+				<Blankslate body="" icon={errorIcon} title={errorMessage} className="c-content">
 					{children}
 					{renderButtons(buttons)}
 				</Blankslate>

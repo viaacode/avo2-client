@@ -1,5 +1,4 @@
-$multiRangeMargin: 15px;
-$multiRangeInputWidth: 87px;
+@import '../../../styles/settings/variables';
 
 .c-modal__body-add-fragment {
 	.c-radio + div {
@@ -9,23 +8,9 @@ $multiRangeInputWidth: 87px;
 	.c-cut-overlay {
 		display: none;
 	}
-}
 
-.m-time-crop-controls {
-	.c-input {
-		width: $multiRangeInputWidth;
-		display: inline-block;
-	}
-
-	.m-multi-range-wrapper {
-		width: calc(
-			100% - #{$multiRangeInputWidth} - #{$multiRangeInputWidth} - #{$multiRangeMargin} - #{$multiRangeMargin}
-		);
-		display: inline-block;
-		margin: 0 $multiRangeMargin;
-	}
-
-	.c-multi-range {
-		display: inline-block;
+	// Hide cuepoint during cut of a video
+	.fp-cuepoint {
+		display: none !important;
 	}
 }
