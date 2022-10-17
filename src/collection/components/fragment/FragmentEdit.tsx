@@ -159,15 +159,30 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			user
 		);
 
-		ToastService.success(
-			!isThisFragmentACollection
-				? t(
+		if (isThisFragmentACollection) {
+			if (fragment.type === 'TEXT') {
+				// Text block
+				ToastService.success(
+					t(
+						'collection/components/fragment/fragment-edit___tekst-is-succesvol-verwijderd-uit-de-collectie'
+					)
+				);
+			} else {
+				// video/audio fragment
+				ToastService.success(
+					t(
 						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
-				  )
-				: t(
-						'collection/components/fragment/fragment-edit___collectie-is-succesvol-verwijderd-uit-de-bundel'
-				  )
-		);
+					)
+				);
+			}
+		} else {
+			// Delete collection from bundle
+			ToastService.success(
+				t(
+					'collection/components/fragment/fragment-edit___collectie-is-succesvol-verwijderd-uit-de-bundel'
+				)
+			);
+		}
 	};
 
 	// TODO: DISABLED FEATURE
