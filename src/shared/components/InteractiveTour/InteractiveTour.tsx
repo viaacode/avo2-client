@@ -151,7 +151,7 @@ const InteractiveTour: FunctionComponent<
 			// Fetch interactive tours for current user and their seen status
 			const tourTemp = await InteractiveTourService.fetchStepsForPage(
 				routeId,
-				get(user, 'profile.id'),
+				user?.profile?.id,
 				tourDisplayDates
 			);
 			setTour(tourTemp);

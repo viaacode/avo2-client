@@ -17,6 +17,7 @@ export const fetchData = <TData, TVariables>(
 				'Content-Type': 'application/json',
 				...options,
 			},
+			credentials: 'include',
 			body: JSON.stringify({
 				query: isString(query) ? query : print(query),
 				variables,

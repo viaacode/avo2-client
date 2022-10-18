@@ -108,8 +108,8 @@ export class BookmarksViewsPlaysService {
 		});
 		const isBookmarked = !!response.app_item_bookmarks[0];
 		const bookmarkCount = response.app_item_bookmarks_aggregate.aggregate?.count ?? 0;
-		const viewCount = response.app_item_views[0].count ?? 0;
-		const playCount = response.app_item_plays[0].count ?? 0;
+		const viewCount = response.app_item_views[0]?.count ?? 0;
+		const playCount = response.app_item_plays[0]?.count ?? 0;
 		return {
 			bookmarkCount,
 			viewCount,

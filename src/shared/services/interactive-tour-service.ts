@@ -60,7 +60,7 @@ export class InteractiveTourService {
 	): Promise<TourInfo | null> {
 		try {
 			const response = await this.fetchInteractiveTourFromProxy(routeId, profileId);
-			const tours: Partial<TourInfo>[] = response.app_interactive_tour ?? null;
+			const tours: Partial<TourInfo>[] = response.data.app_interactive_tour ?? null;
 
 			const seenStatuses: { key: string; through_platform: boolean }[] = this.getSeenStatuses(
 				routeId,
