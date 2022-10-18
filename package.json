@@ -19,7 +19,6 @@
     "update-sitemap": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",
     "licenses": "license-checker --csv --out licenses.csv",
     "analyse": "npm run build && source-map-explorer 'build/static/js/*.js'",
-    "convert-gql-queries-to-separate-files": "ts-node --transpile-only --require dotenv/config --project ./scripts/tsconfig.json -- scripts/convert-gql-queries-to-separate-graphql-files.ts",
     "generate-database-types": "dotenv -e .env graphql-codegen -- --verbose --config codegen.yml"
   },
   "contributors": [
