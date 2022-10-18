@@ -1227,7 +1227,7 @@ export class CollectionService {
 			return response.app_collections as Avo.Collection.Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
-				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
+				query: 'GET_COLLECTIONS_BY_ITEM_UUID',
 				variables: { fragmentId },
 			});
 		}

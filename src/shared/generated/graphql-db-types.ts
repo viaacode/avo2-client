@@ -41986,13 +41986,13 @@ export type GetSubjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSubjectsQuery = { __typename?: 'query_root', lookup_enum_lom_classification: Array<{ __typename?: 'lookup_enum_lom_classification', description: string }> };
 
-export type DeleteAssignmentLabelMutationVariables = Exact<{
+export type DeleteAssignmentLabelsMutationVariables = Exact<{
   profileId: Scalars['uuid'];
   labelIds: Array<Scalars['uuid']> | Scalars['uuid'];
 }>;
 
 
-export type DeleteAssignmentLabelMutation = { __typename?: 'mutation_root', delete_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', affected_rows: number } | null };
+export type DeleteAssignmentLabelsMutation = { __typename?: 'mutation_root', delete_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', affected_rows: number } | null };
 
 export type GetAllAssignmentLabelColorsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -47261,8 +47261,8 @@ export const useGetSubjectsQuery = <
       fetchData<GetSubjectsQuery, GetSubjectsQueryVariables>(GetSubjectsDocument, variables),
       options
     );
-export const DeleteAssignmentLabelDocument = `
-    mutation deleteAssignmentLabel($profileId: uuid!, $labelIds: [uuid!]!) {
+export const DeleteAssignmentLabelsDocument = `
+    mutation deleteAssignmentLabels($profileId: uuid!, $labelIds: [uuid!]!) {
   delete_app_assignment_labels_v2(
     where: {owner_profile_id: {_eq: $profileId}, id: {_in: $labelIds}}
   ) {
@@ -47270,13 +47270,13 @@ export const DeleteAssignmentLabelDocument = `
   }
 }
     `;
-export const useDeleteAssignmentLabelMutation = <
+export const useDeleteAssignmentLabelsMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentLabelMutation, TError, DeleteAssignmentLabelMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentLabelMutation, TError, DeleteAssignmentLabelMutationVariables, TContext>(
-      ['deleteAssignmentLabel'],
-      (variables?: DeleteAssignmentLabelMutationVariables) => fetchData<DeleteAssignmentLabelMutation, DeleteAssignmentLabelMutationVariables>(DeleteAssignmentLabelDocument, variables)(),
+    >(options?: UseMutationOptions<DeleteAssignmentLabelsMutation, TError, DeleteAssignmentLabelsMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentLabelsMutation, TError, DeleteAssignmentLabelsMutationVariables, TContext>(
+      ['deleteAssignmentLabels'],
+      (variables?: DeleteAssignmentLabelsMutationVariables) => fetchData<DeleteAssignmentLabelsMutation, DeleteAssignmentLabelsMutationVariables>(DeleteAssignmentLabelsDocument, variables)(),
       options
     );
 export const GetAllAssignmentLabelColorsDocument = `

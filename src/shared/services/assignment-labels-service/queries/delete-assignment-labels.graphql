@@ -1,4 +1,4 @@
-mutation deleteAssignmentLabel($profileId: uuid!, $labelIds: [uuid!]!) {
+mutation deleteAssignmentLabels($profileId: uuid!, $labelIds: [uuid!]!) {
 	delete_app_assignment_labels_v2(
 		where: { owner_profile_id: { _eq: $profileId }, id: { _in: $labelIds } }
 	) {

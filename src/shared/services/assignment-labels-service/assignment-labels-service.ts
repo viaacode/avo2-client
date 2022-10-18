@@ -2,8 +2,8 @@ import { get, omit } from 'lodash-es';
 
 import { Assignment_Label_v2, AssignmentLabelColor } from '../../../assignment/assignment.types';
 import {
-	DeleteAssignmentLabelDocument,
-	DeleteAssignmentLabelMutation,
+	DeleteAssignmentLabelsDocument,
+	DeleteAssignmentLabelsMutationVariables,
 	GetAllAssignmentLabelColorsDocument,
 	GetAllAssignmentLabelColorsQuery,
 	GetAssignmentLabelsByProfileIdDocument,
@@ -89,20 +89,20 @@ export class AssignmentLabelsService {
 		} catch (err) {
 			throw new CustomError('Failed to update assignment label', err, {
 				variables,
-				query: 'UPDATE_ASSIGNMENT_LABEL',
+				query: 'UPDATE_ASSIGNMENT_LABELS',
 			});
 		}
 	}
 
 	public static async deleteLabels(profileId: string, labelIds: string[]): Promise<void> {
-		let variables;
+		let variables: DeleteAssignmentLabelsMutationVariables | null = null;
 		try {
 			variables = {
 				profileId,
 				labelIds,
 			};
 			await dataService.query<DeleteAssignmentLabelMutation>({
-				query: DeleteAssignmentLabelDocument,
+				query: DeleteAssignmentLabelsDocument,
 				variables,
 			});
 		} catch (err) {

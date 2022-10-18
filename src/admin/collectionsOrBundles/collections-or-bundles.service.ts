@@ -127,7 +127,7 @@ export class CollectionsOrBundlesService {
 				variables: {
 					where,
 				},
-				query: 'GET_COLLECTION_IDS',
+				query: 'GET_COLLECTIONS_BY_IDS',
 			});
 		}
 	}
@@ -194,7 +194,7 @@ export class CollectionsOrBundlesService {
 				{
 					variables,
 					editorialType,
-					query: 'GET_COLLECTION_ACTUALISATION | GET_COLLECTION_QUALITY_CHECK | GET_COLLECTION_MARCOM',
+					query: 'GET_COLLECTION_ACTUALISATIONS | GET_COLLECTION_QUALITY_CHECK | GET_COLLECTION_MARCOM',
 				}
 			);
 		}

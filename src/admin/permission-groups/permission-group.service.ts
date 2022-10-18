@@ -170,7 +170,7 @@ export class PermissionGroupService {
 			});
 		} catch (err) {
 			throw new CustomError('Failed to remove permissions from group', err, {
-				query: 'REMOVE_PERMISSIONS_FROM_GROUP',
+				query: 'REMOVE_PERMISSIONS_FROM_PERMISSION_GROUP',
 				variables: {
 					permissionIds,
 					permissionGroupId,
