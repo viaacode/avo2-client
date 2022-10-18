@@ -124,12 +124,12 @@ export class BookmarksViewsPlaysService {
 	): Promise<BookmarkViewPlayCounts> {
 		const response = await dataService.query<GetCollectionBookmarkViewPlayCountsQuery>({
 			query: GetCollectionBookmarkViewPlayCountsDocument,
-			variables: { collectionUuid, profileId: get(user, 'profile.id', null) },
+			variables: { collectionUuid, profileId: user?.profile?.id || null },
 		});
 		const isBookmarked = !!response.app_collection_bookmarks[0];
 		const bookmarkCount = response.app_collection_bookmarks_aggregate.aggregate?.count || 0;
-		const viewCount = response.app_collection_views[0].count ?? 0;
-		const playCount = response.app_collection_plays[0].count ?? 0;
+		const viewCount = response.app_collection_views[0]?.count ?? 0;
+		const playCount = response.app_collection_plays[0]?.count ?? 0;
 		return {
 			bookmarkCount,
 			viewCount,

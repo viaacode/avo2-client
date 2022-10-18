@@ -121,7 +121,7 @@ export const GET_EVENT_QUERIES: () => {
 				itemUuid,
 			}),
 			getResponseCount: (response: GetItemPlayCountQuery): number =>
-				response.app_item_meta[0].play_counts[0].count || 0,
+				response.app_item_meta[0]?.play_counts?.[0]?.count || 0,
 		},
 		collection: {
 			get: GetCollectionPlayCountDocument,

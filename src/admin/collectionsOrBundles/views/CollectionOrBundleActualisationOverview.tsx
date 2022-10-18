@@ -269,7 +269,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 		);
 
 		switch (columnId) {
-			case 'title':
+			case 'title': {
 				const title = truncate(rowData[columnId] || '-', { length: 50 });
 
 				return (
@@ -291,6 +291,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 						)}
 					</Link>
 				);
+			}
 
 			case 'actions':
 				return (

@@ -3,6 +3,7 @@ import { get, omit } from 'lodash-es';
 import { Assignment_Label_v2, AssignmentLabelColor } from '../../../assignment/assignment.types';
 import {
 	DeleteAssignmentLabelsDocument,
+	DeleteAssignmentLabelsMutation,
 	DeleteAssignmentLabelsMutationVariables,
 	GetAllAssignmentLabelColorsDocument,
 	GetAllAssignmentLabelColorsQuery,
@@ -101,7 +102,7 @@ export class AssignmentLabelsService {
 				profileId,
 				labelIds,
 			};
-			await dataService.query<DeleteAssignmentLabelMutation>({
+			await dataService.query<DeleteAssignmentLabelsMutation>({
 				query: DeleteAssignmentLabelsDocument,
 				variables,
 			});

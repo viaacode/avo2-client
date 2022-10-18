@@ -46,8 +46,10 @@ import {
 	GetOrganisationContentQueryVariables,
 	GetPublicCollectionsByIdDocument,
 	GetPublicCollectionsByIdQuery,
+	GetPublicCollectionsByIdQueryVariables,
 	GetPublicCollectionsByTitleDocument,
 	GetPublicCollectionsByTitleQuery,
+	GetPublicCollectionsByTitleQueryVariables,
 	GetPublicCollectionsDocument,
 	GetPublicCollectionsQuery,
 	GetPublishedBundlesContainingCollectionDocument,
@@ -89,7 +91,7 @@ import {
 	UpdateMarcomNoteDocument,
 	UpdateMarcomNoteMutation,
 } from '../shared/generated/graphql-db-types';
-import { CustomError, getEnv, performQuery } from '../shared/helpers';
+import { CustomError, getEnv } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { isUuid } from '../shared/helpers/uuid';
@@ -810,33 +812,27 @@ export class CollectionService {
 	): Promise<Collection[]> {
 		try {
 			const isUuidFormat = isUuid(titleOrId);
-			const variables: any = {
+			const variables: Partial<
+				GetPublicCollectionsByIdQueryVariables | GetPublicCollectionsByTitleQueryVariables
+			> = {
 				limit,
 				typeId: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
 			};
 			if (isUuidFormat) {
-				variables.id = titleOrId;
+				(variables as GetPublicCollectionsByIdQueryVariables).id = titleOrId;
 			} else {
-				variables.title = `%${titleOrId}%`;
+				(variables as GetPublicCollectionsByTitleQueryVariables).title = `%${titleOrId}%`;
 			}
 
-			return (
-				(await performQuery<
-					(
-						| GetPublicCollectionsByIdQuery
-						| GetPublicCollectionsByTitleQuery
-					)['app_collections']
-				>(
-					{
-						variables,
-						query: isUuidFormat
-							? GetPublicCollectionsByIdDocument
-							: GetPublicCollectionsByTitleDocument,
-					},
-					'app_collections',
-					'Failed to retrieve items by title or external id.'
-				)) || []
-			);
+			const response = await dataService.query<
+				GetPublicCollectionsByIdQuery | GetPublicCollectionsByTitleQuery
+			>({
+				query: isUuidFormat
+					? GetPublicCollectionsByIdDocument
+					: GetPublicCollectionsByTitleDocument,
+				variables,
+			});
+			return response.app_collections;
 		} catch (err) {
 			throw new CustomError('Failed to fetch collections or bundles', err, {
 				query: 'GET_PUBLIC_COLLECTIONS_BY_ID or GET_PUBLIC_COLLECTIONS_BY_TITLE',

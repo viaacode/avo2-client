@@ -15,7 +15,7 @@ import { AppState } from '../../../store';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
-import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
+import { InteractiveTourService, TourInfo } from '../../services/interactive-tour.service';
 import Html from '../Html/Html';
 
 import './InteractiveTour.scss';

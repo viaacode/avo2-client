@@ -22,8 +22,10 @@ import {
 	GetItemsWithFiltersQueryVariables,
 	GetPublicItemsByTitleOrExternalIdDocument,
 	GetPublicItemsByTitleOrExternalIdQuery,
+	GetPublicItemsByTitleOrExternalIdQueryVariables,
 	GetPublicItemsDocument,
 	GetPublicItemsQuery,
+	GetPublicItemsQueryVariables,
 	GetUnpublishedItemPidsDocument,
 	GetUnpublishedItemPidsQuery,
 	GetUnpublishedItemPidsQueryVariables,
@@ -49,7 +51,7 @@ import {
 	UpdateItemPublishedStateMutation,
 	UpdateItemPublishedStateMutationVariables,
 } from '../../shared/generated/graphql-db-types';
-import { CustomError, getEnv, performQuery } from '../../shared/helpers';
+import { CustomError, getEnv } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -243,18 +245,16 @@ export class ItemsService {
 	}
 
 	public static async fetchPublicItems(
-		limit?: number
+		limit: number
 	): Promise<GetPublicItemsQuery['app_item_meta'] | null> {
-		const query = {
-			query: GetPublicItemsDocument,
-			variables: { limit },
-		};
+		const variables: GetPublicItemsQueryVariables = { limit };
 
-		return performQuery<GetPublicItemsQuery['app_item_meta']>(
-			query,
-			'app_item_meta',
-			'Failed to retrieve items. GET_PUBLIC_ITEMS'
-		);
+		const response = await dataService.query<GetPublicItemsQuery>({
+			query: GetPublicItemsDocument,
+			variables,
+		});
+
+		return response.app_item_meta;
 	}
 
 	private static async fetchDepublishReasonByExternalId(
@@ -265,7 +265,7 @@ export class ItemsService {
 			query: GetItemDepublishReasonByExternalIdDocument,
 			variables,
 		});
-		return response.app_item_meta[0].depublish_reason || null;
+		return response.app_item_meta[0]?.depublish_reason || null;
 	}
 
 	public static async fetchItemByExternalId(externalId: string): Promise<UnpublishableItem> {
@@ -323,7 +323,7 @@ export class ItemsService {
 				Lookup_Enum_Relation_Types_Enum.IsReplacedBy
 			);
 
-			const replacedByItemUid = get(relations, '[0].object', null);
+			const replacedByItemUid = relations?.[0]?.object || null;
 
 			if (replacedByItemUid) {
 				const replacementItem = await ItemsService.fetchItemByUuid(replacedByItemUid);
@@ -397,26 +397,22 @@ export class ItemsService {
 
 	public static async fetchPublicItemsByTitleOrExternalId(
 		titleOrExternalId: string,
-		limit?: number
+		limit: number
 	): Promise<
 		| GetPublicItemsByTitleOrExternalIdQuery['itemsByExternalId']
 		| GetPublicItemsByTitleOrExternalIdQuery['itemsByTitle']
 	> {
 		try {
-			const query = {
-				query: GetPublicItemsByTitleOrExternalIdDocument,
-				variables: {
-					limit,
-					title: `%${titleOrExternalId}%`,
-					externalId: titleOrExternalId,
-				},
+			const variables: GetPublicItemsByTitleOrExternalIdQueryVariables = {
+				limit,
+				title: `%${titleOrExternalId}%`,
+				externalId: titleOrExternalId,
 			};
 
-			const response = await performQuery<GetPublicItemsByTitleOrExternalIdQuery>(
-				query,
-				null,
-				'Failed to retrieve items by title or external id.'
-			);
+			const response = await dataService.query<GetPublicItemsByTitleOrExternalIdQuery>({
+				query: GetPublicItemsByTitleOrExternalIdDocument,
+				variables,
+			});
 
 			let items = response.itemsByExternalId || [];
 
@@ -436,13 +432,11 @@ export class ItemsService {
 
 	public static async fetchAllSeries(): Promise<string[]> {
 		try {
-			const response = await performQuery<GetDistinctSeriesQuery['app_item_meta']>(
-				{ query: GetDistinctSeriesDocument },
-				'app_item_meta',
-				'Failed to retrieve distinct series'
-			);
+			const response = await dataService.query<GetDistinctSeriesQuery>({
+				query: GetDistinctSeriesDocument,
+			});
 
-			return compact((response || []).map((item) => item.series));
+			return compact((response.app_item_meta || []).map((item) => item.series));
 		} catch (err) {
 			throw new CustomError('Failed to fetch distinct series from the database', err, {
 				query: 'GET_DISTINCT_SERIES',

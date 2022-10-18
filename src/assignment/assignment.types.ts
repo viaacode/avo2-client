@@ -150,7 +150,10 @@ export interface AssignmentLabelColor {
 
 /// Zoek & bouw
 
-export type AssignmentFormState = Omit<Assignment_v2_With_Blocks, 'id'> & { id: string | null };
+export type AssignmentFormState = Omit<
+	Assignment_v2_With_Blocks & Assignment_v2_With_Labels,
+	'id'
+> & { id: string | null };
 
 export type AssignmentResponseFormState = Pick<
 	AssignmentResponseInfo,

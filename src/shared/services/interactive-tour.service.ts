@@ -6,6 +6,7 @@ import { APP_PATH } from '../../constants';
 import { CustomError, getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
+import { GetInteractiveTourResponse } from './interactive-tour.types';
 import { NotificationService } from './notification-service';
 
 const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 7 * 24 * 60 * 60 * 1000; // 2 weeks
@@ -59,8 +60,11 @@ export class InteractiveTourService {
 		tourLaterDates: { [tourId: string]: string }
 	): Promise<TourInfo | null> {
 		try {
-			const response = await this.fetchInteractiveTourFromProxy(routeId, profileId);
-			const tours: Partial<TourInfo>[] = response.data.app_interactive_tour ?? null;
+			const response: GetInteractiveTourResponse = await this.fetchInteractiveTourFromProxy(
+				routeId,
+				profileId
+			);
+			const tours: Partial<TourInfo>[] = response.app_interactive_tour ?? null;
 
 			const seenStatuses: { key: string; through_platform: boolean }[] = this.getSeenStatuses(
 				routeId,
@@ -152,7 +156,7 @@ export class InteractiveTourService {
 	private static async fetchInteractiveTourFromProxy(
 		routeId: string,
 		profileId: string | undefined
-	): Promise<any> {
+	): Promise<GetInteractiveTourResponse> {
 		try {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/interactive-tours/tour?${queryString.stringify({
@@ -172,7 +176,7 @@ export class InteractiveTourService {
 					response,
 				});
 			}
-			return await response.json();
+			return (await response.json()).data;
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get interactive tour and seen statuses by route id from proxy',
@@ -191,7 +195,7 @@ export class InteractiveTourService {
 	 */
 	private static getSeenStatuses(
 		routeId: string | number,
-		response: any
+		response: GetInteractiveTourResponse
 	): { key: string; through_platform: boolean }[] {
 		const seenStatuses: { key: string; through_platform: boolean }[] =
 			response.users_notifications || [];

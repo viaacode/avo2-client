@@ -238,14 +238,10 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				{
 					...original,
 					owner_profile_id: user.profile?.id,
-					blocks: [],
-					responses: [],
-					labels: [],
 				},
 				{
 					...original,
 					...assignment,
-					labels: undefined,
 					blocks: cleanupTitleAndDescriptions(
 						assignment?.blocks || []
 					) as AssignmentBlock[],

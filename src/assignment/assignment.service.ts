@@ -312,6 +312,7 @@ export class AssignmentService {
 				: assignmentToSave.description || '';
 
 		delete (assignmentToSave as any).owner;
+		delete (assignmentToSave as any).profile;
 		delete (assignmentToSave as any).responses;
 		delete (assignmentToSave as any).labels;
 		delete (assignmentToSave as any).__typename;
