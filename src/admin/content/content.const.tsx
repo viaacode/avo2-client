@@ -129,6 +129,9 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 ];
 
+/**
+ * @deprecated use paths directly to get strong type checking
+ */
 export const CONTENT_RESULT_PATH = {
 	COUNT: 'app_content_aggregate',
 	GET: 'app_content',

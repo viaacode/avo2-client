@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { compact, get, has, omit, without } from 'lodash-es';
+import { compact, has, omit, without } from 'lodash-es';
 
 import {
 	DeleteContentBlockDocument,
@@ -14,7 +14,6 @@ import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import i18n from '../../../shared/translations/i18n';
 import { ContentBlockConfig } from '../../shared/types';
-import { CONTENT_BLOCKS_RESULT_PATH } from '../content-block.const';
 import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
@@ -109,8 +108,9 @@ export class ContentBlockService {
 				},
 			});
 
-			const ids: number[] =
-				get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`) || [];
+			const ids: number[] = (response?.insert_app_content_blocks?.returning || []).map(
+				(block) => block.id
+			);
 			return contentBlockConfigs.map((block, index) => ({
 				...block,
 				id: ids[index],

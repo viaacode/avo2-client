@@ -1,6 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
 import { RelationEntry } from '@viaa/avo2-types/types/collection';
-import { get } from 'lodash-es';
 
 import {
 	DeleteCollectionRelationsByObjectDocument,
@@ -74,12 +73,16 @@ export class RelationService {
 				variables,
 				query: isCollection ? collectionQuery : itemQuery,
 			});
-			return (
-				get(
-					response,
-					isCollection ? 'data.app_collection_relations' : 'data.app_item_relations'
-				) || []
-			);
+			if (isCollection) {
+				return ((
+					response as
+						| GetCollectionRelationsByObjectQuery
+						| GetCollectionRelationsBySubjectQuery
+				).app_collection_relations || []) as RelationEntry<Avo.Collection.Collection>[];
+			} else {
+				return ((response as GetItemRelationsByObjectQuery | GetItemRelationsBySubjectQuery)
+					.app_item_relations || []) as RelationEntry<Avo.Item.Item>[];
+			}
 		} catch (err) {
 			throw new CustomError('Failed to get relation from the database', err, {
 				variables,
@@ -117,12 +120,14 @@ export class RelationService {
 				variables,
 				query: isCollection ? InsertCollectionRelationDocument : InsertItemRelationDocument,
 			});
-			const relationId = get(
-				response,
-				`data.${
-					isCollection ? 'insert_app_collection_relations' : 'insert_app_item_relations'
-				}.returning[0].id`
-			);
+			let relationId;
+			if (isCollection) {
+				relationId = (response as InsertCollectionRelationMutation)
+					.insert_app_collection_relations?.returning?.[0]?.id;
+			} else {
+				relationId = (response as InsertItemRelationMutation).insert_app_item_relations
+					?.returning?.[0]?.id;
+			}
 			if (!relationId) {
 				throw new CustomError('Response does not contain a relation id', null, {
 					response,

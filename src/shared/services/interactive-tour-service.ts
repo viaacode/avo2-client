@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { compact, findLast, forIn, fromPairs, get, last, startsWith, uniqBy } from 'lodash-es';
+import { compact, findLast, forIn, fromPairs, last, startsWith, uniqBy } from 'lodash-es';
 import queryString from 'query-string';
 
 import { APP_PATH } from '../../constants';
@@ -193,14 +193,10 @@ export class InteractiveTourService {
 		routeId: string | number,
 		response: any
 	): { key: string; through_platform: boolean }[] {
-		const seenStatuses: { key: string; through_platform: boolean }[] = get(
-			response,
-			'data.users_notifications',
-			[]
-		);
+		const seenStatuses: { key: string; through_platform: boolean }[] =
+			response.users_notifications || [];
 		const seenTourKeyPrefix = `INTERACTIVE-TOUR___${routeId}___`;
-		// @ts-ignore
-		forIn(localStorage || {}, (value: string, key: string) => {
+		forIn(localStorage || {}, (_value: string, key: string) => {
 			if (startsWith(key, seenTourKeyPrefix)) {
 				seenStatuses.push({ key, through_platform: false });
 			}

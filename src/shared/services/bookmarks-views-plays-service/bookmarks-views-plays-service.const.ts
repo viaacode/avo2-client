@@ -7,9 +7,13 @@ import {
 	DeleteItemBookmarkDocument,
 	DeleteItemBookmarkMutationVariables,
 	GetCollectionPlayCountDocument,
+	GetCollectionPlayCountQuery,
 	GetCollectionViewCountDocument,
+	GetCollectionViewCountQuery,
 	GetItemPlayCountDocument,
+	GetItemPlayCountQuery,
 	GetItemViewCountDocument,
+	GetItemViewCountQuery,
 	IncrementCollectionPlaysDocument,
 	IncrementCollectionViewsDocument,
 	IncrementItemPlaysDocument,
@@ -37,7 +41,7 @@ export interface QueryDefinition {
 	get?: string;
 	increment?: string;
 	variables: (uuid: string, user?: Avo.User.User) => any;
-	responsePath?: string;
+	getResponseCount?: (response: any) => number;
 }
 
 export const GET_EVENT_QUERIES: () => {
@@ -96,7 +100,8 @@ export const GET_EVENT_QUERIES: () => {
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
-			responsePath: 'data.app_item_meta[0].view_counts[0].count',
+			getResponseCount: (response: GetItemViewCountQuery): number =>
+				response.app_item_meta[0]?.view_counts?.[0]?.count || 0,
 		},
 		collection: {
 			get: GetCollectionViewCountDocument,
@@ -104,7 +109,8 @@ export const GET_EVENT_QUERIES: () => {
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
-			responsePath: 'data.app_collections[0].view_counts[0].count',
+			getResponseCount: (response: GetCollectionViewCountQuery): number =>
+				response.app_collections[0]?.view_counts?.[0]?.count || 0,
 		},
 	},
 	play: {
@@ -114,7 +120,8 @@ export const GET_EVENT_QUERIES: () => {
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
-			responsePath: 'data.app_item_meta[0].play_counts[0].count',
+			getResponseCount: (response: GetItemPlayCountQuery): number =>
+				response.app_item_meta[0].play_counts[0].count || 0,
 		},
 		collection: {
 			get: GetCollectionPlayCountDocument,
@@ -122,7 +129,8 @@ export const GET_EVENT_QUERIES: () => {
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
-			responsePath: 'data.app_collections[0].play_counts[0].count',
+			getResponseCount: (response: GetCollectionPlayCountQuery): number =>
+				response.app_collections[0]?.play_counts?.[0]?.count || 0,
 		},
 	},
 });

@@ -13,6 +13,8 @@ import {
 	GetItemByUuidQuery,
 	GetItemByUuidQueryVariables,
 	GetItemDepublishReasonByExternalIdDocument,
+	GetItemDepublishReasonByExternalIdQuery,
+	GetItemDepublishReasonByExternalIdQueryVariables,
 	GetItemsByExternalIdDocument,
 	GetItemsByExternalIdQuery,
 	GetItemsWithFiltersDocument,
@@ -255,17 +257,15 @@ export class ItemsService {
 		);
 	}
 
-	private static async fetchDepublishReasonByExternalId(externalId: string): Promise<string> {
-		const query = {
+	private static async fetchDepublishReasonByExternalId(
+		externalId: string
+	): Promise<string | null> {
+		const variables: GetItemDepublishReasonByExternalIdQueryVariables = { externalId };
+		const response = await dataService.query<GetItemDepublishReasonByExternalIdQuery>({
 			query: GetItemDepublishReasonByExternalIdDocument,
-			variables: { externalId },
-		};
-
-		return performQuery(
-			query,
-			'data.app_item_meta[0].depublish_reason',
-			'Failed to retrieve depublish reason for item. GET_ITEM_DEPUBLISH_REASON'
-		);
+			variables,
+		});
+		return response.app_item_meta[0].depublish_reason || null;
 	}
 
 	public static async fetchItemByExternalId(externalId: string): Promise<UnpublishableItem> {

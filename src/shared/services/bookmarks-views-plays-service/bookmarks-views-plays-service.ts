@@ -127,11 +127,7 @@ export class BookmarksViewsPlaysService {
 			variables: { collectionUuid, profileId: get(user, 'profile.id', null) },
 		});
 		const isBookmarked = !!response.app_collection_bookmarks[0];
-		const bookmarkCount = get(
-			response,
-			'data.app_collection_bookmarks_aggregate.aggregate.count',
-			0
-		);
+		const bookmarkCount = response.app_collection_bookmarks_aggregate.aggregate?.count || 0;
 		const viewCount = response.app_collection_views[0].count ?? 0;
 		const playCount = response.app_collection_plays[0].count ?? 0;
 		return {
@@ -246,11 +242,8 @@ export class BookmarksViewsPlaysService {
 			variables,
 		});
 		const itemBookmarks: AppItemBookmark[] = response.app_item_bookmarks as AppItemBookmark[];
-		const collectionBookmarks: AppCollectionBookmark[] = get(
-			response,
-			'data.app_collection_bookmarks',
-			[]
-		);
+		const collectionBookmarks: AppCollectionBookmark[] = (response.app_collection_bookmarks ||
+			[]) as AppCollectionBookmark[];
 		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
 			(itemBookmark): BookmarkInfo | null => {
 				if (!itemBookmark.bookmarkedItem) {
@@ -319,7 +312,8 @@ export class BookmarksViewsPlaysService {
 		// bundle is handled the same way as a collection
 		const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
 
-		const query = get(GET_EVENT_QUERIES(), [action, contentTypeSimplified, queryType]);
+		const eventQueries = GET_EVENT_QUERIES();
+		const query = get(eventQueries, [action, contentTypeSimplified, queryType]);
 		const getVariablesFunc = get(
 			GET_EVENT_QUERIES(),
 			[action, contentTypeSimplified, 'variables'],
@@ -329,12 +323,12 @@ export class BookmarksViewsPlaysService {
 		if (!query || !variables) {
 			throw new CustomError('Failed to find query/variables in query lookup table');
 		}
-		const responsePath = get(GET_EVENT_QUERIES(), [
+		const getResponseCount = get(eventQueries, [
 			action,
 			contentTypeSimplified,
-			'responsePath',
-		]) as string;
-		return { query, variables, responsePath };
+			'getResponseCount',
+		]);
+		return { query, variables, getResponseCount };
 	}
 
 	public static async getMultipleViewCounts(

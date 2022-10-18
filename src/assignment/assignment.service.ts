@@ -1045,11 +1045,7 @@ export class AssignmentService {
 			query: GetMaxPositionAssignmentBlocksDocument,
 			variables: { assignmentId },
 		});
-		return get(
-			result,
-			'data.app_assignments_v2_by_pk.blocks_aggregate.aggregate.max.position',
-			null
-		);
+		return result.app_assignments_v2_by_pk?.blocks_aggregate?.aggregate?.max?.position || null;
 	}
 
 	static async importCollectionToAssignment(

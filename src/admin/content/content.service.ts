@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { get, isFunction, kebabCase, omit } from 'lodash-es';
+import { isFunction, kebabCase, omit } from 'lodash-es';
 import moment from 'moment';
 
 import {
@@ -51,7 +51,6 @@ import { mapDeep } from '../shared/helpers/map-deep';
 import { ContentBlockConfig } from '../shared/types';
 
 import {
-	CONTENT_RESULT_PATH,
 	DELETED_CONTENT_PAGE_PATH_PREFIX,
 	ITEMS_PER_PAGE,
 	RichEditorStateKey,
@@ -343,11 +342,7 @@ export class ContentService {
 				variables,
 			});
 
-			const id: number | null = get(
-				response,
-				`data.${CONTENT_RESULT_PATH.INSERT}.returning[0].id`,
-				null
-			);
+			const id: number | null = response.insert_app_content?.returning?.[0]?.id || null;
 
 			if (id) {
 				// Insert content-blocks

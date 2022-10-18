@@ -1,4 +1,3 @@
-import { DocumentNode } from 'graphql/language/ast';
 import { print } from 'graphql/language/printer';
 import { isString } from 'lodash-es';
 
@@ -41,7 +40,7 @@ export const fetchData = <TData, TVariables>(
 };
 
 export interface QueryInfo {
-	query: string | DocumentNode;
+	query: string;
 	variables?: Record<string, any>;
 }
 

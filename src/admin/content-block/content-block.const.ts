@@ -106,11 +106,6 @@ import {
 	USP_GRID_BLOCK_CONFIG,
 } from './helpers/generators/usp-grid';
 
-export const CONTENT_BLOCKS_RESULT_PATH = {
-	GET: 'app_content_blocks',
-	INSERT: 'insert_app_content_blocks',
-};
-
 export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () => [
 	{
 		label: i18n.t('admin/content-block/content-block___voeg-een-content-blok-toe'),

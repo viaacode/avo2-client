@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { get, isNil } from 'lodash-es';
+import { isNil } from 'lodash-es';
 
 import {
 	DeleteMenuItemByIdDocument,
@@ -19,8 +19,6 @@ import {
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 
-const MENU_RESULT_PATH = 'app_content_nav_elements';
-
 export class MenuService {
 	public static async fetchMenuItemById(id: number): Promise<Avo.Menu.Menu | null> {
 		try {
@@ -29,7 +27,7 @@ export class MenuService {
 				variables: { id },
 			});
 
-			return get(response, `data.${MENU_RESULT_PATH}[0]`, null);
+			return (response.app_content_nav_elements[0] || null) as Avo.Menu.Menu | null;
 		} catch (err) {
 			throw new CustomError(`Failed to fetch menu item by id`, err, {
 				id,
@@ -52,7 +50,7 @@ export class MenuService {
 				throw new CustomError('Response is undefined');
 			}
 
-			return get(response, `data.${MENU_RESULT_PATH}`, []);
+			return (response.app_content_nav_elements || []) as Avo.Menu.Menu[];
 		} catch (err) {
 			throw new CustomError('Failed to fetch menu items', err, {
 				placement,

@@ -321,11 +321,7 @@ export class UserService {
 				variables,
 				query: GetProfileIdsDocument,
 			});
-			return compact(
-				get(response, 'data.users_summary_view' || []).map((user: Partial<Avo.User.User>) =>
-					get(user, 'profile_id')
-				)
-			);
+			return compact((response?.users_summary_view || []).map((user) => user?.profile_id));
 		} catch (err) {
 			throw new CustomError('Failed to get profile ids from the database', err, {
 				variables,

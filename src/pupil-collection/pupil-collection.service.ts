@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { get, without } from 'lodash-es';
+import { without } from 'lodash-es';
 
 import { isNewAssignmentBlock } from '../assignment/assignment.const';
 import { BaseBlockWithMeta, PupilCollectionFragment } from '../assignment/assignment.types';
@@ -232,10 +232,9 @@ export class PupilCollectionService {
 			query: GetMaxPositionPupilCollectionBlocksDocument,
 			variables: { assignmentResponseId },
 		});
-		return get(
-			result,
-			'data.app_assignment_responses_v2_by_pk.pupil_collection_blocks_aggregate.aggregate.max.position',
-			null
+		return (
+			result.app_assignment_responses_v2_by_pk?.pupil_collection_blocks_aggregate.aggregate
+				?.max?.position || null
 		);
 	}
 
