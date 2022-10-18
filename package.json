@@ -37,7 +37,7 @@
     "@storybook/addon-actions": "^6.3.12",
     "@tanstack/react-query": "^4.10.1",
     "@viaa/avo2-components": "^1.97.17",
-    "@viaa/avo2-types": "2.44.7",
+    "@viaa/avo2-types": "2.44.8",
     "braft-editor": "^2.3.9",
     "braft-extensions": "^0.1.0",
     "capture-stack-trace": "^1.0.1",
