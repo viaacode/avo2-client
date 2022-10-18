@@ -15,11 +15,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import { Requests } from 'node-zendesk';
+import type { Requests } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { getFullName } from '../../../shared/helpers/formatters';
+import { getFullName } from '../../../shared/helpers';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';

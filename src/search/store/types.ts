@@ -1,6 +1,5 @@
-import { Action } from 'redux';
-
 import { Avo } from '@viaa/avo2-types';
+import { Action } from 'redux';
 
 export enum SearchActionTypes {
 	SET_RESULTS_LOADING = '@@search/SET_RESULTS_LOADING',

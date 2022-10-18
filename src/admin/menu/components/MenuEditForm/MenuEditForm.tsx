@@ -1,11 +1,10 @@
+import { Alert, Form, FormGroup, TextArea, TextInput } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get, kebabCase } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CreatableSelect from 'react-select/creatable';
 import { ValueType } from 'react-select/src/types';
-
-import { Alert, Form, FormGroup, TextArea, TextInput } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';

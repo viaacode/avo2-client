@@ -1,6 +1,5 @@
-import { isEmpty, isNil } from 'lodash-es';
-
 import { SelectOption } from '@viaa/avo2-components';
+import { isEmpty, isNil } from 'lodash-es';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import { WYSIWYGWrapperProps } from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';

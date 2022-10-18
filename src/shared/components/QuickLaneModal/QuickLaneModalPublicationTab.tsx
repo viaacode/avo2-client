@@ -1,8 +1,7 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import { Button, Spacer } from '@viaa/avo2-components';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';

@@ -1,9 +1,8 @@
+import { FormGroup, TextArea } from '@viaa/avo2-components';
+import { FormGroupPropsSchema } from '@viaa/avo2-components/dist/esm/components/Form/FormGroup/FormGroup';
 import { StringMap } from 'i18next';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { FormGroup, TextArea } from '@viaa/avo2-components';
-import { FormGroupPropsSchema } from '@viaa/avo2-components/dist/esm/components/Form/FormGroup/FormGroup';
 
 import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../../collection/collection.const';
 import { getValidationFeedbackForDescription } from '../../../collection/collection.helpers';

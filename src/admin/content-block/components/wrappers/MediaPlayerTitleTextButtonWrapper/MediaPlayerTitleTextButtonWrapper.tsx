@@ -1,5 +1,3 @@
-import React, { FC, FunctionComponent } from 'react';
-
 import {
 	BlockHeading,
 	Button,
@@ -10,6 +8,7 @@ import {
 	IconName,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import React, { FC, FunctionComponent } from 'react';
 
 import {
 	PermissionName,

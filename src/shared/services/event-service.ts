@@ -1,5 +1,5 @@
 import { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+import { get, noop } from 'lodash-es';
 
 import {
 	InsertCollectionBookmarkDocument,
@@ -48,10 +48,11 @@ export async function trackEvent(
 			);
 		}
 		const query = get(EVENT_QUERIES, [action, contentType, 'query']);
-		const variables = get(EVENT_QUERIES, [action, contentType, 'variables'], () => {})(
-			contentId,
-			profileId
-		);
+		const variables = get(
+			EVENT_QUERIES,
+			[action, contentType, 'variables'],
+			noop
+		)(contentId, profileId);
 		if (!query || !variables) {
 			throw new CustomError(
 				'Failed to find query/variables to execute query in the database',

@@ -1,11 +1,10 @@
+import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
-
-import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import BundleDetail from '../../bundle/views/BundleDetail';
 import { CollectionDetail } from '../../collection/views';

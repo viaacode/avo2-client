@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import CollectionOrBundleEdit from '../components/CollectionOrBundleEdit';
 
-interface CollectionEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+type CollectionEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const CollectionEdit: FunctionComponent<CollectionEditProps> = (props) => {
 	return <CollectionOrBundleEdit {...props} type="collection" />;

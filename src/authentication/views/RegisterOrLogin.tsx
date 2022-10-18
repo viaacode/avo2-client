@@ -1,8 +1,3 @@
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps, withRouter } from 'react-router';
-
 import {
 	Column,
 	Container,
@@ -13,6 +8,10 @@ import {
 	ModalBody,
 	Spacer,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
 import LoginOptions from '../components/LoginOptions';

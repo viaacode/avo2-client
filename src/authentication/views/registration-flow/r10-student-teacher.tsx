@@ -1,14 +1,13 @@
+import { BlockHeading, Button, Container, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
-import { BlockHeading, Button, Container, Spacer } from '@viaa/avo2-components';
-
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import Html from '../../../shared/components/Html/Html';
 
-export interface StudentTeacherProps extends RouteComponentProps {}
+export type StudentTeacherProps = RouteComponentProps;
 
 const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => {
 	const [t] = useTranslation();

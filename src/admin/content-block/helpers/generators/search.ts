@@ -20,7 +20,7 @@ export const INITIAL_SEARCH_BLOCK_STATE = (): DefaultContentBlockState => ({
 	backgroundColor: Color.Gray50,
 });
 
-export const SEARCH_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const SEARCH_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/search___search'),
 	type: ContentBlockType.Search,

@@ -1,3 +1,5 @@
+import { Button } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -5,9 +7,6 @@ import Joyride, { CallBackProps } from 'react-joyride';
 import { connect } from 'react-redux';
 import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
-
-import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';

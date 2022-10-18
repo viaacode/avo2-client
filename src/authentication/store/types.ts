@@ -1,6 +1,5 @@
-import { Action } from 'redux';
-
 import { Avo } from '@viaa/avo2-types';
+import { Action } from 'redux';
 
 export enum LoginActionTypes {
 	SET_LOGIN_LOADING = '@@login/SET_LOGIN_LOADING',
@@ -13,9 +12,9 @@ export interface SetLoginSuccessAction extends Action {
 	data: Avo.Auth.LoginResponse | null;
 }
 
-export interface SetLoginLoadingAction extends Action {}
+export type SetLoginLoadingAction = Action;
 
-export interface SetAcceptConditionsAction extends Action {}
+export type SetAcceptConditionsAction = Action;
 
 export interface SetLoginErrorAction extends Action {
 	error: boolean;

@@ -47,8 +47,9 @@ import {
 import { ToastService } from '../../services/toast-service';
 import { NavigationItemInfo } from '../../types';
 
+import { NavigationItem } from './NavigationItem';
+
 import './Navigation.scss';
-import NavigationItem from './NavigationItem';
 
 export interface NavigationParams extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;

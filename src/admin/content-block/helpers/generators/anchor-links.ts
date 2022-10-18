@@ -28,7 +28,7 @@ export const INITIAL_ANCHOR_LINKS_BLOCK_STATE = (): AnchorLinksBlockState => ({
 	hasDividers: true,
 });
 
-export const ANCHOR_LINKS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const ANCHOR_LINKS_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/anchor-links___links'),
 	type: ContentBlockType.AnchorLinks,

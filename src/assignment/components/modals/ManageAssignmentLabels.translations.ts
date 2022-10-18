@@ -1,4 +1,5 @@
 import { TFunction } from 'i18next';
+
 import { ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
 
 export interface ManageAssignmentLabelsTranslations {

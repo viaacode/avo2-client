@@ -1,7 +1,6 @@
+import { ContentPickerType } from '@viaa/avo2-components';
 import { get } from 'lodash';
 import { ValueType } from 'react-select/src/types';
-
-import { ContentPickerType } from '@viaa/avo2-components';
 
 import { PickerItem, PickerItemControls, PickerSelectItem, PickerTypeOption } from '../../types';
 

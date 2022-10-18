@@ -1,16 +1,15 @@
+import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
-
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
-export interface RegisterStamboekProps extends RouteComponentProps {}
+export type RegisterStamboekProps = RouteComponentProps;
 
 export type StamboekValidationStatus =
 	| 'INCOMPLETE'

@@ -1,6 +1,5 @@
-import { times } from 'lodash-es';
-
 import { ImageInfo } from '@viaa/avo2-components';
+import { times } from 'lodash-es';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import i18n from '../../../../shared/translations/i18n';
@@ -33,7 +32,7 @@ export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (): DefaultContentBlockSta
 		},
 	});
 
-export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t(
 		'admin/content-block/helpers/generators/projects-spotlight___projecten-in-de-kijker'

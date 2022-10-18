@@ -1,14 +1,13 @@
+import { Button, Container, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 
-import { Button, Container, Spacer } from '@viaa/avo2-components';
-
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../constants';
 
-export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
+export type UserItemRequestFormProps = DefaultSecureRouteProps;
 
 const UserItemRequestFormConfirm: FunctionComponent<UserItemRequestFormProps> = ({ history }) => {
 	const [t] = useTranslation();

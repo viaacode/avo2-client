@@ -1,6 +1,5 @@
-import React, { FC, ReactNode } from 'react';
-
 import { Flex, FlexItem, FormGroup, Spacer, Toggle, ToggleProps } from '@viaa/avo2-components';
+import React, { FC, ReactNode } from 'react';
 
 import './AssignmentBlockToggle.scss';
 

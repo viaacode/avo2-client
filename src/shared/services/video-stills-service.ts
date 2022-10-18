@@ -1,6 +1,5 @@
-import { compact, isNil, uniq, without } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { compact, isNil, uniq, without } from 'lodash-es';
 
 import { ContentTypeString } from '../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../constants';

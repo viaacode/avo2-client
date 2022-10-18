@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { Button, ButtonGroup, IconName } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
 
 import { AlignOption } from '../../../../shared/types';
 

@@ -1,8 +1,7 @@
+import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { cloneDeep } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { InteractiveTourAction } from '../helpers/reducers';

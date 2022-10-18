@@ -1,7 +1,6 @@
+import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
 
 import { SettingsService } from '../../../settings/settings.service';
 import { CustomError } from '../../helpers';
