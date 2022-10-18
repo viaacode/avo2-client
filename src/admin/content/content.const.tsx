@@ -1,4 +1,4 @@
-import { TabProps } from '@viaa/avo2-components';
+import { SelectOption, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
@@ -129,18 +129,6 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 ];
 
-/**
- * @deprecated use paths directly to get strong type checking
- */
-export const CONTENT_RESULT_PATH = {
-	COUNT: 'app_content_aggregate',
-	GET: 'app_content',
-	INSERT: 'insert_app_content',
-	UPDATE: 'update_app_content',
-};
-
-export const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
-
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in ContentOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
 }> = {
@@ -180,15 +168,15 @@ export const GET_CONTENT_DETAIL_TABS: () => TabProps[] = () => [
 	},
 ];
 
-export const GET_CONTENT_WIDTH_OPTIONS = () => [
+export const GET_CONTENT_WIDTH_OPTIONS = (): SelectOption<ContentWidth>[] => [
 	{
 		label: i18n.t('admin/content/content___kies-een-content-breedte'),
-		value: '',
+		value: '' as any,
 		disabled: true,
 	},
-	{ label: i18n.t('admin/content/content___max-1300-px'), value: 'REGULAR' },
-	{ label: i18n.t('admin/content/content___breed-940-px'), value: 'LARGE' },
-	{ label: i18n.t('admin/content/content___medium-720-px'), value: 'MEDIUM' },
+	{ label: i18n.t('admin/content/content___max-1300-px'), value: ContentWidth.REGULAR },
+	{ label: i18n.t('admin/content/content___breed-940-px'), value: ContentWidth.REGULAR },
+	{ label: i18n.t('admin/content/content___medium-720-px'), value: ContentWidth.MEDIUM },
 ];
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
