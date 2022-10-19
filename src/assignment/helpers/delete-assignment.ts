@@ -1,12 +1,11 @@
-import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { TFunction } from 'i18next';
 import { isNil } from 'lodash';
 
-import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentType } from '../assignment.types';
+import { Assignment_v2, Assignment_v2_With_Responses, AssignmentType } from '../assignment.types';
 
 export async function deleteAssignment(
 	t: TFunction,
@@ -44,17 +43,14 @@ export async function deleteAssignment(
 	}
 }
 
-export function deleteAssignmentWarning(
-	t: TFunction,
-	assignment?: Avo.Assignment.Assignment_v2
-): string {
+export function deleteAssignmentWarning(t: TFunction, assignment?: Assignment_v2): string {
 	if (assignment?.assignment_type === AssignmentType.BOUW) {
 		return t(
 			'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
 		);
 	}
 
-	if (assignment?.responses?.length) {
+	if ((assignment as Assignment_v2_With_Responses)?.responses?.length) {
 		return t('assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds');
 	}
 

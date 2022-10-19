@@ -26,7 +26,7 @@ export const INITIAL_IMAGE_BLOCK_STATE = (): DefaultContentBlockState =>
 		},
 	});
 
-export const IMAGE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const IMAGE_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/image___afbeelding'),
 	type: ContentBlockType.Image,

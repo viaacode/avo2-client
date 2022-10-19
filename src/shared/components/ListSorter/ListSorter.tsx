@@ -1,11 +1,11 @@
 import { Button, Icon, IconName } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { FC, Fragment, ReactNode, useMemo } from 'react';
 
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
 
 import './ListSorter.scss';
+import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 
 // Types
 
@@ -140,4 +140,4 @@ export const ListSorter: ListSorterType = ({
 };
 
 // TODO: use this pattern for CollectionOrBundle to reduce overhead
-export const BlockListSorter = ListSorter as ListSorterType<Avo.Core.BlockItemBase>;
+export const BlockListSorter = ListSorter as ListSorterType<BaseBlockWithMeta>;

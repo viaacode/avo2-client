@@ -1,16 +1,18 @@
-import { get } from 'lodash-es';
+import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-
-import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import {
+	GetContentPageLabelByIdDocument,
+	GetContentPageLabelByIdQuery,
+} from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, navigateToContentType } from '../../../shared/helpers';
-import { dataService } from '../../../shared/services';
+import { dataService } from '../../../shared/services/data-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import {
@@ -20,10 +22,9 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
-import { GET_CONTENT_PAGE_LABEL_BY_ID } from '../content-page-label.gql';
 import { ContentPageLabel } from '../content-page-label.types';
 
-interface ContentPageLabelEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+type ContentPageLabelEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ history, match }) => {
 	const [t] = useTranslation();
@@ -34,12 +35,12 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 
 	const initOrFetchContentPageLabel = useCallback(async () => {
 		try {
-			const response = await dataService.query({
-				query: GET_CONTENT_PAGE_LABEL_BY_ID,
+			const response = await dataService.query<GetContentPageLabelByIdQuery>({
+				query: GetContentPageLabelByIdDocument,
 				variables: { id: match.params.id },
 			});
 
-			const contentPageLabelObj = get(response, 'data.app_content_labels[0]');
+			const contentPageLabelObj = response.app_content_labels[0];
 
 			if (!contentPageLabelObj) {
 				setLoadingInfo({

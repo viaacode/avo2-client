@@ -1,15 +1,14 @@
-import { Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 
 import { setPositionToIndex } from '../assignment.helper';
 
 type Positioned = { id: string | number; position: number };
 
-export function switchAssignmentBlockPositions<T extends Positioned = Avo.Core.BlockItemBase>(
-	list: T[],
-	block: T,
+export function switchAssignmentBlockPositions(
+	list: Positioned[],
+	block: Positioned,
 	delta: number
-): T[] {
+): Positioned[] {
 	if (!block) {
 		return list;
 	}

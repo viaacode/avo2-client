@@ -1,6 +1,5 @@
-import queryString from 'query-string';
-
 import { Avo } from '@viaa/avo2-types';
+import queryString from 'query-string';
 
 import { CustomError, getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';

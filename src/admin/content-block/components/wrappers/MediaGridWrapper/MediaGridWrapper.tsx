@@ -25,8 +25,9 @@ import { buildLink, CustomError, formatDate, isMobileWidth } from '../../../../.
 import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
 import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
-import { BookmarksViewsPlaysService, ToastService } from '../../../../../shared/services';
+import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
+import { ToastService } from '../../../../../shared/services/toast-service';
 import { MediaGridBlockComponentState, MediaGridBlockState } from '../../../../shared/types';
 
 import { ResolvedItemOrCollection } from './MediaGridWrapper.types';

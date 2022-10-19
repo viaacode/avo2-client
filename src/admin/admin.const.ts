@@ -2,8 +2,8 @@ import { every, isArray, some } from 'lodash-es';
 
 import { PermissionName } from '../authentication/helpers/permission-names';
 import { buildLink, CustomError } from '../shared/helpers';
-import { ToastService } from '../shared/services';
 import { ContentPageService } from '../shared/services/content-page-service';
+import { ToastService } from '../shared/services/toast-service';
 import i18n from '../shared/translations/i18n';
 import { NavigationItemInfo } from '../shared/types';
 

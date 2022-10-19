@@ -15,6 +15,7 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
+import { Assignment_Response_v2 } from '../../../assignment/assignment.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
@@ -24,7 +25,7 @@ import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { AssignmentsBulkAction } from '../../assignments/assignments.types';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
@@ -45,9 +46,9 @@ import { PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const [t] = useTranslation();
 
-	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response_v2[] | null>(
-		null
-	);
+	const [pupilCollections, setPupilCollections] = useState<
+		Omit<Assignment_Response_v2, 'pupil_collection_blocks'>[] | null
+	>(null);
 	const [pupilCollectionsCount, setPupilCollectionsCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<PupilCollectionsOverviewTableState>>({
@@ -289,17 +290,17 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 	};
 
 	const renderTableCell = (
-		pupilCollection: Partial<Avo.Assignment.Response_v2>,
+		pupilCollection: Partial<Assignment_Response_v2>,
 		columnId: PupilCollectionOverviewTableColumns
 	) => {
-		const { id, created_at, updated_at, assignment } = pupilCollection;
+		const { id, created_at, updated_at, assignment_id, assignment } = pupilCollection;
 
 		switch (columnId) {
 			case 'title':
 				return (
 					<Link
 						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
-							assignmentId: assignment?.id,
+							assignmentId: assignment_id,
 							responseId: id,
 						})}
 					>
@@ -312,7 +313,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 
 			case 'assignmentTitle':
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment?.id })}>
+					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment_id })}>
 						{truncateTableValue(assignment?.title || '-')}
 					</Link>
 				);
@@ -382,7 +383,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					columns={columns}
 					data={pupilCollections}
 					dataCount={pupilCollectionsCount}
-					renderCell={(rowData: Partial<Avo.Assignment.Response_v2>, columnId: string) =>
+					renderCell={(rowData: Partial<Assignment_Response_v2>, columnId: string) =>
 						renderTableCell(rowData, columnId as PupilCollectionOverviewTableColumns)
 					}
 					searchTextPlaceholder={t(

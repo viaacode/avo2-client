@@ -16,6 +16,7 @@ import {
 	AssignmentResponseFormState,
 	AssignmentResponseTableColumns,
 	AssignmentType,
+	BaseBlockWithMeta,
 } from './assignment.types';
 
 export const ITEMS_PER_PAGE = 20;
@@ -179,7 +180,7 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 		answer_url: string().nullable().optional(),
 		available_at: string().nullable().optional(),
 		deadline_at: string().nullable().optional(),
-	});
+	}) as any;
 };
 
 export const PUPIL_COLLECTION_FORM_SCHEMA = (
@@ -192,7 +193,7 @@ export const PUPIL_COLLECTION_FORM_SCHEMA = (
 	});
 };
 
-export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
+export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): Partial<AssignmentFormState> => ({
 	id: undefined,
 	title: t('assignment/assignment___titel-opdracht'),
 	labels: [],
@@ -289,6 +290,6 @@ export const ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH: SearchOrderProperty[] = [
 
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 
-export const isNewAssignmentBlock = (item: Pick<Avo.Core.BlockItemBase, 'id'>): boolean => {
+export const isNewAssignmentBlock = (item: Pick<BaseBlockWithMeta, 'id'>): boolean => {
 	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
 };

@@ -12,7 +12,7 @@ import {
 import { isCollection } from '../../../quick-lane/quick-lane.helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks';
-import { ToastService } from '../../services';
+import { ToastService } from '../../services/toast-service';
 
 import { isShareable } from './QuickLaneModal.helpers';
 import './QuickLaneModal.scss';

@@ -1,14 +1,6 @@
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
-import React, {
-	Dispatch,
-	FunctionComponent,
-	SetStateAction,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
@@ -22,11 +14,16 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import { ToastService } from '../../../shared/services';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
-import { AssignmentRetrieveError } from '../../assignment.types';
+import {
+	Assignment_v2_With_Labels,
+	Assignment_v2_With_Responses,
+	AssignmentResponseInfo,
+	AssignmentRetrieveError,
+} from '../../assignment.types';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 import { canViewAnAssignment } from '../../helpers/can-view-an-assignment';
@@ -43,12 +40,15 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 	// Data
 	const assignmentId = match.params.id;
-	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [assignment, setAssignment] = useState<
+		(Assignment_v2_With_Labels & Assignment_v2_With_Responses) | null
+	>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<any | null>(null);
-	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response_v2 | null>(
-		null
-	);
+	const [assignmentResponse, setAssignmentResponse] = useState<Omit<
+		AssignmentResponseInfo,
+		'assignment'
+	> | null>(null);
 
 	// UI
 
@@ -96,7 +96,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
-			const assignmentOrError: Avo.Assignment.Assignment_v2 | string =
+			const assignmentOrError: Assignment_v2_With_Labels & Assignment_v2_With_Responses =
 				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
 
 			if (isString(assignmentOrError)) {
@@ -225,9 +225,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 			<AssignmentResponseEdit
 				assignment={assignment}
 				assignmentResponse={assignmentResponse}
-				setAssignmentResponse={
-					setAssignmentResponse as Dispatch<SetStateAction<Avo.Assignment.Response_v2>>
-				}
+				setAssignmentResponse={setAssignmentResponse}
 				showBackButton
 				onShowPreviewClicked={() => {
 					setIsTeacherPreviewEnabled(true);

@@ -32,12 +32,13 @@ import {
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { QUICK_LANE_DEFAULTS } from '../../../shared/constants/quick-lane';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { ToastService } from '../../../shared/services';
 import { QuickLaneContainingService } from '../../../shared/services/quick-lane-containing.service';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { QuickLaneUrlObject } from '../../../shared/types';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
@@ -181,7 +182,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			}
 			if (!item.is_published) {
 				await ItemsService.setItemPublishedState(item.uid, !item.is_published);
-				await RelationService.deleteRelationsBySubject('item', item.uid, 'IS_REPLACED_BY');
+				await RelationService.deleteRelationsBySubject(
+					'item',
+					item.uid,
+					Lookup_Enum_Relation_Types_Enum.IsReplacedBy
+				);
 				await ItemsService.setItemDepublishReason(item.uid, null);
 
 				await fetchItemById();

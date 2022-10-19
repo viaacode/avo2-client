@@ -48,7 +48,7 @@ import {
 } from '../../../shared/helpers';
 import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,

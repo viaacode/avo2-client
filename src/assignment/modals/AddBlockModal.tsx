@@ -8,13 +8,12 @@ import {
 	Spacer,
 } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
-import { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BLOCK_ITEM_ICONS } from '../../shared/components/BlockList/BlockList.consts';
-import { AssignmentBlockType } from '../assignment.types';
+import { AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
 
 import './AddBlockModal.scss';
 
@@ -33,7 +32,7 @@ interface AddBlockModalOption {
 }
 
 export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	blocks: Avo.Core.BlockItemBase[];
+	blocks: BaseBlockWithMeta[];
 	onConfirm?: (type: AddBlockModalType) => void;
 }
 
@@ -55,7 +54,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 				type: AssignmentBlockType.ITEM,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ITEM]({
 					item_meta: { type: { label: 'video', id: 0 } },
-				} as Avo.Core.BlockItemBase),
+				} as BaseBlockWithMeta),
 				title: t('assignment/modals/add-block___kijken-luisteren-fragment'),
 				description: t(
 					'assignment/modals/add-block___voeg-een-fragment-uit-je-werkruimte-toe-om-te-laten-bekijken-of-beluisteren'

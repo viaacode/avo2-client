@@ -1,8 +1,8 @@
 import { BlockHeading } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
+import { AssignmentBlock } from '../../assignment/assignment.types';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
 import { CollectionBlockType } from '../collection.const';

@@ -1,37 +1,66 @@
 import { Avo } from '@viaa/avo2-types';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
 import { compact, get } from 'lodash-es';
 import queryString from 'query-string';
 
-import { CustomError, getEnv, performQuery } from '../../shared/helpers';
+import {
+	DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
+	DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
+	FetchItemUuidByExternalIdDocument,
+	FetchItemUuidByExternalIdQuery,
+	GetDistinctSeriesDocument,
+	GetDistinctSeriesQuery,
+	GetItemByUuidDocument,
+	GetItemByUuidQuery,
+	GetItemByUuidQueryVariables,
+	GetItemDepublishReasonByExternalIdDocument,
+	GetItemDepublishReasonByExternalIdQuery,
+	GetItemDepublishReasonByExternalIdQueryVariables,
+	GetItemsByExternalIdDocument,
+	GetItemsByExternalIdQuery,
+	GetItemsWithFiltersDocument,
+	GetItemsWithFiltersQuery,
+	GetItemsWithFiltersQueryVariables,
+	GetPublicItemsByTitleOrExternalIdDocument,
+	GetPublicItemsByTitleOrExternalIdQuery,
+	GetPublicItemsByTitleOrExternalIdQueryVariables,
+	GetPublicItemsDocument,
+	GetPublicItemsQuery,
+	GetPublicItemsQueryVariables,
+	GetUnpublishedItemPidsDocument,
+	GetUnpublishedItemPidsQuery,
+	GetUnpublishedItemPidsQueryVariables,
+	GetUnpublishedItemsWithFiltersDocument,
+	GetUnpublishedItemsWithFiltersQuery,
+	GetUnpublishedItemsWithFiltersQueryVariables,
+	GetUsersWithBothBookmarksDocument,
+	GetUsersWithBothBookmarksQuery,
+	GetUsersWithBothBookmarksQueryVariables,
+	Lookup_Enum_Relation_Types_Enum,
+	ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
+	ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
+	ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables,
+	SetSharedItemsStatusDocument,
+	SetSharedItemsStatusMutation,
+	UpdateItemDepublishReasonDocument,
+	UpdateItemDepublishReasonMutation,
+	UpdateItemDepublishReasonMutationVariables,
+	UpdateItemNotesDocument,
+	UpdateItemNotesMutation,
+	UpdateItemNotesMutationVariables,
+	UpdateItemPublishedStateDocument,
+	UpdateItemPublishedStateMutation,
+	UpdateItemPublishedStateMutationVariables,
+} from '../../shared/generated/graphql-db-types';
+import { CustomError, getEnv } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
 import { UnpublishableItem } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
-import {
-	DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
-	FETCH_ITEM_UUID_BY_EXTERNAL_ID,
-	GET_DISTINCT_SERIES,
-	GET_ITEM_BY_UUID,
-	GET_ITEM_DEPUBLISH_REASON,
-	GET_ITEMS_BY_EXTERNAL_ID,
-	GET_ITEMS_WITH_FILTERS,
-	GET_PUBLIC_ITEMS,
-	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
-	GET_UNPUBLISHED_ITEM_PIDS,
-	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
-	GET_USERS_WITH_BOTH_BOOKMARKS,
-	REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
-	UPDATE_ITEM_DEPUBLISH_REASON,
-	UPDATE_ITEM_NOTES,
-	UPDATE_ITEM_PUBLISH_STATE,
-	UPDATE_SHARED_ITEMS_STATUS,
-} from './items.gql';
 import {
 	ItemsOverviewTableCols,
 	UnpublishedItem,
@@ -44,9 +73,9 @@ export class ItemsService {
 		sortColumn: ItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any
+		where: GetItemsWithFiltersQueryVariables['where']
 	): Promise<[Avo.Item.Item[], number]> {
-		let variables: any;
+		let variables: GetItemsWithFiltersQueryVariables | null = null;
 		try {
 			variables = {
 				where,
@@ -60,13 +89,13 @@ export class ItemsService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetItemsWithFiltersQuery>({
 				variables,
-				query: GET_ITEMS_WITH_FILTERS,
+				query: GetItemsWithFiltersDocument,
 			});
 
-			const items = get(response, 'data.app_item_meta');
-			const itemCount = get(response, 'data.app_item_meta_aggregate.aggregate.count');
+			const items = response.app_item_meta;
+			const itemCount = response.app_item_meta_aggregate.aggregate?.count ?? 0;
 
 			if (!items) {
 				throw new CustomError('Response does not contain any items', null, {
@@ -74,7 +103,7 @@ export class ItemsService {
 				});
 			}
 
-			return [items, itemCount];
+			return [items as Avo.Item.Item[], itemCount];
 		} catch (err) {
 			throw new CustomError('Failed to get items from the database', err, {
 				variables,
@@ -87,9 +116,9 @@ export class ItemsService {
 		page: number,
 		sortColumn: UnpublishedItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		where: any
+		where: GetUnpublishedItemsWithFiltersQueryVariables['where']
 	): Promise<[UnpublishedItem[], number]> {
-		let variables: any;
+		let variables: GetUnpublishedItemsWithFiltersQueryVariables | null = null;
 		try {
 			variables = {
 				where,
@@ -98,13 +127,13 @@ export class ItemsService {
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetUnpublishedItemsWithFiltersQuery>({
 				variables,
-				query: GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
+				query: GetUnpublishedItemsWithFiltersDocument,
 			});
 
-			const items = get(response, 'data.shared_items');
-			const itemCount = get(response, 'data.shared_items_aggregate.aggregate.count');
+			const items = response.shared_items;
+			const itemCount = response.shared_items_aggregate.aggregate?.count ?? 0;
 
 			if (!items) {
 				throw new CustomError('Response does not contain any items', null, {
@@ -112,7 +141,7 @@ export class ItemsService {
 				});
 			}
 
-			return [items, itemCount];
+			return [items as UnpublishedItem[], itemCount];
 		} catch (err) {
 			throw new CustomError('Failed to get shared items from the database', err, {
 				variables,
@@ -122,19 +151,18 @@ export class ItemsService {
 	}
 
 	public static async fetchItemByUuid(uuid: string): Promise<Avo.Item.Item> {
-		let variables: any;
+		let variables: GetItemByUuidQueryVariables | null = null;
 		try {
 			variables = {
 				uuid,
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetItemByUuidQuery>({
 				variables,
-				query: GET_ITEM_BY_UUID,
-				errorPolicy: 'all',
+				query: GetItemByUuidDocument,
 			});
 
-			const rawItem = get(response, 'data.app_item_meta[0]');
+			const rawItem = response.app_item_meta[0];
 
 			if (!rawItem) {
 				throw new CustomError('Response does not contain an item', null, {
@@ -142,7 +170,7 @@ export class ItemsService {
 				});
 			}
 
-			return addDefaultAudioStillToItem(rawItem);
+			return addDefaultAudioStillToItem(rawItem as unknown as Avo.Item.Item);
 		} catch (err) {
 			throw new CustomError('Failed to get the item from the database', err, {
 				variables,
@@ -152,22 +180,16 @@ export class ItemsService {
 	}
 
 	static async setItemPublishedState(itemUuid: string, isPublished: boolean): Promise<void> {
-		let variables: any;
+		let variables: UpdateItemPublishedStateMutationVariables | null = null;
 		try {
 			variables = {
 				itemUuid,
 				isPublished,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<UpdateItemPublishedStateMutation>({
+				query: UpdateItemPublishedStateDocument,
 				variables,
-				mutation: UPDATE_ITEM_PUBLISH_STATE,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update is_published field for item in the database',
@@ -181,22 +203,16 @@ export class ItemsService {
 	}
 
 	static async setItemDepublishReason(itemUuid: string, reason: null | string): Promise<void> {
-		let variables: any;
+		let variables: UpdateItemDepublishReasonMutationVariables | null = null;
 		try {
 			variables = {
 				itemUuid,
 				reason,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<UpdateItemDepublishReasonMutation>({
 				variables,
-				mutation: UPDATE_ITEM_DEPUBLISH_REASON,
+				query: UpdateItemDepublishReasonDocument,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update depublish_reason field for item in the database',
@@ -210,22 +226,16 @@ export class ItemsService {
 	}
 
 	static async setItemNotes(itemUuid: string, note: string | null): Promise<void> {
-		let variables: any;
+		let variables: UpdateItemNotesMutationVariables | null = null;
 		try {
 			variables = {
 				itemUuid,
 				note,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<UpdateItemNotesMutation>({
 				variables,
-				mutation: UPDATE_ITEM_NOTES,
+				query: UpdateItemNotesDocument,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update note field for item in the database', err, {
 				variables,
@@ -234,30 +244,28 @@ export class ItemsService {
 		}
 	}
 
-	public static async fetchPublicItems(limit?: number): Promise<Avo.Item.Item[] | null> {
-		const query = {
-			query: GET_PUBLIC_ITEMS,
-			variables: { limit },
-		};
+	public static async fetchPublicItems(
+		limit: number
+	): Promise<GetPublicItemsQuery['app_item_meta'] | null> {
+		const variables: GetPublicItemsQueryVariables = { limit };
 
-		return performQuery(
-			query,
-			'data.app_item_meta',
-			'Failed to retrieve items. GET_PUBLIC_ITEMS'
-		);
+		const response = await dataService.query<GetPublicItemsQuery>({
+			query: GetPublicItemsDocument,
+			variables,
+		});
+
+		return response.app_item_meta;
 	}
 
-	private static async fetchDepublishReasonByExternalId(externalId: string): Promise<string> {
-		const query = {
-			query: GET_ITEM_DEPUBLISH_REASON,
-			variables: { externalId },
-		};
-
-		return performQuery(
-			query,
-			'data.app_item_meta[0].depublish_reason',
-			'Failed to retrieve depublish reason for item. GET_ITEM_DEPUBLISH_REASON'
-		);
+	private static async fetchDepublishReasonByExternalId(
+		externalId: string
+	): Promise<string | null> {
+		const variables: GetItemDepublishReasonByExternalIdQueryVariables = { externalId };
+		const response = await dataService.query<GetItemDepublishReasonByExternalIdQuery>({
+			query: GetItemDepublishReasonByExternalIdDocument,
+			variables,
+		});
+		return response.app_item_meta[0]?.depublish_reason || null;
 	}
 
 	public static async fetchItemByExternalId(externalId: string): Promise<UnpublishableItem> {
@@ -272,18 +280,14 @@ export class ItemsService {
 		}
 
 		try {
-			const response = await dataService.query({
-				query: GET_ITEMS_BY_EXTERNAL_ID,
+			const response = await dataService.query<GetItemsByExternalIdQuery>({
+				query: GetItemsByExternalIdDocument,
 				variables: {
 					externalIds,
 				},
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
-
-			const items: ItemSchema[] = get(response, 'data.app_item_meta', []);
+			const items = response.app_item_meta ?? [];
 
 			return Promise.all(
 				externalIds.map((externalId) => {
@@ -291,7 +295,7 @@ export class ItemsService {
 					const item = items.find((item) => item.external_id === externalId);
 
 					if (item) {
-						return addDefaultAudioStillToItem(item) || null;
+						return addDefaultAudioStillToItem(item as unknown as Avo.Item.Item) || null;
 					}
 
 					return this.fetchItemReplacementByExternalId(externalId);
@@ -316,10 +320,10 @@ export class ItemsService {
 			const relations = await RelationService.fetchRelationsBySubject(
 				'item',
 				[itemUid],
-				'IS_REPLACED_BY'
+				Lookup_Enum_Relation_Types_Enum.IsReplacedBy
 			);
 
-			const replacedByItemUid = get(relations, '[0].object', null);
+			const replacedByItemUid = relations?.[0]?.object || null;
 
 			if (replacedByItemUid) {
 				const replacementItem = await ItemsService.fetchItemByUuid(replacedByItemUid);
@@ -377,18 +381,12 @@ export class ItemsService {
 
 	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
 		try {
-			const response = await dataService.query({
-				query: FETCH_ITEM_UUID_BY_EXTERNAL_ID,
+			const response = await dataService.query<FetchItemUuidByExternalIdQuery>({
+				query: FetchItemUuidByExternalIdDocument,
 				variables: { externalId },
 			});
 
-			if (response.errors) {
-				if (response.errors[0].originalError?.message !== 'DEPUBLISH') {
-					throw new CustomError('GraphQL response contains errors');
-				}
-			}
-
-			return response?.data?.app_item_meta?.[0]?.uid || null;
+			return response?.app_item_meta?.[0]?.uid || null;
 		} catch (err) {
 			throw new CustomError(
 				'Failed to fetch item uuid by external id (FETCH_ITEM_UUID_BY_EXTERNAL_ID)',
@@ -399,28 +397,27 @@ export class ItemsService {
 
 	public static async fetchPublicItemsByTitleOrExternalId(
 		titleOrExternalId: string,
-		limit?: number
-	): Promise<Avo.Item.Item[]> {
+		limit: number
+	): Promise<
+		| GetPublicItemsByTitleOrExternalIdQuery['itemsByExternalId']
+		| GetPublicItemsByTitleOrExternalIdQuery['itemsByTitle']
+	> {
 		try {
-			const query = {
-				query: GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
-				variables: {
-					limit,
-					title: `%${titleOrExternalId}%`,
-					externalId: titleOrExternalId,
-				},
+			const variables: GetPublicItemsByTitleOrExternalIdQueryVariables = {
+				limit,
+				title: `%${titleOrExternalId}%`,
+				externalId: titleOrExternalId,
 			};
 
-			const response = await performQuery(
-				query,
-				'data',
-				'Failed to retrieve items by title or external id.'
-			);
+			const response = await dataService.query<GetPublicItemsByTitleOrExternalIdQuery>({
+				query: GetPublicItemsByTitleOrExternalIdDocument,
+				variables,
+			});
 
-			let items = get(response, 'itemsByExternalId', []);
+			let items = response.itemsByExternalId || [];
 
 			if (items.length === 0) {
-				items = get(response, 'itemsByTitle', []);
+				items = response.itemsByTitle || [];
 			}
 
 			return items;
@@ -435,13 +432,11 @@ export class ItemsService {
 
 	public static async fetchAllSeries(): Promise<string[]> {
 		try {
-			const response = await performQuery(
-				{ query: GET_DISTINCT_SERIES },
-				'data.app_item_meta',
-				'Failed to retrieve distinct series'
-			);
+			const response = await dataService.query<GetDistinctSeriesQuery>({
+				query: GetDistinctSeriesDocument,
+			});
 
-			return (response || []).map((item: { series: string }) => item.series);
+			return compact((response.app_item_meta || []).map((item) => item.series));
 		} catch (err) {
 			throw new CustomError('Failed to fetch distinct series from the database', err, {
 				query: 'GET_DISTINCT_SERIES',
@@ -452,20 +447,15 @@ export class ItemsService {
 	public static async deleteItemFromCollectionsAndBookmarks(
 		itemUid: string,
 		itemExternalId: string
-	) {
+	): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: DELETE_ITEM_FROM_COLLECTIONS_BOOKMARKS,
+			await dataService.query<DeleteItemFromCollectionBookmarksAndAssignmentsMutation>({
+				query: DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
 				variables: {
 					itemUid,
 					itemExternalId,
 				},
-				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to delete item from collections and bookmarks in the database',
@@ -482,37 +472,30 @@ export class ItemsService {
 		oldItemExternalId: string,
 		newItemUid: string,
 		newItemExternalId: string
-	) {
+	): Promise<void> {
 		try {
-			const usersWithBothBookmarks = (
-				(await performQuery(
-					{
-						query: GET_USERS_WITH_BOTH_BOOKMARKS,
-						variables: {
-							oldItemUid,
-							newItemUid,
-						},
-					},
-					'data.users_profiles',
-					'Failed while checking users with both bookmarks.'
-				)) as Pick<Avo.User.Profile, 'id'>[]
-			).map((profile) => profile.id);
+			const variables: GetUsersWithBothBookmarksQueryVariables = {
+				oldItemUid,
+				newItemUid,
+			};
+			const response = await dataService.query<GetUsersWithBothBookmarksQuery>({
+				query: GetUsersWithBothBookmarksDocument,
+				variables,
+			});
+			const usersWithBothBookmarks = response.users_profiles.map((profile) => profile.id);
 
-			const response = await dataService.mutate({
-				mutation: REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
-				variables: {
+			const variablesReplace: ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables =
+				{
 					oldItemUid,
 					oldItemExternalId,
 					newItemUid,
 					newItemExternalId,
 					usersWithBothBookmarks,
-				},
-				update: ApolloCacheManager.clearBookmarksViewsPlays,
+				};
+			await dataService.query<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation>({
+				query: ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
+				variables: variablesReplace,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to replace item in collections, bookmarks and assignments in the database',
@@ -524,20 +507,15 @@ export class ItemsService {
 		}
 	}
 
-	public static async setSharedItemsStatus(pids: string[], status: string) {
+	public static async setSharedItemsStatus(pids: string[], status: string): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: UPDATE_SHARED_ITEMS_STATUS,
+			await dataService.query<SetSharedItemsStatusMutation>({
+				query: SetSharedItemsStatusDocument,
 				variables: {
 					pids,
 					status,
 				},
-				update: ApolloCacheManager.clearSharedItemsCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update status for shared items in the database', err, {
 				query: 'UPDATE_SHARED_ITEMS_STATUS',
@@ -576,28 +554,16 @@ export class ItemsService {
 	}
 
 	static async getUnpublishedItemPids(where: any = {}): Promise<string[]> {
-		let variables: any;
+		let variables: GetUnpublishedItemPidsQueryVariables | null = null;
 		try {
-			variables = where
-				? {
-						where,
-				  }
-				: {};
-			const response = await dataService.query({
+			variables = {
+				where: where || undefined,
+			};
+			const response = await dataService.query<GetUnpublishedItemPidsQuery>({
+				query: GetUnpublishedItemPidsDocument,
 				variables,
-				query: GET_UNPUBLISHED_ITEM_PIDS,
-				fetchPolicy: 'no-cache',
 			});
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-			return compact(
-				get(response, 'data.shared_items' || []).map((item: { pid: string }) =>
-					get(item, 'pid')
-				)
-			);
+			return compact(response.shared_items.map((item) => get(item, 'pid')));
 		} catch (err) {
 			throw new CustomError('Failed to get unpublished item pids from the database', err, {
 				variables,

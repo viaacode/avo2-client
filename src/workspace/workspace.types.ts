@@ -1,6 +1,5 @@
-import { ReactNode } from 'react';
-
 import { IconName, MenuItemInfo, TabProps } from '@viaa/avo2-components';
+import { ReactNode } from 'react';
 
 import {
 	ASSIGNMENTS_ID,

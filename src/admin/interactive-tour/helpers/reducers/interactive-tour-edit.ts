@@ -1,10 +1,9 @@
+import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
+import { Avo } from '@viaa/avo2-types';
 import produce, { Draft } from 'immer';
 import { cloneDeep } from 'lodash-es';
 
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
-
-import { ToastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services/toast-service';
 import i18n from '../../../../shared/translations/i18n';
 import { ValueOf } from '../../../../shared/types';
 import { InteractiveTourService } from '../../interactive-tour.service';
@@ -87,7 +86,7 @@ export const interactiveTourEditReducer = produce(
 				};
 				break;
 
-			case InteractiveTourEditActionType.SWAP_STEPS:
+			case InteractiveTourEditActionType.SWAP_STEPS: {
 				if (
 					!draft.currentInteractiveTour.steps ||
 					!draft.currentInteractiveTour.steps.length
@@ -109,21 +108,24 @@ export const interactiveTourEditReducer = produce(
 				);
 				draft.formErrors = {};
 				break;
+			}
 
-			case InteractiveTourEditActionType.REMOVE_STEP:
+			case InteractiveTourEditActionType.REMOVE_STEP: {
 				const newSteps = draft.currentInteractiveTour.steps;
 				newSteps.splice(action.index, 1);
 				draft.currentInteractiveTour.steps = newSteps;
 				draft.formErrors = {};
 				break;
+			}
 
-			case InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP:
+			case InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP: {
 				const prop = action.interactiveTourProp;
 				(draft.currentInteractiveTour as any)[prop] = action.interactiveTourPropValue;
 				if (action.updateInitialInteractiveTour) {
 					(draft.initialInteractiveTour as any)[prop] = action.interactiveTourPropValue;
 				}
 				break;
+			}
 		}
 	}
 );

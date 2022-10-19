@@ -1,0 +1,16 @@
+query getUserTempAccess($id: uuid!) {
+	shared_users(where: { profile: { id: { _eq: $id }, is_deleted: { _eq: false } } }) {
+		id
+		uid
+		full_name
+		mail
+		is_blocked
+		temp_access {
+			from
+			until
+			current {
+				status
+			}
+		}
+	}
+}

@@ -1,7 +1,6 @@
+import { Button, Flex, FlexItem, FormGroup, Spacer } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { Fragment, FunctionComponent } from 'react';
-
-import { Button, Flex, FlexItem, FormGroup, Spacer } from '@viaa/avo2-components';
 
 import {
 	ContentBlockComponentState,
@@ -90,7 +89,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 				}
 
 				// REPEATED FIELDGROUP
-				const renderFieldGroups = (singleState: any, singleStateIndex: number = 0) => (
+				const renderFieldGroups = (singleState: any, singleStateIndex = 0) => (
 					<Spacer key={`${fieldGroup.label}-${singleStateIndex}`} margin="top-large">
 						<Flex>
 							<FlexItem>{`${fieldGroup.label} ${singleStateIndex + 1}`}</FlexItem>

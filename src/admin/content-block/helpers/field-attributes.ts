@@ -1,7 +1,6 @@
-import { debounce, get, isArray, isNil } from 'lodash-es';
-
 import { SelectOption } from '@viaa/avo2-components';
 import { WYSIWYGProps } from '@viaa/avo2-components/dist/esm/wysiwyg';
+import { debounce, get, isArray, isNil } from 'lodash-es';
 
 import { RichEditorStateKey } from '../../content/content.const';
 import { ContentBlockEditor, ContentBlockField, PickerItem } from '../../shared/types';

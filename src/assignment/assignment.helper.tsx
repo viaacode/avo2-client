@@ -1,12 +1,15 @@
 import { IconName } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabel_v2 } from '@viaa/avo2-types/types/assignment';
 
 import i18n from '../shared/translations/i18n';
 import { Positioned } from '../shared/types';
 
-import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
+import {
+	Assignment_Label_v2,
+	Assignment_v2_With_Labels,
+	AssignmentLayout,
+	AssignmentRetrieveError,
+} from './assignment.types';
 
 export class AssignmentHelper {
 	public static getContentLayoutOptions(): RadioOption[] {
@@ -23,18 +26,16 @@ export class AssignmentHelper {
 	}
 
 	public static getLabels(
-		assignment: Avo.Assignment.Assignment_v2,
+		assignment: Assignment_v2_With_Labels,
 		type: string
-	): { assignment_label: AssignmentLabel_v2 }[] {
-		return (
-			assignment?.labels?.filter((label: any) => label.assignment_label.type === type) || []
-		);
+	): { assignment_label: Assignment_Label_v2 }[] {
+		return assignment?.labels?.filter((label) => label.assignment_label.type === type) || [];
 	}
 }
 
 // Zoek & bouw
 
-export function setPositionToIndex<T>(items: Positioned<T>[]): Positioned<T>[] {
+export function setPositionToIndex(items: Positioned[]): Positioned[] {
 	return items.map((item, i) => {
 		return {
 			...item,

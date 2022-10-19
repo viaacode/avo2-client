@@ -1,7 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Column,
 	Container,
@@ -14,6 +10,10 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
@@ -22,7 +22,6 @@ import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
-import { RouteComponentProps } from 'react-router-dom';
 
 interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;

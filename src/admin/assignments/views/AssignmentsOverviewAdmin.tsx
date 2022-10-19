@@ -15,16 +15,20 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { AssignmentService } from '../../../assignment/assignment.service';
-import { AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
+import {
+	Assignment_v2,
+	AssignmentOverviewTableColumns,
+} from '../../../assignment/assignment.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import Html from '../../../shared/components/Html/Html';
+import { GetAssignmentsAdminOverviewQuery } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
@@ -45,7 +49,7 @@ import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignm
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const [t] = useTranslation();
 
-	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment_v2[] | null>(null);
+	const [assignments, setAssignments] = useState<Assignment_v2[] | null>(null);
 	const [assignmentCount, setAssignmentCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<AssignmentsOverviewTableState>>({
@@ -278,7 +282,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	};
 
 	const renderTableCell = (
-		assignment: Partial<Avo.Assignment.Assignment_v2>,
+		assignment: Partial<Assignment_v2>,
 		columnId: AssignmentOverviewTableColumns
 	) => {
 		const { id, created_at, updated_at, deadline_at } = assignment;
@@ -337,7 +341,10 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			}
 
 			case 'views':
-				return assignment?.view_count?.count || '0';
+				return (
+					(assignment as GetAssignmentsAdminOverviewQuery['app_assignments_v2'][0])
+						?.view_count?.count || '0'
+				);
 
 			case 'actions':
 			default:
@@ -375,10 +382,9 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					columns={columns}
 					data={assignments}
 					dataCount={assignmentCount}
-					renderCell={(
-						rowData: Partial<Avo.Assignment.Assignment_v2>,
-						columnId: string
-					) => renderTableCell(rowData, columnId as AssignmentOverviewTableColumns)}
+					renderCell={(rowData: Partial<Assignment_v2>, columnId: string) =>
+						renderTableCell(rowData, columnId as AssignmentOverviewTableColumns)
+					}
 					searchTextPlaceholder={t(
 						'admin/assignments/views/assignments-overview-admin___zoeken-op-titel-en-auteur'
 					)}

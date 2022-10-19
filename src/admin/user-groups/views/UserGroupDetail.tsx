@@ -27,7 +27,7 @@ import SmartLink from '../../../shared/components/SmartLink/SmartLink';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useTableSort } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { Permission, PermissionGroup } from '../../permission-groups/permission-group.types';
 import {
@@ -61,8 +61,8 @@ const UserGroupDetail: FunctionComponent<UserDetailProps> = ({ history, match })
 
 	const fetchUserGroupById = useCallback(async () => {
 		try {
-			const userGroupObj: UserGroup | undefined = await UserGroupService.fetchUserGroupById(
-				match.params.id
+			const userGroupObj: any | undefined = await UserGroupService.fetchUserGroupById(
+				parseInt(match.params.id)
 			);
 			if (!userGroupObj) {
 				setLoadingInfo({

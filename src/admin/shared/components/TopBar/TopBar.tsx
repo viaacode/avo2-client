@@ -1,7 +1,3 @@
-import React, { FunctionComponent, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import { RouteComponentProps, withRouter } from 'react-router';
-
 import {
 	BlockHeading,
 	Button,
@@ -15,6 +11,9 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import './TopBar.scss';
 

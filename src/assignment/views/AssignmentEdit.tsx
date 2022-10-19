@@ -1,7 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { isPast } from 'date-fns';
 import React, {
 	Dispatch,
@@ -28,12 +26,19 @@ import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/B
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { ToastService } from '../../shared/services';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentFormState } from '../assignment.types';
+import {
+	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Labels,
+	Assignment_v2_With_Responses,
+	AssignmentBlock,
+	AssignmentFormState,
+	BaseBlockWithMeta,
+} from '../assignment.types';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
@@ -66,7 +71,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const [t] = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<Avo.Assignment.Assignment_v2 | null>(null);
+	const [original, setOriginal] = useState<Assignment_v2_With_Blocks | null>(null);
 	const [assignmentLoading, setAssigmentLoading] = useState(false);
 	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
@@ -87,12 +92,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
 	});
 
-	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+	const updateBlocksInAssignmentState = (newBlocks: BaseBlockWithMeta[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
 		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
 	};
 	const setBlock = useAssignmentBlockChangeHandler(
-		assignment.blocks,
+		assignment?.blocks || [],
 		updateBlocksInAssignmentState
 	);
 
@@ -116,7 +121,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			setAssigmentLoading(true);
 			setAssigmentError(null);
 			const id = match.params.id;
-			let tempAssignment;
+			let tempAssignment: Assignment_v2_With_Blocks | null = null;
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
@@ -199,14 +204,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			return;
 		}
 
-		if (assignment.deadline_at && isPast(new Date(assignment.deadline_at))) {
+		if (assignment?.deadline_at && isPast(new Date(assignment?.deadline_at))) {
 			ToastService.danger(
 				t('assignment/views/assignment-edit___de-deadline-mag-niet-in-het-verleden-liggen')
 			);
 			return;
 		}
 
-		if (isDeadlineBeforeAvailableAt(assignment.available_at, assignment.deadline_at)) {
+		if (isDeadlineBeforeAvailableAt(assignment?.available_at, assignment?.deadline_at)) {
 			ToastService.danger(
 				t(
 					'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
@@ -220,7 +225,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			return;
 		}
 
-		handleSubmit(submit, (...args) => console.error(args))();
+		await handleSubmit(submit, (...args) => console.error(args))();
 	};
 
 	const submit = async () => {
@@ -237,11 +242,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				{
 					...original,
 					...assignment,
-					blocks: cleanupTitleAndDescriptions(assignment.blocks) as AssignmentBlock[],
+					blocks: cleanupTitleAndDescriptions(
+						assignment?.blocks || []
+					) as AssignmentBlock[],
 				}
 			);
 
-			if (updated) {
+			if (updated && assignment?.id) {
 				trackEvents(
 					{
 						object: String(assignment.id),
@@ -276,18 +283,18 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
-		assignment.blocks,
+		assignment?.blocks || [],
 		updateBlocksInAssignmentState,
 		{
 			confirmSliceConfig: {
-				responses: original?.responses || [],
+				responses: (original?.responses || []) as any, // TODO strong types
 			},
 			addCollectionConfig: {
 				addCollectionCallback: (id) => {
 					// Track import collection into assignment event
 					trackEvents(
 						{
-							object: `${assignment.id}`,
+							object: `${assignment?.id}`,
 							object_type: 'avo_assignment',
 							action: 'add',
 							resource: {
@@ -304,12 +311,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		modal: {
-			items: assignment.blocks,
+			items: assignment?.blocks,
 			onClose: (update?: AssignmentBlock[]) => {
 				if (update) {
 					const blocks = update.map((item, i) => ({
 						...item,
-						position: assignment.blocks[i].position,
+						position: assignment?.blocks?.[i]?.position || 0,
 					}));
 
 					setAssignment((prev) => ({
@@ -323,27 +330,31 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		},
 	});
 
-	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
-		listSorter: {
-			content: (item) => item && renderBlockContent(item),
-			divider: (position: number) => (
-				<Button
-					icon="plus"
-					type="secondary"
-					onClick={() => {
-						addBlockModal.setEntity(position);
-						addBlockModal.setOpen(true);
-					}}
-				/>
-			),
-		},
-		listSorterItem: {
-			onSlice: (item) => {
-				confirmSliceModal.setEntity(item);
-				confirmSliceModal.setOpen(true);
+	const [renderedListSorter] = useBlocksList(
+		assignment?.blocks || [],
+		updateBlocksInAssignmentState,
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (position: number) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							addBlockModal.setEntity(position);
+							addBlockModal.setOpen(true);
+						}}
+					/>
+				),
 			},
-		},
-	});
+			listSorterItem: {
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
+				},
+			},
+		}
+	);
 
 	const renderBackButton = useMemo(
 		() => (
@@ -366,11 +377,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
 				if (pastDeadline) {
-					return <BlockList blocks={assignment.blocks} />;
+					return <BlockList blocks={assignment?.blocks || []} />;
 				}
 				return (
 					<div className="c-assignment-contents-tab">
-						{assignment.blocks.length > 0 && !pastDeadline && (
+						{(assignment?.blocks?.length || 0) > 0 && !pastDeadline && (
 							<Spacer
 								margin={['bottom-large']}
 								className="c-assignment-page__reorder-container"
@@ -398,7 +409,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					return (
 						<div className="c-assignment-details-tab">
 							<AssignmentDetailsFormReadonly
-								assignment={assignment as Avo.Assignment.Assignment_v2}
+								assignment={assignment as Assignment_v2_With_Labels}
 							/>
 						</div>
 					);
@@ -406,10 +417,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={assignment as Avo.Assignment.Assignment_v2}
+							assignment={
+								assignment as Assignment_v2_With_Labels &
+									Assignment_v2_With_Responses &
+									Assignment_v2_With_Blocks
+							}
 							setAssignment={
 								setAssignment as Dispatch<
-									SetStateAction<Avo.Assignment.Assignment_v2>
+									SetStateAction<
+										Assignment_v2_With_Labels & Assignment_v2_With_Blocks
+									>
 								>
 							}
 							setValue={setValue}
@@ -431,9 +448,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	// Synchronise the React state that triggers renders with the useForm hook
 	useEffect(() => {
-		Object.keys(assignment).forEach((key) => {
+		Object.keys(assignment || {}).forEach((key) => {
 			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment[cast]);
+			setValue(cast, assignment?.[cast]);
 		});
 
 		trigger();
@@ -537,7 +554,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		if (assignmentError) {
 			return <ErrorView {...assignmentError} />;
 		}
-		if (isViewAsPupilEnabled) {
+		if (isViewAsPupilEnabled && assignment) {
 			return (
 				<AssignmentPupilPreview
 					assignment={assignment}

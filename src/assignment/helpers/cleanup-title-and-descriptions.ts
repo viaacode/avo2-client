@@ -1,11 +1,14 @@
-import { Avo } from '@viaa/avo2-types';
-
-import { AssignmentBlockType, EditableBlockItem } from '../assignment.types';
+import {
+	AssignmentBlockType,
+	BaseBlockWithMeta,
+	EditableAssignmentBlock,
+	EditablePupilCollectionFragment,
+} from '../assignment.types';
 import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
 
 /**
  * To be able to keep track of the custom_title and custom_description for all editModes: original, custom and none, we need som extra fields to store these values
- * So the EditableBlockItem interface was created to store:
+ * So the EditableAssignmentBlock type was created to store:
  *  - ownTitle
  *  - ownDescription
  *  - noTitle
@@ -20,8 +23,8 @@ import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBloc
  * @param blocks
  */
 export function cleanupTitleAndDescriptions(
-	blocks: EditableBlockItem[] = []
-): Avo.Core.BlockItemBase[] {
+	blocks: (EditablePupilCollectionFragment | EditableAssignmentBlock)[] = []
+): BaseBlockWithMeta[] {
 	return blocks.map((block) => {
 		if (block.type === AssignmentBlockType.ITEM) {
 			switch (block.editMode) {

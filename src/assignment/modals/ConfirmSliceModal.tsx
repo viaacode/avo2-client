@@ -10,15 +10,14 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
-import { AssignmentBlockType } from '../assignment.types';
+import { Assignment_v2, AssignmentBlock, AssignmentBlockType } from '../assignment.types';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	responses?: Avo.Assignment.Response_v2[];
+	responses?: Assignment_v2[];
 	block?: Pick<AssignmentBlock, 'type'>;
 	onConfirm?: () => void;
 }
@@ -32,7 +31,7 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const label = { type: block ? BLOCK_ITEM_LABELS()[block.type] : '' };
+	const label = { type: block ? BLOCK_ITEM_LABELS()[block.type as Avo.Core.BlockItemType] : '' };
 
 	const renderConfirmButtons = () => {
 		return (

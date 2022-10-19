@@ -1,9 +1,8 @@
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-
-import { Button, ButtonToolbar } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -11,7 +10,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatTimestamp } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -24,7 +23,7 @@ import {
 	UnpublishedItemsTableState,
 } from '../items.types';
 
-interface PublishItemsOverviewProps extends DefaultSecureRouteProps {}
+type PublishItemsOverviewProps = DefaultSecureRouteProps;
 
 const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ history }) => {
 	const [t] = useTranslation();

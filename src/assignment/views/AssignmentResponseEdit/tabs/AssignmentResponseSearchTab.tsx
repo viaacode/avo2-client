@@ -19,22 +19,27 @@ import { SearchFiltersAndResults } from '../../../../search/components';
 import { FilterState } from '../../../../search/search.types';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { useScrollToSelector } from '../../../../shared/hooks/scroll-to-selector';
-import { ToastService } from '../../../../shared/services';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
+import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
 } from '../../../assignment.const';
 import { AssignmentService } from '../../../assignment.service';
-import { PupilSearchFilterState } from '../../../assignment.types';
+import {
+	Assignment_v2,
+	AssignmentResponseInfo,
+	BaseBlockWithMeta,
+	PupilSearchFilterState,
+} from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
-	assignment: Avo.Assignment.Assignment_v2 | null;
-	assignmentResponse: Avo.Assignment.Response_v2 | null;
+	assignment: Assignment_v2 | null;
+	assignmentResponse: AssignmentResponseInfo | null;
 	filterState: any;
 	setFilterState: any;
-	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
+	appendBlockToPupilCollection: (block: BaseBlockWithMeta) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
 const AssignmentResponseSearchTab: FunctionComponent<

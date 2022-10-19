@@ -40,7 +40,7 @@ import {
 	useSubjects,
 } from '../../../shared/hooks';
 import { useIdps } from '../../../shared/hooks/useIdps';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import AddOrRemoveLinkedElementsModal, {

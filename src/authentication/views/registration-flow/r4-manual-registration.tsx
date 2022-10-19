@@ -1,9 +1,3 @@
-import { Requests } from 'node-zendesk';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps, withRouter } from 'react-router';
-
 import {
 	BlockHeading,
 	Button,
@@ -22,18 +16,24 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
+import { Requests } from 'node-zendesk';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import Html from '../../../shared/components/Html/Html';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { CustomError } from '../../../shared/helpers';
-import { ToastService, ZendeskService } from '../../../shared/services';
 import { fetchEducationLevels } from '../../../shared/services/education-levels-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 import './r4-manual-registration.scss';
 
-export interface ManualRegistrationProps extends RouteComponentProps {}
+export type ManualRegistrationProps = RouteComponentProps;
 
 const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ history }) => {
 	const [t] = useTranslation();

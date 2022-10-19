@@ -1,9 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps } from 'react-router';
-
 import {
 	Alert,
 	BlockHeading,
@@ -18,6 +12,11 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps } from 'react-router';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects';

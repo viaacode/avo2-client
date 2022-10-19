@@ -2,7 +2,7 @@ import { Button, ButtonGroup, Select } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 
 import i18n from '../../shared/translations/i18n';
-import { EditableBlockItem } from '../assignment.types';
+import { EditableAssignmentBlock } from '../assignment.types';
 
 import './AssignmentBlockDescriptionButtons.scss';
 
@@ -35,8 +35,8 @@ const getButtonTooltips = (): Record<AssignmentBlockItemDescriptionType, string 
 });
 
 export interface AssignmentBlockDescriptionButtonsProps {
-	block: EditableBlockItem;
-	setBlock: (updatedBlock: EditableBlockItem) => void;
+	block: EditableAssignmentBlock;
+	setBlock: (updatedBlock: EditableAssignmentBlock) => void;
 	types?: AssignmentBlockItemDescriptionType[];
 }
 

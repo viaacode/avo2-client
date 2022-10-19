@@ -82,44 +82,6 @@ export interface DeleteContentCounts {
 	quickLanes: number;
 }
 
-export interface DeleteContentCountsRaw {
-	publicCollections: {
-		aggregate: {
-			count: number;
-		};
-	};
-	publicContentPages: {
-		aggregate: {
-			count: number;
-		};
-	};
-	privateCollections: {
-		aggregate: {
-			count: number;
-		};
-	};
-	assignments: {
-		aggregate: {
-			count: number;
-		};
-	};
-	collectionBookmarks: {
-		aggregate: {
-			count: number;
-		};
-	};
-	itemBookmarks: {
-		aggregate: {
-			count: number;
-		};
-	};
-	privateContentPages: {
-		aggregate: {
-			count: number;
-		};
-	};
-}
-
 export interface UserSummaryView {
 	user_id: string;
 	full_name: string;

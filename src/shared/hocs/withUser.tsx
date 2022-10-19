@@ -1,8 +1,7 @@
+import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-
-import { Avo } from '@viaa/avo2-types';
 
 import { selectUser } from '../../authentication/store/selectors';
 import { AppState } from '../../store';

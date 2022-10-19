@@ -1,11 +1,10 @@
+import { Button, ButtonToolbar } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
-
-import { Button, ButtonToolbar } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
@@ -19,10 +18,11 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, {
@@ -40,7 +40,7 @@ import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 
-interface ItemsOverviewProps extends DefaultSecureRouteProps {}
+type ItemsOverviewProps = DefaultSecureRouteProps;
 
 const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	const [t] = useTranslation();
@@ -95,7 +95,11 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 					orFilters.push({
 						is_published: { _eq: false },
 						depublish_reason: { _is_null: true },
-						_not: { relations: { predicate: { _eq: 'IS_REPLACED_BY' } } },
+						_not: {
+							relations: {
+								predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsReplacedBy },
+							},
+						},
 					});
 				}
 				if (filters.is_published.includes('unpublished-with-reason')) {
@@ -107,7 +111,9 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 				if (filters.is_published.includes('unpublished-with-merge')) {
 					orFilters.push({
 						is_published: { _eq: false },
-						relations: { predicate: { _eq: 'IS_REPLACED_BY' } },
+						relations: {
+							predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsReplacedBy },
+						},
 					});
 				}
 

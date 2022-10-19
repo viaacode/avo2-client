@@ -1,14 +1,14 @@
-import { Avo } from '@viaa/avo2-types';
 import { TFunction } from 'i18next';
 
 import { CustomError } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
+import { Assignment_v2 } from '../assignment.types';
 
 export async function duplicateAssignment(
 	t: TFunction,
-	assignment?: Avo.Assignment.Assignment_v2
-): Promise<Avo.Assignment.Assignment_v2 | undefined> {
+	assignment?: Assignment_v2
+): Promise<Assignment_v2 | undefined> {
 	try {
 		if (!assignment) {
 			throw new CustomError(

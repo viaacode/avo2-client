@@ -22,12 +22,12 @@ const shouldFetchUsersInCompany = (user?: UserSchema) => {
 // Fetch profiles from GQL
 export const retrieveProfiles = async (
 	name: string | null,
-	limit: number = 5,
+	limit = 5,
 	user?: UserSchema
 ): Promise<PickerSelectItem[]> => {
 	try {
 		const where = {
-			...(!!name
+			...(name
 				? {
 						_or: [
 							{ full_name: { _ilike: `%${name}%` } },

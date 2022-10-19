@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -11,6 +8,8 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { PickerItem } from '../../types';
 import { ContentPicker } from '../ContentPicker/ContentPicker';

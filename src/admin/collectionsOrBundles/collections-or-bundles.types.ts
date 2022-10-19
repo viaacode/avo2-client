@@ -112,5 +112,3 @@ export type CollectionBulkAction =
 	| 'change_labels';
 
 export type ManagementStatus = null | 'ACTUEEL' | 'ACTUALISEREN' | 'HERZIEN' | 'GEARCHIVEERD';
-
-export type QualityCheckLabel = 'TAALCHECK' | 'KWALITEITSCHECK' | 'EINDCHECK';

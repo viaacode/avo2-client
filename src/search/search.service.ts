@@ -1,6 +1,5 @@
-import { get, set } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { get, set } from 'lodash-es';
 
 import { getEnv } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
@@ -8,7 +7,7 @@ import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 export const fetchSearchResults = async (
 	orderProperty: Avo.Search.OrderProperty = 'relevance',
 	orderDirection: Avo.Search.OrderDirection = 'desc',
-	from: number = 0,
+	from = 0,
 	size: number,
 	filters?: Partial<Avo.Search.Filters>,
 	filterOptionSearch?: Partial<Avo.Search.FilterOption>,

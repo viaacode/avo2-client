@@ -23,10 +23,11 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { CheckboxDropdownModal } from '../../shared/components';
+import { App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ToastService } from '../../shared/services';
+import { ToastService } from '../../shared/services/toast-service';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
@@ -157,7 +158,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	};
 
 	const addMarcomEntry = async () => {
-		let marcomEntry: Partial<MarcomEntry> | null = null;
+		let marcomEntry: App_Collection_Marcom_Log_Insert_Input | null = null;
 		try {
 			marcomEntry = {
 				channel_type: marcomChannelType || null,
@@ -175,7 +176,13 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				await CollectionService.insertMarcomEntriesForBundleCollections(
 					collection.id,
 					collectionIds,
-					marcomEntry
+					{
+						collection_id: marcomEntry.collection_id,
+						channel_name: marcomEntry.channel_name,
+						channel_type: marcomEntry.channel_type,
+						external_link: marcomEntry.external_link,
+						publish_date: marcomEntry.publish_date,
+					}
 				);
 			}
 			await fetchMarcomEntries();

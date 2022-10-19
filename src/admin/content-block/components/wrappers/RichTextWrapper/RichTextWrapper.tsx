@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { BlockRichText, BlockRichTextProps } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
 
 const RichTextWrapper: FunctionComponent<
 	Omit<BlockRichTextProps, 'maxTextWidth'> & {

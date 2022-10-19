@@ -1,6 +1,5 @@
-import { memoize } from 'lodash-es';
-
 import { IconName } from '@viaa/avo2-components';
+import { memoize } from 'lodash-es';
 
 import { CustomError, getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';

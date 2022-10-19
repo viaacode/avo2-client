@@ -43,7 +43,6 @@ import { ErrorView } from '../../error/views';
 import { CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { useCollectionQualityLabels } from '../../shared/hooks/useCollectionQualityLabels';
-import { ToastService } from '../../shared/services';
 import {
 	BookmarksViewsPlaysService,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -53,6 +52,7 @@ import {
 	BookmarkRequestInfo,
 	BookmarkStatusLookup,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { ToastService } from '../../shared/services/toast-service';
 import { AppState } from '../../store';
 import {
 	DEFAULT_FILTER_STATE,

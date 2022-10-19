@@ -1,7 +1,5 @@
-import { get } from 'lodash-es';
-import moment from 'moment';
-
 import { Avo } from '@viaa/avo2-types';
+import moment from 'moment';
 
 import { LoginMessage } from '../authentication.types';
 
@@ -39,6 +37,6 @@ describe('login > store > reducer', () => {
 	it(`Correctly handle ${LoginActionTypes.SET_ACCEPT_CONDITIONS}`, () => {
 		const state = loginReducer(initialState, setAcceptConditions());
 
-		expect(get(state, 'data.acceptedConditions')).toEqual(true);
+		expect((state.data as any)?.acceptedConditions).toEqual(true);
 	});
 });

@@ -47,7 +47,7 @@ import {
 } from '../../../shared/helpers';
 import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { useContentPageLabelOptions } from '../../content-page-labels/hooks/useContentPageLabelOptions';
 import FilterTable, {

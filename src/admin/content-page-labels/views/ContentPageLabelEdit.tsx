@@ -1,7 +1,3 @@
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	Box,
 	Button,
@@ -13,7 +9,9 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -21,8 +19,9 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
+import { ContentPageType } from '../../content/content.types';
 import { useContentTypes } from '../../content/hooks';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -30,7 +29,7 @@ import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
 import { ContentPageLabelService } from '../content-page-label.service';
 import { ContentPageLabel, ContentPageLabelEditFormErrorState } from '../content-page-label.types';
 
-interface ContentPageLabelEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+type ContentPageLabelEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 	history,
@@ -66,7 +65,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 		} else {
 			try {
 				const contentLabel = await ContentPageLabelService.fetchContentPageLabel(
-					match.params.id
+					parseInt(match.params.id)
 				);
 				setInitialContentPageLabel(contentLabel);
 				setContentPageLabelInfo(contentLabel);
@@ -218,8 +217,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 										onChange={(newContentType) =>
 											setContentPageLabelInfo({
 												...contentPageLabelInfo,
-												content_type:
-													newContentType as Avo.ContentPage.Type,
+												content_type: newContentType as ContentPageType,
 											})
 										}
 									/>

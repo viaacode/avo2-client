@@ -1,6 +1,5 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import type { DocumentNode } from 'graphql';
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,10 +11,10 @@ import {
 } from '../../../authentication/components';
 import { Permissions } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
-import { dataService } from '../../services';
+import { dataService } from '../../services/data-service';
 
 export interface DataQueryComponentProps {
-	query: DocumentNode;
+	query: string;
 	resultPath?: string;
 	renderData: (data: any, refetch: () => void) => ReactNode;
 	variables?: any;
@@ -28,6 +27,21 @@ export interface DataQueryComponentProps {
 	actionButtons?: Avo.Auth.ErrorActionButton[];
 }
 
+/**
+ * @deprecated Use react-query functions from src/shared/generated/graphql-db-types.ts
+ * @param query
+ * @param variables
+ * @param resultPath
+ * @param renderData
+ * @param ignoreNotFound
+ * @param notFoundMessage
+ * @param showSpinner
+ * @param permissions
+ * @param user
+ * @param noPermissionsMessage
+ * @param actionButtons
+ * @constructor
+ */
 const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	query,
 	variables,
@@ -58,7 +72,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			setResult({
 				loading: false,
 				error: null,
-				data: response.data,
+				data: response,
 			});
 		} catch (err) {
 			setResult({
@@ -113,12 +127,12 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			);
 		}
 
-		if (isEmpty(get(result, 'data'))) {
+		if (isEmpty(result)) {
 			// Temp empty because of cache clean
 			return renderSpinner();
 		}
 
-		const data = get(result, resultPath ? `data.${resultPath}` : 'data');
+		const data = resultPath ? get(result, resultPath) : result;
 		if (data || ignoreNotFound) {
 			// We always want to wait until the current database operation finishes, before we refetch the changed data
 			return renderData(data, () => setTimeout(fetchQuery, 0));

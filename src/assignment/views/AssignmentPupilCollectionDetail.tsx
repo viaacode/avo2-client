@@ -1,5 +1,4 @@
 import { BlockHeading, Container, Icon } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +13,13 @@ import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
 import { AssignmentService } from '../assignment.service';
+import {
+	Assignment_v2,
+	Assignment_v2_With_Labels,
+	Assignment_v2_With_Responses,
+	AssignmentResponseInfo,
+	BaseBlockWithMeta,
+} from '../assignment.types';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentMetadata from '../components/AssignmentMetadata';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
@@ -30,14 +36,13 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 }) => {
 	const [t] = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentResponse, setAssignmentResponse] =
-		useState<Avo.Assignment.Response_v2 | null>();
+	const [assignment, setAssignment] = useState<Assignment_v2_With_Labels | null>(null);
+	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo | null>();
 	const assignmentId = match.params.assignmentId;
 	const assignmentResponseId = match.params.responseId;
 
 	const fetchAssignmentResponse = useCallback(
-		async (tempAssignment: Avo.Assignment.Assignment_v2) => {
+		async (tempAssignment: Assignment_v2): Promise<AssignmentResponseInfo | null> => {
 			const canViewAssignmentResponses = await PermissionService.hasPermissions(
 				[
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
@@ -52,7 +57,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 						'assignment/views/assignment-pupil-collection-detail___je-hebt-geen-toegang-om-deze-leerlingencollectie-te-bekijken'
 					),
 				});
-				return;
+				return null;
 			}
 
 			return AssignmentService.getAssignmentResponseById(assignmentResponseId);
@@ -62,7 +67,9 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 
 	const fetchAssignment = useCallback(async () => {
 		try {
-			const tempAssignment = await AssignmentService.fetchAssignmentById(assignmentId);
+			const tempAssignment: Assignment_v2 = await AssignmentService.fetchAssignmentById(
+				assignmentId
+			);
 
 			setAssignmentResponse(await fetchAssignmentResponse(tempAssignment));
 
@@ -124,7 +131,10 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 					info={
 						assignment ? (
 							<AssignmentMetadata
-								assignment={assignment}
+								assignment={
+									assignment as Assignment_v2_With_Labels &
+										Assignment_v2_With_Responses
+								}
 								assignmentResponse={assignmentResponse}
 								who={'pupil'}
 							/>
@@ -137,7 +147,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 						<BlockList
 							blocks={
 								(assignmentResponse?.pupil_collection_blocks ||
-									[]) as Avo.Core.BlockItemBase[]
+									[]) as BaseBlockWithMeta[]
 							}
 							config={{
 								ITEM: {

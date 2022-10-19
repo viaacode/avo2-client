@@ -1,7 +1,3 @@
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	BlockHeading,
 	Button,
@@ -12,6 +8,9 @@ import {
 	Spacer,
 	Table,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -29,7 +28,7 @@ import { GET_PERMISSIONS_TABLE_COLS, PERMISSION_GROUP_PATH } from '../permission
 import { PermissionGroupService } from '../permission-group.service';
 import { PermissionGroup, PermissionsTableCols } from '../permission-group.types';
 
-interface PermissionGroupEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+type PermissionGroupEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const PermissionGroupEdit: FunctionComponent<PermissionGroupEditProps> = ({ history, match }) => {
 	const [t] = useTranslation();

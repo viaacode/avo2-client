@@ -1,5 +1,6 @@
 import { CheckboxProps, MultiRangeProps } from '@viaa/avo2-components';
 
+import { Lookup_Enum_Content_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import i18n from '../../../../shared/translations/i18n';
 import {
 	Color,
@@ -29,7 +30,7 @@ export const INITIAL_PAGE_OVERVIEW_COMPONENTS_STATE =
 		allowMultiple: false,
 		centerHeader: false,
 		headerBackgroundColor: Color.Transparent,
-		contentType: 'PROJECT',
+		contentType: Lookup_Enum_Content_Types_Enum.Project,
 		itemStyle: 'NEWS_LIST',
 		showTitle: true,
 		showDescription: true,
@@ -49,7 +50,7 @@ export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (): DefaultContentBlockState =>
 	};
 };
 
-export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => {
+export const PAGE_OVERVIEW_BLOCK_CONFIG = (position = 0): ContentBlockConfig => {
 	return {
 		position,
 		name: i18n.t('admin/content-block/helpers/generators/page-overview___pagina-overzicht'),

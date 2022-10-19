@@ -31,7 +31,7 @@ const GET_TEMP_ACCESS_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 		// When both from and until date are set, the from date must be < the until date
 		error: i18n.t('admin/users/user___de-startdatum-moet-voor-de-einddatum-liggen'),
 		isValid: (tempAccess: Partial<UserTempAccess>) => {
-			return !!tempAccess.from
+			return tempAccess.from
 				? !!tempAccess.until &&
 						normalizeTimestamp(tempAccess.from).isBefore(
 							normalizeTimestamp(tempAccess.until)

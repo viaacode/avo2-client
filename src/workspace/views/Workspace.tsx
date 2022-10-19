@@ -21,7 +21,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { ApolloQueryResult } from 'apollo-client';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -40,8 +39,12 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import {
+	GetWorkspaceTabCountsDocument,
+	GetWorkspaceTabCountsQuery,
+} from '../../shared/generated/graphql-db-types';
 import { buildLink, isMobileWidth, navigate } from '../../shared/helpers';
-import { dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 import {
 	ASSIGNMENTS_ID,
 	BOOKMARKS_ID,
@@ -51,7 +54,6 @@ import {
 	ORGANISATION_CONTENT_ID,
 	QUICK_LANE_ID,
 } from '../workspace.const';
-import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';
@@ -65,14 +67,14 @@ export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string 
 }
 
 // Using `hasAtLeastOnePerm` to avoid async
-const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown>): number => {
+const getQuickLaneCount = (user: UserSchema, response: GetWorkspaceTabCountsQuery): number => {
 	// Show count of personal quick lane
 	if (
 		PermissionService.hasAtLeastOnePerm(user, [
 			PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 		])
 	) {
-		return get(response, 'data.app_quick_lane_counts.aggregate.count', 0);
+		return response.app_quick_lane_counts.aggregate?.count || 0;
 	}
 
 	if (
@@ -80,7 +82,7 @@ const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown
 			PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
 		])
 	) {
-		return get(response, 'data.app_quick_lane_organisation_counts.aggregate.count', 0);
+		return response.app_quick_lane_organisation_counts.aggregate?.count || 0;
 	}
 
 	return 0;
@@ -116,8 +118,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	const updatePermissionsAndCounts = useCallback(() => {
 		Promise.all([
-			dataService.query({
-				query: GET_WORKSPACE_TAB_COUNTS,
+			dataService.query<GetWorkspaceTabCountsQuery>({
+				query: GetWorkspaceTabCountsDocument,
 				variables: {
 					owner_profile_id: getProfileId(user),
 					company_id: get(user, 'profile.company_id') || 'EMPTY',
@@ -141,17 +143,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		])
 			.then((response) => {
 				setTabCounts({
-					[COLLECTIONS_ID]: get(response[0], 'data.collection_counts.aggregate.count', 0),
-					[BUNDLES_ID]: get(response[0], 'data.bundle_counts.aggregate.count', 0),
-					[ASSIGNMENTS_ID]: get(response[0], 'data.assignment_counts.aggregate.count', 0),
+					[COLLECTIONS_ID]: response[0].collection_counts.aggregate?.count ?? 0,
+					[BUNDLES_ID]: response[0].bundle_counts.aggregate?.count ?? 0,
+					[ASSIGNMENTS_ID]: response[0].assignment_counts.aggregate?.count ?? 0,
 					[BOOKMARKS_ID]:
-						get(response[0], 'data.item_bookmark_counts.aggregate.count', 0) +
-						get(response[0], 'data.collection_bookmark_counts.aggregate.count', 0),
-					[ORGANISATION_CONTENT_ID]: get(
-						response[0],
-						'data.organisation_content_counts.aggregate.count',
-						0
-					),
+						(response[0].item_bookmark_counts.aggregate?.count ?? 0) +
+						(response[0].collection_bookmark_counts.aggregate?.count ?? 0),
+					[ORGANISATION_CONTENT_ID]:
+						response[0].organisation_content_counts.aggregate?.count ?? 0,
 					[QUICK_LANE_ID]: getQuickLaneCount(user, response[0]),
 				});
 				setPermissions({

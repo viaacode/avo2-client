@@ -24,7 +24,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { reorderDate } from '../../helpers';
-import { ToastService } from '../../services';
+import { ToastService } from '../../services/toast-service';
 import { renderDropdownButton } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface DateRangeDropdownProps {

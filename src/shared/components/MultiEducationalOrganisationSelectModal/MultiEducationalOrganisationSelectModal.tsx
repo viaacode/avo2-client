@@ -1,7 +1,3 @@
-import classnames from 'classnames';
-import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	Checkbox,
@@ -13,6 +9,9 @@ import {
 	TagList,
 } from '@viaa/avo2-components';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
+import classnames from 'classnames';
+import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';

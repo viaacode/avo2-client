@@ -21,7 +21,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';

@@ -1,0 +1,10 @@
+query getPublicCollections($limit: Int!, $typeId: Int!) {
+	app_collections(
+		order_by: { title: asc }
+		where: { type_id: { _eq: $typeId }, is_public: { _eq: true }, is_deleted: { _eq: false } }
+		limit: $limit
+	) {
+		id
+		title
+	}
+}

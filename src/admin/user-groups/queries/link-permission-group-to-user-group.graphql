@@ -1,0 +1,7 @@
+mutation linkPermissionGroupToUserGroup(
+	$objs: [users_group_user_permission_groups_insert_input!]!
+) {
+	insert_users_group_user_permission_groups(objects: $objs) {
+		affected_rows
+	}
+}

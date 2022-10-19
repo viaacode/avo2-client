@@ -1,13 +1,12 @@
+import { Button } from '@viaa/avo2-components';
+import { format } from 'date-fns';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
 import { getProfileName } from '../../../../../authentication/helpers/get-profile-info';
 import { navigateToContentType } from '../../../../../shared/helpers';
-import { normalizeTimestamp } from '../../../../../shared/helpers/formatters';
+import { ContentPageLabel } from '../../../../content-page-labels/content-page-label.types';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { getPublishedDate } from '../../../../content/helpers/get-published-state';
 
@@ -21,8 +20,8 @@ const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentPr
 }) => {
 	const [t] = useTranslation();
 
-	const renderLabel = (labelObj: Partial<Avo.ContentPage.Label>) => {
-		return !!(labelObj as any).link_to ? (
+	const renderLabel = (labelObj: ContentPageLabel) => {
+		return (labelObj as any).link_to ? (
 			<Button
 				type="inline-link"
 				onClick={() => navigateToContentType((labelObj as any).link_to, history)}
@@ -71,14 +70,13 @@ const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentPr
 			{t(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___gepubliceerd-op'
 			)}{' '}
-			{publishedDate ? normalizeTimestamp(publishedDate).local().format('D MMMM YYYY') : '-'}{' '}
-			{renderLabels()}
+			{publishedDate ? format(new Date(publishedDate), 'd MMMM yyyy') : '-'} {renderLabels()}
 			{`${t(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___door'
 			)}`}{' '}
-			{getProfileName(contentPageInfo.profile.user)}
+			{getProfileName(contentPageInfo.profile?.user)}
 		</span>
 	);
 };
 
-export default withRouter(ContentPageMeta);
+export default withRouter(ContentPageMeta) as unknown as FunctionComponent<ContentPageMetaProps>;

@@ -1,7 +1,3 @@
-import { get, noop } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Button,
@@ -13,10 +9,13 @@ import {
 	ModalFooterRight,
 	Spacer,
 } from '@viaa/avo2-components';
+import { get, noop } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { toDateObject, toIsoDate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { getTempAccessValidationErrors } from '../user.helpers';
 import { UserTempAccess } from '../user.types';
 

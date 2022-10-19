@@ -1,7 +1,6 @@
-import { get } from 'lodash-es';
-
 import { FlowplayerTrack } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
 
 import i18n from '../translations/i18n';
 

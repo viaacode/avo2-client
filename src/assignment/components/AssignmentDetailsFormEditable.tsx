@@ -8,7 +8,6 @@ import {
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { isPast } from 'date-fns';
 import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
@@ -17,8 +16,12 @@ import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ToastService } from '../../shared/services';
-import { AssignmentFormState } from '../assignment.types';
+import { ToastService } from '../../shared/services/toast-service';
+import {
+	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Labels,
+	AssignmentFormState,
+} from '../assignment.types';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 
@@ -35,8 +38,8 @@ export const AssignmentDetailsFormIds = {
 };
 
 export interface AssignmentDetailsFormEditableProps {
-	assignment: Avo.Assignment.Assignment_v2;
-	setAssignment: Dispatch<SetStateAction<Avo.Assignment.Assignment_v2>>;
+	assignment: Assignment_v2_With_Labels & Assignment_v2_With_Blocks;
+	setAssignment: Dispatch<SetStateAction<Assignment_v2_With_Labels & Assignment_v2_With_Blocks>>;
 	setValue: UseFormSetValue<AssignmentFormState>;
 }
 
@@ -113,6 +116,7 @@ const AssignmentDetailsFormEditable: FC<
 							setAssignment((prev) => ({
 								...prev,
 								labels: newLabels,
+								blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
 							}));
 						}}
 					/>
@@ -147,6 +151,7 @@ const AssignmentDetailsFormEditable: FC<
 							setAssignment((prev) => ({
 								...prev,
 								labels: mergeWithOtherLabels(prev.labels, changed, 'LABEL'),
+								blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
 							}));
 						}}
 					/>

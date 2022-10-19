@@ -1,0 +1,5 @@
+query GetPermissionsFromContentPageByPath($path: String!) {
+	app_content(where: { path: { _eq: $path }, is_deleted: { _eq: false } }) {
+		user_group_ids
+	}
+}

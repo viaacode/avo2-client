@@ -1,37 +1,33 @@
-import { get, isNil } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
-
-import { CustomError } from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { isNil } from 'lodash-es';
 
 import {
-	DELETE_MENU_ITEM,
-	GET_MENUS,
-	GET_MENU_ITEMS_BY_PLACEMENT,
-	GET_MENU_ITEM_BY_ID,
-	INSERT_MENU_ITEM,
-	UPDATE_MENU_ITEM_BY_ID,
-} from './menu.gql';
-
-const MENU_RESULT_PATH = 'app_content_nav_elements';
+	DeleteMenuItemByIdDocument,
+	DeleteMenuItemByIdMutation,
+	GetMenuItemByIdDocument,
+	GetMenuItemByIdQuery,
+	GetMenuItemsByPlacementDocument,
+	GetMenuItemsByPlacementQuery,
+	GetMenusDocument,
+	GetMenusQuery,
+	InsertMenuItemDocument,
+	InsertMenuItemMutation,
+	UpdateMenuItemByIdDocument,
+	UpdateMenuItemByIdMutation,
+	UpdateMenuItemByIdMutationVariables,
+} from '../../shared/generated/graphql-db-types';
+import { CustomError } from '../../shared/helpers';
+import { dataService } from '../../shared/services/data-service';
 
 export class MenuService {
 	public static async fetchMenuItemById(id: number): Promise<Avo.Menu.Menu | null> {
 		try {
-			const response = await dataService.query({
-				query: GET_MENU_ITEM_BY_ID,
+			const response = await dataService.query<GetMenuItemByIdQuery>({
+				query: GetMenuItemByIdDocument,
 				variables: { id },
 			});
 
-			if (!response) {
-				throw new CustomError('Response is undefined');
-			}
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			return get(response, `data.${MENU_RESULT_PATH}[0]`, null);
+			return (response.app_content_nav_elements[0] || null) as Avo.Menu.Menu | null;
 		} catch (err) {
 			throw new CustomError(`Failed to fetch menu item by id`, err, {
 				id,
@@ -42,20 +38,19 @@ export class MenuService {
 
 	public static async fetchMenuItems(placement?: string): Promise<Avo.Menu.Menu[]> {
 		try {
-			const queryOptions = {
-				query: placement ? GET_MENU_ITEMS_BY_PLACEMENT : GET_MENUS,
-				variables: placement ? { placement } : {},
-			};
-			const response = await dataService.query(queryOptions);
+			const variables = placement ? { placement } : {};
+			const response = await dataService.query<
+				typeof placement extends string ? GetMenuItemsByPlacementQuery : GetMenusQuery
+			>({
+				query: placement ? GetMenuItemsByPlacementDocument : GetMenusDocument,
+				variables,
+			});
 
 			if (!response) {
 				throw new CustomError('Response is undefined');
 			}
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 
-			return get(response, `data.${MENU_RESULT_PATH}`, []);
+			return (response.app_content_nav_elements || []) as Avo.Menu.Menu[];
 		} catch (err) {
 			throw new CustomError('Failed to fetch menu items', err, {
 				placement,
@@ -66,17 +61,13 @@ export class MenuService {
 
 	public static async insertMenuItem(menuItem: Partial<Avo.Menu.Menu>): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: INSERT_MENU_ITEM,
+			const response = await dataService.query<InsertMenuItemMutation>({
+				query: InsertMenuItemDocument,
 				variables: {
 					menuItem,
 				},
-				update: ApolloCacheManager.clearNavElementsCache,
 			});
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
-			const id = get(response, 'data.insert_app_content_nav_elements.returning[0].id');
+			const id = response.insert_app_content_nav_elements?.returning?.[0]?.id;
 			if (isNil(id)) {
 				throw new CustomError('Response does not contain inserted id', null, { response });
 			}
@@ -92,16 +83,16 @@ export class MenuService {
 	public static async updateMenuItems(menuItems: Avo.Menu.Menu[]): Promise<void> {
 		try {
 			const promises: Promise<any>[] = menuItems.map((menuItem) => {
-				return dataService.mutate({
-					mutation: UPDATE_MENU_ITEM_BY_ID,
-					variables: {
-						id: menuItem.id,
-						menuItem: {
-							...menuItem,
-							updated_at: new Date().toISOString(),
-						},
+				const variables: UpdateMenuItemByIdMutationVariables = {
+					id: menuItem.id,
+					menuItem: {
+						...menuItem,
+						updated_at: new Date().toISOString(),
 					},
-					update: ApolloCacheManager.clearNavElementsCache,
+				};
+				return dataService.query<UpdateMenuItemByIdMutation>({
+					query: UpdateMenuItemByIdDocument,
+					variables,
 				});
 			});
 
@@ -116,18 +107,10 @@ export class MenuService {
 
 	public static async deleteMenuItem(id: number): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: DELETE_MENU_ITEM,
+			await dataService.query<DeleteMenuItemByIdMutation>({
+				query: DeleteMenuItemByIdDocument,
 				variables: { id },
-				update: ApolloCacheManager.clearNavElementsCache,
 			});
-
-			if (!response) {
-				throw new CustomError('Response is undefined');
-			}
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete menu item by id', err, {
 				id,

@@ -74,7 +74,9 @@ export class ContentPageService {
 			let responseContent: any;
 			try {
 				responseContent = await response.json();
-			} catch (err) {}
+			} catch (err) {
+				// Ignore error, caught below
+			}
 			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError(
 					'Failed to check if content page exists from /content-pages/path-exist',

@@ -1,6 +1,5 @@
-import React, { ComponentType } from 'react';
-
 import { Spinner } from '@viaa/avo2-components';
+import React, { ComponentType } from 'react';
 
 interface WithLoadingProps {
 	loading: boolean;

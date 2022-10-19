@@ -16,8 +16,8 @@ import { useTranslation } from 'react-i18next';
 
 import { CustomError } from '../../helpers';
 import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
-import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
+import { ToastService } from '../../services/toast-service';
 import i18n from '../../translations/i18n';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import Html from '../Html/Html';

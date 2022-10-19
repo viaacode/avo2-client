@@ -1,65 +1,65 @@
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { ApolloQueryResult } from 'apollo-boost';
 import { endOfDay, isBefore } from 'date-fns';
-import { DocumentNode } from 'graphql';
 import { compact, flatten, get, isNil } from 'lodash-es';
 import moment from 'moment';
 
+import {
+	BulkAddSubjectsToProfilesDocument,
+	BulkAddSubjectsToProfilesMutation,
+	BulkDeleteSubjectsFromProfilesDocument,
+	BulkDeleteSubjectsFromProfilesMutation,
+	GetContentCountsForUsersDocument,
+	GetContentCountsForUsersQuery,
+	GetDistinctBusinessCategoriesDocument,
+	GetDistinctBusinessCategoriesQuery,
+	GetIdpsDocument,
+	GetIdpsQuery,
+	GetProfileIdsDocument,
+	GetProfileIdsQuery,
+	GetProfileIdsQueryVariables,
+	GetProfileNamesDocument,
+	GetProfileNamesQuery,
+	GetUserByIdDocument,
+	GetUserByIdQuery,
+	GetUsersDocument,
+	GetUsersInSameCompanyDocument,
+	GetUsersInSameCompanyQuery,
+	GetUsersInSameCompanyQueryVariables,
+	GetUsersQuery,
+	GetUsersQueryVariables,
+	GetUserTempAccessDocument,
+	GetUserTempAccessQuery,
+	UpdateUserTempAccessByIdDocument,
+	UpdateUserTempAccessByIdMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
-import {
-	BULK_ADD_SUBJECTS_TO_PROFILES,
-	BULK_DELETE_SUBJECTS_FROM_PROFILES,
-	GET_CONTENT_COUNTS_FOR_USERS,
-	GET_DISTINCT_BUSINESS_CATEGORIES,
-	GET_IDPS,
-	GET_PROFILE_IDS,
-	GET_PROFILE_NAMES,
-	GET_USER_BY_ID,
-	GET_USER_TEMP_ACCESS_BY_ID,
-	GET_USERS,
-	GET_USERS_IN_SAME_COMPANY,
-	UPDATE_USER_TEMP_ACCESS_BY_ID,
-} from './user.gql';
-import {
-	DeleteContentCounts,
-	DeleteContentCountsRaw,
-	UserOverviewTableCol,
-	UserSummaryView,
-	UserTempAccess,
-} from './user.types';
+import { DeleteContentCounts, UserOverviewTableCol, UserTempAccess } from './user.types';
 
 export class UserService {
 	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
 		try {
-			const userResponse = await dataService.query({
-				query: GET_USER_BY_ID,
+			const userResponse = await dataService.query<GetUserByIdQuery>({
+				query: GetUserByIdDocument,
 				variables: {
 					id: profileId,
 				},
-				fetchPolicy: 'no-cache',
 			});
 
-			if (userResponse.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					userResponse,
-				});
-			}
-
-			const profile = get(userResponse, 'data.users_summary_view[0]');
+			const profile = userResponse.users_summary_view[0];
 
 			if (!profile) {
 				throw new CustomError('Failed to find profile by id', null, { userResponse });
 			}
 
-			return profile;
+			return profile as unknown as Avo.User.Profile;
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {
 				profileId,
@@ -73,15 +73,15 @@ export class UserService {
 	 */
 	static async getTempAccessById(profileId: string): Promise<UserTempAccess | null> {
 		try {
-			const tempAccessResponse = await dataService.query({
-				query: GET_USER_TEMP_ACCESS_BY_ID,
+			const tempAccessResponse = await dataService.query<GetUserTempAccessQuery>({
+				query: GetUserTempAccessDocument,
 				variables: {
 					id: profileId,
 				},
-				fetchPolicy: 'no-cache',
 			});
 
-			return get(tempAccessResponse, 'data.shared_users[0].temp_access');
+			return (tempAccessResponse.shared_users[0].temp_access ||
+				null) as UserTempAccess | null;
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {
 				profileId,
@@ -99,15 +99,14 @@ export class UserService {
 		profileId: string
 	): Promise<void> => {
 		try {
-			// Update a users's temp access
-			await dataService.mutate({
-				mutation: UPDATE_USER_TEMP_ACCESS_BY_ID,
+			// Update a users temp access
+			await dataService.query<UpdateUserTempAccessByIdMutation>({
+				query: UpdateUserTempAccessByIdDocument,
 				variables: {
 					user_id: userId,
 					from: tempAccess.from,
 					until: tempAccess.until,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
 			/**
@@ -201,7 +200,7 @@ export class UserService {
 			where,
 			itemsPerPage,
 			// Change query and variables
-			GET_USERS_IN_SAME_COMPANY,
+			GetUsersInSameCompanyDocument,
 			{ companyId: user.profile.company_id }
 		);
 	}
@@ -213,10 +212,11 @@ export class UserService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE,
-		query: DocumentNode = GET_USERS,
-		initialVariables: any = {}
+		query: typeof GetUsersDocument | typeof GetUsersInSameCompanyDocument = GetUsersDocument,
+		initialVariables: Partial<GetUsersQueryVariables | GetUsersInSameCompanyQueryVariables> = {}
 	): Promise<[Avo.User.Profile[], number]> {
-		let variables = initialVariables;
+		let variables: Partial<GetUsersQueryVariables | GetUsersInSameCompanyQueryVariables> =
+			initialVariables;
 
 		try {
 			const whereWithoutDeleted = {
@@ -237,23 +237,16 @@ export class UserService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetUsersQuery | GetUsersInSameCompanyQuery>({
 				variables,
 				query,
-				fetchPolicy: 'no-cache',
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-
-			const users: UserSummaryView[] = get(response, 'data.users_summary_view');
+			const users = response.users_summary_view;
 
 			// Convert user format to profile format since we initially wrote the ui to deal with profiles
 			const profiles: Partial<Avo.User.Profile>[] = users.map(
-				(user: UserSummaryView): Avo.User.Profile =>
+				(user): Avo.User.Profile =>
 					({
 						id: user.profile_id,
 						stamboek: user.stamboek,
@@ -293,13 +286,13 @@ export class UserService {
 							unblocked_at: get(user, 'unblocked_at.date'),
 							created_at: user.acc_created_at,
 							last_access_at: user.last_access_at,
-							temp_access: user.user.temp_access,
+							temp_access: user.user?.temp_access,
 							idpmaps: user.idps.map((idp) => idp.idp),
 						},
 					} as any)
 			);
 
-			const profileCount = get(response, 'data.users_summary_view_aggregate.aggregate.count');
+			const profileCount = response.users_summary_view_aggregate.aggregate?.count ?? 0;
 
 			if (!profiles) {
 				throw new CustomError('Response does not contain any profiles', null, {
@@ -316,29 +309,19 @@ export class UserService {
 		}
 	}
 
-	static async getProfileIds(where: any = {}): Promise<string[]> {
-		let variables: any;
+	static async getProfileIds(
+		where: GetProfileIdsQueryVariables['where'] = {}
+	): Promise<string[]> {
+		let variables: GetProfileIdsQueryVariables | null = null;
 		try {
-			variables = where
-				? {
-						where,
-				  }
-				: {};
-			const response = await dataService.query({
+			variables = {
+				where: where || undefined,
+			};
+			const response = await dataService.query<GetProfileIdsQuery>({
 				variables,
-				query: GET_PROFILE_IDS,
-				fetchPolicy: 'no-cache',
+				query: GetProfileIdsDocument,
 			});
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-			return compact(
-				get(response, 'data.users_summary_view' || []).map((user: Partial<Avo.User.User>) =>
-					get(user, 'profile_id')
-				)
-			);
+			return compact((response?.users_summary_view || []).map((user) => user?.profile_id));
 		} catch (err) {
 			throw new CustomError('Failed to get profile ids from the database', err, {
 				variables,
@@ -430,29 +413,23 @@ export class UserService {
 
 	static async fetchPublicAndPrivateCounts(profileIds: string[]): Promise<DeleteContentCounts> {
 		try {
-			const response: ApolloQueryResult<DeleteContentCountsRaw> = await dataService.query({
-				query: GET_CONTENT_COUNTS_FOR_USERS,
+			const response = await dataService.query<GetContentCountsForUsersQuery>({
+				query: GetContentCountsForUsersDocument,
 				variables: {
 					profileIds,
 				},
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-
 			return {
-				publicCollections: get(response, 'data.publicCollections.aggregate.count'),
-				privateCollections: get(response, 'data.privateCollections.aggregate.count'),
-				assignments: get(response, 'data.assignments.aggregate.count', '-'),
+				publicCollections: response?.publicCollections?.aggregate?.count || 0,
+				privateCollections: response?.privateCollections?.aggregate?.count || 0,
+				assignments: response?.assignments?.aggregate?.count || 0,
 				bookmarks:
-					get(response, 'data.collectionBookmarks.aggregate.count', 0) +
-					get(response, 'data.itemBookmarks.aggregate.count', 0),
-				publicContentPages: get(response, 'data.publicContentPages.aggregate.count'),
-				privateContentPages: get(response, 'data.privateContentPages.aggregate.count'),
-				quickLanes: get(response, 'data.quickLanes.aggregate.count'),
+					(response?.collectionBookmarks?.aggregate?.count || 0) +
+					(response?.itemBookmarks?.aggregate?.count || 0),
+				publicContentPages: response?.publicContentPages?.aggregate?.count || 0,
+				privateContentPages: response?.privateContentPages?.aggregate?.count || 0,
+				quickLanes: response?.quickLanes?.aggregate?.count || 0,
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get content counts for users from the database', err, {
@@ -464,26 +441,23 @@ export class UserService {
 
 	static async getNamesByProfileIds(profileIds: string[]): Promise<Avo.User.User[]> {
 		try {
-			const response: ApolloQueryResult<DeleteContentCountsRaw> = await dataService.query({
-				query: GET_PROFILE_NAMES,
+			const response = await dataService.query<GetProfileNamesQuery>({
+				query: GetProfileNamesDocument,
 				variables: {
 					profileIds,
 				},
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-
-			return get(response, 'data.users_summary_view').map((profileEntry: any) => ({
-				profile: {
-					id: profileEntry.profile_id,
-				},
-				full_name: profileEntry.full_name,
-				mail: profileEntry.mail,
-			}));
+			return response.users_summary_view.map(
+				(profileEntry): Avo.User.User =>
+					({
+						profile: {
+							id: profileEntry.profile_id,
+						},
+						full_name: profileEntry.full_name,
+						mail: profileEntry.mail,
+					} as Avo.User.User)
+			);
 		} catch (err) {
 			throw new CustomError('Failed to get profile names from the database', err, {
 				profileIds,
@@ -501,8 +475,8 @@ export class UserService {
 			await UserService.bulkRemoveSubjectsFromProfiles(subjects, profileIds);
 
 			// Add the subjects
-			const response = await dataService.mutate({
-				mutation: BULK_ADD_SUBJECTS_TO_PROFILES,
+			await dataService.query<BulkAddSubjectsToProfilesMutation>({
+				query: BulkAddSubjectsToProfilesDocument,
 				variables: {
 					subjects: flatten(
 						subjects.map((subject) =>
@@ -513,11 +487,7 @@ export class UserService {
 						)
 					),
 				},
-				update: ApolloCacheManager.clearUserCache,
 			});
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to bulk add subjects to profiles', err, {
 				subjects,
@@ -532,17 +502,13 @@ export class UserService {
 		profileIds: string[]
 	): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				mutation: BULK_DELETE_SUBJECTS_FROM_PROFILES,
+			await dataService.query<BulkDeleteSubjectsFromProfilesMutation>({
+				query: BulkDeleteSubjectsFromProfilesDocument,
 				variables: {
 					subjects,
 					profileIds,
 				},
-				update: ApolloCacheManager.clearUserCache,
 			});
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to bulk delete subjects from profiles', err, {
 				subjects,
@@ -554,16 +520,14 @@ export class UserService {
 
 	static async fetchDistinctBusinessCategories(): Promise<string[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_DISTINCT_BUSINESS_CATEGORIES,
+			const response = await dataService.query<GetDistinctBusinessCategoriesQuery>({
+				query: GetDistinctBusinessCategoriesDocument,
 			});
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
-
-			return (get(response, 'data.users_profiles', []) as Partial<Avo.User.Profile>[])
-				.map((profile) => profile.business_category)
-				.filter((category) => !!category) as string[]; // Cast to fix infer
+			return compact(
+				response.users_profiles.map(
+					(profile: Partial<Avo.User.Profile>) => profile.business_category
+				)
+			);
 		} catch (err) {
 			throw new CustomError('Failed to get distinct business categories from profiles', err, {
 				query: 'GET_DISTINCT_BUSINESS_CATEGORIES',
@@ -573,13 +537,10 @@ export class UserService {
 
 	static async fetchIdps(): Promise<string[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_IDPS,
+			const response = await dataService.query<GetIdpsQuery>({
+				query: GetIdpsDocument,
 			});
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
-			return get(response, 'data.users_idps', []).map((idp: { value: string }) => idp.value);
+			return response.users_idps.map((idp) => idp.value);
 		} catch (err) {
 			throw new CustomError('Failed to get idps from the database', err, {
 				query: 'GET_IDPS',

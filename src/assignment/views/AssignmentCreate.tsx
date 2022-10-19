@@ -1,7 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -26,11 +24,16 @@ import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveB
 import { navigate } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentFormState } from '../assignment.types';
+import {
+	Assignment_v2_With_Blocks,
+	AssignmentBlock,
+	AssignmentFormState,
+	BaseBlockWithMeta,
+} from '../assignment.types';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentHeading from '../components/AssignmentHeading';
@@ -70,12 +73,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		formState: { isDirty },
 	} = form;
 
-	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+	const updateBlocksInAssignmentState = (newBlocks: BaseBlockWithMeta[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
 		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
 	};
 	const setBlock = useAssignmentBlockChangeHandler(
-		assignment.blocks,
+		assignment?.blocks || [],
 		updateBlocksInAssignmentState
 	);
 
@@ -86,11 +89,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			const created = await AssignmentService.insertAssignment(
 				{
 					...assignment,
-					blocks: cleanupTitleAndDescriptions(assignment.blocks) as AssignmentBlock[],
+					blocks: cleanupTitleAndDescriptions(
+						assignment?.blocks || []
+					) as AssignmentBlock[],
 					owner_profile_id: user.profile?.id,
 					labels: [],
 				},
-				assignment.labels
+				assignment?.labels?.map((label) => label.assignment_label) || []
 			);
 
 			if (created) {
@@ -144,7 +149,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
-		assignment.blocks,
+		assignment?.blocks || [],
 		updateBlocksInAssignmentState,
 		{
 			confirmSliceConfig: {
@@ -172,12 +177,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		modal: {
-			items: assignment.blocks,
+			items: assignment?.blocks || [],
 			onClose: (update?: AssignmentBlock[]) => {
 				if (update) {
 					const blocks = update.map((item, i) => ({
 						...item,
-						position: assignment.blocks[i].position,
+						position: assignment?.blocks?.[i]?.position || 0,
 					}));
 
 					setAssignment((prev) => ({
@@ -191,27 +196,31 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		},
 	});
 
-	const [renderedListSorter] = useBlocksList(assignment?.blocks, updateBlocksInAssignmentState, {
-		listSorter: {
-			content: (item) => item && renderBlockContent(item),
-			divider: (position: number) => (
-				<Button
-					icon="plus"
-					type="secondary"
-					onClick={() => {
-						addBlockModal.setEntity(position);
-						addBlockModal.setOpen(true);
-					}}
-				/>
-			),
-		},
-		listSorterItem: {
-			onSlice: (item) => {
-				confirmSliceModal.setEntity(item);
-				confirmSliceModal.setOpen(true);
+	const [renderedListSorter] = useBlocksList(
+		assignment?.blocks || [],
+		updateBlocksInAssignmentState,
+		{
+			listSorter: {
+				content: (item) => item && renderBlockContent(item),
+				divider: (position: number) => (
+					<Button
+						icon="plus"
+						type="secondary"
+						onClick={() => {
+							addBlockModal.setEntity(position);
+							addBlockModal.setOpen(true);
+						}}
+					/>
+				),
 			},
-		},
-	});
+			listSorterItem: {
+				onSlice: (item) => {
+					confirmSliceModal.setEntity(item);
+					confirmSliceModal.setOpen(true);
+				},
+			},
+		}
+	);
 
 	const renderBackButton = useMemo(
 		() => (
@@ -235,7 +244,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
 				return (
 					<div className="c-assignment-contents-tab">
-						{assignment.blocks.length > 0 && (
+						{(assignment?.blocks?.length || 0) > 0 && (
 							<Spacer
 								margin={['bottom-large']}
 								className="c-assignment-page__reorder-container"
@@ -269,11 +278,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={assignment as Avo.Assignment.Assignment_v2}
+							assignment={assignment as Assignment_v2_With_Blocks}
 							setAssignment={
-								setAssignment as Dispatch<
-									SetStateAction<Avo.Assignment.Assignment_v2>
-								>
+								setAssignment as Dispatch<SetStateAction<Assignment_v2_With_Blocks>>
 							}
 							setValue={setValue}
 						/>
@@ -289,9 +296,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	// Synchronise the React state that triggers renders with the useForm hook
 	useEffect(() => {
-		Object.keys(assignment).forEach((key) => {
+		Object.keys(assignment || {}).forEach((key) => {
 			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment[cast]);
+			setValue(cast, assignment?.[cast]);
 		});
 
 		trigger();
@@ -341,7 +348,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	);
 
 	const renderPageContent = () => {
-		if (isViewAsPupilEnabled) {
+		if (isViewAsPupilEnabled && assignment) {
 			return (
 				<AssignmentPupilPreview
 					assignment={assignment}

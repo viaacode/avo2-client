@@ -1,31 +1,27 @@
-import { ApolloQueryResult } from 'apollo-boost';
-
+import {
+	GetQuickLanesByContentIdDocument,
+	GetQuickLanesByContentIdQuery,
+} from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
-import { GET_QUICK_LANE_BY_CONTENT_ID } from '../queries/quick-lane-containing.gql';
-import { QuickLaneQueryResponse, QuickLaneUrlObject } from '../types';
+import { QuickLaneUrlObject } from '../types';
 
 import { dataService } from './data-service';
 
 export class QuickLaneContainingService {
-	static async fetchQuickLanesByContentId(contentId: string) {
+	static async fetchQuickLanesByContentId(contentId: string): Promise<QuickLaneUrlObject[]> {
 		try {
 			const variables = {
 				contentId,
 			};
 
-			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
+			const response = await dataService.query<GetQuickLanesByContentIdQuery>({
 				variables,
-				query: GET_QUICK_LANE_BY_CONTENT_ID,
+				query: GetQuickLanesByContentIdDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
-
-			const urls: QuickLaneUrlObject[] = response.data.app_quick_lanes.map(
-				quickLaneUrlRecordToObject
-			);
+			const urls: QuickLaneUrlObject[] =
+				response?.app_quick_lanes?.map(quickLaneUrlRecordToObject) || [];
 
 			return urls;
 		} catch (err) {

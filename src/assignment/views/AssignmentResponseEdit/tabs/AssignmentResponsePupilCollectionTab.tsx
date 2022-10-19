@@ -10,7 +10,6 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -20,15 +19,19 @@ import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.s
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import { BlockList } from '../../../../collection/components';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
-import { ToastService } from '../../../../shared/services';
+import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
 import {
+	Assignment_Response_v2,
 	AssignmentResponseFormState,
+	AssignmentResponseInfo,
+	BaseBlockWithMeta,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../../assignment.types';
@@ -43,7 +46,6 @@ import {
 } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
-import { getMoreOptionsLabel } from '../../../../shared/constants';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -52,8 +54,8 @@ enum MobileActionId {
 
 interface AssignmentResponsePupilCollectionTabProps {
 	pastDeadline: boolean;
-	assignmentResponse: Avo.Assignment.Response_v2;
-	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	assignmentResponse: AssignmentResponseInfo;
+	setAssignmentResponse: Dispatch<SetStateAction<Assignment_Response_v2>>;
 	onShowPreviewClicked: () => void;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 	setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void;
@@ -76,9 +78,9 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
 	const [isDraggableListModalOpen, setIsDraggableListModalOpen] = useState<boolean>(false);
 
-	const updateBlocksInAssignmentResponseState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+	const updateBlocksInAssignmentResponseState = (newBlocks: BaseBlockWithMeta[]) => {
 		setAssignmentResponse(
-			(prev) =>
+			(prev: Assignment_Response_v2) =>
 				({
 					...prev,
 					pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
@@ -153,7 +155,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 								} as PupilCollectionFragment
 							);
 
-							updateBlocksInAssignmentResponseState(newBlocks);
+							updateBlocksInAssignmentResponseState(newBlocks as BaseBlockWithMeta[]);
 						}}
 					/>
 				),
@@ -327,8 +329,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 			<Container mode="vertical">
 				<BlockList
 					blocks={
-						(assignmentResponse?.pupil_collection_blocks ||
-							[]) as Avo.Core.BlockItemBase[]
+						(assignmentResponse?.pupil_collection_blocks || []) as BaseBlockWithMeta[]
 					}
 				/>
 			</Container>

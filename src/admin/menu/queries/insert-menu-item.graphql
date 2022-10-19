@@ -1,0 +1,7 @@
+mutation insertMenuItem($menuItem: app_content_nav_elements_insert_input!) {
+	insert_app_content_nav_elements(objects: [$menuItem]) {
+		returning {
+			id
+		}
+	}
+}

@@ -2,6 +2,12 @@ import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import {
+	GetContentByIdQuery,
+	GetContentPagesQuery,
+	Lookup_Enum_Content_Types_Enum,
+} from '../../shared/generated/graphql-db-types';
+import { ContentPageLabel } from '../content-page-labels/content-page-label.types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { ContentBlockConfig } from '../shared/types';
 
@@ -44,13 +50,18 @@ export interface ContentTableState extends FilterableTableState {
 }
 
 // Content Detail
+export type ContentPageWithBlocksDb = GetContentByIdQuery['app_content'][0];
+
+export type ContentPageDb = GetContentPagesQuery['app_content'][0] | ContentPageWithBlocksDb;
+
+export { Lookup_Enum_Content_Types_Enum as ContentPageType };
+
 /**
  * Convenience type with certain fields converted to be easier to manipulate
  * eg:
  * - contentBlockConfigs: ContentBlockConfig[]; instead of contentBlockssBycontentId: ContentBlockSchema[];
- * - labels: Avo.ContentPage.Label[] instead of content_content_labels: ContentLabelLinkSchema[];
+ * - labels: ContentPageLabel[] instead of content_content_labels: ContentLabelLinkSchema[];
  */
-
 export interface ContentPageInfo {
 	id: number;
 	thumbnail_path: string | null;
@@ -67,13 +78,13 @@ export interface ContentPageInfo {
 	created_at: string;
 	updated_at: string | null;
 	is_protected: boolean;
-	content_type: Avo.ContentPage.Type;
+	content_type: Lookup_Enum_Content_Types_Enum;
 	content_width: Avo.ContentPage.Width;
-	profile: Avo.User.Profile;
+	profile: Avo.User.Profile | null;
 	user_profile_id: string | null;
 	user_group_ids: number[] | null;
 	contentBlockConfigs: ContentBlockConfig[];
-	labels: Partial<Avo.ContentPage.Label>[];
+	labels: ContentPageLabel[];
 }
 
 export type ContentDetailParams = { id: string };

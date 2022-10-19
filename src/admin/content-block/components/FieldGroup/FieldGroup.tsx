@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { FormGroup, Spacer } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
 
 import {
 	ContentBlockComponentState,

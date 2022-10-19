@@ -6,29 +6,30 @@ import {
 	BLOCK_ITEM_ICONS,
 	BLOCK_ITEM_LABELS,
 } from '../../shared/components/BlockList/BlockList.consts';
+import { BaseBlockWithMeta } from '../assignment.types';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
 
 export function useBlocksList(
-	blocks: Avo.Core.BlockItemBase[],
-	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
+	blocks: BaseBlockWithMeta[],
+	setBlocks: (newBlocks: BaseBlockWithMeta[]) => void,
 	config?: {
-		listSorter?: Partial<ListSorterProps<Avo.Core.BlockItemBase>>;
+		listSorter?: Partial<ListSorterProps<BaseBlockWithMeta>>;
 		listSorterItem?: Partial<ListSorterItem>;
 	}
-): [ReactNode, (Avo.Core.BlockItemBase & ListSorterItem)[]] {
+): [ReactNode, (BaseBlockWithMeta & ListSorterItem)[]] {
 	const items = useMemo(() => {
 		return (blocks || []).map((block) => {
-			const mapped: Avo.Core.BlockItemBase & ListSorterItem = {
+			const mapped: BaseBlockWithMeta & ListSorterItem = {
 				...block,
 				...config?.listSorterItem,
-				icon: BLOCK_ITEM_ICONS()[block.type](block),
+				icon: BLOCK_ITEM_ICONS()[block.type as Avo.Core.BlockItemType](block),
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(
 						blocks,
-						item as Avo.Core.BlockItemBase,
+						item as BaseBlockWithMeta,
 						delta
 					);
-					setBlocks(switched);
+					setBlocks(switched as BaseBlockWithMeta[]);
 				},
 			};
 
@@ -40,7 +41,7 @@ export function useBlocksList(
 		() => (
 			<BlockListSorter
 				{...config?.listSorter}
-				heading={(item) => item && BLOCK_ITEM_LABELS()[item.type]}
+				heading={(item) => item && BLOCK_ITEM_LABELS()[item.type as Avo.Core.BlockItemType]}
 				items={items}
 			/>
 		),

@@ -1,7 +1,6 @@
+import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
 import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-
-import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
 
 import { useUserGroupOptions } from '../../../user-groups/hooks/useUserGroupOptions';
 

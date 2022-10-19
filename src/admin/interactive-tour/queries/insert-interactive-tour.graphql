@@ -1,0 +1,7 @@
+mutation insertInteractiveTour($interactiveTour: app_interactive_tour_insert_input!) {
+	insert_app_interactive_tour(objects: [$interactiveTour]) {
+		returning {
+			id
+		}
+	}
+}

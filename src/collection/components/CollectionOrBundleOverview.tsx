@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query';
 import {
 	Button,
 	ButtonToolbar,
@@ -34,6 +35,10 @@ import {
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import {
+	Lookup_Enum_Assignment_Content_Labels_Enum,
+	useSoftDeleteCollectionByIdMutation,
+} from '../../shared/generated/graphql-db-types';
+import {
 	buildLink,
 	createDropdownMenuItem,
 	formatDate,
@@ -42,8 +47,9 @@ import {
 	navigate,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { ToastService } from '../../shared/services';
+import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
@@ -85,6 +91,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
+
+	// Mutations
+	const { mutateAsync: triggerCollectionDelete } = useSoftDeleteCollectionByIdMutation();
 
 	// Listeners
 	const onClickDelete = (collectionId: string) => {
@@ -246,7 +255,17 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				);
 				return;
 			}
-			await CollectionService.deleteCollection(selected);
+			await triggerCollectionDelete(
+				{
+					id: parseInt(selected),
+				},
+				{
+					onSuccess: async () => {
+						const queryClient = new QueryClient();
+						await queryClient.invalidateQueries(COLLECTION_QUERY_KEYS);
+					},
+				}
+			);
 
 			trackEvents(
 				{
@@ -687,7 +706,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		if (isCollection) {
 			return (
 				<DeleteCollectionModal
-					collectionId={selected as string}
 					isOpen={isDeleteModalOpen}
 					onClose={() => {
 						setSelected(null);
@@ -720,7 +738,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					modalTitle={t('collection/views/collection-overview___delen-met-leerlingen')}
 					isOpen={isQuickLaneModalOpen}
 					content={selectedDetail}
-					content_label="COLLECTIE"
+					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
 					onClose={() => {
 						setSelected(null);
 						setIsQuickLaneModalOpen(false);

@@ -1,8 +1,7 @@
+import { BlockButtons, BlockButtonsProps } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { BlockButtons, BlockButtonsProps } from '@viaa/avo2-components';
 
 const ButtonsWrapper: FunctionComponent<BlockButtonsProps> = (props) => {
 	const [t] = useTranslation();

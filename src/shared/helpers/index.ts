@@ -3,7 +3,6 @@ export * from './custom-error';
 export * from './dropdown';
 export * from './env';
 export * from './formatters';
-export * from './gql';
 export * from './is-rich-text-empty';
 export * from './link';
 export * from './media-query';

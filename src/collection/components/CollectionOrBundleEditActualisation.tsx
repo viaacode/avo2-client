@@ -1,7 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Column,
 	Container,
@@ -15,6 +11,10 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
@@ -24,7 +24,6 @@ import { getFullName, toDateObject } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
-import { RouteComponentProps } from 'react-router-dom';
 
 interface CollectionOrBundleEditActualisationProps {
 	collection: Avo.Collection.Collection;

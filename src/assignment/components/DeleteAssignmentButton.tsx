@@ -1,5 +1,4 @@
 import { Button, ButtonProps, DefaultProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
@@ -7,11 +6,12 @@ import { compose } from 'redux';
 import { DeleteObjectModal } from '../../shared/components';
 import { ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { Assignment_v2 } from '../assignment.types';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 
 export type DeleteAssignmentButtonProps = DefaultProps &
 	Partial<UserProps> & {
-		assignment?: Avo.Assignment.Assignment_v2;
+		assignment?: Assignment_v2;
 		button?: Partial<ButtonProps>;
 		modal?: Partial<ConfirmModalProps>;
 	};

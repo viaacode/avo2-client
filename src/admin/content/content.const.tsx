@@ -1,14 +1,15 @@
-import { TabProps } from '@viaa/avo2-components';
+import { SelectOption, TabProps } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { Lookup_Enum_Content_Types_Enum } from '../../shared/generated/graphql-db-types';
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
-import { ContentOverviewTableCols, ContentWidth } from './content.types';
+import { ContentOverviewTableCols, ContentPageType, ContentWidth } from './content.types';
 
 export const RichEditorStateKey = 'RichEditorState';
 
@@ -128,15 +129,6 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 ];
 
-export const CONTENT_RESULT_PATH = {
-	COUNT: 'app_content_aggregate',
-	GET: 'data.app_content',
-	INSERT: 'insert_app_content',
-	UPDATE: 'update_app_content',
-};
-
-export const CONTENT_TYPES_LOOKUP_PATH = 'lookup_enum_content_types';
-
 export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in ContentOverviewTableCols]: (order: Avo.Search.OrderDirection) => any;
 }> = {
@@ -176,22 +168,22 @@ export const GET_CONTENT_DETAIL_TABS: () => TabProps[] = () => [
 	},
 ];
 
-export const GET_CONTENT_WIDTH_OPTIONS = () => [
+export const GET_CONTENT_WIDTH_OPTIONS = (): SelectOption<ContentWidth>[] => [
 	{
 		label: i18n.t('admin/content/content___kies-een-content-breedte'),
-		value: '',
+		value: '' as any,
 		disabled: true,
 	},
-	{ label: i18n.t('admin/content/content___max-1300-px'), value: 'REGULAR' },
-	{ label: i18n.t('admin/content/content___breed-940-px'), value: 'LARGE' },
-	{ label: i18n.t('admin/content/content___medium-720-px'), value: 'MEDIUM' },
+	{ label: i18n.t('admin/content/content___max-1300-px'), value: ContentWidth.REGULAR },
+	{ label: i18n.t('admin/content/content___breed-940-px'), value: ContentWidth.REGULAR },
+	{ label: i18n.t('admin/content/content___medium-720-px'), value: ContentWidth.MEDIUM },
 ];
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: Avo.ContentPage.Type[] } = {
-	[ContentWidth.REGULAR]: ['PROJECT'],
+export const DEFAULT_PAGES_WIDTH: { [key in ContentWidth]: ContentPageType[] } = {
+	[ContentWidth.REGULAR]: [Lookup_Enum_Content_Types_Enum.Project],
 	[ContentWidth.LARGE]: [],
-	[ContentWidth.MEDIUM]: ['NIEUWS_ITEM'],
+	[ContentWidth.MEDIUM]: [Lookup_Enum_Content_Types_Enum.NieuwsItem],
 };
 /* eslint-enable @typescript-eslint/no-unused-vars */
 

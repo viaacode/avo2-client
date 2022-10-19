@@ -26,9 +26,10 @@ import {
 import { FileUpload } from '../../../../shared/components';
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
-import { getFullName } from '../../../../shared/helpers/formatters';
-import { ToastService } from '../../../../shared/services';
+import { getFullName } from '../../../../shared/helpers';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { ValueOf } from '../../../../shared/types';
+import { ContentPageLabel } from '../../../content-page-labels/content-page-label.types';
 import { UserGroupSelect } from '../../../shared/components';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../../shared/types';
@@ -38,6 +39,7 @@ import {
 	ContentEditActionType,
 	ContentEditFormErrors,
 	ContentPageInfo,
+	ContentPageType,
 	ContentWidth,
 } from '../../content.types';
 import { ContentEditAction } from '../../helpers/reducers';
@@ -45,7 +47,7 @@ import { ContentEditAction } from '../../helpers/reducers';
 import './ContentEditForm.scss';
 
 interface ContentEditFormProps {
-	contentTypes: SelectOption<Avo.ContentPage.Type>[];
+	contentTypes: SelectOption<ContentPageType>[];
 	formErrors: ContentEditFormErrors;
 	contentPageInfo: Partial<ContentPageInfo>;
 	changeContentPageState: (action: ContentEditAction) => void;
@@ -62,7 +64,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 	// Hooks
 	const [t] = useTranslation();
 
-	const [contentTypeLabels, setContentTypeLabels] = useState<Avo.ContentPage.Label[]>([]);
+	const [contentTypeLabels, setContentTypeLabels] = useState<ContentPageLabel[]>([]);
 
 	const changeContentPageProp = useCallback(
 		(propName: keyof ContentPageInfo, propValue: ValueOf<ContentPageInfo>) =>
@@ -122,21 +124,20 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 		changeContentPageProp('labels', []);
 	};
 
-	const mapLabelsToTags = (contentLabels: Partial<Avo.ContentPage.Label>[]): TagInfo[] => {
+	const mapLabelsToTags = (contentLabels: ContentPageLabel[]): TagInfo[] => {
 		return (contentLabels || []).map((contentLabel) => ({
 			label: contentLabel.label as string,
 			value: String(contentLabel.id as number),
 		}));
 	};
 
-	const mapTagsToLabels = (
-		tags: TagInfo[],
-		contentType: Avo.ContentPage.Type | undefined
-	): Partial<Avo.ContentPage.Label>[] => {
+	const mapTagsToLabels = (tags: TagInfo[], contentType: ContentPageType): ContentPageLabel[] => {
 		return (tags || []).map((tag) => ({
 			label: tag.label,
 			id: tag.value as number,
 			content_type: contentType,
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString(),
 		}));
 	};
 
@@ -373,7 +374,7 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 												'labels',
 												mapTagsToLabels(
 													values,
-													contentPageInfo.content_type
+													contentPageInfo.content_type as ContentPageType
 												)
 											)
 										}

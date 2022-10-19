@@ -6,7 +6,6 @@ import {
 	Spacer,
 	Table,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +20,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -31,13 +30,13 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
+import { InteractiveTour } from '../interactive-tour.types';
 
 type UserDetailProps = RouteComponentProps<{ id: string }>;
 
 const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, match }) => {
 	// Hooks
-	const [interactiveTour, setInteractiveTour] =
-		useState<Avo.InteractiveTour.InteractiveTour | null>(null);
+	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 

@@ -1,8 +1,7 @@
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import { Table, TableProps } from '@viaa/avo2-components';
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
+import React, { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';

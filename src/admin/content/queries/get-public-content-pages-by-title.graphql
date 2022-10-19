@@ -1,0 +1,10 @@
+query getPublicContentPagesByTitle(
+	$limit: Int = 20
+	$orderBy: [app_content_order_by!] = {}
+	$where: app_content_bool_exp = {}
+) {
+	app_content(where: $where, limit: $limit, order_by: $orderBy) {
+		path
+		title
+	}
+}

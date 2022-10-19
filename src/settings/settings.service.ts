@@ -1,11 +1,15 @@
-import { get, sortBy } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { sortBy } from 'lodash-es';
 
+import {
+	GetEducationLevelsDocument,
+	GetEducationLevelsQuery,
+	GetSubjectsDocument,
+	GetSubjectsQuery,
+} from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
-import { GET_EDUCATION_LEVELS, GET_SUBJECTS } from '../shared/queries/lookup.gql';
-import { dataService } from '../shared/services';
+import { dataService } from '../shared/services/data-service';
 
 import { UpdateProfileValues } from './settings.types';
 
@@ -32,7 +36,9 @@ export class SettingsService {
 
 			try {
 				body = await response.json();
-			} catch (err) {}
+			} catch (err) {
+				// ignore errors since they are handled below using the status code
+			}
 
 			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError(
@@ -51,19 +57,13 @@ export class SettingsService {
 
 	public static async fetchSubjects(): Promise<string[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_SUBJECTS,
+			const response: GetSubjectsQuery = await dataService.query<GetSubjectsQuery>({
+				query: GetSubjectsDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
-
-			const subjects = (
-				(get(response, 'data.lookup_enum_lom_classification', []) || []) as {
-					description: string;
-				}[]
-			).map((item: { description: string }) => item.description);
+			const subjects = (response.lookup_enum_lom_classification || []).map(
+				(item: { description: string }) => item.description
+			);
 
 			return sortBy(subjects, (subject) => subject.toLowerCase());
 		} catch (err) {
@@ -75,16 +75,12 @@ export class SettingsService {
 
 	public static async fetchEducationLevels(): Promise<string[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_EDUCATION_LEVELS,
+			const response = await dataService.query<GetEducationLevelsQuery>({
+				query: GetEducationLevelsDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
-
 			return (
-				(get(response, 'data.lookup_enum_lom_context') || []) as {
+				(response.lookup_enum_lom_context || []) as {
 					description: string;
 				}[]
 			).map((item: { description: string }) => item.description);

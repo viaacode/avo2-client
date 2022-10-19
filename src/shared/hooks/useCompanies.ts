@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CustomError } from '../helpers';
-import { ToastService } from '../services';
 import { OrganisationService } from '../services/organizations-service';
+import { ToastService } from '../services/toast-service';
 
 export type BasicOrganisation = {
 	or_id: string;

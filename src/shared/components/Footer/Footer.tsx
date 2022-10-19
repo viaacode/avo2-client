@@ -13,7 +13,7 @@ import {
 	NavItemMap,
 } from '../../services/navigation-items-service';
 import { NavigationItemInfo } from '../../types';
-import NavigationItem from '../Navigation/NavigationItem';
+import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 

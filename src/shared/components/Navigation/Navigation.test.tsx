@@ -1,6 +1,6 @@
 import { mount, ReactWrapper } from 'enzyme';
 import React from 'react';
-import { BrowserRouter as Router, Link, MemoryRouter, RouteComponentProps } from 'react-router-dom';
+import { Link, MemoryRouter, RouteComponentProps, BrowserRouter as Router } from 'react-router-dom';
 
 import { APP_PATH } from '../../../constants';
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';

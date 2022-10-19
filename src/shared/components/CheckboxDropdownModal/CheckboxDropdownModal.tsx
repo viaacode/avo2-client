@@ -1,8 +1,3 @@
-import classnames from 'classnames';
-import { clone, compact, fromPairs, take } from 'lodash-es';
-import React, { FunctionComponent, MouseEvent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -26,6 +21,10 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import classnames from 'classnames';
+import { clone, compact, fromPairs, take } from 'lodash-es';
+import React, { FunctionComponent, MouseEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { isMobileWidth } from '../../helpers';
 

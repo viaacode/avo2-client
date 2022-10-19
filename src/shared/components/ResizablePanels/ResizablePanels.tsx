@@ -108,7 +108,7 @@ export default class ResizablePanels extends Component<ResizablePanelsProps, Res
 		);
 	}
 
-	displayDirectionIsColumn() {
+	displayDirectionIsColumn(): boolean {
 		return this.props.displayDirection === 'column';
 	}
 

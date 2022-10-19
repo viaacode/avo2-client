@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/react-hooks';
 import {
 	Blankslate,
 	Button,
@@ -46,7 +45,7 @@ import {
 	navigateToAbsoluteOrRelativeUrl,
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { ApolloCacheManager, ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	AdminLayout,
@@ -57,7 +56,6 @@ import {
 import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import PublishContentPageModal from '../components/PublishContentPageModal';
 import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
-import { SOFT_DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, ContentPageInfo } from '../content.types';
 import { isPublic } from '../helpers/get-published-state';
@@ -89,8 +87,6 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 
-	const [triggerContentDelete] = useMutation(SOFT_DELETE_CONTENT);
-
 	const [currentTab, setCurrentTab, tabs] = useTabs(
 		GET_CONTENT_DETAIL_TABS(),
 		GET_CONTENT_DETAIL_TABS()[0].id
@@ -118,7 +114,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				});
 				return;
 			}
-			const contentPageObj = await ContentService.getContentPageById(id);
+			const contentPageObj = await ContentService.getContentPageById(parseInt(id));
 			if (!contentPageObj) {
 				setLoadingInfo({
 					state: 'error',
@@ -166,28 +162,31 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		}
 	}, [contentPageInfo, setLoadingInfo]);
 
-	const handleDelete = () => {
-		setIsConfirmModalOpen(false);
-		triggerContentDelete({
-			variables: { id },
-			update: ApolloCacheManager.clearContentCache,
-		})
-			.then(() => {
-				history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
-				ToastService.success(
-					t(
-						'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
-					)
-				);
-			})
-			.catch((err) => {
-				console.error(err);
+	const handleDelete = async () => {
+		try {
+			setIsConfirmModalOpen(false);
+			if (!contentPageInfo) {
 				ToastService.danger(
 					t(
 						'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
 					)
 				);
-			});
+				return;
+			}
+			await ContentService.deleteContentPage(contentPageInfo);
+
+			history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
+			ToastService.success(
+				t('admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd')
+			);
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(
+				t(
+					'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
+				)
+			);
+		}
 	};
 
 	function handlePreviewClicked() {
@@ -200,7 +199,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		}
 	}
 
-	const handleShareModalClose = async (newContentPage?: Partial<ContentPageInfo>) => {
+	const handleShareModalClose = async (newContentPage?: ContentPageInfo) => {
 		try {
 			if (newContentPage) {
 				await ContentService.updateContentPage({

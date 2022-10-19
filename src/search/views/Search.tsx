@@ -38,8 +38,8 @@ import { InteractiveTour } from '../../shared/components';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ToastService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 

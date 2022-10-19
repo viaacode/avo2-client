@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ContentPage } from '../../../content-page/views';
 import { ResizablePanels } from '../../../shared/components';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
@@ -57,9 +58,23 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 	// Methods
 	const handleAddContentBlock = (configType: ContentBlockType) => {
-		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](
+		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]?.(
 			(contentPageInfo.contentBlockConfigs || []).length
 		);
+
+		if (!newConfig) {
+			console.error(
+				'Failed to find content block config object in CONTENT_BLOCK_CONFIG_MAP for type ' +
+					configType
+			);
+			ToastService.danger(
+				t(
+					'Het toevoegen van de content block is mislukt. Configuratie niet gevonden voor ' +
+						configType
+				)
+			);
+			return;
+		}
 
 		// Update content block configs
 		changeContentPageState({

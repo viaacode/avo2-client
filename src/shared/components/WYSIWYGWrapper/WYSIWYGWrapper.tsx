@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 
 import { WYSIWYG_OPTIONS_DEFAULT } from '../../constants';
 import { CustomError } from '../../helpers';
-import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
+import { ToastService } from '../../services/toast-service';
 
 import './WYSIWYGWrapper.scss';
 

@@ -1,5 +1,4 @@
 import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -16,7 +15,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -28,6 +27,7 @@ import {
 } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
+	InteractiveTour,
 	InteractiveTourOverviewTableCols,
 	InteractiveTourTableState,
 } from '../interactive-tour.types';
@@ -41,9 +41,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 
 	const [interactiveTourIdToDelete, setInteractiveTourIdToDelete] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-	const [interactiveTours, setInteractiveTours] = useState<
-		Avo.InteractiveTour.InteractiveTour[] | null
-	>(null);
+	const [interactiveTours, setInteractiveTours] = useState<InteractiveTour[] | null>(null);
 	const [interactiveTourCount, setInteractiveTourCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<InteractiveTourTableState>>({});
@@ -148,7 +146,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 	};
 
 	const renderTableCell = (
-		rowData: Avo.InteractiveTour.InteractiveTour,
+		rowData: InteractiveTour,
 		columnId: InteractiveTourOverviewTableCols
 	) => {
 		switch (columnId) {
@@ -263,7 +261,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 					columns={GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS()}
 					data={interactiveTours || []}
 					dataCount={interactiveTourCount}
-					renderCell={(rowData: Avo.InteractiveTour.InteractiveTour, columnId: string) =>
+					renderCell={(rowData: InteractiveTour, columnId: string) =>
 						renderTableCell(rowData, columnId as InteractiveTourOverviewTableCols)
 					}
 					searchTextPlaceholder={t(

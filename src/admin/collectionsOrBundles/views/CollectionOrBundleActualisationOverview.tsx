@@ -24,7 +24,7 @@ import {
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, {
@@ -269,7 +269,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 		);
 
 		switch (columnId) {
-			case 'title':
+			case 'title': {
 				const title = truncate(rowData[columnId] || '-', { length: 50 });
 
 				return (
@@ -291,6 +291,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 						)}
 					</Link>
 				);
+			}
 
 			case 'actions':
 				return (

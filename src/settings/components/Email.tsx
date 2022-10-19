@@ -1,3 +1,15 @@
+import {
+	BlockHeading,
+	Button,
+	Checkbox,
+	CheckboxGroup,
+	Container,
+	Form,
+	FormGroup,
+	Spacer,
+	Spinner,
+} from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { keys } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -11,24 +23,11 @@ import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
-import {
-	BlockHeading,
-	Button,
-	Checkbox,
-	CheckboxGroup,
-	Container,
-	Form,
-	FormGroup,
-	Spacer,
-	Spinner,
-} from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
 import { GENERATE_SITE_TITLE } from '../../constants';
 import Html from '../../shared/components/Html/Html';
 import { convertToNewsletterPreferenceUpdate, CustomError } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { NewsletterList, ReactAction } from '../../shared/types';
 import { GET_NEWSLETTER_LABELS } from '../settings.const';
 
@@ -41,6 +40,7 @@ enum NewsletterPreferencesActionType {
 	SET_NEWSLETTER_PREFERENCES = '@@newsletter-preferences/SET_NEWSLETTER_PREFERENCES',
 	UPDATE_NEWSLETTER_PREFERENCES = '@@newsletter-preferences/UPDATE_NEWSLETTER_PREFERENCES',
 }
+
 /* eslint-enable @typescript-eslint/no-unused-vars */
 
 type NewsletterPreferencesAction = ReactAction<NewsletterPreferencesActionType>;

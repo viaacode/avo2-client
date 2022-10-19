@@ -1,8 +1,7 @@
+import { Alert, AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { toast, ToastId, ToastOptions } from 'react-toastify';
-
-import { Alert, AlertProps, Spacer } from '@viaa/avo2-components';
 
 import { ROUTE_PARTS } from '../constants';
 

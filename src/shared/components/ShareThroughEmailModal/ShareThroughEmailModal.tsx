@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Box,
@@ -12,12 +9,14 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 import { copyToClipboard } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
-import { ToastService } from '../../services';
 import { CampaignMonitorService, EmailTemplateType } from '../../services/campaign-monitor-service';
 import { trackEvents } from '../../services/event-logging-service';
+import { ToastService } from '../../services/toast-service';
 
 import './ShareThroughEmailModal.scss';
 

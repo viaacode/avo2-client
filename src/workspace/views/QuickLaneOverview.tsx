@@ -19,11 +19,11 @@ import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import { useDebounce } from '../../shared/hooks';
-import { ToastService } from '../../shared/services';
 import {
 	QuickLaneFilters,
 	QuickLaneFilterService,
 } from '../../shared/services/quick-lane-filter-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { QuickLaneOverviewFilterState, QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';

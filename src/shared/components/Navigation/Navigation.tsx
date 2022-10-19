@@ -39,16 +39,17 @@ import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
 import { insideIframe } from '../../helpers/inside-iframe';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
-import { ToastService } from '../../services';
 import {
 	AppContentNavElement,
 	getNavigationItems,
 	NavItemMap,
 } from '../../services/navigation-items-service';
+import { ToastService } from '../../services/toast-service';
 import { NavigationItemInfo } from '../../types';
 
+import { NavigationItem } from './NavigationItem';
+
 import './Navigation.scss';
-import NavigationItem from './NavigationItem';
 
 export interface NavigationParams extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;

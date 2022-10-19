@@ -1,3 +1,5 @@
+import { Button } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,9 +8,6 @@ import { connect } from 'react-redux';
 import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
-import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
 import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteId, RouteInfo } from '../../../constants';
@@ -16,7 +15,7 @@ import { AppState } from '../../../store';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
-import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
+import { InteractiveTourService, TourInfo } from '../../services/interactive-tour.service';
 import Html from '../Html/Html';
 
 import './InteractiveTour.scss';
@@ -152,7 +151,7 @@ const InteractiveTour: FunctionComponent<
 			// Fetch interactive tours for current user and their seen status
 			const tourTemp = await InteractiveTourService.fetchStepsForPage(
 				routeId,
-				get(user, 'profile.id'),
+				user?.profile?.id,
 				tourDisplayDates
 			);
 			setTour(tourTemp);

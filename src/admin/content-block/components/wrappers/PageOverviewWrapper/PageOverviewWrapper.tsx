@@ -16,14 +16,16 @@ import placeholderWide from '../../../../../assets/images/placeholder-wide.png';
 import { ContentPage } from '../../../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { ROUTE_PARTS } from '../../../../../shared/constants';
+import { Lookup_Enum_Content_Types_Enum } from '../../../../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
 import { useDebounce } from '../../../../../shared/hooks';
 import { useScrollToSelector } from '../../../../../shared/hooks/scroll-to-selector';
-import { ToastService } from '../../../../../shared/services';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
+import { ToastService } from '../../../../../shared/services/toast-service';
 import i18n from '../../../../../shared/translations/i18n';
 import { ContentPageLabelService } from '../../../../content-page-labels/content-page-label.service';
+import { ContentPageLabel } from '../../../../content-page-labels/content-page-label.types';
 import { ContentService } from '../../../../content/content.service';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { convertToContentPageInfos } from '../../../../content/helpers/parsers';
@@ -67,7 +69,7 @@ interface PageOverviewWrapperProps {
 
 const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	contentTypeAndTabs = {
-		selectedContentType: 'PROJECT',
+		selectedContentType: Lookup_Enum_Content_Types_Enum.Project,
 		selectedLabels: null,
 	},
 	tabStyle = 'MENU_BAR',
@@ -110,7 +112,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	const dbToPageOverviewContentPage = (contentPageInfo: ContentPageInfo): PageInfo => {
 		return {
 			thumbnail_path: contentPageInfo.thumbnail_path || placeholderWide,
-			labels: ((contentPageInfo.labels || []) as Avo.ContentPage.Label[]).map((labelObj) => ({
+			labels: ((contentPageInfo.labels || []) as ContentPageLabel[]).map((labelObj) => ({
 				id: labelObj.id,
 				label: labelObj.label,
 			})),

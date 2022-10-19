@@ -1,5 +1,8 @@
+import { GetUserGroupByIdQuery } from '../../shared/generated/graphql-db-types';
 import { PermissionGroup } from '../permission-groups/permission-group.types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
+
+export type UserGroupDb = GetUserGroupByIdQuery['users_groups'][0];
 
 export interface UserGroup {
 	id: number;
@@ -36,7 +39,7 @@ export type PermissionGroupTableCols =
 	| 'updated_at'
 	| 'actions';
 
-export interface UserGroup {
-	id: number;
-	label: string;
-}
+// export interface UserGroup {
+// 	id: number;
+// 	label: string;
+// }

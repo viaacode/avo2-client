@@ -40,6 +40,7 @@ import { InteractiveTour, LoadingInfo, ShareThroughEmailModal } from '../../shar
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
+import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -56,11 +57,14 @@ import {
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { isUuid } from '../../shared/helpers/uuid';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarksViewsPlaysService,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { ContentTypeString, Relation } from '../collection.types';
@@ -1137,7 +1141,6 @@ const CollectionDetail: FunctionComponent<
 					/>
 				)}
 				<DeleteCollectionModal
-					collectionId={(collection as Avo.Collection.Collection).id}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
@@ -1162,7 +1165,7 @@ const CollectionDetail: FunctionComponent<
 						modalTitle={t('collection/views/collection-detail___delen-met-leerlingen')}
 						isOpen={isQuickLaneModalOpen}
 						content={collection}
-						content_label="COLLECTIE"
+						content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
 						onClose={() => {
 							setIsQuickLaneModalOpen(false);
 						}}

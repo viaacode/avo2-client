@@ -1,0 +1,9 @@
+query getItemPlayCount($itemUuid: uuid!) {
+	app_item_meta(where: { uid: { _eq: $itemUuid } }) {
+		play_counts {
+			count
+		}
+		is_published
+		is_deleted
+	}
+}

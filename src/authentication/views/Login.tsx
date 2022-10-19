@@ -1,12 +1,11 @@
+import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
-
-import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { APP_PATH } from '../../constants';

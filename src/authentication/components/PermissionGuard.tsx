@@ -1,9 +1,8 @@
+import { useSlot } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { useSlot } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 
 import { LoadingErrorLoadedComponent } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
@@ -58,7 +57,7 @@ const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 
 	const renderPermissionGuard = () => {
 		return hasPermission ? (
-			<>{!!childrenIfPassed ? childrenIfPassed : children}</>
+			<>{childrenIfPassed ? childrenIfPassed : children}</>
 		) : (
 			<>{childrenIfFailed}</>
 		);

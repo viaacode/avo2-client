@@ -1,11 +1,3 @@
-import { get } from 'lodash-es';
-import { Requests } from 'node-zendesk';
-import queryString from 'query-string';
-import React, { FunctionComponent, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { withRouter } from 'react-router';
-
 import {
 	BlockHeading,
 	Button,
@@ -17,6 +9,13 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import type { Requests } from 'node-zendesk';
+import queryString from 'query-string';
+import React, { FunctionComponent, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
+import { withRouter } from 'react-router';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -26,10 +25,11 @@ import Html from '../../shared/components/Html/Html';
 import { getFullName, isMobileWidth } from '../../shared/helpers';
 import { DOC_TYPES, isPhoto } from '../../shared/helpers/files';
 import { sanitizeHtml, sanitizePresets } from '../../shared/helpers/sanitize';
-import { ToastService, ZendeskService } from '../../shared/services';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { ZendeskService } from '../../shared/services/zendesk-service';
 
-export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
+export type UserItemRequestFormProps = DefaultSecureRouteProps;
 
 const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ history, user }) => {
 	const [t] = useTranslation();

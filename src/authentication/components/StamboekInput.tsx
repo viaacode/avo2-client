@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import stamboekExampleImage from '../../assets/images/leerkrachten-kaart-voorbeeld-nummer.png';
 import { APP_PATH } from '../../constants';
 import Html from '../../shared/components/Html/Html';
-import { ToastType } from '../../shared/services';
+import { ToastType } from '../../shared/services/toast-service';
 import { verifyStamboekNumber } from '../authentication.service';
 import { StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
 

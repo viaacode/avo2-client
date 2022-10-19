@@ -1,15 +1,3 @@
-import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	Reducer,
-	useCallback,
-	useEffect,
-	useReducer,
-	useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	BlockHeading,
 	Box,
@@ -25,24 +13,39 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
+import React, {
+	FunctionComponent,
+	Reducer,
+	useCallback,
+	useEffect,
+	useReducer,
+	useState,
+} from 'react';
+import { useTranslation } from 'react-i18next';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
+import {
+	GetInteractiveTourByIdDocument,
+	GetInteractiveTourByIdQuery,
+} from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
-import { dataService, ToastService } from '../../../shared/services';
+import { dataService } from '../../../shared/services/data-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import {
+	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 	InteractiveTourAction,
 	interactiveTourEditReducer,
-	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
 } from '../helpers/reducers';
 import {
 	getInitialInteractiveTour,
@@ -50,7 +53,6 @@ import {
 	MAX_STEP_TEXT_LENGTH,
 	MAX_STEP_TITLE_LENGTH,
 } from '../interactive-tour.const';
-import { GET_INTERACTIVE_TOUR_BY_ID } from '../interactive-tour.gql';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
 	EditableInteractiveTour,
@@ -59,12 +61,13 @@ import {
 	InteractiveTourEditFormErrorState,
 	InteractiveTourPageType,
 	InteractiveTourState,
+	InteractiveTourStep,
 } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
-export interface InteractiveTourEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	history,
@@ -123,15 +126,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			});
 		} else {
 			try {
-				const response = await dataService.query({
-					query: GET_INTERACTIVE_TOUR_BY_ID,
+				const response = await dataService.query<GetInteractiveTourByIdQuery>({
+					query: GetInteractiveTourByIdDocument,
 					variables: { id: match.params.id },
 				});
 
-				const interactiveTourObj: EditableInteractiveTour | undefined = get(
-					response,
-					'data.app_interactive_tour[0]'
-				);
+				const interactiveTourObj = response.app_interactive_tour[0];
 
 				if (!interactiveTourObj) {
 					setLoadingInfo({
@@ -205,32 +205,32 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht'
 			);
 		}
-		get(interactiveTourState.currentInteractiveTour, 'steps', []).forEach((step, index) => {
-			if (step.title.length > MAX_STEP_TITLE_LENGTH) {
-				errors.steps = errors.steps || [];
-				errors.steps[index] = {
-					...(errors.steps[index] || {}),
-					title: t(
-						'admin/interactive-tour/views/interactive-tour-edit___de-titel-is-te-lang'
-					),
-				};
+		get(interactiveTourState.currentInteractiveTour, 'steps', []).forEach(
+			(step: InteractiveTourStep, index: number) => {
+				if (step.title.length > MAX_STEP_TITLE_LENGTH) {
+					errors.steps = errors.steps || [];
+					errors.steps[index] = {
+						...(errors.steps[index] || {}),
+						title: t(
+							'admin/interactive-tour/views/interactive-tour-edit___de-titel-is-te-lang'
+						),
+					};
+				}
+				if (step.title.length > MAX_STEP_TEXT_LENGTH) {
+					errors.steps = errors.steps || [];
+					errors.steps[index] = {
+						...(errors.steps[index] || {}),
+						content: t(
+							'admin/interactive-tour/views/interactive-tour-edit___de-tekst-is-te-lang'
+						),
+					};
+				}
 			}
-			if (step.title.length > MAX_STEP_TEXT_LENGTH) {
-				errors.steps = errors.steps || [];
-				errors.steps[index] = {
-					...(errors.steps[index] || {}),
-					content: t(
-						'admin/interactive-tour/views/interactive-tour-edit___de-tekst-is-te-lang'
-					),
-				};
-			}
-		});
+		);
 		return isEmpty(errors) ? null : errors;
 	};
 
-	const convertTourContentToHtml = (
-		tour: EditableInteractiveTour
-	): Avo.InteractiveTour.InteractiveTour => {
+	const convertTourContentToHtml = (tour: EditableInteractiveTour): EditableInteractiveTour => {
 		const clonedTour = cloneDeep(tour);
 		clonedTour.steps.forEach((step: EditableStep) => {
 			if (step.contentState) {
@@ -267,7 +267,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			setIsSaving(true);
 
 			// Convert rich text editor state back to html before we save to database
-			const tour = convertTourContentToHtml(interactiveTourState.currentInteractiveTour);
+			const tour: EditableInteractiveTour = convertTourContentToHtml(
+				interactiveTourState.currentInteractiveTour
+			);
 
 			let interactiveTourId: number | string;
 			if (isCreatePage) {

@@ -92,11 +92,14 @@ import {
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser from '../../shared/hocs/withUser';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
-import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarksViewsPlaysService,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { UnpublishableItem } from '../../shared/types';
 import { AddToAssignmentModal, AddToCollectionModal, ItemVideoDescription } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
@@ -104,6 +107,7 @@ import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
 
 import './ItemDetail.scss';
+import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
@@ -990,7 +994,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					modalTitle={t('item/views/item___snel-delen-met-leerlingen')}
 					isOpen={isQuickLaneModalOpen}
 					content={item}
-					content_label="ITEM"
+					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Item}
 					onClose={() => {
 						setIsQuickLaneModalOpen(false);
 					}}

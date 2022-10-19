@@ -1,4 +1,4 @@
-import { WYSIWYGControl } from '@viaa/avo2-components/dist/esm/wysiwyg';
+import { WYSIWYGControl } from '@viaa/avo2-components';
 
 export const WYSIWYG_OPTIONS_ALIGN: WYSIWYGControl[] = ['separator', 'text-align'];
 

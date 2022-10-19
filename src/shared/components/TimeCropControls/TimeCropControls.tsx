@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { formatDurationHoursMinutesSeconds, parseDuration, toSeconds } from '../../helpers';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
-import { ToastService } from '../../services';
+import { ToastService } from '../../services/toast-service';
 
 import './TimeCropControls.scss';
 
