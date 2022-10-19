@@ -176,7 +176,7 @@ export class InteractiveTourService {
 					response,
 				});
 			}
-			return (await response.json()).data;
+			return await response.json();
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get interactive tour and seen statuses by route id from proxy',
