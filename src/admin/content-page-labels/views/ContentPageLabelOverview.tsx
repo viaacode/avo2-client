@@ -208,16 +208,18 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				return rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
 
 			case 'link_to':
-				const linkTo = rowData.link_to;
-				if (!linkTo) {
-					return '-';
-				}
-				const labels = GET_CONTENT_TYPE_LABELS();
-				return (
-					<SmartLink action={linkTo} removeStyles={false}>{`${labels[linkTo.type]} - ${
-						linkTo.label
-					}`}</SmartLink>
-				);
+				return (() => {
+					const linkTo = rowData.link_to;
+					if (!linkTo) {
+						return '-';
+					}
+					const labels = GET_CONTENT_TYPE_LABELS();
+					return (
+						<SmartLink action={linkTo} removeStyles={false}>{`${
+							labels[linkTo.type]
+						} - ${linkTo.label}`}</SmartLink>
+					);
+				})();
 
 			case 'actions':
 				return (

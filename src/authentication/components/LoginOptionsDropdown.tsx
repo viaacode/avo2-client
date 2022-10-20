@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
@@ -12,7 +13,7 @@ const LoginOptionsDropdown: FunctionComponent<LoginOptionsDropdownProps & RouteC
 	history,
 	location,
 	match,
-	closeDropdown = () => {},
+	closeDropdown = noop,
 }) => {
 	return (
 		<div className="m-login-options-dropdown">

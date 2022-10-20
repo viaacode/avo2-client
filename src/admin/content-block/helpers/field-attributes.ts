@@ -14,7 +14,7 @@ export const generateFieldAttributes = (
 	// key and state are required, so we can store rich text editor state side by side of the html string
 	key: string,
 	state: any
-) => {
+): Record<string, any> => {
 	switch (field.editorType) {
 		case ContentBlockEditor.TextInput:
 			return {
@@ -48,24 +48,32 @@ export const generateFieldAttributes = (
 				),
 			};
 		case ContentBlockEditor.WYSIWYG:
-			const html = (state as any)[`${key}`] || '';
-			const richEditorState = (state as any)[`${key}${RichEditorStateKey}`];
-			return {
-				id,
-				initialHtml: html, // Only use the html the first time, then use the editor state
-				state: richEditorState,
-				onChange: (editorState: any) => {
-					onChange(editorState, `${key}${RichEditorStateKey}`);
-				},
-			} as Partial<WYSIWYGProps>;
+			return (() => {
+				const html = (state as any)[`${key}`] || '';
+				const richEditorState = (state as any)[`${key}${RichEditorStateKey}`];
+				return {
+					id,
+					initialHtml: html, // Only use the html the first time, then use the editor state
+					state: richEditorState,
+					onChange: (editorState: any) => {
+						onChange(editorState, `${key}${RichEditorStateKey}`);
+					},
+				} as Partial<WYSIWYGProps>;
+			})();
 		case ContentBlockEditor.FileUpload:
-			const urlOrUrls: string[] | undefined = value;
-			return {
-				// If the component wants a single value, take the first image from the array, otherwise pass the array
-				onChange: (value: null | undefined | string[]) =>
-					onChange(field.editorProps.allowMulti || !value ? value : value[0]),
-				urls: Array.isArray(urlOrUrls) ? urlOrUrls : isNil(urlOrUrls) ? [] : [urlOrUrls],
-			};
+			return (() => {
+				const urlOrUrls: string[] | undefined = value;
+				return {
+					// If the component wants a single value, take the first image from the array, otherwise pass the array
+					onChange: (value: null | undefined | string[]) =>
+						onChange(field.editorProps.allowMulti || !value ? value : value[0]),
+					urls: Array.isArray(urlOrUrls)
+						? urlOrUrls
+						: isNil(urlOrUrls)
+						? []
+						: [urlOrUrls],
+				};
+			})();
 		case ContentBlockEditor.MultiRange:
 			return {
 				onChange: (value: any) => {

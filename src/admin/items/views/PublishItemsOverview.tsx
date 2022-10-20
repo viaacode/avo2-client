@@ -38,14 +38,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const generateWhereObject = useCallback((filters: Partial<UnpublishedItemsTableState>) => {
 		const andFilters: any[] = [];
 		andFilters.push(
-			...getQueryFilter(
-				filters.query,
-				// @ts-ignore
-				(queryWildcard: string, query: string) => [
-					{ pid: { _eq: query } },
-					{ title: { _ilike: queryWildcard } },
-				]
-			)
+			...getQueryFilter(filters.query, (queryWildcard: string, query: string) => [
+				{ pid: { _eq: query } },
+				{ title: { _ilike: queryWildcard } },
+			])
 		);
 		andFilters.push(...getDateRangeFilters(filters, ['updated_at']));
 
@@ -239,37 +235,44 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				return t('admin/items/views/publish-items-overview___nieuw');
 
 			case 'actions':
-				const itemExternalId: string | undefined = get(rowData, 'item_meta.external_id');
-				const itemUid: string | undefined = get(rowData, 'item_meta.uid');
-				if (itemExternalId) {
-					return (
-						<ButtonToolbar>
-							<Button
-								type="secondary"
-								icon="eye"
-								onClick={() => navigateToItemDetail(itemExternalId)}
-								title={t(
-									'admin/items/views/items-overview___bekijk-item-in-de-website'
-								)}
-								ariaLabel={t(
-									'admin/items/views/items-overview___bekijk-item-in-de-website'
-								)}
-							/>
-							<Button
-								type="secondary"
-								icon="edit"
-								onClick={() => navigateToAdminItemDetail(itemUid)}
-								title={t(
-									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
-								)}
-								ariaLabel={t(
-									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
-								)}
-							/>
-						</ButtonToolbar>
+				return (() => {
+					const itemExternalId: string | undefined = get(
+						rowData,
+						'item_meta.external_id'
 					);
-				}
-				return null;
+					const itemUid: string | undefined = get(rowData, 'item_meta.uid');
+
+					if (itemExternalId) {
+						return (
+							<ButtonToolbar>
+								<Button
+									type="secondary"
+									icon="eye"
+									onClick={() => navigateToItemDetail(itemExternalId)}
+									title={t(
+										'admin/items/views/items-overview___bekijk-item-in-de-website'
+									)}
+									ariaLabel={t(
+										'admin/items/views/items-overview___bekijk-item-in-de-website'
+									)}
+								/>
+								<Button
+									type="secondary"
+									icon="edit"
+									onClick={() => navigateToAdminItemDetail(itemUid)}
+									title={t(
+										'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
+									)}
+									ariaLabel={t(
+										'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
+									)}
+								/>
+							</ButtonToolbar>
+						);
+					}
+
+					return null;
+				})();
 
 			default:
 				return truncate((rowData as any)[columnId] || '-', { length: 60 });

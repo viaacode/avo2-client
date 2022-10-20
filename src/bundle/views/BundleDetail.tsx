@@ -50,6 +50,7 @@ import {
 } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -75,7 +76,6 @@ import { getRelatedItems } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 
 import './BundleDetail.scss';
-import { getMoreOptionsLabel } from '../../shared/constants';
 
 type BundleDetailProps = {
 	id?: string;

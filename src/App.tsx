@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
@@ -11,7 +12,6 @@ import { Route, RouteComponentProps, BrowserRouter as Router, withRouter } from 
 import { Slide, ToastContainer } from 'react-toastify';
 import { compose } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import Admin from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';

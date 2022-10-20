@@ -18,13 +18,7 @@ import LoginOptions from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss';
 
-export interface RegisterOrLoginProps {}
-
-const RegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteComponentProps> = ({
-	history,
-	location,
-	match,
-}) => {
+const RegisterOrLogin: FunctionComponent<RouteComponentProps> = ({ history, location, match }) => {
 	const [t] = useTranslation();
 
 	return (

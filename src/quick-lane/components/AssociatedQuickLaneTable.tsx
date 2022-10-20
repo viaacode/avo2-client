@@ -9,9 +9,7 @@ import { isMobileWidth } from '../../shared/helpers';
 import { QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
-interface AssociatedQuickLaneTableProps {}
-
-const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps & TableProps> = ({
+const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 	onColumnClick,
 	sortColumn,
 	sortOrder,
@@ -79,9 +77,7 @@ const AssociatedQuickLaneTable: FunctionComponent<AssociatedQuickLaneTableProps 
 	);
 };
 
-export default AssociatedQuickLaneTable as FunctionComponent<
-	AssociatedQuickLaneTableProps & TableProps
->;
+export default AssociatedQuickLaneTable as FunctionComponent<TableProps>;
 
 export const AssociatedQuickLaneTableOrderBy = {
 	[QUICK_LANE_COLUMNS.AUTHOR]: 'owner.user.full_name',

@@ -1,4 +1,4 @@
-import produce, { Draft } from 'immer';
+import immer, { Draft } from 'immer';
 import { cloneDeep, isEqual, isNil } from 'lodash-es';
 import moment from 'moment';
 
@@ -134,7 +134,7 @@ const repositionConfigs = (updatedConfigs: ContentBlockConfig[]) => {
 };
 
 // Reducer
-export const contentEditReducer = produce(
+export const contentEditReducer = immer(
 	(draft: Draft<ContentPageEditState>, action: ContentEditAction) => {
 		// Because we use immer, we have to mutate the draft state in place for it to work properly
 		// We don't have to return anything because our produce() will automagically do that for us
@@ -169,98 +169,113 @@ export const contentEditReducer = produce(
 				return;
 
 			case ContentEditActionType.REORDER_CONTENT_BLOCK_CONFIG:
-				const reorderContentBlockConfig = action as ReorderContentBlockConfig;
-				const newIndex =
-					reorderContentBlockConfig.payload.configIndex +
-					reorderContentBlockConfig.payload.indexUpdate;
-				// Get updated item and remove it from copy
-				const reorderedConfig = draft.currentContentPageInfo.contentBlockConfigs.splice(
-					reorderContentBlockConfig.payload.configIndex,
-					1
-				)[0];
-				// Apply update object to config
-				draft.currentContentPageInfo.contentBlockConfigs.splice(
-					newIndex,
-					0,
-					reorderedConfig
-				);
-				// Reposition
-				repositionConfigs(draft.currentContentPageInfo.contentBlockConfigs);
-				return;
+				return (() => {
+					const reorderContentBlockConfig = action as ReorderContentBlockConfig;
+					const newIndex =
+						reorderContentBlockConfig.payload.configIndex +
+						reorderContentBlockConfig.payload.indexUpdate;
+					// Get updated item and remove it from copy
+					const reorderedConfig = draft.currentContentPageInfo.contentBlockConfigs.splice(
+						reorderContentBlockConfig.payload.configIndex,
+						1
+					)[0];
+					// Apply update object to config
+					draft.currentContentPageInfo.contentBlockConfigs.splice(
+						newIndex,
+						0,
+						reorderedConfig
+					);
+					// Reposition
+					repositionConfigs(draft.currentContentPageInfo.contentBlockConfigs);
+					return;
+				})();
 
 			case ContentEditActionType.ADD_COMPONENTS_STATE:
-				const addComponentsState = action as AddComponentsState;
-				config =
-					draft.currentContentPageInfo.contentBlockConfigs[
-						addComponentsState.payload.index
-					];
-				componentsState = config.components.state;
-				(componentsState as RepeatedContentBlockComponentState[]).push(
-					...(addComponentsState.payload
-						.formGroupState as RepeatedContentBlockComponentState[])
-				);
-				return;
+				return (() => {
+					const addComponentsState = action as AddComponentsState;
+					config =
+						draft.currentContentPageInfo.contentBlockConfigs[
+							addComponentsState.payload.index
+						];
+					componentsState = config.components.state;
+					(componentsState as RepeatedContentBlockComponentState[]).push(
+						...(addComponentsState.payload
+							.formGroupState as RepeatedContentBlockComponentState[])
+					);
+					return;
+				})();
 
 			case ContentEditActionType.REMOVE_COMPONENTS_STATE:
-				const removeComponentsState = action as RemoveComponentsState;
-				config =
-					draft.currentContentPageInfo.contentBlockConfigs[
-						removeComponentsState.payload.index
-					];
-				componentsState = config.components.state;
-				(componentsState as RepeatedContentBlockComponentState[]).splice(
-					removeComponentsState.payload.stateIndex,
-					1
-				);
-				return;
+				return (() => {
+					const removeComponentsState = action as RemoveComponentsState;
+					config =
+						draft.currentContentPageInfo.contentBlockConfigs[
+							removeComponentsState.payload.index
+						];
+					componentsState = config.components.state;
+					(componentsState as RepeatedContentBlockComponentState[]).splice(
+						removeComponentsState.payload.stateIndex,
+						1
+					);
+					return;
+				})();
 
 			case ContentEditActionType.SET_COMPONENTS_STATE:
-				const setComponentsState = action as SetComponentsState;
-				config =
-					draft.currentContentPageInfo.contentBlockConfigs[
-						setComponentsState.payload.index
-					];
-				components = config.components as ContentBlockComponentsConfig;
+				return (() => {
+					const setComponentsState = action as SetComponentsState;
+					config =
+						draft.currentContentPageInfo.contentBlockConfigs[
+							setComponentsState.payload.index
+						];
+					components = config.components as ContentBlockComponentsConfig;
 
-				if (!isNil(action.payload.stateIndex)) {
-					// Config component state is an array (repeatable)
-					const repeatableState =
-						components.state as RepeatedContentBlockComponentState[];
-					repeatableState[action.payload.stateIndex] = {
-						...repeatableState[action.payload.stateIndex],
-						...(action.payload.formGroupState as RepeatedContentBlockComponentState),
-					};
-				} else {
-					// Config component state is a single object (single)
-					components.state = {
-						...components.state,
-						...(action.payload.formGroupState as SingleContentBlockComponentState),
-					};
-				}
-				return;
+					if (!isNil(action.payload.stateIndex)) {
+						// Config component state is an array (repeatable)
+						const repeatableState =
+							components.state as RepeatedContentBlockComponentState[];
+						repeatableState[action.payload.stateIndex] = {
+							...repeatableState[action.payload.stateIndex],
+							...(action.payload
+								.formGroupState as RepeatedContentBlockComponentState),
+						};
+					} else {
+						// Config component state is a single object (single)
+						components.state = {
+							...components.state,
+							...(action.payload.formGroupState as SingleContentBlockComponentState),
+						};
+					}
+					return;
+				})();
 
 			case ContentEditActionType.SET_BLOCK_STATE:
-				const setBlockState = action as SetBlockState;
-				const { block } =
-					draft.currentContentPageInfo.contentBlockConfigs[setBlockState.payload.index];
-				block.state = { ...block.state, ...setBlockState.payload.formGroupState };
-				return;
+				return (() => {
+					const setBlockState = action as SetBlockState;
+					const { block } =
+						draft.currentContentPageInfo.contentBlockConfigs[
+							setBlockState.payload.index
+						];
+					block.state = { ...block.state, ...setBlockState.payload.formGroupState };
+					return;
+				})();
 
 			case ContentEditActionType.SET_CONTENT_BLOCK_ERROR:
-				const setContentBlockError = action as SetContentBlockError;
-				if (
-					!isEqual(
-						action.payload.errors,
+				return (() => {
+					const setContentBlockError = action as SetContentBlockError;
+					if (
+						!isEqual(
+							action.payload.errors,
+							draft.currentContentPageInfo.contentBlockConfigs[
+								setContentBlockError.payload.configIndex
+							].errors
+						)
+					) {
 						draft.currentContentPageInfo.contentBlockConfigs[
 							setContentBlockError.payload.configIndex
-						].errors
-					)
-				) {
-					draft.currentContentPageInfo.contentBlockConfigs[
-						setContentBlockError.payload.configIndex
-					].errors = setContentBlockError.payload.errors;
-				}
-				return;
+						].errors = setContentBlockError.payload.errors;
+					}
+					return;
+				})();
 
 			default:
 				// We don't actually need the default case, produce() will simply return the

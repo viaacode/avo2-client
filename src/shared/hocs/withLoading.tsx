@@ -5,10 +5,9 @@ interface WithLoadingProps {
 	loading: boolean;
 }
 
-const withLoading =
-	(WrappedComponent: ComponentType<any>): ComponentType<any> =>
-	(props: WithLoadingProps) => {
+const withLoading = (WrappedComponent: ComponentType<any>): ComponentType<any> =>
+	React.memo(function withLoading(props: WithLoadingProps) {
 		return props.loading ? <Spinner size="large" /> : <WrappedComponent {...props} />;
-	};
+	});
 
 export default withLoading;

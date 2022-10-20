@@ -4,6 +4,7 @@ import { get, kebabCase } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import CreatableSelect from 'react-select/creatable';
+// eslint-disable-next-line import/namespace
 import { ValueType } from 'react-select/src/types';
 
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';

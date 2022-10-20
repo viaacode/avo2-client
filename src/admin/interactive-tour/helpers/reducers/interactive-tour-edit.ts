@@ -1,6 +1,6 @@
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
-import produce, { Draft } from 'immer';
+import immer, { Draft } from 'immer';
 import { cloneDeep } from 'lodash-es';
 
 import { ToastService } from '../../../../shared/services/toast-service';
@@ -58,7 +58,7 @@ export const INTERACTIVE_TOUR_EDIT_INITIAL_STATE = (): InteractiveTourState => (
 });
 
 // Reducer
-export const interactiveTourEditReducer = produce(
+export const interactiveTourEditReducer = immer(
 	(draft: Draft<InteractiveTourState>, action: InteractiveTourAction) => {
 		// Because we use immer, we have to mutate the draft state in place for it to work properly
 		// We don't have to return anything because our produce() will automagically do that for us

@@ -1,4 +1,5 @@
 import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import { noop } from 'lodash';
 import React, { FunctionComponent, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
@@ -33,7 +34,7 @@ const LoginOptionsTabs = {
 const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 	history,
 	location,
-	onOptionClicked = () => {},
+	onOptionClicked = noop,
 }) => {
 	const [t] = useTranslation();
 	const [tab, setActiveTab, tabs] = useTabs(

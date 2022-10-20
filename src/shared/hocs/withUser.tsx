@@ -7,9 +7,9 @@ import { selectUser } from '../../authentication/store/selectors';
 import { AppState } from '../../store';
 
 const withUser = (WrappedComponent: FunctionComponent) => {
-	return (props: any) => {
+	return React.memo(function withUser(props: any) {
 		return <WrappedComponent {...props} />;
-	};
+	});
 };
 
 const mapStateToProps = (state: AppState) => ({

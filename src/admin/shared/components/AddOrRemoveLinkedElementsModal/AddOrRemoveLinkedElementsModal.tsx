@@ -13,6 +13,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { noop } from 'lodash';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,7 +33,7 @@ const AddOrRemoveLinkedElementsModal: FunctionComponent<AddOrRemoveLinkedElement
 	title,
 	addOrRemoveLabel,
 	contentLabel,
-	onClose = () => {},
+	onClose = noop,
 	isOpen,
 	labels,
 	callback,
