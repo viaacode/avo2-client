@@ -1137,7 +1137,6 @@ const CollectionDetail: FunctionComponent<
 					/>
 				)}
 				<DeleteCollectionModal
-					collectionId={(collection as Avo.Collection.Collection).id}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
