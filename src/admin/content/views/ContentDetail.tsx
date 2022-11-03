@@ -175,7 +175,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 		if (contentPageInfo === null) {
 			ToastService.danger(
-				t('Er is niet voldoende informatie beschikbaar om het content item te verwijderen.')
+				t(
+					'admin/content/views/content-detail___er-is-niet-voldoende-informatie-beschikbaar-om-het-content-item-te-verwijderen'
+				)
 			);
 
 			return;
