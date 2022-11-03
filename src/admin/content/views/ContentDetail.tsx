@@ -56,7 +56,11 @@ import {
 } from '../../shared/layouts';
 import { SpecialUserGroup } from '../../user-groups/user-group.const';
 import PublishContentPageModal from '../components/PublishContentPageModal';
-import { CONTENT_PATH, GET_CONTENT_DETAIL_TABS } from '../content.const';
+import {
+	CONTENT_PATH,
+	DELETED_CONTENT_PAGE_PATH_PREFIX,
+	GET_CONTENT_DETAIL_TABS,
+} from '../content.const';
 import { SOFT_DELETE_CONTENT } from '../content.gql';
 import { ContentService } from '../content.service';
 import { ContentDetailParams, ContentPageInfo } from '../content.types';
@@ -168,8 +172,20 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 	const handleDelete = () => {
 		setIsConfirmModalOpen(false);
+
+		if (contentPageInfo === null) {
+			ToastService.danger(
+				t('Er is niet voldoende informatie beschikbaar om het content item te verwijderen.')
+			);
+
+			return;
+		}
+
 		triggerContentDelete({
-			variables: { id },
+			variables: {
+				id: contentPageInfo.id,
+				path: `${DELETED_CONTENT_PAGE_PATH_PREFIX}${contentPageInfo.id}${contentPageInfo.path}`,
+			},
 			update: ApolloCacheManager.clearContentCache,
 		})
 			.then(() => {
