@@ -496,7 +496,7 @@ const getMarcomLastCommunicationChannelNameColumn = (
 	visibleByDefault: true,
 	filterType: 'CheckboxDropdownModal',
 	filterProps: {
-		label: i18n.t('Communicatiekanaal'),
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___communicatiekanaal'),
 		options: channelNameOptions,
 	},
 	dataType: TableColumnDataType.string,
