@@ -7,7 +7,7 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
-const UserGroupGroupOverview: FunctionComponent = () => {
+const UserGroupGroupOverviewPage: FunctionComponent = () => {
 	const [t] = useTranslation();
 
 	const renderPageContent = () => {
@@ -38,4 +38,4 @@ const UserGroupGroupOverview: FunctionComponent = () => {
 	);
 };
 
-export default withAdminCoreConfig(UserGroupGroupOverview);
+export default withAdminCoreConfig(UserGroupGroupOverviewPage);
