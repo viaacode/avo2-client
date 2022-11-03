@@ -1230,9 +1230,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 				)}
 
 				<DeleteCollectionModal
-					collectionId={
-						(collectionState.currentCollection as Avo.Collection.Collection).id
-					}
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
