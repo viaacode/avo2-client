@@ -1,9 +1,0 @@
-query getAllPermissionGroups {
-	users_permission_groups {
-		id
-		label
-		description
-		created_at
-		updated_at
-	}
-}

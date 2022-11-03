@@ -1,30 +1,20 @@
 import {
-	Accordion,
 	Button,
 	ButtonToolbar,
 	Checkbox,
 	Container,
 	MenuItemInfo,
 	MoreOptionsDropdown,
-	Spacer,
 	Table,
 	TagList,
 	TagOption,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get, sortBy } from 'lodash-es';
+import { get } from 'lodash-es';
 import moment from 'moment';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
@@ -59,12 +49,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import TempAccessModal from '../components/TempAccessModal';
 import UserDeleteModal from '../components/UserDeleteModal';
 import { UserService } from '../user.service';
-import {
-	RawPermissionLink,
-	RawUserGroup,
-	RawUserGroupPermissionGroupLink,
-	UserTempAccess,
-} from '../user.types';
+import { RawUserGroup, UserTempAccess } from '../user.types';
 
 type UserDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
@@ -286,92 +271,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		return months;
 	};
 
-	const renderList = (list: { id: number; label: string }[], path?: string): ReactNode => {
-		return (
-			<Table horizontal variant="invisible" className="c-table_detail-page">
-				<tbody>
-					{list.map((item) => {
-						return (
-							<tr key={`user-group-row-${item.id}`}>
-								<td>
-									{path ? (
-										<Link
-											to={buildLink(path, {
-												id: item.id,
-											})}
-										>
-											{item.label}
-										</Link>
-									) : (
-										item.label
-									)}
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</Table>
-		);
-	};
-
-	const renderPermissionLists = () => {
-		const permissionGroups: { id: number; label: string }[] = [];
-		const permissions: { id: number; label: string }[] = [];
-
-		const profileUserGroup: RawUserGroup = get(
-			storedProfile,
-			'profile.profile_user_group.group',
-			[]
-		);
-
-		const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
-			profileUserGroup,
-			'group_user_permission_groups',
-			[]
-		);
-
-		rawPermissionGroups.forEach((permissionGroup) => {
-			permissionGroups.push({
-				id: get(permissionGroup, 'group.id'),
-				label: get(permissionGroup, 'group.label'),
-			});
-
-			const rawPermissions: RawPermissionLink[] = get(
-				permissionGroup.permission_group,
-				'permission_group_user_permissions'
-			);
-
-			rawPermissions.map((permission) =>
-				permissions.push({
-					id: permission.permission.id,
-					label: permission.permission.label,
-				})
-			);
-		});
-
-		return (
-			<>
-				<Spacer margin="top-extra-large">
-					<Accordion
-						title={t('admin/users/views/user-detail___permissiegroepen')}
-						isOpen={false}
-					>
-						{renderList(
-							sortBy(permissionGroups, 'label'),
-							ADMIN_PATH.PERMISSION_GROUP_DETAIL
-						)}
-					</Accordion>
-					<Accordion
-						title={t('admin/users/views/user-detail___permissies')}
-						isOpen={false}
-					>
-						{renderList(sortBy(permissions, 'label'))}
-					</Accordion>
-				</Spacer>
-			</>
-		);
-	};
-
 	const renderUserDetail = () => {
 		if (!storedProfile) {
 			console.error(
@@ -418,17 +317,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								],
 							])}
 							{renderDetailRow(
-								userGroup ? (
-									<Link
-										to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
-											id: userGroup.id,
-										})}
-									>
-										{userGroup.label}
-									</Link>
-								) : (
-									'-'
-								),
+								userGroup ? userGroup.label : '-',
 								t('admin/users/views/user-detail___gebruikersgroep')
 							)}
 							{renderDateDetailRows(storedProfile, [
@@ -525,7 +414,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							)}
 						</tbody>
 					</Table>
-					{renderPermissionLists()}
 				</Container>
 			</Container>
 		);
