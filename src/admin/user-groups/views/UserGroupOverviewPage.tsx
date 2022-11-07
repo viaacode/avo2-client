@@ -15,7 +15,12 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 	};
 
 	return (
-		<AdminLayout pageTitle={t('Groepen en permissies')} size="full-width">
+		<AdminLayout
+			pageTitle={t(
+				'admin/user-groups/views/user-group-overview-page___groepen-en-permissies'
+			)}
+			size="full-width"
+		>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>

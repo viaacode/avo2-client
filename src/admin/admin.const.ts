@@ -73,7 +73,7 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 			},
 			{
 				navItem: {
-					label: i18n.t('Groepen en permissies'),
+					label: i18n.t('admin/admin___groepen-en-permissies'),
 					location: ADMIN_PATH.USER_GROUP_OVERVIEW,
 					key: 'userGroups',
 					exact: false,

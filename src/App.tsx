@@ -140,7 +140,6 @@ const Root: FunctionComponent = () => {
 		}
 	}, []);
 
-	console.log('setting query client provider, ', queryClient);
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Provider store={store}>
