@@ -190,8 +190,6 @@ export class CollectionService {
 
 			const newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
 
-			console.info({ newCollection });
-
 			// remove custom_title and custom_description if user wants to use the item's original title and description
 			(newCollection.collection_fragments || []).forEach(
 				(fragment: Avo.Collection.Fragment) => {
