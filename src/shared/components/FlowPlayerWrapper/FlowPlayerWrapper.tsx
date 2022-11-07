@@ -66,6 +66,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
 
 	const [triggeredForUrl, setTriggeredForUrl] = useState<Record<string, boolean>>({});
+	// AVO-2241: added workaround to get correct state
 	const triggeredForUrlRef = React.useRef(triggeredForUrl);
 	const setTriggeredForUrlRef = (data: Record<string, boolean>) => {
 		triggeredForUrlRef.current = data;
