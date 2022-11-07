@@ -4,7 +4,7 @@ query getQuickLanesWithFilters(
 	$createdAtLte: timestamptz
 	$updatedAtGte: timestamptz
 	$updatedAtLte: timestamptz
-	$filters: [app_quick_lanes_bool_exp]
+	$filters: [app_quick_lanes_bool_exp!]
 	$orderBy: [app_quick_lanes_order_by!]
 	$limit: Int = 100
 	$offset: Int = 0

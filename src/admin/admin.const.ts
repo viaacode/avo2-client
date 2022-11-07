@@ -15,7 +15,6 @@ import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';
 import { MENU_PATH } from './menu/menu.const';
-import { PERMISSION_GROUP_PATH } from './permission-groups/permission-group.const';
 import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.const';
 import { TRANSLATIONS_PATH } from './translations/translations.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
@@ -29,7 +28,6 @@ export const ADMIN_PATH = Object.freeze({
 	...CONTENT_PATH,
 	...CONTENT_PAGE_LABEL_PATH,
 	...TRANSLATIONS_PATH,
-	...PERMISSION_GROUP_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
 	...ASSIGNMENTS_PATH,
 	...PUPIL_COLLECTIONS_PATH,
@@ -75,21 +73,12 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 			},
 			{
 				navItem: {
-					label: i18n.t('admin/admin___gebruikersgroepen'),
+					label: i18n.t('admin/admin___groepen-en-permissies'),
 					location: ADMIN_PATH.USER_GROUP_OVERVIEW,
 					key: 'userGroups',
 					exact: false,
 				},
 				permission: 'EDIT_USER_GROUPS',
-			},
-			{
-				navItem: {
-					label: i18n.t('admin/admin___permissie-groepen'),
-					location: ADMIN_PATH.PERMISSION_GROUP_OVERVIEW,
-					key: 'permissionGroups',
-					exact: false,
-				},
-				permission: 'EDIT_PERMISSION_GROUPS',
 			},
 		],
 		userPermissions

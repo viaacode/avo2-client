@@ -2,7 +2,7 @@ query getAssignmentsByResponseOwnerId(
 	$owner_profile_id: uuid!
 	$offset: Int = 0
 	$limit: Int
-	$filter: [app_assignments_v2_bool_exp]
+	$filter: [app_assignments_v2_bool_exp!]
 	$order: [app_assignments_v2_order_by!]!
 ) {
 	app_assignments_v2(

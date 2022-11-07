@@ -3,7 +3,7 @@ query getBookmarkedCollectionsByOwner(
 	$offset: Int = 0
 	$limit: Int
 	$order: [app_collection_bookmarks_order_by!] = { updated_at: desc }
-	$where: [app_collection_bookmarks_bool_exp] = []
+	$where: [app_collection_bookmarks_bool_exp!] = []
 ) {
 	app_collection_bookmarks(
 		where: { profile_id: { _eq: $owner_profile_id }, bookmarkedCollection: {}, _and: $where }

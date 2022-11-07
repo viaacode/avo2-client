@@ -1,5 +1,0 @@
-mutation deleteUserGroup($userGroupId: Int!) {
-	delete_users_groups(where: { id: { _eq: $userGroupId } }) {
-		affected_rows
-	}
-}

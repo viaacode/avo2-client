@@ -456,7 +456,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			);
 			ToastService.danger(
 				t(
-					'Het toevoegen van de blok is mislukt. Default instellingen van de blok konden niet worden gevonden'
+					'admin/content/views/content-edit___het-toevoegen-van-de-blok-is-mislukt-default-instellingen-van-de-blok-konden-niet-worden-gevonden'
 				)
 			);
 			return;

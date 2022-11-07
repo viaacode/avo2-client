@@ -3,7 +3,7 @@ query getAssignmentResponsesByAssignmentId(
 	$offset: Int = 0
 	$limit: Int
 	$order: [app_assignment_responses_v2_order_by!]! = { updated_at: desc }
-	$filter: [app_assignment_responses_v2_bool_exp]
+	$filter: [app_assignment_responses_v2_bool_exp!]
 ) {
 	app_assignment_responses_v2(
 		where: { assignment_id: { _eq: $assignmentId }, _and: $filter }

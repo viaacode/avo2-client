@@ -1,7 +1,0 @@
-mutation insertPermissionGroup($permissionGroup: users_permission_groups_insert_input!) {
-	insert_users_permission_groups(objects: [$permissionGroup]) {
-		returning {
-			id
-		}
-	}
-}

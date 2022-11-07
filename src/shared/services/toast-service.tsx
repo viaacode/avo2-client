@@ -39,7 +39,7 @@ export class ToastService {
 		toast.dismiss(toastId);
 	}
 
-	private static showToast(
+	public static showToast(
 		message: ToastMessage,
 		options: ToastOptions = {},
 		alertType: ToastType = ToastType.INFO
