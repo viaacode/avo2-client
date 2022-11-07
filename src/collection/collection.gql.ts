@@ -54,10 +54,7 @@ export const DELETE_COLLECTION_FRAGMENT = gql`
 `;
 
 export const INSERT_COLLECTION_FRAGMENTS = gql`
-	mutation insertCollectionFragment(
-		$id: Int!
-		$fragments: [app_collection_fragments_insert_input!]!
-	) {
+	mutation insertCollectionFragment($fragments: [app_collection_fragments_insert_input!]!) {
 		insert_app_collection_fragments(objects: $fragments) {
 			affected_rows
 			returning {

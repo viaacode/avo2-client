@@ -325,7 +325,7 @@ export const reorderFragments = (
 export const getFragmentsFromCollection = (
 	collection: Partial<Avo.Collection.Collection> | null | undefined
 ): Avo.Collection.Fragment[] => {
-	return sortBy(get(collection, 'collection_fragments') || [], ['position']);
+	return sortBy(collection?.collection_fragments || [], ['position']);
 };
 
 /**
