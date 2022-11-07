@@ -322,69 +322,65 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			case 'is_public':
 				return get(rowData, 'is_public') ? 'Ja' : 'Nee';
 
-			case 'labels':
-				return (() => {
-					const labels = rowData[columnId];
+			case 'labels': {
+				const labels = rowData[columnId];
 
-					if (!labels || !labels.length) {
-						return '-';
-					}
+				if (!labels || !labels.length) {
+					return '-';
+				}
 
-					return (
-						<TagList
-							tags={labels.map(
-								(labelObj: LabelObj): TagOption => ({
-									label: labelObj.label,
-									id: labelObj.id,
-								})
-							)}
-							swatches={false}
-						/>
-					);
-				})();
+				return (
+					<TagList
+						tags={labels.map(
+							(labelObj: LabelObj): TagOption => ({
+								label: labelObj.label,
+								id: labelObj.id,
+							})
+						)}
+						swatches={false}
+					/>
+				);
+			}
 
-			case 'user_group_ids':
-				return (() => {
-					const userGroupIds = rowData[columnId];
-					if (!userGroupIds || !userGroupIds.length) {
-						return '-';
-					}
-					return (
-						<TagList
-							tags={compact(
-								userGroupIds.map((userGroupId: number): TagOption | null => {
-									const userGroup = userGroups.find(
-										(userGroup) => userGroup.id === userGroupId
-									);
-									if (!userGroup) {
-										return null;
-									}
-									if (userGroup.id === SpecialPermissionGroups.loggedInUsers) {
-										return {
-											label: t(
-												'admin/content/views/content-overview___ingelogd'
-											),
-											id: userGroup.id as number,
-										};
-									}
-									if (userGroup.id === SpecialPermissionGroups.loggedOutUsers) {
-										return {
-											label: t(
-												'admin/content/views/content-overview___niet-ingelogd'
-											),
-											id: userGroup.id as number,
-										};
-									}
+			case 'user_group_ids': {
+				const userGroupIds = rowData[columnId];
+				if (!userGroupIds || !userGroupIds.length) {
+					return '-';
+				}
+				return (
+					<TagList
+						tags={compact(
+							userGroupIds.map((userGroupId: number): TagOption | null => {
+								const userGroup = userGroups.find(
+									(userGroup) => userGroup.id === userGroupId
+								);
+								if (!userGroup) {
+									return null;
+								}
+								if (userGroup.id === SpecialPermissionGroups.loggedInUsers) {
 									return {
-										label: userGroup.label as string,
+										label: t('admin/content/views/content-overview___ingelogd'),
 										id: userGroup.id as number,
 									};
-								})
-							)}
-							swatches={false}
-						/>
-					);
-				})();
+								}
+								if (userGroup.id === SpecialPermissionGroups.loggedOutUsers) {
+									return {
+										label: t(
+											'admin/content/views/content-overview___niet-ingelogd'
+										),
+										id: userGroup.id as number,
+									};
+								}
+								return {
+									label: userGroup.label as string,
+									id: userGroup.id as number,
+								};
+							})
+						)}
+						swatches={false}
+					/>
+				);
+			}
 
 			case 'published_at':
 			case 'publish_at':

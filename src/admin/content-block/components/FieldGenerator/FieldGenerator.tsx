@@ -120,125 +120,122 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 		};
 
 		switch ((fieldOrFieldGroupInstance as ContentBlockFieldGroup).type) {
-			case 'fieldGroup':
-				return (() => {
-					const fieldGroup: ContentBlockFieldGroup =
-						fieldOrFieldGroupInstance as ContentBlockFieldGroup;
+			case 'fieldGroup': {
+				const fieldGroup: ContentBlockFieldGroup =
+					fieldOrFieldGroupInstance as ContentBlockFieldGroup;
 
-					if (!fieldGroup) {
-						return null;
-					}
+				if (!fieldGroup) {
+					return null;
+				}
 
-					if (fieldGroup.repeat) {
-						return (
-							<>
-								{currentState.map(
-									(fieldGroupState: any, fieldGroupStateIndex: number) =>
-										renderFieldGroups(fieldGroupState, fieldGroupStateIndex)
-								)}
-								{(!fieldGroup.max || currentState.length < fieldGroup.max) && (
-									<Spacer margin="top">
-										<Flex center>
-											{renderAddButton(
-												currentState,
-												get(fieldGroup, 'repeat.defaultState'),
-												get(fieldGroup, 'repeat.addButtonLabel')
-											)}
-										</Flex>
-									</Spacer>
-								)}
-							</>
-						);
-					}
-
-					// FIELDGROUP
+				if (fieldGroup.repeat) {
 					return (
-						<Fragment key={stateIndex}>
-							{renderFieldGroups(currentState, stateIndex)}
-						</Fragment>
-					);
-				})();
-			case 'field':
-			default:
-				return (() => {
-					const field: ContentBlockField = fieldOrFieldGroupInstance as ContentBlockField;
-					const EditorComponent = (EDITOR_TYPES_MAP as any)[
-						(field as ContentBlockField).editorType
-					];
-
-					// REPEATED FIELD
-					if (field.repeat) {
-						return (
-							<>
-								{currentState.map((innerState: any, index: number) => {
-									const editorProps: any = generateFieldAttributes(
-										field as ContentBlockField,
-										(value: any, key?: string) => {
-											handleStateChange(index, value, key);
-										},
-										innerState as any,
-										`${fieldKey}-${index}`,
-										fieldKey,
-										currentState
-									);
-
-									return (
-										<Spacer margin="top" key={`${fieldKey}-${index}`}>
-											<Flex justify="between" center orientation="vertical">
-												<FlexItem>
-													<FormGroup
-														label={`${field.label} ${index + 1}`}
-													>
-														<Spacer margin="top-small">
-															<EditorComponent {...editorProps} />
-														</Spacer>
-													</FormGroup>
-												</FlexItem>
-												{currentState.length > 1 && (
-													<Spacer margin="left">
-														{renderDeleteButton(
-															currentState,
-															get(field, 'repeat.deleteButtonLabel'),
-															index
-														)}
-													</Spacer>
-												)}
-											</Flex>
-										</Spacer>
-									);
-								})}
+						<>
+							{currentState.map(
+								(fieldGroupState: any, fieldGroupStateIndex: number) =>
+									renderFieldGroups(fieldGroupState, fieldGroupStateIndex)
+							)}
+							{(!fieldGroup.max || currentState.length < fieldGroup.max) && (
 								<Spacer margin="top">
 									<Flex center>
 										{renderAddButton(
 											currentState,
-											get(field, 'repeat.defaultState'),
-											get(field, 'repeat.addButtonLabel')
+											get(fieldGroup, 'repeat.defaultState'),
+											get(fieldGroup, 'repeat.addButtonLabel')
 										)}
 									</Flex>
 								</Spacer>
-							</>
-						);
-					}
-
-					// FIELD
-					const defaultProps = {
-						...field.editorProps,
-						editorId: fieldId,
-						name: fieldId,
-					};
-
-					const editorProps: any = generateFieldAttributes(
-						field,
-						(value: any, key?: string) =>
-							handleChange(type, key || fieldKey, value, stateIndex),
-						(state as any)[fieldKey],
-						fieldId,
-						fieldKey,
-						state
+							)}
+						</>
 					);
+				}
 
-					return <EditorComponent {...defaultProps} {...editorProps} />;
-				})();
+				// FIELDGROUP
+				return (
+					<Fragment key={stateIndex}>
+						{renderFieldGroups(currentState, stateIndex)}
+					</Fragment>
+				);
+			}
+
+			case 'field':
+			default: {
+				const field: ContentBlockField = fieldOrFieldGroupInstance as ContentBlockField;
+				const EditorComponent = (EDITOR_TYPES_MAP as any)[
+					(field as ContentBlockField).editorType
+				];
+
+				// REPEATED FIELD
+				if (field.repeat) {
+					return (
+						<>
+							{currentState.map((innerState: any, index: number) => {
+								const editorProps: any = generateFieldAttributes(
+									field as ContentBlockField,
+									(value: any, key?: string) => {
+										handleStateChange(index, value, key);
+									},
+									innerState as any,
+									`${fieldKey}-${index}`,
+									fieldKey,
+									currentState
+								);
+
+								return (
+									<Spacer margin="top" key={`${fieldKey}-${index}`}>
+										<Flex justify="between" center orientation="vertical">
+											<FlexItem>
+												<FormGroup label={`${field.label} ${index + 1}`}>
+													<Spacer margin="top-small">
+														<EditorComponent {...editorProps} />
+													</Spacer>
+												</FormGroup>
+											</FlexItem>
+											{currentState.length > 1 && (
+												<Spacer margin="left">
+													{renderDeleteButton(
+														currentState,
+														get(field, 'repeat.deleteButtonLabel'),
+														index
+													)}
+												</Spacer>
+											)}
+										</Flex>
+									</Spacer>
+								);
+							})}
+							<Spacer margin="top">
+								<Flex center>
+									{renderAddButton(
+										currentState,
+										get(field, 'repeat.defaultState'),
+										get(field, 'repeat.addButtonLabel')
+									)}
+								</Flex>
+							</Spacer>
+						</>
+					);
+				}
+
+				// FIELD
+				const defaultProps = {
+					...field.editorProps,
+					editorId: fieldId,
+					name: fieldId,
+				};
+
+				const editorProps: any = generateFieldAttributes(
+					field,
+					(value: any, key?: string) =>
+						handleChange(type, key || fieldKey, value, stateIndex),
+					(state as any)[fieldKey],
+					fieldId,
+					fieldKey,
+					state
+				);
+
+				return <EditorComponent {...defaultProps} {...editorProps} />;
+			}
 		}
 	};
 

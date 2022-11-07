@@ -357,25 +357,24 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 												/>
 											);
 
-										case 'MultiEducationalOrganisationSelectModal':
-											return (() => {
-												const orgs: string[] = (tableState as any)[col.id];
-												const orgObjs: ClientEducationOrganization[] =
-													eduOrgToClientOrg(orgs);
+										case 'MultiEducationalOrganisationSelectModal': {
+											const orgs: string[] = (tableState as any)[col.id];
+											const orgObjs: ClientEducationOrganization[] =
+												eduOrgToClientOrg(orgs);
 
-												return (
-													<MultiEducationalOrganisationSelectModal
-														{...(col.filterProps || {})}
-														id={col.id}
-														label={col.label || ''}
-														values={orgObjs}
-														onChange={(value) =>
-															handleTableStateChanged(value, col.id)
-														}
-														key={`filter-${col.id}`}
-													/>
-												);
-											})();
+											return (
+												<MultiEducationalOrganisationSelectModal
+													{...(col.filterProps || {})}
+													id={col.id}
+													label={col.label || ''}
+													values={orgObjs}
+													onChange={(value) =>
+														handleTableStateChanged(value, col.id)
+													}
+													key={`filter-${col.id}`}
+												/>
+											);
+										}
 
 										default:
 											return null;

@@ -207,19 +207,18 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			case 'updated_at':
 				return rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
 
-			case 'link_to':
-				return (() => {
-					const linkTo = rowData.link_to;
-					if (!linkTo) {
-						return '-';
-					}
-					const labels = GET_CONTENT_TYPE_LABELS();
-					return (
-						<SmartLink action={linkTo} removeStyles={false}>{`${
-							labels[linkTo.type]
-						} - ${linkTo.label}`}</SmartLink>
-					);
-				})();
+			case 'link_to': {
+				const linkTo = rowData.link_to;
+				if (!linkTo) {
+					return '-';
+				}
+				const labels = GET_CONTENT_TYPE_LABELS();
+				return (
+					<SmartLink action={linkTo} removeStyles={false}>{`${labels[linkTo.type]} - ${
+						linkTo.label
+					}`}</SmartLink>
+				);
+			}
 
 			case 'actions':
 				return (
