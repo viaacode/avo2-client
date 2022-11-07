@@ -22,7 +22,6 @@ import { useTranslation } from 'react-i18next';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { CheckboxDropdownModal } from '../../shared/components';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -55,7 +54,6 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
 	const [marcomLink, setMarcomLink] = useState<string>('');
 	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
-	const [selectedChannelTypes, setSelectedChannelTypes] = useState<string[]>([]);
 
 	const fetchMarcomEntries = useCallback(async () => {
 		try {
@@ -237,12 +235,6 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	};
 
 	const getEmptyMarcomTableMessage = () => {
-		if (selectedChannelTypes?.length) {
-			// With filters
-			return t(
-				'collection/components/collection-or-bundle-edit-marcom___er-zijn-geen-marcom-entries-die-voldoen-aan-de-geselecteerde-filters'
-			);
-		}
 		if (isCollection) {
 			// Collection
 			// Without filters
@@ -258,11 +250,6 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 		}
 	};
 
-	const channelTypeOptions = GET_MARCOM_CHANNEL_TYPE_OPTIONS().map((option) => ({
-		id: option.value,
-		label: option.label,
-		checked: selectedChannelTypes.includes(option.value),
-	}));
 	return (
 		<>
 			<Container mode="vertical">
@@ -345,26 +332,8 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</BlockHeading>
 							{marcomEntries ? (
 								<>
-									<CheckboxDropdownModal
-										label={t(
-											'collection/components/collection-or-bundle-edit-marcom___communicatie-type'
-										)}
-										id="communication_type"
-										options={channelTypeOptions}
-										onChange={(selected) => {
-											setSelectedChannelTypes(selected);
-										}}
-									/>
 									<Table
-										data={
-											selectedChannelTypes?.length
-												? marcomEntries.filter((entry) =>
-														selectedChannelTypes.includes(
-															entry.channel_type || ''
-														)
-												  )
-												: marcomEntries
-										}
+										data={marcomEntries}
 										columns={GET_MARCOM_ENTRY_TABLE_COLUMNS(isCollection)}
 										renderCell={renderMarcomTableCell as any}
 										emptyStateMessage={getEmptyMarcomTableMessage()}

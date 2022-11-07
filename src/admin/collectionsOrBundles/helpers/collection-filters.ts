@@ -226,6 +226,7 @@ export function generateCollectionWhereObject(
 
 	// Marcom filters
 	const marcomFilters = filters as CollectionOrBundleMarcomTableState;
+
 	if (marcomFilters?.marcom_last_communication_channel_name?.length) {
 		andFilters.push({
 			_or: [
@@ -240,6 +241,19 @@ export function generateCollectionWhereObject(
 			],
 		});
 	}
+
+	if (marcomFilters?.marcom_last_communication_channel_type?.length) {
+		andFilters.push({
+			_or: [
+				{
+					channel_type: {
+						_in: marcomFilters.marcom_last_communication_channel_type,
+					},
+				},
+			],
+		});
+	}
+
 	andFilters.push(...getBooleanFilters(filters, ['marcom_klascement'], ['klascement']));
 
 	return andFilters;

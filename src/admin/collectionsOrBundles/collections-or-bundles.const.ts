@@ -476,11 +476,18 @@ const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
-const getMarcomLastCommunicationChannelTypeColumn = (): FilterableColumn => ({
+const getMarcomLastCommunicationChannelTypeColumn = (
+	channelTypeOptions: CheckboxOption[]
+): FilterableColumn => ({
 	id: 'marcom_last_communication_channel_type',
 	label: i18n.t(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-type'
 	),
+	filterType: 'CheckboxDropdownModal',
+	filterProps: {
+		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___communicatietype'),
+		options: channelTypeOptions,
+	},
 	sortable: true,
 	visibleByDefault: true,
 });
@@ -626,7 +633,8 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	channelNameOptions: CheckboxOption[],
 	subjects: string[],
 	educationLevels: string[],
-	organisations: CheckboxOption[]
+	organisations: CheckboxOption[],
+	channelTypeOptions: CheckboxOption[]
 ) => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
@@ -634,7 +642,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getMarcomLastUpdatedByColumn(),
 	getCollectionCreatedAtColumn(),
 	getCollectionUpdatedAtColumn(),
-	getMarcomLastCommunicationChannelTypeColumn(),
+	getMarcomLastCommunicationChannelTypeColumn(channelTypeOptions),
 	getMarcomLastCommunicationChannelNameColumn(channelNameOptions),
 	getMarcomLastCommunicationAtColumn(),
 	getCollectionIsPublicColumn(),
