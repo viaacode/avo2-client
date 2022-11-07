@@ -46,9 +46,11 @@ export default class ResizablePanels extends Component<ResizablePanelsProps, Res
 	componentDidMount() {
 		this.setState({ ...this.state, panelsSize: this.props.panelsSize });
 
+		/* eslint-disable react/no-find-dom-node */
 		(ReactDOM.findDOMNode(this) as any).addEventListener('mousemove', this.executeResize);
 		(ReactDOM.findDOMNode(this) as any).addEventListener('mouseup', this.stopResize);
 		(ReactDOM.findDOMNode(this) as any).addEventListener('mouseleave', this.stopResize);
+		/* eslint-enable react/no-find-dom-node */
 	}
 
 	render() {

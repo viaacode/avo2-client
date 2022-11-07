@@ -10,6 +10,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { noop } from 'lodash';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -40,7 +41,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	maxLength,
 	cancelLabel = i18n.t('shared/components/input-modal/input-modal___annuleer'),
 	confirmLabel = i18n.t('shared/components/input-modal/input-modal___opslaan'),
-	onClose = () => {},
+	onClose = noop,
 	emptyMessage = i18n.t(
 		'shared/components/input-modal/input-modal___gelieve-een-waarde-in-te-vullen'
 	),
@@ -112,7 +113,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 								<Button
 									type="primary"
 									label={confirmLabel}
-									onClick={isInputTooLong() ? () => {} : onClickConfirm}
+									onClick={isInputTooLong() ? noop : onClickConfirm}
 									disabled={isInputTooLong()}
 								/>
 							</ButtonToolbar>

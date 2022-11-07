@@ -140,34 +140,30 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			const generateWhereObject = (filters: Partial<ContentTableState>) => {
 				const andFilters: any[] = [];
 				andFilters.push(
-					...getQueryFilter(
-						filters.query,
-						// @ts-ignore
-						(queryWildcard: string) => [
-							{ title: { _ilike: queryWildcard } },
-							{ title: { _ilike: queryWildcard } },
-							{ path: { _ilike: queryWildcard } },
-							{
-								owner: {
-									full_name: { _ilike: queryWildcard },
-								},
+					...getQueryFilter(filters.query, (queryWildcard: string) => [
+						{ title: { _ilike: queryWildcard } },
+						{ title: { _ilike: queryWildcard } },
+						{ path: { _ilike: queryWildcard } },
+						{
+							owner: {
+								full_name: { _ilike: queryWildcard },
 							},
-							{
-								owner: {
-									group_name: { _ilike: queryWildcard },
-								},
+						},
+						{
+							owner: {
+								group_name: { _ilike: queryWildcard },
 							},
-							{
-								content_content_labels: {
-									content_label: {
-										label: {
-											_ilike: queryWildcard,
-										},
+						},
+						{
+							content_content_labels: {
+								content_label: {
+									label: {
+										_ilike: queryWildcard,
 									},
 								},
 							},
-						]
-					)
+						},
+					])
 				);
 				andFilters.push(...getBooleanFilters(filters, ['is_public']));
 				andFilters.push(
@@ -326,11 +322,13 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			case 'is_public':
 				return get(rowData, 'is_public') ? 'Ja' : 'Nee';
 
-			case 'labels':
+			case 'labels': {
 				const labels = rowData[columnId];
+
 				if (!labels || !labels.length) {
 					return '-';
 				}
+
 				return (
 					<TagList
 						tags={labels.map(
@@ -342,8 +340,9 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						swatches={false}
 					/>
 				);
+			}
 
-			case 'user_group_ids':
+			case 'user_group_ids': {
 				const userGroupIds = rowData[columnId];
 				if (!userGroupIds || !userGroupIds.length) {
 					return '-';
@@ -381,6 +380,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 						swatches={false}
 					/>
 				);
+			}
 
 			case 'published_at':
 			case 'publish_at':

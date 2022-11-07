@@ -3,7 +3,7 @@ query getAssignmentsByOwner(
 	$offset: Int = 0
 	$limit: Int
 	$order: [app_assignments_v2_order_by!]! = [{ deadline_at: desc }]
-	$filter: [app_assignments_v2_bool_exp]
+	$filter: [app_assignments_v2_bool_exp!]
 ) {
 	app_assignments_v2(
 		where: {

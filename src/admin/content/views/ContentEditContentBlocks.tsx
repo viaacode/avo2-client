@@ -69,8 +69,8 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 			);
 			ToastService.danger(
 				t(
-					'Het toevoegen van de content block is mislukt. Configuratie niet gevonden voor ' +
-						configType
+					'admin/content/views/content-edit-content-blocks___het-toevoegen-van-de-content-block-is-mislukt-configuratie-niet-gevonden-voor-config-type',
+					{ configType }
 				)
 			);
 			return;

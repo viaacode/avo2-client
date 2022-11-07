@@ -62,8 +62,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 		closeModal();
 	};
 
-	// @ts-ignore
-	const deleteAllSelectedOrganisations = (tagId: string | number, clickEvent: MouseEvent) => {
+	const deleteAllSelectedOrganisations = (_tagId: string | number, clickEvent: MouseEvent) => {
 		setSelectedOrganisations([]);
 		onChange([], id);
 		clickEvent.stopPropagation();

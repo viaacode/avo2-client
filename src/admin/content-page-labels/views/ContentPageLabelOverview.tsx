@@ -207,7 +207,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 			case 'updated_at':
 				return rowData[columnId] ? formatDate(rowData[columnId] as string) : '-';
 
-			case 'link_to':
+			case 'link_to': {
 				const linkTo = rowData.link_to;
 				if (!linkTo) {
 					return '-';
@@ -218,6 +218,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 						linkTo.label
 					}`}</SmartLink>
 				);
+			}
 
 			case 'actions':
 				return (

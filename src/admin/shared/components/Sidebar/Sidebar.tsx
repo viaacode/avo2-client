@@ -59,8 +59,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 				<NavLink
 					className={classnames('o-sidebar__nav-item')}
 					activeClassName="o-sidebar__nav-item--active"
-					// @ts-ignore
-					isActive={(match, location) => isActiveClass(navItem, location)}
+					isActive={(_match, location) => isActiveClass(navItem, location)}
 					to={navItem.location || '/'}
 				>
 					{navItem.label}

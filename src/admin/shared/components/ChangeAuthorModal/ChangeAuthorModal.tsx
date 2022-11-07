@@ -8,6 +8,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { noop } from 'lodash';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +23,7 @@ interface ChangeAuthorModalProps {
 }
 
 const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
-	onClose = () => {},
+	onClose = noop,
 	isOpen,
 	initialAuthor,
 	callback,

@@ -275,10 +275,9 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 		);
 		switch (columnId) {
 			case 'title':
-				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
 				return (
 					<Link to={editLink}>
-						<span>{title}</span>
+						<span>{truncate((rowData as any)[columnId] || '-', { length: 50 })}</span>
 						{!!get(rowData, 'relations[0].object') && (
 							<a
 								href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {

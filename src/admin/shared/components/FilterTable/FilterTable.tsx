@@ -357,10 +357,11 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 												/>
 											);
 
-										case 'MultiEducationalOrganisationSelectModal':
+										case 'MultiEducationalOrganisationSelectModal': {
 											const orgs: string[] = (tableState as any)[col.id];
 											const orgObjs: ClientEducationOrganization[] =
 												eduOrgToClientOrg(orgs);
+
 											return (
 												<MultiEducationalOrganisationSelectModal
 													{...(col.filterProps || {})}
@@ -373,6 +374,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 													key={`filter-${col.id}`}
 												/>
 											);
+										}
 
 										default:
 											return null;
@@ -491,6 +493,7 @@ export function getFilters(tableState: any | undefined) {
 		return tableState;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { page, sort_column, sort_order, ...filters } = tableState;
 
 	return cleanupObject(filters);

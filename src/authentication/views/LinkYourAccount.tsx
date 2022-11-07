@@ -5,10 +5,10 @@ import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import Html from '../../shared/components/Html/Html';
 import { navigate } from '../../shared/helpers';
 
 import './LinkYourAccount.scss';
-import Html from '../../shared/components/Html/Html';
 
 const LinkYourAccount: FunctionComponent<RouteComponentProps> = ({ history }) => {
 	const [t] = useTranslation();

@@ -3,9 +3,9 @@ import { sortBy } from 'lodash-es';
 import React, { FC, Fragment, ReactNode, useMemo } from 'react';
 
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
+import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 
 import './ListSorter.scss';
-import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 
 // Types
 

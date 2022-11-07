@@ -1,6 +1,6 @@
 query getItemBookmarksForUser(
 	$profileId: uuid!
-	$filter: [app_item_bookmarks_bool_exp]
+	$filter: [app_item_bookmarks_bool_exp!]
 	$order: [app_item_bookmarks_order_by!]! = [{ created_at: desc }]
 ) {
 	app_item_bookmarks(

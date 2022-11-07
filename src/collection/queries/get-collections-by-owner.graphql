@@ -4,7 +4,7 @@ query getCollectionsByOwner(
 	$offset: Int = 0
 	$limit: Int
 	$order: [app_collections_order_by!] = { updated_at: desc }
-	$where: [app_collections_bool_exp] = []
+	$where: [app_collections_bool_exp!] = []
 ) {
 	app_collections(
 		where: {

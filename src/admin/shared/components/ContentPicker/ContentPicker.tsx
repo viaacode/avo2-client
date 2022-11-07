@@ -12,6 +12,7 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 import ReactSelect from 'react-select';
 import AsyncSelect from 'react-select/async';
+// eslint-disable-next-line import/namespace
 import { ActionMeta, ValueType } from 'react-select/src/types';
 
 import { FileUpload } from '../../../../shared/components';

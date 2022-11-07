@@ -1,4 +1,5 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
+import { noop } from 'lodash';
 import React, { FunctionComponent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -13,7 +14,7 @@ export interface PupilOrTeacherDropdownProps {
 
 const PupilOrTeacherDropdown: FunctionComponent<
 	PupilOrTeacherDropdownProps & RouteComponentProps
-> = ({ history, closeDropdown = () => {} }) => {
+> = ({ history, closeDropdown = noop }) => {
 	const [t] = useTranslation();
 
 	return (

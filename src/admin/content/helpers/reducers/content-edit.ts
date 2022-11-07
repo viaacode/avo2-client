@@ -1,4 +1,4 @@
-import produce, { Draft } from 'immer';
+import immer, { Draft } from 'immer';
 import { cloneDeep, isEqual, isNil } from 'lodash-es';
 import moment from 'moment';
 
@@ -134,7 +134,7 @@ const repositionConfigs = (updatedConfigs: ContentBlockConfig[]) => {
 };
 
 // Reducer
-export const contentEditReducer = produce(
+export const contentEditReducer = immer(
 	(draft: Draft<ContentPageEditState>, action: ContentEditAction) => {
 		// Because we use immer, we have to mutate the draft state in place for it to work properly
 		// We don't have to return anything because our produce() will automagically do that for us
@@ -168,7 +168,7 @@ export const contentEditReducer = produce(
 				repositionConfigs(draft.currentContentPageInfo.contentBlockConfigs);
 				return;
 
-			case ContentEditActionType.REORDER_CONTENT_BLOCK_CONFIG:
+			case ContentEditActionType.REORDER_CONTENT_BLOCK_CONFIG: {
 				const reorderContentBlockConfig = action as ReorderContentBlockConfig;
 				const newIndex =
 					reorderContentBlockConfig.payload.configIndex +
@@ -187,8 +187,9 @@ export const contentEditReducer = produce(
 				// Reposition
 				repositionConfigs(draft.currentContentPageInfo.contentBlockConfigs);
 				return;
+			}
 
-			case ContentEditActionType.ADD_COMPONENTS_STATE:
+			case ContentEditActionType.ADD_COMPONENTS_STATE: {
 				const addComponentsState = action as AddComponentsState;
 				config =
 					draft.currentContentPageInfo.contentBlockConfigs[
@@ -200,8 +201,9 @@ export const contentEditReducer = produce(
 						.formGroupState as RepeatedContentBlockComponentState[])
 				);
 				return;
+			}
 
-			case ContentEditActionType.REMOVE_COMPONENTS_STATE:
+			case ContentEditActionType.REMOVE_COMPONENTS_STATE: {
 				const removeComponentsState = action as RemoveComponentsState;
 				config =
 					draft.currentContentPageInfo.contentBlockConfigs[
@@ -213,8 +215,9 @@ export const contentEditReducer = produce(
 					1
 				);
 				return;
+			}
 
-			case ContentEditActionType.SET_COMPONENTS_STATE:
+			case ContentEditActionType.SET_COMPONENTS_STATE: {
 				const setComponentsState = action as SetComponentsState;
 				config =
 					draft.currentContentPageInfo.contentBlockConfigs[
@@ -238,15 +241,17 @@ export const contentEditReducer = produce(
 					};
 				}
 				return;
+			}
 
-			case ContentEditActionType.SET_BLOCK_STATE:
+			case ContentEditActionType.SET_BLOCK_STATE: {
 				const setBlockState = action as SetBlockState;
 				const { block } =
 					draft.currentContentPageInfo.contentBlockConfigs[setBlockState.payload.index];
 				block.state = { ...block.state, ...setBlockState.payload.formGroupState };
 				return;
+			}
 
-			case ContentEditActionType.SET_CONTENT_BLOCK_ERROR:
+			case ContentEditActionType.SET_CONTENT_BLOCK_ERROR: {
 				const setContentBlockError = action as SetContentBlockError;
 				if (
 					!isEqual(
@@ -261,6 +266,7 @@ export const contentEditReducer = produce(
 					].errors = setContentBlockError.payload.errors;
 				}
 				return;
+			}
 
 			default:
 				// We don't actually need the default case, produce() will simply return the

@@ -17,13 +17,15 @@ import { redirectToClientPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading, selectUser } from '../store/selectors';
 
-export interface DefaultSecureRouteProps<T = {}> extends RouteComponentProps<T> {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export interface DefaultSecureRouteProps<T extends { [K in keyof T]?: string } = {}>
+	extends RouteComponentProps<T> {
 	// technically this type is incorrect, it should be Avo.User.User | undefined
 	// But practically it's always Avo.User.User where we need a user and this avoids a shit ton of IF checks
 	user: Avo.User.User;
 }
 
-export interface SecuredRouteProps extends DefaultSecureRouteProps {
+export interface SecuredRouteProps extends DefaultSecureRouteProps<any> {
 	component: ComponentType<any>;
 	exact?: boolean;
 	getLoginState: () => Dispatch;

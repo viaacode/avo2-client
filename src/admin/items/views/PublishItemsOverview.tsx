@@ -38,14 +38,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const generateWhereObject = useCallback((filters: Partial<UnpublishedItemsTableState>) => {
 		const andFilters: any[] = [];
 		andFilters.push(
-			...getQueryFilter(
-				filters.query,
-				// @ts-ignore
-				(queryWildcard: string, query: string) => [
-					{ pid: { _eq: query } },
-					{ title: { _ilike: queryWildcard } },
-				]
-			)
+			...getQueryFilter(filters.query, (queryWildcard: string, query: string) => [
+				{ pid: { _eq: query } },
+				{ title: { _ilike: queryWildcard } },
+			])
 		);
 		andFilters.push(...getDateRangeFilters(filters, ['updated_at']));
 
@@ -238,9 +234,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				}
 				return t('admin/items/views/publish-items-overview___nieuw');
 
-			case 'actions':
+			case 'actions': {
 				const itemExternalId: string | undefined = get(rowData, 'item_meta.external_id');
 				const itemUid: string | undefined = get(rowData, 'item_meta.uid');
+
 				if (itemExternalId) {
 					return (
 						<ButtonToolbar>
@@ -269,7 +266,9 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 						</ButtonToolbar>
 					);
 				}
+
 				return null;
+			}
 
 			default:
 				return truncate((rowData as any)[columnId] || '-', { length: 60 });

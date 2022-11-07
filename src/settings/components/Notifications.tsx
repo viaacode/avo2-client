@@ -4,9 +4,7 @@ import MetaTags from 'react-meta-tags';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
 
-export interface NotificationsProps {}
-
-const Notifications: FunctionComponent<NotificationsProps> = () => {
+const Notifications: FunctionComponent = () => {
 	const [t] = useTranslation();
 
 	return (
