@@ -25,7 +25,6 @@ import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
-import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
 
@@ -67,6 +66,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
 
 	const [triggeredForUrl, setTriggeredForUrl] = useState<Record<string, boolean>>({});
+	const triggeredForUrlRef = React.useRef(triggeredForUrl);
+	const setTriggeredForUrlRef = (data: Record<string, boolean>) => {
+		triggeredForUrlRef.current = data;
+		setTriggeredForUrl(data);
+	};
+
 	const [clickedThumbnail, setClickedThumbnail] = useState<boolean>(false);
 	const [src, setSrc] = useState<string | FlowplayerSourceList | undefined>(props.src);
 
@@ -107,17 +112,8 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	}, [props.autoplay, item, initFlowPlayer]);
 
 	const handlePlay = (playingSrc: string) => {
-		trackEvents(
-			{
-				object: props.external_id || '',
-				object_type: 'item',
-				action: 'play',
-			},
-			props.user
-		);
-
 		// Only trigger once per video
-		if (item && item.uid && !triggeredForUrl[playingSrc]) {
+		if (item && item.uid && !triggeredForUrlRef.current[playingSrc]) {
 			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch((err) => {
 				console.error(
 					new CustomError('Failed to track item play event', err, { itemUuid: item.uid })
@@ -127,8 +123,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			if (props.onPlay) {
 				props.onPlay(playingSrc);
 			}
-
-			setTriggeredForUrl({
+			setTriggeredForUrlRef({
 				...triggeredForUrl,
 				[playingSrc]: true,
 			});
