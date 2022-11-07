@@ -68,7 +68,22 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					configType
 			);
 			ToastService.danger(
-				t('admin/content/views/content-edit-content-blocks___het-toevoegen-van-de-content-block-is-mislukt-configuratie-niet-gevonden-voor-config-type-return-update-content-block-configs-change-content-page-state-type-content-edit-action-type-add-content-block-config-payload-new-config-scroll-preview-and-sidebar-to-the-bottom-focus-block-new-config-position-preview');
+				t(
+					'admin/content/views/content-edit-content-blocks___het-toevoegen-van-de-content-block-is-mislukt-configuratie-niet-gevonden-voor-config-type',
+					{ configType }
+				)
+			);
+			return;
+		}
+
+		// Update content block configs
+		changeContentPageState({
+			type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,
+			payload: newConfig,
+		});
+
+		// Scroll preview and sidebar to the bottom
+		focusBlock(newConfig.position, 'preview');
 		focusBlock(newConfig.position, 'sidebar');
 	};
 

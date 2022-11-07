@@ -609,7 +609,7 @@
   "admin/content/views/content-detail___titel": "Titel:",
   "admin/content/views/content-detail___toegankelijk-voor": "Toegankelijk voor:",
   "admin/content/views/content-detail___verwijderen": "Verwijderen",
-  "admin/content/views/content-edit-content-blocks___het-toevoegen-van-de-content-block-is-mislukt-configuratie-niet-gevonden-voor-config-type-return-update-content-block-configs-change-content-page-state-type-content-edit-action-type-add-content-block-config-payload-new-config-scroll-preview-and-sidebar-to-the-bottom-focus-block-new-config-position-preview": "Het toevoegen van de content block is mislukt. Configuratie niet gevonden voor ' +\n configType\n )\n );\n return;\n\t\t}\n\n\t\t// Update content block configs\n\t\tchangeContentPageState({\n type: ContentEditActionType.ADD_CONTENT_BLOCK_CONFIG,\n payload: newConfig,\n\t\t});\n\n\t\t// Scroll preview and sidebar to the bottom\n\t\tfocusBlock(newConfig.position, 'preview",
+  "admin/content/views/content-edit-content-blocks___het-toevoegen-van-de-content-block-is-mislukt-configuratie-niet-gevonden-voor-config-type": "Het toevoegen van de content block is mislukt. Configuratie niet gevonden voor {{configType}}",
   "admin/content/views/content-edit-content-blocks___voeg-een-content-blok-toe": "Voeg een contentblock toe",
   "admin/content/views/content-edit___annuleer": "Annuleer",
   "admin/content/views/content-edit___content-aanpassen": "Content aanpassen",
