@@ -1,6 +1,5 @@
-import { get, sortBy } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { get, sortBy } from 'lodash-es';
 
 import { CustomError } from '../helpers';
 
