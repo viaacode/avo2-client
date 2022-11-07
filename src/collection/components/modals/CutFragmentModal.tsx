@@ -157,10 +157,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		>
 			<ModalBody>
 				<FlowPlayerWrapper
-					item={{
-						...itemMetaData,
-						thumbnail_path: fragment.thumbnail_path || itemMetaData.thumbnail_path,
-					}}
+					item={itemMetaData}
 					external_id={itemMetaData.external_id}
 					duration={itemMetaData.duration}
 					title={itemMetaData.title}
