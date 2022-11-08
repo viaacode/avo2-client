@@ -161,7 +161,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					external_id={itemMetaData.external_id}
 					duration={itemMetaData.duration}
 					title={itemMetaData.title}
-					cuePoints={{
+					cuePointsLabel={{
 						start: fragmentStartTime,
 						end: fragmentEndTime,
 					}}

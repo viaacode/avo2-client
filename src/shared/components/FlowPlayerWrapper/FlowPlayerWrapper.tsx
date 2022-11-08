@@ -49,7 +49,8 @@ export type FlowPlayerWrapperProps = {
 	annotationTitle?: string;
 	annotationText?: string;
 	canPlay?: boolean;
-	cuePoints?: CuePoints;
+	cuePointsVideo?: CuePoints;
+	cuePointsLabel?: CuePoints;
 	autoplay?: boolean;
 	onPlay?: (playingSrc: string) => void;
 	onEnded?: () => void;
@@ -223,8 +224,8 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	};
 
 	const [start, end]: [number | null, number | null] = getValidStartAndEnd(
-		props.cuePoints?.start,
-		props.cuePoints?.end,
+		props.cuePointsVideo?.start,
+		props.cuePointsVideo?.end,
 		toSeconds(item?.duration)
 	);
 

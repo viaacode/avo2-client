@@ -900,7 +900,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							}
 							onPlay={trackOnPlay}
 							verticalLayout={isMobileWidth()}
-							cuePoints={{
+							cuePointsVideo={{
+								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
+								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
+							}}
+							cuePointsLabel={{
 								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
 								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
 							}}

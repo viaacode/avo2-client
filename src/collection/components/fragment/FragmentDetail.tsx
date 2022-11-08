@@ -74,7 +74,11 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 				'description'
 			)}
 			titleLink={getTitleLink()}
-			cuePoints={{
+			cuePointsVideo={{
+				start: collectionFragment.start_oc,
+				end: collectionFragment.end_oc,
+			}}
+			cuePointsLabel={{
 				start: collectionFragment.start_oc,
 				end: collectionFragment.end_oc,
 			}}
