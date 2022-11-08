@@ -197,9 +197,7 @@ const ItemVideoDescription: FunctionComponent<
 		<Grid className="c-item-video-description">
 			{showDescription ? (
 				<>
-					<Column size={verticalLayout ? '2-12' : '2-7'} className="c-video-column">
-						{renderMedia()}
-					</Column>
+					<Column size={verticalLayout ? '2-12' : '2-7'}>{renderMedia()}</Column>
 					<Column size={verticalLayout ? '2-12' : '2-5'}>
 						<Spacer margin={verticalLayout ? ['top'] : []}>
 							<div ref={descriptionRef}>{renderDescriptionWrapper()}</div>

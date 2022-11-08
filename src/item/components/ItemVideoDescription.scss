@@ -25,9 +25,13 @@
 	}
 
 	@media (max-width: $g-bp2) {
-		.c-video-column {
+		.o-grid-col-bp2-7 {
 			margin-left: 0;
 			margin-right: 0;
+
+			+ .o-grid-col-bp2-5 {
+				margin-top: $g-spacer-unit * 2;
+			}
 		}
 
 		.c-item-view__main .c-video-player {
