@@ -12,7 +12,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { compact, get, isNil, omit, sortBy } from 'lodash-es';
+import { compact, isNil, omit, sortBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Trans } from 'react-i18next';
 
