@@ -1,0 +1,107 @@
+@import '../../../styles/settings/variables';
+@import '../../../styles/components/input';
+
+.p-admin__user-group-overview {
+	margin: 0 auto;
+
+	.c-input.c-input--md {
+		padding: 0;
+		border: 0;
+		margin: 0;
+		position: relative;
+
+		.c-input__field {
+			@include textfield-transition;
+			@include textfield-focus;
+			border-radius: $c-input-border-radius;
+			background-color: $c-input-bg-color;
+			border: 1px solid $c-input-border-color;
+			font-size: inherit;
+			height: 3.6rem;
+			padding: $c-input-padding;
+			width: 100%;
+			appearance: none;
+		}
+
+		.c-input__icon {
+			position: absolute;
+			right: 0;
+			top: 0;
+			height: 100%;
+			display: flex;
+			flex-direction: row;
+
+			.c-button {
+				pointer-events: auto;
+				height: 100%;
+				display: block;
+				background: transparent;
+				border: 0;
+			}
+		}
+	}
+
+	&.c-input--icon--double {
+		.c-input__field {
+			padding-left: 4rem;
+		}
+	}
+
+	.c-table {
+		width: 100%;
+		border-collapse: separate;
+		margin-bottom: $g-spacer-unit * 4;
+
+		thead {
+			position: -webkit-sticky; /* Safari */
+			position: sticky;
+			top: 0;
+			background-color: white;
+			height: 20rem;
+			z-index: 2;
+
+			th {
+				border-bottom: 1px solid $color-gray-100;
+			}
+		}
+
+		th:not(:first-child) span {
+			position: absolute;
+			bottom: 0;
+			white-space: nowrap;
+			text-align: left;
+			overflow: visible;
+			transform: translate(0, -4rem) rotate(-45deg);
+			width: 100%;
+		}
+
+		tr:nth-child(even) {
+			background-color: $color-gray-25;
+		}
+
+		tbody tr:hover {
+			background-color: $color-gray-50;
+		}
+
+		th:first-child,
+		td:first-child {
+			width: 25%;
+		}
+
+		th:not(:first-child),
+		td:not(:first-child) {
+			overflow: visible;
+			text-align: left;
+			position: relative;
+
+			.c-checkbox {
+				margin: 0 auto;
+				display: block;
+			}
+		}
+
+		.c-checkbox__input {
+			margin-top: 0.3rem;
+		}
+	}
+}
