@@ -11,6 +11,8 @@
 		position: relative;
 
 		.c-input__field {
+			@include textfield-transition;
+			@include textfield-focus;
 			border-radius: $c-input-border-radius;
 			background-color: $c-input-bg-color;
 			border: 1px solid $c-input-border-color;
@@ -19,8 +21,6 @@
 			padding: $c-input-padding;
 			width: 100%;
 			appearance: none;
-			@include textfield-transition;
-			@include textfield-focus;
 		}
 
 		.c-input__icon {

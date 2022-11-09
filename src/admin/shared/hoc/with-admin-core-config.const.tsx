@@ -148,12 +148,16 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			toastService: {
 				showToast: (toastInfo: ToastInfo) => {
 					ToastService.showToast(
-						<>
-							<div>
-								<b>{toastInfo.title}</b>
-							</div>
-							<div>{toastInfo.description}</div>
-						</>,
+						<div
+							role="dialog"
+							aria-labelledby="toastTitle"
+							aria-describedby="toastDescription"
+						>
+							<b aria-describedby="toastDescription" id="toastTitle">
+								{toastInfo.title}
+							</b>
+							<p id="toastDescription">{toastInfo.description}</p>
+						</div>,
 						{},
 						toastInfo.type
 					);
