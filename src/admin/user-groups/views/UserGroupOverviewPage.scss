@@ -90,7 +90,6 @@
 
 		th:not(:first-child),
 		td:not(:first-child) {
-			width: calc(75% / 13);
 			overflow: visible;
 			text-align: left;
 			position: relative;
