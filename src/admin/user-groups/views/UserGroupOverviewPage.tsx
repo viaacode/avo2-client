@@ -1,22 +1,24 @@
 import { UserGroupOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@meemoo/react-components';
-import { Icon } from '@viaa/avo2-components';
-import React, { FunctionComponent, useRef } from 'react';
+import { Icon, Toolbar, ToolbarRight } from '@viaa/avo2-components';
+import React, { FunctionComponent, useRef, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/use-translation/use-translation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
-import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { UserGroupOverviewRef } from '../../shared/services/user-groups/user-groups.types';
 
 import './UserGroupOverviewPage.scss';
 
 const UserGroupGroupOverviewPage: FunctionComponent = () => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Access child functions
 	const permissionsRef = useRef<UserGroupOverviewRef>();
+
+	const [hasChanges, setHasChanges] = useState<boolean>(false);
 
 	const renderSearchButtons = (search?: string) => {
 		return (
@@ -43,8 +45,40 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 		);
 	};
 
+	const renderActionButtons = () => {
+		return (
+			<>
+				<Button
+					variants="tertiary"
+					onClick={() => permissionsRef.current?.onCancel()}
+					label={tHtml('pages/admin/gebruikersbeheer/permissies/index___annuleren')}
+				/>
+				<Button
+					variants="primary"
+					onClick={() => permissionsRef.current?.onSave()}
+					label={tHtml(
+						'pages/admin/gebruikersbeheer/permissies/index___wijzigingen-opslaan'
+					)}
+				/>
+			</>
+		);
+	};
+
 	const renderPageContent = () => {
-		return <UserGroupOverview renderSearchButtons={renderSearchButtons} ref={permissionsRef} />;
+		return (
+			<>
+				<UserGroupOverview
+					renderSearchButtons={renderSearchButtons}
+					ref={permissionsRef}
+					onChangePermissions={(value) => setHasChanges(value)}
+				/>
+				{hasChanges && (
+					<Toolbar>
+						<ToolbarRight>{renderActionButtons()}</ToolbarRight>
+					</Toolbar>
+				)}
+			</>
+		);
 	};
 
 	return (
@@ -55,6 +89,9 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 			size="full-width"
 			className="p-admin__user-group-overview"
 		>
+			<AdminLayoutTopBarRight>
+				{hasChanges && <>{renderActionButtons()}</>}
+			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
