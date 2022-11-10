@@ -121,7 +121,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			id: option.value,
 			label: option.label,
 			checked: (tableState?.marcom_last_communication_channel_name || []).includes(
-				String(option.value)
+				option.value
 			),
 		}));
 		return [
@@ -137,6 +137,19 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			...options,
 		];
 	}, [GET_MARCOM_CHANNEL_TYPE_OPTIONS, tableState]);
+
+	const channelTypeOptions = useMemo(
+		() => [
+			...GET_MARCOM_CHANNEL_TYPE_OPTIONS().map((option) => ({
+				id: option.value,
+				label: option.label,
+				checked: (tableState?.marcom_last_communication_channel_type || []).includes(
+					option.value
+				),
+			})),
+		],
+		[GET_MARCOM_CHANNEL_TYPE_OPTIONS, tableState]
+	);
 
 	const organisationOptions = useMemo(
 		() => [
@@ -168,7 +181,8 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				channelNameOptions,
 				subjects,
 				educationLevels,
-				organisationOptions
+				organisationOptions,
+				channelTypeOptions
 			),
 		[collectionLabelOptions, educationLevels, subjects, userGroupOptions, organisationOptions]
 	);
