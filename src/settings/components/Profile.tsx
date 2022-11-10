@@ -660,9 +660,9 @@ const Profile: FunctionComponent<
 			}
 
 			case 'temp_access': {
-				const tempAccess = get(profile, 'user.temp_access');
+				const tempAccess = profile?.user?.temp_access;
 
-				return tempAccess
+				return tempAccess && tempAccess.current?.status === 1
 					? `${t('settings/components/profile___van')} ${formatDate(
 							get(tempAccess, 'from')
 					  )} ${t('settings/components/profile___tot')} ${formatDate(
