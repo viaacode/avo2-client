@@ -111,7 +111,7 @@ export class ContentPageService {
 			try {
 				responseContent = await response.json();
 			} catch (err) {
-				console.log(err);
+				// error is handled below
 			}
 			if (response.status < 200 || response.status >= 400) {
 				throw new CustomError(
