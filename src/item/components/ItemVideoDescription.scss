@@ -7,21 +7,26 @@
 	}
 
 	.c-button-toolbar .c-button {
-		margin-bottom: 0.8rem;
+		margin-bottom: $g-spacer-unit;
 
 		&:not(:last-child) {
-			margin-right: 0.8rem;
+			margin-right: $g-spacer-unit;
 		}
 	}
 
 	.c-toolbar__left {
-		flex-grow: 1;
-		max-width: 100%;
-		padding-right: 0.8rem;
+		display: block;
+
+		// Reset flex for title
+		flex: unset;
+		align-items: unset;
+		justify-content: unset;
 	}
 
 	.c-toolbar__right {
-		flex-shrink: 1;
+		.c-button {
+			margin-left: $g-spacer-unit;
+		}
 	}
 
 	@media (max-width: $g-bp2) {
