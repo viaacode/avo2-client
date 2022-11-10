@@ -1,4 +1,4 @@
-import { ContentPageOverview } from '@meemoo/admin-core-ui';
+import { CONTENT_PAGE_PATH, ContentPageOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,6 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { CONTENT_PAGE_PATH } from '../content-page.const';
 
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
@@ -60,6 +59,7 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ h
 						)}
 					/>
 				</MetaTags>
+				Banaan
 				{renderPageContent()}
 			</AdminLayoutBody>
 		</AdminLayout>

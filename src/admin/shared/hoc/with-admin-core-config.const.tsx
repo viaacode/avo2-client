@@ -5,6 +5,7 @@ import {
 	ContentBlockType,
 	LinkInfo,
 	ToastInfo,
+	ROUTE_PARTS,
 } from '@meemoo/admin-core-ui';
 import { Icon, IconName, IconProps, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -27,6 +28,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
 		return <Link {...linkInfo} />;
 	};
+
 	const commonUser: CommonUser = {
 		uid: user?.uid,
 		profileId: user?.profile?.id as string,
@@ -45,6 +47,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		permissions: user?.profile?.permissions as any[],
 	};
+
 	return {
 		navigation: {
 			service: navigationService,
