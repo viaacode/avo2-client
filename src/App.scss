@@ -6,6 +6,12 @@
 	}
 }
 
+// Prevent the modal container from exceeding the viewport
+.c-modal-context {
+	max-height: 100vh;
+	max-width: 100vw;
+}
+
 .hide-zendesk-widget iframe#launcher {
 	display: none !important;
 }
