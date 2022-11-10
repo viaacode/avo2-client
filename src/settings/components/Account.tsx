@@ -40,6 +40,8 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 
 	const hasTempAccess = get(user, 'temp_access.current.status') === 1;
 
+	console.info({ hasTempAccess, user });
+
 	if (!user) {
 		return (
 			<Flex center>

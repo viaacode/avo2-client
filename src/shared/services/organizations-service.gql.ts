@@ -49,6 +49,9 @@ export const GET_USERS_IN_COMPANY = gql`
 				temp_access {
 					from
 					until
+					current {
+						status
+					}
 				}
 			}
 			profile_user_group {
