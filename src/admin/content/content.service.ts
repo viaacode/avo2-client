@@ -6,6 +6,7 @@ import { CustomError, performQuery, sanitizeHtml } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
 import { ApolloCacheManager, dataService, ToastService } from '../../shared/services';
+import { ContentPageService } from '../../shared/services/content-page-service';
 import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ContentBlockService } from '../content-block/services/content-block.service';
@@ -525,7 +526,9 @@ export class ContentService {
 		profileId: string
 	): Promise<Partial<ContentPageInfo> | null> {
 		try {
-			const duplicate = { ...contentPageInfo };
+			const duplicate = await ContentPageService.duplicateContentPageImages(
+				contentPageInfo.id
+			);
 
 			// update attributes specific to duplicate
 			duplicate.thumbnail_path = null; // https://meemoo.atlassian.net/browse/AVO-1841
