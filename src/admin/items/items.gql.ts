@@ -360,6 +360,11 @@ export const REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS = gql`
 		) {
 			affected_rows
 		}
+		delete_app_item_bookmarks(
+			where: { item_id: { _eq: $oldItemUid }, profile_id: { _in: $usersWithBothBookmarks } }
+		) {
+			affected_rows
+		}
 		update_app_assignment_blocks_v2(
 			where: { fragment_id: { _eq: $oldItemExternalId }, type: { _eq: "ITEM" } }
 			_set: { fragment_id: $newItemExternalId }
