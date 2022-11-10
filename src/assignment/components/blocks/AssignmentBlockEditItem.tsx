@@ -86,7 +86,11 @@ export const AssignmentBlockEditItem: FC<
 							external_id={item.external_id}
 							duration={item.duration}
 							title={item.title}
-							cuePoints={{
+							cuePointsVideo={{
+								start: editableBlock.start_oc,
+								end: editableBlock.end_oc,
+							}}
+							cuePointsLabel={{
 								start: editableBlock.start_oc,
 								end: editableBlock.end_oc,
 							}}
