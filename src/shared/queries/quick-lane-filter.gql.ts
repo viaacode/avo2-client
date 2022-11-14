@@ -7,7 +7,7 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 		$createdAtLte: timestamptz
 		$updatedAtGte: timestamptz
 		$updatedAtLte: timestamptz
-		$filters: [app_quick_lanes_bool_exp]
+		$filters: [app_quick_lanes_bool_exp!]
 		$orderBy: [app_quick_lanes_order_by!]
 		$limit: Int = 100
 		$offset: Int = 0
@@ -28,8 +28,6 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 							}
 						]
 					}
-					{ created_at: { _gte: $createdAtGte, _lte: $createdAtLte } }
-					{ updated_at: { _gte: $updatedAtGte, _lte: $updatedAtLte } }
 					{ _and: $filters }
 				]
 			}
@@ -74,8 +72,6 @@ export const GET_QUICK_LANE_WITH_FILTERS = gql`
 							}
 						]
 					}
-					{ created_at: { _gte: $createdAtGte, _lte: $createdAtLte } }
-					{ updated_at: { _gte: $updatedAtGte, _lte: $updatedAtLte } }
 					{ _and: $filters }
 				]
 			}

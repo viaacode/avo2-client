@@ -31,6 +31,49 @@ const asISO = (str?: string) => {
 	return str && str.length > 0 ? new Date(str).toISOString() : undefined;
 };
 
+const constructTimestampFilters = (params: QuickLaneFilters) => {
+	const iso = {
+		cGte: asISO(params.createdAt?.gte),
+		cLte: asISO(params.createdAt?.lte),
+		uGte: asISO(params.updatedAt?.gte),
+		uLte: asISO(params.updatedAt?.lte),
+	};
+
+	const hasCreatedAtFilter = iso.cGte || iso.cLte;
+	const hasUpdatedAtFilter = iso.uGte || iso.uLte;
+
+	const hasAnyTimestampFilter = hasCreatedAtFilter || hasUpdatedAtFilter;
+
+	if (!hasAnyTimestampFilter) {
+		return null;
+	}
+
+	return {
+		_and: [
+			...(hasCreatedAtFilter
+				? [
+						{
+							created_at: {
+								...(iso.cGte ? { _gte: iso.cGte } : {}),
+								...(iso.cLte ? { _lte: iso.cLte } : {}),
+							},
+						},
+				  ]
+				: []),
+			...(hasUpdatedAtFilter
+				? [
+						{
+							updated_at: {
+								...(iso.uGte ? { _gte: iso.uGte } : {}),
+								...(iso.uLte ? { _lte: iso.uLte } : {}),
+							},
+						},
+				  ]
+				: []),
+		],
+	};
+};
+
 export class QuickLaneFilterService {
 	static async fetchFilteredQuickLanes(params?: QuickLaneFilters) {
 		try {
@@ -38,10 +81,6 @@ export class QuickLaneFilterService {
 				limit: params?.limit,
 				offset: params?.offset,
 				filterString: `%${params?.filterString ?? ''}%`,
-				createdAtGte: asISO(params?.createdAt?.gte),
-				createdAtLte: asISO(params?.createdAt?.lte),
-				updatedAtGte: asISO(params?.updatedAt?.gte),
-				updatedAtLte: asISO(params?.updatedAt?.lte),
 				filters: [
 					{
 						_or: params?.profileIds?.map((id) => {
@@ -68,6 +107,13 @@ export class QuickLaneFilterService {
 						  })
 						: undefined,
 			};
+
+			const timestampFilters = params && constructTimestampFilters(params);
+
+			if (timestampFilters) {
+				// Circumvent const typing
+				variables.filters.push(timestampFilters as any);
+			}
 
 			const response: ApolloQueryResult<QuickLaneQueryResponse> = await dataService.query({
 				variables,
