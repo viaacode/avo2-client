@@ -380,16 +380,17 @@ export const REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS = gql`
 	}
 `;
 
-export const GET_USERS_WITH_BOTH_BOOKMARKS = gql`
+export const GET_USERS_WITH_EITHER_BOOKMARK = gql`
 	query getUserWithBothBookmarks($oldItemUid: uuid!, $newItemUid: uuid!) {
 		users_profiles(
-			where: {
-				item_bookmarks: {
-					_or: [{ item_id: { _eq: $oldItemUid } }, { item_id: { _eq: $newItemUid } }]
-				}
-			}
+			where: { item_bookmarks: { item_id: { _in: [$oldItemUid, $newItemUid] } } }
 		) {
 			id
+			item_bookmarks_aggregate(where: { item_id: { _in: [$oldItemUid, $newItemUid] } }) {
+				aggregate {
+					count
+				}
+			}
 		}
 	}
 `;

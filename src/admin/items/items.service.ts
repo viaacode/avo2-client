@@ -25,7 +25,7 @@ import {
 	GET_PUBLIC_ITEMS_BY_TITLE_OR_EXTERNAL_ID,
 	GET_UNPUBLISHED_ITEM_PIDS,
 	GET_UNPUBLISHED_ITEMS_WITH_FILTERS,
-	GET_USERS_WITH_BOTH_BOOKMARKS,
+	GET_USERS_WITH_EITHER_BOOKMARK,
 	REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
 	UPDATE_ITEM_DEPUBLISH_REASON,
 	UPDATE_ITEM_NOTES,
@@ -487,7 +487,7 @@ export class ItemsService {
 			const usersWithBothBookmarks = (
 				(await performQuery(
 					{
-						query: GET_USERS_WITH_BOTH_BOOKMARKS,
+						query: GET_USERS_WITH_EITHER_BOOKMARK,
 						variables: {
 							oldItemUid,
 							newItemUid,
@@ -495,8 +495,16 @@ export class ItemsService {
 					},
 					'data.users_profiles',
 					'Failed while checking users with both bookmarks.'
-				)) as Pick<Avo.User.Profile, 'id'>[]
-			).map((profile) => profile.id);
+				)) as (Pick<Avo.User.Profile, 'id'> & {
+					item_bookmarks_aggregate: {
+						aggregate: {
+							count: number;
+						};
+					};
+				})[]
+			)
+				.filter((result) => result.item_bookmarks_aggregate.aggregate.count >= 2)
+				.map((profile) => profile.id);
 
 			const response = await dataService.mutate({
 				mutation: REPLACE_ITEM_IN_COLLECTIONS_BOOKMARKS_AND_ASSIGNMENTS,
