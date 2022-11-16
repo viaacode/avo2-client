@@ -43,7 +43,8 @@ interface ItemVideoDescriptionProps {
 	description?: string | null;
 	src?: string;
 	poster?: string;
-	cuePoints?: CuePoints;
+	cuePointsVideo?: CuePoints;
+	cuePointsLabel?: CuePoints;
 	canPlay?: boolean; // If video is behind modal or inside a closed modal this value will be false
 	renderButtons?: (itemMetaData: Avo.Item.Item) => ReactNode;
 	verticalLayout?: boolean;
@@ -64,7 +65,8 @@ const ItemVideoDescription: FunctionComponent<
 	description = itemMetaData.description,
 	src,
 	poster,
-	cuePoints,
+	cuePointsVideo,
+	cuePointsLabel,
 	canPlay = true,
 	renderButtons = () => null,
 	verticalLayout = false,
@@ -107,7 +109,8 @@ const ItemVideoDescription: FunctionComponent<
 				poster={poster}
 				item={itemMetaData}
 				canPlay={canPlay}
-				cuePoints={cuePoints}
+				cuePointsVideo={cuePointsVideo}
+				cuePointsLabel={cuePointsLabel}
 				onPlay={onPlay}
 				external_id={itemMetaData.external_id}
 				duration={itemMetaData.duration}
@@ -197,9 +200,7 @@ const ItemVideoDescription: FunctionComponent<
 		<Grid className="c-item-video-description">
 			{showDescription ? (
 				<>
-					<Column size={verticalLayout ? '2-12' : '2-7'} className="c-video-column">
-						{renderMedia()}
-					</Column>
+					<Column size={verticalLayout ? '2-12' : '2-7'}>{renderMedia()}</Column>
 					<Column size={verticalLayout ? '2-12' : '2-5'}>
 						<Spacer margin={verticalLayout ? ['top'] : []}>
 							<div ref={descriptionRef}>{renderDescriptionWrapper()}</div>

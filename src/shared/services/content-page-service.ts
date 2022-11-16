@@ -48,6 +48,42 @@ export class ContentPageService {
 		}
 	}
 
+	public static async duplicateContentPageImages(id: number): Promise<ContentPageInfo> {
+		try {
+			const response = await fetchWithLogout(
+				`${getEnv('PROXY_URL')}/content-pages/duplicate?${queryString.stringify({
+					id,
+				})}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				}
+			);
+			let responseContent: any;
+			try {
+				responseContent = await response.json();
+			} catch (err) {
+				// Ignore failed json parsing => will be handled by the status code not being between 200 and 400
+			}
+			if (response.status < 200 || response.status >= 400) {
+				throw new CustomError('Failed to get content page from /content-pages', null, {
+					id,
+					response,
+					responseContent,
+				});
+			}
+			if (responseContent.error) {
+				return responseContent.error;
+			}
+			return convertToContentPageInfo(responseContent);
+		} catch (err) {
+			throw new CustomError('Failed to get content page by path', err);
+		}
+	}
+
 	/**
 	 * Check if content page with path already exists
 	 * @param path The path to identify the content page including the leading slash. eg: /over

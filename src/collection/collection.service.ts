@@ -248,7 +248,7 @@ export class CollectionService {
 
 			// Fragments to insert do not have an id yet
 			const newFragments = getFragmentsFromCollection(newCollection).filter(
-				(fragment) => fragment.id < 0 || isNil(fragment.id)
+				(fragment) => fragment.id < 0 || Object.is(fragment.id, -0) || isNil(fragment.id)
 			);
 
 			// delete fragments that were removed from collection
@@ -995,13 +995,13 @@ export class CollectionService {
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			fragments.forEach((fragment) => (fragment.collection_uuid = collectionId));
-
 			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
 				delete (fragment as any).__typename;
 				delete fragment.item_meta;
+
 				return {
 					...fragment,
+					collection_uuid: collectionId,
 					id: undefined,
 				};
 			});

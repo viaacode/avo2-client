@@ -289,9 +289,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 										case 'CheckboxDropdownModal':
 											return (
 												<CheckboxDropdownModal
+													label={col.label}
 													{...(col.filterProps || {})}
 													id={col.id}
-													label={col.label}
 													onChange={(value) =>
 														handleTableStateChanged(value, col.id)
 													}

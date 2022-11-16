@@ -239,11 +239,9 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 						emptyStateMessage={
 							filterString
 								? t(
-										'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
+										'workspace/assignments/create___er-zijn-geen-bladwijzers-die-voldoen-aan-de-zoekopdracht'
 								  )
-								: t(
-										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
-								  )
+								: t('workspace/assignments/create___geen-bladwijzers-aangemaakt')
 						}
 						renderCell={(rowData: BookmarkInfo, colKey: string) =>
 							renderCell(rowData, colKey as AddBookmarkFragmentColumn)

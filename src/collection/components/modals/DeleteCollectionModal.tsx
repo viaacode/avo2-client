@@ -19,14 +19,14 @@ interface DeleteCollectionModalProps {
 
 const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	isOpen,
-	onClose,
+	onClose = noop,
 	deleteObjectCallback,
 }) => {
 	const [t] = useTranslation();
 
 	const handleDelete = async () => {
 		deleteObjectCallback();
-		(onClose || noop)();
+		onClose();
 	};
 
 	const renderConfirmButtons = () => {
@@ -56,6 +56,20 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 		);
 	};
 
+	const renderDeleteMessage = () => {
+		return (
+			<p>
+				{t(
+					'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
+				)}
+				<br />
+				{t(
+					'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden'
+				)}
+			</p>
+		);
+	};
+
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -68,15 +82,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 			className="c-content"
 		>
 			<ModalBody>
-				<p>
-					{t(
-						'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
-					)}
-					<br />
-					{t(
-						'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden'
-					)}
-				</p>
+				{renderDeleteMessage()}
 				{renderConfirmButtons()}
 			</ModalBody>
 		</Modal>

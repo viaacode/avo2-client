@@ -6,4 +6,21 @@
 	.c-media-card {
 		margin-bottom: 2.4rem;
 	}
+	
+	.c-toolbar {
+		margin-bottom: $g-spacer-unit * 2;
+
+		@media screen and (max-width: ($g-bp2 - 1px)) {
+			// https://meemoo.atlassian.net/browse/AVO-2246
+			// This code prevents long text from overstepping the container
+			// and is critical to ensure the navigation and popups display correctly
+			// but don't ask me why or how...
+			flex-direction: column;
+			align-items: flex-start;
+
+			&__left {
+				margin-bottom: $g-spacer-unit;
+			}
+		}
+	}
 }

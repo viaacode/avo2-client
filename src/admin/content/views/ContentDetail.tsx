@@ -163,29 +163,36 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	}, [contentPageInfo, setLoadingInfo]);
 
 	const handleDelete = async () => {
+		setIsConfirmModalOpen(false);
+
+		if (contentPageInfo === null) {
+			ToastService.danger(
+				t(
+					'admin/content/views/content-detail___er-is-niet-voldoende-informatie-beschikbaar-om-het-content-item-te-verwijderen'
+				)
+			);
+
+			return;
+		}
+
 		try {
-			setIsConfirmModalOpen(false);
-			if (!contentPageInfo) {
-				ToastService.danger(
-					t(
-						'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
-					)
-				);
-				return;
-			}
 			await ContentService.deleteContentPage(contentPageInfo);
 
-			history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
 			ToastService.success(
 				t('admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd')
 			);
+
+			history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
 		} catch (err) {
 			console.error(err);
+
 			ToastService.danger(
 				t(
 					'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
 				)
 			);
+
+			return;
 		}
 	};
 

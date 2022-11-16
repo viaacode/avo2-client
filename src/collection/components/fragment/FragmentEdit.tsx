@@ -417,7 +417,11 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 										external_id={itemMetaData.external_id}
 										duration={itemMetaData.duration}
 										title={itemMetaData.title}
-										cuePoints={{
+										cuePointsVideo={{
+											start: fragment.start_oc,
+											end: fragment.end_oc,
+										}}
+										cuePointsLabel={{
 											start: fragment.start_oc,
 											end: fragment.end_oc,
 										}}

@@ -293,7 +293,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									showTitle
 									showDescription
 									canPlay={isOpen}
-									cuePoints={{ start, end }}
+									cuePointsLabel={{ start, end }}
 									verticalLayout={isMobileWidth()}
 								/>
 								<Grid>
