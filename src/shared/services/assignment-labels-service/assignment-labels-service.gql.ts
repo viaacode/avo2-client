@@ -1,9 +1,9 @@
 import { gql } from 'apollo-boost';
 
 export const GET_ASSIGNMENT_LABELS_BY_PROFILE_ID = gql`
-	query getAssignmentLabels($profileId: uuid!, $type: String) {
+	query getAssignmentLabels($profileId: uuid!, $filters: [app_assignment_labels_v2_bool_exp!]) {
 		app_assignment_labels_v2(
-			where: { owner_profile_id: { _eq: $profileId }, type: { _eq: $type } }
+			where: { _and: [{ owner_profile_id: { _eq: $profileId } }, { _and: $filters }] }
 			order_by: { label: asc }
 		) {
 			color_enum_value

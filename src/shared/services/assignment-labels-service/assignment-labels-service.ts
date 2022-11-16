@@ -26,7 +26,7 @@ export class AssignmentLabelsService {
 				query: GET_ASSIGNMENT_LABELS_BY_PROFILE_ID,
 				variables: {
 					profileId,
-					type,
+					filters: [...(type ? [{ type: { _eq: type } }] : [])],
 				},
 			});
 
