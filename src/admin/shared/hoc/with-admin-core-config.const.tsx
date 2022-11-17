@@ -5,7 +5,6 @@ import {
 	ContentBlockType,
 	LinkInfo,
 	ToastInfo,
-	ROUTE_PARTS,
 } from '@meemoo/admin-core-ui';
 import { Icon, IconName, IconProps, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
@@ -21,6 +20,7 @@ import { AssetsService } from '../../../shared/services/assets-service/assets.se
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { navigationService } from '../../navigation/services/navigation-service';
+import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
 import { PermissionsService } from '../services/permissions';
 import { UserGroupsService } from '../services/user-groups';
 
@@ -194,5 +194,6 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 		},
 		user: commonUser,
+		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
 	};
 }

@@ -10,6 +10,7 @@ import {
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ADMIN_CORE_ROUTE_PARTS } from '../../shared/constants/admin-core.routes';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 
@@ -39,7 +40,9 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ h
 						title={t(
 							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 						)}
-						onClick={() => history.push(CONTENT_PAGE_PATH.CREATE)}
+						onClick={() =>
+							history.push(CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).CREATE)
+						}
 					/>
 				)}
 			</AdminLayoutTopBarRight>
@@ -59,7 +62,6 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ h
 						)}
 					/>
 				</MetaTags>
-				Banaan
 				{renderPageContent()}
 			</AdminLayoutBody>
 		</AdminLayout>
