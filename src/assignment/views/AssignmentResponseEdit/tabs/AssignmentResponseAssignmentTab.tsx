@@ -1,9 +1,9 @@
 import React, { FunctionComponent, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { ErrorView } from '../../../../error/views';
 import { FilterState } from '../../../../search/search.types';
 import BlockList from '../../../../shared/components/BlockList/BlockList';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 import { Assignment_v2_With_Blocks, BaseBlockWithMeta } from '../../../assignment.types';
 
@@ -19,7 +19,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 	pastDeadline,
 	setTab,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// Render
 
@@ -27,7 +27,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 		if ((blocks?.length || 0) === 0) {
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud'
 					)}
 					icon="search"

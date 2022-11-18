@@ -2,12 +2,12 @@
  This script runs over all the code and looks for either:
  <Trans>Aanvraagformulier</Trans>
  or
- t('Aanvraagformulier')
+ tText('Aanvraagformulier')
 
  and replaces them with:
  <Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">Aanvraagformulier</Trans>
  or
- t('authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier')
+ tText('authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier')
 
 
  and it also outputs a json file with the translatable strings:
@@ -26,10 +26,11 @@
  */
 
 import * as fs from 'fs';
+import * as path from 'path';
+
 import glob from 'glob';
 import * as _ from 'lodash';
 import fetch from 'node-fetch';
-import * as path from 'path';
 
 import localTranslations from '../src/shared/translations/nl.json';
 
@@ -62,7 +63,7 @@ function getFormattedTranslation(translation: string) {
 	if (!translation) {
 		return translation;
 	}
-	return translation.trim().replace(/\t\t(\t)+/g, ' ');
+	return translation.trim().replace(/\t\tText(\t)+/g, ' ');
 }
 
 async function getFilesByGlob(globPattern: string): Promise<string[]> {
@@ -116,12 +117,12 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					if (hasKeyAlready) {
 						return match;
 					} else {
-						return `<Trans i18nKey="${formattedKey}">${formattedTranslation}</Trans>`;
+						return `{tHtml('${formattedKey}')}`;
 					}
 				}
 			);
 
-			// Replace t() functions ( including i18n.t() )
+			// Replace tText() functions ( including tText() )
 			const beforeTFunction = '([^a-zA-Z])';
 			const tFuncStart = 't\\(';
 			const whitespace = '\\s*';
@@ -166,8 +167,8 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					if ((translationParams || '').includes('(')) {
 						console.warn(
 							'WARNING: Translation params should not contain any function calls, ' +
-								'since the regex replacement cannot deal with brackets inside the t() function. ' +
-								'Store the translation params in a variable before calling the t() function.',
+								'since the regex replacement cannot deal with brackets inside the tText() function. ' +
+								'Store the translation params in a variable before calling the tText() function.',
 							{
 								match,
 								prefix,
@@ -190,7 +191,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					if (hasKeyAlready) {
 						return match;
 					} else {
-						return `${prefix}t('${formattedKey}'${translationParams || ''})`;
+						return `${prefix}tText('${formattedKey}'${translationParams || ''})`;
 					}
 				}
 			);

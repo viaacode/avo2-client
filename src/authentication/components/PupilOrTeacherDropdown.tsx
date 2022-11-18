@@ -1,11 +1,11 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { redirectToClientPage } from '../helpers/redirects';
 
 export interface PupilOrTeacherDropdownProps {
@@ -15,26 +15,24 @@ export interface PupilOrTeacherDropdownProps {
 const PupilOrTeacherDropdown: FunctionComponent<
 	PupilOrTeacherDropdownProps & RouteComponentProps
 > = ({ history, closeDropdown = noop }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	return (
 		<Container className="c-register-pupil-or-teacher-dropdown" mode="horizontal">
 			<Container mode="vertical">
 				<h4 className="c-h4">
-					<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___ben-je-lesgever">
-						Ben je lesgever?
-					</Trans>
+					{tHtml('authentication/components/pupil-or-teacher-dropdown___ben-je-lesgever')}
 				</h4>
 				<p>
-					<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-audiovisueel-lesmateriaal-maak-eigen-collecties">
-						Krijg toegang tot audiovisueel lesmateriaal, maak eigen collecties.
-					</Trans>
+					{tHtml(
+						'authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-audiovisueel-lesmateriaal-maak-eigen-collecties'
+					)}
 				</p>
 				<Spacer margin={['bottom-large', 'top-small']}>
 					<Button
 						block
 						type="primary"
-						label={t(
+						label={tText(
 							'authentication/components/pupil-or-teacher-dropdown___maak-je-gratis-account-aan'
 						)}
 						onClick={() => {
@@ -45,20 +43,20 @@ const PupilOrTeacherDropdown: FunctionComponent<
 				</Spacer>
 				<Spacer margin="top-large">
 					<h4 className="c-h4">
-						<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___ben-je-leerling-secundair">
-							Ben je leerling secundair?
-						</Trans>
+						{tHtml(
+							'authentication/components/pupil-or-teacher-dropdown___ben-je-leerling-secundair'
+						)}
 					</h4>
 					<p>
-						<Trans i18nKey="authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-opdrachten-klaargezet-door-jouw-leerkrachten">
-							Krijg toegang tot opdrachten klaargezet door jouw leerkrachten.
-						</Trans>
+						{tHtml(
+							'authentication/components/pupil-or-teacher-dropdown___krijg-toegang-tot-opdrachten-klaargezet-door-jouw-leerkrachten'
+						)}
 					</p>
 					<Spacer margin="top-small">
 						<Button
 							block
 							type="primary"
-							label={t(
+							label={tText(
 								'authentication/components/pupil-or-teacher-dropdown___toegang-voor-leerlingen'
 							)}
 							onClick={() => {

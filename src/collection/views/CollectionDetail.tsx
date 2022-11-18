@@ -20,7 +20,6 @@ import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -57,6 +56,7 @@ import {
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { isUuid } from '../../shared/helpers/uuid';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -114,7 +114,7 @@ type CollectionDetailProps = {
 const CollectionDetail: FunctionComponent<
 	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
 > = ({ history, location, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [collectionId, setCollectionId] = useState(id || match.params.id);
@@ -174,12 +174,12 @@ const CollectionDetail: FunctionComponent<
 			});
 
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/views/collection-detail___het-ophalen-van-de-gerelateerde-collecties-is-mislukt'
 				)
 			);
 		}
-	}, [setRelatedCollections, t, collectionId]);
+	}, [setRelatedCollections, tText, collectionId]);
 
 	/**
 	 * Get published bundles that contain this collection
@@ -197,12 +197,12 @@ const CollectionDetail: FunctionComponent<
 			});
 
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/views/collection-detail___het-ophalen-van-de-gepubliceerde-bundels-die-deze-collectie-bevatten-is-mislukt'
 				)
 			);
 		}
-	}, [setPublishedBundles, t, collectionId]);
+	}, [setPublishedBundles, tText, collectionId]);
 
 	const triggerEvents = useCallback(async () => {
 		// Do not trigger events when a search engine loads this page
@@ -228,13 +228,13 @@ const CollectionDetail: FunctionComponent<
 					})
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
 					)
 				);
 			}
 		}
-	}, [setPublishedBundles, t, collection?.id, user, showLoginPopup]);
+	}, [setPublishedBundles, tText, collection?.id, user, showLoginPopup]);
 
 	useEffect(() => {
 		setCollectionId(id || match.params.id);
@@ -333,7 +333,7 @@ const CollectionDetail: FunctionComponent<
 				if (!uuid) {
 					setLoadingInfo({
 						state: 'error',
-						message: t(
+						message: tText(
 							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 						),
 						icon: 'alert-triangle',
@@ -369,7 +369,7 @@ const CollectionDetail: FunctionComponent<
 			if (!collectionObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 					),
 					icon: 'search',
@@ -419,14 +419,14 @@ const CollectionDetail: FunctionComponent<
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
 				),
 				icon: 'alert-triangle',
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, setCollectionInfo, t, user, history, defaultGoToDetailLink]);
+	}, [collectionId, setCollectionInfo, tText, user, history, defaultGoToDetailLink]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
@@ -479,7 +479,7 @@ const CollectionDetail: FunctionComponent<
 				try {
 					if (!collection) {
 						ToastService.danger(
-							t(
+							tHtml(
 								'collection/views/collection-detail___de-collectie-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 							)
 						);
@@ -487,7 +487,7 @@ const CollectionDetail: FunctionComponent<
 					}
 					if (!user) {
 						ToastService.danger(
-							t(
+							tHtml(
 								'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 							)
 						);
@@ -512,7 +512,7 @@ const CollectionDetail: FunctionComponent<
 					defaultGoToDetailLink(history)(duplicateCollection.id, 'collectie');
 					setCollectionId(duplicateCollection.id);
 					ToastService.success(
-						t(
+						tHtml(
 							'collection/views/collection-detail___de-collectie-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
 						)
 					);
@@ -521,7 +521,7 @@ const CollectionDetail: FunctionComponent<
 						originalCollection: collection,
 					});
 					ToastService.danger(
-						t(
+						tHtml(
 							'collection/views/collection-detail___het-kopieren-van-de-collectie-is-mislukt'
 						)
 					);
@@ -577,7 +577,7 @@ const CollectionDetail: FunctionComponent<
 		try {
 			if (!user) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 					)
 				);
@@ -595,8 +595,8 @@ const CollectionDetail: FunctionComponent<
 			});
 			ToastService.success(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('collection/views/collection-detail___de-bladwijzer-is-verwijderd')
-					: t('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
+					? tHtml('collection/views/collection-detail___de-bladwijzer-is-verwijderd')
+					: tHtml('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {
 			console.error(
@@ -609,10 +609,10 @@ const CollectionDetail: FunctionComponent<
 			);
 			ToastService.danger(
 				bookmarkViewPlayCounts.isBookmarked
-					? t(
+					? tHtml(
 							'collection/views/collection-detail___het-verwijderen-van-de-bladwijzer-is-mislukt'
 					  )
-					: t(
+					: tHtml(
 							'collection/views/collection-detail___het-aanmaken-van-de-bladwijzer-is-mislukt'
 					  )
 			);
@@ -634,11 +634,11 @@ const CollectionDetail: FunctionComponent<
 
 			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
-				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
+				tHtml('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
 			);
 		} catch (err) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
 				)
 			);
@@ -711,13 +711,13 @@ const CollectionDetail: FunctionComponent<
 			);
 
 			ToastService.success(
-				t(
+				tHtml(
 					'collection/views/collection-detail___de-collectie-is-geimporteerd-naar-de-opdracht'
 				)
 			);
 		} else {
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/views/collection-detail___de-collectie-kon-niet-worden-geimporteerd-naar-de-opdracht'
 				)
 			);
@@ -732,7 +732,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.addToBundle,
-							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
+							tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
 							'plus'
 						),
 				  ]
@@ -741,7 +741,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
-							t('collection/views/collection-detail___delen-met-leerlingen'),
+							tText('collection/views/collection-detail___delen-met-leerlingen'),
 							'link-2'
 						),
 				  ]
@@ -750,7 +750,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.duplicate,
-							t('collection/views/collection-detail___dupliceer'),
+							tText('collection/views/collection-detail___dupliceer'),
 							'copy'
 						),
 				  ]
@@ -759,7 +759,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.delete,
-							t('collection/views/collection-detail___verwijder')
+							tText('collection/views/collection-detail___verwijder')
 						),
 				  ]
 				: []),
@@ -772,9 +772,11 @@ const CollectionDetail: FunctionComponent<
 				{permissions?.canAutoplayCollection && (
 					<Button
 						type="secondary"
-						label={t('collection/views/collection-detail___speel-de-collectie-af')}
-						title={t('collection/views/collection-detail___speel-de-collectie-af')}
-						ariaLabel={t('collection/views/collection-detail___speelt-de-collectie-af')}
+						label={tText('collection/views/collection-detail___speel-de-collectie-af')}
+						title={tText('collection/views/collection-detail___speel-de-collectie-af')}
+						ariaLabel={tText(
+							'collection/views/collection-detail___speelt-de-collectie-af'
+						)}
 						icon="play"
 						onClick={() =>
 							executeAction(COLLECTION_ACTIONS.openAutoplayCollectionModal)
@@ -783,7 +785,9 @@ const CollectionDetail: FunctionComponent<
 				)}
 				{permissions?.canCreateAssignments && (
 					<Dropdown
-						label={t('collection/views/collection-detail___importeer-naar-opdracht')}
+						label={tText(
+							'collection/views/collection-detail___importeer-naar-opdracht'
+						)}
 						isOpen={isCreateAssignmentDropdownOpen}
 						onClose={() => setIsCreateAssignmentDropdownOpen(false)}
 						onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
@@ -791,13 +795,13 @@ const CollectionDetail: FunctionComponent<
 						<MenuContent
 							menuItems={[
 								{
-									label: t(
+									label: tText(
 										'collection/views/collection-detail___nieuwe-opdracht'
 									),
 									id: COLLECTION_ACTIONS.createAssignment,
 								},
 								{
-									label: t(
+									label: tText(
 										'collection/views/collection-detail___bestaande-opdracht'
 									),
 									id: COLLECTION_ACTIONS.importToAssignment,
@@ -811,9 +815,11 @@ const CollectionDetail: FunctionComponent<
 					<Button
 						type="secondary"
 						icon="link-2"
-						label={t('item/views/item___delen-met-leerlingen')}
-						ariaLabel={t('collection/views/collection-detail___delen-met-leerlingen')}
-						title={t('collection/views/collection-detail___delen-met-leerlingen')}
+						label={tText('item/views/item___delen-met-leerlingen')}
+						ariaLabel={tText(
+							'collection/views/collection-detail___delen-met-leerlingen'
+						)}
+						title={tText('collection/views/collection-detail___delen-met-leerlingen')}
 						onClick={() => executeAction(COLLECTION_ACTIONS.openQuickLane)}
 					/>
 				)}
@@ -822,19 +828,19 @@ const CollectionDetail: FunctionComponent<
 						type="secondary"
 						title={
 							isPublic
-								? t(
+								? tText(
 										'collection/views/collection-detail___maak-deze-collectie-prive'
 								  )
-								: t(
+								: tText(
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
 						ariaLabel={
 							isPublic
-								? t(
+								? tText(
 										'collection/views/collection-detail___maak-deze-collectie-prive'
 								  )
-								: t(
+								: tText(
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
@@ -843,19 +849,19 @@ const CollectionDetail: FunctionComponent<
 					/>
 				)}
 				<ToggleButton
-					title={t('collection/views/collection-detail___bladwijzer')}
+					title={tText('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
 					icon="bookmark"
 					active={bookmarkViewPlayCounts.isBookmarked}
-					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
+					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction(COLLECTION_ACTIONS.toggleBookmark)}
 				/>
 				{isPublic && (
 					<Button
-						title={t('collection/views/collection-detail___deel')}
+						title={tText('collection/views/collection-detail___deel')}
 						type="secondary"
 						icon="share-2"
-						ariaLabel={t('collection/views/collection-detail___deel')}
+						ariaLabel={tText('collection/views/collection-detail___deel')}
 						onClick={() => executeAction(COLLECTION_ACTIONS.openShareThroughEmail)}
 					/>
 				)}
@@ -872,8 +878,10 @@ const CollectionDetail: FunctionComponent<
 						<Button
 							type="primary"
 							icon="edit"
-							label={t('collection/views/collection-detail___bewerken')}
-							title={t('collection/views/collection-detail___pas-deze-collectie-aan')}
+							label={tText('collection/views/collection-detail___bewerken')}
+							title={tText(
+								'collection/views/collection-detail___pas-deze-collectie-aan'
+							)}
 							onClick={() => executeAction(COLLECTION_ACTIONS.editCollection)}
 						/>
 					</Spacer>
@@ -889,7 +897,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.editCollection,
-							t('collection/views/collection-detail___bewerken'),
+							tText('collection/views/collection-detail___bewerken'),
 							'edit'
 						),
 				  ]
@@ -897,13 +905,13 @@ const CollectionDetail: FunctionComponent<
 			...(permissions?.canCreateAssignments
 				? [
 						{
-							label: t(
+							label: tText(
 								'collection/views/collection-detail___importeer-naar-nieuwe-opdracht'
 							),
 							id: COLLECTION_ACTIONS.createAssignment,
 						},
 						{
-							label: t(
+							label: tText(
 								'collection/views/collection-detail___importeer-naar-bestaande-opdracht'
 							),
 							id: COLLECTION_ACTIONS.importToAssignment,
@@ -914,7 +922,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openPublishCollectionModal,
-							t('collection/views/collection-detail___delen'),
+							tText('collection/views/collection-detail___delen'),
 							'plus'
 						),
 				  ]
@@ -922,15 +930,15 @@ const CollectionDetail: FunctionComponent<
 			createDropdownMenuItem(
 				COLLECTION_ACTIONS.toggleBookmark,
 				bookmarkViewPlayCounts.isBookmarked
-					? t('collection/views/collection-detail___verwijder-bladwijzer')
-					: t('collection/views/collection-detail___maak-bladwijzer'),
+					? tText('collection/views/collection-detail___verwijder-bladwijzer')
+					: tText('collection/views/collection-detail___maak-bladwijzer'),
 				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 			),
 			...(!!collection && collection.is_public
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openShareThroughEmail,
-							t('collection/views/collection-detail___deel'),
+							tText('collection/views/collection-detail___deel'),
 							'share-2'
 						),
 				  ]
@@ -939,7 +947,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.addToBundle,
-							t('collection/views/collection-detail___voeg-toe-aan-bundel'),
+							tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
 							'plus'
 						),
 				  ]
@@ -948,7 +956,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openQuickLane,
-							t('collection/views/collection-detail___delen-met-leerlingen'),
+							tText('collection/views/collection-detail___delen-met-leerlingen'),
 							'link-2'
 						),
 				  ]
@@ -957,7 +965,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.openAutoplayCollectionModal,
-							t('collection/views/collection-detail___speel-de-collectie-af'),
+							tText('collection/views/collection-detail___speel-de-collectie-af'),
 							'play'
 						),
 				  ]
@@ -966,7 +974,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.duplicate,
-							t('collection/views/collection-detail___dupliceer'),
+							tText('collection/views/collection-detail___dupliceer'),
 							'copy'
 						),
 				  ]
@@ -975,7 +983,7 @@ const CollectionDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							COLLECTION_ACTIONS.delete,
-							t('collection/views/collection-detail___verwijder')
+							tText('collection/views/collection-detail___verwijder')
 						),
 				  ]
 				: []),
@@ -1027,7 +1035,7 @@ const CollectionDetail: FunctionComponent<
 				<Container mode="vertical">
 					<Container mode="horizontal">
 						<h3 className="c-h3">
-							{t('collection/views/collection-detail___info-over-deze-collectie')}
+							{tText('collection/views/collection-detail___info-over-deze-collectie')}
 						</h3>
 						<Grid>
 							{!!collection &&
@@ -1040,13 +1048,11 @@ const CollectionDetail: FunctionComponent<
 								<Column size="3-6">
 									<Spacer margin="top-large">
 										<p className="u-text-bold">
-											<Trans i18nKey="collection/views/collection-detail___ordering">
-												Ordering
-											</Trans>
+											{tHtml('collection/views/collection-detail___ordering')}
 										</p>
 										{hasCopies && (
 											<p className="c-body-1">
-												{`${t(
+												{`${tText(
 													'collection/views/collection-detail___deze-collectie-is-een-kopie-van'
 												)} `}
 												{(
@@ -1067,7 +1073,7 @@ const CollectionDetail: FunctionComponent<
 
 										{hasParentBundles && (
 											<p className="c-body-1">
-												{`${t(
+												{`${tText(
 													'collection/views/collection-detail___deze-collectie-is-deel-van-een-map'
 												)} `}
 												{publishedBundles.map((bundle, index) => (
@@ -1146,7 +1152,7 @@ const CollectionDetail: FunctionComponent<
 					deleteObjectCallback={onDeleteCollection}
 				/>
 				<ShareThroughEmailModal
-					modalTitle={t('collection/views/collection-detail___deel-deze-collectie')}
+					modalTitle={tText('collection/views/collection-detail___deel-deze-collectie')}
 					type="collection"
 					emailLinkHref={window.location.href}
 					emailLinkTitle={(collection as Avo.Collection.Collection).title}
@@ -1162,7 +1168,9 @@ const CollectionDetail: FunctionComponent<
 				)}
 				{!!collection && (
 					<QuickLaneModal
-						modalTitle={t('collection/views/collection-detail___delen-met-leerlingen')}
+						modalTitle={tText(
+							'collection/views/collection-detail___delen-met-leerlingen'
+						)}
 						isOpen={isQuickLaneModalOpen}
 						content={collection}
 						content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
@@ -1190,13 +1198,13 @@ const CollectionDetail: FunctionComponent<
 							onClose={() => setIsCreateAssignmentModalOpen(false)}
 							createAssignmentCallback={onCreateAssignment}
 							translations={{
-								title: t(
+								title: tText(
 									'assignment/modals/create-assignment-modal___importeer-naar-nieuwe-opdracht'
 								),
-								primaryButton: t(
+								primaryButton: tText(
 									'assignment/modals/create-assignment-modal___importeer'
 								),
-								secondaryButton: t(
+								secondaryButton: tText(
 									'assignment/modals/create-assignment-modal___annuleer'
 								),
 							}}
@@ -1208,13 +1216,13 @@ const CollectionDetail: FunctionComponent<
 							importToAssignmentCallback={onImportToAssignment}
 							showToggle={true}
 							translations={{
-								title: t(
+								title: tText(
 									'assignment/modals/import-to-assignment-modal___importeer-naar-bestaande-opdracht'
 								),
-								primaryButton: t(
+								primaryButton: tText(
 									'assignment/modals/import-to-assignment-modal___importeer'
 								),
-								secondaryButton: t(
+								secondaryButton: tText(
 									'assignment/modals/import-to-assignment-modal___annuleer'
 								),
 							}}
@@ -1226,22 +1234,22 @@ const CollectionDetail: FunctionComponent<
 							}
 							confirmCallback={onConfirmImportAssignment}
 							translations={{
-								title: t(
+								title: tText(
 									'assignment/modals/confirm-import-to-assignment-with-responses-modal___collectie-importeren'
 								),
-								warningCallout: t(
+								warningCallout: tText(
 									'assignment/modals/confirm-import-to-assignment-with-responses-modal___opgelet'
 								),
-								warningMessage: t(
+								warningMessage: tText(
 									'assignment/modals/confirm-import-to-assignment-with-responses-modal___leerlingen-hebben-deze-opdracht-reeds-bekeken'
 								),
-								warningBody: t(
+								warningBody: tText(
 									'assignment/modals/confirm-import-to-assignment-with-responses-modal___ben-je-zeker-dat-je-de-collectie-wil-importeren-tot-deze-opdracht'
 								),
-								primaryButton: t(
+								primaryButton: tText(
 									'assignment/modals/create-assignment-modal___importeer'
 								),
-								secondaryButton: t(
+								secondaryButton: tText(
 									'assignment/modals/create-assignment-modal___annuleer'
 								),
 							}}
@@ -1267,7 +1275,7 @@ const CollectionDetail: FunctionComponent<
 			return (
 				<ErrorView
 					icon="lock"
-					message={t(
+					message={tText(
 						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
 					)}
 					actionButtons={['home']}
@@ -1279,7 +1287,7 @@ const CollectionDetail: FunctionComponent<
 			return (
 				<ErrorView
 					icon="alert-triangle"
-					message={t(
+					message={tText(
 						'collection/views/collection-detail___het-laden-van-de-collectie-is-mislukt'
 					)}
 					actionButtons={['home']}
@@ -1366,7 +1374,7 @@ const CollectionDetail: FunctionComponent<
 							get(
 								collection,
 								'title',
-								t(
+								tText(
 									'collection/views/collection-detail___collectie-detail-titel-fallback'
 								)
 							)

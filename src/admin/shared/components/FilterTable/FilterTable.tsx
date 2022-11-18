@@ -29,7 +29,6 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
@@ -44,6 +43,7 @@ import {
 import { MultiEducationalOrganisationSelectModal } from '../../../../shared/components/MultiEducationalOrganisationSelectModal/MultiEducationalOrganisationSelectModal';
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-client-org';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { KeyCode } from '../../../../shared/types';
 
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
@@ -130,7 +130,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	defaultOrderProp,
 	defaultOrderDirection,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// Holds the text while the user is typing, once they press the search button or enter it will be copied to the tableState.query
 	// This avoids doing a database query on every key press
@@ -259,7 +259,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						</FormGroup>
 						<FormGroup inlineMode="shrink">
 							<Button
-								label={t(
+								label={tText(
 									'admin/shared/components/filter-table/filter-table___zoeken'
 								)}
 								type="primary"
@@ -384,7 +384,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 									<Select
 										options={bulkActions}
 										onChange={handleSelectBulkAction}
-										placeholder={t(
+										placeholder={tText(
 											'admin/shared/components/filter-table/filter-table___bulkactie'
 										)}
 										disabled={!(selectedItemIds || []).length}
@@ -396,7 +396,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						{!hideTableColumnsButton && (
 							<ToolbarRight>
 								<CheckboxDropdownModal
-									label={t(
+									label={tText(
 										'admin/shared/components/filter-table/filter-table___kolommen'
 									)}
 									id="table_columns"
@@ -474,7 +474,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 					confirmLabel={get(
 						bulkActions.find((action) => action.value === selectedBulkAction),
 						'label',
-						t('admin/shared/components/filter-table/filter-table___bevestig')
+						tText('admin/shared/components/filter-table/filter-table___bevestig')
 					)}
 					confirmButtonType={get(
 						bulkActions.find((action) => action.value === selectedBulkAction),

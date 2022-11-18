@@ -1,7 +1,7 @@
 import { GridItem, MultiRangeProps } from '@viaa/avo2-components';
 
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -46,25 +46,25 @@ export const INITIAL_LOGO_GRID_BLOCK_STATE = (): BlockLogoGridWrapperProps &
 
 export const LOGO_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/logo-grid___logos-sign-off'),
+	name: tText('admin/content-block/helpers/generators/logo-grid___logos-sign-off'),
 	type: ContentBlockType.LogoGrid,
 	components: {
-		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),
+		name: tText('admin/content-block/helpers/generators/image-grid___item'),
 		state: INITIAL_LOGO_GRID_COMPONENTS_STATE(),
 		fields: {
 			textAbove: TEXT_FIELD('', {
-				label: i18n.t(
+				label: tText(
 					'admin/content-block/helpers/generators/logo-grid___tekst-boven-afbeelding'
 				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
 			source: FILE_FIELD(
-				i18n.t(
+				tText(
 					'admin/content-block/helpers/generators/image-grid___een-afbeelding-is-verplicht'
 				),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/image-grid___afbeelding'),
+					label: tText('admin/content-block/helpers/generators/image-grid___afbeelding'),
 					editorProps: {
 						assetType: 'CONTENT_BLOCK_IMAGE',
 						allowMulti: false,
@@ -73,7 +73,7 @@ export const LOGO_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 				}
 			),
 			action: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___link'),
+				label: tText('admin/content-block/helpers/generators/image-grid___link'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 		},
@@ -84,14 +84,14 @@ export const LOGO_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 			format: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___formaat'),
+				label: tText('admin/content-block/helpers/generators/image-grid___formaat'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_IMAGE_GRID_FORMAT_OPTIONS(),
 				},
 			},
 			itemWidth: {
-				label: i18n.t('admin/content-block/helpers/generators/logo-grid___kolom-breedte'),
+				label: tText('admin/content-block/helpers/generators/logo-grid___kolom-breedte'),
 				editorType: ContentBlockEditor.MultiRange,
 				editorProps: {
 					min: 0,
@@ -101,21 +101,21 @@ export const LOGO_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 				} as MultiRangeProps,
 			},
 			fill: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___zoom'),
+				label: tText('admin/content-block/helpers/generators/image-grid___zoom'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_FILL_OPTIONS(),
 				},
 			},
 			align: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___alignatie'),
+				label: tText('admin/content-block/helpers/generators/image-grid___alignatie'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_ALIGN_OPTIONS(),
 				},
 			},
 			textAlign: {
-				label: i18n.t('admin/content-block/helpers/generators/image-grid___text-alignatie'),
+				label: tText('admin/content-block/helpers/generators/image-grid___text-alignatie'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_ALIGN_OPTIONS(),

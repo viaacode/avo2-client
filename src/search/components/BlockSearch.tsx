@@ -15,7 +15,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -24,6 +23,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { toEnglishContentType } from '../../collection/collection.types';
 import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
 import { useDebounce } from '../../shared/hooks';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { AppState } from '../../store';
@@ -54,7 +54,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps>
 	search,
 	history,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [searchTerms, setSearchTerms] = useState<string>('');
 	const [isAutocompleteSearchOpen, setAutocompleteSearchOpen] = useState<boolean>(false);
@@ -109,7 +109,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps>
 				);
 			} else {
 				ToastService.danger(
-					t('home/views/home___geen-zoekresultaten-gevonden-met-id-id', {
+					tHtml('home/views/home___geen-zoekresultaten-gevonden-met-id-id', {
 						id: searchResultId,
 					})
 				);
@@ -132,7 +132,9 @@ const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps>
 		<Container mode="horizontal" size="medium" className="m-search-block">
 			<Spacer>
 				<BlockHeading type="h2" className="u-text-center">
-					{t('home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken')}
+					{tText(
+						'home/views/home___vind-alles-wat-je-nodig-hebt-om-je-lessen-te-verrijken'
+					)}
 				</BlockHeading>
 				<div className="u-text-center">
 					<Spacer margin="large" className="c-dropdown__wrapper">
@@ -146,7 +148,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps>
 						>
 							<DropdownButton>
 								<TextInput
-									placeholder={t('home/views/home___vul-een-zoekterm-in')}
+									placeholder={tText('home/views/home___vul-een-zoekterm-in')}
 									icon="search"
 									value={searchTerms}
 									onChange={(searchTerm) => handleSearchTermChanged(searchTerm)}
@@ -158,7 +160,9 @@ const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps>
 									{!searchResultsLoading ? (
 										<MenuSearchResultContent
 											menuItems={autocompleteMenuItems}
-											noResultsLabel={t('home/views/home___geen-resultaten')}
+											noResultsLabel={tText(
+												'home/views/home___geen-resultaten'
+											)}
 											onClick={(id) => goToSearchResult(id.toString())}
 										/>
 									) : (
@@ -186,12 +190,12 @@ const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps>
 							<Flex className="c-button-toolbar" orientation="horizontal" center>
 								TODO link to content page
 								<Button
-									label={t('home/views/home___basisonderwijs')}
+									label={tText('home/views/home___basisonderwijs')}
 									type="secondary"
 								/>
 								TODO link to content page
 								<Button
-									label={t('home/views/home___secundair-onderwijs')}
+									label={tText('home/views/home___secundair-onderwijs')}
 									type="secondary"
 								/>
 							</Flex>

@@ -1,7 +1,7 @@
 import { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 import { formatDate } from '../../helpers';
 
@@ -14,7 +14,7 @@ export const BlockItemMetadata: FC<BlockItemMetadataProps> = ({
 	block,
 	buildSeriesLink = (series: string) => series,
 }) => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 
 	const organisation = block.item_meta?.organisation?.name;
 	const broadcastDate = (block.item_meta as Avo.Item.Item)?.issued;
@@ -24,21 +24,23 @@ export const BlockItemMetadata: FC<BlockItemMetadataProps> = ({
 		<section className="u-spacer-bottom">
 			{organisation && (
 				<div>
-					{t('shared/components/block-item-metadata/block-item-metadata___uitzender')}:
-					<b>{` ${organisation}`}</b>
+					{tHtml('shared/components/block-item-metadata/block-item-metadata___uitzender')}
+					:<b>{` ${organisation}`}</b>
 				</div>
 			)}
 
 			{broadcastDate && (
 				<div>
-					{t('shared/components/block-item-metadata/block-item-metadata___uitgezonden')}:
-					<b>{` ${formatDate(broadcastDate)}`}</b>
+					{tHtml(
+						'shared/components/block-item-metadata/block-item-metadata___uitgezonden'
+					)}
+					:<b>{` ${formatDate(broadcastDate)}`}</b>
 				</div>
 			)}
 
 			{series && (
 				<div>
-					{t('shared/components/block-item-metadata/block-item-metadata___reeks')}:
+					{tHtml('shared/components/block-item-metadata/block-item-metadata___reeks')}:
 					<b> {buildSeriesLink(series)}</b>
 				</div>
 			)}

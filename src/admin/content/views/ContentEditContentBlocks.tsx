@@ -1,10 +1,11 @@
 import { Navbar, Select } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { ContentPage } from '../../../content-page/views';
 import { ResizablePanels } from '../../../shared/components';
+import { tHtml } from '../../../shared/helpers/translate';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ContentBlockForm } from '../../content-block/components';
 import {
@@ -48,7 +49,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	addComponentToState,
 	removeComponentFromState,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// Hooks
 	const [activeBlockPosition, setActiveBlockPosition] = useState<number | null>(null);
@@ -68,7 +69,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 					configType
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content/views/content-edit-content-blocks___het-toevoegen-van-de-content-block-is-mislukt-configuratie-niet-gevonden-voor-config-type',
 					{ configType }
 				)
@@ -206,7 +207,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						<Select
 							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
 							onChange={(value) => handleAddContentBlock(value as ContentBlockType)}
-							placeholder={t(
+							placeholder={tText(
 								'admin/content/views/content-edit-content-blocks___voeg-een-content-blok-toe'
 							)}
 							value={null as any}

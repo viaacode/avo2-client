@@ -12,15 +12,13 @@ import { Avo } from '@viaa/avo2-types';
 import { compact, isString } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
 import { getUrlInfo, isPhoto, isVideo, PHOTO_TYPES } from '../../helpers/files';
 import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services/toast-service';
-import i18n from '../../translations/i18n';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import Html from '../Html/Html';
 
 import './FileUpload.scss';
 
@@ -49,7 +47,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 	disabled = false,
 	onChange,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -73,7 +71,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					: [];
 				if (notAllowedFiles.length) {
 					ToastService.danger(
-						t(
+						tHtml(
 							'shared/components/file-upload/file-upload___een-geselecteerde-bestand-is-niet-toegelaten'
 						)
 					);
@@ -96,13 +94,13 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 			);
 			if (files && files.length > 1 && allowMulti) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/file-upload/file-upload___het-uploaden-van-de-bestanden-is-mislukt'
 					)
 				);
 			} else {
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/file-upload/file-upload___het-uploaden-van-het-bestand-is-mislukt'
 					)
 				);
@@ -139,7 +137,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 		} catch (err) {
 			console.error(new CustomError('Failed to delete asset', err, { urls }));
 			ToastService.danger(
-				t(
+				tHtml(
 					'shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt'
 				)
 			);
@@ -158,8 +156,8 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				className="a-delete-button"
 				type="danger-hover"
 				icon="delete"
-				ariaLabel={t('shared/components/file-upload/file-upload___verwijder-bestand')}
-				title={t('shared/components/file-upload/file-upload___verwijder-bestand')}
+				ariaLabel={tText('shared/components/file-upload/file-upload___verwijder-bestand')}
+				title={tText('shared/components/file-upload/file-upload___verwijder-bestand')}
 				autoHeight
 				disabled={isProcessing}
 				onClick={() => openDeleteModal(url)}
@@ -241,10 +239,10 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 								label={
 									label ||
 									(allowMulti
-										? i18n.t(
+										? tText(
 												'shared/components/file-upload/file-upload___selecteer-bestanden'
 										  )
-										: i18n.t(
+										: tText(
 												'shared/components/file-upload/file-upload___selecteer-een-bestand'
 										  ))
 								}
@@ -254,7 +252,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 							/>
 							<input
 								type="file"
-								title={t(
+								title={tText(
 									'shared/components/file-upload/file-upload___kies-een-bestand'
 								)}
 								multiple={allowMulti}
@@ -269,20 +267,23 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					<Spinner size="large" />
 				))}
 			<ConfirmModal
-				title={t(
+				title={tText(
 					'shared/components/file-upload/file-upload___ben-je-zeker-dat-je-dit-bestand-wil-verwijderen'
 				)}
-				body={
-					<Html
-						content={t(
-							'shared/components/file-upload/file-upload___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
-						)}
-					/>
-				}
+				body={tHtml(
+					'shared/components/file-upload/file-upload___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
+				)}
 				isOpen={isDeleteModalOpen}
 				onClose={closeDeleteModal}
-				confirmCallback={() => {
-					deleteUploadedFile(urlToDelete || '');
+				confirmCallback={async () => {
+					try {
+						await deleteUploadedFile(urlToDelete || '');
+					} catch (err) {
+						console.error(
+							new CustomError('Failed to delete uploaded file', err, { urlToDelete })
+						);
+						ToastService.danger(tHtml('Het verwijderen van het bestand is mislukt.'));
+					}
 				}}
 			/>
 		</div>

@@ -1,13 +1,13 @@
 import { Flex } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { PermissionName } from '../authentication/helpers/permission-names';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import { LoadingErrorLoadedComponent, LoadingInfo, ResizablePanels } from '../shared/components';
 import { CustomError } from '../shared/helpers';
 import withUser from '../shared/hocs/withUser';
+import useTranslation from '../shared/hooks/useTranslation';
 import { ToastService } from '../shared/services/toast-service';
 import { NavigationItemInfo } from '../shared/types';
 
@@ -17,7 +17,7 @@ import './Admin.scss';
 import { Sidebar } from './shared/components';
 
 const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [userPermissions, setUserPermissions] = useState<PermissionName[] | null>(null);
@@ -34,13 +34,13 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 				.then(setNavigationItems)
 				.catch((err) => {
 					console.error(new CustomError('Failed to get nav items', err));
-					ToastService.danger('Het ophalen van de navigatie items is mislukt');
+					ToastService.danger(tHtml('Het ophalen van de navigatie items is mislukt'));
 				});
 		} else {
 			setLoadingInfo({
 				state: 'error',
 				icon: 'lock',
-				message: t(
+				message: tText(
 					'admin/admin___je-hebt-geen-rechten-om-het-beheer-dashboard-te-bekijken-view-admin-dashboard'
 				),
 				actionButtons: ['home', 'helpdesk'],
@@ -52,7 +52,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 		if (zendeskWidget) {
 			zendeskWidget.remove();
 		}
-	}, [user, setLoadingInfo, t]);
+	}, [user, setLoadingInfo, tText]);
 
 	useEffect(() => {
 		if (userPermissions && navigationItems) {

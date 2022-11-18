@@ -17,13 +17,13 @@ import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import type { Requests } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { tText } from '../../../shared/helpers/translate';
 import { getFullName } from '../../../shared/helpers';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
-import i18n from '../../../shared/translations/i18n';
 
 interface ReportItemModalProps {
 	externalId: string;
@@ -35,9 +35,9 @@ interface ReportItemModalProps {
 type Reason = 'broken' | 'inappropriate' | 'copyright';
 
 const GET_RADIO_BUTTON_LABELS = () => ({
-	broken: i18n.t('item/components/modals/report-item-modal___defect'),
-	inappropriate: i18n.t('item/components/modals/report-item-modal___ongepast'),
-	copyright: i18n.t('item/components/modals/report-item-modal___schending-auteursrechten'),
+	broken: tText('item/components/modals/report-item-modal___defect'),
+	inappropriate: tText('item/components/modals/report-item-modal___ongepast'),
+	copyright: tText('item/components/modals/report-item-modal___schending-auteursrechten'),
 });
 
 const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
@@ -46,7 +46,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 	onClose,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [reason, setReason] = useState<Reason | null>(null);
 	const [extraDetails, setExtraDetails] = useState<string>('');
@@ -72,19 +72,19 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
   <dt><Trans i18nKey="item/components/modals/report-item-modal___reden-van-rapporteren">Reden van rapporteren</Trans></dt><dd>${
 		GET_RADIO_BUTTON_LABELS()[reason]
   }</dd>
-  <dt>${t('item/components/modals/report-item-modal___extra-toelichting')}</dt><dd>${
+  <dt>${tText('item/components/modals/report-item-modal___extra-toelichting')}</dt><dd>${
 						extraDetails ||
-						t(
+						tText(
 							'item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven'
 						)
 					}</dd>
-  <dt>${t('item/components/modals/report-item-modal___pagina-url')}</dt><dd>${
+  <dt>${tText('item/components/modals/report-item-modal___pagina-url')}</dt><dd>${
 						window.location.href
 					}</dd>
 </dl>`,
 					public: false,
 				},
-				subject: t(
+				subject: tText(
 					'item/components/modals/report-item-modal___media-item-gerapporteerd-door-gebruiker-op-av-o-2'
 				),
 				requester: {
@@ -105,7 +105,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 
 			onClose();
 			ToastService.success(
-				t('item/components/modals/report-item-modal___het-item-is-gerapporteerd')
+				tHtml('item/components/modals/report-item-modal___het-item-is-gerapporteerd')
 			);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket for reporting an item', err, {
@@ -114,7 +114,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 				user,
 			});
 			ToastService.danger(
-				t(
+				tHtml(
 					'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt'
 				)
 			);
@@ -125,7 +125,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 	const renderReportItemModal = () => {
 		return (
 			<Modal
-				title={t(
+				title={tText(
 					'item/components/modals/report-item-modal___waarom-wil-je-dit-fragment-rapporteren'
 				)}
 				size="medium"
@@ -137,7 +137,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 					<div>
 						<Spacer>
 							<FormGroup
-								label={t('item/components/modals/report-item-modal___reden')}
+								label={tText('item/components/modals/report-item-modal___reden')}
 								required
 							>
 								<RadioButtonGroup
@@ -161,7 +161,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 							</FormGroup>
 							<Spacer margin="top-large">
 								<FormGroup
-									label={t(
+									label={tText(
 										'item/components/modals/report-item-modal___geef-eventueel-meer-toelichting'
 									)}
 								>
@@ -183,7 +183,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 								<ButtonToolbar>
 									{isProcessing && <Spinner />}
 									<Button
-										label={t(
+										label={tText(
 											'item/components/modals/add-to-collection-modal___annuleren'
 										)}
 										type="link"
@@ -192,7 +192,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 										disabled={isProcessing}
 									/>
 									<Button
-										label={t(
+										label={tText(
 											'item/components/modals/report-item-modal___verzenden'
 										)}
 										type="primary"
@@ -201,7 +201,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 										title={
 											reason
 												? ''
-												: t(
+												: tText(
 														'item/components/modals/report-item-modal___je-moet-een-reden-opgeven-om-een-item-te-kunnen-rapporteren'
 												  )
 										}

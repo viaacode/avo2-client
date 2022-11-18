@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '../../shared/hooks/useTranslation';
 
 export const useWarningBeforeUnload = ({
 	when,
@@ -8,10 +9,10 @@ export const useWarningBeforeUnload = ({
 	when: boolean;
 	message?: string;
 }): void => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const messageOrDefault: any =
 		message ||
-		t(
+		tText(
 			'shared/hooks/use-warning-before-unload___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
 		);
 

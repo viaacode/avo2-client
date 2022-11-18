@@ -11,7 +11,7 @@ import {
 	GetCollectionQualityCheckDocument,
 } from '../../shared/generated/graphql-db-types';
 import { stringToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
@@ -133,7 +133,7 @@ type CollectionBulkActionOption = SelectOption<string> & {
 export const GET_COLLECTION_BULK_ACTIONS = (): CollectionBulkActionOption[] => {
 	return [
 		{
-			label: i18n.t(
+			label: tText(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___publiceren'
 			),
 			value: 'publish',
@@ -141,7 +141,7 @@ export const GET_COLLECTION_BULK_ACTIONS = (): CollectionBulkActionOption[] => {
 			confirmButtonType: 'primary',
 		},
 		{
-			label: i18n.t(
+			label: tText(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___depubliceren'
 			),
 			value: 'depublish',
@@ -149,7 +149,7 @@ export const GET_COLLECTION_BULK_ACTIONS = (): CollectionBulkActionOption[] => {
 			confirmButtonType: 'danger',
 		},
 		{
-			label: i18n.t(
+			label: tText(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___verwijderen'
 			),
 			value: 'delete',
@@ -157,13 +157,13 @@ export const GET_COLLECTION_BULK_ACTIONS = (): CollectionBulkActionOption[] => {
 			confirmButtonType: 'danger',
 		},
 		{
-			label: i18n.t(
+			label: tText(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur-aanpassen'
 			),
 			value: 'change_author',
 		},
 		{
-			label: i18n.t(
+			label: tText(
 				'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
 			),
 			value: 'change_labels',
@@ -173,7 +173,7 @@ export const GET_COLLECTION_BULK_ACTIONS = (): CollectionBulkActionOption[] => {
 
 const getCollectionTitleColumn = (): FilterableColumn => ({
 	id: 'title',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___title'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___title'),
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.string,
@@ -181,7 +181,7 @@ const getCollectionTitleColumn = (): FilterableColumn => ({
 
 const getCollectionAuthorColumn = (): FilterableColumn => ({
 	id: 'owner_profile_id',
-	label: i18n.t('admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'),
+	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'MultiUserSelectDropdown',
@@ -194,7 +194,7 @@ const getCollectionAuthorUserGroupColumn = (
 ): FilterableColumn => ({
 	visibleByDefault,
 	id: 'author_user_group',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
 	sortable: true,
 	filterType: 'CheckboxDropdownModal',
 	filterProps: {
@@ -205,7 +205,7 @@ const getCollectionAuthorUserGroupColumn = (
 
 const getCollectionLastUpdatedByColumn = (): FilterableColumn => ({
 	id: 'last_updated_by_profile',
-	label: i18n.t(
+	label: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
 	),
 	sortable: true,
@@ -215,7 +215,7 @@ const getCollectionLastUpdatedByColumn = (): FilterableColumn => ({
 
 const getCollectionCreatedAtColumn = (): FilterableColumn => ({
 	id: 'created_at',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
@@ -225,7 +225,7 @@ const getCollectionCreatedAtColumn = (): FilterableColumn => ({
 
 const getCollectionUpdatedAtColumn = (): FilterableColumn => ({
 	id: 'updated_at',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
@@ -235,7 +235,7 @@ const getCollectionUpdatedAtColumn = (): FilterableColumn => ({
 
 const getCollectionIsPublicColumn = (): FilterableColumn => ({
 	id: 'is_public',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___publiek'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___publiek'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
@@ -244,7 +244,7 @@ const getCollectionIsPublicColumn = (): FilterableColumn => ({
 
 const getCollectionLabelsColumn = (collectionLabelOptions: CheckboxOption[]): FilterableColumn => ({
 	id: 'collection_labels',
-	label: i18n.t('admin/collections-or-bundles/views/collections-or-bundles-overview___labels'),
+	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___labels'),
 	sortable: false,
 	visibleByDefault: true,
 	filterType: 'CheckboxDropdownModal',
@@ -255,7 +255,7 @@ const getCollectionLabelsColumn = (collectionLabelOptions: CheckboxOption[]): Fi
 
 const getCollectionIsCopyColumn = (): FilterableColumn => ({
 	id: 'is_copy',
-	label: i18n.t('admin/collections-or-bundles/views/collections-or-bundles-overview___kopie'),
+	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___kopie'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'BooleanCheckboxDropdown',
@@ -263,7 +263,7 @@ const getCollectionIsCopyColumn = (): FilterableColumn => ({
 
 const getCollectionManagedColumn = (): FilterableColumn => ({
 	id: 'is_managed',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___redactie'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___redactie'),
 	sortable: true,
 	visibleByDefault: false,
 	filterType: 'BooleanCheckboxDropdown',
@@ -272,7 +272,7 @@ const getCollectionManagedColumn = (): FilterableColumn => ({
 
 const getCollectionViewsColumn = (): FilterableColumn => ({
 	id: 'views',
-	tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+	tooltip: tText('admin/collections-or-bundles/collections-or-bundles___bekeken'),
 	icon: 'eye',
 	sortable: true,
 	visibleByDefault: true,
@@ -281,7 +281,7 @@ const getCollectionViewsColumn = (): FilterableColumn => ({
 
 const getCollectionBookmarksColumn = (): FilterableColumn => ({
 	id: 'bookmarks',
-	tooltip: i18n.t(
+	tooltip: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
 	),
 	icon: 'bookmark',
@@ -292,7 +292,7 @@ const getCollectionBookmarksColumn = (): FilterableColumn => ({
 
 const getCollectionCopiesColumn = (): FilterableColumn => ({
 	id: 'copies',
-	tooltip: i18n.t(
+	tooltip: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-gekopieerd'
 	),
 	icon: 'copy',
@@ -306,7 +306,7 @@ const getCollectionInBundleColumn = (isCollection: boolean): FilterableColumn[] 
 		return [
 			{
 				id: 'in_bundle',
-				tooltip: i18n.t(
+				tooltip: tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bundel'
 				),
 				icon: 'folder',
@@ -324,7 +324,7 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 		return [
 			{
 				id: 'in_assignment',
-				tooltip: i18n.t(
+				tooltip: tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
 				),
 				icon: 'clipboard',
@@ -339,7 +339,7 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 
 const getCollectionQuickLanesColumn = (): FilterableColumn => ({
 	id: 'quick_lane_links',
-	tooltip: i18n.t(
+	tooltip: tText(
 		'admin/collections-or-bundles/collections-or-bundles___aantal-keer-gedeeld-met-leerlingen'
 	),
 	icon: 'link-2',
@@ -350,7 +350,7 @@ const getCollectionQuickLanesColumn = (): FilterableColumn => ({
 
 const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
 	id: 'subjects',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vakken'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___vakken'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',
@@ -361,7 +361,7 @@ const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
 
 const getCollectionEducationLevelsColumn = (educationLevels: string[]): FilterableColumn => ({
 	id: 'education_levels',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',
@@ -374,7 +374,7 @@ const getCollectionOrganisationColumn = (
 	organisationOptions: CheckboxOption[]
 ): FilterableColumn => ({
 	id: 'organisation',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___organisatie'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___organisatie'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',
@@ -385,7 +385,7 @@ const getCollectionOrganisationColumn = (
 
 const getActualisationStatusColumn = (): FilterableColumn => ({
 	id: 'actualisation_status',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___status'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___status'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'CheckboxDropdownModal',
@@ -397,7 +397,7 @@ const getActualisationStatusColumn = (): FilterableColumn => ({
 
 const getActualisationLastActualisedAtColumn = (): FilterableColumn => ({
 	id: 'actualisation_last_actualised_at',
-	label: i18n.t(
+	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___datum-laatste-actualisatie'
 	),
 	sortable: true,
@@ -408,7 +408,7 @@ const getActualisationLastActualisedAtColumn = (): FilterableColumn => ({
 
 const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
 	id: 'actualisation_status_valid_until',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___vervaldatum'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___vervaldatum'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
@@ -421,7 +421,7 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
 
 const getActualisationApprovedAtColumn = (): FilterableColumn => ({
 	id: 'actualisation_approved_at',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'DateRangeDropdown',
@@ -430,7 +430,7 @@ const getActualisationApprovedAtColumn = (): FilterableColumn => ({
 
 const getActualisationResponsibleProfileColumn = (): FilterableColumn => ({
 	id: 'actualisation_manager',
-	label: i18n.t(
+	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___actualisatie-verantwoordelijke'
 	),
 	sortable: true,
@@ -441,13 +441,13 @@ const getActualisationResponsibleProfileColumn = (): FilterableColumn => ({
 
 const getQualityCheckLanguageCheckColumn = (): FilterableColumn => ({
 	id: 'quality_check_language_check',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___taalcheck'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___taalcheck'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
 	filterProps: {
-		trueLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___ok'),
-		falseLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___nok'),
+		trueLabel: tText('admin/collections-or-bundles/collections-or-bundles___ok'),
+		falseLabel: tText('admin/collections-or-bundles/collections-or-bundles___nok'),
 		includeEmpty: true,
 	} as BooleanCheckboxDropdownProps,
 	dataType: TableColumnDataType.boolean,
@@ -455,13 +455,13 @@ const getQualityCheckLanguageCheckColumn = (): FilterableColumn => ({
 
 const getQualityCheckQualityCheckColumn = (): FilterableColumn => ({
 	id: 'quality_check_quality_check',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___kwaliteitscontrole'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___kwaliteitscontrole'),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'BooleanCheckboxDropdown',
 	filterProps: {
-		trueLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___ok'),
-		falseLabel: i18n.t('admin/collections-or-bundles/collections-or-bundles___nok'),
+		trueLabel: tText('admin/collections-or-bundles/collections-or-bundles___ok'),
+		falseLabel: tText('admin/collections-or-bundles/collections-or-bundles___nok'),
 		includeEmpty: true,
 	} as BooleanCheckboxDropdownProps,
 	dataType: TableColumnDataType.boolean,
@@ -469,7 +469,7 @@ const getQualityCheckQualityCheckColumn = (): FilterableColumn => ({
 
 const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
 	id: 'quality_check_approved_at',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.dateTime,
@@ -479,12 +479,12 @@ const getMarcomLastCommunicationChannelTypeColumn = (
 	channelTypeOptions: CheckboxOption[]
 ): FilterableColumn => ({
 	id: 'marcom_last_communication_channel_type',
-	label: i18n.t(
+	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-type'
 	),
 	filterType: 'CheckboxDropdownModal',
 	filterProps: {
-		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___communicatietype'),
+		label: tText('admin/collections-or-bundles/collections-or-bundles___communicatietype'),
 		options: channelTypeOptions,
 	},
 	sortable: true,
@@ -495,14 +495,14 @@ const getMarcomLastCommunicationChannelNameColumn = (
 	channelNameOptions: CheckboxOption[]
 ): FilterableColumn => ({
 	id: 'marcom_last_communication_channel_name',
-	label: i18n.t(
+	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-naam'
 	),
 	sortable: true,
 	visibleByDefault: true,
 	filterType: 'CheckboxDropdownModal',
 	filterProps: {
-		label: i18n.t('admin/collections-or-bundles/collections-or-bundles___communicatiekanaal'),
+		label: tText('admin/collections-or-bundles/collections-or-bundles___communicatiekanaal'),
 		options: channelNameOptions,
 	},
 	dataType: TableColumnDataType.string,
@@ -510,9 +510,7 @@ const getMarcomLastCommunicationChannelNameColumn = (
 
 const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
 	id: 'marcom_last_communication_at',
-	label: i18n.t(
-		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatiedatum'
-	),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___laatste-communicatiedatum'),
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.dateTime,
@@ -520,7 +518,7 @@ const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
 
 const getMarcomKlascementColumn = (): FilterableColumn => ({
 	id: 'marcom_klascement',
-	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___klas-cement'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___klas-cement'),
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.boolean,
@@ -528,7 +526,7 @@ const getMarcomKlascementColumn = (): FilterableColumn => ({
 
 const getMarcomLastUpdatedByColumn = (): FilterableColumn => ({
 	id: 'last_updated_by_profile',
-	label: i18n.t(
+	label: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
 	),
 	sortable: true,
@@ -565,7 +563,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
-		tooltip: i18n.t(
+		tooltip: tText(
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___acties'
 		),
 		visibleByDefault: true,
@@ -597,7 +595,7 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
-		tooltip: i18n.t(
+		tooltip: tText(
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___acties'
 		),
 		visibleByDefault: true,
@@ -627,7 +625,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
-		tooltip: i18n.t(
+		tooltip: tText(
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___acties'
 		),
 		visibleByDefault: true,
@@ -660,7 +658,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
-		tooltip: i18n.t(
+		tooltip: tText(
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___acties'
 		),
 		visibleByDefault: true,
@@ -672,7 +670,7 @@ export const getCollectionManagementStatuses = (): CheckboxOption[] => [
 	{ checked: false, label: 'Te actualiseren', id: 'ACTUALISEREN' },
 	{ checked: false, label: 'Volledig te herzien', id: 'HERZIEN' },
 	{ checked: false, label: 'Gearchiveerd', id: 'GEARCHIVEERD' },
-	{ checked: false, label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+	{ checked: false, label: tText('admin/users/user___leeg'), id: NULL_FILTER },
 ];
 
 export const EDITORIAL_QUERIES: Record<EditorialType, string> = {

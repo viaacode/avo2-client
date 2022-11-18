@@ -17,7 +17,6 @@ import { Avo } from '@viaa/avo2-types';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { fromPairs, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -47,6 +46,7 @@ import {
 	navigate,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -72,7 +72,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	history,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -189,16 +189,16 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t(
+					? tText(
 							'collection/components/collection-or-bundle-overview___het-ophalen-van-de-collecties-is-mislukt'
 					  )
-					: t(
+					: tText(
 							'collection/components/collection-or-bundle-overview___het-ophalen-van-de-bundels-is-mislukt'
 					  ),
 				actionButtons: ['home'],
 			});
 		}
-	}, [user, page, sortColumn, sortOrder, isCollection, t]);
+	}, [user, page, sortColumn, sortOrder, isCollection, tText]);
 
 	useEffect(() => {
 		fetchCollections();
@@ -246,10 +246,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			if (!selected) {
 				ToastService.danger(
 					isCollection
-						? t(
+						? tHtml(
 								'collection/components/collection-or-bundle-overview___er-was-geen-collectie-geselecteerd-gelieve-opnieuw-te-proberen-na-het-herladen-van-de-pagina'
 						  )
-						: t(
+						: tHtml(
 								'collection/components/collection-or-bundle-overview___er-was-geen-bundel-geselecteerd-gelieve-opnieuw-te-proberen-na-het-herladen-van-de-pagina'
 						  )
 				);
@@ -278,10 +278,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 			ToastService.success(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-overview___collectie-is-verwijderd'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-overview___bundel-is-verwijderd'
 					  )
 			);
@@ -291,10 +291,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			console.error(err);
 			ToastService.danger(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-overview___collectie-kon-niet-verwijderd-worden'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-overview___bundel-kon-niet-verwijderd-worden'
 					  )
 			);
@@ -391,7 +391,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'edit',
-							t('collection/views/collection-overview___bewerk'),
+							tText('collection/views/collection-overview___bewerk'),
 							'edit2'
 						),
 				  ]
@@ -400,7 +400,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'createAssignment',
-							t('collection/views/collection-overview___maak-opdracht'),
+							tText('collection/views/collection-overview___maak-opdracht'),
 							'clipboard'
 						),
 				  ]
@@ -409,7 +409,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'createQuickLane',
-							t('collection/views/collection-overview___delen-met-leerlingen'),
+							tText('collection/views/collection-overview___delen-met-leerlingen'),
 							'link-2'
 						),
 				  ]
@@ -418,7 +418,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'delete',
-							t('collection/views/collection-overview___verwijderen')
+							tText('collection/views/collection-overview___verwijderen')
 						),
 				  ]
 				: []),
@@ -484,10 +484,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						}
 						title={
 							isCollection
-								? t(
+								? tText(
 										'collection/components/collection-or-bundle-overview___bekijk-deze-collectie'
 								  )
-								: t(
+								: tText(
 										'collection/components/collection-or-bundle-overview___bekijk-deze-bundel'
 								  )
 						}
@@ -517,8 +517,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					<div
 						title={
 							collection.is_public
-								? t('collection/components/collection-or-bundle-overview___publiek')
-								: t(
+								? tText(
+										'collection/components/collection-or-bundle-overview___publiek'
+								  )
+								: tText(
 										'collection/components/collection-or-bundle-overview___niet-publiek'
 								  )
 						}
@@ -557,14 +559,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				{ id: 'thumbnail', label: '', col: '2' },
 				{
 					id: 'title',
-					label: t('collection/views/collection-overview___titel'),
+					label: tText('collection/views/collection-overview___titel'),
 					col: '6',
 					sortable: true,
 					dataType: TableColumnDataType.string,
 				},
 				{
 					id: 'actions',
-					tooltip: t('collection/components/collection-or-bundle-overview___acties'),
+					tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
 					col: '1',
 				},
 			];
@@ -572,19 +574,19 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		return [
 			{
 				id: 'thumbnail',
-				tooltip: t('collection/components/collection-or-bundle-overview___cover'),
+				tooltip: tText('collection/components/collection-or-bundle-overview___cover'),
 				col: '2',
 			},
 			{
 				id: 'title',
-				label: t('collection/views/collection-overview___titel'),
+				label: tText('collection/views/collection-overview___titel'),
 				col: '6',
 				sortable: true,
 				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'updated_at',
-				label: t('collection/views/collection-overview___laatst-bewerkt'),
+				label: tText('collection/views/collection-overview___laatst-bewerkt'),
 				col: '3',
 				sortable: true,
 				dataType: TableColumnDataType.dateTime,
@@ -593,7 +595,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						{
 							id: 'is_public',
-							label: t(
+							label: tText(
 								'collection/components/collection-or-bundle-overview___is-publiek'
 							),
 							col: '2',
@@ -607,7 +609,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			// 	? [
 			// 			{
 			// 				id: 'inFolder',
-			// 				label: t('collection/views/collection-overview___in-map'),
+			// 				label: tText('collection/views/collection-overview___in-map'),
 			// 				col: '2' as any,
 			// 			},
 			// 	  ]
@@ -615,12 +617,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			// TODO re-enable once users can give share collection view/edit rights with other users
 			// {
 			// 	id: 'access',
-			// 	label: t('collection/views/collection-overview___toegang'),
+			// 	label: tText('collection/views/collection-overview___toegang'),
 			// 	col: '2',
 			// },
 			{
 				id: 'actions',
-				tooltip: t('collection/components/collection-or-bundle-overview___acties'),
+				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
 				col: '1',
 			},
 		];
@@ -639,7 +641,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			<Table
 				columns={getColumns()}
 				data={collections}
-				emptyStateMessage={t(
+				emptyStateMessage={tText(
 					'collection/views/collection-overview___geen-resultaten-gevonden'
 				)}
 				renderCell={renderCell}
@@ -658,31 +660,20 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			icon={isCollection ? 'collection' : 'folder'}
 			message={
 				isCollection
-					? t(
+					? tText(
 							'collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt'
 					  )
-					: t(
+					: tText(
 							'collection/components/collection-or-bundle-overview___je-hebt-nog-geen-bundels-aangemaakt'
 					  )
 			}
 		>
 			<p>
-				{isCollection ? (
-					<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
-						Een collectie is een verzameling van video- of audiofragmenten rond een
-						bepaald thema of voor een bepaalde les. Nadat je een collectie hebt
-						aangemaakt kan je deze delen met andere gebruikers om samen aan te werken.
-						Andere gebruikers kunnen ook collecties met jou delen die je dan hier
-						terugvindt.
-					</Trans>
-				) : (
-					<Trans i18nKey="collection/components/beschrijving-hoe-collecties-aan-te-maken">
-						Een bundel is een verzameling van collecties rond een bepaald thema of voor
-						een bepaalde les. Nadat je een bundel hebt aangemaakt kan je deze delen met
-						andere gebruikers om samen aan te werken. Andere gebruikers kunnen ook
-						bundels met jou delen die je dan hier terugvindt.
-					</Trans>
-				)}
+				{isCollection
+					? tHtml(
+							'collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken'
+					  )
+					: tHtml('collection/components/beschrijving-hoe-collecties-aan-te-maken')}
 			</p>
 			<Spacer margin="top">
 				<Button
@@ -691,8 +682,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					autoHeight
 					label={
 						isCollection
-							? t('collection/views/collection-overview___maak-je-eerste-collectie')
-							: t(
+							? tText(
+									'collection/views/collection-overview___maak-je-eerste-collectie'
+							  )
+							: tText(
 									'collection/components/collection-or-bundle-overview___zoek-een-collectie-en-maak-je-eerste-bundel'
 							  )
 					}
@@ -717,8 +710,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		}
 		return (
 			<DeleteObjectModal
-				title={t('collection/components/collection-or-bundle-overview___verwijder-bundel')}
-				body={t(
+				title={tText(
+					'collection/components/collection-or-bundle-overview___verwijder-bundel'
+				)}
+				body={tText(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
 				)}
 				isOpen={isDeleteModalOpen}
@@ -735,7 +730,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		return (
 			selectedDetail && (
 				<QuickLaneModal
-					modalTitle={t('collection/views/collection-overview___delen-met-leerlingen')}
+					modalTitle={tText(
+						'collection/views/collection-overview___delen-met-leerlingen'
+					)}
 					isOpen={isQuickLaneModalOpen}
 					content={selectedDetail}
 					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
@@ -756,13 +753,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				onClose={() => setIsCreateAssignmentModalOpen(false)}
 				createAssignmentCallback={onCreateAssignmentFromCollection}
 				translations={{
-					title: t(
+					title: tText(
 						'collection/components/collection-or-bundle-overview___maak-nieuwe-opdracht'
 					),
-					primaryButton: t(
+					primaryButton: tText(
 						'collection/components/collection-or-bundle-overview___maak-opdracht'
 					),
-					secondaryButton: t(
+					secondaryButton: tText(
 						'collection/components/collection-or-bundle-overview___annuleer'
 					),
 				}}

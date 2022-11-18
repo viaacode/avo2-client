@@ -1,13 +1,16 @@
 import classnames from 'classnames';
 import { flatten } from 'lodash-es';
 import React, { FunctionComponent, ReactElement } from 'react';
-import { Trans } from 'react-i18next';
 import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
 
+import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers';
+import { tText } from '../../../../shared/helpers/translate';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { NavigationItemInfo } from '../../../../shared/types';
 
 import './Sidebar.scss';
+import { Icon } from '@viaa/avo2-components';
 
 interface SidebarProps {
 	className?: string;
@@ -23,6 +26,8 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 	light = false,
 	navItems,
 }) => {
+	const { tHtml } = useTranslation();
+
 	const isActiveClass = (
 		item: NavigationItemInfo,
 		location: RouteComponentProps['location']
@@ -84,10 +89,27 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 		<div className={classnames(className, 'o-sidebar', { 'o-sidebar--light': light })}>
 			{headerLink && (
 				<div className="o-sidebar__header">
-					<Link className="u-remove-link-styling u-color-white" to={headerLink}>
-						<Trans i18nKey="admin/shared/components/sidebar/sidebar___beheer">
-							Beheer
-						</Trans>
+					<Link
+						className="u-remove-link-styling u-color-white o-sidebar__header__admin-home"
+						to={headerLink}
+					>
+						{tHtml('admin/shared/components/sidebar/sidebar___beheer')}
+					</Link>
+					<Link
+						className="u-remove-link-styling u-color-white o-sidebar__header__side-link"
+						to={APP_PATH.LOGOUT.route}
+					>
+						<span title={tText('Uitloggen')}>
+							<Icon name="log-out" />
+						</span>
+					</Link>
+					<Link
+						className="u-remove-link-styling u-color-white o-sidebar__header__side-link"
+						to={APP_PATH.HOME.route}
+					>
+						<span title={tText('Homepagina')}>
+							<Icon name="home" />
+						</span>
 					</Link>
 				</div>
 			)}

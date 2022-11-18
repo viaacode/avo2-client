@@ -17,45 +17,49 @@ export interface ManageAssignmentLabelsTranslations {
 }
 
 export const getManageAssignmentLabelsTranslations = (
-	t: TFunction,
+	tText: TFunction,
 	type: ManageAssignmentLabelsProps['type']
 ) => {
 	return type === 'LABEL'
 		? {
 				modal: {
-					title: t(
+					title: tText(
 						'assignment/components/modals/manage-assignment-labels___beheer-labels'
 					),
 				},
 				buttons: {
-					addLabel: t(
+					addLabel: tText(
 						'assignment/components/modals/manage-assignment-labels___voeg-een-label-toe'
 					),
 				},
 				columns: {
-					color: t('assignment/components/modals/manage-assignment-labels___label-kleur'),
-					type: t('assignment/components/modals/manage-assignment-labels___label'),
+					color: tText(
+						'assignment/components/modals/manage-assignment-labels___label-kleur'
+					),
+					type: tText('assignment/components/modals/manage-assignment-labels___label'),
 				},
-				emptyState: t(
+				emptyState: tText(
 					'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-labels-aangemaakt'
 				),
 		  }
 		: {
 				modal: {
-					title: t(
+					title: tText(
 						'assignment/components/modals/manage-assignment-labels___beheer-klassen'
 					),
 				},
 				buttons: {
-					addLabel: t(
+					addLabel: tText(
 						'assignment/components/modals/manage-assignment-labels___voeg-een-klas-toe'
 					),
 				},
 				columns: {
-					color: t('assignment/components/modals/manage-assignment-labels___klas-kleur'),
-					type: t('assignment/components/modals/manage-assignment-labels___klas'),
+					color: tText(
+						'assignment/components/modals/manage-assignment-labels___klas-kleur'
+					),
+					type: tText('assignment/components/modals/manage-assignment-labels___klas'),
 				},
-				emptyState: t(
+				emptyState: tText(
 					'assignment/components/modals/manage-assignment-labels___er-zijn-nog-geen-klassen-aangemaakt'
 				),
 		  };
