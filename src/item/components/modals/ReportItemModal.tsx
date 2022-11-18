@@ -18,9 +18,9 @@ import { get } from 'lodash-es';
 import type { Requests } from 'node-zendesk';
 import React, { FunctionComponent, useState } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
-import { tText } from '../../../shared/helpers/translate';
 import { getFullName } from '../../../shared/helpers';
+import { tText } from '../../../shared/helpers/translate';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
@@ -69,9 +69,9 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 					url: window.location.href,
 					body: JSON.stringify(body),
 					html_body: `<dl>
-  <dt><Trans i18nKey="item/components/modals/report-item-modal___reden-van-rapporteren">Reden van rapporteren</Trans></dt><dd>${
-		GET_RADIO_BUTTON_LABELS()[reason]
-  }</dd>
+  <dt>${tText('item/components/modals/report-item-modal___reden-van-rapporteren')}</dt><dd>${
+						GET_RADIO_BUTTON_LABELS()[reason]
+					}</dd>
   <dt>${tText('item/components/modals/report-item-modal___extra-toelichting')}</dt><dd>${
 						extraDetails ||
 						tText(

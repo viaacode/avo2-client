@@ -598,7 +598,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 							})}
 						>
 							<Icon name="chevron-left" size="small" type="arrows" />
-							{tHtml('Opdrachten')}
+							{tHtml('assignment/views/assignment-responses___opdrachten')}
 						</Link>
 
 						<Flex center className="u-spacer-top-l">

@@ -277,7 +277,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				)
 			);
 
-			ToastService.danger(tHtml('Het ophalen van de collectie ids is mislukt'));
+			ToastService.danger(
+				tHtml(
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___het-ophalen-van-de-collectie-ids-is-mislukt'
+				)
+			);
 		}
 
 		setIsLoading(false);

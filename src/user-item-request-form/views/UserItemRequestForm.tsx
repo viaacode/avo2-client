@@ -97,19 +97,21 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 					url: window.location.href,
 					body: JSON.stringify(body),
 					html_body: `<dl>
-  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___bericht">Bericht</Trans></dt><dd>${
-		body.description
-  }</dd>
-  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___bijlage">Bijlage</Trans></dt><dd>${renderAttachment()}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${
-		body.organization
-  }</dd>
-  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___vakken">Vakken</Trans></dt><dd>${
-		body.subjects
-  }</dd>
-  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___onderwijsniveaus">Onderwijsniveaus</Trans></dt><dd>${
-		body.educationLevels
-  }</dd>
+  <dt>${tText('user-item-request-form/views/user-item-request-form___bericht')}</dt><dd>${
+						body.description
+					}</dd>
+  <dt>${tText(
+		'user-item-request-form/views/user-item-request-form___bijlage'
+  )}</dt><dd>${renderAttachment()}</dd>
+  <dt>${tText(
+		'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
+  )}</dt><dd>${body.organization}</dd>
+  <dt>${tText('user-item-request-form/views/user-item-request-form___vakken')}</dt><dd>${
+						body.subjects
+					}</dd>
+  <dt>${tText('user-item-request-form/views/user-item-request-form___onderwijsniveaus')}</dt><dd>${
+						body.educationLevels
+					}</dd>
 </dl>`,
 					public: false,
 				},

@@ -673,7 +673,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					? tHtml(
 							'collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken'
 					  )
-					: tHtml('collection/components/beschrijving-hoe-collecties-aan-te-maken')}
+					: tHtml(
+							'collection/components/collection-or-bundle-overview___collection-components-beschrijving-hoe-collecties-aan-te-maken'
+					  )}
 			</p>
 			<Spacer margin="top">
 				<Button

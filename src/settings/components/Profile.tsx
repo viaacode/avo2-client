@@ -812,11 +812,6 @@ const Profile: FunctionComponent<
 						<Column size="3-5">
 							{!isPupil && (
 								<>
-									{/*<Box>*/}
-									{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
-									{/*	/!* TODO replace with components from component repo *!/*/}
-									{/*	<div className="c-progress-bar" />*/}
-									{/*</Box>*/}
 									<Spacer margin={['top', 'bottom']}>
 										<Box>
 											<p>

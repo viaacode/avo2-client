@@ -282,7 +282,11 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 						console.error(
 							new CustomError('Failed to delete uploaded file', err, { urlToDelete })
 						);
-						ToastService.danger(tHtml('Het verwijderen van het bestand is mislukt.'));
+						ToastService.danger(
+							tHtml(
+								'shared/components/file-upload/file-upload___het-verwijderen-van-het-bestand-is-mislukt'
+							)
+						);
 					}
 				}}
 			/>

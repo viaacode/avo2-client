@@ -99,7 +99,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 						className="u-remove-link-styling u-color-white o-sidebar__header__side-link"
 						to={APP_PATH.LOGOUT.route}
 					>
-						<span title={tText('Uitloggen')}>
+						<span title={tText('admin/shared/components/sidebar/sidebar___uitloggen')}>
 							<Icon name="log-out" />
 						</span>
 					</Link>
@@ -107,7 +107,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 						className="u-remove-link-styling u-color-white o-sidebar__header__side-link"
 						to={APP_PATH.HOME.route}
 					>
-						<span title={tText('Homepagina')}>
+						<span title={tText('admin/shared/components/sidebar/sidebar___homepagina')}>
 							<Icon name="home" />
 						</span>
 					</Link>

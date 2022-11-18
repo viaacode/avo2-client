@@ -34,7 +34,9 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 				.then(setNavigationItems)
 				.catch((err) => {
 					console.error(new CustomError('Failed to get nav items', err));
-					ToastService.danger(tHtml('Het ophalen van de navigatie items is mislukt'));
+					ToastService.danger(
+						tHtml('admin/admin___het-ophalen-van-de-navigatie-items-is-mislukt')
+					);
 				});
 		} else {
 			setLoadingInfo({

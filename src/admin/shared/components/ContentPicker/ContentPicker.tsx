@@ -112,7 +112,11 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 						selectedType,
 					})
 				);
-				ToastService.danger(tHtml('Het ophalen van de opties is mislukt'));
+				ToastService.danger(
+					tHtml(
+						'admin/shared/components/content-picker/content-picker___het-ophalen-van-de-opties-is-mislukt'
+					)
+				);
 				return [];
 			}
 		},

@@ -179,7 +179,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			await ContentService.deleteContentPage(contentPageInfo);
 
 			ToastService.success(
-				tHtml('admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd')
+				tHtml(
+					'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
+				)
 			);
 
 			history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);

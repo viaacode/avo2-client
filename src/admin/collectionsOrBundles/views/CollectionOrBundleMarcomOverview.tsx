@@ -292,7 +292,11 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 					{ tableState }
 				)
 			);
-			ToastService.danger(tHtml('Het ophalen van de collectie ids is mislukt'));
+			ToastService.danger(
+				tHtml(
+					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___het-ophalen-van-de-collectie-ids-is-mislukt'
+				)
+			);
 		}
 		setIsLoading(false);
 	};

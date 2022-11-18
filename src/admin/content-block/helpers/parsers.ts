@@ -53,7 +53,11 @@ export const parseContentBlocks = (
 						CONTENT_BLOCK_CONFIG_MAP,
 					})
 				);
-				ToastService.danger(tHtml('Er ging iets mis bij het laden van de pagina'));
+				ToastService.danger(
+					tHtml(
+						'admin/content-block/helpers/parsers___er-ging-iets-mis-bij-het-laden-van-de-pagina'
+					)
+				);
 				return null;
 			}
 			const cleanConfig = configForType(contentBlock.position);
