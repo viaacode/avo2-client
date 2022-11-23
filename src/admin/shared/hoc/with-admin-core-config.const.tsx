@@ -14,6 +14,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
+import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { AssetsService } from '../../../shared/services/assets-service/assets.service';
@@ -67,18 +68,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			})
 		),
 		contentPage: {
-			availableContentBlocks: [
-				ContentBlockType.Heading,
-				ContentBlockType.Intro,
-				ContentBlockType.RichText,
-				ContentBlockType.RichTextTwoColumns,
-				ContentBlockType.Buttons,
-				ContentBlockType.Image,
-				ContentBlockType.ImageGrid,
-				ContentBlockType.PageOverview,
-				ContentBlockType.UspGrid,
-				ContentBlockType.Quote,
-			],
+			availableContentBlocks: ContentBlockType,
 			defaultPageWidth: 'LARGE',
 			onSaveContentPage: noop,
 		},
@@ -146,6 +136,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 					value: 'content-page-button--link',
 				},
 			],
+			flowplayer: FlowPlayerWrapper,
 		},
 		services: {
 			toastService: {

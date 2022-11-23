@@ -33,27 +33,27 @@ import { ToastService } from '../../services/toast-service';
 import './FlowPlayerWrapper.scss';
 
 export interface CuePoints {
-	start: number | null;
 	end: number | null;
+	start: number | null;
 }
 
 export type FlowPlayerWrapperProps = {
-	item?: Avo.Item.Item;
-	src?: string | FlowplayerSourceList;
-	poster?: string;
-	external_id?: string;
-	title?: string;
-	duration?: string;
-	organisationName?: string;
-	organisationLogo?: string;
-	issuedDate?: string;
-	annotationTitle?: string;
 	annotationText?: string;
+	annotationTitle?: string;
+	autoplay?: boolean;
 	canPlay?: boolean;
 	cuePoints?: CuePoints;
-	autoplay?: boolean;
-	onPlay?: (playingSrc: string) => void;
+	duration?: string;
+	external_id?: string;
+	issuedDate?: string;
+	item?: Avo.Item.Item;
 	onEnded?: () => void;
+	onPlay?: (playingSrc: string) => void;
+	organisationLogo?: string;
+	organisationName?: string;
+	poster?: string;
+	src?: string | FlowplayerSourceList;
+	title?: string;
 };
 
 /**
