@@ -31,6 +31,7 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ h
 	return (
 		<AdminLayout
 			pageTitle={t('admin/content-page/views/content-page-overview-page___contentoverzicht')}
+			className="c-admin-core"
 			size="full-width"
 		>
 			<AdminLayoutTopBarRight>

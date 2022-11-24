@@ -28,9 +28,9 @@ const ContentPageDetailPage: FunctionComponent<
 				</MetaTags>
 			)}
 			<ContentPageDetail
+				className="c-admin-core"
 				id={id}
 				loaded={setItem}
-				className="c-admin-core"
 				renderBack={() => (
 					<Back
 						onClick={() =>
