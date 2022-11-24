@@ -96,6 +96,7 @@ export interface CollectionOrBundleMarcomTableState extends CollectionOrBundleTa
 	marcom_last_communication_channel_type: string[];
 	marcom_last_communication_at: string;
 	marcom_last_communication_channel_name: string[];
+	marcom_klascement: boolean;
 }
 
 export type CollectionTableStates =

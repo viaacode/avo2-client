@@ -519,6 +519,14 @@ const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
+const getMarcomKlascementColumn = (): FilterableColumn => ({
+	id: 'marcom_klascement',
+	label: i18n.t('admin/collections-or-bundles/collections-or-bundles___klas-cement'),
+	sortable: true,
+	visibleByDefault: true,
+	dataType: TableColumnDataType.boolean,
+});
+
 const getMarcomLastUpdatedByColumn = (): FilterableColumn => ({
 	id: 'last_updated_by_profile',
 	label: i18n.t(
@@ -645,6 +653,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getMarcomLastCommunicationChannelTypeColumn(channelTypeOptions),
 	getMarcomLastCommunicationChannelNameColumn(channelNameOptions),
 	getMarcomLastCommunicationAtColumn(),
+	getMarcomKlascementColumn(),
 	getCollectionIsPublicColumn(),
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
