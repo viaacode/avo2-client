@@ -1,5 +1,6 @@
 import { DutchContentType, EnglishContentType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 import { invert } from 'lodash-es';
 
 export enum ContentTypeNumber {
@@ -28,6 +29,22 @@ const CONTENT_TYPE_TRANSLATIONS = {
 	zoek: 'search',
 	zoekopdracht: 'searchquery',
 };
+
+export function blockTypeToContentType(type: BlockItemBaseSchema['type']): EnglishContentType {
+	let r: string = CONTENT_TYPE_TRANSLATIONS.item;
+
+	switch (type) {
+		case 'COLLECTION':
+			r = CONTENT_TYPE_TRANSLATIONS.collectie;
+			break;
+
+		case 'ZOEK':
+			r = CONTENT_TYPE_TRANSLATIONS.zoek;
+			break;
+	}
+
+	return r as EnglishContentType;
+}
 
 export function toEnglishContentType(label: DutchContentType): EnglishContentType {
 	return CONTENT_TYPE_TRANSLATIONS[label] as EnglishContentType;

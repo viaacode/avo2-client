@@ -37,6 +37,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderCommonMetadata, renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
+import { blockTypeToContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -50,6 +51,7 @@ import {
 } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
+import { getMoreOptionsLabel } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -72,7 +74,6 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { getRelatedItems } from '../../shared/services/related-items-service';
 
 import './BundleDetail.scss';
-import { getMoreOptionsLabel } from '../../shared/constants';
 
 type BundleDetailProps = {
 	id?: string;
@@ -477,7 +478,7 @@ const BundleDetail: FunctionComponent<
 					>
 						<MediaCard
 							className="u-clickable"
-							category="bundle"
+							category={blockTypeToContentType(fragment.type)}
 							orientation="vertical"
 							title={
 								fragment.use_custom_fields
