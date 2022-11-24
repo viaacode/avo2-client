@@ -58,16 +58,25 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 		};
 
 		return (
-			<Modal
-				className={styles['c-translations-overview__modal']}
-				isOpen={isOpen}
-				closeButtonProps={{ hidden: true }}
-				heading={renderHeader()}
-				footer={renderFooter()}
-				onClose={onClose}
-			>
-				{body}
-			</Modal>
+			<>
+				{/* the div disables the background */}
+				<div
+					className={styles['c-translations-overview__modal']}
+					style={{ background: 'black', width: '200vh', height: '100vh', opacity: 0.5 }}
+					hidden={!isOpen}
+					onClick={() => onClose()}
+				/>
+				<Modal
+					className={styles['c-translations-overview__modal']}
+					isOpen={isOpen}
+					closeButtonProps={{ hidden: true }}
+					heading={renderHeader()}
+					footer={renderFooter()}
+					onClose={onClose}
+				>
+					{body}
+				</Modal>
+			</>
 		);
 	};
 
