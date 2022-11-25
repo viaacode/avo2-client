@@ -1,3 +1,11 @@
+import {
+	BlockClickHandler,
+	ContentBlockConfig,
+	ContentBlockPreview,
+	ContentBlockType,
+	ContentPageInfo,
+	ContentPageService,
+} from '@meemoo/admin-core-ui';
 import { BlockImageProps } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { cloneDeep, compact, intersection, noop, set } from 'lodash-es';
@@ -5,16 +13,11 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { ContentBlockPreview } from '../../admin/content-block/components';
-import { ContentService } from '../../admin/content/content.service';
-import { BlockClickHandler, ContentPageInfo } from '../../admin/content/content.types';
-import { ContentBlockConfig, ContentBlockType } from '../../admin/shared/types';
 import { getUserGroupIds } from '../../authentication/authentication.service';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ContentPageService } from '../../shared/services/content-page-service';
 
 import './ContentPage.scss';
 
@@ -82,7 +85,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 
 	const getContentBlocks = (contentPageInfo: ContentPageInfo) => {
 		// Convert editor states to html
-		let contentBlockBlockConfigs = ContentService.convertRichTextEditorStatesToHtml(
+		let contentBlockBlockConfigs = ContentPageService.convertRichTextEditorStatesToHtml(
 			contentPageInfo.contentBlockConfigs || []
 		);
 

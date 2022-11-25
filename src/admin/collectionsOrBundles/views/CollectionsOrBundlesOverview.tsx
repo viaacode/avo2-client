@@ -28,7 +28,6 @@ import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../..
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import AddOrRemoveLinkedElementsModal, {
 	AddOrRemove,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
@@ -45,6 +44,7 @@ import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	GET_COLLECTION_BULK_ACTIONS,
 	GET_COLLECTIONS_COLUMNS,
+	ITEMS_PER_PAGE,
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {

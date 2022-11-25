@@ -21,7 +21,6 @@ import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { dataService } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';
 import i18n from '../../shared/translations/i18n';
-import { ContentPageType } from '../content/content.types';
 
 import { ITEMS_PER_PAGE } from './content-page-label.const';
 import { ContentPageLabel, ContentPageLabelOverviewTableCols } from './content-page-label.types';
@@ -176,7 +175,7 @@ export class ContentPageLabelService {
 	}
 
 	static async getContentPageLabelsByTypeAndLabels(
-		contentType: ContentPageType,
+		contentType: Avo.ContentPage.Type,
 		labels: string[]
 	): Promise<LabelObj[]> {
 		try {
@@ -207,7 +206,7 @@ export class ContentPageLabelService {
 	}
 
 	static async getContentPageLabelsByTypeAndIds(
-		contentType: ContentPageType,
+		contentType: Avo.ContentPage.Type,
 		labelIds: number[]
 	): Promise<LabelObj[]> {
 		try {

@@ -1,7 +1,7 @@
+import { ContentBlockErrors } from '@meemoo/admin-core-ui';
 import { isNumber, pick, pickBy } from 'lodash-es';
 
 import i18n from '../../../shared/translations/i18n';
-import { ContentBlockErrors } from '../types';
 
 // Handle content-block config components/block state validation
 export const validateContentBlockField = (

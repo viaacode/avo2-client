@@ -1,3 +1,4 @@
+import { useContentTypes } from '@meemoo/admin-core-ui';
 import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
@@ -22,7 +23,6 @@ import { ToastService } from '../../../shared/services/toast-service';
 import i18n from '../../../shared/translations/i18n';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
-import { useContentTypes } from '../../content/hooks';
 import { ItemsTableState } from '../../items/items.types';
 import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import FilterTable, {

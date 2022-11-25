@@ -1,7 +1,0 @@
-mutation deleteContentLabelLinks($contentPageId: Int!, $labelIds: [Int!]!) {
-	delete_app_content_content_labels(
-		where: { label_id: { _in: $labelIds }, content_id: { _eq: $contentPageId } }
-	) {
-		affected_rows
-	}
-}

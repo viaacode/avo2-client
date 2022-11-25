@@ -1,3 +1,4 @@
+import { ContentPageInfo, ContentPageService, getPublishedDate } from '@meemoo/admin-core-ui';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
@@ -8,8 +9,6 @@ import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { ContentPageInfo } from '../../admin/content/content.types';
-import { getPublishedDate } from '../../admin/content/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
@@ -36,7 +35,6 @@ import {
 	getFullName,
 	stripHtml,
 } from '../../shared/helpers';
-import { ContentPageService } from '../../shared/services/content-page-service';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';

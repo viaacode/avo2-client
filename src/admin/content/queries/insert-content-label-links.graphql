@@ -1,5 +1,0 @@
-mutation insertContentLabelLinks($objects: [app_content_content_labels_insert_input!]!) {
-	insert_app_content_content_labels(objects: $objects) {
-		affected_rows
-	}
-}

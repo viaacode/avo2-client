@@ -1,5 +1,0 @@
-mutation updateContentBlock($id: Int!, $contentBlock: app_content_blocks_set_input!) {
-	update_app_content_blocks(where: { id: { _eq: $id } }, _set: $contentBlock) {
-		affected_rows
-	}
-}
