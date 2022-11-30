@@ -183,7 +183,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			assetService: AssetsService,
 		},
 		database: {
-			databaseApplicationType: AvoOrHetArchief.hetArchief,
+			databaseApplicationType: AvoOrHetArchief.avo,
 			proxyUrl: getEnv('PROXY_URL'),
 		},
 		flowplayer: {
