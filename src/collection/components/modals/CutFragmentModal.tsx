@@ -161,7 +161,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					showTitle
 					showDescription={false}
 					canPlay={isOpen}
-					cuePoints={{ start, end }}
+					cuePointsLabel={{
+						start: fragmentStartTime,
+						end: fragmentEndTime,
+					}}
 					verticalLayout={isMobileWidth()}
 				/>
 				<TimeCropControls
