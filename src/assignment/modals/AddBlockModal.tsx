@@ -10,9 +10,9 @@ import {
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { BLOCK_ITEM_ICONS } from '../../shared/components/BlockList/BlockList.consts';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
 
 import './AddBlockModal.scss';
@@ -42,7 +42,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 	onClose,
 	onConfirm,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const disableSearchBlock = !!blocks.find(
 		(block) =>
@@ -55,28 +55,28 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ITEM]({
 					item_meta: { type: { label: 'video', id: 0 } },
 				} as BaseBlockWithMeta),
-				title: t('assignment/modals/add-block___kijken-luisteren-fragment'),
-				description: t(
+				title: tHtml('assignment/modals/add-block___kijken-luisteren-fragment'),
+				description: tHtml(
 					'assignment/modals/add-block___voeg-een-fragment-uit-je-werkruimte-toe-om-te-laten-bekijken-of-beluisteren'
 				),
 			},
 			{
 				type: 'COLLECTIE',
 				icon: 'collection',
-				title: t('assignment/modals/add-block___kijken-luisteren-collectie'),
-				description: t(
+				title: tHtml('assignment/modals/add-block___kijken-luisteren-collectie'),
+				description: tHtml(
 					'assignment/modals/add-block___start-je-opdracht-vanaf-een-bestaande-collectie-fragmenten-uit-je-werkruimte'
 				),
 			},
 			{
 				type: AssignmentBlockType.ZOEK as AddBlockModalType,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ZOEK](),
-				title: t('assignment/modals/add-block___zoeken-bouwen'),
+				title: tHtml('assignment/modals/add-block___zoeken-bouwen'),
 				description: disableSearchBlock
-					? t(
+					? tHtml(
 							'assignment/modals/add-block-modal___het-is-niet-mogelijk-om-meer-dan-een-zoekoefening-per-opdracht-te-gebruiken'
 					  )
-					: t(
+					: tHtml(
 							'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
 					  ),
 				disabled: disableSearchBlock,
@@ -84,19 +84,19 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 			{
 				type: AssignmentBlockType.TEXT,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.TEXT](),
-				title: t('assignment/modals/add-block___instructies-tekst'),
-				description: t(
+				title: tHtml('assignment/modals/add-block___instructies-tekst'),
+				description: tHtml(
 					'assignment/modals/add-block___voeg-een-tekstblok-toe-met-instructies-of-wat-extra-informatie'
 				),
 			},
 		],
-		[blocks, t]
+		[blocks, tHtml]
 	);
 
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('assignment/modals/add-block___toevoegen')}
+			title={tText('assignment/modals/add-block___toevoegen')}
 			size="large"
 			onClose={onClose}
 			scrollable

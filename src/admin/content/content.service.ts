@@ -41,10 +41,10 @@ import {
 import { CustomError, sanitizeHtml } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { SanitizePreset } from '../../shared/helpers/sanitize/presets';
+import { tHtml } from '../../shared/helpers/translate';
 import { ContentPageService } from '../../shared/services/content-page-service';
 import { dataService } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';
-import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ContentBlockService } from '../content-block/services/content-block.service';
 import { ContentPageLabel } from '../content-page-labels/content-page-label.types';
@@ -178,7 +178,7 @@ export class ContentService {
 		} catch (err) {
 			console.error('Failed to retrieve content types.', err, { query: 'GET_CONTENT_TYPES' });
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content/content___er-ging-iets-mis-tijdens-het-ophalen-van-de-content-types'
 				)
 			);

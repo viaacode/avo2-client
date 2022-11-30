@@ -1,6 +1,6 @@
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { ROUTE_PARTS } from '../../shared/constants';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 
 import { UserGroup } from './user-group.types';
 
@@ -12,13 +12,13 @@ export const ITEMS_PER_PAGE = 20;
 
 export const GET_SPECIAL_USER_GROUPS: () => Partial<UserGroup>[] = () => [
 	{
-		label: i18n.t(
+		label: tText(
 			'admin/menu/components/menu-edit-form/menu-edit-form___niet-ingelogde-gebruikers'
 		),
 		id: SpecialPermissionGroups.loggedOutUsers,
 	},
 	{
-		label: i18n.t('admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'),
+		label: tText('admin/menu/components/menu-edit-form/menu-edit-form___ingelogde-gebruikers'),
 		id: SpecialPermissionGroups.loggedInUsers,
 	},
 ];

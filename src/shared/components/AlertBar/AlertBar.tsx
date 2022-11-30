@@ -13,7 +13,7 @@ import './AlertBar.scss';
 
 interface AlertBarProps {
 	icon?: IconName;
-	textLeft: string;
+	textLeft: string | ReactNode;
 	contentRight: ReactNode;
 }
 

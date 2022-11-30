@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 
-import { sanitizeHtml } from '../../helpers/sanitize';
+import { sanitizeHtml } from '../../helpers';
 import { SanitizePreset } from '../../helpers/sanitize/presets';
 
 export interface HtmlProps {

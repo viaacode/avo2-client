@@ -18,7 +18,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
@@ -33,6 +32,7 @@ import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { ToastService } from '../../shared/services/toast-service';
 import { QuickLaneUrlObject } from '../../shared/types';
@@ -63,7 +63,7 @@ interface CollectionOrBundleEditAdminProps {
 const CollectionOrBundleEditAdmin: FunctionComponent<
 	CollectionOrBundleEditAdminProps & UserProps
 > = ({ collection, changeCollectionState, history, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [qualityLabels, setQualityLabels] = useState<TagInfo[] | null>(null);
@@ -98,12 +98,12 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-bundles-die-deze-collectie-bevatten-is-mislukt'
 				)
 			);
 		}
-	}, [setBundlesContainingCollection, t, collection]);
+	}, [setBundlesContainingCollection, tText, collection]);
 
 	const fetchQualityLabels = useCallback(async () => {
 		try {
@@ -117,12 +117,12 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch quality labels', err));
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
 				)
 			);
 		}
-	}, [setQualityLabels, t]);
+	}, [setQualityLabels, tText]);
 
 	const fetchAssociatedQuickLanes = useCallback(async () => {
 		try {
@@ -142,12 +142,12 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-admin___het-ophalen-van-de-gedeelde-links-die-naar-deze-collectie-leiden-is-mislukt'
 				)
 			);
 		}
-	}, [setAssociatedQuickLanes, t, collection]);
+	}, [setAssociatedQuickLanes, tText, collection]);
 
 	useEffect(() => {
 		fetchBundlesByCollectionUuid();
@@ -232,8 +232,10 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 					<div
 						title={
 							rowData.is_public
-								? t('collection/components/collection-or-bundle-overview___publiek')
-								: t(
+								? tText(
+										'collection/components/collection-or-bundle-overview___publiek'
+								  )
+								: tText(
 										'collection/components/collection-or-bundle-overview___niet-publiek'
 								  )
 						}
@@ -247,10 +249,10 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 					<Button
 						type="borderless"
 						icon="eye"
-						title={t(
+						title={tText(
 							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-bundel-detail-pagina'
 						)}
-						ariaLabel={t(
+						ariaLabel={tText(
 							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-bundel-detail-pagina'
 						)}
 						onClick={(evt) => {
@@ -269,7 +271,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		<>
 			<Spacer margin={['top-extra-large', 'bottom-small']}>
 				<BlockHeading type="h2">
-					{t(
+					{tText(
 						'collection/components/collection-or-bundle-edit-admin___bundels-die-deze-collectie-bevatten'
 					)}
 				</BlockHeading>
@@ -278,7 +280,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				<Table
 					columns={[
 						{
-							label: t(
+							label: tText(
 								'collection/components/collection-or-bundle-edit-admin___titel'
 							),
 							id: 'title',
@@ -286,7 +288,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							dataType: TableColumnDataType.string,
 						},
 						{
-							label: t(
+							label: tText(
 								'collection/components/collection-or-bundle-edit-admin___auteur'
 							),
 							id: 'author',
@@ -299,13 +301,13 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							sortable: false,
 						},
 						{
-							label: t('admin/items/items___publiek'),
+							label: tText('admin/items/items___publiek'),
 							id: 'is_public',
 							sortable: true,
 							dataType: TableColumnDataType.boolean,
 						},
 						{
-							tooltip: t(
+							tooltip: tText(
 								'collection/components/collection-or-bundle-edit-admin___acties'
 							),
 							id: 'actions',
@@ -322,7 +324,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 					rowKey="id"
 				/>
 			) : (
-				t(
+				tText(
 					'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-in-geen-enkele-bundel-opgenomen'
 				)
 			)}
@@ -333,7 +335,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		<>
 			<Spacer margin={['top-extra-large', 'bottom-small']}>
 				<BlockHeading type="h2">
-					{t(
+					{tText(
 						'collection/components/collection-or-bundle-edit-admin___gedeelde-links-naar-deze-collectie'
 					)}
 				</BlockHeading>
@@ -341,7 +343,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 			{!!associatedQuickLanes && !!associatedQuickLanes.length ? (
 				<AssociatedQuickLaneTable
 					data={associatedQuickLanes}
-					emptyStateMessage={t(
+					emptyStateMessage={tText(
 						'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-nog-niet-gedeeld'
 					)}
 					onColumnClick={handleQuickLaneColumnClick}
@@ -349,7 +351,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 					sortOrder={quickLaneSortOrder}
 				/>
 			) : (
-				t(
+				tText(
 					'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-nog-niet-gedeeld'
 				)
 			)}
@@ -373,7 +375,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 							<Grid>
 								<Column size="3-7">
 									<FormGroup
-										label={t(
+										label={tText(
 											'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
 										)}
 									>
@@ -386,7 +388,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'admin/collections-or-bundles/collections-or-bundles___aangepast-op'
 										)}
 									>
@@ -401,7 +403,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 									</FormGroup>
 									{isCollection && (
 										<FormGroup
-											label={t(
+											label={tText(
 												'collection/components/collection-or-bundle-edit-admin___briefing-s'
 											)}
 										>
@@ -425,7 +427,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 											: PermissionName.EDIT_BUNDLE_LABELS
 									) && (
 										<FormGroup
-											label={t(
+											label={tText(
 												'collection/components/collection-or-bundle-edit-admin___kwaliteitslabels'
 											)}
 										>
@@ -450,7 +452,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 											: PermissionName.EDIT_BUNDLE_AUTHOR
 									) && (
 										<FormGroup
-											label={t(
+											label={tText(
 												'collection/components/collection-or-bundle-edit-admin___eigenaar'
 											)}
 											required
@@ -481,7 +483,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 									) ? (
 										<FormGroup>
 											<Checkbox
-												label={t(
+												label={tText(
 													'collection/components/collection-or-bundle-edit-admin___redactie'
 												)}
 												checked={get(collection, 'is_managed', false)}
@@ -500,14 +502,14 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										</FormGroup>
 									) : (
 										<Spacer margin="top">
-											{`${t(
+											{`${tText(
 												'collection/components/collection-or-bundle-edit-admin___redactie'
 											)}: ${
 												get(collection, 'is_managed', false)
-													? t(
+													? tText(
 															'collection/components/collection-or-bundle-edit-admin___ja'
 													  )
-													: t(
+													: tText(
 															'collection/components/collection-or-bundle-edit-admin___nee'
 													  )
 											}

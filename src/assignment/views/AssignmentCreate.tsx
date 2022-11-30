@@ -10,7 +10,6 @@ import React, {
 	useState,
 } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -19,10 +18,10 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
-import Html from '../../shared/components/Html/Html';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { navigate } from '../../shared/helpers';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -55,14 +54,14 @@ import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Data
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm();
 
 	const form = useForm<AssignmentFormState>({
 		defaultValues,
-		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
 	});
 	const {
 		control,
@@ -109,7 +108,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				);
 
 				ToastService.success(
-					t(
+					tHtml(
 						'assignment/views/assignment-create___de-opdracht-is-succesvol-aangemaakt-je-vindt-deze-in-je-werkruimte'
 					)
 				);
@@ -124,7 +123,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-create___het-opslaan-van-de-opdracht-is-mislukt-contacteer-ons-via-de-feedback-knop-mocht-dit-probleem-zich-blijven-voordoen'
 				)
 			);
@@ -226,15 +225,15 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		() => (
 			<Link className="c-return" to={backToOverview()}>
 				<Icon name="chevron-left" size="small" type="arrows" />
-				{t('assignment/views/assignment-edit___mijn-opdrachten')}
+				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[t, backToOverview]
+		[tText, backToOverview]
 	);
 
 	const renderTitle = useMemo(
 		() => <AssignmentTitle control={control} setAssignment={setAssignment} />,
-		[t, control, setAssignment]
+		[tText, control, setAssignment]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
@@ -256,17 +255,15 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 						{renderedListSorter}
 
 						<EmptyStateMessage
-							title={t(
+							title={tText(
 								'assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten-titel'
 							)}
 							message={
 								<>
 									<strong>
-										<Html
-											content={t(
-												'assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten-beschrijving'
-											)}
-										/>
+										{tHtml(
+											'assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten-beschrijving'
+										)}
 									</strong>
 								</>
 							}
@@ -364,13 +361,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t('assignment/views/assignment-create___maak-opdracht-pagina-titel')
+						tText('assignment/views/assignment-create___maak-opdracht-pagina-titel')
 					)}
 				</title>
 
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'assignment/views/assignment-create___maak-opdracht-pagina-beschrijving'
 					)}
 				/>
@@ -380,7 +377,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				dataObject={assignment}
 				render={renderPageContent}
 				loadingInfo={loadingInfo}
-				notFoundError={t('assignment/views/assignment-edit___de-opdracht-is-niet-gevonden')}
+				notFoundError={tText(
+					'assignment/views/assignment-edit___de-opdracht-is-niet-gevonden'
+				)}
 			/>
 
 			<BeforeUnloadPrompt when={isDirty} />

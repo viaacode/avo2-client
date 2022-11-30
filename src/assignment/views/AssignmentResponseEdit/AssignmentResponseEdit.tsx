@@ -20,7 +20,6 @@ import React, {
 	useState,
 } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
 	JsonParam,
@@ -37,6 +36,7 @@ import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPromp
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../../shared/services/toast-service';
 import {
@@ -97,7 +97,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	onShowPreviewClicked,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Data
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] = useState<Omit<
@@ -118,7 +118,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			pupil_collection_blocks: (assignmentResponseOriginal?.pupil_collection_blocks ||
 				[]) as Omit<PupilCollectionFragment, 'item_meta'>[],
 		},
-		resolver: yupResolver(PUPIL_COLLECTION_FORM_SCHEMA(t)),
+		resolver: yupResolver(PUPIL_COLLECTION_FORM_SCHEMA(tText)),
 		mode: 'onChange',
 	});
 
@@ -186,7 +186,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const handleFormErrors = (...args: any[]) => {
 		if (isPreview) {
 			ToastService.info(
-				t(
+				tHtml(
 					'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
 				)
 			);
@@ -198,7 +198,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		try {
 			if (isPreview) {
 				ToastService.info(
-					t(
+					tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
 					)
 				);
@@ -244,7 +244,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				await onAssignmentChanged();
 
 				ToastService.success(
-					t(
+					tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit___de-collectie-is-opgeslagen'
 					)
 				);
@@ -252,7 +252,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-response-edit/assignment-response-edit___het-opslaan-van-de-collectie-is-mislukt'
 				)
 			);
@@ -281,10 +281,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		() => (
 			<Link className="c-return" to={backToOverview}>
 				<Icon name="chevron-left" size="small" type="arrows" />
-				{t('assignment/views/assignment-edit___mijn-opdrachten')}
+				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[t, backToOverview]
+		[tText, backToOverview]
 	);
 
 	const renderedTitle = useMemo(
@@ -402,7 +402,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 									{!!assignment.answer_url && (
 										<Box backgroundColor="soft-white" condensed>
 											<p>
-												{t(
+												{tText(
 													'assignment/views/assignment-detail___geef-je-antwoorden-in-op'
 												)}{' '}
 												<a href={assignment.answer_url}>
@@ -420,7 +420,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						{pastDeadline && (
 							<Spacer margin={['top-large']}>
 								<Alert type="info">
-									{t(
+									{tText(
 										'assignment/views/assignment-response-edit___deze-opdracht-is-afgelopen-de-deadline-was-deadline',
 										{
 											deadline,

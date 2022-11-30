@@ -9,11 +9,11 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
 
 import './AutoplayCollectionModal.scss';
@@ -29,7 +29,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	onClose,
 	collectionFragments,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const [sourceList, setSourceList] = useState<FlowplayerSourceList | null>(null);
 
 	const fetchPlayableUrls = useCallback(async () => {
@@ -83,7 +83,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
+			title={tText(
 				'collection/components/modals/autoplay-collection-modal___speel-de-collectie-af'
 			)}
 			size="extra-large"

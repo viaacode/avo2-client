@@ -9,7 +9,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -24,6 +23,7 @@ import {
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../content/content.const';
@@ -51,7 +51,7 @@ type CollectionOrBundleQualityCheckOverviewProps = DefaultSecureRouteProps;
 const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 	CollectionOrBundleQualityCheckOverviewProps
 > = ({ location, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);
@@ -74,7 +74,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
+				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
 				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
 					NULL_FILTER
 				),
@@ -89,14 +89,14 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 				})
 			),
 		],
-		[tableState, userGroups, t]
+		[tableState, userGroups, tText]
 	);
 
 	const collectionLabelOptions = useMemo(
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t(
+				label: tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 				),
 				checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
@@ -111,14 +111,14 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 				})
 			),
 		],
-		[collectionLabels, t, tableState]
+		[collectionLabels, tText, tableState]
 	);
 
 	const organisationOptions = useMemo(
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t(
+				label: tText(
 					'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___geen-organisatie'
 				),
 				checked: get(tableState, 'organisation', [] as string[]).includes(NULL_FILTER),
@@ -133,7 +133,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 				})
 			),
 		],
-		[organisations, t, tableState]
+		[organisations, tText, tableState]
 	);
 
 	const tableColumns = useMemo(
@@ -204,17 +204,17 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t(
+					? tText(
 							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___het-ophalen-van-de-collectie-actualisaties-is-mislukt'
 					  )
-					: t(
+					: tText(
 							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___het-ophalen-van-de-bundel-actualisaties-is-mislukt'
 					  ),
 			});
 		}
 
 		setIsLoading(false);
-	}, [tableColumns, tableState, generateWhereObject, isCollection, t]);
+	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();
@@ -244,7 +244,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t(
+				tHtml(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___je-hebt-num-of-selected-collections-collecties-geselecteerd',
 					{
 						numOfSelectedCollections: collectionIds.length,
@@ -260,7 +260,11 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 					{ tableState }
 				)
 			);
-			ToastService.danger('Het ophalen van de collectie ids is mislukt');
+			ToastService.danger(
+				tHtml(
+					'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___het-ophalen-van-de-collectie-ids-is-mislukt'
+				)
+			);
 		}
 		setIsLoading(false);
 	};
@@ -274,7 +278,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 			{ id: rowData.id, tabId: 'quality_check' }
 		);
 		switch (columnId) {
-			case 'title':
+			case 'title': {
 				return (
 					<Link to={editLink}>
 						<span>{truncate((rowData as any)[columnId] || '-', { length: 50 })}</span>
@@ -294,6 +298,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 						)}
 					</Link>
 				);
+			}
 
 			case 'actions':
 				return (
@@ -304,19 +309,19 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 								icon="edit"
 								ariaLabel={
 									isCollection
-										? t(
+										? tText(
 												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
 										  )
-										: t(
+										: tText(
 												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
 										  )
 								}
 								title={
 									isCollection
-										? t(
+										? tText(
 												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
 										  )
-										: t(
+										: tText(
 												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
 										  )
 								}
@@ -333,14 +338,14 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={t(
+				message={tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___er-bestaan-nog-geen-collecties'
 				)}
 			>
 				<p>
-					<Trans i18nKey="admin/collections-or-bundles/views/collections-or-bundles-overview___beschrijving-wanneer-er-nog-geen-collecties-zijn">
-						Beschrijving wanneer er nog geen collecties zijn
-					</Trans>
+					{tHtml(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___beschrijving-wanneer-er-nog-geen-collecties-zijn'
+					)}
 				</p>
 			</ErrorView>
 		);
@@ -357,15 +362,15 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___zoek-op-titel-beschrijving-auteur'
 					)}
 					noContentMatchingFiltersMessage={
 						isCollection
-							? t(
+							? tText(
 									'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___er-zijn-geen-collectie-kwaliteitscontrole-items-die-voldoen-aan-de-opgegeven-filters'
 							  )
-							: t(
+							: tText(
 									'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___er-zijn-geen-bundel-kwaliteitscontrole-items-die-voldoen-aan-de-opgegeven-filters'
 							  )
 					}
@@ -386,10 +391,10 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 		<AdminLayout
 			pageTitle={
 				isCollection
-					? t(
+					? tText(
 							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collecties-kwaliteitscontrole'
 					  )
-					: t(
+					: tText(
 							'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundels-kwaliteitscontrole'
 					  )
 			}
@@ -400,10 +405,10 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
-								? t(
+								? tText(
 										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-titel'
 								  )
-								: t(
+								: tText(
 										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-titel'
 								  )
 						)}
@@ -412,10 +417,10 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 						name="description"
 						content={
 							isCollection
-								? t(
+								? tText(
 										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collectie-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
 								  )
-								: t(
+								: tText(
 										'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundel-kwaliteitscontrole-beheer-overview-pagina-beschrijving'
 								  )
 						}

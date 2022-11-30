@@ -18,19 +18,19 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, isMobileWidth } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
+import { tText } from '../../shared/helpers/translate';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
-import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import './AddItemsModals.scss';
@@ -45,19 +45,19 @@ enum AddBookmarkFragmentColumn {
 const GET_ADD_BOOKMARK_FRAGMENT_COLUMNS = (): TableColumn[] => [
 	{
 		id: AddBookmarkFragmentColumn.contentTitle,
-		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___titel'),
+		label: tText('assignment/modals/add-bookmark-fragment-modal___titel'),
 		sortable: true,
 		dataType: 'string',
 	},
 	{
 		id: AddBookmarkFragmentColumn.contentDuration,
-		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___speelduur'),
+		label: tText('assignment/modals/add-bookmark-fragment-modal___speelduur'),
 		sortable: true,
 		dataType: 'string',
 	},
 	{
 		id: AddBookmarkFragmentColumn.createdAt,
-		label: i18n.t('assignment/modals/add-bookmark-fragment-modal___laatst-toegevoegd'),
+		label: tText('assignment/modals/add-bookmark-fragment-modal___laatst-toegevoegd'),
 		sortable: true,
 		dataType: 'dateTime',
 	},
@@ -96,7 +96,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 		return;
 	},
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
@@ -135,12 +135,12 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 			console.error(new CustomError('Failed to get bookmarks', err));
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'assignment/modals/add-bookmark-fragment-modal___het-ophalen-van-bladwijzers-is-mislukt'
 				),
 			});
 		}
-	}, [tableColumns, user, filterString, sortColumn, sortOrder, t]);
+	}, [tableColumns, user, filterString, sortColumn, sortOrder, tText]);
 
 	useEffect(() => {
 		if (bookmarks) {
@@ -159,7 +159,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 	const handleImportToAssignment = () => {
 		if (!selectedBookmarkId) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/modals/add-bookmark-fragment-modal___gelieve-een-fragment-te-selecteren'
 				)
 			);
@@ -238,10 +238,12 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 						data={bookmarks || undefined}
 						emptyStateMessage={
 							filterString
-								? t(
+								? tText(
 										'workspace/assignments/create___er-zijn-geen-bladwijzers-die-voldoen-aan-de-zoekopdracht'
 								  )
-								: t('workspace/assignments/create___geen-bladwijzers-aangemaakt')
+								: tText(
+										'workspace/assignments/create___geen-bladwijzers-aangemaakt'
+								  )
 						}
 						renderCell={(rowData: BookmarkInfo, colKey: string) =>
 							renderCell(rowData, colKey as AddBookmarkFragmentColumn)
@@ -266,7 +268,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
+			title={tText(
 				'assignment/modals/add-bookmark-fragment-modal___fragment-toevoegen-uit-bladwijzers'
 			)}
 			size="large"
@@ -286,12 +288,12 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 				<ButtonToolbar>
 					<Button
 						type="secondary"
-						label={t('assignment/modals/add-bookmark-fragment-modal___annuleer')}
+						label={tText('assignment/modals/add-bookmark-fragment-modal___annuleer')}
 						onClick={onClose}
 					/>
 					<Button
 						type="primary"
-						label={t('assignment/modals/add-bookmark-fragment-modal___voeg-toe')}
+						label={tText('assignment/modals/add-bookmark-fragment-modal___voeg-toe')}
 						onClick={handleImportToAssignment}
 					/>
 				</ButtonToolbar>

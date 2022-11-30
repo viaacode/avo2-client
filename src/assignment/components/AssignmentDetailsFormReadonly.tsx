@@ -1,9 +1,9 @@
 import { DefaultProps, Form, FormGroup } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { formatTimestamp } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { Assignment_v2_With_Labels } from '../assignment.types';
 
 import './AssignmentDetailsForm.scss';
@@ -17,12 +17,12 @@ const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & Def
 	className,
 	style,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	return (
 		<div className={classnames('c-assignment-details-form', className)} style={style}>
 			<Form>
-				<FormGroup label={t('assignment/assignment___klas')}>
+				<FormGroup label={tText('assignment/assignment___klas')}>
 					<p>
 						{assignment.labels
 							.filter((item) => item.assignment_label.type === 'CLASS')
@@ -31,7 +31,7 @@ const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & Def
 					</p>
 				</FormGroup>
 
-				<FormGroup label={t('assignment/assignment___label')}>
+				<FormGroup label={tText('assignment/assignment___label')}>
 					<p>
 						{assignment.labels
 							.filter((item) => item.assignment_label.type === 'LABEL')
@@ -40,16 +40,16 @@ const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & Def
 					</p>
 				</FormGroup>
 
-				<FormGroup label={t('assignment/assignment___beschikbaar-vanaf')}>
+				<FormGroup label={tText('assignment/assignment___beschikbaar-vanaf')}>
 					<p>{formatTimestamp(assignment.available_at) || '-'}</p>
 				</FormGroup>
 
-				<FormGroup label={t('assignment/assignment___deadline')}>
+				<FormGroup label={tText('assignment/assignment___deadline')}>
 					<p>{formatTimestamp(assignment.deadline_at) || '-'}</p>
 				</FormGroup>
 
 				<FormGroup
-					label={`${t('assignment/assignment___link')} (${t(
+					label={`${tText('assignment/assignment___link')} (${tText(
 						'assignment/assignment___optioneel'
 					)})`}
 				>

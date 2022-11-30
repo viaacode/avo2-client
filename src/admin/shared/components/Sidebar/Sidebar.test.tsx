@@ -1,7 +1,7 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 
 import Sidebar from './Sidebar';
 
@@ -9,12 +9,12 @@ const sidebarProps = {
 	headerLink: '/beheer',
 	navItems: [
 		{
-			label: i18n.t('admin/shared/components/sidebar/sidebar___navigatie'),
+			label: tText('admin/shared/components/sidebar/sidebar___navigatie'),
 			location: '/beheer/navigatie',
 			key: 'navigatie',
 		},
 		{
-			label: i18n.t('admin/shared/components/sidebar/sidebar___content'),
+			label: tText('admin/shared/components/sidebar/sidebar___content'),
 			location: '/beheer/content',
 			key: 'content',
 		},

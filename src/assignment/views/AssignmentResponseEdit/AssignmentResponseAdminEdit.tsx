@@ -8,7 +8,6 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -21,6 +20,7 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
@@ -41,7 +41,7 @@ import './AssignmentResponseEdit.scss';
 const AssignmentResponseAdminEdit: FunctionComponent<
 	UserProps & DefaultSecureRouteProps<{ assignmentId: string; responseId: string }>
 > = ({ match, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Data
 	const assignmentId = match.params.assignmentId;
@@ -67,7 +67,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
 			if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENT_RESPONSES)) {
 				setAssignmentError({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-response-edit/assignment-response-admin-edit___enkel-een-admin-kan-leerlingencollecties-bewerken'
 					),
 					icon: 'user-student',
@@ -80,7 +80,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			setAssignmentError(null);
 			if (!user.profile?.id) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id'
 					)
 				);
@@ -108,7 +108,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			);
 			if (!response) {
 				setAssignmentError({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-response-edit/assignment-response-admin-edit___de-leerlingencollectie-kon-niet-opgehaald-worden'
 					),
 					icon: 'user-student',
@@ -151,7 +151,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 				<ErrorView
 					message={
 						assignmentError.message ||
-						t(
+						tText(
 							'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
 						)
 					}
@@ -162,7 +162,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 		if (!assignment) {
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden'
 					)}
 					icon={'search'}
@@ -193,7 +193,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 		if (!assignmentResponse) {
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
 					)}
 					icon="alert-triangle"
@@ -229,7 +229,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t(
+						tText(
 							'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-titel'
 						)
 					)}
@@ -237,7 +237,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-beschrijving'
 					)}
 				/>

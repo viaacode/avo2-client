@@ -23,7 +23,6 @@ import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { AssignmentOverview } from '../../assignment/views';
@@ -61,6 +60,7 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
+import useTranslation from '../../shared/hooks/useTranslation';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
@@ -99,7 +99,7 @@ interface WorkspacePermissions {
 }
 
 const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
@@ -171,12 +171,12 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'
 					),
 				});
 			});
-	}, [user, t, setPermissions]);
+	}, [user, tText, setPermissions]);
 
 	// Make map for available tab views
 	useEffect(() => {
@@ -269,7 +269,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				  }
 				: empty,
 		});
-	}, [tabCounts, permissions, t, history, location, match, user, updatePermissionsAndCounts]);
+	}, [tabCounts, permissions, tText, history, location, match, user, updatePermissionsAndCounts]);
 
 	const goToTab = useCallback(
 		(id: ReactText) => {
@@ -309,14 +309,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			} else {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken'
 					),
 					icon: 'lock',
 				});
 			}
 		}
-	}, [setLoadingInfo, getActiveTab, t, permissions, tabs]);
+	}, [setLoadingInfo, getActiveTab, tText, permissions, tabs]);
 
 	const getNavTabs = useCallback(() => {
 		return compact(
@@ -425,9 +425,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					permissions.canCreateAssignments && (
 						<Button
 							type="primary"
-							label={t('workspace/views/workspace___nieuwe-opdracht')}
+							label={tText('workspace/views/workspace___nieuwe-opdracht')}
 							onClick={handleCreateNewAssignmentClick}
-							title={t(
+							title={tText(
 								'workspace/views/workspace___maak-een-opdracht-voor-je-leerlingen'
 							)}
 						/>
@@ -450,9 +450,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						<Toolbar>
 							<ToolbarLeft>
 								<BlockHeading type="h2" className="u-m-0">
-									<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">
-										Mijn Werkruimte
-									</Trans>
+									{tHtml('workspace/views/workspace___mijn-werkruimte')}
 								</BlockHeading>
 							</ToolbarLeft>
 
@@ -485,12 +483,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t('workspace/views/workspace___mijn-werkruimte-pagina-titel')
+						tText('workspace/views/workspace___mijn-werkruimte-pagina-titel')
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t('workspace/views/workspace___mijn-werkruimte-pagina-beschrijving')}
+					content={tText(
+						'workspace/views/workspace___mijn-werkruimte-pagina-beschrijving'
+					)}
 				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent

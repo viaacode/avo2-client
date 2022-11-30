@@ -3,7 +3,6 @@ import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import {
 	FlowPlayerWrapper,
@@ -11,6 +10,7 @@ import {
 	LoadingInfo,
 } from '../../../../../shared/components';
 import { CustomError } from '../../../../../shared/helpers';
+import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { ItemsService } from '../../../../items/items.service';
 
@@ -43,7 +43,7 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 	width,
 	autoplay,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [videoStill, setVideoStill] = useState<string>();
@@ -68,12 +68,12 @@ const MediaPlayerWrapper: FunctionComponent<MediaPlayerWrapperProps> = ({
 				new CustomError('Failed to fetch item info from the database', err, { item })
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content-block/components/wrappers/media-player-wrapper/media-player-wrapper___het-ophalen-van-het-fragment-is-mislukt'
 				)
 			);
 		}
-	}, [item, src, poster, t]);
+	}, [item, src, poster, tText]);
 
 	useEffect(() => {
 		retrieveMediaItem();

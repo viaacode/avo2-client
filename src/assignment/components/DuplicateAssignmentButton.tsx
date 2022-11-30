@@ -1,7 +1,7 @@
 import { Button, ButtonProps, DefaultProps } from '@viaa/avo2-components';
 import React, { FC, MouseEvent } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../shared/hooks/useTranslation';
 import { Assignment_v2 } from '../assignment.types';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
@@ -15,23 +15,25 @@ const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps> = ({
 	assignment,
 	...props
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	return (
 		<Button
-			altTitle={t(
+			altTitle={tText(
 				'assignment/components/duplicate-assignment-button___dupliceer-de-opdracht'
 			)}
-			ariaLabel={t(
+			ariaLabel={tText(
 				'assignment/components/duplicate-assignment-button___dupliceer-de-opdracht'
 			)}
-			label={t('assignment/components/duplicate-assignment-button___dupliceer')}
-			title={t('assignment/components/duplicate-assignment-button___dupliceer-de-opdracht')}
+			label={tText('assignment/components/duplicate-assignment-button___dupliceer')}
+			title={tText(
+				'assignment/components/duplicate-assignment-button___dupliceer-de-opdracht'
+			)}
 			type="borderless"
 			icon="copy"
 			{...props}
 			onClick={async (e) => {
-				const res = await duplicateAssignment(t, assignment);
+				const res = await duplicateAssignment(assignment);
 				props?.onClick && props?.onClick(e, res);
 			}}
 		/>

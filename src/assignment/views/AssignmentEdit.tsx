@@ -11,7 +11,6 @@ import React, {
 	useState,
 } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -25,6 +24,7 @@ import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
@@ -68,7 +68,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	user,
 	history,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Data
 	const [original, setOriginal] = useState<Assignment_v2_With_Blocks | null>(null);
@@ -89,7 +89,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		trigger,
 	} = useForm<AssignmentFormState>({
 		defaultValues: useMemo(() => original || undefined, [original]),
-		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(t)),
+		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
 	});
 
 	const updateBlocksInAssignmentState = (newBlocks: BaseBlockWithMeta[]) => {
@@ -128,7 +128,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			} catch (err) {
 				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
 					setAssigmentError({
-						message: t(
+						message: tText(
 							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 						),
 						icon: 'lock',
@@ -138,7 +138,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					return;
 				}
 				setAssigmentError({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
 					icon: 'alert-triangle',
@@ -150,7 +150,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			if (!tempAssignment) {
 				setAssigmentError({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
 					icon: 'alert-triangle',
@@ -170,7 +170,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				))
 			) {
 				setAssigmentError({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 					),
 					icon: 'lock',
@@ -188,14 +188,14 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
 			setAssigmentError({
-				message: t(
+				message: tText(
 					'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
 				),
 				icon: 'alert-triangle',
 			});
 		}
 		setAssigmentLoading(false);
-	}, [user, match.params.id, t, history, setOriginal, setAssignment]);
+	}, [user, match.params.id, tText, history, setOriginal, setAssignment]);
 
 	// Events
 
@@ -206,14 +206,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 		if (assignment?.deadline_at && isPast(new Date(assignment?.deadline_at))) {
 			ToastService.danger(
-				t('assignment/views/assignment-edit___de-deadline-mag-niet-in-het-verleden-liggen')
+				tHtml(
+					'assignment/views/assignment-edit___de-deadline-mag-niet-in-het-verleden-liggen'
+				)
 			);
 			return;
 		}
 
 		if (isDeadlineBeforeAvailableAt(assignment?.available_at, assignment?.deadline_at)) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
 				)
 			);
@@ -262,13 +264,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				await fetchAssignment();
 
 				ToastService.success(
-					t('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
+					tHtml('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
 				);
 			}
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
+				tHtml('assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt')
 			);
 		}
 	};
@@ -360,15 +362,15 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		() => (
 			<Link className="c-return" to={backToOverview()}>
 				<Icon name="chevron-left" size="small" type="arrows" />
-				{t('assignment/views/assignment-edit___mijn-opdrachten')}
+				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[t, backToOverview]
+		[tText, backToOverview]
 	);
 
 	const renderTitle = useMemo(
 		() => <AssignmentTitle control={control} setAssignment={setAssignment} />,
-		[t, control, setAssignment]
+		[tText, control, setAssignment]
 	);
 
 	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
@@ -507,7 +509,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					{pastDeadline && (
 						<Spacer margin={['top-large']}>
 							<Alert type="info">
-								{t(
+								{tText(
 									'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
 								)}
 							</Alert>
@@ -571,13 +573,13 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t('assignment/views/assignment-edit___bewerk-opdracht-pagina-titel')
+						tText('assignment/views/assignment-edit___bewerk-opdracht-pagina-titel')
 					)}
 				</title>
 
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
 					)}
 				/>
