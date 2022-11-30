@@ -36,6 +36,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderCommonMetadata, renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
+import { blockTypeToContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -488,7 +489,7 @@ const BundleDetail: FunctionComponent<
 					>
 						<MediaCard
 							className="u-clickable"
-							category="bundle"
+							category={blockTypeToContentType(fragment.type)}
 							orientation="vertical"
 							title={
 								fragment.use_custom_fields

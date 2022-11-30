@@ -1,11 +1,5 @@
-import {
-	Flex,
-	FlowplayerSourceItem,
-	FlowplayerSourceList,
-	Modal,
-	ModalBody,
-	Spinner,
-} from '@viaa/avo2-components';
+import { FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
+import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';

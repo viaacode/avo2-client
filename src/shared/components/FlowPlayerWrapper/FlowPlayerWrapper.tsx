@@ -1,8 +1,6 @@
+import { FlowPlayer, FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
 import {
 	AspectRatioWrapper,
-	FlowPlayer,
-	FlowplayerSourceItem,
-	FlowplayerSourceList,
 	Icon,
 	MediaCard,
 	MediaCardThumbnail,

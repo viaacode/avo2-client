@@ -1,4 +1,5 @@
-import { convertToHtml, setPlayingVideoSeekTime } from '@viaa/avo2-components';
+import { setPlayingVideoSeekTime } from '@meemoo/react-components';
+import { convertToHtml } from '@viaa/avo2-components';
 import React, { FC, useCallback, useEffect, useRef } from 'react';
 
 import { parseDuration } from '../../helpers';
