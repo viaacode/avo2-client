@@ -17,7 +17,11 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	contentTypeOptions: CheckboxOption[],
 	userGroupOptions: CheckboxOption[],
 	contentPageLabelOptions: CheckboxOption[]
-) => FilterableColumn[] = (contentTypeOptions, userGroupOptions, contentPageLabelOptions) => [
+) => FilterableColumn<ContentOverviewTableCols>[] = (
+	contentTypeOptions,
+	userGroupOptions,
+	contentPageLabelOptions
+) => [
 	{
 		id: 'title',
 		label: tText('admin/content/content___titel'),

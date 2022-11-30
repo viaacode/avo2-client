@@ -13,7 +13,7 @@ import { QuickLaneService } from '../../quick-lane/quick-lane.service';
 import { DeleteObjectModal, LoadingInfo } from '../../shared/components';
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { QUICK_LANE_COLUMNS, QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
+import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../shared/constants/quick-lane';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
@@ -63,9 +63,9 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 
 	// Configuration
 
-	const columns: FilterableColumn[] = [
+	const columns: FilterableColumn<QuickLaneColumn>[] = [
 		{
-			id: QUICK_LANE_COLUMNS.TITLE,
+			id: 'title',
 			label: tText('workspace/views/quick-lane-overview___titel'),
 			sortable: true,
 			dataType: TableColumnDataType.string,
@@ -76,56 +76,56 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			? []
 			: [
 					{
-						id: QUICK_LANE_COLUMNS.CONTENT_LABEL,
+						id: 'content_label' as const,
 						label: tText('workspace/views/quick-lane-overview___type'),
 						sortable: true,
 						dataType: TableColumnDataType.string,
 						visibleByDefault: true,
-						filterType: 'CheckboxDropdownModal',
+						filterType: 'CheckboxDropdownModal' as const,
 						filterProps: { options: getTypeOptions() },
 					},
 
 					...(isOrganisational(user)
 						? [
 								{
-									id: QUICK_LANE_COLUMNS.AUTHOR,
+									id: 'author' as const,
 									label: tText(
 										'workspace/views/quick-lane-overview___aangemaakt-door'
 									),
 									sortable: true,
 									dataType: TableColumnDataType.string,
 									visibleByDefault: true,
-									filterType: 'MultiUserSelectDropdown',
+									filterType: 'MultiUserSelectDropdown' as const,
 								},
 						  ]
 						: []),
 
 					...[
 						{
-							id: QUICK_LANE_COLUMNS.CREATED_AT,
+							id: 'created_at' as const,
 							label: tText('workspace/views/quick-lane-overview___aangemaakt-op'),
 							sortable: true,
 							dataType: TableColumnDataType.dateTime,
 							visibleByDefault: true,
-							filterType: 'DateRangeDropdown',
+							filterType: 'DateRangeDropdown' as const,
 						},
 						// Disabled due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
 						// {
-						// 	id: QUICK_LANE_COLUMNS.UPDATED_AT,
+						// 	id: 'updated_at' as const,
 						// 	label: tText('workspace/views/quick-lane-overview___aangepast-op'),
 						// 	sortable: true,
 						// 	dataType: TableColumnDataType.dateTime,
 						// 	visibleByDefault: true,
-						// 	filterType: 'DateRangeDropdown',
+						// 	filterType: 'DateRangeDropdown' as const,
 						// },
 					],
 			  ]),
 		{
-			id: QUICK_LANE_COLUMNS.ACTIONS,
+			id: 'action',
 			sortable: false,
 			visibleByDefault: true,
 		},
-	] as FilterableColumn[];
+	];
 
 	// Data
 
@@ -263,7 +263,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 
 	// Rendering
 
-	const renderCell = (data: QuickLaneUrlObject, id: string) => (
+	const renderCell = (data: QuickLaneUrlObject, id: QuickLaneColumn) => (
 		<QuickLaneFilterTableCell
 			id={id}
 			data={data}
@@ -352,7 +352,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						setFilters(state as QuickLaneOverviewFilterState);
 					}
 				}}
-				renderCell={renderCell}
+				renderCell={renderCell as any}
 				renderNoResults={() => <h1>NoResults</h1>}
 				searchTextPlaceholder={tText(
 					'workspace/views/quick-lane-overview___zoek-op-titel-of-naam-van-de-auteur'

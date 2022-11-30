@@ -2,13 +2,13 @@ import React, { FC, ReactNode } from 'react';
 
 import { isCollection, isItem } from '../../../quick-lane/quick-lane.helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { QUICK_LANE_COLUMNS } from '../../constants/quick-lane';
+import { QuickLaneColumn } from '../../constants/quick-lane';
 import { formatDate, formatTimestamp } from '../../helpers';
 import { QuickLaneUrlObject } from '../../types';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
 interface QuickLaneFilterTableCellProps {
-	id: string;
+	id: QuickLaneColumn;
 	data: QuickLaneUrlObject;
 	actions?: (data?: QuickLaneUrlObject) => ReactNode;
 }
@@ -38,7 +38,7 @@ const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 	};
 
 	switch (id) {
-		case QUICK_LANE_COLUMNS.TITLE:
+		case 'title':
 			return data.title.length <= 0 ? (
 				<span className="u-text-muted">
 					{tHtml('workspace/views/quick-lane-overview___geen')}
@@ -47,20 +47,20 @@ const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 				<QuickLaneLink id={data.id} label={data.title} />
 			);
 
-		case QUICK_LANE_COLUMNS.CONTENT_LABEL:
+		case 'content_label':
 			return <span>{getItemTypeLabel(data)}</span>;
 
-		case QUICK_LANE_COLUMNS.AUTHOR:
+		case 'author':
 			return <span>{data.owner?.user.full_name || '-'}</span>;
 
-		case QUICK_LANE_COLUMNS.CREATED_AT:
-		case QUICK_LANE_COLUMNS.UPDATED_AT:
+		case 'created_at':
+		case 'updated_at':
 			return getItemTimestamp(data);
 
-		case QUICK_LANE_COLUMNS.ORGANISATION:
+		case 'organisation':
 			return <span>{data.owner?.organisation?.name || '-'}</span>;
 
-		case QUICK_LANE_COLUMNS.ACTIONS:
+		case 'action':
 			return <>{actions(data)}</>;
 	}
 
