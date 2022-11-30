@@ -12,9 +12,9 @@ import { noop } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { FlowPlayerWrapper } from '../../../shared/components';
+import { ItemVideoDescription } from '../../../item/components';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
-import { toSeconds } from '../../../shared/helpers';
+import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import { ToastService } from '../../../shared/services';
@@ -150,22 +150,22 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		<Modal
 			isOpen={isOpen}
 			title={t('collection/components/modals/cut-fragment-modal___knip-fragment')}
-			size="medium"
+			size="auto"
 			onClose={onClose}
 			scrollable
 			className="m-cut-fragment-modal"
 		>
 			<ModalBody>
-				<FlowPlayerWrapper
-					item={itemMetaData}
-					external_id={itemMetaData.external_id}
-					duration={itemMetaData.duration}
-					title={itemMetaData.title}
+				<ItemVideoDescription
+					itemMetaData={itemMetaData}
+					showTitle
+					showDescription={false}
+					canPlay={isOpen}
 					cuePointsLabel={{
 						start: fragmentStartTime,
 						end: fragmentEndTime,
 					}}
-					canPlay={isOpen}
+					verticalLayout={isMobileWidth()}
 				/>
 				<TimeCropControls
 					className="u-spacer-top-l u-spacer-bottom-l"
