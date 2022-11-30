@@ -26,7 +26,6 @@ import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -37,6 +36,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderCommonMetadata, renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
+import { blockTypeToContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -66,6 +66,7 @@ import {
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -85,7 +86,7 @@ type BundleDetailProps = {
 const BundleDetail: FunctionComponent<
 	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
 > = ({ history, location, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [bundleId, setBundleId] = useState(id || match.params.id);
@@ -197,7 +198,9 @@ const BundleDetail: FunctionComponent<
 			if (!bundleObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
+					message: tText(
+						'bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'
+					),
 					icon: 'search',
 				});
 				return;
@@ -252,7 +255,7 @@ const BundleDetail: FunctionComponent<
 						})
 					);
 					ToastService.danger(
-						t(
+						tHtml(
 							'bundle/views/bundle-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
 						)
 					);
@@ -269,7 +272,7 @@ const BundleDetail: FunctionComponent<
 							limit: 4,
 						});
 						ToastService.danger(
-							t(
+							tHtml(
 								'bundle/views/bundle-detail___het-ophalen-van-de-gerelateerde-bundels-is-mislukt'
 							)
 						);
@@ -293,13 +296,13 @@ const BundleDetail: FunctionComponent<
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'bundle/views/bundle-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-bundel'
 				),
 				icon: 'alert-triangle',
 			});
 		});
-	}, [user, bundleId, setLoadingInfo, setShowLoginPopup, t]);
+	}, [user, bundleId, setLoadingInfo, setShowLoginPopup, tText]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && bundle && !isNil(showLoginPopup)) {
@@ -330,12 +333,12 @@ const BundleDetail: FunctionComponent<
 
 			history.push(APP_PATH.WORKSPACE.route);
 			ToastService.success(
-				t('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
+				tHtml('bundle/views/bundle-detail___de-bundel-werd-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t('bundle/views/bundle-detail___het-verwijderen-van-de-bundel-is-mislukt')
+				tHtml('bundle/views/bundle-detail___het-verwijderen-van-de-bundel-is-mislukt')
 			);
 		}
 	};
@@ -344,7 +347,7 @@ const BundleDetail: FunctionComponent<
 		try {
 			if (!bundle) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'bundle/views/bundle-detail___de-bundel-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 					)
 				);
@@ -352,7 +355,7 @@ const BundleDetail: FunctionComponent<
 			}
 			if (!user) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 					)
 				);
@@ -377,12 +380,14 @@ const BundleDetail: FunctionComponent<
 			defaultGoToDetailLink(history)(duplicateBundle.id, 'bundel');
 			setBundleId(duplicateBundle.id);
 			ToastService.success(
-				t('bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie')
+				tHtml(
+					'bundle/views/bundle-detail___de-bundel-is-gekopieerd-u-kijkt-nu-naar-de-kopie'
+				)
 			);
 		} catch (err) {
 			console.error('Failed to copy bundle', err, { originalBundle: bundle });
 			ToastService.danger(
-				t('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
+				tHtml('bundle/views/bundle-detail___het-kopieren-van-de-bundel-is-mislukt')
 			);
 		}
 	};
@@ -423,7 +428,7 @@ const BundleDetail: FunctionComponent<
 	const toggleBookmark = async () => {
 		if (!user) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 				)
 			);
@@ -442,8 +447,8 @@ const BundleDetail: FunctionComponent<
 			});
 			ToastService.success(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('bundle/views/bundle-detail___de-beladwijzer-is-verwijderd')
-					: t('bundle/views/bundle-detail___de-bladwijzer-is-aangemaakt')
+					? tHtml('bundle/views/bundle-detail___de-beladwijzer-is-verwijderd')
+					: tHtml('bundle/views/bundle-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {
 			console.error(
@@ -456,8 +461,12 @@ const BundleDetail: FunctionComponent<
 			);
 			ToastService.danger(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('bundle/views/bundle-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
-					: t('bundle/views/bundle-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
+					? tHtml(
+							'bundle/views/bundle-detail___het-verwijderen-van-de-bladwijzer-is-mislukt'
+					  )
+					: tHtml(
+							'bundle/views/bundle-detail___het-aanmaken-van-de-bladwijzer-is-mislukt'
+					  )
 			);
 		}
 	};
@@ -480,7 +489,7 @@ const BundleDetail: FunctionComponent<
 					>
 						<MediaCard
 							className="u-clickable"
-							category="bundle"
+							category={blockTypeToContentType(fragment.type)}
 							orientation="vertical"
 							title={
 								fragment.use_custom_fields
@@ -522,13 +531,18 @@ const BundleDetail: FunctionComponent<
 				? [
 						createDropdownMenuItem(
 							'duplicate',
-							t('bundle/views/bundle-detail___dupliceer'),
+							tText('bundle/views/bundle-detail___dupliceer'),
 							'copy'
 						),
 				  ]
 				: []),
 			...(permissions.canDeleteBundle
-				? [createDropdownMenuItem('delete', t('bundle/views/bundle-detail___verwijder'))]
+				? [
+						createDropdownMenuItem(
+							'delete',
+							tText('bundle/views/bundle-detail___verwijder')
+						),
+				  ]
 				: []),
 		];
 
@@ -551,7 +565,7 @@ const BundleDetail: FunctionComponent<
 					? [
 							createDropdownMenuItem(
 								'edit',
-								t('bundle/views/bundle-detail___bewerken'),
+								tText('bundle/views/bundle-detail___bewerken'),
 								'edit'
 							),
 					  ]
@@ -560,7 +574,7 @@ const BundleDetail: FunctionComponent<
 					? [
 							createDropdownMenuItem(
 								'openPublishModal',
-								t('bundle/views/bundle-detail___delen'),
+								tText('bundle/views/bundle-detail___delen'),
 								'lock'
 							),
 					  ]
@@ -568,15 +582,15 @@ const BundleDetail: FunctionComponent<
 				createDropdownMenuItem(
 					'toggleBookmark',
 					bookmarkViewPlayCounts.isBookmarked
-						? t('bundle/views/bundle-detail___verwijder-bladwijzer')
-						: t('bundle/views/bundle-detail___maak-bladwijzer'),
+						? tText('bundle/views/bundle-detail___verwijder-bladwijzer')
+						: tText('bundle/views/bundle-detail___maak-bladwijzer'),
 					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
 				),
 				...(!!bundle && bundle.is_public
 					? [
 							createDropdownMenuItem(
 								'openShareThroughEmailModal',
-								t('bundle/views/bundle-detail___share-bundel'),
+								tText('bundle/views/bundle-detail___share-bundel'),
 								'share-2'
 							),
 					  ]
@@ -585,7 +599,7 @@ const BundleDetail: FunctionComponent<
 					? [
 							createDropdownMenuItem(
 								'duplicate',
-								t('bundle/views/bundle-detail___dupliceer'),
+								tText('bundle/views/bundle-detail___dupliceer'),
 								'copy'
 							),
 					  ]
@@ -594,7 +608,7 @@ const BundleDetail: FunctionComponent<
 					? [
 							createDropdownMenuItem(
 								'delete',
-								t('bundle/views/bundle-detail___verwijder')
+								tText('bundle/views/bundle-detail___verwijder')
 							),
 					  ]
 					: []),
@@ -617,13 +631,13 @@ const BundleDetail: FunctionComponent<
 					<Button
 						title={
 							isPublic
-								? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
-								: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
+								? tText('bundle/views/bundle-detail___maak-deze-bundel-prive')
+								: tText('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
 						}
 						ariaLabel={
 							isPublic
-								? t('bundle/views/bundle-detail___maak-deze-bundel-prive')
-								: t('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
+								? tText('bundle/views/bundle-detail___maak-deze-bundel-prive')
+								: tText('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
 						}
 						icon={isPublic ? 'unlock-3' : 'lock'}
 						onClick={() => executeAction('openPublishModal')}
@@ -632,26 +646,26 @@ const BundleDetail: FunctionComponent<
 				)}
 				{permissions.canEditBundle && (
 					<Button
-						label={t('bundle/views/bundle-detail___bewerken')}
-						title={t('bundle/views/bundle-detail___pas-de-bundel-aan')}
+						label={tText('bundle/views/bundle-detail___bewerken')}
+						title={tText('bundle/views/bundle-detail___pas-de-bundel-aan')}
 						onClick={() => executeAction('edit')}
 						type="primary"
 					/>
 				)}
 				<ToggleButton
-					title={t('collection/views/collection-detail___bladwijzer')}
+					title={tText('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
 					icon="bookmark"
 					active={bookmarkViewPlayCounts.isBookmarked}
-					ariaLabel={t('collection/views/collection-detail___bladwijzer')}
+					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
 				/>
 				{isPublic && (
 					<Button
-						title={t('bundle/views/bundle-detail___share-bundel')}
+						title={tText('bundle/views/bundle-detail___share-bundel')}
 						type="secondary"
 						icon="share-2"
-						ariaLabel={t('bundle/views/bundle-detail___share-bundel')}
+						ariaLabel={tText('bundle/views/bundle-detail___share-bundel')}
 						onClick={() => executeAction('openShareThroughEmailModal')}
 					/>
 				)}
@@ -669,7 +683,7 @@ const BundleDetail: FunctionComponent<
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<BlockHeading type="h3">
-						{t('bundle/views/bundle-detail___over-deze-bundel')}
+						{tText('bundle/views/bundle-detail___over-deze-bundel')}
 					</BlockHeading>
 					<Grid>
 						{renderCommonMetadata(bundle, enabledMetaData, defaultRenderSearchLink)}
@@ -697,7 +711,7 @@ const BundleDetail: FunctionComponent<
 							get(
 								bundle,
 								'title',
-								t('bundle/views/bundle-detail___bundel-detail-titel-fallback')
+								tText('bundle/views/bundle-detail___bundel-detail-titel-fallback')
 							)
 						)}
 					</title>
@@ -749,10 +763,10 @@ const BundleDetail: FunctionComponent<
 															category="bundle"
 															label={
 																is_public
-																	? t(
+																	? tText(
 																			'bundle/views/bundle-detail___openbare-bundel'
 																	  )
-																	: t(
+																	: tText(
 																			'bundle/views/bundle-detail___prive-bundel'
 																	  )
 															}
@@ -826,10 +840,10 @@ const BundleDetail: FunctionComponent<
 				{!showLoginPopup && (
 					<>
 						<DeleteObjectModal
-							title={t(
+							title={tText(
 								'bundle/views/bundle-detail___ben-je-zeker-dat-je-deze-bundel-wil-verwijderen'
 							)}
-							body={t(
+							body={tText(
 								'bundle/views/bundle-detail___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 							)}
 							isOpen={isDeleteModalOpen}
@@ -837,7 +851,7 @@ const BundleDetail: FunctionComponent<
 							confirmCallback={onDeleteBundle}
 						/>
 						<ShareThroughEmailModal
-							modalTitle={t('bundle/views/bundle-detail___deel-deze-bundel')}
+							modalTitle={tText('bundle/views/bundle-detail___deel-deze-bundel')}
 							type="bundle"
 							emailLinkHref={window.location.href}
 							emailLinkTitle={(bundle as Avo.Collection.Collection).title}

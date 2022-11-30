@@ -2,7 +2,6 @@ import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import {
 	PermissionGuard,
@@ -12,6 +11,7 @@ import {
 import { Permissions } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
 import { dataService } from '../../services/data-service';
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 export interface DataQueryComponentProps {
 	query: string;
@@ -55,7 +55,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	noPermissionsMessage,
 	actionButtons = [],
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [result, setResult] = useState<{ loading: boolean; error: any; data: any }>({
 		loading: true,
@@ -106,7 +106,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 				// TODO: show different message if a list of items was returned but only some were deleted
 				return (
 					<ErrorView
-						message={t(
+						message={tText(
 							'shared/components/data-query-component/data-query-component___dit-item-is-verwijderd'
 						)}
 						icon="delete"
@@ -118,7 +118,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'shared/components/data-query-component/data-query-component___er-ging-iets-mis-tijdens-het-ophalen'
 					)}
 					icon="alert-triangle"
@@ -142,7 +142,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			<ErrorView
 				message={
 					notFoundMessage ||
-					t(
+					tText(
 						'shared/components/data-query-component/data-query-component___het-opgevraagde-object-werd-niet-gevonden'
 					)
 				}
@@ -159,7 +159,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 				<ErrorView
 					message={
 						noPermissionsMessage ||
-						t(
+						tText(
 							'shared/components/data-query-component/data-query-component___je-hebt-geen-rechten-om-deze-pagina-te-bekijken'
 						)
 					}

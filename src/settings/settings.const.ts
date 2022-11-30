@@ -1,5 +1,5 @@
 import { ROUTE_PARTS } from '../shared/constants';
-import i18n from '../shared/translations/i18n';
+import { tText } from '../shared/helpers/translate';
 
 export const PROFILE_ID = ROUTE_PARTS.profile;
 export const ACCOUNT_ID = ROUTE_PARTS.account;
@@ -15,34 +15,34 @@ export type SettingsTab =
 	| typeof LINKED_ACCOUNTS;
 
 export const GET_NEWSLETTER_LABELS = () => ({
-	newsletter: i18n.t(
+	newsletter: tText(
 		'settings/settings___ik-ontvang-graag-tips-en-inspiratie-voor-mijn-lessen-en-nieuws-van-partners'
 	),
-	workshop: i18n.t('settings/settings___ik-wil-berichten-over-workshops-en-events-ontvangen'),
-	ambassador: i18n.t(
+	workshop: tText('settings/settings___ik-wil-berichten-over-workshops-en-events-ontvangen'),
+	ambassador: tText(
 		'settings/settings___ik-krijg-graag-berichten-om-actief-mee-te-werken-aan-het-archief-voor-onderwijs'
 	),
 });
 
 export const USERS_IN_SAME_COMPANY_COLUMNS = () => [
 	{
-		label: i18n.t('settings/settings___naam'),
+		label: tText('settings/settings___naam'),
 		id: 'full_name',
 	},
 	{
-		label: i18n.t('settings/settings___rol'),
+		label: tText('settings/settings___rol'),
 		id: 'user_group',
 	},
 	{
-		label: i18n.t('settings/settings___geblokkeerd'),
+		label: tText('settings/settings___geblokkeerd'),
 		id: 'is_blocked',
 	},
 	{
-		label: i18n.t('settings/settings___laatste-login'),
+		label: tText('settings/settings___laatste-login'),
 		id: 'last_access_at',
 	},
 	{
-		label: i18n.t('settings/settings___tijdelijke-toegang'),
+		label: tText('settings/settings___tijdelijke-toegang'),
 		id: 'temp_access',
 	},
 ];

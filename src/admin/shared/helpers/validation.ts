@@ -1,6 +1,6 @@
 import { isNumber, pick, pickBy } from 'lodash-es';
 
-import i18n from '../../../shared/translations/i18n';
+import { tText } from '../../../shared/helpers/translate';
 import { ContentBlockErrors } from '../types';
 
 // Handle content-block config components/block state validation
@@ -52,16 +52,16 @@ export const validateContentBlockField = (
 	return pick(oldErrors, newKeys);
 };
 
-export function validateFlowplayerVideoUrl(url: string | null | undefined) {
+export function validateFlowplayerVideoUrl(url: string | null | undefined): string[] {
 	if (!url) {
 		return [];
 	}
 	if (!url.startsWith('https://')) {
-		return [i18n.t('admin/shared/helpers/validation___video-url-moet-beginnen-met-http')];
+		return [tText('admin/shared/helpers/validation___video-url-moet-beginnen-met-http')];
 	}
 	if (!url.endsWith('.m3u8') && !url.endsWith('.mp4')) {
 		return [
-			i18n.t('admin/shared/helpers/validation___video-url-moet-eindigen-met-m-3-u-8-of-mp-4'),
+			tText('admin/shared/helpers/validation___video-url-moet-eindigen-met-m-3-u-8-of-mp-4'),
 		];
 	}
 	return [];

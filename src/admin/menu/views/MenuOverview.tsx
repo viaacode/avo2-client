@@ -2,7 +2,6 @@ import { Button, ButtonToolbar, Spacer, Table } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -12,6 +11,7 @@ import { ErrorView } from '../../../error/views';
 import { DataQueryComponent } from '../../../shared/components';
 import { GetMenusDocument } from '../../../shared/generated/graphql-db-types';
 import { buildLink, navigate } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { GET_MENU_OVERVIEW_TABLE_COLS, MENU_PATH } from '../menu.const';
 import { MenuOverviewTableCols } from '../menu.types';
@@ -19,7 +19,7 @@ import { MenuOverviewTableCols } from '../menu.types';
 type MenuOverviewProps = DefaultSecureRouteProps;
 
 const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [menus, setMenus] = useState<any>([]);
 
@@ -42,10 +42,10 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 								navigate(history, MENU_PATH.MENU_DETAIL, { menu: placement })
 							}
 							size="small"
-							title={t(
+							title={tText(
 								'admin/menu/views/menu-overview___bekijk-de-navigatie-items-voor-deze-navigatie-balk'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/menu/views/menu-overview___bekijk-de-navigatie-items-voor-deze-navigatie-balk'
 							)}
 							type="secondary"
@@ -56,10 +56,10 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 								navigate(history, MENU_PATH.MENU_ITEM_CREATE, { menu: placement })
 							}
 							size="small"
-							title={t(
+							title={tText(
 								'admin/menu/views/menu-overview___voeg-een-navigatie-item-toe-aan-deze-navigatie-balk'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/menu/views/menu-overview___voeg-een-navigatie-item-toe-aan-deze-navigatie-balk'
 							)}
 							type="secondary"
@@ -75,22 +75,19 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 		if (!data.length) {
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'admin/menu/views/menu-overview___er-zijn-nog-geen-navigaties-aangemaakt'
 					)}
 				>
 					<p>
-						<Trans i18nKey="admin/menu/views/menu-overview___beschrijving-hoe-navigatie-items-toe-te-voegen">
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid
-							ab debitis blanditiis vitae molestiae delectus earum asperiores
-							mollitia, minima laborum expedita ratione quas impedit repudiandae nisi
-							corrupti quis eaque!
-						</Trans>
+						{tHtml(
+							'admin/menu/views/menu-overview___beschrijving-hoe-navigatie-items-toe-te-voegen'
+						)}
 					</p>
 					<Spacer margin="top">
 						<Button
 							icon="plus"
-							label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
+							label={tText('admin/menu/views/menu-overview___navigatie-toevoegen')}
 							onClick={() => history.push(MENU_PATH.MENU_CREATE)}
 							type="primary"
 						/>
@@ -116,13 +113,13 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 
 	return (
 		<AdminLayout
-			pageTitle={t('admin/menu/views/menu-overview___navigatie-overzicht')}
+			pageTitle={tText('admin/menu/views/menu-overview___navigatie-overzicht')}
 			size="large"
 		>
 			{!!menus.length && (
 				<AdminLayoutTopBarRight>
 					<Button
-						label={t('admin/menu/views/menu-overview___navigatie-toevoegen')}
+						label={tText('admin/menu/views/menu-overview___navigatie-toevoegen')}
 						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
 					/>
 				</AdminLayoutTopBarRight>
@@ -131,12 +128,14 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t('admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel')
+							tText(
+								'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel'
+							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-beschrijving'
 						)}
 					/>

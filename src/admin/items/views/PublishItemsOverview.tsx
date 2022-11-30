@@ -1,7 +1,6 @@
 import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -10,6 +9,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatTimestamp } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, { getFilters } from '../../shared/components/FilterTable/FilterTable';
@@ -26,7 +26,7 @@ import {
 type PublishItemsOverviewProps = DefaultSecureRouteProps;
 
 const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ history }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [items, setItems] = useState<UnpublishedItem[] | null>(null);
 	const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
@@ -86,13 +86,13 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt'
 				),
 			});
 		}
 		setIsLoading(false);
-	}, [setLoadingInfo, setItems, setItemCount, tableState, t, generateWhereObject]);
+	}, [setLoadingInfo, setItems, setItemCount, tableState, tText, generateWhereObject]);
 
 	useEffect(() => {
 		fetchItems();
@@ -109,7 +109,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const navigateToItemDetail = (externalId: string | undefined) => {
 		if (!externalId) {
 			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid')
+				tHtml('admin/items/views/items-overview___dit-item-heeft-geen-geldig-pid')
 			);
 			return;
 		}
@@ -120,7 +120,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const navigateToAdminItemDetail = (uuid: string | undefined) => {
 		if (!uuid) {
 			ToastService.danger(
-				t('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid')
+				tHtml('admin/items/views/items-overview___dit-item-heeft-geen-geldig-uuid')
 			);
 			return;
 		}
@@ -132,7 +132,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 		try {
 			if (!selectedItemIds || !selectedItemIds.length) {
 				ToastService.info(
-					t(
+					tHtml(
 						'admin/items/views/publish-items-overview___selecteer-eerst-enkele-items-die-je-wil-publiceren-dmv-de-checkboxes'
 					)
 				);
@@ -140,7 +140,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			}
 			await ItemsService.setSharedItemsStatus(selectedItemIds || [], 'OK');
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/items/views/publish-items-overview___de-geselecteerde-items-zijn-gepubliceerd-naar-av-o'
 				)
 			);
@@ -150,7 +150,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				new CustomError('Failed to set status for shared.items', err, { selectedItemIds })
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/items/views/publish-items-overview___het-publiceren-van-de-items-is-mislukt'
 				)
 			);
@@ -162,13 +162,13 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			const result: string = await ItemsService.triggerMamSync();
 			if (result === 'starting') {
 				ToastService.success(
-					t(
+					tHtml(
 						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-gestart'
 					)
 				);
 			} else {
 				ToastService.info(
-					t(
+					tHtml(
 						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-reeds-bezig'
 					)
 				);
@@ -176,7 +176,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 		} catch (err) {
 			console.error(new CustomError('Failed to trigger MAM sync', err));
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/items/views/publish-items-overview___het-triggeren-van-een-mam-synchronisatie-is-mislukt'
 				)
 			);
@@ -190,7 +190,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t(
+				tHtml(
 					'admin/items/views/publish-items-overview___je-hebt-num-of-selected-items-items-geselecteerd',
 					{
 						numOfSelectedItems: itemPids.length,
@@ -207,7 +207,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				)
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/items/views/publish-items-overview___het-ophalen-van-alle-item-ids-is-mislukt'
 				)
 			);
@@ -230,9 +230,9 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 
 			case 'status':
 				if (rowData.item_meta) {
-					return t('admin/items/views/publish-items-overview___update');
+					return tText('admin/items/views/publish-items-overview___update');
 				}
-				return t('admin/items/views/publish-items-overview___nieuw');
+				return tText('admin/items/views/publish-items-overview___nieuw');
 
 			case 'actions': {
 				const itemExternalId: string | undefined = get(rowData, 'item_meta.external_id');
@@ -245,10 +245,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 								type="secondary"
 								icon="eye"
 								onClick={() => navigateToItemDetail(itemExternalId)}
-								title={t(
+								title={tText(
 									'admin/items/views/items-overview___bekijk-item-in-de-website'
 								)}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/items/views/items-overview___bekijk-item-in-de-website'
 								)}
 							/>
@@ -256,10 +256,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 								type="secondary"
 								icon="edit"
 								onClick={() => navigateToAdminItemDetail(itemUid)}
-								title={t(
+								title={tText(
 									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
 								)}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
 								)}
 							/>
@@ -277,11 +277,13 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('admin/items/views/items-overview___er-bestaan-nog-geen-items')}>
+			<ErrorView
+				message={tText('admin/items/views/items-overview___er-bestaan-nog-geen-items')}
+			>
 				<p>
-					<Trans i18nKey="admin/items/views/items-overview___beschrijving-wanneer-er-nog-geen-items-zijn">
-						Beschrijving wanneer er nog geen items zijn
-					</Trans>
+					{tHtml(
+						'admin/items/views/items-overview___beschrijving-wanneer-er-nog-geen-items-zijn'
+					)}
 				</p>
 			</ErrorView>
 		);
@@ -300,10 +302,10 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 					renderCell={(rowData: Partial<UnpublishedItem>, columnId: string) =>
 						renderTableCell(rowData, columnId as UnpublishedItemsOverviewTableCols)
 					}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/items/views/publish-items-overview___zoeken-op-titel-pid'
 					)}
-					noContentMatchingFiltersMessage={t(
+					noContentMatchingFiltersMessage={tText(
 						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -323,22 +325,25 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')} size="full-width">
+		<AdminLayout
+			pageTitle={tText('admin/items/views/items-overview___items')}
+			size="full-width"
+		>
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
 					<Button
 						icon="external-link"
 						type="danger"
-						label={t('admin/items/views/publish-items-overview___publiceren')}
+						label={tText('admin/items/views/publish-items-overview___publiceren')}
 						onClick={publishSelection}
 					/>
 					<Button
 						icon="download"
 						type="primary"
-						label={t(
+						label={tText(
 							'admin/items/views/publish-items-overview___synchroniseren-met-mam'
 						)}
-						title={t(
+						title={tText(
 							'admin/items/views/publish-items-overview___kopieer-nieuwe-en-aangepaste-items-van-het-mam-naar-de-avo-database'
 						)}
 						onClick={triggerMamSync}
@@ -349,14 +354,14 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/items/views/publish-items-overview___publiceer-items-beheer-overview-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/items/views/publish-items-overview___unpublished-item-beheer-overview-pagina-beschrijving'
 						)}
 					/>

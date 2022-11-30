@@ -3,8 +3,8 @@ import { Avo } from '@viaa/avo2-types';
 import immer, { Draft } from 'immer';
 import { cloneDeep } from 'lodash-es';
 
+import { tHtml } from '../../../../shared/helpers/translate';
 import { ToastService } from '../../../../shared/services/toast-service';
-import i18n from '../../../../shared/translations/i18n';
 import { ValueOf } from '../../../../shared/types';
 import { InteractiveTourService } from '../../interactive-tour.service';
 import {
@@ -71,7 +71,7 @@ export const interactiveTourEditReducer = immer(
 
 		if (!draft.currentInteractiveTour) {
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-edit___de-interactieve-tour-is-nog-niet-geladen'
 				)
 			);
@@ -92,7 +92,7 @@ export const interactiveTourEditReducer = immer(
 					!draft.currentInteractiveTour.steps.length
 				) {
 					ToastService.danger(
-						i18n.t(
+						tHtml(
 							'admin/interactive-tour/views/interactive-tour-edit___deze-interactive-tour-lijkt-geen-stappen-te-bevatten'
 						)
 					);

@@ -1,7 +1,6 @@
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -10,6 +9,7 @@ import BundleDetail from '../../bundle/views/BundleDetail';
 import { CollectionDetail } from '../../collection/views';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
@@ -47,7 +47,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 	history,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -72,7 +72,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 				APP_PATH.ERROR.route,
 				{},
 				{
-					message: t(
+					message: tText(
 						'authentication/components/secured-route___het-inloggen-is-mislukt-controleer-je-internet-verbinding-of-probeer-later-opnieuw'
 					),
 					icon: 'alert-triangle',

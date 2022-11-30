@@ -11,9 +11,9 @@ import {
 import { AssignmentLayout } from '@viaa/avo2-types/types/assignment';
 import { UserProfile } from '@viaa/avo2-types/types/user';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks';
@@ -32,7 +32,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 	content,
 	content_label,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
 	const [exists, setExists] = useState<boolean>(false);
@@ -70,7 +70,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 						]);
 
 						ToastService.success(
-							t(
+							tHtml(
 								'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangemaakt'
 							)
 						);
@@ -118,7 +118,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 						});
 
 						ToastService.success(
-							t(
+							tHtml(
 								'shared/components/quick-lane-modal/quick-lane-modal___je-gedeelde-link-is-succesvol-aangepast'
 							)
 						);
@@ -149,7 +149,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 			<Spacer margin={['bottom']}>
 				<FormGroup
 					required
-					label={t('shared/components/quick-lane-modal/quick-lane-modal___titel')}
+					label={tText('shared/components/quick-lane-modal/quick-lane-modal___titel')}
 				>
 					<TextInput
 						id="title"
@@ -167,7 +167,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 
 			<Spacer margin={['bottom']}>
 				<FormGroup
-					label={t('shared/components/quick-lane-modal/quick-lane-modal___inhoud')}
+					label={tText('shared/components/quick-lane-modal/quick-lane-modal___inhoud')}
 				>
 					{content_label && (
 						<ContentLink
@@ -185,7 +185,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 
 			<Spacer margin={['bottom']}>
 				<FormGroup
-					label={t(
+					label={tText(
 						'shared/components/quick-lane-modal/quick-lane-modal___weergave-voor-leerlingen'
 					)}
 				>
@@ -212,10 +212,10 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 							<Spacer margin="left-small">
 								<Button
 									disabled={!quickLane.id}
-									label={t(
+									label={tText(
 										'shared/components/quick-lane-modal/quick-lane-modal___kopieer-link'
 									)}
-									onClick={() => copyQuickLaneToClipboard(quickLane.id, t)}
+									onClick={() => copyQuickLaneToClipboard(quickLane.id)}
 								/>
 							</Spacer>
 						</FlexItem>

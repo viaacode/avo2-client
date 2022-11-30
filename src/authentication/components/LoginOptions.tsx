@@ -1,13 +1,13 @@
 import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants';
 import { useTabs } from '../../shared/hooks';
+import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	redirectToClientPage,
 	redirectToServerACMIDMLogin,
@@ -36,16 +36,16 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 	location,
 	onOptionClicked = noop,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
 			{
-				label: t('authentication/components/login-options___lesgever'),
+				label: tText('authentication/components/login-options___lesgever'),
 				id: LoginOptionsTabs.TEACHER,
 				icon: 'user-teacher',
 			},
 			{
-				label: t('authentication/components/login-options___leerling'),
+				label: tText('authentication/components/login-options___leerling'),
 				id: LoginOptionsTabs.STUDENT,
 				icon: 'user-student',
 			},
@@ -64,7 +64,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				return (
 					<>
 						<Icon name="user-teacher" />
-						{t('authentication/components/login-options___log-in-als-lesgever')}
+						{tHtml('authentication/components/login-options___log-in-als-lesgever')}
 					</>
 				);
 
@@ -72,7 +72,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				return (
 					<>
 						<Icon name="user-student" />
-						{t('authentication/components/login-options___log-in-als-leerling')}
+						{tHtml('authentication/components/login-options___log-in-als-leerling')}
 					</>
 				);
 
@@ -88,7 +88,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					<Button
 						key="login-button-archief"
 						block
-						label={t(
+						label={tText(
 							'authentication/components/login-options___inloggen-met-e-mailadres'
 						)}
 						icon="at"
@@ -107,7 +107,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						className="c-button-itsme"
 						icon="itsme"
 						iconType="multicolor"
-						label={t('authentication/components/login-options___itsme')}
+						label={tText('authentication/components/login-options___itsme')}
 						onClick={() => {
 							onOptionClicked();
 							redirectToServerItsmeLogin(location);
@@ -120,7 +120,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						type="secondary"
 						className="c-button-acmidm"
 						icon="eid"
-						label={t(
+						label={tText(
 							'authentication/components/login-options___e-id-of-een-digitale-sleutel'
 						)}
 						onClick={() => {
@@ -134,7 +134,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						block
 						className="c-button-smartschool"
 						icon="smartschool"
-						label={t(
+						label={tText(
 							'authentication/components/login-options___inloggen-met-smartschool'
 						)}
 						onClick={() => {
@@ -148,7 +148,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						block
 						className="c-button-klascement"
 						icon="klascement"
-						label={t(
+						label={tText(
 							'authentication/components/login-options___inloggen-met-klas-cement'
 						)}
 						onClick={() => {
@@ -163,7 +163,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 					<Button
 						key="login-button-archief-pupil"
 						block
-						label={t(
+						label={tText(
 							'authentication/components/login-options___inloggen-met-e-mailadres'
 						)}
 						icon="at"
@@ -182,7 +182,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						className="c-button-leerid"
 						icon="leerid"
 						iconType="multicolor"
-						label={t('authentication/components/login-options___leerling-id')}
+						label={tText('authentication/components/login-options___leerling-id')}
 						onClick={() => {
 							onOptionClicked();
 							redirectToServerLeerIDLogin(location);
@@ -194,7 +194,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						block
 						className="c-button-smartschool"
 						icon="smartschool"
-						label={t(
+						label={tText(
 							'authentication/components/login-options___inloggen-met-smartschool'
 						)}
 						onClick={() => {
@@ -214,7 +214,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			case LoginOptionsTabs.TEACHER:
 				return (
 					<h3 className="c-h4 u-m-0">
-						{t('authentication/components/login-options___nog-geen-account')}
+						{tText('authentication/components/login-options___nog-geen-account')}
 					</h3>
 				);
 
@@ -229,7 +229,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 				return (
 					<Button
 						block
-						label={t(
+						label={tText(
 							'authentication/views/register-or-login___account-aanmaken-als-lesgever'
 						)}
 						type="primary"
@@ -246,7 +246,9 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						to="/faq-leerling?label=Toegang%20als%20leerling"
 						onClick={onOptionClicked}
 					>
-						{t('authentication/views/register-or-login___krijg-toegang-als-leerling')}
+						{tText(
+							'authentication/views/register-or-login___krijg-toegang-als-leerling'
+						)}
 					</Link>
 				);
 

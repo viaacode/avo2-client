@@ -11,7 +11,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import reactToString from 'react-to-string';
@@ -40,6 +39,7 @@ import {
 	useSubjects,
 } from '../../../shared/hooks';
 import { useIdps } from '../../../shared/hooks/useIdps';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
@@ -69,7 +69,7 @@ import './UserOverview.scss';
 type UserOverviewProps = RouteComponentProps & UserProps;
 
 const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [profiles, setProfiles] = useState<Avo.User.Profile[] | null>(null);
 	const [profileCount, setProfileCount] = useState<number>(0);
@@ -273,13 +273,13 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/users/views/user-overview___het-ophalen-van-de-gebruikers-is-mislukt'
 				),
 			});
 		}
 		setIsLoading(false);
-	}, [columns, tableState, generateWhereObject, t]);
+	}, [columns, tableState, generateWhereObject, tText]);
 
 	useEffect(() => {
 		fetchProfiles();
@@ -302,7 +302,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 			if (addOrRemove === 'add') {
 				await UserService.bulkAddSubjectsToProfiles(subjects, compact(selectedProfileIds));
 				ToastService.success(
-					t(
+					tHtml(
 						'admin/users/views/user-overview___de-vakken-zijn-toegevoegd-aan-de-geselecteerde-gebruikers'
 					)
 				);
@@ -313,7 +313,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 					compact(selectedProfileIds)
 				);
 				ToastService.success(
-					t(
+					tHtml(
 						'admin/users/views/user-overview___de-vakken-zijn-verwijderd-van-de-geselecteerde-gebruikers'
 					)
 				);
@@ -326,7 +326,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 				})
 			);
 			ToastService.danger(
-				t('admin/users/views/user-overview___het-aanpassen-van-de-vakken-is-mislukt')
+				tHtml('admin/users/views/user-overview___het-aanpassen-van-de-vakken-is-mislukt')
 			);
 		}
 	};
@@ -338,7 +338,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 				generateWhereObject(getFilters(tableState), false)
 			);
 			ToastService.info(
-				t(
+				tHtml(
 					'admin/users/views/user-overview___je-hebt-num-of-selected-profiles-gebuikers-geselecteerd',
 					{
 						numOfSelectedProfiles: profileIds.length,
@@ -355,7 +355,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 				)
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/users/views/user-overview___het-ophalen-van-alle-geselecteerde-gebruiker-ids-is-mislukt'
 				)
 			);
@@ -379,16 +379,16 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 			await fetchProfiles();
 			ToastService.success(
 				blockOrUnblock
-					? t(
+					? tHtml(
 							'admin/users/views/user-overview___de-geselecteerde-gebruikers-zijn-geblokkeerd'
 					  )
-					: t(
+					: tHtml(
 							'admin/users/views/user-overview___de-geselecteerde-gebruikers-zijn-gedeblokkeerd'
 					  )
 			);
 		} catch (err) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/users/views/user-overview___het-blokkeren-van-de-geselecteerde-gebruikers-is-mislukt'
 				)
 			);
@@ -453,7 +453,7 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 				new CustomError('Failed to export users to csv file', err, { tableState })
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/users/views/user-overview___het-exporteren-van-de-geselecteerde-gebruikers-is-mislukt'
 				)
 			);
@@ -494,7 +494,9 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 							new CustomError('Failed to get subjects from the database', err)
 						);
 						ToastService.danger(
-							t('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
+							tHtml(
+								'settings/components/profile___het-ophalen-van-de-vakken-is-mislukt'
+							)
 						);
 					});
 				return;
@@ -550,9 +552,9 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 
 				switch (tempAccess) {
 					case 0:
-						return t('admin/users/views/user-overview___tijdelijke-toegang-nee');
+						return tText('admin/users/views/user-overview___tijdelijke-toegang-nee');
 					case 1:
-						return t('admin/users/views/user-overview___tijdelijke-toegang-ja');
+						return tText('admin/users/views/user-overview___tijdelijke-toegang-ja');
 					default:
 						return '-';
 				}
@@ -604,12 +606,12 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={t('admin/users/views/user-overview___er-bestaan-nog-geen-gebruikers')}
+				message={tText('admin/users/views/user-overview___er-bestaan-nog-geen-gebruikers')}
 			>
 				<p>
-					<Trans i18nKey="admin/users/views/user-overview___beschrijving-wanneer-er-nog-geen-gebruikers-zijn">
-						Beschrijving wanneer er nog geen gebruikers zijn
-					</Trans>
+					{tHtml(
+						'admin/users/views/user-overview___beschrijving-wanneer-er-nog-geen-gebruikers-zijn'
+					)}
 				</p>
 			</ErrorView>
 		);
@@ -628,10 +630,10 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 					renderCell={(rowData: Partial<Avo.User.Profile>, columnId: string) =>
 						renderTableCell(rowData, columnId as UserOverviewTableCol)
 					}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/users/views/user-overview___zoek-op-naam-email-alias'
 					)}
-					noContentMatchingFiltersMessage={t(
+					noContentMatchingFiltersMessage={tText(
 						'admin/users/views/user-overview___er-zijn-geen-gebruikers-doe-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -658,18 +660,18 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 						setShouldSendActionEmail(false);
 						await bulkUpdateBlockStatus(true);
 					}}
-					title={t('admin/users/views/user-overview___bevestig')}
-					confirmLabel={t('admin/users/views/user-overview___deactiveren')}
+					title={tText('admin/users/views/user-overview___bevestig')}
+					confirmLabel={tText('admin/users/views/user-overview___deactiveren')}
 					size={'medium'}
 					body={
 						<>
 							<strong>
-								{t(
+								{tHtml(
 									'admin/users/views/user-overview___weet-je-zeker-dat-je-deze-gebruiker-s-wil-deactiveren'
 								)}
 							</strong>
 							<Checkbox
-								label={t(
+								label={tText(
 									'admin/users/views/user-overview___breng-de-gebruiker-s-op-de-hoogte-van-deze-actie'
 								)}
 								checked={shouldSendActionEmail}
@@ -692,19 +694,19 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 						setShouldSendActionEmail(false);
 						await bulkUpdateBlockStatus(false);
 					}}
-					title={t('admin/users/views/user-overview___bevestig')}
-					confirmLabel={t('admin/users/views/user-overview___opnieuw-activeren')}
+					title={tText('admin/users/views/user-overview___bevestig')}
+					confirmLabel={tText('admin/users/views/user-overview___opnieuw-activeren')}
 					confirmButtonType={'primary'}
 					size={'medium'}
 					body={
 						<>
 							<strong>
-								{t(
+								{tText(
 									'admin/users/views/user-overview___weet-je-zeker-dat-je-deze-gebruiker-s-opnieuw-wil-activeren'
 								)}
 							</strong>
 							<Checkbox
-								label={t(
+								label={tText(
 									'admin/users/views/user-overview___breng-de-gebruiker-s-op-de-hoogte-van-deze-actie'
 								)}
 								checked={shouldSendActionEmail}
@@ -722,11 +724,11 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 					deleteCallback={fetchProfiles}
 				/>
 				<AddOrRemoveLinkedElementsModal
-					title={t('admin/users/views/user-overview___vakken-aanpassen')}
-					addOrRemoveLabel={t(
+					title={tText('admin/users/views/user-overview___vakken-aanpassen')}
+					addOrRemoveLabel={tText(
 						'admin/users/views/user-overview___vakken-toevoegen-of-verwijderen'
 					)}
-					contentLabel={t('admin/users/views/user-overview___vakken')}
+					contentLabel={tText('admin/users/views/user-overview___vakken')}
 					isOpen={changeSubjectsModalOpen}
 					onClose={() => setChangeSubjectsModalOpen(false)}
 					labels={allSubjects.map((subject) => ({
@@ -746,21 +748,21 @@ const UserOverview: FunctionComponent<UserOverviewProps> = ({ user, history }) =
 
 	return (
 		<AdminLayout
-			pageTitle={t('admin/users/views/user-overview___gebruikers')}
+			pageTitle={tText('admin/users/views/user-overview___gebruikers')}
 			size="full-width"
 		>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/users/views/user-overview___gebruikersbeheer-overzicht-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/users/views/user-overview___gebruikersbeheer-overzicht-pagina-beschrijving'
 						)}
 					/>

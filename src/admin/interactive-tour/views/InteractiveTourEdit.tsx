@@ -22,7 +22,6 @@ import React, {
 	useReducer,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -35,6 +34,7 @@ import {
 	GetInteractiveTourByIdQuery,
 } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -64,8 +64,9 @@ import {
 	InteractiveTourStep,
 } from '../interactive-tour.types';
 
-import './InteractiveTourEdit.scss';
 import InteractiveTourEditStep from './InteractiveTourEditStep';
+
+import './InteractiveTourEdit.scss';
 
 export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
@@ -74,7 +75,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	match,
 	location,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Hooks
 	const [formErrors, setFormErrors] = useState<InteractiveTourEditFormErrorState>({});
@@ -137,7 +138,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					setLoadingInfo({
 						state: 'error',
 						icon: 'search',
-						message: t(
+						message: tText(
 							'admin/interactive-tour/views/interactive-tour-edit___deze-interactieve-tour-werd-niet-gevonden'
 						),
 					});
@@ -159,13 +160,20 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'admin/interactive-tour/views/interactive-tour-edit___het-ophalen-van-de-interactive-tour-is-mislukt'
 					),
 				});
 			}
 		}
-	}, [setLoadingInfo, changeInteractiveTourState, t, isCreatePage, getPageType, match.params.id]);
+	}, [
+		setLoadingInfo,
+		changeInteractiveTourState,
+		tText,
+		isCreatePage,
+		getPageType,
+		match.params.id,
+	]);
 
 	useEffect(() => {
 		initOrFetchInteractiveTour();
@@ -193,7 +201,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			!interactiveTourState.currentInteractiveTour ||
 			!interactiveTourState.currentInteractiveTour.name
 		) {
-			errors.name = t(
+			errors.name = tText(
 				'admin/interactive-tour/views/interactive-tour-edit___een-naam-is-verplicht'
 			);
 		}
@@ -201,7 +209,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			!interactiveTourState.currentInteractiveTour ||
 			!interactiveTourState.currentInteractiveTour.page_id
 		) {
-			errors.page_id = t(
+			errors.page_id = tText(
 				'admin/interactive-tour/views/interactive-tour-edit___een-pagina-is-verplicht'
 			);
 		}
@@ -211,7 +219,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					errors.steps = errors.steps || [];
 					errors.steps[index] = {
 						...(errors.steps[index] || {}),
-						title: t(
+						title: tText(
 							'admin/interactive-tour/views/interactive-tour-edit___de-titel-is-te-lang'
 						),
 					};
@@ -220,7 +228,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					errors.steps = errors.steps || [];
 					errors.steps[index] = {
 						...(errors.steps[index] || {}),
-						content: t(
+						content: tText(
 							'admin/interactive-tour/views/interactive-tour-edit___de-tekst-is-te-lang'
 						),
 					};
@@ -247,7 +255,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			setFormErrors(errors || {});
 			if (errors) {
 				ToastService.danger(
-					t('admin/interactive-tour/views/interactive-tour-edit___de-invoer-is-ongeldig')
+					tHtml(
+						'admin/interactive-tour/views/interactive-tour-edit___de-invoer-is-ongeldig'
+					)
 				);
 				return;
 			}
@@ -257,7 +267,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				!interactiveTourState.currentInteractiveTour
 			) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt-omdat-de-interactive-tour-nog-niet-is-geladen'
 					)
 				);
@@ -288,7 +298,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				history
 			);
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-edit___de-interactive-tour-is-opgeslagen'
 				)
 			);
@@ -300,7 +310,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-edit___het-opslaan-van-de-interactive-tour-is-mislukt'
 				)
 			);
@@ -375,7 +385,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 						<Box backgroundColor="gray">
 							<Form>
 								<FormGroup
-									label={t(
+									label={tText(
 										'admin/interactive-tour/views/interactive-tour-edit___naam'
 									)}
 									error={formErrors.name}
@@ -395,7 +405,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 									/>
 								</FormGroup>
 								<FormGroup
-									label={t(
+									label={tText(
 										'admin/interactive-tour/views/interactive-tour-edit___pagina'
 									)}
 									error={formErrors.page_id}
@@ -407,13 +417,13 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 												options={[
 													{
 														value: 'static',
-														label: t(
+														label: tText(
 															'admin/interactive-tour/views/interactive-tour-edit___statische-pagina'
 														),
 													},
 													{
 														value: 'content',
-														label: t(
+														label: tText(
 															'admin/interactive-tour/views/interactive-tour-edit___content-pagina'
 														),
 													},
@@ -456,7 +466,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					</Spacer>
 				</Container>
 				<BlockHeading type="h3">
-					{t('admin/interactive-tour/views/interactive-tour-edit___stappen')}
+					{tText('admin/interactive-tour/views/interactive-tour-edit___stappen')}
 				</BlockHeading>
 				<InteractiveTourAdd
 					index={0}
@@ -472,7 +482,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 	const renderPage = () => (
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
-			pageTitle={t(
+			pageTitle={tText(
 				'admin/interactive-tour/views/interactive-tour-edit___interactive-tour-aanpassen'
 			)}
 			size="large"
@@ -480,13 +490,17 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
 					<Button
-						label={t('admin/interactive-tour/views/interactive-tour-edit___annuleer')}
+						label={tText(
+							'admin/interactive-tour/views/interactive-tour-edit___annuleer'
+						)}
 						onClick={navigateBack}
 						type="tertiary"
 					/>
 					<Button
 						disabled={isSaving}
-						label={t('admin/interactive-tour/views/interactive-tour-edit___opslaan')}
+						label={tText(
+							'admin/interactive-tour/views/interactive-tour-edit___opslaan'
+						)}
 						onClick={handleSave}
 					/>
 				</ButtonToolbar>
@@ -502,10 +516,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					{GENERATE_SITE_TITLE(
 						get(interactiveTourState.currentInteractiveTour, 'name'),
 						isCreatePage
-							? t(
+							? tText(
 									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-titel'
 							  )
-							: t(
+							: tText(
 									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-titel'
 							  )
 					)}
@@ -514,10 +528,10 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					name="description"
 					content={
 						isCreatePage
-							? t(
+							? tText(
 									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-aanmaak-pagina-beschrijving'
 							  )
-							: t(
+							: tText(
 									'admin/interactive-tour/views/interactive-tour-edit___interactieve-rondleiding-beheer-bewerk-pagina-beschrijving'
 							  )
 					}

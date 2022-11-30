@@ -2,9 +2,9 @@ import { Alert, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { showReplacementWarning } from '../../helpers/fragment';
 
 import FragmentDetail from './FragmentDetail';
@@ -33,7 +33,7 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 	user,
 	...rest
 }) => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 	const renderCollectionFragments = () =>
 		sortBy(collectionFragments, 'position').map(
 			(collectionFragment: Avo.Collection.Fragment) => {
@@ -45,7 +45,7 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 						{showReplacementWarning(collection, collectionFragment, user) && (
 							<Spacer margin="bottom-large">
 								<Alert type="danger">
-									{t(
+									{tHtml(
 										'collection/components/fragment/fragment-list___dit-item-is-recent-vervangen-door-een-nieuwe-versie-je-controleert-best-of-je-knippunten-nog-correct-zijn'
 									)}
 								</Alert>

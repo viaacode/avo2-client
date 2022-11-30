@@ -10,13 +10,13 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
@@ -46,7 +46,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	onClose,
 	onConfirm,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// Save initial state for reusability purposes
 	const [start, end] = getValidStartAndEnd(
@@ -149,7 +149,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('collection/components/modals/cut-fragment-modal___knip-fragment')}
+			title={tText('collection/components/modals/cut-fragment-modal___knip-fragment')}
 			size="medium"
 			onClose={onClose}
 			scrollable
@@ -157,14 +157,11 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		>
 			<ModalBody>
 				<FlowPlayerWrapper
-					item={{
-						...itemMetaData,
-						thumbnail_path: fragment.thumbnail_path || itemMetaData.thumbnail_path,
-					}}
+					item={itemMetaData}
 					external_id={itemMetaData.external_id}
 					duration={itemMetaData.duration}
 					title={itemMetaData.title}
-					cuePoints={{
+					cuePointsLabel={{
 						start: fragmentStartTime,
 						end: fragmentEndTime,
 					}}
@@ -192,14 +189,14 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t(
+									label={tText(
 										'collection/components/modals/cut-fragment-modal___annuleren'
 									)}
 									onClick={onCancelCut}
 								/>
 								<Button
 									type="primary"
-									label={t(
+									label={tText(
 										'collection/components/modals/cut-fragment-modal___knippen'
 									)}
 									onClick={onSaveCut}

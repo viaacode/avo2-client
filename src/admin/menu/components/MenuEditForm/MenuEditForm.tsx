@@ -2,11 +2,11 @@ import { Alert, Form, FormGroup, TextArea, TextInput } from '@viaa/avo2-componen
 import { Avo } from '@viaa/avo2-types';
 import { get, kebabCase } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import CreatableSelect from 'react-select/creatable';
 // eslint-disable-next-line import/namespace
 import { ValueType } from 'react-select/src/types';
 
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ReactSelectOption, ValueOf } from '../../../../shared/types';
 import { UserGroupSelect } from '../../../shared/components';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
@@ -37,7 +37,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 	onChange,
 	permissionWarning,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const handleMenuCreate = (label: string) => {
 		return {
@@ -50,7 +50,9 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 		<Form className="m-menu-edit-form">
 			<FormGroup
 				error={formErrors.placement}
-				label={t('admin/menu/components/menu-edit-form/menu-edit-form___navigatie-naam')}
+				label={tText(
+					'admin/menu/components/menu-edit-form/menu-edit-form___navigatie-naam'
+				)}
 				required
 			>
 				{/* TODO: Add CreatableSelect to components lib */}
@@ -62,7 +64,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 						onChange('placement', get(option, 'value', ''))
 					}
 					options={menuParentOptions}
-					placeholder={t(
+					placeholder={tText(
 						'admin/menu/components/menu-edit-form/menu-edit-form___selecteer-of-maak-een-navigatie-aan'
 					)}
 					isDisabled={!!menuParentId}
@@ -71,7 +73,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			{!menuParentId && (
 				<FormGroup
 					error={formErrors.description}
-					label={t(
+					label={tText(
 						'admin/menu/components/menu-edit-form/menu-edit-form___navigatie-omschrijving'
 					)}
 				>
@@ -81,7 +83,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 					/>
 				</FormGroup>
 			)}
-			<FormGroup label={t('admin/menu/components/menu-edit-form/menu-edit-form___icoon')}>
+			<FormGroup label={tText('admin/menu/components/menu-edit-form/menu-edit-form___icoon')}>
 				<IconPicker
 					options={GET_ADMIN_ICON_OPTIONS()}
 					onChange={(option: ValueType<ReactSelectOption<string>, any>) =>
@@ -94,7 +96,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			</FormGroup>
 			<FormGroup
 				error={formErrors.label}
-				label={t('admin/menu/components/menu-edit-form/menu-edit-form___label')}
+				label={tText('admin/menu/components/menu-edit-form/menu-edit-form___label')}
 			>
 				<TextInput
 					onChange={(value: string) => onChange('label', value)}
@@ -103,7 +105,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			</FormGroup>
 			<FormGroup
 				error={formErrors.tooltip}
-				label={t('admin/menu/components/menu-edit-form/menu-edit-form___tooltip')}
+				label={tText('admin/menu/components/menu-edit-form/menu-edit-form___tooltip')}
 			>
 				<TextInput
 					onChange={(value: string) => onChange('tooltip', value)}
@@ -112,7 +114,7 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 			</FormGroup>
 			<FormGroup
 				error={formErrors.content_path}
-				label={t('admin/menu/components/menu-edit-form/menu-edit-form___link')}
+				label={tText('admin/menu/components/menu-edit-form/menu-edit-form___link')}
 				required
 			>
 				<ContentPicker
@@ -132,9 +134,11 @@ const MenuEditForm: FunctionComponent<MenuEditFormProps> = ({
 				/>
 			</FormGroup>
 			<UserGroupSelect
-				label={t('admin/menu/components/menu-edit-form/menu-edit-form___zichtbaar-voor')}
+				label={tText(
+					'admin/menu/components/menu-edit-form/menu-edit-form___zichtbaar-voor'
+				)}
 				error={formErrors.user_group_ids}
-				placeholder={t('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
+				placeholder={tText('admin/menu/components/menu-edit-form/menu-edit-form___niemand')}
 				values={formState.user_group_ids || []}
 				required={false}
 				onChange={(userGroupIds: number[]) => onChange('user_group_ids', userGroupIds)}
