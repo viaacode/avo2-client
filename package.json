@@ -82,7 +82,7 @@
     "webpack": "^5.74.0",
     "yup": "^0.32.11",
     "react-router": "^5.2.1",
-    "@meemoo/react-components": "2.21.1"
+    "@meemoo/react-components": "2.21.5"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.0",
