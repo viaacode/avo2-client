@@ -9,9 +9,8 @@ import {
 } from '@viaa/avo2-components';
 import { get, isNull } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import ReactSelect from 'react-select';
+import ReactSelect, { ActionMeta, ValueType } from 'react-select';
 import AsyncSelect from 'react-select/async';
-import { ActionMeta, ValueType } from 'react-select/src/types';
 
 import { FileUpload } from '../../../../shared/components';
 import { CustomError } from '../../../../shared/helpers';

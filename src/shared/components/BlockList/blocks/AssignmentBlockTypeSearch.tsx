@@ -10,7 +10,6 @@ import classnames from 'classnames';
 import React, { FC } from 'react';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
-import './AssignmentBlockTypeSearch.scss';
 import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionFragmentRichText } from '../../../../collection/components';
 import useTranslation from '../../../../shared/hooks/useTranslation';

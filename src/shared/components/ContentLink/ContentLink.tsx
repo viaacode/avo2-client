@@ -1,4 +1,4 @@
-import { DutchContentType, Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
+import { Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
@@ -23,7 +23,7 @@ export const ContentLink: FunctionComponent<ContentLinkProps> = ({ parent, conte
 		content,
 		'type.label',
 		(parent.content_label || '').toLowerCase()
-	) as DutchContentType;
+	) as Avo.ContentType.Dutch;
 
 	const linkContent = (
 		<div className="c-box c-box--padding-small">

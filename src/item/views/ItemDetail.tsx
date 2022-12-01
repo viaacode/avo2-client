@@ -6,7 +6,6 @@ import {
 	Container,
 	Dropdown,
 	DropdownContent,
-	EnglishContentType,
 	Flex,
 	Grid,
 	Header,
@@ -361,7 +360,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	};
 
 	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
-		const englishContentType: EnglishContentType =
+		const englishContentType: Avo.ContentType.English =
 			toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 		return (
@@ -817,7 +816,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		if (!item) {
 			return null;
 		}
-		const englishContentType: EnglishContentType =
+		const englishContentType: Avo.ContentType.English =
 			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
 
 		return (
