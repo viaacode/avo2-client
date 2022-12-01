@@ -1,5 +1,4 @@
-import { DutchContentType, EnglishContentType } from '@viaa/avo2-components';
-import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
+import { Avo } from '@viaa/avo2-types';
 
 import { BaseBlockWithMeta } from '../assignment/assignment.types';
 import {
@@ -29,7 +28,7 @@ export enum ContentTypeString {
 	searchquery = 'zoekopdracht',
 }
 
-const CONTENT_TYPE_TRANSLATIONS = {
+const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.ContentType.English> = {
 	item: 'item',
 	audio: 'audio',
 	video: 'video',
@@ -40,7 +39,9 @@ const CONTENT_TYPE_TRANSLATIONS = {
 	zoekopdracht: 'searchquery',
 };
 
-export function blockTypeToContentType(type: BlockItemBaseSchema['type']): EnglishContentType {
+export function blockTypeToContentType(
+	type: Avo.Core.BlockItemBase['type']
+): Avo.ContentType.English {
 	let r: string = CONTENT_TYPE_TRANSLATIONS.item;
 
 	switch (type) {
@@ -53,11 +54,11 @@ export function blockTypeToContentType(type: BlockItemBaseSchema['type']): Engli
 			break;
 	}
 
-	return r as EnglishContentType;
+	return r as Avo.ContentType.English;
 }
 
-export function toEnglishContentType(label: DutchContentType): EnglishContentType {
-	return CONTENT_TYPE_TRANSLATIONS[label] as EnglishContentType;
+export function toEnglishContentType(label: Avo.ContentType.Dutch): Avo.ContentType.English {
+	return CONTENT_TYPE_TRANSLATIONS[label];
 }
 
 export type CollectionLabelLookup = { [id: string]: string };

@@ -1,7 +1,6 @@
 import {
 	BlockHeading,
 	Column,
-	EnglishContentType,
 	Grid,
 	MediaCard,
 	MediaCardMetaData,
@@ -505,7 +504,7 @@ export const renderCommonMetadata = (
 };
 
 const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
-	const englishContentType: EnglishContentType =
+	const englishContentType =
 		toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 	return (
