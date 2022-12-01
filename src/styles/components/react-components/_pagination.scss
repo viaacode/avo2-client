@@ -12,14 +12,6 @@
 		margin: 5px 5px;
 		cursor: pointer;
 
-		&--active {
-			background-color: $color-primary;
-			color: #fff;
-			border: 1px solid $color-primary;
-			font-weight: 700;
-			border-radius: 50%;
-		}
-
 		&--disabled {
 			cursor: default;
 		}
