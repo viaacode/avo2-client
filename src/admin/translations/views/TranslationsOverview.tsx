@@ -1,6 +1,5 @@
 import { TranslationsOverviewV2 } from '@meemoo/admin-core-ui';
-import { Modal } from '@meemoo/react-components';
-import { Button } from '@viaa/avo2-components';
+import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -149,19 +148,6 @@ const TranslationsOverview: FunctionComponent = () => {
 		onClose: () => void;
 		isOpen: boolean;
 	}) => {
-		const closeButton = () => {
-			return <Button icon="close" onClick={onClose} />;
-		};
-
-		const renderHeader = () => {
-			return (
-				<div className={styles['test']}>
-					{title}
-					{closeButton()}
-				</div>
-			);
-		};
-
 		const renderFooter = () => {
 			return (
 				<div className="u-px-32 u-py-24">
@@ -188,14 +174,13 @@ const TranslationsOverview: FunctionComponent = () => {
 					onClick={() => onClose()}
 				/>
 				<Modal
-					className={styles['c-translations-overview__modal']}
+					className="c-translations-overview__modal"
+					title={title}
 					isOpen={isOpen}
-					closeButtonProps={{ hidden: true }}
-					heading={renderHeader()}
-					footer={renderFooter()}
 					onClose={onClose}
 				>
-					{body}
+					<ModalBody>{body}</ModalBody>
+					<ModalFooterRight>{renderFooter()}</ModalFooterRight>
 				</Modal>
 			</>
 		);
