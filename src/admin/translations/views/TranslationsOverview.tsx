@@ -227,7 +227,6 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 				<TranslationsOverviewV2
 					renderPopup={renderPopup}
 					className={styles['c-translations-overview']}
-					isAvo
 				/>
 			</AdminLayoutBody>
 		</AdminLayout>
