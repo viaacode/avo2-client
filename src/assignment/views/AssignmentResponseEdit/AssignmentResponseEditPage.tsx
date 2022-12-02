@@ -1,7 +1,6 @@
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import { isString } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -14,6 +13,7 @@ import {
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
@@ -36,7 +36,7 @@ import './AssignmentResponseEdit.scss';
 const AssignmentResponseEditPage: FunctionComponent<
 	UserProps & DefaultSecureRouteProps<{ id: string }>
 > = ({ match, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Data
 	const assignmentId = match.params.id;
@@ -65,7 +65,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
 			) {
 				setAssignmentError({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-kan-geen-antwoorden-indienen-op-deze-opdracht-aangezien-je-geen-leerling-bent-gebruikt-de-bekijk-als-leerling-knop-om-te-zien-we-je-leerlingen-zien'
 					),
 					icon: 'user-student',
@@ -76,7 +76,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			if (!canViewAnAssignment(user)) {
 				setAssignmentError({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
 					icon: 'lock',
@@ -89,7 +89,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 			setAssignmentError(null);
 			if (!user.profile?.id) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id'
 					)
 				);
@@ -171,7 +171,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				<ErrorView
 					message={
 						assignmentError.message ||
-						t(
+						tText(
 							'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
 						)
 					}
@@ -182,7 +182,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 		if (!assignment) {
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden'
 					)}
 					icon={'search'}
@@ -213,7 +213,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 		if (!assignmentResponse) {
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
 					)}
 					icon="alert-triangle"
@@ -240,7 +240,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t(
+						tText(
 							'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-titel'
 						)
 					)}
@@ -248,7 +248,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-beschrijving'
 					)}
 				/>

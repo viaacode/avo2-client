@@ -17,7 +17,6 @@ import { ItemSchema } from '@viaa/avo2-types/types/item';
 import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 
@@ -30,6 +29,7 @@ import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { QuickLaneUrlObject } from '../../shared/types';
 import { isCollection, isItem } from '../quick-lane.helpers';
 import { QuickLaneService } from '../quick-lane.service';
@@ -45,7 +45,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	user,
 	...rest
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// State
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>();
@@ -67,7 +67,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				if (!content || !content.is_public) {
 					setLoadingInfo({
 						state: 'error',
-						message: t(
+						message: tText(
 							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 						),
 						icon: 'search',
@@ -84,7 +84,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 					setLoadingInfo({
 						state: 'error',
 						message:
-							t(
+							tText(
 								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
 							) + (response.content as ItemSchema).depublish_reason,
 						icon: 'camera-off',
@@ -98,7 +98,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				if (!content.is_published) {
 					setLoadingInfo({
 						state: 'error',
-						message: t('item/views/item___dit-item-werd-niet-gevonden'),
+						message: tText('item/views/item___dit-item-werd-niet-gevonden'),
 						icon: 'search',
 					});
 
@@ -145,12 +145,12 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'quick-lane/views/quick-lane-detail___het-laden-van-de-gedeelde-link-is-mislukt'
 				),
 			});
 		}
-	}, [setQuickLane, setLoadingInfo, match.params.id, t, user]);
+	}, [setQuickLane, setLoadingInfo, match.params.id, tText, user]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
@@ -158,13 +158,13 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 		} else {
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'quick-lane/views/quick-lane-detail___je-hebt-geen-rechten-om-deze-gedeelde-link-te-bekijken'
 				),
 				icon: 'lock',
 			});
 		}
-	}, [fetchQuickLaneAndContent, user, t]);
+	}, [fetchQuickLaneAndContent, user, tText]);
 
 	useEffect(() => {
 		if (quickLane) {
@@ -212,9 +212,12 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				return (
 					<ErrorView
 						icon="alert-triangle"
-						message={t('quick-lane/views/quick-lane-detail___onverwacht-inhoudstype', {
-							type: contentLabel || undefined,
-						})}
+						message={tText(
+							'quick-lane/views/quick-lane-detail___onverwacht-inhoudstype',
+							{
+								type: contentLabel || undefined,
+							}
+						)}
 					/>
 				);
 		}
@@ -264,10 +267,10 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 												<ToolbarItem>
 													<Button
 														type="primary"
-														label={t(
+														label={tText(
 															'quick-lane/views/quick-lane-detail___bekijk-als-leerkracht'
 														)}
-														title={t(
+														title={tText(
 															'quick-lane/views/quick-lane-detail___bekijk-als-leerkracht'
 														)}
 														icon="eye"
@@ -326,7 +329,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						get(
 							quickLane,
 							'title',
-							t(
+							tText(
 								'quick-lane/views/quick-lane-detail___gedeelde-link-detail-pagina-titel-fallback'
 							)
 						)
@@ -336,7 +339,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
-				notFoundError={t(
+				notFoundError={tText(
 					'quick-lane/views/quick-lane-detail___de-gedeelde-link-werd-niet-gevonden'
 				)}
 				dataObject={quickLane}

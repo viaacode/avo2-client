@@ -1,6 +1,6 @@
 import { CTAProps } from '@viaa/avo2-components';
 
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
 	ContentBlockConfig,
@@ -42,10 +42,10 @@ export const INITIAL_CTAS_BLOCK_STATE = (): DefaultContentBlockState =>
 
 export const CTAS_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/ctas___ctas'),
+	name: tText('admin/content-block/helpers/generators/ctas___ctas'),
 	type: ContentBlockType.Ctas,
 	components: {
-		name: i18n.t('admin/content-block/helpers/generators/ctas___cta'),
+		name: tText('admin/content-block/helpers/generators/ctas___cta'),
 		limits: {
 			min: 1,
 			max: 2,
@@ -53,57 +53,57 @@ export const CTAS_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 		state: INITIAL_CTAS_COMPONENTS_STATE(),
 		fields: {
 			headingType: {
-				label: i18n.t('admin/content-block/helpers/generators/ctas___titel-stijl'),
+				label: tText('admin/content-block/helpers/generators/ctas___titel-stijl'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_HEADING_TYPE_OPTIONS(),
 				},
 			},
 			heading: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/ctas___titel-is-verplicht'),
+				tText('admin/content-block/helpers/generators/ctas___titel-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/ctas___titel-tekst'),
+					label: tText('admin/content-block/helpers/generators/ctas___titel-tekst'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
 			headingColor: FOREGROUND_COLOR_FIELD(
-				i18n.t('admin/content-block/helpers/generators/ctas___titel-kleur')
+				tText('admin/content-block/helpers/generators/ctas___titel-kleur')
 			),
 			content: TEXT_FIELD(),
 			contentColor: FOREGROUND_COLOR_FIELD(
-				i18n.t('admin/content-block/helpers/generators/ctas___tekst-kleur')
+				tText('admin/content-block/helpers/generators/ctas___tekst-kleur')
 			),
 			buttonType: {
-				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-type'),
+				label: tText('admin/content-block/helpers/generators/ctas___knop-type'),
 				editorType: ContentBlockEditor.Select,
 				editorProps: {
 					options: GET_BUTTON_TYPE_OPTIONS(),
 				},
 			},
 			buttonLabel: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/ctas___knoptekst-is-verplicht'),
+				tText('admin/content-block/helpers/generators/ctas___knoptekst-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/ctas___knop-tekst'),
+					label: tText('admin/content-block/helpers/generators/ctas___knop-tekst'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
 			buttonAltTitle: TEXT_FIELD('', {
-				label: i18n.t('admin/content-block/helpers/generators/ctas___alt-button-text'),
+				label: tText('admin/content-block/helpers/generators/ctas___alt-button-text'),
 				editorType: ContentBlockEditor.TextInput,
 			}),
 			buttonIcon: {
-				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),
+				label: tText('admin/content-block/helpers/generators/ctas___knop-icoon'),
 				editorType: ContentBlockEditor.IconPicker,
 				editorProps: {
 					options: GET_ADMIN_ICON_OPTIONS(),
 				},
 			},
 			buttonAction: {
-				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-actie'),
+				label: tText('admin/content-block/helpers/generators/ctas___knop-actie'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 			backgroundColor: BACKGROUND_COLOR_FIELD(
-				i18n.t('admin/content-block/helpers/generators/ctas___achtergrond-kleur'),
+				tText('admin/content-block/helpers/generators/ctas___achtergrond-kleur'),
 				GET_BACKGROUND_COLOR_OPTIONS()[1]
 			),
 		},

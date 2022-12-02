@@ -2,7 +2,6 @@ import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -22,6 +21,7 @@ import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graph
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
@@ -43,7 +43,7 @@ import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
 type ItemsOverviewProps = DefaultSecureRouteProps;
 
 const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
 	const [itemCount, setItemCount] = useState<number>(0);
@@ -170,13 +170,13 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt'
 				),
 			});
 		}
 		setIsLoading(false);
-	}, [tableColumns, setLoadingInfo, setItems, setItemCount, tableState, user, t]);
+	}, [tableColumns, setLoadingInfo, setItems, setItemCount, tableState, user, tText]);
 
 	const fetchAllSeries = useCallback(async () => {
 		try {
@@ -188,10 +188,12 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		} catch (err) {
 			console.error(new CustomError('Failed to load all item series from the database', err));
 			ToastService.danger(
-				t('admin/items/views/items-overview___het-ophalen-van-de-reeks-opties-is-mislukt')
+				tHtml(
+					'admin/items/views/items-overview___het-ophalen-van-de-reeks-opties-is-mislukt'
+				)
 			);
 		}
-	}, [setSeriesOptions, t]);
+	}, [setSeriesOptions, tText]);
 
 	useEffect(() => {
 		fetchItems();
@@ -260,15 +262,15 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 
 			case 'is_published':
 				if (rowData.is_published) {
-					return t('admin/items/views/items-overview___gepubliceerd');
+					return tText('admin/items/views/items-overview___gepubliceerd');
 				}
 				if (rowData.depublish_reason) {
-					return t('admin/items/views/items-overview___gedepubliceerd-pancarte');
+					return tText('admin/items/views/items-overview___gedepubliceerd-pancarte');
 				}
 				if (get(rowData, 'relations[0]')) {
-					return t('admin/items/views/items-overview___gedepubliceerd-merge');
+					return tText('admin/items/views/items-overview___gedepubliceerd-merge');
 				}
-				return t('admin/items/views/items-overview___gedepubliceerd');
+				return tText('admin/items/views/items-overview___gedepubliceerd');
 
 			case 'actions':
 				return (
@@ -277,10 +279,10 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 							<Button
 								type="secondary"
 								icon="eye"
-								title={t(
+								title={tText(
 									'admin/items/views/items-overview___bekijk-item-in-de-website'
 								)}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/items/views/items-overview___bekijk-item-in-de-website'
 								)}
 							/>
@@ -289,10 +291,10 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 							<Button
 								type="secondary"
 								icon="edit"
-								title={t(
+								title={tText(
 									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
 								)}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
 								)}
 							/>
@@ -307,11 +309,13 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 
 	const renderNoResults = () => {
 		return (
-			<ErrorView message={t('admin/items/views/items-overview___er-bestaan-nog-geen-items')}>
+			<ErrorView
+				message={tText('admin/items/views/items-overview___er-bestaan-nog-geen-items')}
+			>
 				<p>
-					<Trans i18nKey="admin/items/views/items-overview___beschrijving-wanneer-er-nog-geen-items-zijn">
-						Beschrijving wanneer er nog geen items zijn
-					</Trans>
+					{tHtml(
+						'admin/items/views/items-overview___beschrijving-wanneer-er-nog-geen-items-zijn'
+					)}
 				</p>
 			</ErrorView>
 		);
@@ -330,10 +334,10 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 					renderCell={(rowData: Partial<Avo.Item.Item>, columnId: string) =>
 						renderTableCell(rowData, columnId as ItemsOverviewTableCols)
 					}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/items/views/items-overview___zoek-op-pid-titel-beschrijving-organisatie'
 					)}
-					noContentMatchingFiltersMessage={t(
+					noContentMatchingFiltersMessage={tText(
 						'admin/items/views/items-overview___er-zijn-geen-items-doe-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -347,19 +351,22 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	};
 
 	return (
-		<AdminLayout pageTitle={t('admin/items/views/items-overview___items')} size="full-width">
+		<AdminLayout
+			pageTitle={tText('admin/items/views/items-overview___items')}
+			size="full-width"
+		>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/items/views/items-overview___item-beheer-overview-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving'
 						)}
 					/>

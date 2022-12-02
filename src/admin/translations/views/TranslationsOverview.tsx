@@ -3,12 +3,11 @@ import { Modal } from '@meemoo/react-components';
 import { Button } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { CustomError } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -17,8 +16,8 @@ import { Translation, TranslationsState } from '../translations.types';
 
 import styles from './TranslationsOverviewV2.module.scss';
 
-const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
-	const [t] = useTranslation();
+const TranslationsOverview: FunctionComponent = () => {
+	const { tText, tHtml } = useTranslation();
 
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
 	const [translations, setTranslations] = useState<Translation[]>([]);
@@ -33,12 +32,12 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 			.catch((err) => {
 				console.error(new CustomError('Failed to fetch translations', err));
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/translations/views/translations-overview___het-ophalen-van-de-vertalingen-is-mislukt'
 					)
 				);
 			});
-	}, [t]);
+	}, [tText]);
 
 	const onSaveTranslations = async () => {
 		// convert translations to db format and save translations
@@ -84,12 +83,14 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 			await getTranslations();
 
 			ToastService.success(
-				t('admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen')
+				tHtml(
+					'admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen'
+				)
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to save translations', err));
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/translations/views/translations-overview___het-opslaan-van-de-vertalingen-is-mislukt'
 				)
 			);
@@ -166,12 +167,12 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 				<div className="u-px-32 u-py-24">
 					<Button
 						onClick={onSave}
-						label={t('pages/admin/vertalingen-v-2/index___bewaar-wijzigingen')}
+						label={tText('pages/admin/vertalingen-v-2/index___bewaar-wijzigingen')}
 					/>
 
 					<Button
 						onClick={onClose}
-						label={t('pages/admin/vertalingen-v-2/index___annuleer')}
+						label={tText('pages/admin/vertalingen-v-2/index___annuleer')}
 					/>
 				</div>
 			);
@@ -202,7 +203,7 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 
 	return (
 		<AdminLayout
-			pageTitle={t('admin/translations/views/translations-overview___vertalingen')}
+			pageTitle={tText('admin/translations/views/translations-overview___vertalingen')}
 			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
@@ -212,14 +213,14 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving'
 						)}
 					/>
@@ -233,4 +234,4 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 	);
 };
 
-export default withAdminCoreConfig(TranslationsOverview as FunctionComponent);
+export default withAdminCoreConfig(TranslationsOverview) as FunctionComponent;

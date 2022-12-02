@@ -17,11 +17,11 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { CustomError } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
@@ -45,7 +45,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 	onClose,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewBundle, setCreateNewBundle] = useState<boolean>(false);
@@ -66,24 +66,24 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				.catch((err) => {
 					console.error(err);
 					ToastService.danger(
-						t(
+						tHtml(
 							'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bestaande-bundels-is-mislukt'
 						)
 					);
 				}),
-		[user, t]
+		[user, tText]
 	);
 
 	useEffect(() => {
 		fetchBundles().catch((err) => {
 			console.error('Failed to fetch bundles', err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-bundels-is-mislukt'
 				)
 			);
 		});
-	}, [fetchBundles, t]);
+	}, [fetchBundles, tText]);
 
 	const setSelectedBundleIdAndGetBundleInfo = async (id: string) => {
 		try {
@@ -98,7 +98,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			setSelectedBundle(collection);
 		} catch (err) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/modals/add-to-bundle-modal___het-ophalen-van-de-collectie-details-is-mislukt'
 				)
 			);
@@ -135,7 +135,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 			await CollectionService.insertFragments(bundle.id, [fragment]);
 
 			ToastService.success(
-				t(
+				tHtml(
 					'collection/components/modals/add-to-bundle-modal___de-collectie-is-toegevoegd-aan-de-bundel'
 				)
 			);
@@ -151,7 +151,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/modals/add-to-bundle-modal___de-collectie-kon-niet-worden-toegevoegd-aan-de-bundel'
 				)
 			);
@@ -217,7 +217,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				},
 			});
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/modals/add-to-bundle-modal___de-bundel-kon-niet-worden-aangemaakt'
 				)
 			);
@@ -233,7 +233,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	return (
 		<Modal
-			title={t(
+			title={tText(
 				'collection/components/modals/add-to-bundle-modal___voeg-collectie-toe-aan-bundel'
 			)}
 			size="medium"
@@ -247,7 +247,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 							<FormGroup>
 								<Spacer margin="bottom">
 									<RadioButton
-										label={t(
+										label={tText(
 											'collection/components/modals/add-to-bundle-modal___bestaande-bundel'
 										)}
 										checked={!createNewBundle}
@@ -259,7 +259,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 										{bundles.length ? (
 											<Select
 												id="existingCollection"
-												placeholder={t(
+												placeholder={tText(
 													'collection/components/modals/add-to-bundle-modal___kies-bundel'
 												)}
 												options={[
@@ -279,7 +279,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 										) : (
 											<TextInput
 												disabled
-												value={t(
+												value={tText(
 													'collection/components/modals/add-to-bundle-modal___je-hebt-nog-geen-bundels'
 												)}
 											/>
@@ -288,7 +288,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 								</Spacer>
 								<Spacer margin="bottom">
 									<RadioButton
-										label={t(
+										label={tText(
 											'collection/components/modals/add-to-bundle-modal___nieuwe-bundel'
 										)}
 										checked={createNewBundle}
@@ -298,7 +298,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 									/>
 									<div>
 										<TextInput
-											placeholder={t(
+											placeholder={tText(
 												'collection/components/modals/add-to-bundle-modal___bundel-titel'
 											)}
 											disabled={!createNewBundle}
@@ -319,7 +319,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 							<ButtonToolbar>
 								{isProcessing && <Spinner />}
 								<Button
-									label={t(
+									label={tText(
 										'item/components/modals/add-to-collection-modal___annuleren'
 									)}
 									type="link"
@@ -328,18 +328,18 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 									disabled={isProcessing}
 								/>
 								<Button
-									label={t(
+									label={tText(
 										'item/components/modals/add-to-collection-modal___toepassen'
 									)}
 									type="primary"
 									block
 									title={
 										createNewBundle && !newBundleTitle
-											? t(
+											? tText(
 													'collection/components/modals/add-to-bundle-modal___u-moet-een-bundel-titel-opgeven'
 											  )
 											: !createNewBundle && !selectedBundle
-											? t(
+											? tText(
 													'collection/components/modals/add-to-bundle-modal___je-moet-een-bundel-kiezen-om-deze-collectie-aan-toe-te-voegen'
 											  )
 											: ''

@@ -9,7 +9,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -25,6 +24,7 @@ import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { AssignmentsBulkAction } from '../../assignments/assignments.types';
@@ -44,7 +44,7 @@ import {
 import { PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
 const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [pupilCollections, setPupilCollections] = useState<
 		Omit<Assignment_Response_v2, 'pupil_collection_blocks'>[] | null
@@ -155,13 +155,13 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/pupil-collection/views/pupil-collections-overview___het-ophalen-van-de-leerlingencollecties-is-mislukt'
 				),
 			});
 		}
 		setIsLoading(false);
-	}, [columns, tableState, generateWhereObject, t]);
+	}, [columns, tableState, generateWhereObject, tText]);
 
 	useEffect(() => {
 		fetchPupilCollections();
@@ -182,7 +182,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t(
+				tHtml(
 					'admin/pupil-collection/views/pupil-collections-overview___je-hebt-num-of-selected-pupil-collections-geselecteerd',
 					{
 						numOfSelectedPupilCollections: pupilCollectionIds.length,
@@ -199,7 +199,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 				)
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/pupil-collection/views/pupil-collections-overview___het-ophalen-van-alle-geselecteerde-leerlingencollectie-ids-is-mislukt'
 				)
 			);
@@ -230,7 +230,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 			await PupilCollectionService.deleteAssignmentResponses(selectedPupilCollectionIds);
 			await fetchPupilCollections();
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/pupil-collection/views/pupil-collections-overview___je-hebt-num-of-selected-pupil-collections-leerlingencollecties-verwijderd',
 					{
 						numOfSelectedPupilCollections: selectedPupilCollectionIds.length,
@@ -245,7 +245,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/pupil-collection/views/pupil-collections-overview___het-verwijderen-van-de-geselecteerde-leerlingencollecties-is-mislukt'
 				)
 			);
@@ -262,7 +262,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 			);
 			await fetchPupilCollections();
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/pupil-collection/views/pupil-collections-overview___je-hebt-de-auteur-van-num-of-selected-pupil-collections-leerlingencollecties-aangepast',
 					{
 						numOfSelectedPupilCollections: selectedPupilCollectionIds.length,
@@ -281,7 +281,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 				)
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/pupil-collection/views/pupil-collections-overview___het-updaten-van-de-auteur-van-de-geselecteerde-leerlingencollecties-is-mislukt'
 				)
 			);
@@ -333,8 +333,8 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 			case 'status':
 				return !!assignment?.deadline_at &&
 					new Date(assignment?.deadline_at).getTime() < new Date().getTime()
-					? t('admin/pupil-collection/views/pupil-collections-overview___afgelopen')
-					: t('admin/pupil-collection/views/pupil-collections-overview___actief');
+					? tText('admin/pupil-collection/views/pupil-collections-overview___afgelopen')
+					: tText('admin/pupil-collection/views/pupil-collections-overview___actief');
 
 			case 'actions':
 			default:
@@ -360,12 +360,12 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={t(
+				message={tText(
 					'admin/pupil-collection/views/pupil-collections-overview___er-bestaan-nog-geen-leerlingencollecties'
 				)}
 			>
 				<p>
-					{t(
+					{tText(
 						'admin/pupil-collection/views/pupil-collections-overview___beschrijving-wanneer-er-nog-geen-leerlingencollecties-zijn'
 					)}
 				</p>
@@ -386,10 +386,10 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					renderCell={(rowData: Partial<Assignment_Response_v2>, columnId: string) =>
 						renderTableCell(rowData, columnId as PupilCollectionOverviewTableColumns)
 					}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/pupil-collection/views/pupil-collections-overview___zoek-op-titel-van-collectie-opdracht-naam-leerling'
 					)}
-					noContentMatchingFiltersMessage={t(
+					noContentMatchingFiltersMessage={tText(
 						'admin/pupil-collection/views/pupil-collections-overview___er-zijn-geen-leerlingen-collecties-die-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -411,7 +411,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					defaultOrderDirection={'desc'}
 				/>
 				<ConfirmModal
-					body={t(
+					body={tHtml(
 						'admin/pupil-collection/views/pupil-collections-overview___dit-zal-num-of-selected-pupil-collections-leerlingencollecties-verwijderen-deze-actie-kan-niet-ongedaan-gemaakt-worden',
 						{ numOfSelectedPupilCollections: selectedPupilCollectionIds.length }
 					)}
@@ -432,7 +432,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 
 	return (
 		<AdminLayout
-			pageTitle={t(
+			pageTitle={tText(
 				'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties'
 			)}
 			size="full-width"
@@ -441,14 +441,14 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-beschrijving'
 						)}
 					/>

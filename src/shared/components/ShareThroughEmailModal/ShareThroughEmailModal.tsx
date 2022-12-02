@@ -10,10 +10,10 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import React, { FunctionComponent, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 
 import { copyToClipboard } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
+import useTranslation from '../../hooks/useTranslation';
 import { CampaignMonitorService, EmailTemplateType } from '../../services/campaign-monitor-service';
 import { trackEvents } from '../../services/event-logging-service';
 import { ToastService } from '../../services/toast-service';
@@ -38,7 +38,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 	onClose,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [emailAddress, setEmailAddress] = useState<string>('');
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -59,7 +59,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 		);
 
 		ToastService.success(
-			t(
+			tHtml(
 				'shared/components/share-through-email-modal/share-through-email-modal___de-url-is-naar-het-klembord-gekopieerd'
 			)
 		);
@@ -88,7 +88,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 			);
 
 			ToastService.success(
-				t(
+				tHtml(
 					'shared/components/share-through-email-modal/share-through-email-modal___de-email-is-verstuurd'
 				)
 			);
@@ -118,12 +118,12 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 		>
 			<ModalBody>
 				<BlockHeading type="h4">
-					<Trans i18nKey="shared/components/share-through-email-modal/share-through-email-modal___kopieer-deze-publieke-link">
-						Kopieer deze publieke link
-					</Trans>
+					{tHtml(
+						'shared/components/share-through-email-modal/share-through-email-modal___kopieer-deze-publieke-link'
+					)}
 				</BlockHeading>
 				<p>
-					{t(
+					{tText(
 						'shared/components/share-through-email-modal/share-through-email-modal___waarschuwing-deel-link-via-email'
 					)}
 				</p>
@@ -136,7 +136,7 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 							<FlexItem shrink>
 								<Spacer margin="left-small">
 									<Button
-										label={t(
+										label={tText(
 											'shared/components/share-through-email-modal/share-through-email-modal___kopieer-link'
 										)}
 										onClick={copyLink}
@@ -147,21 +147,21 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 					</Box>
 				</Spacer>
 				<BlockHeading type="h4">
-					<Trans i18nKey="shared/components/share-through-email-modal/share-through-email-modal___stuur-een-link-via-email">
-						Stuur een link via email
-					</Trans>
+					{tHtml(
+						'shared/components/share-through-email-modal/share-through-email-modal___stuur-een-link-via-email'
+					)}
 				</BlockHeading>
 				<p>
-					<Trans i18nKey="shared/components/share-through-email-modal/share-through-email-modal___wij-sturen-voor-jou-een-mailtje-met-deze-link">
-						Wij sturen voor jou een mailtje met deze link.
-					</Trans>
+					{tHtml(
+						'shared/components/share-through-email-modal/share-through-email-modal___wij-sturen-voor-jou-een-mailtje-met-deze-link'
+					)}
 				</p>
 				<Spacer margin="top-large">
 					<Box backgroundColor="gray" condensed>
 						<Flex wrap justify="between">
 							<FlexItem>
 								<TextInput
-									placeholder={t(
+									placeholder={tText(
 										'shared/components/share-through-email-modal/share-through-email-modal___uw-e-mailadres'
 									)}
 									value={emailAddress}
@@ -176,10 +176,10 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 										disabled={isProcessing}
 										label={
 											isProcessing
-												? t(
+												? tText(
 														'shared/components/share-through-email-modal/share-through-email-modal___versturen'
 												  )
-												: t(
+												: tText(
 														'shared/components/share-through-email-modal/share-through-email-modal___verzenden'
 												  )
 										}

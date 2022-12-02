@@ -3,11 +3,11 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ValueType } from 'react-select';
 
 import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -37,10 +37,10 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	type = 'LABEL',
 	...props
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const dictionary = {
-		placeholder: t('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
-		empty: t('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
+		placeholder: tText('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
+		empty: tText('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
@@ -87,7 +87,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	const addAssignmentLabel = (labelOption: ValueType<{ label: string; value: string }, any>) => {
 		if (!labelOption) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
 				)
 			);
@@ -100,7 +100,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 
 		if (!assignmentLabel) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
 				)
 			);

@@ -20357,6 +20357,10 @@ export type Mutation_Root = {
   delete_users_profiles?: Maybe<Users_Profiles_Mutation_Response>;
   /** delete single row from the table: "users.profiles" */
   delete_users_profiles_by_pk?: Maybe<Users_Profiles>;
+  /** delete data from the table: "users.users_sync_cm" */
+  delete_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
+  /** delete single row from the table: "users.users_sync_cm" */
+  delete_users_users_sync_cm_by_pk?: Maybe<Users_Users_Sync_Cm>;
   /** insert data into the table: "app.assignment_assignment_tags" */
   insert_app_assignment_assignment_tags?: Maybe<App_Assignment_Assignment_Tags_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_assignment_tags" */
@@ -20693,6 +20697,10 @@ export type Mutation_Root = {
   insert_users_profiles?: Maybe<Users_Profiles_Mutation_Response>;
   /** insert a single row into the table: "users.profiles" */
   insert_users_profiles_one?: Maybe<Users_Profiles>;
+  /** insert data into the table: "users.users_sync_cm" */
+  insert_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
+  /** insert a single row into the table: "users.users_sync_cm" */
+  insert_users_users_sync_cm_one?: Maybe<Users_Users_Sync_Cm>;
   /** update data of the table: "app.assignment_assignment_tags" */
   update_app_assignment_assignment_tags?: Maybe<App_Assignment_Assignment_Tags_Mutation_Response>;
   /** update single row of the table: "app.assignment_assignment_tags" */
@@ -21195,6 +21203,12 @@ export type Mutation_Root = {
   update_users_profiles_by_pk?: Maybe<Users_Profiles>;
   /** update multiples rows of table: "users.profiles" */
   update_users_profiles_many?: Maybe<Array<Maybe<Users_Profiles_Mutation_Response>>>;
+  /** update data of the table: "users.users_sync_cm" */
+  update_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
+  /** update single row of the table: "users.users_sync_cm" */
+  update_users_users_sync_cm_by_pk?: Maybe<Users_Users_Sync_Cm>;
+  /** update multiples rows of table: "users.users_sync_cm" */
+  update_users_users_sync_cm_many?: Maybe<Array<Maybe<Users_Users_Sync_Cm_Mutation_Response>>>;
 };
 
 
@@ -22196,6 +22210,18 @@ export type Mutation_RootDelete_Users_ProfilesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Users_Profiles_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Users_Users_Sync_CmArgs = {
+  where: Users_Users_Sync_Cm_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Users_Users_Sync_Cm_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -23371,6 +23397,20 @@ export type Mutation_RootInsert_Users_ProfilesArgs = {
 export type Mutation_RootInsert_Users_Profiles_OneArgs = {
   object: Users_Profiles_Insert_Input;
   on_conflict?: InputMaybe<Users_Profiles_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_Users_Sync_CmArgs = {
+  objects: Array<Users_Users_Sync_Cm_Insert_Input>;
+  on_conflict?: InputMaybe<Users_Users_Sync_Cm_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Users_Users_Sync_Cm_OneArgs = {
+  object: Users_Users_Sync_Cm_Insert_Input;
+  on_conflict?: InputMaybe<Users_Users_Sync_Cm_On_Conflict>;
 };
 
 
@@ -25307,6 +25347,38 @@ export type Mutation_RootUpdate_Users_Profiles_ManyArgs = {
   updates: Array<Users_Profiles_Updates>;
 };
 
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Users_Sync_CmArgs = {
+  _append?: InputMaybe<Users_Users_Sync_Cm_Append_Input>;
+  _delete_at_path?: InputMaybe<Users_Users_Sync_Cm_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Users_Users_Sync_Cm_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Users_Users_Sync_Cm_Delete_Key_Input>;
+  _inc?: InputMaybe<Users_Users_Sync_Cm_Inc_Input>;
+  _prepend?: InputMaybe<Users_Users_Sync_Cm_Prepend_Input>;
+  _set?: InputMaybe<Users_Users_Sync_Cm_Set_Input>;
+  where: Users_Users_Sync_Cm_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Users_Sync_Cm_By_PkArgs = {
+  _append?: InputMaybe<Users_Users_Sync_Cm_Append_Input>;
+  _delete_at_path?: InputMaybe<Users_Users_Sync_Cm_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Users_Users_Sync_Cm_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Users_Users_Sync_Cm_Delete_Key_Input>;
+  _inc?: InputMaybe<Users_Users_Sync_Cm_Inc_Input>;
+  _prepend?: InputMaybe<Users_Users_Sync_Cm_Prepend_Input>;
+  _set?: InputMaybe<Users_Users_Sync_Cm_Set_Input>;
+  pk_columns: Users_Users_Sync_Cm_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Users_Users_Sync_Cm_ManyArgs = {
+  updates: Array<Users_Users_Sync_Cm_Updates>;
+};
+
 /** column ordering options */
 export enum Order_By {
   /** in ascending order, nulls last */
@@ -25895,6 +25967,12 @@ export type Query_Root = {
   users_summary_view: Array<Users_Summary_View>;
   /** fetch aggregated fields from the table: "users.summary_view" */
   users_summary_view_aggregate: Users_Summary_View_Aggregate;
+  /** fetch data from the table: "users.users_sync_cm" */
+  users_users_sync_cm: Array<Users_Users_Sync_Cm>;
+  /** fetch aggregated fields from the table: "users.users_sync_cm" */
+  users_users_sync_cm_aggregate: Users_Users_Sync_Cm_Aggregate;
+  /** fetch data from the table: "users.users_sync_cm" using primary key columns */
+  users_users_sync_cm_by_pk?: Maybe<Users_Users_Sync_Cm>;
 };
 
 
@@ -28128,6 +28206,29 @@ export type Query_RootUsers_Summary_View_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Users_Summary_View_Order_By>>;
   where?: InputMaybe<Users_Summary_View_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Users_Sync_CmArgs = {
+  distinct_on?: InputMaybe<Array<Users_Users_Sync_Cm_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Users_Sync_Cm_Order_By>>;
+  where?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Users_Sync_Cm_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Users_Sync_Cm_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Users_Sync_Cm_Order_By>>;
+  where?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
+};
+
+
+export type Query_RootUsers_Users_Sync_Cm_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 /** columns and relationships of "shared.collateral" */
@@ -31868,6 +31969,14 @@ export type Subscription_Root = {
   users_summary_view_aggregate: Users_Summary_View_Aggregate;
   /** fetch data from the table in a streaming manner : "users.summary_view" */
   users_summary_view_stream: Array<Users_Summary_View>;
+  /** fetch data from the table: "users.users_sync_cm" */
+  users_users_sync_cm: Array<Users_Users_Sync_Cm>;
+  /** fetch aggregated fields from the table: "users.users_sync_cm" */
+  users_users_sync_cm_aggregate: Users_Users_Sync_Cm_Aggregate;
+  /** fetch data from the table: "users.users_sync_cm" using primary key columns */
+  users_users_sync_cm_by_pk?: Maybe<Users_Users_Sync_Cm>;
+  /** fetch data from the table in a streaming manner : "users.users_sync_cm" */
+  users_users_sync_cm_stream: Array<Users_Users_Sync_Cm>;
 };
 
 
@@ -34808,6 +34917,36 @@ export type Subscription_RootUsers_Summary_View_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Users_Summary_View_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Summary_View_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Users_Sync_CmArgs = {
+  distinct_on?: InputMaybe<Array<Users_Users_Sync_Cm_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Users_Sync_Cm_Order_By>>;
+  where?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Users_Sync_Cm_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Users_Users_Sync_Cm_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Users_Users_Sync_Cm_Order_By>>;
+  where?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
+};
+
+
+export type Subscription_RootUsers_Users_Sync_Cm_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootUsers_Users_Sync_Cm_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Users_Users_Sync_Cm_Stream_Cursor_Input>>;
+  where?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
 };
 
 /** Boolean expression to compare columns of type "time". All fields are combined with logical 'AND'. */
@@ -41390,6 +41529,352 @@ export type Users_Summary_View_Variance_Fields = {
   role_id?: Maybe<Scalars['Float']>;
 };
 
+/** columns and relationships of "users.users_sync_cm" */
+export type Users_Users_Sync_Cm = {
+  __typename?: 'users_users_sync_cm';
+  action: Scalars['String'];
+  avo_user_id?: Maybe<Scalars['uuid']>;
+  cm_email?: Maybe<Scalars['String']>;
+  created_at: Scalars['timestamptz'];
+  expected_info: Scalars['jsonb'];
+  failed_sync_count: Scalars['Int'];
+  id: Scalars['uuid'];
+  ldap_user_id?: Maybe<Scalars['String']>;
+  received_info: Scalars['jsonb'];
+  updated_at: Scalars['timestamptz'];
+};
+
+
+/** columns and relationships of "users.users_sync_cm" */
+export type Users_Users_Sync_CmExpected_InfoArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "users.users_sync_cm" */
+export type Users_Users_Sync_CmReceived_InfoArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "users.users_sync_cm" */
+export type Users_Users_Sync_Cm_Aggregate = {
+  __typename?: 'users_users_sync_cm_aggregate';
+  aggregate?: Maybe<Users_Users_Sync_Cm_Aggregate_Fields>;
+  nodes: Array<Users_Users_Sync_Cm>;
+};
+
+/** aggregate fields of "users.users_sync_cm" */
+export type Users_Users_Sync_Cm_Aggregate_Fields = {
+  __typename?: 'users_users_sync_cm_aggregate_fields';
+  avg?: Maybe<Users_Users_Sync_Cm_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Users_Users_Sync_Cm_Max_Fields>;
+  min?: Maybe<Users_Users_Sync_Cm_Min_Fields>;
+  stddev?: Maybe<Users_Users_Sync_Cm_Stddev_Fields>;
+  stddev_pop?: Maybe<Users_Users_Sync_Cm_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Users_Users_Sync_Cm_Stddev_Samp_Fields>;
+  sum?: Maybe<Users_Users_Sync_Cm_Sum_Fields>;
+  var_pop?: Maybe<Users_Users_Sync_Cm_Var_Pop_Fields>;
+  var_samp?: Maybe<Users_Users_Sync_Cm_Var_Samp_Fields>;
+  variance?: Maybe<Users_Users_Sync_Cm_Variance_Fields>;
+};
+
+
+/** aggregate fields of "users.users_sync_cm" */
+export type Users_Users_Sync_Cm_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Users_Users_Sync_Cm_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Users_Users_Sync_Cm_Append_Input = {
+  expected_info?: InputMaybe<Scalars['jsonb']>;
+  received_info?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** aggregate avg on columns */
+export type Users_Users_Sync_Cm_Avg_Fields = {
+  __typename?: 'users_users_sync_cm_avg_fields';
+  failed_sync_count?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "users.users_sync_cm". All fields are combined with a logical 'AND'. */
+export type Users_Users_Sync_Cm_Bool_Exp = {
+  _and?: InputMaybe<Array<Users_Users_Sync_Cm_Bool_Exp>>;
+  _not?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
+  _or?: InputMaybe<Array<Users_Users_Sync_Cm_Bool_Exp>>;
+  action?: InputMaybe<String_Comparison_Exp>;
+  avo_user_id?: InputMaybe<Uuid_Comparison_Exp>;
+  cm_email?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  expected_info?: InputMaybe<Jsonb_Comparison_Exp>;
+  failed_sync_count?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  ldap_user_id?: InputMaybe<String_Comparison_Exp>;
+  received_info?: InputMaybe<Jsonb_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "users.users_sync_cm" */
+export enum Users_Users_Sync_Cm_Constraint {
+  /** unique or primary key constraint on columns "avo_user_id" */
+  UsersSyncCmAvoUserIdKey = 'users_sync_cm_avo_user_id_key',
+  /** unique or primary key constraint on columns "cm_email" */
+  UsersSyncCmCmEmailKey = 'users_sync_cm_cm_email_key',
+  /** unique or primary key constraint on columns "ldap_user_id" */
+  UsersSyncCmLdapUserIdKey = 'users_sync_cm_ldap_user_id_key',
+  /** unique or primary key constraint on columns "id" */
+  UsersSyncCmPkey = 'users_sync_cm_pkey'
+}
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Users_Users_Sync_Cm_Delete_At_Path_Input = {
+  expected_info?: InputMaybe<Array<Scalars['String']>>;
+  received_info?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Users_Users_Sync_Cm_Delete_Elem_Input = {
+  expected_info?: InputMaybe<Scalars['Int']>;
+  received_info?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Users_Users_Sync_Cm_Delete_Key_Input = {
+  expected_info?: InputMaybe<Scalars['String']>;
+  received_info?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for incrementing numeric columns in table "users.users_sync_cm" */
+export type Users_Users_Sync_Cm_Inc_Input = {
+  failed_sync_count?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "users.users_sync_cm" */
+export type Users_Users_Sync_Cm_Insert_Input = {
+  action?: InputMaybe<Scalars['String']>;
+  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  cm_email?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  expected_info?: InputMaybe<Scalars['jsonb']>;
+  failed_sync_count?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  ldap_user_id?: InputMaybe<Scalars['String']>;
+  received_info?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Users_Users_Sync_Cm_Max_Fields = {
+  __typename?: 'users_users_sync_cm_max_fields';
+  action?: Maybe<Scalars['String']>;
+  avo_user_id?: Maybe<Scalars['uuid']>;
+  cm_email?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  failed_sync_count?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  ldap_user_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Users_Users_Sync_Cm_Min_Fields = {
+  __typename?: 'users_users_sync_cm_min_fields';
+  action?: Maybe<Scalars['String']>;
+  avo_user_id?: Maybe<Scalars['uuid']>;
+  cm_email?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  failed_sync_count?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
+  ldap_user_id?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "users.users_sync_cm" */
+export type Users_Users_Sync_Cm_Mutation_Response = {
+  __typename?: 'users_users_sync_cm_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Users_Users_Sync_Cm>;
+};
+
+/** on_conflict condition type for table "users.users_sync_cm" */
+export type Users_Users_Sync_Cm_On_Conflict = {
+  constraint: Users_Users_Sync_Cm_Constraint;
+  update_columns?: Array<Users_Users_Sync_Cm_Update_Column>;
+  where?: InputMaybe<Users_Users_Sync_Cm_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "users.users_sync_cm". */
+export type Users_Users_Sync_Cm_Order_By = {
+  action?: InputMaybe<Order_By>;
+  avo_user_id?: InputMaybe<Order_By>;
+  cm_email?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  expected_info?: InputMaybe<Order_By>;
+  failed_sync_count?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  ldap_user_id?: InputMaybe<Order_By>;
+  received_info?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: users.users_sync_cm */
+export type Users_Users_Sync_Cm_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Users_Users_Sync_Cm_Prepend_Input = {
+  expected_info?: InputMaybe<Scalars['jsonb']>;
+  received_info?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "users.users_sync_cm" */
+export enum Users_Users_Sync_Cm_Select_Column {
+  /** column name */
+  Action = 'action',
+  /** column name */
+  AvoUserId = 'avo_user_id',
+  /** column name */
+  CmEmail = 'cm_email',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpectedInfo = 'expected_info',
+  /** column name */
+  FailedSyncCount = 'failed_sync_count',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LdapUserId = 'ldap_user_id',
+  /** column name */
+  ReceivedInfo = 'received_info',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "users.users_sync_cm" */
+export type Users_Users_Sync_Cm_Set_Input = {
+  action?: InputMaybe<Scalars['String']>;
+  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  cm_email?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  expected_info?: InputMaybe<Scalars['jsonb']>;
+  failed_sync_count?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  ldap_user_id?: InputMaybe<Scalars['String']>;
+  received_info?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate stddev on columns */
+export type Users_Users_Sync_Cm_Stddev_Fields = {
+  __typename?: 'users_users_sync_cm_stddev_fields';
+  failed_sync_count?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Users_Users_Sync_Cm_Stddev_Pop_Fields = {
+  __typename?: 'users_users_sync_cm_stddev_pop_fields';
+  failed_sync_count?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Users_Users_Sync_Cm_Stddev_Samp_Fields = {
+  __typename?: 'users_users_sync_cm_stddev_samp_fields';
+  failed_sync_count?: Maybe<Scalars['Float']>;
+};
+
+/** Streaming cursor of the table "users_users_sync_cm" */
+export type Users_Users_Sync_Cm_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Users_Users_Sync_Cm_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Users_Users_Sync_Cm_Stream_Cursor_Value_Input = {
+  action?: InputMaybe<Scalars['String']>;
+  avo_user_id?: InputMaybe<Scalars['uuid']>;
+  cm_email?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  expected_info?: InputMaybe<Scalars['jsonb']>;
+  failed_sync_count?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  ldap_user_id?: InputMaybe<Scalars['String']>;
+  received_info?: InputMaybe<Scalars['jsonb']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate sum on columns */
+export type Users_Users_Sync_Cm_Sum_Fields = {
+  __typename?: 'users_users_sync_cm_sum_fields';
+  failed_sync_count?: Maybe<Scalars['Int']>;
+};
+
+/** update columns of table "users.users_sync_cm" */
+export enum Users_Users_Sync_Cm_Update_Column {
+  /** column name */
+  Action = 'action',
+  /** column name */
+  AvoUserId = 'avo_user_id',
+  /** column name */
+  CmEmail = 'cm_email',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  ExpectedInfo = 'expected_info',
+  /** column name */
+  FailedSyncCount = 'failed_sync_count',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LdapUserId = 'ldap_user_id',
+  /** column name */
+  ReceivedInfo = 'received_info',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type Users_Users_Sync_Cm_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Users_Users_Sync_Cm_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Users_Users_Sync_Cm_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Users_Users_Sync_Cm_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Users_Users_Sync_Cm_Delete_Key_Input>;
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Users_Users_Sync_Cm_Inc_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Users_Users_Sync_Cm_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Users_Users_Sync_Cm_Set_Input>;
+  where: Users_Users_Sync_Cm_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Users_Users_Sync_Cm_Var_Pop_Fields = {
+  __typename?: 'users_users_sync_cm_var_pop_fields';
+  failed_sync_count?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Users_Users_Sync_Cm_Var_Samp_Fields = {
+  __typename?: 'users_users_sync_cm_var_samp_fields';
+  failed_sync_count?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Users_Users_Sync_Cm_Variance_Fields = {
+  __typename?: 'users_users_sync_cm_variance_fields';
+  failed_sync_count?: Maybe<Scalars['Float']>;
+};
+
 /** Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'. */
 export type Uuid_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['uuid']>;
@@ -41787,13 +42272,13 @@ export type GetUnpublishedItemsWithFiltersQueryVariables = Exact<{
 
 export type GetUnpublishedItemsWithFiltersQuery = { __typename?: 'query_root', shared_items: Array<{ __typename?: 'shared_items', id: number, pid: string, updated_at: any, title?: string | null, status?: any | null, item_meta?: { __typename?: 'app_item_meta', id: number, external_id: any, uid: any, is_published?: boolean | null, is_deleted?: boolean | null } | null }>, shared_items_aggregate: { __typename?: 'shared_items_aggregate', aggregate?: { __typename?: 'shared_items_aggregate_fields', count: number } | null } };
 
-export type GetUsersWithBothBookmarksQueryVariables = Exact<{
+export type GetUserWithEitherBookmarkQueryVariables = Exact<{
   oldItemUid: Scalars['uuid'];
   newItemUid: Scalars['uuid'];
 }>;
 
 
-export type GetUsersWithBothBookmarksQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any }> };
+export type GetUserWithEitherBookmarkQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, item_bookmarks_aggregate: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null } }> };
 
 export type ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables = Exact<{
   oldItemUid: Scalars['uuid'];
@@ -42589,7 +43074,7 @@ export type GetAllAssignmentLabelColorsQuery = { __typename?: 'query_root', look
 
 export type GetAssignmentLabelsByProfileIdQueryVariables = Exact<{
   profileId: Scalars['uuid'];
-  type?: InputMaybe<Scalars['String']>;
+  filters?: InputMaybe<Array<App_Assignment_Labels_V2_Bool_Exp> | App_Assignment_Labels_V2_Bool_Exp>;
 }>;
 
 
@@ -44368,25 +44853,30 @@ export const useGetUnpublishedItemsWithFiltersQuery = <
       fetchData<GetUnpublishedItemsWithFiltersQuery, GetUnpublishedItemsWithFiltersQueryVariables>(GetUnpublishedItemsWithFiltersDocument, variables),
       options
     );
-export const GetUsersWithBothBookmarksDocument = `
-    query getUsersWithBothBookmarks($oldItemUid: uuid!, $newItemUid: uuid!) {
+export const GetUserWithEitherBookmarkDocument = `
+    query getUserWithEitherBookmark($oldItemUid: uuid!, $newItemUid: uuid!) {
   users_profiles(
-    where: {item_bookmarks: {_or: [{item_id: {_eq: $oldItemUid}}, {item_id: {_eq: $newItemUid}}]}}
+    where: {item_bookmarks: {item_id: {_in: [$oldItemUid, $newItemUid]}}}
   ) {
     id
+    item_bookmarks_aggregate(where: {item_id: {_in: [$oldItemUid, $newItemUid]}}) {
+      aggregate {
+        count
+      }
+    }
   }
 }
     `;
-export const useGetUsersWithBothBookmarksQuery = <
-      TData = GetUsersWithBothBookmarksQuery,
+export const useGetUserWithEitherBookmarkQuery = <
+      TData = GetUserWithEitherBookmarkQuery,
       TError = unknown
     >(
-      variables: GetUsersWithBothBookmarksQueryVariables,
-      options?: UseQueryOptions<GetUsersWithBothBookmarksQuery, TError, TData>
+      variables: GetUserWithEitherBookmarkQueryVariables,
+      options?: UseQueryOptions<GetUserWithEitherBookmarkQuery, TError, TData>
     ) =>
-    useQuery<GetUsersWithBothBookmarksQuery, TError, TData>(
-      ['getUsersWithBothBookmarks', variables],
-      fetchData<GetUsersWithBothBookmarksQuery, GetUsersWithBothBookmarksQueryVariables>(GetUsersWithBothBookmarksDocument, variables),
+    useQuery<GetUserWithEitherBookmarkQuery, TError, TData>(
+      ['getUserWithEitherBookmark', variables],
+      fetchData<GetUserWithEitherBookmarkQuery, GetUserWithEitherBookmarkQueryVariables>(GetUserWithEitherBookmarkDocument, variables),
       options
     );
 export const ReplaceItemInCollectionsBookmarksAndAssignmentsDocument = `
@@ -47574,9 +48064,9 @@ export const useGetAllAssignmentLabelColorsQuery = <
       options
     );
 export const GetAssignmentLabelsByProfileIdDocument = `
-    query getAssignmentLabelsByProfileId($profileId: uuid!, $type: String) {
+    query getAssignmentLabelsByProfileId($profileId: uuid!, $filters: [app_assignment_labels_v2_bool_exp!]) {
   app_assignment_labels_v2(
-    where: {owner_profile_id: {_eq: $profileId}, type: {_eq: $type}}
+    where: {_and: [{owner_profile_id: {_eq: $profileId}}, {_and: $filters}]}
     order_by: {label: asc}
   ) {
     color_enum_value

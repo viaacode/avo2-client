@@ -8,6 +8,7 @@ import { renderErrorRoutes } from '../error/error.routes';
 import { renderAdminAssignmentRoutes } from './assignments/assignment.routes';
 import { renderCollectionOrBundleRoutes } from './collectionsOrBundles/collections-or-bundles.routes';
 import { renderAdminContentPageLabelRoutes } from './content-page-labels/content-page-label.routes';
+import { renderAdminContentPageRoutes } from './content-page/content-page.routes';
 import { renderAdminContentRoutes } from './content/content.routes';
 import { renderAdminDashboardRoutes } from './dashboard/dashboard.routes';
 import { renderInteractiveTourRoutes } from './interactive-tour/interactive-tour.routes';
@@ -48,6 +49,11 @@ export const renderAdminRoutes = (userPermissions: string[]): ReactNode => {
 			{renderWithPermissions(renderAdminMenuRoutes, [PermissionName.EDIT_NAVIGATION_BARS])}
 			{renderWithPermissions(
 				renderAdminContentRoutes,
+				[PermissionName.EDIT_OWN_CONTENT_PAGES, PermissionName.EDIT_ANY_CONTENT_PAGES],
+				'OR'
+			)}
+			{renderWithPermissions(
+				renderAdminContentPageRoutes,
 				[PermissionName.EDIT_OWN_CONTENT_PAGES, PermissionName.EDIT_ANY_CONTENT_PAGES],
 				'OR'
 			)}

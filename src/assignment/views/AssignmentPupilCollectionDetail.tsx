@@ -1,7 +1,6 @@
 import { BlockHeading, Container, Icon } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -12,6 +11,7 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2,
@@ -34,7 +34,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 	match,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignment, setAssignment] = useState<Assignment_v2_With_Labels | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo | null>();
@@ -53,7 +53,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 			if (!canViewAssignmentResponses) {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'assignment/views/assignment-pupil-collection-detail___je-hebt-geen-toegang-om-deze-leerlingencollectie-te-bekijken'
 					),
 				});
@@ -83,18 +83,18 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'assignment/views/assignment-pupil-collection-detail___het-ophalen-van-de-leerlingencollectie-is-mislukt'
 				),
 			});
 		}
-	}, [setAssignment, setLoadingInfo, assignmentResponseId, t, user]);
+	}, [setAssignment, setLoadingInfo, assignmentResponseId, tText, user]);
 
 	// Effects
 
 	useEffect(() => {
 		fetchAssignment();
-	}, [fetchAssignment, user, t]);
+	}, [fetchAssignment, user, tText]);
 
 	useEffect(() => {
 		if (assignment && assignmentResponse) {
@@ -111,10 +111,10 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 			assignment && (
 				<Link className="c-return" to={toAssignmentResponsesOverview(assignment)}>
 					<Icon name="chevron-left" size="small" type="arrows" />
-					{t('assignment/views/assignment-pupil-collection-detail___alle-responsen')}
+					{tText('assignment/views/assignment-pupil-collection-detail___alle-responsen')}
 				</Link>
 			),
-		[t, toAssignmentResponsesOverview, assignment]
+		[tText, toAssignmentResponsesOverview, assignment]
 	);
 
 	const renderReadOnlyPupilCollectionBlocks = () => {
@@ -168,7 +168,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 					</Container>
 				) : (
 					<ErrorView
-						message={t(
+						message={tText(
 							'assignment/views/assignment-pupil-collection-detail___deze-leerlingencollectie-bevat-geen-fragmenten'
 						)}
 						icon={'search'}
@@ -186,7 +186,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 						get(
 							assignmentResponse,
 							'collection_title',
-							t(
+							tText(
 								'assignment/views/assignment-pupil-collection-detail___leerlingencollectie-detail'
 							)
 						)
@@ -196,7 +196,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 			</MetaTags>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
-				notFoundError={t(
+				notFoundError={tText(
 					'assignment/views/assignment-pupil-collection-detail___de-leerlingencollectie-werd-niet-gevonden'
 				)}
 				dataObject={assignmentResponse}

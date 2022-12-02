@@ -14,8 +14,8 @@ import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser';
 import { APP_PATH } from '../../../constants';
 import { buildLink, formatDate, normalizeTimestamp } from '../../../shared/helpers';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
+import { tText } from '../../../shared/helpers/translate';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import i18n from '../../../shared/translations/i18n';
 import { getCollectionManagementStatuses } from '../collections-or-bundles.const';
 import { CollectionTableCols, ManagementStatus } from '../collections-or-bundles.types';
 
@@ -55,10 +55,8 @@ export const renderCollectionOverviewColumns = (
 		case 'is_public':
 		case 'is_managed':
 			return rowData[columnId]
-				? i18n.t('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
-				: i18n.t(
-						'admin/collections-or-bundles/views/collections-or-bundles-overview___nee'
-				  );
+				? tText('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
+				: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
 
 		case 'views':
 			return get(rowData, 'counts.views') || '0';

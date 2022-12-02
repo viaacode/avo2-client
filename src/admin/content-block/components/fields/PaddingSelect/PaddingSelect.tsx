@@ -1,7 +1,7 @@
 import { Form, FormGroup, Select, SelectOption, SpacerOption } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { PaddingFieldState } from '../../../../shared/types';
 
 import './PaddingSelect.scss';
@@ -14,36 +14,36 @@ interface PaddingSelectProps {
 type PaddingDirection = 'top' | 'bottom';
 
 const PaddingSelect: FunctionComponent<PaddingSelectProps> = ({ onChange, value }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const generateOptions = (direction: PaddingDirection) =>
 		[
 			{
-				label: t(
+				label: tText(
 					'admin/content-block/components/fields/padding-select/padding-select___geen'
 				),
 				value: 'none',
 			},
 			{
-				label: t(
+				label: tText(
 					'admin/content-block/components/fields/padding-select/padding-select___klein'
 				),
 				value: `${direction}-small`,
 			},
 			{
-				label: t(
+				label: tText(
 					'admin/content-block/components/fields/padding-select/padding-select___medium'
 				),
 				value: `${direction}`,
 			},
 			{
-				label: t(
+				label: tText(
 					'admin/content-block/components/fields/padding-select/padding-select___groot'
 				),
 				value: `${direction}-large`,
 			},
 			{
-				label: t(
+				label: tText(
 					'admin/content-block/components/fields/padding-select/padding-select___extra-groot'
 				),
 				value: `${direction}-extra-large`,

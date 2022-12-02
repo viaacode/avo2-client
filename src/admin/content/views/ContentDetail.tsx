@@ -18,7 +18,6 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -45,6 +44,7 @@ import {
 	navigateToAbsoluteOrRelativeUrl,
 } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
@@ -79,7 +79,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const { id } = match.params;
 
 	// Hooks
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [contentPageInfo, setContentPageInfo] = useState<ContentPageInfo | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -107,7 +107,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			) {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'admin/content/views/content-detail___je-hebt-geen-rechten-om-deze-content-pagina-te-bekijken'
 					),
 					icon: 'lock',
@@ -118,7 +118,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			if (!contentPageObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gevonden-of-je-hebt-geen-rechten-om-deze-te-bekijken'
 					),
 					icon: 'lock',
@@ -139,16 +139,16 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			setLoadingInfo({
 				state: 'error',
 				message: notFound
-					? t(
+					? tText(
 							'admin/content/views/content-detail___een-content-pagina-met-dit-id-kon-niet-worden-gevonden'
 					  )
-					: t(
+					: tText(
 							'admin/content/views/content-detail___het-ophalen-van-de-content-pagina-is-mislukt'
 					  ),
 				icon: notFound ? 'search' : 'alert-triangle',
 			});
 		}
-	}, [setContentPageInfo, setLoadingInfo, user, t, id]);
+	}, [setContentPageInfo, setLoadingInfo, user, tText, id]);
 
 	useEffect(() => {
 		fetchContentPageById();
@@ -167,7 +167,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 		if (contentPageInfo === null) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content/views/content-detail___er-is-niet-voldoende-informatie-beschikbaar-om-het-content-item-te-verwijderen'
 				)
 			);
@@ -179,7 +179,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			await ContentService.deleteContentPage(contentPageInfo);
 
 			ToastService.success(
-				t('admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd')
+				tHtml(
+					'admin/content/views/content-detail___het-content-item-is-succesvol-verwijderd'
+				)
 			);
 
 			history.push(CONTENT_PATH.CONTENT_PAGE_OVERVIEW);
@@ -187,7 +189,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			console.error(err);
 
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content/views/content-detail___het-verwijderen-van-het-content-item-is-mislukt'
 				)
 			);
@@ -201,7 +203,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			navigateToAbsoluteOrRelativeUrl(contentPageInfo.path, history, LinkTarget.Blank);
 		} else {
 			ToastService.danger(
-				t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
+				tHtml('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
 			);
 		}
 	}
@@ -221,8 +223,10 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 				ToastService.success(
 					isPublic(newContentPage)
-						? t('admin/content/views/content-detail___de-content-pagina-is-nu-publiek')
-						: t(
+						? tText(
+								'admin/content/views/content-detail___de-content-pagina-is-nu-publiek'
+						  )
+						: tText(
 								'admin/content/views/content-detail___de-content-pagina-is-nu-niet-meer-publiek'
 						  )
 				);
@@ -234,7 +238,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			});
 
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content/views/content-detail___het-opslaan-van-de-publiek-status-van-de-content-pagina-is-mislukt'
 				)
 			);
@@ -248,7 +252,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			? [
 					createDropdownMenuItem(
 						'duplicate',
-						t('collection/views/collection-detail___dupliceer'),
+						tText('collection/views/collection-detail___dupliceer'),
 						'copy'
 					),
 			  ]
@@ -258,7 +262,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			? [
 					createDropdownMenuItem(
 						'delete',
-						t('admin/content/views/content-detail___verwijderen')
+						tText('admin/content/views/content-detail___verwijderen')
 					),
 			  ]
 			: []),
@@ -271,7 +275,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				try {
 					if (!contentPageInfo) {
 						ToastService.danger(
-							t(
+							tHtml(
 								'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gedupliceerd'
 							)
 						);
@@ -287,7 +291,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 
 					if (!duplicateContentPage) {
 						ToastService.danger(
-							t(
+							tHtml(
 								'admin/content/views/content-detail___de-gedupliceerde-content-pagina-kon-niet-worden-gevonden'
 							)
 						);
@@ -302,7 +306,9 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					);
 
 					ToastService.success(
-						t('admin/content/views/content-detail___de-content-pagina-is-gedupliceerd')
+						tHtml(
+							'admin/content/views/content-detail___de-content-pagina-is-gedupliceerd'
+						)
 					);
 				} catch (err) {
 					console.error('Failed to duplicate content page', err, {
@@ -310,7 +316,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					});
 
 					ToastService.danger(
-						t(
+						tHtml(
 							'admin/content/views/content-detail___het-dupliceren-van-de-content-pagina-is-mislukt'
 						)
 					);
@@ -339,11 +345,11 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<Button
 						type="secondary"
 						icon={isPublic(contentPageInfo) ? 'unlock-3' : 'lock'}
-						label={t('admin/content/views/content-detail___publiceren')}
-						title={t(
+						label={tText('admin/content/views/content-detail___publiceren')}
+						title={tText(
 							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
 						)}
-						ariaLabel={t(
+						ariaLabel={tText(
 							'admin/content/views/content-detail___maak-de-content-pagina-publiek-niet-publiek'
 						)}
 						onClick={() => setIsPublishModalOpen(true)}
@@ -352,11 +358,11 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 				<Button
 					type="secondary"
 					icon="eye"
-					label={t('admin/content/views/content-detail___preview')}
-					title={t(
+					label={tText('admin/content/views/content-detail___preview')}
+					title={tText(
 						'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
 					)}
-					ariaLabel={t(
+					ariaLabel={tText(
 						'admin/content/views/content-detail___bekijk-deze-pagina-in-de-website'
 					)}
 					onClick={handlePreviewClicked}
@@ -367,8 +373,8 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						className="a-link__no-styles"
 					>
 						<Button
-							label={t('admin/content/views/content-detail___bewerken')}
-							title={t(
+							label={tText('admin/content/views/content-detail___bewerken')}
+							title={tText(
 								'admin/content/views/content-detail___bewerk-deze-content-pagina'
 							)}
 						/>
@@ -390,7 +396,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 	const renderContentDetail = (contentPageInfo: ContentPageInfo | null): ReactElement | null => {
 		if (!contentPageInfo) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-ingeladen'
 				)
 			);
@@ -405,7 +411,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 			default:
 				return (
 					<Blankslate
-						title={t(
+						title={tText(
 							'admin/content/views/content-detail___dit-tabblad-kon-niet-gevonden-worden'
 						)}
 					/>
@@ -432,7 +438,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					<title>
 						{GENERATE_SITE_TITLE(
 							get(contentPageInfo, 'title'),
-							t(
+							tText(
 								'admin/content/views/content-detail___content-beheer-detail-pagina-titel'
 							)
 						)}
@@ -453,7 +459,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={
 						isContentProtected
-							? t(
+							? tText(
 									'admin/content/views/content-detail___opgelet-dit-is-een-beschermde-pagina'
 							  )
 							: ''

@@ -1,4 +1,4 @@
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -24,22 +24,22 @@ export const INITIAL_IFRAME_BLOCK_STATE = (): DefaultContentBlockState =>
 
 export const IFRAME_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/iframe___i-frame'),
+	name: tText('admin/content-block/helpers/generators/iframe___i-frame'),
 	type: ContentBlockType.Iframe,
 	components: {
 		state: INITIAL_IFRAME_COMPONENTS_STATE(),
 		fields: {
 			title: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/iframe___titel-is-verplicht'),
+				tText('admin/content-block/helpers/generators/iframe___titel-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/iframe___titel'),
+					label: tText('admin/content-block/helpers/generators/iframe___titel'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
 			src: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/iframe___url-is-verplicht'),
+				tText('admin/content-block/helpers/generators/iframe___url-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/iframe___url'),
+					label: tText('admin/content-block/helpers/generators/iframe___url'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),

@@ -10,9 +10,9 @@ import {
 	UpdateContentBlockMutation,
 } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers';
+import { tHtml } from '../../../shared/helpers/translate';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import i18n from '../../../shared/translations/i18n';
 import { ContentBlockConfig } from '../../shared/types';
 import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
@@ -31,7 +31,7 @@ export class ContentBlockService {
 
 			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
 				)
 			);
@@ -70,7 +70,7 @@ export class ContentBlockService {
 
 			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
 				)
 			);
@@ -125,7 +125,7 @@ export class ContentBlockService {
 
 			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
 				)
 			);
@@ -206,7 +206,7 @@ export class ContentBlockService {
 
 			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
 				)
 			);

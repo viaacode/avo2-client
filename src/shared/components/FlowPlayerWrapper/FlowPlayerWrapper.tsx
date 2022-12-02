@@ -1,8 +1,6 @@
+import { FlowPlayer, FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
 import {
 	AspectRatioWrapper,
-	FlowPlayer,
-	FlowplayerSourceItem,
-	FlowplayerSourceList,
 	Icon,
 	MediaCard,
 	MediaCardThumbnail,
@@ -11,8 +9,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
@@ -62,7 +60,7 @@ export type FlowPlayerWrapperProps = {
  * @constructor
  */
 const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> = (props) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
@@ -104,12 +102,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
 				)
 			);
 		}
-	}, [item, setSrc, t]);
+	}, [item, setSrc, tText]);
 
 	useEffect(() => {
 		if (props.autoplay && item) {
@@ -202,7 +200,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 			if ((src as FlowplayerSourceList).items.some((entry) => entry.src.includes('.m3u8'))) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/flow-player-wrapper/flow-player-wrapper___bepaalde-videos-in-de-playlist-kunnen-niet-worden-afgespeeld-probeer-een-andere-browser'
 					)
 				);
@@ -217,7 +215,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 			if ((src as string).endsWith('.m3u8')) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
 					)
 				);
@@ -261,19 +259,19 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						speed={{
 							options: [0.5, 0.75, 1, 1.25, 1.5],
 							labels: [
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___0-5'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___0-75'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___normaal'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___1-25'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___1-5'
 								),
 							],

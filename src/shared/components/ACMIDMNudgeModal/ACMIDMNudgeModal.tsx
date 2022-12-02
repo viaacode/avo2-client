@@ -1,7 +1,6 @@
 import { Button, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FC, useCallback, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose, Dispatch } from 'redux';
@@ -11,6 +10,7 @@ import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { hasIdpLinked, isProfileComplete } from '../../../authentication/helpers/get-profile-info';
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { AppState } from '../../../store';
 import { setShowNudgingModalAction } from '../../../uistate/store/actions';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
@@ -33,7 +33,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 	showNudgingModal,
 	setShowNudgingModal,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
 
 	// HTTP
@@ -103,16 +103,16 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 	const renderTitle = () => {
 		return isPupil ? (
-			t(
+			tText(
 				'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___snel-veilig-en-makkelijk-inloggen'
 			)
 		) : (
 			<>
-				{t(
+				{tHtml(
 					'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___snel-en-makkelijk-inloggen-met'
 				)}
 				<span className="u-text-bold">
-					{t(
+					{tHtml(
 						'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme-e-id-of-een-digitale-sleutel'
 					)}
 				</span>
@@ -123,10 +123,10 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 	const renderDescription = () => {
 		return isPupil
-			? t(
+			? tHtml(
 					'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-snel-je-leerling-id-aan-je-bestaande-account'
 			  )
-			: t(
+			: tHtml(
 					'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___koppel-dan-direct-je-burgerprofiel-aan-je-bestaande-account'
 			  );
 	};
@@ -141,7 +141,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 						type="tertiary"
 						icon="leerid"
 						iconType="multicolor"
-						label={t(
+						label={tText(
 							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___leerling-id'
 						)}
 						onClick={() => {
@@ -164,7 +164,9 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 						type="tertiary"
 						icon="itsme"
 						iconType="multicolor"
-						label={t('shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme')}
+						label={tText(
+							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme'
+						)}
 						onClick={() => {
 							redirectToServerLinkAccount(
 								location,
@@ -182,7 +184,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 						className="c-button-acmidm"
 						type="tertiary"
 						icon="eid"
-						label={t(
+						label={tText(
 							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___e-id-of-een-digitale-sleutel'
 						)}
 						onClick={() => {
@@ -218,7 +220,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 						<div>
 							<Button
 								type="link"
-								label={t(
+								label={tText(
 									'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___nu-even-niet'
 								)}
 								onClick={onClose}
@@ -227,7 +229,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 
 						<Button
 							type="link"
-							label={t(
+							label={tText(
 								'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___niet-meer-weergeven'
 							)}
 							onClick={onClickDoNotShow}

@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Select } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 import { EditableAssignmentBlock } from '../assignment.types';
 
 import './AssignmentBlockDescriptionButtons.scss';
@@ -13,22 +13,22 @@ export enum AssignmentBlockItemDescriptionType {
 }
 
 const getButtonLabels = (): Record<AssignmentBlockItemDescriptionType, string> => ({
-	[AssignmentBlockItemDescriptionType.original]: i18n.t(
+	[AssignmentBlockItemDescriptionType.original]: tText(
 		'assignment/views/assignment-edit___origineel'
 	),
-	[AssignmentBlockItemDescriptionType.custom]: i18n.t(
+	[AssignmentBlockItemDescriptionType.custom]: tText(
 		'assignment/views/assignment-edit___aangepast'
 	),
-	[AssignmentBlockItemDescriptionType.none]: i18n.t(
+	[AssignmentBlockItemDescriptionType.none]: tText(
 		'assignment/views/assignment-edit___geen-beschrijving'
 	),
 });
 
 const getButtonTooltips = (): Record<AssignmentBlockItemDescriptionType, string | undefined> => ({
-	[AssignmentBlockItemDescriptionType.original]: i18n.t(
+	[AssignmentBlockItemDescriptionType.original]: tText(
 		'assignment/components/assignment-block-description-buttons___zoals-bij-origineel-fragment'
 	),
-	[AssignmentBlockItemDescriptionType.custom]: i18n.t(
+	[AssignmentBlockItemDescriptionType.custom]: tText(
 		'assignment/components/assignment-block-description-buttons___zoals-in-collectie'
 	),
 	[AssignmentBlockItemDescriptionType.none]: undefined,

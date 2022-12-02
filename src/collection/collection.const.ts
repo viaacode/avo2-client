@@ -1,6 +1,6 @@
 import { SelectOption, TableColumn } from '@viaa/avo2-components';
 
-import i18n from '../shared/translations/i18n';
+import { tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 export const STILL_DIMENSIONS = {
@@ -33,49 +33,49 @@ export const NEW_FRAGMENT = {
 };
 
 export const GET_MARCOM_CHANNEL_TYPE_OPTIONS: () => SelectOption<string>[] = () => [
-	{ label: i18n.t('collection/collection___nieuwsbericht'), value: 'NIEUWSBERICHT' },
-	{ label: i18n.t('collection/collection___nieuwsbrief'), value: 'NIEUWSBRIEF' },
-	{ label: i18n.t('collection/collection___social'), value: 'SOCIAL' },
-	{ label: i18n.t('collection/collection___webpagina'), value: 'WEBPAGINA' },
-	{ label: i18n.t('collection/collection___overige'), value: 'OVERIGE' },
+	{ label: tText('collection/collection___nieuwsbericht'), value: 'NIEUWSBERICHT' },
+	{ label: tText('collection/collection___nieuwsbrief'), value: 'NIEUWSBRIEF' },
+	{ label: tText('collection/collection___social'), value: 'SOCIAL' },
+	{ label: tText('collection/collection___webpagina'), value: 'WEBPAGINA' },
+	{ label: tText('collection/collection___overige'), value: 'OVERIGE' },
 ];
 
 export const GET_MARCOM_CHANNEL_NAME_OPTIONS: () => SelectOption<string>[] = () => [
-	{ label: i18n.t('collection/collection___facebook'), value: 'FACEBOOK' },
-	{ label: i18n.t('collection/collection___twitter'), value: 'TWITTER' },
-	{ label: i18n.t('collection/collection___nieuwsbericht-av-o'), value: 'NIEUWSBERICHT_AVO' },
-	{ label: i18n.t('collection/collection___nieuwsbrief-avo'), value: 'NIEUWSBRIEF_AVO' },
-	{ label: i18n.t('collection/collection___klas-cement'), value: 'KLASCEMENT' },
-	{ label: i18n.t('collection/collection___zill'), value: 'ZILL' },
-	{ label: i18n.t('collection/collection___overige'), value: 'OVERIGE' },
+	{ label: tText('collection/collection___facebook'), value: 'FACEBOOK' },
+	{ label: tText('collection/collection___twitter'), value: 'TWITTER' },
+	{ label: tText('collection/collection___nieuwsbericht-av-o'), value: 'NIEUWSBERICHT_AVO' },
+	{ label: tText('collection/collection___nieuwsbrief-avo'), value: 'NIEUWSBRIEF_AVO' },
+	{ label: tText('collection/collection___klas-cement'), value: 'KLASCEMENT' },
+	{ label: tText('collection/collection___zill'), value: 'ZILL' },
+	{ label: tText('collection/collection___overige'), value: 'OVERIGE' },
 ];
 
 export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableColumn[] = (
 	isCollection: boolean
 ) => [
 	{
-		label: i18n.t('collection/collection___datum'),
+		label: tText('collection/collection___datum'),
 		id: 'publish_date',
 		dateTime: 'dateTime',
 	},
 	{
-		label: i18n.t('collection/collection___kanaal-type'),
+		label: tText('collection/collection___kanaal-type'),
 		id: 'channel_type',
 		dataType: TableColumnDataType.string,
 	},
 	{
-		label: i18n.t('collection/collection___kanaal-naam'),
+		label: tText('collection/collection___kanaal-naam'),
 		id: 'channel_name',
 		dataType: TableColumnDataType.string,
 	},
 	{
-		label: i18n.t('collection/collection___link'),
+		label: tText('collection/collection___link'),
 		id: 'external_link',
 	},
 	...(isCollection
 		? [
 				{
-					label: i18n.t('collection/collection___bundle'),
+					label: tText('collection/collection___bundle'),
 					id: 'parent_collection',
 				},
 		  ]
