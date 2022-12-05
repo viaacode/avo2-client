@@ -1,6 +1,6 @@
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import { UserSchema, UserTempAccess } from '@viaa/avo2-types/types/user';
 import { endOfDay, isBefore } from 'date-fns';
 import { compact, flatten, get, isNil } from 'lodash-es';
 import moment from 'moment';
@@ -41,7 +41,7 @@ import { dataService } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
-import { DeleteContentCounts, UserOverviewTableCol, UserTempAccess } from './user.types';
+import { DeleteContentCounts, UserOverviewTableCol } from './user.types';
 
 export class UserService {
 	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
