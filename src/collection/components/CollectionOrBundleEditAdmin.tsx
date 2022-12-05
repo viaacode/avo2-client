@@ -28,7 +28,7 @@ import { APP_PATH } from '../../constants';
 import AssociatedQuickLaneTable, {
 	AssociatedQuickLaneTableOrderBy,
 } from '../../quick-lane/components/AssociatedQuickLaneTable';
-import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
+import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -196,7 +196,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		);
 	};
 
-	const handleQuickLaneColumnClick = (id: string) => {
+	const handleQuickLaneColumnClick = (id: QuickLaneColumn) => {
 		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
 
 		setQuickLaneSortColumn(id);
@@ -346,7 +346,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 					emptyStateMessage={tText(
 						'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-nog-niet-gedeeld'
 					)}
-					onColumnClick={handleQuickLaneColumnClick}
+					onColumnClick={handleQuickLaneColumnClick as any}
 					sortColumn={quickLaneSortColumn}
 					sortOrder={quickLaneSortOrder}
 				/>

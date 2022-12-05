@@ -6,7 +6,7 @@ import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
-import { ItemsOverviewTableCols } from './items.types';
+import { ItemsOverviewTableCols, UnpublishedItemsOverviewTableCols } from './items.types';
 
 export const ITEMS_PATH = {
 	ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,
@@ -191,53 +191,54 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 ];
 
-export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
-	{
-		id: 'title',
-		label: tText('admin/items/items___titel'),
-		sortable: true,
-		visibleByDefault: true,
-		dataType: TableColumnDataType.string,
-	},
-	{
-		id: 'pid',
-		label: tText('admin/items/items___pid'),
-		sortable: true,
-		visibleByDefault: true,
-		dataType: TableColumnDataType.string,
-	},
-	{
-		id: 'updated_at',
-		label: tText('admin/items/items___aangepast-op-mam'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-		dataType: TableColumnDataType.dateTime,
-	},
-	{
-		id: 'status',
-		label: tText('admin/items/items___status'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
-		filterProps: {
-			options: [
-				{
-					label: tText('admin/items/items___nieuw'),
-					id: 'NEW',
-				},
-				{
-					label: tText('admin/items/items___update'),
-					id: 'UPDATE',
-				},
-			],
+export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn<UnpublishedItemsOverviewTableCols>[] =
+	() => [
+		{
+			id: 'title',
+			label: tText('admin/items/items___titel'),
+			sortable: true,
+			visibleByDefault: true,
+			dataType: TableColumnDataType.string,
 		},
+		{
+			id: 'pid',
+			label: tText('admin/items/items___pid'),
+			sortable: true,
+			visibleByDefault: true,
+			dataType: TableColumnDataType.string,
+		},
+		{
+			id: 'updated_at',
+			label: tText('admin/items/items___aangepast-op-mam'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'DateRangeDropdown',
+			dataType: TableColumnDataType.dateTime,
+		},
+		{
+			id: 'status',
+			label: tText('admin/items/items___status'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'CheckboxDropdownModal',
+			filterProps: {
+				options: [
+					{
+						label: tText('admin/items/items___nieuw'),
+						id: 'NEW',
+					},
+					{
+						label: tText('admin/items/items___update'),
+						id: 'UPDATE',
+					},
+				],
+			},
 
-		dataType: TableColumnDataType.string,
-	},
-	{
-		id: 'actions',
-		tooltip: tText('admin/items/items___acties'),
-		visibleByDefault: true,
-	},
-];
+			dataType: TableColumnDataType.string,
+		},
+		{
+			id: 'actions',
+			tooltip: tText('admin/items/items___acties'),
+			visibleByDefault: true,
+		},
+	];
