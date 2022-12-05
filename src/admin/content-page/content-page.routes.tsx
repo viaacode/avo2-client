@@ -5,6 +5,7 @@ import { SecuredRoute } from '../../authentication/components';
 import { ADMIN_CORE_ROUTE_PARTS } from '../shared/constants/admin-core.routes';
 
 import ContentPageDetailPage from './views/ContentPageDetailPage';
+import ContentPageEditPage from './views/ContentPageEditPage';
 import ContentPageOverviewPage from './views/ContentPageOverviewPage';
 
 export const renderAdminContentPageRoutes = (): ReactNode[] => {
@@ -20,6 +21,12 @@ export const renderAdminContentPageRoutes = (): ReactNode[] => {
 			component={ContentPageDetailPage}
 			exact
 			path={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).DETAIL}
+		/>,
+		<SecuredRoute
+			key={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).EDIT}
+			component={ContentPageEditPage}
+			exact
+			path={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).EDIT}
 		/>,
 	];
 };

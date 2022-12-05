@@ -66,7 +66,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			})
 		),
 		contentPage: {
-			availableContentBlocks: ContentBlockType,
+			availableContentBlocks: Object.values(ContentBlockType),
 			defaultPageWidth: 'LARGE',
 			onSaveContentPage: () => new Promise(noop),
 		},
@@ -189,5 +189,8 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 		user: commonUser,
 		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
+		users: {
+			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
+		},
 	};
 }
