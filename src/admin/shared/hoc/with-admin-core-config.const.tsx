@@ -4,7 +4,6 @@ import {
 	CommonUser,
 	ContentBlockType,
 	LinkInfo,
-	ROUTE_PARTS,
 	ToastInfo,
 } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
@@ -15,17 +14,20 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
+import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { AssetsService } from '../../../shared/services/assets-service/assets.service';
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
+import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
 import { PermissionsService } from '../services/permissions';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
 		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
 	};
+
 	const commonUser: CommonUser = {
 		uid: user?.uid,
 		profileId: user?.profile?.id as string,
@@ -44,6 +46,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		permissions: user?.profile?.permissions as any[],
 	};
+
 	return {
 		// navigation: {
 		// 	service: navigationService,
@@ -63,18 +66,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			})
 		),
 		contentPage: {
-			availableContentBlocks: [
-				ContentBlockType.Heading,
-				ContentBlockType.Intro,
-				ContentBlockType.RichText,
-				ContentBlockType.RichTextTwoColumns,
-				ContentBlockType.Buttons,
-				ContentBlockType.Image,
-				ContentBlockType.ImageGrid,
-				ContentBlockType.PageOverview,
-				ContentBlockType.UspGrid,
-				ContentBlockType.Quote,
-			],
+			availableContentBlocks: Object.values(ContentBlockType),
 			defaultPageWidth: 'LARGE',
 			onSaveContentPage: () => new Promise(noop),
 		},
@@ -142,6 +134,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 					value: 'content-page-button--link',
 				},
 			],
+			flowplayer: FlowPlayerWrapper,
 		},
 		services: {
 			toastService: {
@@ -195,6 +188,9 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 		},
 		user: commonUser,
-		route_parts: ROUTE_PARTS,
+		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
+		users: {
+			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
+		},
 	};
 }
