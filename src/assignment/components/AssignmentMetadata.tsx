@@ -1,8 +1,8 @@
 import { Flex } from '@viaa/avo2-components';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { formatTimestamp } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	Assignment_v2_With_Labels,
 	Assignment_v2_With_Responses,
@@ -22,7 +22,7 @@ const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 	assignmentResponse,
 	who,
 }) => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 
 	if (!assignment) {
 		return null;
@@ -48,31 +48,31 @@ const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 				{[
 					teacherName && (
 						<>
-							{t('assignment/views/assignment-response-edit___lesgever')}:
+							{tHtml('assignment/views/assignment-response-edit___lesgever')}:
 							<b>{` ${teacherName}`}</b>
 						</>
 					),
 					pupilName && (
 						<>
-							{t('assignment/components/assignment-metadata___leerling')}:
+							{tHtml('assignment/components/assignment-metadata___leerling')}:
 							<b>{` ${pupilName}`}</b>
 						</>
 					),
 					deadline && (
 						<>
-							{t('assignment/views/assignment-response-edit___deadline')}:
+							{tHtml('assignment/views/assignment-response-edit___deadline')}:
 							<b>{` ${deadline}`}</b>
 						</>
 					),
 					labels && (
 						<>
-							{t('assignment/views/assignment-response-edit___label')}:
+							{tHtml('assignment/views/assignment-response-edit___label')}:
 							<b>{` ${labels}`}</b>
 						</>
 					),
 					classes && (
 						<>
-							{t('assignment/views/assignment-response-edit___klas')}:
+							{tHtml('assignment/views/assignment-response-edit___klas')}:
 							<b>{` ${classes}`}</b>
 						</>
 					),

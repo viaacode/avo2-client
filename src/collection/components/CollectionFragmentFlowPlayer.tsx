@@ -18,7 +18,15 @@ const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (pro
 			external_id={meta?.external_id}
 			duration={meta?.duration}
 			title={meta?.title}
-			cuePoints={
+			cuePointsVideo={
+				block
+					? {
+							start: block.start_oc || null,
+							end: block.end_oc || null,
+					  }
+					: undefined
+			}
+			cuePointsLabel={
 				block
 					? {
 							start: block.start_oc || null,

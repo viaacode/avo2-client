@@ -9,7 +9,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -23,11 +22,11 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
-import Html from '../../../shared/components/Html/Html';
 import { GetAssignmentsAdminOverviewQuery } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
@@ -47,7 +46,7 @@ import {
 import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
 
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [assignments, setAssignments] = useState<Assignment_v2[] | null>(null);
 	const [assignmentCount, setAssignmentCount] = useState<number>(0);
@@ -156,13 +155,13 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/assignments/views/assignments-overview-admin___het-ophalen-van-de-opdrachten-is-mislukt'
 				),
 			});
 		}
 		setIsLoading(false);
-	}, [columns, tableState, generateWhereObject, t]);
+	}, [columns, tableState, generateWhereObject, tText]);
 
 	useEffect(() => {
 		fetchAssignments();
@@ -183,7 +182,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t(
+				tHtml(
 					'admin/assignments/views/assignments-overview-admin___je-hebt-num-of-selected-assignments-geselecteerd',
 					{
 						numOfSelectedAssignments: assignmentIds.length,
@@ -200,7 +199,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				)
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/assignments/views/assignments-overview-admin___het-ophalen-van-alle-geselecteerde-opdrachten-ids-is-mislukt'
 				)
 			);
@@ -231,7 +230,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			await AssignmentService.deleteAssignments(selectedAssignmentIds);
 			await fetchAssignments();
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/assignments/views/assignments-overview-admin___je-hebt-num-of-selected-assignments-verwijderd',
 					{
 						numOfSelectedAssignments: selectedAssignmentIds.length,
@@ -244,7 +243,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				new CustomError('Failed to delete the selected assignments', err, { tableState })
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/assignments/views/assignments-overview-admin___het-verwijderen-van-de-geselecteerde-opdrachten-is-mislukt'
 				)
 			);
@@ -258,7 +257,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			await AssignmentService.changeAssignmentsAuthor(profileId, selectedAssignmentIds);
 			await fetchAssignments();
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/assignments/views/assignments-overview-admin___je-hebt-de-auteur-van-num-of-selected-assignments-aangepast',
 					{
 						numOfSelectedAssignments: selectedAssignmentIds.length,
@@ -273,7 +272,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/assignments/views/assignments-overview-admin___het-updaten-van-de-auteur-van-de-geselecteerde-opdrachten-is-mislukt'
 				)
 			);
@@ -310,8 +309,8 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			case 'status':
 				return !!assignment.deadline_at &&
 					new Date(assignment.deadline_at).getTime() < new Date().getTime()
-					? t('admin/assignments/views/assignments-overview-admin___afgelopen')
-					: t('admin/assignments/views/assignments-overview-admin___actief');
+					? tText('admin/assignments/views/assignments-overview-admin___afgelopen')
+					: tText('admin/assignments/views/assignments-overview-admin___actief');
 
 			case 'responses': {
 				const responsesLength =
@@ -333,11 +332,11 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					);
 				}
 				if (assignment.assignment_type === 'BOUW') {
-					return t(
+					return tText(
 						'admin/assignments/views/assignments-overview-admin___aantal-leerlingen-collecties'
 					);
 				}
-				return t('admin/assignments/views/assignments-overview-admin___nvt');
+				return tText('admin/assignments/views/assignments-overview-admin___nvt');
 			}
 
 			case 'views':
@@ -359,12 +358,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={t(
+				message={tText(
 					'admin/assignments/views/assignments-overview-admin___er-bestaan-nog-geen-opdrachten'
 				)}
 			>
 				<p>
-					{t(
+					{tText(
 						'admin/assignments/views/assignments-overview-admin___beschrijving-wanneer-er-nog-geen-opdrachten-zijn'
 					)}
 				</p>
@@ -385,10 +384,10 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					renderCell={(rowData: Partial<Assignment_v2>, columnId: string) =>
 						renderTableCell(rowData, columnId as AssignmentOverviewTableColumns)
 					}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/assignments/views/assignments-overview-admin___zoeken-op-titel-en-auteur'
 					)}
-					noContentMatchingFiltersMessage={t(
+					noContentMatchingFiltersMessage={tText(
 						'admin/assignments/views/assignments-overview-admin___er-zijn-geen-opdrachten-die-voldoen-aan-de-opgegeven-filters'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -408,14 +407,10 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					defaultOrderDirection={'desc'}
 				/>
 				<ConfirmModal
-					body={
-						<Html
-							content={t(
-								'admin/assignments/views/assignments-overview-admin___dit-zal-num-of-selected-assignment-opdrachten-verwijderen-deze-actie-kan-niet-ongedaan-gemaakt-worden',
-								{ numOfSelectedAssignment: selectedAssignmentIds.length }
-							)}
-						/>
-					}
+					body={tHtml(
+						'admin/assignments/views/assignments-overview-admin___dit-zal-num-of-selected-assignment-opdrachten-verwijderen-deze-actie-kan-niet-ongedaan-gemaakt-worden',
+						{ numOfSelectedAssignment: selectedAssignmentIds.length }
+					)}
 					isOpen={assignmentsDeleteModalOpen}
 					onClose={() => setAssignmentsDeleteModalOpen(false)}
 					confirmCallback={deleteSelectedAssignments}
@@ -433,21 +428,21 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 	return (
 		<AdminLayout
-			pageTitle={t('admin/assignments/views/assignments-overview-admin___opdrachten')}
+			pageTitle={tText('admin/assignments/views/assignments-overview-admin___opdrachten')}
 			size="full-width"
 		>
 			<AdminLayoutBody>
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving'
 						)}
 					/>

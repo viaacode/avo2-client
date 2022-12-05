@@ -18,7 +18,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -70,6 +69,7 @@ import { isPublic } from '../helpers/get-published-state';
 import { useContentTypes } from '../hooks';
 
 import './ContentOverview.scss';
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 type ContentOverviewProps = DefaultSecureRouteProps;
 
@@ -99,7 +99,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const [contentTypes] = useContentTypes();
 	const [contentPageLabelOptions] = useContentPageLabelOptions();
 
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const contentTypeOptions = useMemo(
 		() =>
@@ -223,14 +223,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/content/views/content-overview___het-ophalen-van-de-content-paginas-is-mislukt'
 				),
 				icon: 'alert-triangle',
 			});
 		}
 		setIsLoading(false);
-	}, [tableColumns, tableState, hasPerm, user, t]);
+	}, [tableColumns, tableState, hasPerm, user, tText]);
 
 	useEffect(() => {
 		fetchContentPages();
@@ -253,14 +253,16 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			await ContentService.deleteContentPage(contentToDelete);
 			fetchContentPages();
 			ToastService.success(
-				t('admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd')
+				tHtml(
+					'admin/content/views/content-overview___het-content-item-is-succesvol-verwijderd'
+				)
 			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to delete content page', err, { contentToDelete })
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content/views/content-overview___het-verwijderen-van-het-content-item-is-mislukt'
 				)
 			);
@@ -288,7 +290,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 			navigateToAbsoluteOrRelativeUrl(page.path, history, LinkTarget.Blank);
 		} else {
 			ToastService.danger(
-				t('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
+				tHtml('admin/content/views/content-detail___de-preview-kon-niet-worden-geopend')
 			);
 		}
 	}
@@ -359,13 +361,15 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 								}
 								if (userGroup.id === SpecialPermissionGroups.loggedInUsers) {
 									return {
-										label: t('admin/content/views/content-overview___ingelogd'),
+										label: tText(
+											'admin/content/views/content-overview___ingelogd'
+										),
 										id: userGroup.id as number,
 									};
 								}
 								if (userGroup.id === SpecialPermissionGroups.loggedOutUsers) {
 									return {
-										label: t(
+										label: tText(
 											'admin/content/views/content-overview___niet-ingelogd'
 										),
 										id: userGroup.id as number,
@@ -398,16 +402,20 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 								navigate(history, CONTENT_PATH.CONTENT_PAGE_DETAIL, { id })
 							}
 							size="small"
-							title={t('admin/content/views/content-overview___bekijk-content')}
-							ariaLabel={t('admin/content/views/content-overview___bekijk-content')}
+							title={tText('admin/content/views/content-overview___bekijk-content')}
+							ariaLabel={tText(
+								'admin/content/views/content-overview___bekijk-content'
+							)}
 							type="secondary"
 						/>
 						<Button
 							icon="eye"
 							onClick={() => handlePreviewClicked(rowData)}
 							size="small"
-							title={t('admin/content/views/content-overview___preview-content')}
-							ariaLabel={t('admin/content/views/content-overview___preview-content')}
+							title={tText('admin/content/views/content-overview___preview-content')}
+							ariaLabel={tText(
+								'admin/content/views/content-overview___preview-content'
+							)}
 							type="secondary"
 						/>
 						<Button
@@ -415,10 +423,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 							size="small"
 							title={
 								isPublic(rowData)
-									? t(
+									? tText(
 											'admin/content/views/content-overview___deze-pagina-is-publiek'
 									  )
-									: t(
+									: tText(
 											'admin/content/views/content-overview___deze-pagina-is-prive'
 									  )
 							}
@@ -431,8 +439,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 								navigate(history, CONTENT_PATH.CONTENT_PAGE_EDIT, { id })
 							}
 							size="small"
-							title={t('admin/content/views/content-overview___pas-content-aan')}
-							ariaLabel={t('admin/content/views/content-overview___pas-content-aan')}
+							title={tText('admin/content/views/content-overview___pas-content-aan')}
+							ariaLabel={tText(
+								'admin/content/views/content-overview___pas-content-aan'
+							)}
 							type="secondary"
 						/>
 						{hasPerm(DELETE_ANY_CONTENT_PAGES) && (
@@ -440,10 +450,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 								icon="delete"
 								onClick={() => openModal(rowData)}
 								size="small"
-								title={t(
+								title={tText(
 									'admin/content/views/content-overview___verwijder-content'
 								)}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/content/views/content-overview___verwijder-content'
 								)}
 								type="danger-hover"
@@ -460,24 +470,23 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={t(
+				message={tText(
 					'admin/content/views/content-overview___er-is-nog-geen-content-aangemaakt'
 				)}
 			>
 				<p>
-					<Trans i18nKey="admin/content/views/content-overview___beschrijving-hoe-content-toe-te-voegen">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores aliquid ab
-						debitis blanditiis vitae molestiae delectus earum asperiores mollitia,
-						minima laborum expedita ratione quas impedit repudiandae nisi corrupti quis
-						eaque!
-					</Trans>
+					{tHtml(
+						'admin/content/views/content-overview___beschrijving-hoe-content-toe-te-voegen'
+					)}
 				</p>
 				{hasPerm(CREATE_CONTENT_PAGES) && (
 					<Spacer margin="top">
 						<Button
 							icon="plus"
-							label={t('admin/content/views/content-overview___content-toevoegen')}
-							title={t(
+							label={tText(
+								'admin/content/views/content-overview___content-toevoegen'
+							)}
+							title={tText(
 								'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 							)}
 							onClick={() => history.push(CONTENT_PATH.CONTENT_PAGE_CREATE)}
@@ -499,10 +508,10 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					itemsPerPage={ITEMS_PER_PAGE}
 					columns={tableColumns}
 					dataCount={contentPageCount}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/content/views/content-overview___zoeken-op-auteur-titel-rol'
 					)}
-					noContentMatchingFiltersMessage={t(
+					noContentMatchingFiltersMessage={tText(
 						'admin/content/views/content-overview___er-is-geen-content-gevonden-die-voldoen-aan-uw-filters'
 					)}
 					renderNoResults={renderNoResults}
@@ -517,7 +526,7 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					onClose={() => setIsConfirmModalOpen(false)}
 					body={
 						get(contentToDelete, 'is_protected', null)
-							? t(
+							? tText(
 									'admin/content/views/content-overview___opgelet-dit-is-een-beschermde-pagina'
 							  )
 							: ''
@@ -527,15 +536,15 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 					isOpen={isNotAdminModalOpen}
 					onClose={() => setIsNotAdminModalOpen(false)}
 					size="small"
-					title={t(
+					title={tText(
 						'admin/content/views/content-overview___u-heeft-niet-de-juiste-rechten'
 					)}
 				>
 					<ModalBody>
 						<p>
-							<Trans i18nKey="admin/content/views/content-overview___contacteer-een-van-de-admins-om-deze-pagina-te-kunnen-verwijderen">
-								Contacteer een van de admins om deze pagina te kunnen verwijderen.
-							</Trans>
+							{tHtml(
+								'admin/content/views/content-overview___contacteer-een-van-de-admins-om-deze-pagina-te-kunnen-verwijderen'
+							)}
 						</p>
 					</ModalBody>
 				</Modal>
@@ -545,14 +554,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 
 	return (
 		<AdminLayout
-			pageTitle={t('admin/content/views/content-overview___content-overzicht')}
+			pageTitle={tText('admin/content/views/content-overview___content-overzicht')}
 			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				{hasPerm(CREATE_CONTENT_PAGES) && (
 					<Button
-						label={t('admin/content/views/content-overview___content-toevoegen')}
-						title={t(
+						label={tText('admin/content/views/content-overview___content-toevoegen')}
+						title={tText(
 							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 						)}
 						onClick={() => history.push(CONTENT_PATH.CONTENT_PAGE_CREATE)}
@@ -563,14 +572,14 @@ const ContentOverview: FunctionComponent<ContentOverviewProps> = ({ history, use
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/content/views/content-overview___content-beheer-overview-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/content/views/content-overview___content-beheer-overview-pagina-beschrijving'
 						)}
 					/>

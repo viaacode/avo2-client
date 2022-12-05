@@ -31,7 +31,6 @@ import {
 	set,
 } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose, Dispatch } from 'redux';
@@ -43,6 +42,7 @@ import { ErrorView } from '../../error/views';
 import { CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { useCollectionQualityLabels } from '../../shared/hooks/useCollectionQualityLabels';
+import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
@@ -94,7 +94,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	history,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const resultsCount = get(searchResults, 'count', 0);
 
 	const urlUpdateType: UrlUpdateType = 'push';
@@ -243,10 +243,10 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				})
 			);
 			ToastService.danger(
-				t('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
+				tHtml('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
 			);
 		}
-	}, [t, setBookmarkStatuses, searchResults, user]);
+	}, [tText, setBookmarkStatuses, searchResults, user]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS)) {
@@ -360,8 +360,8 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			setBookmarkStatuses(bookmarkStatusesTemp);
 			ToastService.success(
 				active
-					? t('search/views/search___de-bladwijzer-is-aangemaakt')
-					: t('search/views/search___de-bladwijzer-is-verwijderd')
+					? tHtml('search/views/search___de-bladwijzer-is-aangemaakt')
+					: tHtml('search/views/search___de-bladwijzer-is-verwijderd')
 			);
 		} catch (err) {
 			console.error(
@@ -374,8 +374,8 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			);
 			ToastService.danger(
 				active
-					? t('search/views/search___het-aanmaken-van-de-bladwijzer-is-mislukt')
-					: t('search/views/search___het-verwijderen-van-de-bladwijzer-is-mislukt')
+					? tHtml('search/views/search___het-aanmaken-van-de-bladwijzer-is-mislukt')
+					: tHtml('search/views/search___het-verwijderen-van-de-bladwijzer-is-mislukt')
 			);
 		}
 	};
@@ -412,7 +412,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		if (searchResultsError) {
 			return (
 				<ErrorView
-					message={t('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
+					message={tText('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
 					actionButtons={['home']}
 				/>
 			);
@@ -456,7 +456,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 									<FormGroup inlineMode="grow">
 										<TextInput
 											id="query"
-											placeholder={t(
+											placeholder={tText(
 												'search/views/search___vul-uw-zoekterm-in'
 											)}
 											value={searchTerms}
@@ -467,7 +467,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 									</FormGroup>
 									<FormGroup inlineMode="shrink">
 										<Button
-											label={t('search/views/search___zoeken')}
+											label={tText('search/views/search___zoeken')}
 											type="primary"
 											className="c-search-button"
 											onClick={copySearchTermsToFormState}
@@ -479,11 +479,11 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 												label={
 													isMobileWidth()
 														? ''
-														: t(
+														: tText(
 																'search/views/search___verwijder-alle-filters'
 														  )
 												}
-												ariaLabel={t(
+												ariaLabel={tText(
 													'search/views/search___verwijder-alle-filters'
 												)}
 												icon={isMobileWidth() ? 'delete' : undefined}
@@ -518,7 +518,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					<ToolbarRight>
 						<Form type="inline">
 							<FormGroup
-								label={t('search/views/search___sorteer-op')}
+								label={tText('search/views/search___sorteer-op')}
 								labelFor="sortBy"
 							>
 								<Select

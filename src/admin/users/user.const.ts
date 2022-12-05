@@ -4,7 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
@@ -38,62 +38,62 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 ) => [
 	{
 		id: 'id',
-		label: i18n.t('admin/users/user___id'),
+		label: tText('admin/users/user___id'),
 		sortable: false,
 		visibleByDefault: false,
 	},
 	{
 		id: 'first_name',
-		label: i18n.t('admin/users/user___voornaam'),
+		label: tText('admin/users/user___voornaam'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'last_name',
-		label: i18n.t('admin/users/user___achternaam'),
+		label: tText('admin/users/user___achternaam'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'mail',
-		label: i18n.t('admin/users/user___email'),
+		label: tText('admin/users/user___email'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'user_group',
-		label: i18n.t('admin/users/user___gebruikersgroep'),
+		label: tText('admin/users/user___gebruikersgroep'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
 				...userGroupOptions,
-				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+				{ label: tText('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'business_category',
-		label: i18n.t('admin/users/user___oormerk'),
+		label: tText('admin/users/user___oormerk'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
 				...businessCategoryOptions,
-				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+				{ label: tText('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'is_exception',
-		label: i18n.t('admin/users/user___uitzonderingsaccount'),
+		label: tText('admin/users/user___uitzonderingsaccount'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
@@ -101,7 +101,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'is_blocked',
-		label: i18n.t('admin/users/user___geblokkeerd'),
+		label: tText('admin/users/user___geblokkeerd'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
@@ -109,7 +109,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'blocked_at',
-		label: i18n.t('admin/users/user___geblokkeerd-op'),
+		label: tText('admin/users/user___geblokkeerd-op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -117,7 +117,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'unblocked_at',
-		label: i18n.t('admin/users/user___ongeblokkeerd-op'),
+		label: tText('admin/users/user___ongeblokkeerd-op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -127,28 +127,34 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		? [
 				{
 					id: 'temp_access',
-					label: i18n.t('admin/users/user___tijdelijke-toegang'),
+					label: tText('admin/users/user___tijdelijke-toegang'),
 					sortable: true,
 					visibleByDefault: false,
 					filterType: 'CheckboxDropdownModal',
 					filterProps: {
 						options: [
-							{ label: i18n.t('admin/users/user___tijdelijke-toegang-ja'), id: '1' },
-							{ label: i18n.t('admin/users/user___tijdelijke-toegang-nee'), id: '0' },
+							{
+								label: tText('admin/users/user___tijdelijke-toegang-ja'),
+								id: '1',
+							},
+							{
+								label: tText('admin/users/user___tijdelijke-toegang-nee'),
+								id: '0',
+							},
 						],
 					} as CheckboxDropdownModalProps,
 					dataType: TableColumnDataType.booleanNullsLast, // Users without a value are always last when sorting
 				},
 				{
 					id: 'temp_access_from',
-					label: i18n.t('admin/users/user___te-deblokkeren-op'),
+					label: tText('admin/users/user___te-deblokkeren-op'),
 					sortable: true,
 					visibleByDefault: false,
 					dataType: TableColumnDataType.dateTime,
 				},
 				{
 					id: 'temp_access_until',
-					label: i18n.t('admin/users/user___te-blokkeren-op'),
+					label: tText('admin/users/user___te-blokkeren-op'),
 					sortable: true,
 					visibleByDefault: false,
 					dataType: TableColumnDataType.dateTime,
@@ -157,7 +163,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		: []) as FilterableColumn[]),
 	{
 		id: 'stamboek',
-		label: i18n.t('admin/users/user___stamboek'),
+		label: tText('admin/users/user___stamboek'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'BooleanCheckboxDropdown',
@@ -165,21 +171,21 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'organisation',
-		label: i18n.t('admin/users/user___organisatie'),
+		label: tText('admin/users/user___organisatie'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
 				...companyOptions,
-				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+				{ label: tText('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'created_at',
-		label: i18n.t('admin/users/user___gebruiker-sinds'),
+		label: tText('admin/users/user___gebruiker-sinds'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -187,7 +193,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'last_access_at',
-		label: i18n.t('admin/users/user___laatste-toegang'),
+		label: tText('admin/users/user___laatste-toegang'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -195,41 +201,41 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'education_levels',
-		label: i18n.t('admin/users/user___onderwijs-niveaus'),
+		label: tText('admin/users/user___onderwijs-niveaus'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
 				...educationLevels,
-				{ label: i18n.t('admin/users/user___andere'), id: 'Andere' },
-				{ label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER },
+				{ label: tText('admin/users/user___andere'), id: 'Andere' },
+				{ label: tText('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'subjects',
-		label: i18n.t('admin/users/user___vakken'),
+		label: tText('admin/users/user___vakken'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: [...subjects, { label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER }],
+			options: [...subjects, { label: tText('admin/users/user___leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'idps',
-		label: i18n.t('admin/users/user___toegang-via'),
+		label: tText('admin/users/user___toegang-via'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
-			options: [...idps, { label: i18n.t('admin/users/user___leeg'), id: NULL_FILTER }],
+			options: [...idps, { label: tText('admin/users/user___leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'educational_organisations',
-		label: i18n.t('admin/users/user___educatieve-organisaties'),
+		label: tText('admin/users/user___educatieve-organisaties'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'MultiEducationalOrganisationSelectModal',
@@ -302,27 +308,27 @@ type UserDeleteRadioOption = { label: string; value: Avo.User.UserDeleteOption }
 export const GET_DELETE_RADIO_OPTIONS = (): UserDeleteRadioOption[] => {
 	return [
 		{
-			label: i18n.t('admin/users/user___verwijder-alle-content'),
+			label: tText('admin/users/user___verwijder-alle-content'),
 			value: 'DELETE_ALL',
 		},
 		{
-			label: i18n.t('admin/users/user___anonimiseer-de-publieke-content-verwijder-de-rest'),
+			label: tText('admin/users/user___anonimiseer-de-publieke-content-verwijder-de-rest'),
 			value: 'ANONYMIZE_PUBLIC',
 		},
 		{
-			label: i18n.t(
+			label: tText(
 				'admin/users/user___verwijder-prive-content-behoud-publieke-content-met-de-naam-van-de-gebruiker'
 			),
 			value: 'DELETE_PRIVATE_KEEP_NAME',
 		},
 		{
-			label: i18n.t(
+			label: tText(
 				'admin/users/user___zet-publieke-content-over-naar-een-andere-gebruiker-verwijder-de-rest'
 			),
 			value: 'TRANSFER_PUBLIC',
 		},
 		{
-			label: i18n.t('admin/users/user___zet-alle-content-over-naar-een-andere-gebruiker'),
+			label: tText('admin/users/user___zet-alle-content-over-naar-een-andere-gebruiker'),
 			value: 'TRANSFER_ALL',
 		},
 	];
@@ -340,28 +346,28 @@ export const GET_USER_BULK_ACTIONS = (user: Avo.User.User | undefined): UserBulk
 
 	if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
 		actions.push({
-			label: i18n.t('admin/users/user___blokkeren'),
+			label: tText('admin/users/user___blokkeren'),
 			value: 'block',
 		});
 		actions.push({
-			label: i18n.t('admin/users/user___deblokkeren'),
+			label: tText('admin/users/user___deblokkeren'),
 			value: 'unblock',
 		});
 	}
 	if (PermissionService.hasPerm(user, PermissionName.DELETE_ANY_USER)) {
 		actions.push({
-			label: i18n.t('admin/users/user___verwijderen'),
+			label: tText('admin/users/user___verwijderen'),
 			value: 'delete',
 		});
 	}
 	if (PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)) {
 		actions.push({
-			label: i18n.t('admin/users/user___vakken-aanpassen'),
+			label: tText('admin/users/user___vakken-aanpassen'),
 			value: 'change_subjects',
 		});
 	}
 	actions.push({
-		label: i18n.t('admin/users/user___exporteren'),
+		label: tText('admin/users/user___exporteren'),
 		value: 'export',
 	});
 

@@ -12,10 +12,10 @@ import classnames from 'classnames';
 import { isPast } from 'date-fns';
 import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	Assignment_v2_With_Blocks,
@@ -46,7 +46,7 @@ export interface AssignmentDetailsFormEditableProps {
 const AssignmentDetailsFormEditable: FC<
 	AssignmentDetailsFormEditableProps & UserProps & DefaultProps
 > = ({ assignment, setAssignment, setValue, className, style, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const getId = useCallback(
 		(key: string | number) => `${assignment.id}--${key}`,
@@ -71,7 +71,7 @@ const AssignmentDetailsFormEditable: FC<
 		<div className={classnames('c-assignment-details-form', className)} style={style}>
 			<Form>
 				<FormGroup
-					label={t('assignment/assignment___klas')}
+					label={tText('assignment/assignment___klas')}
 					labelFor={getId(AssignmentDetailsFormIds.classrooms)}
 					required
 				>
@@ -83,10 +83,10 @@ const AssignmentDetailsFormEditable: FC<
 						)}
 						user={user}
 						dictionary={{
-							placeholder: t(
+							placeholder: tText(
 								'assignment/components/assignment-details-form-editable___voeg-een-klas-toe'
 							),
-							empty: t(
+							empty: tText(
 								'assignment/components/assignment-details-form-editable___geen-klassen-beschikbaar'
 							),
 						}}
@@ -95,7 +95,7 @@ const AssignmentDetailsFormEditable: FC<
 
 							if (changed.length > 1) {
 								ToastService.danger(
-									t(
+									tHtml(
 										'assignment/components/assignment-details-form-editable___opgepast-je-kan-maar-1-klas-instellen-per-opdracht'
 									)
 								);
@@ -123,7 +123,7 @@ const AssignmentDetailsFormEditable: FC<
 				</FormGroup>
 
 				<FormGroup
-					label={`${t('assignment/assignment___label')} (${t(
+					label={`${tText('assignment/assignment___label')} (${tText(
 						'assignment/assignment___optioneel'
 					)})`}
 					labelFor={getId(AssignmentDetailsFormIds.labels)}
@@ -136,10 +136,10 @@ const AssignmentDetailsFormEditable: FC<
 						)}
 						user={user}
 						dictionary={{
-							placeholder: t(
+							placeholder: tText(
 								'assignment/components/assignment-details-form-editable___voeg-een-label-toe'
 							),
-							empty: t(
+							empty: tText(
 								'assignment/components/assignment-details-form-editable___geen-labels-beschikbaar'
 							),
 						}}
@@ -158,7 +158,7 @@ const AssignmentDetailsFormEditable: FC<
 				</FormGroup>
 
 				<FormGroup
-					label={t('assignment/assignment___beschikbaar-vanaf')}
+					label={tText('assignment/assignment___beschikbaar-vanaf')}
 					labelFor={getId(AssignmentDetailsFormIds.available_at)}
 					required
 				>
@@ -180,7 +180,7 @@ const AssignmentDetailsFormEditable: FC<
 				</FormGroup>
 
 				<FormGroup
-					label={t('assignment/assignment___deadline')}
+					label={tText('assignment/assignment___deadline')}
 					labelFor={getId(AssignmentDetailsFormIds.deadline_at)}
 					required
 				>
@@ -201,20 +201,20 @@ const AssignmentDetailsFormEditable: FC<
 						defaultTime="23:59"
 					/>
 					<p className="c-form-help-text">
-						{t(
+						{tText(
 							'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
 						)}
 					</p>
 					{deadline && isPast(deadline) && (
 						<p className="c-form-help-text--error">
-							{t(
+							{tText(
 								'assignment/components/assignment-details-form-editable___de-deadline-mag-niet-in-het-verleden-liggen'
 							)}
 						</p>
 					)}
 					{isDeadlineBeforeAvailableAt(availableAt, deadline) && (
 						<p className="c-form-help-text--error">
-							{t(
+							{tText(
 								'assignment/components/assignment-details-form-editable___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
 							)}
 						</p>
@@ -222,7 +222,7 @@ const AssignmentDetailsFormEditable: FC<
 				</FormGroup>
 
 				<FormGroup
-					label={`${t('assignment/assignment___link')} (${t(
+					label={`${tText('assignment/assignment___link')} (${tText(
 						'assignment/assignment___optioneel'
 					)})`}
 					labelFor={getId(AssignmentDetailsFormIds.answer_url)}
@@ -239,7 +239,7 @@ const AssignmentDetailsFormEditable: FC<
 						value={assignment.answer_url || undefined}
 					/>
 					<p className="c-form-help-text">
-						{t(
+						{tText(
 							'assignment/assignment___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
 						)}
 					</p>

@@ -94,12 +94,12 @@ import {
 import { CustomError, getEnv } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
+import { tHtml } from '../shared/helpers/translate';
 import { isUuid } from '../shared/helpers/uuid';
 import { dataService } from '../shared/services/data-service';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import i18n from '../shared/translations/i18n';
 
 import {
 	cleanCollectionBeforeSave,
@@ -208,7 +208,7 @@ export class CollectionService {
 			// abort if updatedCollection is empty
 			if (!updatedCollection) {
 				ToastService.danger(
-					i18n.t('collection/collection___de-huidige-collectie-is-niet-gevonden')
+					tHtml('collection/collection___de-huidige-collectie-is-niet-gevonden')
 				);
 				return null;
 			}
@@ -248,7 +248,7 @@ export class CollectionService {
 
 			// Fragments to insert do not have an id yet
 			const newFragments = getFragmentsFromCollection(newCollection).filter(
-				(fragment) => fragment.id < 0 || isNil(fragment.id)
+				(fragment) => fragment.id < 0 || Object.is(fragment.id, -0) || isNil(fragment.id)
 			);
 
 			// delete fragments that were removed from collection
@@ -285,7 +285,7 @@ export class CollectionService {
 
 					if (!fragmentToUpdate) {
 						ToastService.info(
-							i18n.t(
+							tHtml(
 								'collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id',
 								{ id }
 							)
@@ -995,13 +995,13 @@ export class CollectionService {
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			fragments.forEach((fragment) => (fragment.collection_uuid = collectionId));
-
 			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
 				delete (fragment as any).__typename;
 				delete fragment.item_meta;
+
 				return {
 					...fragment,
+					collection_uuid: collectionId,
 					id: undefined,
 				};
 			});
@@ -1060,10 +1060,10 @@ export class CollectionService {
 			console.error(customError);
 
 			ToastService.danger([
-				i18n.t(
+				tHtml(
 					'collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'
 				),
-				i18n.t(
+				tHtml(
 					'collection/collection___de-collectie-zal-opgeslagen-worden-zonder-thumbnail'
 				),
 			]);

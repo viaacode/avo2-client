@@ -1,16 +1,15 @@
 import { BlockHeading, Button, Container, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import Html from '../../../shared/components/Html/Html';
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 export type StudentTeacherProps = RouteComponentProps;
 
 const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
@@ -18,14 +17,14 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-beschrijving'
 						)}
 					/>
@@ -36,24 +35,22 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 							type="secondary"
 							onClick={history.goBack}
 							icon="arrow-left"
-							title={t(
+							title={tText(
 								'authentication/views/registration-flow/r-10-student-teacher___ga-terug-naar-de-manuele-account-aanvraag-pagina'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'authentication/views/registration-flow/r-10-student-teacher___ga-terug-naar-de-manuele-account-aanvraag-pagina'
 							)}
 						/>
 					</Spacer>
 					<BlockHeading type="h2">
-						<Trans i18nKey="authentication/views/registration-flow/r-10-student-teacher___het-archief-voor-onderwijs-voor-student-leerkrachten">
-							Het Archief voor Onderwijs voor Student-leerkrachten
-						</Trans>
-					</BlockHeading>
-					<Html
-						content={t(
-							'authentication/views/registration-flow/r-10-student-teacher___student-teacher-description'
+						{tHtml(
+							'authentication/views/registration-flow/r-10-student-teacher___het-archief-voor-onderwijs-voor-student-leerkrachten'
 						)}
-					/>
+					</BlockHeading>
+					{tHtml(
+						'authentication/views/registration-flow/r-10-student-teacher___student-teacher-description'
+					)}
 				</div>
 			</Container>
 		</Container>

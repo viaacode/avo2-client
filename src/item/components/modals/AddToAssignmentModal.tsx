@@ -14,7 +14,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -23,6 +22,7 @@ import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ItemTrimInfo } from '../../item.types';
 import ItemVideoDescription from '../ItemVideoDescription';
 
@@ -38,7 +38,7 @@ interface AddToAssignmentModalProps {
 const AddToAssignmentModal: FunctionComponent<
 	AddToAssignmentModalProps & RouteComponentProps & UserProps
 > = ({ itemMetaData, isOpen, onClose, onAddToAssignmentCallback }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
@@ -69,7 +69,7 @@ const AddToAssignmentModal: FunctionComponent<
 
 		return (
 			<Modal
-				title={t(
+				title={tText(
 					'item/components/modals/add-to-assignment-modal___knip-fragment-optioneel'
 				)}
 				size="extra-large"
@@ -86,7 +86,7 @@ const AddToAssignmentModal: FunctionComponent<
 									showTitle
 									showDescription
 									canPlay={isOpen}
-									cuePoints={{ start, end }}
+									cuePointsLabel={{ start, end }}
 									verticalLayout={isMobileWidth()}
 								/>
 								<Grid>
@@ -117,7 +117,7 @@ const AddToAssignmentModal: FunctionComponent<
 													<ToolbarItem>
 														<ButtonToolbar>
 															<Button
-																label={t(
+																label={tText(
 																	'item/components/modals/add-to-assignment-modal___overslaan'
 																)}
 																type="secondary"
@@ -131,7 +131,7 @@ const AddToAssignmentModal: FunctionComponent<
 																}
 															/>
 															<Button
-																label={t(
+																label={tText(
 																	'item/components/modals/add-to-assignment-modal___knip'
 																)}
 																type="primary"

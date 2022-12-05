@@ -2,7 +2,6 @@ import { BlockImageProps } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { cloneDeep, compact, intersection, noop, set } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { ContentBlockPreview } from '../../admin/content-block/components';
@@ -14,6 +13,7 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import { InteractiveTour, LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { ContentPageService } from '../../shared/services/content-page-service';
 
 import './ContentPage.scss';
@@ -31,7 +31,7 @@ type ContentPageDetailProps =
 	  };
 
 const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (props) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const [contentPageInfo, setContentPageInfo] = useState<ContentPageInfo | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -53,7 +53,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'content-page/views/content-page___het-laden-van-deze-content-pagina-is-mislukt'
 					),
 				});
@@ -62,12 +62,12 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 			console.error(new CustomError('Failed to load content page', err, { props }));
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'content-page/views/content-page___het-laden-van-deze-content-pagina-is-mislukt'
 				),
 			});
 		}
-	}, [props, t]);
+	}, [props, tText]);
 
 	useEffect(() => {
 		fetchContentPage();
@@ -162,7 +162,7 @@ const ContentPage: FunctionComponent<ContentPageDetailProps & UserProps> = (prop
 					<title>
 						{GENERATE_SITE_TITLE(
 							contentPageInfo?.title,
-							t(
+							tText(
 								'admin/content/views/content-detail___content-beheer-detail-pagina-titel'
 							)
 						)}

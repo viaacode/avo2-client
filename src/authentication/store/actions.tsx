@@ -9,7 +9,7 @@ import { Action, Dispatch } from 'redux';
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { ToastService } from '../../shared/services/toast-service';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 import { LoginMessage } from '../authentication.types';
 import { logoutAndRedirectToLogin } from '../helpers/redirects';
 
@@ -40,12 +40,12 @@ function checkIfSessionExpires(expiresAt: string) {
 		// Show warning since user is about to be logged out
 		ToastService.info(
 			<>
-				{i18n.t(
+				{tText(
 					'authentication/store/actions___je-sessie-gaat-over-5-min-verlopen-sla-je-werk-op-en-log-opnieuw-in'
 				)}
 				<Spacer margin="top-small">
 					<Button
-						label={i18n.t('authentication/store/actions___ga-naar-login')}
+						label={tText('authentication/store/actions___ga-naar-login')}
 						onClick={() => logoutAndRedirectToLogin(location)}
 						type="primary"
 					/>

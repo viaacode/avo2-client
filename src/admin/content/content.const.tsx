@@ -4,7 +4,7 @@ import { Avo } from '@viaa/avo2-types';
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { Lookup_Enum_Content_Types_Enum } from '../../shared/generated/graphql-db-types';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
@@ -20,14 +20,14 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 ) => FilterableColumn[] = (contentTypeOptions, userGroupOptions, contentPageLabelOptions) => [
 	{
 		id: 'title',
-		label: i18n.t('admin/content/content___titel'),
+		label: tText('admin/content/content___titel'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'content_type',
-		label: i18n.t('admin/content/content___content-type'),
+		label: tText('admin/content/content___content-type'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
@@ -38,7 +38,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'user_profile_id',
-		label: i18n.t('admin/content/content___auteur'),
+		label: tText('admin/content/content___auteur'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'MultiUserSelectDropdown',
@@ -46,21 +46,21 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'author_user_group',
-		label: i18n.t('admin/users/user___gebruikersgroep'),
+		label: tText('admin/users/user___gebruikersgroep'),
 		sortable: true,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
 				...userGroupOptions,
-				{ label: i18n.t('admin/content/content___leeg'), id: NULL_FILTER },
+				{ label: tText('admin/content/content___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'created_at',
-		label: i18n.t('admin/content/content___aangemaakt'),
+		label: tText('admin/content/content___aangemaakt'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -68,7 +68,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'updated_at',
-		label: i18n.t('admin/content/content___laatst-bewerkt'),
+		label: tText('admin/content/content___laatst-bewerkt'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -76,7 +76,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'is_public',
-		label: i18n.t('admin/content/content___publiek'),
+		label: tText('admin/content/content___publiek'),
 		sortable: true,
 		visibleByDefault: false,
 		filterType: 'BooleanCheckboxDropdown',
@@ -84,7 +84,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'published_at',
-		label: i18n.t('admin/content/views/content-overview___publicatie'),
+		label: tText('admin/content/views/content-overview___publicatie'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -92,7 +92,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'publish_at',
-		label: i18n.t('admin/content/views/content-overview___publiceer-op'),
+		label: tText('admin/content/views/content-overview___publiceer-op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -100,7 +100,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'depublish_at',
-		label: i18n.t('admin/content/views/content-overview___depubliceer-op'),
+		label: tText('admin/content/views/content-overview___depubliceer-op'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -108,7 +108,7 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'labels',
-		label: i18n.t('admin/content/content___labels'),
+		label: tText('admin/content/content___labels'),
 		sortable: false,
 		visibleByDefault: false,
 		filterType: 'CheckboxDropdownModal',
@@ -118,13 +118,13 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	},
 	{
 		id: 'user_group_ids',
-		label: i18n.t('admin/content/content___zichtbaar-voor'),
+		label: tText('admin/content/content___zichtbaar-voor'),
 		sortable: false,
 		visibleByDefault: false,
 	},
 	{
 		id: 'actions',
-		tooltip: i18n.t('admin/content/views/content-overview___acties'),
+		tooltip: tText('admin/content/views/content-overview___acties'),
 		visibleByDefault: true,
 	},
 ];
@@ -158,25 +158,25 @@ export const ITEMS_PER_PAGE = 10;
 export const GET_CONTENT_DETAIL_TABS: () => TabProps[] = () => [
 	{
 		id: 'inhoud',
-		label: i18n.t('admin/content/content___inhoud'),
+		label: tText('admin/content/content___inhoud'),
 		icon: 'layout',
 	},
 	{
 		id: 'metadata',
-		label: i18n.t('admin/content/content___metadata'),
+		label: tText('admin/content/content___metadata'),
 		icon: 'file-text',
 	},
 ];
 
 export const GET_CONTENT_WIDTH_OPTIONS = (): SelectOption<ContentWidth>[] => [
 	{
-		label: i18n.t('admin/content/content___kies-een-content-breedte'),
+		label: tText('admin/content/content___kies-een-content-breedte'),
 		value: '' as any,
 		disabled: true,
 	},
-	{ label: i18n.t('admin/content/content___max-1300-px'), value: ContentWidth.REGULAR },
-	{ label: i18n.t('admin/content/content___breed-940-px'), value: ContentWidth.REGULAR },
-	{ label: i18n.t('admin/content/content___medium-720-px'), value: ContentWidth.MEDIUM },
+	{ label: tText('admin/content/content___max-1300-px'), value: ContentWidth.REGULAR },
+	{ label: tText('admin/content/content___breed-940-px'), value: ContentWidth.REGULAR },
+	{ label: tText('admin/content/content___medium-720-px'), value: ContentWidth.MEDIUM },
 ];
 
 /* eslint-disable @typescript-eslint/no-unused-vars */

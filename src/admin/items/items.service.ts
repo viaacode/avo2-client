@@ -32,9 +32,9 @@ import {
 	GetUnpublishedItemsWithFiltersDocument,
 	GetUnpublishedItemsWithFiltersQuery,
 	GetUnpublishedItemsWithFiltersQueryVariables,
-	GetUsersWithBothBookmarksDocument,
-	GetUsersWithBothBookmarksQuery,
-	GetUsersWithBothBookmarksQueryVariables,
+	GetUserWithEitherBookmarkDocument,
+	GetUserWithEitherBookmarkQuery,
+	GetUserWithEitherBookmarkQueryVariables,
 	Lookup_Enum_Relation_Types_Enum,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
@@ -474,15 +474,19 @@ export class ItemsService {
 		newItemExternalId: string
 	): Promise<void> {
 		try {
-			const variables: GetUsersWithBothBookmarksQueryVariables = {
+			const variables: GetUserWithEitherBookmarkQueryVariables = {
 				oldItemUid,
 				newItemUid,
 			};
-			const response = await dataService.query<GetUsersWithBothBookmarksQuery>({
-				query: GetUsersWithBothBookmarksDocument,
+
+			const response = await dataService.query<GetUserWithEitherBookmarkQuery>({
+				query: GetUserWithEitherBookmarkDocument,
 				variables,
 			});
-			const usersWithBothBookmarks = response.users_profiles.map((profile) => profile.id);
+
+			const usersWithBothBookmarks = response.users_profiles
+				.filter((result) => (result.item_bookmarks_aggregate.aggregate?.count || 0) >= 2)
+				.map((profile) => profile.id);
 
 			const variablesReplace: ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables =
 				{

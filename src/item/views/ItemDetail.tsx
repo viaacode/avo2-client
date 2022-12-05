@@ -6,7 +6,6 @@ import {
 	Container,
 	Dropdown,
 	DropdownContent,
-	EnglishContentType,
 	Flex,
 	Grid,
 	Header,
@@ -36,7 +35,6 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -93,6 +91,7 @@ import {
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser from '../../shared/hocs/withUser';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
+import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
@@ -152,7 +151,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	renderBookmarkCount = defaultRenderBookmarkCount,
 	renderInteractiveTour = defaultRenderInteractiveTour,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const itemId = id || match.params.id;
 
@@ -190,7 +189,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					index: 'items',
 				});
 				ToastService.danger(
-					t('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
+					tHtml('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
 				);
 			});
 	};
@@ -207,7 +206,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
 					setLoadingInfo({
 						state: 'error',
-						message: t(
+						message: tText(
 							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
 						),
 						icon: 'lock',
@@ -215,7 +214,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				} else {
 					setLoadingInfo({
 						state: 'error',
-						message: t(
+						message: tText(
 							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
 						),
 						icon: 'lock',
@@ -228,7 +227,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			if (!itemObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: t('item/views/item___dit-item-werd-niet-gevonden'),
+					message: tText('item/views/item___dit-item-werd-niet-gevonden'),
 					icon: 'search',
 				});
 				return;
@@ -238,7 +237,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				setLoadingInfo({
 					state: 'error',
 					message:
-						t(
+						tText(
 							'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
 						) + itemObj.depublish_reason,
 					icon: 'camera-off',
@@ -278,7 +277,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					})
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'item/views/item-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
 					)
 				);
@@ -294,10 +293,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
+				message: tText('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
 			});
 		}
-	}, [itemId, setItem, t, history, user]);
+	}, [itemId, setItem, tText, history, user]);
 
 	useEffect(() => {
 		if (item) {
@@ -329,8 +328,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			});
 			ToastService.success(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('collection/views/collection-detail___de-bladwijzer-is-verwijderd')
-					: t('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
+					? tHtml('collection/views/collection-detail___de-bladwijzer-is-verwijderd')
+					: tHtml('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {
 			console.error(
@@ -343,8 +342,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			);
 			ToastService.danger(
 				bookmarkViewPlayCounts.isBookmarked
-					? t('item/views/item-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
-					: t('item/views/item-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
+					? tHtml('item/views/item-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
+					: tHtml('item/views/item-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
 			);
 		}
 	};
@@ -361,7 +360,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	};
 
 	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
-		const englishContentType: EnglishContentType =
+		const englishContentType: Avo.ContentType.English =
 			toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 		return (
@@ -444,11 +443,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		if (item && assignmentId) {
 			await AssignmentService.importFragmentToAssignment(item, assignmentId, itemTrimInfo);
 			ToastService.success(
-				t('item/views/item-detail___het-fragment-is-toegevoegd-aan-de-opdracht')
+				tHtml('item/views/item-detail___het-fragment-is-toegevoegd-aan-de-opdracht')
 			);
 		} else {
 			ToastService.danger(
-				t(
+				tHtml(
 					'item/views/item-detail___het-fragment-kon-niet-worden-toegevoegd-aan-de-opdracht'
 				)
 			);
@@ -490,7 +489,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">{t('item/views/item___geschikt-voor')}</th>
+						<th scope="row">{tText('item/views/item___geschikt-voor')}</th>
 						<td>
 							{renderSearchLinks(
 								renderSearchLink,
@@ -523,7 +522,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">{t('item/views/item-detail___onderwijsgraad')}</th>
+						<th scope="row">{tText('item/views/item-detail___onderwijsgraad')}</th>
 						<td>
 							{renderSearchLinks(
 								renderSearchLink,
@@ -556,7 +555,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">{t('item/views/item___vakken')}</th>
+						<th scope="row">{tText('item/views/item___vakken')}</th>
 						<td>
 							{renderSearchLinks(
 								renderSearchLink,
@@ -585,7 +584,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">{t('item/views/item-detail___themas')}</th>
+						<th scope="row">{tText('item/views/item-detail___themas')}</th>
 						<td>
 							{renderSearchLinks(
 								renderSearchLink,
@@ -614,7 +613,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			>
 				<tbody>
 					<tr>
-						<th scope="row">{t('item/views/item___trefwoorden')}</th>
+						<th scope="row">{tText('item/views/item___trefwoorden')}</th>
 						<td>
 							{stringsToTagList(
 								item.lom_keywords || [],
@@ -629,7 +628,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						</td>
 					</tr>
 					{/*<tr>*/}
-					{/*<th scope="row">{t('item/views/item___klascement')}</th>*/}
+					{/*<th scope="row">{tText('item/views/item___klascement')}</th>*/}
 					{/*<td>*/}
 					{/*<a href={'http://www.klascement.be/link_item'}>*/}
 					{/*www.klascement.be/link_item*/}
@@ -653,13 +652,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				<Grid tag="tbody">
 					{!!item.issued && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">{t('item/views/item___publicatiedatum')}</th>
+							<th scope="row">{tText('item/views/item___publicatiedatum')}</th>
 							<td>{reorderDate(item.issued, '/')}</td>
 						</Column>
 					)}
 					{!!item.published_at && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">{t('item/views/item___toegevoegd-op')}</th>
+							<th scope="row">{tText('item/views/item___toegevoegd-op')}</th>
 							<td>{reorderDate(item.published_at, '/')}</td>
 						</Column>
 					)}
@@ -667,7 +666,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				<Grid tag="tbody">
 					{!!get(item, 'organisation.name') && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">{t('item/views/item___aanbieder')}</th>
+							<th scope="row">{tText('item/views/item___aanbieder')}</th>
 							<td>
 								{renderSearchLink(item.organisation.name, {
 									filters: {
@@ -679,7 +678,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					)}
 					{!!item.duration && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">{t('item/views/item___speelduur')}</th>
+							<th scope="row">{tText('item/views/item___speelduur')}</th>
 							<td>{item.duration}</td>
 						</Column>
 					)}
@@ -687,7 +686,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				<Grid tag="tbody">
 					{!!item.series && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">{t('item/views/item___reeks')}</th>
+							<th scope="row">{tText('item/views/item___reeks')}</th>
 							<td>
 								{renderSearchLink(item.series, {
 									filters: { serie: [item.series] },
@@ -697,7 +696,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					)}
 					{!!item.lom_languages && !!item.lom_languages.length && (
 						<Column size="2-5" tag="tr">
-							<th scope="row">{t('item/views/item___taal')}</th>
+							<th scope="row">{tText('item/views/item___taal')}</th>
 							<td>
 								{item.lom_languages
 									.map((languageCode) => LANGUAGES.nl[languageCode])
@@ -718,11 +717,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						<Button
 							type="tertiary"
 							icon="scissors"
-							label={t('item/views/item___voeg-fragment-toe-aan-collectie')}
-							title={t(
+							label={tText('item/views/item___voeg-fragment-toe-aan-collectie')}
+							title={tText(
 								'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
 							)}
 							onClick={() => {
@@ -735,7 +734,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						<Dropdown
 							buttonType="tertiary"
 							icon="clipboard"
-							label={t('item/views/item-detail___voeg-toe-aan-opdracht')}
+							label={tText('item/views/item-detail___voeg-toe-aan-opdracht')}
 							isOpen={isCreateAssignmentDropdownOpen}
 							onClose={() => setIsCreateAssignmentDropdownOpen(false)}
 							onOpen={() => setIsCreateAssignmentDropdownOpen(true)}
@@ -746,13 +745,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 										className: 'u-m-0',
 										icon: undefined,
 										id: ITEM_ACTIONS.createAssignment,
-										label: t('item/views/item-detail___nieuwe-opdracht'),
+										label: tText('item/views/item-detail___nieuwe-opdracht'),
 										type: 'borderless',
 									})}
 									<Button
 										className="u-m-0"
 										id={ITEM_ACTIONS.importToAssignment}
-										label={t('item/views/item-detail___bestaande-opdracht')}
+										label={tText('item/views/item-detail___bestaande-opdracht')}
 										onClick={() =>
 											executeAction(ITEM_ACTIONS.importToAssignment)
 										}
@@ -767,9 +766,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						<Button
 							type="tertiary"
 							icon="link-2"
-							label={t('item/views/item___delen-met-leerlingen')}
-							ariaLabel={t('item/views/item-detail___deel-dit-met-alle-leerlingen')}
-							title={t('item/views/item-detail___deel-dit-met-alle-leerlingen')}
+							label={tText('item/views/item___delen-met-leerlingen')}
+							ariaLabel={tText(
+								'item/views/item-detail___deel-dit-met-alle-leerlingen'
+							)}
+							title={tText('item/views/item-detail___deel-dit-met-alle-leerlingen')}
 							onClick={() => {
 								setIsQuickLaneModalOpen(true);
 							}}
@@ -782,16 +783,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						renderBookmarkButton &&
 						renderBookmarkButton({
 							active: bookmarkViewPlayCounts.isBookmarked,
-							ariaLabel: t('item/views/item___toggle-bladwijzer'),
-							title: t('item/views/item___toggle-bladwijzer'),
+							ariaLabel: tText('item/views/item___toggle-bladwijzer'),
+							title: tText('item/views/item___toggle-bladwijzer'),
 							onClick: toggleBookmark,
 						})}
 
 					<Button
 						type="tertiary"
 						icon="share-2"
-						ariaLabel={t('item/views/item___share-item')}
-						title={t('item/views/item___share-item')}
+						ariaLabel={tText('item/views/item___share-item')}
+						title={tText('item/views/item___share-item')}
 						onClick={() => {
 							setIsShareThroughEmailModalOpen(true);
 						}}
@@ -800,8 +801,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					<Button
 						type="tertiary"
 						icon="flag"
-						ariaLabel={t('item/views/item___rapporteer-item')}
-						title={t('item/views/item___rapporteer-item')}
+						ariaLabel={tText('item/views/item___rapporteer-item')}
+						title={tText('item/views/item___rapporteer-item')}
 						onClick={() => {
 							setIsReportItemModalOpen(true);
 						}}
@@ -815,7 +816,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		if (!item) {
 			return null;
 		}
-		const englishContentType: EnglishContentType =
+		const englishContentType: Avo.ContentType.English =
 			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
 
 		return (
@@ -874,7 +875,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							{!!item.issued && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										{`${t(
+										{`${tText(
 											'item/views/item-detail___uitgezonden-op'
 										)} ${reorderDate(item.issued || null, '/')}`}
 									</p>
@@ -883,7 +884,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							{!!item.series && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
-										<span>{`${t('item/views/item-detail___reeks')} `}</span>
+										<span>{`${tText('item/views/item-detail___reeks')} `}</span>
 										{renderSearchLink(item.series, {
 											filters: { serie: [item.series] },
 										})}
@@ -904,7 +905,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							}
 							onPlay={trackOnPlay}
 							verticalLayout={isMobileWidth()}
-							cuePoints={{
+							cuePointsVideo={{
+								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
+								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
+							}}
+							cuePointsLabel={{
 								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
 								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
 							}}
@@ -923,7 +928,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							<Column size="2-7">
 								<Container mode="vertical" size="small">
 									<BlockHeading type="h3">
-										{t('item/views/item___metadata')}
+										{tText('item/views/item___metadata')}
 									</BlockHeading>
 									{renderGeneralMetaData(item)}
 									{(!!renderEducationLevels(item) ||
@@ -940,7 +945,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							<Column size="2-5">
 								<Container size="small" mode="vertical">
 									<BlockHeading type="h3">
-										{t('item/views/item___bekijk-ook')}
+										{tText('item/views/item___bekijk-ook')}
 									</BlockHeading>
 									<ul className="c-media-card-list">{renderRelatedItems()}</ul>
 								</Container>
@@ -973,7 +978,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					/>
 				)}
 				<ShareThroughEmailModal
-					modalTitle={t('item/views/item-detail___deel-dit-item')}
+					modalTitle={tText('item/views/item-detail___deel-dit-item')}
 					type="item"
 					emailLinkHref={window.location.href}
 					emailLinkTitle={item.title}
@@ -991,7 +996,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					user={user}
 				/>
 				<QuickLaneModal
-					modalTitle={t('item/views/item___snel-delen-met-leerlingen')}
+					modalTitle={tText('item/views/item___snel-delen-met-leerlingen')}
 					isOpen={isQuickLaneModalOpen}
 					content={item}
 					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Item}
@@ -1006,9 +1011,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					importToAssignmentCallback={onImportToAssignment}
 					showToggle={false}
 					translations={{
-						title: t('item/views/item-detail___voeg-toe-aan-bestaande-opdracht'),
-						primaryButton: t('item/views/item-detail___voeg-toe'),
-						secondaryButton: t('item/views/item-detail___annuleer'),
+						title: tText('item/views/item-detail___voeg-toe-aan-bestaande-opdracht'),
+						primaryButton: tText('item/views/item-detail___voeg-toe'),
+						secondaryButton: tText('item/views/item-detail___annuleer'),
 					}}
 				/>
 				<ConfirmImportToAssignmentWithResponsesModal
@@ -1016,16 +1021,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					onClose={() => setIsConfirmImportToAssignmentWithResponsesModalOpen(false)}
 					confirmCallback={onConfirmImportAssignment}
 					translations={{
-						title: t('item/views/item-detail___fragment-toevoegen'),
-						warningCallout: t('item/views/item-detail___opgelet'),
-						warningMessage: t(
+						title: tText('item/views/item-detail___fragment-toevoegen'),
+						warningCallout: tText('item/views/item-detail___opgelet'),
+						warningMessage: tText(
 							'item/views/item-detail___leerlingen-hebben-deze-opdracht-reeds-bekeken'
 						),
-						warningBody: t(
+						warningBody: tText(
 							'item/views/item-detail___ben-je-zeker-dat-je-het-fragment-wil-toevoegen-aan-deze-opdracht'
 						),
-						primaryButton: t('item/views/item-detail___voeg-toe'),
-						secondaryButton: t('item/views/item-detail___annuleer'),
+						primaryButton: tText('item/views/item-detail___voeg-toe'),
+						secondaryButton: tText('item/views/item-detail___annuleer'),
 					}}
 				/>
 				{item &&
@@ -1050,7 +1055,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						get(
 							item,
 							'title',
-							t('item/views/item-detail___item-detail-pagina-titel-fallback')
+							tText('item/views/item-detail___item-detail-pagina-titel-fallback')
 						)
 					)}
 				</title>
@@ -1060,7 +1065,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				loadingInfo={loadingInfo}
 				dataObject={item}
 				render={renderItem}
-				notFoundError={t('item/views/item___dit-item-werd-niet-gevonden')}
+				notFoundError={tText('item/views/item___dit-item-werd-niet-gevonden')}
 			/>
 		</>
 	);

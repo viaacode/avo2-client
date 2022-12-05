@@ -1,19 +1,19 @@
 import { Button, KeyValueEditor } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { CustomError } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import { Translation, TranslationsState } from '../translations.types';
 
 const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
 	const [translations, setTranslations] = useState<Translation[]>([]);
@@ -28,12 +28,12 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 			.catch((err) => {
 				console.error(new CustomError('Failed to fetch translations', err));
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/translations/views/translations-overview___het-ophalen-van-de-vertalingen-is-mislukt'
 					)
 				);
 			});
-	}, [t]);
+	}, [tText]);
 
 	useEffect(() => {
 		getTranslations();
@@ -87,12 +87,14 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 			await getTranslations();
 
 			ToastService.success(
-				t('admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen')
+				tHtml(
+					'admin/translations/views/translations-overview___de-vertalingen-zijn-opgeslagen'
+				)
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to save translations', err));
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/translations/views/translations-overview___het-opslaan-van-de-vertalingen-is-mislukt'
 				)
 			);
@@ -140,7 +142,7 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 
 	return (
 		<AdminLayout
-			pageTitle={t('admin/translations/views/translations-overview___vertalingen')}
+			pageTitle={tText('admin/translations/views/translations-overview___vertalingen')}
 			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
@@ -150,14 +152,14 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/translations/views/translations-overview___vertalingen-beheer-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving'
 						)}
 					/>

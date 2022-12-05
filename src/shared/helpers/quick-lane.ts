@@ -1,9 +1,10 @@
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { TFunction } from 'i18next';
 
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { CheckboxOption } from '../components';
 import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../generated/graphql-db-types';
+
+import { tText } from './translate';
 
 export const isOrganisational = (user: UserSchema): boolean => {
 	return PermissionService.hasAtLeastOnePerm(user, [
@@ -17,15 +18,15 @@ export const isPersonal = (user: UserSchema): boolean => {
 	]);
 };
 
-export const getTypeOptions = (t: TFunction): CheckboxOption[] => {
+export const getTypeOptions = (): CheckboxOption[] => {
 	const translations: {
 		// eslint-disable-next-line
 		[x in Lookup_Enum_Assignment_Content_Labels_Enum]?: string;
 	} = {
-		[Lookup_Enum_Assignment_Content_Labels_Enum.Item]: t(
+		[Lookup_Enum_Assignment_Content_Labels_Enum.Item]: tText(
 			'workspace/views/quick-lane-overview___item'
 		),
-		[Lookup_Enum_Assignment_Content_Labels_Enum.Collectie]: t(
+		[Lookup_Enum_Assignment_Content_Labels_Enum.Collectie]: tText(
 			'workspace/views/quick-lane-overview___collectie'
 		),
 	};

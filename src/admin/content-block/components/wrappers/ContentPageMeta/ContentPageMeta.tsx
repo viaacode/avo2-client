@@ -1,11 +1,11 @@
 import { Button } from '@viaa/avo2-components';
 import { format } from 'date-fns';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { getProfileName } from '../../../../../authentication/helpers/get-profile-info';
 import { navigateToContentType } from '../../../../../shared/helpers';
+import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { ContentPageLabel } from '../../../../content-page-labels/content-page-label.types';
 import { ContentPageInfo } from '../../../../content/content.types';
 import { getPublishedDate } from '../../../../content/helpers/get-published-state';
@@ -18,7 +18,7 @@ const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentPr
 	contentPageInfo,
 	history,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const renderLabel = (labelObj: ContentPageLabel) => {
 		return (labelObj as any).link_to ? (
@@ -41,7 +41,7 @@ const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentPr
 
 		return (
 			<>
-				{`${t(
+				{`${tText(
 					'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___in'
 				)} `}
 				{contentPageInfo.labels.map((labelObj, index) => {
@@ -52,7 +52,7 @@ const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentPr
 						return (
 							<>
 								{renderLabel(labelObj)}{' '}
-								{t(
+								{tText(
 									'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___en'
 								)}{' '}
 							</>
@@ -67,11 +67,11 @@ const ContentPageMeta: FunctionComponent<ContentPageMetaProps & RouteComponentPr
 	const publishedDate = getPublishedDate(contentPageInfo);
 	return (
 		<span>
-			{t(
+			{tText(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___gepubliceerd-op'
 			)}{' '}
 			{publishedDate ? format(new Date(publishedDate), 'd MMMM yyyy') : '-'} {renderLabels()}
-			{`${t(
+			{`${tText(
 				'admin/content-block/components/wrappers/block-content-page-meta/block-content-page-meta___door'
 			)}`}{' '}
 			{getProfileName(contentPageInfo.profile?.user)}

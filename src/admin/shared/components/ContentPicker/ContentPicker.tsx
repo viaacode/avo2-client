@@ -9,17 +9,14 @@ import {
 } from '@viaa/avo2-components';
 import { get, isNull } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import ReactSelect from 'react-select';
+import ReactSelect, { ActionMeta, ValueType } from 'react-select';
 import AsyncSelect from 'react-select/async';
-// eslint-disable-next-line import/namespace
-import { ActionMeta, ValueType } from 'react-select/src/types';
 
 import { FileUpload } from '../../../../shared/components';
 import { CustomError } from '../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
-import i18n from '../../../../shared/translations/i18n';
 import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
 
 import {
@@ -45,15 +42,13 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	allowedTypes = DEFAULT_ALLOWED_TYPES,
 	initialValue,
 	onSelect,
-	placeholder = i18n.t(
-		'admin/shared/components/content-picker/content-picker___selecteer-een-item'
-	),
+	placeholder,
 	hideTypeDropdown = false,
 	hideTargetSwitch = false,
 	errors = [],
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// filter available options for the type picker
 	const typeOptions = filterTypes(GET_CONTENT_TYPES(user), allowedTypes as ContentPickerType[]);
@@ -116,7 +111,11 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 						selectedType,
 					})
 				);
-				ToastService.danger('Het ophalen van de opties is mislukt');
+				ToastService.danger(
+					tHtml(
+						'admin/shared/components/content-picker/content-picker___het-ophalen-van-de-opties-is-mislukt'
+					)
+				);
 				return [];
 			}
 		},
@@ -166,7 +165,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/shared/components/content-picker/content-picker___voor-deze-content-pagina-is-geen-pad-geconfigureerd'
 				)
 			);
@@ -252,8 +251,10 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 				<ReactSelect
 					{...REACT_SELECT_DEFAULT_OPTIONS}
 					id="content-picker-type"
-					placeholder={t('admin/shared/components/content-picker/content-picker___type')}
-					aria-label={t(
+					placeholder={tText(
+						'admin/shared/components/content-picker/content-picker___type'
+					)}
+					aria-label={tText(
 						'admin/shared/components/content-picker/content-picker___selecteer-een-type'
 					)}
 					options={typeOptions}
@@ -262,7 +263,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 					isSearchable={false}
 					isOptionDisabled={(option: PickerTypeOption) => !!option.disabled}
 					noOptionsMessage={() =>
-						t('admin/shared/components/content-picker/content-picker___geen-types')
+						tText('admin/shared/components/content-picker/content-picker___geen-types')
 					}
 				/>
 			</FlexItem>
@@ -290,8 +291,14 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 		<AsyncSelect
 			{...REACT_SELECT_DEFAULT_OPTIONS}
 			id="content-picker-item"
-			placeholder={placeholder}
-			aria-label={placeholder}
+			placeholder={
+				placeholder ||
+				tText('admin/shared/components/content-picker/content-picker___selecteer-een-item')
+			}
+			aria-label={
+				placeholder ||
+				tText('admin/shared/components/content-picker/content-picker___selecteer-een-item')
+			}
 			loadOptions={fetchPickerOptions}
 			onChange={onSelectItem}
 			onFocus={() => fetchPickerOptions(null)}
@@ -299,10 +306,10 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 			defaultOptions={itemOptions as any} // TODO: type
 			isClearable
 			noOptionsMessage={() =>
-				t('admin/shared/components/content-picker/content-picker___geen-resultaten')
+				tText('admin/shared/components/content-picker/content-picker___geen-resultaten')
 			}
 			loadingMessage={() =>
-				t('admin/shared/components/content-picker/content-picker___laden')
+				tText('admin/shared/components/content-picker/content-picker___laden')
 			}
 		/>
 	);
@@ -340,10 +347,10 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 					icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
 					title={
 						isTargetSelf
-							? t(
+							? tText(
 									'admin/shared/components/content-picker/content-picker___open-de-link-in-hetzelfde-tablad'
 							  )
-							: t(
+							: tText(
 									'admin/shared/components/content-picker/content-picker___open-de-link-in-een-nieuw-tabblad'
 							  )
 					}

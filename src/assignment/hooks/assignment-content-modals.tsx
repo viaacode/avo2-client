@@ -1,12 +1,12 @@
 import { Avo } from '@viaa/avo2-types';
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
 import { AddToAssignmentModal } from '../../item/components';
 import { ItemTrimInfo } from '../../item/item.types';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { Positioned } from '../../shared/types';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
@@ -29,7 +29,7 @@ export function useBlockListModals(
 		addCollectionConfig?: Partial<AddCollectionModalProps>;
 	}
 ): [JSX.Element, SingleEntityModal<Pick<AssignmentBlock, 'id'>>, SingleEntityModal<number>] {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 
 	const slice = useSingleEntityModal<Pick<AssignmentBlock, 'id'>>();
 	const {
@@ -184,7 +184,7 @@ export function useBlockListModals(
 
 							if (!collection) {
 								ToastService.danger(
-									t(
+									tHtml(
 										'assignment/views/assignment-edit___de-collectie-kon-niet-worden-opgehaald'
 									)
 								);

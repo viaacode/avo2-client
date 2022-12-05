@@ -1,7 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 
-import i18n from '../shared/translations/i18n';
+import { tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
 
 import {
@@ -15,11 +15,11 @@ export class AssignmentHelper {
 	public static getContentLayoutOptions(): RadioOption[] {
 		return [
 			{
-				label: i18n.t('assignment/views/assignment-edit___mediaspeler-met-beschrijving'),
+				label: tText('assignment/views/assignment-edit___mediaspeler-met-beschrijving'),
 				value: AssignmentLayout.PlayerAndText.toString(),
 			},
 			{
-				label: i18n.t('assignment/views/assignment-edit___enkel-mediaspeler'),
+				label: tText('assignment/views/assignment-edit___enkel-mediaspeler'),
 				value: AssignmentLayout.OnlyPlayer.toString(),
 			},
 		];
@@ -51,13 +51,13 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 	switch (errorType) {
 		case AssignmentRetrieveError.DELETED:
 			return {
-				message: i18n.t('assignment/views/assignment-detail___de-opdracht-werd-verwijderd'),
+				message: tText('assignment/views/assignment-detail___de-opdracht-werd-verwijderd'),
 				icon: 'delete',
 			};
 
 		case AssignmentRetrieveError.NOT_YET_AVAILABLE:
 			return {
-				message: i18n.t(
+				message: tText(
 					'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
 				),
 				icon: 'clock',
@@ -65,7 +65,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 
 		default:
 			return {
-				message: i18n.t(
+				message: tText(
 					'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
 				),
 				icon: 'alert-triangle',

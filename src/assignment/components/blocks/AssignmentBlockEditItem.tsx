@@ -1,7 +1,6 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FC, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { FilterState } from '../../../search/search.types';
 import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components';
@@ -9,6 +8,7 @@ import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm'
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import {
 	AssignmentBlock,
 	BaseBlockWithMeta,
@@ -39,7 +39,7 @@ export const AssignmentBlockEditItem: FC<
 		buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string;
 	}
 > = ({ block, setBlock, AssignmentBlockItemDescriptionTypes, buildSearchLink }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [cutButton, cutModal] = useCutModal();
 	const editableBlock = {
@@ -89,9 +89,13 @@ export const AssignmentBlockEditItem: FC<
 							external_id={item.external_id}
 							duration={item.duration}
 							title={item.title}
-							cuePoints={{
-								start: editableBlock.start_oc ?? null,
-								end: editableBlock.end_oc ?? null,
+							cuePointsVideo={{
+								start: editableBlock.start_oc || null,
+								end: editableBlock.end_oc || null,
+							}}
+							cuePointsLabel={{
+								start: editableBlock.start_oc || null,
+								end: editableBlock.end_oc || null,
 							}}
 						/>
 
@@ -112,7 +116,7 @@ export const AssignmentBlockEditItem: FC<
 					</>
 				);
 			}}
-			buttonsLabel={t(
+			buttonsLabel={tText(
 				'assignment/components/blocks/assignment-block-edit-item___titel-en-beschrijving'
 			)}
 			buttons={
@@ -123,8 +127,10 @@ export const AssignmentBlockEditItem: FC<
 				/>
 			}
 			title={{
-				label: t('assignment/views/assignment-edit___titel-fragment'),
-				placeholder: t('assignment/views/assignment-edit___instructies-of-omschrijving'),
+				label: tText('assignment/views/assignment-edit___titel-fragment'),
+				placeholder: tText(
+					'assignment/views/assignment-edit___instructies-of-omschrijving'
+				),
 				value: title,
 				disabled: editableBlock.editMode === AssignmentBlockItemDescriptionType.original,
 				onChange: (value) => {
@@ -139,7 +145,9 @@ export const AssignmentBlockEditItem: FC<
 			description={
 				editableBlock.editMode !== AssignmentBlockItemDescriptionType.none
 					? {
-							label: t('assignment/views/assignment-edit___beschrijving-fragment'),
+							label: tText(
+								'assignment/views/assignment-edit___beschrijving-fragment'
+							),
 							initialHtml: convertToHtml(description),
 							controls: WYSIWYG_OPTIONS_AUTHOR,
 							enabledHeadings: ['h3', 'h4', 'normal'],

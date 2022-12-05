@@ -2,10 +2,10 @@ import { Alert, Container, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
@@ -25,7 +25,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	changeCollectionState,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [openOptionsId, setOpenOptionsId] = useState<number | string | null>(null);
@@ -45,12 +45,12 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 					{ user, permission: PermissionName.ADD_HYPERLINK_COLLECTIONS }
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'collection/components/fragment/fragment-edit___het-controleren-van-je-account-rechten-is-mislukt'
 					)
 				);
 			});
-	}, [user, t]);
+	}, [user, tText]);
 
 	const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
 		return `fragment_${fragment.id}-${get(fragment, 'created_at')}-${get(
@@ -99,8 +99,8 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	// 	fragment: CollectionFragment,
 	// 	index: number
 	// ): TitleDescriptionFormTitleField | CustomiseItemFormTitleField => ({
-	// 	label: t('collection/components/fragment/fragment-edit___tekstblok-titel'),
-	// 	placeholder: t(
+	// 	label: tText('collection/components/fragment/fragment-edit___tekstblok-titel'),
+	// 	placeholder: tText(
 	// 		'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 	// 	),
 	// 	onChange: (value) =>
@@ -119,8 +119,8 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	// 	index: number
 	// ): TitleDescriptionFormDescriptionField | CustomiseItemFormDescriptionField => ({
 	// 	controls: allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT,
-	// 	label: t('collection/components/fragment/fragment-edit___tekstblok-beschrijving'),
-	// 	placeholder: t(
+	// 	label: tText('collection/components/fragment/fragment-edit___tekstblok-beschrijving'),
+	// 	placeholder: tText(
 	// 		'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 	// 	),
 	// 	onChange: (value) =>
@@ -164,7 +164,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	// 			return null;
 	// 		}}
 	// 		toggle={{
-	// 			label: t('collection/components/fragment/fragment-edit___alternatieve-tekst'),
+	// 			label: tText('collection/components/fragment/fragment-edit___alternatieve-tekst'),
 	// 			checked: fragment.use_custom_fields,
 	// 			onChange: (value) =>
 	// 				changeCollectionState({
@@ -317,7 +317,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 								return (
 									<Spacer margin="bottom">
 										<Alert type="danger">
-											{t(
+											{tText(
 												'collection/components/fragment/fragment-list___dit-item-is-recent-vervangen-door-een-nieuwe-versie-je-controleert-best-of-je-knippunten-nog-correct-zijn'
 											)}
 										</Alert>

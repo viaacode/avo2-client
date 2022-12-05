@@ -1,4 +1,4 @@
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import {
 	Color,
 	ContentBlockConfig,
@@ -22,7 +22,7 @@ export const INITIAL_SEARCH_BLOCK_STATE = (): DefaultContentBlockState => ({
 
 export const SEARCH_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/search___search'),
+	name: tText('admin/content-block/helpers/generators/search___search'),
 	type: ContentBlockType.Search,
 	components: {
 		state: INITIAL_SEARCH_COMPONENTS_STATE(),

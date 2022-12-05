@@ -1,5 +1,5 @@
 import defaultAudioStillPath from '../../assets/images/audio-still.svg';
-import i18n from '../translations/i18n';
+import { tText } from '../helpers/translate';
 
 export { LANGUAGES } from './languages';
 export { ROUTE_PARTS } from './routes';
@@ -19,6 +19,6 @@ export const NOT_NOW_VAL = 'Yes';
 export const ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS =
 	'AVO.assignment_overview_back_button_filters';
 
-export function getMoreOptionsLabel() {
-	return i18n.t('shared/constants/index___meer-opties');
+export function getMoreOptionsLabel(): string {
+	return tText('shared/constants/index___meer-opties');
 }

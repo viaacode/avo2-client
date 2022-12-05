@@ -4,7 +4,7 @@ import { isEmpty, isNil } from 'lodash-es';
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import { WYSIWYGWrapperProps } from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import { UserGroupSelectProps } from '../../../shared/components';
 import {
 	Color,
@@ -45,18 +45,18 @@ export const BLOCK_STATE_DEFAULTS = (
 export const BLOCK_FIELD_DEFAULTS = () => ({
 	backgroundColor: BACKGROUND_COLOR_FIELD(),
 	padding: PADDING_FIELD(),
-	margin: PADDING_FIELD(i18n.t('admin/content-block/helpers/generators/defaults___marge')),
+	margin: PADDING_FIELD(tText('admin/content-block/helpers/generators/defaults___marge')),
 	userGroupIds: USER_GROUP_SELECT(),
 
 	// Used to link to this block from inside the same page using the anchors-block
 	anchor: INPUT_FIELD({
-		label: i18n.t('admin/content-block/helpers/generators/defaults___anchor-id'),
+		label: tText('admin/content-block/helpers/generators/defaults___anchor-id'),
 	}),
 });
 
 // Recurring fields
 export const FOREGROUND_COLOR_FIELD = (
-	label: string = i18n.t('admin/content-block/helpers/generators/defaults___tekst-kleur'),
+	label: string = tText('admin/content-block/helpers/generators/defaults___tekst-kleur'),
 	defaultValue?: SelectOption<Color>
 ): ContentBlockField => ({
 	label,
@@ -68,7 +68,7 @@ export const FOREGROUND_COLOR_FIELD = (
 });
 
 export const BACKGROUND_COLOR_FIELD = (
-	label: string = i18n.t('admin/content-block/helpers/generators/defaults___achtergrondkleur'),
+	label: string = tText('admin/content-block/helpers/generators/defaults___achtergrondkleur'),
 	defaultValue?: SelectOption<Color>
 ): ContentBlockField => ({
 	label,
@@ -80,26 +80,26 @@ export const BACKGROUND_COLOR_FIELD = (
 });
 
 export const PADDING_FIELD = (
-	label = i18n.t('admin/content-block/helpers/generators/defaults___padding')
+	label = tText('admin/content-block/helpers/generators/defaults___padding')
 ): ContentBlockField => ({
 	label,
 	editorType: ContentBlockEditor.PaddingSelect,
 });
 
 export const USER_GROUP_SELECT = (
-	label = i18n.t('admin/content-block/helpers/generators/defaults___zichtbaar-voor')
+	label = tText('admin/content-block/helpers/generators/defaults___zichtbaar-voor')
 ): ContentBlockField => ({
 	label,
 	editorType: ContentBlockEditor.UserGroupSelect,
 	editorProps: {
-		placeholder: i18n.t(
+		placeholder: tText(
 			'admin/content-block/helpers/generators/defaults___iedereen-met-toegang-tot-de-pagina'
 		),
 	} as UserGroupSelectProps,
 });
 
 export const ALIGN_FIELD = (
-	label: string = i18n.t('admin/content-block/helpers/generators/defaults___uitlijning')
+	label: string = tText('admin/content-block/helpers/generators/defaults___uitlijning')
 ): ContentBlockField => ({
 	label,
 	editorType: ContentBlockEditor.AlignSelect,
@@ -109,12 +109,12 @@ export const ALIGN_FIELD = (
 });
 
 export const TEXT_FIELD = (
-	emptyFieldValidatorMessage = i18n.t(
+	emptyFieldValidatorMessage = tText(
 		'admin/content-block/helpers/generators/defaults___tekst-is-verplicht'
 	),
 	propOverride?: Partial<ContentBlockField>
 ): ContentBlockField => ({
-	label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
+	label: tText('admin/content-block/helpers/generators/defaults___tekst'),
 	editorType: ContentBlockEditor.WYSIWYG,
 	validator: (value: string) => {
 		const errorArray: string[] = [];
@@ -133,18 +133,18 @@ export const TEXT_FIELD = (
 });
 
 export const INPUT_FIELD = (propOverride?: Partial<ContentBlockField>): ContentBlockField => ({
-	label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
+	label: tText('admin/content-block/helpers/generators/defaults___tekst'),
 	editorType: ContentBlockEditor.TextInput,
 	...propOverride,
 });
 
 export const FILE_FIELD = (
-	emptyFieldValidatorMessage = i18n.t(
+	emptyFieldValidatorMessage = tText(
 		'admin/content-block/helpers/generators/defaults___een-bestand-is-verplicht'
 	),
 	propOverride?: Partial<ContentBlockField>
 ): ContentBlockField => ({
-	label: i18n.t('admin/content-block/helpers/generators/defaults___bestand'),
+	label: tText('admin/content-block/helpers/generators/defaults___bestand'),
 	editorType: ContentBlockEditor.FileUpload,
 	validator: (value: string) => {
 		const errorArray: string[] = [];
@@ -160,12 +160,12 @@ export const FILE_FIELD = (
 });
 
 export const ITEM_PICKER_FIELD = (
-	emptyFieldValidatorMessage = i18n.t(
+	emptyFieldValidatorMessage = tText(
 		'admin/content-block/helpers/generators/defaults___selecteren-van-video-item-is-verplicht'
 	),
 	propOverride?: Partial<ContentBlockField>
 ): ContentBlockField => ({
-	label: i18n.t('admin/content-block/helpers/generators/media-player___video-of-audio-item'),
+	label: tText('admin/content-block/helpers/generators/media-player___video-of-audio-item'),
 	editorType: ContentBlockEditor.ContentPicker,
 	validator: (value: string) => {
 		const errorArray: string[] = [];
@@ -186,7 +186,7 @@ export const ITEM_PICKER_FIELD = (
 export const CONTENT_TYPE_AND_LABELS_INPUT = (
 	propOverride?: Partial<ContentBlockField>
 ): ContentBlockField => ({
-	label: i18n.t('admin/content-block/helpers/generators/defaults___type-en-labels'),
+	label: tText('admin/content-block/helpers/generators/defaults___type-en-labels'),
 	editorType: ContentBlockEditor.ContentTypeAndLabelsPicker,
 	validator: undefined,
 	...propOverride,

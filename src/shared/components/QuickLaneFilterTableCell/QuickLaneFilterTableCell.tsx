@@ -1,7 +1,7 @@
 import React, { FC, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { isCollection, isItem } from '../../../quick-lane/quick-lane.helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { QUICK_LANE_COLUMNS } from '../../constants/quick-lane';
 import { formatDate, formatTimestamp } from '../../helpers';
 import { QuickLaneUrlObject } from '../../types';
@@ -18,15 +18,15 @@ const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 	data,
 	actions = () => null,
 }) => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 
-	const getItemTypeLabel = (data: Pick<QuickLaneUrlObject, 'content_label'>): string => {
-		let label: string = t('workspace/views/quick-lane-overview___unknown-type');
+	const getItemTypeLabel = (data: Pick<QuickLaneUrlObject, 'content_label'>): ReactNode => {
+		let label: ReactNode = tHtml('workspace/views/quick-lane-overview___unknown-type');
 
 		if (isCollection(data)) {
-			label = t('workspace/views/quick-lane-overview___collectie');
+			label = tHtml('workspace/views/quick-lane-overview___collectie');
 		} else if (isItem(data)) {
-			label = t('workspace/views/quick-lane-overview___item');
+			label = tHtml('workspace/views/quick-lane-overview___item');
 		}
 
 		return label;
@@ -41,7 +41,7 @@ const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 		case QUICK_LANE_COLUMNS.TITLE:
 			return data.title.length <= 0 ? (
 				<span className="u-text-muted">
-					{t('workspace/views/quick-lane-overview___geen')}
+					{tHtml('workspace/views/quick-lane-overview___geen')}
 				</span>
 			) : (
 				<QuickLaneLink id={data.id} label={data.title} />
