@@ -1,11 +1,11 @@
 import { Table, TableProps } from '@viaa/avo2-components';
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
 import { isMobileWidth } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
@@ -16,7 +16,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 	data,
 	emptyStateMessage,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: string) => (
 		<QuickLaneFilterTableCell id={id} data={data} />
@@ -29,7 +29,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 					[
 						{
 							id: QUICK_LANE_COLUMNS.TITLE,
-							label: t('workspace/views/quick-lane-overview___titel'),
+							label: tText('workspace/views/quick-lane-overview___titel'),
 							sortable: true,
 							dataType: TableColumnDataType.string,
 						},
@@ -39,7 +39,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 							: [
 									{
 										id: QUICK_LANE_COLUMNS.AUTHOR,
-										label: t(
+										label: tText(
 											'workspace/views/quick-lane-overview___aangemaakt-door'
 										),
 										sortable: true,
@@ -47,7 +47,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 									},
 									{
 										id: QUICK_LANE_COLUMNS.ORGANISATION,
-										label: t(
+										label: tText(
 											'workspace/views/quick-lane-overview___organisatie'
 										),
 										sortable: true,
@@ -55,7 +55,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 									},
 									{
 										id: QUICK_LANE_COLUMNS.CREATED_AT,
-										label: t(
+										label: tText(
 											'workspace/views/quick-lane-overview___aangemaakt-op'
 										),
 										sortable: true,

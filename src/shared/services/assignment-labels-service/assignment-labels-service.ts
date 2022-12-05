@@ -32,7 +32,7 @@ export class AssignmentLabelsService {
 				query: GetAssignmentLabelsByProfileIdDocument,
 				variables: {
 					profileId,
-					type,
+					filters: [...(type ? [{ type: { _eq: type } }] : [])],
 				},
 			});
 

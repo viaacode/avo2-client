@@ -1,9 +1,9 @@
 import { TagInfo } from '@viaa/avo2-components';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { CheckboxOption } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { GET_SPECIAL_USER_GROUPS } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
@@ -14,7 +14,7 @@ export const useUserGroupOptions = (
 	type: 'CheckboxOption' | 'TagInfo',
 	includeSpecialGroups: boolean
 ): UseUserGroupsTuple => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const [userGroupOptions, setUserGroupOptions] = useState<TagInfo[] | CheckboxOption[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -51,7 +51,7 @@ export const useUserGroupOptions = (
 			.catch((err) => {
 				console.error(new CustomError('Failed to get user group options', err));
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/user-groups/hooks/use-user-group-options___het-ophalen-van-de-gebruikergroep-opties-is-mislukt'
 					)
 				);
@@ -59,7 +59,7 @@ export const useUserGroupOptions = (
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [setIsLoading, setUserGroupOptions, includeSpecialGroups, type, t]);
+	}, [setIsLoading, setUserGroupOptions, includeSpecialGroups, type, tText]);
 
 	return [userGroupOptions, isLoading];
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers';
 import { OrganisationService } from '../services/organizations-service';
 import { ToastService } from '../services/toast-service';
@@ -13,7 +13,7 @@ export type BasicOrganisation = {
 type UseCompaniesTuple = [BasicOrganisation[], boolean];
 
 export const useCompanies = (onlyWithItems: boolean): UseCompaniesTuple => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [companies, setCompanies] = useState<BasicOrganisation[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -32,19 +32,21 @@ export const useCompanies = (onlyWithItems: boolean): UseCompaniesTuple => {
 			.catch((err) => {
 				console.error(new CustomError('Failed to get organisations from database', err));
 				ToastService.danger(
-					t('settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt')
+					tHtml(
+						'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt'
+					)
 				);
 			})
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [t, onlyWithItems]);
+	}, [tText, onlyWithItems]);
 
 	return [companies, isLoading];
 };
 
 export const useCompaniesWithUsers = (): UseCompaniesTuple => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [companies, setCompanies] = useState<BasicOrganisation[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -63,13 +65,15 @@ export const useCompaniesWithUsers = (): UseCompaniesTuple => {
 			.catch((err) => {
 				console.error(new CustomError('Failed to get organisations from database', err));
 				ToastService.danger(
-					t('settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt')
+					tHtml(
+						'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt'
+					)
 				);
 			})
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [t]);
+	}, [tText]);
 
 	return [companies, isLoading];
 };

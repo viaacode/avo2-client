@@ -9,7 +9,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { cloneDeep, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { NumberParam, QueryParamConfig, StringParam, useQueryParams } from 'use-query-params';
 
 import placeholderWide from '../../../../../assets/images/placeholder-wide.png';
@@ -21,9 +20,9 @@ import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { fetchWithLogout } from '../../../../../shared/helpers/fetch-with-logout';
 import { useDebounce } from '../../../../../shared/hooks';
 import { useScrollToSelector } from '../../../../../shared/hooks/scroll-to-selector';
+import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { ToastService } from '../../../../../shared/services/toast-service';
-import i18n from '../../../../../shared/translations/i18n';
 import { ContentPageLabelService } from '../../../../content-page-labels/content-page-label.service';
 import { ContentPageLabel } from '../../../../content-page-labels/content-page-label.types';
 import { ContentService } from '../../../../content/content.service';
@@ -79,16 +78,14 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 	showTitle = true,
 	showDescription = true,
 	showDate = false,
-	buttonLabel = i18n.t(
-		'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___lees-meer'
-	),
+	buttonLabel,
 	buttonAltTitle = '',
 	itemsPerPage = 20,
 	sortOrder = 'published_at__desc',
 	headerBackgroundColor,
 	renderLink,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const queryParamConfig: { [queryParamId: string]: QueryParamConfig<any> } = {
 		page: NumberParam,
@@ -195,7 +192,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 						)
 					);
 					ToastService.danger(
-						t(
+						tHtml(
 							'admin/content-block/components/wrappers/page-overview-wrapper/page-overview-wrapper___het-opgegeven-item-kon-niet-worden-gevonden'
 						) + queryParamsState.item
 					);
@@ -246,7 +243,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___het-ophalen-van-de-paginas-is-mislukt'
 				),
 			});
@@ -262,7 +259,7 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 		// Deep compare by value and not by ref
 		// https://github.com/facebook/react/issues/14476#issuecomment-471199055
 		JSON.stringify(contentTypeAndTabs.selectedLabels),
-		t,
+		tText,
 	]);
 
 	useEffect(() => {
@@ -324,16 +321,21 @@ const PageOverviewWrapper: FunctionComponent<PageOverviewWrapperProps> = ({
 				showTitle={showTitle}
 				showDescription={showDescription}
 				showDate={showDate}
-				dateString={t(
+				dateString={tText(
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___geplaatst-label-op-date'
 				)}
-				allLabel={t(
+				allLabel={tText(
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___alle'
 				)}
-				noLabel={t(
+				noLabel={tText(
 					'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___overige'
 				)}
-				buttonLabel={buttonLabel}
+				buttonLabel={
+					buttonLabel ||
+					tText(
+						'admin/content-block/components/page-overview-wrapper/page-overview-wrapper___lees-meer'
+					)
+				}
 				buttonAltTitle={buttonAltTitle}
 				focusedPage={focusedPage}
 				getLabelLink={(label: string) => {

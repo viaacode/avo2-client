@@ -12,7 +12,6 @@ import {
 } from '@viaa/avo2-components';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { UrlUpdateType } from 'use-query-params';
 
 import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
@@ -46,6 +45,7 @@ import {
 } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -74,7 +74,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	setTab,
 	setFilterState,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
 	const [isDraggableListModalOpen, setIsDraggableListModalOpen] = useState<boolean>(false);
 
@@ -181,7 +181,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 
 			default:
 				ToastService.danger(
-					t(
+					tHtml(
 						'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___knop-actie-niet-gekend'
 					)
 				);
@@ -200,13 +200,13 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					label={getMoreOptionsLabel()}
 					menuItems={[
 						{
-							label: t(
+							label: tText(
 								'collection/components/collection-or-bundle-edit___herorden-fragmenten'
 							),
 							id: MobileActionId.reorderBlocks,
 						},
 						{
-							label: t(
+							label: tText(
 								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
 							),
 							id: MobileActionId.viewAsTeacher,
@@ -223,7 +223,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				{!!assignmentResponse?.pupil_collection_blocks?.length && draggableListButton}
 				<Button
 					type="primary"
-					label={t(
+					label={tText(
 						'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
 					)}
 					onClick={onShowPreviewClicked}
@@ -243,7 +243,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 								control={control}
 								render={({ field, fieldState: { error, isTouched } }) => (
 									<FormGroup
-										label={t(
+										label={tText(
 											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
 										)}
 										className="c-form-group--full-width"
@@ -272,7 +272,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 
 										{error && isTouched && (
 											<span className="c-floating-error">
-												{t(
+												{tText(
 													'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
 												)}
 											</span>
@@ -289,28 +289,28 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					{!assignmentResponse?.pupil_collection_blocks?.length && (
 						<EmptyStateMessage
 							img={<PupilSvg />}
-							title={t(
+							title={tText(
 								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
 							)}
 							message={
 								<>
-									{t(
+									{tText(
 										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
 									)}{' '}
 									<Button
 										type="inline-link"
-										label={t(
+										label={tText(
 											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
 										)}
 										onClick={() =>
 											setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
 										}
 									/>{' '}
-									{t(
+									{tText(
 										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
 									)}{' '}
 									<a href="/hulp" target="_blank">
-										{t(
+										{tText(
 											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___hier'
 										)}
 									</a>

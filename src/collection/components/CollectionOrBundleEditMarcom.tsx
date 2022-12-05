@@ -18,15 +18,14 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { CheckboxDropdownModal } from '../../shared/components';
 import { App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
@@ -47,7 +46,7 @@ interface CollectionOrBundleEditMarcomProps {
 const CollectionOrBundleEditMarcom: FunctionComponent<
 	CollectionOrBundleEditMarcomProps & UserProps
 > = ({ collection, changeCollectionState }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
 
@@ -56,7 +55,6 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	const [marcomChannelName, setMarcomChannelName] = useState<string | null>();
 	const [marcomLink, setMarcomLink] = useState<string>('');
 	const [marcomEntries, setMarcomEntries] = useState<MarcomEntry[] | null>(null);
-	const [selectedChannelTypes, setSelectedChannelTypes] = useState<string[]>([]);
 
 	const fetchMarcomEntries = useCallback(async () => {
 		try {
@@ -68,12 +66,12 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-marcom___het-ophalen-van-de-marcom-entries-is-mislukt'
 				)
 			);
 		}
-	}, [collection.id, t, setMarcomEntries]);
+	}, [collection.id, tText, setMarcomEntries]);
 
 	useEffect(() => {
 		fetchMarcomEntries();
@@ -141,10 +139,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 								}
 							}}
 							size="small"
-							title={t(
+							title={tText(
 								'collection/components/collection-or-bundle-edit-marcom___verwijder-de-marcom-entry'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'collection/components/collection-or-bundle-edit-marcom___verwijder-de-marcom-entry'
 							)}
 							type="danger-hover"
@@ -187,7 +185,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			}
 			await fetchMarcomEntries();
 			ToastService.success(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-gelukt'
 				)
 			);
@@ -202,7 +200,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-mislukt'
 				)
 			);
@@ -222,10 +220,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			await fetchMarcomEntries();
 			ToastService.success(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-edit-marcom___de-communicatie-entry-is-verwijderd-voor-deze-collectie'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-edit-marcom___de-communicatie-entry-is-verwijderd-voor-de-bundel-en-alle-collecties-in-deze-bundel'
 					  )
 			);
@@ -236,7 +234,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-marcom___het-verwijderen-van-de-marcom-entry-is-mislukt'
 				)
 			);
@@ -244,46 +242,35 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	};
 
 	const getEmptyMarcomTableMessage = () => {
-		if (selectedChannelTypes?.length) {
-			// With filters
-			return t(
-				'collection/components/collection-or-bundle-edit-marcom___er-zijn-geen-marcom-entries-die-voldoen-aan-de-geselecteerde-filters'
-			);
-		}
 		if (isCollection) {
 			// Collection
 			// Without filters
-			return t(
+			return tText(
 				'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie'
 			);
 		} else {
 			// Bundle
 			// Without filters
-			return t(
+			return tText(
 				'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie'
 			);
 		}
 	};
 
-	const channelTypeOptions = GET_MARCOM_CHANNEL_TYPE_OPTIONS().map((option) => ({
-		id: option.value,
-		label: option.label,
-		checked: selectedChannelTypes.includes(option.value),
-	}));
 	return (
 		<>
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Form>
 						<BlockHeading type="h3">
-							{t(
+							{tText(
 								'collection/components/collection-or-bundle-edit-marcom___meest-recente-communicatie'
 							)}
 						</BlockHeading>
 						<Flex justify="between" spaced="wide">
 							<FlexItem>
 								<FormGroup
-									label={t(
+									label={tText(
 										'collection/components/collection-or-bundle-edit-marcom___datum-communicatie'
 									)}
 								>
@@ -292,7 +279,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</FlexItem>
 							<FlexItem>
 								<FormGroup
-									label={t(
+									label={tText(
 										'collection/components/collection-or-bundle-edit-marcom___kanaal-type'
 									)}
 								>
@@ -307,7 +294,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</FlexItem>
 							<FlexItem>
 								<FormGroup
-									label={t(
+									label={tText(
 										'collection/components/collection-or-bundle-edit-marcom___kanaal-naam'
 									)}
 								>
@@ -322,7 +309,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</FlexItem>
 							<FlexItem>
 								<FormGroup
-									label={t(
+									label={tText(
 										'collection/components/collection-or-bundle-edit-marcom___link'
 									)}
 								>
@@ -335,7 +322,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							<FlexItem>
 								<FormGroup label=" ">
 									<Button
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-marcom___toevoegen'
 										)}
 										onClick={addMarcomEntry}
@@ -346,32 +333,14 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 						</Flex>
 						<Spacer margin={['top-extra-large', 'bottom-large']}>
 							<BlockHeading type="h3" className="u-padding-top u-padding-bottom">
-								{t(
+								{tText(
 									'collection/components/collection-or-bundle-edit-marcom___eerdere-communicatie'
 								)}
 							</BlockHeading>
 							{marcomEntries ? (
 								<>
-									<CheckboxDropdownModal
-										label={t(
-											'collection/components/collection-or-bundle-edit-marcom___communicatie-type'
-										)}
-										id="communication_type"
-										options={channelTypeOptions}
-										onChange={(selected) => {
-											setSelectedChannelTypes(selected);
-										}}
-									/>
 									<Table
-										data={
-											selectedChannelTypes?.length
-												? marcomEntries.filter((entry) =>
-														selectedChannelTypes.includes(
-															entry.channel_type || ''
-														)
-												  )
-												: marcomEntries
-										}
+										data={marcomEntries}
 										columns={GET_MARCOM_ENTRY_TABLE_COLUMNS(isCollection)}
 										renderCell={renderMarcomTableCell as any}
 										emptyStateMessage={getEmptyMarcomTableMessage()}
@@ -387,7 +356,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							)}
 						</Spacer>
 						<FormGroup
-							label={t(
+							label={tText(
 								'collection/components/collection-or-bundle-edit-marcom___opmerkingen'
 							)}
 						>

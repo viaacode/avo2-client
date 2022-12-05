@@ -2,6 +2,7 @@ import { Avo } from '@viaa/avo2-types';
 import { compact, get, sortBy } from 'lodash-es';
 
 import { CustomError } from '../../../shared/helpers';
+import { tHtml } from '../../../shared/helpers/translate';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ContentPageWithBlocksDb } from '../../content/content.types';
 import { ContentBlockConfig } from '../../shared/types';
@@ -52,7 +53,11 @@ export const parseContentBlocks = (
 						CONTENT_BLOCK_CONFIG_MAP,
 					})
 				);
-				ToastService.danger('Er ging iets mis bij het laden van de pagina');
+				ToastService.danger(
+					tHtml(
+						'admin/content-block/helpers/parsers___er-ging-iets-mis-bij-het-laden-van-de-pagina'
+					)
+				);
 				return null;
 			}
 			const cleanConfig = configForType(contentBlock.position);

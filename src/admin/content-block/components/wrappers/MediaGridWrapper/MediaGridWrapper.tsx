@@ -9,7 +9,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -25,6 +24,7 @@ import { buildLink, CustomError, formatDate, isMobileWidth } from '../../../../.
 import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
 import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
+import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { ToastService } from '../../../../../shared/services/toast-service';
@@ -70,7 +70,7 @@ const MediaGridWrapper: FunctionComponent<
 	user,
 	renderLink,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [resolvedResults, setResolvedResults] = useState<ResolvedItemOrCollection[] | null>(null);
@@ -145,7 +145,7 @@ const MediaGridWrapper: FunctionComponent<
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/content-block/components/wrappers/media-grid-wrapper/media-grid-wrapper___het-laden-van-deze-media-tegel-grid-is-mislukt'
 				),
 				actionButtons: [],
@@ -161,7 +161,7 @@ const MediaGridWrapper: FunctionComponent<
 		lastSearchQueryLimit,
 		setResolvedResults,
 		setLoadingInfo,
-		t,
+		tText,
 	]);
 
 	useEffect(() => {
@@ -265,8 +265,8 @@ const MediaGridWrapper: FunctionComponent<
 			setActiveItemBookmarkStatus(!activeItemBookmarkStatus);
 			ToastService.success(
 				activeItemBookmarkStatus
-					? t('collection/views/collection-detail___de-bladwijzer-is-verwijderd')
-					: t('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
+					? tHtml('collection/views/collection-detail___de-bladwijzer-is-verwijderd')
+					: tHtml('collection/views/collection-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {
 			console.error(
@@ -279,8 +279,8 @@ const MediaGridWrapper: FunctionComponent<
 			);
 			ToastService.danger(
 				activeItemBookmarkStatus
-					? t('item/views/item-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
-					: t('item/views/item-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
+					? tHtml('item/views/item-detail___het-verwijderen-van-de-bladwijzer-is-mislukt')
+					: tHtml('item/views/item-detail___het-aanmaken-van-de-bladwijzer-is-mislukt')
 			);
 		}
 	};
@@ -299,8 +299,8 @@ const MediaGridWrapper: FunctionComponent<
 		}
 		return defaultRenderBookmarkButton({
 			active: activeItemBookmarkStatus,
-			ariaLabel: t('item/views/item___toggle-bladwijzer'),
-			title: t('item/views/item___toggle-bladwijzer'),
+			ariaLabel: tText('item/views/item___toggle-bladwijzer'),
+			title: tText('item/views/item___toggle-bladwijzer'),
 			onClick: toggleBookmark,
 		});
 	};

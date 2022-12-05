@@ -1,6 +1,6 @@
 import { isEmpty, isNil } from 'lodash-es';
 
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -27,26 +27,26 @@ export const INITIAL_KLAAR_BLOCK_STATE = (): DefaultContentBlockState =>
 
 export const KLAAR_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/klaar___klaar'),
+	name: tText('admin/content-block/helpers/generators/klaar___klaar'),
 	type: ContentBlockType.Klaar,
 	components: {
-		name: i18n.t('admin/content-block/helpers/generators/klaar___klaar-titel'),
+		name: tText('admin/content-block/helpers/generators/klaar___klaar-titel'),
 		limits: {
 			max: 3,
 		},
 		state: INITIAL_KLAAR_COMPONENTS_STATE(),
 		fields: {
 			titles: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/klaar___titel-is-verplicht'),
+				tText('admin/content-block/helpers/generators/klaar___titel-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/klaar___titel'),
+					label: tText('admin/content-block/helpers/generators/klaar___titel'),
 					editorType: ContentBlockEditor.TextInput,
 					repeat: {
 						defaultState: '',
-						addButtonLabel: i18n.t(
+						addButtonLabel: tText(
 							'admin/content-block/helpers/generators/klaar___voeg-titel-toe'
 						),
-						deleteButtonLabel: i18n.t(
+						deleteButtonLabel: tText(
 							'admin/content-block/helpers/generators/klaar___verwijder-titel'
 						),
 					},
@@ -60,7 +60,7 @@ export const KLAAR_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 
 					if (isNil(value) || isEmpty(value)) {
 						errorArray.push(
-							i18n.t(
+							tText(
 								'admin/content-block/helpers/generators/klaar___datum-is-verplicht'
 							)
 						);

@@ -8,12 +8,13 @@ import {
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
-import './AssignmentBlockTypeSearch.scss';
 import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionFragmentRichText } from '../../../../collection/components';
+import useTranslation from '../../../../shared/hooks/useTranslation';
+
+import './AssignmentBlockTypeSearch.scss';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: BaseBlockWithMeta;
@@ -31,13 +32,13 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	pastDeadline,
 	className,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	return (
 		<div className={classnames('c-assignment-block-type-search', className)}>
 			<Flex orientation="vertical">
 				<BlockHeading type="h2">
-					{t(
+					{tHtml(
 						'shared/components/block-list/blocks/assignment-block-type-search___zoekoefening'
 					)}
 				</BlockHeading>
@@ -46,7 +47,7 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 				/>
 				<Button
 					type="primary"
-					label={t(
+					label={tText(
 						'shared/components/block-list/blocks/assignment-block-type-search___start-met-zoeken'
 					)}
 					onClick={() => {
@@ -59,7 +60,7 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 				{showCollectionButton && (
 					<Button
 						type="secondary"
-						label={t(
+						label={tText(
 							'shared/components/block-list/blocks/assignment-block-type-search___naar-mijn-collectie'
 						)}
 						onClick={() => {

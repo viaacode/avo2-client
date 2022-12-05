@@ -17,7 +17,8 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 	max-width: 100%;
 	width: 100%;
 
-	.a-flowplayer__text {
+	.a-flowplayer__text,
+	+ .a-block-image__annotation p {
 		color: $color-gray-200;
 	}
 

@@ -1,8 +1,6 @@
+import { FlowPlayer, FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
 import {
 	AspectRatioWrapper,
-	FlowPlayer,
-	FlowplayerSourceItem,
-	FlowplayerSourceList,
 	Icon,
 	MediaCard,
 	MediaCardThumbnail,
@@ -11,8 +9,8 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
@@ -25,7 +23,6 @@ import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service';
-import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
 import { ToastService } from '../../services/toast-service';
@@ -47,6 +44,8 @@ export type FlowPlayerWrapperProps = {
 	external_id?: string;
 	issuedDate?: string;
 	item?: Avo.Item.Item;
+	cuePointsVideo?: CuePoints;
+	cuePointsLabel?: CuePoints;
 	onEnded?: () => void;
 	onPlay?: (playingSrc: string) => void;
 	organisationLogo?: string;
@@ -62,12 +61,22 @@ export type FlowPlayerWrapperProps = {
  * @constructor
  */
 const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> = (props) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
 
 	const [triggeredForUrl, setTriggeredForUrl] = useState<Record<string, boolean>>({});
+
+	// AVO-2241:
+	// The flowplayer play event is created from outside react, so to be able to update the state, we need to use a ref.
+	// see: https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
+	const triggeredForUrlRef = React.useRef(triggeredForUrl);
+	const setTriggeredForUrlRef = (data: Record<string, boolean>) => {
+		triggeredForUrlRef.current = data;
+		setTriggeredForUrl(data);
+	};
+
 	const [clickedThumbnail, setClickedThumbnail] = useState<boolean>(false);
 	const [src, setSrc] = useState<string | FlowplayerSourceList | undefined>(props.src);
 
@@ -94,12 +103,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
 				)
 			);
 		}
-	}, [item, setSrc, t]);
+	}, [item, setSrc, tText]);
 
 	useEffect(() => {
 		if (props.autoplay && item) {
@@ -108,19 +117,10 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	}, [props.autoplay, item, initFlowPlayer]);
 
 	const handlePlay = (playingSrc: string) => {
-		trackEvents(
-			{
-				object: props.external_id || '',
-				object_type: 'item',
-				action: 'play',
-			},
-			props.user
-		);
-
 		// Only trigger once per video
-		if (item && item.uid && !triggeredForUrl[playingSrc]) {
+		if (item && item.uid && !triggeredForUrlRef.current[playingSrc]) {
 			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch(
-				(err: any) => {
+				(err: unknown) => {
 					console.error(
 						new CustomError('Failed to track item play event', err, {
 							itemUuid: item.uid,
@@ -132,8 +132,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 			if (props.onPlay) {
 				props.onPlay(playingSrc);
 			}
-
-			setTriggeredForUrl({
+			setTriggeredForUrlRef({
 				...triggeredForUrl,
 				[playingSrc]: true,
 			});
@@ -202,7 +201,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 			if ((src as FlowplayerSourceList).items.some((entry) => entry.src.includes('.m3u8'))) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/flow-player-wrapper/flow-player-wrapper___bepaalde-videos-in-de-playlist-kunnen-niet-worden-afgespeeld-probeer-een-andere-browser'
 					)
 				);
@@ -217,7 +216,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 			if ((src as string).endsWith('.m3u8')) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
 					)
 				);
@@ -228,8 +227,8 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	};
 
 	const [start, end]: [number | null, number | null] = getValidStartAndEnd(
-		props.cuePoints?.start,
-		props.cuePoints?.end,
+		props.cuePointsVideo?.start,
+		props.cuePointsVideo?.end,
 		toSeconds(item?.duration)
 	);
 
@@ -261,19 +260,19 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						speed={{
 							options: [0.5, 0.75, 1, 1.25, 1.5],
 							labels: [
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___0-5'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___0-75'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___normaal'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___1-25'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___1-5'
 								),
 							],

@@ -18,10 +18,9 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
-import Html from '../../../shared/components/Html/Html';
 import { ToastService } from '../../../shared/services/toast-service';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ContentPageInfo } from '../content.types';
 import { getPublishedState } from '../helpers/get-published-state';
 
@@ -40,7 +39,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 	isOpen,
 	contentPage,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [selectedOption, setSelectedOption] = useState<publishOption>(
@@ -71,7 +70,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 			closeModal(newContent);
 		} catch (err) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content/components/share-content-page-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'
 				)
 			);
@@ -96,7 +95,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
+			title={tText(
 				'admin/content/components/share-content-page-modal___maak-deze-content-pagina-publiek'
 			)}
 			size="large"
@@ -106,32 +105,34 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 		>
 			<ModalBody>
 				<p>
-					{t(
+					{tText(
 						'admin/content/components/share-content-page-modal___bepaald-in-hoevere-je-pagina-zichtbaar-is-voor-andere-gebruikers'
 					)}
 				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">
 						<BlockHeading className="u-m-0" type="h4">
-							{t('admin/content/components/share-content-page-modal___zichtbaarheid')}
+							{tText(
+								'admin/content/components/share-content-page-modal___zichtbaarheid'
+							)}
 						</BlockHeading>
 					</Spacer>
 					<RadioButtonGroup
 						options={[
 							{
-								label: t(
+								label: tText(
 									'admin/content/components/share-content-page-modal___prive'
 								),
 								value: 'private',
 							},
 							{
-								label: t(
+								label: tText(
 									'admin/content/components/share-content-page-modal___openbaar'
 								),
 								value: 'public',
 							},
 							{
-								label: t(
+								label: tText(
 									'admin/content/components/share-content-page-modal___tijdsgebonden'
 								),
 								value: 'timebound',
@@ -144,7 +145,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 				<Spacer margin="left-large">
 					<Form>
 						<FormGroup
-							label={t(
+							label={tText(
 								'admin/content/components/share-content-page-modal___publiceren-op'
 							)}
 						>
@@ -156,7 +157,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 							/>
 						</FormGroup>
 						<FormGroup
-							label={t(
+							label={tText(
 								'admin/content/components/share-content-page-modal___depubliceren-op'
 							)}
 						>
@@ -173,7 +174,7 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 				</Spacer>
 
 				<FormGroup
-					label={t(
+					label={tText(
 						'admin/content/components/publish-content-page-modal___display-datum-optioneel'
 					)}
 					className="p-content-page-publish-modal__display-date"
@@ -188,12 +189,9 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 								<Icon className="a-info-icon" name="info" size="small" />
 							</TooltipTrigger>
 							<TooltipContent>
-								<Html
-									content={t(
-										'admin/content/components/publish-content-page-modal___tooltip-display-date'
-									)}
-									sanitizePreset={'basic'}
-								/>
+								{tHtml(
+									'admin/content/components/publish-content-page-modal___tooltip-display-date'
+								)}
 							</TooltipContent>
 						</Tooltip>
 					</Spacer>
@@ -205,14 +203,14 @@ const PublishContentPageModal: FunctionComponent<PublishContentPageModalProps> =
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t(
+									label={tText(
 										'admin/content/components/share-content-page-modal___annuleren'
 									)}
 									onClick={() => closeModal()}
 								/>
 								<Button
 									type="primary"
-									label={t(
+									label={tText(
 										'admin/content/components/share-content-page-modal___opslaan'
 									)}
 									onClick={onSave}

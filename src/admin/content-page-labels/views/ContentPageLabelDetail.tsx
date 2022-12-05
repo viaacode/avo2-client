@@ -1,6 +1,5 @@
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -12,6 +11,7 @@ import {
 	GetContentPageLabelByIdQuery,
 } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, navigateToContentType } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
@@ -27,7 +27,7 @@ import { ContentPageLabel } from '../content-page-label.types';
 type ContentPageLabelEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ history, match }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// Hooks
 	const [contentPageLabelInfo, setContentPageLabelInfo] = useState<ContentPageLabel | null>(null);
@@ -46,7 +46,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 				setLoadingInfo({
 					state: 'error',
 					icon: 'search',
-					message: t(
+					message: tText(
 						'admin/content-page-labels/views/content-page-label-detail___deze-content-pagina-label-werd-niet-gevonden'
 					),
 				});
@@ -71,12 +71,12 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/content-page-labels/views/content-page-label-detail___het-ophalen-van-de-content-pagina-label-is-mislukt'
 				),
 			});
 		}
-	}, [setLoadingInfo, setContentPageLabelInfo, t, match.params.id]);
+	}, [setLoadingInfo, setContentPageLabelInfo, tText, match.params.id]);
 
 	useEffect(() => {
 		initOrFetchContentPageLabel();
@@ -112,13 +112,13 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 						{renderSimpleDetailRows(contentPageLabelInfo, [
 							[
 								'label',
-								t(
+								tText(
 									'admin/content-page-labels/views/content-page-label-detail___label'
 								),
 							],
 							[
 								'content_type',
-								t(
+								tText(
 									'admin/content-page-labels/views/content-page-label-detail___type'
 								),
 							],
@@ -132,18 +132,20 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 							) : (
 								'-'
 							),
-							t('admin/content-page-labels/views/content-page-label-detail___link')
+							tText(
+								'admin/content-page-labels/views/content-page-label-detail___link'
+							)
 						)}
 						{renderDateDetailRows(contentPageLabelInfo, [
 							[
 								'created_at',
-								t(
+								tText(
 									'admin/content-page-labels/views/content-page-label-detail___aangemaakt-op'
 								),
 							],
 							[
 								'updated_at',
-								t(
+								tText(
 									'admin/content-page-labels/views/content-page-label-detail___aangepast-op'
 								),
 							],
@@ -162,7 +164,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 		return (
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW)}
-				pageTitle={t(
+				pageTitle={tText(
 					'admin/content-page-labels/views/content-page-label-detail___content-pagina-label-details'
 				)}
 				size="large"
@@ -171,13 +173,13 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 					<ButtonToolbar>
 						<Button
 							type="primary"
-							label={t(
+							label={tText(
 								'admin/content-page-labels/views/content-page-label-detail___bewerken'
 							)}
-							title={t(
+							title={tText(
 								'admin/content-page-labels/views/content-page-label-detail___bewerk-deze-content-pagina-label'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/content-page-labels/views/content-page-label-detail___bewerk-deze-content-pagina-label'
 							)}
 							onClick={handleEditClick}
@@ -194,14 +196,14 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t(
+						tText(
 							'admin/content-page-labels/views/content-page-label-detail___content-page-label-beheer-detail-pagina-titel'
 						)
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'admin/content-page-labels/views/content-page-label-detail___content-page-label-beheer-detail-pagina-beschrijving'
 					)}
 				/>

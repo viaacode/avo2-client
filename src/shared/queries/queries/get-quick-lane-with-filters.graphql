@@ -1,9 +1,5 @@
 query getQuickLanesWithFilters(
 	$filterString: String
-	$createdAtGte: timestamptz
-	$createdAtLte: timestamptz
-	$updatedAtGte: timestamptz
-	$updatedAtLte: timestamptz
 	$filters: [app_quick_lanes_bool_exp!]
 	$orderBy: [app_quick_lanes_order_by!]
 	$limit: Int = 100
@@ -25,8 +21,6 @@ query getQuickLanesWithFilters(
 						}
 					]
 				}
-				{ created_at: { _gte: $createdAtGte, _lte: $createdAtLte } }
-				{ updated_at: { _gte: $updatedAtGte, _lte: $updatedAtLte } }
 				{ _and: $filters }
 			]
 		}
@@ -71,8 +65,6 @@ query getQuickLanesWithFilters(
 						}
 					]
 				}
-				{ created_at: { _gte: $createdAtGte, _lte: $createdAtLte } }
-				{ updated_at: { _gte: $updatedAtGte, _lte: $updatedAtLte } }
 				{ _and: $filters }
 			]
 		}

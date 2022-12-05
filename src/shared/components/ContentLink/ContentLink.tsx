@@ -1,12 +1,12 @@
-import { DutchContentType, Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
+import { Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
 import { toEnglishContentType } from '../../../collection/collection.types';
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 type ParentType = Pick<Avo.Assignment.Assignment, 'content_label' | 'content_id'>; // TODO switch to assignments v2
 type ContentType = Avo.Assignment.Content | null;
@@ -17,13 +17,13 @@ export interface ContentLinkProps {
 }
 
 export const ContentLink: FunctionComponent<ContentLinkProps> = ({ parent, content }) => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 
 	const dutchLabel = get(
 		content,
 		'type.label',
 		(parent.content_label || '').toLowerCase()
-	) as DutchContentType;
+	) as Avo.ContentType.Dutch;
 
 	const linkContent = (
 		<div className="c-box c-box--padding-small">
@@ -41,7 +41,7 @@ export const ContentLink: FunctionComponent<ContentLinkProps> = ({ parent, conte
 						<p>
 							{get(content, 'title') ||
 								get(content, 'description') ||
-								t('assignment/assignment___de-opdracht-inhoud-is-verwijderd')}
+								tHtml('assignment/assignment___de-opdracht-inhoud-is-verwijderd')}
 						</p>
 					</div>
 				</FlexItem>
