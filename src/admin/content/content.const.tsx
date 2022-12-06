@@ -17,7 +17,11 @@ export const GET_CONTENT_PAGE_OVERVIEW_COLUMNS: (
 	contentTypeOptions: CheckboxOption[],
 	userGroupOptions: CheckboxOption[],
 	contentPageLabelOptions: CheckboxOption[]
-) => FilterableColumn[] = (contentTypeOptions, userGroupOptions, contentPageLabelOptions) => [
+) => FilterableColumn<ContentOverviewTableCols>[] = (
+	contentTypeOptions,
+	userGroupOptions,
+	contentPageLabelOptions
+) => [
 	{
 		id: 'title',
 		label: tText('admin/content/content___titel'),
@@ -141,16 +145,16 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 };
 
 export const CONTENT_PATH = {
-	CONTENT_PAGE_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}`,
-	CONTENT_PAGE_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/${ROUTE_PARTS.create}`,
-	CONTENT_PAGE_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id`,
-	CONTENT_PAGE_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/:id/${ROUTE_PARTS.edit}`,
-	PAGES: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=PAGINA`,
-	NEWS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=NIEUWS_ITEM`,
-	FAQS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=FAQ_ITEM`,
-	SCREENCASTS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=SCREENCAST`,
-	PROJECTS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=PROJECT`,
-	OVERVIEWS: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}?content_type=OVERZICHT`,
+	CONTENT_PAGE_OVERVIEW: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}`,
+	CONTENT_PAGE_CREATE: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}/${ROUTE_PARTS.create}`,
+	CONTENT_PAGE_DETAIL: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}/:id`,
+	CONTENT_PAGE_EDIT: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}/:id/${ROUTE_PARTS.edit}`,
+	PAGES: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}?content_type=PAGINA`,
+	NEWS: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}?content_type=NIEUWS_ITEM`,
+	FAQS: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}?content_type=FAQ_ITEM`,
+	SCREENCASTS: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}?content_type=SCREENCAST`,
+	PROJECTS: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}?content_type=PROJECT`,
+	OVERVIEWS: `/${ROUTE_PARTS.admin}/old/${ROUTE_PARTS.content}?content_type=OVERZICHT`,
 };
 
 export const ITEMS_PER_PAGE = 10;

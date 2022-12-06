@@ -171,7 +171,7 @@ export const GET_COLLECTION_BULK_ACTIONS = (): CollectionBulkActionOption[] => {
 	];
 };
 
-const getCollectionTitleColumn = (): FilterableColumn => ({
+const getCollectionTitleColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'title',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___title'),
 	sortable: true,
@@ -179,7 +179,7 @@ const getCollectionTitleColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.string,
 });
 
-const getCollectionAuthorColumn = (): FilterableColumn => ({
+const getCollectionAuthorColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'owner_profile_id',
 	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___auteur'),
 	sortable: true,
@@ -191,7 +191,7 @@ const getCollectionAuthorColumn = (): FilterableColumn => ({
 const getCollectionAuthorUserGroupColumn = (
 	userGroupOptions: CheckboxOption[],
 	visibleByDefault: boolean
-): FilterableColumn => ({
+): FilterableColumn<CollectionTableCols> => ({
 	visibleByDefault,
 	id: 'author_user_group',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___auteur-rol'),
@@ -203,7 +203,7 @@ const getCollectionAuthorUserGroupColumn = (
 	dataType: TableColumnDataType.string,
 });
 
-const getCollectionLastUpdatedByColumn = (): FilterableColumn => ({
+const getCollectionLastUpdatedByColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'last_updated_by_profile',
 	label: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
@@ -213,7 +213,7 @@ const getCollectionLastUpdatedByColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.string,
 });
 
-const getCollectionCreatedAtColumn = (): FilterableColumn => ({
+const getCollectionCreatedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'created_at',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___aangemaakt-op'),
 	sortable: true,
@@ -223,7 +223,7 @@ const getCollectionCreatedAtColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
-const getCollectionUpdatedAtColumn = (): FilterableColumn => ({
+const getCollectionUpdatedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'updated_at',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___aangepast-op'),
 	sortable: true,
@@ -233,7 +233,7 @@ const getCollectionUpdatedAtColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
-const getCollectionIsPublicColumn = (): FilterableColumn => ({
+const getCollectionIsPublicColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'is_public',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___publiek'),
 	sortable: true,
@@ -242,7 +242,9 @@ const getCollectionIsPublicColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.boolean,
 });
 
-const getCollectionLabelsColumn = (collectionLabelOptions: CheckboxOption[]): FilterableColumn => ({
+const getCollectionLabelsColumn = (
+	collectionLabelOptions: CheckboxOption[]
+): FilterableColumn<CollectionTableCols> => ({
 	id: 'collection_labels',
 	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___labels'),
 	sortable: false,
@@ -253,7 +255,7 @@ const getCollectionLabelsColumn = (collectionLabelOptions: CheckboxOption[]): Fi
 	} as CheckboxDropdownModalProps,
 });
 
-const getCollectionIsCopyColumn = (): FilterableColumn => ({
+const getCollectionIsCopyColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'is_copy',
 	label: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___kopie'),
 	sortable: false,
@@ -261,7 +263,7 @@ const getCollectionIsCopyColumn = (): FilterableColumn => ({
 	filterType: 'BooleanCheckboxDropdown',
 });
 
-const getCollectionManagedColumn = (): FilterableColumn => ({
+const getCollectionManagedColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'is_managed',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___redactie'),
 	sortable: true,
@@ -270,7 +272,7 @@ const getCollectionManagedColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.boolean,
 });
 
-const getCollectionViewsColumn = (): FilterableColumn => ({
+const getCollectionViewsColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'views',
 	tooltip: tText('admin/collections-or-bundles/collections-or-bundles___bekeken'),
 	icon: 'eye',
@@ -279,7 +281,7 @@ const getCollectionViewsColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.number,
 });
 
-const getCollectionBookmarksColumn = (): FilterableColumn => ({
+const getCollectionBookmarksColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'bookmarks',
 	tooltip: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
@@ -290,7 +292,7 @@ const getCollectionBookmarksColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.number,
 });
 
-const getCollectionCopiesColumn = (): FilterableColumn => ({
+const getCollectionCopiesColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'copies',
 	tooltip: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-gekopieerd'
@@ -301,7 +303,9 @@ const getCollectionCopiesColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.number,
 });
 
-const getCollectionInBundleColumn = (isCollection: boolean): FilterableColumn[] => {
+const getCollectionInBundleColumn = (
+	isCollection: boolean
+): FilterableColumn<CollectionTableCols>[] => {
 	if (isCollection) {
 		return [
 			{
@@ -319,7 +323,9 @@ const getCollectionInBundleColumn = (isCollection: boolean): FilterableColumn[] 
 	return [];
 };
 
-const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColumn[] => {
+const getCollectionInAssignmentColumn = (
+	isCollection: boolean
+): FilterableColumn<CollectionTableCols>[] => {
 	if (isCollection) {
 		return [
 			{
@@ -337,7 +343,7 @@ const getCollectionInAssignmentColumn = (isCollection: boolean): FilterableColum
 	return [];
 };
 
-const getCollectionQuickLanesColumn = (): FilterableColumn => ({
+const getCollectionQuickLanesColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'quick_lane_links',
 	tooltip: tText(
 		'admin/collections-or-bundles/collections-or-bundles___aantal-keer-gedeeld-met-leerlingen'
@@ -348,7 +354,9 @@ const getCollectionQuickLanesColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.number,
 });
 
-const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
+const getCollectionSubjectsColumn = (
+	subjects: string[]
+): FilterableColumn<CollectionTableCols> => ({
 	id: 'subjects',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___vakken'),
 	sortable: false,
@@ -359,7 +367,9 @@ const getCollectionSubjectsColumn = (subjects: string[]): FilterableColumn => ({
 	} as CheckboxDropdownModalProps,
 });
 
-const getCollectionEducationLevelsColumn = (educationLevels: string[]): FilterableColumn => ({
+const getCollectionEducationLevelsColumn = (
+	educationLevels: string[]
+): FilterableColumn<CollectionTableCols> => ({
 	id: 'education_levels',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'),
 	sortable: false,
@@ -372,7 +382,7 @@ const getCollectionEducationLevelsColumn = (educationLevels: string[]): Filterab
 
 const getCollectionOrganisationColumn = (
 	organisationOptions: CheckboxOption[]
-): FilterableColumn => ({
+): FilterableColumn<CollectionTableCols> => ({
 	id: 'organisation',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___organisatie'),
 	sortable: false,
@@ -383,7 +393,7 @@ const getCollectionOrganisationColumn = (
 	} as CheckboxDropdownModalProps,
 });
 
-const getActualisationStatusColumn = (): FilterableColumn => ({
+const getActualisationStatusColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'actualisation_status',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___status'),
 	sortable: true,
@@ -395,7 +405,7 @@ const getActualisationStatusColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.string,
 });
 
-const getActualisationLastActualisedAtColumn = (): FilterableColumn => ({
+const getActualisationLastActualisedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'actualisation_last_actualised_at',
 	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___datum-laatste-actualisatie'
@@ -406,7 +416,7 @@ const getActualisationLastActualisedAtColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
-const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
+const getActualisationStatusValidUntilColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'actualisation_status_valid_until',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___vervaldatum'),
 	sortable: true,
@@ -419,7 +429,7 @@ const getActualisationStatusValidUntilColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
-const getActualisationApprovedAtColumn = (): FilterableColumn => ({
+const getActualisationApprovedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'actualisation_approved_at',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
@@ -428,7 +438,7 @@ const getActualisationApprovedAtColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
-const getActualisationResponsibleProfileColumn = (): FilterableColumn => ({
+const getActualisationResponsibleProfileColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'actualisation_manager',
 	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___actualisatie-verantwoordelijke'
@@ -439,7 +449,7 @@ const getActualisationResponsibleProfileColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.string,
 });
 
-const getQualityCheckLanguageCheckColumn = (): FilterableColumn => ({
+const getQualityCheckLanguageCheckColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'quality_check_language_check',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___taalcheck'),
 	sortable: true,
@@ -453,7 +463,7 @@ const getQualityCheckLanguageCheckColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.boolean,
 });
 
-const getQualityCheckQualityCheckColumn = (): FilterableColumn => ({
+const getQualityCheckQualityCheckColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'quality_check_quality_check',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___kwaliteitscontrole'),
 	sortable: true,
@@ -467,7 +477,7 @@ const getQualityCheckQualityCheckColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.boolean,
 });
 
-const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
+const getQualityCheckApprovedAtColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'quality_check_approved_at',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___datum-goedkeuring'),
 	sortable: true,
@@ -477,7 +487,7 @@ const getQualityCheckApprovedAtColumn = (): FilterableColumn => ({
 
 const getMarcomLastCommunicationChannelTypeColumn = (
 	channelTypeOptions: CheckboxOption[]
-): FilterableColumn => ({
+): FilterableColumn<CollectionTableCols> => ({
 	id: 'marcom_last_communication_channel_type',
 	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-type'
@@ -493,7 +503,7 @@ const getMarcomLastCommunicationChannelTypeColumn = (
 
 const getMarcomLastCommunicationChannelNameColumn = (
 	channelNameOptions: CheckboxOption[]
-): FilterableColumn => ({
+): FilterableColumn<CollectionTableCols> => ({
 	id: 'marcom_last_communication_channel_name',
 	label: tText(
 		'admin/collections-or-bundles/collections-or-bundles___laatste-communicatie-kanaal-naam'
@@ -508,7 +518,7 @@ const getMarcomLastCommunicationChannelNameColumn = (
 	dataType: TableColumnDataType.string,
 });
 
-const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
+const getMarcomLastCommunicationAtColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'marcom_last_communication_at',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___laatste-communicatiedatum'),
 	sortable: true,
@@ -516,7 +526,7 @@ const getMarcomLastCommunicationAtColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.dateTime,
 });
 
-const getMarcomKlascementColumn = (): FilterableColumn => ({
+const getMarcomKlascementColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'marcom_klascement',
 	label: tText('admin/collections-or-bundles/collections-or-bundles___klas-cement'),
 	sortable: true,
@@ -524,7 +534,7 @@ const getMarcomKlascementColumn = (): FilterableColumn => ({
 	dataType: TableColumnDataType.boolean,
 });
 
-const getMarcomLastUpdatedByColumn = (): FilterableColumn => ({
+const getMarcomLastUpdatedByColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'last_updated_by_profile',
 	label: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___laatste-bewerkt-door'
@@ -541,7 +551,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	subjects: string[],
 	educationLevels: string[],
 	organisations: CheckboxOption[]
-): FilterableColumn[] => [
+): FilterableColumn<CollectionTableCols>[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
 	getCollectionAuthorUserGroupColumn(userGroupOptions, true),
@@ -576,7 +586,7 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 	subjects: string[],
 	educationLevels: string[],
 	organisations: CheckboxOption[]
-): FilterableColumn[] => [
+): FilterableColumn<CollectionTableCols>[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
 	getCollectionAuthorUserGroupColumn(userGroupOptions, false),
@@ -608,7 +618,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 	subjects: string[],
 	educationLevels: string[],
 	organisations: CheckboxOption[]
-): FilterableColumn[] => [
+): FilterableColumn<CollectionTableCols>[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
 	getCollectionAuthorUserGroupColumn(userGroupOptions, false),
@@ -640,7 +650,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	educationLevels: string[],
 	organisations: CheckboxOption[],
 	channelTypeOptions: CheckboxOption[]
-): FilterableColumn[] => [
+): FilterableColumn<CollectionTableCols>[] => [
 	getCollectionTitleColumn(),
 	getCollectionAuthorColumn(),
 	getCollectionAuthorUserGroupColumn(userGroupOptions, false),

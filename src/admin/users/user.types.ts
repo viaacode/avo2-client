@@ -1,3 +1,5 @@
+import { UserTempAccess } from '@viaa/avo2-types/types/user';
+
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type UserOverviewTableCol =
@@ -133,10 +135,4 @@ export interface UserSummaryView {
 			ldap_description: string;
 		};
 	}[];
-}
-
-// TODO: use typings version
-export interface UserTempAccess {
-	from: string | null;
-	until: string | null;
 }
