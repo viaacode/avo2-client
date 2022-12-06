@@ -128,7 +128,8 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 													) || '',
 												value: get(
 													collection,
-													'management.manager_profile_id'
+													'management.manager_profile_id',
+													''
 												),
 												type: 'PROFILE',
 											}}

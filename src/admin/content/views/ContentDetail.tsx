@@ -273,7 +273,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 		switch (item) {
 			case 'duplicate':
 				try {
-					if (!contentPageInfo) {
+					if (!contentPageInfo || !user.profile?.id) {
 						ToastService.danger(
 							tHtml(
 								'admin/content/views/content-detail___de-content-pagina-kon-niet-worden-gedupliceerd'
@@ -286,7 +286,7 @@ const ContentDetail: FunctionComponent<ContentDetailProps> = ({ history, match, 
 						contentPageInfo,
 						CONTENT_PAGE_COPY,
 						CONTENT_PAGE_COPY_REGEX,
-						get(user, 'profile.id')
+						user.profile.id
 					);
 
 					if (!duplicateContentPage) {

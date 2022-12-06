@@ -740,7 +740,7 @@ const Profile: FunctionComponent<
 													onChange={setTitle}
 												/>
 											</FormGroup>
-											{!get(user, 'profile.organisation') && (
+											{!get(user, 'profile.organisation') && user.profile && (
 												<FormGroup
 													label={tText(
 														'settings/components/profile___profielfoto'
@@ -754,7 +754,7 @@ const Profile: FunctionComponent<
 														urls={compact([avatar])}
 														allowMulti={false}
 														assetType="PROFILE_AVATAR"
-														ownerId={get(user, 'profile.id')}
+														ownerId={user.profile.id}
 														onChange={(urls) => setAvatar(urls[0])}
 													/>
 												</FormGroup>

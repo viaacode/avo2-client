@@ -168,18 +168,23 @@ const ContentEditForm: FunctionComponent<ContentEditFormProps> = ({
 										'admin/content/components/content-edit-form/content-edit-form___cover-afbeelding'
 									)}
 								>
-									<FileUpload
-										ownerId={get(user, 'profile.id')}
-										urls={compact([contentPageInfo.thumbnail_path])}
-										assetType="CONTENT_PAGE_COVER"
-										allowMulti={false}
-										label={tText(
-											'admin/content/components/content-edit-form/content-edit-form___cover-afbeelding'
-										)}
-										onChange={(urls) =>
-											changeContentPageProp('thumbnail_path', urls[0] || '')
-										}
-									/>
+									{user.profile?.id && (
+										<FileUpload
+											ownerId={user.profile.id}
+											urls={compact([contentPageInfo.thumbnail_path])}
+											assetType="CONTENT_PAGE_COVER"
+											allowMulti={false}
+											label={tText(
+												'admin/content/components/content-edit-form/content-edit-form___cover-afbeelding'
+											)}
+											onChange={(urls) =>
+												changeContentPageProp(
+													'thumbnail_path',
+													urls[0] || ''
+												)
+											}
+										/>
+									)}
 								</FormGroup>
 							</Column>
 							<Column size="12">

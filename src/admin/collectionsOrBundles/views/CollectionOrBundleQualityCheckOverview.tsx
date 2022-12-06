@@ -282,16 +282,14 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 				return (
 					<Link to={editLink}>
 						<span>{truncate((rowData as any)[columnId] || '-', { length: 50 })}</span>
-						{!!get(rowData, 'relations[0].object') && (
+						{!!rowData.relations?.[0].object && (
 							<a
 								href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
-									id: get(rowData, 'relations[0].object'),
+									id: rowData.relations?.[0].object,
 								})}
 							>
 								<TagList
-									tags={[
-										{ id: get(rowData, 'relations[0].object'), label: 'Kopie' },
-									]}
+									tags={[{ id: rowData.relations?.[0].object, label: 'Kopie' }]}
 									swatches={false}
 								/>
 							</a>

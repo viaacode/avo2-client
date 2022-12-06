@@ -170,7 +170,8 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 													) || '',
 												value: get(
 													collection,
-													'management_language_check[0].assignee_profile_id'
+													'management_language_check[0].assignee_profile_id',
+													''
 												),
 												type: 'PROFILE',
 											}}

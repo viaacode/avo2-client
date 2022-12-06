@@ -1,9 +1,8 @@
+import { UserTempAccess } from '@viaa/avo2-types/types/user';
 import { compact } from 'lodash-es';
 
 import { normalizeTimestamp } from '../../shared/helpers';
 import { tText } from '../../shared/helpers/translate';
-
-import { UserTempAccess } from './user.types';
 
 // Validation
 type ValidationRule<T> = {

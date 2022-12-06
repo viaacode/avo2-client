@@ -979,13 +979,13 @@ export class AssignmentService {
 		user: Avo.User.User | undefined
 	): Promise<Omit<AssignmentResponseInfo, 'assignment'> | null> {
 		try {
-			if (!user) {
+			if (!user || !user.profile) {
 				return null;
 			}
 			const existingAssignmentResponse:
 				| Omit<AssignmentResponseInfo, 'assignment'>
 				| undefined = await AssignmentService.getAssignmentResponse(
-				get(user, 'profile.id'),
+				user.profile.id,
 				get(assignment, 'id') as unknown as string
 			);
 

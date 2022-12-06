@@ -538,7 +538,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS,
 				  ]
 		);
-		const showEditorialTabs: boolean =
+		const showEditorialTabs = !!(
 			(isCollection &&
 				get(collectionState, 'currentCollection.is_managed') &&
 				PermissionService.hasPerm(
@@ -547,7 +547,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 				)) ||
 			(!isCollection &&
 				get(collectionState, 'currentCollection.is_managed') &&
-				PermissionService.hasPerm(user, PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS));
+				PermissionService.hasPerm(user, PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS))
+		);
 		return [
 			{
 				id: 'content',

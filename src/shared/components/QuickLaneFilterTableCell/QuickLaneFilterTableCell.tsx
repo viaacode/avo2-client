@@ -2,13 +2,12 @@ import React, { FC, ReactNode } from 'react';
 
 import { isCollection, isItem } from '../../../quick-lane/quick-lane.helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { QuickLaneColumn } from '../../constants/quick-lane';
 import { formatDate, formatTimestamp } from '../../helpers';
 import { QuickLaneUrlObject } from '../../types';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
 interface QuickLaneFilterTableCellProps {
-	id: QuickLaneColumn;
+	id: string;
 	data: QuickLaneUrlObject;
 	actions?: (data?: QuickLaneUrlObject) => ReactNode;
 }

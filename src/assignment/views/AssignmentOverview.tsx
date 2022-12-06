@@ -25,7 +25,7 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classnames from 'classnames';
-import { cloneDeep, compact, get, isNil, noop } from 'lodash-es';
+import { cloneDeep, compact, isNil, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	KeyboardEvent,
@@ -288,9 +288,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	]);
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		// Fetch all labels for th current user
-		const labels = await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'));
-		setAllAssignmentLabels(labels);
+		if (user.profile) {
+			// Fetch all labels for th current user
+			const labels = await AssignmentLabelsService.getLabelsForProfile(user.profile.id);
+			setAllAssignmentLabels(labels);
+		}
 	}, [user, setAllAssignmentLabels]);
 
 	useEffect(() => {

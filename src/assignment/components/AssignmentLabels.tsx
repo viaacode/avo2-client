@@ -48,9 +48,11 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		// Fetch labels every time the manage labels modal closes and once at startup
-		const labels = await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'));
-		setAllAssignmentLabels(labels);
+		if (user.profile) {
+			// Fetch labels every time the manage labels modal closes and once at startup
+			const labels = await AssignmentLabelsService.getLabelsForProfile(user.profile.id);
+			setAllAssignmentLabels(labels);
+		}
 	}, [user, setAllAssignmentLabels]);
 
 	useEffect(() => {

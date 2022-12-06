@@ -279,7 +279,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	): ReactNode => {
 		switch (columnId) {
 			case 'author': {
-				const user = get(rowData, 'profile.user');
+				const user = rowData.profile?.user;
 				if (!user) {
 					return '-';
 				}

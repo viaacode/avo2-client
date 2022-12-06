@@ -207,7 +207,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
 		const underLimit =
 			isNil(get(components, 'limits.max')) ||
-			(isArray(components.state) && components.state.length < get(components, 'limits.max'));
+			(isArray(components.state) &&
+				components.state.length < get(components, 'limits.max', 1));
 
 		return (
 			<Accordion

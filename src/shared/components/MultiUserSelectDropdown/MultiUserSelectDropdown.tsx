@@ -67,7 +67,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 						users.map(
 							(user): PickerItem => ({
 								label: `${get(user, 'full_name')} (${get(user, 'mail')})`,
-								value: get(user, 'profile.id') as string,
+								value: user.profile?.id || '',
 								type: 'PROFILE',
 							})
 						)
