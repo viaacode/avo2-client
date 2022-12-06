@@ -1,4 +1,5 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { get, isString, some } from 'lodash-es';
 
 import { ContentPageInfo } from '../../admin/content/content.types';
@@ -7,9 +8,6 @@ import { CollectionService } from '../../collection/collection.service';
 import { ContentPageService } from '../../shared/services/content-page-service';
 
 import { getProfileId } from './get-profile-id';
-import { PermissionName } from './permission-names';
-
-export { PermissionName };
 
 type PermissionInfo = { name: PermissionName; obj?: any | null };
 

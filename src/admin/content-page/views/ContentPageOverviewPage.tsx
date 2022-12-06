@@ -1,14 +1,12 @@
 import { CONTENT_PAGE_PATH, ContentPageOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { FunctionComponent, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ADMIN_CORE_ROUTE_PARTS } from '../../shared/constants/admin-core.routes';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';

@@ -15,8 +15,8 @@ import {
 	Spinner,
 	ToggleButton,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
@@ -30,7 +30,7 @@ import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -1178,7 +1178,7 @@ const CollectionDetail: FunctionComponent<
 							setIsQuickLaneModalOpen(false);
 						}}
 						onUpdate={(newCollection) => {
-							if ((collection as CollectionSchema).collection_fragments) {
+							if ((collection as Avo.Collection.Collection).collection_fragments) {
 								setCollectionInfo((oldCollectionInfo) => ({
 									showLoginPopup: oldCollectionInfo?.showLoginPopup || false,
 									showNoAccessPopup:

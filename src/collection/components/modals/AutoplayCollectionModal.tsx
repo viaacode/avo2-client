@@ -1,7 +1,6 @@
 import { FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
 import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
@@ -43,7 +42,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 				const [start, end] = getValidStartAndEnd(
 					frag.start_oc,
 					frag.end_oc,
-					toSeconds((frag.item_meta as ItemSchema).duration)
+					toSeconds((frag.item_meta as Avo.Item.Item).duration)
 				);
 				return {
 					src: playableUrls[fragIndex],

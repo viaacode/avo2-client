@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { isFunction, kebabCase, omit } from 'lodash-es';
 import moment from 'moment';
 

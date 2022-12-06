@@ -1,5 +1,5 @@
 import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { fromPairs, get, isArray, isEmpty, isNil, isString, map } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment, ReactElement, ReactNode } from 'react';

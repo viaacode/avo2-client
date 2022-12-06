@@ -8,8 +8,8 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { AssignmentLayout } from '@viaa/avo2-types/types/assignment';
-import { UserProfile } from '@viaa/avo2-types/types/user';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
@@ -52,7 +52,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 					let items = await QuickLaneService.fetchQuickLanesByContentAndOwnerId(
 						getContentUuid(content, content_label),
 						content_label,
-						(user.profile as UserProfile).id
+						(user.profile as Avo.User.Profile).id
 					);
 
 					if (items.length === 0 && isShareable(content)) {
@@ -65,7 +65,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 								},
 								content_label,
 								content_id: getContentUuid(content, content_label),
-								owner_profile_id: (user.profile as UserProfile).id,
+								owner_profile_id: (user.profile as Avo.User.Profile).id,
 							},
 						]);
 
@@ -107,7 +107,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 						...object,
 						content_label,
 						content_id: getContentUuid(content, content_label),
-						owner_profile_id: (user.profile as UserProfile).id,
+						owner_profile_id: (user.profile as Avo.User.Profile).id,
 					});
 
 					if (updated.length === 1) {

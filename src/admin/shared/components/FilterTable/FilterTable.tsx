@@ -16,9 +16,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
-import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, get, sortBy } from 'lodash-es';
 import React, {
@@ -360,7 +358,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 
 										case 'MultiEducationalOrganisationSelectModal': {
 											const orgs: string[] = (tableState as any)[col.id];
-											const orgObjs: ClientEducationOrganization[] =
+											const orgObjs: Avo.EducationOrganization.Organization[] =
 												eduOrgToClientOrg(orgs);
 
 											return (
@@ -436,7 +434,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								variant={variant}
 								sortColumn={tableState.sort_column || defaultOrderProp || undefined}
 								sortOrder={
-									(tableState.sort_order as SearchOrderDirection) ||
+									(tableState.sort_order as Avo.Search.OrderDirection) ||
 									defaultOrderDirection ||
 									undefined
 								}

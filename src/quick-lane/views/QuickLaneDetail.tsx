@@ -11,9 +11,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
@@ -22,7 +21,7 @@ import { generatePath } from 'react-router';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -62,7 +61,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			// Handle edge cases
 
 			if (isCollection(response)) {
-				const content = response.content as CollectionSchema | undefined;
+				const content = response.content as Avo.Collection.Collection | undefined;
 
 				if (!content || !content.is_public) {
 					setLoadingInfo({
@@ -77,7 +76,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				}
 			} else {
 				// We assume the response isItem but don't check so we can handle the absence of VIEW_ANY_UNPUBLISHED_ITEMS
-				const content = response.content as ItemSchema;
+				const content = response.content as Avo.Item.Item;
 
 				// Check for a depublishing reason first
 				if (content.depublish_reason) {
@@ -86,7 +85,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						message:
 							tText(
 								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
-							) + (response.content as ItemSchema).depublish_reason,
+							) + (response.content as Avo.Item.Item).depublish_reason,
 						icon: 'camera-off',
 					});
 
@@ -286,7 +285,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 																	APP_PATH.ITEM_DETAIL.route,
 																	{
 																		id: (
-																			quickLane.content as ItemSchema
+																			quickLane.content as Avo.Item.Item
 																		).external_id.toString(),
 																	}
 																);
