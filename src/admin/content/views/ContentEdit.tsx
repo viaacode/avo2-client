@@ -24,6 +24,7 @@ import {
 } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ContentPageService } from '../../../shared/services/content-page-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -64,8 +65,6 @@ import { useContentTypes } from '../hooks';
 
 import './ContentEdit.scss';
 import ContentEditContentBlocks from './ContentEditContentBlocks';
-
-import useTranslation from '../../../shared/hooks/useTranslation';
 
 type ContentEditProps = DefaultSecureRouteProps<{ id?: string }>;
 

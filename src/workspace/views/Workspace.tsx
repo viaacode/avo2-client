@@ -43,6 +43,7 @@ import {
 	GetWorkspaceTabCountsQuery,
 } from '../../shared/generated/graphql-db-types';
 import { buildLink, isMobileWidth, navigate } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { dataService } from '../../shared/services/data-service';
 import {
 	ASSIGNMENTS_ID,
@@ -60,7 +61,6 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
-import useTranslation from '../../shared/hooks/useTranslation';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;

@@ -1,3 +1,4 @@
+import { Icon } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { flatten } from 'lodash-es';
 import React, { FunctionComponent, ReactElement } from 'react';
@@ -10,7 +11,6 @@ import useTranslation from '../../../../shared/hooks/useTranslation';
 import { NavigationItemInfo } from '../../../../shared/types';
 
 import './Sidebar.scss';
-import { Icon } from '@viaa/avo2-components';
 
 interface SidebarProps {
 	className?: string;

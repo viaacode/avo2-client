@@ -17,6 +17,7 @@ import {
 import SmartLink from '../../../shared/components/SmartLink/SmartLink';
 import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
@@ -42,7 +43,6 @@ import {
 } from '../content-page-label.types';
 
 import './ContentPageLabelOverview.scss';
-import useTranslation from '../../../shared/hooks/useTranslation';
 
 type ContentPageLabelOverviewProps = DefaultSecureRouteProps;
 

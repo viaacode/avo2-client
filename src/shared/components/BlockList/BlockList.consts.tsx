@@ -1,8 +1,8 @@
 import { IconName } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import { tText } from '../../helpers/translate';
 import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
+import { tText } from '../../helpers/translate';
 
 export const BLOCK_ITEM_ICONS: () => Record<
 	Avo.Core.BlockItemType,

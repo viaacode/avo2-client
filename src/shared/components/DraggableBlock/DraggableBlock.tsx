@@ -3,6 +3,7 @@ import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
 import classNames from 'classnames';
 import { truncate } from 'lodash';
 import React, { FC } from 'react';
+
 import { AssignmentBlock } from '../../../assignment/assignment.types';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { stripHtml } from '../../helpers';
