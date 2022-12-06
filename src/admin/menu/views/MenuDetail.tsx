@@ -15,7 +15,6 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ match }) => {
 	const { tText } = useTranslation();
 
 	const menuId = match.params.menu;
-	console.log('menuId: ', menuId);
 
 	return (
 		<>

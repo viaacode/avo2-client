@@ -195,6 +195,6 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 		},
 		user: commonUser,
-		route_parts: ROUTE_PARTS,
+		route_parts: { ...ROUTE_PARTS, admin: 'beheer' },
 	};
 }
