@@ -13,7 +13,6 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
-import { RelationEntry } from '@viaa/avo2-types/types/collection';
 import { get, noop } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
@@ -133,15 +132,15 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				// The final replacement should look like this:
 				// A => C
 				// B => C
-				const itemsReplacedByCurrentItem: RelationEntry<Avo.Item.Item>[] =
+				const itemsReplacedByCurrentItem: Avo.Collection.RelationEntry<Avo.Item.Item>[] =
 					(await RelationService.fetchRelationsByObject(
 						'item',
 						Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
 						[item.uid]
-					)) as RelationEntry<Avo.Item.Item>[];
+					)) as Avo.Collection.RelationEntry<Avo.Item.Item>[];
 				await Promise.all(
 					itemsReplacedByCurrentItem.map(
-						async (relation: RelationEntry<Avo.Item.Item>) => {
+						async (relation: Avo.Collection.RelationEntry<Avo.Item.Item>) => {
 							// Remove the old relationship (A => B)
 							await RelationService.deleteRelationsBySubject(
 								'item',

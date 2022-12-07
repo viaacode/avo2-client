@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { RelationEntry } from '@viaa/avo2-types/types/collection';
 
 import {
 	DeleteCollectionRelationsByObjectDocument,
@@ -32,7 +31,7 @@ export class RelationService {
 		type: 'collection' | 'item',
 		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectIds: string[]
-	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		return this.fetchRelations(type, null, relationType, objectIds);
 	}
 
@@ -40,7 +39,7 @@ export class RelationService {
 		type: 'collection' | 'item',
 		subjectIds: string[],
 		relationType: Lookup_Enum_Relation_Types_Enum
-	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		return this.fetchRelations(type, subjectIds, relationType, null);
 	}
 
@@ -49,7 +48,7 @@ export class RelationService {
 		subjectIds: string[] | null,
 		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectIds: string[] | null
-	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		let variables: any = undefined;
 		const isCollection = type === 'collection';
 		try {
@@ -78,10 +77,11 @@ export class RelationService {
 					response as
 						| GetCollectionRelationsByObjectQuery
 						| GetCollectionRelationsBySubjectQuery
-				).app_collection_relations || []) as RelationEntry<Avo.Collection.Collection>[];
+				).app_collection_relations ||
+					[]) as Avo.Collection.RelationEntry<Avo.Collection.Collection>[];
 			} else {
 				return ((response as GetItemRelationsByObjectQuery | GetItemRelationsBySubjectQuery)
-					.app_item_relations || []) as RelationEntry<Avo.Item.Item>[];
+					.app_item_relations || []) as Avo.Collection.RelationEntry<Avo.Item.Item>[];
 			}
 		} catch (err) {
 			throw new CustomError('Failed to get relation from the database', err, {
