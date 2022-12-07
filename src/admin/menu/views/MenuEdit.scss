@@ -1,0 +1,19 @@
+@import '../../../styles/settings/colors';
+@import '../../../styles/settings/variables';
+
+.c-admin__header {
+	border-bottom: 0.1rem solid #d6dee3;
+	background-color: #edeff2;
+	display: flex;
+	padding: 20px 40px;
+
+	.c-admin__page-title {
+		font-size: 2.4rem;
+		font-family: 'Avenir LT Std', 'Avenir Next', Avenir, Montserrat, sans-serif;
+		font-weight: 500;
+	}
+}
+
+.c-admin__content {
+	margin: 40px;
+}
