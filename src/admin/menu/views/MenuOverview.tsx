@@ -1,54 +1,36 @@
 import { NavigationOverview } from '@meemoo/admin-core-ui';
-import { Button } from '@viaa/avo2-components';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { MENU_PATH } from '../menu.const';
+
+import './MenuOverview.scss';
 
 type MenuOverviewProps = DefaultSecureRouteProps;
 
-const MenuOverview: FunctionComponent<MenuOverviewProps> = ({ history }) => {
+const MenuOverview: FunctionComponent<MenuOverviewProps> = () => {
 	const { tText } = useTranslation();
 
-	const [menus] = useState<any>([]);
-
 	return (
-		<AdminLayout
-			pageTitle={tText('admin/menu/views/menu-overview___navigatie-overzicht')}
-			size="large"
-		>
-			{!!menus.length && (
-				<AdminLayoutTopBarRight>
-					<Button
-						label={tText('admin/menu/views/menu-overview___navigatie-toevoegen')}
-						onClick={() => history.push(MENU_PATH.MENU_CREATE)}
-					/>
-				</AdminLayoutTopBarRight>
-			)}
-			<AdminLayoutBody>
-				<MetaTags>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel'
-							)
-						)}
-					</title>
-					<meta
-						name="description"
-						content={tText(
-							'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-beschrijving'
-						)}
-					/>
-				</MetaTags>
-				<NavigationOverview />
-			</AdminLayoutBody>
-		</AdminLayout>
+		<>
+			<MetaTags>
+				<title>
+					{GENERATE_SITE_TITLE(
+						tText('admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel')
+					)}
+				</title>
+				<meta
+					name="description"
+					content={tText(
+						'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-beschrijving'
+					)}
+				/>
+			</MetaTags>
+			<NavigationOverview />
+		</>
 	);
 };
 
