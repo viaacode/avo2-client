@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
-
 import { Icon, IconProps } from '@viaa/avo2-components';
+import React, { FC } from 'react';
 
 import './IconBar.scss';
 
@@ -16,7 +15,7 @@ const IconBar: FC<IconBarProps> = ({
 }) => (
 	<div className="c-icon-bar">
 		<div className="c-icon-bar__sidebar">
-			<Icon {...icon}></Icon>
+			<Icon {...icon} />
 		</div>
 		<div className="c-icon-bar__content">{children}</div>
 	</div>

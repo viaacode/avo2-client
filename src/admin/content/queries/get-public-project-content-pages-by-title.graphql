@@ -1,0 +1,19 @@
+query getPublicProjectContentPagesByTitle(
+	$title: String!
+	$limit: Int = 20
+	$orderBy: [app_content_order_by!] = {}
+) {
+	app_content(
+		where: {
+			title: { _ilike: $title }
+			content_type: { _eq: PROJECT }
+			is_public: { _eq: true }
+			is_deleted: { _eq: false }
+		}
+		limit: $limit
+		order_by: $orderBy
+	) {
+		path
+		title
+	}
+}

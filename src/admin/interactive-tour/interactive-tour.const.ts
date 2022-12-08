@@ -1,10 +1,13 @@
 import { ROUTE_PARTS } from '../../shared/constants';
+import { tText } from '../../shared/helpers/translate';
 import { generateRandomId } from '../../shared/helpers/uuid';
-import i18n from '../../shared/translations/i18n';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
-import { EditableInteractiveTour } from './interactive-tour.types';
+import {
+	EditableInteractiveTour,
+	InteractiveTourOverviewTableCols,
+} from './interactive-tour.types';
 
 export const INTERACTIVE_TOUR_PATH = {
 	INTERACTIVE_TOUR_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.interactiveTours}`,
@@ -15,48 +18,51 @@ export const INTERACTIVE_TOUR_PATH = {
 
 export const ITEMS_PER_PAGE = 10;
 
-export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
-	{
-		id: 'name',
-		label: i18n.t('admin/interactive-tour/interactive-tour___naam'),
-		sortable: true,
-		visibleByDefault: true,
-		dataType: TableColumnDataType.string,
-	},
-	{
-		id: 'page_id',
-		label: i18n.t('admin/interactive-tour/interactive-tour___pagina'),
-		sortable: true,
-		visibleByDefault: true,
-		dataType: TableColumnDataType.string,
-	},
-	{
-		id: 'created_at',
-		label: i18n.t('admin/interactive-tour/interactive-tour___aangemaakt-op'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-		dataType: TableColumnDataType.dateTime,
-	},
-	{
-		id: 'updated_at',
-		label: i18n.t('admin/interactive-tour/interactive-tour___aangepast-op'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-		dataType: TableColumnDataType.dateTime,
-	},
-	{
-		id: 'actions',
-		tooltip: i18n.t('admin/interactive-tour/interactive-tour___acties'),
-		visibleByDefault: true,
-	},
-];
+export const GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS: () => FilterableColumn<InteractiveTourOverviewTableCols>[] =
+	() => [
+		{
+			id: 'name',
+			label: tText('admin/interactive-tour/interactive-tour___naam'),
+			sortable: true,
+			visibleByDefault: true,
+			dataType: TableColumnDataType.string,
+		},
+		{
+			id: 'page_id',
+			label: tText('admin/interactive-tour/interactive-tour___pagina'),
+			sortable: true,
+			visibleByDefault: true,
+			dataType: TableColumnDataType.string,
+		},
+		{
+			id: 'created_at',
+			label: tText('admin/interactive-tour/interactive-tour___aangemaakt-op'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'DateRangeDropdown',
+			dataType: TableColumnDataType.dateTime,
+		},
+		{
+			id: 'updated_at',
+			label: tText('admin/interactive-tour/interactive-tour___aangepast-op'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'DateRangeDropdown',
+			dataType: TableColumnDataType.dateTime,
+		},
+		{
+			id: 'actions',
+			tooltip: tText('admin/interactive-tour/interactive-tour___acties'),
+			visibleByDefault: true,
+		},
+	];
 
-export function getInitialInteractiveTour(): EditableInteractiveTour {
+export function getInitialInteractiveTour(): Omit<EditableInteractiveTour, 'id'> {
 	return {
 		name: '',
 		page_id: '',
+		created_at: new Date(),
+		updated_at: new Date(),
 		steps: [
 			{
 				target: '',

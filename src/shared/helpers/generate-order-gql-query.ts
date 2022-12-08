@@ -44,11 +44,14 @@ export const getOrderObject = (
 	columns: Partial<{
 		[columnName: string]: (order: Avo.Search.OrderDirection) => any;
 	}>
-) => {
-	const getOrderFunc: Function | undefined = columns[sortColumn];
+): Record<string, any> => {
+	const getOrderFunc: ((order: Avo.Search.OrderDirection) => any) | undefined =
+		columns[sortColumn];
 
 	if (getOrderFunc) {
-		return [getOrderFunc(getSortOrder(sortOrder, tableColumnDataType))];
+		return [
+			getOrderFunc(getSortOrder(sortOrder, tableColumnDataType) as Avo.Search.OrderDirection),
+		];
 	}
 
 	return [{ [sortColumn]: getSortOrder(sortOrder, tableColumnDataType) }];

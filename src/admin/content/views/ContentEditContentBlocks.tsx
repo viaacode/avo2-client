@@ -1,10 +1,12 @@
 import { Navbar, Select } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { ContentPage } from '../../../content-page/views';
 import { ResizablePanels } from '../../../shared/components';
+import { tHtml } from '../../../shared/helpers/translate';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ContentBlockForm } from '../../content-block/components';
 import {
 	CONTENT_BLOCK_CONFIG_MAP,
@@ -47,7 +49,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 	addComponentToState,
 	removeComponentFromState,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// Hooks
 	const [activeBlockPosition, setActiveBlockPosition] = useState<number | null>(null);
@@ -57,9 +59,23 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 
 	// Methods
 	const handleAddContentBlock = (configType: ContentBlockType) => {
-		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType](
+		const newConfig = CONTENT_BLOCK_CONFIG_MAP[configType]?.(
 			(contentPageInfo.contentBlockConfigs || []).length
 		);
+
+		if (!newConfig) {
+			console.error(
+				'Failed to find content block config object in CONTENT_BLOCK_CONFIG_MAP for type ' +
+					configType
+			);
+			ToastService.danger(
+				tHtml(
+					'admin/content/views/content-edit-content-blocks___het-toevoegen-van-de-content-block-is-mislukt-configuratie-niet-gevonden-voor-config-type',
+					{ configType }
+				)
+			);
+			return;
+		}
 
 		// Update content block configs
 		changeContentPageState({
@@ -191,7 +207,7 @@ const ContentEditContentBlocks: FunctionComponent<ContentEditContentBlocksProps>
 						<Select
 							options={GET_CONTENT_BLOCK_TYPE_OPTIONS()}
 							onChange={(value) => handleAddContentBlock(value as ContentBlockType)}
-							placeholder={t(
+							placeholder={tText(
 								'admin/content/views/content-edit-content-blocks___voeg-een-content-blok-toe'
 							)}
 							value={null as any}

@@ -16,10 +16,9 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import classNames from 'classnames';
-import { cloneDeep, get, isNil, noop, uniq } from 'lodash-es';
+import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -28,7 +27,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
@@ -46,16 +44,21 @@ import {
 import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
-import { ToastService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ASSIGNMENTS_ID, ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
+	Assignment_Response_v2,
+	Assignment_v2,
 	AssignmentOverviewTableColumns,
+	AssignmentResponseInfo,
 	AssignmentResponseTableColumns,
 	AssignmentType,
+	BaseBlockWithMeta,
 	PupilCollectionFragment,
 } from '../assignment.types';
 import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
@@ -77,13 +80,13 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	match,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Data
-	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment_v2 | null>(null);
-	const [assignmentResponses, setAssignmentResponses] = useState<
-		Avo.Assignment.Response_v2[] | null
-	>(null);
+	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
+	const [assignmentResponses, setAssignmentResponses] = useState<AssignmentResponseInfo[] | null>(
+		null
+	);
 	const [assignmentResponsesCount, setAssigmentResponsesCount] = useState<number>(0);
 	const [assignmentResponsesFragments, setAssignmentResponsesFragments] = useState<string[]>([]);
 
@@ -102,7 +105,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const [isDeleteAssignmentResponseModalOpen, setDeleteAssignmentResponseModalOpen] =
 		useState<boolean>(false);
 	const [markedAssignmentResponse, setMarkedAssignmentResponse] =
-		useState<Avo.Assignment.Response_v2 | null>(null);
+		useState<Assignment_Response_v2 | null>(null);
 
 	// Permissions
 	const [canViewAssignmentResponses, setCanViewAssignmentResponses] = useState<boolean | null>(
@@ -191,18 +194,18 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				],
 			});
 			ToastService.danger(
-				t(
+				tHtml(
 					'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
 				)
 			);
 		}
-	}, [setCanViewAssignmentResponses, user, t]);
+	}, [setCanViewAssignmentResponses, user, tText]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
 			if (!canViewAnAssignment(user)) {
 				setLoadingInfo({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
 					icon: 'lock',
@@ -217,7 +220,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		} catch (err) {
 			if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
 				setLoadingInfo({
-					message: t(
+					message: tText(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
 					icon: 'lock',
@@ -227,12 +230,12 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			}
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'assignment/views/assignment-responses___het-ophalen-van-de-opdracht-is-mislukt'
 				),
 			});
 		}
-	}, [match, t]);
+	}, [match, tText]);
 
 	const fetchAssignmentResponses = useCallback(async () => {
 		try {
@@ -259,19 +262,21 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			);
 
 			// Determine each response's fragments to evaluate their published-status
-			const fragments = response.assignmentResponses.flatMap((response) =>
-				((response.pupil_collection_blocks as PupilCollectionFragment[]) || []).flatMap(
-					(block) => block.fragment_id
+			const fragmentIds: string[] = compact(
+				response.assignmentResponses.flatMap((response) =>
+					((response.pupil_collection_blocks as PupilCollectionFragment[]) || []).flatMap(
+						(block) => block.fragment_id
+					)
 				)
 			);
 
 			setAssignmentResponses(response.assignmentResponses);
 			setAssigmentResponsesCount(response.count);
-			setAssignmentResponsesFragments(uniq(fragments));
+			setAssignmentResponsesFragments(uniq(fragmentIds));
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'assignment/views/assignment-responses___het-ophalen-van-responses-is-mislukt'
 				),
 			});
@@ -285,7 +290,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		sortOrder,
 		query.page,
 		query.filter,
-		t,
+		tText,
 	]);
 
 	const fetchAssignmentResponsesFragments = async (items: string[]) => {
@@ -298,7 +303,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					return {
 						...response,
 						pupil_collection_blocks:
-							await AssignmentService.enrichBlocksWithMeta<PupilCollectionFragment>(
+							await AssignmentService.enrichBlocksWithMeta<BaseBlockWithMeta>(
 								response.pupil_collection_blocks,
 								fragments
 							),
@@ -326,7 +331,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		} else if (!isNil(canViewAssignmentResponses)) {
 			// canViewAssignmentResponses: false
 			setLoadingInfo({
-				message: t(
+				message: tText(
 					'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 				),
 				icon: 'lock',
@@ -347,7 +352,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		try {
 			if (isNil(assignmentResponseId)) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'assignment/views/assignment-responses___de-response-kon-niet-verwijderd-worden-geen-geldig-id'
 					)
 				);
@@ -359,22 +364,22 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 			onUpdate();
 			ToastService.success(
-				t('assignment/views/assignment-responses___de-response-is-verwijderd')
+				tHtml('assignment/views/assignment-responses___de-response-is-verwijderd')
 			);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-responses___het-verwijderen-van-de-response-is-mislukt'
 				)
 			);
 		}
 	};
 
-	const renderDeleteAction = (assignmentResponse: Avo.Assignment.Response_v2) => (
+	const renderDeleteAction = (assignmentResponse: Assignment_Response_v2) => (
 		<Button
-			title={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-			ariaLabel={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+			title={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+			ariaLabel={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
 			icon="delete"
 			type="danger-hover"
 			onClick={() => {
@@ -402,7 +407,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		);
 
 	const renderCell = (
-		assignmentResponse: Avo.Assignment.Response_v2,
+		assignmentResponse: Assignment_Response_v2,
 		colKey: AssignmentResponseTableColumns
 	) => {
 		const cellData: any = (assignmentResponse as any)[colKey];
@@ -428,7 +433,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			case 'pupil_collection_block_count':
 				return renderDataCell(
 					assignmentResponse.pupil_collection_blocks?.filter(isItemWithMeta).length || '',
-					t('assignment/views/assignment-responses___fragmenten'),
+					tText('assignment/views/assignment-responses___fragmenten'),
 					'c-assignment-responses__block-count'
 				);
 
@@ -451,7 +456,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 						>
 							{cellData}
 						</Link>,
-						t('assignment/views/assignment-responses___leerlingencollectie'),
+						tText('assignment/views/assignment-responses___leerlingencollectie'),
 						'c-assignment-responses__collection-title'
 					)
 				);
@@ -474,7 +479,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				<ToolbarLeft>
 					<BlockHeading type="h2" className="u-m-0">
 						{assignmentResponsesCount}{' '}
-						{t('assignment/views/assignment-responses___responsen')}
+						{tText('assignment/views/assignment-responses___responsen')}
 					</BlockHeading>
 				</ToolbarLeft>
 				<ToolbarRight>
@@ -491,7 +496,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 							</FormGroup>
 							<FormGroup inlineMode="grow">
 								<Button
-									label={t('search/views/search___zoeken')}
+									label={tText('search/views/search___zoeken')}
 									type="primary"
 									className="c-assignment-overview__search-input"
 									onClick={copySearchTermsToQueryState}
@@ -509,12 +514,12 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			{renderHeader()}
 			<ErrorView
 				icon="clipboard"
-				message={t(
+				message={tText(
 					'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht'
 				)}
 			>
 				<p>
-					{t(
+					{tText(
 						'assignment/views/assignment-responses___deel-de-link-van-deze-opdracht-met-je-leerlingen'
 					)}
 				</p>
@@ -538,14 +543,14 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					data={assignmentResponses}
 					emptyStateMessage={
 						query.filter
-							? t(
+							? tText(
 									'assignment/views/assignment-responses___er-zijn-geen-antwoorden-die-voldoen-aan-de-zoekopdracht'
 							  )
-							: t(
+							: tText(
 									'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht'
 							  )
 					}
-					renderCell={(rowData: Avo.Assignment.Response_v2, colKey: string) =>
+					renderCell={(rowData: Assignment_Response_v2, colKey: string) =>
 						renderCell(rowData, colKey as AssignmentResponseTableColumns)
 					}
 					rowKey="id"
@@ -564,10 +569,10 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				</Spacer>
 
 				<DeleteObjectModal
-					title={t(
+					title={tText(
 						'assignment/views/assignment-responses___ben-je-zeker-dat-je-deze-response-wil-verwijderen'
 					)}
-					body={t(
+					body={tText(
 						'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 					)}
 					isOpen={isDeleteAssignmentResponseModalOpen}
@@ -593,7 +598,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 							})}
 						>
 							<Icon name="chevron-left" size="small" type="arrows" />
-							<Trans i18nKey="Opdrachten">Opdrachten</Trans>
+							{tHtml('assignment/views/assignment-responses___opdrachten')}
 						</Link>
 
 						<Flex center className="u-spacer-top-l">

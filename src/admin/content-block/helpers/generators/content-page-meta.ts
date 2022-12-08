@@ -1,4 +1,4 @@
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import {
 	ContentBlockConfig,
 	ContentBlockType,
@@ -17,9 +17,9 @@ export const INITIAL_CONTENT_PAGE_META_BLOCK_STATE = (): DefaultContentBlockStat
 		},
 	});
 
-export const CONTENT_PAGE_META_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const CONTENT_PAGE_META_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/content-page-meta___pagina-meta-data'),
+	name: tText('admin/content-block/helpers/generators/content-page-meta___pagina-meta-data'),
 	type: ContentBlockType.ContentPageMeta,
 	components: {
 		state: INITIAL_CONTENT_PAGE_META_COMPONENTS_STATE(),

@@ -1,6 +1,5 @@
-import { isEmpty, isNil, keys } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { isEmpty, isNil, keys } from 'lodash-es';
 
 import { NewsletterList } from '../types';
 

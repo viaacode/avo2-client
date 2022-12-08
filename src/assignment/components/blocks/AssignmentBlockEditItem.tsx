@@ -1,9 +1,6 @@
 import { convertToHtml } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import { ItemSchema } from '@viaa/avo2-types/types/item';
 import React, { FC, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { FilterState } from '../../../search/search.types';
 import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components';
@@ -11,15 +8,21 @@ import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm'
 import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
-import { EditableBlockItem, EditBlockProps } from '../../assignment.types';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import {
+	AssignmentBlock,
+	BaseBlockWithMeta,
+	EditableAssignmentBlock,
+	EditBlockProps,
+} from '../../assignment.types';
 import {
 	AssignmentBlockDescriptionButtons,
 	AssignmentBlockItemDescriptionType,
 } from '../AssignmentBlockDescriptionButtons';
 
-function getBlockEditMode(block: Avo.Core.BlockItemBase | EditableBlockItem) {
-	if ((block as EditableBlockItem).editMode) {
-		return (block as EditableBlockItem).editMode;
+function getBlockEditMode(block: BaseBlockWithMeta | EditableAssignmentBlock) {
+	if ((block as EditableAssignmentBlock).editMode) {
+		return (block as EditableAssignmentBlock).editMode;
 	}
 	if (!block.use_custom_fields) {
 		return AssignmentBlockItemDescriptionType.original;
@@ -36,7 +39,7 @@ export const AssignmentBlockEditItem: FC<
 		buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string;
 	}
 > = ({ block, setBlock, AssignmentBlockItemDescriptionTypes, buildSearchLink }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [cutButton, cutModal] = useCutModal();
 	const editableBlock = {
@@ -87,12 +90,12 @@ export const AssignmentBlockEditItem: FC<
 							duration={item.duration}
 							title={item.title}
 							cuePointsVideo={{
-								start: editableBlock.start_oc,
-								end: editableBlock.end_oc,
+								start: editableBlock.start_oc || null,
+								end: editableBlock.end_oc || null,
 							}}
 							cuePointsLabel={{
-								start: editableBlock.start_oc,
-								end: editableBlock.end_oc,
+								start: editableBlock.start_oc || null,
+								end: editableBlock.end_oc || null,
 							}}
 						/>
 
@@ -103,6 +106,9 @@ export const AssignmentBlockEditItem: FC<
 							itemMetaData: item,
 							fragment: {
 								...block,
+								start_oc: block.start_oc ?? null,
+								end_oc: block.end_oc ?? null,
+								thumbnail_path: block.thumbnail_path ?? null,
 								external_id: `${editableBlock.id}`,
 							},
 							onConfirm: (update) => setBlock({ ...editableBlock, ...update }),
@@ -110,7 +116,7 @@ export const AssignmentBlockEditItem: FC<
 					</>
 				);
 			}}
-			buttonsLabel={t(
+			buttonsLabel={tText(
 				'assignment/components/blocks/assignment-block-edit-item___titel-en-beschrijving'
 			)}
 			buttons={
@@ -121,8 +127,10 @@ export const AssignmentBlockEditItem: FC<
 				/>
 			}
 			title={{
-				label: t('assignment/views/assignment-edit___titel-fragment'),
-				placeholder: t('assignment/views/assignment-edit___instructies-of-omschrijving'),
+				label: tText('assignment/views/assignment-edit___titel-fragment'),
+				placeholder: tText(
+					'assignment/views/assignment-edit___instructies-of-omschrijving'
+				),
 				value: title,
 				disabled: editableBlock.editMode === AssignmentBlockItemDescriptionType.original,
 				onChange: (value) => {
@@ -137,7 +145,9 @@ export const AssignmentBlockEditItem: FC<
 			description={
 				editableBlock.editMode !== AssignmentBlockItemDescriptionType.none
 					? {
-							label: t('assignment/views/assignment-edit___beschrijving-fragment'),
+							label: tText(
+								'assignment/views/assignment-edit___beschrijving-fragment'
+							),
 							initialHtml: convertToHtml(description),
 							controls: WYSIWYG_OPTIONS_AUTHOR,
 							enabledHeadings: ['h3', 'h4', 'normal'],

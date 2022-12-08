@@ -8,12 +8,12 @@ import { renderErrorRoutes } from '../error/error.routes';
 import { renderAdminAssignmentRoutes } from './assignments/assignment.routes';
 import { renderCollectionOrBundleRoutes } from './collectionsOrBundles/collections-or-bundles.routes';
 import { renderAdminContentPageLabelRoutes } from './content-page-labels/content-page-label.routes';
+import { renderAdminContentPageRoutes } from './content-page/content-page.routes';
 import { renderAdminContentRoutes } from './content/content.routes';
 import { renderAdminDashboardRoutes } from './dashboard/dashboard.routes';
 import { renderInteractiveTourRoutes } from './interactive-tour/interactive-tour.routes';
 import { renderItemRoutes, renderPublishItemRoutes } from './items/items.routes';
 import { renderAdminMenuRoutes } from './menu/menu.routes';
-import { renderAdminPermissionGroupRoutes } from './permission-groups/permission-group.routes';
 import { renderAdminPupilCollectionRoutes } from './pupil-collection/pupil-collection.routes';
 import { renderAdminTranslationsRoutes } from './translations/translations.routes';
 import { renderAdminUserGroupRoutes } from './user-groups/user-group.routes';
@@ -46,12 +46,14 @@ export const renderAdminRoutes = (userPermissions: string[]): ReactNode => {
 			{renderAdminDashboardRoutes()}
 			{renderWithPermissions(renderAdminUserRoutes, [PermissionName.VIEW_USERS])}
 			{renderWithPermissions(renderAdminUserGroupRoutes, [PermissionName.EDIT_USER_GROUPS])}
-			{renderWithPermissions(renderAdminPermissionGroupRoutes, [
-				PermissionName.EDIT_PERMISSION_GROUPS,
-			])}
 			{renderWithPermissions(renderAdminMenuRoutes, [PermissionName.EDIT_NAVIGATION_BARS])}
 			{renderWithPermissions(
 				renderAdminContentRoutes,
+				[PermissionName.EDIT_OWN_CONTENT_PAGES, PermissionName.EDIT_ANY_CONTENT_PAGES],
+				'OR'
+			)}
+			{renderWithPermissions(
+				renderAdminContentPageRoutes,
 				[PermissionName.EDIT_OWN_CONTENT_PAGES, PermissionName.EDIT_ANY_CONTENT_PAGES],
 				'OR'
 			)}

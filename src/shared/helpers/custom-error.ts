@@ -7,12 +7,12 @@ export class CustomError {
 	public innerException: any | null;
 	public additionalInfo: any | null;
 	public identifier: string = generateRandomId();
-	public name: string = 'Error';
+	public name = 'Error';
 	public stackTrace: string;
 	public timestamp: string = new Date().toISOString();
 
 	constructor(
-		message: string = 'Something went wrong',
+		message = 'Something went wrong',
 		innerException: any = null,
 		additionalInfo: any = null
 	) {

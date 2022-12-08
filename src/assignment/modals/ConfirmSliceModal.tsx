@@ -10,15 +10,14 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
-import { AssignmentBlockType } from '../assignment.types';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { Assignment_v2, AssignmentBlock, AssignmentBlockType } from '../assignment.types';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	responses?: Avo.Assignment.Response_v2[];
+	responses?: Assignment_v2[];
 	block?: Pick<AssignmentBlock, 'type'>;
 	onConfirm?: () => void;
 }
@@ -30,9 +29,9 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 	onClose,
 	onConfirm,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
-	const label = { type: block ? BLOCK_ITEM_LABELS()[block.type] : '' };
+	const label = { type: block ? BLOCK_ITEM_LABELS()[block.type as Avo.Core.BlockItemType] : '' };
 
 	const renderConfirmButtons = () => {
 		return (
@@ -42,12 +41,12 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={t('assignment/modals/confirm-slice___annuleer')}
+								label={tText('assignment/modals/confirm-slice___annuleer')}
 								onClick={onClose}
 							/>
 							<Button
 								type="danger"
-								label={t('assignment/modals/confirm-slice___verwijder')}
+								label={tText('assignment/modals/confirm-slice___verwijder')}
 								onClick={onConfirm}
 							/>
 						</ButtonToolbar>
@@ -60,24 +59,24 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 	const renderModalBody = () => {
 		switch (block?.type) {
 			case AssignmentBlockType.ITEM:
-				return t(
+				return tHtml(
 					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen'
 				);
 			case AssignmentBlockType.TEXT:
-				return t(
+				return tHtml(
 					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-instructie-of-tekstblok-wil-verwijderen'
 				);
 			case AssignmentBlockType.ZOEK:
 			case AssignmentBlockType.BOUW:
 				return responses.length > 0 ? (
 					<>
-						<b>{t('assignment/modals/confirm-slice___opgelet')}: </b>
-						{t(
+						<b>{tHtml('assignment/modals/confirm-slice___opgelet')}: </b>
+						{tHtml(
 							'assignment/modals/confirm-slice___opgelet-er-bestaan-reeds-leerlingencollecties-voor-deze-zoekopdracht-ben-je-zeker-dat-je-de-zoekoefening-en-leerlingencollecties-wil-verwijderen'
 						)}
 					</>
 				) : (
-					t(
+					tText(
 						'assignment/modals/confirm-slice___ben-je-zeker-dat-je-de-zoekoefening-wil-verwijderen'
 					)
 				);
@@ -90,7 +89,7 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('assignment/modals/confirm-slice___type-verwijderen', label)}
+			title={tText('assignment/modals/confirm-slice___type-verwijderen', label)}
 			size="medium"
 			onClose={onClose}
 			scrollable

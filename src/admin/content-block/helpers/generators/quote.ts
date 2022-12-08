@@ -1,5 +1,5 @@
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -24,40 +24,38 @@ export const INITIAL_QUOTE_BLOCK_STATE = (): DefaultContentBlockState =>
 		},
 	});
 
-export const QUOTE_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const QUOTE_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/quote___quote'),
+	name: tText('admin/content-block/helpers/generators/quote___quote'),
 	type: ContentBlockType.Quote,
 	components: {
 		state: INITIAL_QUOTE_COMPONENTS_STATE(),
 		fields: {
 			quote: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/quote___quote-is-verplicht'),
+				tText('admin/content-block/helpers/generators/quote___quote-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/quote___quote'),
+					label: tText('admin/content-block/helpers/generators/quote___quote'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
 			authorName: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/quote___auteur-is-verplicht'),
+				tText('admin/content-block/helpers/generators/quote___auteur-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/quote___auteur'),
+					label: tText('admin/content-block/helpers/generators/quote___auteur'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
 			authorInitials: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/quote___initialen-is-verplicht'),
+				tText('admin/content-block/helpers/generators/quote___initialen-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/quote___initialen'),
+					label: tText('admin/content-block/helpers/generators/quote___initialen'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
 			authorImage: FILE_FIELD(
-				i18n.t(
-					'admin/content-block/helpers/generators/image___een-afbeelding-is-verplicht'
-				),
+				tText('admin/content-block/helpers/generators/image___een-afbeelding-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/image___afbeelding'),
+					label: tText('admin/content-block/helpers/generators/image___afbeelding'),
 					editorProps: { assetType: 'CONTENT_BLOCK_IMAGE' } as FileUploadProps,
 				}
 			),

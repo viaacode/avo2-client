@@ -7,7 +7,8 @@ import {
 } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FunctionComponent, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '../../shared/hooks/useTranslation';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
@@ -33,16 +34,16 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	duplicate,
 	remove,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 
 	const renderPreviewButton = (config?: Partial<ButtonProps>) => (
 		<Button
-			label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
-			title={t(
+			label={tText('assignment/views/assignment-edit___bekijk-als-leerling')}
+			title={tText(
 				'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 			)}
-			ariaLabel={t(
+			ariaLabel={tText(
 				'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 			)}
 			type="secondary"
@@ -55,8 +56,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		<Button
 			icon="more-horizontal"
 			type="secondary"
-			ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
-			title={t('assignment/views/assignment-detail___meer-opties')}
+			ariaLabel={tText('assignment/views/assignment-detail___meer-opties')}
+			title={tText('assignment/views/assignment-detail___meer-opties')}
 			{...overflow}
 			{...config}
 		/>
@@ -148,7 +149,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				})}
 			</>
 		),
-		[t, isOverflowDropdownOpen]
+		[tText, isOverflowDropdownOpen]
 	);
 
 	return renderActions;

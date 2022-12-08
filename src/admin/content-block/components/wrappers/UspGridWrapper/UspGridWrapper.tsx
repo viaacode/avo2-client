@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { AlignOptions, BlockImageGrid, ButtonAction, GridItem } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
 
 export interface BlockUspGridWrapperProps {
 	elements: GridItem[];

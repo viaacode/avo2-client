@@ -1,7 +1,6 @@
+import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import queryString from 'query-string';
-
-import { Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';

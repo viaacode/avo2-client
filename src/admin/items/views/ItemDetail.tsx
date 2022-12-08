@@ -13,7 +13,6 @@ import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -31,13 +30,15 @@ import {
 } from '../../../shared/components';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
-import { QUICK_LANE_DEFAULTS } from '../../../shared/constants/quick-lane';
+import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../../shared/constants/quick-lane';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { QuickLaneContainingService } from '../../../shared/services/quick-lane-containing.service';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { QuickLaneUrlObject } from '../../../shared/types';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
@@ -88,7 +89,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const fetchItemById = useCallback(async () => {
 		try {
@@ -106,12 +107,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			console.error(new CustomError('Failed to get item by uuid', err));
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/items/views/item-detail___het-ophalen-van-de-item-info-is-mislukt'
 				),
 			});
 		}
-	}, [setItem, setLoadingInfo, t, match.params.id]);
+	}, [setItem, setLoadingInfo, tText, match.params.id]);
 
 	const fetchCollectionsByItemExternalId = useCallback(async () => {
 		try {
@@ -127,12 +128,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/items/views/item-detail___het-ophalen-van-de-collecties-die-dit-item-bevatten-is-mislukt'
 				)
 			);
 		}
-	}, [setCollectionsContainingItem, t, item]);
+	}, [setCollectionsContainingItem, tText, item]);
 
 	const fetchAssociatedQuickLanes = useCallback(async () => {
 		try {
@@ -151,12 +152,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/items/views/item-detail___het-ophalen-van-de-gedeelde-links-die-naar-dit-fragment-wijzen-is-mislukt'
 				)
 			);
 		}
-	}, [setAssociatedQuickLanes, t, item]);
+	}, [setAssociatedQuickLanes, tText, item]);
 
 	useEffect(() => {
 		fetchItemById();
@@ -181,11 +182,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			}
 			if (!item.is_published) {
 				await ItemsService.setItemPublishedState(item.uid, !item.is_published);
-				await RelationService.deleteRelationsBySubject('item', item.uid, 'IS_REPLACED_BY');
+				await RelationService.deleteRelationsBySubject(
+					'item',
+					item.uid,
+					Lookup_Enum_Relation_Types_Enum.IsReplacedBy
+				);
 				await ItemsService.setItemDepublishReason(item.uid, null);
 
 				await fetchItemById();
-				ToastService.success(t('admin/items/views/item-detail___het-item-is-gepubliceerd'));
+				ToastService.success(
+					tHtml('admin/items/views/item-detail___het-item-is-gepubliceerd')
+				);
 			} else {
 				setDepublishItemModalOpen(true);
 			}
@@ -194,7 +201,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				new CustomError('Failed to toggle is_published state for item', err, { item })
 			);
 			ToastService.danger(
-				t('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt')
+				tHtml('admin/items/views/item-detail___het-de-publiceren-van-het-item-is-mislukt')
 			);
 		}
 	};
@@ -202,7 +209,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const navigateToItemDetail = () => {
 		if (!item) {
 			ToastService.danger(
-				t('admin/items/views/item-detail___dit-item-heeft-geen-geldig-pid')
+				tHtml('admin/items/views/item-detail___dit-item-heeft-geen-geldig-pid')
 			);
 			return;
 		}
@@ -230,7 +237,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const handleQuickLaneColumnClick = (id: string) => {
+	const handleQuickLaneColumnClick = (id: QuickLaneColumn) => {
 		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
 
 		setQuickLaneSortColumn(id);
@@ -257,11 +264,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					'link'
 				) || null
 			);
-			ToastService.success(t('admin/items/views/item-detail___opmerkingen-opgeslagen'));
+			ToastService.success(tHtml('admin/items/views/item-detail___opmerkingen-opgeslagen'));
 		} catch (err) {
 			console.error(new CustomError('Failed to save item notes', err, { item }));
 			ToastService.danger(
-				t('admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt')
+				tHtml('admin/items/views/item-detail___het-opslaan-van-de-opmerkingen-is-mislukt')
 			);
 		}
 	};
@@ -272,7 +279,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	): ReactNode => {
 		switch (columnId) {
 			case 'author': {
-				const user = get(rowData, 'profile.user');
+				const user = rowData.profile?.user;
 				if (!user) {
 					return '-';
 				}
@@ -287,8 +294,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					<div
 						title={
 							rowData.is_public
-								? t('collection/components/collection-or-bundle-overview___publiek')
-								: t(
+								? tText(
+										'collection/components/collection-or-bundle-overview___publiek'
+								  )
+								: tText(
 										'collection/components/collection-or-bundle-overview___niet-publiek'
 								  )
 						}
@@ -302,10 +311,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					<Button
 						type="borderless"
 						icon="eye"
-						title={t(
+						title={tText(
 							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
 						)}
-						ariaLabel={t(
+						ariaLabel={tText(
 							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
 						)}
 						onClick={(evt) => {
@@ -324,20 +333,20 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		<>
 			<Spacer margin={['top-extra-large', 'bottom-small']}>
 				<BlockHeading type="h2">
-					{t('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
+					{tText('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
 				</BlockHeading>
 			</Spacer>
 			{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
 				<Table
 					columns={[
 						{
-							label: t('admin/items/views/item-detail___titel'),
+							label: tText('admin/items/views/item-detail___titel'),
 							id: 'title',
 							sortable: true,
 							dataType: TableColumnDataType.string,
 						},
 						{
-							label: t('admin/items/views/item-detail___auteur'),
+							label: tText('admin/items/views/item-detail___auteur'),
 							id: 'author',
 							sortable: true,
 							dataType: TableColumnDataType.string,
@@ -348,19 +357,19 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							sortable: false,
 						},
 						{
-							label: t('admin/items/items___publiek'),
+							label: tText('admin/items/items___publiek'),
 							id: 'is_public',
 							sortable: true,
 							dataType: TableColumnDataType.boolean,
 						},
 						{
-							tooltip: t('admin/items/views/item-detail___acties'),
+							tooltip: tText('admin/items/views/item-detail___acties'),
 							id: 'actions',
 							sortable: false,
 						},
 					]}
 					data={collectionsContainingItem}
-					emptyStateMessage={t(
+					emptyStateMessage={tText(
 						'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
 					)}
 					onColumnClick={handleCollectionColumnClick as any}
@@ -372,7 +381,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					rowKey="id"
 				/>
 			) : (
-				t('admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen')
+				tText(
+					'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
+				)
 			)}
 		</>
 	);
@@ -381,21 +392,21 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		<>
 			<Spacer margin={['top-extra-large', 'bottom-small']}>
 				<BlockHeading type="h2">
-					{t('admin/items/views/item-detail___gedeelde-links-naar-dit-fragment')}
+					{tText('admin/items/views/item-detail___gedeelde-links-naar-dit-fragment')}
 				</BlockHeading>
 			</Spacer>
 			{!!associatedQuickLanes && !!associatedQuickLanes.length ? (
 				<AssociatedQuickLaneTable
 					data={associatedQuickLanes}
-					emptyStateMessage={t(
+					emptyStateMessage={tText(
 						'admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld'
 					)}
-					onColumnClick={handleQuickLaneColumnClick}
+					onColumnClick={handleQuickLaneColumnClick as any}
 					sortColumn={quickLaneSortColumn}
 					sortOrder={quickLaneSortOrder}
 				/>
 			) : (
-				t('admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld')
+				tText('admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld')
 			)}
 		</>
 	);
@@ -422,32 +433,38 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
 							{renderSimpleDetailRows(item, [
-								['uid', t('admin/items/views/item-detail___av-o-uuid')],
-								['external_id', t('admin/items/views/item-detail___pid')],
-								['is_published', t('admin/items/views/item-detail___pubiek')],
-								['is_deleted', t('admin/items/views/item-detail___verwijderd')],
+								['uid', tText('admin/items/views/item-detail___av-o-uuid')],
+								['external_id', tText('admin/items/views/item-detail___pid')],
+								['is_published', tText('admin/items/views/item-detail___pubiek')],
+								['is_deleted', tText('admin/items/views/item-detail___verwijderd')],
 							])}
 							{renderDateDetailRows(item, [
-								['created_at', t('admin/items/views/item-detail___aangemaakt-op')],
-								['updated_at', t('admin/items/views/item-detail___aangepast-op')],
-								['issued', t('admin/items/views/item-detail___uitgegeven-op')],
+								[
+									'created_at',
+									tText('admin/items/views/item-detail___aangemaakt-op'),
+								],
+								[
+									'updated_at',
+									tText('admin/items/views/item-detail___aangepast-op'),
+								],
+								['issued', tText('admin/items/views/item-detail___uitgegeven-op')],
 								[
 									'published_at',
-									t('admin/items/views/item-detail___gepubliceert-op'),
+									tText('admin/items/views/item-detail___gepubliceert-op'),
 								],
 								[
 									'publish_at',
-									t('admin/items/views/item-detail___te-publiceren-op'),
+									tText('admin/items/views/item-detail___te-publiceren-op'),
 								],
 								[
 									'depublish_at',
-									t('admin/items/views/item-detail___te-depubliceren-op'),
+									tText('admin/items/views/item-detail___te-depubliceren-op'),
 								],
 							])}
 							{renderSimpleDetailRows(item, [
 								[
 									'depublish_reason',
-									t('admin/items/views/item-detail___reden-tot-depubliceren'),
+									tText('admin/items/views/item-detail___reden-tot-depubliceren'),
 								],
 							])}
 							{renderDetailRow(
@@ -460,12 +477,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								) : (
 									'-'
 								),
-								t('admin/items/views/item-detail___vervangen-door')
+								tText('admin/items/views/item-detail___vervangen-door')
 							)}
 							{renderSimpleDetailRows(item, [
 								[
 									'view_counts_aggregate.aggregate.sum.count',
-									t('admin/items/views/item-detail___views'),
+									tText('admin/items/views/item-detail___views'),
 								],
 							])}
 							{renderDetailRow(
@@ -476,7 +493,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 											</a>
 									  ))
 									: '-',
-								t('admin/items/views/item-detail___ondertitels')
+								tText('admin/items/views/item-detail___ondertitels')
 							)}
 							{renderDetailRow(
 								<>
@@ -496,7 +513,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 										<Toolbar>
 											<ToolbarRight>
 												<Button
-													label={t(
+													label={tText(
 														'admin/items/views/item-detail___opmerkingen-opslaan'
 													)}
 													onClick={saveNotes}
@@ -505,7 +522,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 										</Toolbar>
 									</Spacer>
 								</>,
-								t('admin/items/views/item-detail___opmerkingen')
+								tText('admin/items/views/item-detail___opmerkingen')
 							)}
 						</tbody>
 					</Table>
@@ -514,21 +531,21 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					<DeleteObjectModal
 						title={
 							item.is_published
-								? t('admin/items/views/item-detail___depubliceren')
-								: t('admin/items/views/item-detail___publiceren')
+								? tText('admin/items/views/item-detail___depubliceren')
+								: tText('admin/items/views/item-detail___publiceren')
 						}
 						body={
 							item.is_published
-								? t(
+								? tText(
 										'admin/items/views/item-detail___weet-je-zeker-dat-je-dit-item-wil-depubliceren'
 								  )
-								: t(
+								: tText(
 										'admin/items/views/item-detail___weet-je-zeker-dat-je-dit-item-wil-publiceren'
 								  )
 						}
 						confirmLabel={
 							item.is_published
-								? t('admin/items/views/item-detail___depubliceren')
+								? tText('admin/items/views/item-detail___depubliceren')
 								: 'Publiceren'
 						}
 						isOpen={isConfirmPublishModalOpen}
@@ -555,7 +572,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		return (
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.ITEMS_OVERVIEW)}
-				pageTitle={`${t('admin/items/views/item-detail___item-details')}: ${item.title}`}
+				pageTitle={`${tText('admin/items/views/item-detail___item-details')}: ${
+					item.title
+				}`}
 				size="large"
 			>
 				<AdminLayoutTopBarRight>
@@ -565,18 +584,26 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								type={item.is_published ? 'danger' : 'primary'}
 								label={
 									item.is_published
-										? t('admin/items/views/item-detail___depubliceren')
-										: t('admin/items/views/item-detail___publiceren')
+										? tText('admin/items/views/item-detail___depubliceren')
+										: tText('admin/items/views/item-detail___publiceren')
 								}
 								ariaLabel={
 									item.is_published
-										? t('admin/items/views/item-detail___depubliceer-dit-item')
-										: t('admin/items/views/item-detail___publiceer-dit-item')
+										? tText(
+												'admin/items/views/item-detail___depubliceer-dit-item'
+										  )
+										: tText(
+												'admin/items/views/item-detail___publiceer-dit-item'
+										  )
 								}
 								title={
 									item.is_published
-										? t('admin/items/views/item-detail___depubliceer-dit-item')
-										: t('admin/items/views/item-detail___publiceer-dit-item')
+										? tText(
+												'admin/items/views/item-detail___depubliceer-dit-item'
+										  )
+										: tText(
+												'admin/items/views/item-detail___publiceer-dit-item'
+										  )
 								}
 								onClick={() => {
 									if (item.is_published) {
@@ -587,7 +614,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								}}
 							/>
 							<Button
-								label={t(
+								label={tText(
 									'admin/items/views/item-detail___bekijk-item-in-de-website'
 								)}
 								onClick={navigateToItemDetail}
@@ -606,7 +633,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(item, 'title'),
-						t('admin/items/views/item-detail___item-beheer-detail-pagina-titel')
+						tText('admin/items/views/item-detail___item-beheer-detail-pagina-titel')
 					)}
 				</title>
 				<meta name="description" content={get(item, 'description') || ''} />

@@ -1,7 +1,7 @@
+import { Dropdown, DropdownButton, DropdownContent, Icon } from '@viaa/avo2-components';
+import { noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
-
-import { Dropdown, DropdownButton, DropdownContent, Icon } from '@viaa/avo2-components';
 
 import { BooleanDictionary } from '../../helpers/navigation';
 import { NavigationItemInfo } from '../../types';
@@ -27,7 +27,7 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 	isMobile = false,
 	areDropdownsOpen,
 	setDropdownsOpen,
-	onNavigate = () => {},
+	onNavigate = noop,
 }) => {
 	const setDropdownOpen = (
 		label: string,
@@ -95,5 +95,3 @@ export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
 		</li>
 	);
 };
-
-export default NavigationItem;

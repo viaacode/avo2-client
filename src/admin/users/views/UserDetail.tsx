@@ -1,30 +1,20 @@
 import {
-	Accordion,
 	Button,
 	ButtonToolbar,
 	Checkbox,
 	Container,
 	MenuItemInfo,
 	MoreOptionsDropdown,
-	Spacer,
 	Table,
 	TagList,
 	TagOption,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get, sortBy } from 'lodash-es';
+import { UserTempAccess } from '@viaa/avo2-types/types/user';
+import { get } from 'lodash-es';
 import moment from 'moment';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
@@ -48,7 +38,8 @@ import {
 } from '../../../shared/helpers';
 import { idpMapsToTagList } from '../../../shared/helpers/idps-to-taglist';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -59,12 +50,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import TempAccessModal from '../components/TempAccessModal';
 import UserDeleteModal from '../components/UserDeleteModal';
 import { UserService } from '../user.service';
-import {
-	RawPermissionLink,
-	RawUserGroup,
-	RawUserGroupPermissionGroupLink,
-	UserTempAccess,
-} from '../user.types';
+import { RawUserGroup } from '../user.types';
 
 type UserDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
@@ -82,7 +68,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		useState<boolean>(false);
 	const [shouldSendActionEmail, setShouldSendActionEmail] = useState<boolean>(false);
 
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const hasPerm = useCallback(
 		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
@@ -110,12 +96,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/users/views/user-detail___het-ophalen-van-de-gebruiker-info-is-mislukt'
 				),
 			});
 		}
-	}, [setStoredProfile, setLoadingInfo, t, match.params.id]);
+	}, [setStoredProfile, setLoadingInfo, tText, match.params.id]);
 
 	useEffect(() => {
 		fetchProfileById();
@@ -130,7 +116,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	}, [storedProfile, setLoadingInfo]);
 
 	const getLdapDashboardUrl = () => {
-		const ipdMapEntry = (get(storedProfile, 'idps') || []).find(
+		const ipdMapEntry = (get(storedProfile as any, 'idps') || []).find(
 			(idpMap: { idp: string; idp_user_id: string }) => idpMap.idp === 'HETARCHIEF'
 		);
 
@@ -160,12 +146,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 				ToastService.success(
 					isBlocked
-						? t('admin/users/views/user-detail___gebruiker-is-gedeblokkeerd')
-						: t('admin/users/views/user-detail___gebruiker-is-geblokkeerd')
+						? tText('admin/users/views/user-detail___gebruiker-is-gedeblokkeerd')
+						: tText('admin/users/views/user-detail___gebruiker-is-geblokkeerd')
 				);
 			} else {
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt-omdat-zijn-id-niet-kon-worden-gevonden'
 					)
 				);
@@ -178,7 +164,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			);
 
 			ToastService.danger(
-				t('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt')
+				tHtml('admin/users/views/user-detail___het-updaten-van-de-gebruiker-is-mislukt')
 			);
 		}
 	};
@@ -188,13 +174,13 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			? [
 					createDropdownMenuItem(
 						'tempAccess',
-						t('admin/users/views/user-detail___tijdelijke-toegang'),
+						tText('admin/users/views/user-detail___tijdelijke-toegang'),
 						'clock'
 					),
 			  ]
 			: []),
-		createDropdownMenuItem('edit', t('admin/users/views/user-detail___bewerken')),
-		createDropdownMenuItem('delete', t('admin/users/views/user-detail___verwijderen')),
+		createDropdownMenuItem('edit', tText('admin/users/views/user-detail___bewerken')),
+		createDropdownMenuItem('delete', tText('admin/users/views/user-detail___verwijderen')),
 	];
 
 	const executeAction = async (item: ReactText) => {
@@ -241,7 +227,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			await fetchProfileById();
 
 			ToastService.success(
-				t('admin/users/views/user-detail___tijdelijke-toegang-werd-successvol-geupdated')
+				tHtml(
+					'admin/users/views/user-detail___tijdelijke-toegang-werd-successvol-geupdated'
+				)
 			);
 		} catch (err) {
 			console.error(
@@ -251,7 +239,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			);
 
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/users/views/user-detail___het-updaten-van-de-tijdelijke-toegang-is-mislukt'
 				)
 			);
@@ -265,10 +253,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		const from = get(tempAccess, 'from');
 		const until = get(tempAccess, 'until');
 		return from
-			? `${t('admin/users/views/user-detail___van')} ${formatDate(from)} ${t(
+			? `${tText('admin/users/views/user-detail___van')} ${formatDate(from)} ${tText(
 					'admin/users/views/user-detail___tot'
 			  )} ${formatDate(until)}`
-			: `${t('admin/users/views/user-detail___tot')} ${formatDate(until)}`;
+			: `${tText('admin/users/views/user-detail___tot')} ${formatDate(until)}`;
 	};
 
 	const renderTempAccessDuration = (tempAccess: UserTempAccess | null): string => {
@@ -280,100 +268,11 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return '-';
 		}
 		const until = get(tempAccess, 'until') || '';
-		const months = moment
-			.duration(normalizeTimestamp(until).diff(normalizeTimestamp(from)))
-			.humanize();
-		return months;
-	};
-
-	const renderList = (list: { id: number; label: string }[], path?: string): ReactNode => {
-		return (
-			<Table horizontal variant="invisible" className="c-table_detail-page">
-				<tbody>
-					{list.map((item) => {
-						return (
-							<tr key={`user-group-row-${item.id}`}>
-								<td>
-									{path ? (
-										<Link
-											to={buildLink(path, {
-												id: item.id,
-											})}
-										>
-											{item.label}
-										</Link>
-									) : (
-										item.label
-									)}
-								</td>
-							</tr>
-						);
-					})}
-				</tbody>
-			</Table>
-		);
-	};
-
-	const renderPermissionLists = () => {
-		const permissionGroups: { id: number; label: string }[] = [];
-		const permissions: { id: number; label: string }[] = [];
-
-		const profileUserGroup: RawUserGroup = get(
-			storedProfile,
-			'profile.profile_user_group.group',
-			[]
-		);
-
-		const rawPermissionGroups: RawUserGroupPermissionGroupLink[] = get(
-			profileUserGroup,
-			'group_user_permission_groups',
-			[]
-		);
-
-		rawPermissionGroups.forEach((permissionGroup) => {
-			permissionGroups.push({
-				id: get(permissionGroup, 'group.id'),
-				label: get(permissionGroup, 'group.label'),
-			});
-
-			const rawPermissions: RawPermissionLink[] = get(
-				permissionGroup.permission_group,
-				'permission_group_user_permissions'
-			);
-
-			rawPermissions.map((permission) =>
-				permissions.push({
-					id: permission.permission.id,
-					label: permission.permission.label,
-				})
-			);
-		});
-
-		return (
-			<>
-				<Spacer margin="top-extra-large">
-					<Accordion
-						title={t('admin/users/views/user-detail___permissiegroepen')}
-						isOpen={false}
-					>
-						{renderList(
-							sortBy(permissionGroups, 'label'),
-							ADMIN_PATH.PERMISSION_GROUP_DETAIL
-						)}
-					</Accordion>
-					<Accordion
-						title={t('admin/users/views/user-detail___permissies')}
-						isOpen={false}
-					>
-						{renderList(sortBy(permissions, 'label'))}
-					</Accordion>
-				</Spacer>
-			</>
-		);
+		return moment.duration(normalizeTimestamp(until).diff(normalizeTimestamp(from))).humanize();
 	};
 
 	const renderUserDetail = () => {
-		if (!storedProfile) {
+		if (!storedProfile || !storedProfile) {
 			console.error(
 				new CustomError(
 					'Failed to load user because render function is called before user was fetched'
@@ -382,7 +281,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile.profile_user_group.group');
+		const userGroup: RawUserGroup = get(
+			storedProfile as any,
+			'profile.profile_user_group.group'
+		);
 
 		const eduOrgs: {
 			unit_id: string;
@@ -398,94 +300,98 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
 							{renderDetailRow(
-								renderAvatar(get(storedProfile, 'profile'), { small: false }),
-								t('admin/users/views/user-detail___avatar')
+								renderAvatar(storedProfile, { small: false }),
+								tText('admin/users/views/user-detail___avatar')
 							)}
 							{renderSimpleDetailRows(storedProfile, [
-								['first_name', t('admin/users/views/user-detail___voornaam')],
-								['last_name', t('admin/users/views/user-detail___achternaam')],
+								['first_name', tText('admin/users/views/user-detail___voornaam')],
+								['last_name', tText('admin/users/views/user-detail___achternaam')],
 								[
 									'profile.alias',
-									t('admin/users/views/user-detail___gebruikersnaam'),
+									tText('admin/users/views/user-detail___gebruikersnaam'),
 								],
-								['profile.title', t('admin/users/views/user-detail___functie')],
-								['profile.bio', t('admin/users/views/user-detail___bio')],
-								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],
-								['mail', t('admin/users/views/user-detail___primair-email-adres')],
+								['profile.title', tText('admin/users/views/user-detail___functie')],
+								['profile.bio', tText('admin/users/views/user-detail___bio')],
+								[
+									'stamboek',
+									tText('admin/users/views/user-detail___stamboek-nummer'),
+								],
+								[
+									'mail',
+									tText('admin/users/views/user-detail___primair-email-adres'),
+								],
 								[
 									'profile.alternative_email',
-									t('admin/users/views/user-detail___secundair-email-adres'),
+									tText('admin/users/views/user-detail___secundair-email-adres'),
 								],
 							])}
 							{renderDetailRow(
-								userGroup ? (
-									<Link
-										to={buildLink(ADMIN_PATH.USER_GROUP_DETAIL, {
-											id: userGroup.id,
-										})}
-									>
-										{userGroup.label}
-									</Link>
-								) : (
-									'-'
-								),
-								t('admin/users/views/user-detail___gebruikersgroep')
+								userGroup ? userGroup.label : '-',
+								tText('admin/users/views/user-detail___gebruikersgroep')
 							)}
 							{renderDateDetailRows(storedProfile, [
 								[
 									'acc_created_at',
-									t('admin/users/views/user-detail___aangemaakt-op'),
+									tText('admin/users/views/user-detail___aangemaakt-op'),
 								],
 								[
 									'acc_updated_at',
-									t('admin/users/views/user-detail___aangepast-op'),
+									tText('admin/users/views/user-detail___aangepast-op'),
 								],
 								[
 									'last_access_at',
-									t('admin/users/views/user-detail___laatste-toegang'),
+									tText('admin/users/views/user-detail___laatste-toegang'),
 								],
 							])}
 							{renderSimpleDetailRows(storedProfile, [
-								['business_category', t('admin/users/views/user-detail___oormerk')],
+								[
+									'business_category',
+									tText('admin/users/views/user-detail___oormerk'),
+								],
 								[
 									'is_exception',
-									t('admin/users/views/user-detail___uitzonderingsaccount'),
+									tText('admin/users/views/user-detail___uitzonderingsaccount'),
 								],
-								['is_blocked', t('admin/users/views/user-detail___geblokkeerd')],
+								[
+									'is_blocked',
+									tText('admin/users/views/user-detail___geblokkeerd'),
+								],
 							])}
 							{renderDateDetailRows(storedProfile, [
 								[
 									'last_blocked_at.aggregate.max.created_at',
-									t('admin/users/views/user-detail___laatst-geblokeerd-op'),
+									tText('admin/users/views/user-detail___laatst-geblokeerd-op'),
 								],
 								[
 									'last_unblocked_at.aggregate.max.created_at',
-									t('admin/users/views/user-detail___laatst-gedeblokkeerd-op'),
+									tText(
+										'admin/users/views/user-detail___laatst-gedeblokkeerd-op'
+									),
 								],
 							])}
 							{hasPerm(PermissionName.EDIT_USER_TEMP_ACCESS) &&
 								renderDetailRow(
 									renderTempAccess(tempAccess),
-									t('admin/users/views/user-detail___tijdelijk-account')
+									tText('admin/users/views/user-detail___tijdelijk-account')
 								)}
 							{hasPerm(PermissionName.EDIT_USER_TEMP_ACCESS) &&
 								renderDetailRow(
 									renderTempAccessDuration(tempAccess),
-									t('admin/users/views/user-detail___totale-toegang')
+									tText('admin/users/views/user-detail___totale-toegang')
 								)}
 							{renderDetailRow(
 								idpMapsToTagList(
 									get(storedProfile, 'idps', []).map((idpMap: any) => idpMap.idp),
 									'idps'
 								) || '-',
-								t('admin/users/views/user-detail___gelinked-aan')
+								tText('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(
 								stringsToTagList(
 									get(storedProfile, 'classifications', []),
 									'key'
 								) || '-',
-								t('admin/users/views/user-detail___vakken')
+								tText('admin/users/views/user-detail___vakken')
 							)}
 							{renderDetailRow(
 								get(storedProfile, 'contexts', [] as any[]).length ? (
@@ -502,7 +408,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								) : (
 									'-'
 								),
-								t('admin/users/views/user-detail___opleidingsniveaus')
+								tText('admin/users/views/user-detail___opleidingsniveaus')
 							)}
 							{renderDetailRow(
 								eduOrgs.length ? (
@@ -517,15 +423,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								) : (
 									'-'
 								),
-								t('admin/users/views/user-detail___educatieve-organisaties')
+								tText('admin/users/views/user-detail___educatieve-organisaties')
 							)}
 							{renderDetailRow(
 								get(storedProfile, 'company_name') || '-',
-								t('admin/users/views/user-detail___bedrijf')
+								tText('admin/users/views/user-detail___bedrijf')
 							)}
 						</tbody>
 					</Table>
-					{renderPermissionLists()}
 				</Container>
 			</Container>
 		);
@@ -537,15 +442,15 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	const renderUserDetailPage = () => {
 		const isBlocked = get(storedProfile, 'is_blocked');
 		const blockButtonTooltip = isBlocked
-			? t(
+			? tText(
 					'admin/users/views/user-detail___laat-deze-gebruiker-terug-toe-op-het-av-o-platform'
 			  )
-			: t('admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform');
+			: tText('admin/users/views/user-detail___ban-deze-gebruiker-van-het-av-o-platform');
 		return (
 			<>
 				<AdminLayout
 					onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
-					pageTitle={t('admin/users/views/user-detail___gebruiker-details')}
+					pageTitle={tText('admin/users/views/user-detail___gebruiker-details')}
 					size="large"
 				>
 					<AdminLayoutTopBarRight>
@@ -555,8 +460,8 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 									type={isBlocked ? 'primary' : 'danger'}
 									label={
 										isBlocked
-											? t('admin/users/views/user-detail___deblokkeren')
-											: t('admin/users/views/user-detail___blokkeren')
+											? tText('admin/users/views/user-detail___deblokkeren')
+											: tText('admin/users/views/user-detail___blokkeren')
 									}
 									title={blockButtonTooltip}
 									ariaLabel={blockButtonTooltip}
@@ -575,19 +480,19 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								rel="noopener noreferrer"
 							>
 								<Button
-									label={t(
+									label={tText(
 										'admin/users/views/user-detail___beheer-in-account-manager'
 									)}
-									ariaLabel={t(
+									ariaLabel={tText(
 										'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
 									)}
 									disabled={!getLdapDashboardUrl()}
 									title={
 										getLdapDashboardUrl()
-											? t(
+											? tText(
 													'admin/users/views/user-detail___open-deze-gebruiker-in-het-account-beheer-dashboard-van-meemoo'
 											  )
-											: t(
+											: tText(
 													'admin/users/views/user-detail___deze-gebruiker-is-niet-gelinked-aan-een-archief-account'
 											  )
 									}
@@ -623,18 +528,18 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 						setShouldSendActionEmail(false);
 						await toggleBlockedStatus();
 					}}
-					title={t('admin/users/views/user-detail___bevestig')}
-					confirmLabel={t('admin/users/views/user-detail___deactiveren')}
+					title={tText('admin/users/views/user-detail___bevestig')}
+					confirmLabel={tText('admin/users/views/user-detail___deactiveren')}
 					size={'medium'}
 					body={
 						<>
 							<strong>
-								{t(
+								{tText(
 									'admin/users/views/user-detail___weet-je-zeker-dat-je-deze-gebruiker-wil-deactiveren'
 								)}
 							</strong>
 							<Checkbox
-								label={t(
+								label={tText(
 									'admin/users/views/user-detail___breng-de-gebruiker-op-de-hoogte-van-deze-actie'
 								)}
 								checked={shouldSendActionEmail}
@@ -657,19 +562,19 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 						setShouldSendActionEmail(false);
 						await toggleBlockedStatus();
 					}}
-					title={t('admin/users/views/user-detail___bevestig')}
-					confirmLabel={t('admin/users/views/user-detail___opnieuw-activeren')}
+					title={tText('admin/users/views/user-detail___bevestig')}
+					confirmLabel={tText('admin/users/views/user-detail___opnieuw-activeren')}
 					confirmButtonType={'primary'}
 					size={'medium'}
 					body={
 						<>
 							<strong>
-								{t(
+								{tHtml(
 									'admin/users/views/user-detail___weet-je-zeker-dat-je-deze-gebruiker-opnieuw-wil-activeren'
 								)}
 							</strong>
 							<Checkbox
-								label={t(
+								label={tText(
 									'admin/users/views/user-detail___breng-de-gebruiker-op-de-hoogte-van-deze-actie'
 								)}
 								checked={shouldSendActionEmail}
@@ -680,12 +585,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 						</>
 					}
 				/>
-				<UserDeleteModal
-					selectedProfileIds={[get(storedProfile, 'profile_id')]}
-					isOpen={userDeleteModalOpen}
-					onClose={() => setUserDeleteModalOpen(false)}
-					deleteCallback={deleteCallback}
-				/>
+				{storedProfile && (
+					<UserDeleteModal
+						selectedProfileIds={[storedProfile.id]}
+						isOpen={userDeleteModalOpen}
+						onClose={() => setUserDeleteModalOpen(false)}
+						deleteCallback={deleteCallback}
+					/>
+				)}
 			</>
 		);
 	};
@@ -696,12 +603,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 				<title>
 					{GENERATE_SITE_TITLE(
 						`${get(storedProfile, 'first_name')} ${get(storedProfile, 'last_name')}`,
-						t('admin/users/views/user-detail___item-detail-pagina-titel')
+						tText('admin/users/views/user-detail___item-detail-pagina-titel')
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
 					)}
 				/>

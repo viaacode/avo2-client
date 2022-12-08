@@ -1,15 +1,14 @@
+import { BlockSpotlight, ButtonAction, ImageInfo, RenderLinkFunction } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { withRouter } from 'react-router';
 import { compose } from 'redux';
-
-import { BlockSpotlight, ButtonAction, ImageInfo, RenderLinkFunction } from '@viaa/avo2-components';
 
 import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
 import { CustomError } from '../../../../../shared/helpers';
 import withUser from '../../../../../shared/hocs/withUser';
+import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { ContentPageService } from '../../../../../shared/services/content-page-service';
 import { ContentPageInfo } from '../../../../content/content.types';
 
@@ -27,7 +26,7 @@ interface ProjectSpotlightWrapperProps {
 const ProjectSpotlightWrapper: FunctionComponent<
 	ProjectSpotlightWrapperProps & DefaultSecureRouteProps
 > = ({ elements, renderLink }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [projectContentPages, setProjectContentPages] = useState<
@@ -50,13 +49,13 @@ const ProjectSpotlightWrapper: FunctionComponent<
 			console.error(new CustomError('Failed to get projects by path', err, { elements }));
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/content-block/components/wrappers/project-spotlight-wrapper/project-spotlight-wrapper___het-ophalen-van-de-projecten-in-de-kijker-is-mislukt'
 				),
 				actionButtons: [],
 			});
 		}
-	}, [elements, setProjectContentPages, setLoadingInfo, t]);
+	}, [elements, setProjectContentPages, setLoadingInfo, tText]);
 
 	useEffect(() => {
 		fetchContentPages();

@@ -21,16 +21,16 @@ const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (pro
 			cuePointsVideo={
 				block
 					? {
-							start: block.start_oc,
-							end: block.end_oc,
+							start: block.start_oc || null,
+							end: block.end_oc || null,
 					  }
 					: undefined
 			}
 			cuePointsLabel={
 				block
 					? {
-							start: block.start_oc,
-							end: block.end_oc,
+							start: block.start_oc || null,
+							end: block.end_oc || null,
 					  }
 					: undefined
 			}

@@ -1,0 +1,5 @@
+mutation deleteAssignmentById($assignmentId: uuid!) {
+	delete_app_assignments_v2(where: { id: { _eq: $assignmentId } }) {
+		affected_rows
+	}
+}

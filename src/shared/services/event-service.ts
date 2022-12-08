@@ -1,16 +1,18 @@
-import { get } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { get, noop } from 'lodash-es';
 
+import {
+	InsertCollectionBookmarkDocument,
+	InsertItemBookmarkDocument,
+} from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
-import { INSERT_COLLECTION_BOOKMARK, INSERT_ITEM_BOOKMARK } from './bookmarks-views-plays-service';
 import { dataService } from './data-service';
 
 const EVENT_QUERIES = {
 	bookmark: {
 		item: {
-			query: INSERT_ITEM_BOOKMARK,
+			query: InsertItemBookmarkDocument,
 			variables: (contentId: string, profileId: string) => ({
 				bookmarkItem: {
 					item_id: contentId,
@@ -19,7 +21,7 @@ const EVENT_QUERIES = {
 			}),
 		},
 		collection: {
-			query: INSERT_COLLECTION_BOOKMARK,
+			query: InsertCollectionBookmarkDocument,
 			variables: (contentId: string, profileId: string) => ({
 				bookmarkItem: {
 					collection_id: contentId,
@@ -30,6 +32,7 @@ const EVENT_QUERIES = {
 	},
 };
 
+// TODO figure out why this is not used
 export async function trackEvent(
 	action: 'bookmark' | 'unbookmark' | 'view' | 'play',
 	contentType: 'item' | 'collection' | 'bundle',
@@ -45,21 +48,18 @@ export async function trackEvent(
 			);
 		}
 		const query = get(EVENT_QUERIES, [action, contentType, 'query']);
-		const variables = get(EVENT_QUERIES, [action, contentType, 'variables'], () => {})(
-			contentId,
-			profileId
-		);
+		const variables = get(
+			EVENT_QUERIES,
+			[action, contentType, 'variables'],
+			noop
+		)(contentId, profileId);
 		if (!query || !variables) {
 			throw new CustomError(
 				'Failed to find query/variables to execute query in the database',
 				null
 			);
 		}
-		const response = await dataService.query({ query, variables });
-
-		if (response.errors) {
-			throw new CustomError('Graphql errors', null, { errors: response.errors });
-		}
+		await dataService.query({ query, variables });
 	} catch (err) {
 		console.error('Failed to track metric event to the database', err, {
 			action,

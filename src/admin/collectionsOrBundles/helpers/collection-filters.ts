@@ -6,6 +6,7 @@ import {
 	PermissionService,
 } from '../../../authentication/helpers/permission-service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -166,11 +167,13 @@ export function generateCollectionWhereObject(
 	if (!isNil(isCopy)) {
 		if (isCopy === 'true') {
 			andFilters.push({
-				relations: { predicate: { _eq: 'IS_COPY_OF' } },
+				relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
 			});
 		} else if (isCopy === 'false') {
 			andFilters.push({
-				_not: { relations: { predicate: { _eq: 'IS_COPY_OF' } } },
+				_not: {
+					relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
+				},
 			});
 		}
 	}

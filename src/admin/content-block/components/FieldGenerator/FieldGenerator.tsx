@@ -1,7 +1,6 @@
+import { Button, Flex, FlexItem, FormGroup, Spacer } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { Fragment, FunctionComponent } from 'react';
-
-import { Button, Flex, FlexItem, FormGroup, Spacer } from '@viaa/avo2-components';
 
 import {
 	ContentBlockComponentState,
@@ -80,42 +79,54 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 		fieldOrFieldGroupInstance: ContentBlockField | ContentBlockFieldGroup,
 		currentState: any = []
 	) => {
+		// REPEATED FIELDGROUP
+		const renderFieldGroups = (
+			fieldGroup: ContentBlockFieldGroup,
+			singleState: any,
+			singleStateIndex = 0
+		) => (
+			<Spacer key={`${fieldGroup.label}-${singleStateIndex}`} margin="top-large">
+				<Flex>
+					<FlexItem>{`${fieldGroup.label} ${singleStateIndex + 1}`}</FlexItem>
+					<FlexItem shrink>
+						{currentState.length >
+							(fieldGroup.min !== undefined ? fieldGroup.min : 1) &&
+							renderDeleteButton(
+								currentState,
+								get(fieldGroup, 'repeat.deleteButtonLabel'),
+								singleStateIndex
+							)}
+					</FlexItem>
+				</Flex>
+				<FieldGroup
+					globalState={currentState}
+					globalStateIndex={stateIndex || 0}
+					fieldKey={fieldKey}
+					fieldGroup={fieldGroup}
+					fieldGroupState={singleState}
+					fieldGroupStateIndex={singleStateIndex}
+					type={type}
+					handleChange={handleChange}
+				/>
+			</Spacer>
+		);
+
+		const handleStateChange = (index: any, value: any, key?: string) => {
+			const newState = [...currentState];
+
+			newState[index] = value;
+
+			handleChange(type, key || fieldKey, newState, stateIndex);
+		};
+
 		switch ((fieldOrFieldGroupInstance as ContentBlockFieldGroup).type) {
-			case 'fieldGroup':
+			case 'fieldGroup': {
 				const fieldGroup: ContentBlockFieldGroup =
 					fieldOrFieldGroupInstance as ContentBlockFieldGroup;
 
 				if (!fieldGroup) {
 					return null;
 				}
-
-				// REPEATED FIELDGROUP
-				const renderFieldGroups = (singleState: any, singleStateIndex: number = 0) => (
-					<Spacer key={`${fieldGroup.label}-${singleStateIndex}`} margin="top-large">
-						<Flex>
-							<FlexItem>{`${fieldGroup.label} ${singleStateIndex + 1}`}</FlexItem>
-							<FlexItem shrink>
-								{currentState.length >
-									(fieldGroup.min !== undefined ? fieldGroup.min : 1) &&
-									renderDeleteButton(
-										currentState,
-										get(fieldGroup, 'repeat.deleteButtonLabel'),
-										singleStateIndex
-									)}
-							</FlexItem>
-						</Flex>
-						<FieldGroup
-							globalState={currentState}
-							globalStateIndex={stateIndex || 0}
-							fieldKey={fieldKey}
-							fieldGroup={fieldGroup}
-							fieldGroupState={singleState}
-							fieldGroupStateIndex={singleStateIndex}
-							type={type}
-							handleChange={handleChange}
-						/>
-					</Spacer>
-				);
 
 				if (fieldGroup.repeat) {
 					return (
@@ -145,20 +156,14 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 						{renderFieldGroups(currentState, stateIndex)}
 					</Fragment>
 				);
+			}
+
 			case 'field':
-			default:
+			default: {
 				const field: ContentBlockField = fieldOrFieldGroupInstance as ContentBlockField;
 				const EditorComponent = (EDITOR_TYPES_MAP as any)[
 					(field as ContentBlockField).editorType
 				];
-
-				const handleStateChange = (index: any, value: any, key?: string) => {
-					const newState = [...currentState];
-
-					newState[index] = value;
-
-					handleChange(type, key || fieldKey, newState, stateIndex);
-				};
 
 				// REPEATED FIELD
 				if (field.repeat) {
@@ -230,6 +235,7 @@ export const FieldGenerator: FunctionComponent<FieldGeneratorProps> = ({
 				);
 
 				return <EditorComponent {...defaultProps} {...editorProps} />;
+			}
 		}
 	};
 

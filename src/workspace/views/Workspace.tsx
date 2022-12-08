@@ -21,10 +21,8 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { ApolloQueryResult } from 'apollo-client';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { AssignmentOverview } from '../../assignment/views';
@@ -40,8 +38,13 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import {
+	GetWorkspaceTabCountsDocument,
+	GetWorkspaceTabCountsQuery,
+} from '../../shared/generated/graphql-db-types';
 import { buildLink, isMobileWidth, navigate } from '../../shared/helpers';
-import { dataService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { dataService } from '../../shared/services/data-service';
 import {
 	ASSIGNMENTS_ID,
 	BOOKMARKS_ID,
@@ -51,7 +54,6 @@ import {
 	ORGANISATION_CONTENT_ID,
 	QUICK_LANE_ID,
 } from '../workspace.const';
-import { GET_WORKSPACE_TAB_COUNTS } from '../workspace.gql';
 import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';
@@ -65,14 +67,14 @@ export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string 
 }
 
 // Using `hasAtLeastOnePerm` to avoid async
-const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown>): number => {
+const getQuickLaneCount = (user: UserSchema, response: GetWorkspaceTabCountsQuery): number => {
 	// Show count of personal quick lane
 	if (
 		PermissionService.hasAtLeastOnePerm(user, [
 			PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 		])
 	) {
-		return get(response, 'data.app_quick_lane_counts.aggregate.count', 0);
+		return response.app_quick_lane_counts.aggregate?.count || 0;
 	}
 
 	if (
@@ -80,7 +82,7 @@ const getQuickLaneCount = (user: UserSchema, response: ApolloQueryResult<unknown
 			PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
 		])
 	) {
-		return get(response, 'data.app_quick_lane_organisation_counts.aggregate.count', 0);
+		return response.app_quick_lane_organisation_counts.aggregate?.count || 0;
 	}
 
 	return 0;
@@ -97,7 +99,7 @@ interface WorkspacePermissions {
 }
 
 const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
@@ -116,8 +118,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	const updatePermissionsAndCounts = useCallback(() => {
 		Promise.all([
-			dataService.query({
-				query: GET_WORKSPACE_TAB_COUNTS,
+			dataService.query<GetWorkspaceTabCountsQuery>({
+				query: GetWorkspaceTabCountsDocument,
 				variables: {
 					owner_profile_id: getProfileId(user),
 					company_id: get(user, 'profile.company_id') || 'EMPTY',
@@ -141,17 +143,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 		])
 			.then((response) => {
 				setTabCounts({
-					[COLLECTIONS_ID]: get(response[0], 'data.collection_counts.aggregate.count', 0),
-					[BUNDLES_ID]: get(response[0], 'data.bundle_counts.aggregate.count', 0),
-					[ASSIGNMENTS_ID]: get(response[0], 'data.assignment_counts.aggregate.count', 0),
+					[COLLECTIONS_ID]: response[0].collection_counts.aggregate?.count ?? 0,
+					[BUNDLES_ID]: response[0].bundle_counts.aggregate?.count ?? 0,
+					[ASSIGNMENTS_ID]: response[0].assignment_counts.aggregate?.count ?? 0,
 					[BOOKMARKS_ID]:
-						get(response[0], 'data.item_bookmark_counts.aggregate.count', 0) +
-						get(response[0], 'data.collection_bookmark_counts.aggregate.count', 0),
-					[ORGANISATION_CONTENT_ID]: get(
-						response[0],
-						'data.organisation_content_counts.aggregate.count',
-						0
-					),
+						(response[0].item_bookmark_counts.aggregate?.count ?? 0) +
+						(response[0].collection_bookmark_counts.aggregate?.count ?? 0),
+					[ORGANISATION_CONTENT_ID]:
+						response[0].organisation_content_counts.aggregate?.count ?? 0,
 					[QUICK_LANE_ID]: getQuickLaneCount(user, response[0]),
 				});
 				setPermissions({
@@ -172,12 +171,12 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'
 					),
 				});
 			});
-	}, [user, t, setPermissions]);
+	}, [user, tText, setPermissions]);
 
 	// Make map for available tab views
 	useEffect(() => {
@@ -270,7 +269,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				  }
 				: empty,
 		});
-	}, [tabCounts, permissions, t, history, location, match, user, updatePermissionsAndCounts]);
+	}, [tabCounts, permissions, tText, history, location, match, user, updatePermissionsAndCounts]);
 
 	const goToTab = useCallback(
 		(id: ReactText) => {
@@ -310,14 +309,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			} else {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken'
 					),
 					icon: 'lock',
 				});
 			}
 		}
-	}, [setLoadingInfo, getActiveTab, t, permissions, tabs]);
+	}, [setLoadingInfo, getActiveTab, tText, permissions, tabs]);
 
 	const getNavTabs = useCallback(() => {
 		return compact(
@@ -426,9 +425,9 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					permissions.canCreateAssignments && (
 						<Button
 							type="primary"
-							label={t('workspace/views/workspace___nieuwe-opdracht')}
+							label={tText('workspace/views/workspace___nieuwe-opdracht')}
 							onClick={handleCreateNewAssignmentClick}
-							title={t(
+							title={tText(
 								'workspace/views/workspace___maak-een-opdracht-voor-je-leerlingen'
 							)}
 						/>
@@ -451,9 +450,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 						<Toolbar>
 							<ToolbarLeft>
 								<BlockHeading type="h2" className="u-m-0">
-									<Trans i18nKey="workspace/views/workspace___mijn-werkruimte">
-										Mijn Werkruimte
-									</Trans>
+									{tHtml('workspace/views/workspace___mijn-werkruimte')}
 								</BlockHeading>
 							</ToolbarLeft>
 
@@ -486,12 +483,14 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t('workspace/views/workspace___mijn-werkruimte-pagina-titel')
+						tText('workspace/views/workspace___mijn-werkruimte-pagina-titel')
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t('workspace/views/workspace___mijn-werkruimte-pagina-beschrijving')}
+					content={tText(
+						'workspace/views/workspace___mijn-werkruimte-pagina-beschrijving'
+					)}
 				/>
 			</MetaTags>
 			<LoadingErrorLoadedComponent

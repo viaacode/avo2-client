@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -13,9 +10,11 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { noop } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { ToastService } from '../../services';
-import i18n from '../../translations/i18n';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../services/toast-service';
 
 interface InputModalProps {
 	title?: string;
@@ -35,18 +34,16 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	inputValue,
 	inputCallback,
 	isOpen,
-	title = i18n.t('shared/components/input-modal/input-modal___vul-in'),
+	title,
 	inputLabel = '',
 	inputPlaceholder = '',
 	maxLength,
-	cancelLabel = i18n.t('shared/components/input-modal/input-modal___annuleer'),
-	confirmLabel = i18n.t('shared/components/input-modal/input-modal___opslaan'),
-	onClose = () => {},
-	emptyMessage = i18n.t(
-		'shared/components/input-modal/input-modal___gelieve-een-waarde-in-te-vullen'
-	),
+	cancelLabel,
+	confirmLabel,
+	onClose = noop,
+	emptyMessage,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [input, setInput] = useState<string>('');
 
@@ -64,7 +61,12 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 
 	const onClickConfirm = () => {
 		if (!input) {
-			ToastService.danger(emptyMessage);
+			ToastService.danger(
+				emptyMessage ||
+					tHtml(
+						'shared/components/input-modal/input-modal___gelieve-een-waarde-in-te-vullen'
+					)
+			);
 			return null;
 		}
 
@@ -78,7 +80,13 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 
 	// Render
 	return (
-		<Modal isOpen={isOpen} title={title} size="small" onClose={onClickClose} scrollable>
+		<Modal
+			isOpen={isOpen}
+			title={title || tText('shared/components/input-modal/input-modal___vul-in')}
+			size="small"
+			onClose={onClickClose}
+			scrollable
+		>
 			<ModalBody>
 				<Spacer margin="bottom-large">
 					<FormGroup label={inputLabel} labelFor="collectionNameId" required>
@@ -92,7 +100,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 							<Spacer margin="top-small">
 								<span>
 									{isInputTooLong()
-										? `${t(
+										? `${tText(
 												'shared/components/input-modal/input-modal___de-invoer-is-te-lang-maxiumum-lengte'
 										  )} ${maxLength}`
 										: `${input.length}/${maxLength}`}
@@ -107,13 +115,21 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={cancelLabel}
+									label={
+										cancelLabel ||
+										tText(
+											'shared/components/input-modal/input-modal___annuleer'
+										)
+									}
 									onClick={onClickClose}
 								/>
 								<Button
 									type="primary"
-									label={confirmLabel}
-									onClick={isInputTooLong() ? () => {} : onClickConfirm}
+									label={
+										confirmLabel ||
+										tText('shared/components/input-modal/input-modal___opslaan')
+									}
+									onClick={isInputTooLong() ? noop : onClickConfirm}
 									disabled={isInputTooLong()}
 								/>
 							</ButtonToolbar>

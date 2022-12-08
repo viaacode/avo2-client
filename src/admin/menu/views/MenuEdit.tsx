@@ -1,9 +1,3 @@
-import { ApolloQueryResult } from 'apollo-boost';
-import { compact, get, isNil, startCase, uniq, uniqBy, without } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
 import {
 	Badge,
 	Button,
@@ -15,15 +9,23 @@ import {
 	TagInfo,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { compact, get, isNil, startCase, uniq, uniqBy, without } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import MetaTags from 'react-meta-tags';
 
 import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import {
+	GetPermissionsFromContentPageByPathDocument,
+	GetPermissionsFromContentPageByPathQuery,
+} from '../../../shared/generated/graphql-db-types';
 import { CustomError, navigate } from '../../../shared/helpers';
-import { dataService, ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { dataService } from '../../../shared/services/data-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ValueOf } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
-import { GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH } from '../../content/content.gql';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import { useUserGroupOptions } from '../../user-groups/hooks/useUserGroupOptions';
@@ -32,10 +34,10 @@ import { GET_PAGE_TYPES_LANG, INITIAL_MENU_FORM, MENU_PATH } from '../menu.const
 import { MenuService } from '../menu.service';
 import { MenuEditFormErrorState, MenuEditPageType, MenuEditParams } from '../menu.types';
 
-interface MenuEditProps extends DefaultSecureRouteProps<MenuEditParams> {}
+type MenuEditProps = DefaultSecureRouteProps<MenuEditParams>;
 
 const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const { menu: menuParentId, id: menuItemId } = match.params;
 	const menuName = startCase(menuParentId);
@@ -62,7 +64,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				} else {
 					// Go back to overview if no menu items are present
 					ToastService.danger(
-						t(
+						tHtml(
 							'admin/menu/views/menu-edit___er-werden-geen-navigatie-items-gevonden-voor-menu-name',
 							{
 								menuName,
@@ -75,10 +77,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			.catch((err) => {
 				console.error(new CustomError('Failed to fetch menu items', err));
 				ToastService.danger(
-					t('admin/menu/views/menu-edit___het-ophalen-van-de-menu-items-is-mislukt')
+					tHtml('admin/menu/views/menu-edit___het-ophalen-van-de-menu-items-is-mislukt')
 				);
 			});
-	}, [history, menuName, menuParentId, t]);
+	}, [history, menuName, menuParentId, tText]);
 
 	// Fetch menu item by id
 	useEffect(() => {
@@ -112,16 +114,12 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	}, [menuItemId, menuParentId]);
 
 	const checkMenuItemContentPagePermissionsMismatch = useCallback(
-		(response: ApolloQueryResult<any>) => {
-			let contentUserGroupIds: number[] = get(
-				response,
-				'data.app_content[0].user_group_ids',
-				[]
-			);
+		(response: GetPermissionsFromContentPageByPathQuery) => {
+			let contentUserGroupIds: number[] = response.app_content[0].user_group_ids || [];
 			const navItemUserGroupIds: number[] = menuForm.user_group_ids || [];
 			const allUserGroupIds: number[] = allUserGroups.map((ug) => ug.value as number);
 
-			// Add all user groups to content page user groups if content page is accessible by special user group: logged in users
+			// Add all user groups to content page user groups if content page is accessible by special user group: logged-in users
 			if (contentUserGroupIds.includes(SpecialPermissionGroups.loggedInUsers)) {
 				contentUserGroupIds = uniq([
 					...contentUserGroupIds,
@@ -142,15 +140,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				setPermissionWarning(
 					<div>
 						<Spacer margin="bottom-small">
-							<Trans i18nKey="admin/menu/views/menu-edit___het-navigatie-item-zal-zichtbaar-zijn-voor-gebruikers-die-geen-toegang-hebben-tot-de-geselecteerde-pagina">
-								Het navigatie item zal zichtbaar zijn voor gebruikers die geen
-								toegang hebben tot de geselecteerde pagina.
-							</Trans>
+							{tHtml(
+								'admin/menu/views/menu-edit___het-navigatie-item-zal-zichtbaar-zijn-voor-gebruikers-die-geen-toegang-hebben-tot-de-geselecteerde-pagina'
+							)}
 						</Spacer>
 						<Spacer margin="bottom-small">
-							<Trans i18nKey="admin/menu/views/menu-edit___de-geselecteerde-pagina-is-niet-toegankelijk-voor">
-								De geselecteerde pagina is niet toegankelijk voor:
-							</Trans>
+							{tHtml(
+								'admin/menu/views/menu-edit___de-geselecteerde-pagina-is-niet-toegankelijk-voor'
+							)}
 							<ButtonToolbar>
 								{faultyUserGroups.map((group) => (
 									<Badge text={group} key={`badge-${group}`} />
@@ -169,10 +166,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 	// Check if the navigation item is visible for users that do not have access to the selected content page
 	useEffect(() => {
 		if (menuForm.content_type === 'CONTENT_PAGE' && menuForm.content_path) {
-			// Check if permissions are more strict than the permissions on the content_page
+			// Check if permissions are stricter than the permissions on the content_page
 			dataService
-				.query({
-					query: GET_PERMISSIONS_FROM_CONTENT_PAGE_BY_PATH,
+				.query<GetPermissionsFromContentPageByPathQuery>({
+					query: GetPermissionsFromContentPageByPathDocument,
 					variables: {
 						path: menuForm.content_path,
 					},
@@ -190,7 +187,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 						})
 					);
 					ToastService.danger(
-						t(
+						tHtml(
 							'admin/menu/views/menu-edit___het-controleren-of-de-permissies-van-de-pagina-overeenkomen-met-de-zichtbaarheid-van-dit-navigatie-item-is-mislukt'
 						)
 					);
@@ -201,14 +198,14 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		menuForm.content_path,
 		menuForm.user_group_ids,
 		checkMenuItemContentPagePermissionsMismatch,
-		t,
+		tText,
 	]);
 
 	// Computed
 	const pageType: MenuEditPageType = menuItemId ? 'edit' : 'create';
 	const pageTitle = menuParentId
 		? `${menuName}: item ${GET_PAGE_TYPES_LANG()[pageType]}`
-		: t('admin/menu/views/menu-edit___navigatie-toevoegen');
+		: tText('admin/menu/views/menu-edit___navigatie-toevoegen');
 	const menuParentOptions = uniqBy(
 		compact(
 			menuItems.map((menuItem) => {
@@ -232,8 +229,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		if (key === 'content') {
 			setMenuForm({
 				...menuForm,
-				content_type: get(value, 'type'),
-				content_path: get(value, 'value'),
+				content_type: get(value, 'type', null),
+				content_path: get(value, 'value', null),
 				link_target: get(value, 'target', '_self'),
 			});
 		} else {
@@ -279,7 +276,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					menu: menuForm.placement as string,
 				});
 				ToastService.success(
-					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt')
+					tHtml('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-aangemaakt')
 				);
 			} else {
 				if (isNil(menuItemId)) {
@@ -299,7 +296,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 					menu: menuForm.placement as string,
 				});
 				ToastService.success(
-					t('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet')
+					tHtml('admin/menu/views/menu-edit___het-navigatie-item-is-succesvol-geupdatet')
 				);
 			}
 		} catch (err) {
@@ -309,7 +306,7 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 				})
 			);
 			ToastService.danger(
-				t('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt')
+				tHtml('admin/menu/views/menu-edit___het-updaten-van-het-navigatie-item-is-mislukt')
 			);
 		}
 		setIsSaving(false);
@@ -319,11 +316,11 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		const errors: MenuEditFormErrorState = {};
 
 		if (!menuParentId && !menuForm.placement) {
-			errors.placement = t('admin/menu/views/menu-edit___navigatie-naam-is-verplicht');
+			errors.placement = tText('admin/menu/views/menu-edit___navigatie-naam-is-verplicht');
 		}
 
 		if (!menuForm.content_path) {
-			errors.content_path = t('admin/menu/views/menu-edit___link-is-verplicht');
+			errors.content_path = tText('admin/menu/views/menu-edit___link-is-verplicht');
 		}
 
 		setFormErrors(errors);
@@ -355,13 +352,13 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
 					<Button
-						label={t('admin/menu/views/menu-edit___annuleer')}
+						label={tText('admin/menu/views/menu-edit___annuleer')}
 						onClick={navigateBack}
 						type="tertiary"
 					/>
 					<Button
 						disabled={isSaving}
-						label={t('admin/menu/views/menu-edit___opslaan')}
+						label={tText('admin/menu/views/menu-edit___opslaan')}
 						onClick={handleSave}
 					/>
 				</ButtonToolbar>
@@ -372,10 +369,10 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 						{GENERATE_SITE_TITLE(
 							get(menuForm, 'label'),
 							menuItemId
-								? t(
+								? tText(
 										'admin/menu/views/menu-edit___menu-item-beheer-bewerk-pagina-titel'
 								  )
-								: t(
+								: tText(
 										'admin/menu/views/menu-edit___menu-item-beheer-aanmaak-pagina-titel'
 								  )
 						)}

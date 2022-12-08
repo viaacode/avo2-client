@@ -1,7 +1,7 @@
 import { IconName, TabProps } from '@viaa/avo2-components';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
 export function useAssignmentTeacherTabs(): [
@@ -10,7 +10,7 @@ export function useAssignmentTeacherTabs(): [
 	React.Dispatch<React.SetStateAction<ASSIGNMENT_CREATE_UPDATE_TABS>>,
 	(id: string | number) => void
 ] {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
 		ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud
@@ -20,19 +20,19 @@ export function useAssignmentTeacherTabs(): [
 			[
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud,
-					label: t('assignment/hooks/assignment-tabs___inhoud'),
+					label: tText('assignment/hooks/assignment-tabs___inhoud'),
 					icon: 'collection' as IconName,
 				},
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.Details,
-					label: t('assignment/hooks/assignment-tabs___details'),
+					label: tText('assignment/hooks/assignment-tabs___details'),
 					icon: 'settings' as IconName,
 				},
 			].map((item) => ({
 				...item,
 				active: item.id === tab,
 			})),
-		[t, tab]
+		[tText, tab]
 	);
 
 	const onTabClick = useCallback(

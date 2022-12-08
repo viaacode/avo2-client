@@ -1,8 +1,3 @@
-import classnames from 'classnames';
-import { clone, compact, fromPairs, take } from 'lodash-es';
-import React, { FunctionComponent, MouseEvent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -26,7 +21,11 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import classnames from 'classnames';
+import { clone, compact, fromPairs, take } from 'lodash-es';
+import React, { FunctionComponent, MouseEvent, useState } from 'react';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { isMobileWidth } from '../../helpers';
 
 import './CheckboxDropdownModal.scss';
@@ -73,7 +72,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 	onChange,
 	onSearch,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// Computed
 	const optionsFromPairs = fromPairs(
@@ -199,7 +198,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 							<FormGroup>
 								<Button
 									disabled={!options.length}
-									label={t(
+									label={tText(
 										'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
 									)}
 									type="primary"
@@ -252,7 +251,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 						{showSearch && (
 							<>
 								<TextInput
-									placeholder={t(
+									placeholder={tText(
 										'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___zoeken'
 									)}
 									icon="search"
@@ -305,7 +304,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 								<ToolbarItem>
 									<ButtonToolbar>
 										<Button
-											label={t(
+											label={tText(
 												'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___annuleren'
 											)}
 											type="secondary"
@@ -313,7 +312,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 											onClick={closeDropdownOrModal}
 										/>
 										<Button
-											label={t(
+											label={tText(
 												'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
 											)}
 											className="c-apply-filter-button"

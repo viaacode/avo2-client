@@ -1,12 +1,11 @@
-import { isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import { useSlot } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { isNil } from 'lodash-es';
+import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 
 import { LoadingErrorLoadedComponent } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { Permissions, PermissionService } from '../helpers/permission-service';
 
 import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
@@ -24,7 +23,7 @@ const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 	user,
 	noPermissionsMessage,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const childrenIfPassed = useSlot(PermissionGuardPass, children);
 	const childrenIfFailed = useSlot(PermissionGuardFail, children);
@@ -43,7 +42,7 @@ const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 					state: 'error',
 					message:
 						noPermissionsMessage ||
-						t(
+						tText(
 							'authentication/components/permission-guard___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
 						),
 				});
@@ -58,7 +57,7 @@ const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 
 	const renderPermissionGuard = () => {
 		return hasPermission ? (
-			<>{!!childrenIfPassed ? childrenIfPassed : children}</>
+			<>{childrenIfPassed ? childrenIfPassed : children}</>
 		) : (
 			<>{childrenIfFailed}</>
 		);

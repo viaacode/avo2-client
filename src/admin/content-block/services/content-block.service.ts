@@ -1,24 +1,27 @@
-import { FetchResult } from 'apollo-link';
-import { compact, get, has, omit, without } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { compact, has, omit, without } from 'lodash-es';
 
-import { CustomError } from '../../../shared/helpers';
-import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
-import i18n from '../../../shared/translations/i18n';
-import { ContentBlockConfig } from '../../shared/types';
-import { CONTENT_BLOCKS_RESULT_PATH } from '../content-block.const';
 import {
-	DELETE_CONTENT_BLOCK,
-	INSERT_CONTENT_BLOCKS,
-	UPDATE_CONTENT_BLOCK,
-} from '../content-block.gql';
+	DeleteContentBlockDocument,
+	DeleteContentBlockMutation,
+	InsertContentBlocksDocument,
+	InsertContentBlocksMutation,
+	UpdateContentBlockDocument,
+	UpdateContentBlockMutation,
+} from '../../../shared/generated/graphql-db-types';
+import { CustomError } from '../../../shared/helpers';
+import { tHtml } from '../../../shared/helpers/translate';
+import { dataService } from '../../../shared/services/data-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ContentBlockConfig } from '../../shared/types';
 import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
 
 export class ContentBlockService {
-	public static async updateContentBlocks(contentBlockConfigs: ContentBlockConfig[]) {
+	public static async updateContentBlocks(
+		contentBlockConfigs: ContentBlockConfig[]
+	): Promise<void> {
 		try {
-			return Promise.all(contentBlockConfigs.map(this.updateContentBlock));
+			await Promise.all(contentBlockConfigs.map(this.updateContentBlock));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to update some content blocks', err, {
@@ -26,13 +29,12 @@ export class ContentBlockService {
 				})
 			);
 
+			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-updaten-van-de-content-blocks'
 				)
 			);
-
-			return null;
 		}
 	}
 
@@ -43,13 +45,12 @@ export class ContentBlockService {
 	 */
 	public static async updateContentBlock(
 		contentBlockConfig: ContentBlockConfig
-	): Promise<FetchResult<any> | null> {
+	): Promise<UpdateContentBlockMutation> {
 		const contentBlock = convertBlockToDatabaseFormat(contentBlockConfig);
 
-		return await dataService.mutate({
-			mutation: UPDATE_CONTENT_BLOCK,
+		return await dataService.query<UpdateContentBlockMutation>({
+			query: UpdateContentBlockDocument,
 			variables: { contentBlock, id: contentBlockConfig.id },
-			update: ApolloCacheManager.clearContentBlocksCache,
 		});
 	}
 
@@ -58,23 +59,21 @@ export class ContentBlockService {
 	 *
 	 * @param id content block identifier
 	 */
-	public static async deleteContentBlock(id: number) {
+	public static async deleteContentBlock(id: number): Promise<void> {
 		try {
-			return await dataService.mutate({
-				mutation: DELETE_CONTENT_BLOCK,
+			await dataService.query<DeleteContentBlockMutation>({
+				query: DeleteContentBlockDocument,
 				variables: { id },
-				update: ApolloCacheManager.clearContentBlocksCache,
 			});
 		} catch (err) {
 			console.error(new CustomError('Failed to delete content block', err, { id }));
 
+			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-verwijderen-van-de-content-blocks'
 				)
 			);
-
-			return null;
 		}
 	}
 
@@ -96,22 +95,22 @@ export class ContentBlockService {
 	 */
 	public static async insertContentBlocks(
 		contentId: number,
-		contentBlockConfigs: Partial<ContentBlockConfig>[]
+		contentBlockConfigs: ContentBlockConfig[]
 	): Promise<Partial<ContentBlockConfig>[] | null> {
 		try {
 			const dbBlocks: Partial<Avo.ContentPage.Block>[] =
 				convertBlocksToDatabaseFormat(contentBlockConfigs);
 			(dbBlocks || []).forEach((block) => (block.content_id = contentId));
-			const response = await dataService.mutate({
-				mutation: INSERT_CONTENT_BLOCKS,
+			const response = await dataService.query<InsertContentBlocksMutation>({
+				query: InsertContentBlocksDocument,
 				variables: {
 					contentBlocks: this.cleanContentBlocksBeforeDatabaseInsert(dbBlocks),
 				},
-				update: ApolloCacheManager.clearContentBlocksCache,
 			});
 
-			const ids: number[] =
-				get(response, `data.${CONTENT_BLOCKS_RESULT_PATH.INSERT}.returning`) || [];
+			const ids: number[] = (response?.insert_app_content_blocks?.returning || []).map(
+				(block) => block.id
+			);
 			return contentBlockConfigs.map((block, index) => ({
 				...block,
 				id: ids[index],
@@ -124,8 +123,9 @@ export class ContentBlockService {
 				})
 			);
 
+			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
 				)
 			);
@@ -145,7 +145,7 @@ export class ContentBlockService {
 		contentId: number,
 		initialContentBlocks: ContentBlockConfig[],
 		contentBlockConfigs: ContentBlockConfig[]
-	) {
+	): Promise<void> {
 		try {
 			const initialContentBlockIds: number[] = compact(
 				initialContentBlocks.map((contentBlock) => contentBlock.id)
@@ -204,13 +204,12 @@ export class ContentBlockService {
 				})
 			);
 
+			// TODO move toast outside of service, service should throw error, consumer should show toast to user
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-block/content-block___er-ging-iets-mis-tijdens-het-opslaan-van-de-content-blocks'
 				)
 			);
-
-			return null;
 		}
 	}
 }

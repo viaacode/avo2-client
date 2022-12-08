@@ -3,11 +3,11 @@ import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import { isMobileWidth } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { SearchFilter } from '../search.const';
 import { SearchFilterControlsProps, SearchFilterMultiOptions } from '../search.types';
 
@@ -25,7 +25,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 	enabledFilters,
 	collectionLabels,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const getCombinedMultiOptions = () => {
 		const combinedMultiOptions: SearchFilterMultiOptions = cloneDeep(multiOptions);
@@ -133,57 +133,57 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		>
 			{isFilterEnabled(SearchFilter.type) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___type'),
+					tText('search/components/search-filter-controls___type'),
 					SearchFilter.type
 				)}
 			{isFilterEnabled(SearchFilter.educationLevel) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___onderwijsniveau'),
+					tText('search/components/search-filter-controls___onderwijsniveau'),
 					SearchFilter.educationLevel
 				)}
 			{isFilterEnabled(SearchFilter.educationDegree) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___onderwijsgraad'),
+					tText('search/components/search-filter-controls___onderwijsgraad'),
 					SearchFilter.educationDegree
 				)}
 			{isFilterEnabled(SearchFilter.subject) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___vak'),
+					tText('search/components/search-filter-controls___vak'),
 					SearchFilter.subject
 				)}
 			{isFilterEnabled(SearchFilter.thema) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___thema'),
+					tText('search/components/search-filter-controls___thema'),
 					SearchFilter.thema
 				)}
 			{isFilterEnabled(SearchFilter.keyword) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___trefwoord'),
+					tText('search/components/search-filter-controls___trefwoord'),
 					SearchFilter.keyword
 				)}
 			{isFilterEnabled(SearchFilter.serie) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___serie'),
+					tText('search/components/search-filter-controls___serie'),
 					SearchFilter.serie
 				)}
 			{isFilterEnabled(SearchFilter.broadcastDate) &&
 				renderDateRangeDropdown(
-					t('search/components/search-filter-controls___uitzenddatum'),
+					tText('search/components/search-filter-controls___uitzenddatum'),
 					SearchFilter.broadcastDate
 				)}
 			{isFilterEnabled(SearchFilter.language) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___taal'),
+					tText('search/components/search-filter-controls___taal'),
 					SearchFilter.language
 				)}
 			{isFilterEnabled(SearchFilter.provider) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___aanbieder'),
+					tText('search/components/search-filter-controls___aanbieder'),
 					SearchFilter.provider
 				)}
 			{isFilterEnabled(SearchFilter.collectionLabel) &&
 				renderCheckboxDropdownModal(
-					t('search/components/search-filter-controls___label'),
+					tText('search/components/search-filter-controls___label'),
 					SearchFilter.collectionLabel,
 					false,
 					Object.fromEntries(
@@ -197,7 +197,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		return (
 			<Spacer margin="bottom-large">
 				<Accordion
-					title={t('search/components/search-filter-controls___filters')}
+					title={tText('search/components/search-filter-controls___filters')}
 					className="c-accordion--filters"
 				>
 					<AccordionBody>{renderFilters()}</AccordionBody>

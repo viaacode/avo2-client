@@ -1,7 +1,3 @@
-import { get, noop } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Button,
@@ -13,12 +9,15 @@ import {
 	ModalFooterRight,
 	Spacer,
 } from '@viaa/avo2-components';
+import { UserTempAccess } from '@viaa/avo2-types/types/user';
+import { noop } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { toDateObject, toIsoDate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { getTempAccessValidationErrors } from '../user.helpers';
-import { UserTempAccess } from '../user.types';
 
 interface TempAccessModalProps {
 	tempAccess: UserTempAccess | null;
@@ -33,7 +32,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 	onClose,
 	setTempAccessCallback,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const fromDate = tempAccess ? toDateObject(tempAccess.from) : null;
 	const untilDate = tempAccess ? toDateObject(tempAccess.until) : null;
@@ -60,7 +59,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 		const validationErrors: string[] = getTempAccessValidationErrors(newTempAccess);
 
 		if (validationErrors && validationErrors.length) {
-			setValidationError(validationErrors.map((rule) => get(rule[1], 'error')));
+			setValidationError(validationErrors);
 			ToastService.danger(validationErrors);
 			return;
 		}
@@ -76,12 +75,12 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 			<ButtonToolbar>
 				<Button
 					type="secondary"
-					label={t('admin/users/components/temp-access-modal___annuleren')}
+					label={tText('admin/users/components/temp-access-modal___annuleren')}
 					onClick={onClose}
 				/>
 				<Button
 					type="primary"
-					label={t('admin/users/components/temp-access-modal___opslaan')}
+					label={tText('admin/users/components/temp-access-modal___opslaan')}
 					onClick={onSave}
 				/>
 			</ButtonToolbar>
@@ -92,7 +91,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 		return (
 			<FormGroup error={validationError}>
 				<BlockHeading className="u-m-0" type="h4">
-					{t('admin/users/components/temp-access-modal___begindatum')}
+					{tHtml('admin/users/components/temp-access-modal___begindatum')}
 				</BlockHeading>
 				<DatePicker
 					value={toDateObject(from)}
@@ -102,7 +101,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 				/>
 				<Spacer margin="top-large">
 					<BlockHeading className="u-m-0" type="h4">
-						{t('admin/users/components/temp-access-modal___einddatum')}
+						{tHtml('admin/users/components/temp-access-modal___einddatum')}
 					</BlockHeading>
 				</Spacer>
 				<DatePicker
@@ -118,7 +117,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('admin/users/components/temp-access-modal___tijdelijke-toegang-instellen')}
+			title={tText('admin/users/components/temp-access-modal___tijdelijke-toegang-instellen')}
 			size="small"
 			onClose={onClose}
 		>

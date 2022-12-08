@@ -1,7 +1,6 @@
+import { FormGroup, Spacer } from '@viaa/avo2-components';
 import { get, isNumber } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-
-import { FormGroup, Spacer } from '@viaa/avo2-components';
 
 import { createKey } from '../../../shared/helpers';
 import {

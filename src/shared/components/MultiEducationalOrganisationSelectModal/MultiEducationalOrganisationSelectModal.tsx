@@ -1,7 +1,3 @@
-import classnames from 'classnames';
-import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	Checkbox,
@@ -13,8 +9,11 @@ import {
 	TagList,
 } from '@viaa/avo2-components';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
+import classnames from 'classnames';
+import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 
 import './MultiEducationalOrganisationSelectModal.scss';
@@ -36,7 +35,7 @@ export interface MultiEducationalOrganisationSelectModalProps {
 export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 	MultiEducationalOrganisationSelectModalProps
 > = ({ label, id, values, disabled, onChange, showSelectedValuesOnCollapsed = true }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [includeEmpty, setIncludeEmpty] = useState<boolean>(false);
@@ -63,8 +62,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 		closeModal();
 	};
 
-	// @ts-ignore
-	const deleteAllSelectedOrganisations = (tagId: string | number, clickEvent: MouseEvent) => {
+	const deleteAllSelectedOrganisations = (_tagId: string | number, clickEvent: MouseEvent) => {
 		setSelectedOrganisations([]);
 		onChange([], id);
 		clickEvent.stopPropagation();
@@ -90,10 +88,10 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 											id: 'users',
 											label: `${selected} ${
 												selected > 1
-													? t(
+													? tText(
 															'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___items-geselecteerd'
 													  )
-													: t(
+													: tText(
 															'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___item-geselecteerd'
 													  )
 											}`,
@@ -116,7 +114,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 				<Modal
 					isOpen={isOpen}
 					onClose={closeModal}
-					title={t(
+					title={tText(
 						'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___educatieve-organisaties'
 					)}
 					size={'medium'}
@@ -124,7 +122,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 					<ModalBody>
 						<Spacer margin="bottom-small">
 							<Checkbox
-								label={t('admin/users/user___leeg')}
+								label={tText('admin/users/user___leeg')}
 								checked={includeEmpty}
 								onChange={setIncludeEmpty}
 							/>
@@ -136,7 +134,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 					</ModalBody>
 					<ModalFooterRight>
 						<Button
-							label={t(
+							label={tText(
 								'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
 							)}
 							type="primary"

@@ -1,6 +1,5 @@
-import React, { createRef } from 'react';
-
 import { Container } from '@viaa/avo2-components';
+import React, { createRef } from 'react';
 
 export class CookiePolicy extends React.Component<any, any> {
 	private cookieBotWrapper = createRef<HTMLDivElement>();

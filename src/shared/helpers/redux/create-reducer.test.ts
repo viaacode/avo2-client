@@ -8,7 +8,7 @@ interface AddAction extends Action {
 
 describe('helpers > redux > createReducer', () => {
 	it('Should correctly create a callable reducer', () => {
-		const reducer = createReducer<Number[]>([], {
+		const reducer = createReducer<number[]>([], {
 			add: (state, action: AddAction) => [...state, action.value],
 			subtract: (state) => state.slice(0, -1),
 			clear: () => [],

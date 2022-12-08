@@ -1,8 +1,7 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-
 import { BlockIntro } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../../constants';

@@ -1,4 +1,4 @@
-import { EnglishContentType } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 
 export interface BookmarkRequestInfo {
 	type: EventContentTypeSimplified;
@@ -13,7 +13,7 @@ export interface BookmarkInfo {
 	createdAt: number; // Bookmark created at date
 	contentId: string;
 	contentLinkId: string;
-	contentType: EnglishContentType;
+	contentType: Avo.ContentType.English;
 	contentTitle: string;
 	contentDuration?: string;
 	contentThumbnailPath: string | null | undefined;
@@ -27,13 +27,6 @@ export interface BookmarkViewPlayCounts {
 	viewCount: number;
 	playCount: number;
 	isBookmarked: boolean;
-}
-
-export interface GetBookmarksForUserResponse {
-	data: {
-		app_item_bookmarks: AppItemBookmark[];
-		app_collection_bookmarks: AppCollectionBookmark[];
-	};
 }
 
 export interface AppItemBookmark {

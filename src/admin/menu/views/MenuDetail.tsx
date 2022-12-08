@@ -10,7 +10,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { cloneDeep, isEqual, isNil, startCase } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -21,7 +20,8 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { MENU_PATH } from '../menu.const';
@@ -32,7 +32,7 @@ import './MenuDetail.scss';
 type MenuDetailProps = DefaultSecureRouteProps<{ menu: string }>;
 
 const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const menuId = match.params.menu;
 
@@ -59,10 +59,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			console.error('Failed to fetch menu items', err, { menuId });
 			setLoadingInfo({
 				state: 'error',
-				message: t('admin/menu/views/menu-detail___het-laden-van-de-menu-items-is-mislukt'),
+				message: tText(
+					'admin/menu/views/menu-detail___het-laden-van-de-menu-items-is-mislukt'
+				),
 			});
 		}
-	}, [menuId, setMenuItems, setLoadingInfo, t]);
+	}, [menuId, setMenuItems, setLoadingInfo, tText]);
 
 	useEffect(() => {
 		fetchMenuItems();
@@ -97,12 +99,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 			await MenuService.deleteMenuItem(idToDelete);
 			await fetchMenuItems();
 			ToastService.success(
-				t('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd')
+				tHtml('admin/menu/views/menu-detail___het-navigatie-item-is-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to delete menu item', err, { idToDelete }));
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/menu/views/menu-detail___het-verwijderen-van-het-navigatie-item-is-mislukt'
 				)
 			);
@@ -124,12 +126,14 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 
 			fetchMenuItems();
 			ToastService.success(
-				t('admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen')
+				tHtml('admin/menu/views/menu-detail___de-navigatie-items-zijn-succesvol-opgeslagen')
 			);
 		} catch (err) {
 			console.error(new CustomError('Failed to update menu items', err, { menuItems }));
 			ToastService.danger(
-				t('admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt')
+				tHtml(
+					'admin/menu/views/menu-detail___het-opslaan-van-de-navigatie-items-is-mislukt'
+				)
 			);
 		}
 	};
@@ -179,13 +183,13 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				onClick={() => reorderMenuItem(index, indexUpdate, id)}
 				title={
 					dir === 'up'
-						? t('admin/menu/views/menu-detail___verplaats-het-item-naar-boven')
-						: t('admin/menu/views/menu-detail___verplaats-het-item-naar-onder')
+						? tText('admin/menu/views/menu-detail___verplaats-het-item-naar-boven')
+						: tText('admin/menu/views/menu-detail___verplaats-het-item-naar-onder')
 				}
 				ariaLabel={
 					dir === 'up'
-						? t('admin/menu/views/menu-detail___verplaats-het-item-naar-boven')
-						: t('admin/menu/views/menu-detail___verplaats-het-item-naar-onder')
+						? tText('admin/menu/views/menu-detail___verplaats-het-item-naar-boven')
+						: tText('admin/menu/views/menu-detail___verplaats-het-item-naar-onder')
 				}
 				type="secondary"
 				disabled={disabled}
@@ -197,7 +201,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 		// Return to overview if menu is empty
 		if (!menuItems) {
 			ToastService.danger(
-				t('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden')
+				tHtml('admin/menu/views/menu-detail___er-werden-geen-navigatie-items-gevonden')
 			);
 			handleNavigate(MENU_PATH.MENU_OVERVIEW);
 			return null;
@@ -216,13 +220,13 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
 						<Button
-							label={t('admin/menu/views/menu-detail___annuleer')}
+							label={tText('admin/menu/views/menu-detail___annuleer')}
 							onClick={() => handleNavigate(MENU_PATH.MENU_OVERVIEW)}
 							type="tertiary"
 						/>
 						<Button
 							disabled={isEqual(initialMenuItems, menuItems) || isSaving}
-							label={t('admin/menu/views/menu-detail___opslaan')}
+							label={tText('admin/menu/views/menu-detail___opslaan')}
 							onClick={() => handleSave()}
 						/>
 					</ButtonToolbar>
@@ -266,20 +270,20 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 														id: String(item.id),
 													})
 												}
-												title={t(
+												title={tText(
 													'admin/menu/views/menu-detail___bewerk-dit-navigatie-item'
 												)}
-												ariaLabel={t(
+												ariaLabel={tText(
 													'admin/menu/views/menu-detail___bewerk-dit-navigatie-item'
 												)}
 												type="secondary"
 											/>
 											<Button
 												icon="delete"
-												title={t(
+												title={tText(
 													'admin/menu/views/menu-detail___verwijder-dit-navigatie-item'
 												)}
-												ariaLabel={t(
+												ariaLabel={tText(
 													'admin/menu/views/menu-detail___verwijder-dit-navigatie-item'
 												)}
 												onClick={() => openConfirmModal(item.id)}
@@ -295,7 +299,7 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 						<Flex center>
 							<Button
 								icon="plus"
-								label={t('admin/menu/views/menu-detail___voeg-een-item-toe')}
+								label={tText('admin/menu/views/menu-detail___voeg-een-item-toe')}
 								onClick={() =>
 									handleNavigate(MENU_PATH.MENU_ITEM_CREATE, {
 										menu: menuId,
@@ -321,12 +325,12 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ history, match }) => {
 				<title>
 					{GENERATE_SITE_TITLE(
 						menuId,
-						t('admin/menu/views/menu-detail___menu-beheer-detail-pagina-titel')
+						tText('admin/menu/views/menu-detail___menu-beheer-detail-pagina-titel')
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'admin/menu/views/menu-detail___menu-beheer-detail-pagina-beschrijving'
 					)}
 				/>

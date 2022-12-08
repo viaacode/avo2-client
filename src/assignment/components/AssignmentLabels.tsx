@@ -3,20 +3,24 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ValueType } from 'react-select';
 
 import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
-import { AssignmentLabelsService, ToastService } from '../../shared/services';
-import { AssignmentSchemaLabel_v2 } from '../assignment.types';
+import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { Assignment_Label_v2 } from '../assignment.types';
 
-import './AssignmentLabels.scss';
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
-export type AssignmentLabelsProps = Pick<Avo.Assignment.Assignment_v2, 'labels'> & {
+import './AssignmentLabels.scss';
+
+export type AssignmentLabelsProps = {
+	labels: { assignment_label: Assignment_Label_v2 }[];
 	id?: string;
-	onChange: (changed: AssignmentSchemaLabel_v2[]) => void;
+	onChange: (changed: { assignment_label: Assignment_Label_v2 }[]) => void;
 	user: Avo.User.User;
 	dictionary?: {
 		placeholder: string;
@@ -33,27 +37,29 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	type = 'LABEL',
 	...props
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const dictionary = {
-		placeholder: t('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
-		empty: t('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
+		placeholder: tText('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
+		empty: tText('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label_v2[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		// Fetch labels every time the manage labels modal closes and once at startup
-		const labels = await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'));
-		setAllAssignmentLabels(labels);
+		if (user.profile) {
+			// Fetch labels every time the manage labels modal closes and once at startup
+			const labels = await AssignmentLabelsService.getLabelsForProfile(user.profile.id);
+			setAllAssignmentLabels(labels);
+		}
 	}, [user, setAllAssignmentLabels]);
 
 	useEffect(() => {
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: Avo.Assignment.Label_v2[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: Assignment_Label_v2[]): TagOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -68,22 +74,22 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		setIsManageLabelsModalOpen(false);
 	};
 
-	const getColorOptions = (labels: Avo.Assignment.Label_v2[]): ColorOption[] => {
+	const getColorOptions = (labels: Assignment_Label_v2[]): ColorOption[] => {
 		return labels
 			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({
 				label: labelObj.label || '',
-				value: String(labelObj.id),
+				value: String(labelObj.id) as Lookup_Enum_Colors_Enum,
 				// labelObj.enum_color.label contains hex code (graphql enum quirk)
 				// The value of the enum has to be uppercase text, so the value contains the color name
 				color: labelObj.color_override || get(labelObj, 'enum_color.label'),
 			}));
 	};
 
-	const addAssignmentLabel = (labelOption: ValueType<ColorOption, any>) => {
+	const addAssignmentLabel = (labelOption: ValueType<{ label: string; value: string }, any>) => {
 		if (!labelOption) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
 				)
 			);
@@ -96,7 +102,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 
 		if (!assignmentLabel) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
 				)
 			);

@@ -7,12 +7,12 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { WYSIWYG_OPTIONS_DEFAULT } from '../../constants';
 import { CustomError } from '../../helpers';
-import { ToastService } from '../../services';
 import { FileUploadService } from '../../services/file-upload-service';
+import { ToastService } from '../../services/toast-service';
 
 import './WYSIWYGWrapper.scss';
 
@@ -28,7 +28,7 @@ export type WYSIWYGWrapperProps = WYSIWYGProps & {
  * @constructor
  */
 const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = (props) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const { controls, fileType, ownerId, state, onChange, ...rest } = props;
 
@@ -56,7 +56,7 @@ const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = (props) => {
 						});
 					} catch (err) {
 						const error = new CustomError(
-							t(
+							tText(
 								'shared/components/wysiwyg-wrapper/wysiwyg-wrapper___het-opladen-van-de-afbeelding-is-mislukt'
 							),
 							err,
@@ -72,7 +72,7 @@ const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = (props) => {
 						return true;
 					}
 					ToastService.danger(
-						t(
+						tHtml(
 							'shared/components/wysiwyg-wrapper/wysiwyg-wrapper___dit-bestand-is-te-groot-max-10-mb'
 						)
 					);

@@ -1,9 +1,9 @@
 import { createMemoryHistory } from 'history';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { ROUTE_PARTS } from '../constants';
 
 import { buildLink, navigate } from './link';
-import { RouteComponentProps } from 'react-router-dom';
 
 const route = `/${ROUTE_PARTS.search}`;
 const routeWithParam = `/${ROUTE_PARTS.collections}/:id/${ROUTE_PARTS.edit}`;

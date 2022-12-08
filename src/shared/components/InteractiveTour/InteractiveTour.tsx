@@ -1,22 +1,21 @@
+import { Button } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import Joyride, { CallBackProps } from 'react-joyride';
 import { connect } from 'react-redux';
 import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
-import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
 import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteId, RouteInfo } from '../../../constants';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { AppState } from '../../../store';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
-import { InteractiveTourService, TourInfo } from '../../services/interactive-tour-service';
+import { InteractiveTourService, TourInfo } from '../../services/interactive-tour.service';
 import Html from '../Html/Html';
 
 import './InteractiveTour.scss';
@@ -34,7 +33,7 @@ interface UiStateProps {
 const InteractiveTour: FunctionComponent<
 	InteractiveTourProps & SecuredRouteProps & UiStateProps
 > = ({ showButton, user, location, showNudgingModal }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [tour, setTour] = useState<TourInfo | null>(null);
 	const [routeId, setRouteId] = useState<RouteId | null>(null);
@@ -152,7 +151,7 @@ const InteractiveTour: FunctionComponent<
 			// Fetch interactive tours for current user and their seen status
 			const tourTemp = await InteractiveTourService.fetchStepsForPage(
 				routeId,
-				get(user, 'profile.id'),
+				user?.profile?.id,
 				tourDisplayDates
 			);
 			setTour(tourTemp);
@@ -234,11 +233,15 @@ const InteractiveTour: FunctionComponent<
 					steps={mapSteps(tour.steps)}
 					callback={handleJoyrideCallback}
 					locale={{
-						back: t('shared/components/interactive-tour/interactive-tour___terug'),
-						close: t('shared/components/interactive-tour/interactive-tour___sluit'),
-						last: t('shared/components/interactive-tour/interactive-tour___einde'),
-						next: t('shared/components/interactive-tour/interactive-tour___volgende'),
-						skip: t('shared/components/interactive-tour/interactive-tour___overslaan'),
+						back: tText('shared/components/interactive-tour/interactive-tour___terug'),
+						close: tText('shared/components/interactive-tour/interactive-tour___sluit'),
+						last: tText('shared/components/interactive-tour/interactive-tour___einde'),
+						next: tText(
+							'shared/components/interactive-tour/interactive-tour___volgende'
+						),
+						skip: tText(
+							'shared/components/interactive-tour/interactive-tour___overslaan'
+						),
 					}}
 					spotlightPadding={8}
 					scrollOffset={220}
@@ -255,10 +258,10 @@ const InteractiveTour: FunctionComponent<
 				{showButton && (
 					<Button
 						type="borderless"
-						label={t(
+						label={tText(
 							'shared/components/interactive-tour/interactive-tour___rondleiding'
 						)}
-						title={t(
+						title={tText(
 							'shared/components/interactive-tour/interactive-tour___start-een-rondleiding-om-wegwijs-te-geraken-op-deze-pagina'
 						)}
 						icon="info"

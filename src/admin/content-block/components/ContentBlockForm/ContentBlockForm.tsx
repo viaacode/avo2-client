@@ -1,9 +1,3 @@
-import classnames from 'classnames';
-import { get, isEqual, isNil } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Accordion,
 	AccordionActions,
@@ -21,8 +15,13 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import classnames from 'classnames';
+import { get, isEqual, isNil } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import { ToastService } from '../../../../shared/services';
+import useTranslation from '../../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { validateContentBlockField } from '../../../shared/helpers';
 import {
 	ContentBlockBlockConfig,
@@ -73,7 +72,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	const configErrors = config.errors || {};
 
 	// Hooks
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Methods
 	const handleChange = (
@@ -125,10 +124,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 						type="danger"
 						onClick={() => removeComponentFromState(stateIndex)}
 						size="small"
-						title={t(
+						title={tText(
 							'admin/content-block/components/content-block-form/content-block-form___verwijder-sectie'
 						)}
-						ariaLabel={t(
+						ariaLabel={tText(
 							'admin/content-block/components/content-block-form/content-block-form___verwijder-sectie'
 						)}
 					/>
@@ -189,11 +188,11 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 	const renderAddButton = (label: string) => (
 		<Spacer margin="bottom">
 			<Button
-				label={t(
+				label={tText(
 					'admin/content-block/components/content-block-form/content-block-form___voeg-label-to',
 					{ label }
 				)}
-				title={t(
+				title={tText(
 					'admin/content-block/components/content-block-form/content-block-form___voeg-sectie-toe'
 				)}
 				icon="add"
@@ -208,7 +207,8 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 		const label = get(contentBlock.components, 'name', '').toLowerCase();
 		const underLimit =
 			isNil(get(components, 'limits.max')) ||
-			(isArray(components.state) && components.state.length < get(components, 'limits.max'));
+			(isArray(components.state) &&
+				components.state.length < get(components, 'limits.max', 1));
 
 		return (
 			<Accordion
@@ -227,10 +227,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								icon="chevron-up"
 								onClick={() => onReorder(blockIndex, -1)}
 								size="small"
-								title={t(
+								title={tText(
 									'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
 								)}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-boven'
 								)}
 								type="tertiary"
@@ -240,10 +240,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 								icon="chevron-down"
 								onClick={() => onReorder(blockIndex, 1)}
 								size="small"
-								title={t(
+								title={tText(
 									'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
 								)}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/content-block/components/content-block-form/content-block-form___verplaats-naar-onder'
 								)}
 								type="tertiary"
@@ -253,7 +253,7 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							text={JSON.stringify({ block: config })}
 							onCopy={() =>
 								ToastService.success(
-									t(
+									tHtml(
 										'admin/content-block/components/content-block-form/content-block-form___de-blok-is-naar-je-klembord-gekopieerd-druk-ctrl-v-om-hem-te-plakken'
 									)
 								)
@@ -262,10 +262,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							<Button
 								icon="copy"
 								size="small"
-								title={t(
+								title={tText(
 									'admin/content-block/components/content-block-form/content-block-form___kopieer-content-blok'
 								)}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/content-block/components/content-block-form/content-block-form___kopieer-content-blok'
 								)}
 								type="secondary"
@@ -275,10 +275,10 @@ const ContentBlockForm: FunctionComponent<ContentBlockFormProps> = ({
 							icon="delete"
 							onClick={() => onRemove(blockIndex)}
 							size="small"
-							title={t(
+							title={tText(
 								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/content-block/components/content-block-form/content-block-form___verwijder-content-block'
 							)}
 							type="danger"

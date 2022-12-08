@@ -25,7 +25,6 @@ import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import { compact, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -50,9 +49,10 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate } from '../../shared/helpers';
 import { stringToTagInfo } from '../../shared/helpers/string-to-select-options';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
-import { ToastService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
+import { ToastService } from '../../shared/services/toast-service';
 import store, { AppState } from '../../store';
 import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
 import { SettingsService } from '../settings.service';
@@ -88,7 +88,7 @@ const Profile: FunctionComponent<
 		getLoginState: () => Dispatch;
 	}
 > = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, location, user, getLoginState }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 
 	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
@@ -207,7 +207,7 @@ const Profile: FunctionComponent<
 				.catch((err) => {
 					console.error(new CustomError('Failed to get subjects from the database', err));
 					ToastService.danger(
-						t('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
+						tHtml('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
 					);
 				});
 		}
@@ -222,7 +222,7 @@ const Profile: FunctionComponent<
 						new CustomError('Failed to get education levels from database', err)
 					);
 					ToastService.danger(
-						t(
+						tHtml(
 							'settings/components/profile___het-ophalen-van-de-opleidingsniveaus-is-mislukt'
 						)
 					);
@@ -239,7 +239,7 @@ const Profile: FunctionComponent<
 						new CustomError('Failed to get organisations from database', err)
 					);
 					ToastService.danger(
-						t(
+						tHtml(
 							'settings/components/profile___het-ophalen-van-de-organisaties-is-mislukt'
 						)
 					);
@@ -264,7 +264,7 @@ const Profile: FunctionComponent<
 						)
 					);
 					ToastService.danger(
-						t(
+						tHtml(
 							'settings/components/profile___het-ophalen-van-de-gebruikers-in-dezelfde-organisatie-is-mislukt'
 						)
 					);
@@ -273,7 +273,7 @@ const Profile: FunctionComponent<
 	}, [
 		permissions,
 		isCompleteProfileStep,
-		t,
+		tText,
 		user,
 		setAllSubjects,
 		setAllEducationLevels,
@@ -290,21 +290,21 @@ const Profile: FunctionComponent<
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.subjects || !profileInfo.subjects.length)
 		) {
-			errors.push(t('settings/components/profile___vakken-zijn-verplicht'));
+			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.educationLevels || !profileInfo.educationLevels.length)
 		) {
-			errors.push(t('settings/components/profile___opleidingsniveau-is-verplicht'));
+			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
 			(!profileInfo.organizations || !profileInfo.organizations.length)
 		) {
-			errors.push(t('settings/components/profile___educatieve-organisatie-is-verplicht'));
+			errors.push(tText('settings/components/profile___educatieve-organisatie-is-verplicht'));
 			filledIn = false;
 		}
 		if (
@@ -312,7 +312,7 @@ const Profile: FunctionComponent<
 			!profileInfo.company_id &&
 			!isCompleteProfileStep
 		) {
-			errors.push(t('settings/components/profile___organisatie-is-verplicht'));
+			errors.push(tText('settings/components/profile___organisatie-is-verplicht'));
 			filledIn = false;
 		}
 		if (errors.length) {
@@ -358,10 +358,12 @@ const Profile: FunctionComponent<
 				setIsSaving(false);
 				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
 					ToastService.danger(
-						t('settings/components/profile___deze-schermnaam-is-reeds-in-gebruik')
+						tHtml('settings/components/profile___deze-schermnaam-is-reeds-in-gebruik')
 					);
 					setProfileErrors({
-						alias: t('settings/components/profile___schermnaam-is-reeds-in-gebruik'),
+						alias: tText(
+							'settings/components/profile___schermnaam-is-reeds-in-gebruik'
+						),
 					});
 					return;
 				}
@@ -390,7 +392,7 @@ const Profile: FunctionComponent<
 					})
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'settings/components/profile___het-updaten-van-de-nieuwsbrief-voorkeuren-is-mislukt'
 					)
 				);
@@ -408,13 +410,15 @@ const Profile: FunctionComponent<
 				}, 0);
 			} else {
 				getLoginState();
-				ToastService.success(t('settings/components/profile___opgeslagen'));
+				ToastService.success(tHtml('settings/components/profile___opgeslagen'));
 				setIsSaving(false);
 			}
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t('settings/components/profile___het-opslaan-van-de-profiel-information-is-mislukt')
+				tHtml(
+					'settings/components/profile___het-opslaan-van-de-profiel-information-is-mislukt'
+				)
 			);
 			setIsSaving(false);
 		}
@@ -423,14 +427,14 @@ const Profile: FunctionComponent<
 	const renderSubjectsField = (editable: boolean, required: boolean) => {
 		return (
 			<FormGroup
-				label={t('settings/components/profile___vakken')}
+				label={tText('settings/components/profile___vakken')}
 				labelFor="subjects"
 				required={required}
 			>
 				{editable ? (
 					<TagsInput
 						id="subjects"
-						placeholder={t(
+						placeholder={tText(
 							'settings/components/profile___selecteer-de-vakken-die-u-geeft'
 						)}
 						options={(allSubjects || []).map((subject) => ({
@@ -462,14 +466,14 @@ const Profile: FunctionComponent<
 
 		return (
 			<FormGroup
-				label={t('settings/components/profile___onderwijsniveau')}
+				label={tText('settings/components/profile___onderwijsniveau')}
 				labelFor="educationLevel"
 				required={required}
 			>
 				{editable ? (
 					<TagsInput
 						id="educationLevel"
-						placeholder={t(
+						placeholder={tText(
 							'settings/components/profile___selecteer-een-opleidingsniveau'
 						)}
 						options={(allEducationLevels || []).map((edLevel) => ({
@@ -496,7 +500,7 @@ const Profile: FunctionComponent<
 						<Spacer margin="top-small">
 							<Alert
 								type="info"
-								message={t(
+								message={tText(
 									'settings/components/profile___wil-je-jouw-onderwijsniveau-aanpassen-neem-dan-contact-op-via-de-feedbackknop'
 								)}
 							/>
@@ -510,7 +514,7 @@ const Profile: FunctionComponent<
 	const renderOrganisationField = (editable: boolean, required: boolean) => {
 		return (
 			<FormGroup
-				label={t('settings/components/profile___organisatie')}
+				label={tText('settings/components/profile___organisatie')}
 				labelFor="organisation"
 				required={required}
 			>
@@ -536,7 +540,7 @@ const Profile: FunctionComponent<
 					get(
 						(allOrganisations || []).find((org) => org.or_id === companyId),
 						'name'
-					) || t('settings/components/profile___onbekende-organisatie')
+					) || tText('settings/components/profile___onbekende-organisatie')
 				)}
 			</FormGroup>
 		);
@@ -548,7 +552,7 @@ const Profile: FunctionComponent<
 		}
 		return (
 			<FormGroup
-				label={t('settings/components/profile___school-organisatie')}
+				label={tText('settings/components/profile___school-organisatie')}
 				labelFor="educationalOrganizations"
 				required={required}
 			>
@@ -560,7 +564,7 @@ const Profile: FunctionComponent<
 						/>
 						<Alert
 							type="info"
-							message={t(
+							message={tText(
 								'settings/components/profile___vind-je-je-onderwijsinstelling-niet-contacteer-ons-via-de-feedback-knop'
 							)}
 						/>
@@ -577,15 +581,15 @@ const Profile: FunctionComponent<
 			<Container mode="horizontal" size="medium">
 				<Container mode="vertical" className="p-profile-page">
 					<BlockHeading type="h1">
-						<Trans i18nKey="settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel">
-							Je bent er bijna. Vervolledig nog je profiel.
-						</Trans>
+						{tHtml(
+							'settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel'
+						)}
 					</BlockHeading>
 					<Spacer margin="top-large">
 						<Alert type="info">
-							<Trans i18nKey="settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen">
-								We gebruiken deze info om je gepersonaliseerde content te tonen.
-							</Trans>
+							{tHtml(
+								'settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen'
+							)}
 						</Alert>
 					</Spacer>
 					<Form type="standard">
@@ -598,7 +602,7 @@ const Profile: FunctionComponent<
 							<Spacer margin="bottom">
 								<FormGroup>
 									<Checkbox
-										label={t(
+										label={tText(
 											'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
 										)}
 										checked={subscribeToNewsletter}
@@ -609,7 +613,7 @@ const Profile: FunctionComponent<
 						)}
 					</Form>
 					<Button
-						label={t('settings/components/profile___inloggen')}
+						label={tText('settings/components/profile___inloggen')}
 						type="primary"
 						disabled={isSaving}
 						onClick={saveProfileChanges}
@@ -651,8 +655,8 @@ const Profile: FunctionComponent<
 
 			case 'is_blocked':
 				return get(profile, 'user.is_blocked')
-					? t('settings/components/profile___ja')
-					: t('settings/components/profile___nee');
+					? tText('settings/components/profile___ja')
+					: tText('settings/components/profile___nee');
 
 			case 'last_access_at': {
 				const lastAccessDate = get(profile, 'user.last_access_at');
@@ -662,10 +666,10 @@ const Profile: FunctionComponent<
 			case 'temp_access': {
 				const tempAccess = profile?.user?.temp_access;
 
-				return tempAccess && tempAccess.current?.status === 1
-					? `${t('settings/components/profile___van')} ${formatDate(
+				return tempAccess?.status
+					? `${tText('settings/components/profile___van')} ${formatDate(
 							get(tempAccess, 'from')
-					  )} ${t('settings/components/profile___tot')} ${formatDate(
+					  )} ${tText('settings/components/profile___tot')} ${formatDate(
 							get(tempAccess, 'until')
 					  )}`
 					: '-';
@@ -682,7 +686,7 @@ const Profile: FunctionComponent<
 							<Form type="standard">
 								<>
 									<FormGroup
-										label={t('settings/components/account___voornaam')}
+										label={tText('settings/components/account___voornaam')}
 										labelFor="first_name"
 										error={get(profileErrors, 'first_name')}
 									>
@@ -693,7 +697,7 @@ const Profile: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t('settings/components/account___achternaam')}
+										label={tText('settings/components/account___achternaam')}
 										labelFor="last_name"
 										error={get(profileErrors, 'last_name')}
 									>
@@ -706,13 +710,15 @@ const Profile: FunctionComponent<
 									{!isPupil && (
 										<>
 											<FormGroup
-												label={t('settings/components/profile___nickname')}
+												label={tText(
+													'settings/components/profile___nickname'
+												)}
 												labelFor="alias"
 												error={get(profileErrors, 'alias')}
 											>
 												<TextInput
 													id="alias"
-													placeholder={t(
+													placeholder={tText(
 														'settings/components/profile___een-unieke-gebruikersnaam'
 													)}
 													value={alias || ''}
@@ -720,33 +726,35 @@ const Profile: FunctionComponent<
 												/>
 											</FormGroup>
 											<FormGroup
-												label={t('settings/components/profile___functie')}
+												label={tText(
+													'settings/components/profile___functie'
+												)}
 												labelFor="title"
 											>
 												<TextInput
 													id="title"
-													placeholder={t(
+													placeholder={tText(
 														'settings/components/profile___bv-leerkracht-basis-onderwijs'
 													)}
 													value={title || ''}
 													onChange={setTitle}
 												/>
 											</FormGroup>
-											{!get(user, 'profile.organisation') && (
+											{!get(user, 'profile.organisation') && user.profile && (
 												<FormGroup
-													label={t(
+													label={tText(
 														'settings/components/profile___profielfoto'
 													)}
 													labelFor="profilePicture"
 												>
 													<FileUpload
-														label={t(
+														label={tText(
 															'settings/components/profile___upload-een-profiel-foto'
 														)}
 														urls={compact([avatar])}
 														allowMulti={false}
 														assetType="PROFILE_AVATAR"
-														ownerId={get(user, 'profile.id')}
+														ownerId={user.profile.id}
 														onChange={(urls) => setAvatar(urls[0])}
 													/>
 												</FormGroup>
@@ -763,14 +771,14 @@ const Profile: FunctionComponent<
 												/>
 											)}
 											<FormGroup
-												label={t('settings/components/profile___bio')}
+												label={tText('settings/components/profile___bio')}
 												labelFor="bio"
 											>
 												<TextArea
 													name="bio"
 													id="bio"
 													height="medium"
-													placeholder={t(
+													placeholder={tText(
 														'settings/components/profile___een-korte-beschrijving-van-jezelf'
 													)}
 													value={bio || ''}
@@ -794,7 +802,7 @@ const Profile: FunctionComponent<
 									renderOrganisationField
 								)}
 								<Button
-									label={t('settings/components/profile___opslaan')}
+									label={tText('settings/components/profile___opslaan')}
 									type="primary"
 									disabled={isSaving}
 									onClick={saveProfileChanges}
@@ -804,20 +812,12 @@ const Profile: FunctionComponent<
 						<Column size="3-5">
 							{!isPupil && (
 								<>
-									{/*<Box>*/}
-									{/*	<BlockHeading type="h4"><Trans i18nKey="settings/components/profile___volledigheid-profiel">Volledigheid profiel</Trans></BlockHeading>*/}
-									{/*	/!* TODO replace with components from component repo *!/*/}
-									{/*	<div className="c-progress-bar" />*/}
-									{/*</Box>*/}
 									<Spacer margin={['top', 'bottom']}>
 										<Box>
 											<p>
-												<Trans i18nKey="settings/components/profile___profiel-sidebar-intro-tekst">
-													Vul hier wat info over jezelf in! Deze
-													informatie wordt getoond op jouw persoonlijk
-													profiel. Je kan voor elk veld aanduiden of je
-													deze informatie wil delen of niet.
-												</Trans>
+												{tHtml(
+													'settings/components/profile___profiel-sidebar-intro-tekst'
+												)}
 											</p>
 										</Box>
 									</Spacer>
@@ -828,7 +828,7 @@ const Profile: FunctionComponent<
 							<Column size="3-12">
 								<Spacer margin="top-extra-large">
 									<BlockHeading type="h2">
-										{t(
+										{tText(
 											'settings/components/profile___gebruikers-in-je-organisatie'
 										)}
 									</BlockHeading>
@@ -836,7 +836,7 @@ const Profile: FunctionComponent<
 										<Table
 											data={usersInSameCompany}
 											columns={USERS_IN_SAME_COMPANY_COLUMNS()}
-											emptyStateMessage={t(
+											emptyStateMessage={tText(
 												'settings/components/profile___er-zitten-geen-andere-gebruikers-uit-je-organisatie-op-het-archief-voor-onderwijs'
 											)}
 											rowKey="id"
@@ -874,12 +874,12 @@ const Profile: FunctionComponent<
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t('settings/components/profile___profiel-instellingen-pagina-titel')
+						tText('settings/components/profile___profiel-instellingen-pagina-titel')
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'settings/components/profile___profiel-instellingen-pagina-beschrijving'
 					)}
 				/>

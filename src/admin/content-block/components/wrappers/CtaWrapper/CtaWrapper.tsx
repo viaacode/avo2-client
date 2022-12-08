@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { BlockCTAs, BlockCTAsProps } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
 
 import { isMobileWidth } from '../../../../../shared/helpers';
 

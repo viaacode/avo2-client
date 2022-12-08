@@ -1,0 +1,8 @@
+query getMenus {
+	app_content_nav_elements(distinct_on: placement, order_by: { placement: asc }) {
+		id
+		description
+		placement
+		tooltip
+	}
+}

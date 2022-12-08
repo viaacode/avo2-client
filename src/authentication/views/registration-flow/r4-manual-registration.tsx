@@ -1,9 +1,3 @@
-import { Requests } from 'node-zendesk';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps, withRouter } from 'react-router';
-
 import {
 	BlockHeading,
 	Button,
@@ -22,21 +16,26 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
+import type { Requests } from 'node-zendesk';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import Html from '../../../shared/components/Html/Html';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { CustomError } from '../../../shared/helpers';
-import { ToastService, ZendeskService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { fetchEducationLevels } from '../../../shared/services/education-levels-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 import './r4-manual-registration.scss';
 
-export interface ManualRegistrationProps extends RouteComponentProps {}
+export type ManualRegistrationProps = RouteComponentProps;
 
 const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ history }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [firstName, setFirstName] = useState<string>('');
 	const [lastName, setLastName] = useState<string>('');
@@ -63,12 +62,12 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			console.error(new CustomError('Failed to get education levels from the database', err));
 
 			ToastService.danger(
-				t(
+				tHtml(
 					'authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus-konden-niet-worden-opgehaald'
 				)
 			);
 		}
-	}, [setEducationLevels, t]);
+	}, [setEducationLevels, tText]);
 
 	useEffect(() => {
 		retrieveEducationLevels();
@@ -79,14 +78,14 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		const errors = [];
 		if (!firstName) {
 			errors.push(
-				`${t(
+				`${tText(
 					'authentication/views/registration-flow/r-4-manual-registration___voornaam'
 				)} ${requiredError}`
 			);
 		}
 		if (!lastName) {
 			errors.push(
-				`${t(
+				`${tText(
 					'authentication/views/registration-flow/r-4-manual-registration___achternaam'
 				)} ${requiredError}`
 			);
@@ -95,35 +94,35 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			errors.push(`Email ${requiredError}`);
 		} else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(email)) {
 			errors.push(
-				t(
+				tText(
 					'authentication/views/registration-flow/r-4-manual-registration___email-is-geen-geldig-email-adres'
 				)
 			);
 		}
 		if (!organization) {
 			errors.push(
-				`${t(
+				`${tText(
 					'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
 				)} ${requiredError}`
 			);
 		}
 		if (!profession) {
 			errors.push(
-				`${t(
+				`${tText(
 					'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
 				)} ${requiredError}`
 			);
 		}
 		if (!reason) {
 			errors.push(
-				`${t(
+				`${tText(
 					'authentication/views/registration-flow/r-4-manual-registration___reden-van-aanvraag'
 				)} ${requiredError}`
 			);
 		}
 		if (!acceptedPrivacyConditions) {
 			errors.push(
-				t(
+				tText(
 					'authentication/views/registration-flow/r-4-manual-registration___je-moet-de-privacy-voorwaarden-accepteren-om-manueel-toegang-aan-te-vragen'
 				)
 			);
@@ -156,21 +155,21 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						educationLevels: selectedEducationLevels,
 					}),
 					html_body: `<dl>
-  <dt>${t(
+  <dt>${tText(
 		'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
   )}</dt><dd>${organization}</dd>
-  <dt>${t(
+  <dt>${tText(
 		'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
   )}</dt><dd>${profession}</dd>
-  <dt>${t(
+  <dt>${tText(
 		'authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus'
   )}</dt><dd>${parsedEducationLevels}</dd>
-  <dt>${t(
+  <dt>${tText(
 		'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
   )}</dt><dd>${reason}</dd>`,
 					public: false,
 				},
-				subject: t(
+				subject: tText(
 					'authentication/views/registration-flow/r-4-manual-registration___manuele-aanvraag-account-op-av-o'
 				),
 				requester: {
@@ -190,7 +189,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 			);
 
 			ToastService.success(
-				t(
+				tHtml(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
 				)
 			);
@@ -198,7 +197,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
 			ToastService.danger(
-				t(
+				tHtml(
 					'authentication/views/registration-flow/r-4-manual-registration___het-versturen-van-je-aanvraag-is-mislukt'
 				)
 			);
@@ -220,34 +219,32 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						type="secondary"
 						onClick={history.goBack}
 						icon="arrow-left"
-						title={t(
+						title={tText(
 							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
 						)}
-						ariaLabel={t(
+						ariaLabel={tText(
 							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
 						)}
 					/>
 				</Spacer>
 				<BlockHeading type="h2">
-					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs">
-						Vraag een account aan op het Archief voor Onderwijs
-					</Trans>
-				</BlockHeading>
-				<Html
-					content={t(
-						'authentication/views/registration-flow/r-4-manual-registration___intro',
-						links
+					{tHtml(
+						'authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan-op-het-archief-voor-onderwijs'
 					)}
-				/>
+				</BlockHeading>
+				{tHtml(
+					'authentication/views/registration-flow/r-4-manual-registration___intro',
+					links
+				)}
 				<BlockHeading type="h3">
-					<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">
-						Aanvraagformulier
-					</Trans>
+					{tHtml(
+						'authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier'
+					)}
 				</BlockHeading>
 				<Grid>
 					<Column size="2-6" className="m-manual-registration">
 						<FormGroup
-							label={t(
+							label={tText(
 								'authentication/views/registration-flow/r-4-manual-registration___voornaam'
 							)}
 							labelFor="firstName"
@@ -255,7 +252,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							<TextInput id="firstName" value={firstName} onChange={setFirstName} />
 						</FormGroup>
 						<FormGroup
-							label={t(
+							label={tText(
 								'authentication/views/registration-flow/r-4-manual-registration___achternaam'
 							)}
 							labelFor="lastName"
@@ -263,7 +260,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							<TextInput id="lastName" value={lastName} onChange={setLastName} />
 						</FormGroup>
 						<FormGroup
-							label={t(
+							label={tText(
 								'authentication/views/registration-flow/r-4-manual-registration___professioneel-e-mailadres'
 							)}
 							labelFor="email"
@@ -277,18 +274,15 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 								</TooltipTrigger>
 								<TooltipContent>
 									<p>
-										<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___tooltip-professioneel-email-adres">
-											Vul bij voorkeur je professioneel e-mailadres in. Dat is
-											het adres dat je krijgt in je school of organisatie, bv.
-											jan.smit@basisschool-mirakel.be. Zo kunnen we je
-											aanvraag sneller behandelen.
-										</Trans>
+										{tHtml(
+											'authentication/views/registration-flow/r-4-manual-registration___tooltip-professioneel-email-adres'
+										)}
 									</p>
 								</TooltipContent>
 							</Tooltip>
 						</FormGroup>
 						<FormGroup
-							label={t(
+							label={tText(
 								'authentication/views/registration-flow/r-4-manual-registration___organisatie-of-onderwijsinstelling'
 							)}
 							labelFor="organization"
@@ -300,7 +294,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							/>
 						</FormGroup>
 						<FormGroup
-							label={t(
+							label={tText(
 								'authentication/views/registration-flow/r-4-manual-registration___functie-of-beroep'
 							)}
 							labelFor="function"
@@ -308,7 +302,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							<TextInput id="function" value={profession} onChange={setProfession} />
 						</FormGroup>
 						<FormGroup
-							label={t(
+							label={tText(
 								'collection/views/collection-edit-meta-data___onderwijsniveau'
 							)}
 							labelFor="classificationId"
@@ -320,7 +314,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							/>
 						</FormGroup>
 						<FormGroup
-							label={t(
+							label={tText(
 								'authentication/views/registration-flow/r-4-manual-registration___reden-voor-aanvraag'
 							)}
 							labelFor="reason"
@@ -334,30 +328,17 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						</FormGroup>
 						<FormGroup>
 							<Checkbox
-								label={
-									<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-privacyverklaring">
-										Ik aanvaard de&nbsp;
-										<a
-											href="//meemoo.be/nl/privacybeleid"
-											target="_blank"
-											title={t(
-												'authentication/views/registration-flow/r-3-stamboek___bekijk-de-privacy-voorwaarden'
-											)}
-											rel="noopener noreferrer"
-										>
-											privacyverklaring
-										</a>
-										.
-									</Trans>
-								}
+								label={tHtml(
+									'authentication/views/registration-flow/r-3-stamboek___ik-aanvaard-de-privacyverklaring'
+								)}
 								checked={acceptedPrivacyConditions}
 								onChange={setAcceptedPrivacyConditions}
 							/>
 						</FormGroup>
 						<Button type="primary" onClick={onSend}>
-							<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan">
-								Vraag een account aan
-							</Trans>
+							{tHtml(
+								'authentication/views/registration-flow/r-4-manual-registration___vraag-een-account-aan'
+							)}
 						</Button>
 					</Column>
 					<Column size="2-5">
@@ -368,13 +349,8 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		);
 	};
 
-	const renderConfirmation = () => (
-		<Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___bevestiging">
-			Bedankt voor je aanvraag. Onze helpdesk bekijkt deze binnen de vijf werkdagen. Heb je
-			ondertussen nog vragen of toevoegingen met betrekking tot je aanvraag? Formuleer deze
-			dan in een reply op automatische bevestigingsmail die je krijgt van onze helpdesk.
-		</Trans>
-	);
+	const renderConfirmation = () =>
+		tHtml('authentication/views/registration-flow/r-4-manual-registration___bevestiging');
 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
@@ -382,14 +358,14 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-beschrijving'
 						)}
 					/>

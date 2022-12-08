@@ -1,0 +1,10 @@
+mutation deleteItemRelationsByObject(
+	$objectId: uuid!
+	$relationType: lookup_enum_relation_types_enum!
+) {
+	delete_app_item_relations(
+		where: { object: { _eq: $objectId }, predicate: { _eq: $relationType } }
+	) {
+		affected_rows
+	}
+}

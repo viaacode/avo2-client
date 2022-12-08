@@ -1,4 +1,5 @@
 import { mount, shallow } from 'enzyme';
+import { noop } from 'lodash';
 import React from 'react';
 
 import DraggableList from './DraggableList';
@@ -16,7 +17,7 @@ describe('<DraggableList />', () => {
 			<DraggableList
 				renderItem={renderItem}
 				items={mockItems}
-				onListChange={() => {}}
+				onListChange={noop}
 				generateKey={(item: any) => item.id}
 			/>
 		);
@@ -27,7 +28,7 @@ describe('<DraggableList />', () => {
 			<DraggableList
 				renderItem={renderItem}
 				items={mockItems}
-				onListChange={() => {}}
+				onListChange={noop}
 				generateKey={(item: any) => item.id}
 			/>
 		);
@@ -40,7 +41,7 @@ describe('<DraggableList />', () => {
 			<DraggableList
 				renderItem={renderItem}
 				items={mockItems}
-				onListChange={() => {}}
+				onListChange={noop}
 				generateKey={(item: any) => item.id}
 			/>
 		);

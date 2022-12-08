@@ -1,6 +1,5 @@
-import React, { FunctionComponent } from 'react';
-
 import { BlockHero, BlockHeroProps } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
 
 import { getEnv } from '../../../../../shared/helpers';
 

@@ -12,14 +12,15 @@ import {
 import { QualityLabel } from '../../../collection/collection.types';
 import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser';
 import { APP_PATH } from '../../../constants';
+import { Lookup_Enum_Collection_Management_Qc_Label_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, formatDate, normalizeTimestamp } from '../../../shared/helpers';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
+import { tText } from '../../../shared/helpers/translate';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import i18n from '../../../shared/translations/i18n';
 import { getCollectionManagementStatuses } from '../collections-or-bundles.const';
 import { CollectionTableCols, ManagementStatus } from '../collections-or-bundles.types';
 
-export const getDisplayTextForManagementStatus = (status: ManagementStatus): string | null => {
+export const getDisplayTextForManagementStatus = (status?: ManagementStatus): string | null => {
 	return (
 		get(
 			getCollectionManagementStatuses().find((option) => option.id === status),
@@ -45,20 +46,19 @@ export const renderCollectionOverviewColumns = (
 
 		case 'last_updated_by_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
-			const lastEditUser: Avo.User.User | undefined =
-				get(rowData, 'updated_by.user') ||
-				get(rowData, 'last_editor') ||
-				get(rowData, 'last_editor_name');
-			return lastEditUser ? lastEditUser.full_name : '-';
+			return (
+				rowData.updated_by?.user?.full_name ||
+				(rowData as any).last_editor.full_name ||
+				(rowData as any).last_editor_name ||
+				'-'
+			);
 		}
 
 		case 'is_public':
 		case 'is_managed':
 			return rowData[columnId]
-				? i18n.t('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
-				: i18n.t(
-						'admin/collections-or-bundles/views/collections-or-bundles-overview___nee'
-				  );
+				? tText('admin/collections-or-bundles/views/collections-or-bundles-overview___ja')
+				: tText('admin/collections-or-bundles/views/collections-or-bundles-overview___nee');
 
 		case 'views':
 			return get(rowData, 'counts.views') || '0';
@@ -150,10 +150,26 @@ export const renderCollectionOverviewColumns = (
 			return get(rowData, 'manager.full_name') || '-';
 
 		case 'quality_check_language_check':
-			return booleanToOkNok(get(rowData, 'mgmt_language_check')) || '-';
+			return (
+				booleanToOkNok(
+					!!rowData.management?.QC?.find(
+						(item) =>
+							item.qc_label ===
+							Lookup_Enum_Collection_Management_Qc_Label_Enum.Taalcheck
+					)?.qc_status
+				) || '-'
+			);
 
 		case 'quality_check_quality_check':
-			return booleanToOkNok(get(rowData, 'mgmt_quality_check')) || '-';
+			return (
+				booleanToOkNok(
+					!!rowData.management?.QC?.find(
+						(item) =>
+							item.qc_label ===
+							Lookup_Enum_Collection_Management_Qc_Label_Enum.Kwaliteitscheck
+					)?.qc_status
+				) || '-'
+			);
 
 		case 'quality_check_approved_at':
 			return formatDate(get(rowData, 'mgmt_eind_check_date')) || '-';

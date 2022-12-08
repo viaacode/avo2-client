@@ -1,9 +1,8 @@
+import { ImageInfo } from '@viaa/avo2-components';
 import { times } from 'lodash-es';
 
-import { ImageInfo } from '@viaa/avo2-components';
-
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import { ContentPickerProps } from '../../../shared/components/ContentPicker/ContentPicker';
 import {
 	ContentBlockConfig,
@@ -33,14 +32,14 @@ export const INITIAL_PROJECTS_SPOTLIGHT_BLOCK_STATE = (): DefaultContentBlockSta
 		},
 	});
 
-export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t(
+	name: tText(
 		'admin/content-block/helpers/generators/projects-spotlight___projecten-in-de-kijker'
 	),
 	type: ContentBlockType.ProjectsSpotlight,
 	components: {
-		name: i18n.t('admin/content-block/helpers/generators/projects-spotlight___project'),
+		name: tText('admin/content-block/helpers/generators/projects-spotlight___project'),
 		limits: {
 			min: 3,
 			max: 3,
@@ -48,7 +47,7 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 		state: INITIAL_PROJECTS_SPOTLIGHT_COMPONENTS_STATE(),
 		fields: {
 			project: {
-				label: i18n.t(
+				label: tText(
 					'admin/content-block/helpers/generators/project-spotlight___project-pagina'
 				),
 				editorType: ContentBlockEditor.ContentPicker,
@@ -58,7 +57,7 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 				} as ContentPickerProps,
 			},
 			customImage: FILE_FIELD('', {
-				label: i18n.t(
+				label: tText(
 					'admin/content-block/helpers/generators/project-spotlight___aangepaste-afbeelding-optioneel'
 				),
 				editorProps: {
@@ -68,7 +67,7 @@ export const PROJECTS_SPOTLIGHT_BLOCK_CONFIG = (position: number = 0): ContentBl
 				validator: undefined,
 			}),
 			customTitle: TEXT_FIELD('', {
-				label: i18n.t(
+				label: tText(
 					'admin/content-block/helpers/generators/project-spotlight___aangepaste-titel-optioneel'
 				),
 				editorType: ContentBlockEditor.TextInput,

@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import { Requests } from 'node-zendesk';
 
 import { getEnv } from '../helpers';

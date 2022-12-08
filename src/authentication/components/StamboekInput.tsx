@@ -10,13 +10,12 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import stamboekExampleImage from '../../assets/images/leerkrachten-kaart-voorbeeld-nummer.png';
 import { APP_PATH } from '../../constants';
-import Html from '../../shared/components/Html/Html';
-import { ToastType } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { ToastType } from '../../shared/services/toast-service';
 import { verifyStamboekNumber } from '../authentication.service';
 import { StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
 
@@ -28,7 +27,7 @@ export interface StamboekInputProps {
 }
 
 export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange, value = '' }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [stamboekValidationStatus, setStamboekValidationStatus] =
 		useState<StamboekValidationStatus>('INCOMPLETE');
@@ -47,7 +46,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 			status: undefined,
 		},
 		INVALID_FORMAT: {
-			message: t(
+			message: tHtml(
 				'authentication/components/stamboek-input___het-stamboek-nummer-heeft-een-ongeldig-formaat-geldige-formaten-00000000000-of-00000000000-000000'
 			),
 			status: ToastType.DANGER,
@@ -55,16 +54,14 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 		INVALID_NUMBER: {
 			message: (
 				<span>
-					<Trans i18nKey="authentication/components/stamboek-input___het-stamboek-nummer-is-niet-geldig-of-nog-niet-geactiveerd">
-						Het stamboek nummer is niet geldig, of nog niet geactiveerd. Indien u nog
-						maar recent uw kaart heeft ontvangen kan u via een manuele aanvraag toch al
-						toegang krijgen.
-					</Trans>
+					{tHtml(
+						'authentication/components/stamboek-input___het-stamboek-nummer-is-niet-geldig-of-nog-niet-geactiveerd'
+					)}
 					<br />
 					<Spacer margin="top-small">
 						<Link to={APP_PATH.MANUAL_ACCESS_REQUEST.route}>
 							<Button
-								label={t(
+								label={tText(
 									'authentication/components/stamboek-input___manuele-aanvraag-indienen'
 								)}
 							/>
@@ -75,27 +72,23 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 			status: ToastType.DANGER,
 		},
 		VALID_FORMAT: {
-			message: t('authentication/components/stamboek-input___bezig-met-valideren'),
+			message: tHtml('authentication/components/stamboek-input___bezig-met-valideren'),
 			status: ToastType.SPINNER,
 		},
 		VALID: {
-			message: t('authentication/components/stamboek-input___het-stamboek-nummer-is-geldig'),
+			message: tHtml(
+				'authentication/components/stamboek-input___het-stamboek-nummer-is-geldig'
+			),
 			status: ToastType.SUCCESS,
 		},
 		ALREADY_IN_USE: {
-			message: (
-				<Html
-					content={t(
-						'authentication/components/stamboek-input___dit-stamboek-nummer-is-reeds-in-gebruik'
-					)}
-					type="span"
-					sanitizePreset="link"
-				/>
+			message: tHtml(
+				'authentication/components/stamboek-input___dit-stamboek-nummer-is-reeds-in-gebruik'
 			),
 			status: ToastType.DANGER,
 		},
 		SERVER_ERROR: {
-			message: t(
+			message: tHtml(
 				'authentication/components/stamboek-input___er-ging-iets-mis-bij-het-valideren-van-het-stamboek-nummer-probeer-later-eens-opnieuw'
 			),
 			status: ToastType.DANGER,
@@ -143,7 +136,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 	return (
 		<Spacer className="m-stamboek-input" margin={['bottom-large']}>
 			<TextInput
-				placeholder={t('authentication/components/stamboek-input___00000000000-000000')}
+				placeholder={tText('authentication/components/stamboek-input___00000000000-000000')}
 				value={rawStamboekNumber}
 				onChange={setStamboekNumber}
 			/>
@@ -157,13 +150,13 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 					<Spacer margin={'small'}>
 						<Spacer margin="bottom-small">
 							<span>
-								<Trans i18nKey="authentication/components/stamboek-input___je-stamboek-nummer-staat-op-je-lerarenkaart">
-									Je stamboek nummer staat op je lerarenkaart
-								</Trans>
+								{tHtml(
+									'authentication/components/stamboek-input___je-stamboek-nummer-staat-op-je-lerarenkaart'
+								)}
 							</span>
 						</Spacer>
 						<img
-							alt={t(
+							alt={tText(
 								'authentication/components/stamboek-input___voorbeeld-leeraren-kaart'
 							)}
 							className="a-stamboek-image"

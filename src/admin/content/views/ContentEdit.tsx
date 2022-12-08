@@ -8,7 +8,6 @@ import React, {
 	useReducer,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -25,8 +24,9 @@ import {
 } from '../../../shared/components';
 import { CustomError, navigate } from '../../../shared/helpers';
 import { useTabs } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ContentPageService } from '../../../shared/services/content-page-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { CONTENT_BLOCK_INITIAL_STATE_MAP } from '../../content-block/content-block.const';
 import { validateContentBlockField } from '../../shared/helpers';
@@ -88,7 +88,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
 
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [currentTab, setCurrentTab, tabs] = useTabs(GET_CONTENT_DETAIL_TABS(), 'inhoud');
@@ -109,21 +109,21 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			) {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'admin/content/views/content-edit___je-hebt-geen-rechten-om-deze-content-pagina-te-bekijken'
 					),
 					icon: 'lock',
 				});
 				return;
 			}
-			const contentPageObj = await ContentService.getContentPageById(id);
+			const contentPageObj = await ContentService.getContentPageById(parseInt(id));
 			if (
 				!hasPerm(PermissionName.EDIT_ANY_CONTENT_PAGES) &&
 				contentPageObj.user_profile_id !== getProfileId(user)
 			) {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'admin/content/views/content-edit___je-hebt-geen-rechten-om-deze-content-pagina-te-bekijken'
 					),
 					icon: 'lock',
@@ -140,10 +140,12 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		} catch (err) {
 			console.error(new CustomError('Failed to load content page', err, { id }));
 			ToastService.danger(
-				t('admin/content/views/content-edit___het-laden-van-deze-content-pagina-is-mislukt')
+				tHtml(
+					'admin/content/views/content-edit___het-laden-van-deze-content-pagina-is-mislukt'
+				)
 			);
 		}
-	}, [id, user, hasPerm, t]);
+	}, [id, user, hasPerm, tText]);
 
 	const onPasteContentBlock = useCallback(
 		(evt: ClipboardEvent) => {
@@ -164,20 +166,20 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 						});
 
 						ToastService.success(
-							t('admin/content/views/content-edit___de-blok-is-toegevoegd')
+							tHtml('admin/content/views/content-edit___de-blok-is-toegevoegd')
 						);
 					}
 				}
 			} catch (err) {
 				console.error(new CustomError('Failed to paste content block', err));
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/content/views/content-edit___het-plakken-van-het-content-blok-is-mislukt'
 					)
 				);
 			}
 		},
-		[changeContentPageState, contentPageState.currentContentPageInfo.contentBlockConfigs, t]
+		[changeContentPageState, contentPageState.currentContentPageInfo.contentBlockConfigs, tText]
 	);
 
 	useEffect(() => {
@@ -200,9 +202,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 
 	// Computed
 	const pageType = id ? PageType.Edit : PageType.Create;
-	let pageTitle = t('admin/content/views/content-edit___content-toevoegen');
+	let pageTitle = tText('admin/content/views/content-edit___content-toevoegen');
 	if (pageType !== PageType.Create) {
-		pageTitle = `${t('admin/content/views/content-edit___content-aanpassen')}: ${get(
+		pageTitle = `${tText('admin/content/views/content-edit___content-aanpassen')}: ${get(
 			contentPageState.currentContentPageInfo,
 			'title',
 			''
@@ -289,14 +291,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 				setIsSaving(false);
 				if (!isFormValid) {
 					ToastService.danger(
-						t(
+						tHtml(
 							'admin/content/views/content-edit___er-zijn-nog-fouten-in-het-metadata-formulier'
 						)
 					);
 				}
 				if (!areConfigsValid) {
 					ToastService.danger(
-						t(
+						tHtml(
 							'admin/content/views/content-edit___er-zijn-nog-fouten-in-de-content-blocks'
 						)
 					);
@@ -371,7 +373,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			]);
 
 			ToastService.success(
-				t('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen')
+				tHtml('admin/content/views/content-edit___het-content-item-is-succesvol-opgeslagen')
 			);
 			navigate(history, CONTENT_PATH.CONTENT_PAGE_DETAIL, {
 				id: insertedOrUpdatedContent.id,
@@ -379,7 +381,9 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		} catch (err) {
 			console.error(new CustomError('Failed to save content page ', err));
 			ToastService.danger(
-				t('admin/content/views/content-edit___het-opslaan-van-de-content-pagina-is-mislukt')
+				tHtml(
+					'admin/content/views/content-edit___het-opslaan-van-de-content-pagina-is-mislukt'
+				)
 			);
 		}
 
@@ -390,11 +394,13 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 		const errors: ContentEditFormErrors = {};
 
 		if (!contentPageState.currentContentPageInfo.title) {
-			errors.title = t('admin/content/views/content-edit___titel-is-verplicht');
+			errors.title = tText('admin/content/views/content-edit___titel-is-verplicht');
 		}
 
 		if (!contentPageState.currentContentPageInfo.content_type) {
-			errors.content_type = t('admin/content/views/content-edit___content-type-is-verplicht');
+			errors.content_type = tText(
+				'admin/content/views/content-edit___content-type-is-verplicht'
+			);
 		}
 
 		// check if the path is unique
@@ -407,7 +413,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					contentPageState.currentContentPageInfo.id
 				);
 			if (existingContentPageTitle) {
-				errors.path = t(
+				errors.path = tText(
 					'admin/content/views/content-edit___dit-path-is-reeds-gebruikt-door-pagina-page-title',
 					{
 						pageTitle: existingContentPageTitle,
@@ -429,7 +435,7 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 			new Date(contentPageState.currentContentPageInfo.depublish_at) <
 				new Date(contentPageState.currentContentPageInfo.publish_at)
 		) {
-			errors.depublish_at = t(
+			errors.depublish_at = tText(
 				'admin/content/views/content-edit___depublicatie-moet-na-publicatie-datum'
 			);
 		}
@@ -448,11 +454,24 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 	};
 
 	const addComponentToState = (index: number, blockType: ContentBlockType) => {
+		const getInitialContentBlockState = CONTENT_BLOCK_INITIAL_STATE_MAP[blockType];
+		if (!getInitialContentBlockState) {
+			console.error(
+				'Failed to add component to state since content block initial state was not found in CONTENT_BLOCK_INITIAL_STATE_MAP with type: ' +
+					blockType
+			);
+			ToastService.danger(
+				tHtml(
+					'admin/content/views/content-edit___het-toevoegen-van-de-blok-is-mislukt-default-instellingen-van-de-blok-konden-niet-worden-gevonden'
+				)
+			);
+			return;
+		}
 		changeContentPageState({
 			type: ContentEditActionType.ADD_COMPONENTS_STATE,
 			payload: {
 				index,
-				formGroupState: CONTENT_BLOCK_INITIAL_STATE_MAP[blockType](),
+				formGroupState: getInitialContentBlockState(),
 			},
 		});
 	};
@@ -545,14 +564,14 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 					<AdminLayoutTopBarRight>
 						<ButtonToolbar>
 							<Button
-								label={t('admin/content/views/content-edit___annuleer')}
+								label={tText('admin/content/views/content-edit___annuleer')}
 								onClick={navigateBack}
 								type="tertiary"
 							/>
 							{isAllowedToSave && (
 								<Button
 									disabled={isSaving}
-									label={t('admin/content/views/content-edit___opslaan')}
+									label={tText('admin/content/views/content-edit___opslaan')}
 									onClick={handleSave}
 								/>
 							)}
@@ -571,10 +590,10 @@ const ContentEdit: FunctionComponent<ContentEditProps> = ({ history, match, user
 								{GENERATE_SITE_TITLE(
 									get(contentPageState.currentContentPageInfo, 'title'),
 									pageType === PageType.Create
-										? t(
+										? tText(
 												'admin/content/views/content-edit___content-beheer-aanmaak-pagina-titel'
 										  )
-										: t(
+										: tText(
 												'admin/content/views/content-edit___content-beheer-bewerk-pagina-titel'
 										  )
 								)}

@@ -5,7 +5,7 @@ import { PickerSelectItem } from '../../../types';
 
 export const retrieveAnchors = async (
 	name: string | null,
-	limit: number = 5
+	limit = 5
 ): Promise<PickerSelectItem[]> => {
 	try {
 		const anchorIds: string[] = [];

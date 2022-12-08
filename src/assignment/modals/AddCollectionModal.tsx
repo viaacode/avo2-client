@@ -26,7 +26,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
@@ -34,11 +33,12 @@ import { ContentTypeNumber } from '../../collection/collection.types';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, formatTimestamp } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
+import { tText } from '../../shared/helpers/translate';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks';
-import { ToastService } from '../../shared/services';
-import i18n from '../../shared/translations/i18n';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { AssignmentOverviewTableColumns } from '../assignment.types';
 
@@ -48,19 +48,19 @@ import './AddItemsModals.scss';
 const GET_ADD_COLLECTION_COLUMNS = (): TableColumn[] => [
 	{
 		id: 'title',
-		label: i18n.t('assignment/modals/add-collection-modal___titel'),
+		label: tText('assignment/modals/add-collection-modal___titel'),
 		sortable: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'updated_at',
-		label: i18n.t('assignment/modals/add-collection-modal___laatst-bewerkt'),
+		label: tText('assignment/modals/add-collection-modal___laatst-bewerkt'),
 		sortable: true,
 		dataType: TableColumnDataType.dateTime,
 	},
 	{
 		id: 'is_public',
-		label: i18n.t('assignment/modals/add-collection-modal___is-publiek'),
+		label: tText('assignment/modals/add-collection-modal___is-publiek'),
 		sortable: true,
 		dataType: TableColumnDataType.boolean,
 	},
@@ -111,7 +111,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	onClose = noop,
 	addCollectionCallback,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
@@ -170,12 +170,12 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			console.error(new CustomError('Failed to get collections', err));
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'assignment/modals/add-collection-modal___het-ophalen-van-bestaande-collecties-is-mislukt'
 				),
 			});
 		}
-	}, [tableColumns, activeView, user, filterString, sortColumn, sortOrder, t]);
+	}, [tableColumns, activeView, user, filterString, sortColumn, sortOrder, tText]);
 
 	useEffect(() => {
 		if (collections) {
@@ -207,7 +207,9 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	const handleImportToAssignment = () => {
 		if (!selectedCollectionId) {
 			ToastService.danger(
-				t('assignment/modals/add-collection-modal___gelieve-een-collectie-te-selecteren')
+				tHtml(
+					'assignment/modals/add-collection-modal___gelieve-een-collectie-te-selecteren'
+				)
 			);
 			return;
 		}
@@ -235,8 +237,8 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					<div
 						title={
 							collection.is_public
-								? t('assignment/modals/add-collection-modal___publiek')
-								: t('assignment/modals/add-collection-modal___niet-publiek')
+								? tText('assignment/modals/add-collection-modal___publiek')
+								: tText('assignment/modals/add-collection-modal___niet-publiek')
 						}
 					>
 						<Icon name={collection.is_public ? 'unlock-3' : 'lock'} />
@@ -262,10 +264,10 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 									<ButtonGroup>
 										<Button
 											type="secondary"
-											label={t(
+											label={tText(
 												'assignment/modals/add-collection-modal___mijn-collecties'
 											)}
-											title={t(
+											title={tText(
 												'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
 											)}
 											active={activeView === AddCollectionTab.myCollections}
@@ -275,10 +277,10 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 										/>
 										<Button
 											type="secondary"
-											label={t(
+											label={tText(
 												'assignment/modals/add-collection-modal___bladwijzer-collecties'
 											)}
-											title={t(
+											title={tText(
 												'assignment/modals/add-collection-modal___filter-op-mijn-collecties'
 											)}
 											active={
@@ -300,13 +302,13 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 									value={activeView}
 									options={[
 										{
-											label: t(
+											label: tText(
 												'assignment/modals/add-collection-modal___mijn-collecties'
 											),
 											value: AddCollectionTab.myCollections,
 										},
 										{
-											label: t(
+											label: tText(
 												'assignment/modals/add-collection-modal___bladwijzer-collecties'
 											),
 											value: AddCollectionTab.bookmarkedCollections,
@@ -340,10 +342,10 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 						data={collections || undefined}
 						emptyStateMessage={
 							filterString
-								? t(
+								? tText(
 										'assignment/modals/add-collection-modal___er-zijn-geen-collecties-die-voldoen-aan-de-zoekopdracht'
 								  )
-								: t(
+								: tText(
 										'assignment/modals/add-collection-modal___er-zijn-nog-geen-collecties-aangemaakt'
 								  )
 						}
@@ -368,7 +370,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('assignment/modals/add-collection-modal___importeer-collectie')}
+			title={tText('assignment/modals/add-collection-modal___importeer-collectie')}
 			size="large"
 			onClose={resetStateAndCallOnClose}
 			scrollable
@@ -390,7 +392,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					/>
 					<Spacer margin="left">
 						<FlexItem>
-							{t(
+							{tText(
 								'assignment/modals/add-collection-modal___importeer-fragmenten-met-beschrijving'
 							)}
 						</FlexItem>
@@ -402,12 +404,12 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 				<ButtonToolbar>
 					<Button
 						type="secondary"
-						label={t('assignment/modals/add-collection-modal___annuleer')}
+						label={tText('assignment/modals/add-collection-modal___annuleer')}
 						onClick={resetStateAndCallOnClose}
 					/>
 					<Button
 						type="primary"
-						label={t('assignment/modals/add-collection-modal___importeer')}
+						label={tText('assignment/modals/add-collection-modal___importeer')}
 						onClick={handleImportToAssignment}
 					/>
 				</ButtonToolbar>

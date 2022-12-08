@@ -13,7 +13,7 @@ import {
 
 import { FileUpload } from '../../shared/components';
 import WYSIWYGWrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 import { UserGroupSelect } from '../shared/components';
 // TODO investigate why these cannot be loaded from the barrel file: src/admin/shared/components/index.ts
 // More info on the bug that occurs:
@@ -25,7 +25,7 @@ import {
 	AlignOption,
 	BlockGridFormatOption,
 	Color,
-	ContentBlockComponentState,
+	ContentBlockConfig,
 	ContentBlockType,
 	FillOption,
 	HeadingTypeOption,
@@ -106,111 +106,106 @@ import {
 	USP_GRID_BLOCK_CONFIG,
 } from './helpers/generators/usp-grid';
 
-export const CONTENT_BLOCKS_RESULT_PATH = {
-	GET: 'app_content_blocks',
-	INSERT: 'insert_app_content_blocks',
-};
-
 export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___voeg-een-content-blok-toe'),
+		label: tText('admin/content-block/content-block___voeg-een-content-blok-toe'),
 		value: '',
 		disabled: true,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___titel'),
+		label: tText('admin/content-block/content-block___titel'),
 		value: ContentBlockType.Heading,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___tekst'),
+		label: tText('admin/content-block/content-block___tekst'),
 		value: ContentBlockType.RichText,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___tekst-2-kolommen'),
+		label: tText('admin/content-block/content-block___tekst-2-kolommen'),
 		value: ContentBlockType.RichTextTwoColumns,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___knoppen'),
+		label: tText('admin/content-block/content-block___knoppen'),
 		value: ContentBlockType.Buttons,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___intro'),
+		label: tText('admin/content-block/content-block___intro'),
 		value: ContentBlockType.Intro,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___2-ct-as'),
-		value: ContentBlockType.CTAs,
+		label: tText('admin/content-block/content-block___2-ct-as'),
+		value: ContentBlockType.Ctas,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___i-frame'),
-		value: ContentBlockType.IFrame,
+		label: tText('admin/content-block/content-block___i-frame'),
+		value: ContentBlockType.Iframe,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___klaar'),
+		label: tText('admin/content-block/content-block___klaar'),
 		value: ContentBlockType.Klaar,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___media-tegels'),
+		label: tText('admin/content-block/content-block___media-tegels'),
 		value: ContentBlockType.MediaGrid,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___media-speler'),
+		label: tText('admin/content-block/content-block___media-speler'),
 		value: ContentBlockType.MediaPlayer,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___media-speler-met-titel-tekst-en-knop'),
+		label: tText('admin/content-block/content-block___media-speler-met-titel-tekst-en-knop'),
 		value: ContentBlockType.MediaPlayerTitleTextButton,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___afbeelding'),
+		label: tText('admin/content-block/content-block___afbeelding'),
 		value: ContentBlockType.Image,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___afbeelding-grid'),
+		label: tText('admin/content-block/content-block___afbeelding-grid'),
 		value: ContentBlockType.ImageGrid,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___pagina-overzicht'),
+		label: tText('admin/content-block/content-block___pagina-overzicht'),
 		value: ContentBlockType.PageOverview,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___projecten-in-de-kijker'),
+		label: tText('admin/content-block/content-block___projecten-in-de-kijker'),
 		value: ContentBlockType.ProjectsSpotlight,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___in-de-kijker'),
+		label: tText('admin/content-block/content-block___in-de-kijker'),
 		value: ContentBlockType.Spotlight,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___quote'),
+		label: tText('admin/content-block/content-block___quote'),
 		value: ContentBlockType.Quote,
 	},
 	{
-		label: i18n.t('admin/content-block/helpers/generators/anchor-links___links'),
+		label: tText('admin/content-block/helpers/generators/anchor-links___links'),
 		value: ContentBlockType.AnchorLinks,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___hero'),
+		label: tText('admin/content-block/content-block___hero'),
 		value: ContentBlockType.Hero,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___zoek'),
+		label: tText('admin/content-block/content-block___zoek'),
 		value: ContentBlockType.Search,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___pagina-metadata'),
+		label: tText('admin/content-block/content-block___pagina-metadata'),
 		value: ContentBlockType.ContentPageMeta,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___logos-sign-off'),
+		label: tText('admin/content-block/content-block___logos-sign-off'),
 		value: ContentBlockType.LogoGrid,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___usp'),
+		label: tText('admin/content-block/content-block___usp'),
 		value: ContentBlockType.UspGrid,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___eventbrite'),
+		label: tText('admin/content-block/content-block___eventbrite'),
 		value: ContentBlockType.Eventbrite,
 	},
 ];
@@ -233,13 +228,18 @@ export const EDITOR_TYPES_MAP = {
 	WYSIWYG: WYSIWYGWrapper,
 };
 
-export const CONTENT_BLOCK_CONFIG_MAP = {
+type ContentBlockConfigLookup = Partial<
+	Record<ContentBlockType, (position: number) => ContentBlockConfig>
+>;
+
+// TODO see if partial is needed, or if the missing properties should be added
+export const CONTENT_BLOCK_CONFIG_MAP: ContentBlockConfigLookup = {
 	[ContentBlockType.AnchorLinks]: ANCHOR_LINKS_BLOCK_CONFIG,
 	[ContentBlockType.Buttons]: BUTTONS_BLOCK_CONFIG,
-	[ContentBlockType.CTAs]: CTAS_BLOCK_CONFIG,
+	[ContentBlockType.Ctas]: CTAS_BLOCK_CONFIG,
 	[ContentBlockType.Heading]: HEADING_BLOCK_CONFIG,
 	[ContentBlockType.Hero]: HERO_BLOCK_CONFIG,
-	[ContentBlockType.IFrame]: IFRAME_BLOCK_CONFIG,
+	[ContentBlockType.Iframe]: IFRAME_BLOCK_CONFIG,
 	[ContentBlockType.Image]: IMAGE_BLOCK_CONFIG,
 	[ContentBlockType.ImageGrid]: IMAGE_GRID_BLOCK_CONFIG,
 	[ContentBlockType.Intro]: INTRO_BLOCK_CONFIG,
@@ -260,17 +260,15 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.Eventbrite]: EVENTBRITE_BLOCK_CONFIG,
 };
 
-export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
-	/* eslint-disable @typescript-eslint/no-unused-vars */
-	[type in ContentBlockType]: (position?: number) => ContentBlockComponentState;
-	/* eslint-enable @typescript-eslint/no-unused-vars */
-} = {
+type ContentBlockInitialConfigLookup = Partial<Record<ContentBlockType, () => any>>;
+
+export const CONTENT_BLOCK_INITIAL_STATE_MAP: ContentBlockInitialConfigLookup = {
 	[ContentBlockType.AnchorLinks]: INITIAL_ANCHOR_LINKS_COMPONENTS_STATE,
 	[ContentBlockType.Buttons]: INITIAL_BUTTONS_COMPONENTS_STATE,
-	[ContentBlockType.CTAs]: INITIAL_CTAS_COMPONENTS_STATE,
+	[ContentBlockType.Ctas]: INITIAL_CTAS_COMPONENTS_STATE,
 	[ContentBlockType.Heading]: INITIAL_HEADING_COMPONENTS_STATE,
 	[ContentBlockType.Hero]: INITIAL_HERO_COMPONENTS_STATE,
-	[ContentBlockType.IFrame]: INITIAL_IFRAME_COMPONENTS_STATE,
+	[ContentBlockType.Iframe]: INITIAL_IFRAME_COMPONENTS_STATE,
 	[ContentBlockType.Image]: INITIAL_IMAGE_COMPONENTS_STATE,
 	[ContentBlockType.ImageGrid]: INITIAL_IMAGE_GRID_COMPONENTS_STATE,
 	[ContentBlockType.Intro]: INITIAL_INTRO_COMPONENTS_STATE,
@@ -294,39 +292,39 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 
 // Options
 const transparentOption = () => ({
-	label: i18n.t('admin/content-block/content-block___geen'),
+	label: tText('admin/content-block/content-block___geen'),
 	value: Color.Transparent,
 });
 const whiteOption = () => ({
-	label: i18n.t('admin/content-block/content-block___wit'),
+	label: tText('admin/content-block/content-block___wit'),
 	value: Color.White,
 });
 const gray50Option = () => ({
-	label: i18n.t('admin/content-block/content-block___grijs'),
+	label: tText('admin/content-block/content-block___grijs'),
 	value: Color.Gray50,
 });
 const softBlueOption = () => ({
-	label: i18n.t('admin/content-block/content-block___zachtblauw'),
+	label: tText('admin/content-block/content-block___zachtblauw'),
 	value: Color.SoftBlue,
 });
 const nightBlueOption = () => ({
-	label: i18n.t('admin/content-block/content-block___nachtblauw'),
+	label: tText('admin/content-block/content-block___nachtblauw'),
 	value: Color.NightBlue,
 });
 const tealOption = () => ({
-	label: i18n.t('admin/content-block/content-block___appelblauwzeegroen'),
+	label: tText('admin/content-block/content-block___appelblauwzeegroen'),
 	value: Color.Teal,
 });
 const tealBrightOption = () => ({
-	label: i18n.t('admin/content-block/content-block___appelblauwzeegroen-helder'),
+	label: tText('admin/content-block/content-block___appelblauwzeegroen-helder'),
 	value: Color.TealBright,
 });
 const oceanGreenOption = () => ({
-	label: i18n.t('admin/content-block/content-block___oceaangroen'),
+	label: tText('admin/content-block/content-block___oceaangroen'),
 	value: Color.OceanGreen,
 });
 const yellowOption = () => ({
-	label: i18n.t('admin/content-block/content-block___leerlingen-geel'),
+	label: tText('admin/content-block/content-block___leerlingen-geel'),
 	value: Color.Yellow,
 });
 
@@ -353,19 +351,19 @@ export const GET_HERO_BACKGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = ()
 
 export const GET_FOREGROUND_COLOR_OPTIONS: () => SelectOption<Color>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___zwart'),
+		label: tText('admin/content-block/content-block___zwart'),
 		value: Color.Black,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___donker-grijs'),
+		label: tText('admin/content-block/content-block___donker-grijs'),
 		value: Color.Gray700,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___grijs'),
+		label: tText('admin/content-block/content-block___grijs'),
 		value: Color.Gray50,
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___wit'),
+		label: tText('admin/content-block/content-block___wit'),
 		value: Color.White,
 	},
 ];
@@ -381,37 +379,37 @@ export const GET_DARK_BACKGROUND_COLOR_OPTIONS: () => Color[] = () => [
 
 export const GET_ALIGN_OPTIONS: () => { label: string; value: AlignOption }[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___links'),
+		label: tText('admin/content-block/content-block___links'),
 		value: 'left',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___gecentreerd'),
+		label: tText('admin/content-block/content-block___gecentreerd'),
 		value: 'center',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___rechts'),
+		label: tText('admin/content-block/content-block___rechts'),
 		value: 'right',
 	},
 ];
 
 export const GET_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___h-2'),
+		label: tText('admin/content-block/content-block___h-2'),
 		value: 'h2',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___h-3'),
+		label: tText('admin/content-block/content-block___h-3'),
 		value: 'h3',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___h-4'),
+		label: tText('admin/content-block/content-block___h-4'),
 		value: 'h4',
 	},
 ];
 
 export const GET_FULL_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___h-1'),
+		label: tText('admin/content-block/content-block___h-1'),
 		value: 'h1',
 	},
 	...GET_HEADING_TYPE_OPTIONS(),
@@ -419,96 +417,96 @@ export const GET_FULL_HEADING_TYPE_OPTIONS: () => SelectOption<HeadingTypeOption
 
 export const GET_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___primair'),
+		label: tText('admin/content-block/content-block___primair'),
 		value: 'primary',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___secundair'),
+		label: tText('admin/content-block/content-block___secundair'),
 		value: 'secondary',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___secundair-invers'),
+		label: tText('admin/content-block/content-block___secundair-invers'),
 		value: 'secondary-i',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___tertiair'),
+		label: tText('admin/content-block/content-block___tertiair'),
 		value: 'tertiary',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___randloos'),
+		label: tText('admin/content-block/content-block___randloos'),
 		value: 'borderless',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___randloos-invers'),
+		label: tText('admin/content-block/content-block___randloos-invers'),
 		value: 'borderless-i',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___gevaar'),
+		label: tText('admin/content-block/content-block___gevaar'),
 		value: 'danger',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___gevaar-hover'),
+		label: tText('admin/content-block/content-block___gevaar-hover'),
 		value: 'danger-hover',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___link'),
+		label: tText('admin/content-block/content-block___link'),
 		value: 'link',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___link-inline'),
+		label: tText('admin/content-block/content-block___link-inline'),
 		value: 'inline-link',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___leerling-primair-geel'),
+		label: tText('admin/content-block/content-block___leerling-primair-geel'),
 		value: 'pupil-primary',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___leerling-link-tekst-in-geel'),
+		label: tText('admin/content-block/content-block___leerling-link-tekst-in-geel'),
 		value: 'pupil-link',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___leerling-link-geel-inline'),
+		label: tText('admin/content-block/content-block___leerling-link-geel-inline'),
 		value: 'pupil-inline-link',
 	},
 ];
 
 export const GET_UNDERLINED_LINK_BUTTON_TYPE_OPTIONS: () => SelectOption<ButtonType>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___blauw'),
+		label: tText('admin/content-block/content-block___blauw'),
 		value: 'underlined-link',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___geel'),
+		label: tText('admin/content-block/content-block___geel'),
 		value: 'pupil-underlined-link',
 	},
 ];
 
 export const GET_MEDIA_PLAYER_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___paginabreedte'),
+		label: tText('admin/content-block/content-block___paginabreedte'),
 		value: '100%',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___groot'),
+		label: tText('admin/content-block/content-block___groot'),
 		value: '700px',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___medium'),
+		label: tText('admin/content-block/content-block___medium'),
 		value: '500px',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___klein'),
+		label: tText('admin/content-block/content-block___klein'),
 		value: '400px',
 	},
 ];
 
 export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___schermbreedte-header'),
+		label: tText('admin/content-block/content-block___schermbreedte-header'),
 		value: 'page-header',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___schermbreedte'),
+		label: tText('admin/content-block/content-block___schermbreedte'),
 		value: 'full-width',
 	},
 	...GET_MEDIA_PLAYER_WIDTH_OPTIONS(),
@@ -516,72 +514,72 @@ export const GET_WIDTH_OPTIONS: () => SelectOption<WidthOption>[] = () => [
 
 export const GET_FILL_OPTIONS: () => SelectOption<FillOption>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___opvullen'),
+		label: tText('admin/content-block/content-block___opvullen'),
 		value: 'cover',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___volledig-zichtbaar'),
+		label: tText('admin/content-block/content-block___volledig-zichtbaar'),
 		value: 'contain',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___oorspronkelijke-grootte'),
+		label: tText('admin/content-block/content-block___oorspronkelijke-grootte'),
 		value: 'auto',
 	},
 ];
 
 export const GET_IMAGE_GRID_FORMAT_OPTIONS: () => SelectOption<BlockGridFormatOption>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___vierkant-klein-200-x-200'),
+		label: tText('admin/content-block/content-block___vierkant-klein-200-x-200'),
 		value: 'squareSmall',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___vierkant-groot-275-x-275'),
+		label: tText('admin/content-block/content-block___vierkant-groot-275-x-275'),
 		value: 'squareLarge',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___4-x-3-400-x-300'),
+		label: tText('admin/content-block/content-block___4-x-3-400-x-300'),
 		value: '4:3',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___2-x-1-200-x-100'),
+		label: tText('admin/content-block/content-block___2-x-1-200-x-100'),
 		value: '2:1',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___6-x-9-400-x-225'),
+		label: tText('admin/content-block/content-block___6-x-9-400-x-225'),
 		value: '6:9',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___400-x-150'),
+		label: tText('admin/content-block/content-block___400-x-150'),
 		value: '400x150',
 	},
 ];
 
 export const GET_PAGE_OVERVIEW_TAB_STYLE_OPTIONS: () => SelectOption<ContentTabStyle>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___menu-balk'),
+		label: tText('admin/content-block/content-block___menu-balk'),
 		value: 'MENU_BAR',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___tags'),
+		label: tText('admin/content-block/content-block___tags'),
 		value: 'ROUNDED_BADGES',
 	},
 ];
 
 export const GET_PAGE_OVERVIEW_ITEM_STYLE_OPTIONS: () => SelectOption<ContentItemStyle>[] = () => [
 	{
-		label: i18n.t('admin/content-block/content-block___nieuws-lijst'),
+		label: tText('admin/content-block/content-block___nieuws-lijst'),
 		value: 'NEWS_LIST',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___projecten-lijst'),
+		label: tText('admin/content-block/content-block___projecten-lijst'),
 		value: 'PROJECT_LIST',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___grid'),
+		label: tText('admin/content-block/content-block___grid'),
 		value: 'GRID',
 	},
 	{
-		label: i18n.t('admin/content-block/content-block___accrodions'),
+		label: tText('admin/content-block/content-block___accrodions'),
 		value: 'ACCORDION',
 	},
 ];
@@ -595,19 +593,19 @@ export type PageOverviewOrderOptions =
 export const GET_PAGE_OVERVIEW_ORDER_OPTIONS: () => SelectOption<PageOverviewOrderOptions>[] =
 	() => [
 		{
-			label: i18n.t('admin/content-block/content-block___publicatie-datum-nieuw-oud'),
+			label: tText('admin/content-block/content-block___publicatie-datum-nieuw-oud'),
 			value: 'published_at__desc',
 		},
 		{
-			label: i18n.t('admin/content-block/content-block___publicatie-datum-oud-nieuw'),
+			label: tText('admin/content-block/content-block___publicatie-datum-oud-nieuw'),
 			value: 'published_at__asc',
 		},
 		{
-			label: i18n.t('admin/content-block/content-block___titel-a-z'),
+			label: tText('admin/content-block/content-block___titel-a-z'),
 			value: 'title__asc',
 		},
 		{
-			label: i18n.t('admin/content-block/content-block___titel-z-a'),
+			label: tText('admin/content-block/content-block___titel-z-a'),
 			value: 'title__desc',
 		},
 	];

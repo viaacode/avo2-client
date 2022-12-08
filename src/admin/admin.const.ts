@@ -2,9 +2,9 @@ import { every, isArray, some } from 'lodash-es';
 
 import { PermissionName } from '../authentication/helpers/permission-names';
 import { buildLink, CustomError } from '../shared/helpers';
-import { ToastService } from '../shared/services';
+import { tText } from '../shared/helpers/translate';
 import { ContentPageService } from '../shared/services/content-page-service';
-import i18n from '../shared/translations/i18n';
+import { ToastService } from '../shared/services/toast-service';
 import { NavigationItemInfo } from '../shared/types';
 
 import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
@@ -15,7 +15,6 @@ import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';
 import { MENU_PATH } from './menu/menu.const';
-import { PERMISSION_GROUP_PATH } from './permission-groups/permission-group.const';
 import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.const';
 import { TRANSLATIONS_PATH } from './translations/translations.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
@@ -29,7 +28,6 @@ export const ADMIN_PATH = Object.freeze({
 	...CONTENT_PATH,
 	...CONTENT_PAGE_LABEL_PATH,
 	...TRANSLATIONS_PATH,
-	...PERMISSION_GROUP_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
 	...ASSIGNMENTS_PATH,
 	...PUPIL_COLLECTIONS_PATH,
@@ -66,7 +64,7 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 		[
 			{
 				navItem: {
-					label: i18n.t('admin/admin___gebruikers'),
+					label: tText('admin/admin___gebruikers'),
 					location: ADMIN_PATH.USER_OVERVIEW,
 					key: 'users',
 					exact: false,
@@ -75,21 +73,12 @@ function getUserNavItems(userPermissions: string[]): NavigationItemInfo[] {
 			},
 			{
 				navItem: {
-					label: i18n.t('admin/admin___gebruikersgroepen'),
+					label: tText('admin/admin___groepen-en-permissies'),
 					location: ADMIN_PATH.USER_GROUP_OVERVIEW,
 					key: 'userGroups',
 					exact: false,
 				},
 				permission: 'EDIT_USER_GROUPS',
-			},
-			{
-				navItem: {
-					label: i18n.t('admin/admin___permissie-groepen'),
-					location: ADMIN_PATH.PERMISSION_GROUP_OVERVIEW,
-					key: 'permissionGroups',
-					exact: false,
-				},
-				permission: 'EDIT_PERMISSION_GROUPS',
 			},
 		],
 		userPermissions
@@ -131,7 +120,7 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 	} catch (err) {
 		console.error(new CustomError('Failed to fetch content page by pad', err, { path }));
 		ToastService.danger(
-			`${i18n.t(
+			`${tText(
 				'admin/admin___het-ophalen-van-de-route-adhv-het-pagina-pad-is-mislukt'
 			)}: ${path}`
 		);
@@ -143,7 +132,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 	return [
 		...getUserNavItems(userPermissions),
 		...hasPermissions([PermissionName.EDIT_NAVIGATION_BARS], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___navigatie'),
+			label: tText('admin/admin___navigatie'),
 			location: ADMIN_PATH.MENU_OVERVIEW,
 			key: 'navigatie',
 			exact: false,
@@ -153,7 +142,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			'OR',
 			userPermissions,
 			{
-				label: i18n.t('admin/admin___content-paginas'),
+				label: tText('admin/admin___content-paginas'),
 				location: ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
 				key: 'content',
 				exact: false,
@@ -162,19 +151,19 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 					...(userPermissions.includes(PermissionName.EDIT_ANY_CONTENT_PAGES)
 						? [
 								{
-									label: i18n.t('admin/admin___start-uitgelogd'),
+									label: tText('admin/admin___start-uitgelogd'),
 									location: await getContentPageDetailRouteByPath('/'),
 									key: 'faqs',
 									exact: true,
 								},
 								{
-									label: i18n.t('admin/admin___start-uitgelogd-leerlingen'),
+									label: tText('admin/admin___start-uitgelogd-leerlingen'),
 									location: await getContentPageDetailRouteByPath('/leerlingen'),
 									key: 'faqs',
 									exact: true,
 								},
 								{
-									label: i18n.t('admin/admin___start-ingelogd-lesgever'),
+									label: tText('admin/admin___start-ingelogd-lesgever'),
 									location: await getContentPageDetailRouteByPath('/start'),
 									key: 'faqs',
 									exact: true,
@@ -185,19 +174,19 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			}
 		),
 		...hasPermissions([PermissionName.EDIT_CONTENT_PAGE_LABELS], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___content-pagina-labels'),
+			label: tText('admin/admin___content-pagina-labels'),
 			location: ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW,
 			key: 'content-page-labels',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.VIEW_ITEMS_OVERVIEW], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___media-items'),
+			label: tText('admin/admin___media-items'),
 			location: ADMIN_PATH.ITEMS_OVERVIEW,
 			key: 'items',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.VIEW_COLLECTIONS_OVERVIEW], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___collectiebeheer'),
+			label: tText('admin/admin___collectiebeheer'),
 			location: ADMIN_PATH.COLLECTIONS_OVERVIEW,
 			key: 'collections',
 			exact: false,
@@ -208,19 +197,19 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 					userPermissions,
 					[
 						{
-							label: i18n.t('admin/admin___actualisatie'),
+							label: tText('admin/admin___actualisatie'),
 							location: ADMIN_PATH.COLLECTION_ACTUALISATION_OVERVIEW,
 							key: 'collections',
 							exact: false,
 						},
 						{
-							label: i18n.t('admin/admin___kwaliteitscontrole'),
+							label: tText('admin/admin___kwaliteitscontrole'),
 							location: ADMIN_PATH.COLLECTION_QUALITYCHECK_OVERVIEW,
 							key: 'collections',
 							exact: false,
 						},
 						{
-							label: i18n.t('admin/admin___marcom'),
+							label: tText('admin/admin___marcom'),
 							location: ADMIN_PATH.COLLECTION_MARCOM_OVERVIEW,
 							key: 'collections',
 							exact: false,
@@ -230,7 +219,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			],
 		}),
 		...hasPermissions([PermissionName.VIEW_BUNDLES_OVERVIEW], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___bundelbeheer'),
+			label: tText('admin/admin___bundelbeheer'),
 			location: ADMIN_PATH.BUNDLES_OVERVIEW,
 			key: 'bundels',
 			exact: false,
@@ -241,19 +230,19 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 					userPermissions,
 					[
 						{
-							label: i18n.t('admin/admin___actualisatie'),
+							label: tText('admin/admin___actualisatie'),
 							location: ADMIN_PATH.BUNDLE_ACTUALISATION_OVERVIEW,
 							key: 'collections',
 							exact: false,
 						},
 						{
-							label: i18n.t('admin/admin___kwaliteitscontrole'),
+							label: tText('admin/admin___kwaliteitscontrole'),
 							location: ADMIN_PATH.BUNDLE_QUALITYCHECK_OVERVIEW,
 							key: 'collections',
 							exact: false,
 						},
 						{
-							label: i18n.t('admin/admin___marcom'),
+							label: tText('admin/admin___marcom'),
 							location: ADMIN_PATH.BUNDLE_MARCOM_OVERVIEW,
 							key: 'collections',
 							exact: false,
@@ -263,7 +252,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			],
 		}),
 		...hasPermissions([PermissionName.VIEW_ANY_ASSIGNMENTS], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___opdrachtenbeheer'),
+			label: tText('admin/admin___opdrachtenbeheer'),
 			location: ADMIN_PATH.ASSIGNMENTS_OVERVIEW,
 			key: 'assignments',
 			exact: false,
@@ -274,7 +263,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 					userPermissions,
 					[
 						{
-							label: i18n.t('admin/admin___leerlingencollecties'),
+							label: tText('admin/admin___leerlingencollecties'),
 							location: ADMIN_PATH.ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW,
 							key: 'pupil-collections',
 							exact: false,
@@ -284,19 +273,19 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			],
 		}),
 		...hasPermissions([PermissionName.VIEW_ANY_UNPUBLISHED_ITEMS], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___items-publiceren'),
+			label: tText('admin/admin___items-publiceren'),
 			location: ADMIN_PATH.PUBLISH_ITEMS_OVERVIEW,
 			key: 'publish-items',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.EDIT_INTERACTIVE_TOURS], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___interactive-tours'),
+			label: tText('admin/admin___interactive-tours'),
 			location: ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW,
 			key: 'interactiveTours',
 			exact: false,
 		}),
 		...hasPermissions([PermissionName.EDIT_TRANSLATIONS], 'OR', userPermissions, {
-			label: i18n.t('admin/admin___vertaling'),
+			label: tText('admin/admin___vertaling'),
 			location: ADMIN_PATH.TRANSLATIONS,
 			key: 'translations',
 			exact: false,

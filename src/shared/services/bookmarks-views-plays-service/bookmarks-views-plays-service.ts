@@ -1,25 +1,41 @@
-import { EnglishContentType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
-import { CustomError, normalizeTimestamp } from '../../helpers';
-import i18n from '../../translations/i18n';
-import { ApolloCacheManager, dataService } from '../data-service';
-import { trackEvents } from '../event-logging-service';
-import { ToastService } from '../toast-service';
-
-import { EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
-	GET_BOOKMARK_STATUSES,
-	GET_BOOKMARKS_FOR_USER,
-	GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
-	GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
-	GET_ITEM_BOOKMARKS_FOR_USER,
-	GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
-	GET_MULTIPLE_ITEM_VIEW_COUNTS,
-} from './bookmarks-views-plays-service.gql';
+	DeleteCollectionBookmarksForUserMutation,
+	DeleteItemBookmarkMutation,
+	GetBookmarksForUserDocument,
+	GetBookmarksForUserQuery,
+	GetBookmarksForUserQueryVariables,
+	GetBookmarkStatusesDocument,
+	GetBookmarkStatusesQuery,
+	GetCollectionBookmarkViewPlayCountsDocument,
+	GetCollectionBookmarkViewPlayCountsQuery,
+	GetItemBookmarksForUserDocument,
+	GetItemBookmarksForUserQuery,
+	GetItemBookmarksForUserQueryVariables,
+	GetItemBookmarkViewPlayCountsDocument,
+	GetItemBookmarkViewPlayCountsQuery,
+	GetMultipleCollectionViewCountsDocument,
+	GetMultipleCollectionViewCountsQuery,
+	GetMultipleCollectionViewCountsQueryVariables,
+	GetMultipleItemViewCountsDocument,
+	GetMultipleItemViewCountsQuery,
+	GetMultipleItemViewCountsQueryVariables,
+	IncrementCollectionPlaysMutation,
+	IncrementCollectionViewsMutation,
+	IncrementItemPlaysMutation,
+	IncrementItemViewsMutation,
+	InsertCollectionBookmarkMutation,
+	InsertItemBookmarkMutation,
+} from '../../generated/graphql-db-types';
+import { CustomError, normalizeTimestamp } from '../../helpers';
+import { dataService } from '../data-service';
+import { trackEvents } from '../event-logging-service';
+
+import { GET_EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
 	AppCollectionBookmark,
 	AppItemBookmark,
@@ -30,7 +46,6 @@ import {
 	EventAction,
 	EventContentType,
 	EventContentTypeSimplified,
-	GetBookmarksForUserResponse,
 	QueryType,
 } from './bookmarks-views-plays-service.types';
 
@@ -55,28 +70,15 @@ export class BookmarksViewsPlaysService {
 					user
 				);
 
-				const response = await dataService.mutate({
+				await dataService.query<
+					| InsertItemBookmarkMutation
+					| InsertCollectionBookmarkMutation
+					| DeleteItemBookmarkMutation
+					| DeleteCollectionBookmarksForUserMutation
+				>({
+					query,
 					variables,
-					mutation: query,
-					update: ApolloCacheManager.clearBookmarksViewsPlays,
 				});
-
-				if (response.errors) {
-					// Bookmark related action failed
-					console.error('Failed to store action into the database', null, {
-						response,
-						variables,
-					});
-					ToastService.danger(
-						action === 'bookmark'
-							? i18n.t(
-									'shared/services/bookmarks-views-plays-service___het-aanmaken-van-de-bladwijzer-is-mislukt'
-							  )
-							: i18n.t(
-									'shared/services/bookmarks-views-plays-service___het-verwijderen-van-de-bladwijzer-is-mislukt'
-							  )
-					);
-				}
 			}
 
 			// Finished incrementing
@@ -99,14 +101,14 @@ export class BookmarksViewsPlaysService {
 		itemUuid: string,
 		user: Avo.User.User | null
 	): Promise<BookmarkViewPlayCounts> {
-		const response = await dataService.query({
-			query: GET_ITEM_BOOKMARK_VIEW_PLAY_COUNTS,
+		const response = await dataService.query<GetItemBookmarkViewPlayCountsQuery>({
+			query: GetItemBookmarkViewPlayCountsDocument,
 			variables: { itemUuid, profileId: get(user, 'profile.id', null) },
 		});
-		const isBookmarked = !!get(response, 'data.app_item_bookmarks[0]');
-		const bookmarkCount = get(response, 'data.app_item_bookmarks_aggregate.aggregate.count', 0);
-		const viewCount = get(response, 'data.app_item_views[0].count', 0);
-		const playCount = get(response, 'data.app_item_plays[0].count', 0);
+		const isBookmarked = !!response.app_item_bookmarks[0];
+		const bookmarkCount = response.app_item_bookmarks_aggregate.aggregate?.count ?? 0;
+		const viewCount = response.app_item_views[0]?.count ?? 0;
+		const playCount = response.app_item_plays[0]?.count ?? 0;
 		return {
 			bookmarkCount,
 			viewCount,
@@ -119,18 +121,14 @@ export class BookmarksViewsPlaysService {
 		collectionUuid: string,
 		user: Avo.User.User | null
 	): Promise<BookmarkViewPlayCounts> {
-		const response = await dataService.query({
-			query: GET_COLLECTION_BOOKMARK_VIEW_PLAY_COUNTS,
-			variables: { collectionUuid, profileId: get(user, 'profile.id', null) },
+		const response = await dataService.query<GetCollectionBookmarkViewPlayCountsQuery>({
+			query: GetCollectionBookmarkViewPlayCountsDocument,
+			variables: { collectionUuid, profileId: user?.profile?.id || null },
 		});
-		const isBookmarked = !!get(response, 'data.app_collection_bookmarks[0]');
-		const bookmarkCount = get(
-			response,
-			'data.app_collection_bookmarks_aggregate.aggregate.count',
-			0
-		);
-		const viewCount = get(response, 'data.app_collection_views[0].count', 0);
-		const playCount = get(response, 'data.app_collection_plays[0].count', 0);
+		const isBookmarked = !!response.app_collection_bookmarks[0];
+		const bookmarkCount = response.app_collection_bookmarks_aggregate.aggregate?.count || 0;
+		const viewCount = response.app_collection_views[0]?.count ?? 0;
+		const playCount = response.app_collection_plays[0]?.count ?? 0;
 		return {
 			bookmarkCount,
 			viewCount,
@@ -187,17 +185,18 @@ export class BookmarksViewsPlaysService {
 	public static async getItemBookmarksForUser(
 		user: Avo.User.User,
 		filterString: string,
-		orderObject: Record<string, string>[]
+		orderObject: GetItemBookmarksForUserQueryVariables['order']
 	): Promise<BookmarkInfo[]> {
-		const response: GetBookmarksForUserResponse = await dataService.query({
-			query: GET_ITEM_BOOKMARKS_FOR_USER,
-			variables: {
-				profileId: get(user, 'profile.id'),
-				filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
-				order: orderObject,
-			},
+		const variables: GetItemBookmarksForUserQueryVariables = {
+			profileId: get(user, 'profile.id'),
+			filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
+			order: orderObject,
+		};
+		const response = await dataService.query<GetItemBookmarksForUserQuery>({
+			query: GetItemBookmarksForUserDocument,
+			variables,
 		});
-		const itemBookmarks: AppItemBookmark[] = get(response, 'data.app_item_bookmarks', []);
+		const itemBookmarks: AppItemBookmark[] = response.app_item_bookmarks as AppItemBookmark[];
 		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
 			(itemBookmark): BookmarkInfo | null => {
 				if (!itemBookmark.bookmarkedItem) {
@@ -213,7 +212,7 @@ export class BookmarksViewsPlaysService {
 					contentId: itemBookmark.item_id,
 					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
-						.label as EnglishContentType,
+						.label as Avo.ContentType.English,
 					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
 					contentTitle: itemBookmark.bookmarkedItem.title,
 					contentDuration: itemBookmark.bookmarkedItem.duration,
@@ -236,16 +235,14 @@ export class BookmarksViewsPlaysService {
 	 * @param user
 	 */
 	public static async getAllBookmarksForUser(user: Avo.User.User): Promise<BookmarkInfo[]> {
-		const response: GetBookmarksForUserResponse = await dataService.query({
-			query: GET_BOOKMARKS_FOR_USER,
-			variables: { profileId: get(user, 'profile.id') },
+		const variables: GetBookmarksForUserQueryVariables = { profileId: user?.profile?.id };
+		const response = await dataService.query<GetBookmarksForUserQuery>({
+			query: GetBookmarksForUserDocument,
+			variables,
 		});
-		const itemBookmarks: AppItemBookmark[] = get(response, 'data.app_item_bookmarks', []);
-		const collectionBookmarks: AppCollectionBookmark[] = get(
-			response,
-			'data.app_collection_bookmarks',
-			[]
-		);
+		const itemBookmarks: AppItemBookmark[] = response.app_item_bookmarks as AppItemBookmark[];
+		const collectionBookmarks: AppCollectionBookmark[] = (response.app_collection_bookmarks ||
+			[]) as AppCollectionBookmark[];
 		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
 			(itemBookmark): BookmarkInfo | null => {
 				if (!itemBookmark.bookmarkedItem) {
@@ -261,7 +258,7 @@ export class BookmarksViewsPlaysService {
 					contentId: itemBookmark.item_id,
 					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
-						.label as EnglishContentType,
+						.label as Avo.ContentType.English,
 					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
 					contentTitle: itemBookmark.bookmarkedItem.title,
 					contentDuration: itemBookmark.bookmarkedItem.duration,
@@ -314,9 +311,10 @@ export class BookmarksViewsPlaysService {
 		// bundle is handled the same way as a collection
 		const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
 
-		const query = get(EVENT_QUERIES, [action, contentTypeSimplified, queryType]);
+		const eventQueries = GET_EVENT_QUERIES();
+		const query = get(eventQueries, [action, contentTypeSimplified, queryType]);
 		const getVariablesFunc = get(
-			EVENT_QUERIES,
+			GET_EVENT_QUERIES(),
 			[action, contentTypeSimplified, 'variables'],
 			noop
 		);
@@ -324,29 +322,32 @@ export class BookmarksViewsPlaysService {
 		if (!query || !variables) {
 			throw new CustomError('Failed to find query/variables in query lookup table');
 		}
-		const responsePath = get(EVENT_QUERIES, [
+		const getResponseCount = get(eventQueries, [
 			action,
 			contentTypeSimplified,
-			'responsePath',
-		]) as string;
-		return { query, variables, responsePath };
+			'getResponseCount',
+		]);
+		return { query, variables, getResponseCount };
 	}
 
 	public static async getMultipleViewCounts(
 		contentIds: string[],
 		type: EventContentTypeSimplified
 	): Promise<{ [uuid: string]: number }> {
-		const response = await dataService.query({
+		const variables:
+			| GetMultipleItemViewCountsQueryVariables
+			| GetMultipleCollectionViewCountsQueryVariables = { uuids: contentIds };
+		const response = await dataService.query<
+			GetMultipleItemViewCountsQuery | GetMultipleCollectionViewCountsQuery
+		>({
 			query:
 				type === 'item'
-					? GET_MULTIPLE_ITEM_VIEW_COUNTS
-					: GET_MULTIPLE_COLLECTION_VIEW_COUNTS,
-			variables: { uuids: contentIds },
+					? GetMultipleItemViewCountsDocument
+					: GetMultipleCollectionViewCountsDocument,
+			variables,
 		});
-		const items = get(response, 'data.items', []);
-		return Object.fromEntries(
-			items.map((item: { id: string; count: number }) => [item.id, item.count])
-		);
+		const items = response.items;
+		return Object.fromEntries(items.map((item) => [item.id, item.count]));
 	}
 
 	private static async incrementCount(
@@ -365,15 +366,15 @@ export class BookmarksViewsPlaysService {
 				user
 			);
 
-			const response = await dataService.mutate({
+			await dataService.query<
+				| IncrementItemPlaysMutation
+				| IncrementItemViewsMutation
+				| IncrementCollectionViewsMutation
+				| IncrementCollectionPlaysMutation
+			>({
+				query,
 				variables,
-				mutation: query,
-				update: ApolloCacheManager.clearBookmarksViewsPlays,
 			});
-
-			if (response.errors) {
-				throw new CustomError('Graphql errors', null, { errors: response.errors });
-			}
 		} catch (err) {
 			const error = new CustomError(
 				'Failed to increment view/play count in the database',
@@ -427,22 +428,19 @@ export class BookmarksViewsPlaysService {
 			const collectionUuids: string[] = collectionObjectInfos.map(
 				(objectInfo) => objectInfo.uuid
 			);
-			const response = await dataService.query({
-				query: GET_BOOKMARK_STATUSES,
+			const response = await dataService.query<GetBookmarkStatusesQuery>({
+				query: GetBookmarkStatusesDocument,
 				variables: {
 					profileId,
 					itemUuids,
 					collectionUuids,
 				},
 			});
-			if (response.errors) {
-				throw new CustomError('response contains errors', null, { response });
-			}
 			// Extract the ids of the bookmark items that were found
-			const itemBookmarkIds = get(response, 'data.app_item_bookmarks', []).map(
+			const itemBookmarkIds = (response.app_item_bookmarks ?? []).map(
 				(itemBookmark: { item_id: string }) => itemBookmark.item_id
 			);
-			const collectionBookmarkIds = get(response, 'data.app_collection_bookmarks', []).map(
+			const collectionBookmarkIds = (response.app_collection_bookmarks ?? []).map(
 				(itemBookmark: { collection_uuid: string }) => itemBookmark.collection_uuid
 			);
 			// Map the ids that were found to the original id

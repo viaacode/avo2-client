@@ -1,5 +1,5 @@
 import { WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN } from '../../../../shared/constants';
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import {
 	ContentBlockConfig,
 	ContentBlockEditor,
@@ -21,24 +21,24 @@ export const INITIAL_INTRO_BLOCK_STATE = (): DefaultContentBlockState =>
 		padding: { top: 'top-extra-large', bottom: 'bottom-small' },
 	});
 
-export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const INTRO_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/intro___intro'),
+	name: tText('admin/content-block/helpers/generators/intro___intro'),
 	type: ContentBlockType.Intro,
 	components: {
 		state: INITIAL_INTRO_COMPONENTS_STATE(),
 		fields: {
 			title: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/intro___titel-is-verplicht'),
+				tText('admin/content-block/helpers/generators/intro___titel-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/intro___titel'),
+					label: tText('admin/content-block/helpers/generators/intro___titel'),
 					editorType: ContentBlockEditor.TextInput,
 				}
 			),
 			content: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/intro___tekst-is-verplicht'),
+				tText('admin/content-block/helpers/generators/intro___tekst-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/defaults___tekst'),
+					label: tText('admin/content-block/helpers/generators/defaults___tekst'),
 					editorType: ContentBlockEditor.WYSIWYG,
 					editorProps: {
 						controls: [...WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN, 'media'],
@@ -46,7 +46,7 @@ export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => 
 					},
 				}
 			),
-			align: ALIGN_FIELD(i18n.t('admin/content-block/helpers/generators/intro___uitlijning')),
+			align: ALIGN_FIELD(tText('admin/content-block/helpers/generators/intro___uitlijning')),
 		},
 	},
 	block: {

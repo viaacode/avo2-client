@@ -3,7 +3,7 @@ import { BlockHeroProps, TextInputProps } from '@viaa/avo2-components';
 import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
 import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';
 import { PHOTO_TYPES } from '../../../../shared/helpers/files';
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import { validateFlowplayerVideoUrl } from '../../../shared/helpers';
 import {
@@ -12,8 +12,8 @@ import {
 	ContentBlockEditor,
 	ContentBlockFieldGroup,
 	ContentBlockType,
-	DefaultContentBlockState,
 	DEFAULT_BUTTON_PROPS,
+	DefaultContentBlockState,
 } from '../../../shared/types';
 import {
 	GET_BUTTON_TYPE_OPTIONS,
@@ -47,103 +47,99 @@ export const INITIAL_HERO_BLOCK_STATE = (): DefaultContentBlockState => ({
 	backgroundColor: Color.NightBlue,
 });
 
-export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const HERO_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/hero___hero'),
+	name: tText('admin/content-block/helpers/generators/hero___hero'),
 	type: ContentBlockType.Hero,
 	components: {
 		state: INITIAL_HERO_COMPONENTS_STATE(),
 		fields: {
 			title: TEXT_FIELD('', {
-				label: i18n.t('admin/content-block/helpers/generators/hero___titel'),
+				label: tText('admin/content-block/helpers/generators/hero___titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
 			titleColor: FOREGROUND_COLOR_FIELD(
-				i18n.t('admin/content-block/helpers/generators/hero___titel-kleur')
+				tText('admin/content-block/helpers/generators/hero___titel-kleur')
 			),
 			content: TEXT_FIELD('', {
-				label: i18n.t('admin/content-block/helpers/generators/hero___beschrijving'),
+				label: tText('admin/content-block/helpers/generators/hero___beschrijving'),
 				editorType: ContentBlockEditor.TextArea,
 				validator: undefined,
 			}),
 			contentColor: FOREGROUND_COLOR_FIELD(
-				i18n.t('admin/content-block/helpers/generators/hero___beschrijving-kleur')
+				tText('admin/content-block/helpers/generators/hero___beschrijving-kleur')
 			),
 
 			buttons: {
-				label: i18n.t('admin/content-block/helpers/generators/hero___knop'),
+				label: tText('admin/content-block/helpers/generators/hero___knop'),
 				fields: {
 					type: {
-						label: i18n.t('admin/content-block/helpers/generators/buttons___type'),
+						label: tText('admin/content-block/helpers/generators/buttons___type'),
 						editorType: ContentBlockEditor.Select,
 						editorProps: {
 							options: GET_BUTTON_TYPE_OPTIONS(),
 						},
 					},
 					label: TEXT_FIELD(
-						i18n.t(
+						tText(
 							'admin/content-block/helpers/generators/buttons___knoptekst-is-verplicht'
 						),
 						{
-							label: i18n.t('admin/content-block/helpers/generators/buttons___tekst'),
+							label: tText('admin/content-block/helpers/generators/buttons___tekst'),
 							editorType: ContentBlockEditor.TextInput,
 						}
 					),
 					altTitle: TEXT_FIELD('', {
-						label: i18n.t(
+						label: tText(
 							'admin/content-block/helpers/generators/hero___alt-title-text'
 						),
 						editorType: ContentBlockEditor.TextInput,
 					}),
 					icon: {
-						label: i18n.t('admin/content-block/helpers/generators/buttons___icoon'),
+						label: tText('admin/content-block/helpers/generators/buttons___icoon'),
 						editorType: ContentBlockEditor.IconPicker,
 						editorProps: {
 							options: GET_ADMIN_ICON_OPTIONS(),
 						},
 					},
 					buttonAction: {
-						label: i18n.t(
-							'admin/content-block/helpers/generators/buttons___knop-actie'
-						),
+						label: tText('admin/content-block/helpers/generators/buttons___knop-actie'),
 						editorType: ContentBlockEditor.ContentPicker,
 					},
 				},
 				type: 'fieldGroup',
 				repeat: {
 					defaultState: DEFAULT_BUTTON_PROPS,
-					addButtonLabel: i18n.t(
+					addButtonLabel: tText(
 						'admin/content-block/helpers/generators/rich-text-two-columns___voeg-knop-toe'
 					),
-					deleteButtonLabel: i18n.t(
+					deleteButtonLabel: tText(
 						'admin/content-block/helpers/generators/rich-text-two-columns___verwijder-knop'
 					),
 				},
 			} as ContentBlockFieldGroup,
 
 			textBelowButtons: TEXT_FIELD(undefined, {
-				label: i18n.t('admin/content-block/helpers/generators/hero___text-onder-knoppen'),
+				label: tText('admin/content-block/helpers/generators/hero___text-onder-knoppen'),
 				editorProps: {
 					controls: WYSIWYG_OPTIONS_FULL,
 				},
 			}),
 			src: TEXT_FIELD(undefined, {
-				label: i18n.t(
+				label: tText(
 					'admin/content-block/helpers/generators/hero___eigen-video-url-van-flowplayer-com'
 				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: validateFlowplayerVideoUrl,
 				editorProps: {
-					placeholder: i18n.t(
+					placeholder: tText(
 						'admin/content-block/helpers/generators/hero___bv-https-cdn-flowplayer-com-hls-playlist-m-3-u-8'
 					),
 				} as TextInputProps,
 			}),
 			poster: FILE_FIELD(undefined, {
-				label: i18n.t(
-					'admin/content-block/helpers/generators/hero___eigen-poster-uploaden'
-				),
+				label: tText('admin/content-block/helpers/generators/hero___eigen-poster-uploaden'),
 				validator: undefined,
 				editorProps: {
 					allowMulti: false,
@@ -153,7 +149,7 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 				} as Partial<FileUploadProps>,
 			}),
 			altText: TEXT_FIELD(undefined, {
-				label: i18n.t(
+				label: tText(
 					'admin/content-block/helpers/generators/hero___alt-tekst-voor-video-afbeelding'
 				),
 				editorType: ContentBlockEditor.TextInput,
@@ -165,7 +161,7 @@ export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => (
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 			backgroundColor: {
-				label: i18n.t('admin/content-block/helpers/generators/defaults___achtergrondkleur'),
+				label: tText('admin/content-block/helpers/generators/defaults___achtergrondkleur'),
 				editorType: ContentBlockEditor.ColorSelect,
 				editorProps: {
 					options: GET_HERO_BACKGROUND_COLOR_OPTIONS(),

@@ -2,7 +2,7 @@ import { TableColumn } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../../shared/constants';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 
 export const MENU_PATH = {
 	MENU_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.menu}`,
@@ -13,12 +13,12 @@ export const MENU_PATH = {
 };
 
 export const GET_MENU_OVERVIEW_TABLE_COLS: () => TableColumn[] = () => [
-	{ id: 'placement', label: i18n.t('admin/menu/menu___naam') },
-	{ id: 'description', label: i18n.t('admin/menu/menu___omschrijving') },
-	{ id: 'actions', tooltip: i18n.t('admin/menu/menu___acties') },
+	{ id: 'placement', label: tText('admin/menu/menu___naam') },
+	{ id: 'description', label: tText('admin/menu/menu___omschrijving') },
+	{ id: 'actions', tooltip: tText('admin/menu/menu___acties') },
 ];
 
-export const INITIAL_MENU_FORM = (placement: string = ''): Partial<Avo.Menu.Menu> => ({
+export const INITIAL_MENU_FORM = (placement = ''): Partial<Avo.Menu.Menu> => ({
 	placement,
 	description: '',
 	icon_name: '',
@@ -31,6 +31,6 @@ export const INITIAL_MENU_FORM = (placement: string = ''): Partial<Avo.Menu.Menu
 });
 
 export const GET_PAGE_TYPES_LANG = () => ({
-	create: i18n.t('admin/menu/menu___toevoegen'),
-	edit: i18n.t('admin/menu/menu___aanpassen'),
+	create: tText('admin/menu/menu___toevoegen'),
+	edit: tText('admin/menu/menu___aanpassen'),
 });

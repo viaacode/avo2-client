@@ -16,7 +16,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -29,7 +28,8 @@ import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { stringToTagInfo } from '../../../shared/helpers/string-to-select-options';
 import { useCompanies, useSubjects } from '../../../shared/hooks';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { USER_PATH } from '../user.const';
@@ -57,7 +57,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 	const [alias, setAlias] = useState<string | undefined>();
 	const [companyId, setCompanyId] = useState<string | undefined>();
 
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const fetchProfileById = useCallback(async () => {
 		try {
@@ -88,12 +88,12 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/users/views/user-detail___het-ophalen-van-de-gebruiker-info-is-mislukt'
 				),
 			});
 		}
-	}, [setStoredProfile, setLoadingInfo, t, match.params.id]);
+	}, [setStoredProfile, setLoadingInfo, tText, match.params.id]);
 
 	useEffect(() => {
 		fetchProfileById();
@@ -138,10 +138,12 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 				setIsSaving(false);
 				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
 					ToastService.danger(
-						t('settings/components/profile___deze-schermnaam-is-reeds-in-gebruik')
+						tHtml('settings/components/profile___deze-schermnaam-is-reeds-in-gebruik')
 					);
 					setProfileErrors({
-						alias: t('settings/components/profile___schermnaam-is-reeds-in-gebruik'),
+						alias: tText(
+							'settings/components/profile___schermnaam-is-reeds-in-gebruik'
+						),
 					});
 					return;
 				}
@@ -152,7 +154,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 				buildLink(USER_PATH.USER_DETAIL, { id: match.params.id }),
 				history
 			);
-			ToastService.success(t('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
+			ToastService.success(tHtml('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save user', err, {
@@ -160,7 +162,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 				})
 			);
 			ToastService.danger(
-				t('admin/users/views/user-edit___het-opslaan-van-de-gebruiker-is-mislukt')
+				tHtml('admin/users/views/user-edit___het-opslaan-van-de-gebruiker-is-mislukt')
 			);
 		}
 		setIsSaving(false);
@@ -185,7 +187,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			<Container mode="vertical" size="small">
 				<Container mode="horizontal">
 					<Form>
-						<FormGroup label={t('admin/users/views/user-detail___avatar')}>
+						<FormGroup label={tText('admin/users/views/user-detail___avatar')}>
 							{!companyId && (
 								<FileUpload
 									urls={avatar ? [avatar] : []}
@@ -207,28 +209,28 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 							{!!companyId && !companyLogo && 'geen avatar'}
 						</FormGroup>
 
-						<FormGroup label={t('admin/users/views/user-detail___voornaam')}>
+						<FormGroup label={tText('admin/users/views/user-detail___voornaam')}>
 							<TextInput value={firstName} onChange={setFirstName} />
 						</FormGroup>
-						<FormGroup label={t('admin/users/views/user-detail___achternaam')}>
+						<FormGroup label={tText('admin/users/views/user-detail___achternaam')}>
 							<TextInput value={lastName} onChange={setLastName} />
 						</FormGroup>
-						<FormGroup label={t('admin/users/views/user-detail___functie')}>
+						<FormGroup label={tText('admin/users/views/user-detail___functie')}>
 							<TextInput value={title} onChange={setTitle} />
 						</FormGroup>
-						<FormGroup label={t('admin/users/views/user-detail___bio')}>
+						<FormGroup label={tText('admin/users/views/user-detail___bio')}>
 							<TextArea value={bio} onChange={setBio} />
 						</FormGroup>
 						<FormGroup
-							label={t('admin/users/views/user-detail___gebruikersnaam')}
+							label={tText('admin/users/views/user-detail___gebruikersnaam')}
 							error={profileErrors.alias}
 						>
 							<TextInput value={alias} onChange={setAlias} />
 						</FormGroup>
-						<FormGroup label={t('admin/users/views/user-detail___vakken')}>
+						<FormGroup label={tText('admin/users/views/user-detail___vakken')}>
 							<TagsInput
 								id="subjects"
-								placeholder={t(
+								placeholder={tText(
 									'admin/users/views/user-edit___selecteer-de-vakken-die-deze-gebruiker-geeft'
 								)}
 								options={(subjects || []).map(stringToTagInfo)}
@@ -238,7 +240,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 								}
 							/>
 						</FormGroup>
-						<FormGroup label={t('admin/users/views/user-detail___bedrijf')}>
+						<FormGroup label={tText('admin/users/views/user-detail___bedrijf')}>
 							<Flex>
 								<FlexItem>
 									<Select
@@ -264,7 +266,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 										<Button
 											type="danger"
 											size="large"
-											ariaLabel={t(
+											ariaLabel={tText(
 												'admin/users/views/user-edit___verbreek-de-link-tussen-deze-gebruiker-en-dit-bedrijf'
 											)}
 											icon="delete"
@@ -284,19 +286,19 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 		return (
 			<AdminLayout
 				onClickBackButton={() => navigate(history, ADMIN_PATH.USER_OVERVIEW)}
-				pageTitle={t('admin/users/views/user-edit___bewerk-gebruiker')}
+				pageTitle={tText('admin/users/views/user-edit___bewerk-gebruiker')}
 				size="large"
 			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
 						<Button
-							label={t('admin/user-groups/views/user-group-edit___annuleer')}
+							label={tText('admin/user-groups/views/user-group-edit___annuleer')}
 							onClick={navigateBack}
 							type="tertiary"
 						/>
 						<Button
 							disabled={isSaving}
-							label={t('admin/user-groups/views/user-group-edit___opslaan')}
+							label={tText('admin/user-groups/views/user-group-edit___opslaan')}
 							onClick={handleSave}
 						/>
 					</ButtonToolbar>
@@ -312,12 +314,12 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 				<title>
 					{GENERATE_SITE_TITLE(
 						`${firstName} ${lastName}`,
-						t('admin/users/views/user-detail___item-detail-pagina-titel')
+						tText('admin/users/views/user-detail___item-detail-pagina-titel')
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
 					)}
 				/>

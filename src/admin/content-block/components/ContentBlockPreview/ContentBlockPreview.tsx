@@ -1,10 +1,9 @@
+import { Container, Spacer } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { get, noop, omit } from 'lodash-es';
 import React, { FunctionComponent, RefObject, useCallback, useEffect, useRef } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-
-import { Container, Spacer } from '@viaa/avo2-components';
 
 import { generateSmartLink } from '../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
@@ -43,7 +42,8 @@ const ContentBlockPreview: FunctionComponent<
 	const blockState = get(contentBlockConfig, 'block.state');
 	const componentState = get(contentBlockConfig, 'components.state');
 	const containerSize = ContentWidthMap[contentPageInfo.content_width || 'REGULAR'];
-	const PreviewComponent = COMPONENT_PREVIEW_MAP[contentBlockConfig.type];
+	const PreviewComponent: FunctionComponent<any> | undefined =
+		COMPONENT_PREVIEW_MAP[contentBlockConfig.type];
 	const needsElements = REPEATABLE_CONTENT_BLOCKS.includes(contentBlockConfig.type);
 	const componentStateProps: any = needsElements ? { elements: componentState } : componentState;
 
@@ -101,6 +101,9 @@ const ContentBlockPreview: FunctionComponent<
 
 	const hasDarkBg = GET_DARK_BACKGROUND_COLOR_OPTIONS().includes(blockState.backgroundColor);
 
+	if (!PreviewComponent) {
+		return null;
+	}
 	return (
 		<div
 			className={classnames('c-content-block', className)}

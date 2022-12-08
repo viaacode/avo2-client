@@ -1,13 +1,10 @@
-import { ApolloClient, ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { noop } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { ApolloProvider } from 'react-apollo';
-import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
-import { useTranslation } from 'react-i18next';
 import { Provider } from 'react-redux';
 import { Route, RouteComponentProps, BrowserRouter as Router, withRouter } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
@@ -23,15 +20,18 @@ import { renderRoutes } from './routes';
 import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
 import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 import ConfirmModal from './shared/components/ConfirmModal/ConfirmModal';
-import Html from './shared/components/Html/Html';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
 import { insideIframe } from './shared/helpers/inside-iframe';
+import { tText } from './shared/helpers/translate';
 import withUser, { UserProps } from './shared/hocs/withUser';
-import { dataService, ToastService } from './shared/services';
+import useTranslation from './shared/hooks/useTranslation';
+import { ToastService } from './shared/services/toast-service';
 import { waitForTranslations } from './shared/translations/i18n';
 import store from './store';
+
+import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './styles/main.scss';
 import './App.scss';
 
@@ -124,8 +124,10 @@ const AppWithRouter = compose(withRouter, withUser)(App) as FunctionComponent;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 
+const queryClient = new QueryClient();
+
 const Root: FunctionComponent = () => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
 
 	useEffect(() => {
@@ -133,54 +135,48 @@ const Root: FunctionComponent = () => {
 		const linked: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked';
 		const hasLinked = url.searchParams.get(linked) !== null;
 		if (hasLinked) {
-			ToastService.success(t('app___je-account-is-gekoppeld'));
+			ToastService.success(tHtml('app___je-account-is-gekoppeld'));
 			url.searchParams.delete(linked);
 			history.replace(url.toString().replace(url.origin, ''));
 		}
 	}, []);
 
 	return (
-		<ApolloProvider client={dataService}>
-			<ApolloHooksProvider client={dataService as unknown as ApolloClient<any>}>
-				<Provider store={store}>
-					<Router
-						getUserConfirmation={(_message, callback) => {
-							setIsUnsavedChangesModalOpen(true);
-							confirmUnsavedChangesCallback = callback;
-						}}
-					>
-						<QueryParamProvider ReactRouterRoute={Route}>
-							<AppWithRouter />
-							<ConfirmModal
-								className="c-modal__unsaved-changes"
-								isOpen={isUnsavedChangesModalOpen}
-								confirmCallback={() => {
-									setIsUnsavedChangesModalOpen(false);
-									(confirmUnsavedChangesCallback || noop)(true);
-									confirmUnsavedChangesCallback = null;
-								}}
-								onClose={() => {
-									setIsUnsavedChangesModalOpen(false);
-									(confirmUnsavedChangesCallback || noop)(false);
-									confirmUnsavedChangesCallback = null;
-								}}
-								cancelLabel={t('app___blijven')}
-								confirmLabel={t('app___verlaten')}
-								title={t('app___wijzigingen-opslaan')}
-								body={
-									<Html
-										content={t(
-											'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
-										)}
-									/>
-								}
-								confirmButtonType="primary"
-							/>
-						</QueryParamProvider>
-					</Router>
-				</Provider>
-			</ApolloHooksProvider>
-		</ApolloProvider>
+		<QueryClientProvider client={queryClient}>
+			<Provider store={store}>
+				<Router
+					getUserConfirmation={(_message, callback) => {
+						setIsUnsavedChangesModalOpen(true);
+						confirmUnsavedChangesCallback = callback;
+					}}
+				>
+					<QueryParamProvider ReactRouterRoute={Route}>
+						<AppWithRouter />
+						<ConfirmModal
+							className="c-modal__unsaved-changes"
+							isOpen={isUnsavedChangesModalOpen}
+							confirmCallback={() => {
+								setIsUnsavedChangesModalOpen(false);
+								(confirmUnsavedChangesCallback || noop)(true);
+								confirmUnsavedChangesCallback = null;
+							}}
+							onClose={() => {
+								setIsUnsavedChangesModalOpen(false);
+								(confirmUnsavedChangesCallback || noop)(false);
+								confirmUnsavedChangesCallback = null;
+							}}
+							cancelLabel={tText('app___blijven')}
+							confirmLabel={tText('app___verlaten')}
+							title={tText('app___wijzigingen-opslaan')}
+							body={tHtml(
+								'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
+							)}
+							confirmButtonType="primary"
+						/>
+					</QueryParamProvider>
+				</Router>
+			</Provider>
+		</QueryClientProvider>
 	);
 };
 
