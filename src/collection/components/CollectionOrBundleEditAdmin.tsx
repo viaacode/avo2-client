@@ -28,7 +28,7 @@ import { APP_PATH } from '../../constants';
 import AssociatedQuickLaneTable, {
 	AssociatedQuickLaneTableOrderBy,
 } from '../../quick-lane/components/AssociatedQuickLaneTable';
-import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../shared/constants/quick-lane';
+import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -196,7 +196,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		);
 	};
 
-	const handleQuickLaneColumnClick = (id: QuickLaneColumn) => {
+	const handleQuickLaneColumnClick = (id: string) => {
 		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
 
 		setQuickLaneSortColumn(id);
@@ -217,11 +217,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	): ReactNode => {
 		switch (columnId) {
 			case 'author': {
-				const user = get(rowData, 'profile.user');
-				if (!user) {
-					return '-';
+				const user = rowData.profile?.user;
+				if (user) {
+					return truncateTableValue(`${user.first_name} ${user.last_name}`);
 				}
-				return truncateTableValue(`${user.first_name} ${user.last_name}`);
+				return '-';
 			}
 
 			case 'organization':

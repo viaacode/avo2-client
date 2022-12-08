@@ -7,8 +7,8 @@ import { ValueType } from 'react-select';
 
 import { ColorSelect } from '../../admin/content-block/components/fields';
 import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
-import useTranslation from '../../shared/hooks/useTranslation';
 import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { Assignment_Label_v2 } from '../assignment.types';
@@ -48,9 +48,11 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		// Fetch labels every time the manage labels modal closes and once at startup
-		const labels = await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'));
-		setAllAssignmentLabels(labels);
+		if (user.profile) {
+			// Fetch labels every time the manage labels modal closes and once at startup
+			const labels = await AssignmentLabelsService.getLabelsForProfile(user.profile.id);
+			setAllAssignmentLabels(labels);
+		}
 	}, [user, setAllAssignmentLabels]);
 
 	useEffect(() => {

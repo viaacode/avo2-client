@@ -211,7 +211,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 			newValue = input;
 		} else if (selectedType.picker === 'SELECT' && selectedItem) {
 			newLabel = get(selectedItem, 'label');
-			newValue = get(selectedItem, 'value.value');
+			newValue = get(selectedItem as any, 'value.value');
 		} else {
 			newValue = null;
 		}

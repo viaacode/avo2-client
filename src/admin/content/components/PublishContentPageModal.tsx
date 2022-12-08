@@ -19,8 +19,8 @@ import {
 } from '@viaa/avo2-components';
 import React, { FunctionComponent, useState } from 'react';
 
-import { ToastService } from '../../../shared/services/toast-service';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ContentPageInfo } from '../content.types';
 import { getPublishedState } from '../helpers/get-published-state';
 

@@ -10,8 +10,8 @@ import {
 } from '../../../authentication/components';
 import { Permissions } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
-import { dataService } from '../../services/data-service';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { dataService } from '../../services/data-service';
 
 export interface DataQueryComponentProps {
 	query: string;

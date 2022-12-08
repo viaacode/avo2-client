@@ -1,3 +1,4 @@
+import { ValueOf } from '@meemoo/admin-core-ui';
 import {
 	BlockHeading,
 	Button,
@@ -369,7 +370,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 										collectionPropValue: {
 											...get(collection, 'marcom_note', {}),
 											note: newNote,
-										},
+										} as ValueOf<Avo.Collection.Collection>,
 									});
 								}}
 							/>

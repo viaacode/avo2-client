@@ -3,7 +3,6 @@ import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Tab
 import React, { FunctionComponent } from 'react';
 
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
-import { QuickLaneColumn } from '../../shared/constants/quick-lane';
 import { isMobileWidth } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { QuickLaneUrlObject } from '../../shared/types';
@@ -18,7 +17,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 }) => {
 	const { tText } = useTranslation();
 
-	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: QuickLaneColumn) => (
+	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: string) => (
 		<QuickLaneFilterTableCell id={id} data={data} />
 	);
 
@@ -62,7 +61,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 										dataType: TableColumnDataType.dateTime,
 									},
 							  ]),
-					] as (Omit<TableColumnSchema, 'id'> & { id: QuickLaneColumn })[]
+					] as (Omit<TableColumnSchema, 'id'> & { id: string })[]
 				}
 				data={data}
 				emptyStateMessage={emptyStateMessage}
@@ -79,7 +78,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 
 export default AssociatedQuickLaneTable as FunctionComponent<TableProps>;
 
-export const AssociatedQuickLaneTableOrderBy: Partial<Record<QuickLaneColumn, string>> = {
+export const AssociatedQuickLaneTableOrderBy: Partial<Record<string, string>> = {
 	author: 'owner.user.full_name',
 	organisation: 'owner.organisation.name',
 };

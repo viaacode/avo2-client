@@ -46,6 +46,7 @@ import {
 } from '../../../shared/helpers';
 import { setSelectedCheckboxes } from '../../../shared/helpers/set-selected-checkboxes';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { useContentPageLabelOptions } from '../../content-page-labels/hooks/useContentPageLabelOptions';
@@ -69,7 +70,6 @@ import { isPublic } from '../helpers/get-published-state';
 import { useContentTypes } from '../hooks';
 
 import './ContentOverview.scss';
-import useTranslation from '../../../shared/hooks/useTranslation';
 
 type ContentOverviewProps = DefaultSecureRouteProps;
 

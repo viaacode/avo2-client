@@ -410,7 +410,7 @@ export class CollectionService {
 						null
 					),
 					note: get(updatedCollection, 'management.note', null),
-					updated_at: get(updatedCollection, 'management.updated_at', null),
+					updated_at: get(updatedCollection, 'management.updated_at', undefined),
 				});
 			} else if (
 				!!get(initialCollection, 'management') &&
@@ -430,7 +430,7 @@ export class CollectionService {
 						null
 					),
 					note: get(updatedCollection, 'management.note', null),
-					updated_at: get(updatedCollection, 'management.updated_at', null),
+					updated_at: get(updatedCollection, 'management.updated_at', undefined),
 				});
 			}
 
@@ -530,12 +530,15 @@ export class CollectionService {
 
 			const marcomNoteId = get(updatedCollection, 'marcom_note.id');
 			const marcomNoteText = get(updatedCollection, 'marcom_note.note');
-			if (!isNil(marcomNoteId)) {
-				// Already have note id => so we should update the note text
-				await CollectionService.updateMarcomNote(marcomNoteId, marcomNoteText);
-			} else if (marcomNoteText) {
-				// We don't have a note id, but do have a note, so we should do an insert
-				await CollectionService.insertMarcomNote(collectionId, marcomNoteText);
+
+			if (!isNil(marcomNoteText)) {
+				if (!isNil(marcomNoteId)) {
+					// Already have note id => so we should update the note text
+					await CollectionService.updateMarcomNote(marcomNoteId, marcomNoteText);
+				} else {
+					// We don't have a note id, but do have a note, so we should do an insert
+					await CollectionService.insertMarcomNote(collectionId, marcomNoteText);
+				}
 			}
 		} catch (err) {
 			throw new CustomError('Failed to save management data to the database', err, {

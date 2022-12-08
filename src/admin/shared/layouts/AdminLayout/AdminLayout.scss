@@ -49,3 +49,31 @@ $admin-actions-bar-height: 8.4rem;
 		}
 	}
 }
+
+.c-table {
+	margin-top: 20px !important;
+}
+
+.c-table__row {
+	border: 1px solid lightgray;
+
+	&--header {
+		padding: 20px;
+	}
+	&--header th:nth-child(2) {
+		border-left: 1px solid lightgray;
+	}
+}
+
+.c-table__cell {
+	justify-content: center;
+
+	&--header {
+		padding: 10px;
+	}
+}
+
+.c-table td:nth-child(2) {
+	border-left: 1px solid lightgray;
+	padding: 30px;
+}

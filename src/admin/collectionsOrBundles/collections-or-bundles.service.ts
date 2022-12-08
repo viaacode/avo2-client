@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { RelationEntry } from '@viaa/avo2-types/types/collection';
 import { flatten } from 'lodash-es';
 
 import {
@@ -92,7 +91,7 @@ export class CollectionsOrBundlesService {
 				'collection',
 				collections.map((coll) => coll.id),
 				Lookup_Enum_Relation_Types_Enum.IsCopyOf
-			)) as RelationEntry<Avo.Collection.Collection>[];
+			)) as Avo.Collection.RelationEntry<Avo.Collection.Collection>[];
 
 			relations.forEach((relation) => {
 				const collection = collections.find((coll) => coll.id === relation.subject);

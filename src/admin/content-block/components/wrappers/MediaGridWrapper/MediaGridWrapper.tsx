@@ -178,7 +178,7 @@ const MediaGridWrapper: FunctionComponent<
 		itemOrCollection: ResolvedItemOrCollection,
 		index: number
 	): MediaListItem => {
-		const itemLabel = get(itemOrCollection, 'type.label', 'item');
+		const itemLabel = itemOrCollection.type?.label;
 		const isItem =
 			itemLabel === ContentTypeString.video || itemLabel === ContentTypeString.audio;
 		const isCollection = itemLabel === ContentTypeString.collection;

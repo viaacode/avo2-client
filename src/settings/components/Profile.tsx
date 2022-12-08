@@ -666,7 +666,7 @@ const Profile: FunctionComponent<
 			case 'temp_access': {
 				const tempAccess = profile?.user?.temp_access;
 
-				return tempAccess && tempAccess.current?.status === 1
+				return tempAccess?.status
 					? `${tText('settings/components/profile___van')} ${formatDate(
 							get(tempAccess, 'from')
 					  )} ${tText('settings/components/profile___tot')} ${formatDate(
@@ -740,7 +740,7 @@ const Profile: FunctionComponent<
 													onChange={setTitle}
 												/>
 											</FormGroup>
-											{!get(user, 'profile.organisation') && (
+											{!get(user, 'profile.organisation') && user.profile && (
 												<FormGroup
 													label={tText(
 														'settings/components/profile___profielfoto'
@@ -754,7 +754,7 @@ const Profile: FunctionComponent<
 														urls={compact([avatar])}
 														allowMulti={false}
 														assetType="PROFILE_AVATAR"
-														ownerId={get(user, 'profile.id')}
+														ownerId={user.profile.id}
 														onChange={(urls) => setAvatar(urls[0])}
 													/>
 												</FormGroup>

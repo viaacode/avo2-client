@@ -55,12 +55,14 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 
 	const fetchAssignmentLabels = useCallback(async () => {
 		try {
-			const labels = sortBy(
-				await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'), type),
-				'label'
-			);
-			setAssignmentLabels(labels);
-			setInitialAssignmentLabels(labels);
+			if (user?.profile?.id) {
+				const labels = sortBy(
+					await AssignmentLabelsService.getLabelsForProfile(user.profile.id, type),
+					'label'
+				);
+				setAssignmentLabels(labels);
+				setInitialAssignmentLabels(labels);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch assignment labels for user', err, { user })
@@ -146,7 +148,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				updatedIds.map((updatedId) => assignmentLabels.find((l) => l.id === updatedId))
 			);
 
-			const profileId = get(user, 'profile.id');
+			const profileId = user?.profile?.id;
 			await Promise.all([
 				AssignmentLabelsService.insertLabels(
 					newLabels.map((item) =>
@@ -158,15 +160,19 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 							: item
 					)
 				),
-				AssignmentLabelsService.deleteLabels(profileId, oldIds),
-				updatedLabels.map((l) =>
-					AssignmentLabelsService.updateLabel(
-						profileId,
-						l.id,
-						l.label || '',
-						l.color_enum_value
-					)
-				),
+				...(profileId
+					? [
+							AssignmentLabelsService.deleteLabels(profileId, oldIds),
+							updatedLabels.map((l) =>
+								AssignmentLabelsService.updateLabel(
+									profileId,
+									l.id,
+									l.label || '',
+									l.color_enum_value
+								)
+							),
+					  ]
+					: []),
 			]);
 			onClose();
 			ToastService.success(

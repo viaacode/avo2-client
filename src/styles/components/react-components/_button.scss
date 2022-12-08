@@ -55,6 +55,33 @@ $c-button-icon-spacing-small: 0.2rem !default;
 	align-items: center;
 	font-weight: 400;
 
+	&--disabled {
+		cursor: default;
+		background: $color-gray-100 !important;
+		color: $color-gray-200 !important;
+		border: 1px solid $color-gray-100 !important;
+	}
+
+	&--neutral {
+		border: 1px solid $color-gray-200;
+		background-color: $color-gray-50;
+		color: $color-gray-700;
+
+		&:hover,
+		&:active,
+		&:focus,
+		&.c-button--active,
+		&.c-button--active:focus {
+			background-color: #fff;
+		}
+	}
+
+	&--copy-to-clipboard {
+		border: 1px solid $color-gray-200;
+		background-color: $color-gray-50;
+		color: $color-gray-700;
+	}
+
 	.c-button__icon {
 		pointer-events: none;
 	}
