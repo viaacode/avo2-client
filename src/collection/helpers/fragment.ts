@@ -1,5 +1,4 @@
 import { Avo } from '@viaa/avo2-types';
-import { RelationEntry } from '@viaa/avo2-types/types/collection';
 import { get } from 'lodash-es';
 import moment from 'moment';
 
@@ -29,7 +28,8 @@ export const showReplacementWarning = (
 	user?: Avo.User.User
 ): boolean => {
 	const item = collectionFragment.item_meta as Avo.Item.Item;
-	const replacedRelation: RelationEntry<Avo.Item.Item> | undefined = item.relations?.[0];
+	const replacedRelation: Avo.Collection.RelationEntry<Avo.Item.Item> | undefined =
+		item.relations?.[0];
 	const ownsCollection: boolean = collection.owner_profile_id === get(user, 'profile.id');
 
 	return (

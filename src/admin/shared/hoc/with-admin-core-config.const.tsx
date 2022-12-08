@@ -42,9 +42,10 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		firstName: user?.first_name || undefined,
 		lastName: user?.last_name || undefined,
 		fullName: user?.full_name || undefined,
-		last_access_at: user?.last_access_at || undefined, // TODO enable once last_access_at field is added to the database
+		lastAccessAt: user?.last_access_at || undefined, // TODO enable once last_access_at field is added to the database
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		permissions: user?.profile?.permissions as any[],
+		tempAccess: null,
 	};
 
 	return {
@@ -176,7 +177,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 		database: {
 			databaseApplicationType: AvoOrHetArchief.avo,
-			proxyUrl: getEnv('PROXY_URL') || '',
+			proxyUrl: getEnv('PROXY_URL') as string,
 		},
 		flowplayer: {
 			FLOW_PLAYER_ID: getEnv('FLOW_PLAYER_ID') || '',

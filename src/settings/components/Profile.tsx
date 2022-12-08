@@ -666,7 +666,7 @@ const Profile: FunctionComponent<
 			case 'temp_access': {
 				const tempAccess = profile?.user?.temp_access;
 
-				return tempAccess && tempAccess.current?.status === 1
+				return tempAccess?.status
 					? `${tText('settings/components/profile___van')} ${formatDate(
 							get(tempAccess, 'from')
 					  )} ${tText('settings/components/profile___tot')} ${formatDate(
