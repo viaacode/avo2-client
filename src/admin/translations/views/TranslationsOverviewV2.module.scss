@@ -24,7 +24,7 @@
 			margin: 0;
 			border-radius: 0.3rem;
 			background-color: #fff;
-			border: 1px solid #bac7d1;
+			border: 1px solid $color-gray-150;
 			font-size: inherit;
 			height: 3.6rem;
 			padding: 0.8rem 0 0.8rem 3.2rem;
@@ -34,8 +34,8 @@
 
 			&:focus {
 				outline: 0;
-				border-color: #25a4cf;
-				box-shadow: inset 0 0 0 0.1rem #25a4cf;
+				border-color: $color-teal-bright;
+				box-shadow: inset 0 0 0 0.1rem $color-teal-bright;
 			}
 		}
 
@@ -48,7 +48,7 @@
 	}
 
 	:global(.c-table__scroller) {
-		border: 1px solid #d6dee3;
+		border: 1px solid $color-gray-100;
 		border-radius: 0.3rem;
 	}
 
@@ -69,7 +69,7 @@
 		}
 
 		:global(tr) {
-			border: 1px solid #d6dee3;
+			border: 1px solid $color-gray-100;
 			border-width: 1px 0 0 0;
 			border-collapse: separate;
 		}
@@ -127,7 +127,7 @@
 		}
 
 		:global(.bf-container) {
-			border: 1px solid #d6dee3;
+			border: 1px solid $color-gray-100;
 			border-radius: 0.3rem;
 
 			:global(.bf-content) {
