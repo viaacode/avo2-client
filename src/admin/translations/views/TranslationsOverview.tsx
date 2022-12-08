@@ -1,18 +1,21 @@
-import { Button, KeyValueEditor } from '@viaa/avo2-components';
+import { TranslationsOverviewV2 } from '@meemoo/admin-core-ui';
+import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { CustomError } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
+import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import { Translation, TranslationsState } from '../translations.types';
 
-const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
+import styles from './TranslationsOverviewV2.module.scss';
+
+const TranslationsOverview: FunctionComponent = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
@@ -34,14 +37,6 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 				);
 			});
 	}, [tText]);
-
-	useEffect(() => {
-		getTranslations();
-	}, [getTranslations]);
-
-	const onChangeTranslations = (updatedTranslations: Translation[]) => {
-		setTranslations(updatedTranslations);
-	};
 
 	const onSaveTranslations = async () => {
 		// convert translations to db format and save translations
@@ -101,6 +96,27 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 		}
 	};
 
+	const convertDataToTranslations = (data: Translation[]) => {
+		const translationsPerContext = groupBy(data, (dataItem) => {
+			return splitOnFirstSlash(dataItem[0])[0];
+		});
+
+		return map(translationsPerContext, (translations: Translation, context: string) => ({
+			name: `translations-${context}`,
+			value: fromPairs(
+				translations.map((translation) => [
+					splitOnFirstSlash(translation[0])[1],
+					translation[1],
+				])
+			),
+		}));
+	};
+
+	const splitOnFirstSlash = (text: string): string[] => {
+		const firstSlashIndex = text.indexOf('/');
+		return [text.substring(0, firstSlashIndex), text.substring(firstSlashIndex + 1)];
+	};
+
 	const convertTranslationsToData = (translations: TranslationsState[]): Translation[] => {
 		// convert translations to state format
 		return flatten(
@@ -119,25 +135,55 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 		);
 	};
 
-	const splitOnFirstSlash = (text: string): string[] => {
-		const firstSlashIndex = text.indexOf('/');
-		return [text.substring(0, firstSlashIndex), text.substring(firstSlashIndex + 1)];
-	};
+	const renderPopup = ({
+		title,
+		body,
+		isOpen,
+		onSave,
+		onClose,
+	}: {
+		title: string;
+		body: ReactNode;
+		onSave: () => void;
+		onClose: () => void;
+		isOpen: boolean;
+	}) => {
+		const renderFooter = () => {
+			return (
+				<div className="u-px-32 u-py-24">
+					<Button
+						onClick={onSave}
+						label={tText('pages/admin/vertalingen-v-2/index___bewaar-wijzigingen')}
+					/>
 
-	const convertDataToTranslations = (data: Translation[]) => {
-		const translationsPerContext = groupBy(data, (dataItem) => {
-			return splitOnFirstSlash(dataItem[0])[0];
-		});
+					<Button
+						onClick={onClose}
+						label={tText('pages/admin/vertalingen-v-2/index___annuleer')}
+					/>
+				</div>
+			);
+		};
 
-		return map(translationsPerContext, (translations: Translation, context: string) => ({
-			name: `translations-${context}`,
-			value: fromPairs(
-				translations.map((translation) => [
-					splitOnFirstSlash(translation[0])[1],
-					translation[1],
-				])
-			),
-		}));
+		return (
+			<>
+				{/* the div disables the background */}
+				<div
+					className={styles['c-translations-overview__modal']}
+					style={{ background: 'black', width: '200vh', height: '100vh', opacity: 0.5 }}
+					hidden={!isOpen}
+					onClick={() => onClose()}
+				/>
+				<Modal
+					className="c-translations-overview__modal"
+					title={title}
+					isOpen={isOpen}
+					onClose={onClose}
+				>
+					<ModalBody>{body}</ModalBody>
+					<ModalFooterRight>{renderFooter()}</ModalFooterRight>
+				</Modal>
+			</>
+		);
 	};
 
 	return (
@@ -164,16 +210,13 @@ const TranslationsOverview: FunctionComponent<DefaultSecureRouteProps> = () => {
 						)}
 					/>
 				</MetaTags>
-				{!!translations.length && (
-					<KeyValueEditor
-						initialData={initialTranslations}
-						data={translations}
-						onChange={onChangeTranslations}
-					/>
-				)}
+				<TranslationsOverviewV2
+					renderPopup={renderPopup}
+					className={styles['c-translations-overview']}
+				/>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
 };
 
-export default TranslationsOverview;
+export default withAdminCoreConfig(TranslationsOverview) as FunctionComponent;

@@ -177,7 +177,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 		database: {
 			databaseApplicationType: AvoOrHetArchief.avo,
-			proxyUrl: getEnv('PROXY_URL') || '',
+			proxyUrl: getEnv('PROXY_URL') as string,
 		},
 		flowplayer: {
 			FLOW_PLAYER_ID: getEnv('FLOW_PLAYER_ID') || '',
