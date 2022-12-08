@@ -1,5 +1,4 @@
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
+import type { Avo } from '@viaa/avo2-types';
 
 import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
@@ -53,7 +52,7 @@ const quickLaneUrlObjectToRecord = (object: QuickLaneUrlObject) => {
 
 // Helpers
 
-const checkForItemReplacements = async (item: ItemSchema): Promise<ItemSchema> => {
+const checkForItemReplacements = async (item: Avo.Item.Item): Promise<Avo.Item.Item> => {
 	// Note: because of the GET_ITEM_BY_UUID gql, the item coming in here only has IS_REPLACED_BY-type relations
 	// hence why we don't filter and just grab the most recently updated one
 	const replacement = item.relations?.sort((a, b) => {
@@ -148,7 +147,7 @@ export class QuickLaneService {
 						url.content_id || '',
 						'collection',
 						undefined
-					)) as CollectionSchema;
+					)) as Avo.Collection.Collection;
 					break;
 
 				default:

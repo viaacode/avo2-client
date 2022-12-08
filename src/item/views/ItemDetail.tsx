@@ -23,8 +23,8 @@ import {
 	Table,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
 import React, {
@@ -47,7 +47,7 @@ import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import {
 	ContentTypeNumber,
 	ContentTypeString,
@@ -404,7 +404,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	};
 
 	const createNewAssignment = async (
-		source: (ItemSchema & { start_oc?: number | null; end_oc?: number | null }) | null = item
+		source: (Avo.Item.Item & { start_oc?: number | null; end_oc?: number | null }) | null = item
 	) => {
 		if (!source) {
 			return;

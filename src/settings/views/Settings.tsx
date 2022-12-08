@@ -7,13 +7,14 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';

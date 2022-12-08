@@ -7,7 +7,7 @@ import {
 	ToastInfo,
 } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';

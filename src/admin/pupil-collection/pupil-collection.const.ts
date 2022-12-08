@@ -1,6 +1,7 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types';
 import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';

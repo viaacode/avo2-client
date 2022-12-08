@@ -9,7 +9,8 @@ import {
 	ToolbarRight,
 	ToolbarTitle,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -29,7 +30,6 @@ import {
 	PermissionGuardFail,
 	PermissionGuardPass,
 } from '../../authentication/components';
-import { PermissionName } from '../../authentication/helpers/permission-names';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';

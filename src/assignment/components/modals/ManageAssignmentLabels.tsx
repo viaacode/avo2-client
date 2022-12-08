@@ -13,7 +13,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, get, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
@@ -32,7 +32,7 @@ import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.
 export interface ManageAssignmentLabelsProps extends UserProps {
 	isOpen: boolean;
 	onClose: () => void;
-	type?: AssignmentLabelType;
+	type?: Avo.Assignment.LabelType;
 }
 
 const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = ({

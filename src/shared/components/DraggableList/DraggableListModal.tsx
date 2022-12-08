@@ -1,5 +1,5 @@
 import { Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
 

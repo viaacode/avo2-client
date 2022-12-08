@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 
 import {
@@ -11,12 +11,10 @@ import { CustomError, getEnv } from '../shared/helpers';
 import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { dataService } from '../shared/services/data-service';
 
-import { UpdateProfileValues } from './settings.types';
-
 export class SettingsService {
 	public static async updateProfileInfo(
 		profile: Avo.User.Profile | null,
-		variables: Partial<UpdateProfileValues>
+		variables: Partial<Avo.User.UpdateProfileValues>
 	): Promise<void> {
 		try {
 			if (!profile) {

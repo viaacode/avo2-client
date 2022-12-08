@@ -1,7 +1,6 @@
 import { ColorOption, ColorSelect } from '@meemoo/admin-core-ui';
 import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
+import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 
@@ -24,7 +23,7 @@ export type AssignmentLabelsProps = {
 		placeholder: string;
 		empty: string;
 	};
-	type?: AssignmentLabelType;
+	type?: Avo.Assignment.LabelType;
 };
 
 const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({

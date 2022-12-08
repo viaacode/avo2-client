@@ -1,9 +1,9 @@
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 
-import { PermissionName } from '../../authentication/helpers/permission-names';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 
-export const canViewAnAssignment = (user?: UserSchema): boolean => {
+export const canViewAnAssignment = (user?: Avo.User.User): boolean => {
 	return (
 		PermissionService.hasPerm(user, PermissionName.VIEW_ASSIGNMENTS) ||
 		PermissionService.hasPerm(user, PermissionName.VIEW_ANY_ASSIGNMENTS) ||

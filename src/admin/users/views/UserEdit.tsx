@@ -13,7 +13,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -22,7 +22,6 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
-import { UpdateProfileValues } from '../../../settings/settings.types';
 import { FileUpload, LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
@@ -43,7 +42,7 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [profileErrors, setProfileErrors] = useState<
-		Partial<{ [prop in keyof UpdateProfileValues]: string }>
+		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
 	>({});
 
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>([]);

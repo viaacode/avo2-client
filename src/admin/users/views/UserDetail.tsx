@@ -9,18 +9,14 @@ import {
 	TagList,
 	TagOption,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { UserTempAccess } from '@viaa/avo2-types/types/user';
-import { get } from 'lodash-es';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import moment from 'moment';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
@@ -58,7 +54,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tempAccess, setTempAccess] = useState<UserTempAccess | null>(null);
+	const [tempAccess, setTempAccess] = useState<Avo.User.TempAccess | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isTempAccessModalOpen, setIsTempAccessModalOpen] = useState<boolean>(false);
 	const [userDeleteModalOpen, setUserDeleteModalOpen] = useState<boolean>(false);
@@ -116,7 +112,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	}, [storedProfile, setLoadingInfo]);
 
 	const getLdapDashboardUrl = () => {
-		const ipdMapEntry = (get(storedProfile as any, 'idps') || []).find(
+		const ipdMapEntry = ((storedProfile as any)?.idps || []).find(
 			(idpMap: { idp: string; idp_user_id: string }) => idpMap.idp === 'HETARCHIEF'
 		);
 
@@ -133,8 +129,8 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 
 	const toggleBlockedStatus = async () => {
 		try {
-			const profileId = get(storedProfile, 'profile_id');
-			const isBlocked = get(storedProfile, 'is_blocked') || false;
+			const profileId = (storedProfile as any)?.profile_id;
+			const isBlocked = (storedProfile as any)?.is_blocked || false;
 
 			if (profileId) {
 				await UserService.updateBlockStatusByProfileIds(
@@ -206,15 +202,15 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		}
 	};
 
-	const onSetTempAccess = async (tempAccess: UserTempAccess) => {
+	const onSetTempAccess = async (tempAccess: Avo.User.TempAccess) => {
 		try {
-			const userId = get(storedProfile, 'user_id');
+			const userId = (storedProfile as any)?.user_id;
 
 			if (!userId) {
 				throw new CustomError('Invalid userId');
 			}
 
-			const profileId = get(storedProfile, 'profile_id');
+			const profileId = (storedProfile as any)?.profile_id;
 
 			if (!profileId) {
 				throw new CustomError('Invalid profileId');
@@ -246,12 +242,12 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 		}
 	};
 
-	const renderTempAccess = (tempAccess: UserTempAccess | null): string => {
+	const renderTempAccess = (tempAccess: Avo.User.TempAccess | null): string => {
 		if (!tempAccess) {
 			return '-';
 		}
-		const from = get(tempAccess, 'from');
-		const until = get(tempAccess, 'until');
+		const from = tempAccess?.from;
+		const until = tempAccess?.until;
 		return from
 			? `${tText('admin/users/views/user-detail___van')} ${formatDate(from)} ${tText(
 					'admin/users/views/user-detail___tot'
@@ -259,15 +255,15 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			: `${tText('admin/users/views/user-detail___tot')} ${formatDate(until)}`;
 	};
 
-	const renderTempAccessDuration = (tempAccess: UserTempAccess | null): string => {
+	const renderTempAccessDuration = (tempAccess: Avo.User.TempAccess | null): string => {
 		if (!tempAccess) {
 			return '-';
 		}
-		const from = get(tempAccess, 'from');
+		const from = tempAccess?.from;
 		if (!from) {
 			return '-';
 		}
-		const until = get(tempAccess, 'until') || '';
+		const until = tempAccess?.until || '';
 		return moment.duration(normalizeTimestamp(until).diff(normalizeTimestamp(from))).humanize();
 	};
 
@@ -281,10 +277,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(
-			storedProfile as any,
-			'profile.profile_user_group.group'
-		);
+		const userGroup: RawUserGroup = (storedProfile as any)?.profile?.profile_user_group?.group;
 
 		const eduOrgs: {
 			unit_id: string;
@@ -292,7 +285,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			organization: {
 				ldap_description: string;
 			};
-		}[] = get(storedProfile, 'organisations') || [];
+		}[] = (storedProfile as any)?.organisations || [];
 
 		return (
 			<Container mode="vertical" size="small">
@@ -381,22 +374,24 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								)}
 							{renderDetailRow(
 								idpMapsToTagList(
-									get(storedProfile, 'idps', []).map((idpMap: any) => idpMap.idp),
+									((storedProfile as any)?.idps || []).map(
+										(idpMap: any) => idpMap.idp
+									),
 									'idps'
 								) || '-',
 								tText('admin/users/views/user-detail___gelinked-aan')
 							)}
 							{renderDetailRow(
 								stringsToTagList(
-									get(storedProfile, 'classifications', []),
+									(storedProfile as any)?.classifications || [],
 									'key'
 								) || '-',
 								tText('admin/users/views/user-detail___vakken')
 							)}
 							{renderDetailRow(
-								get(storedProfile, 'contexts', [] as any[]).length ? (
+								((storedProfile as any)?.contexts || ([] as any[])).length ? (
 									<TagList
-										tags={get(storedProfile, 'contexts', []).map(
+										tags={((storedProfile as any)?.contexts || []).map(
 											(educationLevel: { key: string }): TagOption => ({
 												id: educationLevel.key,
 												label: educationLevel.key,
@@ -426,7 +421,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 								tText('admin/users/views/user-detail___educatieve-organisaties')
 							)}
 							{renderDetailRow(
-								get(storedProfile, 'company_name') || '-',
+								(storedProfile as any)?.company_name || '-',
 								tText('admin/users/views/user-detail___bedrijf')
 							)}
 						</tbody>
@@ -440,7 +435,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	const deleteCallback = () => navigate(history, ADMIN_PATH.USER_OVERVIEW);
 
 	const renderUserDetailPage = () => {
-		const isBlocked = get(storedProfile, 'is_blocked');
+		const isBlocked = (storedProfile as any)?.is_blocked;
 		const blockButtonTooltip = isBlocked
 			? tText(
 					'admin/users/views/user-detail___laat-deze-gebruiker-terug-toe-op-het-av-o-platform'
@@ -602,7 +597,9 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						`${get(storedProfile, 'first_name')} ${get(storedProfile, 'last_name')}`,
+						`${(storedProfile as any)?.first_name} ${
+							(storedProfile as any)?.last_name
+						}`,
 						tText('admin/users/views/user-detail___item-detail-pagina-titel')
 					)}
 				</title>

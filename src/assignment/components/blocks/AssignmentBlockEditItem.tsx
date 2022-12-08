@@ -1,5 +1,5 @@
 import { convertToHtml } from '@viaa/avo2-components';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 
 import { FilterState } from '../../../search/search.types';
@@ -79,7 +79,7 @@ export const AssignmentBlockEditItem: FC<
 			className="u-padding-l"
 			id={editableBlock.item_meta.id}
 			preview={() => {
-				const item = editableBlock.item_meta as ItemSchema;
+				const item = editableBlock.item_meta as Avo.Item.Item;
 
 				return (
 					<>

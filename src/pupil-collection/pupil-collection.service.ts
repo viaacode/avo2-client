@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { without } from 'lodash-es';
 
 import { isNewAssignmentBlock } from '../assignment/assignment.const';

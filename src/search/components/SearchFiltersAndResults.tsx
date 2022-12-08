@@ -15,8 +15,8 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { SearchResultItem } from '@viaa/avo2-types/types/search';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import {
 	cloneDeep,
 	every,
@@ -36,7 +36,7 @@ import { withRouter } from 'react-router-dom';
 import { compose, Dispatch } from 'redux';
 import { UrlUpdateType } from 'use-query-params';
 
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { CustomError, isMobileWidth, navigate } from '../../shared/helpers';
@@ -342,7 +342,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
 		try {
 			const results = get(searchResults, 'results', []);
-			const resultItem: SearchResultItem | undefined = results.find(
+			const resultItem: Avo.Search.ResultItem | undefined = results.find(
 				(result) => result.uid === uuid
 			);
 			if (!resultItem) {

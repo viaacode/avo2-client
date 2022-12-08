@@ -1,8 +1,8 @@
+import { PermissionName } from '@viaa/avo2-types';
 import { every, some } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Switch } from 'react-router';
 
-import { PermissionName } from '../authentication/helpers/permission-names';
 import { renderErrorRoutes } from '../error/error.routes';
 
 import { renderAdminAssignmentRoutes } from './assignments/assignment.routes';

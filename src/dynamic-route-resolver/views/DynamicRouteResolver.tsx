@@ -1,6 +1,7 @@
 import { ContentPageInfo, ContentPageService, getPublishedDate } from '@meemoo/admin-core-ui';
 import { Flex, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -10,7 +11,7 @@ import { Dispatch } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {

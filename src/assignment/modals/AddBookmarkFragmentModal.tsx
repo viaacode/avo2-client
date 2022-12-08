@@ -15,7 +15,7 @@ import {
 	TextInput,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { compose } from 'redux';

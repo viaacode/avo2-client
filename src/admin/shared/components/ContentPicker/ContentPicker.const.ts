@@ -1,5 +1,5 @@
 import { ContentPickerType } from '@viaa/avo2-components';
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import type { Avo } from '@viaa/avo2-types';
 
 import { tText } from '../../../../shared/helpers/translate';
 import { PickerTypeOption } from '../../types';
@@ -25,7 +25,7 @@ export const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => (
 	FILE: tText('admin/shared/components/content-picker/content-picker___bestand'),
 });
 
-export const GET_CONTENT_TYPES: (user?: UserSchema) => PickerTypeOption[] = (user) => {
+export const GET_CONTENT_TYPES: (user?: Avo.User.User) => PickerTypeOption[] = (user) => {
 	const labels = GET_CONTENT_TYPE_LABELS();
 	return [
 		{

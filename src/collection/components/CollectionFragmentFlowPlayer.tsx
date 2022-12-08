@@ -1,4 +1,4 @@
-import { ItemSchema } from '@viaa/avo2-types/types/item';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 
 import { FlowPlayerWrapper } from '../../shared/components';
@@ -10,7 +10,7 @@ export type CollectionFragmentFlowPlayerProps = BlockItemComponent & FlowPlayerW
 const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (props) => {
 	const { block, ...rest } = props;
 
-	const meta = block?.item_meta as ItemSchema | undefined;
+	const meta = block?.item_meta as Avo.Item.Item | undefined;
 
 	return (
 		<FlowPlayerWrapper

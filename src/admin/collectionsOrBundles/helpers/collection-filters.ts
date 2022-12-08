@@ -1,10 +1,8 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { first, get, isNil, without } from 'lodash-es';
 
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import {

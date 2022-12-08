@@ -1,5 +1,5 @@
 import { TableColumn } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 import { tText } from '../../shared/helpers/translate';

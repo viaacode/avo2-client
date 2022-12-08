@@ -1,6 +1,6 @@
 import { Color } from '@meemoo/admin-core-ui';
 import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import Joyride, { CallBackProps } from 'react-joyride';

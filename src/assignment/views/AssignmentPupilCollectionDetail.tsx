@@ -1,11 +1,12 @@
 import { BlockHeading, Container, Icon } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';

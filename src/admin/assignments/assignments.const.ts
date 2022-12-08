@@ -1,8 +1,9 @@
 import { ButtonType, SelectOption } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 
 import { AssignmentOverviewTableColumns } from '../../assignment/assignment.types';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { tText } from '../../shared/helpers/translate';
