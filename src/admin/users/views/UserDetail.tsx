@@ -10,6 +10,7 @@ import {
 	TagOption,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { UserTempAccess } from '@viaa/avo2-types/types/user';
 import { get } from 'lodash-es';
 import moment from 'moment';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
@@ -49,7 +50,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import TempAccessModal from '../components/TempAccessModal';
 import UserDeleteModal from '../components/UserDeleteModal';
 import { UserService } from '../user.service';
-import { RawUserGroup, UserTempAccess } from '../user.types';
+import { RawUserGroup } from '../user.types';
 
 type UserDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
@@ -115,7 +116,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	}, [storedProfile, setLoadingInfo]);
 
 	const getLdapDashboardUrl = () => {
-		const ipdMapEntry = (get(storedProfile, 'idps') || []).find(
+		const ipdMapEntry = (get(storedProfile as any, 'idps') || []).find(
 			(idpMap: { idp: string; idp_user_id: string }) => idpMap.idp === 'HETARCHIEF'
 		);
 
@@ -271,7 +272,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 	};
 
 	const renderUserDetail = () => {
-		if (!storedProfile) {
+		if (!storedProfile || !storedProfile) {
 			console.error(
 				new CustomError(
 					'Failed to load user because render function is called before user was fetched'
@@ -280,7 +281,10 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 			return;
 		}
 
-		const userGroup: RawUserGroup = get(storedProfile, 'profile.profile_user_group.group');
+		const userGroup: RawUserGroup = get(
+			storedProfile as any,
+			'profile.profile_user_group.group'
+		);
 
 		const eduOrgs: {
 			unit_id: string;
@@ -296,7 +300,7 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 					<Table horizontal variant="invisible" className="c-table_detail-page">
 						<tbody>
 							{renderDetailRow(
-								renderAvatar(get(storedProfile, 'profile'), { small: false }),
+								renderAvatar(storedProfile, { small: false }),
 								tText('admin/users/views/user-detail___avatar')
 							)}
 							{renderSimpleDetailRows(storedProfile, [
@@ -581,12 +585,14 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 						</>
 					}
 				/>
-				<UserDeleteModal
-					selectedProfileIds={[get(storedProfile, 'profile_id')]}
-					isOpen={userDeleteModalOpen}
-					onClose={() => setUserDeleteModalOpen(false)}
-					deleteCallback={deleteCallback}
-				/>
+				{storedProfile && (
+					<UserDeleteModal
+						selectedProfileIds={[storedProfile.id]}
+						isOpen={userDeleteModalOpen}
+						onClose={() => setUserDeleteModalOpen(false)}
+						deleteCallback={deleteCallback}
+					/>
+				)}
 			</>
 		);
 	};

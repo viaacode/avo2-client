@@ -12,7 +12,6 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -63,7 +62,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 				const validationErrors: string[] = await getValidationErrorsForPublish(collection);
 
 				if (validationErrors && validationErrors.length) {
-					setValidationError(validationErrors.map((rule) => get(rule[1], 'error')));
+					setValidationError(validationErrors);
 					ToastService.danger(validationErrors);
 					return;
 				}

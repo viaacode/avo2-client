@@ -21,9 +21,9 @@ import {
 	GetPermissionsFromContentPageByPathQuery,
 } from '../../../shared/generated/graphql-db-types';
 import { CustomError, navigate } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import useTranslation from '../../../shared/hooks/useTranslation';
 import { ValueOf } from '../../../shared/types';
 import { ADMIN_PATH } from '../../admin.const';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -229,8 +229,8 @@ const MenuEdit: FunctionComponent<MenuEditProps> = ({ history, match }) => {
 		if (key === 'content') {
 			setMenuForm({
 				...menuForm,
-				content_type: get(value, 'type'),
-				content_path: get(value, 'value'),
+				content_type: get(value, 'type', null),
+				content_path: get(value, 'value', null),
 				link_target: get(value, 'target', '_self'),
 			});
 		} else {

@@ -1,6 +1,7 @@
 import { Button, Spacer } from '@viaa/avo2-components';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+
 import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
 import { isCollection } from '../../../quick-lane/quick-lane.helpers';

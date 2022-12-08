@@ -17,6 +17,7 @@ import {
 import SmartLink from '../../../shared/components/SmartLink/SmartLink';
 import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
@@ -42,7 +43,6 @@ import {
 } from '../content-page-label.types';
 
 import './ContentPageLabelOverview.scss';
-import useTranslation from '../../../shared/hooks/useTranslation';
 
 type ContentPageLabelOverviewProps = DefaultSecureRouteProps;
 
@@ -120,57 +120,60 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		})
 	);
 
-	const getContentPageLabelOverviewTableCols: () => FilterableColumn[] = () => [
-		{
-			id: 'label',
-			label: tText('admin/content-page-labels/views/content-page-label-overview___label'),
-			sortable: true,
-			visibleByDefault: true,
-			dataType: TableColumnDataType.string,
-		},
-		{
-			id: 'content_type',
-			label: tText('admin/content-page-labels/views/content-page-label-overview___type'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'CheckboxDropdownModal',
-			filterProps: {
-				options: contentTypeOptions,
-			} as CheckboxDropdownModalProps,
-			dataType: TableColumnDataType.string,
-		},
-		{
-			id: 'link_to',
-			label: tText('admin/content-page-labels/views/content-page-label-overview___link'),
-			sortable: false,
-			visibleByDefault: true,
-		},
-		{
-			id: 'created_at',
-			label: tText(
-				'admin/content-page-labels/views/content-page-label-overview___gemaakt-op'
-			),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-			dataType: TableColumnDataType.dateTime,
-		},
-		{
-			id: 'updated_at',
-			label: tText(
-				'admin/content-page-labels/views/content-page-label-overview___aangepast-op'
-			),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-			dataType: TableColumnDataType.dateTime,
-		},
-		{
-			id: 'actions',
-			tooltip: tText('admin/content-page-labels/views/content-page-label-overview___acties'),
-			visibleByDefault: true,
-		},
-	];
+	const getContentPageLabelOverviewTableCols: () => FilterableColumn<ContentPageLabelOverviewTableCols>[] =
+		() => [
+			{
+				id: 'label',
+				label: tText('admin/content-page-labels/views/content-page-label-overview___label'),
+				sortable: true,
+				visibleByDefault: true,
+				dataType: TableColumnDataType.string,
+			},
+			{
+				id: 'content_type',
+				label: tText('admin/content-page-labels/views/content-page-label-overview___type'),
+				sortable: true,
+				visibleByDefault: true,
+				filterType: 'CheckboxDropdownModal',
+				filterProps: {
+					options: contentTypeOptions,
+				} as CheckboxDropdownModalProps,
+				dataType: TableColumnDataType.string,
+			},
+			{
+				id: 'link_to',
+				label: tText('admin/content-page-labels/views/content-page-label-overview___link'),
+				sortable: false,
+				visibleByDefault: true,
+			},
+			{
+				id: 'created_at',
+				label: tText(
+					'admin/content-page-labels/views/content-page-label-overview___gemaakt-op'
+				),
+				sortable: true,
+				visibleByDefault: true,
+				filterType: 'DateRangeDropdown',
+				dataType: TableColumnDataType.dateTime,
+			},
+			{
+				id: 'updated_at',
+				label: tText(
+					'admin/content-page-labels/views/content-page-label-overview___aangepast-op'
+				),
+				sortable: true,
+				visibleByDefault: true,
+				filterType: 'DateRangeDropdown',
+				dataType: TableColumnDataType.dateTime,
+			},
+			{
+				id: 'actions',
+				tooltip: tText(
+					'admin/content-page-labels/views/content-page-label-overview___acties'
+				),
+				visibleByDefault: true,
+			},
+		];
 
 	// Methods
 	const handleDelete = async () => {

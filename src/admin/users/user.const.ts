@@ -27,7 +27,7 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	educationLevels: CheckboxOption[],
 	subjects: CheckboxOption[],
 	idps: CheckboxOption[]
-) => FilterableColumn[] = (
+) => FilterableColumn<UserOverviewTableCol>[] = (
 	user: Avo.User.User | undefined,
 	userGroupOptions: CheckboxOption[],
 	companyOptions: CheckboxOption[],
@@ -37,38 +37,38 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 	idps: CheckboxOption[]
 ) => [
 	{
-		id: 'id',
+		id: 'id' as const,
 		label: tText('admin/users/user___id'),
 		sortable: false,
 		visibleByDefault: false,
 	},
 	{
-		id: 'first_name',
+		id: 'first_name' as const,
 		label: tText('admin/users/user___voornaam'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
-		id: 'last_name',
+		id: 'last_name' as const,
 		label: tText('admin/users/user___achternaam'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
-		id: 'mail',
+		id: 'mail' as const,
 		label: tText('admin/users/user___email'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
-		id: 'user_group',
+		id: 'user_group' as const,
 		label: tText('admin/users/user___gebruikersgroep'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: 'CheckboxDropdownModal' as const,
 		filterProps: {
 			options: [
 				...userGroupOptions,
@@ -78,11 +78,11 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		dataType: TableColumnDataType.string,
 	},
 	{
-		id: 'business_category',
+		id: 'business_category' as const,
 		label: tText('admin/users/user___oormerk'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: 'CheckboxDropdownModal' as const,
 		filterProps: {
 			options: [
 				...businessCategoryOptions,
@@ -92,45 +92,45 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		dataType: TableColumnDataType.string,
 	},
 	{
-		id: 'is_exception',
+		id: 'is_exception' as const,
 		label: tText('admin/users/user___uitzonderingsaccount'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: 'BooleanCheckboxDropdown' as const,
 		dataType: TableColumnDataType.boolean,
 	},
 	{
-		id: 'is_blocked',
+		id: 'is_blocked' as const,
 		label: tText('admin/users/user___geblokkeerd'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: 'BooleanCheckboxDropdown' as const,
 		dataType: TableColumnDataType.boolean,
 	},
 	{
-		id: 'blocked_at',
+		id: 'blocked_at' as const,
 		label: tText('admin/users/user___geblokkeerd-op'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: 'DateRangeDropdown' as const,
 		dataType: TableColumnDataType.dateTime,
 	},
 	{
-		id: 'unblocked_at',
+		id: 'unblocked_at' as const,
 		label: tText('admin/users/user___ongeblokkeerd-op'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: 'DateRangeDropdown' as const,
 		dataType: TableColumnDataType.dateTime,
 	},
-	...((PermissionService.hasPerm(user, PermissionName.EDIT_USER_TEMP_ACCESS)
+	...(PermissionService.hasPerm(user, PermissionName.EDIT_USER_TEMP_ACCESS)
 		? [
 				{
-					id: 'temp_access',
+					id: 'temp_access' as const,
 					label: tText('admin/users/user___tijdelijke-toegang'),
 					sortable: true,
 					visibleByDefault: false,
-					filterType: 'CheckboxDropdownModal',
+					filterType: 'CheckboxDropdownModal' as const,
 					filterProps: {
 						options: [
 							{
@@ -146,35 +146,35 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 					dataType: TableColumnDataType.booleanNullsLast, // Users without a value are always last when sorting
 				},
 				{
-					id: 'temp_access_from',
+					id: 'temp_access_from' as const,
 					label: tText('admin/users/user___te-deblokkeren-op'),
 					sortable: true,
 					visibleByDefault: false,
 					dataType: TableColumnDataType.dateTime,
 				},
 				{
-					id: 'temp_access_until',
+					id: 'temp_access_until' as const,
 					label: tText('admin/users/user___te-blokkeren-op'),
 					sortable: true,
 					visibleByDefault: false,
 					dataType: TableColumnDataType.dateTime,
 				},
 		  ]
-		: []) as FilterableColumn[]),
+		: []),
 	{
-		id: 'stamboek',
+		id: 'stamboek' as const,
 		label: tText('admin/users/user___stamboek'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'BooleanCheckboxDropdown',
+		filterType: 'BooleanCheckboxDropdown' as const,
 		dataType: TableColumnDataType.number,
 	},
 	{
-		id: 'organisation',
+		id: 'organisation' as const,
 		label: tText('admin/users/user___organisatie'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
+		filterType: 'CheckboxDropdownModal' as const,
 		filterProps: {
 			options: [
 				...companyOptions,
@@ -184,27 +184,27 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		dataType: TableColumnDataType.string,
 	},
 	{
-		id: 'created_at',
+		id: 'created_at' as const,
 		label: tText('admin/users/user___gebruiker-sinds'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: 'DateRangeDropdown' as const,
 		dataType: TableColumnDataType.dateTime,
 	},
 	{
-		id: 'last_access_at',
+		id: 'last_access_at' as const,
 		label: tText('admin/users/user___laatste-toegang'),
 		sortable: true,
 		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
+		filterType: 'DateRangeDropdown' as const,
 		dataType: TableColumnDataType.dateTime,
 	},
 	{
-		id: 'education_levels',
+		id: 'education_levels' as const,
 		label: tText('admin/users/user___onderwijs-niveaus'),
 		sortable: false,
 		visibleByDefault: false,
-		filterType: 'CheckboxDropdownModal',
+		filterType: 'CheckboxDropdownModal' as const,
 		filterProps: {
 			options: [
 				...educationLevels,
@@ -214,31 +214,31 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'subjects',
+		id: 'subjects' as const,
 		label: tText('admin/users/user___vakken'),
 		sortable: false,
 		visibleByDefault: false,
-		filterType: 'CheckboxDropdownModal',
+		filterType: 'CheckboxDropdownModal' as const,
 		filterProps: {
 			options: [...subjects, { label: tText('admin/users/user___leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'idps',
+		id: 'idps' as const,
 		label: tText('admin/users/user___toegang-via'),
 		sortable: false,
 		visibleByDefault: false,
-		filterType: 'CheckboxDropdownModal',
+		filterType: 'CheckboxDropdownModal' as const,
 		filterProps: {
 			options: [...idps, { label: tText('admin/users/user___leeg'), id: NULL_FILTER }],
 		} as CheckboxDropdownModalProps,
 	},
 	{
-		id: 'educational_organisations',
+		id: 'educational_organisations' as const,
 		label: tText('admin/users/user___educatieve-organisaties'),
 		sortable: false,
 		visibleByDefault: false,
-		filterType: 'MultiEducationalOrganisationSelectModal',
+		filterType: 'MultiEducationalOrganisationSelectModal' as const,
 	},
 ];
 

@@ -21,6 +21,7 @@ import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/E
 import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
@@ -45,7 +46,6 @@ import {
 } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
-import useTranslation from '../../../../shared/hooks/useTranslation';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',

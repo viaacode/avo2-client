@@ -8,8 +8,8 @@ import { Action, Dispatch } from 'redux';
 
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
-import { ToastService } from '../../shared/services/toast-service';
 import { tText } from '../../shared/helpers/translate';
+import { ToastService } from '../../shared/services/toast-service';
 import { LoginMessage } from '../authentication.types';
 import { logoutAndRedirectToLogin } from '../helpers/redirects';
 

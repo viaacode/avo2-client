@@ -3,9 +3,9 @@ import { Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 
-import useTranslation from '../../shared/hooks/useTranslation';
 import { LoadingErrorLoadedComponent } from '../../shared/components';
 import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { Permissions, PermissionService } from '../helpers/permission-service';
 
 import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';

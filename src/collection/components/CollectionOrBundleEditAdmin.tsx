@@ -217,11 +217,11 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	): ReactNode => {
 		switch (columnId) {
 			case 'author': {
-				const user = get(rowData, 'profile.user');
-				if (!user) {
-					return '-';
+				const user = rowData.profile?.user;
+				if (user) {
+					return truncateTableValue(`${user.first_name} ${user.last_name}`);
 				}
-				return truncateTableValue(`${user.first_name} ${user.last_name}`);
+				return '-';
 			}
 
 			case 'organization':
@@ -346,7 +346,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 					emptyStateMessage={tText(
 						'collection/components/collection-or-bundle-edit-admin___deze-collectie-is-nog-niet-gedeeld'
 					)}
-					onColumnClick={handleQuickLaneColumnClick}
+					onColumnClick={handleQuickLaneColumnClick as any}
 					sortColumn={quickLaneSortColumn}
 					sortOrder={quickLaneSortOrder}
 				/>

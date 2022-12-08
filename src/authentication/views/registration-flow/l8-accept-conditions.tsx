@@ -101,7 +101,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			setAcceptInProgress(true);
 			await NotificationService.setNotification(
 				ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS,
-				get(user, 'profile.id'),
+				user.profile?.id || '',
 				true,
 				true
 			);

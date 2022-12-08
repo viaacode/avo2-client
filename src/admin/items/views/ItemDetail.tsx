@@ -30,7 +30,7 @@ import {
 } from '../../../shared/components';
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
-import { QUICK_LANE_DEFAULTS } from '../../../shared/constants/quick-lane';
+import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../../shared/constants/quick-lane';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
@@ -237,7 +237,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		);
 	};
 
-	const handleQuickLaneColumnClick = (id: string) => {
+	const handleQuickLaneColumnClick = (id: QuickLaneColumn) => {
 		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
 
 		setQuickLaneSortColumn(id);
@@ -279,7 +279,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	): ReactNode => {
 		switch (columnId) {
 			case 'author': {
-				const user = get(rowData, 'profile.user');
+				const user = rowData.profile?.user;
 				if (!user) {
 					return '-';
 				}
@@ -401,7 +401,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					emptyStateMessage={tText(
 						'admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld'
 					)}
-					onColumnClick={handleQuickLaneColumnClick}
+					onColumnClick={handleQuickLaneColumnClick as any}
 					sortColumn={quickLaneSortColumn}
 					sortOrder={quickLaneSortOrder}
 				/>

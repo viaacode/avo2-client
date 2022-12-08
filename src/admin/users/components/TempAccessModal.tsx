@@ -9,7 +9,8 @@ import {
 	ModalFooterRight,
 	Spacer,
 } from '@viaa/avo2-components';
-import { get, noop } from 'lodash-es';
+import { UserTempAccess } from '@viaa/avo2-types/types/user';
+import { noop } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
@@ -17,7 +18,6 @@ import { toDateObject, toIsoDate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getTempAccessValidationErrors } from '../user.helpers';
-import { UserTempAccess } from '../user.types';
 
 interface TempAccessModalProps {
 	tempAccess: UserTempAccess | null;
@@ -59,7 +59,7 @@ const TempAccessModal: FunctionComponent<TempAccessModalProps> = ({
 		const validationErrors: string[] = getTempAccessValidationErrors(newTempAccess);
 
 		if (validationErrors && validationErrors.length) {
-			setValidationError(validationErrors.map((rule) => get(rule[1], 'error')));
+			setValidationError(validationErrors);
 			ToastService.danger(validationErrors);
 			return;
 		}
