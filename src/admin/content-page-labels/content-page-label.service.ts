@@ -18,9 +18,9 @@ import {
 } from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
 import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
+import { tHtml } from '../../shared/helpers/translate';
 import { dataService } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';
-import i18n from '../../shared/translations/i18n';
 
 import { ITEMS_PER_PAGE } from './content-page-label.const';
 import { ContentPageLabel, ContentPageLabelOverviewTableCols } from './content-page-label.types';
@@ -167,7 +167,7 @@ export class ContentPageLabelService {
 				})
 			);
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/content-page-labels/content-page-label___het-verwijderen-van-de-content-pagina-label-is-mislukt'
 				)
 			);

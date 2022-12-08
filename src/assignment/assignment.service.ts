@@ -78,11 +78,11 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
+import { tText } from '../shared/helpers/translate';
 import { AssignmentLabelsService } from '../shared/services/assignment-labels-service';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import i18n from '../shared/translations/i18n';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
@@ -979,13 +979,13 @@ export class AssignmentService {
 		user: Avo.User.User | undefined
 	): Promise<Omit<AssignmentResponseInfo, 'assignment'> | null> {
 		try {
-			if (!user) {
+			if (!user || !user.profile) {
 				return null;
 			}
 			const existingAssignmentResponse:
 				| Omit<AssignmentResponseInfo, 'assignment'>
 				| undefined = await AssignmentService.getAssignmentResponse(
-				get(user, 'profile.id'),
+				user.profile.id,
 				get(assignment, 'id') as unknown as string
 			);
 
@@ -993,7 +993,7 @@ export class AssignmentService {
 				if (assignment.assignment_type === AssignmentType.BOUW) {
 					existingAssignmentResponse.collection_title =
 						existingAssignmentResponse.collection_title ||
-						i18n.t('assignment/assignment___nieuwe-collectie');
+						tText('assignment/assignment___nieuwe-collectie');
 				}
 				return {
 					...existingAssignmentResponse,
@@ -1007,7 +1007,7 @@ export class AssignmentService {
 				assignment_id: assignment.id,
 				collection_title:
 					assignment.assignment_type === AssignmentType.BOUW
-						? i18n.t('assignment/assignment___nieuwe-collectie')
+						? tText('assignment/assignment___nieuwe-collectie')
 						: null,
 			};
 			const response = await dataService.query<InsertAssignmentResponseMutation>({

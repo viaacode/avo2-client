@@ -6,7 +6,7 @@ import {
 	LinkInfo,
 	ToastInfo,
 } from '@meemoo/admin-core-ui';
-import { Icon, IconName, IconProps, Spinner } from '@viaa/avo2-components';
+import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
@@ -20,14 +20,12 @@ import { tHtml, tText } from '../../../shared/helpers/translate';
 import { AssetsService } from '../../../shared/services/assets-service/assets.service';
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { navigationService } from '../../navigation/services/navigation-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
 import { PermissionsService } from '../services/permissions';
-import { UserGroupsService } from '../services/user-groups';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
-		return <Link {...linkInfo} />;
+		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
 	};
 
 	const commonUser: CommonUser = {
@@ -44,20 +42,21 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		firstName: user?.first_name || undefined,
 		lastName: user?.last_name || undefined,
 		fullName: user?.full_name || undefined,
-		last_access_at: user?.last_access_at || undefined, // TODO enable once last_access_at field is added to the database
+		lastAccessAt: user?.last_access_at || undefined, // TODO enable once last_access_at field is added to the database
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		permissions: user?.profile?.permissions as any[],
+		tempAccess: null,
 	};
 
 	return {
-		navigation: {
-			service: navigationService,
-			views: {
-				overview: {
-					labels: { tableHeads: {} },
-				},
-			},
-		},
+		// navigation: {
+		// 	service: navigationService,
+		// 	views: {
+		// 		overview: {
+		// 			labels: { tableHeads: {} },
+		// 		},
+		// 	},
+		// },
 		staticPages: compact(
 			(Object.keys(APP_PATH) as RouteId[]).map((routeId) => {
 				if (APP_PATH[routeId].showInContentPicker) {
@@ -70,11 +69,11 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		contentPage: {
 			availableContentBlocks: Object.values(ContentBlockType),
 			defaultPageWidth: 'LARGE',
-			onSaveContentPage: noop,
+			onSaveContentPage: () => new Promise(noop),
 		},
 		navigationBars: { enableIcons: false },
 		icon: {
-			component: ({ name }: { name: IconName }) => <Icon name={name} />,
+			component: ({ name }: { name: string }) => <Icon name={name as IconName} />,
 			componentProps: {
 				add: { name: 'plus' },
 				view: { name: 'eye' },
@@ -88,7 +87,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				arrowUp: { name: 'arrow-up' },
 				sortTable: { name: 'chevrons-up-and-down' },
 				arrowDown: { name: 'arrow-down' },
-			} as Record<string, IconProps>,
+			},
 			list: [],
 		},
 		components: {
@@ -153,7 +152,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 							<p id="toastDescription">{toastInfo.description}</p>
 						</div>,
 						{},
-						toastInfo.type
+						toastInfo.type as any
 					);
 				},
 			},
@@ -172,24 +171,27 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				clear: async (_key: string) => Promise.resolve(),
 			},
-			UserGroupsService,
+			// UserGroupsService,
 			PermissionsService,
 			assetService: AssetsService,
 		},
 		database: {
 			databaseApplicationType: AvoOrHetArchief.avo,
-			proxyUrl: getEnv('PROXY_URL'),
+			proxyUrl: getEnv('PROXY_URL') as string,
 		},
 		flowplayer: {
-			FLOW_PLAYER_ID: getEnv('FLOW_PLAYER_ID'),
-			FLOW_PLAYER_TOKEN: getEnv('FLOW_PLAYER_TOKEN'),
+			FLOW_PLAYER_ID: getEnv('FLOW_PLAYER_ID') || '',
+			FLOW_PLAYER_TOKEN: getEnv('FLOW_PLAYER_TOKEN') || '',
 		},
 		handlers: {
-			onExternalLink: (url: string, label: string) => {
-				SmartschoolAnalyticsService.triggerUrlEvent(toAbsoluteUrl(url), label);
+			onExternalLink: (url: string) => {
+				SmartschoolAnalyticsService.triggerUrlEvent(toAbsoluteUrl(url));
 			},
 		},
 		user: commonUser,
 		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
+		users: {
+			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
+		},
 	};
 }

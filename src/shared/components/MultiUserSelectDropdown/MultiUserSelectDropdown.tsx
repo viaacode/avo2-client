@@ -13,11 +13,11 @@ import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, uniqBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../../admin/shared/types';
 import { UserService } from '../../../admin/users/user.service';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services/toast-service';
 
@@ -47,7 +47,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 	onChange,
 	showSelectedValuesOnCollapsed = true,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [selectedProfiles, setSelectedProfiles] = useState<PickerItem[]>([]);
@@ -67,7 +67,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 						users.map(
 							(user): PickerItem => ({
 								label: `${get(user, 'full_name')} (${get(user, 'mail')})`,
-								value: get(user, 'profile.id') as string,
+								value: user.profile?.id || '',
 								type: 'PROFILE',
 							})
 						)
@@ -80,13 +80,13 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 						})
 					);
 					ToastService.danger(
-						t(
+						tHtml(
 							'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___het-ophalen-van-de-gebruikersaccount-namen-is-mislukt'
 						)
 					);
 				});
 		}
-	}, [values, setSelectedProfiles, t]);
+	}, [values, setSelectedProfiles, tText]);
 
 	const closeDropdown = () => {
 		setSelectedProfiles([]);
@@ -136,10 +136,10 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 											id: 'users',
 											label: `${selectedProfiles.length} ${
 												selectedProfiles.length > 1
-													? t(
+													? tText(
 															'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___gebruikers'
 													  )
-													: t(
+													: tText(
 															'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___gebruiker'
 													  )
 											}`,
@@ -192,7 +192,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 										hideTypeDropdown
 										placeholder={
 											placeholder ||
-											t(
+											tText(
 												'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___selecteer-een-gebruiker'
 											)
 										}
@@ -203,7 +203,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 
 							<FormGroup>
 								<Button
-									label={t(
+									label={tText(
 										'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___toepassen'
 									)}
 									type="primary"

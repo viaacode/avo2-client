@@ -1,6 +1,5 @@
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
@@ -11,9 +10,10 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ContentPage } from '../../content-page/views';
 import { ROUTE_PARTS } from '../../shared/constants';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 
 const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, user }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// /start when user is a pupil => should be redirected to /werkruimte/opdrachten
 	if (getUserGroupId(get(user, 'profile')) === SpecialUserGroup.Pupil) {
@@ -24,11 +24,11 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, use
 		<>
 			<MetaTags>
 				<title>
-					{GENERATE_SITE_TITLE(t('home/views/home___ingelogde-start-pagina-titel'))}
+					{GENERATE_SITE_TITLE(tText('home/views/home___ingelogde-start-pagina-titel'))}
 				</title>
 				<meta
 					name="description"
-					content={t('home/views/home___ingelogde-start-pagina-beschrijving')}
+					content={tText('home/views/home___ingelogde-start-pagina-beschrijving')}
 				/>
 			</MetaTags>
 			<ContentPage

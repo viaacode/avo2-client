@@ -16,16 +16,17 @@ import {
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { compact, get, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { Assignment_Label_v2, AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
+
 import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
 
 export interface ManageAssignmentLabelsProps extends UserProps {
@@ -40,8 +41,8 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	type,
 	user,
 }) => {
-	const [t] = useTranslation();
-	const translations = getManageAssignmentLabelsTranslations(t, type);
+	const { tText, tHtml } = useTranslation();
+	const translations = getManageAssignmentLabelsTranslations(tText, type);
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
 	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Assignment_Label_v2[]>(
@@ -52,23 +53,25 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 
 	const fetchAssignmentLabels = useCallback(async () => {
 		try {
-			const labels = sortBy(
-				await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'), type),
-				'label'
-			);
-			setAssignmentLabels(labels);
-			setInitialAssignmentLabels(labels);
+			if (user?.profile?.id) {
+				const labels = sortBy(
+					await AssignmentLabelsService.getLabelsForProfile(user.profile.id, type),
+					'label'
+				);
+				setAssignmentLabels(labels);
+				setInitialAssignmentLabels(labels);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch assignment labels for user', err, { user })
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-labels-is-mislukt'
 				)
 			);
 		}
-	}, [user, setAssignmentLabels, t, type]);
+	}, [user, setAssignmentLabels, tText, type]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
@@ -76,12 +79,12 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		} catch (err) {
 			console.error(new CustomError('Failed to fetch assignment label colors', err));
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/components/modals/manage-assignment-labels___het-ophalen-van-je-label-kleuren-is-mislukt'
 				)
 			);
 		}
-	}, [setAssignmentLabelColors, t]);
+	}, [setAssignmentLabelColors, tText]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -143,7 +146,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				updatedIds.map((updatedId) => assignmentLabels.find((l) => l.id === updatedId))
 			);
 
-			const profileId = get(user, 'profile.id');
+			const profileId = user?.profile?.id;
 			await Promise.all([
 				AssignmentLabelsService.insertLabels(
 					newLabels.map((item) =>
@@ -155,19 +158,23 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 							: item
 					)
 				),
-				AssignmentLabelsService.deleteLabels(profileId, oldIds),
-				updatedLabels.map((l) =>
-					AssignmentLabelsService.updateLabel(
-						profileId,
-						l.id,
-						l.label || '',
-						l.color_enum_value
-					)
-				),
+				...(profileId
+					? [
+							AssignmentLabelsService.deleteLabels(profileId, oldIds),
+							updatedLabels.map((l) =>
+								AssignmentLabelsService.updateLabel(
+									profileId,
+									l.id,
+									l.label || '',
+									l.color_enum_value
+								)
+							),
+					  ]
+					: []),
 			]);
 			onClose();
 			ToastService.success(
-				t(
+				tHtml(
 					'assignment/components/modals/manage-assignment-labels___de-labels-zijn-opgeslagen'
 				)
 			);
@@ -179,7 +186,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt'
 				)
 			);
@@ -226,10 +233,10 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			case 'actions':
 				return (
 					<Button
-						ariaLabel={t(
+						ariaLabel={tText(
 							'assignment/components/modals/manage-assignment-labels___verwijder-dit-label'
 						)}
-						title={t(
+						title={tText(
 							'assignment/components/modals/manage-assignment-labels___verwijder-dit-label'
 						)}
 						onClick={() => handleRowDelete(assignmentLabel.id)}
@@ -284,7 +291,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 							<ButtonToolbar>
 								{isProcessing && <Spinner />}
 								<Button
-									label={t(
+									label={tText(
 										'assignment/components/modals/manage-assignment-labels___annuleren'
 									)}
 									type="secondary"
@@ -293,7 +300,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 									disabled={isProcessing}
 								/>
 								<Button
-									label={t(
+									label={tText(
 										'assignment/components/modals/manage-assignment-labels___opslaan'
 									)}
 									type="primary"

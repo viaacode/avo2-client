@@ -13,14 +13,13 @@ import {
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
-import { RelationEntry } from '@viaa/avo2-types/types/collection';
 import { get, noop } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import { CustomError, stripHtml } from '../../../../shared/helpers';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { ContentPicker } from '../../../shared/components/ContentPicker/ContentPicker';
@@ -41,7 +40,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 	onClose = noop,
 	isOpen,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [depublishType, setDepublishType] = useState<DepublishType>('depublish');
 	const [reason, setReason] = useState<RichEditorState | null>(null);
@@ -62,7 +61,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				(!reasonHtml || !stripHtml(reasonHtml).trim())
 			) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/items/components/depublish-item-modal/depublish-item-modal___reden-mag-niet-leeg-zijn'
 					)
 				);
@@ -70,7 +69,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			}
 			if (depublishType === 'depublish_with_replacement' && !replacementExternalId) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/items/components/depublish-item-modal/depublish-item-modal___je-moet-een-vervang-item-selecteren'
 					)
 				);
@@ -102,7 +101,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 
 				if (!replacementItem) {
 					ToastService.danger(
-						t(
+						tHtml(
 							'admin/items/components/depublish-item-modal/depublish-item-modal___het-bepalen-van-de-id-van-het-vervang-item-is-mislukt'
 						)
 					);
@@ -133,15 +132,15 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				// The final replacement should look like this:
 				// A => C
 				// B => C
-				const itemsReplacedByCurrentItem: RelationEntry<Avo.Item.Item>[] =
+				const itemsReplacedByCurrentItem: Avo.Collection.RelationEntry<Avo.Item.Item>[] =
 					(await RelationService.fetchRelationsByObject(
 						'item',
 						Lookup_Enum_Relation_Types_Enum.IsReplacedBy,
 						[item.uid]
-					)) as RelationEntry<Avo.Item.Item>[];
+					)) as Avo.Collection.RelationEntry<Avo.Item.Item>[];
 				await Promise.all(
 					itemsReplacedByCurrentItem.map(
-						async (relation: RelationEntry<Avo.Item.Item>) => {
+						async (relation: Avo.Collection.RelationEntry<Avo.Item.Item>) => {
 							// Remove the old relationship (A => B)
 							await RelationService.deleteRelationsBySubject(
 								'item',
@@ -160,7 +159,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				);
 			}
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/items/components/depublish-item-modal/depublish-item-modal___het-item-is-gedepubliceerd'
 				)
 			);
@@ -175,7 +174,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/items/components/depublish-item-modal/depublish-item-modal___het-depubliceren-is-mislukt'
 				)
 			);
@@ -185,7 +184,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
+			title={tText(
 				'admin/items/components/depublish-item-modal/depublish-item-modal___item-depubliceren'
 			)}
 			size="medium"
@@ -195,26 +194,26 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 			<ModalBody>
 				<Form>
 					<FormGroup
-						label={t(
+						label={tText(
 							'admin/items/components/depublish-item-modal/depublish-item-modal___hoe-depubliceren'
 						)}
 					>
 						<Select
 							options={[
 								{
-									label: t(
+									label: tText(
 										'admin/items/components/depublish-item-modal/depublish-item-modal___enkel-depubliceren'
 									),
 									value: 'depublish',
 								},
 								{
-									label: t(
+									label: tText(
 										'admin/items/components/depublish-item-modal/depublish-item-modal___depubliceren-met-reden'
 									),
 									value: 'depublish_with_reason',
 								},
 								{
-									label: t(
+									label: tText(
 										'admin/items/components/depublish-item-modal/depublish-item-modal___depubliceren-en-vervang-item-aanduiden'
 									),
 									value: 'depublish_with_replacement',
@@ -226,12 +225,12 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					</FormGroup>
 					{depublishType === 'depublish_with_reason' && (
 						<FormGroup
-							label={t(
+							label={tText(
 								'admin/items/components/depublish-item-modal/depublish-item-modal___reden-tot-depubliceren'
 							)}
 						>
 							<WYSIWYGWrapper
-								placeholder={t(
+								placeholder={tText(
 									'admin/items/components/depublish-item-modal/depublish-item-modal___geef-een-reden-waarom-dit-item-gedepubliceerd-wordt'
 								)}
 								state={reason || undefined}
@@ -241,7 +240,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 					)}
 					{depublishType === 'depublish_with_replacement' && (
 						<FormGroup
-							label={t(
+							label={tText(
 								'admin/items/components/depublish-item-modal/depublish-item-modal___selecteer-item-ter-vervanging'
 							)}
 						>
@@ -272,14 +271,14 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t(
+									label={tText(
 										'admin/shared/components/change-labels-modal/change-labels-modal___annuleren'
 									)}
 									onClick={handleClose}
 								/>
 								<Button
 									type="primary"
-									label={t(
+									label={tText(
 										'admin/items/components/depublish-item-modal/depublish-item-modal___depubliceer'
 									)}
 									onClick={depublishItem}

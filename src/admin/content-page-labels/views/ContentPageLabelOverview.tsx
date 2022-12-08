@@ -2,7 +2,6 @@ import { useContentTypes } from '@meemoo/admin-core-ui';
 import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -19,8 +18,8 @@ import {
 import SmartLink from '../../../shared/components/SmartLink/SmartLink';
 import { buildLink, formatDate, navigate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import i18n from '../../../shared/translations/i18n';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import { ItemsTableState } from '../../items/items.types';
@@ -63,7 +62,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 
 	const [contentTypes] = useContentTypes();
 
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const fetchContentPageLabels = useCallback(async () => {
 		setIsLoading(true);
@@ -93,13 +92,13 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/content-page-labels/views/content-page-label-overview___het-ophalen-van-de-content-pagina-labels-is-mislukt'
 				),
 			});
 		}
 		setIsLoading(false);
-	}, [setContentPageLabels, setLoadingInfo, t, tableState]);
+	}, [setContentPageLabels, setLoadingInfo, tText, tableState]);
 
 	useEffect(() => {
 		fetchContentPageLabels();
@@ -121,57 +120,60 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		})
 	);
 
-	const getContentPageLabelOverviewTableCols: () => FilterableColumn[] = () => [
-		{
-			id: 'label',
-			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___label'),
-			sortable: true,
-			visibleByDefault: true,
-			dataType: TableColumnDataType.string,
-		},
-		{
-			id: 'content_type',
-			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___type'),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'CheckboxDropdownModal',
-			filterProps: {
-				options: contentTypeOptions,
-			} as CheckboxDropdownModalProps,
-			dataType: TableColumnDataType.string,
-		},
-		{
-			id: 'link_to',
-			label: i18n.t('admin/content-page-labels/views/content-page-label-overview___link'),
-			sortable: false,
-			visibleByDefault: true,
-		},
-		{
-			id: 'created_at',
-			label: i18n.t(
-				'admin/content-page-labels/views/content-page-label-overview___gemaakt-op'
-			),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-			dataType: TableColumnDataType.dateTime,
-		},
-		{
-			id: 'updated_at',
-			label: i18n.t(
-				'admin/content-page-labels/views/content-page-label-overview___aangepast-op'
-			),
-			sortable: true,
-			visibleByDefault: true,
-			filterType: 'DateRangeDropdown',
-			dataType: TableColumnDataType.dateTime,
-		},
-		{
-			id: 'actions',
-			tooltip: i18n.t('admin/content-page-labels/views/content-page-label-overview___acties'),
-			visibleByDefault: true,
-		},
-	];
+	const getContentPageLabelOverviewTableCols: () => FilterableColumn<ContentPageLabelOverviewTableCols>[] =
+		() => [
+			{
+				id: 'label',
+				label: tText('admin/content-page-labels/views/content-page-label-overview___label'),
+				sortable: true,
+				visibleByDefault: true,
+				dataType: TableColumnDataType.string,
+			},
+			{
+				id: 'content_type',
+				label: tText('admin/content-page-labels/views/content-page-label-overview___type'),
+				sortable: true,
+				visibleByDefault: true,
+				filterType: 'CheckboxDropdownModal',
+				filterProps: {
+					options: contentTypeOptions,
+				} as CheckboxDropdownModalProps,
+				dataType: TableColumnDataType.string,
+			},
+			{
+				id: 'link_to',
+				label: tText('admin/content-page-labels/views/content-page-label-overview___link'),
+				sortable: false,
+				visibleByDefault: true,
+			},
+			{
+				id: 'created_at',
+				label: tText(
+					'admin/content-page-labels/views/content-page-label-overview___gemaakt-op'
+				),
+				sortable: true,
+				visibleByDefault: true,
+				filterType: 'DateRangeDropdown',
+				dataType: TableColumnDataType.dateTime,
+			},
+			{
+				id: 'updated_at',
+				label: tText(
+					'admin/content-page-labels/views/content-page-label-overview___aangepast-op'
+				),
+				sortable: true,
+				visibleByDefault: true,
+				filterType: 'DateRangeDropdown',
+				dataType: TableColumnDataType.dateTime,
+			},
+			{
+				id: 'actions',
+				tooltip: tText(
+					'admin/content-page-labels/views/content-page-label-overview___acties'
+				),
+				visibleByDefault: true,
+			},
+		];
 
 	// Methods
 	const handleDelete = async () => {
@@ -179,7 +181,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 		await ContentPageLabelService.deleteContentPageLabel(contentPageLabelIdToDelete);
 		await fetchContentPageLabels();
 		ToastService.success(
-			t(
+			tHtml(
 				'admin/content-page-labels/views/content-page-label-overview___de-content-pagina-label-is-verwijdert'
 			)
 		);
@@ -235,10 +237,10 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 								)
 							}
 							size="small"
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/content-page-labels/views/content-page-label-overview___bekijk-de-details-van-deze-content-pagina-label'
 							)}
-							title={t(
+							title={tText(
 								'admin/content-page-labels/views/content-page-label-overview___bekijk-de-details-van-deze-content-pagina-label'
 							)}
 							type="secondary"
@@ -251,10 +253,10 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 								})
 							}
 							size="small"
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/content-page-labels/views/content-page-label-overview___bewerk-deze-content-pagina-label'
 							)}
-							title={t(
+							title={tText(
 								'admin/content-page-labels/views/content-page-label-overview___bewerk-deze-content-pagina-label'
 							)}
 							type="secondary"
@@ -263,10 +265,10 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 							icon="delete"
 							onClick={() => openModal(rowData)}
 							size="small"
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/content-page-labels/views/content-page-label-overview___verwijder-deze-content-pagina-label'
 							)}
-							title={t(
+							title={tText(
 								'admin/content-page-labels/views/content-page-label-overview___verwijder-deze-content-pagina-label'
 							)}
 							type="danger-hover"
@@ -282,14 +284,14 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={t(
+				message={tText(
 					'admin/content-page-labels/views/content-page-label-overview___er-zijn-nog-geen-content-pagina-labels-aangemaakt'
 				)}
 			>
 				<p>
-					<Trans i18nKey="admin/content-page-labels/views/content-page-label-overview___er-zijn-nog-geen-content-pagina-labels-aangemaakt">
-						Beschrijving wanneer er nog geen permissie groepen zijn aangemaakt
-					</Trans>
+					{tHtml(
+						'admin/content-page-labels/views/content-page-label-overview___er-zijn-nog-geen-content-pagina-labels-aangemaakt'
+					)}
 				</p>
 			</ErrorView>
 		);
@@ -305,11 +307,11 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					renderCell={(rowData: ContentPageLabel, columnId: string) =>
 						renderTableCell(rowData, columnId as ContentPageLabelOverviewTableCols)
 					}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/content-page-labels/views/content-page-label-overview___zoek-op-label'
 					)}
 					renderNoResults={renderNoResults}
-					noContentMatchingFiltersMessage={t(
+					noContentMatchingFiltersMessage={tText(
 						'admin/content-page-labels/views/content-page-label-overview___er-zijn-geen-content-pagina-labels-gevonden-die-voldoen-aan-je-zoekterm'
 					)}
 					itemsPerPage={ITEMS_PER_PAGE}
@@ -327,14 +329,14 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 
 	return (
 		<AdminLayout
-			pageTitle={t(
+			pageTitle={tText(
 				'admin/content-page-labels/views/content-page-label-overview___content-pagina-labels-overzicht'
 			)}
 			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<Button
-					label={t(
+					label={tText(
 						'admin/content-page-labels/views/content-page-label-overview___content-pagina-label-toevoegen'
 					)}
 					onClick={() => history.push(CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_CREATE)}
@@ -344,14 +346,14 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/content-page-labels/views/content-page-label-overview___content-page-label-beheer-overzicht-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/content-page-labels/views/content-page-label-overview___content-page-label-beheer-overzicht-pagina-beschrijving'
 						)}
 					/>

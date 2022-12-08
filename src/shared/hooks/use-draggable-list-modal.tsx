@@ -1,8 +1,8 @@
 import { Button, ButtonProps } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
 import React, { ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../shared/hooks/useTranslation';
 import DraggableBlock from '../components/DraggableBlock/DraggableBlock';
 import DraggableListModal, {
 	DraggableListModalProps,
@@ -13,7 +13,7 @@ export function useDraggableListModal(config?: {
 	modal?: Partial<DraggableListModalProps>;
 	setIsOpen?: (isOpen: boolean) => void; // Optional, if not passed, the hook will keep track of the open state
 }): [ReactNode, ReactNode] {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 
 	const button = (
@@ -21,8 +21,8 @@ export function useDraggableListModal(config?: {
 			icon="shuffle"
 			{...config?.button}
 			type="secondary"
-			label={t('collection/components/collection-or-bundle-edit___herorden-fragmenten')}
-			title={t(
+			label={tText('collection/components/collection-or-bundle-edit___herorden-fragmenten')}
+			title={tText(
 				'shared/hooks/use-draggable-list-modal___herorden-de-onderdelen-via-drag-and-drop'
 			)}
 			onClick={(e) => {

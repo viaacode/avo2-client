@@ -1,11 +1,10 @@
 import { Table, TableProps } from '@viaa/avo2-components';
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
-import { QUICK_LANE_COLUMNS } from '../../shared/constants/quick-lane';
 import { isMobileWidth } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
@@ -16,7 +15,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 	data,
 	emptyStateMessage,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const renderAssociatedQuickLaneTableCell = (data: QuickLaneUrlObject, id: string) => (
 		<QuickLaneFilterTableCell id={id} data={data} />
@@ -28,8 +27,8 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 				columns={
 					[
 						{
-							id: QUICK_LANE_COLUMNS.TITLE,
-							label: t('workspace/views/quick-lane-overview___titel'),
+							id: 'title',
+							label: tText('workspace/views/quick-lane-overview___titel'),
 							sortable: true,
 							dataType: TableColumnDataType.string,
 						},
@@ -38,36 +37,36 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 							? []
 							: [
 									{
-										id: QUICK_LANE_COLUMNS.AUTHOR,
-										label: t(
+										id: 'author',
+										label: tText(
 											'workspace/views/quick-lane-overview___aangemaakt-door'
 										),
 										sortable: true,
 										dataType: TableColumnDataType.string,
 									},
 									{
-										id: QUICK_LANE_COLUMNS.ORGANISATION,
-										label: t(
+										id: 'organisation',
+										label: tText(
 											'workspace/views/quick-lane-overview___organisatie'
 										),
 										sortable: true,
 										dataType: TableColumnDataType.string,
 									},
 									{
-										id: QUICK_LANE_COLUMNS.CREATED_AT,
-										label: t(
+										id: 'created_at',
+										label: tText(
 											'workspace/views/quick-lane-overview___aangemaakt-op'
 										),
 										sortable: true,
 										dataType: TableColumnDataType.dateTime,
 									},
 							  ]),
-					] as TableColumnSchema[]
+					] as (Omit<TableColumnSchema, 'id'> & { id: string })[]
 				}
 				data={data}
 				emptyStateMessage={emptyStateMessage}
 				onColumnClick={onColumnClick}
-				renderCell={renderAssociatedQuickLaneTableCell}
+				renderCell={renderAssociatedQuickLaneTableCell as any}
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
 				variant="bordered"
@@ -79,7 +78,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 
 export default AssociatedQuickLaneTable as FunctionComponent<TableProps>;
 
-export const AssociatedQuickLaneTableOrderBy = {
-	[QUICK_LANE_COLUMNS.AUTHOR]: 'owner.user.full_name',
-	[QUICK_LANE_COLUMNS.ORGANISATION]: 'owner.organisation.name',
+export const AssociatedQuickLaneTableOrderBy: Partial<Record<string, string>> = {
+	author: 'owner.user.full_name',
+	organisation: 'owner.organisation.name',
 };

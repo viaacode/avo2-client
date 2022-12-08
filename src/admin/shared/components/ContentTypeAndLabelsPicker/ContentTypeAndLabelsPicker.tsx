@@ -10,12 +10,11 @@ import {
 	TagsInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash';
 import { compact, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { CustomError } from '../../../../shared/helpers';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { ContentPageLabel } from '../../../content-page-labels/content-page-label.types';
 
@@ -38,7 +37,7 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 	onChange,
 	errors,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [contentTypes, isLoadingContentTypes] = useContentTypes();
 	const [labels, setLabels] = useState<ContentPageLabel[]>([]);
@@ -59,13 +58,13 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 					)
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___het-ophalen-van-de-content-pagina-labels-is-mislukt'
 					)
 				);
 			})
 			.finally(() => setIsLoading(false));
-	}, [value.selectedContentType, setLabels, t]);
+	}, [value.selectedContentType, setLabels, tText]);
 
 	const handleContentTypeChanged = (selectedValue: string) => {
 		onChange({
@@ -76,7 +75,7 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 
 	const handleLabelsChanged = (newSelectedLabels: TagInfo[]) => {
 		onChange({
-			selectedContentType: get(value, 'selectedContentType') as Avo.ContentPage.Type,
+			selectedContentType: value.selectedContentType,
 			selectedLabels: (newSelectedLabels || []).map(
 				(labelOption) => labelOption.value as number
 			),
@@ -113,9 +112,11 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 			<Column size="1">
 				<Select
 					id="content-type-and-label-picker-type"
-					placeholder={t('admin/content/components/content-picker/content-picker___type')}
+					placeholder={tText(
+						'admin/content/components/content-picker/content-picker___type'
+					)}
 					options={contentTypes}
-					value={get(value, 'selectedContentType')}
+					value={value.selectedContentType}
 					loading={isLoadingContentTypes}
 					onChange={handleContentTypeChanged}
 				/>
@@ -138,10 +139,10 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 						isLoading={isLoading}
 						placeholder={
 							!value || !value.selectedContentType
-								? t(
+								? tText(
 										'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___kies-eerst-een-content-type'
 								  )
-								: t(
+								: tText(
 										'admin/shared/components/content-type-and-labels-picker/content-type-and-labels-picker___labels'
 								  )
 						}

@@ -1,7 +1,6 @@
 import { DefaultProps } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { AssignmentBlock, BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../../collection/collection.const';
@@ -11,6 +10,7 @@ import CollectionFragmentFlowPlayer, {
 import CollectionFragmentTitle, {
 	CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import {
 	BlockItemMetadata,
 	BlockItemMetadataProps,
@@ -35,7 +35,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	className,
 	canOpenOriginal,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const custom = block.use_custom_fields && block.custom_description;
 	const original =
@@ -46,7 +46,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 			<>
 				{canOpenOriginal && (
 					<b>
-						{t(
+						{tHtml(
 							'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
 						)}
 					</b>
@@ -61,7 +61,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				/>
 			</>
 		),
-		[canOpenOriginal, block, t]
+		[canOpenOriginal, block, tHtml]
 	);
 
 	const originalDescription = useMemo(
@@ -69,7 +69,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 			<>
 				{canOpenOriginal && (
 					<b>
-						{t(
+						{tHtml(
 							'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
 						)}
 					</b>
@@ -78,7 +78,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				<TextWithTimestamps content={original || ''} />
 			</>
 		),
-		[canOpenOriginal, original, t]
+		[canOpenOriginal, original, tHtml]
 	);
 
 	return (
@@ -105,10 +105,10 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 								icon: (expanded) => (expanded ? 'eye-off' : 'eye'),
 								label: (expanded) =>
 									expanded
-										? t(
+										? tText(
 												'shared/components/block-list/blocks/collection-fragment-type-item___verberg'
 										  )
-										: t(
+										: tText(
 												'shared/components/block-list/blocks/collection-fragment-type-item___toon'
 										  ),
 							}}

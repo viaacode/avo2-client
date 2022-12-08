@@ -15,10 +15,10 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { buildLink, CustomError } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
@@ -47,7 +47,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 	onClose,
 	deleteCallback,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [transferToUser, setTransferToUser] = useState<PickerItem | null>(null);
 	const [transferToUserError, setTransferToUserError] = useState<string | undefined>();
@@ -68,7 +68,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 			) {
 				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
 				setTransferToUserError(
-					t(
+					tText(
 						'admin/users/views/user-overview___kies-een-gebruiker-om-de-content-naar-over-te-dragen'
 					)
 				);
@@ -82,7 +82,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 			) {
 				// transfer user was not selected, or transfer user is the same user as one of the user that will be deleted
 				setTransferToUserError(
-					t(
+					tText(
 						'admin/users/views/user-overview___je-kan-geen-content-overdragen-naar-een-gebruiker-die-verwijdert-zal-worden'
 					)
 				);
@@ -104,7 +104,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/users/views/user-overview___het-ophalen-van-de-content-items-voor-de-geselecteerde-gebruikers-is-mislukt'
 				)
 			);
@@ -144,7 +144,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						}
 					)}
 				>
-					{`${publicCollections} ${t(
+					{`${publicCollections} ${tText(
 						'admin/users/views/user-overview___publieke-collecties'
 					)}`}
 				</Link>
@@ -162,7 +162,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						}
 					)}
 				>
-					{`${privateCollections} ${t(
+					{`${privateCollections} ${tText(
 						'admin/users/views/user-overview___prive-collecties'
 					)}`}
 				</Link>
@@ -180,7 +180,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						}
 					)}
 				>
-					{`${publicContentPages} ${t(
+					{`${publicContentPages} ${tText(
 						'admin/users/views/user-overview___publieke-content-paginas'
 					)}`}
 				</Link>
@@ -198,7 +198,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						}
 					)}
 				>
-					{`${privateContentPages} ${t(
+					{`${privateContentPages} ${tText(
 						'admin/users/views/user-overview___prive-content-paginas'
 					)}`}
 				</Link>
@@ -215,28 +215,32 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 						}
 					)}
 				>
-					{`${assignments} ${t('admin/users/views/user-overview___opdrachten')}`}
+					{`${assignments} ${tText('admin/users/views/user-overview___opdrachten')}`}
 				</Link>
 			);
 		}
 		if (!isTransferAll && bookmarks) {
-			countOutputs.push(`${bookmarks} ${t('admin/users/views/user-overview___bladwijzers')}`);
+			countOutputs.push(
+				`${bookmarks} ${tText('admin/users/views/user-overview___bladwijzers')}`
+			);
 		}
 		if (isDeleteAll && quickLanes) {
 			countOutputs.push(
-				`${quickLanes} ${t('admin/users/components/user-delete-modal___gedeelde-links')}`
+				`${quickLanes} ${tText(
+					'admin/users/components/user-delete-modal___gedeelde-links'
+				)}`
 			);
 		}
 		return (
 			<>
-				{t(
+				{tText(
 					'admin/users/views/user-overview___weet-je-zeker-dat-je-deze-gebruikers-wil-verwijderen'
 				)}
 
 				{!!countOutputs.length && (
 					<Spacer margin="top" className="c-content">
 						<strong>
-							{t(
+							{tText(
 								'admin/users/components/user-delete-modal___deze-inhoud-zal-verwijderd-worden'
 							)}
 						</strong>
@@ -249,7 +253,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 				)}
 
 				<Checkbox
-					label={t(
+					label={tText(
 						'admin/users/components/user-delete-modal___breng-de-gebruiker-s-op-de-hoogte-van-deze-actie'
 					)}
 					checked={shouldSendEmail}
@@ -257,7 +261,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 				/>
 				<Spacer margin="top">
 					<Alert
-						message={t(
+						message={tText(
 							'admin/users/views/user-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 						)}
 						type="danger"
@@ -278,12 +282,12 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 				shouldSendEmail
 			);
 
-			ToastService.success(t('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
+			ToastService.success(tHtml('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
 			deleteCallback();
 		} catch (err) {
 			console.error(new CustomError('Failed to remove users', err));
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/users/views/user-overview___het-verwijderen-van-de-geselecteerde-gebruikers-is-mislukt'
 				)
 			);
@@ -293,7 +297,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 	return (
 		<>
 			<Modal
-				title={t('admin/users/views/user-overview___verwijder-opties')}
+				title={tText('admin/users/views/user-overview___verwijder-opties')}
 				isOpen={isOpen}
 				onClose={onClose}
 				size="medium"
@@ -311,7 +315,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 							allowedTypes={['PROFILE']}
 							onSelect={setTransferToUser}
 							initialValue={transferToUser}
-							placeholder={t(
+							placeholder={tText(
 								'admin/users/views/user-overview___overdragen-naar-gebruiker'
 							)}
 							hideTargetSwitch
@@ -327,14 +331,14 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 								<ButtonToolbar>
 									<Button
 										type="secondary"
-										label={t(
+										label={tText(
 											'admin/shared/components/change-labels-modal/change-labels-modal___annuleren'
 										)}
 										onClick={onClose}
 									/>
 									<Button
 										type="danger"
-										label={t(
+										label={tText(
 											'admin/users/views/user-overview___verwijder-gebruikers'
 										)}
 										onClick={validateOptionModalAndOpenConfirm}
@@ -347,7 +351,7 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 			</Modal>
 			<Modal
 				isOpen={deleteConfirmModalOpen}
-				title={t('admin/users/views/user-overview___bevestiging')}
+				title={tText('admin/users/views/user-overview___bevestiging')}
 				size="medium"
 				onClose={handleConfirmModalClose}
 				scrollable
@@ -361,12 +365,12 @@ const UserDeleteModal: FunctionComponent<UserDeleteModalProps> = ({
 								<ButtonToolbar>
 									<Button
 										type="secondary"
-										label={t('admin/users/views/user-overview___annuleren')}
+										label={tText('admin/users/views/user-overview___annuleren')}
 										onClick={handleConfirmModalClose}
 									/>
 									<Button
 										type="danger"
-										label={t(
+										label={tText(
 											'admin/users/views/user-overview___verwijder-gebruikers'
 										)}
 										onClick={handleDeleteUsers}

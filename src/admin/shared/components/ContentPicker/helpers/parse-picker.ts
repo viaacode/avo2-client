@@ -1,8 +1,8 @@
 import { ContentPickerType, LinkTarget } from '@viaa/avo2-components';
 import queryString from 'query-string';
 
+import { tHtml } from '../../../../../shared/helpers/translate';
 import { ToastService } from '../../../../../shared/services/toast-service';
-import i18n from '../../../../../shared/translations/i18n';
 import { PickerItem } from '../../../types';
 
 export const parseSearchQuery = (input: string): string => {
@@ -28,7 +28,7 @@ export const parseSearchQuery = (input: string): string => {
 	} catch (err) {
 		console.error('Failed to parse search query input', err);
 		ToastService.danger(
-			i18n.t(
+			tHtml(
 				'admin/shared/helpers/content-picker/parse-picker___gelieve-een-correcte-zoekfilter-link-in-te-vullen'
 			)
 		);

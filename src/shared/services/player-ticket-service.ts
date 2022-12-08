@@ -1,17 +1,13 @@
 import { CustomError, getEnv } from '../helpers';
 import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
-export type PlayerTicketResponse = {
-	urls: string[];
-};
-
 export const fetchPlayerTicket = async (externalId: string): Promise<string> => {
 	return (await fetchPlayerTickets([externalId]))[0];
 };
 
 export const fetchPlayerTickets = async (externalIds: string[]): Promise<string[]> => {
 	try {
-		const url = `${getEnv('PROXY_URL')}/player-ticket?externalIds=${externalIds}`;
+		const url = `${getEnv('PROXY_URL')}/admin/player-ticket?externalIds=${externalIds}`;
 
 		const response = await fetchWithLogout(url, {
 			method: 'GET',
@@ -21,9 +17,7 @@ export const fetchPlayerTickets = async (externalIds: string[]): Promise<string[
 			credentials: 'include',
 		});
 
-		const data: PlayerTicketResponse = await response.json();
-
-		return data.urls;
+		return response.json();
 	} catch (err) {
 		throw new CustomError('Failed to get player tickets', err, { externalIds });
 	}

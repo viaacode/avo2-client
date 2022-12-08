@@ -3,7 +3,6 @@ import { Flex, Spinner } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
@@ -25,7 +24,6 @@ import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import {
 	buildLink,
@@ -35,6 +33,7 @@ import {
 	getFullName,
 	stripHtml,
 } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
@@ -61,7 +60,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	loginStateError,
 	loginStateLoading,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// State
 	const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
@@ -72,7 +71,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			if (!loginState) {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'dynamic-route-resolver/views/dynamic-route-resolver___het-controleren-van-je-login-status-is-mislukt'
 					),
 					actionButtons: ['home', 'helpdesk'],
@@ -184,7 +183,15 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				icon: 'search',
 			});
 		}
-	}, [loginState, location.pathname, location.hash, setRouteInfo, setLoadingInfo, history, t]);
+	}, [
+		loginState,
+		location.pathname,
+		location.hash,
+		setRouteInfo,
+		setLoadingInfo,
+		history,
+		tText,
+	]);
 
 	// Check if current user is logged in
 	useEffect(() => {
@@ -199,7 +206,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			redirectToErrorPage(
 				{
-					message: t(
+					message: tText(
 						'dynamic-route-resolver/views/dynamic-route-resolver___er-ging-iets-mis-bij-het-inloggen'
 					),
 					actionButtons: ['home', 'helpdesk'],
@@ -207,7 +214,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				location
 			);
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, t, location]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, location]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {
@@ -273,13 +280,8 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		if (routeInfo && routeInfo.type === 'depublishedContentPage') {
 			return (
 				<ErrorView icon="clock" actionButtons={['home', 'helpdesk']} message="">
-					<Html
-						content={
-							GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
-							GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]
-						}
-						sanitizePreset={'link'}
-					/>
+					{GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
+						GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]}
 				</ErrorView>
 			);
 		}

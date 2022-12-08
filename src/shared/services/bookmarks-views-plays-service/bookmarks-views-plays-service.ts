@@ -1,4 +1,3 @@
-import { EnglishContentType } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
@@ -213,7 +212,7 @@ export class BookmarksViewsPlaysService {
 					contentId: itemBookmark.item_id,
 					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
-						.label as EnglishContentType,
+						.label as Avo.ContentType.English,
 					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
 					contentTitle: itemBookmark.bookmarkedItem.title,
 					contentDuration: itemBookmark.bookmarkedItem.duration,
@@ -259,7 +258,7 @@ export class BookmarksViewsPlaysService {
 					contentId: itemBookmark.item_id,
 					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
-						.label as EnglishContentType,
+						.label as Avo.ContentType.English,
 					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
 					contentTitle: itemBookmark.bookmarkedItem.title,
 					contentDuration: itemBookmark.bookmarkedItem.duration,

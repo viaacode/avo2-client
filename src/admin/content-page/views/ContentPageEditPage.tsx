@@ -1,5 +1,5 @@
 import { CONTENT_PAGE_PATH, ContentPageEdit } from '@meemoo/admin-core-ui';
-import { ContentPageDetailParams } from '@meemoo/admin-core-ui/dist/esm/react-admin/modules/content-page/types/content-pages.types';
+import { ContentPageDetailProps } from '@meemoo/admin-core-ui/dist/esm/react-admin/modules/content-page/views/ContentPageDetail';
 import React, { FunctionComponent } from 'react';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -8,9 +8,10 @@ import { Back } from '../../shared/components/Back/Back';
 import { ADMIN_CORE_ROUTE_PARTS } from '../../shared/constants/admin-core.routes';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
-const ContentPageDetailPage: FunctionComponent<
-	DefaultSecureRouteProps<ContentPageDetailParams>
-> = ({ history, match }) => {
+const ContentPageDetailPage: FunctionComponent<DefaultSecureRouteProps<ContentPageDetailProps>> = ({
+	history,
+	match,
+}) => {
 	const { id } = match.params;
 
 	return (

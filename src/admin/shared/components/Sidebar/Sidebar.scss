@@ -18,12 +18,31 @@
 .o-sidebar__header {
 	display: flex;
 	align-items: center;
+	justify-content: stretch;
 	height: 6.4rem;
-	padding: 0 3.2rem;
+	padding: 0 1.5rem 0 3.2rem !important;
 	border-bottom: 2px solid rgba($color-gray-50, 0.2);
 	font-size: 2.4rem;
 	font-weight: 500;
 	text-align: center;
+
+	.o-sidebar__header__admin-home {
+		flex-grow: 1;
+		text-align: left;
+	}
+
+	.o-sidebar__header__side-link {
+		font-size: $g-base-font-size;
+		border: 1px solid $color-gray-600;
+		background-color: $color-gray-600;
+		padding: 0.5rem;
+		border-radius: 4px;
+		margin-left: $g-spacer-unit;
+
+		&:hover {
+			background-color: $color-gray-500;
+		}
+	}
 }
 
 .o-sidebar__nav {

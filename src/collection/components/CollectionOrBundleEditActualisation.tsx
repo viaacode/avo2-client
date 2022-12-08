@@ -13,7 +13,6 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const';
@@ -22,6 +21,7 @@ import { NULL_FILTER } from '../../admin/shared/helpers/filters';
 import { PickerItem } from '../../admin/shared/types';
 import { getFullName, toDateObject } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
 
@@ -34,7 +34,7 @@ interface CollectionOrBundleEditActualisationProps {
 const CollectionOrBundleEditActualisation: FunctionComponent<
 	CollectionOrBundleEditActualisationProps & UserProps
 > = ({ collection, changeCollectionState }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const actualisationStatuses = getCollectionManagementStatuses()
 		.filter((option) => option.id !== NULL_FILTER)
@@ -54,7 +54,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 							<Grid>
 								<Column size="3-7">
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-actualisation___status'
 										)}
 									>
@@ -74,7 +74,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-actualisation___datum-laatste-actualisatie'
 										)}
 									>
@@ -94,7 +94,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-actualisation___vervaldatum'
 										)}
 									>
@@ -114,7 +114,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-actualisation___verantwoordelijke-actualisatie'
 										)}
 									>
@@ -128,11 +128,12 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 													) || '',
 												value: get(
 													collection,
-													'management.manager_profile_id'
+													'management.manager_profile_id',
+													''
 												),
 												type: 'PROFILE',
 											}}
-											placeholder={t(
+											placeholder={tText(
 												'collection/components/collection-or-bundle-edit-actualisation___selecteer-een-verantwoordelijke'
 											)}
 											hideTargetSwitch
@@ -148,7 +149,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-actualisation___opmerkingen'
 										)}
 									>

@@ -1,9 +1,8 @@
+import { UserTempAccess } from '@viaa/avo2-types/types/user';
 import { compact } from 'lodash-es';
 
 import { normalizeTimestamp } from '../../shared/helpers';
-import i18n from '../../shared/translations/i18n';
-
-import { UserTempAccess } from './user.types';
+import { tText } from '../../shared/helpers/translate';
 
 // Validation
 type ValidationRule<T> = {
@@ -23,13 +22,13 @@ const GET_TEMP_ACCESS_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 >[] = () => [
 	{
 		// until cannot be null and must be in the future
-		error: i18n.t('admin/users/user___de-einddatum-is-verplicht-en-moet-in-de-toekomst-liggen'),
+		error: tText('admin/users/user___de-einddatum-is-verplicht-en-moet-in-de-toekomst-liggen'),
 		isValid: (tempAccess: Partial<UserTempAccess>) =>
 			!!tempAccess.until && normalizeTimestamp(tempAccess.until).isAfter(),
 	},
 	{
 		// When both from and until date are set, the from date must be < the until date
-		error: i18n.t('admin/users/user___de-startdatum-moet-voor-de-einddatum-liggen'),
+		error: tText('admin/users/user___de-startdatum-moet-voor-de-einddatum-liggen'),
 		isValid: (tempAccess: Partial<UserTempAccess>) => {
 			return tempAccess.from
 				? !!tempAccess.until &&

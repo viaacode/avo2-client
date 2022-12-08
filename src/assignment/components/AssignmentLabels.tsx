@@ -4,9 +4,9 @@ import { Avo } from '@viaa/avo2-types';
 import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { Assignment_Label_v2 } from '../assignment.types';
@@ -35,10 +35,10 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	type = 'LABEL',
 	...props
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const dictionary = {
-		placeholder: t('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
-		empty: t('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
+		placeholder: tText('assignment/views/assignment-edit___voeg-een-vak-of-project-toe'),
+		empty: tText('assignment/views/assignment-edit___geen-vakken-of-projecten-beschikbaar'),
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
@@ -46,9 +46,11 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		// Fetch labels every time the manage labels modal closes and once at startup
-		const labels = await AssignmentLabelsService.getLabelsForProfile(get(user, 'profile.id'));
-		setAllAssignmentLabels(labels);
+		if (user.profile) {
+			// Fetch labels every time the manage labels modal closes and once at startup
+			const labels = await AssignmentLabelsService.getLabelsForProfile(user.profile.id);
+			setAllAssignmentLabels(labels);
+		}
 	}, [user, setAllAssignmentLabels]);
 
 	useEffect(() => {
@@ -85,7 +87,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	const addAssignmentLabel = (labelOption?: unknown) => {
 		if (!labelOption) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
 				)
 			);
@@ -98,7 +100,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 
 		if (!assignmentLabel) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-edit___het-geselecteerde-label-kon-niet-worden-toegevoegd-aan-de-opdracht'
 				)
 			);

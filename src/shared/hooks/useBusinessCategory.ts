@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { UserService } from '../../admin/users/user.service';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers';
 import { ToastService } from '../services/toast-service';
 
 type UseBusinessCategoriesTuple = [string[], boolean];
 
 export const useBusinessCategories = (): UseBusinessCategoriesTuple => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [businessCategories, setBusinessCategories] = useState<string[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,7 +23,7 @@ export const useBusinessCategories = (): UseBusinessCategoriesTuple => {
 					new CustomError('Failed to get distinct business categories from database', err)
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/hooks/use-business-category___het-ophalen-van-de-oormerken-is-mislukt'
 					)
 				);
@@ -31,7 +31,7 @@ export const useBusinessCategories = (): UseBusinessCategoriesTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [t]);
+	}, [tText]);
 
 	return [businessCategories, isLoading];
 };

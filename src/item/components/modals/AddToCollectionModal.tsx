@@ -19,7 +19,6 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
@@ -30,6 +29,7 @@ import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCr
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
@@ -51,7 +51,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	onClose,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 	const [createNewCollection, setCreateNewCollection] = useState<boolean>(false);
@@ -75,24 +75,24 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				.catch((err) => {
 					console.error(err);
 					ToastService.danger(
-						t(
+						tHtml(
 							'item/components/modals/add-to-collection-modal___het-ophalen-van-de-bestaande-collections-is-mislukt'
 						)
 					);
 				}),
-		[user, t]
+		[user, tText]
 	);
 
 	useEffect(() => {
 		fetchCollections().catch((err) => {
 			console.error('Failed to fetch collections', err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collecties-is-mislukt'
 				)
 			);
 		});
-	}, [fetchCollections, t]);
+	}, [fetchCollections, tText]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -120,7 +120,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			);
 		} catch (err) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'item/components/modals/add-to-collection-modal___het-ophalen-van-de-collectie-details-is-mislukt'
 				)
 			);
@@ -161,7 +161,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				fragment as Avo.Collection.Fragment,
 			]);
 			ToastService.success(
-				t(
+				tHtml(
 					'item/components/modals/add-to-collection-modal___het-fragment-is-toegevoegd-aan-de-collectie'
 				)
 			);
@@ -177,7 +177,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'item/components/modals/add-to-collection-modal___het-fragment-kon-niet-worden-toegevoegd-aan-de-collectie'
 				)
 			);
@@ -249,7 +249,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				},
 			});
 			ToastService.danger(
-				t(
+				tHtml(
 					'item/components/modals/add-to-collection-modal___de-collectie-kon-niet-worden-aangemaakt'
 				)
 			);
@@ -276,7 +276,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 		return (
 			<Modal
-				title={t(
+				title={tText(
 					'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
 				)}
 				size="extra-large"
@@ -293,7 +293,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									showTitle
 									showDescription
 									canPlay={isOpen}
-									cuePoints={{ start, end }}
+									cuePointsLabel={{ start, end }}
 									verticalLayout={isMobileWidth()}
 								/>
 								<Grid>
@@ -319,14 +319,14 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									</Column>
 									<Column size="2-5">
 										<FormGroup
-											label={t(
+											label={tText(
 												'item/components/modals/add-to-collection-modal___collectie'
 											)}
 											required
 										>
 											<Spacer margin="bottom">
 												<RadioButton
-													label={t(
+													label={tText(
 														'item/components/modals/add-to-collection-modal___voeg-toe-aan-bestaande-collectie'
 													)}
 													checked={!createNewCollection}
@@ -342,7 +342,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 															id="existingCollection"
 															options={[
 																{
-																	label: t(
+																	label: tText(
 																		'item/components/modals/add-to-collection-modal___kies-collectie'
 																	),
 																	value: '',
@@ -369,7 +369,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 													) : (
 														<TextInput
 															disabled
-															value={t(
+															value={tText(
 																'item/components/modals/add-to-collection-modal___je-hebt-nog-geen-collecties'
 															)}
 														/>
@@ -378,7 +378,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 											</Spacer>
 											<Spacer margin="bottom">
 												<RadioButton
-													label={t(
+													label={tText(
 														'item/components/modals/add-to-collection-modal___voeg-toe-aan-een-nieuwe-collectie'
 													)}
 													checked={createNewCollection}
@@ -390,7 +390,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 												/>
 												<div>
 													<TextInput
-														placeholder={t(
+														placeholder={tText(
 															'item/components/modals/add-to-collection-modal___collectie-titel'
 														)}
 														disabled={!createNewCollection}
@@ -413,7 +413,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 								<ButtonToolbar>
 									{isProcessing && <Spinner />}
 									<Button
-										label={t(
+										label={tText(
 											'item/components/modals/add-to-collection-modal___annuleren'
 										)}
 										type="link"
@@ -422,18 +422,18 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 										disabled={isProcessing}
 									/>
 									<Button
-										label={t(
+										label={tText(
 											'item/components/modals/add-to-collection-modal___toepassen'
 										)}
 										type="primary"
 										block
 										title={
 											createNewCollection && !newCollectionTitle
-												? t(
+												? tText(
 														'item/components/modals/add-to-collection-modal___u-moet-een-collectie-titel-opgeven'
 												  )
 												: !createNewCollection && !selectedCollection
-												? t(
+												? tText(
 														'item/components/modals/add-to-collection-modal___je-moet-een-collectie-kiezen-om-dit-item-aan-toe-te-voegen'
 												  )
 												: ''
