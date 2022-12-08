@@ -1,11 +1,11 @@
-import { Avo } from '@viaa/avo2-types';
-import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
-import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
+import { PermissionService } from '../authentication/helpers/permission-service';
 import {
 	App_Collection_Marcom_Log_Insert_Input,
 	DeleteCollectionBookmarksDocument,
@@ -184,8 +184,8 @@ export class CollectionService {
 
 	private static getLabels(
 		collection: Partial<Avo.Collection.Collection> | null
-	): CollectionLabelSchema[] {
-		return get(collection, 'collection_labels', []) as CollectionLabelSchema[];
+	): Avo.Collection.Label[] {
+		return get(collection, 'collection_labels', []) as Avo.Collection.Label[];
 	}
 
 	/**

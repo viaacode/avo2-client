@@ -15,14 +15,15 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import AssociatedQuickLaneTable, {

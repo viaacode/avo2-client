@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, isString, omit, trimEnd, trimStart } from 'lodash-es';
 import queryString from 'query-string';
 import { RouteComponentProps } from 'react-router-dom';

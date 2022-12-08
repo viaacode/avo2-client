@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';

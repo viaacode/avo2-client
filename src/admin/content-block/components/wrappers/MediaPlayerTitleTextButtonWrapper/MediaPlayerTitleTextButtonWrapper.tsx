@@ -7,13 +7,11 @@ import {
 	Grid,
 	IconName,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, FunctionComponent } from 'react';
 
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../../../authentication/helpers/permission-service';
 import { generateSmartLink } from '../../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import { AlignOption, HeadingTypeOption } from '../../../../shared/types';

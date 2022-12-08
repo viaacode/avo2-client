@@ -9,6 +9,7 @@ import {
 	TagList,
 	TagOption,
 } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -24,10 +25,7 @@ import { Link } from 'react-router-dom';
 import { SpecialPermissionGroups } from '../../../authentication/authentication.types';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {

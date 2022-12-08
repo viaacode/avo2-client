@@ -13,15 +13,13 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
 import { getProfileId } from '../../../../authentication/helpers/get-profile-id';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { FileUpload } from '../../../../shared/components';
 import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../../shared/constants';

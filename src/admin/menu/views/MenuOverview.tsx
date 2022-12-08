@@ -1,5 +1,5 @@
 import { Button, ButtonToolbar, Spacer, Table } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { startCase } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import MetaTags from 'react-meta-tags';

@@ -1,8 +1,8 @@
 import { Flex } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { PermissionName } from '../authentication/helpers/permission-names';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import { LoadingErrorLoadedComponent, LoadingInfo, ResizablePanels } from '../shared/components';
 import { CustomError } from '../shared/helpers';
@@ -32,7 +32,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 			setUserPermissions(tempUserPermissions);
 			GET_NAV_ITEMS(tempUserPermissions)
 				.then(setNavigationItems)
-				.catch((err) => {
+				.catch((err: any) => {
 					console.error(new CustomError('Failed to get nav items', err));
 					ToastService.danger(
 						tHtml('admin/admin___het-ophalen-van-de-navigatie-items-is-mislukt')

@@ -9,6 +9,7 @@ import {
 	Navbar,
 	Tabs,
 } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -23,10 +24,7 @@ import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getUserGroupId } from '../../../authentication/helpers/get-profile-info';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ContentPage } from '../../../content-page/views';

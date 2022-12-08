@@ -1,5 +1,5 @@
 import { Button, Spacer } from '@viaa/avo2-components';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
@@ -34,9 +34,9 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 	const onSubmit = () => {
 		if (user && content && model && isCollection({ content_label })) {
 			CollectionService.updateCollection(
-				content as CollectionSchema,
+				content as Avo.Collection.Collection,
 				{
-					...(model as CollectionSchema),
+					...(model as Avo.Collection.Collection),
 					is_public: true,
 				},
 				user

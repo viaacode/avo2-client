@@ -1,5 +1,5 @@
 import { Button, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import moment from 'moment';
 import React from 'react';

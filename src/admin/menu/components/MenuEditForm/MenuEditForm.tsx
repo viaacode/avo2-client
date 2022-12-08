@@ -1,5 +1,5 @@
 import { Alert, Form, FormGroup, TextArea, TextInput } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, kebabCase } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import CreatableSelect from 'react-select/creatable';
