@@ -2,18 +2,18 @@
 @import '../../../styles/settings/variables';
 
 .c-admin__header {
-	border-bottom: 0.1rem solid #d6dee3;
-	background-color: #edeff2;
+	border-bottom: 0.1rem solid $color-gray-100;
+	background-color: $color-gray-50;
 	display: flex;
-	padding: 20px 40px;
+	padding: 2rem 4rem;
 
 	.c-admin__page-title {
 		font-size: 2.4rem;
-		font-family: 'Avenir LT Std', 'Avenir Next', Avenir, Montserrat, sans-serif;
+		font-family: $g-headings-font-family;
 		font-weight: 500;
 	}
 }
 
 .c-admin__content {
-	margin: 40px;
+	margin: 4rem;
 }
