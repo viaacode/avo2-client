@@ -13,6 +13,8 @@ import { CustomError } from '../../../shared/helpers';
 import { ContentPageLabel } from '../../content-page-labels/content-page-label.types';
 
 import { CONTENT_PAGE_SERVICE_BASE_URL } from './content-page.const';
+import { ResolvedItemOrCollection } from '../../../search/components/MediaGridWrapper/MediaGridWrapper.types';
+import { ButtonAction } from '@viaa/avo2-components';
 
 export class ContentPageService {
 	private static getBaseUrl(): string {
@@ -116,6 +118,39 @@ export class ContentPageService {
 			return convertDbContentPageToContentPageInfo(dbContentPage);
 		} catch (err) {
 			throw new CustomError('Failed to get content page by path', err);
+		}
+	}
+
+	public static async resolveMediaItems(
+		searchQuery: string | null,
+		searchQueryLimit: number | undefined,
+		mediaItems:
+			| {
+					mediaItem: ButtonAction;
+			  }[]
+			| undefined
+	): Promise<ResolvedItemOrCollection[]> {
+		let url: string | undefined = undefined;
+		let body: any | undefined = undefined;
+		try {
+			url = this.getBaseUrl() + '/media';
+			body = {
+				searchQuery,
+				searchQueryLimit,
+				mediaItems,
+			};
+			return fetchWithLogoutJson(url, {
+				method: 'POST',
+				body: JSON.stringify(body),
+			});
+		} catch (err) {
+			throw new CustomError('Failed to resolve media items through proxy', err, {
+				searchQuery,
+				searchQueryLimit,
+				mediaItems,
+				url,
+				body,
+			});
 		}
 	}
 }

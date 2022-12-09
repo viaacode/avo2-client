@@ -262,7 +262,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					? stripHtml(get(routeInfo.data, 'description_html'))
 					: null) ||
 				'';
-			console.log('content page info: ', routeInfo.data);
 			return (
 				<>
 					<MetaTags>

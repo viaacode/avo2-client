@@ -30,13 +30,13 @@ import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import './ErrorView.scss';
 
 export interface ErrorViewQueryParams {
-	message?: string;
+	message?: string | ReactNode;
 	icon?: IconName;
 	actionButtons?: Avo.Auth.ErrorActionButton[];
 }
 
 interface ErrorViewProps {
-	message?: string;
+	message?: string | ReactNode;
 	icon?: IconName;
 	actionButtons?: Avo.Auth.ErrorActionButton[];
 	children?: ReactNode;
@@ -70,7 +70,9 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 	}
 
 	const messageText = (queryParams.message as string) || message || '';
-	const errorMessage: string = isNil(messageText) ? getPageNotFoundError(!!user) : messageText;
+	const errorMessage: string | ReactNode = isNil(messageText)
+		? getPageNotFoundError(!!user)
+		: messageText;
 	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,

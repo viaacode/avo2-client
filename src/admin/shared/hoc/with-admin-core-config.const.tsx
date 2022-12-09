@@ -21,7 +21,6 @@ import { AssetsService } from '../../../shared/services/assets-service/assets.se
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
-import { PermissionsService } from '../services/permissions';
 import BlockSearch from '../../../search/components/BlockSearch';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
@@ -48,6 +47,8 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		permissions: user?.profile?.permissions as any[],
 		tempAccess: null,
 	};
+
+	const proxyUrl = getEnv('PROXY_URL') as string;
 
 	return {
 		// navigation: {
@@ -160,6 +161,9 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 					);
 				},
 			},
+			// Use the avo2-proxy to fetch content pages, so their media tile blocks are resolved
+			// https://app.diagrams.net/#G1WCrp76U14pGpajEplYlSVGiuWfEQpRqI
+			getContentPageByPathEndpoint: `${proxyUrl}/content-pages`,
 			i18n: { tHtml, tText },
 			educationOrganisationService: {
 				fetchEducationOrganisationName: () => Promise.resolve(null),
@@ -175,13 +179,11 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				clear: async (_key: string) => Promise.resolve(),
 			},
-			// UserGroupsService,
-			PermissionsService,
 			assetService: AssetsService,
 		},
 		database: {
 			databaseApplicationType: DatabaseType.avo,
-			proxyUrl: getEnv('PROXY_URL') as string,
+			proxyUrl,
 		},
 		flowplayer: {
 			FLOW_PLAYER_ID: getEnv('FLOW_PLAYER_ID') || '',
