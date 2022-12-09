@@ -1,4 +1,3 @@
-import { useContentTypes } from '@meemoo/admin-core-ui';
 import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
@@ -22,6 +21,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
+import { useContentTypes } from '../../content-page/hooks/useContentTypes';
 import { ItemsTableState } from '../../items/items.types';
 import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import FilterTable, {
@@ -60,7 +60,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 	const [tableState, setTableState] = useState<Partial<ContentPageLabelTableState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const [contentTypes] = useContentTypes();
+	const [contentTypes] = useContentTypes() as [any[], boolean];
 
 	const { tText, tHtml } = useTranslation();
 

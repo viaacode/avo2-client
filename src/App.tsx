@@ -34,6 +34,7 @@ import store from './store';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './styles/main.scss';
 import './App.scss';
+import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
@@ -120,7 +121,7 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	);
 };
 
-const AppWithRouter = compose(withRouter, withUser)(App) as FunctionComponent;
+const AppWithRouter = compose(withRouter, withUser, withAdminCoreConfig)(App) as FunctionComponent;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 

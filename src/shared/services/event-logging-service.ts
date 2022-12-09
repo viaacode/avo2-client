@@ -1,8 +1,8 @@
 import type { Avo } from '@viaa/avo2-types';
+import { fetchWithLogout } from '@meemoo/admin-core-ui';
 import { get } from 'lodash-es';
 
 import { getEnv } from '../helpers';
-import { fetchWithLogout } from '../helpers/fetch-with-logout';
 import { insideIframe } from '../helpers/inside-iframe';
 
 interface MinimalClientEvent {

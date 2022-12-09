@@ -1,4 +1,3 @@
-import { useContentTypes } from '@meemoo/admin-core-ui';
 import {
 	Box,
 	Button,
@@ -23,6 +22,7 @@ import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
+import { useContentTypes } from '../../content-page/hooks/useContentTypes';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';

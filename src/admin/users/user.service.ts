@@ -1,3 +1,4 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, isBefore } from 'date-fns';
 import { compact, flatten, get, isNil } from 'lodash-es';
@@ -33,7 +34,6 @@ import {
 	UpdateUserTempAccessByIdMutation,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
-import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -150,20 +150,10 @@ export class UserService {
 				sendEmail,
 			};
 
-			const response = await fetchWithLogout(url, {
+			await fetchWithLogoutJson(url, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
 				body: JSON.stringify(body),
 			});
-
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError('Status code was unexpected', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update temp access is_blocked field for users in the database',
@@ -343,20 +333,10 @@ export class UserService {
 				sendEmail,
 			};
 
-			const response = await fetchWithLogout(url, {
+			await fetchWithLogoutJson(url, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
 				body: JSON.stringify(body),
 			});
-
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError('Status code was unexpected', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update is_blocked field for users in the database',
@@ -385,20 +365,10 @@ export class UserService {
 				transferToProfileId,
 				sendEmail,
 			};
-			const response = await fetchWithLogout(url, {
+			await fetchWithLogoutJson(url, {
 				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
 				body: JSON.stringify(body),
 			});
-
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError('Status code was unexpected', null, {
-					response,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to bulk delete users from the database', err, {
 				url,

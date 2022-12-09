@@ -1,3 +1,4 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { LabelObj } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
@@ -17,7 +18,6 @@ import {
 	UpdateContentPageLabelMutation,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
-import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { tHtml } from '../../shared/helpers/translate';
 import { dataService } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -25,6 +25,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { ITEMS_PER_PAGE } from './content-page-label.const';
 import { ContentPageLabel, ContentPageLabelOverviewTableCols } from './content-page-label.types';
 
+// TODO replace with admin-core version, once this service is moved there
 export class ContentPageLabelService {
 	public static async fetchContentPageLabels(
 		page: number,
@@ -179,20 +180,17 @@ export class ContentPageLabelService {
 		labels: string[]
 	): Promise<LabelObj[]> {
 		try {
-			const reply = await fetchWithLogout(`${getEnv('PROXY_URL')}/content-pages/labels`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-				body: JSON.stringify({
-					contentType,
-					labels,
-				}),
-			});
-
-			const labelObj = await reply.json();
-			return labelObj;
+			const labelObjs = await fetchWithLogoutJson<LabelObj[]>(
+				`${getEnv('PROXY_URL')}/content-pages/labels`,
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						contentType,
+						labels,
+					}),
+				}
+			);
+			return labelObjs || [];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get content page label objects by content type and labels',
@@ -210,20 +208,18 @@ export class ContentPageLabelService {
 		labelIds: number[]
 	): Promise<LabelObj[]> {
 		try {
-			const reply = await fetchWithLogout(`${getEnv('PROXY_URL')}/content-pages/labels`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-				body: JSON.stringify({
-					contentType,
-					labelIds,
-				}),
-			});
+			const labelObjs = await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/content-pages/labels`,
+				{
+					method: 'POST',
+					body: JSON.stringify({
+						contentType,
+						labelIds,
+					}),
+				}
+			);
 
-			const labelObj = await reply.json();
-			return labelObj;
+			return labelObjs || [];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get content page labels by content type and label ids',

@@ -1,10 +1,10 @@
 import type { Avo } from '@viaa/avo2-types';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { compact, findLast, forIn, fromPairs, last, startsWith, uniqBy } from 'lodash-es';
 import queryString from 'query-string';
 
 import { APP_PATH } from '../../constants';
 import { CustomError, getEnv } from '../helpers';
-import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 import { GetInteractiveTourResponse } from './interactive-tour.types';
 import { NotificationService } from './notification-service';
@@ -23,21 +23,9 @@ export class InteractiveTourService {
 	public static async fetchInteractiveTourRouteIds(): Promise<string[]> {
 		try {
 			if (!this.routeIds) {
-				const response = await fetchWithLogout(
-					`${getEnv('PROXY_URL')}/interactive-tours/route-ids`,
-					{
-						method: 'GET',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-					}
+				InteractiveTourService.routeIds = await fetchWithLogoutJson(
+					`${getEnv('PROXY_URL')}/interactive-tours/route-ids`
 				);
-				if (response.status < 200 || response.status >= 400) {
-					throw new CustomError('invalid status code', null, {
-						response,
-					});
-				}
-				InteractiveTourService.routeIds = await response.json();
 			}
 			return InteractiveTourService.routeIds as string[];
 		} catch (err) {
@@ -158,25 +146,17 @@ export class InteractiveTourService {
 		profileId: string | undefined
 	): Promise<GetInteractiveTourResponse> {
 		try {
-			const response = await fetchWithLogout(
+			const response = await fetchWithLogoutJson<GetInteractiveTourResponse>(
 				`${getEnv('PROXY_URL')}/interactive-tours/tour?${queryString.stringify({
 					routeId,
 					profileId,
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
+				})}`
 			);
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError('unexpected status code in response', null, {
-					response,
-				});
+			if (!response) {
+				throw new Error('Re');
 			}
-			return await response.json();
+
+			return response;
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get interactive tour and seen statuses by route id from proxy',

@@ -70,7 +70,7 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 				<UserGroupOverview
 					renderSearchButtons={renderSearchButtons}
 					ref={permissionsRef}
-					onChangePermissions={(value) => setHasChanges(value)}
+					onChangePermissions={(value: boolean) => setHasChanges(value)}
 				/>
 				{hasChanges && (
 					<Toolbar>

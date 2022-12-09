@@ -1,3 +1,4 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { Button, Spacer } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
@@ -6,8 +7,7 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Action, Dispatch } from 'redux';
 
-import { CustomError, getEnv } from '../../shared/helpers';
-import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
+import { getEnv } from '../../shared/helpers';
 import { tText } from '../../shared/helpers/translate';
 import { ToastService } from '../../shared/services/toast-service';
 import { LoginMessage } from '../authentication.types';
@@ -129,25 +129,9 @@ export const setAcceptConditions = (): SetAcceptConditionsAction => ({
 export const getLoginResponse = async (): Promise<Avo.Auth.LoginResponse> => {
 	try {
 		const url = `${getEnv('PROXY_URL')}/auth/check-login`;
-		const response = await fetchWithLogout(url, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			credentials: 'include',
+		return fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
+			forceLogout: false,
 		});
-
-		const data = await response.json();
-
-		if (data.statusCode < 200 || data.statusCode >= 400) {
-			throw new CustomError(
-				'Failed to check login, status code not in expected range (200-399)',
-				null,
-				{ response, data, message: data.message }
-			);
-		}
-
-		return data as Avo.Auth.LoginResponse;
 	} catch (err) {
 		console.error('failed to check login state', err);
 		throw err;

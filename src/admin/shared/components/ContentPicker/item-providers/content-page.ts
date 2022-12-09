@@ -1,8 +1,9 @@
-import { ContentPageDb, ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
+import { ContentPageInfo, DbContentPage } from '@meemoo/admin-core-ui';
 
 import { CustomError } from '../../../../../shared/helpers';
 import { PickerSelectItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
+import { ContentPageService } from '../../../../content-page/services/content-page.service';
 
 // Fetch content items from GQL
 export const retrieveContentPages = async (
@@ -10,7 +11,7 @@ export const retrieveContentPages = async (
 	limit = 5
 ): Promise<PickerSelectItem[]> => {
 	try {
-		const contentItems: Pick<ContentPageDb, 'path' | 'title'>[] | null = title
+		const contentItems: Pick<DbContentPage, 'path' | 'title'>[] | null = title
 			? await ContentPageService.getPublicContentItemsByTitle(`%${title}%`, limit)
 			: await ContentPageService.getPublicContentItems(limit);
 

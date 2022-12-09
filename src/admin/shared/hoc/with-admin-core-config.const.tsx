@@ -1,6 +1,5 @@
 import {
 	AdminConfig,
-	AvoOrHetArchief,
 	CommonUser,
 	ContentBlockType,
 	LinkInfo,
@@ -8,6 +7,7 @@ import {
 } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -176,7 +176,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			assetService: AssetsService,
 		},
 		database: {
-			databaseApplicationType: AvoOrHetArchief.avo,
+			databaseApplicationType: DatabaseType.avo,
 			proxyUrl: getEnv('PROXY_URL') as string,
 		},
 		flowplayer: {

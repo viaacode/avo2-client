@@ -1,4 +1,4 @@
-import { ColorOption, ColorSelect } from '@meemoo/admin-core-ui';
+import { ColorOption } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	ButtonToolbar,
@@ -17,6 +17,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { compact, get, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
+import { ColorSelect } from '../../../admin/content-page/components/ColorSelect/ColorSelect';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { UserProps } from '../../../shared/hocs/withUser';

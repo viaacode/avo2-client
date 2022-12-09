@@ -1,3 +1,4 @@
+import { ContentPageRenderer } from '@meemoo/admin-core-ui';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -7,7 +8,6 @@ import { compose } from 'redux';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { getUserGroupId } from '../../authentication/helpers/get-profile-info';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ContentPage } from '../../content-page/views';
 import { ROUTE_PARTS } from '../../shared/constants';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -31,7 +31,7 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, use
 					content={tText('home/views/home___ingelogde-start-pagina-beschrijving')}
 				/>
 			</MetaTags>
-			<ContentPage
+			<ContentPageRenderer
 				path={`/${ROUTE_PARTS.loggedInHome}`}
 				onLoaded={() => scrollTo({ top: 0 })}
 			/>

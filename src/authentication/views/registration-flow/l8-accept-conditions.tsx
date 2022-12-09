@@ -1,4 +1,4 @@
-import { ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
+import { ContentPageInfo, ContentPageRenderer } from '@meemoo/admin-core-ui';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
@@ -9,7 +9,6 @@ import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -21,6 +20,7 @@ import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { acceptConditionsAction } from '../../store/actions';
 import { selectLogin, selectUser } from '../../store/selectors';
+import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
 
 export const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
 	'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
@@ -139,9 +139,13 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			<>
 				<Spacer margin="bottom-large">
 					{/* terms of use */}
-					{!!pages[0] && <ContentPage contentPageInfo={pages[0] as ContentPageInfo} />}
+					{!!pages[0] && (
+						<ContentPageRenderer contentPageInfo={pages[0] as ContentPageInfo} />
+					)}
 					{/* privacy conditions */}
-					{!!pages[1] && <ContentPage contentPageInfo={pages[1] as ContentPageInfo} />}
+					{!!pages[1] && (
+						<ContentPageRenderer contentPageInfo={pages[1] as ContentPageInfo} />
+					)}
 				</Spacer>
 				<Spacer margin="large">
 					<Toolbar>

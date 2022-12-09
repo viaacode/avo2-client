@@ -1,8 +1,8 @@
 import type { Avo } from '@viaa/avo2-types';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { get, set } from 'lodash-es';
 
 import { getEnv } from '../shared/helpers';
-import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 
 export const fetchSearchResults = async (
 	orderProperty: Avo.Search.OrderProperty = 'relevance',
@@ -13,7 +13,7 @@ export const fetchSearchResults = async (
 	filterOptionSearch?: Partial<Avo.Search.FilterOption>,
 	requestedAggs?: Avo.Search.FilterProp[],
 	aggsSize?: number
-) => {
+): Promise<Avo.Search.Search> => {
 	if (filters) {
 		const gte = get(filters, 'broadcastDate.gte');
 		const lte = get(filters, 'broadcastDate.lte');
@@ -24,12 +24,8 @@ export const fetchSearchResults = async (
 			set(filters, 'broadcastDate.lte', lte.split(' ')[0]);
 		}
 	}
-	const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/search`, {
+	return fetchWithLogoutJson(`${getEnv('PROXY_URL')}/search`, {
 		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		credentials: 'include',
 		body: JSON.stringify({
 			filters,
 			filterOptionSearch,
@@ -41,6 +37,4 @@ export const fetchSearchResults = async (
 			aggsSize,
 		}),
 	});
-
-	return response.json();
 };

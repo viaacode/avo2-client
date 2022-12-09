@@ -1,4 +1,4 @@
-import { ContentPageInfo, ContentPageService, getPublishedDate } from '@meemoo/admin-core-ui';
+import { ContentPageInfo, ContentPageRenderer, DbContentPage } from '@meemoo/admin-core-ui';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
@@ -7,9 +7,12 @@ import React, { FunctionComponent, useCallback, useEffect, useState } from 'reac
 import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
+import { compose, Dispatch } from 'redux';
 
+import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
+import { ContentPageService } from '../../admin/content-page/services/content-page.service';
 import { ItemsService } from '../../admin/items/items.service';
+import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects';
@@ -21,7 +24,6 @@ import {
 } from '../../authentication/store/selectors';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
@@ -160,6 +162,11 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				// Path is indeed a content page url
 				setRouteInfo({ type: 'contentPage', data: contentPage });
 			} catch (err) {
+				console.error({
+					message: 'Failed to check if path corresponds to a content page',
+					innerException: err,
+					additionalInfo: { pathname },
+				});
 				if (JSON.stringify(err).includes('CONTENT_PAGE_DEPUBLISHED')) {
 					const type = get(
 						err,
@@ -232,7 +239,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
-			const routeUserGroupIds = routeInfo.data.user_group_ids ?? [];
+			const routeUserGroupIds = (routeInfo.data as DbContentPage).userGroupIds ?? [];
 			// Check if the page requires the user to be logged in and not both logged in or out
 			if (
 				routeUserGroupIds.includes[SpecialPermissionGroups.loggedInUsers] &&
@@ -255,6 +262,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					? stripHtml(get(routeInfo.data, 'description_html'))
 					: null) ||
 				'';
+			console.log('content page info: ', routeInfo.data);
 			return (
 				<>
 					<MetaTags>
@@ -271,8 +279,8 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 						publishedAt={getPublishedDate(routeInfo.data)}
 						updatedAt={get(routeInfo.data, 'updated_at')}
 					/>
-					<ContentPage
-						contentPageInfo={routeInfo.data}
+					<ContentPageRenderer
+						contentPageInfo={routeInfo.data as ContentPageInfo}
 						onLoaded={() => scrollTo({ top: 0 })}
 					/>
 				</>
@@ -325,4 +333,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	getLoginState: () => dispatch(getLoginStateAction() as any),
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DynamicRouteResolver));
+export default compose(
+	withRouter,
+	connect(mapStateToProps, mapDispatchToProps),
+	withAdminCoreConfig
+)(DynamicRouteResolver) as FunctionComponent;

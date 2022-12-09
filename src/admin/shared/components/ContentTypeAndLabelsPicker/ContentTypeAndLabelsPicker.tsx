@@ -1,4 +1,3 @@
-import { ContentPageService, useContentTypes } from '@meemoo/admin-core-ui';
 import {
 	Column,
 	FormGroup,
@@ -17,6 +16,8 @@ import { CustomError } from '../../../../shared/helpers';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { ContentPageLabel } from '../../../content-page-labels/content-page-label.types';
+import { useContentTypes } from '../../../content-page/hooks/useContentTypes';
+import { ContentPageService } from '../../../content-page/services/content-page.service';
 
 export interface ContentTypeAndLabelsValue {
 	selectedContentType: Avo.ContentPage.Type;

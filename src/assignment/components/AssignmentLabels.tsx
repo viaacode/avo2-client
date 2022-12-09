@@ -1,4 +1,4 @@
-import { ColorOption, ColorSelect } from '@meemoo/admin-core-ui';
+import { ColorOption } from '@meemoo/admin-core-ui';
 import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
@@ -9,6 +9,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { Assignment_Label_v2 } from '../assignment.types';
+import { ColorSelect } from '../../admin/content-page/components/ColorSelect/ColorSelect';
 
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 

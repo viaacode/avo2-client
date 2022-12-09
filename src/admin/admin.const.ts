@@ -1,4 +1,4 @@
-import { CONTENT_PAGE_PATH, ContentPageService } from '@meemoo/admin-core-ui';
+import { CONTENT_PAGE_PATH } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import { every, isArray, some } from 'lodash-es';
 
@@ -10,6 +10,7 @@ import { NavigationItemInfo } from '../shared/types';
 import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
+import { ContentPageService } from './content-page/services/content-page.service';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';

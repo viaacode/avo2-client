@@ -1,3 +1,4 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
@@ -93,7 +94,6 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
-import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { tHtml } from '../shared/helpers/translate';
 import { isUuid } from '../shared/helpers/uuid';
 import { dataService } from '../shared/services/data-service';
@@ -944,33 +944,14 @@ export class CollectionService {
 		includeFragments = true
 	): Promise<Avo.Collection.Collection | null> {
 		try {
-			const response = await fetchWithLogout(
+			return fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
 					assignmentUuid,
 					id: collectionId,
 					includeFragments: includeFragments ? 'true' : 'false',
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
+				})}`
 			);
-			if (response.status === 404) {
-				return null;
-			}
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError('invalid status code', null, {
-					collectionId,
-					type,
-					response,
-					statusCode: response.status,
-				});
-			}
-			return await response.json();
 		} catch (err) {
 			if (JSON.stringify(err).includes('COLLECTION_NOT_FOUND')) {
 				return null;
@@ -1311,28 +1292,13 @@ export class CollectionService {
 
 	static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
 		try {
-			const response = await fetchWithLogout(
+			const json = await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify({
 					id: avo1Id,
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
+				})}`
 			);
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError(
-					'Failed to get external_id from /collections/fetch-uuid-by-avo1-id',
-					null,
-					{
-						response,
-					}
-				);
-			}
-			return get(await response.json(), 'uuid') || null;
+
+			return json?.uuid || null;
 		} catch (err) {
 			throw new CustomError('Failed to get collection or bundle uuid by avo1 id', err, {
 				avo1Id,

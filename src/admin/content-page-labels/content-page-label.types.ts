@@ -1,4 +1,4 @@
-import { ContentPageDb } from '@meemoo/admin-core-ui';
+import { DbContentPage } from '@meemoo/admin-core-ui';
 import { Avo } from '@viaa/avo2-types';
 
 import {
@@ -17,7 +17,7 @@ export type ContentPageLabelOverviewTableCols =
 	| 'actions';
 
 export type ContentPageLabel = Exclude<
-	| ContentPageDb['content_content_labels'][0]['content_label']
+	| DbContentPage['labels'][0]
 	| GetContentPageLabelByIdQuery['app_content_labels'][0]
 	| GetContentLabelsByContentTypeQuery['app_content_labels'][0],
 	null | undefined
