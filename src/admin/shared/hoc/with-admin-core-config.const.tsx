@@ -22,6 +22,7 @@ import { SmartschoolAnalyticsService } from '../../../shared/services/smartschoo
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
 import { PermissionsService } from '../services/permissions';
+import BlockSearch from '../../../search/components/BlockSearch';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
@@ -136,6 +137,9 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				},
 			],
 			flowplayer: FlowPlayerWrapper,
+		},
+		content_blocks: {
+			SEARCH: BlockSearch,
 		},
 		services: {
 			toastService: {
