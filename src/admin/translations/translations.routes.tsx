@@ -3,12 +3,12 @@ import React, { ReactNode } from 'react';
 import { SecuredRoute } from '../../authentication/components';
 
 import { TRANSLATIONS_PATH } from './translations.const';
-import { TranslationsOverview } from './views';
+import { TranslationsOverviewPage } from './views';
 
 export const renderAdminTranslationsRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		key={TRANSLATIONS_PATH.TRANSLATIONS}
-		component={TranslationsOverview}
+		component={TranslationsOverviewPage}
 		exact
 		path={TRANSLATIONS_PATH.TRANSLATIONS}
 	/>,

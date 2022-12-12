@@ -188,7 +188,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 		},
 		user: commonUser,
-		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
+		route_parts: ADMIN_CORE_ROUTE_PARTS,
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
 		},

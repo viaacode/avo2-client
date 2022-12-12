@@ -1,4 +1,4 @@
-import { TranslationsOverviewV2 } from '@meemoo/admin-core-ui';
+import { TranslationsOverview } from '@meemoo/admin-core-ui';
 import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
@@ -13,9 +13,9 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import { Translation, TranslationsState } from '../translations.types';
 
-import styles from './TranslationsOverviewV2.module.scss';
+import styles from './TranslationsOverviewPage.module.scss';
 
-const TranslationsOverview: FunctionComponent = () => {
+const TranslationsOverviewPage: FunctionComponent = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
@@ -210,7 +210,7 @@ const TranslationsOverview: FunctionComponent = () => {
 						)}
 					/>
 				</MetaTags>
-				<TranslationsOverviewV2
+				<TranslationsOverview
 					renderPopup={renderPopup}
 					className={styles['c-translations-overview']}
 				/>
@@ -219,4 +219,4 @@ const TranslationsOverview: FunctionComponent = () => {
 	);
 };
 
-export default withAdminCoreConfig(TranslationsOverview) as FunctionComponent;
+export default withAdminCoreConfig(TranslationsOverviewPage) as FunctionComponent;
