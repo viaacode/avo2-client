@@ -193,5 +193,8 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
 		},
+		env: {
+			LDAP_DASHBOARD_PEOPLE_URL: getEnv('LDAP_DASHBOARD_PEOPLE_URL'),
+		},
 	};
 }

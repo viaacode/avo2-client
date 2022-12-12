@@ -9,7 +9,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
-import { CustomError } from '../../../shared/helpers';
+import { CustomError, getEnv } from '../../../shared/helpers';
 import { ContentPageLabel } from '../../content-page-labels/content-page-label.types';
 
 import { CONTENT_PAGE_SERVICE_BASE_URL } from './content-page.const';
@@ -106,7 +106,7 @@ export class ContentPageService {
 		try {
 			const dbContentPage = await fetchWithLogoutJson<DbContentPage | null>(
 				stringifyUrl({
-					url: this.getBaseUrl(),
+					url: `${getEnv('PROXY_URL')}/content-pages`,
 					query: {
 						path,
 					},
