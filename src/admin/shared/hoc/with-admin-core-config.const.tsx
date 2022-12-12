@@ -1,13 +1,6 @@
-import {
-	AdminConfig,
-	AvoOrHetArchief,
-	CommonUser,
-	ContentBlockType,
-	LinkInfo,
-	ToastInfo,
-} from '@meemoo/admin-core-ui';
+import { AdminConfig, LinkInfo, ToastInfo } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { Avo, DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -22,13 +15,14 @@ import { SmartschoolAnalyticsService } from '../../../shared/services/smartschoo
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
 import { PermissionsService } from '../services/permissions';
+import { ContentBlockType } from '../types';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
 		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
 	};
 
-	const commonUser: CommonUser = {
+	const commonUser: any = {
 		uid: user?.uid,
 		profileId: user?.profile?.id as string,
 		userId: user?.uid,
@@ -176,7 +170,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			assetService: AssetsService,
 		},
 		database: {
-			databaseApplicationType: AvoOrHetArchief.avo,
+			databaseApplicationType: DatabaseType.avo,
 			proxyUrl: getEnv('PROXY_URL') as string,
 		},
 		flowplayer: {
@@ -192,6 +186,9 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
+		},
+		env: {
+			LDAP_DASHBOARD_PEOPLE_URL: getEnv('LDAP_DASHBOARD_PEOPLE_URL'),
 		},
 	};
 }
