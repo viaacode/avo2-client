@@ -1,5 +1,5 @@
 import { Button } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, {
 	FunctionComponent,

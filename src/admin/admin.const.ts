@@ -1,6 +1,6 @@
+import { PermissionName } from '@viaa/avo2-types';
 import { every, isArray, some } from 'lodash-es';
 
-import { PermissionName } from '../authentication/helpers/permission-names';
 import { buildLink, CustomError } from '../shared/helpers';
 import { tText } from '../shared/helpers/translate';
 import { ContentPageService } from '../shared/services/content-page-service';

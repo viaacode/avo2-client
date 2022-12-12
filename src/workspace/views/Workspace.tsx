@@ -19,8 +19,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -28,7 +28,7 @@ import MetaTags from 'react-meta-tags';
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -67,7 +67,7 @@ export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string 
 }
 
 // Using `hasAtLeastOnePerm` to avoid async
-const getQuickLaneCount = (user: UserSchema, response: GetWorkspaceTabCountsQuery): number => {
+const getQuickLaneCount = (user: Avo.User.User, response: GetWorkspaceTabCountsQuery): number => {
 	// Show count of personal quick lane
 	if (
 		PermissionService.hasAtLeastOnePerm(user, [

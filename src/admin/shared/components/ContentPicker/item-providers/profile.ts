@@ -1,17 +1,14 @@
-import { Avo } from '@viaa/avo2-types';
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../../../authentication/helpers/permission-service';
 import { CustomError } from '../../../../../shared/helpers';
 import { TableColumnDataType } from '../../../../../shared/types/table-column-data-type';
 import { UserService } from '../../../../users/user.service';
 import { PickerSelectItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
-const shouldFetchUsersInCompany = (user?: UserSchema) => {
+const shouldFetchUsersInCompany = (user?: Avo.User.User) => {
 	return (
 		user &&
 		PermissionService.hasPerm(user, PermissionName.VIEW_USERS_IN_SAME_COMPANY) &&
@@ -23,7 +20,7 @@ const shouldFetchUsersInCompany = (user?: UserSchema) => {
 export const retrieveProfiles = async (
 	name: string | null,
 	limit = 5,
-	user?: UserSchema
+	user?: Avo.User.User
 ): Promise<PickerSelectItem[]> => {
 	try {
 		const where = {

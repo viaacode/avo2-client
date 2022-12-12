@@ -1,5 +1,5 @@
 import { Button, ButtonToolbar, TagInfo, TagList } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, get, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,

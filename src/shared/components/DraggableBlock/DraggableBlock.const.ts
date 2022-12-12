@@ -1,7 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
-import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
+import type { Avo } from '@viaa/avo2-types';
 
-export const DRAGGABLE_BLOCK_ICONS: Record<BlockItemTypeSchema, IconName> = {
+export const DRAGGABLE_BLOCK_ICONS: Record<Avo.Core.BlockItemType, IconName> = {
 	BOUW: 'collection',
 	COLLECTION: 'collection',
 	ITEM: 'video',

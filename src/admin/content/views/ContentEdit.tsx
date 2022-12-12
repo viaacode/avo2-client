@@ -1,4 +1,5 @@
 import { Button, ButtonToolbar, Container, Navbar, Tabs } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { get, has, isFunction, isNil, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -12,10 +13,7 @@ import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,

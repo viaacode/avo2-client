@@ -21,9 +21,8 @@ import {
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentLabelType } from '@viaa/avo2-types/types/assignment';
-import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isNil, noop } from 'lodash-es';
 import React, {
@@ -47,7 +46,7 @@ import {
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -158,7 +157,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			setSortColumn(query.sort_column as AssignmentOverviewTableColumns);
 		}
 		if (query.sort_order) {
-			setSortOrder(query.sort_order as SearchOrderDirection);
+			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
 		}
 	}, []);
 
@@ -579,7 +578,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	};
 
-	const getLabelOptions = (labelType: AssignmentLabelType): CheckboxOption[] => {
+	const getLabelOptions = (labelType: Avo.Assignment.LabelType): CheckboxOption[] => {
 		return compact(
 			allAssignmentLabels
 				.filter((labelObj: Assignment_Label_v2) => labelObj.type === labelType)

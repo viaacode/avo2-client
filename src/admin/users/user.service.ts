@@ -1,6 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
-import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
-import { UserSchema, UserTempAccess } from '@viaa/avo2-types/types/user';
+import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, isBefore } from 'date-fns';
 import { compact, flatten, get, isNil } from 'lodash-es';
 import moment from 'moment';
@@ -71,7 +69,7 @@ export class UserService {
 	/**
 	 * Get the tempAccess data for a user by profileId
 	 */
-	static async getTempAccessById(profileId: string): Promise<UserTempAccess | null> {
+	static async getTempAccessById(profileId: string): Promise<Avo.User.TempAccess | null> {
 		try {
 			const tempAccessResponse = await dataService.query<GetUserTempAccessQuery>({
 				query: GetUserTempAccessDocument,
@@ -81,7 +79,7 @@ export class UserService {
 			});
 
 			return (tempAccessResponse.shared_users[0].temp_access ||
-				null) as UserTempAccess | null;
+				null) as Avo.User.TempAccess | null;
 		} catch (err) {
 			throw new CustomError('Failed to get profile by id from the database', err, {
 				profileId,
@@ -95,7 +93,7 @@ export class UserService {
 	 */
 	static updateTempAccessByUserId = async (
 		userId: string,
-		tempAccess: UserTempAccess,
+		tempAccess: Avo.User.TempAccess,
 		profileId: string
 	): Promise<void> => {
 		try {
@@ -185,7 +183,7 @@ export class UserService {
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
-		user?: UserSchema,
+		user?: Avo.User.User,
 		itemsPerPage: number = ITEMS_PER_PAGE
 	): Promise<[Avo.User.Profile[], number]> {
 		if (!user?.profile?.company_id) {
@@ -256,7 +254,7 @@ export class UserService {
 							  } as Avo.Organization.Organization)
 							: null,
 						educational_organisations: user.organisations.map(
-							(org): ClientEducationOrganization => ({
+							(org): Avo.EducationOrganization.Organization => ({
 								organizationId: org.organization_id,
 								unitId: org.unit_id || null,
 								label: org.organization?.ldap_description || '',

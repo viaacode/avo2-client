@@ -7,7 +7,7 @@ import {
 	Spacer,
 	Table,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, isEqual, isNil, startCase } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import MetaTags from 'react-meta-tags';

@@ -1,13 +1,13 @@
 import {
 	AdminConfig,
-	AvoOrHetArchief,
 	CommonUser,
 	ContentBlockType,
 	LinkInfo,
 	ToastInfo,
 } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { DatabaseType } from '@viaa/avo2-types/types/core/enums';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -21,7 +21,6 @@ import { AssetsService } from '../../../shared/services/assets-service/assets.se
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
-import { PermissionsService } from '../services/permissions';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
@@ -137,6 +136,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			],
 			flowplayer: FlowPlayerWrapper,
 		},
+		content_blocks: {},
 		services: {
 			toastService: {
 				showToast: (toastInfo: ToastInfo) => {
@@ -157,6 +157,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				},
 			},
 			i18n: { tHtml, tText },
+			getContentPageByPathEndpoint: null,
 			educationOrganisationService: {
 				fetchEducationOrganisationName: () => Promise.resolve(null),
 				fetchCities: () => Promise.resolve([]),
@@ -171,12 +172,10 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				clear: async (_key: string) => Promise.resolve(),
 			},
-			// UserGroupsService,
-			PermissionsService,
 			assetService: AssetsService,
 		},
 		database: {
-			databaseApplicationType: AvoOrHetArchief.avo,
+			databaseApplicationType: DatabaseType.avo,
 			proxyUrl: getEnv('PROXY_URL') as string,
 		},
 		flowplayer: {

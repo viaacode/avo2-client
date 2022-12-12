@@ -1,5 +1,4 @@
-import { ContentWidthSchema } from '@viaa/avo2-types/types/content-page';
-import { UserProfile } from '@viaa/avo2-types/types/user';
+import type { Avo } from '@viaa/avo2-types';
 
 import { parseContentBlocks } from '../../content-block/helpers';
 import { ContentPageLabel } from '../../content-page-labels/content-page-label.types';
@@ -40,7 +39,7 @@ export function convertToContentPageInfo(dbContentPage: ContentPageDb): ContentP
 		created_at: dbContentPage.created_at,
 		updated_at: dbContentPage.updated_at || dbContentPage.created_at || null,
 		user_group_ids: dbContentPage.user_group_ids,
-		profile: (dbContentPage.profile || null) as UserProfile | null,
+		profile: (dbContentPage.profile || null) as Avo.User.Profile | null,
 		user_profile_id: dbContentPage.user_profile_id,
 	};
 }
@@ -66,7 +65,7 @@ export function convertToDatabaseContentPage(
 		is_public: contentPageInfo.is_public || false,
 		path: contentPageInfo.path || null,
 		content_type: contentPageInfo.content_type,
-		content_width: contentPageInfo.content_width as ContentWidthSchema,
+		content_width: contentPageInfo.content_width as Avo.ContentPage.Width,
 		publish_at: contentPageInfo.publish_at || null,
 		depublish_at: contentPageInfo.depublish_at || null,
 		published_at: contentPageInfo.published_at,

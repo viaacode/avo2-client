@@ -1,14 +1,12 @@
 import { Button, Container, Icon, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
 import { UrlUpdateType } from 'use-query-params';
 
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
 import { AddToAssignmentModal } from '../../../../item/components';
 import { ItemTrimInfo } from '../../../../item/item.types';

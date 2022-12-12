@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';

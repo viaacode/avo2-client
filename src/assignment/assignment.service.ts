@@ -1,5 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
-import { ItemSchema } from '@viaa/avo2-types/types/item';
+import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, get, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -845,7 +844,7 @@ export class AssignmentService {
 	 */
 	static async enrichBlocksWithMeta<T extends PupilCollectionFragment | AssignmentBlock>(
 		blocks?: T[],
-		items: (ItemSchema | null)[] = []
+		items: (Avo.Item.Item | null)[] = []
 	): Promise<T[]> {
 		const enriched = await Promise.all(
 			(blocks || []).map(async (block): Promise<BaseBlockWithMeta> => {

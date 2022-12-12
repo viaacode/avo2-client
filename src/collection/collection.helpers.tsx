@@ -10,7 +10,7 @@ import {
 	Spacer,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, isNil, omit, sortBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
 

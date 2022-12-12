@@ -1,5 +1,5 @@
 import { TableColumn } from '@viaa/avo2-components';
-import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
+import type { Avo } from '@viaa/avo2-types';
 
 import { FilterState } from '../search/search.types';
 import {
@@ -78,7 +78,7 @@ type EditableBlockFields = {
 export type EditablePupilCollectionFragment = PupilCollectionFragment & EditableBlockFields;
 
 export type BaseBlockWithMeta = (PupilCollectionFragment | AssignmentBlock) &
-	Pick<BlockItemBaseSchema, 'item_meta'> & { type: string };
+	Pick<Avo.Core.BlockItemBase, 'item_meta'> & { type: string };
 
 export type Assignment_Label_v2 = Exclude<
 	GetAssignmentLabelsByProfileIdQuery['app_assignment_labels_v2'][0],
@@ -174,5 +174,5 @@ export interface EditBlockProps {
 }
 
 export type EditableAssignmentBlock = AssignmentBlock &
-	Pick<BlockItemBaseSchema, 'item_meta'> &
+	Pick<Avo.Core.BlockItemBase, 'item_meta'> &
 	EditableBlockFields;
