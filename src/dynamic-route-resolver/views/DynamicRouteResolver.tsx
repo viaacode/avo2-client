@@ -278,10 +278,12 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 						publishedAt={getPublishedDate(routeInfo.data)}
 						updatedAt={get(routeInfo.data, 'updated_at')}
 					/>
-					<ContentPageRenderer
-						contentPageInfo={routeInfo.data as ContentPageInfo}
-						onLoaded={() => scrollTo({ top: 0 })}
-					/>
+					{routeInfo.data && (
+						<ContentPageRenderer
+							contentPageInfo={routeInfo.data as ContentPageInfo}
+							onLoaded={() => scrollTo({ top: 0 })}
+						/>
+					)}
 				</>
 			);
 		}

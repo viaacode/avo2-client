@@ -133,7 +133,7 @@ export class ContentPageService {
 		let url: string | undefined = undefined;
 		let body: any | undefined = undefined;
 		try {
-			url = this.getBaseUrl() + '/media';
+			url = AdminConfigManager.getConfig().database.proxyUrl + '/content-pages/media';
 			body = {
 				searchQuery,
 				searchQueryLimit,

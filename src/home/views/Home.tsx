@@ -33,10 +33,12 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, use
 					content={tText('home/views/home___ingelogde-start-pagina-beschrijving')}
 				/>
 			</MetaTags>
-			<ContentPageRenderer
-				contentPageInfo={contentPageInfo}
-				onLoaded={() => scrollTo({ top: 0 })}
-			/>
+			{contentPageInfo && (
+				<ContentPageRenderer
+					contentPageInfo={contentPageInfo}
+					onLoaded={() => scrollTo({ top: 0 })}
+				/>
+			)}
 		</>
 	);
 };

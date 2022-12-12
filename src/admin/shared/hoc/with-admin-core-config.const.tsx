@@ -22,6 +22,7 @@ import { SmartschoolAnalyticsService } from '../../../shared/services/smartschoo
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
 import BlockSearch from '../../../search/components/BlockSearch';
+import MediaGridWrapper from '../../../search/components/MediaGridWrapper/MediaGridWrapper';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
@@ -141,6 +142,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 		content_blocks: {
 			SEARCH: BlockSearch,
+			MEDIA_GRID: MediaGridWrapper,
 		},
 		services: {
 			toastService: {
