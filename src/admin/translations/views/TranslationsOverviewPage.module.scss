@@ -81,6 +81,10 @@
 		:global(tbody tr) {
 			vertical-align: center;
 
+		  :global(td) {
+			vertical-align: middle;
+		  }
+
 			&:hover {
 				background-color: $color-gray-25;
 				cursor: pointer;
