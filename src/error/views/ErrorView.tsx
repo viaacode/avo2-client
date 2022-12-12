@@ -69,7 +69,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 		);
 	}
 
-	const messageText = (queryParams.message as string) || message || '';
+	const messageText: string | ReactNode = (queryParams.message as string) || message || '';
 	const errorMessage: string | ReactNode = isNil(messageText)
 		? getPageNotFoundError(!!user)
 		: messageText;

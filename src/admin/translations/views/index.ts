@@ -1,3 +1,3 @@
-import TranslationsOverview from './TranslationsOverview';
+import TranslationsOverviewPage from './TranslationsOverviewPage';
 
-export { TranslationsOverview };
+export { TranslationsOverviewPage };

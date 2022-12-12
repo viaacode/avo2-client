@@ -14,6 +14,8 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
+import BlockSearch from '../../../search/components/BlockSearch';
+import MediaGridWrapper from '../../../search/components/MediaGridWrapper/MediaGridWrapper';
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
@@ -21,8 +23,6 @@ import { AssetsService } from '../../../shared/services/assets-service/assets.se
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
-import BlockSearch from '../../../search/components/BlockSearch';
-import MediaGridWrapper from '../../../search/components/MediaGridWrapper/MediaGridWrapper';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
@@ -52,14 +52,6 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const proxyUrl = getEnv('PROXY_URL') as string;
 
 	return {
-		// navigation: {
-		// 	service: navigationService,
-		// 	views: {
-		// 		overview: {
-		// 			labels: { tableHeads: {} },
-		// 		},
-		// 	},
-		// },
 		staticPages: compact(
 			(Object.keys(APP_PATH) as RouteId[]).map((routeId) => {
 				if (APP_PATH[routeId].showInContentPicker) {
@@ -197,7 +189,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 		},
 		user: commonUser,
-		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
+		route_parts: ADMIN_CORE_ROUTE_PARTS,
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
 		},
