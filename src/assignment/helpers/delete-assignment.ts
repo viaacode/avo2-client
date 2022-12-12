@@ -1,4 +1,4 @@
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import type { Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash';
 import { ReactNode } from 'react';
 
@@ -10,7 +10,7 @@ import { Assignment_v2, Assignment_v2_With_Responses, AssignmentType } from '../
 
 export async function deleteAssignment(
 	id?: string | null,
-	user?: UserSchema | null
+	user?: Avo.User.User | null
 ): Promise<void> {
 	try {
 		if (isNil(id)) {

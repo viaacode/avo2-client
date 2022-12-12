@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 
 import { BaseBlockWithMeta } from '../../../assignment/assignment.types';

@@ -1,5 +1,5 @@
 import { BlockHeading, DefaultProps, Flex, FlexItem, Icon } from '@viaa/avo2-components';
-import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
+import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { truncate } from 'lodash';
 import React, { FC } from 'react';
@@ -13,7 +13,7 @@ import { DRAGGABLE_BLOCK_ICONS } from './DraggableBlock.const';
 import './DraggableBlock.scss';
 
 export interface DraggableBlockProps extends DefaultProps {
-	block?: BlockItemBaseSchema;
+	block?: Avo.Core.BlockItemBase;
 }
 
 const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {

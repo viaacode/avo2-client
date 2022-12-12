@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import React, { ReactNode, useMemo } from 'react';
 
 import { BlockListSorter, ListSorterItem, ListSorterProps } from '../../shared/components';

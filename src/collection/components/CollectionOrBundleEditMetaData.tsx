@@ -10,7 +10,7 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
 import React, { FunctionComponent, useState } from 'react';
 

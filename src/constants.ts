@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
 import { ROUTE_PARTS } from './shared/constants';

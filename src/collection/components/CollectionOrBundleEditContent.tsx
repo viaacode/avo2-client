@@ -1,10 +1,11 @@
 import { Alert, Container, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { FragmentAdd, FragmentEdit } from '../components';
@@ -140,7 +141,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	// 		id={fragment.id}
 	// 		preview={() => {
 	// 			if (fragment.item_meta) {
-	// 				const meta = fragment.item_meta as ItemSchema;
+	// 				const meta = fragment.item_meta as Avo.Item.Item;
 	//
 	// 				return (
 	// 					<FlowPlayerWrapper

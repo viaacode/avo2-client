@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { stringify } from 'query-string';
 
 import { DEFAULT_AUDIO_STILL } from '../constants';

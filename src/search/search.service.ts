@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, set } from 'lodash-es';
 
 import { getEnv } from '../shared/helpers';

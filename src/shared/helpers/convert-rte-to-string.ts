@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep } from 'lodash-es';
 
 import { getFragmentsFromCollection } from '../../collection/collection.helpers';

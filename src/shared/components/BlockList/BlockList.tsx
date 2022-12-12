@@ -1,6 +1,6 @@
 import { Container } from '@viaa/avo2-components';
 import { ContainerPropsSchema } from '@viaa/avo2-components/dist/esm/components/Container/Container';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, ReactNode } from 'react';
 

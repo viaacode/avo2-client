@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { getUserGroupId } from '../../authentication/helpers/get-profile-info';

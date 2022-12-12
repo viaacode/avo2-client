@@ -16,7 +16,8 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, {
@@ -33,7 +34,7 @@ import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 import { ItemsService } from '../../admin/items/items.service';
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
@@ -135,7 +136,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			setSortColumn(query.sort_column as AssignmentOverviewTableColumns);
 		}
 		if (query.sort_order) {
-			setSortOrder(query.sort_order as SearchOrderDirection);
+			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
 		}
 	}, []);
 

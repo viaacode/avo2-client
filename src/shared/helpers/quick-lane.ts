@@ -1,18 +1,19 @@
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { CheckboxOption } from '../components';
 import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../generated/graphql-db-types';
 
 import { tText } from './translate';
 
-export const isOrganisational = (user: UserSchema): boolean => {
+export const isOrganisational = (user: Avo.User.User): boolean => {
 	return PermissionService.hasAtLeastOnePerm(user, [
 		PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
 	]);
 };
 
-export const isPersonal = (user: UserSchema): boolean => {
+export const isPersonal = (user: Avo.User.User): boolean => {
 	return PermissionService.hasAtLeastOnePerm(user, [
 		PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 	]);

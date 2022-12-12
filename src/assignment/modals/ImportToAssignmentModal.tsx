@@ -15,7 +15,7 @@ import {
 	TextInput,
 	Toggle,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';

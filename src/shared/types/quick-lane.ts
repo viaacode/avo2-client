@@ -1,6 +1,4 @@
-import { AssignmentContent, AssignmentLayout } from '@viaa/avo2-types/types/assignment';
-import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import { UserProfile } from '@viaa/avo2-types/types/user';
+import type { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import {
@@ -11,48 +9,20 @@ import {
 export interface QuickLaneUrl {
 	id: string;
 	title: string;
-	content?: AssignmentContent;
+	content?: Avo.Assignment.Content;
 	content_id?: string;
 	content_label?: Lookup_Enum_Assignment_Content_Labels_Enum;
-	owner?: UserProfile;
+	owner?: Avo.User.Profile;
 	owner_profile_id?: string;
 	created_at?: string;
 	updated_at?: string;
 }
 
 export interface QuickLaneUrlObject extends QuickLaneUrl {
-	view_mode: AssignmentLayout;
+	view_mode: Avo.Assignment.Layout;
 }
 
 export type QuickLaneUrlRecord = GetQuickLanesByContentIdQuery['app_quick_lanes'][0];
-
-export interface QuickLaneQueryResponse {
-	app_quick_lanes: QuickLaneUrlRecord[];
-	app_quick_lanes_aggregate: {
-		aggregate: {
-			count: number;
-		};
-	};
-}
-
-export interface QuickLaneInsertResponse {
-	insert_app_quick_lanes: QuickLaneMutateResponse;
-}
-
-export interface QuickLaneUpdateResponse {
-	update_app_quick_lanes: QuickLaneMutateResponse;
-}
-
-export interface QuickLaneRemoveResponse {
-	delete_app_quick_lanes: Omit<QuickLaneMutateResponse, 'returning'> & {
-		returning: Pick<QuickLaneUrlRecord, 'id'>[];
-	};
-}
-
-export interface QuickLaneMutateResponse {
-	affected_rows: number;
-	returning: QuickLaneUrlRecord[];
-}
 
 export interface QuickLaneOverviewFilterState {
 	author: string[];
@@ -62,6 +32,6 @@ export interface QuickLaneOverviewFilterState {
 	page: number;
 	query?: string;
 	sort_column?: string;
-	sort_order?: SearchOrderDirection;
+	sort_order?: Avo.Search.OrderDirection;
 	updated_at?: DateRange;
 }

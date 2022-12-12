@@ -21,8 +21,8 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -34,7 +34,7 @@ import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { getProfileAlias, getProfileFromUser } from '../../authentication/helpers/get-profile-info';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	getLoginResponse,
@@ -56,7 +56,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import store, { AppState } from '../../store';
 import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
 import { SettingsService } from '../settings.service';
-import { UpdateProfileValues, UsersInSameCompanyColumn } from '../settings.types';
+import { UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
 
@@ -98,7 +98,7 @@ const Profile: FunctionComponent<
 		get(user, 'profile.subjects', []).map(stringToTagInfo)
 	);
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
-		ClientEducationOrganization[]
+		Avo.EducationOrganization.Organization[]
 	>(get(user, 'profile.organizations', []));
 	const [firstName, setFirstName] = useState<string>(get(user, 'first_name') || '');
 	const [lastName, setLastName] = useState<string>(get(user, 'last_name') || '');
@@ -122,7 +122,7 @@ const Profile: FunctionComponent<
 	);
 	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
 	const [profileErrors, setProfileErrors] = useState<
-		Partial<{ [prop in keyof UpdateProfileValues]: string }>
+		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
 	>({});
 	const [usersInSameCompany, setUsersInSameCompany] = useState<Partial<Avo.User.Profile>[]>([]);
 
@@ -280,7 +280,7 @@ const Profile: FunctionComponent<
 		setAllOrganisations,
 	]);
 
-	const areRequiredFieldsFilledIn = (profileInfo: Partial<UpdateProfileValues>) => {
+	const areRequiredFieldsFilledIn = (profileInfo: Partial<Avo.User.UpdateProfileValues>) => {
 		if (!permissions) {
 			return false;
 		}
@@ -325,7 +325,7 @@ const Profile: FunctionComponent<
 		try {
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
-			const newProfileInfo: Partial<UpdateProfileValues> = {
+			const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {
 				firstName,
 				lastName,
 				alias,
@@ -666,7 +666,7 @@ const Profile: FunctionComponent<
 			case 'temp_access': {
 				const tempAccess = profile?.user?.temp_access;
 
-				return tempAccess?.status
+				return tempAccess?.current?.status === 1
 					? `${tText('settings/components/profile___van')} ${formatDate(
 							get(tempAccess, 'from')
 					  )} ${tText('settings/components/profile___tot')} ${formatDate(

@@ -8,7 +8,7 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, isString } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
