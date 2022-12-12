@@ -1,3 +1,4 @@
+import { fetchWithLogout, fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
 import queryString from 'query-string';
@@ -53,7 +54,6 @@ import {
 } from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
-import { fetchWithLogout } from '../../shared/helpers/fetch-with-logout';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
@@ -348,30 +348,15 @@ export class ItemsService {
 		mediamosaId: string
 	): Promise<string | null> {
 		try {
-			const response = await fetchWithLogout(
+			const response = await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
 				)}/collections/fetch-external-id-by-mediamosa-id?${queryString.stringify({
 					id: mediamosaId,
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
+				})}`
 			);
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError(
-					'Failed to get external_id from /collections/fetch-external-id-by-mediamosa-id',
-					null,
-					{
-						response,
-					}
-				);
-			}
-			return get(await response.json(), 'externalId') || null;
+
+			return response?.externalId || null;
 		} catch (err) {
 			throw new CustomError('Failed to get external_id by mediamosa id (avo1 id)', err, {
 				mediamosaId,
@@ -539,7 +524,6 @@ export class ItemsService {
 			url = `${getEnv('PROXY_URL')}/mam-syncrator/trigger-delta-sync`;
 			const response = await fetchWithLogout(url, {
 				method: 'POST',
-				credentials: 'include',
 			});
 
 			const body = await response.text();

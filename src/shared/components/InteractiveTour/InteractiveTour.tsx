@@ -1,3 +1,4 @@
+import { Color } from '@meemoo/admin-core-ui';
 import { Button } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
@@ -7,7 +8,6 @@ import { connect } from 'react-redux';
 import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
-import { Color } from '../../../admin/shared/types';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH, RouteId, RouteInfo } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';

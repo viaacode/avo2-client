@@ -19,7 +19,7 @@ I18n.use(XHR)
 				setTimeout(() => {
 					resolveTranslations();
 				}, 0);
-				return JSON.parse(data).value;
+				return JSON.parse(data);
 			},
 		},
 		debug: false,

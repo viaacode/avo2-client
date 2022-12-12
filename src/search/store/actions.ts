@@ -33,7 +33,7 @@ const getSearchResults = (
 				filterOptionSearch
 			);
 
-			if (data.statusCode) {
+			if ((data as any).statusCode) {
 				console.error(
 					JSON.stringify(
 						new CustomError('Failed to get search results from elasticsearch', data, {
@@ -54,13 +54,14 @@ const getSearchResults = (
 
 			const processedData = {
 				...data,
-				results: data.results.map((result: Avo.Search.ResultItem) => {
-					if (result.administrative_type === 'audio') {
-						result.thumbnail_path = DEFAULT_AUDIO_STILL;
-					}
+				results:
+					data.results?.map((result: Avo.Search.ResultItem) => {
+						if (result.administrative_type === 'audio') {
+							result.thumbnail_path = DEFAULT_AUDIO_STILL;
+						}
 
-					return result;
-				}),
+						return result;
+					}) || [],
 			};
 
 			return dispatch(setSearchResultsSuccess(processedData as Avo.Search.Search));
