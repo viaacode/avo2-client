@@ -1,6 +1,7 @@
-import { HTTPError } from 'ky';
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { ContentPageInfo } from '@meemoo/admin-core-ui';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { HTTPError } from 'ky';
+
 import { ContentPageService } from '../services/content-page.service';
 
 export const useGetContentPageByPath = (

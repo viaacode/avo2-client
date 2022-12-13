@@ -4,12 +4,12 @@ import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
 
+import { ColorSelect } from '../../admin/content-page/components/ColorSelect/ColorSelect';
 import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { Assignment_Label_v2 } from '../assignment.types';
-import { ColorSelect } from '../../admin/content-page/components/ColorSelect/ColorSelect';
 
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 

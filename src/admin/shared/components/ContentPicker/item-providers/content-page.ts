@@ -1,9 +1,9 @@
 import { ContentPageInfo, DbContentPage } from '@meemoo/admin-core-ui';
 
 import { CustomError } from '../../../../../shared/helpers';
+import { ContentPageService } from '../../../../content-page/services/content-page.service';
 import { PickerSelectItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
-import { ContentPageService } from '../../../../content-page/services/content-page.service';
 
 // Fetch content items from GQL
 export const retrieveContentPages = async (

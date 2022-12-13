@@ -32,9 +32,12 @@ import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import { InteractiveTour } from '../interactive-tour.types';
 
-type UserDetailProps = RouteComponentProps<{ id: string }>;
+type InteractiveTourDetailProps = RouteComponentProps<{ id: string }>;
 
-const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, match }) => {
+const InteractiveTourDetail: FunctionComponent<InteractiveTourDetailProps> = ({
+	history,
+	match,
+}) => {
 	// Hooks
 	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -163,7 +166,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 		);
 	};
 
-	const renderUserDetailPage = () => (
+	const renderInteractiveTourDetailPage = () => (
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
 			pageTitle={tText(
@@ -242,7 +245,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={interactiveTour}
-				render={renderUserDetailPage}
+				render={renderInteractiveTourDetailPage}
 			/>
 		</>
 	);

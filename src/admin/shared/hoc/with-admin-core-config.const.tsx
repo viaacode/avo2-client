@@ -1,16 +1,10 @@
-import {
-	AdminConfig,
-	CommonUser,
-	ContentBlockType,
-	LinkInfo,
-	ToastInfo,
-} from '@meemoo/admin-core-ui';
+import { AdminConfig, ContentBlockType, LinkInfo, ToastInfo } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
@@ -29,7 +23,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
 	};
 
-	const commonUser: CommonUser = {
+	const commonUser: any = {
 		uid: user?.uid,
 		profileId: user?.profile?.id as string,
 		userId: user?.uid,
@@ -167,7 +161,6 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			router: {
 				Link: InternalLink as FunctionComponent<LinkInfo>,
 				useHistory: useHistory,
-				useParams: useParams,
 			},
 			queryCache: {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import { SecuredRoute } from '../../authentication/components';
 
 import { USER_PATH } from './user.const';
-import { UserDetail, UserOverviewPage } from './views';
+import { UserDetailPage, UserOverviewPage } from './views';
 import UserEdit from './views/UserEdit';
 
 export const renderAdminUserRoutes = (): ReactNode[] => [
@@ -15,7 +15,7 @@ export const renderAdminUserRoutes = (): ReactNode[] => [
 	/>,
 	<SecuredRoute
 		key={USER_PATH.USER_DETAIL}
-		component={UserDetail}
+		component={UserDetailPage}
 		exact
 		path={USER_PATH.USER_DETAIL}
 	/>,

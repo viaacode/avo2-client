@@ -1,5 +1,5 @@
-import type { Avo } from '@viaa/avo2-types';
 import { fetchWithLogout } from '@meemoo/admin-core-ui';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import { getEnv } from '../helpers';

@@ -13,6 +13,7 @@ import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';
+import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroup } from './admin/user-groups/user-group.const';
 import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
@@ -34,7 +35,6 @@ import store from './store';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './styles/main.scss';
 import './App.scss';
-import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 
 const history = createBrowserHistory();
 wrapHistory(history, {

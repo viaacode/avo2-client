@@ -1,5 +1,5 @@
-import type { Avo } from '@viaa/avo2-types';
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, findLast, forIn, fromPairs, last, startsWith, uniqBy } from 'lodash-es';
 import queryString from 'query-string';
 

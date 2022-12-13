@@ -6,15 +6,15 @@ import {
 	DbContentPage,
 	fetchWithLogoutJson,
 } from '@meemoo/admin-core-ui';
+import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
+import { ResolvedItemOrCollection } from '../../../search/components/MediaGridWrapper/MediaGridWrapper.types';
 import { CustomError, getEnv } from '../../../shared/helpers';
 import { ContentPageLabel } from '../../content-page-labels/content-page-label.types';
 
 import { CONTENT_PAGE_SERVICE_BASE_URL } from './content-page.const';
-import { ResolvedItemOrCollection } from '../../../search/components/MediaGridWrapper/MediaGridWrapper.types';
-import { ButtonAction } from '@viaa/avo2-components';
 
 export class ContentPageService {
 	private static getBaseUrl(): string {

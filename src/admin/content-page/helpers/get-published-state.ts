@@ -1,5 +1,5 @@
-import moment from 'moment';
 import { ContentPageInfo } from '@meemoo/admin-core-ui';
+import moment from 'moment';
 
 export function getPublishedDate(
 	contentPage: Partial<ContentPageInfo> | undefined | null

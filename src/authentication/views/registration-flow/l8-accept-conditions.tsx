@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
+import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
@@ -20,7 +21,6 @@ import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { acceptConditionsAction } from '../../store/actions';
 import { selectLogin, selectUser } from '../../store/selectors';
-import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
 
 export const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
 	'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
