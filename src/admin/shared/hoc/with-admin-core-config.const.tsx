@@ -4,7 +4,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
@@ -161,7 +161,6 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			router: {
 				Link: InternalLink as FunctionComponent<LinkInfo>,
 				useHistory: useHistory,
-				useParams: useParams,
 			},
 			queryCache: {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
