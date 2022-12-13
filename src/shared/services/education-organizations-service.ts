@@ -1,9 +1,8 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import queryString from 'query-string';
 
 import { CustomError, getEnv } from '../helpers';
-import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export class EducationOrganisationService {
 	public static async fetchCities(): Promise<string[]> {
@@ -11,19 +10,7 @@ export class EducationOrganisationService {
 		try {
 			url = `${getEnv('PROXY_URL')}/education-organisations/cities`;
 
-			const response = await fetchWithLogout(url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
-
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError('Status code invalid', null, { response });
-			}
-
-			return await response.json();
+			return fetchWithLogoutJson<string[]>(url);
 		} catch (err) {
 			throw new CustomError('Failed to get cities', err, { url });
 		}
@@ -42,15 +29,7 @@ export class EducationOrganisationService {
 				zipCode,
 			})}`;
 
-			const response = await fetchWithLogout(url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
-
-			return await response.json();
+			return fetchWithLogoutJson<Avo.EducationOrganization.Organization[]>(url);
 		} catch (err) {
 			throw new CustomError('Failed to get educational organisations', err, { url });
 		}
@@ -69,15 +48,9 @@ export class EducationOrganisationService {
 				unitId,
 			})}`;
 
-			const response = await fetchWithLogout(url, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-			});
+			const response = await fetchWithLogoutJson(url);
 
-			return get(await response.json(), 'name');
+			return response?.name || null;
 		} catch (err) {
 			throw new CustomError('Failed to get educational organisation name', err, {
 				url,

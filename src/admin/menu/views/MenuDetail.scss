@@ -17,6 +17,12 @@
 		&.o-table-col-1 {
 			width: 10rem;
 		}
+
+		.c-button-group {
+			.c-button {
+				margin-left: 0 !important;
+			}
+		}
 	}
 }
 
@@ -28,4 +34,27 @@
 
 .c-menu-detail__nav-label {
 	margin: 0 auto 0 ($g-spacer-unit * 3);
+}
+
+.c-admin__header {
+	border-bottom: 0.1rem solid $color-gray-100;
+	background-color: $color-gray-50;
+	display: flex;
+	padding: 2rem 4rem;
+
+	.c-admin__page-title {
+		font-size: 2.4rem;
+		font-family: $g-headings-font-family;
+		font-weight: 500;
+	}
+}
+
+.c-admin__content {
+	margin: 4rem;
+
+	.c-menu-detail__table {
+		border: 1px solid $color-gray-100;
+		border-radius: 0.3rem;
+		border-collapse: initial;
+	}
 }

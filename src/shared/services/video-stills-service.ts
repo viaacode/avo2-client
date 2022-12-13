@@ -1,10 +1,10 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { compact, isNil, uniq, without } from 'lodash-es';
 
 import { ContentTypeString } from '../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError, getEnv, toSeconds } from '../helpers';
-import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export class VideoStillService {
 	/**
@@ -18,16 +18,10 @@ export class VideoStillService {
 			if (!stillRequests || !stillRequests.length) {
 				return [];
 			}
-			const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/video-stills`, {
+			return fetchWithLogoutJson(`${getEnv('PROXY_URL')}/video-stills`, {
 				method: 'POST',
 				body: JSON.stringify(stillRequests),
-				credentials: 'include',
-				headers: {
-					'Content-Type': 'application/json',
-				},
 			});
-
-			return await response.json();
 		} catch (err) {
 			throw new CustomError('Failed to get video stills', err, { stillRequests });
 		}

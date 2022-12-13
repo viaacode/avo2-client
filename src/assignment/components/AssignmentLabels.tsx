@@ -1,11 +1,10 @@
+import { ColorOption } from '@meemoo/admin-core-ui';
 import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
-import { ValueType } from 'react-select';
 
-import { ColorSelect } from '../../admin/content-block/components/fields';
-import { ColorOption } from '../../admin/content-block/components/fields/ColorSelect/ColorSelect';
+import { ColorSelect } from '../../admin/content-page/components/ColorSelect/ColorSelect';
 import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
@@ -85,7 +84,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 			}));
 	};
 
-	const addAssignmentLabel = (labelOption: ValueType<{ label: string; value: string }, any>) => {
+	const addAssignmentLabel = (labelOption?: unknown) => {
 		if (!labelOption) {
 			ToastService.danger(
 				tHtml(

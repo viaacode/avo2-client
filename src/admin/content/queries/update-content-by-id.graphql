@@ -1,8 +1,0 @@
-mutation updateContentById($id: Int!, $contentPage: app_content_set_input!) {
-	update_app_content(
-		where: { id: { _eq: $id }, is_deleted: { _eq: false } }
-		_set: $contentPage
-	) {
-		affected_rows
-	}
-}

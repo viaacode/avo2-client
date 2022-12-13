@@ -1,8 +1,8 @@
+import { goToLoginBecauseOfUnauthorizedError } from '@meemoo/admin-core-ui';
 import ky from 'ky-universal';
 import { KyInstance } from 'ky/distribution/types/ky';
 
 import { getEnv } from '../../../../shared/helpers';
-import { goToLoginBecauseOfUnauthorizedError } from '../../../../shared/helpers/fetch-with-logout';
 
 export abstract class ApiService {
 	private static api: KyInstance | null = null;

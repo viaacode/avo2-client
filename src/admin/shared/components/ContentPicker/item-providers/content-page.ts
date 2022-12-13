@@ -1,6 +1,7 @@
+import { ContentPageInfo, DbContentPage } from '@meemoo/admin-core-ui';
+
 import { CustomError } from '../../../../../shared/helpers';
-import { ContentService } from '../../../../content/content.service';
-import { ContentPageDb, ContentPageInfo } from '../../../../content/content.types';
+import { ContentPageService } from '../../../../content-page/services/content-page.service';
 import { PickerSelectItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
@@ -10,9 +11,9 @@ export const retrieveContentPages = async (
 	limit = 5
 ): Promise<PickerSelectItem[]> => {
 	try {
-		const contentItems: Pick<ContentPageDb, 'path' | 'title'>[] | null = title
-			? await ContentService.getPublicContentItemsByTitle(`%${title}%`, limit)
-			: await ContentService.getPublicContentItems(limit);
+		const contentItems: Pick<DbContentPage, 'path' | 'title'>[] | null = title
+			? await ContentPageService.getPublicContentItemsByTitle(`%${title}%`, limit)
+			: await ContentPageService.getPublicContentItems(limit);
 
 		return parseContentPages(contentItems || []);
 	} catch (err) {
@@ -29,8 +30,8 @@ export const retrieveProjectContentPages = async (
 	limit = 5
 ): Promise<PickerSelectItem[]> => {
 	const contentItems: Partial<ContentPageInfo>[] | null = title
-		? await ContentService.getPublicProjectContentItemsByTitle(`%${title}%`, limit)
-		: await ContentService.getPublicProjectContentItems(limit);
+		? await ContentPageService.getPublicProjectContentItemsByTitle(`%${title}%`, limit)
+		: await ContentPageService.getPublicProjectContentItems(limit);
 
 	return parseContentPages(contentItems || []);
 };

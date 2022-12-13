@@ -1,12 +1,15 @@
-import { AdminConfig, LinkInfo, ToastInfo } from '@meemoo/admin-core-ui';
+import { AdminConfig, ContentBlockType, LinkInfo, ToastInfo } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import { Avo, DatabaseType } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
+import BlockSearch from '../../../search/components/BlockSearch';
+import MediaGridWrapper from '../../../search/components/MediaGridWrapper/MediaGridWrapper';
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
@@ -14,8 +17,6 @@ import { AssetsService } from '../../../shared/services/assets-service/assets.se
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
-import { PermissionsService } from '../services/permissions';
-import { ContentBlockType } from '../types';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
@@ -42,15 +43,9 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		tempAccess: null,
 	};
 
+	const proxyUrl = getEnv('PROXY_URL') as string;
+
 	return {
-		// navigation: {
-		// 	service: navigationService,
-		// 	views: {
-		// 		overview: {
-		// 			labels: { tableHeads: {} },
-		// 		},
-		// 	},
-		// },
 		staticPages: compact(
 			(Object.keys(APP_PATH) as RouteId[]).map((routeId) => {
 				if (APP_PATH[routeId].showInContentPicker) {
@@ -131,6 +126,10 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			],
 			flowplayer: FlowPlayerWrapper,
 		},
+		content_blocks: {
+			SEARCH: BlockSearch,
+			MEDIA_GRID: MediaGridWrapper,
+		},
 		services: {
 			toastService: {
 				showToast: (toastInfo: ToastInfo) => {
@@ -150,6 +149,9 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 					);
 				},
 			},
+			// Use the avo2-proxy to fetch content pages, so their media tile blocks are resolved
+			// https://app.diagrams.net/#G1WCrp76U14pGpajEplYlSVGiuWfEQpRqI
+			getContentPageByPathEndpoint: `${proxyUrl}/content-pages`,
 			i18n: { tHtml, tText },
 			educationOrganisationService: {
 				fetchEducationOrganisationName: () => Promise.resolve(null),
@@ -165,13 +167,11 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				clear: async (_key: string) => Promise.resolve(),
 			},
-			// UserGroupsService,
-			PermissionsService,
 			assetService: AssetsService,
 		},
 		database: {
 			databaseApplicationType: DatabaseType.avo,
-			proxyUrl: getEnv('PROXY_URL') as string,
+			proxyUrl,
 		},
 		flowplayer: {
 			FLOW_PLAYER_ID: getEnv('FLOW_PLAYER_ID') || '',
@@ -183,7 +183,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 		},
 		user: commonUser,
-		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
+		route_parts: ADMIN_CORE_ROUTE_PARTS,
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
 		},

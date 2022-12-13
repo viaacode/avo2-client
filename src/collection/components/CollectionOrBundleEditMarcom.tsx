@@ -1,4 +1,3 @@
-import { ValueOf } from '@meemoo/admin-core-ui';
 import {
 	BlockHeading,
 	Button,
@@ -28,6 +27,7 @@ import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
+import { ValueOf } from '../../shared/types';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,

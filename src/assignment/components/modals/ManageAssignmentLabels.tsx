@@ -1,3 +1,4 @@
+import { ColorOption } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	ButtonToolbar,
@@ -15,10 +16,8 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import { compact, get, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { ValueType } from 'react-select';
 
-import { ColorSelect } from '../../../admin/content-block/components/fields';
-import { ColorOption } from '../../../admin/content-block/components/fields/ColorSelect/ColorSelect';
+import { ColorSelect } from '../../../admin/content-page/components/ColorSelect/ColorSelect';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import { UserProps } from '../../../shared/hocs/withUser';
@@ -113,7 +112,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 
 	const handleRowColorChanged = (
 		assignmentLabel: Assignment_Label_v2,
-		newColor: ValueType<AssignmentLabelColor, any>
+		newColor?: ColorOption
 	) => {
 		if (!newColor) {
 			return;
@@ -198,7 +197,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 
 	const renderCell = (rowData: any, columnId: string) => {
 		const assignmentLabel = rowData as Assignment_Label_v2;
-		const colorOptions = assignmentLabelColors.map((assignmentLabelColor) => ({
+		const colorOptions: ColorOption[] = assignmentLabelColors.map((assignmentLabelColor) => ({
 			label: '',
 			value: assignmentLabelColor.value,
 			color: assignmentLabelColor.label,

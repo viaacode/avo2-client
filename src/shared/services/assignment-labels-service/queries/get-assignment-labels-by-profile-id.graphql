@@ -1,4 +1,7 @@
-query getAssignmentLabelsByProfileId($profileId: uuid!, $filters: [app_assignment_labels_v2_bool_exp!]) {
+query getAssignmentLabelsByProfileId(
+	$profileId: uuid!
+	$filters: [app_assignment_labels_v2_bool_exp!]
+) {
 	app_assignment_labels_v2(
 		where: { _and: [{ owner_profile_id: { _eq: $profileId } }, { _and: $filters }] }
 		order_by: { label: asc }
