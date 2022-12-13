@@ -10,7 +10,7 @@ import { APP_PATH, RouteId } from '../../../constants';
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
-import { AssetsService } from '../../../shared/services/assets-service/assets.service';
+import { FileUploadService } from '../../../shared/services/file-upload-service';
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
@@ -167,7 +167,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 			// UserGroupsService,
 			PermissionsService,
-			assetService: AssetsService,
+			assetService: FileUploadService,
 		},
 		database: {
 			databaseApplicationType: DatabaseType.avo,

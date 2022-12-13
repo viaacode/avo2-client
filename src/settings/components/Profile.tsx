@@ -353,7 +353,7 @@ const Profile: FunctionComponent<
 				return;
 			}
 			try {
-				await SettingsService.updateProfileInfo(getProfileFromUser(user), newProfileInfo);
+				await SettingsService.updateProfileInfo(newProfileInfo);
 			} catch (err) {
 				setIsSaving(false);
 				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
