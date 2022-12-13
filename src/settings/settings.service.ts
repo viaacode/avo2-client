@@ -13,8 +13,7 @@ import { dataService } from '../shared/services/data-service';
 
 export class SettingsService {
 	public static async updateProfileInfo(
-		profile: Avo.User.Profile | null,
-		variables: Partial<Avo.User.UpdateProfileValues>
+		profile: Partial<Avo.User.UpdateProfileValues>
 	): Promise<void> {
 		try {
 			if (!profile) {
@@ -23,12 +22,11 @@ export class SettingsService {
 
 			await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/profile`, {
 				method: 'POST',
-				body: JSON.stringify(variables),
+				body: JSON.stringify(profile),
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update profile information', err, {
 				profile,
-				variables,
 			});
 		}
 	}

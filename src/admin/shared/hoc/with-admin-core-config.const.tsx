@@ -13,7 +13,7 @@ import MediaGridWrapper from '../../../search/components/MediaGridWrapper/MediaG
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
-import { AssetsService } from '../../../shared/services/assets-service/assets.service';
+import { FileUploadService } from '../../../shared/services/file-upload-service';
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
@@ -166,7 +166,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				clear: async (_key: string) => Promise.resolve(),
 			},
-			assetService: AssetsService,
+			assetService: FileUploadService,
 		},
 		database: {
 			databaseApplicationType: DatabaseType.avo,
