@@ -22,12 +22,13 @@ import React, { FunctionComponent } from 'react';
 
 import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
-import { sanitizeHtml, stripHtml } from '../../../shared/helpers';
+import { stripHtml } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { InteractiveTourAction } from '../helpers/reducers';
 import { EditableStep, InteractiveTourEditActionType } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 
 export interface InteractiveTourEditStepProps {
 	step: EditableStep;
@@ -163,7 +164,12 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 						<Spacer margin="top-small">
 							{
 								(step.contentState
-									? stripHtml(sanitizeHtml(step.contentState.toHTML(), 'link'))
+									? stripHtml(
+											sanitizeHtml(
+												step.contentState.toHTML(),
+												SanitizePreset.link
+											)
+									  )
 									: step.content || ''
 								).length
 							}{' '}

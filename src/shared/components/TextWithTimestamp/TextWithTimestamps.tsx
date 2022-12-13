@@ -1,3 +1,4 @@
+import { SanitizePreset } from '@meemoo/admin-core-ui';
 import { setPlayingVideoSeekTime } from '@meemoo/react-components';
 import { convertToHtml } from '@viaa/avo2-components';
 import React, { FC, useCallback, useEffect, useRef } from 'react';
@@ -45,7 +46,7 @@ const TextWithTimestamps: FC<TextWithTimestampsProps> = ({ content }) => {
 			<Html
 				type="div"
 				className="c-content"
-				sanitizePreset="full"
+				sanitizePreset={SanitizePreset.full}
 				content={format(convertToHtml(content))}
 			/>
 		</div>

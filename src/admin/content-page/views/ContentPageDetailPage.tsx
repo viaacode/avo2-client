@@ -1,5 +1,5 @@
-import { CONTENT_PAGE_PATH, ContentPageDetail, ContentPageInfo } from '@meemoo/admin-core-ui';
-import { ContentPageDetailProps } from '@meemoo/admin-core-ui/dist/esm/react-admin/modules/content-page/views/ContentPageDetail';
+import { CONTENT_PAGE_PATH, ContentPageDetail } from '@meemoo/admin-core-ui';
+import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';

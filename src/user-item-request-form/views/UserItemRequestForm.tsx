@@ -22,7 +22,6 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { getFullName, isMobileWidth } from '../../shared/helpers';
 import { DOC_TYPES, isPhoto } from '../../shared/helpers/files';
-import { sanitizeHtml, sanitizePresets } from '../../shared/helpers/sanitize';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -159,27 +158,13 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 						'user-item-request-form/views/user-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan'
 					)}
 				</BlockHeading>
-				<p
-					dangerouslySetInnerHTML={{
-						__html: sanitizeHtml(
-							tText(
-								'user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in'
-							),
-							sanitizePresets.link
-						),
-					}}
-				/>
+				{tHtml(
+					'user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in'
+				)}
 				<Container mode="vertical">
-					<p
-						dangerouslySetInnerHTML={{
-							__html: sanitizeHtml(
-								tText(
-									'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
-								),
-								sanitizePresets.link
-							),
-						}}
-					/>
+					{tHtml(
+						'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
+					)}
 					<FormGroup>
 						<TextArea
 							id="description"

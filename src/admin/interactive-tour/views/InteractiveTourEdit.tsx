@@ -33,7 +33,7 @@ import {
 	GetInteractiveTourByIdDocument,
 	GetInteractiveTourByIdQuery,
 } from '../../../shared/generated/graphql-db-types';
-import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -67,6 +67,7 @@ import {
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 
 export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
@@ -242,7 +243,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		const clonedTour = cloneDeep(tour);
 		clonedTour.steps.forEach((step: EditableStep) => {
 			if (step.contentState) {
-				step.content = sanitizeHtml(step.contentState.toHTML(), 'link');
+				step.content = sanitizeHtml(step.contentState.toHTML(), SanitizePreset.link);
 				delete step.contentState;
 			}
 		});

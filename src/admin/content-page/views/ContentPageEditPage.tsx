@@ -1,5 +1,5 @@
 import { CONTENT_PAGE_PATH, ContentPageEdit } from '@meemoo/admin-core-ui';
-import { ContentPageDetailProps } from '@meemoo/admin-core-ui/dist/esm/react-admin/modules/content-page/views/ContentPageDetail';
+import type { ContentPageDetailProps } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent } from 'react';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';

@@ -1,3 +1,4 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	ButtonToolbar,
@@ -12,7 +13,6 @@ import { ModalPropsSchema } from '@viaa/avo2-components/src/components/Modal/Mod
 import { noop } from 'lodash';
 import React, { FunctionComponent, ReactNode } from 'react';
 
-import { sanitizeHtml } from '../../helpers';
 import useTranslation from '../../hooks/useTranslation';
 
 export interface ConfirmModalProps {
@@ -53,7 +53,7 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 						tText(
 							'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
 						),
-					'basic'
+					SanitizePreset.basic
 				)
 			}
 			size={size}

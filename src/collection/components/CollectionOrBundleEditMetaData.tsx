@@ -1,3 +1,4 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Column,
@@ -25,7 +26,7 @@ import {
 	WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION,
 	WYSIWYG_OPTIONS_DEFAULT_NO_TITLES,
 } from '../../shared/constants/wysiwyg';
-import { sanitizeHtml, stripHtml } from '../../shared/helpers';
+import { stripHtml } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
@@ -140,7 +141,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 															descriptionLongEditorState
 																? descriptionLongEditorState.toHTML()
 																: collection.description_long || '',
-															'link'
+															SanitizePreset.link
 														),
 													})
 												}

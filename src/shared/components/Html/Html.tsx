@@ -1,7 +1,5 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent } from 'react';
-
-import { sanitizeHtml } from '../../helpers';
-import { SanitizePreset } from '../../helpers/sanitize/presets';
 
 export interface HtmlProps {
 	content: string;
@@ -12,7 +10,7 @@ export interface HtmlProps {
 
 const Html: FunctionComponent<HtmlProps> = ({
 	content,
-	sanitizePreset = 'link',
+	sanitizePreset = SanitizePreset.link,
 	type = 'p',
 	className,
 }) => {

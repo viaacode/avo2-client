@@ -1,4 +1,4 @@
-import { Color } from '@meemoo/admin-core-ui';
+import { Color, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	BlockHeading,
 	Button,
@@ -33,7 +33,7 @@ import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWra
 import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
 import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../../shared/constants/quick-lane';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
-import { buildLink, CustomError, navigate, sanitizeHtml } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -261,7 +261,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				item.uid,
 				sanitizeHtml(
 					(noteEditorState ? noteEditorState.toHTML() : (item as any).note) || '',
-					'link'
+					SanitizePreset.link
 				) || null
 			);
 			ToastService.success(tHtml('admin/items/views/item-detail___opmerkingen-opgeslagen'));
