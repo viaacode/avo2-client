@@ -7,14 +7,15 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
+import BlockSearch from '../../../search/components/BlockSearch';
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { FileUploadService } from '../../../shared/services/file-upload-service';
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
+import { MediaGridWrapper } from '../../content-block/components';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
-import { PermissionsService } from '../services/permissions';
 import { ContentBlockType } from '../types';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
@@ -41,6 +42,8 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		permissions: user?.profile?.permissions as any[],
 		tempAccess: null,
 	};
+
+	const proxyUrl = getEnv('PROXY_URL') as string;
 
 	return {
 		// navigation: {
@@ -131,6 +134,10 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			],
 			flowplayer: FlowPlayerWrapper,
 		},
+		content_blocks: {
+			SEARCH: BlockSearch,
+			MEDIA_GRID: MediaGridWrapper,
+		},
 		services: {
 			toastService: {
 				showToast: (toastInfo: ToastInfo) => {
@@ -150,6 +157,9 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 					);
 				},
 			},
+			// Use the avo2-proxy to fetch content pages, so their media tile blocks are resolved
+			// https://app.diagrams.net/#G1WCrp76U14pGpajEplYlSVGiuWfEQpRqI
+			getContentPageByPathEndpoint: `${proxyUrl}/content-pages`,
 			i18n: { tHtml, tText },
 			educationOrganisationService: {
 				fetchEducationOrganisationName: () => Promise.resolve(null),
@@ -166,12 +176,12 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				clear: async (_key: string) => Promise.resolve(),
 			},
 			// UserGroupsService,
-			PermissionsService,
+			// PermissionsService,
 			assetService: FileUploadService,
 		},
 		database: {
 			databaseApplicationType: DatabaseType.avo,
-			proxyUrl: getEnv('PROXY_URL') as string,
+			proxyUrl,
 		},
 		flowplayer: {
 			FLOW_PLAYER_ID: getEnv('FLOW_PLAYER_ID') || '',
