@@ -1,3 +1,4 @@
+import { Color } from '@meemoo/admin-core-ui';
 import {
 	BlockHeading,
 	Column,
@@ -24,7 +25,6 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { compose } from 'redux';
 
-import { Color } from '../../admin/shared/types';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';

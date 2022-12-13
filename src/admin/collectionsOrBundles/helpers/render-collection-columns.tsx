@@ -47,9 +47,9 @@ export const renderCollectionOverviewColumns = (
 		case 'last_updated_by_profile': {
 			// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 			return (
-				rowData.updated_by?.user?.full_name ||
-				(rowData as any).last_editor.full_name ||
-				(rowData as any).last_editor_name ||
+				rowData?.updated_by?.user?.full_name ||
+				(rowData as any)?.last_editor?.full_name ||
+				(rowData as any)?.last_editor_name ||
 				'-'
 			);
 		}

@@ -1,22 +1,22 @@
-import { AdminConfig, LinkInfo, ToastInfo } from '@meemoo/admin-core-ui';
+import { AdminConfig, ContentBlockType, LinkInfo, ToastInfo } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import { Avo, DatabaseType } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
 import BlockSearch from '../../../search/components/BlockSearch';
+import MediaGridWrapper from '../../../search/components/MediaGridWrapper/MediaGridWrapper';
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { FileUploadService } from '../../../shared/services/file-upload-service';
 import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { MediaGridWrapper } from '../../content-block/components';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
-import { ContentBlockType } from '../types';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
@@ -46,14 +46,6 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const proxyUrl = getEnv('PROXY_URL') as string;
 
 	return {
-		// navigation: {
-		// 	service: navigationService,
-		// 	views: {
-		// 		overview: {
-		// 			labels: { tableHeads: {} },
-		// 		},
-		// 	},
-		// },
 		staticPages: compact(
 			(Object.keys(APP_PATH) as RouteId[]).map((routeId) => {
 				if (APP_PATH[routeId].showInContentPicker) {
@@ -169,14 +161,11 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			router: {
 				Link: InternalLink as FunctionComponent<LinkInfo>,
 				useHistory: useHistory,
-				useParams: useParams,
 			},
 			queryCache: {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				clear: async (_key: string) => Promise.resolve(),
 			},
-			// UserGroupsService,
-			// PermissionsService,
 			assetService: FileUploadService,
 		},
 		database: {
@@ -193,7 +182,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 		},
 		user: commonUser,
-		route_parts: Object.freeze(ADMIN_CORE_ROUTE_PARTS),
+		route_parts: ADMIN_CORE_ROUTE_PARTS,
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
 		},

@@ -26,7 +26,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 	dataObject,
 	render,
 }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const renderSpinner = () => (
 		<Container mode="vertical">
@@ -40,7 +40,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 		<ErrorView
 			message={
 				loadingInfo.message ||
-				tText(
+				tHtml(
 					'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-is-iets-mis-gegaan-bij-het-laden-van-de-gegevens'
 				)
 			}

@@ -1,3 +1,4 @@
+import { Color } from '@meemoo/admin-core-ui';
 import {
 	BlockHeading,
 	Button,
@@ -48,7 +49,6 @@ import {
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { Color } from '../../shared/types';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { ItemsService } from '../items.service';
 

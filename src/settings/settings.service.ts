@@ -1,3 +1,4 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 
@@ -8,41 +9,24 @@ import {
 	GetSubjectsQuery,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
-import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 import { dataService } from '../shared/services/data-service';
 
 export class SettingsService {
 	public static async updateProfileInfo(
-		variables: Partial<Avo.User.UpdateProfileValues>
+		profile: Partial<Avo.User.UpdateProfileValues>
 	): Promise<void> {
 		try {
-			const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/profile`, {
+			if (!profile) {
+				return;
+			}
+
+			await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/profile`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-				body: JSON.stringify(variables),
+				body: JSON.stringify(profile),
 			});
-
-			let body;
-
-			try {
-				body = await response.json();
-			} catch (err) {
-				// ignore errors since they are handled below using the status code
-			}
-
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError(
-					"Failed to update profile because response status wasn't in the valid range",
-					null,
-					{ response, body }
-				);
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update profile information', err, {
-				variables,
+				profile,
 			});
 		}
 	}

@@ -1,21 +1,22 @@
+import { CONTENT_PAGE_PATH } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import { every, isArray, some } from 'lodash-es';
 
 import { buildLink, CustomError } from '../shared/helpers';
 import { tText } from '../shared/helpers/translate';
-import { ContentPageService } from '../shared/services/content-page-service';
 import { ToastService } from '../shared/services/toast-service';
 import { NavigationItemInfo } from '../shared/types';
 
 import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
-import { CONTENT_PATH } from './content/content.const';
+import { ContentPageService } from './content-page/services/content-page.service';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';
 import { MENU_PATH } from './menu/menu.const';
 import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.const';
+import { ADMIN_CORE_ROUTE_PARTS } from './shared/constants/admin-core.routes';
 import { TRANSLATIONS_PATH } from './translations/translations.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
 import { USER_PATH } from './users/user.const';
@@ -25,7 +26,7 @@ export const ADMIN_PATH = Object.freeze({
 	...USER_PATH,
 	...USER_GROUP_PATH,
 	...MENU_PATH,
-	...CONTENT_PATH,
+	CONTENT_PAGE: { ...CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS) },
 	...CONTENT_PAGE_LABEL_PATH,
 	...TRANSLATIONS_PATH,
 	...COLLECTIONS_OR_BUNDLES_PATH,
@@ -116,7 +117,7 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 				page,
 			});
 		}
-		return buildLink(CONTENT_PATH.CONTENT_PAGE_DETAIL, { id: page.id });
+		return buildLink(CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).DETAIL, { id: page.id });
 	} catch (err) {
 		console.error(new CustomError('Failed to fetch content page by pad', err, { path }));
 		ToastService.danger(
@@ -143,7 +144,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 			userPermissions,
 			{
 				label: tText('admin/admin___content-paginas'),
-				location: ADMIN_PATH.CONTENT_PAGE_OVERVIEW,
+				location: ADMIN_PATH.CONTENT_PAGE.OVERVIEW,
 				key: 'content',
 				exact: false,
 				subLinks: [

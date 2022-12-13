@@ -30,7 +30,6 @@ import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQ
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -41,6 +40,7 @@ import { useUserGroups } from '../../user-groups/hooks';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	GET_COLLECTION_MARCOM_COLUMNS,
+	ITEMS_PER_PAGE,
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {

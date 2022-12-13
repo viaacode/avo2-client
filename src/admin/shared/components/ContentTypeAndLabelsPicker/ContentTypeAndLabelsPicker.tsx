@@ -8,19 +8,19 @@ import {
 	TagInfo,
 	TagsInput,
 } from '@viaa/avo2-components';
-import { compact, get, isNumber } from 'lodash-es';
+import { Avo } from '@viaa/avo2-types';
+import { compact, isNumber } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { CustomError } from '../../../../shared/helpers';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
 import { ContentPageLabel } from '../../../content-page-labels/content-page-label.types';
-import { ContentService } from '../../../content/content.service';
-import { ContentPageType } from '../../../content/content.types';
-import { useContentTypes } from '../../../content/hooks';
+import { useContentTypes } from '../../../content-page/hooks/useContentTypes';
+import { ContentPageService } from '../../../content-page/services/content-page.service';
 
 export interface ContentTypeAndLabelsValue {
-	selectedContentType: ContentPageType;
+	selectedContentType: Avo.ContentPage.Type;
 	selectedLabels: number[] | null;
 }
 
@@ -32,7 +32,7 @@ export interface ContentTypeAndLabelsProps {
 
 export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsProps> = ({
 	value = {
-		selectedContentType: ContentPageType.Project,
+		selectedContentType: 'PROJECT',
 		selectedLabels: null,
 	},
 	onChange,
@@ -46,7 +46,7 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 
 	useEffect(() => {
 		setIsLoading(true);
-		ContentService.fetchLabelsByContentType(value.selectedContentType)
+		ContentPageService.fetchLabelsByContentType(value.selectedContentType)
 			.then(setLabels)
 			.catch((err: any) => {
 				console.error(
@@ -69,14 +69,14 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 
 	const handleContentTypeChanged = (selectedValue: string) => {
 		onChange({
-			selectedContentType: selectedValue as ContentPageType,
+			selectedContentType: selectedValue as Avo.ContentPage.Type,
 			selectedLabels: null,
 		});
 	};
 
 	const handleLabelsChanged = (newSelectedLabels: TagInfo[]) => {
 		onChange({
-			selectedContentType: get(value, 'selectedContentType') as ContentPageType,
+			selectedContentType: value.selectedContentType,
 			selectedLabels: (newSelectedLabels || []).map(
 				(labelOption) => labelOption.value as number
 			),
@@ -117,7 +117,7 @@ export const ContentTypeAndLabelsPicker: FunctionComponent<ContentTypeAndLabelsP
 						'admin/content/components/content-picker/content-picker___type'
 					)}
 					options={contentTypes}
-					value={get(value, 'selectedContentType')}
+					value={value.selectedContentType}
 					loading={isLoadingContentTypes}
 					onChange={handleContentTypeChanged}
 				/>

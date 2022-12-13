@@ -9,6 +9,7 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 
@@ -21,8 +22,7 @@ import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import { ContentPageType } from '../../content/content.types';
-import { useContentTypes } from '../../content/hooks';
+import { useContentTypes } from '../../content-page/hooks/useContentTypes';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
@@ -217,7 +217,8 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 										onChange={(newContentType) =>
 											setContentPageLabelInfo({
 												...contentPageLabelInfo,
-												content_type: newContentType as ContentPageType,
+												content_type:
+													newContentType as Avo.ContentPage.Type,
 											})
 										}
 									/>

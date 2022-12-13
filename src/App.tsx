@@ -13,6 +13,7 @@ import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';
+import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
 import { SpecialUserGroup } from './admin/user-groups/user-group.const';
 import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
@@ -120,7 +121,7 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	);
 };
 
-const AppWithRouter = compose(withRouter, withUser)(App) as FunctionComponent;
+const AppWithRouter = compose(withRouter, withUser, withAdminCoreConfig)(App) as FunctionComponent;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 

@@ -1,7 +1,0 @@
-mutation insertContentBlocks($contentBlocks: [app_content_blocks_insert_input!]!) {
-	insert_app_content_blocks(objects: $contentBlocks) {
-		returning {
-			id
-		}
-	}
-}
