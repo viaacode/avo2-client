@@ -102,6 +102,10 @@ import {
 	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers/generators/spotlight';
 import {
+	INITIAL_UITGEKLAARD_BLOCK_STATE,
+	UITGEKLAARD_BLOCK_CONFIG,
+} from './helpers/generators/uitgeklaard';
+import {
 	INITIAL_USP_GRID_COMPONENTS_STATE,
 	USP_GRID_BLOCK_CONFIG,
 } from './helpers/generators/usp-grid';
@@ -148,6 +152,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 	{
 		label: i18n.t('admin/content-block/content-block___klaar'),
 		value: ContentBlockType.Klaar,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___uitgeklaard-titel-datum'),
+		value: ContentBlockType.Uitgeklaard,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___media-tegels'),
@@ -258,6 +266,7 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.LogoGrid]: LOGO_GRID_BLOCK_CONFIG,
 	[ContentBlockType.UspGrid]: USP_GRID_BLOCK_CONFIG,
 	[ContentBlockType.Eventbrite]: EVENTBRITE_BLOCK_CONFIG,
+	[ContentBlockType.Uitgeklaard]: UITGEKLAARD_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
@@ -290,6 +299,7 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 	[ContentBlockType.LogoGrid]: INITIAL_LOGO_GRID_COMPONENTS_STATE,
 	[ContentBlockType.UspGrid]: INITIAL_USP_GRID_COMPONENTS_STATE,
 	[ContentBlockType.Eventbrite]: INITIAL_EVENTBRITE_COMPONENTS_STATE,
+	[ContentBlockType.Uitgeklaard]: INITIAL_UITGEKLAARD_BLOCK_STATE,
 };
 
 // Options
