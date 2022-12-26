@@ -12,12 +12,12 @@ import {
 
 import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
 
-export const INITIAL_KLAAR_COMPONENTS_STATE = (): KlaarBlockComponentState => ({
+export const INITIAL_UITGEKLAARD_COMPONENTS_STATE = (): KlaarBlockComponentState => ({
 	titles: [''],
 	date: '',
 });
 
-export const INITIAL_KLAAR_BLOCK_STATE = (): DefaultContentBlockState =>
+export const INITIAL_UITGEKLAARD_BLOCK_STATE = (): DefaultContentBlockState =>
 	BLOCK_STATE_DEFAULTS({
 		padding: {
 			top: 'none',
@@ -25,29 +25,29 @@ export const INITIAL_KLAAR_BLOCK_STATE = (): DefaultContentBlockState =>
 		},
 	});
 
-export const KLAAR_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
+export const UITGEKLAARD_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
-	name: i18n.t('admin/content-block/helpers/generators/klaar___klaar'),
-	type: ContentBlockType.Klaar,
+	name: i18n.t('admin/content-block/helpers/generators/uitgeklaard___uitgeklaard'),
+	type: ContentBlockType.Uitgeklaard,
 	components: {
-		name: i18n.t('admin/content-block/helpers/generators/klaar___klaar-titel'),
+		name: i18n.t('admin/content-block/helpers/generators/uitgeklaard___uitgeklaard-titel'),
 		limits: {
 			max: 3,
 		},
-		state: INITIAL_KLAAR_COMPONENTS_STATE(),
+		state: INITIAL_UITGEKLAARD_COMPONENTS_STATE(),
 		fields: {
 			titles: TEXT_FIELD(
-				i18n.t('admin/content-block/helpers/generators/klaar___titel-is-verplicht'),
+				i18n.t('admin/content-block/helpers/generators/uitgeklaard___titel-is-verplicht'),
 				{
-					label: i18n.t('admin/content-block/helpers/generators/klaar___titel'),
+					label: i18n.t('admin/content-block/helpers/generators/uitgeklaard___titel'),
 					editorType: ContentBlockEditor.TextInput,
 					repeat: {
 						defaultState: '',
 						addButtonLabel: i18n.t(
-							'admin/content-block/helpers/generators/klaar___voeg-titel-toe'
+							'admin/content-block/helpers/generators/uitgeklaard___voeg-titel-toe'
 						),
 						deleteButtonLabel: i18n.t(
-							'admin/content-block/helpers/generators/klaar___verwijder-titel'
+							'admin/content-block/helpers/generators/uitgeklaard___verwijder-titel'
 						),
 					},
 				}
@@ -61,7 +61,7 @@ export const KLAAR_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 					if (isNil(value) || isEmpty(value)) {
 						errorArray.push(
 							i18n.t(
-								'admin/content-block/helpers/generators/klaar___datum-is-verplicht'
+								'admin/content-block/helpers/generators/uitgeklaard___datum-is-verplicht'
 							)
 						);
 					}
@@ -72,7 +72,7 @@ export const KLAAR_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 		},
 	},
 	block: {
-		state: INITIAL_KLAAR_BLOCK_STATE(),
+		state: INITIAL_UITGEKLAARD_BLOCK_STATE(),
 		fields: {
 			...BLOCK_FIELD_DEFAULTS(),
 		},

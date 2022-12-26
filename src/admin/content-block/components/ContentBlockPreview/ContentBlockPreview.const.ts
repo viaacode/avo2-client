@@ -7,6 +7,7 @@ import {
 	BlockKlaar,
 	BlockQuote,
 	BlockSpotlight,
+	BlockUitgeklaard,
 } from '@viaa/avo2-components';
 
 import BlockSearch from '../../../../search/components/BlockSearch';
@@ -52,6 +53,7 @@ export const COMPONENT_PREVIEW_MAP = Object.freeze({
 	[ContentBlockType.LogoGrid]: BlockLogoGridWrapper,
 	[ContentBlockType.UspGrid]: BlockUspGridWrapper,
 	[ContentBlockType.Eventbrite]: BlockEventbrite,
+	[ContentBlockType.Uitgeklaard]: BlockUitgeklaard,
 });
 
 export const REPEATABLE_CONTENT_BLOCKS = [

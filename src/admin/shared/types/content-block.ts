@@ -114,6 +114,7 @@ export enum ContentBlockType {
 	LogoGrid = 'LOGO_GRID',
 	UspGrid = 'USP_GRID',
 	Eventbrite = 'EVENTBRITE',
+	Uitgeklaard = 'UITGEKLAARD',
 }
 
 export enum ContentBlockEditor {
@@ -256,6 +257,7 @@ export interface IntroBlockComponentState {
 	align: AlignOption;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface IFrameBlockComponentState {
 	title: string;
 	src: string;
@@ -345,7 +347,7 @@ export type SingleContentBlockComponentState =
 	| PageOverviewBlockComponentStateFields
 	| QuoteBlockComponentState
 	| RichTextBlockComponentState
-	| {}; // Search block & content page meta
+	| Record<string, any>; // Search block & content page meta
 
 export type ContentBlockComponentState =
 	| RepeatedContentBlockComponentState[]
