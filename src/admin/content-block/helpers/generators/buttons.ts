@@ -26,7 +26,7 @@ export const INITIAL_BUTTONS_BLOCK_STATE = (): DefaultContentBlockState =>
 		},
 	});
 
-export const BUTTONS_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const BUTTONS_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/buttons___knoppen'),
 	type: ContentBlockType.Buttons,

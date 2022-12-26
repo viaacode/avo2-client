@@ -47,7 +47,7 @@ export const INITIAL_HERO_BLOCK_STATE = (): DefaultContentBlockState => ({
 	backgroundColor: Color.NightBlue,
 });
 
-export const HERO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const HERO_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/hero___hero'),
 	type: ContentBlockType.Hero,
