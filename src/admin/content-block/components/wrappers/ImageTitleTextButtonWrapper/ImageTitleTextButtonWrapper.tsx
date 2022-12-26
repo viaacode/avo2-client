@@ -48,7 +48,6 @@ export const ImageTitleTextButtonWrapper: FC<
 					generateSmartLink(
 						buttonAction,
 						<Button icon={buttonIcon} label={buttonLabel} type={buttonType} />,
-						buttonLabel,
 						buttonAltTitle || buttonLabel
 					)}
 			</Column>

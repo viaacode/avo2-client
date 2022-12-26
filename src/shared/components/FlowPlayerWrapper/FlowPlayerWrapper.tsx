@@ -26,7 +26,6 @@ import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService, ToastService } from '../../services';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
-import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
 
 import './FlowPlayerWrapper.scss';
 
@@ -133,12 +132,6 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				[playingSrc]: true,
 			});
 		}
-
-		SmartschoolAnalyticsService.triggerVideoPlayEvent(
-			props.title || get(item, 'title'),
-			props.external_id || get(item, 'external_id'),
-			toSeconds(props.duration || get(item, 'duration'), true) || undefined
-		);
 	};
 
 	const handlePosterClicked = () => {

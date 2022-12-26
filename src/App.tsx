@@ -27,7 +27,6 @@ import Html from './shared/components/Html/Html';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
-import { insideIframe } from './shared/helpers/inside-iframe';
 import withUser, { UserProps } from './shared/hocs/withUser';
 import { dataService, ToastService } from './shared/services';
 import { waitForTranslations } from './shared/translations/i18n';
@@ -76,7 +75,6 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 
 	// Render
 	const renderApp = () => {
-		const isInsideIframe = insideIframe();
 		const isLoginRoute = props.location.pathname === APP_PATH.LOGIN.route;
 
 		return (
@@ -100,8 +98,8 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 					<>
 						{!isLoginRoute && <Navigation {...props} />}
 						{renderRoutes()}
-						{!isLoginRoute && !isInsideIframe && <Footer {...props} />}
-						{!isInsideIframe && <ZendeskWrapper />}
+						{!isLoginRoute && <Footer {...props} />}
+						<ZendeskWrapper />
 						<ACMIDMNudgeModal />
 					</>
 				)}
