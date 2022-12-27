@@ -1,7 +1,3 @@
-import { StringMap } from 'i18next';
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	Column,
@@ -9,12 +5,16 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	Image,
 	Spacer,
 	TagInfo,
 	TextArea,
 } from '@viaa/avo2-components';
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import { Avo } from '@viaa/avo2-types';
+import { StringMap } from 'i18next';
+import React, { FunctionComponent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
 	EducationLevelsField,
@@ -197,22 +197,32 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										labelFor="coverImageId"
 									>
 										{isCollection ? (
-											<Button
-												type="secondary"
-												label={t(
-													'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
+											<>
+												<Button
+													type="secondary"
+													label={t(
+														'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
+													)}
+													title={
+														isCollection
+															? t(
+																	'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-collectie'
+															  )
+															: t(
+																	'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-bundel'
+															  )
+													}
+													onClick={() =>
+														setCollectionsStillsModalOpen(true)
+													}
+												/>
+												{collection.thumbnail_path && (
+													<Image
+														className="u-spacer-top"
+														src={collection.thumbnail_path}
+													/>
 												)}
-												title={
-													isCollection
-														? t(
-																'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-collectie'
-														  )
-														: t(
-																'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-bundel'
-														  )
-												}
-												onClick={() => setCollectionsStillsModalOpen(true)}
-											/>
+											</>
 										) : (
 											<FileUpload
 												label={t(
@@ -251,7 +261,17 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 			</Container>
 			<CollectionStillsModal
 				isOpen={isCollectionsStillsModalOpen}
-				onClose={() => setCollectionsStillsModalOpen(false)}
+				onClose={(updated) => {
+					setCollectionsStillsModalOpen(false);
+
+					if (collection.thumbnail_path !== updated.thumbnail_path) {
+						changeCollectionState({
+							type: 'UPDATE_COLLECTION_PROP',
+							collectionProp: 'thumbnail_path',
+							collectionPropValue: updated.thumbnail_path,
+						});
+					}
+				}}
 				collection={collection}
 			/>
 		</>
