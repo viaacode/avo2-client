@@ -112,11 +112,12 @@ export const MEDIA_PLAYER_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (position = 0): Conte
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
 			},
-			buttonAltTitle: TEXT_FIELD('', {
+			buttonAltTitle: TEXT_FIELD(undefined, {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/media-player-title-text-button___alt-title-text'
 				),
 				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
 			}),
 			buttonIcon: {
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-icoon'),

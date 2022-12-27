@@ -36,6 +36,7 @@ export const EVENTBRITE_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 			eventId: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/eventbrite___event-id'),
 				editorType: ContentBlockEditor.TextInput,
+				validator: undefined,
 			}),
 			type: {
 				label: i18n.t('admin/content-block/helpers/generators/buttons___type'),

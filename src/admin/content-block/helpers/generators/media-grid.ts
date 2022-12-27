@@ -58,12 +58,12 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 					allowedTypes: ['ITEM', 'COLLECTION', 'BUNDLE'] as ContentPickerType[],
 				},
 			},
-			buttonLabel: TEXT_FIELD('', {
+			buttonLabel: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			buttonAltTitle: TEXT_FIELD('', {
+			buttonAltTitle: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
@@ -91,19 +91,19 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	block: {
 		state: INITIAL_MEDIA_GRID_BLOCK_STATE(),
 		fields: {
-			title: TEXT_FIELD('', {
+			title: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___algemene-titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			buttonLabel: TEXT_FIELD('', {
+			buttonLabel: TEXT_FIELD(undefined, {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/media-grid___algemene-knop-tekst'
 				),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			buttonAltTitle: TEXT_FIELD('', {
+			buttonAltTitle: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
@@ -144,7 +144,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 					),
 				} as CheckboxProps,
 			},
-			ctaTitle: TEXT_FIELD('', {
+			ctaTitle: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
@@ -161,7 +161,7 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 					options: GET_FULL_HEADING_TYPE_OPTIONS(),
 				},
 			},
-			ctaContent: TEXT_FIELD('', {
+			ctaContent: TEXT_FIELD(undefined, {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/media-grid___cta-omschrijving'
 				),
@@ -171,12 +171,12 @@ export const MEDIA_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 			ctaContentColor: FOREGROUND_COLOR_FIELD(
 				i18n.t('admin/content-block/helpers/generators/media-grid___cta-omschrijving-kleur')
 			),
-			ctaButtonLabel: TEXT_FIELD('', {
+			ctaButtonLabel: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/media-grid___cta-knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			ctaButtonAltTitle: TEXT_FIELD('', {
+			ctaButtonAltTitle: TEXT_FIELD(undefined, {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/media-grid___alt-button-title-text'
 				),

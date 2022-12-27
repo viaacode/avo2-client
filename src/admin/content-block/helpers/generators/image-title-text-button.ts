@@ -51,7 +51,7 @@ export const IMAGE_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (position = 0): ContentBlock
 				label: i18n.t('Link achter de afbeelding'),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
-			imageAlt: TEXT_FIELD('', {
+			imageAlt: TEXT_FIELD(undefined, {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/image-title-text-button___alt-tekst-voor-de-afbeelding'
 				),
@@ -69,7 +69,7 @@ export const IMAGE_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (position = 0): ContentBlock
 					),
 				},
 			},
-			headingTitle: TEXT_FIELD('', {
+			headingTitle: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/heading___titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
@@ -93,7 +93,7 @@ export const IMAGE_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (position = 0): ContentBlock
 				label: i18n.t('admin/content-block/helpers/generators/ctas___knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
 			},
-			buttonAltTitle: TEXT_FIELD('', {
+			buttonAltTitle: TEXT_FIELD(undefined, {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/media-player-title-text-button___alt-title-text'
 				),

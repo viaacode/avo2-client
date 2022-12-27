@@ -68,27 +68,27 @@ export const IMAGE_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 					} as FileUploadProps,
 				}
 			),
-			title: TEXT_FIELD('', {
+			title: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___titel'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			text: TEXT_FIELD('', {
+			text: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___tekst'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			buttonLabel: TEXT_FIELD('', {
+			buttonLabel: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tekst'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			buttonAltTitle: TEXT_FIELD('', {
+			buttonAltTitle: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___alt-title-text'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,
 			}),
-			buttonTitle: TEXT_FIELD('', {
+			buttonTitle: TEXT_FIELD(undefined, {
 				label: i18n.t('admin/content-block/helpers/generators/image-grid___knop-tooltip'),
 				editorType: ContentBlockEditor.TextInput,
 				validator: undefined,

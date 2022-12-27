@@ -52,7 +52,7 @@ export const LOGO_GRID_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 		name: i18n.t('admin/content-block/helpers/generators/image-grid___item'),
 		state: INITIAL_LOGO_GRID_COMPONENTS_STATE(),
 		fields: {
-			textAbove: TEXT_FIELD('', {
+			textAbove: TEXT_FIELD(undefined, {
 				label: i18n.t(
 					'admin/content-block/helpers/generators/logo-grid___tekst-boven-afbeelding'
 				),
