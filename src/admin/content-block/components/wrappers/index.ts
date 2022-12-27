@@ -9,3 +9,4 @@ export { default as BlockUspGridWrapper } from './UspGridWrapper/UspGridWrapper'
 export { default as ContentPageMeta } from './ContentPageMeta/ContentPageMeta';
 export { default as HeroWrapper } from './HeroWrapper/HeroWrapper';
 export { default as CtaWrapper } from './CtaWrapper/CtaWrapper';
+export { default as ImageTitleTextButtonWrapper } from './ImageTitleTextButtonWrapper/ImageTitleTextButtonWrapper';

@@ -21,7 +21,7 @@ export const INITIAL_INTRO_BLOCK_STATE = (): DefaultContentBlockState =>
 		padding: { top: 'top-extra-large', bottom: 'bottom-small' },
 	});
 
-export const INTRO_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const INTRO_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/intro___intro'),
 	type: ContentBlockType.Intro,

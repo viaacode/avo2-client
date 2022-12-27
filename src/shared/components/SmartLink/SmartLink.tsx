@@ -5,17 +5,13 @@ import queryString from 'query-string';
 import React, { FunctionComponent, ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { BUNDLE_PATH } from '../../../bundle/bundle.const';
 import { APP_PATH } from '../../../constants';
 import { buildLink, getEnv } from '../../helpers';
-import { insideIframe } from '../../helpers/inside-iframe';
-import { SmartschoolAnalyticsService } from '../../services/smartschool-analytics-service';
 
 export interface SmartLinkProps {
 	action?: ButtonAction | null;
 	removeStyles?: boolean;
-	label?: string;
 	title?: string;
 	children: ReactNode;
 }
@@ -23,14 +19,9 @@ export interface SmartLinkProps {
 const SmartLink: FunctionComponent<SmartLinkProps> = ({
 	action,
 	removeStyles = true,
-	label,
 	title,
 	children,
 }) => {
-	const handleAdditionalTriggers = (url: string) => {
-		SmartschoolAnalyticsService.triggerUrlEvent(toAbsoluteUrl(url), label);
-	};
-
 	const renderLink = (
 		url: string,
 		target: LinkTarget = LinkTarget.Self
@@ -51,7 +42,6 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							target="_self"
 							className={classnames({ 'a-link__no-styles': removeStyles })}
 							title={title}
-							onClick={() => handleAdditionalTriggers(fullUrl)}
 						>
 							{children}
 						</a>
@@ -62,7 +52,6 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 					<Link
 						to={fullUrl}
 						className={classnames({ 'a-link__no-styles': removeStyles })}
-						onClick={() => handleAdditionalTriggers(fullUrl)}
 						title={title}
 					>
 						{children}
@@ -80,7 +69,6 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 							target="_blank"
 							rel="noopener noreferrer"
 							className={classnames({ 'a-link__no-styles': removeStyles })}
-							onClick={() => handleAdditionalTriggers(fullUrl)}
 							title={title}
 						>
 							{children}
@@ -94,7 +82,6 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 						target="_blank"
 						rel="noopener noreferrer"
 						className={classnames({ 'a-link__no-styles': removeStyles })}
-						onClick={() => handleAdditionalTriggers(fullUrl)}
 						title={title}
 					>
 						{children}
@@ -111,37 +98,31 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 				return <>{children}</>;
 			}
 
-			let resolvedTarget = target;
-			if (insideIframe()) {
-				// Klaar page inside smartschool iframe must open all links in new window: https://meemoo.atlassian.net/browse/AVO-1354
-				resolvedTarget = LinkTarget.Blank;
-			}
-
 			switch (type as ContentPickerType) {
 				case 'INTERNAL_LINK':
 				case 'CONTENT_PAGE':
 				case 'PROJECTS':
-					return renderLink(String(value), resolvedTarget);
+					return renderLink(String(value), target);
 
 				case 'COLLECTION': {
 					const collectionUrl = buildLink(APP_PATH.COLLECTION_DETAIL.route, {
 						id: value as string,
 					});
-					return renderLink(collectionUrl, resolvedTarget);
+					return renderLink(collectionUrl, target);
 				}
 
 				case 'ITEM': {
 					const itemUrl = buildLink(APP_PATH.ITEM_DETAIL.route, {
 						id: value,
 					});
-					return renderLink(itemUrl, resolvedTarget);
+					return renderLink(itemUrl, target);
 				}
 
 				case 'BUNDLE': {
 					const bundleUrl = buildLink(BUNDLE_PATH.BUNDLE_DETAIL, {
 						id: value,
 					});
-					return renderLink(bundleUrl, resolvedTarget);
+					return renderLink(bundleUrl, target);
 				}
 
 				case 'EXTERNAL_LINK': {
@@ -149,14 +130,14 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 						'{{PROXY_URL}}',
 						getEnv('PROXY_URL') || ''
 					);
-					return renderLink(externalUrl, resolvedTarget);
+					return renderLink(externalUrl, target);
 				}
 
 				case 'ANCHOR_LINK': {
 					const urlWithoutQueryOrAnchor = window.location.href
 						.split('?')[0]
 						.split('#')[0];
-					return renderLink(`${urlWithoutQueryOrAnchor}#${value}`, resolvedTarget);
+					return renderLink(`${urlWithoutQueryOrAnchor}#${value}`, target);
 				}
 
 				case 'FILE':
@@ -177,7 +158,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 								)
 							)
 						),
-						resolvedTarget
+						target
 					);
 				}
 

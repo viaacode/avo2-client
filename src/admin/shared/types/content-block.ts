@@ -114,6 +114,8 @@ export enum ContentBlockType {
 	LogoGrid = 'LOGO_GRID',
 	UspGrid = 'USP_GRID',
 	Eventbrite = 'EVENTBRITE',
+	Uitgeklaard = 'UITGEKLAARD',
+	ImageTitleTextButton = 'IMAGE_TITLE_TEXT_BUTTON',
 }
 
 export enum ContentBlockEditor {
@@ -256,6 +258,7 @@ export interface IntroBlockComponentState {
 	align: AlignOption;
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface IFrameBlockComponentState {
 	title: string;
 	src: string;
@@ -275,18 +278,29 @@ export interface MediaPlayerBlockComponentState {
 }
 
 export interface MediaPlayerTitleTextButtonBlockComponentState {
-	mediaTitle: string;
-	mediaItem?: ButtonAction;
-	headingType: HeadingTypeOption;
-	headingTitle: string;
-	content: string;
-	buttonLabel: string;
-	buttonIcon?: IconName;
-	buttonType?: ButtonType;
-	buttonAction?: ButtonAction;
 	align: AlignOption;
+	buttonAction?: ButtonAction;
+	buttonAltTitle?: string;
+	buttonIcon?: IconName;
+	buttonLabel: string;
+	buttonType?: ButtonType;
+	content: string;
+	headingTitle: string;
+	headingType: HeadingTypeOption;
 	mediaAutoplay: boolean;
+	mediaItem?: ButtonAction;
+	mediaTitle: string;
 }
+
+export type ImageTitleTextButtonBlockComponentState = Omit<
+	MediaPlayerTitleTextButtonBlockComponentState,
+	'mediaTitle' | 'mediaAutoplay' | 'align'
+> & {
+	imageAction?: ButtonAction;
+	imageAlt?: string;
+	imagePosition?: Omit<AlignOption, 'center'>;
+	imageSource?: string;
+};
 
 export interface MediaGridBlockComponentState {
 	mediaItem?: ButtonAction;
@@ -345,7 +359,7 @@ export type SingleContentBlockComponentState =
 	| PageOverviewBlockComponentStateFields
 	| QuoteBlockComponentState
 	| RichTextBlockComponentState
-	| {}; // Search block & content page meta
+	| Record<string, any>; // Search block & content page meta
 
 export type ContentBlockComponentState =
 	| RepeatedContentBlockComponentState[]

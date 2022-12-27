@@ -30,7 +30,7 @@ export const INITIAL_HEADING_BLOCK_STATE = (): DefaultContentBlockState =>
 		},
 	});
 
-export const HEADING_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => ({
+export const HEADING_BLOCK_CONFIG = (position = 0): ContentBlockConfig => ({
 	position,
 	name: i18n.t('admin/content-block/helpers/generators/heading___titel'),
 	type: ContentBlockType.Heading,

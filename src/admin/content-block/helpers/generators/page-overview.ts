@@ -49,7 +49,7 @@ export const INITIAL_PAGE_OVERVIEW_BLOCK_STATE = (): DefaultContentBlockState =>
 	};
 };
 
-export const PAGE_OVERVIEW_BLOCK_CONFIG = (position: number = 0): ContentBlockConfig => {
+export const PAGE_OVERVIEW_BLOCK_CONFIG = (position = 0): ContentBlockConfig => {
 	return {
 		position,
 		name: i18n.t('admin/content-block/helpers/generators/page-overview___pagina-overzicht'),

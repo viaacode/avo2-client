@@ -37,7 +37,6 @@ import {
 } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import { AppState } from '../../../store';
-import { insideIframe } from '../../helpers/inside-iframe';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import { ToastService } from '../../services';
 import {
@@ -48,7 +47,7 @@ import {
 import { NavigationItemInfo } from '../../types';
 
 import './Navigation.scss';
-import NavigationItem from './NavigationItem';
+import { default as NavigationItem } from './NavigationItem';
 
 export interface NavigationParams extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
@@ -238,25 +237,6 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 		}
 	};
 
-	const isInsideIframe = insideIframe();
-
-	if (isInsideIframe) {
-		return (
-			<Navbar background="inverse" position="fixed" placement="top">
-				<Container mode="horizontal">
-					<Toolbar>
-						<ToolbarLeft>
-							<ToolbarItem>
-								<h1 className="c-brand">
-									<AvoLogo />
-								</h1>
-							</ToolbarItem>
-						</ToolbarLeft>
-					</Toolbar>
-				</Container>
-			</Navbar>
-		);
-	}
 	return (
 		<>
 			<Navbar background="inverse" position="fixed" placement="top">

@@ -1,0 +1,19 @@
+$component: 'c-image-title-text-button-wrapper';
+
+.#{$component} {
+	&--image {
+		&-right {
+			@media screen and (max-width: $o-grid-bp2) {
+				flex-direction: column-reverse;
+
+				> *:first-child {
+					margin-top: $g-spacer-unit * 2;
+				}
+			}
+
+			@media screen and (min-width: ($o-grid-bp2)) {
+				flex-direction: row-reverse;
+			}
+		}
+	}
+}

@@ -61,6 +61,10 @@ import {
 	IMAGE_GRID_BLOCK_CONFIG,
 	INITIAL_IMAGE_GRID_COMPONENTS_STATE,
 } from './helpers/generators/image-grid';
+import {
+	IMAGE_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
+	INITIAL_IMAGE_TITLE_TEXT_BUTTON_BLOCK_STATE,
+} from './helpers/generators/image-title-text-button';
 import { INITIAL_INTRO_COMPONENTS_STATE, INTRO_BLOCK_CONFIG } from './helpers/generators/intro';
 import { INITIAL_KLAAR_COMPONENTS_STATE, KLAAR_BLOCK_CONFIG } from './helpers/generators/klaar';
 import {
@@ -101,6 +105,10 @@ import {
 	INITIAL_SPOTLIGHT_COMPONENTS_STATE,
 	SPOTLIGHT_BLOCK_CONFIG,
 } from './helpers/generators/spotlight';
+import {
+	INITIAL_UITGEKLAARD_BLOCK_STATE,
+	UITGEKLAARD_BLOCK_CONFIG,
+} from './helpers/generators/uitgeklaard';
 import {
 	INITIAL_USP_GRID_COMPONENTS_STATE,
 	USP_GRID_BLOCK_CONFIG,
@@ -150,6 +158,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 		value: ContentBlockType.Klaar,
 	},
 	{
+		label: i18n.t('admin/content-block/content-block___uitgeklaard-titel-datum'),
+		value: ContentBlockType.Uitgeklaard,
+	},
+	{
 		label: i18n.t('admin/content-block/content-block___media-tegels'),
 		value: ContentBlockType.MediaGrid,
 	},
@@ -160,6 +172,10 @@ export const GET_CONTENT_BLOCK_TYPE_OPTIONS: () => SelectOption<string>[] = () =
 	{
 		label: i18n.t('admin/content-block/content-block___media-speler-met-titel-tekst-en-knop'),
 		value: ContentBlockType.MediaPlayerTitleTextButton,
+	},
+	{
+		label: i18n.t('admin/content-block/content-block___afbeelding-met-titel-tekst-en-knop'),
+		value: ContentBlockType.ImageTitleTextButton,
 	},
 	{
 		label: i18n.t('admin/content-block/content-block___afbeelding'),
@@ -258,6 +274,8 @@ export const CONTENT_BLOCK_CONFIG_MAP = {
 	[ContentBlockType.LogoGrid]: LOGO_GRID_BLOCK_CONFIG,
 	[ContentBlockType.UspGrid]: USP_GRID_BLOCK_CONFIG,
 	[ContentBlockType.Eventbrite]: EVENTBRITE_BLOCK_CONFIG,
+	[ContentBlockType.Uitgeklaard]: UITGEKLAARD_BLOCK_CONFIG,
+	[ContentBlockType.ImageTitleTextButton]: IMAGE_TITLE_TEXT_BUTTON_BLOCK_CONFIG,
 };
 
 export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
@@ -290,6 +308,8 @@ export const CONTENT_BLOCK_INITIAL_STATE_MAP: {
 	[ContentBlockType.LogoGrid]: INITIAL_LOGO_GRID_COMPONENTS_STATE,
 	[ContentBlockType.UspGrid]: INITIAL_USP_GRID_COMPONENTS_STATE,
 	[ContentBlockType.Eventbrite]: INITIAL_EVENTBRITE_COMPONENTS_STATE,
+	[ContentBlockType.Uitgeklaard]: INITIAL_UITGEKLAARD_BLOCK_STATE,
+	[ContentBlockType.ImageTitleTextButton]: INITIAL_IMAGE_TITLE_TEXT_BUTTON_BLOCK_STATE,
 };
 
 // Options
