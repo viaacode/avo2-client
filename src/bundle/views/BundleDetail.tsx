@@ -24,7 +24,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get, isEmpty, isNil } from 'lodash-es';
+import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -115,75 +115,82 @@ const BundleDetail: FunctionComponent<
 
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
-			if (!user) {
-				return;
-			}
-			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions(
-					[{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{
-							name: PermissionName.VIEW_ANY_PUBLISHED_BUNDLES,
-						},
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{
-							name: PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
-						},
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.EDIT_OWN_BUNDLES, obj: bundleId },
-						{ name: PermissionName.EDIT_ANY_BUNDLES },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.PUBLISH_OWN_BUNDLES, obj: bundleId },
-						{ name: PermissionName.PUBLISH_ANY_BUNDLES },
-					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
-						{ name: PermissionName.DELETE_OWN_BUNDLES, obj: bundleId },
-						{ name: PermissionName.DELETE_ANY_BUNDLES },
-					],
-					user
-				),
-				PermissionService.hasPermissions([{ name: PermissionName.CREATE_BUNDLES }], user),
-				PermissionService.hasPermissions(
-					[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
-					user
-				),
-			]);
-			const permissionObj = {
-				canViewBundle: rawPermissions[0],
-				canViewPublishedBundles: rawPermissions[1],
-				canViewUnpublishedBundles: rawPermissions[2],
-				canEditBundle: rawPermissions[3],
-				canPublishBundle: rawPermissions[4],
-				canDeleteBundle: rawPermissions[5],
-				canCreateBundles: rawPermissions[6],
-				canViewItems: rawPermissions[7],
-			};
-
 			let showPopup = false;
-			if (
-				!permissionObj.canViewBundle &&
-				!permissionObj.canViewPublishedBundles &&
-				!permissionObj.canViewUnpublishedBundles
-			) {
+			let permissionObj = undefined;
+
+			if (!user) {
 				showPopup = true;
+			} else {
+				const rawPermissions = await Promise.all([
+					PermissionService.hasPermissions(
+						[{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{
+								name: PermissionName.VIEW_ANY_PUBLISHED_BUNDLES,
+							},
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{
+								name: PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
+							},
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionName.EDIT_OWN_BUNDLES, obj: bundleId },
+							{ name: PermissionName.EDIT_ANY_BUNDLES },
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionName.PUBLISH_OWN_BUNDLES, obj: bundleId },
+							{ name: PermissionName.PUBLISH_ANY_BUNDLES },
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[
+							{ name: PermissionName.DELETE_OWN_BUNDLES, obj: bundleId },
+							{ name: PermissionName.DELETE_ANY_BUNDLES },
+						],
+						user
+					),
+					PermissionService.hasPermissions(
+						[{ name: PermissionName.CREATE_BUNDLES }],
+						user
+					),
+					PermissionService.hasPermissions(
+						[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+						user
+					),
+				]);
+
+				permissionObj = {
+					canViewBundle: rawPermissions[0],
+					canViewPublishedBundles: rawPermissions[1],
+					canViewUnpublishedBundles: rawPermissions[2],
+					canEditBundle: rawPermissions[3],
+					canPublishBundle: rawPermissions[4],
+					canDeleteBundle: rawPermissions[5],
+					canCreateBundles: rawPermissions[6],
+					canViewItems: rawPermissions[7],
+				};
+
+				if (
+					!permissionObj.canViewBundle &&
+					!permissionObj.canViewPublishedBundles &&
+					!permissionObj.canViewUnpublishedBundles
+				) {
+					showPopup = true;
+				}
 			}
 
 			const bundleObj = await CollectionService.fetchCollectionOrBundleById(
@@ -201,12 +208,13 @@ const BundleDetail: FunctionComponent<
 			}
 
 			if (
-				(!permissionObj.canViewBundle &&
+				permissionObj &&
+				((!permissionObj.canViewBundle &&
 					bundleObj.is_public &&
 					!permissionObj.canViewPublishedBundles) ||
-				(!permissionObj.canViewBundle &&
-					!bundleObj.is_public &&
-					!permissionObj.canViewUnpublishedBundles)
+					(!permissionObj.canViewBundle &&
+						!bundleObj.is_public &&
+						!permissionObj.canViewUnpublishedBundles))
 			) {
 				showPopup = true;
 			}
@@ -239,9 +247,10 @@ const BundleDetail: FunctionComponent<
 				}
 
 				try {
-					setBookmarkViewPlayCounts(
-						await BookmarksViewsPlaysService.getCollectionCounts(bundleId, user)
-					);
+					user &&
+						setBookmarkViewPlayCounts(
+							await BookmarksViewsPlaysService.getCollectionCounts(bundleId, user)
+						);
 				} catch (err) {
 					console.error(
 						new CustomError('Failed to get getCollectionCounts for bundle', err, {
@@ -274,7 +283,7 @@ const BundleDetail: FunctionComponent<
 			}
 
 			setShowLoginPopup(showPopup);
-			setPermissions(permissionObj);
+			setPermissions(permissionObj || {});
 			setBundle(bundleObj || null);
 		};
 
@@ -299,7 +308,7 @@ const BundleDetail: FunctionComponent<
 	}, [user, bundleId, setLoadingInfo, setShowLoginPopup, t]);
 
 	useEffect(() => {
-		if (!isEmpty(permissions) && bundle && !isNil(showLoginPopup)) {
+		if (bundle && !isNil(showLoginPopup)) {
 			setLoadingInfo({
 				state: 'loaded',
 			});
