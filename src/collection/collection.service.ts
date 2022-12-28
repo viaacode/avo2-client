@@ -902,17 +902,13 @@ export class CollectionService {
 	 */
 	public static async fetchCollectionOrBundleById(
 		collectionId: string,
-		type: 'collection' | 'bundle',
-		assignmentUuid: string | undefined,
-		includeFragments = true
+		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			const response = await fetchWithLogout(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
-					assignmentUuid,
 					id: collectionId,
-					includeFragments: includeFragments ? 'true' : 'false',
 				})}`,
 				{
 					method: 'GET',
@@ -1275,7 +1271,7 @@ export class CollectionService {
 		user: Avo.User.User,
 		offset: number,
 		limit: number | null,
-		order: any,
+		order: unknown,
 		filterString: string | undefined
 	): Promise<Avo.Collection.Collection[]> {
 		let variables: any;

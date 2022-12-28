@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -19,6 +16,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
@@ -90,12 +89,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		try {
 			setSelectedBundle(null);
 			setSelectedBundleId(id);
-			const collection = await CollectionService.fetchCollectionOrBundleById(
-				id,
-				'bundle',
-				undefined,
-				false
-			);
+			const collection = await CollectionService.fetchCollectionOrBundleById(id, 'bundle');
 			setSelectedBundle(collection);
 		} catch (err) {
 			ToastService.danger(

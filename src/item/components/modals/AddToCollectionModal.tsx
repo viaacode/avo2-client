@@ -111,12 +111,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			setSelectedCollection(null);
 			setSelectedCollectionId(id);
 			setSelectedCollection(
-				await CollectionService.fetchCollectionOrBundleById(
-					id,
-					'collection',
-					undefined,
-					false
-				)
+				await CollectionService.fetchCollectionOrBundleById(id, 'collection')
 			);
 		} catch (err) {
 			ToastService.danger(

@@ -414,8 +414,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
 				collectionId,
-				type,
-				undefined
+				type
 			);
 
 			if (!collectionObj) {
@@ -916,12 +915,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			} else {
 				// We're adding a collection to the bundle
 				const collection: Avo.Collection.Collection | null =
-					await CollectionService.fetchCollectionOrBundleById(
-						id,
-						'collection',
-						undefined,
-						false
-					);
+					await CollectionService.fetchCollectionOrBundleById(id, 'collection');
 				if (!collection) {
 					ToastService.danger(
 						t(
