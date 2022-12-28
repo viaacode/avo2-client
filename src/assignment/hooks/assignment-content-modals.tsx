@@ -177,9 +177,7 @@ export function useBlockListModals(
 							// fetch collection details
 							const collection = await CollectionService.fetchCollectionOrBundleById(
 								id,
-								'collection',
-								undefined,
-								true
+								'collection'
 							);
 
 							if (!collection) {

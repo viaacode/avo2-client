@@ -6,6 +6,7 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	Image,
 	Spacer,
 	TagInfo,
 	TextArea,
@@ -197,22 +198,32 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										labelFor="coverImageId"
 									>
 										{isCollection ? (
-											<Button
-												type="secondary"
-												label={tText(
-													'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
+											<>
+												<Button
+													type="secondary"
+													label={tText(
+														'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
+													)}
+													title={
+														isCollection
+															? tText(
+																	'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-collectie'
+															  )
+															: tText(
+																	'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-bundel'
+															  )
+													}
+													onClick={() =>
+														setCollectionsStillsModalOpen(true)
+													}
+												/>
+												{collection.thumbnail_path && (
+													<Image
+														className="u-spacer-top"
+														src={collection.thumbnail_path}
+													/>
 												)}
-												title={
-													isCollection
-														? tText(
-																'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-collectie'
-														  )
-														: tText(
-																'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-bundel'
-														  )
-												}
-												onClick={() => setCollectionsStillsModalOpen(true)}
-											/>
+											</>
 										) : (
 											<FileUpload
 												label={tText(
@@ -251,7 +262,17 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 			</Container>
 			<CollectionStillsModal
 				isOpen={isCollectionsStillsModalOpen}
-				onClose={() => setCollectionsStillsModalOpen(false)}
+				onClose={(updated) => {
+					setCollectionsStillsModalOpen(false);
+
+					if (collection.thumbnail_path !== updated.thumbnail_path) {
+						changeCollectionState({
+							type: 'UPDATE_COLLECTION_PROP',
+							collectionProp: 'thumbnail_path',
+							collectionPropValue: updated.thumbnail_path,
+						});
+					}
+				}}
 				collection={collection}
 			/>
 		</>

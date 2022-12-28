@@ -37,7 +37,6 @@ import {
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AppState } from '../../../store';
-import { insideIframe } from '../../helpers/inside-iframe';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import {
 	AppContentNavElement,
@@ -238,25 +237,6 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 		}
 	};
 
-	const isInsideIframe = insideIframe();
-
-	if (isInsideIframe) {
-		return (
-			<Navbar background="inverse" position="fixed" placement="top">
-				<Container mode="horizontal">
-					<Toolbar>
-						<ToolbarLeft>
-							<ToolbarItem>
-								<h1 className="c-brand">
-									<AvoLogo />
-								</h1>
-							</ToolbarItem>
-						</ToolbarLeft>
-					</Toolbar>
-				</Container>
-			</Navbar>
-		);
-	}
 	return (
 		<>
 			<Navbar background="inverse" position="fixed" placement="top">

@@ -507,7 +507,7 @@ export class ItemsService {
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update status for shared items in the database', err, {
-				query: 'UPDATE_SHARED_ITEMS_STATUS',
+				query: 'SET_SHARED_ITEMS_STATUS',
 			});
 		}
 	}

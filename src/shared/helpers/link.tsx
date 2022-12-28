@@ -13,7 +13,6 @@ import SmartLink from '../components/SmartLink/SmartLink';
 import { ToastService } from '../services/toast-service';
 
 import { getEnv } from './env';
-import { insideIframe } from './inside-iframe';
 import { tHtml } from './translate';
 
 type RouteParams = { [key: string]: string | number | undefined };
@@ -124,11 +123,10 @@ export function navigateToAbsoluteOrRelativeUrl(
 export const generateSmartLink = (
 	action: ButtonAction | null | undefined,
 	children: ReactNode,
-	label?: string,
 	title?: string
 ): ReactElement<any, any> | null => {
 	return (
-		<SmartLink action={action} label={label} title={title}>
+		<SmartLink action={action} title={title}>
 			{children}
 		</SmartLink>
 	);
@@ -141,24 +139,18 @@ export const navigateToContentType = (
 	if (action) {
 		const { type, value, target } = action;
 
-		let resolvedTarget = target;
-		if (insideIframe()) {
-			// Klaar page inside smartschool iframe must open all links in new window: https://meemoo.atlassian.net/browse/AVO-1354
-			resolvedTarget = LinkTarget.Blank;
-		}
-
 		switch (type as ContentPickerType) {
 			case 'INTERNAL_LINK':
 			case 'CONTENT_PAGE':
 			case 'PROJECTS':
-				navigateToAbsoluteOrRelativeUrl(String(value), history, resolvedTarget);
+				navigateToAbsoluteOrRelativeUrl(String(value), history, target);
 				break;
 
 			case 'COLLECTION': {
 				const collectionUrl = buildLink(APP_PATH.COLLECTION_DETAIL.route, {
 					id: value as string,
 				});
-				navigateToAbsoluteOrRelativeUrl(collectionUrl, history, resolvedTarget);
+				navigateToAbsoluteOrRelativeUrl(collectionUrl, history, target);
 				break;
 			}
 
@@ -166,7 +158,7 @@ export const navigateToContentType = (
 				const itemUrl = buildLink(APP_PATH.ITEM_DETAIL.route, {
 					id: value,
 				});
-				navigateToAbsoluteOrRelativeUrl(itemUrl, history, resolvedTarget);
+				navigateToAbsoluteOrRelativeUrl(itemUrl, history, target);
 				break;
 			}
 
@@ -174,7 +166,7 @@ export const navigateToContentType = (
 				const bundleUrl = buildLink(BUNDLE_PATH.BUNDLE_DETAIL, {
 					id: value,
 				});
-				navigateToAbsoluteOrRelativeUrl(bundleUrl, history, resolvedTarget);
+				navigateToAbsoluteOrRelativeUrl(bundleUrl, history, target);
 				break;
 			}
 
@@ -183,7 +175,7 @@ export const navigateToContentType = (
 					'{{PROXY_URL}}',
 					getEnv('PROXY_URL') || ''
 				);
-				navigateToAbsoluteOrRelativeUrl(externalUrl, history, resolvedTarget);
+				navigateToAbsoluteOrRelativeUrl(externalUrl, history, target);
 				break;
 			}
 
@@ -192,7 +184,7 @@ export const navigateToContentType = (
 				navigateToAbsoluteOrRelativeUrl(
 					`${urlWithoutQueryOrAnchor}#${value}`,
 					history,
-					resolvedTarget
+					target
 				);
 				break;
 			}
@@ -215,7 +207,7 @@ export const navigateToContentType = (
 						)
 					),
 					history,
-					resolvedTarget
+					target
 				);
 				break;
 			}

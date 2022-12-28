@@ -939,17 +939,13 @@ export class CollectionService {
 	 */
 	public static async fetchCollectionOrBundleById(
 		collectionId: string,
-		type: 'collection' | 'bundle',
-		assignmentUuid: string | undefined,
-		includeFragments = true
+		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			return fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
-					assignmentUuid,
 					id: collectionId,
-					includeFragments: includeFragments ? 'true' : 'false',
 				})}`
 			);
 		} catch (err) {

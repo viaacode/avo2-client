@@ -9,6 +9,9 @@ Disallow: /werkruimte
 Disallow: /vervolledig-profiel
 # Files
 Disallow: /unsupported-browser.html
-Disallow: /env-config.js
+
+# Is required to allow JSON-LD crawling of content pages
+# See https://meemoo.atlassian.net/browse/AVO-2251?focusedCommentId=36747
+# Disallow: /env-config.js
 
 Sitemap: https://onderwijs.hetarchief.be/sitemap.xml

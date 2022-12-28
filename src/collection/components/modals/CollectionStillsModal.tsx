@@ -24,7 +24,7 @@ import { STILL_DIMENSIONS } from '../../collection.const';
 
 interface CollectionStillsModalProps {
 	isOpen: boolean;
-	onClose: () => void;
+	onClose: (collection: Avo.Collection.Collection) => void;
 	collection: Avo.Collection.Collection;
 }
 
@@ -63,8 +63,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	}, [isOpen, collection, tText]);
 
 	const saveCoverImage = () => {
-		collection.thumbnail_path = selectedCoverImages[0];
-		onClose();
+		onClose({ ...collection, thumbnail_path: selectedCoverImages[0] });
 		ToastService.success(
 			tHtml(
 				'collection/components/modals/collection-stills-modal___de-cover-afbeelding-is-ingesteld'
@@ -79,7 +78,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 				'collection/components/modals/collection-stills-modal___stel-een-cover-afbeelding-in'
 			)}
 			size="large"
-			onClose={onClose}
+			onClose={() => onClose(collection)}
 			scrollable
 		>
 			<ModalBody>
@@ -120,7 +119,9 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 									)}
 									type="secondary"
 									block
-									onClick={onClose}
+									onClick={() => {
+										onClose(collection);
+									}}
 								/>
 								<Button
 									label={tText(
