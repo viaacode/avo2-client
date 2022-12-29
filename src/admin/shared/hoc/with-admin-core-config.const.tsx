@@ -14,7 +14,6 @@ import { FlowPlayerWrapper } from '../../../shared/components';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { FileUploadService } from '../../../shared/services/file-upload-service';
-import { SmartschoolAnalyticsService } from '../../../shared/services/smartschool-analytics-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_CORE_ROUTE_PARTS } from '../constants/admin-core.routes';
 
@@ -177,9 +176,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			FLOW_PLAYER_TOKEN: getEnv('FLOW_PLAYER_TOKEN') || '',
 		},
 		handlers: {
-			onExternalLink: (url: string) => {
-				SmartschoolAnalyticsService.triggerUrlEvent(toAbsoluteUrl(url));
-			},
+			onExternalLink: noop,
 		},
 		user: commonUser,
 		route_parts: ADMIN_CORE_ROUTE_PARTS,
