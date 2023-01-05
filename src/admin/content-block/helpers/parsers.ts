@@ -1,10 +1,18 @@
 import { Avo } from '@viaa/avo2-types';
-import { compact, get, sortBy } from 'lodash-es';
+import { compact, get, omit, sortBy, unset } from 'lodash-es';
 
 import { CustomError } from '../../../shared/helpers';
 import { ToastService } from '../../../shared/services';
 import { ContentBlockConfig, ContentBlockType } from '../../shared/types';
 import { CONTENT_BLOCK_CONFIG_MAP } from '../content-block.const';
+
+export function cleanContentBlockBeforeDatabaseInsert(
+	block: Partial<Avo.ContentPage.Block>
+): Partial<Avo.ContentPage.Block> {
+	const cleanBlock = omit(block, 'enum_content_block_type', '__typename', 'id');
+	unset(cleanBlock, 'variables.blockState.results'); // Ensure that media tile results are not saved in the database
+	return cleanBlock;
+}
 
 // Parse content-block config to valid request body
 export const convertBlockToDatabaseFormat = (
@@ -14,12 +22,12 @@ export const convertBlockToDatabaseFormat = (
 	const componentState = get(contentBlockConfig, 'components.state');
 	const { ...blockState } = get(contentBlockConfig, 'block.state');
 
-	return {
+	return cleanContentBlockBeforeDatabaseInsert({
 		position: contentBlockConfig.position,
 		variables: { componentState, blockState },
 		...(contentId ? { content_id: contentId } : null),
 		content_block_type: contentBlockConfig.type,
-	};
+	});
 };
 
 export const convertBlocksToDatabaseFormat = (

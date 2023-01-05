@@ -1,7 +1,6 @@
-import { FetchResult } from 'apollo-link';
-import { compact, get, has, omit, without } from 'lodash-es';
-
 import { Avo } from '@viaa/avo2-types';
+import { FetchResult } from 'apollo-link';
+import { compact, get, has, without } from 'lodash-es';
 
 import { CustomError } from '../../../shared/helpers';
 import { ApolloCacheManager, dataService, ToastService } from '../../../shared/services';
@@ -13,7 +12,11 @@ import {
 	INSERT_CONTENT_BLOCKS,
 	UPDATE_CONTENT_BLOCK,
 } from '../content-block.gql';
-import { convertBlocksToDatabaseFormat, convertBlockToDatabaseFormat } from '../helpers';
+import {
+	cleanContentBlockBeforeDatabaseInsert,
+	convertBlocksToDatabaseFormat,
+	convertBlockToDatabaseFormat,
+} from '../helpers';
 
 export class ContentBlockService {
 	public static async updateContentBlocks(contentBlockConfigs: ContentBlockConfig[]) {
@@ -78,14 +81,6 @@ export class ContentBlockService {
 		}
 	}
 
-	private static cleanContentBlocksBeforeDatabaseInsert(
-		dbContentBlocks: Partial<Avo.ContentPage.Block>[]
-	) {
-		return (dbContentBlocks || []).map((block) =>
-			omit(block, 'enum_content_block_type', '__typename', 'id')
-		);
-	}
-
 	/**
 	 * Insert content blocks.
 	 *
@@ -105,7 +100,7 @@ export class ContentBlockService {
 			const response = await dataService.mutate({
 				mutation: INSERT_CONTENT_BLOCKS,
 				variables: {
-					contentBlocks: this.cleanContentBlocksBeforeDatabaseInsert(dbBlocks),
+					contentBlocks: dbBlocks.map(cleanContentBlockBeforeDatabaseInsert),
 				},
 				update: ApolloCacheManager.clearContentBlocksCache,
 			});
