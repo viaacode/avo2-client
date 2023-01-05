@@ -48,7 +48,9 @@ export const IMAGE_TITLE_TEXT_BUTTON_BLOCK_CONFIG = (position = 0): ContentBlock
 				}
 			),
 			imageAction: {
-				label: i18n.t('Link achter de afbeelding'),
+				label: i18n.t(
+					'admin/content-block/helpers/generators/image-title-text-button___link-achter-de-afbeelding'
+				),
 				editorType: ContentBlockEditor.ContentPicker,
 			},
 			imageAlt: TEXT_FIELD(undefined, {
