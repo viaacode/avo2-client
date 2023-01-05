@@ -258,6 +258,7 @@ export class CollectionService {
 
 					delete (fragmentToUpdate as any).__typename;
 					delete fragmentToUpdate.item_meta;
+					fragmentToUpdate.updated_at = new Date().toISOString();
 
 					return dataService.mutate({
 						mutation: UPDATE_COLLECTION_FRAGMENT,
