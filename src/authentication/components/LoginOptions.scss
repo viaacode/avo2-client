@@ -13,11 +13,16 @@
 
 	.c-button-smartschool,
 	.c-button-klascement,
-	.c-button-acmidm,
 	.c-button-itsme {
 		.o-svg-icon {
 			bottom: 0;
 			margin-right: 0;
+		}
+	}
+
+	.c-button-acmidm {
+		.o-svg-icon {
+			margin-bottom: $g-spacer-unit / 1.5;
 		}
 	}
 
