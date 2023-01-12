@@ -61,7 +61,6 @@ import {
 	ITEMS_PER_PAGE,
 	SearchFilter,
 } from '../search.const';
-import { fetchSearchResults } from '../search.service';
 import {
 	FilterState,
 	SearchFilterFieldValues,
@@ -109,27 +108,6 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const navigateToUserRequestForm = () =>
 		navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
 
-	const onSearchInSearchFilter = async () => {
-		const orderProperty: Avo.Search.OrderProperty =
-			(filterState.orderProperty as Avo.Search.OrderProperty | undefined) ||
-			DEFAULT_SORT_ORDER.orderProperty;
-
-		const orderDirection: Avo.Search.OrderDirection =
-			(filterState.orderDirection as Avo.Search.OrderDirection | undefined) ||
-			DEFAULT_SORT_ORDER.orderDirection;
-
-		const response = await fetchSearchResults(
-			orderProperty,
-			orderDirection,
-			0,
-			0 // We are only interested in aggs
-		);
-
-		setMultiOptions({
-			...multiOptions,
-			...response.aggregations,
-		});
-	};
 	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
 		filterState.orderDirection || 'desc'
 	}`;
@@ -499,7 +477,6 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 							filterState={filterState.filters || DEFAULT_FILTER_STATE}
 							handleFilterFieldChange={handleFilterFieldChange}
 							multiOptions={multiOptions}
-							onSearch={onSearchInSearchFilter}
 							enabledFilters={enabledFilters}
 							collectionLabels={collectionLabels}
 						/>

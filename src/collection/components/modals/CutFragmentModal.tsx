@@ -8,7 +8,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { noop } from 'lodash-es';
+import { noop, once } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -145,6 +145,10 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		onClose();
 	};
 
+	const startStartTimeOnce = once(() => {
+		setModalVideoSeekTime(fragmentStartTime);
+	});
+
 	const fragmentDuration: number = toSeconds(itemMetaData.duration, true) || 0;
 	return (
 		<Modal
@@ -166,6 +170,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 						end: fragmentEndTime,
 					}}
 					verticalLayout={isMobileWidth()}
+					onPlay={startStartTimeOnce}
 				/>
 				<TimeCropControls
 					className="u-spacer-top-l u-spacer-bottom-l"
