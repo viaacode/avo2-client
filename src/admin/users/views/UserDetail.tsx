@@ -404,10 +404,6 @@ const UserDetail: FunctionComponent<UserDetailProps> = ({ history, match, user }
 							{renderSimpleDetailRows(storedProfile, [
 								['first_name', t('admin/users/views/user-detail___voornaam')],
 								['last_name', t('admin/users/views/user-detail___achternaam')],
-								[
-									'profile.alias',
-									t('admin/users/views/user-detail___gebruikersnaam'),
-								],
 								['profile.title', t('admin/users/views/user-detail___functie')],
 								['profile.bio', t('admin/users/views/user-detail___bio')],
 								['stamboek', t('admin/users/views/user-detail___stamboek-nummer')],

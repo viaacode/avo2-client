@@ -23,7 +23,6 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
-import { UpdateProfileValues } from '../../../settings/settings.types';
 import { FileUpload, LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
@@ -42,9 +41,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 	const [storedProfile, setStoredProfile] = useState<Avo.User.Profile | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [profileErrors, setProfileErrors] = useState<
-		Partial<{ [prop in keyof UpdateProfileValues]: string }>
-	>({});
 
 	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>([]);
 	const [companies] = useCompanies(false);
@@ -54,7 +50,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 	const [avatar, setAvatar] = useState<string | undefined>();
 	const [title, setTitle] = useState<string | undefined>();
 	const [bio, setBio] = useState<string | undefined>();
-	const [alias, setAlias] = useState<string | undefined>();
 	const [companyId, setCompanyId] = useState<string | undefined>();
 
 	const [t] = useTranslation();
@@ -68,7 +63,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			setAvatar(get(profile, 'profile.avatar') || undefined);
 			setTitle(get(profile, 'profile.title') || undefined);
 			setBio(get(profile, 'profile.bio') || undefined);
-			setAlias(get(profile, 'profiile.alias') || undefined);
 			setCompanyId(get(profile, 'company_id') || undefined);
 			setSelectedSubjects(
 				(get(profile, 'classifications') || [])
@@ -121,7 +115,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 			const newProfileInfo = {
 				firstName,
 				lastName,
-				alias,
 				title,
 				bio,
 				userId: get(storedProfile, 'user_id'),
@@ -136,15 +129,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 				await SettingsService.updateProfileInfo(storedProfile, newProfileInfo as any);
 			} catch (err) {
 				setIsSaving(false);
-				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
-					ToastService.danger(
-						t('settings/components/profile___deze-schermnaam-is-reeds-in-gebruik')
-					);
-					setProfileErrors({
-						alias: t('settings/components/profile___schermnaam-is-reeds-in-gebruik'),
-					});
-					return;
-				}
 				throw err;
 			}
 
@@ -218,12 +202,6 @@ const UserEdit: FunctionComponent<UserEditProps> = ({ history, match }) => {
 						</FormGroup>
 						<FormGroup label={t('admin/users/views/user-detail___bio')}>
 							<TextArea value={bio} onChange={setBio} />
-						</FormGroup>
-						<FormGroup
-							label={t('admin/users/views/user-detail___gebruikersnaam')}
-							error={profileErrors.alias}
-						>
-							<TextInput value={alias} onChange={setAlias} />
 						</FormGroup>
 						<FormGroup label={t('admin/users/views/user-detail___vakken')}>
 							<TagsInput
