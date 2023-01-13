@@ -101,9 +101,9 @@ const Profile: FunctionComponent<
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		ClientEducationOrganization[]
 	>(get(user, 'profile.organizations', []));
-	const [firstName] = useState<string>(get(user, 'first_name') || '');
-	const [lastName] = useState<string>(get(user, 'last_name') || '');
-	const [email] = useState<string>(get(user, 'mail') || '');
+	const firstName = get(user, 'first_name', '');
+	const lastName = get(user, 'last_name', '');
+	const email = get(user, 'mail', '');
 	const [avatar, setAvatar] = useState<string | null>(
 		get(getProfileFromUser(user, true), 'avatar', null)
 	);
@@ -324,8 +324,6 @@ const Profile: FunctionComponent<
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
 			const newProfileInfo: Partial<UpdateProfileValues> = {
-				firstName,
-				lastName,
 				alias: '',
 				title,
 				bio,
@@ -691,7 +689,7 @@ const Profile: FunctionComponent<
 											label={t('settings/components/account___voornaam')}
 											labelFor="first_name"
 										>
-											{firstName || ''}
+											{firstName}
 										</FormGroup>
 										<Button
 											type="secondary"
@@ -703,7 +701,7 @@ const Profile: FunctionComponent<
 										label={t('settings/components/account___achternaam')}
 										labelFor="last_name"
 									>
-										{lastName || ''}
+										{lastName}
 									</FormGroup>
 									{!isPupil && (
 										<>
@@ -711,7 +709,7 @@ const Profile: FunctionComponent<
 												label={t('settings/components/account___email')}
 												labelFor="email"
 											>
-												{email || ''}
+												{email}
 											</FormGroup>
 											<FormGroup
 												label={t('settings/components/profile___functie')}
