@@ -13,3 +13,8 @@
 	background-repeat: no-repeat;
 	border: 20px solid $color-gray-50;
 }
+
+.profile-actions {
+	display: flex;
+	justify-content: space-between;
+}

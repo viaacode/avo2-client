@@ -682,9 +682,7 @@ const Profile: FunctionComponent<
 						<Column size="3-7">
 							<Form type="standard">
 								<>
-									<div
-										style={{ display: 'flex', justifyContent: 'space-between' }}
-									>
+									<div className="profile-actions">
 										<FormGroup
 											label={t('settings/components/account___voornaam')}
 											labelFor="first_name"
@@ -693,7 +691,9 @@ const Profile: FunctionComponent<
 										</FormGroup>
 										<Button
 											type="secondary"
-											label="Wijzig mijn gegevens"
+											label={t(
+												'settings/components/account___wijzig-gegevens'
+											)}
 											onClick={handleEditInfo}
 										/>
 									</div>
