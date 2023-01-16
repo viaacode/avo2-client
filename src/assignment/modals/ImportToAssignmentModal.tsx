@@ -247,7 +247,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 						variant="styled"
 						onColumnClick={handleColumnClick as any}
 						sortColumn={sortColumn}
-						sortOrder={sortOrder as any}
+						sortOrder={sortOrder}
 						showRadioButtons
 						selectedItemIds={selectedAssignmentId ? [selectedAssignmentId] : []}
 						onSelectionChanged={handleSelectedAssignmentChanged}

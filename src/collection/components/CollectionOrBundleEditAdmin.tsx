@@ -320,7 +320,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 					onRowClick={(coll) => navigateToBundleDetail(coll.id)}
 					renderCell={renderBundleCell as any}
 					sortColumn={bundleSortColumn}
-					sortOrder={bundleSortOrder as any}
+					sortOrder={bundleSortOrder}
 					variant="bordered"
 					rowKey="id"
 				/>
@@ -349,7 +349,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 					)}
 					onColumnClick={handleQuickLaneColumnClick as any}
 					sortColumn={quickLaneSortColumn}
-					sortOrder={quickLaneSortOrder as any}
+					sortOrder={quickLaneSortOrder}
 				/>
 			) : (
 				tText(
