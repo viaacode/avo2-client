@@ -2,7 +2,7 @@ import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
@@ -27,7 +27,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 }) => {
 	const [t] = useTranslation();
 
-	const getCombinedMultiOptions = () => {
+	const getCombinedMultiOptions = useMemo(() => {
 		const combinedMultiOptions: SearchFilterMultiOptions = cloneDeep(multiOptions);
 		const arrayFilters = omit(filterState, [
 			SearchFilter.query,
@@ -45,7 +45,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 			);
 		});
 		return combinedMultiOptions;
-	};
+	}, [multiOptions]);
 
 	const isFilterEnabled = (filterName: keyof Avo.Search.Filters): boolean => {
 		if (!enabledFilters) {
@@ -60,7 +60,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		disabled = false,
 		labelsMapping?: Record<string | number, string>
 	): ReactNode => {
-		const checkboxMultiOptions = (getCombinedMultiOptions()[propertyName] || []).map(
+		const checkboxMultiOptions = (getCombinedMultiOptions[propertyName] || []).map(
 			({ option_name, option_count }: Avo.Search.OptionProp): CheckboxOption => {
 				let checkboxLabel = option_name;
 
