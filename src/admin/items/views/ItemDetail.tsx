@@ -376,7 +376,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
 					renderCell={renderCollectionCell as any}
 					sortColumn={collectionSortColumn}
-					sortOrder={collectionSortOrder}
+					sortOrder={collectionSortOrder as any}
 					variant="bordered"
 					rowKey="id"
 				/>
@@ -403,7 +403,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					)}
 					onColumnClick={handleQuickLaneColumnClick as any}
 					sortColumn={quickLaneSortColumn}
-					sortOrder={quickLaneSortOrder}
+					sortOrder={quickLaneSortOrder as any}
 				/>
 			) : (
 				tText('admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld')

@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "1.19.9",
+  "version": "1.19.13",
   "private": true,
   "scripts": {
     "prestart": "npm run env",
@@ -30,13 +30,13 @@
   "dependencies": {
     "@flowplayer/player": "3.2.8",
     "@hookform/resolvers": "^2.9.9",
-    "@meemoo/admin-core-ui": "2.0.23",
-    "@meemoo/react-components": "2.21.5",
+    "@meemoo/admin-core-ui": "2.0.26",
+    "@meemoo/react-components": "2.21.6",
     "@react-hook/resize-observer": "^1.2.6",
     "@storybook/addon-actions": "^6.5.12",
     "@tanstack/react-query": "^4.14.1",
-    "@viaa/avo2-components": "^3.2.0",
-    "@viaa/avo2-types": "2.46.3",
+    "@viaa/avo2-components": "^3.2.1",
+    "@viaa/avo2-types": "2.46.7",
     "braft-editor": "^2.3.9",
     "capture-stack-trace": "^1.0.1",
     "classnames": "^2.3.2",

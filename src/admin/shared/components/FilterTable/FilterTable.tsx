@@ -434,9 +434,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								variant={variant}
 								sortColumn={tableState.sort_column || defaultOrderProp || undefined}
 								sortOrder={
-									(tableState.sort_order as Avo.Search.OrderDirection) ||
-									defaultOrderDirection ||
-									undefined
+									((tableState.sort_order as Avo.Search.OrderDirection) ||
+										defaultOrderDirection ||
+										undefined) as any // TODO add asc_nulls_first to table sort orders
 								}
 								showCheckboxes={
 									(!!bulkActions && !!bulkActions.length) || showCheckboxes

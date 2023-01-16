@@ -1,16 +1,17 @@
-import { isEmpty, isNil } from 'lodash-es';
-
-import i18n from '../../../../shared/translations/i18n';
 import {
+	BLOCK_FIELD_DEFAULTS,
+	BLOCK_STATE_DEFAULTS,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockField,
 	ContentBlockType,
 	DefaultContentBlockState,
 	KlaarBlockComponentState,
-} from '../../../shared/types';
+	TEXT_FIELD,
+} from '@meemoo/admin-core-ui';
+import { isEmpty, isNil } from 'lodash-es';
 
-import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, TEXT_FIELD } from './defaults';
+import i18n from '../../../../shared/translations/i18n';
 
 export const INITIAL_UITGEKLAARD_COMPONENTS_STATE = (): KlaarBlockComponentState => ({
 	titles: [''],

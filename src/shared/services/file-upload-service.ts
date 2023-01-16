@@ -39,7 +39,7 @@ export class FileUploadService {
 				mimeType: file.type,
 			};
 
-			const data = await fetchWithLogoutJson(url, {
+			const data = await fetchWithLogoutJson<{ url: string }>(url, {
 				method: 'POST',
 				body: JSON.stringify(body),
 			});
@@ -90,7 +90,7 @@ export class FileUploadService {
 				url: fileUrl,
 			};
 
-			const reply = await fetchWithLogoutJson(url, {
+			const reply = await fetchWithLogoutJson<{ status: 'deleted' } | null>(url, {
 				method: 'DELETE',
 				body: JSON.stringify(body),
 			});

@@ -18,7 +18,9 @@ export async function getRelatedItems(
 			type,
 			limit,
 		})}`;
-		const resolvedResponse = await fetchWithLogoutJson(url);
+		const resolvedResponse = await fetchWithLogoutJson<{ results: Avo.Search.ResultItem[] }>(
+			url
+		);
 
 		// Apply default audio stills
 

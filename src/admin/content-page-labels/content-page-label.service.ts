@@ -208,7 +208,7 @@ export class ContentPageLabelService {
 		labelIds: number[]
 	): Promise<LabelObj[]> {
 		try {
-			const labelObjs = await fetchWithLogoutJson(
+			const labelObjs = await fetchWithLogoutJson<LabelObj[]>(
 				`${getEnv('PROXY_URL')}/content-pages/labels`,
 				{
 					method: 'POST',
