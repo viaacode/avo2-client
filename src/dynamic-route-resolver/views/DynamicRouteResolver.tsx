@@ -91,6 +91,13 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				new RegExp(`^${key}$`, 'gi').test(pathWithHash)
 			);
 			if (key && redirects[key]) {
+				if (key.endsWith('.*') && redirects[key].endsWith('.*')) {
+					// Append the path matched by the .* regex to the end of the redirect path
+					window.location.href =
+						redirects[key].substring(0, redirects[key].length - 3) +
+						pathWithHash.replace(key.substring(0, key.length - 3), '');
+					return;
+				}
 				window.location.href = redirects[key];
 				return;
 			}

@@ -1,4 +1,4 @@
-import { CONTENT_PAGE_PATH, ContentPageOverview } from '@meemoo/admin-core-ui';
+import { ContentPageOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FunctionComponent, useCallback } from 'react';
@@ -8,9 +8,9 @@ import MetaTags from 'react-meta-tags';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ADMIN_CORE_ROUTE_PARTS } from '../../shared/constants/admin-core.routes';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
@@ -39,9 +39,7 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ h
 						title={t(
 							'admin/content/views/content-overview___maak-een-nieuwe-content-pagina-aan'
 						)}
-						onClick={() =>
-							history.push(CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).CREATE)
-						}
+						onClick={() => history.push(CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE)}
 					/>
 				)}
 			</AdminLayoutTopBarRight>

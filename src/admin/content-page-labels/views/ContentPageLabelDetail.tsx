@@ -1,3 +1,4 @@
+import { ContentPageLabelService } from '@meemoo/admin-core-ui';
 import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -6,13 +7,8 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import {
-	GetContentPageLabelByIdDocument,
-	GetContentPageLabelByIdQuery,
-} from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate, navigateToContentType } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { dataService } from '../../../shared/services/data-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { GET_CONTENT_TYPE_LABELS } from '../../shared/components/ContentPicker/ContentPicker.const';
 import {
@@ -35,12 +31,9 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 
 	const initOrFetchContentPageLabel = useCallback(async () => {
 		try {
-			const response = await dataService.query<GetContentPageLabelByIdQuery>({
-				query: GetContentPageLabelByIdDocument,
-				variables: { id: match.params.id },
-			});
-
-			const contentPageLabelObj = response.app_content_labels[0];
+			const contentPageLabelObj = await ContentPageLabelService.fetchContentPageLabel(
+				match.params.id
+			);
 
 			if (!contentPageLabelObj) {
 				setLoadingInfo({
@@ -128,7 +121,9 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 								<Button
 									type="inline-link"
 									onClick={() => navigateToContentType(linkTo, history)}
-								>{`${labels[linkTo.type]} - ${linkTo.label}`}</Button>
+								>{`${labels[linkTo.type]} - ${decodeURIComponent(
+									String(linkTo.value)?.split('hetarchief.be')?.pop() || ''
+								)}`}</Button>
 							) : (
 								'-'
 							),

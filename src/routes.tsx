@@ -1,6 +1,7 @@
 import React from 'react';
-import { Switch } from 'react-router';
+import { Route, Switch } from 'react-router';
 
+import AdminRedirect from './admin/AdminRedirect';
 import { renderAssignmentRoutes } from './assignment/assignment.routes';
 import { renderAuthenticationRoutes } from './authentication/authentication.routes';
 import { renderBundleRoutes } from './bundle/bundle.routes';
@@ -18,6 +19,7 @@ import { renderWorkspaceRoutes } from './workspace/workspace.routes';
 
 export const renderRoutes = () => (
 	<Switch>
+		<Route path="/beheer" component={AdminRedirect} />
 		{renderHomeRoutes()}
 		{renderSearchRoutes()}
 		{renderItemRoutes()}

@@ -1,10 +1,6 @@
-import { DbContentPage } from '@meemoo/admin-core-ui';
+import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
-import {
-	GetContentLabelsByContentTypeQuery,
-	GetContentPageLabelByIdQuery,
-} from '../../shared/generated/graphql-db-types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 import { PickerItem } from '../shared/types';
 
@@ -16,12 +12,14 @@ export type ContentPageLabelOverviewTableCols =
 	| 'updated_at'
 	| 'actions';
 
-export type ContentPageLabel = Exclude<
-	| DbContentPage['labels'][0]
-	| GetContentPageLabelByIdQuery['app_content_labels'][0]
-	| GetContentLabelsByContentTypeQuery['app_content_labels'][0],
-	null | undefined
->;
+export interface ContentPageLabel {
+	id: number;
+	label: string;
+	content_type: string;
+	link_to: ButtonAction | null;
+	created_at: string;
+	updated_at: string;
+}
 
 export interface ContentPageLabelEditFormErrorState {
 	label?: string;
