@@ -1,5 +1,0 @@
-mutation updateMenuItemById($id: Int!, $menuItem: app_content_nav_elements_set_input!) {
-	update_app_content_nav_elements(where: { id: { _eq: $id } }, _set: $menuItem) {
-		affected_rows
-	}
-}

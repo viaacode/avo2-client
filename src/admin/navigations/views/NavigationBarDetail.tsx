@@ -7,17 +7,17 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
-import './MenuDetail.scss';
+import './NavigationBarDetail.scss';
 
-type MenuDetailProps = DefaultSecureRouteProps<{ menu: string }>;
+type NavigationBarDetailProps = DefaultSecureRouteProps<{ menu: string }>;
 
-const MenuDetail: FunctionComponent<MenuDetailProps> = ({ match }) => {
+const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ match }) => {
 	const { tText } = useTranslation();
 
 	const menuId = match.params.menu;
 
 	return (
-		<>
+		<div className="c-admin__navigation-detail">
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
@@ -33,8 +33,8 @@ const MenuDetail: FunctionComponent<MenuDetailProps> = ({ match }) => {
 				/>
 			</MetaTags>
 			<NavigationDetail navigationBarId={menuId} />
-		</>
+		</div>
 	);
 };
 
-export default withAdminCoreConfig(MenuDetail as FunctionComponent);
+export default withAdminCoreConfig(NavigationBarDetail as FunctionComponent);
