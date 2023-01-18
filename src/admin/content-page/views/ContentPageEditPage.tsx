@@ -13,7 +13,6 @@ const ContentPageDetailPage: FunctionComponent<DefaultSecureRouteProps<ContentPa
 	match,
 }) => {
 	const { id } = match.params;
-	console.log('match: ', JSON.stringify(match));
 	return (
 		<ContentPageEdit
 			className="c-admin-core"

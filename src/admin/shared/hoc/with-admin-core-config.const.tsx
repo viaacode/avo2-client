@@ -75,7 +75,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				sortTable: { name: 'chevrons-up-and-down' },
 				arrowDown: { name: 'arrow-down' },
 			},
-			list: [],
+			list: () => [],
 		},
 		components: {
 			loader: {
