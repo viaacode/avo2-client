@@ -29,8 +29,8 @@ export const showReplacementWarning = (
 ): boolean => {
 	const item = collectionFragment.item_meta as Avo.Item.Item;
 	const replacedRelation: Avo.Collection.RelationEntry<Avo.Item.Item> | undefined =
-		item.relations?.[0];
-	const ownsCollection: boolean = collection.owner_profile_id === get(user, 'profile.id');
+		item?.relations?.[0];
+	const ownsCollection: boolean = collection.owner_profile_id === user?.profile?.id;
 
 	return (
 		!!user &&
