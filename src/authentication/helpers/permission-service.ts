@@ -1,9 +1,8 @@
-import { ContentPageInfo } from '@meemoo/admin-core-ui';
+import { ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, isString, some } from 'lodash-es';
 
-import { ContentPageService } from '../../admin/content-page/services/content-page.service';
 import { AssignmentService } from '../../assignment/assignment.service';
 import { CollectionService } from '../../collection/collection.service';
 

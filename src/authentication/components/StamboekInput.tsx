@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import stamboekExampleImage from '../../assets/images/leerkrachten-kaart-voorbeeld-nummer.png';
 import { APP_PATH } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { ToastType } from '../../shared/services/toast-service';
+import { AvoToastType } from '../../shared/services/toast-service';
 import { verifyStamboekNumber } from '../authentication.service';
 import { StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
 
@@ -38,7 +38,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 		[status in StamboekValidationStatus]: {
 			/* eslint-enable @typescript-eslint/no-unused-vars */
 			message: string | ReactNode;
-			status: ToastType | undefined;
+			status: AvoToastType | undefined;
 		};
 	} = {
 		INCOMPLETE: {
@@ -49,7 +49,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 			message: tHtml(
 				'authentication/components/stamboek-input___het-stamboek-nummer-heeft-een-ongeldig-formaat-geldige-formaten-00000000000-of-00000000000-000000'
 			),
-			status: ToastType.DANGER,
+			status: AvoToastType.DANGER,
 		},
 		INVALID_NUMBER: {
 			message: (
@@ -69,29 +69,29 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 					</Spacer>
 				</span>
 			),
-			status: ToastType.DANGER,
+			status: AvoToastType.DANGER,
 		},
 		VALID_FORMAT: {
 			message: tHtml('authentication/components/stamboek-input___bezig-met-valideren'),
-			status: ToastType.SPINNER,
+			status: AvoToastType.SPINNER,
 		},
 		VALID: {
 			message: tHtml(
 				'authentication/components/stamboek-input___het-stamboek-nummer-is-geldig'
 			),
-			status: ToastType.SUCCESS,
+			status: AvoToastType.SUCCESS,
 		},
 		ALREADY_IN_USE: {
 			message: tHtml(
 				'authentication/components/stamboek-input___dit-stamboek-nummer-is-reeds-in-gebruik'
 			),
-			status: ToastType.DANGER,
+			status: AvoToastType.DANGER,
 		},
 		SERVER_ERROR: {
 			message: tHtml(
 				'authentication/components/stamboek-input___er-ging-iets-mis-bij-het-valideren-van-het-stamboek-nummer-probeer-later-eens-opnieuw'
 			),
-			status: ToastType.DANGER,
+			status: AvoToastType.DANGER,
 		},
 	};
 

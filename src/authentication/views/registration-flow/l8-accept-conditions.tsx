@@ -1,4 +1,4 @@
-import { ContentPageInfo, ContentPageRenderer } from '@meemoo/admin-core-ui';
+import { ContentPageInfo, ContentPageRenderer, ContentPageService } from '@meemoo/admin-core-ui';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';

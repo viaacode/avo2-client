@@ -1,3 +1,14 @@
 .c-admin-core__content-page .c-admin__content {
 	margin: 0;
 }
+
+.c-admin__content-page-edit {
+	.c-content-edit-view__sidebar .o-sidebar__content .c-scrollable {
+		margin: 1.6rem;
+	}
+
+	.c-rich-text-editor {
+		border: 1px solid #bac7d1;
+		border-radius: 0.3rem;
+	}
+}

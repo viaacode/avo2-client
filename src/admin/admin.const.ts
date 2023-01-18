@@ -1,3 +1,4 @@
+import { ContentPageService } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import { every, isArray, some } from 'lodash-es';
 
@@ -10,7 +11,6 @@ import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';
 import { CONTENT_PAGE_LABEL_PATH } from './content-page-labels/content-page-label.const';
 import { CONTENT_PAGE_PATH } from './content-page/content-page.consts';
-import { ContentPageService } from './content-page/services/content-page.service';
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';
@@ -112,7 +112,7 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 	try {
 		const page = await ContentPageService.getContentPageByPath(path);
 		if (!page) {
-			throw new CustomError('Failed to fetch content page by path, reponse was null', null, {
+			throw new CustomError('Failed to fetch content page by path, response was null', null, {
 				page,
 			});
 		}

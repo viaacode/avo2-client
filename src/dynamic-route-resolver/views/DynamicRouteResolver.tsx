@@ -1,4 +1,9 @@
-import { ContentPageInfo, ContentPageRenderer, DbContentPage } from '@meemoo/admin-core-ui';
+import {
+	ContentPageInfo,
+	ContentPageRenderer,
+	ContentPageService,
+	DbContentPage,
+} from '@meemoo/admin-core-ui';
 import { Flex, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
@@ -10,7 +15,6 @@ import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import { compose, Dispatch } from 'redux';
 
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
-import { ContentPageService } from '../../admin/content-page/services/content-page.service';
 import { ItemsService } from '../../admin/items/items.service';
 import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
