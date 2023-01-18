@@ -90,36 +90,56 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 			buttonTypes: () => [
 				{
-					label: tText('modules/admin/wrappers/with-admin-core-config___zilver'),
-					value: 'content-page-button--silver',
+					label: tText('admin/content-block/content-block___primair'),
+					value: 'primary',
 				},
 				{
-					label: tText('modules/admin/wrappers/with-admin-core-config___blauw-groen'),
-					value: 'content-page-button--teal',
+					label: tText('admin/content-block/content-block___secundair'),
+					value: 'secondary',
 				},
 				{
-					label: tText('modules/admin/wrappers/with-admin-core-config___wit'),
-					value: 'content-page-button--white',
+					label: tText('admin/content-block/content-block___secundair-invers'),
+					value: 'secondary-i',
 				},
 				{
-					label: tText('modules/admin/wrappers/with-admin-core-config___zwart'),
-					value: 'content-page-button--black',
+					label: tText('admin/content-block/content-block___tertiair'),
+					value: 'tertiary',
 				},
 				{
-					label: tText('modules/admin/wrappers/with-admin-core-config___outline'),
-					value: 'content-page-button--outline',
+					label: tText('admin/content-block/content-block___randloos'),
+					value: 'borderless',
 				},
 				{
-					label: tText('modules/admin/wrappers/with-admin-core-config___tekst'),
-					value: 'content-page-button--text',
+					label: tText('admin/content-block/content-block___randloos-invers'),
+					value: 'borderless-i',
 				},
 				{
-					label: tText('modules/admin/wrappers/with-admin-core-config___rood'),
-					value: 'content-page-button--red',
+					label: tText('admin/content-block/content-block___gevaar'),
+					value: 'danger',
 				},
 				{
-					label: tText('modules/admin/wrappers/with-admin-core-config___link'),
-					value: 'content-page-button--link',
+					label: tText('admin/content-block/content-block___gevaar-hover'),
+					value: 'danger-hover',
+				},
+				{
+					label: tText('admin/content-block/content-block___link'),
+					value: 'link',
+				},
+				{
+					label: tText('admin/content-block/content-block___link-inline'),
+					value: 'inline-link',
+				},
+				{
+					label: tText('admin/content-block/content-block___leerling-primair-geel'),
+					value: 'pupil-primary',
+				},
+				{
+					label: tText('admin/content-block/content-block___leerling-link-tekst-in-geel'),
+					value: 'pupil-link',
+				},
+				{
+					label: tText('admin/content-block/content-block___leerling-link-geel-inline'),
+					value: 'pupil-inline-link',
 				},
 			],
 			flowplayer: FlowPlayerWrapper,
