@@ -2,19 +2,22 @@ import type { Avo } from '@viaa/avo2-types';
 
 import { TableColumnDataType } from '../types/table-column-data-type';
 
-const DEFAULT_NULL_ORDER: Record<Avo.Search.OrderDirection, string> = {
+const DEFAULT_NULL_ORDER: Record<Avo.Search.OrderDirection, Avo.Search.OrderDirectionGraphql> = {
 	asc: 'asc_nulls_last',
 	desc: 'desc_nulls_first',
 };
 
 // Reverse order so asc sorts [true false null], and desc sorts [null false true]
-const BOOLEAN_ORDER: Record<Avo.Search.OrderDirection, string> = {
+const BOOLEAN_ORDER: Record<Avo.Search.OrderDirection, Avo.Search.OrderDirectionGraphql> = {
 	asc: 'desc_nulls_last',
 	desc: 'asc_nulls_first',
 };
 
 // temp_access edge case
-const BOOLEAN_NULLS_LAST_ORDER: Record<Avo.Search.OrderDirection, string> = {
+const BOOLEAN_NULLS_LAST_ORDER: Record<
+	Avo.Search.OrderDirection,
+	Avo.Search.OrderDirectionGraphql
+> = {
 	asc: 'desc_nulls_last',
 	desc: 'asc_nulls_last',
 };

@@ -348,7 +348,7 @@ export class ItemsService {
 		mediamosaId: string
 	): Promise<string | null> {
 		try {
-			const response = await fetchWithLogoutJson(
+			const response = await fetchWithLogoutJson<{ externalId: string } | null>(
 				`${getEnv(
 					'PROXY_URL'
 				)}/collections/fetch-external-id-by-mediamosa-id?${queryString.stringify({

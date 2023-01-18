@@ -112,7 +112,7 @@ export class ContentPageService {
 					},
 				}),
 				{
-					throwOnNull: false,
+					throwOnNullResponse: false,
 				}
 			);
 			return convertDbContentPageToContentPageInfo(dbContentPage);

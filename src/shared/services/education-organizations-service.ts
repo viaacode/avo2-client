@@ -48,7 +48,7 @@ export class EducationOrganisationService {
 				unitId,
 			})}`;
 
-			const response = await fetchWithLogoutJson(url);
+			const response = await fetchWithLogoutJson<{ name: string } | null>(url);
 
 			return response?.name || null;
 		} catch (err) {

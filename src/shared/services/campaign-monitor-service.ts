@@ -7,9 +7,11 @@ import { CustomError, getEnv } from '../helpers';
 export type EmailTemplateType = 'item' | 'collection' | 'bundle';
 
 export class CampaignMonitorService {
-	public static async fetchNewsletterPreferences(email: string) {
+	public static async fetchNewsletterPreferences(
+		email: string
+	): Promise<Avo.Newsletter.Preferences> {
 		try {
-			return fetchWithLogoutJson(
+			return fetchWithLogoutJson<Avo.Newsletter.Preferences>(
 				`${getEnv('PROXY_URL')}/campaign-monitor/preferences?${queryString.stringify({
 					email,
 				})}`

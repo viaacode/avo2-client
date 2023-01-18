@@ -6,7 +6,6 @@ import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { toAbsoluteUrl } from '../../../authentication/helpers/redirects';
 import { APP_PATH, RouteId } from '../../../constants';
 import BlockSearch from '../../../search/components/BlockSearch';
 import MediaGridWrapper from '../../../search/components/MediaGridWrapper/MediaGridWrapper';

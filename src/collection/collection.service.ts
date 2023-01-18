@@ -297,6 +297,7 @@ export class CollectionService {
 
 					delete (fragmentToUpdate as any).__typename;
 					delete fragmentToUpdate.item_meta;
+					fragmentToUpdate.updated_at = new Date().toISOString();
 
 					const variables: UpdateCollectionFragmentByIdMutationVariables = {
 						id: id as number,
@@ -1288,7 +1289,7 @@ export class CollectionService {
 
 	static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
 		try {
-			const json = await fetchWithLogoutJson(
+			const json = await fetchWithLogoutJson<{ uuid: string } | null>(
 				`${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify({
 					id: avo1Id,
 				})}`
