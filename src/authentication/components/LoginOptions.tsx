@@ -118,7 +118,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						block
 						type="secondary"
 						className="c-button-acmidm"
-						icon="eid"
+						icon="leerid"
 						label={t(
 							'authentication/components/login-options___e-id-of-een-digitale-sleutel'
 						)}
@@ -180,7 +180,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						type="secondary"
 						className="c-button-leerid"
 						icon="leerid"
-						iconType="multicolor"
+						iconType="custom"
 						label={t('authentication/components/login-options___leerling-id')}
 						onClick={() => {
 							onOptionClicked();
