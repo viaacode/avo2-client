@@ -34,7 +34,6 @@ export const ROUTE_PARTS = Object.freeze({
 	logout: 'uitloggen',
 	manualAccessRequest: 'manuele-toegangsaanvraag',
 	marcom: 'marcom',
-	menu: 'navigatie',
 	navigation: 'navigatie',
 	news: 'nieuws',
 	notifications: 'notificaties',

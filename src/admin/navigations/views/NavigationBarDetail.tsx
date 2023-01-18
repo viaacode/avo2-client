@@ -14,14 +14,14 @@ type NavigationBarDetailProps = DefaultSecureRouteProps<{ menu: string }>;
 const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ match }) => {
 	const { tText } = useTranslation();
 
-	const menuId = match.params.menu;
+	const navigationBarId = match.params.menu;
 
 	return (
 		<div className="c-admin__navigation-detail">
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						menuId,
+						navigationBarId,
 						tText('admin/menu/views/menu-detail___menu-beheer-detail-pagina-titel')
 					)}
 				</title>
@@ -32,7 +32,7 @@ const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ matc
 					)}
 				/>
 			</MetaTags>
-			<NavigationDetail navigationBarId={menuId} />
+			<NavigationDetail navigationBarId={navigationBarId} />
 		</div>
 	);
 };
