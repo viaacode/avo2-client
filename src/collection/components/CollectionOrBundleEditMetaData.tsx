@@ -1,4 +1,5 @@
 import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
+import { RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
 	Column,
@@ -11,7 +12,6 @@ import {
 	TagInfo,
 	TextArea,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import type { Avo } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
 import React, { FunctionComponent, useState } from 'react';
@@ -22,11 +22,11 @@ import {
 	ShortDescriptionField,
 	SubjectsField,
 } from '../../shared/components';
-import WYSIWYGWrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import {
-	WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION,
-	WYSIWYG_OPTIONS_DEFAULT_NO_TITLES,
-} from '../../shared/constants/wysiwyg';
+	RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
+	RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES,
+} from '../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import RichTextEditorWrapper from '../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { stripHtml } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
@@ -124,12 +124,12 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												true
 											)}
 										>
-											<WYSIWYGWrapper
+											<RichTextEditorWrapper
 												id="longDescriptionId"
 												controls={
 													isCollection
-														? WYSIWYG_OPTIONS_DEFAULT_NO_TITLES
-														: WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION
+														? RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES
+														: RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION
 												}
 												initialHtml={collection.description_long || ''}
 												state={descriptionLongEditorState}

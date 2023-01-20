@@ -1,33 +1,34 @@
 import {
-	WYSIWYG,
-	WYSIWYGMedia,
-	WYSIWYGProps,
-	WYSIWYGUploadInfo,
-} from '@viaa/avo2-components/dist/esm/wysiwyg';
+	RichTextEditor,
+	RichTextEditorMedia,
+	RichTextEditorProps,
+	RichTextEditorUploadInfo,
+} from '@meemoo/react-components';
 import type { Avo } from '@viaa/avo2-types';
 import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { WYSIWYG_OPTIONS_DEFAULT } from '../../constants';
 import { CustomError } from '../../helpers';
 import { FileUploadService } from '../../services/file-upload-service';
 import { ToastService } from '../../services/toast-service';
 
-import './WYSIWYGWrapper.scss';
+import { RICH_TEXT_EDITOR_OPTIONS_DEFAULT } from './RichTextEditor.consts';
 
-export type WYSIWYGWrapperProps = WYSIWYGProps & {
+import './RichTextEditorWrapper.scss';
+
+export type RichTextEditorWrapperProps = RichTextEditorProps & {
 	fileType?: Avo.FileUpload.AssetType; // Required to enable file upload
 	ownerId?: string;
 	className?: string;
 };
 
 /**
- * Handle WYSIWYG default controls and upload function
+ * Handle RichTextEditor default controls and upload function
  * @param props
  * @constructor
  */
-const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = (props) => {
+const RichTextEditorWrapper: FunctionComponent<RichTextEditorWrapperProps> = (props) => {
 	const { tText, tHtml } = useTranslation();
 
 	const { controls, fileType, ownerId, state, onChange, ...rest } = props;
@@ -35,16 +36,16 @@ const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = (props) => {
 	if ((controls || []).includes('media') && !fileType) {
 		console.error(
 			new CustomError(
-				'Trying to initialize WYSIWYGWrapper component with media without fileType',
+				'Trying to initialize RichTextEditorWrapper component with media without fileType',
 				null,
 				props
 			)
 		);
 	}
 
-	const media: WYSIWYGMedia | undefined = fileType
+	const media: RichTextEditorMedia | undefined = fileType
 		? {
-				uploadFn: async (param: WYSIWYGUploadInfo) => {
+				uploadFn: async (param: RichTextEditorUploadInfo) => {
 					try {
 						const url = await FileUploadService.uploadFile(
 							param.file,
@@ -82,9 +83,9 @@ const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = (props) => {
 		: undefined;
 
 	return (
-		<WYSIWYG
+		<RichTextEditor
 			{...rest}
-			controls={controls || WYSIWYG_OPTIONS_DEFAULT}
+			controls={controls || RICH_TEXT_EDITOR_OPTIONS_DEFAULT}
 			media={media}
 			state={state}
 			onChange={(newState) => {
@@ -96,4 +97,4 @@ const WYSIWYGWrapper: FunctionComponent<WYSIWYGWrapperProps> = (props) => {
 	);
 };
 
-export default WYSIWYGWrapper;
+export default RichTextEditorWrapper;

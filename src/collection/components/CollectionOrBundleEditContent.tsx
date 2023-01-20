@@ -119,7 +119,7 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	// 	fragment: CollectionFragment,
 	// 	index: number
 	// ): TitleDescriptionFormDescriptionField | CustomiseItemFormDescriptionField => ({
-	// 	controls: allowedToAddLinks ? WYSIWYG_OPTIONS_AUTHOR : WYSIWYG_OPTIONS_DEFAULT,
+	// 	controls: allowedToAddLinks ? RichTextEditor_OPTIONS_AUTHOR : RichTextEditor_OPTIONS_DEFAULT,
 	// 	label: tText('collection/components/fragment/fragment-edit___tekstblok-beschrijving'),
 	// 	placeholder: tText(
 	// 		'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'

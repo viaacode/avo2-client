@@ -16,7 +16,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import WYSIWYGWrapper from '../../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
+import RichTextEditorWrapper from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
 import { CustomError, stripHtml } from '../../../../shared/helpers';
 import useTranslation from '../../../../shared/hooks/useTranslation';
@@ -229,7 +229,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 								'admin/items/components/depublish-item-modal/depublish-item-modal___reden-tot-depubliceren'
 							)}
 						>
-							<WYSIWYGWrapper
+							<RichTextEditorWrapper
 								placeholder={tText(
 									'admin/items/components/depublish-item-modal/depublish-item-modal___geef-een-reden-waarom-dit-item-gedepubliceerd-wordt'
 								)}

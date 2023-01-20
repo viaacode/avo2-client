@@ -1,0 +1,85 @@
+@import '../../../styles/settings/colors';
+@import '../../../styles/settings/variables';
+
+.c-content table td {
+	border: 0.1rem solid $color-gray-100;
+}
+
+.c-rich-text-editor {
+	border: 0.1rem solid $color-gray-150;
+	border-radius: 0.3rem;
+	background-color: #fff;
+	@include textfield-transition;
+
+	&.disabled {
+		.bf-controlbar {
+			pointer-events: none;
+		}
+
+		background-color: $color-gray-100;
+	}
+
+	ul,
+	ol {
+		margin: 0;
+		padding: 0.5rem;
+	}
+
+	.bf-table-dropdown-control .button {
+		width: auto;
+	}
+
+	.bf-controlbar {
+		background-color: $color-gray-50;
+	}
+
+	.bf-content {
+		font-size: 1.5rem;
+	}
+
+	.bf-controlbar .separator-line {
+		margin: 0 0.5rem;
+		height: 3.5rem;
+	}
+
+	.bf-controlbar .control-item {
+		margin: 0 0 0 0.3rem;
+	}
+
+	.public-DraftEditor-content {
+		word-break: normal;
+
+		// The same as: .c-content p
+		> div > div {
+			margin: 1.5rem 0;
+		}
+	}
+
+	&.c-rich-text-editor--hide-h1 .headings-dropdown .menu li:nth-child(1) {
+		display: none;
+	}
+
+	&.c-rich-text-editor--hide-h2 .headings-dropdown .menu li:nth-child(2) {
+		display: none;
+	}
+
+	&.c-rich-text-editor--hide-h3 .headings-dropdown .menu li:nth-child(3) {
+		display: none;
+	}
+
+	&.c-rich-text-editor--hide-h4 .headings-dropdown .menu li:nth-child(4) {
+		display: none;
+	}
+
+	&.c-rich-text-editor--hide-h5 .headings-dropdown .menu li:nth-child(5) {
+		display: none;
+	}
+
+	&.c-rich-text-editor--hide-h6 .headings-dropdown .menu li:nth-child(6) {
+		display: none;
+	}
+
+	&.c-rich-text-editor--hide-normal .headings-dropdown .menu li:nth-child(7) {
+		display: none;
+	}
+}

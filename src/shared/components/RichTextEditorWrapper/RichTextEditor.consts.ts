@@ -1,8 +1,8 @@
-import { WYSIWYGControl } from '@viaa/avo2-components';
+import { RichTextEditorControl } from '@meemoo/react-components';
 
-export const WYSIWYG_OPTIONS_ALIGN: WYSIWYGControl[] = ['separator', 'text-align'];
+export const RichTextEditor_OPTIONS_ALIGN: RichTextEditorControl[] = ['separator', 'text-align'];
 
-export const WYSIWYG_OPTIONS_BASE: (WYSIWYGControl[] | WYSIWYGControl)[] = [
+export const RICH_TEXT_EDITOR_OPTIONS_BASE: RichTextEditorControl[] = [
 	'fullscreen',
 	'separator',
 	'undo',
@@ -14,22 +14,22 @@ export const WYSIWYG_OPTIONS_BASE: (WYSIWYGControl[] | WYSIWYGControl)[] = [
 	'italic',
 	'strike-through',
 	'underline',
-	...WYSIWYG_OPTIONS_ALIGN,
+	...RichTextEditor_OPTIONS_ALIGN,
 	'separator',
 	'list-ul',
 	'list-ol',
 ];
 
 // LL & LK
-export const WYSIWYG_OPTIONS_DEFAULT: (WYSIWYGControl[] | WYSIWYGControl)[] = [
-	...WYSIWYG_OPTIONS_BASE,
+export const RICH_TEXT_EDITOR_OPTIONS_DEFAULT: RichTextEditorControl[] = [
+	...RICH_TEXT_EDITOR_OPTIONS_BASE,
 	'separator',
 	'remove-styles',
 ];
 
 // Avo Eind redacteur, Educative Author & Partners
-export const WYSIWYG_OPTIONS_AUTHOR: (WYSIWYGControl[] | WYSIWYGControl)[] = [
-	...WYSIWYG_OPTIONS_BASE,
+export const RICH_TEXT_EDITOR_OPTIONS_AUTHOR: RichTextEditorControl[] = [
+	...RICH_TEXT_EDITOR_OPTIONS_BASE,
 	'separator',
 	'link',
 	'separator',
@@ -37,8 +37,8 @@ export const WYSIWYG_OPTIONS_AUTHOR: (WYSIWYGControl[] | WYSIWYGControl)[] = [
 ];
 
 // Admin
-export const WYSIWYG_OPTIONS_FULL: (WYSIWYGControl[] | WYSIWYGControl)[] = [
-	...WYSIWYG_OPTIONS_BASE,
+export const RICH_TEXT_EDITOR_OPTIONS_FULL: RichTextEditorControl[] = [
+	...RICH_TEXT_EDITOR_OPTIONS_BASE,
 	'separator',
 	'subscript',
 	'superscript',
@@ -52,7 +52,7 @@ export const WYSIWYG_OPTIONS_FULL: (WYSIWYGControl[] | WYSIWYGControl)[] = [
 	'remove-styles',
 ];
 
-export const WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN: (WYSIWYGControl[] | WYSIWYGControl)[] = [
+export const RichTextEditor_OPTIONS_FULL_WITHOUT_ALIGN: RichTextEditorControl[] = [
 	'fullscreen',
 	'separator',
 	'undo',
@@ -80,7 +80,7 @@ export const WYSIWYG_OPTIONS_FULL_WITHOUT_ALIGN: (WYSIWYGControl[] | WYSIWYGCont
 	'remove-styles',
 ];
 
-export const WYSIWYG_OPTIONS_DEFAULT_NO_TITLES: (WYSIWYGControl[] | WYSIWYGControl)[] = [
+export const RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES: RichTextEditorControl[] = [
 	'undo',
 	'redo',
 	'separator',
@@ -100,7 +100,7 @@ export const WYSIWYG_OPTIONS_DEFAULT_NO_TITLES: (WYSIWYGControl[] | WYSIWYGContr
 	'remove-styles',
 ];
 
-export const WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION: (WYSIWYGControl[] | WYSIWYGControl)[] = [
+export const RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION: RichTextEditorControl[] = [
 	'bold',
 	'italic',
 	'strike-through',

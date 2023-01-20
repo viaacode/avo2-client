@@ -1,8 +1,8 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import React, { FC } from 'react';
 
+import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
-import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { EditBlockProps } from '../../assignment.types';
 
@@ -26,7 +26,7 @@ export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock })
 					'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee'
 				),
 				initialHtml: convertToHtml(block.custom_description),
-				controls: WYSIWYG_OPTIONS_AUTHOR,
+				controls: RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 				enabledHeadings: ['h3', 'h4', 'normal'],
 				onChange: (value) =>
 					setBlock({

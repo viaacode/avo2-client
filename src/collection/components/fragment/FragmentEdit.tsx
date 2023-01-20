@@ -28,12 +28,12 @@ import React, {
 } from 'react';
 
 import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
-import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import {
-	getMoreOptionsLabel,
-	WYSIWYG_OPTIONS_AUTHOR,
-	WYSIWYG_OPTIONS_DEFAULT,
-} from '../../../shared/constants';
+	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
+	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
+} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { getMoreOptionsLabel } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -311,12 +311,12 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 						labelFor={`description_${fragment.id}`}
 					>
 						{!isNil(allowedToAddLinks) && (
-							<WYSIWYGWrapper
+							<RichTextEditorWrapper
 								id={`description_${fragment.id}`}
 								controls={
 									allowedToAddLinks
-										? WYSIWYG_OPTIONS_AUTHOR
-										: WYSIWYG_OPTIONS_DEFAULT
+										? RICH_TEXT_EDITOR_OPTIONS_AUTHOR
+										: RICH_TEXT_EDITOR_OPTIONS_DEFAULT
 								}
 								placeholder={tText(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
