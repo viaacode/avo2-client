@@ -1,3 +1,4 @@
+import { ContentPageLabelService } from '@meemoo/admin-core-ui';
 import { capitalize, orderBy, startCase } from 'lodash-es';
 import { useEffect, useState } from 'react';
 
@@ -5,7 +6,6 @@ import { CheckboxOption } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import { ContentPageLabelService } from '../content-page-label.service';
 import { ContentPageLabel } from '../content-page-label.types';
 
 type UseContentPageLabelsTuple = [CheckboxOption[], boolean];

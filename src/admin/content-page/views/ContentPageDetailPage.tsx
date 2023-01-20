@@ -1,4 +1,4 @@
-import { CONTENT_PAGE_PATH, ContentPageDetail } from '@meemoo/admin-core-ui';
+import { ContentPageDetail } from '@meemoo/admin-core-ui';
 import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,8 +8,8 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { navigate } from '../../../shared/helpers';
 import { Back } from '../../shared/components/Back/Back';
-import { ADMIN_CORE_ROUTE_PARTS } from '../../shared/constants/admin-core.routes';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
+import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
 const ContentPageDetailPage: FunctionComponent<DefaultSecureRouteProps<ContentPageDetailProps>> = ({
 	history,
@@ -34,9 +34,7 @@ const ContentPageDetailPage: FunctionComponent<DefaultSecureRouteProps<ContentPa
 				loaded={setItem}
 				renderBack={() => (
 					<Back
-						onClick={() =>
-							navigate(history, CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).OVERVIEW)
-						}
+						onClick={() => navigate(history, CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW)}
 					/>
 				)}
 			/>

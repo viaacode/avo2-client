@@ -1,9 +1,8 @@
-import { CONTENT_PAGE_PATH } from '@meemoo/admin-core-ui';
 import React, { ReactNode } from 'react';
 
 import { SecuredRoute } from '../../authentication/components';
-import { ADMIN_CORE_ROUTE_PARTS } from '../shared/constants/admin-core.routes';
 
+import { CONTENT_PAGE_PATH } from './content-page.consts';
 import ContentPageDetailPage from './views/ContentPageDetailPage';
 import ContentPageEditPage from './views/ContentPageEditPage';
 import ContentPageOverviewPage from './views/ContentPageOverviewPage';
@@ -11,22 +10,28 @@ import ContentPageOverviewPage from './views/ContentPageOverviewPage';
 export const renderAdminContentPageRoutes = (): ReactNode[] => {
 	return [
 		<SecuredRoute
-			key={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).OVERVIEW}
+			key={CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW}
 			component={ContentPageOverviewPage}
 			exact
-			path={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).OVERVIEW}
+			path={CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW}
 		/>,
 		<SecuredRoute
-			key={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).DETAIL}
+			key={CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL}
 			component={ContentPageDetailPage}
 			exact
-			path={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).DETAIL}
+			path={CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL}
 		/>,
 		<SecuredRoute
-			key={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).EDIT}
+			key={CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE}
 			component={ContentPageEditPage}
 			exact
-			path={CONTENT_PAGE_PATH(ADMIN_CORE_ROUTE_PARTS).EDIT}
+			path={CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE}
+		/>,
+		<SecuredRoute
+			key={CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT}
+			component={ContentPageEditPage}
+			exact
+			path={CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT}
 		/>,
 	];
 };

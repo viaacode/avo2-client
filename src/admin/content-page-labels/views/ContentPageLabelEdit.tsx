@@ -1,3 +1,4 @@
+import { ContentPageLabelService } from '@meemoo/admin-core-ui';
 import {
 	Box,
 	Button,
@@ -10,6 +11,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 
@@ -26,7 +28,6 @@ import { useContentTypes } from '../../content-page/hooks/useContentTypes';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
-import { ContentPageLabelService } from '../content-page-label.service';
 import { ContentPageLabel, ContentPageLabelEditFormErrorState } from '../content-page-label.types';
 
 type ContentPageLabelEditProps = DefaultSecureRouteProps<{ id: string }>;
@@ -65,7 +66,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 		} else {
 			try {
 				const contentLabel = await ContentPageLabelService.fetchContentPageLabel(
-					parseInt(match.params.id)
+					match.params.id
 				);
 				setInitialContentPageLabel(contentLabel);
 				setContentPageLabelInfo(contentLabel);
@@ -244,7 +245,28 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 												link_to: newLinkTo,
 											})
 										}
-										initialValue={contentPageLabelInfo.link_to || undefined}
+										initialValue={
+											contentPageLabelInfo?.link_to?.value
+												? {
+														label: isNil(
+															contentPageLabelInfo.link_to?.value
+														)
+															? undefined
+															: String(
+																	contentPageLabelInfo.link_to
+																		?.value
+															  ),
+														type:
+															contentPageLabelInfo.link_to?.type ||
+															'CONTENT_PAGE',
+														value: String(
+															contentPageLabelInfo?.link_to?.value
+														),
+														target: contentPageLabelInfo?.link_to
+															?.target,
+												  }
+												: undefined
+										}
 									/>
 								</FormGroup>
 							</Form>

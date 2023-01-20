@@ -1,3 +1,4 @@
+import { ContentPageLabelService } from '@meemoo/admin-core-ui';
 import { Button, ButtonToolbar } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
@@ -35,7 +36,6 @@ import {
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_LABEL_PATH, ITEMS_PER_PAGE } from '../content-page-label.const';
-import { ContentPageLabelService } from '../content-page-label.service';
 import {
 	ContentPageLabel,
 	ContentPageLabelOverviewTableCols,
@@ -177,6 +177,12 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 
 	// Methods
 	const handleDelete = async () => {
+		if (isNil(contentPageLabelIdToDelete)) {
+			ToastService.danger(
+				tHtml('Het verwijderen van het label is mislukt, omdat geen label geselecteerd is.')
+			);
+			return;
+		}
 		setIsConfirmModalOpen(false);
 		await ContentPageLabelService.deleteContentPageLabel(contentPageLabelIdToDelete);
 		await fetchContentPageLabels();
@@ -216,9 +222,11 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				}
 				const labels = GET_CONTENT_TYPE_LABELS();
 				return (
-					<SmartLink action={linkTo} removeStyles={false}>{`${labels[linkTo.type]} - ${
-						linkTo.label
-					}`}</SmartLink>
+					<SmartLink action={linkTo} removeStyles={false}>{`${
+						labels[linkTo.type]
+					} - ${decodeURIComponent(
+						String(linkTo.value)?.split('hetarchief.be')?.pop() || ''
+					)}`}</SmartLink>
 				);
 			}
 
@@ -322,6 +330,8 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
+					title={tText('Ben je zeker dat je dit label wil verwijderen?')}
+					body={tText('Deze actie kan niet ongedaan gemaakt worden')}
 				/>
 			</>
 		);
