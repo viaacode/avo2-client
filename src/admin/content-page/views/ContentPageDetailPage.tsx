@@ -17,14 +17,14 @@ const ContentPageDetailPage: FunctionComponent<DefaultSecureRouteProps<ContentPa
 }) => {
 	const { id } = match.params;
 
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const [item, setItem] = useState<ContentPageInfo | undefined>(undefined);
 
 	return (
 		<>
 			{item && (
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(item.title, t('Contentpagina detail'))}</title>
+					<title>{GENERATE_SITE_TITLE(item.title, tText('Contentpagina detail'))}</title>
 					<meta name="description" content={item.seoDescription || ''} />
 				</MetaTags>
 			)}
