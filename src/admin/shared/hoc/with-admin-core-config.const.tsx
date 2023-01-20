@@ -13,6 +13,7 @@ import { FlowPlayerWrapper } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
+import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { FileUploadService } from '../../../shared/services/file-upload-service';
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
 
@@ -172,9 +173,11 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			getContentPageByPathEndpoint: `${proxyUrl}/content-pages`,
 			i18n: { tHtml, tText },
 			educationOrganisationService: {
-				fetchEducationOrganisationName: () => Promise.resolve(null),
-				fetchCities: () => Promise.resolve([]),
-				fetchEducationOrganisations: () => Promise.resolve([]),
+				fetchEducationOrganisationName:
+					EducationOrganisationService.fetchEducationOrganisationName,
+				fetchCities: EducationOrganisationService.fetchCities,
+				fetchEducationOrganisations:
+					EducationOrganisationService.fetchEducationOrganisations,
 			},
 			router: {
 				Link: InternalLink as FunctionComponent<LinkInfo>,
