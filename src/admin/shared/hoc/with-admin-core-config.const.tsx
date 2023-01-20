@@ -14,7 +14,7 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { FileUploadService } from '../../../shared/services/file-upload-service';
-import { ToastService } from '../../../shared/services/toast-service';
+import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
@@ -143,7 +143,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 							<p id="toastDescription">{toastInfo.description}</p>
 						</div>,
 						{},
-						toastInfo.type as any
+						ToastTypeToAvoToastType[toastInfo.type]
 					);
 				},
 			},

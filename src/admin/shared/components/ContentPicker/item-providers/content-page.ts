@@ -1,7 +1,6 @@
-import { ContentPageInfo, DbContentPage } from '@meemoo/admin-core-ui';
+import { ContentPageInfo, ContentPageService, DbContentPage } from '@meemoo/admin-core-ui';
 
 import { CustomError } from '../../../../../shared/helpers';
-import { ContentPageService } from '../../../../content-page/services/content-page.service';
 import { PickerSelectItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 

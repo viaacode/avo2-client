@@ -15,7 +15,7 @@ const ContentPageDetailPage: FunctionComponent<DefaultSecureRouteProps<ContentPa
 	const { id } = match.params;
 	return (
 		<ContentPageEdit
-			className="c-admin-core"
+			className="c-admin-core c-admin__content-page-edit"
 			id={id}
 			renderBack={() => (
 				<Back onClick={() => navigate(history, CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW)} />

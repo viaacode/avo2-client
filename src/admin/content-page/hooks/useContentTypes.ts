@@ -1,8 +1,7 @@
+import { ContentPageService } from '@meemoo/admin-core-ui';
 import { SelectOption } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { useEffect, useState } from 'react';
-
-import { ContentPageService } from '../services/content-page.service';
 
 type UseContentTypesTuple = [SelectOption<Avo.ContentPage.Type>[], boolean];
 
@@ -16,7 +15,7 @@ export const useContentTypes = (): UseContentTypesTuple => {
 		setIsLoading(true);
 
 		ContentPageService.getContentTypes()
-			.then((types) => {
+			.then((types: { value: Avo.ContentPage.Type; label: string }[] | null) => {
 				if (types) {
 					setContentTypeOptions(types);
 				}
