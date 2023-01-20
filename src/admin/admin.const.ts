@@ -14,7 +14,7 @@ import { ContentPageService } from './content-page/services/content-page.service
 import { DASHBOARD_PATH } from './dashboard/dashboard.const';
 import { INTERACTIVE_TOUR_PATH } from './interactive-tour/interactive-tour.const';
 import { ITEMS_PATH } from './items/items.const';
-import { MENU_PATH } from './menu/menu.const';
+import { NAVIGATIONS_PATH } from './navigations/navigations.const';
 import { PUPIL_COLLECTIONS_PATH } from './pupil-collection/pupil-collection.const';
 import { TRANSLATIONS_PATH } from './translations/translations.const';
 import { USER_GROUP_PATH } from './user-groups/user-group.const';
@@ -24,7 +24,7 @@ export const ADMIN_PATH = Object.freeze({
 	...DASHBOARD_PATH,
 	...USER_PATH,
 	...USER_GROUP_PATH,
-	...MENU_PATH,
+	...NAVIGATIONS_PATH,
 	...CONTENT_PAGE_PATH,
 	...CONTENT_PAGE_LABEL_PATH,
 	...TRANSLATIONS_PATH,
@@ -133,7 +133,7 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 		...getUserNavItems(userPermissions),
 		...hasPermissions([PermissionName.EDIT_NAVIGATION_BARS], 'OR', userPermissions, {
 			label: tText('admin/admin___navigatie'),
-			location: ADMIN_PATH.MENU_OVERVIEW,
+			location: ADMIN_PATH.NAVIGATIONS_OVERVIEW,
 			key: 'navigatie',
 			exact: false,
 		}),

@@ -1,5 +1,0 @@
-mutation deleteMenuItemById($id: Int!) {
-	delete_app_content_nav_elements(where: { id: { _eq: $id } }) {
-		affected_rows
-	}
-}

@@ -12,6 +12,8 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
+import './ContentPage.scss';
+
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
 const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ history, user }) => {
@@ -29,7 +31,7 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ h
 	return (
 		<AdminLayout
 			pageTitle={t('admin/content-page/views/content-page-overview-page___contentoverzicht')}
-			className="c-admin-core"
+			className="c-admin-core c-admin-core__content-page"
 			size="full-width"
 		>
 			<AdminLayoutTopBarRight>

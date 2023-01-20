@@ -7,15 +7,15 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
-import './MenuOverview.scss';
+import './NavigationBarOverview.scss';
 
-type MenuOverviewProps = DefaultSecureRouteProps;
+type NavigationBarOverviewProps = DefaultSecureRouteProps;
 
-const MenuOverview: FunctionComponent<MenuOverviewProps> = () => {
+const NavigationBarOverview: FunctionComponent<NavigationBarOverviewProps> = () => {
 	const { tText } = useTranslation();
 
 	return (
-		<>
+		<div className="c-admin__navigation-overview">
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
@@ -30,8 +30,8 @@ const MenuOverview: FunctionComponent<MenuOverviewProps> = () => {
 				/>
 			</MetaTags>
 			<NavigationOverview />
-		</>
+		</div>
 	);
 };
 
-export default withAdminCoreConfig(MenuOverview as FunctionComponent);
+export default withAdminCoreConfig(NavigationBarOverview as FunctionComponent);
