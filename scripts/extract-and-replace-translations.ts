@@ -172,14 +172,17 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 }
 
 async function getOnlineTranslations() {
-	const response = await fetch(`https://avo2-proxy-qas.hetarchief.be/translations/nl.json`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	});
+	const response = await fetch(
+		'https://avo2-proxy-qas.hetarchief.be/admin/translations/frontend.json',
+		{
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}
+	);
 
-	return (await response.json()).value;
+	return await response.json();
 }
 
 function checkTranslationsForKeysAsValue(translationJson: string) {

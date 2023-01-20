@@ -1,12 +1,12 @@
 import { ContentPageDetail } from '@meemoo/admin-core-ui';
 import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { navigate } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { Back } from '../../shared/components/Back/Back';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { CONTENT_PAGE_PATH } from '../content-page.consts';
