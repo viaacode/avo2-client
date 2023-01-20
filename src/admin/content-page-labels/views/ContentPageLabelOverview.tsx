@@ -179,7 +179,9 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 	const handleDelete = async () => {
 		if (isNil(contentPageLabelIdToDelete)) {
 			ToastService.danger(
-				tHtml('Het verwijderen van het label is mislukt, omdat geen label geselecteerd is.')
+				tHtml(
+					'admin/content-page-labels/views/content-page-label-overview___het-verwijderen-van-het-label-is-mislukt-omdat-geen-label-geselecteerd-is'
+				)
 			);
 			return;
 		}
@@ -330,8 +332,12 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 					confirmCallback={handleDelete}
 					isOpen={isConfirmModalOpen}
 					onClose={() => setIsConfirmModalOpen(false)}
-					title={tText('Ben je zeker dat je dit label wil verwijderen?')}
-					body={tText('Deze actie kan niet ongedaan gemaakt worden')}
+					title={tText(
+						'admin/content-page-labels/views/content-page-label-overview___ben-je-zeker-dat-je-dit-label-wil-verwijderen'
+					)}
+					body={tText(
+						'admin/content-page-labels/views/content-page-label-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					)}
 				/>
 			</>
 		);

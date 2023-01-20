@@ -22,7 +22,9 @@ const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match 
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						tText('navigation item edit page title'),
+						tText(
+							'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-title'
+						),
 						menuItemId
 							? tText(
 									'admin/menu/views/menu-edit___menu-item-beheer-bewerk-pagina-titel'
@@ -32,7 +34,12 @@ const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match 
 							  )
 					)}
 				</title>
-				<meta name="description" content={tText('navigation item edit page description')} />
+				<meta
+					name="description"
+					content={tText(
+						'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-description'
+					)}
+				/>
 			</MetaTags>
 			<NavigationEdit
 				navigationBarId={menuParentId as string}
