@@ -101,9 +101,9 @@ const Profile: FunctionComponent<
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		ClientEducationOrganization[]
 	>(get(user, 'profile.organizations', []));
-	const firstName = get(user, 'first_name', '');
-	const lastName = get(user, 'last_name', '');
-	const email = get(user, 'mail', '');
+	const firstName = user?.first_name || '';
+	const lastName = user?.last_name || '';
+	const email = user?.mail || '';
 	const [avatar, setAvatar] = useState<string | null>(
 		get(getProfileFromUser(user, true), 'avatar', null)
 	);
@@ -660,8 +660,8 @@ const Profile: FunctionComponent<
 		}
 	};
 
-	const handleEditInfo = () => {
-		window.location.href = stringifyUrl({
+	const generateEditProfileInfoLink = () => {
+		return stringifyUrl({
 			url: getEnv('SSUM_ACCOUNT_EDIT_URL') || '',
 			query: {
 				redirect_to: stringifyUrl({
@@ -689,13 +689,14 @@ const Profile: FunctionComponent<
 										>
 											{firstName}
 										</FormGroup>
-										<Button
-											type="secondary"
-											label={t(
-												'settings/components/account___wijzig-gegevens'
-											)}
-											onClick={handleEditInfo}
-										/>
+										<a href={generateEditProfileInfoLink()}>
+											<Button
+												type="secondary"
+												label={t(
+													'settings/components/account___wijzig-gegevens'
+												)}
+											/>
+										</a>
 									</div>
 									<FormGroup
 										label={t('settings/components/account___achternaam')}
