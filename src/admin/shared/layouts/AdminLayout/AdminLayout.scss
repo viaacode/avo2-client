@@ -1,6 +1,5 @@
 @import '../../../../styles/settings/colors';
-
-$admin-actions-bar-height: 8.4rem;
+@import '../../../../styles/settings/variables';
 
 .l-admin {
 	display: flex;
@@ -60,6 +59,7 @@ $admin-actions-bar-height: 8.4rem;
 	&--header {
 		padding: 20px;
 	}
+
 	&--header th:nth-child(2) {
 		border-left: 1px solid lightgray;
 	}
