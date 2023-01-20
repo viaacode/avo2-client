@@ -16,16 +16,16 @@ export const renderAdminContentPageRoutes = (): ReactNode[] => {
 			path={CONTENT_PAGE_PATH.CONTENT_PAGE_OVERVIEW}
 		/>,
 		<SecuredRoute
-			key={CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL}
-			component={ContentPageDetailPage}
-			exact
-			path={CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL}
-		/>,
-		<SecuredRoute
 			key={CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE}
 			component={ContentPageEditPage}
 			exact
 			path={CONTENT_PAGE_PATH.CONTENT_PAGE_CREATE}
+		/>,
+		<SecuredRoute
+			key={CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL}
+			component={ContentPageDetailPage}
+			exact
+			path={CONTENT_PAGE_PATH.CONTENT_PAGE_DETAIL}
 		/>,
 		<SecuredRoute
 			key={CONTENT_PAGE_PATH.CONTENT_PAGE_EDIT}
