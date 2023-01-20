@@ -1,4 +1,5 @@
 import { Color, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
+import { RichEditorState } from '@meemoo/react-components';
 import {
 	BlockHeading,
 	Button,
@@ -10,7 +11,6 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import type { Avo } from '@viaa/avo2-types';
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';

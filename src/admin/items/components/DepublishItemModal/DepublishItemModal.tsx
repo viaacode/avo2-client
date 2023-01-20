@@ -1,3 +1,4 @@
+import { RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
 	ButtonToolbar,
@@ -11,7 +12,6 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import type { Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';

@@ -1,4 +1,4 @@
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
+import { RichEditorState } from '@meemoo/react-components';
 
 import { GetInteractiveTourByIdQuery } from '../../shared/generated/graphql-db-types';
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';

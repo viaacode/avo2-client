@@ -1,5 +1,5 @@
+import { RichEditorState } from '@meemoo/react-components';
 import { DefaultProps, Form, FormGroup, TextInput, TextInputProps } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import React, { FC, useEffect, useState } from 'react';
 
 import RichTextEditorWrapper, {

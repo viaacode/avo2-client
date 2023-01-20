@@ -1,3 +1,4 @@
+import { RichEditorState } from '@meemoo/react-components';
 import {
 	DefaultProps,
 	Form,
@@ -7,7 +8,6 @@ import {
 	Toggle,
 	ToggleProps,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 
 import { LabeledFormField } from '../../types';
