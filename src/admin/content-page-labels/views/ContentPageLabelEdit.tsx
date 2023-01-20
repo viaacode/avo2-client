@@ -142,16 +142,17 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 
 			setIsSaving(true);
 
-			let contentPageLabelId: number | string;
+			let contentPageLabel: ContentPageLabel;
 			if (isCreatePage) {
 				// insert the content page label
-				contentPageLabelId = await ContentPageLabelService.insertContentPageLabel(
+				contentPageLabel = await ContentPageLabelService.insertContentPageLabel(
 					contentPageLabelInfo
 				);
 			} else {
 				// Update existing content page label
-				await ContentPageLabelService.updateContentPageLabel(contentPageLabelInfo);
-				contentPageLabelId = match.params.id;
+				contentPageLabel = await ContentPageLabelService.updateContentPageLabel(
+					contentPageLabelInfo
+				);
 			}
 
 			ToastService.success(
@@ -160,7 +161,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				)
 			);
 			redirectToClientPage(
-				buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_DETAIL, { id: contentPageLabelId }),
+				buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_DETAIL, { id: contentPageLabel.id }),
 				history
 			);
 		} catch (err) {
