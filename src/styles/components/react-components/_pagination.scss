@@ -1,0 +1,39 @@
+.c-pagination {
+	padding-top: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&__btn {
+		display: flex;
+		justify-content: center;
+		min-width: 3.2rem;
+		min-height: 3.2rem;
+		margin: 5px 5px;
+		cursor: pointer;
+
+		&--disabled {
+			cursor: default;
+		}
+	}
+
+	&__pages {
+		display: flex;
+		align-items: baseline;
+
+		.c-pagination__btn {
+			align-items: center;
+			width: 3.2rem;
+			height: 3.2rem;
+		}
+	}
+
+	&__ellipsis {
+		color: $color-night-blue;
+		margin: 0 5px;
+	}
+
+	&__icon {
+		margin-top: 0.2rem;
+	}
+}

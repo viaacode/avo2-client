@@ -1,7 +1,4 @@
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-
+import { ContentPageLabelService } from '@meemoo/admin-core-ui';
 import {
 	Box,
 	Button,
@@ -14,6 +11,9 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { isNil } from 'lodash-es';
+import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -21,23 +21,23 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
-import { useContentTypes } from '../../content/hooks';
+import { useContentTypes } from '../../content-page/hooks/useContentTypes';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { CONTENT_PAGE_LABEL_PATH } from '../content-page-label.const';
-import { ContentPageLabelService } from '../content-page-label.service';
 import { ContentPageLabel, ContentPageLabelEditFormErrorState } from '../content-page-label.types';
 
-interface ContentPageLabelEditProps extends DefaultSecureRouteProps<{ id: string }> {}
+type ContentPageLabelEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 	history,
 	match,
 	location,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Hooks
 	const [initialContentPageLabel, setInitialContentPageLabel] = useState<ContentPageLabel | null>(
@@ -79,13 +79,13 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'admin/content-page-labels/views/content-page-label-edit___het-ophalen-van-de-content-pagina-label-is-mislukt'
 					),
 				});
 			}
 		}
-	}, [isCreatePage, match.params.id, setLoadingInfo, setContentPageLabelInfo, t]);
+	}, [isCreatePage, match.params.id, setLoadingInfo, setContentPageLabelInfo, tText]);
 
 	useEffect(() => {
 		initOrFetchContentPageLabel();
@@ -110,7 +110,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 	const getFormErrors = (): ContentPageLabelEditFormErrorState | null => {
 		if (!contentPageLabelInfo || !contentPageLabelInfo.label) {
 			return {
-				label: t(
+				label: tText(
 					'admin/content-page-labels/views/content-page-label-edit___een-label-is-verplicht'
 				),
 			};
@@ -124,7 +124,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			setFormErrors(errors || {});
 			if (errors) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/content-page-labels/views/content-page-label-edit___de-invoer-is-ongeldig'
 					)
 				);
@@ -133,7 +133,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 
 			if (!initialContentPageLabel || !contentPageLabelInfo) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-het-content-pagina-label-is-mislukt-omdat-het-label-nog-niet-is-geladen'
 					)
 				);
@@ -142,25 +142,26 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 
 			setIsSaving(true);
 
-			let contentPageLabelId: number | string;
+			let contentPageLabel: ContentPageLabel;
 			if (isCreatePage) {
 				// insert the content page label
-				contentPageLabelId = await ContentPageLabelService.insertContentPageLabel(
+				contentPageLabel = await ContentPageLabelService.insertContentPageLabel(
 					contentPageLabelInfo
 				);
 			} else {
 				// Update existing content page label
-				await ContentPageLabelService.updateContentPageLabel(contentPageLabelInfo);
-				contentPageLabelId = match.params.id;
+				contentPageLabel = await ContentPageLabelService.updateContentPageLabel(
+					contentPageLabelInfo
+				);
 			}
 
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/content-page-labels/views/content-page-label-edit___de-content-pagina-label-is-opgeslagen'
 				)
 			);
 			redirectToClientPage(
-				buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_DETAIL, { id: contentPageLabelId }),
+				buildLink(ADMIN_PATH.CONTENT_PAGE_LABEL_DETAIL, { id: contentPageLabel.id }),
 				history
 			);
 		} catch (err) {
@@ -171,7 +172,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/content-page-labels/views/content-page-label-edit___het-opslaan-van-de-permissiegroep-is-mislukt'
 				)
 			);
@@ -190,7 +191,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 						<Box backgroundColor="gray">
 							<Form>
 								<FormGroup
-									label={t(
+									label={tText(
 										'admin/content-page-labels/views/content-page-label-edit___label'
 									)}
 									error={formErrors.label}
@@ -207,7 +208,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 									/>
 								</FormGroup>
 								<FormGroup
-									label={t(
+									label={tText(
 										'admin/content-page-labels/views/content-page-label-edit___content-pagina-type'
 									)}
 									error={formErrors.content_type}
@@ -225,7 +226,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 									/>
 								</FormGroup>
 								<FormGroup
-									label={t(
+									label={tText(
 										'admin/content-page-labels/views/content-page-label-edit___link-naar'
 									)}
 									error={formErrors.link_to}
@@ -245,7 +246,28 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 												link_to: newLinkTo,
 											})
 										}
-										initialValue={contentPageLabelInfo.link_to || undefined}
+										initialValue={
+											contentPageLabelInfo?.link_to?.value
+												? {
+														label: isNil(
+															contentPageLabelInfo.link_to?.value
+														)
+															? undefined
+															: String(
+																	contentPageLabelInfo.link_to
+																		?.value
+															  ),
+														type:
+															contentPageLabelInfo.link_to?.type ||
+															'CONTENT_PAGE',
+														value: String(
+															contentPageLabelInfo?.link_to?.value
+														),
+														target: contentPageLabelInfo?.link_to
+															?.target,
+												  }
+												: undefined
+										}
 									/>
 								</FormGroup>
 							</Form>
@@ -262,10 +284,10 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			onClickBackButton={() => navigate(history, ADMIN_PATH.CONTENT_PAGE_LABEL_OVERVIEW)}
 			pageTitle={
 				isCreatePage
-					? t(
+					? tText(
 							'admin/content-page-labels/views/content-page-label-edit___content-pagina-label-aanmaken'
 					  )
-					: t(
+					: tText(
 							'admin/content-page-labels/views/content-page-label-edit___content-pagina-label-aanpassen'
 					  )
 			}
@@ -274,7 +296,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
 					<Button
-						label={t(
+						label={tText(
 							'admin/content-page-labels/views/content-page-label-edit___annuleer'
 						)}
 						onClick={navigateBack}
@@ -282,7 +304,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 					/>
 					<Button
 						disabled={isSaving}
-						label={t(
+						label={tText(
 							'admin/content-page-labels/views/content-page-label-edit___opslaan'
 						)}
 						onClick={handleSave}
@@ -299,10 +321,10 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				<title>
 					{GENERATE_SITE_TITLE(
 						isCreatePage
-							? t(
+							? tText(
 									'admin/content-page-labels/views/content-page-label-edit___permissiegroep-beheer-aanmaak-pagina-titel'
 							  )
-							: t(
+							: tText(
 									'admin/content-page-labels/views/content-page-label-edit___permissiegroep-beheer-bewerk-pagina-titel'
 							  )
 					)}
@@ -311,10 +333,10 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 					name="description"
 					content={
 						isCreatePage
-							? t(
+							? tText(
 									'admin/content-page-labels/views/content-page-label-edit___permissiegroep-beheer-aanmaak-pagina-beschrijving'
 							  )
-							: t(
+							: tText(
 									'admin/content-page-labels/views/content-page-label-edit___permissiegroep-beheer-bewerk-pagina-beschrijving'
 							  )
 					}

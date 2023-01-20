@@ -1,8 +1,8 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
 import { ROUTE_PARTS } from './shared/constants';
-import i18n from './shared/translations/i18n';
+import { tText } from './shared/helpers/translate';
 
 export interface RouteInfo {
 	route: string;
@@ -11,6 +11,7 @@ export interface RouteInfo {
 }
 
 export type RouteId =
+	| 'HOME'
 	| 'LOGIN'
 	| 'LOGOUT'
 	| 'REGISTER_OR_LOGIN'
@@ -62,6 +63,11 @@ export type RouteId =
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	/* eslint-enable @typescript-eslint/no-unused-vars */
+	HOME: {
+		route: '/',
+		showInContentPicker: true,
+		showForInteractiveTour: false,
+	},
 	LOGIN: {
 		route: `/${ROUTE_PARTS.login}`,
 		showInContentPicker: true,
@@ -301,4 +307,4 @@ export const CONTENT_TYPE_TO_ROUTE: { [contentType in Avo.Core.ContentType]: str
 } as any; // TODO remove cast once this task is complete: https://meemoo.atlassian.net/browse/DEV-729
 
 export const GENERATE_SITE_TITLE = (...pageTitleParts: (string | null | undefined)[]) =>
-	compact([...pageTitleParts, i18n.t('constants___het-archief-voor-onderwijs')]).join(' | ');
+	compact([...pageTitleParts, tText('constants___het-archief-voor-onderwijs')]).join(' | ');

@@ -1,3 +1,4 @@
+import { ButtonAction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 
 import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
@@ -14,8 +15,8 @@ export type ContentPageLabelOverviewTableCols =
 export interface ContentPageLabel {
 	id: number;
 	label: string;
-	content_type: Avo.ContentPage.Type;
-	link_to: PickerItem | null;
+	content_type: string;
+	link_to: ButtonAction | null;
 	created_at: string;
 	updated_at: string;
 }

@@ -1,13 +1,14 @@
-import { get } from 'lodash-es';
-
+import {
+	GetNotificationDocument,
+	GetNotificationQuery,
+	InsertNotificationDocument,
+	InsertNotificationMutation,
+	UpdateNotificationDocument,
+	UpdateNotificationMutation,
+} from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
-import { ApolloCacheManager, dataService } from './data-service';
-import {
-	GET_NOTIFICATION,
-	INSERT_NOTIFICATION,
-	UPDATE_NOTIFICATION,
-} from './notification-service.gql';
+import { dataService } from './data-service';
 
 export interface NotificationInfo {
 	through_email: boolean;
@@ -20,21 +21,15 @@ export class NotificationService {
 		profileId: string
 	): Promise<NotificationInfo | null> {
 		try {
-			const response = await dataService.query({
-				query: GET_NOTIFICATION,
+			const response = await dataService.query<GetNotificationQuery>({
+				query: GetNotificationDocument,
 				variables: {
 					key,
 					profileId,
 				},
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-
-			return get(response, 'data.users_notifications[0]', null);
+			return (response.users_notifications[0] ?? null) as NotificationInfo | null;
 		} catch (err) {
 			throw new CustomError('Failed to get user notification', err, {
 				profileId,
@@ -51,29 +46,24 @@ export class NotificationService {
 		throughPlatform: boolean
 	): Promise<void> {
 		try {
-			const notificationEntryExists: boolean = !!(await NotificationService.getNotification(
+			const notificationEntryExists = !!(await NotificationService.getNotification(
 				key,
 				profileId
 			));
 			// If entry already exists => update existing entry
 			// If no entry exists in the notifications table => insert a new entry
-			const mutation = notificationEntryExists ? UPDATE_NOTIFICATION : INSERT_NOTIFICATION;
-			const mutateResponse = await dataService.mutate({
-				mutation,
+			const mutation = notificationEntryExists
+				? UpdateNotificationDocument
+				: InsertNotificationDocument;
+			await dataService.query<UpdateNotificationMutation | InsertNotificationMutation>({
+				query: mutation,
 				variables: {
 					profileId,
 					key,
 					throughEmail,
 					throughPlatform,
 				},
-				update: ApolloCacheManager.clearNotificationCache,
 			});
-			if (mutateResponse.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					mutation,
-					mutateResponse,
-				});
-			}
 		} catch (err) {
 			throw new CustomError('Failed to set user notification', err, {
 				profileId,

@@ -16,9 +16,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
-import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, get, sortBy } from 'lodash-es';
 import React, {
@@ -29,7 +27,6 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
@@ -44,6 +41,7 @@ import {
 import { MultiEducationalOrganisationSelectModal } from '../../../../shared/components/MultiEducationalOrganisationSelectModal/MultiEducationalOrganisationSelectModal';
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-client-org';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { KeyCode } from '../../../../shared/types';
 
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
@@ -58,7 +56,7 @@ export interface FilterableTableState {
 	page: number;
 }
 
-export interface FilterableColumn extends TableColumn {
+export interface FilterableColumn<T = string> extends Omit<TableColumn, 'id'> {
 	filterType?:
 		| 'CheckboxDropdownModal'
 		| 'DateRangeDropdown'
@@ -68,6 +66,7 @@ export interface FilterableColumn extends TableColumn {
 		| 'MultiEducationalOrganisationSelectModal';
 	filterProps?: any;
 	visibleByDefault: boolean;
+	id: T;
 }
 
 interface FilterTableProps extends RouteComponentProps {
@@ -130,7 +129,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 	defaultOrderProp,
 	defaultOrderDirection,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// Holds the text while the user is typing, once they press the search button or enter it will be copied to the tableState.query
 	// This avoids doing a database query on every key press
@@ -259,7 +258,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						</FormGroup>
 						<FormGroup inlineMode="shrink">
 							<Button
-								label={t(
+								label={tText(
 									'admin/shared/components/filter-table/filter-table___zoeken'
 								)}
 								type="primary"
@@ -357,10 +356,11 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 												/>
 											);
 
-										case 'MultiEducationalOrganisationSelectModal':
+										case 'MultiEducationalOrganisationSelectModal': {
 											const orgs: string[] = (tableState as any)[col.id];
-											const orgObjs: ClientEducationOrganization[] =
+											const orgObjs: Avo.EducationOrganization.Organization[] =
 												eduOrgToClientOrg(orgs);
+
 											return (
 												<MultiEducationalOrganisationSelectModal
 													{...(col.filterProps || {})}
@@ -373,6 +373,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 													key={`filter-${col.id}`}
 												/>
 											);
+										}
 
 										default:
 											return null;
@@ -382,7 +383,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 									<Select
 										options={bulkActions}
 										onChange={handleSelectBulkAction}
-										placeholder={t(
+										placeholder={tText(
 											'admin/shared/components/filter-table/filter-table___bulkactie'
 										)}
 										disabled={!(selectedItemIds || []).length}
@@ -394,7 +395,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						{!hideTableColumnsButton && (
 							<ToolbarRight>
 								<CheckboxDropdownModal
-									label={t(
+									label={tText(
 										'admin/shared/components/filter-table/filter-table___kolommen'
 									)}
 									id="table_columns"
@@ -433,9 +434,9 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								variant={variant}
 								sortColumn={tableState.sort_column || defaultOrderProp || undefined}
 								sortOrder={
-									(tableState.sort_order as SearchOrderDirection) ||
-									defaultOrderDirection ||
-									undefined
+									((tableState.sort_order as Avo.Search.OrderDirection) ||
+										defaultOrderDirection ||
+										undefined) as any // TODO add asc_nulls_first to table sort orders
 								}
 								showCheckboxes={
 									(!!bulkActions && !!bulkActions.length) || showCheckboxes
@@ -472,7 +473,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 					confirmLabel={get(
 						bulkActions.find((action) => action.value === selectedBulkAction),
 						'label',
-						t('admin/shared/components/filter-table/filter-table___bevestig')
+						tText('admin/shared/components/filter-table/filter-table___bevestig')
 					)}
 					confirmButtonType={get(
 						bulkActions.find((action) => action.value === selectedBulkAction),
@@ -491,6 +492,7 @@ export function getFilters(tableState: any | undefined) {
 		return tableState;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { page, sort_column, sort_order, ...filters } = tableState;
 
 	return cleanupObject(filters);

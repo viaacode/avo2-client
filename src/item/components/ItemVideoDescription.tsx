@@ -1,3 +1,4 @@
+import { Color } from '@meemoo/admin-core-ui';
 import {
 	BlockHeading,
 	Column,
@@ -9,7 +10,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { debounce } from 'lodash-es';
 import React, {
 	createRef,
@@ -20,17 +21,16 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { compose } from 'redux';
 
-import { Color } from '../../admin/shared/types';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { stripHtml } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
 
@@ -73,7 +73,7 @@ const ItemVideoDescription: FunctionComponent<
 	titleLink,
 	onPlay,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 	const descriptionRef = useRef<HTMLDivElement | null>(null);
 
@@ -149,7 +149,7 @@ const ItemVideoDescription: FunctionComponent<
 							renderTitle()
 						) : (
 							<BlockHeading type="h4">
-								{t('item/components/item-video-description___beschrijving')}
+								{tText('item/components/item-video-description___beschrijving')}
 							</BlockHeading>
 						)}
 					</ToolbarLeft>

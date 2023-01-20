@@ -1,0 +1,13 @@
+mutation insertCollectionRelation(
+	$objectId: uuid!
+	$subjectId: uuid!
+	$relationType: lookup_enum_relation_types_enum!
+) {
+	insert_app_collection_relations(
+		objects: [{ object: $objectId, subject: $subjectId, predicate: $relationType }]
+	) {
+		returning {
+			id
+		}
+	}
+}

@@ -1,8 +1,7 @@
 import React, { FC, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { isCollection, isItem } from '../../../quick-lane/quick-lane.helpers';
-import { QUICK_LANE_COLUMNS } from '../../constants/quick-lane';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { formatDate, formatTimestamp } from '../../helpers';
 import { QuickLaneUrlObject } from '../../types';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
@@ -18,15 +17,15 @@ const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 	data,
 	actions = () => null,
 }) => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 
-	const getItemTypeLabel = (data: Pick<QuickLaneUrlObject, 'content_label'>): string => {
-		let label: string = t('workspace/views/quick-lane-overview___unknown-type');
+	const getItemTypeLabel = (data: Pick<QuickLaneUrlObject, 'content_label'>): ReactNode => {
+		let label: ReactNode = tHtml('workspace/views/quick-lane-overview___unknown-type');
 
 		if (isCollection(data)) {
-			label = t('workspace/views/quick-lane-overview___collectie');
+			label = tHtml('workspace/views/quick-lane-overview___collectie');
 		} else if (isItem(data)) {
-			label = t('workspace/views/quick-lane-overview___item');
+			label = tHtml('workspace/views/quick-lane-overview___item');
 		}
 
 		return label;
@@ -38,29 +37,29 @@ const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 	};
 
 	switch (id) {
-		case QUICK_LANE_COLUMNS.TITLE:
+		case 'title':
 			return data.title.length <= 0 ? (
 				<span className="u-text-muted">
-					{t('workspace/views/quick-lane-overview___geen')}
+					{tHtml('workspace/views/quick-lane-overview___geen')}
 				</span>
 			) : (
 				<QuickLaneLink id={data.id} label={data.title} />
 			);
 
-		case QUICK_LANE_COLUMNS.CONTENT_LABEL:
+		case 'content_label':
 			return <span>{getItemTypeLabel(data)}</span>;
 
-		case QUICK_LANE_COLUMNS.AUTHOR:
+		case 'author':
 			return <span>{data.owner?.user.full_name || '-'}</span>;
 
-		case QUICK_LANE_COLUMNS.CREATED_AT:
-		case QUICK_LANE_COLUMNS.UPDATED_AT:
+		case 'created_at':
+		case 'updated_at':
 			return getItemTimestamp(data);
 
-		case QUICK_LANE_COLUMNS.ORGANISATION:
+		case 'organisation':
 			return <span>{data.owner?.organisation?.name || '-'}</span>;
 
-		case QUICK_LANE_COLUMNS.ACTIONS:
+		case 'action':
 			return <>{actions(data)}</>;
 	}
 

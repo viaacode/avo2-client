@@ -1,12 +1,14 @@
-import { AssignmentContent, AssignmentContentLabel } from '@viaa/avo2-types/types/assignment';
+import type { Avo } from '@viaa/avo2-types';
 import { ReactNode } from 'react';
 
+import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../generated/graphql-db-types';
+
 export interface QuickLaneModalProps {
-	content_label?: AssignmentContentLabel;
-	content?: AssignmentContent;
+	content_label?: Lookup_Enum_Assignment_Content_Labels_Enum;
+	content?: Avo.Assignment.Content;
 	error?: ReactNode;
 	isOpen: boolean;
 	modalTitle: string;
 	onClose?: () => void;
-	onUpdate?: (content: AssignmentContent) => void; // TODO investigate typing, since this is also used in collection detail
+	onUpdate?: (content: Avo.Assignment.Content) => void; // TODO investigate typing, since this is also used in collection detail
 }

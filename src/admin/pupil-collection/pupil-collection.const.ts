@@ -1,9 +1,11 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types';
 import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { AssignmentBulkActionOption } from '../assignments/assignments.const';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
@@ -21,7 +23,7 @@ export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
 		...(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_PUPIL_COLLECTIONS)
 			? [
 					{
-						label: i18n.t('admin/pupil-collection/pupil-collection___verwijderen'),
+						label: tText('admin/pupil-collection/pupil-collection___verwijderen'),
 						value: 'delete',
 					},
 			  ]
@@ -29,7 +31,7 @@ export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
 		...(PermissionService.hasPerm(user, PermissionName.EDIT_ANY_PUPIL_COLLECTIONS)
 			? [
 					{
-						label: i18n.t('admin/pupil-collection/pupil-collection___auteur-aanpassen'),
+						label: tText('admin/pupil-collection/pupil-collection___auteur-aanpassen'),
 						value: 'change_author',
 					},
 			  ]
@@ -37,74 +39,75 @@ export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
 	];
 };
 
-export const GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
-	{
-		id: 'title',
-		label: i18n.t('admin/pupil-collection/pupil-collection___titel-collectie'),
-		sortable: true,
-		visibleByDefault: true,
-	},
-	{
-		id: 'pupil',
-		label: i18n.t('admin/pupil-collection/pupil-collection___leerling'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'MultiUserSelectDropdown',
-	},
-	{
-		id: 'assignmentTitle',
-		label: i18n.t('admin/pupil-collection/pupil-collection___titel-opdracht'),
-		sortable: true,
-		visibleByDefault: true,
-	},
-	{
-		id: 'teacher',
-		label: i18n.t('admin/pupil-collection/pupil-collection___lesgever'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'MultiUserSelectDropdown',
-	},
-	{
-		id: 'created_at',
-		label: i18n.t('admin/assignments/assignments___aangemaakt-op'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-		dataType: TableColumnDataType.dateTime,
-	},
-	{
-		id: 'updated_at',
-		label: i18n.t('admin/assignments/assignments___aangepast-op'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-		dataType: TableColumnDataType.dateTime,
-	},
-	{
-		id: 'deadline_at',
-		label: i18n.t('admin/assignments/assignments___vervaldatum'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-		dataType: TableColumnDataType.dateTime,
-	},
-	{
-		id: 'status',
-		label: i18n.t('admin/assignments/assignments___status'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'BooleanCheckboxDropdown',
-		filterProps: {
-			trueLabel: i18n.t('admin/assignments/assignments___actief'),
-			falseLabel: i18n.t('admin/assignments/assignments___afgelopen'),
-			includeEmpty: false,
-		} as BooleanCheckboxDropdownProps,
-		dataType: TableColumnDataType.boolean,
-	},
-	{
-		id: 'actions',
-		tooltip: 'actions',
-		sortable: false,
-		visibleByDefault: true,
-	},
-];
+export const GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS: () => FilterableColumn<PupilCollectionOverviewTableColumns>[] =
+	() => [
+		{
+			id: 'title',
+			label: tText('admin/pupil-collection/pupil-collection___titel-collectie'),
+			sortable: true,
+			visibleByDefault: true,
+		},
+		{
+			id: 'pupil',
+			label: tText('admin/pupil-collection/pupil-collection___leerling'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'MultiUserSelectDropdown',
+		},
+		{
+			id: 'assignmentTitle',
+			label: tText('admin/pupil-collection/pupil-collection___titel-opdracht'),
+			sortable: true,
+			visibleByDefault: true,
+		},
+		{
+			id: 'teacher',
+			label: tText('admin/pupil-collection/pupil-collection___lesgever'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'MultiUserSelectDropdown',
+		},
+		{
+			id: 'created_at',
+			label: tText('admin/assignments/assignments___aangemaakt-op'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'DateRangeDropdown',
+			dataType: TableColumnDataType.dateTime,
+		},
+		{
+			id: 'updated_at',
+			label: tText('admin/assignments/assignments___aangepast-op'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'DateRangeDropdown',
+			dataType: TableColumnDataType.dateTime,
+		},
+		{
+			id: 'deadline_at',
+			label: tText('admin/assignments/assignments___vervaldatum'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'DateRangeDropdown',
+			dataType: TableColumnDataType.dateTime,
+		},
+		{
+			id: 'status',
+			label: tText('admin/assignments/assignments___status'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'BooleanCheckboxDropdown',
+			filterProps: {
+				trueLabel: tText('admin/assignments/assignments___actief'),
+				falseLabel: tText('admin/assignments/assignments___afgelopen'),
+				includeEmpty: false,
+			} as BooleanCheckboxDropdownProps,
+			dataType: TableColumnDataType.boolean,
+		},
+		{
+			id: 'actions',
+			tooltip: 'actions',
+			sortable: false,
+			visibleByDefault: true,
+		},
+	];

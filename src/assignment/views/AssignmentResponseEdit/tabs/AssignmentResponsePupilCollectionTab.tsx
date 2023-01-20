@@ -10,25 +10,28 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { UrlUpdateType } from 'use-query-params';
 
 import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import { BlockList } from '../../../../collection/components';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
+import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
-import { ToastService } from '../../../../shared/services';
+import useTranslation from '../../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
 import {
+	Assignment_Response_v2,
 	AssignmentResponseFormState,
+	AssignmentResponseInfo,
+	BaseBlockWithMeta,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../../assignment.types';
@@ -43,7 +46,6 @@ import {
 } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
-import { getMoreOptionsLabel } from '../../../../shared/constants';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -52,8 +54,8 @@ enum MobileActionId {
 
 interface AssignmentResponsePupilCollectionTabProps {
 	pastDeadline: boolean;
-	assignmentResponse: Avo.Assignment.Response_v2;
-	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	assignmentResponse: AssignmentResponseInfo;
+	setAssignmentResponse: Dispatch<SetStateAction<Assignment_Response_v2>>;
 	onShowPreviewClicked: () => void;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 	setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void;
@@ -72,13 +74,13 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	setTab,
 	setFilterState,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
 	const [isDraggableListModalOpen, setIsDraggableListModalOpen] = useState<boolean>(false);
 
-	const updateBlocksInAssignmentResponseState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+	const updateBlocksInAssignmentResponseState = (newBlocks: BaseBlockWithMeta[]) => {
 		setAssignmentResponse(
-			(prev) =>
+			(prev: Assignment_Response_v2) =>
 				({
 					...prev,
 					pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
@@ -153,7 +155,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 								} as PupilCollectionFragment
 							);
 
-							updateBlocksInAssignmentResponseState(newBlocks);
+							updateBlocksInAssignmentResponseState(newBlocks as BaseBlockWithMeta[]);
 						}}
 					/>
 				),
@@ -179,7 +181,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 
 			default:
 				ToastService.danger(
-					t(
+					tHtml(
 						'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___knop-actie-niet-gekend'
 					)
 				);
@@ -198,13 +200,13 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					label={getMoreOptionsLabel()}
 					menuItems={[
 						{
-							label: t(
+							label: tText(
 								'collection/components/collection-or-bundle-edit___herorden-fragmenten'
 							),
 							id: MobileActionId.reorderBlocks,
 						},
 						{
-							label: t(
+							label: tText(
 								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
 							),
 							id: MobileActionId.viewAsTeacher,
@@ -221,7 +223,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				{!!assignmentResponse?.pupil_collection_blocks?.length && draggableListButton}
 				<Button
 					type="primary"
-					label={t(
+					label={tText(
 						'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___bekijk-als-lesgever'
 					)}
 					onClick={onShowPreviewClicked}
@@ -241,7 +243,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 								control={control}
 								render={({ field, fieldState: { error, isTouched } }) => (
 									<FormGroup
-										label={t(
+										label={tText(
 											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___naam-resultatenset'
 										)}
 										className="c-form-group--full-width"
@@ -270,7 +272,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 
 										{error && isTouched && (
 											<span className="c-floating-error">
-												{t(
+												{tText(
 													'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___een-titel-is-verplicht'
 												)}
 											</span>
@@ -287,28 +289,28 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 					{!assignmentResponse?.pupil_collection_blocks?.length && (
 						<EmptyStateMessage
 							img={<PupilSvg />}
-							title={t(
+							title={tText(
 								'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___mijn-collectie-is-nog-leeg'
 							)}
 							message={
 								<>
-									{t(
+									{tText(
 										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___ga-naar'
 									)}{' '}
 									<Button
 										type="inline-link"
-										label={t(
+										label={tText(
 											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___zoeken'
 										)}
 										onClick={() =>
 											setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH)
 										}
 									/>{' '}
-									{t(
+									{tText(
 										'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___om-fragmenten-toe-te-voegen-of-druk-op-de-plus-knop-hierboven-als-je-tekstblokken-wil-aanmaken'
 									)}{' '}
 									<a href="/hulp" target="_blank">
-										{t(
+										{tText(
 											'assignment/views/assignment-response-edit/tabs/assignment-response-pupil-collection-tab___hier'
 										)}
 									</a>
@@ -327,8 +329,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 			<Container mode="vertical">
 				<BlockList
 					blocks={
-						(assignmentResponse?.pupil_collection_blocks ||
-							[]) as Avo.Core.BlockItemBase[]
+						(assignmentResponse?.pupil_collection_blocks || []) as BaseBlockWithMeta[]
 					}
 				/>
 			</Container>

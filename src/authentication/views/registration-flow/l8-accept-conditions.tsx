@@ -1,23 +1,20 @@
+import { ContentPageInfo, ContentPageRenderer, ContentPageService } from '@meemoo/admin-core-ui';
+import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
-import { ContentPageInfo } from '../../../admin/content/content.types';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import { ContentPage } from '../../../content-page/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { CampaignMonitorService } from '../../../shared/services/campaign-monitor-service';
-import { ContentPageService } from '../../../shared/services/content-page-service';
 import { NotificationService } from '../../../shared/services/notification-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { AppState } from '../../../store';
 import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';
@@ -39,7 +36,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 	acceptConditions,
 	loginState,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// The term of use and the privacy conditions
 	const [pages, setPages] = useState<(ContentPageInfo | null)[]>([]);
@@ -57,12 +54,12 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'authentication/views/registration-flow/l-8-accept-conditions___het-ophalen-van-de-gebruikers-en-privacy-voorwaarden-is-mislukt'
 				),
 			});
 		}
-	}, [setLoadingInfo, setPages, t]);
+	}, [setLoadingInfo, setPages, tText]);
 
 	useEffect(() => {
 		fetchContentPage();
@@ -75,13 +72,13 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			} else {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'authentication/views/registration-flow/l-8-accept-conditions___het-ophalen-van-de-gebruikers-en-privacy-voorwaarden-is-mislukt'
 					),
 				});
 			}
 		}
-	}, [pages, t]);
+	}, [pages, tText]);
 
 	useEffect(() => {
 		if (get(loginState, 'acceptedConditions')) {
@@ -102,7 +99,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			setAcceptInProgress(true);
 			await NotificationService.setNotification(
 				ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS,
-				get(user, 'profile.id'),
+				user.profile?.id || '',
 				true,
 				true
 			);
@@ -128,7 +125,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				)
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'authentication/views/registration-flow/l-8-accept-conditions___het-opslaan-van-de-accepteer-condities-is-mislukt'
 				)
 			);
@@ -141,9 +138,13 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			<>
 				<Spacer margin="bottom-large">
 					{/* terms of use */}
-					{!!pages[0] && <ContentPage contentPageInfo={pages[0] as ContentPageInfo} />}
+					{!!pages[0] && (
+						<ContentPageRenderer contentPageInfo={pages[0] as ContentPageInfo} />
+					)}
 					{/* privacy conditions */}
-					{!!pages[1] && <ContentPage contentPageInfo={pages[1] as ContentPageInfo} />}
+					{!!pages[1] && (
+						<ContentPageRenderer contentPageInfo={pages[1] as ContentPageInfo} />
+					)}
 				</Spacer>
 				<Spacer margin="large">
 					<Toolbar>
@@ -152,10 +153,10 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 								<Spinner size={'large'} />
 							) : (
 								<Button
-									label={t(
+									label={tText(
 										'authentication/views/registration-flow/l-8-accept-conditions___accepteer-voorwaarden'
 									)}
-									title={t(
+									title={tText(
 										'authentication/views/registration-flow/l-8-accept-conditions___accepteer-de-gebruiks-en-privacy-voorwaarden'
 									)}
 									type="primary"
@@ -174,14 +175,14 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t(
+						tText(
 							'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-titel'
 						)
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-beschrijving'
 					)}
 				/>

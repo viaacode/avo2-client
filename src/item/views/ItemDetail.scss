@@ -54,10 +54,6 @@
 
 .c-item-view__main {
 	.c-button-toolbar {
-		.c-button + .c-button {
-			margin-left: 0;
-		}
-
 		.c-button {
 			margin-bottom: 0.8rem;
 		}
@@ -71,6 +67,7 @@
 
 	.c-meta-data__table-mobile {
 		margin-top: 15px;
+
 		th,
 		td {
 			display: inline-block;

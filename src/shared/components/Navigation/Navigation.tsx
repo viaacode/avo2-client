@@ -10,10 +10,9 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, last } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
@@ -36,18 +35,19 @@ import {
 	selectLoginLoading,
 } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
-import { ToastService } from '../../services';
 import {
 	AppContentNavElement,
 	getNavigationItems,
 	NavItemMap,
 } from '../../services/navigation-items-service';
+import { ToastService } from '../../services/toast-service';
 import { NavigationItemInfo } from '../../types';
 
+import { NavigationItem } from './NavigationItem';
 import './Navigation.scss';
-import { default as NavigationItem } from './NavigationItem';
 
 export interface NavigationParams extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
@@ -73,7 +73,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 	location,
 	match,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -97,12 +97,12 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 		} catch (err) {
 			console.error('Failed to get navigation items', err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'shared/components/navigation/navigation___het-ophalen-van-de-navigatie-items-is-mislukt-probeer-later-opnieuw'
 				)
 			);
 		}
-	}, [t]);
+	}, [tText]);
 
 	useEffect(() => {
 		updateNavigationItems();
@@ -128,7 +128,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 	};
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems, t);
+		return mapNavElementsToNavigationItems(primaryNavItems, tText);
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
@@ -137,7 +137,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 		}
 		const dynamicNavItems: NavigationItemInfo[] = mapNavElementsToNavigationItems(
 			secondaryNavItems,
-			t
+			tText
 		);
 
 		const logoutNavItem = last(dynamicNavItems) as NavigationItemInfo;
@@ -210,13 +210,13 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 			if (!navItem) {
 				console.error('Could not find navigation item by id', { menuItemId });
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-1'
 					)
 				);
 				return;
 			}
-			const link = getLocation(navItem, t);
+			const link = getLocation(navItem, tText);
 			if (link.includes('//')) {
 				// external link
 				redirectToExternalPage(link, navItem.link_target || '_blank');
@@ -230,7 +230,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 				menuItemId,
 			});
 			ToastService.danger(
-				t(
+				tHtml(
 					'shared/components/navigation/navigation___dit-menu-item-kon-niet-worden-geopend-2'
 				)
 			);
@@ -277,10 +277,10 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 									<Button
 										icon="menu"
 										type="borderless-i"
-										title={t(
+										title={tText(
 											'shared/components/navigation/navigation___open-het-navigatie-menu'
 										)}
-										ariaLabel={t(
+										ariaLabel={tText(
 											'shared/components/navigation/navigation___open-het-navigatie-menu'
 										)}
 										onClick={onToggleMenu}

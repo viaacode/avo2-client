@@ -1,5 +1,5 @@
 import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { fromPairs, get, isArray, isEmpty, isNil, isString, map } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment, ReactElement, ReactNode } from 'react';
@@ -10,10 +10,10 @@ import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
 import SmartLink from '../components/SmartLink/SmartLink';
-import { ToastService } from '../services';
-import i18n from '../translations/i18n';
+import { ToastService } from '../services/toast-service';
 
 import { getEnv } from './env';
+import { tHtml } from './translate';
 
 type RouteParams = { [key: string]: string | number | undefined };
 
@@ -63,7 +63,7 @@ export const navigate = (
 	if (missingParams.length > 0 && (isNil(params) || isEmpty(params))) {
 		navigationConsoleError(route, missingParams);
 		ToastService.danger(
-			i18n.t('shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters')
+			tHtml('shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters')
 		);
 
 		return;
@@ -74,7 +74,7 @@ export const navigate = (
 
 	if (isEmpty(builtLink)) {
 		ToastService.danger(
-			i18n.t('shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters')
+			tHtml('shared/helpers/link___de-navigatie-is-afgebroken-wegens-foutieve-parameters')
 		);
 
 		return;

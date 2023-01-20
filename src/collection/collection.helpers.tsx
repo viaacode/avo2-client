@@ -1,7 +1,6 @@
 import {
 	BlockHeading,
 	Column,
-	EnglishContentType,
 	Grid,
 	MediaCard,
 	MediaCardMetaData,
@@ -11,15 +10,14 @@ import {
 	Spacer,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { compact, isNil, omit, sortBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
-import { Trans } from 'react-i18next';
 
 import { SearchFilter } from '../search/search.const';
 import { FilterState } from '../search/search.types';
 import { formatDate, renderSearchLinks, stripHtml } from '../shared/helpers';
-import i18n from '../shared/translations/i18n';
+import { tHtml, tText } from '../shared/helpers/translate';
 
 import {
 	CollectionBlockType,
@@ -58,8 +56,8 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('collection/collection___de-collectie-beschrijving-is-te-lang')
-				: i18n.t('collection/collection___de-bundel-beschrijving-is-te-lang'),
+				? tText('collection/collection___de-collectie-beschrijving-is-te-lang')
+				: tText('collection/collection___de-bundel-beschrijving-is-te-lang'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.description ||
 			collection.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
@@ -67,12 +65,10 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t(
+				? tText(
 						'collection/collection___de-lange-beschrijving-van-deze-collectie-is-te-lang'
 				  )
-				: i18n.t(
-						'collection/collection___de-lange-beschrijving-van-deze-bundel-is-te-lang'
-				  ),
+				: tText('collection/collection___de-lange-beschrijving-van-deze-bundel-is-te-lang'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!(collection as any).description_long ||
 			(collection as any).description_long.length <= MAX_LONG_DESCRIPTION_LENGTH,
@@ -83,48 +79,48 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('collection/collection___de-collectie-heeft-geen-titel')
-				: i18n.t('collection/collection___de-bundel-heeft-geen-titel'),
+				? tText('collection/collection___de-collectie-heeft-geen-titel')
+				: tText('collection/collection___de-bundel-heeft-geen-titel'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.title,
 	},
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('collection/collection___de-collectie-heeft-geen-beschrijving')
-				: i18n.t('collection/collection___de-bundel-heeft-geen-beschrijving'),
+				? tText('collection/collection___de-collectie-heeft-geen-beschrijving')
+				: tText('collection/collection___de-bundel-heeft-geen-beschrijving'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.description,
 	},
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('collection/collection___de-collectie-heeft-geen-onderwijsniveaus')
-				: i18n.t('collection/collection___de-bundel-heeft-geen-onderwijsniveaus'),
+				? tText('collection/collection___de-collectie-heeft-geen-onderwijsniveaus')
+				: tText('collection/collection___de-bundel-heeft-geen-onderwijsniveaus'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.lom_context && collection.lom_context.length),
 	},
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('collection/collection___de-collectie-heeft-geen-vakken')
-				: i18n.t('collection/collection___de-bundel-heeft-geen-vakken'),
+				? tText('collection/collection___de-collectie-heeft-geen-vakken')
+				: tText('collection/collection___de-bundel-heeft-geen-vakken'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.lom_classification && collection.lom_classification.length),
 	},
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t('collection/collection___de-collectie-heeft-geen-items')
-				: i18n.t('collection/collection___de-bundel-heeft-geen-collecties'),
+				? tText('collection/collection___de-collectie-heeft-geen-items')
+				: tText('collection/collection___de-bundel-heeft-geen-collecties'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!(collection.collection_fragments && collection.collection_fragments.length),
 	},
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t(
+				? tText(
 						'collection/collection___de-video-items-moeten-een-titel-en-beschrijving-bevatten'
 				  )
-				: i18n.t('collection/collection___de-collecties-moeten-een-titel-hebben'),
+				: tText('collection/collection___de-collecties-moeten-een-titel-hebben'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!collection.collection_fragments ||
 			validateFragments(
@@ -133,7 +129,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 			),
 	},
 	{
-		error: i18n.t(
+		error: tText(
 			'collection/collection___uw-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
 		),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => {
@@ -151,19 +147,19 @@ const GET_VALIDATION_RULES_FOR_START_AND_END_TIMES_FRAGMENT: () => ValidationRul
 	Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>
 >[] = () => [
 	{
-		error: i18n.t('collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'),
+		error: tText('collection/collection___de-starttijd-heeft-geen-geldig-formaat-uu-mm-ss'),
 		isValid: (collectionFragment) => {
 			return !isNil(collectionFragment.start_oc);
 		},
 	},
 	{
-		error: i18n.t('collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'),
+		error: tText('collection/collection___de-eindtijd-heeft-geen-geldig-formaat-uu-mm-ss'),
 		isValid: (collectionFragment) => {
 			return !isNil(collectionFragment.end_oc);
 		},
 	},
 	{
-		error: i18n.t('collection/collection___de-starttijd-moet-voor-de-eindtijd-vallen'),
+		error: tText('collection/collection___de-starttijd-moet-voor-de-eindtijd-vallen'),
 		isValid: (collectionFragment) => {
 			return (
 				!collectionFragment.start_oc ||
@@ -256,10 +252,10 @@ export const getDuplicateTitleOrDescriptionErrors = async (
 	if (duplicates.byTitle) {
 		errors.push(
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t(
+				? tText(
 						'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-titel-bestaat-reeds'
 				  )
-				: i18n.t(
+				: tText(
 						'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-titel-bestaat-reeds'
 				  )
 		);
@@ -268,10 +264,10 @@ export const getDuplicateTitleOrDescriptionErrors = async (
 	if (duplicates.byDescription) {
 		errors.push(
 			collection.type_id === ContentTypeNumber.collection
-				? i18n.t(
+				? tText(
 						'collection/components/modals/share-collection-modal___een-publieke-collectie-met-deze-beschrijving-bestaat-reeds'
 				  )
-				: i18n.t(
+				: tText(
 						'collection/components/modals/share-collection-modal___een-publieke-bundel-met-deze-beschrijving-bestaat-reeds'
 				  )
 		);
@@ -417,7 +413,7 @@ export const renderSubjects = (
 	}
 	return (
 		<Spacer margin="top-large">
-			<p className="u-text-bold">{i18n.t('collection/views/collection-detail___vakken')}</p>
+			<p className="u-text-bold">{tText('collection/views/collection-detail___vakken')}</p>
 			<p className="c-body-1">
 				{lom_classification?.length ? (
 					renderSearchLinks(
@@ -450,7 +446,7 @@ export const renderEducationLevels = (
 	return (
 		<Spacer margin="top-large">
 			<p className="u-text-bold">
-				{i18n.t('collection/views/collection-detail___onderwijsniveau')}
+				{tText('collection/views/collection-detail___onderwijsniveau')}
 			</p>
 			<p className="c-body-1">
 				{lom_context && lom_context.length ? (
@@ -490,7 +486,7 @@ export const renderCommonMetadata = (
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
-						{i18n.t('collection/views/collection-detail___aangemaakt-op')}
+						{tText('collection/views/collection-detail___aangemaakt-op')}
 					</p>
 					<p className="c-body-1">{formatDate(created_at)}</p>
 				</Spacer>
@@ -498,7 +494,7 @@ export const renderCommonMetadata = (
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
-						{i18n.t('collection/views/collection-detail___laatst-aangepast')}
+						{tText('collection/views/collection-detail___laatst-aangepast')}
 					</p>
 					<p className="c-body-1">{formatDate(updated_at)}</p>
 				</Spacer>
@@ -508,7 +504,7 @@ export const renderCommonMetadata = (
 };
 
 const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
-	const englishContentType: EnglishContentType =
+	const englishContentType =
 		toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
 
 	return (
@@ -572,7 +568,7 @@ export const renderRelatedItems = (
 		<>
 			<hr className="c-hr" />
 			<BlockHeading type="h3">
-				<Trans i18nKey="collection/views/collection-detail___bekijk-ook">Bekijk ook</Trans>
+				{tHtml('collection/views/collection-detail___bekijk-ook')}
 			</BlockHeading>
 			<Grid className="c-media-card-list">
 				{renderRelatedContent(relatedItems, renderDetailLink)}

@@ -1,12 +1,28 @@
-import { Avo } from '@viaa/avo2-types';
-import { get, without } from 'lodash-es';
+import type { Avo } from '@viaa/avo2-types';
+import { without } from 'lodash-es';
 
 import { isNewAssignmentBlock } from '../assignment/assignment.const';
-import { PupilCollectionFragment } from '../assignment/assignment.types';
+import { BaseBlockWithMeta, PupilCollectionFragment } from '../assignment/assignment.types';
 import { ItemTrimInfo } from '../item/item.types';
+import {
+	BulkUpdateAuthorForPupilCollectionsDocument,
+	BulkUpdateAuthorForPupilCollectionsMutation,
+	DeleteAssignmentResponsesDocument,
+	DeleteAssignmentResponsesMutation,
+	GetMaxPositionPupilCollectionBlocksDocument,
+	GetMaxPositionPupilCollectionBlocksQuery,
+	GetPupilCollectionIdsDocument,
+	GetPupilCollectionIdsQuery,
+	GetPupilCollectionsAdminOverviewDocument,
+	GetPupilCollectionsAdminOverviewQuery,
+	InsertPupilCollectionBlocksDocument,
+	InsertPupilCollectionBlocksMutation,
+	UpdatePupilCollectionBlockDocument,
+	UpdatePupilCollectionBlockMutation,
+} from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, dataService } from '../shared/services';
+import { dataService } from '../shared/services/data-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
@@ -14,15 +30,6 @@ import {
 	ITEMS_PER_PAGE,
 	PUPIL_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './pupil-collection.const';
-import {
-	BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS,
-	DELETE_ASSIGNMENT_RESPONSES,
-	GET_MAX_POSITION_PUPIL_COLLECTION_BLOCKS,
-	GET_PUPIL_COLLECTION_IDS,
-	GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW,
-	INSERT_PUPIL_COLLECTION_BLOCKS,
-	UPDATE_PUPIL_COLLECTION_BLOCK,
-} from './pupil-collection.gql';
 import { PupilCollectionOverviewTableColumns } from './pupil-collection.types';
 
 export class PupilCollectionService {
@@ -33,7 +40,7 @@ export class PupilCollectionService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[Avo.Assignment.Response_v2[], number]> {
+	): Promise<[GetPupilCollectionsAdminOverviewQuery['app_assignment_responses_v2'], number]> {
 		let variables;
 		try {
 			variables = {
@@ -48,23 +55,15 @@ export class PupilCollectionService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetPupilCollectionsAdminOverviewQuery>({
 				variables,
-				query: GET_PUPIL_COLLECTIONS_ADMIN_OVERVIEW,
-				fetchPolicy: 'no-cache',
+				query: GetPupilCollectionsAdminOverviewDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-
-			const pupilCollections: Avo.Assignment.Response_v2[] =
-				response?.data?.app_assignment_responses_v2;
+			const pupilCollections = response?.app_assignment_responses_v2;
 
 			const assignmentCount =
-				response?.data?.app_assignment_responses_v2_aggregate?.aggregate?.count || 0;
+				response?.app_assignment_responses_v2_aggregate?.aggregate?.count || 0;
 
 			if (!pupilCollections) {
 				throw new CustomError('Response does not contain any pupil collections', null, {
@@ -72,7 +71,7 @@ export class PupilCollectionService {
 				});
 			}
 
-			return [pupilCollections as Avo.Assignment.Response_v2[], assignmentCount];
+			return [pupilCollections, assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get pupil collections from the database', err, {
 				variables,
@@ -88,21 +87,14 @@ export class PupilCollectionService {
 				where,
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetPupilCollectionIdsQuery>({
 				variables,
-				query: GET_PUPIL_COLLECTION_IDS,
-				fetchPolicy: 'no-cache',
+				query: GetPupilCollectionIdsDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response from graphql contains errors', null, {
-					response,
-				});
-			}
-
-			const pupilCollectionIds: string[] = (
-				response?.data?.app_assignment_responses_v2 || []
-			).map((assignmentResponse: Avo.Assignment.Response_v2) => assignmentResponse.id);
+			const pupilCollectionIds: string[] = (response?.app_assignment_responses_v2 || []).map(
+				(assignmentResponse) => assignmentResponse.id
+			);
 
 			if (!pupilCollectionIds) {
 				throw new CustomError('Response does not contain any pupil collection ids', null, {
@@ -122,23 +114,18 @@ export class PupilCollectionService {
 	static async changePupilCollectionsAuthor(
 		profileId: string,
 		pupilCollectionIds: string[]
-	): Promise<void> {
+	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: BULK_UPDATE_AUTHOR_FOR_PUPIL_COLLECTIONS,
+			const response = await dataService.query<BulkUpdateAuthorForPupilCollectionsMutation>({
+				query: BulkUpdateAuthorForPupilCollectionsDocument,
 				variables: {
 					pupilCollectionIds,
 					authorId: profileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
-
-			return response?.data?.update_app_assignments_v2?.affected_rows || 0;
+			return response?.update_app_assignment_responses_v2?.affected_rows || 0;
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update author for pupil collections in the database',
@@ -154,10 +141,9 @@ export class PupilCollectionService {
 
 	static async deleteAssignmentResponses(assignmentResponseIds: string[]): Promise<void> {
 		try {
-			await dataService.mutate({
-				mutation: DELETE_ASSIGNMENT_RESPONSES,
+			await dataService.query<DeleteAssignmentResponsesMutation>({
+				query: DeleteAssignmentResponsesDocument,
 				variables: { assignmentResponseIds },
-				update: ApolloCacheManager.clearAssignmentCache,
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment responses', err, {
@@ -187,7 +173,7 @@ export class PupilCollectionService {
 				!created.map((d) => d.id).includes(block.id)
 		);
 
-		const cleanup = (block: PupilCollectionFragment) => {
+		const cleanup = (block: BaseBlockWithMeta) => {
 			delete block.item_meta;
 			delete (block as any).icon;
 			delete (block as any).onSlice;
@@ -203,25 +189,23 @@ export class PupilCollectionService {
 				.map(cleanup)
 				.filter((block) => block.id)
 				.map((block) =>
-					dataService.mutate({
-						mutation: UPDATE_PUPIL_COLLECTION_BLOCK,
+					dataService.query<UpdatePupilCollectionBlockMutation>({
+						query: UpdatePupilCollectionBlockDocument,
 						variables: { blockId: block.id, update: block },
-						update: ApolloCacheManager.clearAssignmentCache,
 					})
 				),
 			...deleted.map(cleanup).map((block) =>
-				dataService.mutate({
-					mutation: UPDATE_PUPIL_COLLECTION_BLOCK,
+				dataService.query<UpdatePupilCollectionBlockMutation>({
+					query: UpdatePupilCollectionBlockDocument,
 					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
-					update: ApolloCacheManager.clearAssignmentCache,
 				})
 			),
 		];
 
 		if (created.length > 0) {
 			promises.push(
-				dataService.mutate({
-					mutation: INSERT_PUPIL_COLLECTION_BLOCKS,
+				dataService.query<InsertPupilCollectionBlocksMutation>({
+					query: InsertPupilCollectionBlocksDocument,
 					variables: {
 						pupilCollectionBlocks: created
 							.map(cleanup)
@@ -234,7 +218,6 @@ export class PupilCollectionService {
 								return block;
 							}),
 					},
-					update: ApolloCacheManager.clearAssignmentCache,
 				})
 			);
 		}
@@ -245,14 +228,13 @@ export class PupilCollectionService {
 	static async getPupilCollectionBlockMaxPosition(
 		assignmentResponseId: string
 	): Promise<number | null> {
-		const result = await dataService.query({
-			query: GET_MAX_POSITION_PUPIL_COLLECTION_BLOCKS,
+		const result = await dataService.query<GetMaxPositionPupilCollectionBlocksQuery>({
+			query: GetMaxPositionPupilCollectionBlocksDocument,
 			variables: { assignmentResponseId },
 		});
-		return get(
-			result,
-			'data.app_assignment_responses_v2_by_pk.pupil_collection_blocks_aggregate.aggregate.max.position',
-			null
+		return (
+			result.app_assignment_responses_v2_by_pk?.pupil_collection_blocks_aggregate.aggregate
+				?.max?.position || null
 		);
 	}
 
@@ -260,7 +242,7 @@ export class PupilCollectionService {
 		item: Avo.Item.Item,
 		assignmentResponseId: string,
 		itemTrimInfo?: ItemTrimInfo
-	): Promise<Avo.Core.BlockItemBase> {
+	): Promise<BaseBlockWithMeta> {
 		// Handle trim settings and thumbnail
 		const trimInfo: ItemTrimInfo = itemTrimInfo || {
 			hasCut: false,
@@ -291,15 +273,14 @@ export class PupilCollectionService {
 			thumbnail_path: thumbnailPath,
 		};
 
-		const response = await dataService.mutate({
-			mutation: INSERT_PUPIL_COLLECTION_BLOCKS,
+		const response = await dataService.query<InsertPupilCollectionBlocksMutation>({
+			query: InsertPupilCollectionBlocksDocument,
 			variables: {
 				pupilCollectionBlocks: [block],
 			},
-			update: ApolloCacheManager.clearAssignmentCache,
 		});
 
-		const insertedBlock = response?.data?.insert_app_pupil_collection_blocks?.returning?.[0];
+		const insertedBlock = response?.insert_app_pupil_collection_blocks?.returning?.[0];
 
 		if (!insertedBlock) {
 			throw new Error(
@@ -313,8 +294,8 @@ export class PupilCollectionService {
 			);
 		}
 
-		insertedBlock.item_meta = item;
+		const returnObject = { ...insertedBlock, item_meta: item };
 
-		return insertedBlock;
+		return returnObject as BaseBlockWithMeta;
 	}
 }

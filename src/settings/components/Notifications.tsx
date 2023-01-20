@@ -1,25 +1,25 @@
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
+import useTranslation from '../../shared/hooks/useTranslation';
 
-export interface NotificationsProps {}
-
-const Notifications: FunctionComponent<NotificationsProps> = () => {
-	const [t] = useTranslation();
+const Notifications: FunctionComponent = () => {
+	const { tText } = useTranslation();
 
 	return (
 		<>
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t('settings/components/notifications___notificatie-voorkeuren-pagina-titel')
+						tText(
+							'settings/components/notifications___notificatie-voorkeuren-pagina-titel'
+						)
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'settings/components/notifications___notificatie-voorkeuren-pagina-beschrijving'
 					)}
 				/>

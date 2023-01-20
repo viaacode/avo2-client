@@ -1,15 +1,14 @@
 import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
-import { AssignmentType } from '../assignment.types';
+import { Assignment_v2, AssignmentType } from '../assignment.types';
 
 import { useAssignmentPastDeadline } from './assignment-past-deadline';
 
 export function useAssignmentPupilTabs(
-	assignment: Avo.Assignment.Assignment_v2 | null,
+	assignment: Assignment_v2 | null,
 	numOfPupilCollectionFragments: number,
 	activeTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	setTab: (newTab: string) => void
@@ -20,7 +19,7 @@ export function useAssignmentPupilTabs(
 	(id: string | number) => void,
 	() => void // Start pill animation
 ] {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [animatePill, setAnimatePill] = useState(false);
 	const pastDeadline = useAssignmentPastDeadline(assignment);
@@ -30,7 +29,7 @@ export function useAssignmentPupilTabs(
 			[
 				{
 					id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
-					label: t('assignment/hooks/assignment-pupil-tabs___opdracht'),
+					label: tText('assignment/hooks/assignment-pupil-tabs___opdracht'),
 					icon: 'clipboard' as IconName,
 				},
 				...(assignment?.assignment_type &&
@@ -41,7 +40,7 @@ export function useAssignmentPupilTabs(
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
-								label: t('assignment/hooks/assignment-pupil-tabs___zoeken'),
+								label: tText('assignment/hooks/assignment-pupil-tabs___zoeken'),
 								icon: 'search' as IconName,
 							},
 					  ]
@@ -54,11 +53,11 @@ export function useAssignmentPupilTabs(
 								label: (
 									<>
 										<span
-											title={t(
+											title={tText(
 												'assignment/hooks/assignment-pupil-tabs___aantal-fragmenten-in-collectie'
 											)}
 										>
-											{t(
+											{tHtml(
 												'assignment/hooks/assignment-pupil-tabs___mijn-collectie'
 											)}
 										</span>
@@ -84,7 +83,7 @@ export function useAssignmentPupilTabs(
 				...item,
 				active: item.id === activeTab,
 			})),
-		[assignment, t, activeTab, numOfPupilCollectionFragments, animatePill]
+		[assignment, tText, activeTab, numOfPupilCollectionFragments, animatePill]
 	);
 
 	const onTabClick = useCallback(

@@ -1,3 +1,4 @@
+import { RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
 	Column,
@@ -15,8 +16,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, isEqual, isNil, isString } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -26,19 +26,19 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { DeleteObjectModal, FlowPlayerWrapper } from '../../../shared/components';
-import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import {
-	getMoreOptionsLabel,
-	WYSIWYG_OPTIONS_AUTHOR,
-	WYSIWYG_OPTIONS_DEFAULT,
-} from '../../../shared/constants';
+	RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
+	RICH_TEXT_EDITOR_OPTIONS_DEFAULT,
+} from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { getMoreOptionsLabel } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
@@ -71,7 +71,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	renderWarning = () => null,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
@@ -163,14 +163,14 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			if (fragment.type === 'TEXT') {
 				// Text block
 				ToastService.success(
-					t(
+					tHtml(
 						'collection/components/fragment/fragment-edit___tekst-is-succesvol-verwijderd-uit-de-collectie'
 					)
 				);
 			} else {
 				// video/audio fragment
 				ToastService.success(
-					t(
+					tHtml(
 						'collection/components/fragment/fragment-edit___fragment-is-succesvol-verwijderd-uit-de-collectie'
 					)
 				);
@@ -178,7 +178,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 		} else {
 			// Delete collection from bundle
 			ToastService.success(
-				t(
+				tHtml(
 					'collection/components/fragment/fragment-edit___collectie-is-succesvol-verwijderd-uit-de-bundel'
 				)
 			);
@@ -188,22 +188,22 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	// TODO: DISABLED FEATURE
 	// const onDuplicateFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gedupliceerd'));
+	// 	ToastService.success(tHtml('collection/components/fragment/fragment-edit___fragment-is-succesvol-gedupliceerd'));
 	// };
 
 	// const onMoveFragment = () => {
 	// 	setOpenOptionsId(null);
-	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst'));
+	// 	ToastService.success(tHtml('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst'));
 	// };
 
 	// const onCopyFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-gekopieerd-naar-collectie'));
+	// 	ToastService.success(tHtml('collection/components/fragment/fragment-edit___fragment-is-succesvol-gekopieerd-naar-collectie'));
 	// };
 
 	// const onMoveFragmentToCollection = () => {
 	// 	setOpenOptionsId(null);
-	// 	ToastService.success(t('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst-naar-collectie'));
+	// 	ToastService.success(tHtml('collection/components/fragment/fragment-edit___fragment-is-succesvol-verplaatst-naar-collectie'));
 	// };
 
 	const onClickDropdownItem = (item: ReactText) => {
@@ -239,13 +239,13 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			icon={`chevron-${direction}` as IconName}
 			ariaLabel={
 				direction === 'up'
-					? t('collection/components/fragment/fragment-edit___verplaats-naar-boven')
-					: t('collection/components/fragment/fragment-edit___verplaats-naar-onder')
+					? tText('collection/components/fragment/fragment-edit___verplaats-naar-boven')
+					: tText('collection/components/fragment/fragment-edit___verplaats-naar-onder')
 			}
 			title={
 				direction === 'up'
-					? t('collection/components/fragment/fragment-edit___verplaats-naar-boven')
-					: t('collection/components/fragment/fragment-edit___verplaats-naar-onder')
+					? tText('collection/components/fragment/fragment-edit___verplaats-naar-boven')
+					: tText('collection/components/fragment/fragment-edit___verplaats-naar-onder')
 			}
 			onClick={() => {
 				changeCollectionState({
@@ -269,10 +269,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 							[CollectionBlockType.ITEM, CollectionBlockType.TEXT].includes(
 								fragment.type as CollectionBlockType
 							)
-								? t(
+								? tText(
 										'collection/components/fragment/fragment-edit___alternatieve-tekst'
 								  )
-								: t(
+								: tText(
 										'collection/components/fragment/fragment-edit___eigen-collectie-titel'
 								  )
 						}
@@ -288,14 +288,14 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 					</FormGroup>
 				)}
 				<FormGroup
-					label={t('collection/components/fragment/fragment-edit___tekstblok-titel')}
+					label={tText('collection/components/fragment/fragment-edit___tekstblok-titel')}
 					labelFor={`title_${fragment.id}`}
 				>
 					<TextInput
 						id={`title_${fragment.id}`}
 						type="text"
 						value={tempTitle}
-						placeholder={t(
+						placeholder={tText(
 							'collection/components/fragment/fragment-edit___geef-hier-de-titel-van-je-tekstblok-in'
 						)}
 						onChange={setTempTitle}
@@ -305,20 +305,20 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 				</FormGroup>
 				{!isThisFragmentACollection && (
 					<FormGroup
-						label={t(
+						label={tText(
 							'collection/components/fragment/fragment-edit___tekstblok-beschrijving'
 						)}
 						labelFor={`description_${fragment.id}`}
 					>
 						{!isNil(allowedToAddLinks) && (
-							<WYSIWYGWrapper
+							<RichTextEditorWrapper
 								id={`description_${fragment.id}`}
 								controls={
 									allowedToAddLinks
-										? WYSIWYG_OPTIONS_AUTHOR
-										: WYSIWYG_OPTIONS_DEFAULT
+										? RICH_TEXT_EDITOR_OPTIONS_AUTHOR
+										: RICH_TEXT_EDITOR_OPTIONS_DEFAULT
 								}
-								placeholder={t(
+								placeholder={tText(
 									'collection/components/fragment/fragment-edit___geef-hier-de-inhoud-van-je-tekstblok-in'
 								)}
 								initialHtml={getDescription()}
@@ -346,18 +346,18 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 			// collection
 			if (fragment.type === 'TEXT') {
 				// text
-				return t(
+				return tText(
 					'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-deze-tekst-blok-wil-verwijderen-uit-deze-collectie'
 				);
 			} else {
 				// video/audio fragment
-				return t(
+				return tText(
 					'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen-uit-deze-collectie'
 				);
 			}
 		} else {
 			// bundle
-			return t(
+			return tText(
 				'collection/components/fragment/fragment-edit___ben-je-zeker-dat-je-de-collectie-wil-verwijderen-uit-deze-bundel'
 			);
 		}
@@ -376,10 +376,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 									{itemMetaData && !isThisFragmentACollection && (
 										<Button
 											icon="scissors"
-											label={t(
+											label={tText(
 												'collection/components/fragment/fragment-edit___knippen'
 											)}
-											title={t(
+											title={tText(
 												'collection/components/fragment/fragment-edit___knip-een-fragment-uit-dit-video-audio-fragment'
 											)}
 											type="secondary"
@@ -453,7 +453,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 
 			<DeleteObjectModal
 				title={getDeleteFragmentModalTitle()}
-				body={t(
+				body={tText(
 					'collection/components/fragment/fragment-edit___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 				)}
 				isOpen={isDeleteModalOpen}

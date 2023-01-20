@@ -1,18 +1,14 @@
 import { Alert, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
-import { AssignmentContent } from '@viaa/avo2-types/types/assignment';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { isCollection } from '../../../quick-lane/quick-lane.helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks';
-import { ToastService } from '../../services';
+import { ToastService } from '../../services/toast-service';
 
 import { isShareable } from './QuickLaneModal.helpers';
 import './QuickLaneModal.scss';
@@ -29,14 +25,14 @@ const QuickLaneModalTabs = {
 
 // Helpers
 
-const needsToPublish = async (user: UserSchema) => {
+const needsToPublish = async (user: Avo.User.User) => {
 	return await PermissionService.hasPermissions(
 		[PermissionName.REQUIRED_PUBLICATION_DETAILS_ON_QUICK_LANE],
 		user
 	);
 };
 
-const isAllowedToPublish = async (user: UserSchema, collection?: CollectionSchema) => {
+const isAllowedToPublish = async (user: Avo.User.User, collection?: Avo.Collection.Collection) => {
 	return (
 		// Is the author && can publish his own collections
 		(collection?.owner_profile_id === user.profile?.id &&
@@ -54,9 +50,9 @@ const isAllowedToPublish = async (user: UserSchema, collection?: CollectionSchem
 const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (props) => {
 	const { modalTitle, isOpen, content_label, onClose, user } = props;
 
-	const [content, setContent] = useState<AssignmentContent | undefined>(props.content);
+	const [content, setContent] = useState<Avo.Assignment.Content | undefined>(props.content);
 
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [isPublishRequired, setIsPublishRequired] = useState(false);
 	const [canPublish, setCanPublish] = useState(false);
@@ -65,11 +61,13 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		[
 			{
 				id: QuickLaneModalTabs.publication,
-				label: t('shared/components/quick-lane-modal/quick-lane-modal___publicatiedetails'),
+				label: tText(
+					'shared/components/quick-lane-modal/quick-lane-modal___publicatiedetails'
+				),
 			},
 			{
 				id: QuickLaneModalTabs.sharing,
-				label: t('shared/components/quick-lane-modal/quick-lane-modal___snel-delen'),
+				label: tText('shared/components/quick-lane-modal/quick-lane-modal___snel-delen'),
 			},
 		],
 		QuickLaneModalTabs.publication
@@ -85,7 +83,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		async function checkPermissions() {
 			if (isCollection({ content_label }) && user) {
 				setIsPublishRequired(await needsToPublish(user));
-				setCanPublish(await isAllowedToPublish(user, content as CollectionSchema));
+				setCanPublish(await isAllowedToPublish(user, content as Avo.Collection.Collection));
 			}
 		}
 
@@ -99,7 +97,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 			isCollection({ content_label }) &&
 			isPublishRequired &&
 			content &&
-			!(content as CollectionSchema).is_public; // AVO-1880
+			!(content as Avo.Collection.Collection).is_public; // AVO-1880
 
 		setActiveTab(
 			canPublish && shouldBePublishedFirst
@@ -110,7 +108,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 
 	const getTabs = () => {
 		// AVO-1880
-		if ((content as CollectionSchema).is_public) {
+		if ((content as Avo.Collection.Collection).is_public) {
 			return [];
 		}
 
@@ -128,16 +126,16 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 	const renderContentNotShareableWarning = (): string => {
 		switch (content_label) {
 			case 'ITEM':
-				return t(
+				return tText(
 					'shared/components/quick-lane-modal/quick-lane-modal___item-is-niet-gepubliceerd'
 				);
 
 			case 'COLLECTIE':
 				return tab === QuickLaneModalTabs.publication
-					? t(
+					? tText(
 							'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek'
 					  )
-					: t(
+					: tText(
 							'shared/components/quick-lane-modal/quick-lane-modal___collectie-is-niet-publiek--niet-auteur'
 					  );
 
@@ -193,7 +191,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 												setActiveTab(tab);
 											} else {
 												ToastService.danger(
-													t(
+													tHtml(
 														'shared/components/quick-lane-modal/quick-lane-modal___dit-item-kan-nog-niet-gedeeld-worden'
 													)
 												);
@@ -222,7 +220,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 				<ModalBody>
 					<Spacer margin={['bottom-small']}>
 						{props.error ||
-							t(
+							tText(
 								'shared/components/quick-lane-modal/quick-lane-modal___er-ging-iets-mis'
 							)}
 					</Spacer>

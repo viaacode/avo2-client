@@ -1,10 +1,12 @@
 import { Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 import DraggableList from './DraggableList';
+
 import './DraggableListModal.scss';
 
 export interface DraggableListModalProps {
@@ -22,7 +24,7 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 	onClose,
 	size = 'medium',
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [reorderedElements, setReorderedElements] = useState<any[] | null>(null);
 
@@ -35,7 +37,7 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 
 	return (
 		<Modal
-			title={t('shared/components/draggable-list/draggable-list-modal___herschik-items')}
+			title={tText('shared/components/draggable-list/draggable-list-modal___herschik-items')}
 			isOpen={isOpen}
 			size={size}
 			scrollable
@@ -53,14 +55,16 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 			<ModalFooterRight>
 				<ButtonToolbar>
 					<Button
-						label={t(
+						label={tText(
 							'shared/components/draggable-list/draggable-list-modal___annuleer'
 						)}
 						type="secondary"
 						onClick={() => onClose()}
 					/>
 					<Button
-						label={t('shared/components/draggable-list/draggable-list-modal___opslaan')}
+						label={tText(
+							'shared/components/draggable-list/draggable-list-modal___opslaan'
+						)}
 						type="primary"
 						onClick={() => {
 							onClose(reorderedElements || items);

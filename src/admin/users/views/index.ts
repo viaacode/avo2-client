@@ -1,2 +1,3 @@
-export { default as UserOverview } from './UserOverview';
-export { default as UserDetail } from './UserDetail';
+export { default as UserOverviewPage } from './UserOverviewPage';
+export { default as UserDetailPage } from './UserDetailPage';
+export { default as UserEditPage } from './UserEditPage';

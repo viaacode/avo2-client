@@ -1,7 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Column,
 	Container,
@@ -13,16 +9,19 @@ import {
 	Spacer,
 	TextArea,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../admin/shared/types';
 import { getFullName, toDateObject } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
-import { RouteComponentProps } from 'react-router-dom';
 
 interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;
@@ -33,7 +32,7 @@ interface CollectionOrBundleEditQualityCheckProps {
 const CollectionOrBundleEditQualityCheck: FunctionComponent<
 	CollectionOrBundleEditQualityCheckProps & UserProps
 > = ({ collection, changeCollectionState }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const getApprovedAtDate = (collection: Avo.Collection.Collection): Date | null => {
 		if (
@@ -56,20 +55,20 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 							<Grid>
 								<Column size="3-7">
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-quality-check___taalcheck'
 										)}
 									>
 										<Select
 											options={[
 												{
-													label: t(
+													label: tText(
 														'collection/components/collection-or-bundle-edit-quality-check___ok'
 													),
 													value: 'OK',
 												},
 												{
-													label: t(
+													label: tText(
 														'collection/components/collection-or-bundle-edit-quality-check___nok'
 													),
 													value: 'NOK',
@@ -95,20 +94,20 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-quality-check___kwaliteitscontrole'
 										)}
 									>
 										<Select
 											options={[
 												{
-													label: t(
+													label: tText(
 														'collection/components/collection-or-bundle-edit-quality-check___ok'
 													),
 													value: 'OK',
 												},
 												{
-													label: t(
+													label: tText(
 														'collection/components/collection-or-bundle-edit-quality-check___nok'
 													),
 													value: 'NOK',
@@ -134,7 +133,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-quality-check___datum-goedkeuring'
 										)}
 									>
@@ -154,7 +153,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-quality-check___verantwoordelijke-kwaliteitscontrole'
 										)}
 									>
@@ -171,13 +170,14 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 													) || '',
 												value: get(
 													collection,
-													'management_language_check[0].assignee_profile_id'
+													'management_language_check[0].assignee_profile_id',
+													''
 												),
 												type: 'PROFILE',
 											}}
 											hideTargetSwitch
 											hideTypeDropdown
-											placeholder={t(
+											placeholder={tText(
 												'collection/components/collection-or-bundle-edit-quality-check___selecteer-een-verantwoordelijke'
 											)}
 											allowedTypes={['PROFILE']}
@@ -192,7 +192,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 										/>
 									</FormGroup>
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-quality-check___opmerkingen'
 										)}
 									>

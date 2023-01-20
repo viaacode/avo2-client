@@ -1,3 +1,4 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	ButtonToolbar,
@@ -12,8 +13,7 @@ import { ModalPropsSchema } from '@viaa/avo2-components/src/components/Modal/Mod
 import { noop } from 'lodash';
 import React, { FunctionComponent, ReactNode } from 'react';
 
-import { sanitizeHtml } from '../../helpers';
-import i18n from '../../translations/i18n';
+import useTranslation from '../../hooks/useTranslation';
 
 export interface ConfirmModalProps {
 	title?: string;
@@ -29,12 +29,8 @@ export interface ConfirmModalProps {
 }
 
 const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
-	title = i18n.t(
-		'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
-	),
-	body = i18n.t(
-		'shared/components/delete-object-modal/delete-object-modal___deze-actie-kan-niet-ongedaan-gemaakt-worden'
-	),
+	title,
+	body,
 	cancelLabel = 'Annuleer',
 	confirmLabel = 'Verwijder',
 	confirmButtonType = 'danger',
@@ -44,11 +40,22 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	confirmCallback = noop,
 	className,
 }) => {
+	const { tText } = useTranslation();
+
 	return (
 		<Modal
 			className={className}
 			isOpen={isOpen}
-			title={title && sanitizeHtml(title, 'basic')}
+			title={
+				title &&
+				sanitizeHtml(
+					title ||
+						tText(
+							'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
+						),
+					SanitizePreset.basic
+				)
+			}
 			size={size}
 			onClose={onClose}
 			scrollable

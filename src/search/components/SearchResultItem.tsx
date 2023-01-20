@@ -6,7 +6,7 @@ import {
 	TagOption,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { capitalize, compact, get, startCase, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 

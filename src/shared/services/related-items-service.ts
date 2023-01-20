@@ -1,9 +1,9 @@
-import { Avo } from '@viaa/avo2-types';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import type { Avo } from '@viaa/avo2-types';
 import { stringify } from 'query-string';
 
 import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError, getEnv } from '../helpers';
-import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export async function getRelatedItems(
 	id: string | number,
@@ -18,29 +18,18 @@ export async function getRelatedItems(
 			type,
 			limit,
 		})}`;
-		body = {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		};
-		const response = await fetchWithLogout(url, body);
-
-		// Apply default audio stills
-
-		const resolvedResponse = await response.json();
-		const processedResults = (resolvedResponse.results || []).map(
-			(result: Avo.Search.ResultItem) => {
-				if (result.administrative_type === 'audio') {
-					result.thumbnail_path = DEFAULT_AUDIO_STILL;
-				}
-
-				return result;
-			}
+		const resolvedResponse = await fetchWithLogoutJson<{ results: Avo.Search.ResultItem[] }>(
+			url
 		);
 
-		return processedResults;
+		// Apply default audio stills
+		return (resolvedResponse.results || []).map((result: Avo.Search.ResultItem) => {
+			if (result.administrative_type === 'audio') {
+				result.thumbnail_path = DEFAULT_AUDIO_STILL;
+			}
+
+			return result;
+		});
 	} catch (err) {
 		throw new CustomError('Failed to get related items', err, {
 			id,

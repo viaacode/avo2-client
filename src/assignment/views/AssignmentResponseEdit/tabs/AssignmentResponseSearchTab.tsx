@@ -1,15 +1,12 @@
 import { Button, Container, Icon, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { UrlUpdateType } from 'use-query-params';
 
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
 import { AddToAssignmentModal } from '../../../../item/components';
 import { ItemTrimInfo } from '../../../../item/item.types';
@@ -19,22 +16,28 @@ import { SearchFiltersAndResults } from '../../../../search/components';
 import { FilterState } from '../../../../search/search.types';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { useScrollToSelector } from '../../../../shared/hooks/scroll-to-selector';
-import { ToastService } from '../../../../shared/services';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
+import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
 } from '../../../assignment.const';
 import { AssignmentService } from '../../../assignment.service';
-import { PupilSearchFilterState } from '../../../assignment.types';
+import {
+	Assignment_v2,
+	AssignmentResponseInfo,
+	BaseBlockWithMeta,
+	PupilSearchFilterState,
+} from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
-	assignment: Avo.Assignment.Assignment_v2 | null;
-	assignmentResponse: Avo.Assignment.Response_v2 | null;
+	assignment: Assignment_v2 | null;
+	assignmentResponse: AssignmentResponseInfo | null;
 	filterState: any;
 	setFilterState: any;
-	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
+	appendBlockToPupilCollection: (block: BaseBlockWithMeta) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
 const AssignmentResponseSearchTab: FunctionComponent<
@@ -47,7 +50,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	appendBlockToPupilCollection,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Data
 
@@ -75,7 +78,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	const handleAddToPupilCollection = async (item: Avo.Item.Item): Promise<void> => {
 		if (!assignment) {
 			ToastService.info(
-				t(
+				tHtml(
 					'assignment/views/assignment-response-edit___het-laden-van-de-opdracht-is-mislukt'
 				)
 			);
@@ -83,7 +86,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		}
 		if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
 			ToastService.info(
-				t(
+				tHtml(
 					'assignment/views/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
 				)
 			);
@@ -106,13 +109,13 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			appendBlockToPupilCollection(block);
 
 			ToastService.success(
-				t(
+				tHtml(
 					'assignment/views/assignment-response-edit___het-fragment-is-toegevoegd-aan-je-collectie'
 				)
 			);
 		} else {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-response-edit___het-toevoegen-van-het-fragment-aan-je-collectie-is-mislukt'
 				)
 			);
@@ -192,11 +195,13 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			<Button
 				type="tertiary"
 				icon="collection"
-				label={t('assignment/views/assignment-response-edit___voeg-toe-aan-mijn-collectie')}
-				title={t(
+				label={tText(
+					'assignment/views/assignment-response-edit___voeg-toe-aan-mijn-collectie'
+				)}
+				title={tText(
 					'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
 				)}
-				ariaLabel={t(
+				ariaLabel={tText(
 					'assignment/views/assignment-response-edit___knip-fragment-bij-en-of-voeg-toe-aan-mijn-collectie'
 				)}
 				onClick={() => handleAddToPupilCollection(item)}
@@ -239,7 +244,9 @@ const AssignmentResponseSearchTab: FunctionComponent<
 								}}
 							>
 								<Icon name="chevron-left" size="small" type="arrows" />
-								{t('assignment/views/assignment-response-edit___zoekresultaten')}
+								{tText(
+									'assignment/views/assignment-response-edit___zoekresultaten'
+								)}
 							</Button>
 						</Container>
 					</Container>
@@ -251,7 +258,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		if (!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)) {
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'assignment/views/assignment-response-edit___je-hebt-geen-rechten-om-te-zoeken-binnen-een-opdracht'
 					)}
 					actionButtons={['home', 'helpdesk']}

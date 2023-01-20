@@ -1,29 +1,21 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import type { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 
-import { Avo } from '@viaa/avo2-types';
-
 import { CustomError, getEnv } from '../helpers';
-import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export type EmailTemplateType = 'item' | 'collection' | 'bundle';
 
 export class CampaignMonitorService {
-	public static async fetchNewsletterPreferences(email: string) {
+	public static async fetchNewsletterPreferences(
+		email: string
+	): Promise<Avo.Newsletter.Preferences> {
 		try {
-			const response = await fetchWithLogout(
+			return fetchWithLogoutJson<Avo.Newsletter.Preferences>(
 				`${getEnv('PROXY_URL')}/campaign-monitor/preferences?${queryString.stringify({
 					email,
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
+				})}`
 			);
-
-			return response.json();
 		} catch (err) {
 			throw new CustomError('Failed to fetch newsletter preferences', err, {
 				email,
@@ -35,12 +27,8 @@ export class CampaignMonitorService {
 		preferences: Partial<Avo.Newsletter.Preferences>
 	) {
 		try {
-			await fetchWithLogout(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
+			await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/campaign-monitor/preferences`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
 				body: JSON.stringify({ preferences }),
 			});
 		} catch (err) {
@@ -69,20 +57,10 @@ export class CampaignMonitorService {
 				},
 			};
 
-			const response = await fetchWithLogout(url, {
+			await fetchWithLogoutJson(url, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
 				body: JSON.stringify(body),
-				credentials: 'include',
 			});
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError('Failed to share item through email', null, {
-					response,
-				});
-			}
-			return;
 		} catch (err) {
 			throw new CustomError('Failed to get player ticket', err, {
 				email,

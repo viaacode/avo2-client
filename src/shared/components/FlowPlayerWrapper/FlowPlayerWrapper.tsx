@@ -1,18 +1,16 @@
+import { FlowPlayer, FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
 import {
 	AspectRatioWrapper,
-	FlowPlayer,
-	FlowplayerSourceItem,
-	FlowplayerSourceList,
 	Icon,
 	MediaCard,
 	MediaCardThumbnail,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, isNil, isString } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
@@ -24,34 +22,36 @@ import {
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { UserProps } from '../../hocs/withUser';
-import { BookmarksViewsPlaysService, ToastService } from '../../services';
+import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
+import { ToastService } from '../../services/toast-service';
 
 import './FlowPlayerWrapper.scss';
 
 export interface CuePoints {
-	start: number | null;
 	end: number | null;
+	start: number | null;
 }
 
 export type FlowPlayerWrapperProps = {
-	item?: Avo.Item.Item;
-	src?: string | FlowplayerSourceList;
-	poster?: string;
-	external_id?: string;
-	title?: string;
-	duration?: string;
-	organisationName?: string;
-	organisationLogo?: string;
-	issuedDate?: string;
-	annotationTitle?: string;
 	annotationText?: string;
+	annotationTitle?: string;
+	autoplay?: boolean;
 	canPlay?: boolean;
+	cuePoints?: CuePoints;
+	duration?: string;
+	external_id?: string;
+	issuedDate?: string;
+	item?: Avo.Item.Item;
 	cuePointsVideo?: CuePoints;
 	cuePointsLabel?: CuePoints;
-	autoplay?: boolean;
-	onPlay?: (playingSrc: string) => void;
 	onEnded?: () => void;
+	onPlay?: (playingSrc: string) => void;
+	organisationLogo?: string;
+	organisationName?: string;
+	poster?: string;
+	src?: string | FlowplayerSourceList;
+	title?: string;
 };
 
 /**
@@ -60,7 +60,7 @@ export type FlowPlayerWrapperProps = {
  * @constructor
  */
 const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> = (props) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const item: Avo.Item.Item | undefined = props.item;
 	const poster: string | undefined = props.poster || get(item, 'thumbnail_path');
@@ -102,12 +102,12 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'item/components/item-video-description___het-ophalen-van-de-mediaplayer-ticket-is-mislukt'
 				)
 			);
 		}
-	}, [item, setSrc, t]);
+	}, [item, setSrc, tText]);
 
 	useEffect(() => {
 		if (props.autoplay && item) {
@@ -118,11 +118,15 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	const handlePlay = (playingSrc: string) => {
 		// Only trigger once per video
 		if (item && item.uid && !triggeredForUrlRef.current[playingSrc]) {
-			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch((err) => {
-				console.error(
-					new CustomError('Failed to track item play event', err, { itemUuid: item.uid })
-				);
-			});
+			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch(
+				(err: unknown) => {
+					console.error(
+						new CustomError('Failed to track item play event', err, {
+							itemUuid: item.uid,
+						})
+					);
+				}
+			);
 
 			if (props.onPlay) {
 				props.onPlay(playingSrc);
@@ -190,7 +194,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 			if ((src as FlowplayerSourceList).items.some((entry) => entry.src.includes('.m3u8'))) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/flow-player-wrapper/flow-player-wrapper___bepaalde-videos-in-de-playlist-kunnen-niet-worden-afgespeeld-probeer-een-andere-browser'
 					)
 				);
@@ -205,7 +209,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 
 			if ((src as string).endsWith('.m3u8')) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/components/flow-player-wrapper/flow-player-wrapper___deze-video-kan-niet-worden-afgespeeld-probeer-een-andere-browser'
 					)
 				);
@@ -249,19 +253,19 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						speed={{
 							options: [0.5, 0.75, 1, 1.25, 1.5],
 							labels: [
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___0-5'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___0-75'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___normaal'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___1-25'
 								),
-								t(
+								tText(
 									'shared/components/flow-player-wrapper/flow-player-wrapper___1-5'
 								),
 							],

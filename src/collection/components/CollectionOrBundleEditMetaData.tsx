@@ -1,3 +1,5 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
+import { RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
 	Column,
@@ -10,11 +12,9 @@ import {
 	TagInfo,
 	TextArea,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import {
 	EducationLevelsField,
@@ -22,12 +22,13 @@ import {
 	ShortDescriptionField,
 	SubjectsField,
 } from '../../shared/components';
-import WYSIWYGWrapper from '../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
 import {
-	WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION,
-	WYSIWYG_OPTIONS_DEFAULT_NO_TITLES,
-} from '../../shared/constants/wysiwyg';
-import { sanitizeHtml, stripHtml } from '../../shared/helpers';
+	RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
+	RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES,
+} from '../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import RichTextEditorWrapper from '../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { stripHtml } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
@@ -45,7 +46,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 	collection,
 	changeCollectionState,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// State
 	const [isCollectionsStillsModalOpen, setCollectionsStillsModalOpen] = useState<boolean>(false);
@@ -101,7 +102,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 									/>
 									{!isCollection && (
 										<FormGroup
-											label={t(
+											label={tText(
 												'collection/components/collection-or-bundle-edit-meta-data___beschrijving'
 											)}
 											labelFor="longDescriptionId"
@@ -113,7 +114,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												),
 												MAX_LONG_DESCRIPTION_LENGTH,
 												(count) => {
-													return t(
+													return tText(
 														'collection/components/collection-or-bundle-edit-meta-data___de-beschrijving-is-te-lang-count',
 														{
 															count,
@@ -123,12 +124,12 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												true
 											)}
 										>
-											<WYSIWYGWrapper
+											<RichTextEditorWrapper
 												id="longDescriptionId"
 												controls={
 													isCollection
-														? WYSIWYG_OPTIONS_DEFAULT_NO_TITLES
-														: WYSIWYG_OPTIONS_BUNDLE_DESCRIPTION
+														? RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES
+														: RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION
 												}
 												initialHtml={collection.description_long || ''}
 												state={descriptionLongEditorState}
@@ -141,7 +142,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 															descriptionLongEditorState
 																? descriptionLongEditorState.toHTML()
 																: collection.description_long || '',
-															'link'
+															SanitizePreset.link
 														),
 													})
 												}
@@ -155,7 +156,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 													),
 													MAX_LONG_DESCRIPTION_LENGTH,
 													(count) =>
-														t(
+														tText(
 															'collection/components/collection-or-bundle-edit-meta-data___de-beschrijving-is-te-lang-count',
 															{
 																count,
@@ -166,7 +167,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										</FormGroup>
 									)}
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/views/collection-edit-meta-data___persoonlijke-opmerkingen-notities'
 										)}
 										labelFor="personalRemarkId"
@@ -176,7 +177,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											value={collection.note || ''}
 											id="personalRemarkId"
 											height="medium"
-											placeholder={t(
+											placeholder={tText(
 												'collection/views/collection-edit-meta-data___geef-hier-je-persoonlijke-opmerkingen-notities-in'
 											)}
 											onChange={(value: string) =>
@@ -191,7 +192,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 								</Column>
 								<Column size="3-5">
 									<FormGroup
-										label={t(
+										label={tText(
 											'collection/views/collection-edit-meta-data___cover-afbeelding'
 										)}
 										labelFor="coverImageId"
@@ -200,15 +201,15 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											<>
 												<Button
 													type="secondary"
-													label={t(
+													label={tText(
 														'collection/views/collection-edit-meta-data___stel-een-afbeelding-in'
 													)}
 													title={
 														isCollection
-															? t(
+															? tText(
 																	'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-collectie'
 															  )
-															: t(
+															: tText(
 																	'collection/components/collection-or-bundle-edit-meta-data___kies-een-afbeelding-om-te-gebruiken-als-de-cover-van-deze-bundel'
 															  )
 													}
@@ -225,7 +226,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 											</>
 										) : (
 											<FileUpload
-												label={t(
+												label={tText(
 													'collection/components/collection-or-bundle-edit-meta-data___upload-een-cover-afbeelding'
 												)}
 												urls={
@@ -248,8 +249,8 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 									</FormGroup>
 									{/* TODO: DISABLED FEATURE
 											{ isCollection &&
-												<FormGroup label={t('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
-													<Button type="secondary" icon="add" label={t('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
+												<FormGroup label={tText('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
+													<Button type="secondary" icon="add" label={tText('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
 												</FormGroup>
 											}
 										*/}

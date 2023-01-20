@@ -1,6 +1,5 @@
+import type { Avo } from '@viaa/avo2-types';
 import { Action, Dispatch } from 'redux';
-
-import { Avo } from '@viaa/avo2-types';
 
 import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
 import { CustomError } from '../../shared/helpers';
@@ -16,7 +15,7 @@ import {
 const getSearchResults = (
 	orderProperty: Avo.Search.OrderProperty = 'relevance',
 	orderDirection: Avo.Search.OrderDirection = 'desc',
-	from: number = 0,
+	from = 0,
 	size: number,
 	filters?: Partial<Avo.Search.Filters>,
 	filterOptionSearch?: Partial<Avo.Search.FilterOption>
@@ -34,7 +33,7 @@ const getSearchResults = (
 				filterOptionSearch
 			);
 
-			if (data.statusCode) {
+			if ((data as any).statusCode) {
 				console.error(
 					JSON.stringify(
 						new CustomError('Failed to get search results from elasticsearch', data, {
@@ -55,13 +54,14 @@ const getSearchResults = (
 
 			const processedData = {
 				...data,
-				results: data.results.map((result: Avo.Search.ResultItem) => {
-					if (result.administrative_type === 'audio') {
-						result.thumbnail_path = DEFAULT_AUDIO_STILL;
-					}
+				results:
+					data.results?.map((result: Avo.Search.ResultItem) => {
+						if (result.administrative_type === 'audio') {
+							result.thumbnail_path = DEFAULT_AUDIO_STILL;
+						}
 
-					return result;
-				}),
+						return result;
+					}) || [],
 			};
 
 			return dispatch(setSearchResultsSuccess(processedData as Avo.Search.Search));

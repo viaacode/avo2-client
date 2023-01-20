@@ -1,11 +1,11 @@
-import { Avo } from '@viaa/avo2-types';
+import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 
 import { AssignmentBlockTypeSearchProps } from './blocks/AssignmentBlockTypeSearch';
 import { CollectionFragmentTypeItemProps } from './blocks/CollectionFragmentTypeItem';
 import { CollectionFragmentTypeTextProps } from './blocks/CollectionFragmentTypeText';
 
 export interface BlockListProps {
-	blocks: Avo.Core.BlockItemBase[];
+	blocks: BaseBlockWithMeta[];
 	config?: {
 		TEXT?: Partial<CollectionFragmentTypeTextProps>;
 		ITEM?: Partial<CollectionFragmentTypeItemProps>;

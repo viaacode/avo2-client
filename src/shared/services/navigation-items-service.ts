@@ -1,9 +1,8 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { IconName } from '@viaa/avo2-components';
 import { memoize } from 'lodash-es';
 
-import { IconName } from '@viaa/avo2-components';
-
 import { CustomError, getEnv } from '../helpers';
-import { fetchWithLogout } from '../helpers/fetch-with-logout';
 
 export interface AppContentNavElement {
 	content_path: string | null;
@@ -33,17 +32,7 @@ export type NavItemMap = { [navBarName: string]: AppContentNavElement[] };
  */
 async function getNavItems(): Promise<NavItemMap> {
 	try {
-		const response = await fetchWithLogout(`${getEnv('PROXY_URL')}/navigation/items`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			credentials: 'include',
-		});
-		if (response.status < 200 || response.status >= 400) {
-			throw new CustomError('Failed to get navigation items from server', null, { response });
-		}
-		return await response.json();
+		return fetchWithLogoutJson<NavItemMap>(`${getEnv('PROXY_URL')}/navigation/items`);
 	} catch (err) {
 		throw new CustomError('Failed to get all user groups', err);
 	}

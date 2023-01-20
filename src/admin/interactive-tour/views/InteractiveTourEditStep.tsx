@@ -1,3 +1,4 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Form,
@@ -19,12 +20,11 @@ import {
 } from '@viaa/avo2-components';
 import { get, isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
-import Html from '../../../shared/components/Html/Html';
-import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
-import { sanitizeHtml, stripHtml } from '../../../shared/helpers';
+import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
+import { stripHtml } from '../../../shared/helpers';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { InteractiveTourAction } from '../helpers/reducers';
 import { EditableStep, InteractiveTourEditActionType } from '../interactive-tour.types';
 
@@ -45,7 +45,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 	stepErrors,
 	changeInteractiveTourState,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const renderReorderButton = (index: number, direction: 'up' | 'down', disabled: boolean) => (
 		<Button
@@ -53,13 +53,21 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 			icon={`chevron-${direction}` as IconName}
 			title={
 				direction === 'up'
-					? t('admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-boven')
-					: t('admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-onder')
+					? tText(
+							'admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-boven'
+					  )
+					: tText(
+							'admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-onder'
+					  )
 			}
 			ariaLabel={
 				direction === 'up'
-					? t('admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-boven')
-					: t('admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-onder')
+					? tText(
+							'admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-boven'
+					  )
+					: tText(
+							'admin/interactive-tour/views/interactive-tour-edit___verplaats-naar-onder'
+					  )
 			}
 			onClick={() => {
 				changeInteractiveTourState({
@@ -99,10 +107,10 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 										type: InteractiveTourEditActionType.REMOVE_STEP,
 									});
 								}}
-								ariaLabel={t(
+								ariaLabel={tText(
 									'admin/interactive-tour/views/interactive-tour-edit___verwijder-stap'
 								)}
-								title={t(
+								title={tText(
 									'admin/interactive-tour/views/interactive-tour-edit___verwijder-stap'
 								)}
 							/>
@@ -113,7 +121,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 			<PanelBody>
 				<Form>
 					<FormGroup
-						label={t('admin/interactive-tour/views/interactive-tour-edit___titel')}
+						label={tText('admin/interactive-tour/views/interactive-tour-edit___titel')}
 						error={get(stepErrors, 'title')}
 					>
 						<TextInput
@@ -130,10 +138,10 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 						<Spacer margin="top-small">{step.title.length} / 28</Spacer>
 					</FormGroup>
 					<FormGroup
-						label={t('admin/interactive-tour/views/interactive-tour-edit___tekst')}
+						label={tText('admin/interactive-tour/views/interactive-tour-edit___tekst')}
 						error={get(stepErrors, 'content')}
 					>
-						<WYSIWYGWrapper
+						<RichTextEditorWrapper
 							initialHtml={(step.content || '').toString()}
 							state={step.contentState}
 							onChange={(newContentState) => {
@@ -146,17 +154,22 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 									});
 								}
 							}}
-							controls={WYSIWYG_OPTIONS_FULL}
+							controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
 							fileType="INTERACTIVE_TOUR_IMAGE"
 							id={`content_editor_${index}`}
-							placeholder={t(
+							placeholder={tText(
 								'admin/interactive-tour/views/interactive-tour-edit___vul-een-stap-tekst-in'
 							)}
 						/>
 						<Spacer margin="top-small">
 							{
 								(step.contentState
-									? stripHtml(sanitizeHtml(step.contentState.toHTML(), 'link'))
+									? stripHtml(
+											sanitizeHtml(
+												step.contentState.toHTML(),
+												SanitizePreset.link
+											)
+									  )
 									: step.content || ''
 								).length
 							}{' '}
@@ -165,7 +178,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 					</FormGroup>
 
 					<FormGroup
-						label={t(
+						label={tText(
 							'admin/interactive-tour/views/interactive-tour-edit___element-css-selector'
 						)}
 					>
@@ -189,12 +202,9 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 							</TooltipTrigger>
 							<TooltipContent>
 								<Spacer padding="small">
-									<Html
-										content={t(
-											'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector'
-										)}
-										type="div"
-									/>
+									{tHtml(
+										'admin/interactive-tour/views/interactive-tour-edit___hoe-kopieer-je-een-css-selector'
+									)}
 								</Spacer>
 							</TooltipContent>
 						</Tooltip>

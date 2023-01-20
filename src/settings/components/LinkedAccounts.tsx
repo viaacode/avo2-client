@@ -12,10 +12,9 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { Dispatch, FunctionComponent, ReactNode, SetStateAction, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
@@ -27,6 +26,7 @@ import {
 } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { DeleteObjectModal } from '../../shared/components';
+import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
 
@@ -35,8 +35,8 @@ export interface AccountProps extends RouteComponentProps {
 }
 
 interface IdpProps {
-	label: string;
-	description?: string;
+	label: ReactNode;
+	description?: ReactNode;
 	iconNames: IconName[];
 	hideForPupil?: boolean;
 	idpParameters?: string;
@@ -49,7 +49,7 @@ interface DeleteModalToggle {
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
 const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] =
 		useState<boolean>(false);
@@ -72,20 +72,20 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	const idpProps: Record<string, IdpProps> = {
 		VLAAMSEOVERHEID: {
 			label: isPupil
-				? t('settings/components/linked-accounts___leer-id')
-				: t('settings/components/linked-accounts___burgerprofiel'),
+				? tHtml('settings/components/linked-accounts___leer-id')
+				: tHtml('settings/components/linked-accounts___burgerprofiel'),
 			description: isPupil
-				? t('settings/components/linked-accounts___aanmelden-met-je-leer-id')
-				: t('settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'),
+				? tHtml('settings/components/linked-accounts___aanmelden-met-je-leer-id')
+				: tHtml('settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'),
 			iconNames: isPupil ? ['leerid'] : ['itsme', 'eid'],
 			idpParameters: isPupil ? 'authMech=leerid' : 'authMech=itsme',
 		},
 		SMARTSCHOOL: {
-			label: t('settings/components/linked-accounts___smartschool'),
+			label: tHtml('settings/components/linked-accounts___smartschool'),
 			iconNames: ['smartschool'],
 		},
 		KLASCEMENT: {
-			label: t('settings/components/linked-accounts___klas-cement'),
+			label: tHtml('settings/components/linked-accounts___klas-cement'),
 			iconNames: ['klascement'],
 			hideForPupil: true,
 		},
@@ -127,7 +127,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 										type="multicolor"
 										name="circle-check"
 									/>
-									{t('settings/components/linked-accounts___gekoppeld')}
+									{tText('settings/components/linked-accounts___gekoppeld')}
 								</span>
 							) : (
 								<></>
@@ -138,10 +138,10 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 								{linked ? (
 									<Button
 										type="secondary"
-										label={t(
+										label={tText(
 											'settings/components/linked-accounts___verbreek-koppeling'
 										)}
-										title={t(
+										title={tText(
 											'settings/components/linked-accounts___verbreek-koppeling'
 										)}
 										onClick={() => setConfirmModalOpen(true)}
@@ -149,8 +149,12 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 								) : (
 									<Button
 										type="primary"
-										label={t('settings/components/linked-accounts___koppel')}
-										title={t('settings/components/linked-accounts___koppel')}
+										label={tText(
+											'settings/components/linked-accounts___koppel'
+										)}
+										title={tText(
+											'settings/components/linked-accounts___koppel'
+										)}
 										onClick={() =>
 											redirectToServerLinkAccount(
 												location,
@@ -189,12 +193,12 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						t('settings/components/linked-accounts___koppelingen-pagina-titel')
+						tText('settings/components/linked-accounts___koppelingen-pagina-titel')
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'settings/components/linked-accounts___koppelingen-pagina-beschrijving'
 					)}
 				/>
@@ -205,10 +209,12 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 						<Column size="3-8">
 							<Form type="standard">
 								<BlockHeading type="h3">
-									{t('settings/components/linked-accounts___koppel-je-account')}
+									{tText(
+										'settings/components/linked-accounts___koppel-je-account'
+									)}
 								</BlockHeading>
 								<FormGroup
-									label={t(
+									label={tText(
 										'settings/components/account___koppel-je-account-met-andere-platformen'
 									)}
 								>

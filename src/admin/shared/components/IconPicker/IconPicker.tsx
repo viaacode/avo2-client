@@ -1,14 +1,13 @@
+import { Flex, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import React, { FunctionComponent } from 'react';
 import Select, { Props } from 'react-select';
-
-import { Flex, Icon, IconName, Spacer } from '@viaa/avo2-components';
 
 import { ReactSelectOption } from '../../../../shared/types';
 
 import './IconPicker.scss';
 
-interface IconPickerProps extends Props {}
+type IconPickerProps = Props;
 
 export const IconPicker: FunctionComponent<IconPickerProps> = ({
 	className,

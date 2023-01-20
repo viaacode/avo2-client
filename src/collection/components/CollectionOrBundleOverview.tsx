@@ -1,3 +1,4 @@
+import { QueryClient } from '@tanstack/react-query';
 import {
 	Button,
 	ButtonToolbar,
@@ -12,17 +13,16 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
-import { Avo } from '@viaa/avo2-types';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { fromPairs, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -34,6 +34,10 @@ import {
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import {
+	Lookup_Enum_Assignment_Content_Labels_Enum,
+	useSoftDeleteCollectionByIdMutation,
+} from '../../shared/generated/graphql-db-types';
+import {
 	buildLink,
 	createDropdownMenuItem,
 	formatDate,
@@ -42,8 +46,10 @@ import {
 	navigate,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { ToastService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
@@ -66,7 +72,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	history,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -81,10 +87,15 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState<boolean>(false);
 	const [selected, setSelected] = useState<string | null>(null);
-	const [selectedDetail, setSelectedDetail] = useState<CollectionSchema | undefined>(undefined);
+	const [selectedDetail, setSelectedDetail] = useState<Avo.Collection.Collection | undefined>(
+		undefined
+	);
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
+
+	// Mutations
+	const { mutateAsync: triggerCollectionDelete } = useSoftDeleteCollectionByIdMutation();
 
 	// Listeners
 	const onClickDelete = (collectionId: string) => {
@@ -180,16 +191,16 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t(
+					? tText(
 							'collection/components/collection-or-bundle-overview___het-ophalen-van-de-collecties-is-mislukt'
 					  )
-					: t(
+					: tText(
 							'collection/components/collection-or-bundle-overview___het-ophalen-van-de-bundels-is-mislukt'
 					  ),
 				actionButtons: ['home'],
 			});
 		}
-	}, [user, page, sortColumn, sortOrder, isCollection, t]);
+	}, [user, page, sortColumn, sortOrder, isCollection, tText]);
 
 	useEffect(() => {
 		fetchCollections();
@@ -236,16 +247,26 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			if (!selected) {
 				ToastService.danger(
 					isCollection
-						? t(
+						? tHtml(
 								'collection/components/collection-or-bundle-overview___er-was-geen-collectie-geselecteerd-gelieve-opnieuw-te-proberen-na-het-herladen-van-de-pagina'
 						  )
-						: t(
+						: tHtml(
 								'collection/components/collection-or-bundle-overview___er-was-geen-bundel-geselecteerd-gelieve-opnieuw-te-proberen-na-het-herladen-van-de-pagina'
 						  )
 				);
 				return;
 			}
-			await CollectionService.deleteCollection(selected);
+			await triggerCollectionDelete(
+				{
+					id: parseInt(selected),
+				},
+				{
+					onSuccess: async () => {
+						const queryClient = new QueryClient();
+						await queryClient.invalidateQueries(COLLECTION_QUERY_KEYS);
+					},
+				}
+			);
 
 			trackEvents(
 				{
@@ -258,10 +279,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 			ToastService.success(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-overview___collectie-is-verwijderd'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-overview___bundel-is-verwijderd'
 					  )
 			);
@@ -271,10 +292,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			console.error(err);
 			ToastService.danger(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-overview___collectie-kon-niet-verwijderd-worden'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-overview___bundel-kon-niet-verwijderd-worden'
 					  )
 			);
@@ -370,7 +391,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'edit',
-							t('collection/views/collection-overview___bewerk'),
+							tText('collection/views/collection-overview___bewerk'),
 							'edit2'
 						),
 				  ]
@@ -379,7 +400,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'createAssignment',
-							t('collection/views/collection-overview___maak-opdracht'),
+							tText('collection/views/collection-overview___maak-opdracht'),
 							'clipboard'
 						),
 				  ]
@@ -388,7 +409,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'createQuickLane',
-							t('collection/views/collection-overview___delen-met-leerlingen'),
+							tText('collection/views/collection-overview___delen-met-leerlingen'),
 							'link-2'
 						),
 				  ]
@@ -397,7 +418,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'delete',
-							t('collection/views/collection-overview___verwijderen')
+							tText('collection/views/collection-overview___verwijderen')
 						),
 				  ]
 				: []),
@@ -463,10 +484,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						}
 						title={
 							isCollection
-								? t(
+								? tText(
 										'collection/components/collection-or-bundle-overview___bekijk-deze-collectie'
 								  )
-								: t(
+								: tText(
 										'collection/components/collection-or-bundle-overview___bekijk-deze-bundel'
 								  )
 						}
@@ -496,8 +517,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					<div
 						title={
 							collection.is_public
-								? t('collection/components/collection-or-bundle-overview___publiek')
-								: t(
+								? tText(
+										'collection/components/collection-or-bundle-overview___publiek'
+								  )
+								: tText(
 										'collection/components/collection-or-bundle-overview___niet-publiek'
 								  )
 						}
@@ -536,14 +559,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				{ id: 'thumbnail', label: '', col: '2' },
 				{
 					id: 'title',
-					label: t('collection/views/collection-overview___titel'),
+					label: tText('collection/views/collection-overview___titel'),
 					col: '6',
 					sortable: true,
 					dataType: TableColumnDataType.string,
 				},
 				{
 					id: 'actions',
-					tooltip: t('collection/components/collection-or-bundle-overview___acties'),
+					tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
 					col: '1',
 				},
 			];
@@ -551,19 +574,19 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		return [
 			{
 				id: 'thumbnail',
-				tooltip: t('collection/components/collection-or-bundle-overview___cover'),
+				tooltip: tText('collection/components/collection-or-bundle-overview___cover'),
 				col: '2',
 			},
 			{
 				id: 'title',
-				label: t('collection/views/collection-overview___titel'),
+				label: tText('collection/views/collection-overview___titel'),
 				col: '6',
 				sortable: true,
 				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'updated_at',
-				label: t('collection/views/collection-overview___laatst-bewerkt'),
+				label: tText('collection/views/collection-overview___laatst-bewerkt'),
 				col: '3',
 				sortable: true,
 				dataType: TableColumnDataType.dateTime,
@@ -572,7 +595,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						{
 							id: 'is_public',
-							label: t(
+							label: tText(
 								'collection/components/collection-or-bundle-overview___is-publiek'
 							),
 							col: '2',
@@ -586,7 +609,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			// 	? [
 			// 			{
 			// 				id: 'inFolder',
-			// 				label: t('collection/views/collection-overview___in-map'),
+			// 				label: tText('collection/views/collection-overview___in-map'),
 			// 				col: '2' as any,
 			// 			},
 			// 	  ]
@@ -594,12 +617,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			// TODO re-enable once users can give share collection view/edit rights with other users
 			// {
 			// 	id: 'access',
-			// 	label: t('collection/views/collection-overview___toegang'),
+			// 	label: tText('collection/views/collection-overview___toegang'),
 			// 	col: '2',
 			// },
 			{
 				id: 'actions',
-				tooltip: t('collection/components/collection-or-bundle-overview___acties'),
+				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
 				col: '1',
 			},
 		];
@@ -618,7 +641,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			<Table
 				columns={getColumns()}
 				data={collections}
-				emptyStateMessage={t(
+				emptyStateMessage={tText(
 					'collection/views/collection-overview___geen-resultaten-gevonden'
 				)}
 				renderCell={renderCell}
@@ -637,31 +660,22 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			icon={isCollection ? 'collection' : 'folder'}
 			message={
 				isCollection
-					? t(
+					? tText(
 							'collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt'
 					  )
-					: t(
+					: tText(
 							'collection/components/collection-or-bundle-overview___je-hebt-nog-geen-bundels-aangemaakt'
 					  )
 			}
 		>
 			<p>
-				{isCollection ? (
-					<Trans i18nKey="collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken">
-						Een collectie is een verzameling van video- of audiofragmenten rond een
-						bepaald thema of voor een bepaalde les. Nadat je een collectie hebt
-						aangemaakt kan je deze delen met andere gebruikers om samen aan te werken.
-						Andere gebruikers kunnen ook collecties met jou delen die je dan hier
-						terugvindt.
-					</Trans>
-				) : (
-					<Trans i18nKey="collection/components/beschrijving-hoe-collecties-aan-te-maken">
-						Een bundel is een verzameling van collecties rond een bepaald thema of voor
-						een bepaalde les. Nadat je een bundel hebt aangemaakt kan je deze delen met
-						andere gebruikers om samen aan te werken. Andere gebruikers kunnen ook
-						bundels met jou delen die je dan hier terugvindt.
-					</Trans>
-				)}
+				{isCollection
+					? tHtml(
+							'collection/views/collection-overview___beschrijving-hoe-collecties-aan-te-maken'
+					  )
+					: tHtml(
+							'collection/components/collection-or-bundle-overview___collection-components-beschrijving-hoe-collecties-aan-te-maken'
+					  )}
 			</p>
 			<Spacer margin="top">
 				<Button
@@ -670,8 +684,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					autoHeight
 					label={
 						isCollection
-							? t('collection/views/collection-overview___maak-je-eerste-collectie')
-							: t(
+							? tText(
+									'collection/views/collection-overview___maak-je-eerste-collectie'
+							  )
+							: tText(
 									'collection/components/collection-or-bundle-overview___zoek-een-collectie-en-maak-je-eerste-bundel'
 							  )
 					}
@@ -696,8 +712,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		}
 		return (
 			<DeleteObjectModal
-				title={t('collection/components/collection-or-bundle-overview___verwijder-bundel')}
-				body={t(
+				title={tText(
+					'collection/components/collection-or-bundle-overview___verwijder-bundel'
+				)}
+				body={tText(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
 				)}
 				isOpen={isDeleteModalOpen}
@@ -714,10 +732,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		return (
 			selectedDetail && (
 				<QuickLaneModal
-					modalTitle={t('collection/views/collection-overview___delen-met-leerlingen')}
+					modalTitle={tText(
+						'collection/views/collection-overview___delen-met-leerlingen'
+					)}
 					isOpen={isQuickLaneModalOpen}
 					content={selectedDetail}
-					content_label="COLLECTIE"
+					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
 					onClose={() => {
 						setSelected(null);
 						setIsQuickLaneModalOpen(false);
@@ -735,13 +755,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				onClose={() => setIsCreateAssignmentModalOpen(false)}
 				createAssignmentCallback={onCreateAssignmentFromCollection}
 				translations={{
-					title: t(
+					title: tText(
 						'collection/components/collection-or-bundle-overview___maak-nieuwe-opdracht'
 					),
-					primaryButton: t(
+					primaryButton: tText(
 						'collection/components/collection-or-bundle-overview___maak-opdracht'
 					),
-					secondaryButton: t(
+					secondaryButton: tText(
 						'collection/components/collection-or-bundle-overview___annuleer'
 					),
 				}}

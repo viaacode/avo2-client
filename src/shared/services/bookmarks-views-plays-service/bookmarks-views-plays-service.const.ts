@@ -1,21 +1,27 @@
-import { Avo } from '@viaa/avo2-types';
-import type { DocumentNode } from 'graphql';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import {
-	GET_COLLECTION_PLAYS,
-	GET_COLLECTION_VIEWS,
-	GET_ITEM_PLAYS,
-	GET_ITEM_VIEWS,
-	INCREMENT_COLLECTION_PLAYS,
-	INCREMENT_COLLECTION_VIEWS,
-	INCREMENT_ITEM_PLAYS,
-	INCREMENT_ITEM_VIEWS,
-	INSERT_COLLECTION_BOOKMARK,
-	INSERT_ITEM_BOOKMARK,
-	REMOVE_COLLECTION_BOOKMARK_FOR_USER,
-	REMOVE_ITEM_BOOKMARK,
-} from './bookmarks-views-plays-service.gql';
+	DeleteCollectionBookmarksForUserDocument,
+	DeleteCollectionBookmarksForUserMutationVariables,
+	DeleteItemBookmarkDocument,
+	DeleteItemBookmarkMutationVariables,
+	GetCollectionPlayCountDocument,
+	GetCollectionPlayCountQuery,
+	GetCollectionViewCountDocument,
+	GetCollectionViewCountQuery,
+	GetItemPlayCountDocument,
+	GetItemPlayCountQuery,
+	GetItemViewCountDocument,
+	GetItemViewCountQuery,
+	IncrementCollectionPlaysDocument,
+	IncrementCollectionViewsDocument,
+	IncrementItemPlaysDocument,
+	IncrementItemViewsDocument,
+	InsertCollectionBookmarkDocument,
+	InsertItemBookmarkDocument,
+} from '../../generated/graphql-db-types';
+
 import {
 	BookmarkViewPlayCounts,
 	EventAction,
@@ -31,23 +37,23 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 };
 
 export interface QueryDefinition {
-	query?: DocumentNode;
-	get?: DocumentNode;
-	increment?: DocumentNode;
+	query?: string;
+	get?: string;
+	increment?: string;
 	variables: (uuid: string, user?: Avo.User.User) => any;
-	responsePath?: string;
+	getResponseCount?: (response: any) => number;
 }
 
-export const EVENT_QUERIES: {
+export const GET_EVENT_QUERIES: () => {
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	[action in EventAction]: {
 		[contentType in EventContentTypeSimplified]: QueryDefinition;
 		/* eslint-enable @typescript-eslint/no-unused-vars */
 	};
-} = {
+} = () => ({
 	bookmark: {
 		item: {
-			query: INSERT_ITEM_BOOKMARK,
+			query: InsertItemBookmarkDocument,
 			variables: (itemUuid: string, user?: Avo.User.User) => ({
 				bookmarkItem: {
 					item_id: itemUuid,
@@ -56,7 +62,7 @@ export const EVENT_QUERIES: {
 			}),
 		},
 		collection: {
-			query: INSERT_COLLECTION_BOOKMARK,
+			query: InsertCollectionBookmarkDocument,
 			variables: (collectionUuid: string, user?: Avo.User.User) => ({
 				bookmarkItem: {
 					collection_uuid: collectionUuid,
@@ -67,57 +73,67 @@ export const EVENT_QUERIES: {
 	},
 	unbookmark: {
 		item: {
-			query: REMOVE_ITEM_BOOKMARK,
-			variables: (itemUuid: string, user?: Avo.User.User) => ({
+			query: DeleteItemBookmarkDocument,
+			variables: (
+				itemUuid: string,
+				user?: Avo.User.User
+			): DeleteItemBookmarkMutationVariables => ({
 				itemUuid,
-				profileId: get(user, 'profile.id', null),
+				profileId: user?.profile?.id || null,
 			}),
 		},
 		collection: {
-			query: REMOVE_COLLECTION_BOOKMARK_FOR_USER,
-			variables: (collectionUuid: string, user?: Avo.User.User) => ({
+			query: DeleteCollectionBookmarksForUserDocument,
+			variables: (
+				collectionUuid: string,
+				user?: Avo.User.User
+			): DeleteCollectionBookmarksForUserMutationVariables => ({
 				collectionUuid,
-				profileId: get(user, 'profile.id', null),
+				profileId: user?.profile?.id || null,
 			}),
 		},
 	},
 	view: {
 		item: {
-			get: GET_ITEM_VIEWS,
-			increment: INCREMENT_ITEM_VIEWS,
+			get: GetItemViewCountDocument,
+			increment: IncrementItemViewsDocument,
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
-			responsePath: 'data.app_item_meta[0].view_counts[0].count',
+			getResponseCount: (response: GetItemViewCountQuery): number =>
+				response.app_item_meta[0]?.view_counts?.[0]?.count || 0,
 		},
 		collection: {
-			get: GET_COLLECTION_VIEWS,
-			increment: INCREMENT_COLLECTION_VIEWS,
+			get: GetCollectionViewCountDocument,
+			increment: IncrementCollectionViewsDocument,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
-			responsePath: 'data.app_collections[0].view_counts[0].count',
+			getResponseCount: (response: GetCollectionViewCountQuery): number =>
+				response.app_collections[0]?.view_counts?.[0]?.count || 0,
 		},
 	},
 	play: {
 		item: {
-			get: GET_ITEM_PLAYS,
-			increment: INCREMENT_ITEM_PLAYS,
+			get: GetItemPlayCountDocument,
+			increment: IncrementItemPlaysDocument,
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
-			responsePath: 'data.app_item_meta[0].play_counts[0].count',
+			getResponseCount: (response: GetItemPlayCountQuery): number =>
+				response.app_item_meta[0]?.play_counts?.[0]?.count || 0,
 		},
 		collection: {
-			get: GET_COLLECTION_PLAYS,
-			increment: INCREMENT_COLLECTION_PLAYS,
+			get: GetCollectionPlayCountDocument,
+			increment: IncrementCollectionPlaysDocument,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
-			responsePath: 'data.app_collections[0].play_counts[0].count',
+			getResponseCount: (response: GetCollectionPlayCountQuery): number =>
+				response.app_collections[0]?.play_counts?.[0]?.count || 0,
 		},
 	},
-};
+});
 
 export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: {
 	[type: string]: EventContentTypeSimplified;

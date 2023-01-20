@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -53,9 +53,12 @@ export const getUserGroupLabel = (
 export const getUserGroupId = (
 	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
 ): number => {
-	if (get(userOrProfile, 'userGroupIds[0]')) {
-		return get(userOrProfile, 'userGroupIds[0]');
+	const groups = (userOrProfile as Avo.User.Profile).userGroupIds;
+
+	if (groups && groups.length) {
+		return groups[0];
 	}
+
 	if (!userOrProfile) {
 		console.error(
 			new CustomError(
@@ -66,11 +69,14 @@ export const getUserGroupId = (
 	}
 
 	const profile = getProfile(userOrProfile);
-	const userGroupId =
-		get(profile, 'userGroupIds[0]') || get(profile, 'profile_user_group.group.id') || '';
+	const userGroupId = Number(
+		get(profile, 'userGroupIds[0]') || get(profile, 'profile_user_group.group.id') || '0'
+	);
+
 	if (!userGroupId) {
 		console.error('Failed to get user group id from profile');
 	}
+
 	return userGroupId;
 };
 
@@ -118,7 +124,7 @@ export function getProfileAvatar(user: Avo.User.User | undefined): string {
 			'Failed to get profile avatar because the logged in user/profile is undefined'
 		);
 	}
-	return get(profile, 'organisation.logo_url') || get(profile, 'avatar') || undefined;
+	return get(profile, 'organisation.logo_url') || get(profile, 'avatar') || '';
 }
 
 export function getProfileInitials(user: Avo.User.User | undefined): string {

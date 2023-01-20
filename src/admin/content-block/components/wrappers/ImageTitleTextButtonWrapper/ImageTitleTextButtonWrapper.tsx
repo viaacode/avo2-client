@@ -1,11 +1,10 @@
+import { ImageTitleTextButtonBlockComponentState, RichTextWrapper } from '@meemoo/admin-core-ui';
 import { BlockHeading, Button, Column, Grid, Image } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FC, FunctionComponent } from 'react';
 
 import { generateSmartLink } from '../../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
-import { ImageTitleTextButtonBlockComponentState } from '../../../../shared/types';
-import RichTextWrapper from '../RichTextWrapper/RichTextWrapper';
 
 export const ImageTitleTextButtonWrapper: FC<
 	ImageTitleTextButtonBlockComponentState & UserProps

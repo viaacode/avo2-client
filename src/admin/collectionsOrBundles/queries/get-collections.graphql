@@ -1,0 +1,54 @@
+query getCollections(
+	$where: app_collections_bool_exp!
+	$orderBy: [app_collections_order_by!]!
+	$offset: Int!
+	$limit: Int!
+) {
+	app_collections(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
+		id
+		type_id
+		updated_at
+		title
+		description
+		is_public
+		created_at
+		subjects: lom_classification
+		education_levels: lom_context
+		owner {
+			full_name
+			group_id
+			group_name
+			profile_id
+			profile {
+				organisation {
+					or_id
+					name
+				}
+			}
+			user_id
+		}
+		last_editor {
+			full_name
+			profile_id
+			user_id
+		}
+		collection_labels {
+			id
+			label
+		}
+		counts {
+			bookmarks
+			in_assignment
+			in_collection
+			views
+			copies
+			quick_lane_links
+		}
+		is_managed
+	}
+	app_collections_aggregate(where: $where) {
+		aggregate {
+			count
+		}
+	}
+}

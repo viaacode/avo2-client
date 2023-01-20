@@ -15,10 +15,9 @@ import {
 	TextInput,
 	Toggle,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
@@ -32,12 +31,17 @@ import {
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
-import { ToastService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentOverviewTableColumns } from '../assignment.types';
+import {
+	Assignment_v2,
+	Assignment_v2_With_Labels,
+	AssignmentOverviewTableColumns,
+} from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
@@ -63,13 +67,11 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	showToggle,
 	translations,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
-	const [assignments, setAssignments] = useState<Partial<Avo.Assignment.Assignment_v2>[] | null>(
-		null
-	);
+	const [assignments, setAssignments] = useState<Partial<Assignment_v2>[] | null>(null);
 	const [selectedAssignmentId, setSelectedAssignmentId] = useState<string>();
 	const [sortColumn, sortOrder, handleColumnClick] =
 		useTableSort<AssignmentOverviewTableColumns>('updated_at');
@@ -102,12 +104,12 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 			console.error(new CustomError('Failed to get assignments', err));
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'assignment/modals/import-to-assignment-modal___het-ophalen-van-bestaande-opdrachten-is-mislukt'
 				),
 			});
 		}
-	}, [tableColumns, user, filterString, sortColumn, sortOrder, t]);
+	}, [tableColumns, user, filterString, sortColumn, sortOrder, tText]);
 
 	useEffect(() => {
 		if (assignments) {
@@ -126,7 +128,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	const handleImportToAssignment = () => {
 		if (!selectedAssignmentId) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/modals/import-to-assignment-modal___gelieve-een-opdracht-te-selecteren'
 				)
 			);
@@ -141,10 +143,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	};
 
 	// very similar to table in assignment overview, but with differences
-	const renderCell = (
-		assignment: Avo.Assignment.Assignment_v2,
-		colKey: AssignmentOverviewTableColumns
-	) => {
+	const renderCell = (assignment: Assignment_v2, colKey: AssignmentOverviewTableColumns) => {
 		const cellData: any = (assignment as any)[colKey];
 
 		switch (
@@ -166,12 +165,12 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				);
 			}
 			case 'labels':
-				return AssignmentHelper.getLabels(assignment, 'LABEL')
+				return AssignmentHelper.getLabels(assignment as Assignment_v2_With_Labels, 'LABEL')
 					.map((labelLink: any) => labelLink.assignment_label.label)
 					.join(', ');
 
 			case 'class_room':
-				return AssignmentHelper.getLabels(assignment, 'CLASS')
+				return AssignmentHelper.getLabels(assignment as Assignment_v2_With_Labels, 'CLASS')
 					.map((label: any) => label.assignment_label.label)
 					.join(', ');
 
@@ -234,14 +233,14 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 						data={assignments || undefined}
 						emptyStateMessage={
 							filterString
-								? t(
+								? tText(
 										'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
 								  )
-								: t(
+								: tText(
 										'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
 								  )
 						}
-						renderCell={(rowData: Avo.Assignment.Assignment_v2, colKey: string) =>
+						renderCell={(rowData: Assignment_v2, colKey: string) =>
 							renderCell(rowData, colKey as AssignmentOverviewTableColumns)
 						}
 						rowKey="id"
@@ -285,7 +284,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 						/>
 						<Spacer margin="left">
 							<FlexItem>
-								{t(
+								{tText(
 									'assignment/modals/import-to-assignment-modal___importeer-fragmenten-met-beschrijving'
 								)}
 							</FlexItem>

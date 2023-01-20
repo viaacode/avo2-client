@@ -1,16 +1,15 @@
+import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 import { getUserGroupId } from '../helpers/get-profile-info';
@@ -35,7 +34,7 @@ const Login: FunctionComponent<LoginProps> = ({
 	loginStateError,
 	getLoginState,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -45,7 +44,7 @@ const Login: FunctionComponent<LoginProps> = ({
 
 		// Redirect to previous requested path or the default page for that user group (LOGGED_IN_HOME or WORKSPACE_ASSIGNMENTS)
 		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
-			let path = get(location, 'state.from.pathname');
+			let path: string | undefined = get(location, 'state.from.pathname');
 
 			if (!path) {
 				if (
@@ -82,13 +81,13 @@ const Login: FunctionComponent<LoginProps> = ({
 	if (loginStateError) {
 		return (
 			<ErrorView
-				message={t('authentication/views/login___het-inloggen-is-mislukt')}
+				message={tText('authentication/views/login___het-inloggen-is-mislukt')}
 				icon="lock"
 			>
 				<Button
 					type="link"
 					onClick={tryLoginAgainManually}
-					label={t('authentication/views/login___probeer-opnieuw')}
+					label={tText('authentication/views/login___probeer-opnieuw')}
 				/>
 			</ErrorView>
 		);

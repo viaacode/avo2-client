@@ -1,17 +1,17 @@
 import { BlockHeading, ContentInput, Flex, Icon } from '@viaa/avo2-components';
-import React, { FC, useMemo } from 'react';
+import React, { Dispatch, FC, SetStateAction, useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentFormState } from '../assignment.types';
 
 type AssignmentTitleProps = {
 	control?: Control<AssignmentFormState>;
-	setAssignment?: React.Dispatch<React.SetStateAction<AssignmentFormState>>;
+	setAssignment?: Dispatch<SetStateAction<Partial<AssignmentFormState> | undefined>>;
 };
 
 const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	return useMemo(
 		() => (
@@ -26,7 +26,8 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 							<>
 								<ContentInput
 									{...field}
-									placeholder={t(
+									value={field.value ?? undefined}
+									placeholder={tText(
 										'assignment/views/assignment-create___placeholder'
 									)}
 									nodeCancel={<Icon name="x" size="small" />}
@@ -50,7 +51,7 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 				</BlockHeading>
 			</Flex>
 		),
-		[t, control, setAssignment]
+		[tText, control, setAssignment]
 	);
 };
 

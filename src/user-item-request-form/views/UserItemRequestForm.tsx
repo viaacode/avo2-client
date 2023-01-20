@@ -1,11 +1,3 @@
-import { get } from 'lodash-es';
-import { Requests } from 'node-zendesk';
-import queryString from 'query-string';
-import React, { FunctionComponent, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { withRouter } from 'react-router';
-
 import {
 	BlockHeading,
 	Button,
@@ -16,23 +8,29 @@ import {
 	Spinner,
 	TextArea,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { get } from 'lodash-es';
+import type { Requests } from 'node-zendesk';
+import queryString from 'query-string';
+import React, { FunctionComponent, useState } from 'react';
+import MetaTags from 'react-meta-tags';
+import { withRouter } from 'react-router';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
-import Html from '../../shared/components/Html/Html';
 import { getFullName, isMobileWidth } from '../../shared/helpers';
 import { DOC_TYPES, isPhoto } from '../../shared/helpers/files';
-import { sanitizeHtml, sanitizePresets } from '../../shared/helpers/sanitize';
-import { ToastService, ZendeskService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
+import { ZendeskService } from '../../shared/services/zendesk-service';
 
-export interface UserItemRequestFormProps extends DefaultSecureRouteProps {}
+export type UserItemRequestFormProps = DefaultSecureRouteProps;
 
 const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ history, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [description, setDescription] = useState<string>('');
 	const [wantsToUploadAttachment, setWantsToUploadAttachment] = useState<boolean>(false);
@@ -40,13 +38,13 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const getValidationErrors = (): string[] => {
-		const requiredError = t(
+		const requiredError = tText(
 			'user-item-request-form/views/user-item-request-form___is-verplicht'
 		);
 		const errors = [];
 		if (!description) {
 			errors.push(
-				`${t(
+				`${tText(
 					'user-item-request-form/views/user-item-request-form___omschrijving'
 				)} ${requiredError}`
 			);
@@ -58,7 +56,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		const filename = get(
 			queryString.parse((attachmentUrl || '').split('?').pop() || ''),
 			'name',
-			t('user-item-request-form/views/user-item-request-form___bestand')
+			tText('user-item-request-form/views/user-item-request-form___bestand')
 		);
 		if (wantsToUploadAttachment && attachmentUrl) {
 			if (isPhoto(attachmentUrl)) {
@@ -66,7 +64,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 			}
 			return `<a href="${attachmentUrl}">${filename}</a>`;
 		}
-		return t(
+		return tText(
 			'user-item-request-form/views/user-item-request-form___er-werd-geen-bijlage-toegevoegd'
 		);
 	};
@@ -98,23 +96,25 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 					url: window.location.href,
 					body: JSON.stringify(body),
 					html_body: `<dl>
-  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___bericht">Bericht</Trans></dt><dd>${
-		body.description
-  }</dd>
-  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___bijlage">Bijlage</Trans></dt><dd>${renderAttachment()}</dd>
-  <dt><Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie">School of organisatie</Trans></dt><dd>${
-		body.organization
-  }</dd>
-  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___vakken">Vakken</Trans></dt><dd>${
-		body.subjects
-  }</dd>
-  <dt><Trans i18nKey="user-item-request-form/views/user-item-request-form___onderwijsniveaus">Onderwijsniveaus</Trans></dt><dd>${
-		body.educationLevels
-  }</dd>
+  <dt>${tText('user-item-request-form/views/user-item-request-form___bericht')}</dt><dd>${
+						body.description
+					}</dd>
+  <dt>${tText(
+		'user-item-request-form/views/user-item-request-form___bijlage'
+  )}</dt><dd>${renderAttachment()}</dd>
+  <dt>${tText(
+		'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
+  )}</dt><dd>${body.organization}</dd>
+  <dt>${tText('user-item-request-form/views/user-item-request-form___vakken')}</dt><dd>${
+						body.subjects
+					}</dd>
+  <dt>${tText('user-item-request-form/views/user-item-request-form___onderwijsniveaus')}</dt><dd>${
+						body.educationLevels
+					}</dd>
 </dl>`,
 					public: false,
 				},
-				subject: t(
+				subject: tText(
 					'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-item'
 				),
 				requester: {
@@ -134,7 +134,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 			);
 
 			ToastService.success(
-				t(
+				tHtml(
 					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
 				)
 			);
@@ -142,7 +142,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
 			ToastService.danger(
-				t(
+				tHtml(
 					'user-item-request-form/views/user-item-request-form___het-versturen-van-je-aanvraag-is-mislukt'
 				)
 			);
@@ -154,45 +154,31 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		return (
 			<>
 				<BlockHeading type="h2">
-					<Trans i18nKey="user-item-request-form/views/user-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan">
-						Niet gevonden wat je zocht? Vraag het aan!
-					</Trans>
+					{tHtml(
+						'user-item-request-form/views/user-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan'
+					)}
 				</BlockHeading>
-				<p
-					dangerouslySetInnerHTML={{
-						__html: sanitizeHtml(
-							t(
-								'user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in'
-							),
-							sanitizePresets.link
-						),
-					}}
-				/>
+				{tHtml(
+					'user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in'
+				)}
 				<Container mode="vertical">
-					<p
-						dangerouslySetInnerHTML={{
-							__html: sanitizeHtml(
-								t(
-									'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
-								),
-								sanitizePresets.link
-							),
-						}}
-					/>
+					{tHtml(
+						'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
+					)}
 					<FormGroup>
 						<TextArea
 							id="description"
 							value={description}
 							onChange={setDescription}
 							rows={isMobileWidth() ? 6 : 15}
-							placeholder={t(
+							placeholder={tText(
 								'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-beschrijving'
 							)}
 						/>
 					</FormGroup>
 					<FormGroup label="" labelFor="attachment">
 						<Checkbox
-							label={t(
+							label={tText(
 								'user-item-request-form/views/user-item-request-form___ik-wil-een-bijlage-opladen'
 							)}
 							checked={wantsToUploadAttachment}
@@ -206,7 +192,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 								ownerId=""
 								allowedTypes={DOC_TYPES}
 								allowMulti={false}
-								label={t(
+								label={tText(
 									'user-item-request-form/views/user-item-request-form___selecteer-een-betand-word-excel-max-xxx-mb'
 								)}
 							/>
@@ -220,18 +206,16 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 								<Button
 									type="primary"
 									onClick={onSend}
-									label={t(
+									label={tText(
 										'user-item-request-form/views/user-item-request-form___aanvraag-indienen'
 									)}
 								/>
 							)}
 						</FormGroup>
 					</Spacer>
-					<Html
-						content={t(
-							'user-item-request-form/views/user-item-request-form___welk-materiaal-komt-in-aanmerking-voor-publicatie'
-						)}
-					/>
+					{tHtml(
+						'user-item-request-form/views/user-item-request-form___welk-materiaal-komt-in-aanmerking-voor-publicatie'
+					)}
 				</Container>
 			</>
 		);
@@ -243,14 +227,14 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving'
 						)}
 					/>

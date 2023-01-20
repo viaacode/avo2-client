@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -11,7 +8,10 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { noop } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
 
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import { PickerItem } from '../../types';
 import { ContentPicker } from '../ContentPicker/ContentPicker';
 
@@ -23,12 +23,12 @@ interface ChangeAuthorModalProps {
 }
 
 const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
-	onClose = () => {},
+	onClose = noop,
 	isOpen,
 	initialAuthor,
 	callback,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [author, setAuthor] = useState<PickerItem | undefined>(initialAuthor);
 
@@ -40,7 +40,7 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
+			title={tText(
 				'admin/shared/components/change-author-modal/change-author-modal___selecteer-een-auteur'
 			)}
 			size="small"
@@ -51,7 +51,7 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 					initialValue={author || undefined}
 					hideTargetSwitch
 					hideTypeDropdown
-					placeholder={t(
+					placeholder={tText(
 						'admin/shared/components/change-author-modal/change-author-modal___selecteer-een-auteur'
 					)}
 					allowedTypes={['PROFILE']}
@@ -68,14 +68,14 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t(
+									label={tText(
 										'admin/shared/components/change-author-modal/change-author-modal___annuleren'
 									)}
 									onClick={handleClose}
 								/>
 								<Button
 									type="primary"
-									label={t(
+									label={tText(
 										'admin/shared/components/change-author-modal/change-author-modal___toepassen'
 									)}
 									onClick={() => {

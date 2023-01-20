@@ -9,7 +9,8 @@ import {
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 interface DeleteCollectionModalProps {
 	isOpen: boolean;
@@ -22,7 +23,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	onClose = noop,
 	deleteObjectCallback,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const handleDelete = async () => {
 		deleteObjectCallback();
@@ -37,14 +38,14 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								label={t(
+								label={tText(
 									'collection/components/modals/delete-collection-modal___annuleer'
 								)}
 								onClick={onClose}
 							/>
 							<Button
 								type="danger"
-								label={t(
+								label={tText(
 									'collection/components/modals/delete-collection-modal___verwijder'
 								)}
 								onClick={handleDelete}
@@ -59,11 +60,11 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	const renderDeleteMessage = () => {
 		return (
 			<p>
-				{t(
+				{tText(
 					'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
 				)}
 				<br />
-				{t(
+				{tText(
 					'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden'
 				)}
 			</p>
@@ -73,7 +74,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
+			title={tText(
 				'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
 			)}
 			size="large"

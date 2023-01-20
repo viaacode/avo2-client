@@ -1,20 +1,21 @@
-import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
-import i18n from '../../../../shared/translations/i18n';
-import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 import {
+	BLOCK_FIELD_DEFAULTS,
+	BLOCK_STATE_DEFAULTS,
 	ContentBlockConfig,
 	ContentBlockEditor,
 	ContentBlockType,
 	DefaultContentBlockState,
-	ImageTitleTextButtonBlockComponentState,
-} from '../../../shared/types';
-import {
+	FILE_FIELD,
 	GET_ALIGN_OPTIONS,
 	GET_BUTTON_TYPE_OPTIONS,
 	GET_HEADING_TYPE_OPTIONS,
-} from '../../content-block.const';
+	ImageTitleTextButtonBlockComponentState,
+	TEXT_FIELD,
+} from '@meemoo/admin-core-ui';
 
-import { BLOCK_FIELD_DEFAULTS, BLOCK_STATE_DEFAULTS, FILE_FIELD, TEXT_FIELD } from './defaults';
+import { FileUploadProps } from '../../../../shared/components/FileUpload/FileUpload';
+import i18n from '../../../../shared/translations/i18n';
+import { GET_ADMIN_ICON_OPTIONS } from '../../../shared/constants';
 
 export const INITIAL_IMAGE_TITLE_TEXT_BUTTON_COMPONENTS_STATE =
 	(): ImageTitleTextButtonBlockComponentState => ({

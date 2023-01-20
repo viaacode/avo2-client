@@ -1,36 +1,40 @@
-import { Avo } from '@viaa/avo2-types';
-import { get, sortBy } from 'lodash-es';
+import type { Avo } from '@viaa/avo2-types';
+import { sortBy } from 'lodash-es';
 
+import {
+	GetAllOrganisationsDocument,
+	GetAllOrganisationsQuery,
+	GetDistinctOrganisationsDocument,
+	GetDistinctOrganisationsQuery,
+	GetOrganisationsWithUsersDocument,
+	GetOrganisationsWithUsersQuery,
+	GetUsersByCompanyIdDocument,
+	GetUsersByCompanyIdQuery,
+} from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';
-import {
-	GET_ALL_ORGANISATIONS,
-	GET_DISTINCT_ORGANISATIONS,
-	GET_ORGANISATIONS_WITH_USERS,
-	GET_USERS_IN_COMPANY,
-} from './organizations-service.gql';
 
 export class OrganisationService {
 	public static async fetchOrganisations(
 		onlyWithItems: boolean
 	): Promise<Partial<Avo.Organization.Organization>[]> {
 		try {
-			const response = await dataService.query({
-				query: onlyWithItems ? GET_DISTINCT_ORGANISATIONS : GET_ALL_ORGANISATIONS,
+			const response = await dataService.query<
+				GetDistinctOrganisationsQuery | GetAllOrganisationsQuery
+			>({
+				query: onlyWithItems
+					? GetDistinctOrganisationsDocument
+					: GetAllOrganisationsDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
-
-			let organisations: Partial<Avo.Organization.Organization>[] | null;
+			let organisations: any[] | null;
 			if (onlyWithItems) {
-				organisations = get(response, 'data.app_item_meta', []).map(
-					(item: any) => item.organisation
-				);
+				organisations = (
+					(response as GetDistinctOrganisationsQuery).app_item_meta ?? []
+				).map((item) => item.organisation);
 			} else {
-				organisations = get(response, 'data.shared_organisations');
+				organisations = (response as GetAllOrganisationsQuery).shared_organisations;
 			}
 
 			if (!organisations) {
@@ -51,16 +55,11 @@ export class OrganisationService {
 		Partial<Avo.Organization.Organization>[]
 	> {
 		try {
-			const response = await dataService.query({ query: GET_ORGANISATIONS_WITH_USERS });
+			const response = await dataService.query<GetOrganisationsWithUsersQuery>({
+				query: GetOrganisationsWithUsersDocument,
+			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
-
-			const organisations: Partial<Avo.Organization.Organization>[] | null = get(
-				response,
-				'data.shared_organisations_with_users'
-			);
+			const organisations = response.shared_organisations_with_users;
 
 			if (!organisations) {
 				throw new CustomError('Response does not contain any organisations', null, {
@@ -68,7 +67,7 @@ export class OrganisationService {
 				});
 			}
 
-			return sortBy(organisations, 'name');
+			return sortBy(organisations, 'name') as Partial<Avo.Organization.Organization>[];
 		} catch (err) {
 			throw new CustomError('Failed to get organisations from the database', err, {
 				query: 'GET_ORGANISATIONS_WITH_USERS',
@@ -80,18 +79,14 @@ export class OrganisationService {
 		companyId: string
 	): Promise<Partial<Avo.User.Profile>[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_USERS_IN_COMPANY,
+			const response = await dataService.query<GetUsersByCompanyIdQuery>({
+				query: GetUsersByCompanyIdDocument,
 				variables: {
 					companyId,
 				},
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL response contains errors', null, { response });
-			}
-
-			const users: Partial<Avo.User.Profile>[] | null = get(response, 'data.users_profiles');
+			const users = response.users_profiles;
 
 			if (!users) {
 				throw new CustomError('Response does not contain any users', null, {
@@ -99,7 +94,7 @@ export class OrganisationService {
 				});
 			}
 
-			return users;
+			return users as Partial<Avo.User.Profile>[];
 		} catch (err) {
 			throw new CustomError('Failed to get users by companyId from the database', err, {
 				query: 'GET_USERS_IN_COMPANY',

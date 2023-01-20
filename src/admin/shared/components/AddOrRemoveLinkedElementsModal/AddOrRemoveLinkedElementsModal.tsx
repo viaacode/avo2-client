@@ -1,6 +1,3 @@
-import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Button,
 	ButtonToolbar,
@@ -16,6 +13,10 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { noop } from 'lodash-es';
+import React, { FunctionComponent, useState } from 'react';
+
+import useTranslation from '../../../../shared/hooks/useTranslation';
 
 export type AddOrRemove = 'add' | 'remove';
 
@@ -33,12 +34,12 @@ const AddOrRemoveLinkedElementsModal: FunctionComponent<AddOrRemoveLinkedElement
 	title,
 	addOrRemoveLabel,
 	contentLabel,
-	onClose = () => {},
+	onClose = noop,
 	isOpen,
 	labels,
 	callback,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [selectedLabels, setSelectedLabels] = useState<TagInfo[] | undefined>(undefined);
 	const [addOrRemove, setAddOrRemove] = useState<AddOrRemove>('add');
@@ -57,13 +58,13 @@ const AddOrRemoveLinkedElementsModal: FunctionComponent<AddOrRemoveLinkedElement
 						<Select
 							options={[
 								{
-									label: t(
+									label: tText(
 										'admin/shared/components/change-labels-modal/change-labels-modal___toevoegen'
 									),
 									value: 'add',
 								},
 								{
-									label: t(
+									label: tText(
 										'admin/shared/components/change-labels-modal/change-labels-modal___verwijderen'
 									),
 									value: 'delete',
@@ -89,7 +90,7 @@ const AddOrRemoveLinkedElementsModal: FunctionComponent<AddOrRemoveLinkedElement
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t(
+									label={tText(
 										'admin/shared/components/change-labels-modal/change-labels-modal___annuleren'
 									)}
 									onClick={handleClose}
@@ -98,10 +99,10 @@ const AddOrRemoveLinkedElementsModal: FunctionComponent<AddOrRemoveLinkedElement
 									type="primary"
 									label={
 										addOrRemove === 'add'
-											? t(
+											? tText(
 													'admin/shared/components/change-labels-modal/change-labels-modal___toevoegen'
 											  )
-											: t(
+											: tText(
 													'admin/shared/components/change-labels-modal/change-labels-modal___verwijderen'
 											  )
 									}

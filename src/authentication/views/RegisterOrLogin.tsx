@@ -1,8 +1,3 @@
-import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-import MetaTags from 'react-meta-tags';
-import { RouteComponentProps, withRouter } from 'react-router';
-
 import {
 	Column,
 	Container,
@@ -13,20 +8,18 @@ import {
 	ModalBody,
 	Spacer,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent } from 'react';
+import MetaTags from 'react-meta-tags';
+import { RouteComponentProps, withRouter } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
+import useTranslation from '../../shared/hooks/useTranslation';
 import LoginOptions from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss';
 
-export interface RegisterOrLoginProps {}
-
-const RegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteComponentProps> = ({
-	history,
-	location,
-	match,
-}) => {
-	const [t] = useTranslation();
+const RegisterOrLogin: FunctionComponent<RouteComponentProps> = ({ history, location, match }) => {
+	const { tText, tHtml } = useTranslation();
 
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
@@ -34,14 +27,14 @@ const RegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteComponentPr
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'authentication/views/register-or-login___registratie-of-login-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'authentication/views/register-or-login___registratie-of-login-pagina-beschrijving'
 						)}
 					/>
@@ -54,17 +47,15 @@ const RegisterOrLogin: FunctionComponent<RegisterOrLoginProps & RouteComponentPr
 								<Flex className="u-maximize-height" center orientation="vertical">
 									<FlexItem className="c-register-login-view__text">
 										<h2 className="c-h2 u-m-0">
-											{t(
+											{tHtml(
 												'authentication/views/register-or-login___welkom-op-het-archief-voor-onderwijs'
 											)}
 										</h2>
 
 										<Spacer margin={['top-small']}>
-											<p>
-												{t(
-													'authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas'
-												)}
-											</p>
+											{tHtml(
+												'authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas'
+											)}
 										</Spacer>
 									</FlexItem>
 								</Flex>

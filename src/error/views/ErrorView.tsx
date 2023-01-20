@@ -10,11 +10,10 @@ import {
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { isArray, isNil, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -25,18 +24,19 @@ import {
 } from '../../authentication/helpers/redirects';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 
 import './ErrorView.scss';
 
 export interface ErrorViewQueryParams {
-	message?: string;
+	message?: string | ReactNode;
 	icon?: IconName;
 	actionButtons?: Avo.Auth.ErrorActionButton[];
 }
 
 interface ErrorViewProps {
-	message?: string;
+	message?: string | ReactNode;
 	icon?: IconName;
 	actionButtons?: Avo.Auth.ErrorActionButton[];
 	children?: ReactNode;
@@ -50,7 +50,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 	actionButtons = [],
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const queryParams = queryString.parse((location.search || '').substring(1));
 
@@ -69,8 +69,10 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 		);
 	}
 
-	const messageText = (queryParams.message as string) || message || '';
-	const errorMessage: string = isNil(messageText) ? getPageNotFoundError(!!user) : messageText;
+	const messageText: string | ReactNode = (queryParams.message as string) || message || '';
+	const errorMessage: string | ReactNode = isNil(messageText)
+		? getPageNotFoundError(!!user)
+		: messageText;
 	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
 	const buttons = uniq([
 		...actionButtons,
@@ -108,14 +110,14 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 				{btns.includes('home') && (
 					<Button
 						onClick={goToHome}
-						label={t('error/views/error-view___ga-terug-naar-de-homepagina')}
+						label={tText('error/views/error-view___ga-terug-naar-de-homepagina')}
 					/>
 				)}
 				{btns.includes('helpdesk') && (
 					<Button
 						type="danger"
 						onClick={() => window.zE('webWidget', 'toggle')}
-						label={t('error/views/error-view___contacteer-de-helpdesk')}
+						label={tText('error/views/error-view___contacteer-de-helpdesk')}
 					/>
 				)}
 			</>

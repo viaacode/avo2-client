@@ -1,0 +1,11 @@
+$base: 'c-admin-core';
+
+.#{$base} {
+	.c-button {
+		&-toolbar {
+			a + button {
+				margin-left: $g-spacer-unit;
+			}
+		}
+	}
+}

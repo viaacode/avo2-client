@@ -6,10 +6,8 @@ import {
 	Spacer,
 	Table,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 
@@ -21,7 +19,8 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -31,17 +30,20 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
+import { InteractiveTour } from '../interactive-tour.types';
 
-type UserDetailProps = RouteComponentProps<{ id: string }>;
+type InteractiveTourDetailProps = RouteComponentProps<{ id: string }>;
 
-const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, match }) => {
+const InteractiveTourDetail: FunctionComponent<InteractiveTourDetailProps> = ({
+	history,
+	match,
+}) => {
 	// Hooks
-	const [interactiveTour, setInteractiveTour] =
-		useState<Avo.InteractiveTour.InteractiveTour | null>(null);
+	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
 
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const fetchInteractiveTourById = useCallback(async () => {
 		try {
@@ -57,12 +59,12 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/interactive-tour/views/interactive-tour-detail___het-ophalen-van-de-interactive-tour-is-mislukt'
 				),
 			});
 		}
-	}, [setInteractiveTour, setLoadingInfo, t, match.params.id]);
+	}, [setInteractiveTour, setLoadingInfo, tText, match.params.id]);
 
 	useEffect(() => {
 		fetchInteractiveTourById();
@@ -88,7 +90,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 					)
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/interactive-tour/views/interactive-tour-detail___het-verwijderen-van-de-interactive-tour-is-mislukt'
 					)
 				);
@@ -96,7 +98,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			}
 			await InteractiveTourService.deleteInteractiveTour(interactiveTour.id);
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-detail___de-interactive-tour-is-verwijdert'
 				)
 			);
@@ -106,7 +108,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 				new CustomError('Failed to delete interactive tour', err, { interactiveTour })
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-detail___het-verwijderen-van-de-interactive-tour-is-mislukt'
 				)
 			);
@@ -131,27 +133,27 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 								{renderSimpleDetailRows(interactiveTour, [
 									[
 										'name',
-										t(
+										tText(
 											'admin/interactive-tour/views/interactive-tour-detail___naam'
 										),
 									],
 								])}
 								{renderDetailRow(
 									get(APP_PATH, [interactiveTour.page_id, 'route'], '-'),
-									t(
+									tText(
 										'admin/interactive-tour/views/interactive-tour-detail___pagina'
 									)
 								)}
 								{renderDateDetailRows(interactiveTour, [
 									[
 										'created_at',
-										t(
+										tText(
 											'admin/interactive-tour/views/interactive-tour-detail___aangemaakt-op'
 										),
 									],
 									[
 										'updated_at',
-										t(
+										tText(
 											'admin/interactive-tour/views/interactive-tour-detail___aangepast-op'
 										),
 									],
@@ -164,10 +166,10 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 		);
 	};
 
-	const renderUserDetailPage = () => (
+	const renderInteractiveTourDetailPage = () => (
 		<AdminLayout
 			onClickBackButton={() => navigate(history, ADMIN_PATH.INTERACTIVE_TOUR_OVERVIEW)}
-			pageTitle={t(
+			pageTitle={tText(
 				'admin/interactive-tour/views/interactive-tour-detail___interactive-tour-details'
 			)}
 			size="large"
@@ -177,13 +179,13 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 					<ButtonToolbar>
 						<Button
 							type="primary"
-							label={t(
+							label={tText(
 								'admin/interactive-tour/views/interactive-tour-detail___bewerk'
 							)}
-							title={t(
+							title={tText(
 								'admin/interactive-tour/views/interactive-tour-detail___bewerk-deze-rondleiding'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/interactive-tour/views/interactive-tour-detail___bewerk-deze-rondleiding'
 							)}
 							onClick={() => {
@@ -197,13 +199,13 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 						/>
 						<Button
 							type="danger"
-							label={t(
+							label={tText(
 								'admin/interactive-tour/views/interactive-tour-detail___verwijderen'
 							)}
-							title={t(
+							title={tText(
 								'admin/interactive-tour/views/interactive-tour-detail___verwijder-deze-rondleiding'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/interactive-tour/views/interactive-tour-detail___verwijder-deze-rondleiding'
 							)}
 							onClick={() => setIsConfirmModalOpen(true)}
@@ -228,14 +230,14 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(interactiveTour, 'name'),
-						t(
+						tText(
 							'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-titel'
 						)
 					)}
 				</title>
 				<meta
 					name="description"
-					content={t(
+					content={tText(
 						'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-beschrijving'
 					)}
 				/>
@@ -243,7 +245,7 @@ const InteractiveTourDetail: FunctionComponent<UserDetailProps> = ({ history, ma
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={interactiveTour}
-				render={renderUserDetailPage}
+				render={renderInteractiveTourDetailPage}
 			/>
 		</>
 	);

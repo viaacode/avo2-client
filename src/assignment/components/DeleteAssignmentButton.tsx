@@ -1,17 +1,17 @@
 import { Button, ButtonProps, DefaultProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { compose } from 'redux';
 
 import { DeleteObjectModal } from '../../shared/components';
 import { ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { Assignment_v2 } from '../assignment.types';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 
 export type DeleteAssignmentButtonProps = DefaultProps &
 	Partial<UserProps> & {
-		assignment?: Avo.Assignment.Assignment_v2;
+		assignment?: Assignment_v2;
 		button?: Partial<ButtonProps>;
 		modal?: Partial<ConfirmModalProps>;
 	};
@@ -22,22 +22,24 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 	modal,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [isOpen, setOpen] = useState<boolean>(false);
 
 	return (
 		<>
 			<Button
-				altTitle={t(
+				altTitle={tText(
 					'assignment/components/delete-assignment-button___verwijder-de-opdracht'
 				)}
-				ariaLabel={t(
+				ariaLabel={tText(
 					'assignment/components/delete-assignment-button___verwijder-de-opdracht'
 				)}
 				icon="delete"
-				label={t('assignment/components/delete-assignment-button___verwijder')}
-				title={t('assignment/components/delete-assignment-button___verwijder-de-opdracht')}
+				label={tText('assignment/components/delete-assignment-button___verwijder')}
+				title={tText(
+					'assignment/components/delete-assignment-button___verwijder-de-opdracht'
+				)}
 				type="borderless"
 				{...button}
 				onClick={(e) => {
@@ -46,10 +48,10 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 				}}
 			/>
 			<DeleteObjectModal
-				title={t(
+				title={tText(
 					'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 				)}
-				body={deleteAssignmentWarning(t, assignment)}
+				body={deleteAssignmentWarning(assignment)}
 				{...modal}
 				isOpen={isOpen}
 				onClose={() => {
@@ -57,7 +59,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 					modal?.onClose && modal.onClose();
 				}}
 				confirmCallback={async () => {
-					await deleteAssignment(t, assignment?.id, user);
+					await deleteAssignment(assignment?.id, user);
 
 					setOpen(false);
 					modal?.confirmCallback && modal.confirmCallback();

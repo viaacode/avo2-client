@@ -1,10 +1,11 @@
 import { BlockHeading, DefaultProps, Flex, FlexItem, Icon } from '@viaa/avo2-components';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
-import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
+import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { truncate } from 'lodash';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import { AssignmentBlock } from '../../../assignment/assignment.types';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { stripHtml } from '../../helpers';
 
 import { DRAGGABLE_BLOCK_ICONS } from './DraggableBlock.const';
@@ -12,11 +13,11 @@ import { DRAGGABLE_BLOCK_ICONS } from './DraggableBlock.const';
 import './DraggableBlock.scss';
 
 export interface DraggableBlockProps extends DefaultProps {
-	block?: BlockItemBaseSchema;
+	block?: Avo.Core.BlockItemBase;
 }
 
 const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 
 	if (!block) {
 		return null;
@@ -48,7 +49,7 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 						truncate(stripHtml(label), { length: 45 })
 					) : (
 						<span className="c-draggable-block__placeholder">
-							{t(
+							{tHtml(
 								'shared/components/draggable-block/draggable-block___instructies-of-omschrijving'
 							)}
 						</span>

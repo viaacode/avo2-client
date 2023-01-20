@@ -1,7 +1,3 @@
-import { get } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-
 import {
 	BlockHeading,
 	Button,
@@ -15,12 +11,13 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import i18n from '../../../shared/translations/i18n';
+import { ToastService } from '../../../shared/services/toast-service';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 import { CollectionService } from '../../collection.service';
 
@@ -36,7 +33,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 	collection,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [validationError, setValidationError] = useState<string[] | undefined>(undefined);
 	const [isCollectionPublic, setIsCollectionPublic] = useState(collection.is_public);
@@ -65,7 +62,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 				const validationErrors: string[] = await getValidationErrorsForPublish(collection);
 
 				if (validationErrors && validationErrors.length) {
-					setValidationError(validationErrors.map((rule) => get(rule[1], 'error')));
+					setValidationError(validationErrors);
 					ToastService.danger(validationErrors);
 					return;
 				}
@@ -80,17 +77,17 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 			ToastService.success(
 				isCollection()
 					? isCollectionPublic
-						? t(
+						? tHtml(
 								'collection/components/modals/share-collection-modal___de-collectie-staat-nu-publiek'
 						  )
-						: t(
+						: tHtml(
 								'collection/components/modals/share-collection-modal___de-collectie-staat-nu-niet-meer-publiek'
 						  )
 					: isCollectionPublic
-					? t(
+					? tHtml(
 							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-publiek'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/modals/share-collection-modal___de-bundel-staat-nu-niet-meer-publiek'
 					  )
 			);
@@ -110,7 +107,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 			);
 		} catch (err) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/modals/share-collection-modal___de-aanpassingen-kunnen-niet-worden-opgeslagen'
 				)
 			);
@@ -127,8 +124,12 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 			isOpen={isOpen}
 			title={
 				isCollection()
-					? t('collection/components/modals/share-collection-modal___deel-deze-collectie')
-					: t('collection/components/modals/publish-collection-modal___deel-deze-bundel')
+					? tText(
+							'collection/components/modals/share-collection-modal___deel-deze-collectie'
+					  )
+					: tText(
+							'collection/components/modals/publish-collection-modal___deel-deze-bundel'
+					  )
 			}
 			size="large"
 			onClose={onClose}
@@ -136,35 +137,33 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 		>
 			<ModalBody>
 				<p>
-					{isCollection() ? (
-						<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen">
-							Bepaal in hoeverre jouw collectie toegankelijk is voor andere personen.
-						</Trans>
-					) : (
-						<Trans i18nKey="collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-bundel-toegankelijk-is-voor-andere-personen">
-							Bepaal in hoeverre jouw bundel toegankelijk is voor andere personen.
-						</Trans>
-					)}
+					{isCollection()
+						? tHtml(
+								'collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-collectie-toegankelijk-is-voor-andere-personen'
+						  )
+						: tHtml(
+								'collection/components/modals/share-collection-modal___bepaal-in-hoeverre-jouw-bundel-toegankelijk-is-voor-andere-personen'
+						  )}
 				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">
 						<BlockHeading className="u-m-0" type="h4">
-							<Trans i18nKey="collection/components/modals/share-collection-modal___zichtbaarheid">
-								Zichtbaarheid
-							</Trans>
+							{tHtml(
+								'collection/components/modals/share-collection-modal___zichtbaarheid'
+							)}
 						</BlockHeading>
 					</Spacer>
 					<RadioButtonGroup
 						options={[
 							{
 								value: 'private',
-								label: i18n.t(
+								label: tText(
 									'collection/components/modals/share-collection-modal___niet-openbaar'
 								),
 							},
 							{
 								value: 'public',
-								label: i18n.t(
+								label: tText(
 									'collection/components/modals/share-collection-modal___openbaar'
 								),
 							},
@@ -181,14 +180,14 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={t(
+									label={tText(
 										'collection/components/modals/share-collection-modal___annuleren'
 									)}
 									onClick={() => onClose()}
 								/>
 								<Button
 									type="primary"
-									label={t(
+									label={tText(
 										'collection/components/modals/share-collection-modal___opslaan'
 									)}
 									onClick={onSave}

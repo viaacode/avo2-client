@@ -1,0 +1,5 @@
+query getEducationLevels {
+	lookup_enum_lom_context {
+		description
+	}
+}

@@ -1,17 +1,24 @@
+import { ToastType } from '@meemoo/admin-core-ui';
+import { Alert, AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { toast, ToastId, ToastOptions } from 'react-toastify';
 
-import { Alert, AlertProps, Spacer } from '@viaa/avo2-components';
-
 import { ROUTE_PARTS } from '../constants';
 
-export enum ToastType {
+export enum AvoToastType {
 	DANGER = 'danger',
 	INFO = 'info',
 	SPINNER = 'spinner',
 	SUCCESS = 'success',
 }
+
+export const ToastTypeToAvoToastType: Record<ToastType, AvoToastType> = {
+	[ToastType.ERROR]: AvoToastType.DANGER,
+	[ToastType.INFO]: AvoToastType.INFO,
+	[ToastType.SPINNER]: AvoToastType.SPINNER,
+	[ToastType.SUCCESS]: AvoToastType.SUCCESS,
+};
 
 type ToastMessage = string | string[] | ReactNode;
 
@@ -25,13 +32,13 @@ const Toast: FunctionComponent<ToastProps> = ({ closeToast, ...rest }) => (
 
 export class ToastService {
 	public static danger = (message: ToastMessage, options?: ToastOptions): ToastId | undefined =>
-		ToastService.showToast(message, options, ToastType.DANGER);
+		ToastService.showToast(message, options, AvoToastType.DANGER);
 	public static info = (message: ToastMessage, options?: ToastOptions): ToastId | undefined =>
-		ToastService.showToast(message, options, ToastType.INFO);
+		ToastService.showToast(message, options, AvoToastType.INFO);
 	public static spinner = (message: ToastMessage, options?: ToastOptions): ToastId | undefined =>
-		ToastService.showToast(message, options, ToastType.SPINNER);
+		ToastService.showToast(message, options, AvoToastType.SPINNER);
 	public static success = (message: ToastMessage, options?: ToastOptions): ToastId | undefined =>
-		ToastService.showToast(message, options, ToastType.SUCCESS);
+		ToastService.showToast(message, options, AvoToastType.SUCCESS);
 
 	public static close(toastId: ToastId | undefined) {
 		if (isNil(toastId)) {
@@ -40,10 +47,10 @@ export class ToastService {
 		toast.dismiss(toastId);
 	}
 
-	private static showToast(
+	public static showToast(
 		message: ToastMessage,
 		options: ToastOptions = {},
-		alertType: ToastType = ToastType.INFO
+		alertType: AvoToastType = AvoToastType.INFO
 	): ToastId | undefined {
 		if (isNil(message)) {
 			return;

@@ -1,11 +1,36 @@
-import { flatten, get } from 'lodash-es';
+import type { Avo } from '@viaa/avo2-types';
+import { flatten } from 'lodash-es';
 
-import { Avo } from '@viaa/avo2-types';
-import { RelationEntry } from '@viaa/avo2-types/types/collection';
-
+import {
+	BulkAddLabelsToCollectionsDocument,
+	BulkAddLabelsToCollectionsMutation,
+	BulkDeleteCollectionsDocument,
+	BulkDeleteCollectionsMutation,
+	BulkDeleteLabelsFromCollectionsDocument,
+	BulkDeleteLabelsFromCollectionsMutation,
+	BulkUpdateAuthorForCollectionsDocument,
+	BulkUpdateAuthorForCollectionsMutation,
+	BulkUpdateDateAndLastAuthorCollectionsDocument,
+	BulkUpdateDateAndLastAuthorCollectionsMutation,
+	BulkUpdatePublishStateForCollectionsDocument,
+	BulkUpdatePublishStateForCollectionsMutation,
+	GetCollectionActualisationsQuery,
+	GetCollectionActualisationsQueryVariables,
+	GetCollectionMarcomQuery,
+	GetCollectionMarcomQueryVariables,
+	GetCollectionQualityCheckQuery,
+	GetCollectionQualityCheckQueryVariables,
+	GetCollectionsByIdsDocument,
+	GetCollectionsByIdsQuery,
+	GetCollectionsByIdsQueryVariables,
+	GetCollectionsDocument,
+	GetCollectionsQuery,
+	GetCollectionsQueryVariables,
+	Lookup_Enum_Relation_Types_Enum,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
-import { ApolloCacheManager, dataService } from '../../shared/services';
+import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
@@ -15,16 +40,6 @@ import {
 	ITEMS_PER_PAGE,
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './collections-or-bundles.const';
-import {
-	BULK_ADD_LABELS_TO_COLLECTIONS,
-	BULK_DELETE_COLLECTIONS,
-	BULK_DELETE_LABELS_FROM_COLLECTIONS,
-	BULK_UPDATE_AUTHOR_FOR_COLLECTIONS,
-	BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS,
-	BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS,
-	GET_COLLECTIONS,
-	GET_COLLECTION_IDS,
-} from './collections-or-bundles.gql';
 import {
 	CollectionOrBundleActualisationOverviewTableCols,
 	CollectionOrBundleMarcomOverviewTableCols,
@@ -39,7 +54,7 @@ export class CollectionsOrBundlesService {
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any
+		where: GetCollectionsQueryVariables['where']
 	): Promise<[Avo.Collection.Collection[], number]> {
 		let variables: any;
 
@@ -56,21 +71,14 @@ export class CollectionsOrBundlesService {
 				),
 			};
 
-			const response = await dataService.query({
+			const response = await dataService.query<GetCollectionsQuery>({
 				variables,
-				query: GET_COLLECTIONS,
-				fetchPolicy: 'no-cache',
+				query: GetCollectionsDocument,
 			});
 
-			const collections: Avo.Collection.Collection[] | null = get(
-				response,
-				'data.app_collections'
-			);
+			const collections = response.app_collections;
 
-			const collectionsCount = get(
-				response,
-				'data.app_collections_aggregate.aggregate.count'
-			);
+			const collectionsCount = response.app_collections_aggregate.aggregate?.count || 0;
 
 			if (!collections) {
 				throw new CustomError('Response does not contain any collections', null, {
@@ -81,18 +89,18 @@ export class CollectionsOrBundlesService {
 			// also fetch if the collection is a copy in a separate query to avoid making the main query slower
 			const relations = (await RelationService.fetchRelationsBySubject(
 				'collection',
-				collections.map((coll: Avo.Collection.Collection) => coll.id),
-				'IS_COPY_OF'
-			)) as RelationEntry<Avo.Collection.Collection>[];
+				collections.map((coll) => coll.id),
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf
+			)) as Avo.Collection.RelationEntry<Avo.Collection.Collection>[];
 
 			relations.forEach((relation) => {
 				const collection = collections.find((coll) => coll.id === relation.subject);
 				if (collection) {
-					collection.relations = [relation];
+					(collection as Avo.Collection.Collection).relations = [relation];
 				}
 			});
 
-			return [collections, collectionsCount];
+			return [collections as Avo.Collection.Collection[], collectionsCount];
 		} catch (err) {
 			throw new CustomError('Failed to get collections from the database', err, {
 				variables,
@@ -101,24 +109,24 @@ export class CollectionsOrBundlesService {
 		}
 	}
 
-	static async getCollectionIds(where: any): Promise<string[]> {
+	static async getCollectionIds(
+		where: GetCollectionsByIdsQueryVariables['where']
+	): Promise<string[]> {
 		try {
-			const response = await dataService.query({
+			const response = await dataService.query<GetCollectionsByIdsQuery>({
 				variables: {
 					where,
 				},
-				query: GET_COLLECTION_IDS,
+				query: GetCollectionsByIdsDocument,
 			});
 
-			return get(response, 'data.app_collections', []).map(
-				(coll: Partial<Avo.Collection.Collection>) => coll.id
-			);
+			return (response.app_collections ?? []).map((coll) => coll.id);
 		} catch (err) {
 			throw new CustomError('Failed to get collection ids from the database', err, {
 				variables: {
 					where,
 				},
-				query: 'GET_COLLECTION_IDS',
+				query: 'GET_COLLECTIONS_BY_IDS',
 			});
 		}
 	}
@@ -131,10 +139,17 @@ export class CollectionsOrBundlesService {
 			| CollectionOrBundleMarcomOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any,
+		where:
+			| GetCollectionActualisationsQueryVariables['where']
+			| GetCollectionQualityCheckQueryVariables['where']
+			| GetCollectionMarcomQueryVariables['where'],
 		editorialType: EditorialType
 	): Promise<[Avo.Collection.Collection[], number]> {
-		let variables: any;
+		let variables:
+			| GetCollectionActualisationsQueryVariables
+			| GetCollectionQualityCheckQueryVariables
+			| GetCollectionMarcomQueryVariables
+			| null = null;
 
 		try {
 			variables = {
@@ -151,21 +166,18 @@ export class CollectionsOrBundlesService {
 				),
 			};
 
-			const response = await dataService.query({
-				variables,
+			const response = await dataService.query<
+				| GetCollectionActualisationsQuery
+				| GetCollectionQualityCheckQuery
+				| GetCollectionMarcomQuery
+			>({
 				query: EDITORIAL_QUERIES[editorialType],
-				fetchPolicy: 'no-cache',
+				variables,
 			});
 
-			const collections: Avo.Collection.Collection[] | null = get(
-				response,
-				'data.app_collections'
-			);
+			const collections = response.app_collections;
 
-			const collectionsCount = get(
-				response,
-				'data.app_collections_aggregate.aggregate.count'
-			);
+			const collectionsCount = response.app_collections_aggregate.aggregate?.count ?? 0;
 
 			if (!collections) {
 				throw new CustomError('Response does not contain any collections', null, {
@@ -173,7 +185,7 @@ export class CollectionsOrBundlesService {
 				});
 			}
 
-			return [collections, collectionsCount];
+			return [collections as Avo.Collection.Collection[], collectionsCount];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get collection editorial entries from the database',
@@ -181,7 +193,7 @@ export class CollectionsOrBundlesService {
 				{
 					variables,
 					editorialType,
-					query: 'GET_COLLECTION_ACTUALISATION | GET_COLLECTION_QUALITY_CHECK | GET_COLLECTION_MARCOM',
+					query: 'GET_COLLECTION_ACTUALISATIONS | GET_COLLECTION_QUALITY_CHECK | GET_COLLECTION_MARCOM',
 				}
 			);
 		}
@@ -193,22 +205,17 @@ export class CollectionsOrBundlesService {
 		updatedByProfileId: string
 	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: BULK_UPDATE_PUBLISH_STATE_FOR_COLLECTIONS,
+			const response = await dataService.query<BulkUpdatePublishStateForCollectionsMutation>({
+				query: BulkUpdatePublishStateForCollectionsDocument,
 				variables: {
 					isPublic,
 					collectionIds,
 					updatedByProfileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
-
-			return get(response, 'data.update_app_collections.affected_rows');
+			return response.update_app_collections?.affected_rows ?? 0;
 		} catch (err) {
 			throw new CustomError(
 				'Failed to update publish state for collections in the database',
@@ -228,22 +235,17 @@ export class CollectionsOrBundlesService {
 		updatedByProfileId: string
 	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: BULK_UPDATE_AUTHOR_FOR_COLLECTIONS,
+			const response = await dataService.query<BulkUpdateAuthorForCollectionsMutation>({
+				query: BulkUpdateAuthorForCollectionsDocument,
 				variables: {
 					authorId,
 					collectionIds,
 					updatedByProfileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
-
-			return get(response, 'data.update_app_collections.affected_rows');
+			return response.update_app_collections?.affected_rows ?? 0;
 		} catch (err) {
 			throw new CustomError('Failed to update author for collections in the database', err, {
 				authorId,
@@ -258,21 +260,16 @@ export class CollectionsOrBundlesService {
 		updatedByProfileId: string
 	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: BULK_DELETE_COLLECTIONS,
+			const response = await dataService.query<BulkDeleteCollectionsMutation>({
+				query: BulkDeleteCollectionsDocument,
 				variables: {
 					collectionIds,
 					updatedByProfileId,
 					now: new Date().toISOString(),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
-
-			return get(response, 'data.update_app_collections.affected_rows');
+			return response.update_app_collections?.affected_rows ?? 0;
 		} catch (err) {
 			throw new CustomError('Failed to delete collections in the database', err, {
 				collectionIds,
@@ -285,7 +282,7 @@ export class CollectionsOrBundlesService {
 		labels: string[],
 		collectionIds: string[],
 		updatedByProfileId: string
-	) {
+	): Promise<number> {
 		try {
 			// First remove the labels, so we can add them without duplicate conflicts
 			await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
@@ -295,8 +292,8 @@ export class CollectionsOrBundlesService {
 			);
 
 			// Add the labels
-			const response = await dataService.mutate({
-				mutation: BULK_ADD_LABELS_TO_COLLECTIONS,
+			const response = await dataService.query<BulkAddLabelsToCollectionsMutation>({
+				query: BulkAddLabelsToCollectionsDocument,
 				variables: {
 					labels: flatten(
 						labels.map((label) =>
@@ -307,16 +304,11 @@ export class CollectionsOrBundlesService {
 						)
 					),
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
 
 			await this.bulkUpdateDateAndLastAuthorCollections(collectionIds, updatedByProfileId);
 
-			return get(response, 'data.insert_app_collection_labels.affected_rows');
+			return response.insert_app_collection_labels?.affected_rows ?? 0;
 		} catch (err) {
 			throw new CustomError('Failed to bulk add labels to collections', err, {
 				labels,
@@ -330,24 +322,19 @@ export class CollectionsOrBundlesService {
 		labels: string[],
 		collectionIds: string[],
 		updatedByProfileId: string
-	) {
+	): Promise<number> {
 		try {
-			const response = await dataService.mutate({
-				mutation: BULK_DELETE_LABELS_FROM_COLLECTIONS,
+			const response = await dataService.query<BulkDeleteLabelsFromCollectionsMutation>({
+				query: BulkDeleteLabelsFromCollectionsDocument,
 				variables: {
 					labels,
 					collectionIds,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
-
-			if (response.errors) {
-				throw new CustomError('GraphQL query has errors', null, { response });
-			}
 
 			await this.bulkUpdateDateAndLastAuthorCollections(collectionIds, updatedByProfileId);
 
-			return get(response, 'data.delete_app_collection_labels.affected_rows');
+			return response.delete_app_collection_labels?.affected_rows ?? 0;
 		} catch (err) {
 			throw new CustomError('Failed to bulk delete labels from collections', err, {
 				labels,
@@ -360,19 +347,14 @@ export class CollectionsOrBundlesService {
 	private static async bulkUpdateDateAndLastAuthorCollections(
 		collectionIds: string[],
 		updatedByProfileId: string
-	) {
-		const updateResponse = await dataService.mutate({
-			mutation: BULK_UPDATE_DATE_AND_LAST_AUTHOR_COLLECTIONS,
+	): Promise<void> {
+		await dataService.query<BulkUpdateDateAndLastAuthorCollectionsMutation>({
+			query: BulkUpdateDateAndLastAuthorCollectionsDocument,
 			variables: {
 				collectionIds,
 				updatedByProfileId,
 				now: new Date().toISOString(),
 			},
-			update: ApolloCacheManager.clearCollectionCache,
 		});
-
-		if (updateResponse.errors) {
-			throw new CustomError('GraphQL query has errors', null, { updateResponse });
-		}
 	}
 }

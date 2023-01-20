@@ -7,7 +7,7 @@ export function createReducer<State>(
 	handlers: { [type: string]: Handler<State> }
 ): Handler<State> {
 	return (state: State = initialState, action: Action): State => {
-		if (handlers.hasOwnProperty(action.type)) {
+		if (Object.prototype.hasOwnProperty.call(handlers, action.type)) {
 			return handlers[action.type](state, action);
 		}
 

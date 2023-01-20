@@ -1,5 +1,7 @@
+import { ReactNode } from 'react';
+
 import { getEnv } from '../shared/helpers';
-import i18n from '../shared/translations/i18n';
+import { tHtml } from '../shared/helpers/translate';
 
 export const DYNAMIC_ROUTE_RESOLVER_PATH = Object.freeze({
 	ALL_ROUTES: `*`,
@@ -32,13 +34,14 @@ export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 
 	'/klaar.json': `${getEnv('PROXY_URL')}/klaar/klaar.json`,
 	'/projecten/klaar': '/projecten/uitgeklaard',
+	'/beheer': '/admin',
 });
 
-export const GET_ERROR_MESSAGES: () => { [key: string]: string } = () => ({
-	DEPUBLISHED_PAGINA: i18n.t(
+export const GET_ERROR_MESSAGES: () => { [key: string]: ReactNode } = () => ({
+	DEPUBLISHED_PAGINA: tHtml(
 		'dynamic-route-resolver/dynamic-route-resolver___deze-pagina-is-niet-meer-beschikbaar'
 	),
-	DEPUBLISHED_EVENT_DETAIL: i18n.t(
+	DEPUBLISHED_EVENT_DETAIL: tHtml(
 		'dynamic-route-resolver/dynamic-route-resolver___dit-event-is-reeds-afgelopen-a-href-workshops-en-events-bekijk-al-onze-events-a'
 	),
 });

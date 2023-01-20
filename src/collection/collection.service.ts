@@ -1,55 +1,106 @@
-import { Avo } from '@viaa/avo2-types';
-import { CollectionLabelSchema } from '@viaa/avo2-types/types/collection';
-import { FetchResult } from 'apollo-link';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
 import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
 
-import { QualityCheckLabel } from '../admin/collectionsOrBundles/collections-or-bundles.types';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
-import { PermissionName, PermissionService } from '../authentication/helpers/permission-service';
-import { CustomError, getEnv, performQuery } from '../shared/helpers';
-import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
-import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
-import { isUuid } from '../shared/helpers/uuid';
-import { ApolloCacheManager, dataService, ToastService } from '../shared/services';
-import { REMOVE_COLLECTION_BOOKMARKS } from '../shared/services/bookmarks-views-plays-service';
-import { AppCollectionBookmark } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { RelationService } from '../shared/services/relation-service/relation.service';
-import { VideoStillService } from '../shared/services/video-stills-service';
-import i18n from '../shared/translations/i18n';
-
+import { PermissionService } from '../authentication/helpers/permission-service';
 import {
-	DELETE_COLLECTION_FRAGMENT,
-	DELETE_COLLECTION_LABELS,
-	DELETE_MARCOM_ENTRIES_BY_PARENT_COLLECTION_ID,
-	DELETE_MARCOM_ENTRY,
-	GET_BOOKMARKED_COLLECTIONS_BY_OWNER,
-	GET_BUNDLE_TITLES_BY_OWNER,
-	GET_BUNDLES_CONTAINING_COLLECTION,
-	GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
-	GET_COLLECTION_TITLES_BY_OWNER,
-	GET_COLLECTIONS_BY_FRAGMENT_ID,
-	GET_COLLECTIONS_BY_OWNER,
-	GET_MARCOM_ENTRIES,
-	GET_ORGANISATION_CONTENT,
-	GET_PUBLIC_COLLECTIONS,
-	GET_PUBLIC_COLLECTIONS_BY_ID,
-	GET_PUBLIC_COLLECTIONS_BY_TITLE,
-	GET_QUALITY_LABELS,
-	INSERT_COLLECTION,
-	INSERT_COLLECTION_FRAGMENTS,
-	INSERT_COLLECTION_LABELS,
-	INSERT_COLLECTION_MANAGEMENT_ENTRY,
-	INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
-	INSERT_MARCOM_ENTRY,
-	INSERT_MARCOM_NOTE,
-	SOFT_DELETE_COLLECTION,
-	UPDATE_COLLECTION,
-	UPDATE_COLLECTION_FRAGMENT,
-	UPDATE_COLLECTION_MANAGEMENT_ENTRY,
-	UPDATE_MARCOM_NOTE,
-} from './collection.gql';
+	App_Collection_Marcom_Log_Insert_Input,
+	DeleteCollectionBookmarksDocument,
+	DeleteCollectionBookmarksMutation,
+	DeleteCollectionBookmarksMutationVariables,
+	DeleteCollectionFragmentByIdDocument,
+	DeleteCollectionFragmentByIdMutation,
+	DeleteCollectionLabelsDocument,
+	DeleteCollectionLabelsMutation,
+	DeleteCollectionLabelsMutationVariables,
+	DeleteMarcomEntriesByParentCollectionIdDocument,
+	DeleteMarcomEntriesByParentCollectionIdMutation,
+	DeleteMarcomEntriesByParentCollectionIdMutationVariables,
+	DeleteMarcomEntryDocument,
+	DeleteMarcomEntryMutation,
+	DeleteMarcomEntryMutationVariables,
+	GetBookmarkedCollectionsByOwnerDocument,
+	GetBookmarkedCollectionsByOwnerQuery,
+	GetBookmarkedCollectionsByOwnerQueryVariables,
+	GetBundleTitlesByOwnerDocument,
+	GetBundleTitlesByOwnerQuery,
+	GetBundleTitlesByOwnerQueryVariables,
+	GetCollectionByTitleOrDescriptionDocument,
+	GetCollectionByTitleOrDescriptionQuery,
+	GetCollectionMarcomEntriesDocument,
+	GetCollectionMarcomEntriesQuery,
+	GetCollectionMarcomEntriesQueryVariables,
+	GetCollectionsByItemUuidDocument,
+	GetCollectionsByItemUuidQuery,
+	GetCollectionsByOwnerDocument,
+	GetCollectionsByOwnerQuery,
+	GetCollectionsByOwnerQueryVariables,
+	GetCollectionTitlesByOwnerDocument,
+	GetCollectionTitlesByOwnerQuery,
+	GetCollectionTitlesByOwnerQueryVariables,
+	GetOrganisationContentDocument,
+	GetOrganisationContentQuery,
+	GetOrganisationContentQueryVariables,
+	GetPublicCollectionsByIdDocument,
+	GetPublicCollectionsByIdQuery,
+	GetPublicCollectionsByIdQueryVariables,
+	GetPublicCollectionsByTitleDocument,
+	GetPublicCollectionsByTitleQuery,
+	GetPublicCollectionsByTitleQueryVariables,
+	GetPublicCollectionsDocument,
+	GetPublicCollectionsQuery,
+	GetPublishedBundlesContainingCollectionDocument,
+	GetPublishedBundlesContainingCollectionQuery,
+	GetQualityLabelsDocument,
+	GetQualityLabelsQuery,
+	InsertCollectionDocument,
+	InsertCollectionFragmentsDocument,
+	InsertCollectionFragmentsMutation,
+	InsertCollectionFragmentsMutationVariables,
+	InsertCollectionLabelsDocument,
+	InsertCollectionLabelsMutation,
+	InsertCollectionLabelsMutationVariables,
+	InsertCollectionManagementEntryDocument,
+	InsertCollectionManagementEntryMutation,
+	InsertCollectionManagementQualityCheckEntryDocument,
+	InsertCollectionManagementQualityCheckEntryMutation,
+	InsertCollectionManagementQualityCheckEntryMutationVariables,
+	InsertCollectionMutation,
+	InsertMarcomEntryDocument,
+	InsertMarcomEntryMutation,
+	InsertMarcomEntryMutationVariables,
+	InsertMarcomNoteDocument,
+	InsertMarcomNoteMutation,
+	InsertMarcomNoteMutationVariables,
+	Lookup_Enum_Collection_Management_Qc_Label_Enum,
+	Lookup_Enum_Relation_Types_Enum,
+	SoftDeleteCollectionByIdDocument,
+	SoftDeleteCollectionByIdMutation,
+	SoftDeleteCollectionByIdMutationVariables,
+	UpdateCollectionByIdDocument,
+	UpdateCollectionByIdMutation,
+	UpdateCollectionByIdMutationVariables,
+	UpdateCollectionFragmentByIdDocument,
+	UpdateCollectionFragmentByIdMutation,
+	UpdateCollectionFragmentByIdMutationVariables,
+	UpdateCollectionManagementEntryDocument,
+	UpdateCollectionManagementEntryMutation,
+	UpdateMarcomNoteDocument,
+	UpdateMarcomNoteMutation,
+} from '../shared/generated/graphql-db-types';
+import { CustomError, getEnv } from '../shared/helpers';
+import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
+import { tHtml } from '../shared/helpers/translate';
+import { isUuid } from '../shared/helpers/uuid';
+import { dataService } from '../shared/services/data-service';
+import { RelationService } from '../shared/services/relation-service/relation.service';
+import { ToastService } from '../shared/services/toast-service';
+import { VideoStillService } from '../shared/services/video-stills-service';
+
 import {
 	cleanCollectionBeforeSave,
 	getFragmentIdsFromCollection,
@@ -58,7 +109,7 @@ import {
 	getValidationErrorsForPublish,
 	keepCoreCollectionProperties,
 } from './collection.helpers';
-import { ContentTypeNumber, MarcomEntry, QualityLabel } from './collection.types';
+import { Collection, ContentTypeNumber, MarcomEntry, QualityLabel } from './collection.types';
 import { canManageEditorial } from './helpers/can-manage-editorial';
 
 export interface OrganisationContentItem {
@@ -94,26 +145,15 @@ export class CollectionService {
 			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 
 			// insert collection
-			const insertResponse: void | FetchResult<Avo.Collection.Collection> =
-				await dataService.mutate({
-					mutation: INSERT_COLLECTION,
-					variables: {
-						collection: cleanedCollection,
-					},
-					update: ApolloCacheManager.clearCollectionCache,
-				});
-
-			if (!insertResponse || insertResponse.errors) {
-				throw new CustomError('Failed to insert collection', null, {
-					insertResponse,
-				});
-			}
+			const insertResponse = await dataService.query<InsertCollectionMutation>({
+				query: InsertCollectionDocument,
+				variables: {
+					collection: cleanedCollection,
+				},
+			});
 
 			// retrieve inserted collection from response
-			const insertedCollection: Avo.Collection.Collection | null = get(
-				insertResponse,
-				'data.insert_app_collections.returning[0]'
-			);
+			const insertedCollection = insertResponse.insert_app_collections?.returning?.[0];
 
 			if (!insertedCollection || isNil(insertedCollection.id)) {
 				throw new CustomError('Failed to fetch inserted collection', null, {
@@ -129,7 +169,7 @@ export class CollectionService {
 			// insert fragments
 			if (fragments && fragments.length) {
 				newCollection.collection_fragments = await CollectionService.insertFragments(
-					newCollection.id,
+					newCollection.id as string,
 					fragments
 				);
 			}
@@ -144,8 +184,8 @@ export class CollectionService {
 
 	private static getLabels(
 		collection: Partial<Avo.Collection.Collection> | null
-	): CollectionLabelSchema[] {
-		return get(collection, 'collection_labels', []) as CollectionLabelSchema[];
+	): Avo.Collection.Label[] {
+		return get(collection, 'collection_labels', []) as Avo.Collection.Label[];
 	}
 
 	/**
@@ -168,7 +208,7 @@ export class CollectionService {
 			// abort if updatedCollection is empty
 			if (!updatedCollection) {
 				ToastService.danger(
-					i18n.t('collection/collection___de-huidige-collectie-is-niet-gevonden')
+					tHtml('collection/collection___de-huidige-collectie-is-niet-gevonden')
 				);
 				return null;
 			}
@@ -200,7 +240,7 @@ export class CollectionService {
 				}
 			);
 
-			// null should not default to to prevent defaulting of null, we don't use lodash's default value parameter
+			// null should not default to prevent defaulting of null, we don't use lodash's default value parameter
 			const initialFragmentIds: (number | string)[] =
 				getFragmentIdsFromCollection(initialCollection);
 			const currentFragmentIds: (number | string)[] =
@@ -227,10 +267,9 @@ export class CollectionService {
 
 			// delete fragments
 			const deletePromises = deleteFragmentIds.map((id: number | string) =>
-				dataService.mutate({
-					mutation: DELETE_COLLECTION_FRAGMENT,
+				dataService.query<DeleteCollectionFragmentByIdMutation>({
+					query: DeleteCollectionFragmentByIdDocument,
 					variables: { id },
-					update: ApolloCacheManager.clearCollectionCache,
 				})
 			);
 
@@ -246,7 +285,7 @@ export class CollectionService {
 
 					if (!fragmentToUpdate) {
 						ToastService.info(
-							i18n.t(
+							tHtml(
 								'collection/collection___kan-het-te-updaten-fragment-niet-vinden-id-id',
 								{ id }
 							)
@@ -260,13 +299,16 @@ export class CollectionService {
 					delete fragmentToUpdate.item_meta;
 					fragmentToUpdate.updated_at = new Date().toISOString();
 
-					return dataService.mutate({
-						mutation: UPDATE_COLLECTION_FRAGMENT,
-						variables: {
-							id,
-							fragment: fragmentToUpdate,
+					const variables: UpdateCollectionFragmentByIdMutationVariables = {
+						id: id as number,
+						fragment: {
+							...fragmentToUpdate,
+							id: fragmentToUpdate.id as number,
 						},
-						update: ApolloCacheManager.clearCollectionCache,
+					};
+					return dataService.query<UpdateCollectionFragmentByIdMutation>({
+						query: UpdateCollectionFragmentByIdDocument,
+						variables,
 					});
 				})
 			);
@@ -369,7 +411,7 @@ export class CollectionService {
 						null
 					),
 					note: get(updatedCollection, 'management.note', null),
-					updated_at: get(updatedCollection, 'management.updated_at', null),
+					updated_at: get(updatedCollection, 'management.updated_at', undefined),
 				});
 			} else if (
 				!!get(initialCollection, 'management') &&
@@ -389,7 +431,7 @@ export class CollectionService {
 						null
 					),
 					note: get(updatedCollection, 'management.note', null),
-					updated_at: get(updatedCollection, 'management.updated_at', null),
+					updated_at: get(updatedCollection, 'management.updated_at', undefined),
 				});
 			}
 
@@ -436,7 +478,7 @@ export class CollectionService {
 					equalLanguageCheckComment
 				) {
 					await CollectionService.createManagementQCEntry(collectionId, {
-						qc_label: 'TAALCHECK' as QualityCheckLabel,
+						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Taalcheck,
 						qc_status:
 							get(updatedCollection, 'management_language_check[0].qc_status') ??
 							null,
@@ -460,7 +502,7 @@ export class CollectionService {
 					equalLanguageCheckComment
 				) {
 					await CollectionService.createManagementQCEntry(collectionId, {
-						qc_label: 'KWALITEITSCHECK' as QualityCheckLabel,
+						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Kwaliteitscheck,
 						qc_status:
 							get(updatedCollection, 'management_quality_check[0].qc_status') ?? null,
 						assignee_profile_id: get(
@@ -475,7 +517,7 @@ export class CollectionService {
 				// Save approved_at entry when updated statuses are both OK and initial statuses are not both OK
 				if (initialApprovedStatus !== updatedApprovedStatus && updatedApprovedStatus) {
 					await CollectionService.createManagementQCEntry(collectionId, {
-						qc_label: 'EINDCHECK' as QualityCheckLabel,
+						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Eindcheck,
 						qc_status: null,
 						assignee_profile_id: get(
 							updatedCollection,
@@ -489,12 +531,15 @@ export class CollectionService {
 
 			const marcomNoteId = get(updatedCollection, 'marcom_note.id');
 			const marcomNoteText = get(updatedCollection, 'marcom_note.note');
-			if (!isNil(marcomNoteId)) {
-				// Already have note id => so we should update the note text
-				await CollectionService.updateMarcomNote(marcomNoteId, marcomNoteText);
-			} else if (marcomNoteText) {
-				// We don't have a note id, but do have a note, so we should do an insert
-				await CollectionService.insertMarcomNote(collectionId, marcomNoteText);
+
+			if (!isNil(marcomNoteText)) {
+				if (!isNil(marcomNoteId)) {
+					// Already have note id => so we should update the note text
+					await CollectionService.updateMarcomNote(marcomNoteId, marcomNoteText);
+				} else {
+					// We don't have a note id, but do have a note, so we should do an insert
+					await CollectionService.insertMarcomNote(collectionId, marcomNoteText);
+				}
 			}
 		} catch (err) {
 			throw new CustomError('Failed to save management data to the database', err, {
@@ -509,13 +554,12 @@ export class CollectionService {
 		managementData: Partial<Avo.Collection.Management>
 	) => {
 		try {
-			await dataService.mutate({
-				mutation: INSERT_COLLECTION_MANAGEMENT_ENTRY,
+			await dataService.query<InsertCollectionManagementEntryMutation>({
+				query: InsertCollectionManagementEntryDocument,
 				variables: {
 					...managementData,
 					collection_id: collectionId,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to create collection management entry', err, {
@@ -531,13 +575,12 @@ export class CollectionService {
 		managementData: Partial<Avo.Collection.Management>
 	) => {
 		try {
-			await dataService.mutate({
-				mutation: UPDATE_COLLECTION_MANAGEMENT_ENTRY,
+			await dataService.query<UpdateCollectionManagementEntryMutation>({
+				query: UpdateCollectionManagementEntryDocument,
 				variables: {
 					...managementData,
 					collection_id: collectionId,
 				},
-				update: ApolloCacheManager.clearCollectionCache,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update collection management entry', err, {
@@ -550,16 +593,16 @@ export class CollectionService {
 
 	private static createManagementQCEntry = async (
 		collectionId: string,
-		managementQCData: Partial<Avo.Collection.ManagementQualityCheck>
+		managementQCData: Partial<InsertCollectionManagementQualityCheckEntryMutationVariables>
 	) => {
 		try {
-			await dataService.mutate({
-				mutation: INSERT_COLLECTION_MANAGEMENT_QC_ENTRY,
-				variables: {
-					...managementQCData,
-					collection_id: collectionId,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
+			const variables: InsertCollectionManagementQualityCheckEntryMutationVariables = {
+				...managementQCData,
+				collection_id: collectionId,
+			};
+			await dataService.query<InsertCollectionManagementQualityCheckEntryMutation>({
+				query: InsertCollectionManagementQualityCheckEntryDocument,
+				variables,
 			});
 		} catch (err) {
 			throw new CustomError(
@@ -581,13 +624,13 @@ export class CollectionService {
 		try {
 			const dbCollection = cleanCollectionBeforeSave(collection);
 
-			await dataService.mutate({
-				mutation: UPDATE_COLLECTION,
-				variables: {
-					id,
-					collection: dbCollection,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
+			const variables: UpdateCollectionByIdMutationVariables = {
+				id,
+				collection: dbCollection,
+			};
+			await dataService.query<UpdateCollectionByIdMutation>({
+				query: UpdateCollectionByIdDocument,
+				variables,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update collection properties', err, {
@@ -607,18 +650,17 @@ export class CollectionService {
 		try {
 			// delete collection by id
 			await Promise.all([
-				dataService.mutate({
-					mutation: SOFT_DELETE_COLLECTION,
+				dataService.query<SoftDeleteCollectionByIdMutation>({
+					query: SoftDeleteCollectionByIdDocument,
 					variables: {
 						id: collectionId,
-					},
-					update: ApolloCacheManager.clearCollectionCache,
+					} as SoftDeleteCollectionByIdMutationVariables,
 				}),
-				dataService.mutate({
-					mutation: REMOVE_COLLECTION_BOOKMARKS,
+				dataService.query<DeleteCollectionBookmarksMutation>({
+					query: DeleteCollectionBookmarksDocument,
 					variables: {
 						id: collectionId,
-					},
+					} as DeleteCollectionBookmarksMutationVariables,
 				}),
 			]);
 		} catch (err) {
@@ -697,7 +739,7 @@ export class CollectionService {
 			await RelationService.insertRelation(
 				'collection',
 				duplicatedCollection.id,
-				'IS_COPY_OF',
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf,
 				collection.id
 			);
 
@@ -722,15 +764,15 @@ export class CollectionService {
 	static async fetchCollectionsOrBundles(
 		limit: number,
 		typeId: ContentTypeNumber
-	): Promise<Avo.Collection.Collection[]> {
+	): Promise<GetPublicCollectionsQuery['app_collections']> {
 		try {
 			// retrieve collections
-			const response = await dataService.query({
-				query: GET_PUBLIC_COLLECTIONS,
+			const response = await dataService.query<GetPublicCollectionsQuery>({
+				query: GetPublicCollectionsDocument,
 				variables: { limit, typeId },
 			});
 
-			return get(response, 'data.app_collections', []);
+			return response.app_collections || [];
 		} catch (err) {
 			throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_PUBLIC_COLLECTIONS',
@@ -740,24 +782,25 @@ export class CollectionService {
 	}
 
 	static async fetchOrganisationContent(
-		offset: number,
-		limit: number,
-		order: Record<string, 'asc' | 'desc'>,
+		offset: GetOrganisationContentQueryVariables['offset'],
+		limit: GetOrganisationContentQueryVariables['limit'],
+		order: GetOrganisationContentQueryVariables['order'],
 		companyId: string
 	): Promise<OrganisationContentItem[]> {
 		try {
 			// retrieve collections
-			const response = await dataService.query({
-				query: GET_ORGANISATION_CONTENT,
-				variables: {
-					offset,
-					limit,
-					order,
-					company_id: companyId,
-				},
+			const variables: GetOrganisationContentQueryVariables = {
+				offset,
+				limit,
+				order,
+				company_id: companyId,
+			};
+			const response = await dataService.query<GetOrganisationContentQuery>({
+				query: GetOrganisationContentDocument,
+				variables,
 			});
 
-			return get(response, 'data.app_collections', []);
+			return response.app_collections as OrganisationContentItem[];
 		} catch (err) {
 			throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_PUBLIC_COLLECTIONS',
@@ -770,31 +813,30 @@ export class CollectionService {
 		isCollection: boolean,
 		titleOrId: string,
 		limit: number
-	): Promise<Avo.Collection.Collection[]> {
+	): Promise<Collection[]> {
 		try {
 			const isUuidFormat = isUuid(titleOrId);
-			const variables: any = {
+			const variables: Partial<
+				GetPublicCollectionsByIdQueryVariables | GetPublicCollectionsByTitleQueryVariables
+			> = {
 				limit,
 				typeId: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
 			};
 			if (isUuidFormat) {
-				variables.id = titleOrId;
+				(variables as GetPublicCollectionsByIdQueryVariables).id = titleOrId;
 			} else {
-				variables.title = `%${titleOrId}%`;
+				(variables as GetPublicCollectionsByTitleQueryVariables).title = `%${titleOrId}%`;
 			}
 
-			return (
-				(await performQuery(
-					{
-						variables,
-						query: isUuidFormat
-							? GET_PUBLIC_COLLECTIONS_BY_ID
-							: GET_PUBLIC_COLLECTIONS_BY_TITLE,
-					},
-					'data.app_collections',
-					'Failed to retrieve items by title or external id.'
-				)) || []
-			);
+			const response = await dataService.query<
+				GetPublicCollectionsByIdQuery | GetPublicCollectionsByTitleQuery
+			>({
+				query: isUuidFormat
+					? GetPublicCollectionsByIdDocument
+					: GetPublicCollectionsByTitleDocument,
+				variables,
+			});
+			return response.app_collections;
 		} catch (err) {
 			throw new CustomError('Failed to fetch collections or bundles', err, {
 				query: 'GET_PUBLIC_COLLECTIONS_BY_ID or GET_PUBLIC_COLLECTIONS_BY_TITLE',
@@ -814,7 +856,7 @@ export class CollectionService {
 	static async fetchCollectionsByTitleOrId(
 		titleOrId: string,
 		limit: number
-	): Promise<Avo.Collection.Collection[]> {
+	): Promise<Collection[]> {
 		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(true, titleOrId, limit);
 	}
 
@@ -826,24 +868,17 @@ export class CollectionService {
 	 *
 	 * @returns Bundles limited by `limit`, found using the `title` wildcarded keyword.
 	 */
-	static async fetchBundlesByTitleOrId(
-		titleOrId: string,
-		limit: number
-	): Promise<Avo.Collection.Collection[]> {
+	static async fetchBundlesByTitleOrId(titleOrId: string, limit: number): Promise<Collection[]> {
 		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(false, titleOrId, limit);
 	}
 
 	static async fetchQualityLabels(): Promise<QualityLabel[]> {
 		try {
-			const response = await dataService.query({
-				query: GET_QUALITY_LABELS,
+			const response = await dataService.query<GetQualityLabelsQuery>({
+				query: GetQualityLabelsDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response contains errors', null, { response });
-			}
-
-			return get(response, 'data.lookup_enum_collection_labels', []);
+			return response.lookup_enum_collection_labels as QualityLabel[];
 		} catch (err) {
 			throw new CustomError('Failed to get quality labels', err, {
 				query: 'GET_QUALITY_LABELS',
@@ -863,21 +898,23 @@ export class CollectionService {
 		type: 'collection' | 'bundle',
 		user: Avo.User.User | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
-		let queryInfo: any;
-
 		try {
 			// retrieve collections or bundles according to given type and user
-			queryInfo = {
+			const variables:
+				| GetCollectionTitlesByOwnerQueryVariables
+				| GetBundleTitlesByOwnerQueryVariables = { owner_profile_id: getProfileId(user) };
+
+			const response = await dataService.query<
+				GetCollectionTitlesByOwnerQuery | GetBundleTitlesByOwnerQuery
+			>({
 				query:
 					type === 'collection'
-						? GET_COLLECTION_TITLES_BY_OWNER
-						: GET_BUNDLE_TITLES_BY_OWNER,
-				variables: { owner_profile_id: getProfileId(user) },
-			};
+						? GetCollectionTitlesByOwnerDocument
+						: GetBundleTitlesByOwnerDocument,
+				variables,
+			});
 
-			const response = await dataService.query(queryInfo);
-
-			return get(response, 'data.app_collections', []);
+			return response.app_collections;
 		} catch (err) {
 			throw new CustomError('Failed to fetch existing bundle titles by owner', err, {
 				user,
@@ -895,10 +932,6 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
-	 * @param assignmentUuid Collection can be fetched if it's not and you're not the owner,
-	 *        but if it is linked to an assignment that you're trying to view
-	 *
-	 * @param includeFragments
 	 * @returns Collection or bundle.
 	 */
 	public static async fetchCollectionOrBundleById(
@@ -906,31 +939,12 @@ export class CollectionService {
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | null> {
 		try {
-			const response = await fetchWithLogout(
+			return fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
 					id: collectionId,
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
+				})}`
 			);
-			if (response.status === 404) {
-				return null;
-			}
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError('invalid status code', null, {
-					collectionId,
-					type,
-					response,
-					statusCode: response.status,
-				});
-			}
-			return await response.json();
 		} catch (err) {
 			if (JSON.stringify(err).includes('COLLECTION_NOT_FOUND')) {
 				return null;
@@ -945,23 +959,12 @@ export class CollectionService {
 	static async getPublishedBundlesContainingCollection(
 		id: string
 	): Promise<Avo.Collection.Collection[]> {
-		const response = await dataService.query({
-			query: GET_BUNDLES_CONTAINING_COLLECTION,
+		const response = await dataService.query<GetPublishedBundlesContainingCollectionQuery>({
+			query: GetPublishedBundlesContainingCollectionDocument,
 			variables: { id },
 		});
 
-		if (response.errors) {
-			throw new CustomError(
-				`Failed to  get bundles from database because of graphql errors`,
-				null,
-				{
-					collectionId: id,
-					errors: response.errors,
-				}
-			);
-		}
-
-		return get(response, 'data.app_collections', []);
+		return response.app_collections as Avo.Collection.Collection[];
 	}
 
 	static async insertFragments(
@@ -970,34 +973,31 @@ export class CollectionService {
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
 			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
-				fragment.collection_uuid = collectionId;
-
-				delete fragment.id;
 				delete (fragment as any).__typename;
 				delete fragment.item_meta;
 
-				return fragment;
+				return {
+					...fragment,
+					collection_uuid: collectionId,
+					id: undefined,
+				};
 			});
 
-			const response = await dataService.mutate({
-				mutation: INSERT_COLLECTION_FRAGMENTS,
-				variables: {
-					fragments: cleanedFragments,
-				},
-				update: ApolloCacheManager.clearCollectionCache,
+			const variables: InsertCollectionFragmentsMutationVariables = {
+				fragments: cleanedFragments,
+			};
+			const response = await dataService.query<InsertCollectionFragmentsMutation>({
+				query: InsertCollectionFragmentsDocument,
+				variables,
 			});
 
-			if (response.errors) {
-				throw new CustomError('Response contains graphql errors', null, { response });
-			}
-
-			const fragmentIds = get(response, 'data.insert_app_collection_fragments.returning');
+			const fragmentIds = response.insert_app_collection_fragments?.returning;
 			if (!fragmentIds) {
 				throw new CustomError('Response does not contain any fragment ids', null, {
 					response,
 				});
 			}
-			get(response, 'data.insert_app_collection_fragments.returning', []).forEach(
+			(response.insert_app_collection_fragments?.returning ?? []).forEach(
 				(f: { id: number }, index: number) => {
 					fragments[index].id = f.id;
 				}
@@ -1037,10 +1037,10 @@ export class CollectionService {
 			console.error(customError);
 
 			ToastService.danger([
-				i18n.t(
+				tHtml(
 					'collection/collection___het-ophalen-van-de-eerste-video-thumbnail-is-mislukt'
 				),
-				i18n.t(
+				tHtml(
 					'collection/collection___de-collectie-zal-opgeslagen-worden-zonder-thumbnail'
 				),
 			]);
@@ -1051,7 +1051,7 @@ export class CollectionService {
 
 	/**
 	 * Find name that isn't a duplicate of an existing name of a collection of this user
-	 * eg if these collections exist:
+	 * e.g. if these collections exist:
 	 * copy 1: test
 	 * copy 2: test
 	 * copy 4: test
@@ -1089,7 +1089,7 @@ export class CollectionService {
 	};
 
 	static async addLabelsToCollection(collectionId: string, labels: string[]): Promise<void> {
-		let variables: any;
+		let variables: InsertCollectionLabelsMutationVariables | undefined = undefined;
 		try {
 			variables = {
 				objects: labels.map((label) => ({
@@ -1097,14 +1097,10 @@ export class CollectionService {
 					collection_uuid: collectionId,
 				})),
 			};
-			const response = await dataService.mutate({
+			await dataService.query<InsertCollectionLabelsMutation>({
+				query: InsertCollectionLabelsDocument,
 				variables,
-				mutation: INSERT_COLLECTION_LABELS,
-				update: ApolloCacheManager.clearCollectionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to insert collection labels in the database', err, {
 				variables,
@@ -1114,20 +1110,16 @@ export class CollectionService {
 	}
 
 	static async deleteLabelsFromCollection(collectionId: string, labels: string[]): Promise<void> {
-		let variables: any;
+		let variables: DeleteCollectionLabelsMutationVariables | undefined = undefined;
 		try {
 			variables = {
 				collectionId,
 				labels,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<DeleteCollectionLabelsMutation>({
+				query: DeleteCollectionLabelsDocument,
 				variables,
-				mutation: DELETE_COLLECTION_LABELS,
-				update: ApolloCacheManager.clearCollectionCache,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete collection labels from the database', err, {
 				variables,
@@ -1136,6 +1128,7 @@ export class CollectionService {
 		}
 	}
 
+	// TODO investigate why this isn't used anymore
 	static async getCollectionLabels(): Promise<{ [id: string]: string }> {
 		try {
 			if (!CollectionService.collectionLabels) {
@@ -1167,23 +1160,15 @@ export class CollectionService {
 		typeId: ContentTypeNumber
 	): Promise<{ byTitle: boolean; byDescription: boolean }> {
 		try {
-			const response = await dataService.query({
-				query: GET_COLLECTION_BY_TITLE_OR_DESCRIPTION,
+			const response = await dataService.query<GetCollectionByTitleOrDescriptionQuery>({
+				query: GetCollectionByTitleOrDescriptionDocument,
 				variables: { title, description, collectionId, typeId },
 			});
 
-			if (response.errors) {
-				throw new CustomError('response contains graphql errors', null, { response });
-			}
+			const collectionWithSameTitleExists = !!(response.collectionByTitle || []).length;
 
-			const collectionWithSameTitleExists = !!get(response, 'data.collectionByTitle', [])
+			const collectionWithSameDescriptionExists = !!(response.collectionByDescription || [])
 				.length;
-
-			const collectionWithSameDescriptionExists = !!get(
-				response,
-				'data.collectionByDescription',
-				[]
-			).length;
 
 			return {
 				byTitle: collectionWithSameTitleExists,
@@ -1207,19 +1192,15 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection[]> {
 		try {
 			// retrieve collections
-			const response = await dataService.query({
-				query: GET_COLLECTIONS_BY_FRAGMENT_ID,
+			const response = await dataService.query<GetCollectionsByItemUuidQuery>({
+				query: GetCollectionsByItemUuidDocument,
 				variables: { fragmentId },
 			});
 
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_collections', []);
+			return response.app_collections as Avo.Collection.Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
-				query: 'GET_COLLECTIONS_BY_FRAGMENT_ID',
+				query: 'GET_COLLECTIONS_BY_ITEM_UUID',
 				variables: { fragmentId },
 			});
 		}
@@ -1233,7 +1214,7 @@ export class CollectionService {
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined
 	): Promise<Avo.Collection.Collection[]> {
-		let variables: any;
+		let variables: GetCollectionsByOwnerQueryVariables | null = null;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
 			const filterArray: any[] = [];
@@ -1250,16 +1231,12 @@ export class CollectionService {
 				owner_profile_id: getProfileId(user),
 				where: filterArray.length ? filterArray : {},
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<GetCollectionsByOwnerQuery>({
+				query: GetCollectionsByOwnerDocument,
 				variables,
-				query: GET_COLLECTIONS_BY_OWNER,
 			});
 
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_collections', []);
+			return response.app_collections as unknown as Avo.Collection.Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
@@ -1272,13 +1249,13 @@ export class CollectionService {
 		user: Avo.User.User,
 		offset: number,
 		limit: number | null,
-		order: unknown,
+		order: GetBookmarkedCollectionsByOwnerQueryVariables['order'],
 		filterString: string | undefined
 	): Promise<Avo.Collection.Collection[]> {
-		let variables: any;
+		let variables: GetBookmarkedCollectionsByOwnerQueryVariables | undefined = undefined;
 		try {
 			const trimmedFilterString = filterString?.trim();
-			const filterArray: any[] = [];
+			const filterArray: GetBookmarkedCollectionsByOwnerQueryVariables['where'] = [];
 			if (trimmedFilterString) {
 				filterArray.push({
 					bookmarkedCollection: { title: { _ilike: `%${trimmedFilterString}%` } },
@@ -1291,18 +1268,12 @@ export class CollectionService {
 				owner_profile_id: getProfileId(user),
 				where: filterArray.length ? filterArray : {},
 			};
-			const response = await dataService.query<{
-				app_collection_bookmarks: { bookmarkedCollection: AppCollectionBookmark }[];
-			}>({
+			const response = await dataService.query<GetBookmarkedCollectionsByOwnerQuery>({
+				query: GetBookmarkedCollectionsByOwnerDocument,
 				variables,
-				query: GET_BOOKMARKED_COLLECTIONS_BY_OWNER,
 			});
 
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
-
-			const bookmarks = response?.data?.app_collection_bookmarks || [];
+			const bookmarks = response?.app_collection_bookmarks || [];
 			return compact(bookmarks.map((bookmark: any) => bookmark.bookmarkedCollection)); // bookmarkedCollection can sometimes be null apparently
 		} catch (err) {
 			throw new CustomError('Fetch bookmarked collections by owner failed', err, {
@@ -1314,28 +1285,13 @@ export class CollectionService {
 
 	static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
 		try {
-			const response = await fetchWithLogout(
+			const json = await fetchWithLogoutJson<{ uuid: string } | null>(
 				`${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify({
 					id: avo1Id,
-				})}`,
-				{
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					credentials: 'include',
-				}
+				})}`
 			);
-			if (response.status < 200 || response.status >= 400) {
-				throw new CustomError(
-					'Failed to get external_id from /collections/fetch-uuid-by-avo1-id',
-					null,
-					{
-						response,
-					}
-				);
-			}
-			return get(await response.json(), 'uuid') || null;
+
+			return json?.uuid || null;
 		} catch (err) {
 			throw new CustomError('Failed to get collection or bundle uuid by avo1 id', err, {
 				avo1Id,
@@ -1344,22 +1300,17 @@ export class CollectionService {
 	}
 
 	static async getMarcomEntries(collectionUuid: string): Promise<MarcomEntry[]> {
-		let variables: any;
+		let variables: GetCollectionMarcomEntriesQueryVariables | undefined = undefined;
 		try {
 			variables = {
 				collectionUuid,
 			};
-			const response = await dataService.query({
+			const response = await dataService.query<GetCollectionMarcomEntriesQuery>({
+				query: GetCollectionMarcomEntriesDocument,
 				variables,
-				query: GET_MARCOM_ENTRIES,
-				fetchPolicy: 'no-cache',
 			});
 
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
-
-			return get(response, 'data.app_collection_marcom_log', []);
+			return response.app_collection_marcom_log || [];
 		} catch (err) {
 			throw new CustomError(
 				'Fetch collections marcom entries from the database failed',
@@ -1372,20 +1323,18 @@ export class CollectionService {
 		}
 	}
 
-	static async insertMarcomEntry(marcomEntries: Partial<MarcomEntry>[]): Promise<void> {
-		let variables: any;
+	static async insertMarcomEntry(
+		marcomEntries: App_Collection_Marcom_Log_Insert_Input[]
+	): Promise<void> {
+		let variables: InsertMarcomEntryMutationVariables | undefined = undefined;
 		try {
 			variables = {
 				objects: marcomEntries,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<InsertMarcomEntryMutation>({
+				query: InsertMarcomEntryDocument,
 				variables,
-				mutation: INSERT_MARCOM_ENTRY,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to insert marcom entry into the database', err, {
 				variables,
@@ -1397,7 +1346,7 @@ export class CollectionService {
 	static async insertMarcomEntriesForBundleCollections(
 		parentCollectionId: string,
 		collectionIds: string[],
-		marcomEntry: Partial<MarcomEntry>
+		marcomEntry: App_Collection_Marcom_Log_Insert_Input
 	): Promise<void> {
 		const allEntries = collectionIds.map((collectionId) => ({
 			...marcomEntry,
@@ -1408,18 +1357,15 @@ export class CollectionService {
 		await this.insertMarcomEntry(allEntries);
 	}
 
-	static async deleteMarcomEntryById(id: string): Promise<void> {
+	static async deleteMarcomEntryById(id: number): Promise<void> {
 		try {
-			const response = await dataService.mutate({
-				variables: {
-					id,
-				},
-				mutation: DELETE_MARCOM_ENTRY,
+			const variables: DeleteMarcomEntryMutationVariables = {
+				id,
+			};
+			await dataService.query<DeleteMarcomEntryMutation>({
+				query: DeleteMarcomEntryDocument,
+				variables,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete marcom entry from the database', err, {
 				id,
@@ -1433,20 +1379,17 @@ export class CollectionService {
 			if (!marcomEntry.publish_date) {
 				return; // Can't delete entries without a date
 			}
-			const response = await dataService.mutate({
-				variables: {
-					parentCollectionId: marcomEntry.collection_id,
-					channelName: marcomEntry.channel_name,
-					channelType: marcomEntry.channel_type,
-					publishDateGte: startOfDay(new Date(marcomEntry.publish_date)),
-					publishDateLte: endOfDay(new Date(marcomEntry.publish_date)),
-				},
-				mutation: DELETE_MARCOM_ENTRIES_BY_PARENT_COLLECTION_ID,
+			const variables: DeleteMarcomEntriesByParentCollectionIdMutationVariables = {
+				parentCollectionId: marcomEntry.collection_id,
+				channelName: marcomEntry.channel_name,
+				channelType: marcomEntry.channel_type,
+				publishDateGte: startOfDay(new Date(marcomEntry.publish_date)),
+				publishDateLte: endOfDay(new Date(marcomEntry.publish_date)),
+			};
+			await dataService.query<DeleteMarcomEntriesByParentCollectionIdMutation>({
+				query: DeleteMarcomEntriesByParentCollectionIdDocument,
+				variables,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError(
 				'Failed to delete marcom entries by parent collection uuid from the database',
@@ -1459,27 +1402,23 @@ export class CollectionService {
 		}
 	}
 
-	static async insertMarcomNote(collectionId: string, note: string): Promise<number> {
-		let variables: any;
+	static async insertMarcomNote(collectionId: string, note: string): Promise<number | undefined> {
+		let variables: InsertMarcomNoteMutationVariables | null = null;
 		try {
 			variables = {
 				collectionId,
 				note,
 			};
-			const response = await dataService.mutate({
+			const response = await dataService.query<InsertMarcomNoteMutation>({
 				variables,
-				mutation: INSERT_MARCOM_NOTE,
+				query: InsertMarcomNoteDocument,
 			});
 
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
-
-			return get(response, 'insert_app_collection_marcom_notes.returning.id');
+			return response?.insert_app_collection_marcom_notes?.returning?.[0]?.id;
 		} catch (err) {
 			throw new CustomError('Failed to insert marcom note into the database', err, {
-				variables,
 				query: 'INSERT_MARCOM_NOTE',
+				variables,
 			});
 		}
 	}
@@ -1491,14 +1430,10 @@ export class CollectionService {
 				id,
 				note,
 			};
-			const response = await dataService.mutate({
+			await dataService.query<UpdateMarcomNoteMutation>({
 				variables,
-				mutation: UPDATE_MARCOM_NOTE,
+				query: UpdateMarcomNoteDocument,
 			});
-
-			if (response.errors) {
-				throw new CustomError('graphql response contains errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to update marcom note in the database', err, {
 				variables,

@@ -1,0 +1,70 @@
+query getContentCountsForUsers($profileIds: [uuid!]!) {
+	publicCollections: app_collections_aggregate(
+		where: {
+			profile: { id: { _in: $profileIds } }
+			is_public: { _eq: true }
+			is_deleted: { _eq: false }
+		}
+	) {
+		aggregate {
+			count
+		}
+	}
+	publicContentPages: app_content_aggregate(
+		where: {
+			user_profile_id: { _in: $profileIds }
+			is_public: { _eq: true }
+			is_deleted: { _eq: false }
+		}
+	) {
+		aggregate {
+			count
+		}
+	}
+	privateCollections: app_collections_aggregate(
+		where: {
+			profile: { id: { _in: $profileIds } }
+			is_public: { _eq: false }
+			is_deleted: { _eq: false }
+		}
+	) {
+		aggregate {
+			count
+		}
+	}
+	assignments: app_assignments_v2_aggregate(
+		where: { owner_profile_id: { _in: $profileIds }, is_deleted: { _eq: false } }
+	) {
+		aggregate {
+			count
+		}
+	}
+	collectionBookmarks: app_collection_bookmarks_aggregate(
+		where: { profile_id: { _in: $profileIds } }
+	) {
+		aggregate {
+			count
+		}
+	}
+	itemBookmarks: app_item_bookmarks_aggregate(where: { profile_id: { _in: $profileIds } }) {
+		aggregate {
+			count
+		}
+	}
+	privateContentPages: app_content_aggregate(
+		where: {
+			user_profile_id: { _in: $profileIds }
+			is_public: { _eq: false }
+			is_deleted: { _eq: false }
+		}
+	) {
+		aggregate {
+			count
+		}
+	}
+	quickLanes: app_quick_lanes_aggregate(where: { owner_profile_id: { _in: $profileIds } }) {
+		aggregate {
+			count
+		}
+	}
+}

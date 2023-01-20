@@ -7,21 +7,22 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, ReactText, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import { buildLink } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ToastService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { ToastService } from '../../shared/services/toast-service';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { Account, Email, Notifications, Profile } from '../components';
 import LinkedAccounts from '../components/LinkedAccounts';
@@ -37,7 +38,7 @@ import {
 type ForPupilsProps = DefaultSecureRouteProps<{ tabId: string }>;
 
 const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [activeTab, setActiveTab] = useState<SettingsTab>(
 		(props.match.params.tabId as SettingsTab) || PROFILE_ID
@@ -53,7 +54,9 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 	});
 
 	const getTabHeaders = () => {
-		const tabHeaders = [generateTabHeader(PROFILE_ID, t('settings/views/settings___profiel'))];
+		const tabHeaders = [
+			generateTabHeader(PROFILE_ID, tText('settings/views/settings___profiel')),
+		];
 
 		// Only pupils with an archief account can view the account tab
 		if (
@@ -62,20 +65,22 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 				(idpMap: Avo.Auth.IdpType) => idpMap === 'HETARCHIEF'
 			)
 		) {
-			tabHeaders.push(generateTabHeader(ACCOUNT_ID, t('settings/views/settings___account')));
+			tabHeaders.push(
+				generateTabHeader(ACCOUNT_ID, tText('settings/views/settings___account'))
+			);
 		}
 
 		tabHeaders.push(
-			generateTabHeader(LINKED_ACCOUNTS, t('settings/views/settings___koppelingen'))
+			generateTabHeader(LINKED_ACCOUNTS, tText('settings/views/settings___koppelingen'))
 		);
 
 		if (PermissionService.hasPerm(props.user, PermissionName.VIEW_NEWSLETTERS_PAGE)) {
 			tabHeaders.push(
-				generateTabHeader(EMAIL_ID, t('settings/views/settings___e-mail-voorkeuren'))
+				generateTabHeader(EMAIL_ID, tText('settings/views/settings___e-mail-voorkeuren'))
 			);
 		}
 		if (PermissionService.hasPerm(props.user, PermissionName.VIEW_NOTIFICATIONS_PAGE)) {
-			generateTabHeader(NOTIFICATIONS_ID, t('settings/views/settings___notifications'));
+			generateTabHeader(NOTIFICATIONS_ID, tText('settings/views/settings___notifications'));
 		}
 
 		return tabHeaders;
@@ -108,7 +113,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 		let tab = tabContents[activeTab];
 		if (!tab) {
 			ToastService.danger(
-				t('settings/views/settings___het-instellingen-tab-active-tab-bestaat-niet', {
+				tHtml('settings/views/settings___het-instellingen-tab-active-tab-bestaat-niet', {
 					activeTab,
 				})
 			);
@@ -146,9 +151,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 					<Toolbar>
 						<ToolbarLeft>
 							<BlockHeading type="h2" className="u-m-0">
-								<Trans i18nKey="settings/views/settings___instellingen">
-									Instellingen
-								</Trans>
+								{tHtml('settings/views/settings___instellingen')}
 							</BlockHeading>
 						</ToolbarLeft>
 						<ToolbarRight>
