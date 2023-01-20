@@ -5,7 +5,7 @@ import React, { FC, ReactNode } from 'react';
 import { FilterState } from '../../../search/search.types';
 import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
-import { WYSIWYG_OPTIONS_AUTHOR } from '../../../shared/constants';
+import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -149,7 +149,7 @@ export const AssignmentBlockEditItem: FC<
 								'assignment/views/assignment-edit___beschrijving-fragment'
 							),
 							initialHtml: convertToHtml(description),
-							controls: WYSIWYG_OPTIONS_AUTHOR,
+							controls: RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 							enabledHeadings: ['h3', 'h4', 'normal'],
 							disabled:
 								editableBlock.editMode ===

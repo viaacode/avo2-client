@@ -1,13 +1,11 @@
 import { fetchWithLogout, fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
-import queryString from 'query-string';
+import queryString, { stringifyUrl } from 'query-string';
 
 import {
 	DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
 	DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
-	FetchItemUuidByExternalIdDocument,
-	FetchItemUuidByExternalIdQuery,
 	GetDistinctSeriesDocument,
 	GetDistinctSeriesQuery,
 	GetItemByUuidDocument,
@@ -366,17 +364,21 @@ export class ItemsService {
 
 	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
 		try {
-			const response = await dataService.query<FetchItemUuidByExternalIdQuery>({
-				query: FetchItemUuidByExternalIdDocument,
-				variables: { externalId },
-			});
-
-			return response?.app_item_meta?.[0]?.uid || null;
-		} catch (err) {
-			throw new CustomError(
-				'Failed to fetch item uuid by external id (FETCH_ITEM_UUID_BY_EXTERNAL_ID)',
-				err
+			return (
+				(await fetchWithLogoutJson<string | null>(
+					stringifyUrl({
+						url: `${getEnv('PROXY_URL')}/items/ids`,
+						query: {
+							externalId,
+						},
+					})
+				)) || null
 			);
+		} catch (err) {
+			throw new CustomError('Failed to fetch item uuid by external id', err, {
+				externalId,
+				url: '/items/ids',
+			});
 		}
 	}
 

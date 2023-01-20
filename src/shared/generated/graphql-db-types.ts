@@ -43031,13 +43031,6 @@ export type DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables = E
 
 export type DeleteItemFromCollectionBookmarksAndAssignmentsMutation = { __typename?: 'mutation_root', delete_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
 
-export type FetchItemUuidByExternalIdQueryVariables = Exact<{
-  externalId: Scalars['bpchar'];
-}>;
-
-
-export type FetchItemUuidByExternalIdQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', uid: any, is_published?: boolean | null, is_deleted?: boolean | null }> };
-
 export type GetDistinctSeriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -43157,47 +43150,6 @@ export type UpdateItemPublishedStateMutationVariables = Exact<{
 
 
 export type UpdateItemPublishedStateMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
-
-export type DeleteMenuItemByIdMutationVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type DeleteMenuItemByIdMutation = { __typename?: 'mutation_root', delete_app_content_nav_elements?: { __typename?: 'app_content_nav_elements_mutation_response', affected_rows: number } | null };
-
-export type GetMenuItemByIdQueryVariables = Exact<{
-  id: Scalars['Int'];
-}>;
-
-
-export type GetMenuItemByIdQuery = { __typename?: 'query_root', app_content_nav_elements: Array<{ __typename?: 'app_content_nav_elements', id: number, created_at: any, description?: string | null, user_group_ids?: any | null, icon_name: string, label: string, link_target?: string | null, placement: string, position: number, updated_at: any, content_type: string, content_path: string, tooltip?: string | null }> };
-
-export type GetMenuItemsByPlacementQueryVariables = Exact<{
-  placement: Scalars['String'];
-}>;
-
-
-export type GetMenuItemsByPlacementQuery = { __typename?: 'query_root', app_content_nav_elements: Array<{ __typename?: 'app_content_nav_elements', id: number, created_at: any, description?: string | null, user_group_ids?: any | null, icon_name: string, label: string, link_target?: string | null, placement: string, position: number, updated_at: any, content_type: string, content_path: string, tooltip?: string | null }> };
-
-export type GetMenusQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetMenusQuery = { __typename?: 'query_root', app_content_nav_elements: Array<{ __typename?: 'app_content_nav_elements', id: number, description?: string | null, placement: string, tooltip?: string | null }> };
-
-export type InsertMenuItemMutationVariables = Exact<{
-  menuItem: App_Content_Nav_Elements_Insert_Input;
-}>;
-
-
-export type InsertMenuItemMutation = { __typename?: 'mutation_root', insert_app_content_nav_elements?: { __typename?: 'app_content_nav_elements_mutation_response', returning: Array<{ __typename?: 'app_content_nav_elements', id: number }> } | null };
-
-export type UpdateMenuItemByIdMutationVariables = Exact<{
-  id: Scalars['Int'];
-  menuItem: App_Content_Nav_Elements_Set_Input;
-}>;
-
-
-export type UpdateMenuItemByIdMutation = { __typename?: 'mutation_root', update_app_content_nav_elements?: { __typename?: 'app_content_nav_elements_mutation_response', affected_rows: number } | null };
 
 export type GetTranslationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -44766,27 +44718,6 @@ export const useDeleteItemFromCollectionBookmarksAndAssignmentsMutation = <
       (variables?: DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables) => fetchData<DeleteItemFromCollectionBookmarksAndAssignmentsMutation, DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables>(DeleteItemFromCollectionBookmarksAndAssignmentsDocument, variables)(),
       options
     );
-export const FetchItemUuidByExternalIdDocument = `
-    query fetchItemUuidByExternalId($externalId: bpchar!) {
-  app_item_meta(where: {external_id: {_eq: $externalId}}) {
-    uid
-    is_published
-    is_deleted
-  }
-}
-    `;
-export const useFetchItemUuidByExternalIdQuery = <
-      TData = FetchItemUuidByExternalIdQuery,
-      TError = unknown
-    >(
-      variables: FetchItemUuidByExternalIdQueryVariables,
-      options?: UseQueryOptions<FetchItemUuidByExternalIdQuery, TError, TData>
-    ) =>
-    useQuery<FetchItemUuidByExternalIdQuery, TError, TData>(
-      ['fetchItemUuidByExternalId', variables],
-      fetchData<FetchItemUuidByExternalIdQuery, FetchItemUuidByExternalIdQueryVariables>(FetchItemUuidByExternalIdDocument, variables),
-      options
-    );
 export const GetDistinctSeriesDocument = `
     query getDistinctSeries {
   app_item_meta(distinct_on: series, where: {series: {_is_null: false}}) {
@@ -45295,143 +45226,6 @@ export const useUpdateItemPublishedStateMutation = <
     useMutation<UpdateItemPublishedStateMutation, TError, UpdateItemPublishedStateMutationVariables, TContext>(
       ['updateItemPublishedState'],
       (variables?: UpdateItemPublishedStateMutationVariables) => fetchData<UpdateItemPublishedStateMutation, UpdateItemPublishedStateMutationVariables>(UpdateItemPublishedStateDocument, variables)(),
-      options
-    );
-export const DeleteMenuItemByIdDocument = `
-    mutation deleteMenuItemById($id: Int!) {
-  delete_app_content_nav_elements(where: {id: {_eq: $id}}) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteMenuItemByIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteMenuItemByIdMutation, TError, DeleteMenuItemByIdMutationVariables, TContext>) =>
-    useMutation<DeleteMenuItemByIdMutation, TError, DeleteMenuItemByIdMutationVariables, TContext>(
-      ['deleteMenuItemById'],
-      (variables?: DeleteMenuItemByIdMutationVariables) => fetchData<DeleteMenuItemByIdMutation, DeleteMenuItemByIdMutationVariables>(DeleteMenuItemByIdDocument, variables)(),
-      options
-    );
-export const GetMenuItemByIdDocument = `
-    query getMenuItemById($id: Int!) {
-  app_content_nav_elements(where: {id: {_eq: $id}}) {
-    id
-    created_at
-    description
-    user_group_ids
-    icon_name
-    label
-    link_target
-    placement
-    position
-    updated_at
-    content_type
-    content_path
-    tooltip
-  }
-}
-    `;
-export const useGetMenuItemByIdQuery = <
-      TData = GetMenuItemByIdQuery,
-      TError = unknown
-    >(
-      variables: GetMenuItemByIdQueryVariables,
-      options?: UseQueryOptions<GetMenuItemByIdQuery, TError, TData>
-    ) =>
-    useQuery<GetMenuItemByIdQuery, TError, TData>(
-      ['getMenuItemById', variables],
-      fetchData<GetMenuItemByIdQuery, GetMenuItemByIdQueryVariables>(GetMenuItemByIdDocument, variables),
-      options
-    );
-export const GetMenuItemsByPlacementDocument = `
-    query getMenuItemsByPlacement($placement: String!) {
-  app_content_nav_elements(
-    order_by: {position: asc}
-    where: {placement: {_eq: $placement}}
-  ) {
-    id
-    created_at
-    description
-    user_group_ids
-    icon_name
-    label
-    link_target
-    placement
-    position
-    updated_at
-    content_type
-    content_path
-    tooltip
-  }
-}
-    `;
-export const useGetMenuItemsByPlacementQuery = <
-      TData = GetMenuItemsByPlacementQuery,
-      TError = unknown
-    >(
-      variables: GetMenuItemsByPlacementQueryVariables,
-      options?: UseQueryOptions<GetMenuItemsByPlacementQuery, TError, TData>
-    ) =>
-    useQuery<GetMenuItemsByPlacementQuery, TError, TData>(
-      ['getMenuItemsByPlacement', variables],
-      fetchData<GetMenuItemsByPlacementQuery, GetMenuItemsByPlacementQueryVariables>(GetMenuItemsByPlacementDocument, variables),
-      options
-    );
-export const GetMenusDocument = `
-    query getMenus {
-  app_content_nav_elements(distinct_on: placement, order_by: {placement: asc}) {
-    id
-    description
-    placement
-    tooltip
-  }
-}
-    `;
-export const useGetMenusQuery = <
-      TData = GetMenusQuery,
-      TError = unknown
-    >(
-      variables?: GetMenusQueryVariables,
-      options?: UseQueryOptions<GetMenusQuery, TError, TData>
-    ) =>
-    useQuery<GetMenusQuery, TError, TData>(
-      variables === undefined ? ['getMenus'] : ['getMenus', variables],
-      fetchData<GetMenusQuery, GetMenusQueryVariables>(GetMenusDocument, variables),
-      options
-    );
-export const InsertMenuItemDocument = `
-    mutation insertMenuItem($menuItem: app_content_nav_elements_insert_input!) {
-  insert_app_content_nav_elements(objects: [$menuItem]) {
-    returning {
-      id
-    }
-  }
-}
-    `;
-export const useInsertMenuItemMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertMenuItemMutation, TError, InsertMenuItemMutationVariables, TContext>) =>
-    useMutation<InsertMenuItemMutation, TError, InsertMenuItemMutationVariables, TContext>(
-      ['insertMenuItem'],
-      (variables?: InsertMenuItemMutationVariables) => fetchData<InsertMenuItemMutation, InsertMenuItemMutationVariables>(InsertMenuItemDocument, variables)(),
-      options
-    );
-export const UpdateMenuItemByIdDocument = `
-    mutation updateMenuItemById($id: Int!, $menuItem: app_content_nav_elements_set_input!) {
-  update_app_content_nav_elements(where: {id: {_eq: $id}}, _set: $menuItem) {
-    affected_rows
-  }
-}
-    `;
-export const useUpdateMenuItemByIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateMenuItemByIdMutation, TError, UpdateMenuItemByIdMutationVariables, TContext>) =>
-    useMutation<UpdateMenuItemByIdMutation, TError, UpdateMenuItemByIdMutationVariables, TContext>(
-      ['updateMenuItemById'],
-      (variables?: UpdateMenuItemByIdMutationVariables) => fetchData<UpdateMenuItemByIdMutation, UpdateMenuItemByIdMutationVariables>(UpdateMenuItemByIdDocument, variables)(),
       options
     );
 export const GetTranslationsDocument = `

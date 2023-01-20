@@ -2,14 +2,17 @@ import { DefaultProps, Form, FormGroup, TextInput, TextInputProps } from '@viaa/
 import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import React, { FC, useEffect, useState } from 'react';
 
-import WYSIWYGWrapper, { WYSIWYGWrapperProps } from '../WYSIWYGWrapper/WYSIWYGWrapper';
+import RichTextEditorWrapper, {
+	RichTextEditorWrapperProps,
+} from '../RichTextEditorWrapper/RichTextEditorWrapper';
 
 export interface TitleDescriptionFormField {
 	label?: string;
 }
 
 export type TitleDescriptionFormTitleField = TitleDescriptionFormField & TextInputProps;
-export type TitleDescriptionFormDescriptionField = TitleDescriptionFormField & WYSIWYGWrapperProps;
+export type TitleDescriptionFormDescriptionField = TitleDescriptionFormField &
+	RichTextEditorWrapperProps;
 
 export interface TitleDescriptionFormProps extends DefaultProps {
 	id: string | number;
@@ -40,7 +43,7 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
 		setTitle(titleValue);
 	}, [titleValue]);
 
-	// See WYSIWYGInternal.tsx:162
+	// See RichTextEditorInternal.tsx:162
 	useEffect(() => {
 		setDescription(undefined);
 	}, [descriptionInitialHtml]);
@@ -67,7 +70,7 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
 					label={props.description.label}
 					labelFor={getId(TitleDescriptionFormIds.description)}
 				>
-					<WYSIWYGWrapper
+					<RichTextEditorWrapper
 						{...props.description}
 						state={description}
 						onChange={setDescription}

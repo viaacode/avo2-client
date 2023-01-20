@@ -29,8 +29,8 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
-import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
+import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../../shared/constants/quick-lane';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
@@ -500,9 +500,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 									<Spacer margin="right-small">
 										<Spacer margin={['top']}>
 											<div style={{ backgroundColor: Color.White }}>
-												<WYSIWYGWrapper
+												<RichTextEditorWrapper
 													id="note"
-													controls={WYSIWYG_OPTIONS_FULL}
+													controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
 													fileType="ITEM_NOTE_IMAGE"
 													initialHtml={item.note || undefined}
 													state={noteEditorState}

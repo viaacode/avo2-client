@@ -1,3 +1,4 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Form,
@@ -20,15 +21,14 @@ import {
 import { get, isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import WYSIWYGWrapper from '../../../shared/components/WYSIWYGWrapper/WYSIWYGWrapper';
-import { WYSIWYG_OPTIONS_FULL } from '../../../shared/constants';
+import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
+import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { stripHtml } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { InteractiveTourAction } from '../helpers/reducers';
 import { EditableStep, InteractiveTourEditActionType } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 
 export interface InteractiveTourEditStepProps {
 	step: EditableStep;
@@ -141,7 +141,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 						label={tText('admin/interactive-tour/views/interactive-tour-edit___tekst')}
 						error={get(stepErrors, 'content')}
 					>
-						<WYSIWYGWrapper
+						<RichTextEditorWrapper
 							initialHtml={(step.content || '').toString()}
 							state={step.contentState}
 							onChange={(newContentState) => {
@@ -154,7 +154,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 									});
 								}
 							}}
-							controls={WYSIWYG_OPTIONS_FULL}
+							controls={RICH_TEXT_EDITOR_OPTIONS_FULL}
 							fileType="INTERACTIVE_TOUR_IMAGE"
 							id={`content_editor_${index}`}
 							placeholder={tText(
