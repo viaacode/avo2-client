@@ -23,18 +23,13 @@ export async function getRelatedItems(
 		);
 
 		// Apply default audio stills
-
-		const processedResults = (resolvedResponse.results || []).map(
-			(result: Avo.Search.ResultItem) => {
-				if (result.administrative_type === 'audio') {
-					result.thumbnail_path = DEFAULT_AUDIO_STILL;
-				}
-
-				return result;
+		return (resolvedResponse.results || []).map((result: Avo.Search.ResultItem) => {
+			if (result.administrative_type === 'audio') {
+				result.thumbnail_path = DEFAULT_AUDIO_STILL;
 			}
-		);
 
-		return processedResults;
+			return result;
+		});
 	} catch (err) {
 		throw new CustomError('Failed to get related items', err, {
 			id,

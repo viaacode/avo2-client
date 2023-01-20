@@ -20,10 +20,7 @@ export class QuickLaneContainingService {
 				query: GetQuickLanesByContentIdDocument,
 			});
 
-			const urls: QuickLaneUrlObject[] =
-				response?.app_quick_lanes?.map(quickLaneUrlRecordToObject) || [];
-
-			return urls;
+			return response?.app_quick_lanes?.map(quickLaneUrlRecordToObject) || [];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get quick lane urls by content id from database',

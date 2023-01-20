@@ -207,6 +207,14 @@ a.c-button {
 /* Button spacing
    ========================================================================== */
 
-.c-button + .c-button {
-	margin-left: $g-spacer-unit;
+.c-button-toolbar {
+	* + .c-button {
+		margin-left: $g-spacer-unit;
+	}
+
+	.c-button-group {
+		.c-button + .c-button {
+			margin-left: 0;
+		}
+	}
 }

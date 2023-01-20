@@ -887,11 +887,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	return canEditAssignments !== null ? (
-		<LoadingErrorLoadedComponent
-			loadingInfo={loadingInfo}
-			dataObject={assignments}
-			render={renderAssignmentsView}
-		/>
+		<div className="m-assignment-overview">
+			<LoadingErrorLoadedComponent
+				loadingInfo={loadingInfo}
+				dataObject={assignments}
+				render={renderAssignmentsView}
+			/>
+		</div>
 	) : null;
 };
 

@@ -6,13 +6,13 @@ This repository contains the React AVO Client app front-end for the end user.
 
 ## Technical
 
-|Role              | Handle / username|
-| -------------    |--------------|
-|Principal/Owner   | Bart Debunne <bart.debunne@viaa.be>  |
-|Lead Developer    | Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be> |
-|Lead Developer    | Bert Verhelst <bert.verhelst@studiohyperdrive.be> |
-|Developer         | Benjamin Naesen <benjamin.naesen@studiohyperdrive.be> |
-|Developer         | Andry Charlier <andry.charlier@studiohyperdrive.be> |
+| Role            | Handle / username                                     |
+|-----------------|-------------------------------------------------------|
+| Principal/Owner | Bart Debunne <bart.debunne@viaa.be>                   |
+| Lead Developer  | Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be> |
+| Lead Developer  | Bert Verhelst <bert.verhelst@studiohyperdrive.be>     |
+| Developer       | Benjamin Naesen <benjamin.naesen@studiohyperdrive.be> |
+| Developer       | Andry Charlier <andry.charlier@studiohyperdrive.be>   |
 
 **Code Review:**
 
@@ -25,9 +25,9 @@ The React AVO Client app will provide the following:
 
 ## Server
 
-|               | QAS           | PRD      |
-| ------------- |:-------------:| :-----:  |
-| **host**      | TODO          | TODO     |
+|          | QAS  | PRD  |
+|----------|:----:|:----:|
+| **host** | TODO | TODO |
 
 ## Stack
 
@@ -69,7 +69,7 @@ See postman collection (TODO add link)
 Steps to deploy:
 
 * Update package.json version to match release branch version
-* Do an npm install or update the version of the package-lock.json file version
+* Do `npm install` or update the version of the package-lock.json file version
 * Extract translations
 *
 * Merge release branch into master

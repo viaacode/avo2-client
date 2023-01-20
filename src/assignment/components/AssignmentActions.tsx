@@ -99,7 +99,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		/>
 	);
 
-	const renderActions = useMemo(
+	return useMemo(
 		() => (
 			<>
 				{renderPreviewButton({
@@ -151,8 +151,6 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		),
 		[tText, isOverflowDropdownOpen]
 	);
-
-	return renderActions;
 };
 
 export default AssignmentActions;

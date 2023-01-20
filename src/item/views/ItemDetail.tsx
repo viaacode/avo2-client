@@ -458,7 +458,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		setIsCreateAssignmentDropdownOpen(false);
 		switch (item) {
 			case ITEM_ACTIONS.createAssignment:
-				createNewAssignment();
+				await createNewAssignment();
 				break;
 
 			case ITEM_ACTIONS.importToAssignment:

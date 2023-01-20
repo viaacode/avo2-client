@@ -182,6 +182,36 @@ export class BookmarksViewsPlaysService {
 		}
 	}
 
+	private static getItemBookmarkInfos(itemBookmarks: AppItemBookmark[]): (BookmarkInfo | null)[] {
+		return itemBookmarks.map((itemBookmark): BookmarkInfo | null => {
+			if (!itemBookmark.bookmarkedItem) {
+				return null;
+			}
+
+			const thumbnailPath =
+				itemBookmark.bookmarkedItem.item.item_meta.type.label === 'audio'
+					? DEFAULT_AUDIO_STILL
+					: itemBookmark.bookmarkedItem.thumbnail_path;
+
+			return {
+				contentId: itemBookmark.item_id,
+				contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
+				contentType: itemBookmark.bookmarkedItem.item.item_meta.type
+					.label as Avo.ContentType.English,
+				createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
+				contentTitle: itemBookmark.bookmarkedItem.title,
+				contentDuration: itemBookmark.bookmarkedItem.duration,
+				contentThumbnailPath: thumbnailPath,
+				contentCreatedAt: itemBookmark.bookmarkedItem.issued
+					? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
+					: null,
+				contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
+				contentOrganisation:
+					itemBookmark.bookmarkedItem?.item?.item_meta?.organisation?.name,
+			};
+		});
+	}
+
 	public static async getItemBookmarksForUser(
 		user: Avo.User.User,
 		filterString: string,
@@ -197,35 +227,8 @@ export class BookmarksViewsPlaysService {
 			variables,
 		});
 		const itemBookmarks: AppItemBookmark[] = response.app_item_bookmarks as AppItemBookmark[];
-		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
-			(itemBookmark): BookmarkInfo | null => {
-				if (!itemBookmark.bookmarkedItem) {
-					return null;
-				}
-
-				const thumbnailPath =
-					itemBookmark.bookmarkedItem.item.item_meta.type.label === 'audio'
-						? DEFAULT_AUDIO_STILL
-						: itemBookmark.bookmarkedItem.thumbnail_path;
-
-				return {
-					contentId: itemBookmark.item_id,
-					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
-					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
-						.label as Avo.ContentType.English,
-					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
-					contentTitle: itemBookmark.bookmarkedItem.title,
-					contentDuration: itemBookmark.bookmarkedItem.duration,
-					contentThumbnailPath: thumbnailPath,
-					contentCreatedAt: itemBookmark.bookmarkedItem.issued
-						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
-						: null,
-					contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
-					contentOrganisation:
-						itemBookmark.bookmarkedItem?.item?.item_meta?.organisation?.name,
-				};
-			}
-		);
+		const itemBookmarkInfos: (BookmarkInfo | null)[] =
+			BookmarksViewsPlaysService.getItemBookmarkInfos(itemBookmarks);
 		return compact(itemBookmarkInfos);
 	}
 
@@ -243,35 +246,8 @@ export class BookmarksViewsPlaysService {
 		const itemBookmarks: AppItemBookmark[] = response.app_item_bookmarks as AppItemBookmark[];
 		const collectionBookmarks: AppCollectionBookmark[] = (response.app_collection_bookmarks ||
 			[]) as AppCollectionBookmark[];
-		const itemBookmarkInfos: (BookmarkInfo | null)[] = itemBookmarks.map(
-			(itemBookmark): BookmarkInfo | null => {
-				if (!itemBookmark.bookmarkedItem) {
-					return null;
-				}
-
-				const thumbnailPath =
-					itemBookmark.bookmarkedItem.item.item_meta.type.label === 'audio'
-						? DEFAULT_AUDIO_STILL
-						: itemBookmark.bookmarkedItem.thumbnail_path;
-
-				return {
-					contentId: itemBookmark.item_id,
-					contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
-					contentType: itemBookmark.bookmarkedItem.item.item_meta.type
-						.label as Avo.ContentType.English,
-					createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
-					contentTitle: itemBookmark.bookmarkedItem.title,
-					contentDuration: itemBookmark.bookmarkedItem.duration,
-					contentThumbnailPath: thumbnailPath,
-					contentCreatedAt: itemBookmark.bookmarkedItem.issued
-						? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
-						: null,
-					contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
-					contentOrganisation:
-						itemBookmark.bookmarkedItem?.item?.item_meta?.organisation?.name,
-				};
-			}
-		);
+		const itemBookmarkInfos: (BookmarkInfo | null)[] =
+			BookmarksViewsPlaysService.getItemBookmarkInfos(itemBookmarks);
 		const collectionBookmarkInfos: (BookmarkInfo | null)[] = collectionBookmarks.map(
 			(collectionBookmark): BookmarkInfo | null => {
 				if (!collectionBookmark.bookmarkedCollection) {

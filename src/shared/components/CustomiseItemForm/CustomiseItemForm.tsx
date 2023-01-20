@@ -59,7 +59,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
 	const getId = (key: string | number) => `${id}--${key}`;
 
 	/**
-	 * We keep track of temp fields here so we can trigger onChange events onBlur, which improves perceived performance
+	 * We keep track of temp fields here, so we can trigger onChange events onBlur, which improves perceived performance
 	 * Ideally we would like to move away from the braft rich text editor causing this lag and use something like:
 	 * https://github.com/ianstormtaylor/slate
 	 */

@@ -377,7 +377,6 @@ export class ItemsService {
 		} catch (err) {
 			throw new CustomError('Failed to fetch item uuid by external id', err, {
 				externalId,
-				url: '/items/ids',
 			});
 		}
 	}

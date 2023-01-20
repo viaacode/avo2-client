@@ -240,7 +240,7 @@ export class CollectionService {
 				}
 			);
 
-			// null should not default to to prevent defaulting of null, we don't use lodash's default value parameter
+			// null should not default to prevent defaulting of null, we don't use lodash's default value parameter
 			const initialFragmentIds: (number | string)[] =
 				getFragmentIdsFromCollection(initialCollection);
 			const currentFragmentIds: (number | string)[] =
@@ -932,10 +932,6 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
-	 * @param assignmentUuid Collection can be fetched if it's not and you're not the owner,
-	 *        but if it is linked to an assignment that you're trying to view
-	 *
-	 * @param includeFragments
 	 * @returns Collection or bundle.
 	 */
 	public static async fetchCollectionOrBundleById(
@@ -1055,7 +1051,7 @@ export class CollectionService {
 
 	/**
 	 * Find name that isn't a duplicate of an existing name of a collection of this user
-	 * eg if these collections exist:
+	 * e.g. if these collections exist:
 	 * copy 1: test
 	 * copy 2: test
 	 * copy 4: test

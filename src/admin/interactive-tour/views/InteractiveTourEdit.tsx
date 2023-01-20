@@ -1,3 +1,4 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	BlockHeading,
 	Box,
@@ -67,7 +68,6 @@ import {
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 
 export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 

@@ -1,5 +1,5 @@
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, get, isNil, without } from 'lodash-es';
+import { cloneDeep, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
@@ -722,8 +722,8 @@ export class AssignmentService {
 				...tempAssignment,
 				blocks,
 			};
-		} catch (err) {
-			const graphqlError = get(err, 'graphQLErrors[0].message');
+		} catch (err: any) {
+			const graphqlError = err?.graphQLErrors?.[0]?.message;
 
 			if (graphqlError) {
 				return graphqlError;
@@ -985,7 +985,7 @@ export class AssignmentService {
 				| Omit<AssignmentResponseInfo, 'assignment'>
 				| undefined = await AssignmentService.getAssignmentResponse(
 				user.profile.id,
-				get(assignment, 'id') as unknown as string
+				assignment?.id
 			);
 
 			if (existingAssignmentResponse) {
@@ -996,7 +996,8 @@ export class AssignmentService {
 				}
 				return {
 					...existingAssignmentResponse,
-					pupil_collection_blocks: [],
+					pupil_collection_blocks:
+						existingAssignmentResponse.pupil_collection_blocks || [],
 				};
 			}
 

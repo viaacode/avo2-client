@@ -139,12 +139,12 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 				return;
 			}
 			await ItemsService.setSharedItemsStatus(selectedItemIds || [], 'OK');
+			await fetchItems();
 			ToastService.success(
 				tHtml(
 					'admin/items/views/publish-items-overview___de-geselecteerde-items-zijn-gepubliceerd-naar-av-o'
 				)
 			);
-			fetchItems();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to set status for shared.items', err, { selectedItemIds })
