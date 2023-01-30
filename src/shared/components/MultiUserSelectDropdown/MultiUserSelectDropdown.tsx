@@ -11,7 +11,7 @@ import {
 	TagList,
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
-import { get, uniqBy } from 'lodash-es';
+import { uniqBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
@@ -60,7 +60,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 					setSelectedProfiles(
 						users.map(
 							(user): PickerItem => ({
-								label: `${get(user, 'full_name')} (${get(user, 'mail')})`,
+								label: `${user?.fullName} (${user?.email})`,
 								value: user.profileId || '',
 								type: 'PROFILE',
 							})
