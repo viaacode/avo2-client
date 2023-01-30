@@ -10,11 +10,9 @@ $base: 'c-admin-core';
 
 	.c-admin {
 		&__header {
-			@extend %o-container;
-
 			height: auto;
 			min-height: 6rem;
-			padding: 0;
+			padding: 0 4.2rem;
 			position: sticky;
 			inset: 0 0 auto 0;
 			z-index: $g-c-global-navbar-z;
