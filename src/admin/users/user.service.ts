@@ -1,35 +1,19 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, isBefore } from 'date-fns';
-import { compact, flatten, get, isNil } from 'lodash-es';
+import { compact, get, isNil } from 'lodash-es';
 import moment from 'moment';
 
 import {
-	BulkAddSubjectsToProfilesDocument,
-	BulkAddSubjectsToProfilesMutation,
-	BulkDeleteSubjectsFromProfilesDocument,
-	BulkDeleteSubjectsFromProfilesMutation,
-	GetContentCountsForUsersDocument,
-	GetContentCountsForUsersQuery,
-	GetDistinctBusinessCategoriesDocument,
-	GetDistinctBusinessCategoriesQuery,
-	GetIdpsDocument,
-	GetIdpsQuery,
 	GetProfileIdsDocument,
 	GetProfileIdsQuery,
 	GetProfileIdsQueryVariables,
-	GetProfileNamesDocument,
-	GetProfileNamesQuery,
-	GetUserByIdDocument,
-	GetUserByIdQuery,
 	GetUsersDocument,
 	GetUsersInSameCompanyDocument,
 	GetUsersInSameCompanyQuery,
 	GetUsersInSameCompanyQueryVariables,
 	GetUsersQuery,
 	GetUsersQueryVariables,
-	GetUserTempAccessDocument,
-	GetUserTempAccessQuery,
 	UpdateUserTempAccessByIdDocument,
 	UpdateUserTempAccessByIdMutation,
 } from '../../shared/generated/graphql-db-types';
@@ -39,55 +23,9 @@ import { dataService } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
-import { DeleteContentCounts, UserOverviewTableCol } from './user.types';
+import { UserOverviewTableCol } from './user.types';
 
 export class UserService {
-	static async getProfileById(profileId: string): Promise<Avo.User.Profile> {
-		try {
-			const userResponse = await dataService.query<GetUserByIdQuery>({
-				query: GetUserByIdDocument,
-				variables: {
-					id: profileId,
-				},
-			});
-
-			const profile = userResponse.users_summary_view[0];
-
-			if (!profile) {
-				throw new CustomError('Failed to find profile by id', null, { userResponse });
-			}
-
-			return profile as unknown as Avo.User.Profile;
-		} catch (err) {
-			throw new CustomError('Failed to get profile by id from the database', err, {
-				profileId,
-				query: 'GET_USER_BY_ID',
-			});
-		}
-	}
-
-	/**
-	 * Get the tempAccess data for a user by profileId
-	 */
-	static async getTempAccessById(profileId: string): Promise<Avo.User.TempAccess | null> {
-		try {
-			const tempAccessResponse = await dataService.query<GetUserTempAccessQuery>({
-				query: GetUserTempAccessDocument,
-				variables: {
-					id: profileId,
-				},
-			});
-
-			return (tempAccessResponse.shared_users[0].temp_access ||
-				null) as Avo.User.TempAccess | null;
-		} catch (err) {
-			throw new CustomError('Failed to get profile by id from the database', err, {
-				profileId,
-				query: 'GET_USER_TEMP_ACCESS_BY_ID',
-			});
-		}
-	}
-
 	/**
 	 * Update/Set temp access for a user.
 	 */
@@ -314,204 +252,6 @@ export class UserService {
 			throw new CustomError('Failed to get profile ids from the database', err, {
 				variables,
 				query: 'GET_PROFILE_IDS',
-			});
-		}
-	}
-
-	static async updateBlockStatusByProfileIds(
-		profileIds: string[],
-		isBlocked: boolean,
-		sendEmail: boolean
-	): Promise<void> {
-		let url: string | undefined;
-		try {
-			url = `${getEnv('PROXY_URL')}/user/bulk-block`;
-
-			const body: Avo.User.BulkBlockUsersBody = {
-				profileIds,
-				isBlocked,
-				sendEmail,
-			};
-
-			await fetchWithLogoutJson(url, {
-				method: 'POST',
-				body: JSON.stringify(body),
-			});
-		} catch (err) {
-			throw new CustomError(
-				'Failed to update is_blocked field for users in the database',
-				err,
-				{
-					url,
-					profileIds,
-					isBlocked,
-				}
-			);
-		}
-	}
-
-	static async bulkDeleteUsers(
-		profileIds: string[],
-		deleteOption: Avo.User.UserDeleteOption,
-		transferToProfileId: string | undefined,
-		sendEmail: boolean
-	): Promise<void> {
-		let url: string | undefined;
-		try {
-			url = `${getEnv('PROXY_URL')}/user/bulk-delete`;
-			const body: Avo.User.BulkDeleteUsersBody = {
-				profileIds,
-				deleteOption,
-				transferToProfileId,
-				sendEmail,
-			};
-			await fetchWithLogoutJson(url, {
-				method: 'DELETE',
-				body: JSON.stringify(body),
-			});
-		} catch (err) {
-			throw new CustomError('Failed to bulk delete users from the database', err, {
-				url,
-				profileIds,
-				deleteOption,
-				transferToProfileId,
-			});
-		}
-	}
-
-	static async fetchPublicAndPrivateCounts(profileIds: string[]): Promise<DeleteContentCounts> {
-		try {
-			const response = await dataService.query<GetContentCountsForUsersQuery>({
-				query: GetContentCountsForUsersDocument,
-				variables: {
-					profileIds,
-				},
-			});
-
-			return {
-				publicCollections: response?.publicCollections?.aggregate?.count || 0,
-				privateCollections: response?.privateCollections?.aggregate?.count || 0,
-				assignments: response?.assignments?.aggregate?.count || 0,
-				bookmarks:
-					(response?.collectionBookmarks?.aggregate?.count || 0) +
-					(response?.itemBookmarks?.aggregate?.count || 0),
-				publicContentPages: response?.publicContentPages?.aggregate?.count || 0,
-				privateContentPages: response?.privateContentPages?.aggregate?.count || 0,
-				quickLanes: response?.quickLanes?.aggregate?.count || 0,
-			};
-		} catch (err) {
-			throw new CustomError('Failed to get content counts for users from the database', err, {
-				profileIds,
-				query: 'GET_CONTENT_COUNTS_FOR_USERS',
-			});
-		}
-	}
-
-	static async getNamesByProfileIds(profileIds: string[]): Promise<Avo.User.User[]> {
-		try {
-			const response = await dataService.query<GetProfileNamesQuery>({
-				query: GetProfileNamesDocument,
-				variables: {
-					profileIds,
-				},
-			});
-
-			return response.users_summary_view.map(
-				(profileEntry): Avo.User.User =>
-					({
-						profile: {
-							id: profileEntry.profile_id,
-						},
-						full_name: profileEntry.full_name,
-						mail: profileEntry.mail,
-					} as Avo.User.User)
-			);
-		} catch (err) {
-			throw new CustomError('Failed to get profile names from the database', err, {
-				profileIds,
-				query: 'GET_PROFILE_NAMES',
-			});
-		}
-	}
-
-	static async bulkAddSubjectsToProfiles(
-		subjects: string[],
-		profileIds: string[]
-	): Promise<void> {
-		try {
-			// First remove the subjects, so we can add them without duplicate conflicts
-			await UserService.bulkRemoveSubjectsFromProfiles(subjects, profileIds);
-
-			// Add the subjects
-			await dataService.query<BulkAddSubjectsToProfilesMutation>({
-				query: BulkAddSubjectsToProfilesDocument,
-				variables: {
-					subjects: flatten(
-						subjects.map((subject) =>
-							profileIds.map((profileId) => ({
-								key: subject,
-								profile_id: profileId,
-							}))
-						)
-					),
-				},
-			});
-		} catch (err) {
-			throw new CustomError('Failed to bulk add subjects to profiles', err, {
-				subjects,
-				profileIds,
-				query: 'BULK_ADD_SUBJECTS_TO_PROFILES',
-			});
-		}
-	}
-
-	static async bulkRemoveSubjectsFromProfiles(
-		subjects: string[],
-		profileIds: string[]
-	): Promise<void> {
-		try {
-			await dataService.query<BulkDeleteSubjectsFromProfilesMutation>({
-				query: BulkDeleteSubjectsFromProfilesDocument,
-				variables: {
-					subjects,
-					profileIds,
-				},
-			});
-		} catch (err) {
-			throw new CustomError('Failed to bulk delete subjects from profiles', err, {
-				subjects,
-				profileIds,
-				query: 'BULK_DELETE_SUBJECTS_FROM_PROFILES',
-			});
-		}
-	}
-
-	static async fetchDistinctBusinessCategories(): Promise<string[]> {
-		try {
-			const response = await dataService.query<GetDistinctBusinessCategoriesQuery>({
-				query: GetDistinctBusinessCategoriesDocument,
-			});
-			return compact(
-				response.users_profiles.map(
-					(profile: Partial<Avo.User.Profile>) => profile.business_category
-				)
-			);
-		} catch (err) {
-			throw new CustomError('Failed to get distinct business categories from profiles', err, {
-				query: 'GET_DISTINCT_BUSINESS_CATEGORIES',
-			});
-		}
-	}
-
-	static async fetchIdps(): Promise<string[]> {
-		try {
-			const response = await dataService.query<GetIdpsQuery>({
-				query: GetIdpsDocument,
-			});
-			return response.users_idps.map((idp) => idp.value);
-		} catch (err) {
-			throw new CustomError('Failed to get idps from the database', err, {
-				query: 'GET_IDPS',
 			});
 		}
 	}

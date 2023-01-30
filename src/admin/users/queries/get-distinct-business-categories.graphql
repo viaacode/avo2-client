@@ -1,8 +1,0 @@
-query getDistinctBusinessCategories {
-	users_profiles(
-		distinct_on: business_category
-		where: { business_category: { _is_null: false }, is_deleted: { _eq: false } }
-	) {
-		business_category
-	}
-}

@@ -24,7 +24,14 @@ const ContentPageDetailPage: FunctionComponent<DefaultSecureRouteProps<ContentPa
 		<>
 			{item && (
 				<MetaTags>
-					<title>{GENERATE_SITE_TITLE(item.title, tText('Contentpagina detail'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							item.title,
+							tText(
+								'admin/content-page/views/content-page-detail-page___contentpagina-detail'
+							)
+						)}
+					</title>
 					<meta name="description" content={item.seoDescription || ''} />
 				</MetaTags>
 			)}

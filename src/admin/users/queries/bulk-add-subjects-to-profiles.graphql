@@ -1,5 +1,0 @@
-mutation bulkAddSubjectsToProfiles($subjects: [users_profile_classifications_insert_input!]!) {
-	insert_users_profile_classifications(objects: $subjects) {
-		affected_rows
-	}
-}
