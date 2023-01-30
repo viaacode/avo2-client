@@ -1,4 +1,3 @@
-export * from './useBusinessCategory';
 export * from './useCompanies';
 export * from './useDebounce';
 export * from './useEducationLevels';

@@ -1,3 +1,4 @@
+import { CommonUser, UserService } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Dropdown,
@@ -9,24 +10,17 @@ import {
 	Spacer,
 	TagList,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get, uniqBy } from 'lodash-es';
+import { uniqBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
 import { PickerItem } from '../../../admin/shared/types';
-import { UserService } from '../../../admin/users/user.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services/toast-service';
 
 import './MultiUserSelectDropdown.scss';
-
-export interface Tag {
-	label: string;
-	id: string;
-}
 
 export interface MultiUserSelectDropdownProps {
 	label: string;
@@ -62,12 +56,12 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 	useEffect(() => {
 		if (values.length) {
 			UserService.getNamesByProfileIds(values)
-				.then((users: Avo.User.User[]) => {
+				.then((users: Partial<CommonUser>[]) => {
 					setSelectedProfiles(
 						users.map(
 							(user): PickerItem => ({
-								label: `${get(user, 'full_name')} (${get(user, 'mail')})`,
-								value: user.profile?.id || '',
+								label: `${user?.fullName} (${user?.email})`,
+								value: user.profileId || '',
 								type: 'PROFILE',
 							})
 						)

@@ -10,8 +10,8 @@ export const Back: FC<ButtonProps> = (props) => {
 		<Button
 			className="c-top-bar__back"
 			icon="chevron-left"
-			ariaLabel={tText('Ga terug naar het vorig scherm')}
-			title={tText('Ga terug naar het vorig scherm')}
+			ariaLabel={tText('admin/shared/components/back/back___ga-terug-naar-het-vorig-scherm')}
+			title={tText('admin/shared/components/back/back___ga-terug-naar-het-vorig-scherm')}
 			type="borderless"
 			{...props}
 		/>
