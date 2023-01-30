@@ -1,12 +1,5 @@
-import {
-	BlockHeading,
-	Button,
-	Icon,
-	Modal,
-	ModalBody,
-	ModalProps,
-	Spacer,
-} from '@viaa/avo2-components';
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import { Button, Icon, Modal, ModalBody, ModalProps, Spacer } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';

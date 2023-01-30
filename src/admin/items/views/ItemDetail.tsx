@@ -1,7 +1,6 @@
-import { Color, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
+import { BlockHeading, Color, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import { RichEditorState } from '@meemoo/react-components';
 import {
-	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,

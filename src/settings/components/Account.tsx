@@ -1,6 +1,6 @@
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Alert,
-	BlockHeading,
 	Button,
 	Column,
 	Container,

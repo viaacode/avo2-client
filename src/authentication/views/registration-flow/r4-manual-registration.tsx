@@ -1,5 +1,5 @@
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
-	BlockHeading,
 	Button,
 	Checkbox,
 	Column,

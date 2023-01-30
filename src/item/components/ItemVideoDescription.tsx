@@ -1,6 +1,5 @@
-import { Color } from '@meemoo/admin-core-ui';
+import { BlockHeading, Color } from '@meemoo/admin-core-ui';
 import {
-	BlockHeading,
 	Column,
 	convertToHtml,
 	ExpandableContainer,

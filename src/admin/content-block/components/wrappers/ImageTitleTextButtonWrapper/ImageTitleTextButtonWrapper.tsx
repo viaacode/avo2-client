@@ -1,5 +1,9 @@
-import { ImageTitleTextButtonBlockComponentState, RichTextWrapper } from '@meemoo/admin-core-ui';
-import { BlockHeading, Button, Column, Grid, Image } from '@viaa/avo2-components';
+import {
+	BlockHeading,
+	BlockRichTextWrapper,
+	ImageTitleTextButtonBlockComponentState,
+} from '@meemoo/admin-core-ui';
+import { Button, Column, Grid, Image } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FC, FunctionComponent } from 'react';
 
@@ -41,7 +45,7 @@ export const ImageTitleTextButtonWrapper: FC<
 					<BlockHeading type={headingType}>{headingTitle}</BlockHeading>
 				)}
 
-				{content && <RichTextWrapper elements={{ content }} />}
+				{content && <BlockRichTextWrapper elements={{ content }} />}
 
 				{buttonAction &&
 					generateSmartLink(

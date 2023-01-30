@@ -1,5 +1,5 @@
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
-	BlockHeading,
 	Button,
 	Checkbox,
 	Container,
@@ -60,9 +60,9 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		);
 		if (wantsToUploadAttachment && attachmentUrl) {
 			if (isPhoto(attachmentUrl)) {
-				return `<img src="${attachmentUrl}" alt="Bijlage"/>`;
+				return `<img src='${attachmentUrl}' alt='Bijlage'/>`;
 			}
-			return `<a href="${attachmentUrl}">${filename}</a>`;
+			return `<a href='${attachmentUrl}'>${filename}</a>`;
 		}
 		return tText(
 			'user-item-request-form/views/user-item-request-form___er-werd-geen-bijlage-toegevoegd'

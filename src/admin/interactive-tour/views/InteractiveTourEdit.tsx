@@ -1,6 +1,5 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
+import { BlockHeading, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
-	BlockHeading,
 	Box,
 	Button,
 	ButtonToolbar,

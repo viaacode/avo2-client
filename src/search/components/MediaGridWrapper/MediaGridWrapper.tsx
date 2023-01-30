@@ -1,14 +1,11 @@
 import {
 	AdminConfigManager,
+	BlockMediaGrid,
 	MediaGridBlockComponentState,
 	MediaGridBlockState,
-} from '@meemoo/admin-core-ui';
-import {
-	BlockMediaGrid,
-	ButtonAction,
 	MediaListItem,
-	RenderLinkFunction,
-} from '@viaa/avo2-components';
+} from '@meemoo/admin-core-ui';
+import { ButtonAction, RenderLinkFunction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isEmpty, isNil } from 'lodash-es';
 import React, {
