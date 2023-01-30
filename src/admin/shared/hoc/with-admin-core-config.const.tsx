@@ -56,7 +56,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		),
 		contentPage: {
 			availableContentBlocks: Object.values(ContentBlockType),
-			defaultPageWidth: 'LARGE',
+			defaultPageWidth: 'EXTRA_LARGE',
 			onSaveContentPage: () => new Promise(noop),
 		},
 		navigationBars: { enableIcons: false },
