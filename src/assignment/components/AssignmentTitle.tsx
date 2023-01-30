@@ -1,4 +1,5 @@
-import { BlockHeading, ContentInput, Flex, Icon } from '@viaa/avo2-components';
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import { ContentInput, Flex, Icon } from '@viaa/avo2-components';
 import React, { Dispatch, FC, SetStateAction, useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 

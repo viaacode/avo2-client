@@ -1,11 +1,5 @@
-import {
-	BlockHeading,
-	Button,
-	convertToHtml,
-	DefaultProps,
-	Flex,
-	Spacer,
-} from '@viaa/avo2-components';
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import { Button, convertToHtml, DefaultProps, Flex, Spacer } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import React, { FC } from 'react';
 

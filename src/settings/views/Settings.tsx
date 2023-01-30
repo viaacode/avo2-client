@@ -1,12 +1,5 @@
-import {
-	BlockHeading,
-	Container,
-	Navbar,
-	Tabs,
-	Toolbar,
-	ToolbarLeft,
-	ToolbarRight,
-} from '@viaa/avo2-components';
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import { Container, Navbar, Tabs, Toolbar, ToolbarLeft, ToolbarRight } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';

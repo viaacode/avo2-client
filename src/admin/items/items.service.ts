@@ -364,16 +364,18 @@ export class ItemsService {
 
 	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
 		try {
-			return (
-				(await fetchWithLogoutJson<string | null>(
-					stringifyUrl({
-						url: `${getEnv('PROXY_URL')}/items/ids`,
-						query: {
-							externalId,
-						},
-					})
-				)) || null
+			const response = await fetchWithLogout(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/admin/items/ids`,
+					query: {
+						externalId,
+					},
+				})
 			);
+			if (response.ok) {
+				return (await response.text()) || null;
+			}
+			return null;
 		} catch (err) {
 			throw new CustomError('Failed to fetch item uuid by external id', err, {
 				externalId,

@@ -243,11 +243,13 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
-			const routeUserGroupIds = (routeInfo.data as DbContentPage).userGroupIds ?? [];
+			const routeUserGroupIds = ((routeInfo.data as DbContentPage).userGroupIds ?? []).map(
+				(id) => String(id)
+			);
 			// Check if the page requires the user to be logged in and not both logged in or out
 			if (
-				routeUserGroupIds.includes[SpecialPermissionGroups.loggedInUsers] &&
-				!routeUserGroupIds.includes[SpecialPermissionGroups.loggedOutUsers]
+				routeUserGroupIds.includes(String(SpecialPermissionGroups.loggedInUsers)) &&
+				!routeUserGroupIds.includes(String(SpecialPermissionGroups.loggedOutUsers))
 			) {
 				return (
 					<Redirect

@@ -1,4 +1,5 @@
-import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import { Alert, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';

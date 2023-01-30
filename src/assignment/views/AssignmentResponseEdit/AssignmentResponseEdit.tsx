@@ -1,15 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-	Alert,
-	BlockHeading,
-	Box,
-	Container,
-	Flex,
-	Icon,
-	Spacer,
-	Spinner,
-	Tabs,
-} from '@viaa/avo2-components';
+import { Alert, Box, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import React, {
 	Dispatch,
@@ -70,6 +60,7 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { BlockHeading } from '@meemoo/admin-core-ui';
 
 interface AssignmentResponseEditProps {
 	assignment: Assignment_v2_With_Responses;

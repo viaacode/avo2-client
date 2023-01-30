@@ -1,4 +1,4 @@
-import { BlockHeading } from '@viaa/avo2-components';
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 

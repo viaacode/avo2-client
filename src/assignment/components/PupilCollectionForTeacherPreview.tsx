@@ -1,4 +1,5 @@
-import { BlockHeading, Button, Container } from '@viaa/avo2-components';
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import { Button, Container } from '@viaa/avo2-components';
 import React, { FC, ReactNode } from 'react';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
