@@ -29,4 +29,14 @@ $c-admin-core-add-content-block-height: 7rem;
 			padding: 1.6rem;
 		}
 	}
+
+	.c-admin__content {
+		overflow-y: auto;
+		height: calc(100% - 6.4rem);
+
+		.m-edit-content-blocks {
+			overflow-y: hidden;
+			height: calc(100% - 4.9rem);
+		}
+	}
 }
