@@ -16,6 +16,10 @@
 		}
 	}
 
+	.c-toolbar .c-button + .c-button {
+		margin-left: $g-spacer-unit;
+	}
+
 	.m-admin-layout-content {
 		overflow-y: auto;
 		height: calc(100vh - 64px);
