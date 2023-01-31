@@ -1,1 +1,3 @@
-export { default as UserGroupOverviewPage } from './UserGroupOverviewPage';
+import UserGroupOverviewPage from './UserGroupOverviewPage';
+
+export { UserGroupOverviewPage };
