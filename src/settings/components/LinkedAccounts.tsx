@@ -169,6 +169,10 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 					</Grid>
 				)}
 				<DeleteObjectModal
+					title={tText(
+						'settings/components/linked-accounts___ben-je-zeker-dat-je-de-account-koppeling-wil-verbreken'
+					)}
+					confirmLabel={tText('settings/components/linked-accounts___verbreek-koppeling')}
 					confirmCallback={() => {
 						setConfirmModalOpen(false);
 						redirectToServerUnlinkAccount(location, idpType);

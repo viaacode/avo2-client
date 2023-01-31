@@ -48,6 +48,7 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
 
 import './FilterTable.scss';
+import { tHtml } from '../../../../shared/helpers/translate';
 
 export interface FilterableTableState {
 	query?: string;
@@ -467,6 +468,12 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 			)}
 			{!!bulkActions && !!bulkActions.length && (
 				<DeleteObjectModal
+					title={tText(
+						'admin/shared/components/filter-table/filter-table___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
+					)}
+					body={tHtml(
+						'admin/shared/components/filter-table/filter-table___opgelet-deze-actie-kan-niet-meer-ongedaan-worden'
+					)}
 					isOpen={confirmBulkActionModalOpen}
 					confirmCallback={handleConfirmSelectBulkAction}
 					onClose={() => setConfirmBulkActionModalOpen(false)}
