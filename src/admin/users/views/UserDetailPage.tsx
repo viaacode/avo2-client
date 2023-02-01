@@ -7,6 +7,7 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { UserService } from '../user.service';
+import './UserDetailPage.scss';
 
 const UserDetailPage: FunctionComponent = () => {
 	const { tText } = useTranslation();
