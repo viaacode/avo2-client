@@ -165,24 +165,15 @@ const TranslationsOverviewPage: FunctionComponent = () => {
 		};
 
 		return (
-			<>
-				{/* the div disables the background */}
-				<div
-					className={styles['c-translations-overview__modal']}
-					style={{ background: 'black', width: '200vh', height: '100vh', opacity: 0.5 }}
-					hidden={!isOpen}
-					onClick={() => onClose()}
-				/>
-				<Modal
-					className="c-translations-overview__modal"
-					title={title}
-					isOpen={isOpen}
-					onClose={onClose}
-				>
-					<ModalBody>{body}</ModalBody>
-					<ModalFooterRight>{renderFooter()}</ModalFooterRight>
-				</Modal>
-			</>
+			<Modal
+				className="c-translations-overview__modal"
+				title={title}
+				isOpen={isOpen}
+				onClose={onClose}
+			>
+				<ModalBody>{body}</ModalBody>
+				<ModalFooterRight>{renderFooter()}</ModalFooterRight>
+			</Modal>
 		);
 	};
 
