@@ -18,10 +18,10 @@
 
 	.m-admin-layout-content {
 		overflow-y: auto;
-		height: calc(100vh - 64px);
+		height: calc(100vh - 6.4rem);
 
 		> .o-container-vertical {
-			padding-bottom: 400px; // Leave space for the dropdown to open without having to scroll again
+			padding-bottom: 40rem; // Leave space for the dropdown to open without having to scroll again
 		}
 	}
 
@@ -38,7 +38,7 @@
 
 			th,
 			td {
-				padding: 10px 10px;
+				padding: 1rem 1rem;
 				vertical-align: middle;
 			}
 
@@ -49,14 +49,14 @@
 	}
 
 	.c-table {
-		margin-top: 20px !important;
+		margin-top: 2rem !important;
 	}
 
 	.c-table__row {
 		border: 1px solid lightgray;
 
 		&--header {
-			padding: 20px;
+			padding: 2rem;
 		}
 
 		&--header th:nth-child(2) {
@@ -68,12 +68,12 @@
 		justify-content: center;
 
 		&--header {
-			padding: 10px;
+			padding: 1rem;
 		}
 	}
 
 	.c-table td:nth-child(2) {
 		border-left: 1px solid lightgray;
-		padding: 30px;
+		padding: 3rem;
 	}
 }
