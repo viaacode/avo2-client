@@ -18,6 +18,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
+import { once } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -269,6 +270,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 			fragmentDuration
 		);
 
+		const startStartTimeOnce = once(() => {
+			setModalVideoSeekTime(fragmentStartTime);
+		});
+
 		return (
 			<Modal
 				title={t(
@@ -288,6 +293,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 									showTitle
 									showDescription
 									canPlay={isOpen}
+									onPlay={startStartTimeOnce}
 									cuePointsLabel={{ start, end }}
 									verticalLayout={isMobileWidth()}
 								/>
