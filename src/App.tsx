@@ -51,6 +51,7 @@ wrapHistory(history, {
 });
 
 const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
+	const { tHtml } = useTranslation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -73,6 +74,19 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 			document.body.classList.remove('hide-zendesk-widget');
 		}
 	}, [props.user]);
+
+	useEffect(() => {
+		if (loadingInfo.state === 'loaded') {
+			const url = new URL(window.location.href);
+			const linked: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked';
+			const hasLinked = url.searchParams.get(linked) !== null;
+			if (hasLinked) {
+				ToastService.success(tHtml('app___je-account-is-gekoppeld'));
+				url.searchParams.delete(linked);
+				history.replace(url.toString().replace(url.origin, ''));
+			}
+		}
+	}, [loadingInfo]);
 
 	// Render
 	const renderApp = () => {
@@ -128,17 +142,6 @@ const queryClient = new QueryClient();
 const Root: FunctionComponent = () => {
 	const { tHtml } = useTranslation();
 	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
-
-	useEffect(() => {
-		const url = new URL(window.location.href);
-		const linked: Avo.Auth.IdpLinkedSuccessQueryParam = 'linked';
-		const hasLinked = url.searchParams.get(linked) !== null;
-		if (hasLinked) {
-			ToastService.success(tHtml('app___je-account-is-gekoppeld'));
-			url.searchParams.delete(linked);
-			history.replace(url.toString().replace(url.origin, ''));
-		}
-	}, []);
 
 	return (
 		<QueryClientProvider client={queryClient}>

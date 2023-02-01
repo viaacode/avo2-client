@@ -46,16 +46,13 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 		<Modal
 			className={className}
 			isOpen={isOpen}
-			title={
-				title &&
-				sanitizeHtml(
-					title ||
-						tText(
-							'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
-						),
-					SanitizePreset.basic
-				)
-			}
+			title={sanitizeHtml(
+				title ||
+					tText(
+						'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
+					),
+				SanitizePreset.basic
+			)}
 			size={size}
 			onClose={onClose}
 			scrollable
