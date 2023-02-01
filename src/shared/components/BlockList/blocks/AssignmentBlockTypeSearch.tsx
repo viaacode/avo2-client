@@ -8,6 +8,8 @@ import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionFragmentRichText } from '../../../../collection/components';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 
+import './AssignmentBlockTypeSearch.scss';
+
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: BaseBlockWithMeta;
 	showCollectionButton: boolean;
