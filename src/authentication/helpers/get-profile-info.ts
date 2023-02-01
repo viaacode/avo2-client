@@ -102,15 +102,6 @@ export function getProfileName(user: Avo.User.User | undefined): string {
 	return profileName;
 }
 
-export function getProfileAlias(user: Avo.User.User | undefined): string {
-	if (!user) {
-		throw new CustomError(
-			'Failed to get profile alias because the logged in user is undefined'
-		);
-	}
-	return get(user, 'profile.alias', '');
-}
-
 export function getProfileAvatar(user: Avo.User.User | undefined): string {
 	const profile = get(user, 'profile');
 	if (!profile) {

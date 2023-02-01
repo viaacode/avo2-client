@@ -24,6 +24,7 @@ import {
 import { Avo } from '@viaa/avo2-types';
 import { ClientEducationOrganization } from '@viaa/avo2-types/types/education-organizations';
 import { compact, get, isNil } from 'lodash-es';
+import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
@@ -34,7 +35,7 @@ import { Dispatch } from 'redux';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { getProfileAlias, getProfileFromUser } from '../../authentication/helpers/get-profile-info';
+import { getProfileFromUser } from '../../authentication/helpers/get-profile-info';
 import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
@@ -47,7 +48,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import { ROUTE_PARTS } from '../../shared/constants';
-import { CustomError, formatDate } from '../../shared/helpers';
+import { CustomError, formatDate, getEnv } from '../../shared/helpers';
 import { stringToTagInfo } from '../../shared/helpers/string-to-select-options';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import { ToastService } from '../../shared/services';
@@ -100,9 +101,9 @@ const Profile: FunctionComponent<
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		ClientEducationOrganization[]
 	>(get(user, 'profile.organizations', []));
-	const [firstName, setFirstName] = useState<string>(get(user, 'first_name') || '');
-	const [lastName, setLastName] = useState<string>(get(user, 'last_name') || '');
-	const [alias, setAlias] = useState<string>(user ? getProfileAlias(user) : '');
+	const firstName = user?.first_name || '';
+	const lastName = user?.last_name || '';
+	const email = user?.mail || '';
 	const [avatar, setAvatar] = useState<string | null>(
 		get(getProfileFromUser(user, true), 'avatar', null)
 	);
@@ -121,9 +122,6 @@ const Profile: FunctionComponent<
 		get(getProfileFromUser(user, true), 'company_id', null)
 	);
 	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
-	const [profileErrors, setProfileErrors] = useState<
-		Partial<{ [prop in keyof UpdateProfileValues]: string }>
-	>({});
 	const [usersInSameCompany, setUsersInSameCompany] = useState<Partial<Avo.User.Profile>[]>([]);
 
 	const isExceptionAccount = get(user, 'profile.is_exception', false);
@@ -326,9 +324,7 @@ const Profile: FunctionComponent<
 			setIsSaving(true);
 			const profileId: string = getProfileId(user);
 			const newProfileInfo: Partial<UpdateProfileValues> = {
-				firstName,
-				lastName,
-				alias,
+				alias: '',
 				title,
 				bio,
 				userId: user.uid,
@@ -356,15 +352,6 @@ const Profile: FunctionComponent<
 				await SettingsService.updateProfileInfo(getProfileFromUser(user), newProfileInfo);
 			} catch (err) {
 				setIsSaving(false);
-				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
-					ToastService.danger(
-						t('settings/components/profile___deze-schermnaam-is-reeds-in-gebruik')
-					);
-					setProfileErrors({
-						alias: t('settings/components/profile___schermnaam-is-reeds-in-gebruik'),
-					});
-					return;
-				}
 				throw err;
 			}
 
@@ -673,6 +660,20 @@ const Profile: FunctionComponent<
 		}
 	};
 
+	const generateEditProfileInfoLink = () => {
+		return stringifyUrl({
+			url: getEnv('SSUM_ACCOUNT_EDIT_URL') || '',
+			query: {
+				redirect_to: stringifyUrl({
+					url: getEnv('PROXY_URL') + '/auth/global-logout',
+					query: {
+						returnToUrl: window.location.href,
+					},
+				}),
+			},
+		});
+	};
+
 	const renderProfilePage = () => {
 		return (
 			<Container mode="vertical" className="p-profile-page">
@@ -681,43 +682,35 @@ const Profile: FunctionComponent<
 						<Column size="3-7">
 							<Form type="standard">
 								<>
-									<FormGroup
-										label={t('settings/components/account___voornaam')}
-										labelFor="first_name"
-										error={get(profileErrors, 'first_name')}
-									>
-										<TextInput
-											id="first_name"
-											value={firstName || ''}
-											onChange={setFirstName}
-										/>
-									</FormGroup>
+									<div className="profile-actions">
+										<FormGroup
+											label={t('settings/components/account___voornaam')}
+											labelFor="first_name"
+										>
+											{firstName}
+										</FormGroup>
+										<a href={generateEditProfileInfoLink()}>
+											<Button
+												type="secondary"
+												label={t(
+													'settings/components/account___wijzig-gegevens'
+												)}
+											/>
+										</a>
+									</div>
 									<FormGroup
 										label={t('settings/components/account___achternaam')}
 										labelFor="last_name"
-										error={get(profileErrors, 'last_name')}
 									>
-										<TextInput
-											id="last_name"
-											value={lastName || ''}
-											onChange={setLastName}
-										/>
+										{lastName}
 									</FormGroup>
 									{!isPupil && (
 										<>
 											<FormGroup
-												label={t('settings/components/profile___nickname')}
-												labelFor="alias"
-												error={get(profileErrors, 'alias')}
+												label={t('settings/components/account___email')}
+												labelFor="email"
 											>
-												<TextInput
-													id="alias"
-													placeholder={t(
-														'settings/components/profile___een-unieke-gebruikersnaam'
-													)}
-													value={alias || ''}
-													onChange={setAlias}
-												/>
+												{email}
 											</FormGroup>
 											<FormGroup
 												label={t('settings/components/profile___functie')}
