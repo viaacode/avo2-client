@@ -18,62 +18,62 @@
 
 	.m-admin-layout-content {
 		overflow-y: auto;
-		height: calc(100vh - 64px);
+		height: calc(100vh - 6.4rem);
 
 		> .o-container-vertical {
-			padding-bottom: 400px; // Leave space for the dropdown to open without having to scroll again
+			padding-bottom: 40rem; // Leave space for the dropdown to open without having to scroll again
 		}
 	}
-}
 
-.l-admin--with-actions {
-	// Prevent overlap with admin actions bar when present
-	padding-bottom: $admin-actions-bar-height;
-}
-
-.c-table.c-table_detail-page {
-	tr {
-		&:nth-child(even) {
-			background-color: #eee;
-		}
-
-		th,
-		td {
-			padding: 10px 10px;
-			vertical-align: middle;
-		}
-
-		th {
-			text-align: right;
-		}
-	}
-}
-
-.c-table {
-	margin-top: 20px !important;
-}
-
-.c-table__row {
-	border: 1px solid lightgray;
-
-	&--header {
-		padding: 20px;
+	&.l-admin--with-actions {
+		// Prevent overlap with admin actions bar when present
+		padding-bottom: $admin-actions-bar-height;
 	}
 
-	&--header th:nth-child(2) {
+	.c-table.c-table_detail-page {
+		tr {
+			&:nth-child(even) {
+				background-color: #eee;
+			}
+
+			th,
+			td {
+				padding: 1rem 1rem;
+				vertical-align: middle;
+			}
+
+			th {
+				text-align: right;
+			}
+		}
+	}
+
+	.c-table {
+		margin-top: 2rem !important;
+	}
+
+	.c-table__row {
+		border: 1px solid lightgray;
+
+		&--header {
+			padding: 2rem;
+		}
+
+		&--header th:nth-child(2) {
+			border-left: 1px solid lightgray;
+		}
+	}
+
+	.c-table__cell {
+		justify-content: center;
+
+		&--header {
+			padding: 1rem;
+		}
+	}
+
+	.c-table td:nth-child(2) {
 		border-left: 1px solid lightgray;
+		padding: 3rem;
 	}
-}
-
-.c-table__cell {
-	justify-content: center;
-
-	&--header {
-		padding: 10px;
-	}
-}
-
-.c-table td:nth-child(2) {
-	border-left: 1px solid lightgray;
-	padding: 30px;
 }
