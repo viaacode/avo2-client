@@ -63,32 +63,25 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		icon: {
 			component: ({ name }: { name: string }) => <Icon name={name as IconName} />,
 			componentProps: {
-				add: { name: 'plus' },
-				view: { name: 'eye' },
-				angleDown: { name: 'caret-down' },
-				angleUp: { name: 'caret-up' },
-				angleLeft: { name: 'caret-left' },
-				angleRight: { name: 'caret-right' },
-				delete: { name: 'delete' },
-				edit: { name: 'edit' },
-				filter: { name: 'search' },
-				arrowUp: { name: 'arrow-up' },
-				sortTable: { name: 'chevrons-up-and-down' },
-				arrowDown: { name: 'arrow-down' },
-				chevronLeft: { name: 'chevron-left' },
+				add: { name: IconName.plus },
+				view: { name: IconName.eye },
+				angleDown: { name: IconName.caretDown },
+				angleUp: { name: IconName.caretUp },
+				angleLeft: { name: IconName.caretLeft },
+				angleRight: { name: IconName.caretRight },
+				delete: { name: IconName.delete },
+				edit: { name: IconName.edit },
+				filter: { name: IconName.search },
+				arrowUp: { name: IconName.arrowUp },
+				sortTable: { name: IconName.chevronsUpAndDown },
+				arrowDown: { name: IconName.arrowDown },
+				chevronLeft: { name: IconName.chevronLeft },
 			},
 			list: GET_ICON_LIST_CONFIG,
 		},
 		components: {
 			loader: {
 				component: () => <Spinner size="large" />,
-			},
-			table: {
-				sortingIcons: {
-					asc: <Icon className="c-sorting-icon" name={IconName.chevronUp} />,
-					default: <Icon className="c-sorting-icon" name={IconName.chevronsUpAndDown} />,
-					desc: <Icon className="c-sorting-icon" name={IconName.chevronDown} />,
-				},
 			},
 			buttonTypes: () => [
 				{
