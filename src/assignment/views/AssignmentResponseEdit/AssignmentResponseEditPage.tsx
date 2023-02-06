@@ -1,4 +1,4 @@
-import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
@@ -66,7 +66,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 					message: tText(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-kan-geen-antwoorden-indienen-op-deze-opdracht-aangezien-je-geen-leerling-bent-gebruikt-de-bekijk-als-leerling-knop-om-te-zien-we-je-leerlingen-zien'
 					),
-					icon: 'user-student',
+					icon: IconName.userStudent,
 				});
 				setAssignmentLoading(false);
 				return;
@@ -77,7 +77,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 					message: tText(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
-					icon: 'lock',
+					icon: IconName.lock,
 				});
 				setAssignmentLoading(false);
 				return;
@@ -183,7 +183,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 					message={tText(
 						'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden'
 					)}
-					icon={'search'}
+					icon={IconName.search}
 				/>
 			);
 		}
@@ -214,7 +214,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 					message={tText(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
 					)}
-					icon="alert-triangle"
+					icon={IconName.alertTriangle}
 				/>
 			);
 		}

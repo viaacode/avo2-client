@@ -5,6 +5,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	IconName,
 	// Flex,
 	MenuSearchResultContent,
 	MenuSearchResultItemInfo,
@@ -149,7 +150,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps>
 							<DropdownButton>
 								<TextInput
 									placeholder={tText('home/views/home___vul-een-zoekterm-in')}
-									icon="search"
+									icon={IconName.search}
 									value={searchTerms}
 									onChange={(searchTerm) => handleSearchTermChanged(searchTerm)}
 									onKeyUp={handleSearchFieldKeyUp}

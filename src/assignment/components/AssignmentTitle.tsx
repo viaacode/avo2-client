@@ -1,5 +1,5 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import { ContentInput, Flex, Icon } from '@viaa/avo2-components';
+import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
 import React, { Dispatch, FC, SetStateAction, useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
@@ -17,7 +17,7 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 	return useMemo(
 		() => (
 			<Flex center className="u-spacer-top-l">
-				<Icon name="clipboard" size="large" />
+				<Icon name={IconName.clipboard} size="large" />
 
 				<BlockHeading className="u-spacer-left" type="h2">
 					<Controller
@@ -31,8 +31,8 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 									placeholder={tText(
 										'assignment/views/assignment-create___placeholder'
 									)}
-									nodeCancel={<Icon name="x" size="small" />}
-									nodeSubmit={<Icon name="check" size="small" />}
+									nodeCancel={<Icon name={IconName.x} size="small" />}
+									nodeSubmit={<Icon name={IconName.check} size="small" />}
 									onChange={(title) => {
 										field.onChange(title);
 										setAssignment &&

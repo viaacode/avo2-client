@@ -4,6 +4,7 @@ import {
 	ButtonToolbar,
 	Flex,
 	Form,
+	IconName,
 	ImageGrid,
 	Modal,
 	ModalBody,
@@ -91,7 +92,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 						) : !videoStills.length ? (
 							<Blankslate
 								body=""
-								icon="search"
+								icon={IconName.search}
 								title={tText(
 									'collection/components/modals/collection-stills-modal___er-zijn-geen-thumbnails-beschikbaar-voor-de-fragmenten-in-de-collectie'
 								)}

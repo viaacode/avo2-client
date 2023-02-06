@@ -8,6 +8,7 @@ import {
 	Form,
 	FormGroup,
 	Grid,
+	IconName,
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
@@ -55,7 +56,7 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 				message={tText(
 					'settings/components/account___je-hebt-geen-toegang-tot-de-account-pagina'
 				)}
-				icon="lock"
+				icon={IconName.lock}
 			/>
 		);
 	}

@@ -1,4 +1,4 @@
-import { Icon } from '@viaa/avo2-components';
+import { Icon, IconName } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { flatten } from 'lodash-es';
 import React, { FunctionComponent, ReactElement } from 'react';
@@ -100,7 +100,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 						to={APP_PATH.LOGOUT.route}
 					>
 						<span title={tText('admin/shared/components/sidebar/sidebar___uitloggen')}>
-							<Icon name="log-out" />
+							<Icon name={IconName.logOut} />
 						</span>
 					</Link>
 					<Link
@@ -108,7 +108,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 						to={APP_PATH.HOME.route}
 					>
 						<span title={tText('admin/shared/components/sidebar/sidebar___homepagina')}>
-							<Icon name="home" />
+							<Icon name={IconName.home} />
 						</span>
 					</Link>
 				</div>

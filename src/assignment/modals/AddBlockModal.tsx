@@ -1,5 +1,13 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import { Button, Icon, Modal, ModalBody, ModalProps, Spacer } from '@viaa/avo2-components';
+import {
+	Button,
+	Icon,
+	IconName,
+	Modal,
+	ModalBody,
+	ModalProps,
+	Spacer,
+} from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
@@ -55,7 +63,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 			},
 			{
 				type: 'COLLECTIE',
-				icon: 'collection',
+				icon: IconName.collection,
 				title: tHtml('assignment/modals/add-block___kijken-luisteren-collectie'),
 				description: tHtml(
 					'assignment/modals/add-block___start-je-opdracht-vanaf-een-bestaande-collectie-fragmenten-uit-je-werkruimte'
@@ -123,7 +131,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 										{!item.disabled && (
 											<Button
 												id={`c-add-block__${item.type}-button`}
-												icon="plus"
+												icon={IconName.plus}
 												type="primary"
 												onClick={() => {
 													onConfirm && onConfirm(item.type);

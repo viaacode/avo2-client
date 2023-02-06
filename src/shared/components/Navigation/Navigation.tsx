@@ -3,6 +3,7 @@ import {
 	Button,
 	Container,
 	Icon,
+	IconName,
 	MenuContent,
 	Navbar,
 	Toolbar,
@@ -165,7 +166,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 								name={getFirstName(user) || ''}
 								image={getProfileAvatar(user)}
 							/>
-							<Icon name="caret-down" size="small" />
+							<Icon name={IconName.caretDown} size="small" />
 						</div>
 					),
 					component: (
@@ -275,7 +276,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-very-little-space">
 									<Button
-										icon="menu"
+										icon={IconName.menu}
 										type="borderless-i"
 										title={tText(
 											'shared/components/navigation/navigation___open-het-navigatie-menu'

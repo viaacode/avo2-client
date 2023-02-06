@@ -1,6 +1,6 @@
 import { UserGroupOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@meemoo/react-components';
-import { Icon, Toolbar, ToolbarRight } from '@viaa/avo2-components';
+import { Icon, IconName, Toolbar, ToolbarRight } from '@viaa/avo2-components';
 import React, { FunctionComponent, useRef, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 
@@ -26,7 +26,7 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 				{search && (
 					<Button
 						variants={['text', 'icon', 'xxs']}
-						icon={<Icon name="x" aria-hidden />}
+						icon={<Icon name={IconName.x} aria-hidden />}
 						aria-label={tText(
 							'pages/admin/gebruikersbeheer/permissies/index___opnieuw-instellen'
 						)}
@@ -37,7 +37,7 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 				)}
 				<Button
 					variants={['text', 'icon', 'xxs']}
-					icon={<Icon name="search" aria-hidden />}
+					icon={<Icon name={IconName.search} aria-hidden />}
 					aria-label={tText('pages/admin/gebruikersbeheer/permissies/index___uitvoeren')}
 					onClick={() => permissionsRef.current?.onSearch(search)}
 				/>

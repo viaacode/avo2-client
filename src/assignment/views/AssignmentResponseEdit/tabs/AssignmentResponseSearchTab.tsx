@@ -1,4 +1,4 @@
-import { Button, Container, Icon, Spacer } from '@viaa/avo2-components';
+import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
@@ -194,7 +194,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		return (
 			<Button
 				type="tertiary"
-				icon="collection"
+				icon={IconName.collection}
 				label={tText(
 					'assignment/views/assignment-response-edit___voeg-toe-aan-mijn-collectie'
 				)}
@@ -243,7 +243,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 									});
 								}}
 							>
-								<Icon name="chevron-left" size="small" type="arrows" />
+								<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 								{tText(
 									'assignment/views/assignment-response-edit___zoekresultaten'
 								)}
@@ -262,7 +262,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 						'assignment/views/assignment-response-edit___je-hebt-geen-rechten-om-te-zoeken-binnen-een-opdracht'
 					)}
 					actionButtons={['home', 'helpdesk']}
-					icon="lock"
+					icon={IconName.lock}
 				/>
 			);
 		}

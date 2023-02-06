@@ -1,5 +1,5 @@
 import { ColorOption } from '@meemoo/admin-core-ui';
-import { Button, Flex, FlexItem, Spacer, TagList, TagOption } from '@viaa/avo2-components';
+import { Button, Flex, FlexItem, IconName, Spacer, TagList, TagOption } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
@@ -148,7 +148,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 				</FlexItem>
 				<FlexItem shrink>
 					<Button
-						icon="settings"
+						icon={IconName.settings}
 						title="Beheer je vakken en projecten"
 						ariaLabel="Beheer je vakken en projecten"
 						type="borderless"

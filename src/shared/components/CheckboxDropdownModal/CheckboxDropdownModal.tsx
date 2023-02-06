@@ -11,6 +11,7 @@ import {
 	FormGroup,
 	Grid,
 	Icon,
+	IconName,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
@@ -254,7 +255,7 @@ export const CheckboxDropdownModal: FunctionComponent<CheckboxDropdownModalProps
 									placeholder={tText(
 										'shared/components/checkbox-dropdown-modal/checkbox-dropdown-modal___zoeken'
 									)}
-									icon="search"
+									icon={IconName.search}
 									value={searchKeyword}
 									onChange={(value) => {
 										setSearchKeyword(value);
@@ -362,7 +363,7 @@ export const renderDropdownButton = (
 				)}
 				<Icon
 					className="c-button__icon"
-					name={isOpen ? 'caret-up' : 'caret-down'}
+					name={isOpen ? IconName.caretUp : IconName.caretDown}
 					size="small"
 					type="arrows"
 				/>

@@ -1,3 +1,4 @@
+import { IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
@@ -144,7 +145,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'views',
 		tooltip: tText('admin/collections-or-bundles/collections-or-bundles___bekeken'),
-		icon: 'eye',
+		icon: IconName.eye,
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.number,
@@ -152,7 +153,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'in_collection',
 		tooltip: tText('admin/items/items___aantal-keer-opgenomen-in-collectie'),
-		icon: 'collection',
+		icon: IconName.collection,
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.number,
@@ -162,7 +163,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		tooltip: tText(
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
 		),
-		icon: 'bookmark',
+		icon: IconName.bookmark,
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.number,
@@ -170,7 +171,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	{
 		id: 'quick_lane_links',
 		tooltip: tText('admin/items/items___aantal-keer-gedeeld-met-leerlingen'),
-		icon: 'link-2',
+		icon: IconName.link2,
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.number,
@@ -180,7 +181,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 		tooltip: tText(
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
 		),
-		icon: 'clipboard',
+		icon: IconName.clipboard,
 		sortable: true,
 		dataType: TableColumnDataType.number,
 	},

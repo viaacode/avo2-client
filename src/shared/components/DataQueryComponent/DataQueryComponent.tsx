@@ -1,4 +1,4 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
+import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
@@ -109,7 +109,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 						message={tText(
 							'shared/components/data-query-component/data-query-component___dit-item-is-verwijderd'
 						)}
-						icon="delete"
+						icon={IconName.delete}
 					/>
 				);
 			}
@@ -121,7 +121,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 					message={tText(
 						'shared/components/data-query-component/data-query-component___er-ging-iets-mis-tijdens-het-ophalen'
 					)}
-					icon="alert-triangle"
+					icon={IconName.alertTriangle}
 					actionButtons={actionButtons}
 				/>
 			);
@@ -146,7 +146,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 						'shared/components/data-query-component/data-query-component___het-opgevraagde-object-werd-niet-gevonden'
 					)
 				}
-				icon="search"
+				icon={IconName.search}
 				actionButtons={actionButtons}
 			/>
 		);
@@ -163,7 +163,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 							'shared/components/data-query-component/data-query-component___je-hebt-geen-rechten-om-deze-pagina-te-bekijken'
 						)
 					}
-					icon="lock"
+					icon={IconName.lock}
 				/>
 			</PermissionGuardFail>
 		</PermissionGuard>

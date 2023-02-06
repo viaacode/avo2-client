@@ -1,3 +1,4 @@
+import { IconName } from '@viaa/avo2-components';
 import React, { FunctionComponent, ReactNode } from 'react';
 
 import { ErrorView } from '../../../../error/views';
@@ -30,7 +31,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 					message={tText(
 						'assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud'
 					)}
-					icon="search"
+					icon={IconName.search}
 				/>
 			);
 		}

@@ -2,6 +2,7 @@ import {
 	Alert,
 	Button,
 	Icon,
+	IconName,
 	Spacer,
 	TextInput,
 	Tooltip,
@@ -143,7 +144,7 @@ export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange,
 			<Tooltip position="bottom" contentClassName="m-stamboek-tooltip">
 				<TooltipTrigger>
 					<span>
-						<Icon className="a-info-icon" name="info" size="small" />
+						<Icon className="a-info-icon" name={IconName.info} size="small" />
 					</span>
 				</TooltipTrigger>
 				<TooltipContent>

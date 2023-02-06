@@ -1,4 +1,4 @@
-import { Button, ButtonToolbar, Container, Icon, Spacer } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -45,7 +45,7 @@ const LinkYourAccount: FunctionComponent<RouteComponentProps> = ({ history }) =>
 				<Spacer margin="bottom-extra-large">
 					<Spacer margin="bottom">
 						<div className="c-requirement">
-							<Icon name="circle-check" type="multicolor" />
+							<Icon name={IconName.circleCheck} type="multicolor" />
 							<div>
 								<Spacer margin="left-small">
 									<p>
@@ -59,7 +59,7 @@ const LinkYourAccount: FunctionComponent<RouteComponentProps> = ({ history }) =>
 					</Spacer>
 					<Spacer margin="bottom">
 						<div className="c-requirement">
-							<Icon name="circle-check" type="multicolor" />
+							<Icon name={IconName.circleCheck} type="multicolor" />
 							<div>
 								<Spacer margin="left-small">
 									<p>

@@ -1,5 +1,5 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import { Button, Container } from '@viaa/avo2-components';
+import { Button, Container, IconName } from '@viaa/avo2-components';
 import React, { FC, ReactNode } from 'react';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
@@ -25,7 +25,7 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 
 	const closeButton = (
 		<Button
-			icon="close"
+			icon={IconName.close}
 			label={
 				isMobileWidth()
 					? undefined
@@ -46,7 +46,7 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 	return (
 		<div className="c-assignment-response-page c-assignment-response-page--edit">
 			<AlertBar
-				icon="alert-circle"
+				icon={IconName.alertCircle}
 				textLeft={tHtml(
 					'assignment/components/pupil-collection-for-teacher-preview___je-bent-aan-het-kijken-als-lesgever'
 				)}

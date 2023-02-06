@@ -4,6 +4,7 @@ import {
 	Flex,
 	Form,
 	FormGroup,
+	IconName,
 	Pagination,
 	Select,
 	SelectOption,
@@ -251,7 +252,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 						<FormGroup className="c-content-filters__search" inlineMode="grow">
 							<TextInput
 								placeholder={searchTextPlaceholder}
-								icon="search"
+								icon={IconName.search}
 								onChange={setSearchTerm}
 								onKeyUp={handleKeyUp}
 								value={searchTerm}

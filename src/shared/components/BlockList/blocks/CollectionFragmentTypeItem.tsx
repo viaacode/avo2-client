@@ -1,4 +1,4 @@
-import { DefaultProps } from '@viaa/avo2-components';
+import { DefaultProps, IconName } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FC, useMemo } from 'react';
 
@@ -102,7 +102,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 					{custom && canOpenOriginal && (
 						<CollapsibleColumn
 							button={{
-								icon: (expanded) => (expanded ? 'eye-off' : 'eye'),
+								icon: (expanded) => (expanded ? IconName.eyeOff : IconName.eye),
 								label: (expanded) =>
 									expanded
 										? tText(

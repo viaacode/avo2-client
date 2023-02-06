@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '@viaa/avo2-components';
+import { Button, ButtonProps, IconName } from '@viaa/avo2-components';
 import React, { ReactNode, useState } from 'react';
 
 import CutFragmentModal, {
@@ -17,7 +17,7 @@ export function useCutModal(): [
 	const renderButton = (props?: Partial<ButtonProps>) => {
 		return (
 			<Button
-				icon="scissors"
+				icon={IconName.scissors}
 				label={tText('collection/components/fragment/fragment-edit___knippen')}
 				title={tText(
 					'collection/components/fragment/fragment-edit___knip-een-fragment-uit-dit-video-audio-fragment'

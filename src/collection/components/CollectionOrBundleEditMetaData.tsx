@@ -250,7 +250,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 									{/* TODO: DISABLED FEATURE
 											{ isCollection &&
 												<FormGroup label={tText('collection/views/collection-edit-meta-data___map')} labelFor="mapId">
-													<Button type="secondary" icon="add" label={tText('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
+													<Button type="secondary" icon={IconName.add} label={tText('collection/views/collection-edit-meta-data___voeg-toe-aan-een-map')} />
 												</FormGroup>
 											}
 										*/}

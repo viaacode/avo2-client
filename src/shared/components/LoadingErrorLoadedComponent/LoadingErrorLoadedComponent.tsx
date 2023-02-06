@@ -1,4 +1,4 @@
-import { Container, Flex, Spinner } from '@viaa/avo2-components';
+import { Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
 import React, { FunctionComponent, ReactElement } from 'react';
 
 import { ErrorView } from '../../../error/views';
@@ -44,7 +44,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 					'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-is-iets-mis-gegaan-bij-het-laden-van-de-gegevens'
 				)
 			}
-			icon={loadingInfo.icon || 'alert-triangle'}
+			icon={loadingInfo.icon || IconName.alertTriangle}
 			actionButtons={loadingInfo.actionButtons || ['home']}
 		/>
 	);
@@ -66,7 +66,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 							'shared/components/loading-error-loaded-component/loading-error-loaded-component___het-gevraagde-object-is-niet-gevonden'
 						)
 					}
-					icon={'search'}
+					icon={IconName.search}
 					actionButtons={['home', 'helpdesk']}
 				/>
 			);

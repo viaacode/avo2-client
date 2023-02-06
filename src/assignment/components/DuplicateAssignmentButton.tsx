@@ -1,4 +1,4 @@
-import { Button, ButtonProps, DefaultProps } from '@viaa/avo2-components';
+import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
 import React, { FC, MouseEvent } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -30,7 +30,7 @@ const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps> = ({
 				'assignment/components/duplicate-assignment-button___dupliceer-de-opdracht'
 			)}
 			type="borderless"
-			icon="copy"
+			icon={IconName.copy}
 			{...props}
 			onClick={async (e) => {
 				const res = await duplicateAssignment(assignment);

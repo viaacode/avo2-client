@@ -1,5 +1,6 @@
 import {
 	Button,
+	IconName,
 	MetaData,
 	MetaDataItem,
 	Pagination,
@@ -229,7 +230,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 							</span>
 						)}
 					</MetaDataItem>
-					<MetaDataItem icon="eye" label={String(contentViews || 0)} />
+					<MetaDataItem icon={IconName.eye} label={String(contentViews || 0)} />
 				</MetaData>
 			</div>
 		</div>
@@ -239,7 +240,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		<Button
 			title={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
 			ariaLabel={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-			icon="delete"
+			icon={IconName.delete}
 			type="danger-hover"
 			onClick={() => {
 				setBookmarkToDelete(bookmarkInfo);
@@ -295,7 +296,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 	const renderEmptyFallback = () => (
 		<ErrorView
-			icon="bookmark"
+			icon={IconName.bookmark}
 			message={tText('workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt')}
 		>
 			<p>
@@ -306,7 +307,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			<Spacer margin="top">
 				<Button
 					type="primary"
-					icon="search"
+					icon={IconName.search}
 					label={tText('workspace/views/bookmarks___zoek-een-item')}
 					title={tText(
 						'workspace/views/bookmarks-overview___zoek-een-item-en-maak-er-een-bladwijzer-van'

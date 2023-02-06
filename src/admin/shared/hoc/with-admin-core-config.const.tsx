@@ -2,7 +2,7 @@ import { AdminConfig, ContentBlockType, LinkInfo, ToastInfo } from '@meemoo/admi
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { DatabaseType } from '@viaa/avo2-types';
-import { compact, noop } from 'lodash-es';
+import { capitalize, compact, lowerCase, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -77,7 +77,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				arrowDown: { name: 'arrow-down' },
 				chevronLeft: { name: 'chevron-left' },
 			},
-			list: () => [],
+			list: GET_ICON_LIST_CONFIG,
 		},
 		components: {
 			loader: {
@@ -85,9 +85,9 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 			},
 			table: {
 				sortingIcons: {
-					asc: <Icon className="c-sorting-icon" name="chevron-up" />,
-					default: <Icon className="c-sorting-icon" name="chevrons-up-and-down" />,
-					desc: <Icon className="c-sorting-icon" name="chevron-down" />,
+					asc: <Icon className="c-sorting-icon" name={IconName.chevronUp} />,
+					default: <Icon className="c-sorting-icon" name={IconName.chevronsUpAndDown} />,
+					desc: <Icon className="c-sorting-icon" name={IconName.chevronDown} />,
 				},
 			},
 			buttonTypes: () => [
@@ -240,3 +240,10 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 	};
 }
+
+export const GET_ICON_LIST_CONFIG = (): { value: IconName; label: string }[] => {
+	return Object.values(IconName).map((iconName: IconName) => ({
+		value: iconName,
+		label: capitalize(lowerCase(iconName)),
+	}));
+};

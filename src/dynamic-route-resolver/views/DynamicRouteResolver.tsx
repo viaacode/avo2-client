@@ -4,7 +4,7 @@ import {
 	ContentPageService,
 	DbContentPage,
 } from '@meemoo/admin-core-ui';
-import { Flex, Spinner } from '@viaa/avo2-components';
+import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
@@ -192,7 +192,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			setLoadingInfo({
 				state: 'error',
 				message: getPageNotFoundError(loginState?.message === 'LOGGED_IN'),
-				icon: 'search',
+				icon: IconName.search,
 			});
 		}
 	}, [
@@ -295,7 +295,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		}
 		if (routeInfo && routeInfo.type === 'depublishedContentPage') {
 			return (
-				<ErrorView icon="clock" actionButtons={['home', 'helpdesk']} message="">
+				<ErrorView icon={IconName.clock} actionButtons={['home', 'helpdesk']} message="">
 					{GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
 						GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]}
 				</ErrorView>

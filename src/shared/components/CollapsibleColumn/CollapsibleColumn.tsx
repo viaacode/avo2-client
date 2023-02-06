@@ -36,12 +36,12 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, child
 		}
 	});
 
-	const getButtonIcon = () => {
+	const getButtonIcon = (): IconName => {
 		if (button?.icon) {
 			return button.icon(expanded);
 		}
 
-		return expanded ? 'close' : 'plus';
+		return expanded ? IconName.close : IconName.plus;
 	};
 
 	const getButtonLabel = () => {

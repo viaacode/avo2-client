@@ -1,4 +1,4 @@
-import { Icon } from '@viaa/avo2-components';
+import { Icon, IconName } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
 
@@ -77,7 +77,7 @@ const DraggableList: FunctionComponent<DraggableListProps> = ({
 					</div>
 					<div className="o-grid-col-static">
 						<div className="u-opacity-50">
-							<Icon name="menu" />
+							<Icon name={IconName.menu} />
 						</div>
 					</div>
 				</div>

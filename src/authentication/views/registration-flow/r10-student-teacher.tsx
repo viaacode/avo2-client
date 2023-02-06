@@ -1,5 +1,5 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import { Button, Container, Spacer } from '@viaa/avo2-components';
+import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
@@ -35,7 +35,7 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 						<Button
 							type="secondary"
 							onClick={history.goBack}
-							icon="arrow-left"
+							icon={IconName.arrowLeft}
 							title={tText(
 								'authentication/views/registration-flow/r-10-student-teacher___ga-terug-naar-de-manuele-account-aanvraag-pagina'
 							)}

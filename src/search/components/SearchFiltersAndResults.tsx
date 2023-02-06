@@ -4,6 +4,7 @@ import {
 	Flex,
 	Form,
 	FormGroup,
+	IconName,
 	Navbar,
 	Select,
 	Spacer,
@@ -439,7 +440,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 											)}
 											value={searchTerms}
 											className="c-search-term-input-field"
-											icon="search"
+											icon={IconName.search}
 											onChange={setSearchTerms}
 										/>
 									</FormGroup>
@@ -464,7 +465,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 												ariaLabel={tText(
 													'search/views/search___verwijder-alle-filters'
 												)}
-												icon={isMobileWidth() ? 'delete' : undefined}
+												icon={isMobileWidth() ? IconName.delete : undefined}
 												type={isMobileWidth() ? 'borderless' : 'link'}
 												onClick={deleteAllFilters}
 											/>

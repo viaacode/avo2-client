@@ -1,4 +1,4 @@
-import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import React, { ComponentType, FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
@@ -75,7 +75,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 					message: tText(
 						'authentication/components/secured-route___het-inloggen-is-mislukt-controleer-je-internet-verbinding-of-probeer-later-opnieuw'
 					),
-					icon: 'alert-triangle',
+					icon: IconName.alertTriangle,
 					actionButtons: 'home, helpdesk',
 				}
 			),
