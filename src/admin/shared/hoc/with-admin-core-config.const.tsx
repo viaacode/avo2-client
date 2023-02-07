@@ -35,7 +35,8 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 		firstName: user?.first_name || undefined,
 		lastName: user?.last_name || undefined,
-		fullName: user?.full_name || undefined,
+		fullName:
+			user?.full_name || [user?.first_name, user?.last_name].join(' ').trim() || undefined,
 		lastAccessAt: user?.last_access_at || undefined, // TODO enable once last_access_at field is added to the database
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		permissions: user?.profile?.permissions as any[],
