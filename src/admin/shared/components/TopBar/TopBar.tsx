@@ -1,12 +1,9 @@
-import React, { FunctionComponent, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
-import { RouteComponentProps, withRouter } from 'react-router';
-
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
-	BlockHeading,
 	Button,
 	Container,
 	Flex,
+	IconName,
 	Navbar,
 	Spacer,
 	Toolbar,
@@ -15,6 +12,10 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import React, { FunctionComponent, ReactNode } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router';
+
+import useTranslation from '../../../../shared/hooks/useTranslation';
 
 import './TopBar.scss';
 
@@ -33,7 +34,7 @@ export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProp
 	right,
 	size,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	return (
 		<Navbar className="c-top-bar">
@@ -46,11 +47,11 @@ export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProp
 									<Spacer margin="right">
 										<Button
 											className="c-top-bar__back"
-											icon="chevron-left"
-											ariaLabel={t(
+											icon={IconName.chevronLeft}
+											ariaLabel={tText(
 												'admin/shared/components/top-bar/top-bar___ga-terug-naar-het-vorig-scherm'
 											)}
-											title={t(
+											title={tText(
 												'admin/shared/components/top-bar/top-bar___ga-terug-naar-het-vorig-scherm'
 											)}
 											onClick={onClickBackButton}

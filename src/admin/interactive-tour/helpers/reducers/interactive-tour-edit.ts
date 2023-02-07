@@ -1,11 +1,10 @@
-import produce, { Draft } from 'immer';
+import { RichEditorState } from '@meemoo/react-components';
+import type { Avo } from '@viaa/avo2-types';
+import immer, { Draft } from 'immer';
 import { cloneDeep } from 'lodash-es';
 
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
-import { Avo } from '@viaa/avo2-types';
-
-import { ToastService } from '../../../../shared/services';
-import i18n from '../../../../shared/translations/i18n';
+import { tHtml } from '../../../../shared/helpers/translate';
+import { ToastService } from '../../../../shared/services/toast-service';
 import { ValueOf } from '../../../../shared/types';
 import { InteractiveTourService } from '../../interactive-tour.service';
 import {
@@ -59,7 +58,7 @@ export const INTERACTIVE_TOUR_EDIT_INITIAL_STATE = (): InteractiveTourState => (
 });
 
 // Reducer
-export const interactiveTourEditReducer = produce(
+export const interactiveTourEditReducer = immer(
 	(draft: Draft<InteractiveTourState>, action: InteractiveTourAction) => {
 		// Because we use immer, we have to mutate the draft state in place for it to work properly
 		// We don't have to return anything because our produce() will automagically do that for us
@@ -72,7 +71,7 @@ export const interactiveTourEditReducer = produce(
 
 		if (!draft.currentInteractiveTour) {
 			ToastService.danger(
-				i18n.t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-edit___de-interactieve-tour-is-nog-niet-geladen'
 				)
 			);
@@ -87,13 +86,13 @@ export const interactiveTourEditReducer = produce(
 				};
 				break;
 
-			case InteractiveTourEditActionType.SWAP_STEPS:
+			case InteractiveTourEditActionType.SWAP_STEPS: {
 				if (
 					!draft.currentInteractiveTour.steps ||
 					!draft.currentInteractiveTour.steps.length
 				) {
 					ToastService.danger(
-						i18n.t(
+						tHtml(
 							'admin/interactive-tour/views/interactive-tour-edit___deze-interactive-tour-lijkt-geen-stappen-te-bevatten'
 						)
 					);
@@ -109,21 +108,24 @@ export const interactiveTourEditReducer = produce(
 				);
 				draft.formErrors = {};
 				break;
+			}
 
-			case InteractiveTourEditActionType.REMOVE_STEP:
+			case InteractiveTourEditActionType.REMOVE_STEP: {
 				const newSteps = draft.currentInteractiveTour.steps;
 				newSteps.splice(action.index, 1);
 				draft.currentInteractiveTour.steps = newSteps;
 				draft.formErrors = {};
 				break;
+			}
 
-			case InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP:
+			case InteractiveTourEditActionType.UPDATE_INTERACTIVE_TOUR_PROP: {
 				const prop = action.interactiveTourProp;
 				(draft.currentInteractiveTour as any)[prop] = action.interactiveTourPropValue;
 				if (action.updateInitialInteractiveTour) {
 					(draft.initialInteractiveTour as any)[prop] = action.interactiveTourPropValue;
 				}
 				break;
+			}
 		}
 	}
 );

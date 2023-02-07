@@ -1,17 +1,18 @@
-import { BlockHeading, Button, Container } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import { Button, Container, IconName } from '@viaa/avo2-components';
 import React, { FC, ReactNode } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { isMobileWidth } from '../../shared/helpers';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { AssignmentResponseInfo, BaseBlockWithMeta } from '../assignment.types';
 
 import AssignmentHeading from './AssignmentHeading';
 
 export type PupilCollectionForTeacherPreviewProps = {
 	onClose: () => void;
-	assignmentResponse: Avo.Assignment.Response_v2;
+	assignmentResponse: Omit<AssignmentResponseInfo, 'assignment'>;
 	metadata: ReactNode;
 };
 
@@ -20,19 +21,19 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 	assignmentResponse,
 	metadata,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const closeButton = (
 		<Button
-			icon="close"
+			icon={IconName.close}
 			label={
 				isMobileWidth()
 					? undefined
-					: t(
+					: tText(
 							'assignment/components/pupil-collection-for-teacher-preview___sluit-preview'
 					  )
 			}
-			ariaLabel={t(
+			ariaLabel={tText(
 				'assignment/components/pupil-collection-for-teacher-preview___sluit-preview'
 			)}
 			type="borderless-i"
@@ -45,8 +46,8 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 	return (
 		<div className="c-assignment-response-page c-assignment-response-page--edit">
 			<AlertBar
-				icon="alert-circle"
-				textLeft={t(
+				icon={IconName.alertCircle}
+				textLeft={tHtml(
 					'assignment/components/pupil-collection-for-teacher-preview___je-bent-aan-het-kijken-als-lesgever'
 				)}
 				contentRight={closeButton}
@@ -55,8 +56,7 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 			<Container mode="horizontal">
 				<BlockList
 					blocks={
-						(assignmentResponse?.pupil_collection_blocks ||
-							[]) as Avo.Core.BlockItemBase[]
+						(assignmentResponse?.pupil_collection_blocks || []) as BaseBlockWithMeta[]
 					}
 					config={{
 						ITEM: {

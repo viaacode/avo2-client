@@ -1,9 +1,7 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import type { DocumentNode } from 'graphql';
+import { Flex, IconName, Spinner } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import {
 	PermissionGuard,
@@ -12,10 +10,11 @@ import {
 } from '../../../authentication/components';
 import { Permissions } from '../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../error/views';
-import { dataService } from '../../services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { dataService } from '../../services/data-service';
 
 export interface DataQueryComponentProps {
-	query: DocumentNode;
+	query: string;
 	resultPath?: string;
 	renderData: (data: any, refetch: () => void) => ReactNode;
 	variables?: any;
@@ -28,6 +27,21 @@ export interface DataQueryComponentProps {
 	actionButtons?: Avo.Auth.ErrorActionButton[];
 }
 
+/**
+ * @deprecated Use react-query functions from src/shared/generated/graphql-db-types.ts
+ * @param query
+ * @param variables
+ * @param resultPath
+ * @param renderData
+ * @param ignoreNotFound
+ * @param notFoundMessage
+ * @param showSpinner
+ * @param permissions
+ * @param user
+ * @param noPermissionsMessage
+ * @param actionButtons
+ * @constructor
+ */
 const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	query,
 	variables,
@@ -41,7 +55,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 	noPermissionsMessage,
 	actionButtons = [],
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [result, setResult] = useState<{ loading: boolean; error: any; data: any }>({
 		loading: true,
@@ -58,7 +72,7 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			setResult({
 				loading: false,
 				error: null,
-				data: response.data,
+				data: response,
 			});
 		} catch (err) {
 			setResult({
@@ -92,10 +106,10 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 				// TODO: show different message if a list of items was returned but only some were deleted
 				return (
 					<ErrorView
-						message={t(
+						message={tText(
 							'shared/components/data-query-component/data-query-component___dit-item-is-verwijderd'
 						)}
-						icon="delete"
+						icon={IconName.delete}
 					/>
 				);
 			}
@@ -104,21 +118,21 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 
 			return (
 				<ErrorView
-					message={t(
+					message={tText(
 						'shared/components/data-query-component/data-query-component___er-ging-iets-mis-tijdens-het-ophalen'
 					)}
-					icon="alert-triangle"
+					icon={IconName.alertTriangle}
 					actionButtons={actionButtons}
 				/>
 			);
 		}
 
-		if (isEmpty(get(result, 'data'))) {
+		if (isEmpty(result)) {
 			// Temp empty because of cache clean
 			return renderSpinner();
 		}
 
-		const data = get(result, resultPath ? `data.${resultPath}` : 'data');
+		const data = resultPath ? get(result, resultPath) : result;
 		if (data || ignoreNotFound) {
 			// We always want to wait until the current database operation finishes, before we refetch the changed data
 			return renderData(data, () => setTimeout(fetchQuery, 0));
@@ -128,11 +142,11 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 			<ErrorView
 				message={
 					notFoundMessage ||
-					t(
+					tText(
 						'shared/components/data-query-component/data-query-component___het-opgevraagde-object-werd-niet-gevonden'
 					)
 				}
-				icon="search"
+				icon={IconName.search}
 				actionButtons={actionButtons}
 			/>
 		);
@@ -145,11 +159,11 @@ const DataQueryComponent: FunctionComponent<DataQueryComponentProps> = ({
 				<ErrorView
 					message={
 						noPermissionsMessage ||
-						t(
+						tText(
 							'shared/components/data-query-component/data-query-component___je-hebt-geen-rechten-om-deze-pagina-te-bekijken'
 						)
 					}
-					icon="lock"
+					icon={IconName.lock}
 				/>
 			</PermissionGuardFail>
 		</PermissionGuard>

@@ -1,12 +1,13 @@
-import { Avo } from '@viaa/avo2-types';
+import { IconName } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
-import i18n from '../../shared/translations/i18n';
+import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
-import { ItemsOverviewTableCols } from './items.types';
+import { ItemsOverviewTableCols, UnpublishedItemsOverviewTableCols } from './items.types';
 
 export const ITEMS_PATH = {
 	ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,
@@ -46,21 +47,21 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 ) => any[] = (seriesOptions: CheckboxOption[], cpOptions: CheckboxOption[]) => [
 	{
 		id: 'external_id',
-		label: i18n.t('admin/items/items___pid'),
+		label: tText('admin/items/items___pid'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'title',
-		label: i18n.t('admin/items/items___titel'),
+		label: tText('admin/items/items___titel'),
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.string,
 	},
 	{
 		id: 'series',
-		label: i18n.t('admin/items/items___reeks'),
+		label: tText('admin/items/items___reeks'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
@@ -72,7 +73,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'issued',
-		label: i18n.t('admin/items/items___uitgegeven'),
+		label: tText('admin/items/items___uitgegeven'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -80,7 +81,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'published_at',
-		label: i18n.t('admin/items/items___published'),
+		label: tText('admin/items/items___published'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'DateRangeDropdown',
@@ -88,14 +89,14 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'type',
-		label: i18n.t('admin/items/items___type'),
+		label: tText('admin/items/items___type'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
-				{ label: i18n.t('admin/items/items___video'), id: 'video' },
-				{ label: i18n.t('admin/items/items___audio'), id: 'audio' },
+				{ label: tText('admin/items/items___video'), id: 'video' },
+				{ label: tText('admin/items/items___audio'), id: 'audio' },
 			] as CheckboxOption[],
 			showMaxOptions: 40,
 		} as CheckboxDropdownModalProps,
@@ -103,7 +104,7 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'organisation',
-		label: i18n.t('admin/items/items___cp'),
+		label: tText('admin/items/items___cp'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
@@ -115,26 +116,26 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'is_published',
-		label: i18n.t('admin/items/items___publiek'),
+		label: tText('admin/items/items___publiek'),
 		sortable: true,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
 		filterProps: {
 			options: [
 				{
-					label: i18n.t('admin/items/items___gepubliceerd'),
+					label: tText('admin/items/items___gepubliceerd'),
 					id: 'published',
 				},
 				{
-					label: i18n.t('admin/items/items___gedepubliceerd'),
+					label: tText('admin/items/items___gedepubliceerd'),
 					id: 'unpublished',
 				},
 				{
-					label: i18n.t('admin/items/items___gedepubliceerd-pancarte'),
+					label: tText('admin/items/items___gedepubliceerd-pancarte'),
 					id: 'unpublished-with-reason',
 				},
 				{
-					label: i18n.t('admin/items/items___gedepubliceerd-merge'),
+					label: tText('admin/items/items___gedepubliceerd-merge'),
 					id: 'unpublished-with-merge',
 				},
 			],
@@ -143,101 +144,102 @@ export const GET_ITEM_OVERVIEW_TABLE_COLS: (
 	},
 	{
 		id: 'views',
-		tooltip: i18n.t('admin/collections-or-bundles/collections-or-bundles___bekeken'),
-		icon: 'eye',
+		tooltip: tText('admin/collections-or-bundles/collections-or-bundles___bekeken'),
+		icon: IconName.eye,
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'in_collection',
-		tooltip: i18n.t('admin/items/items___aantal-keer-opgenomen-in-collectie'),
-		icon: 'collection',
+		tooltip: tText('admin/items/items___aantal-keer-opgenomen-in-collectie'),
+		icon: IconName.collection,
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'bookmarks',
-		tooltip: i18n.t(
+		tooltip: tText(
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
 		),
-		icon: 'bookmark',
+		icon: IconName.bookmark,
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'quick_lane_links',
-		tooltip: i18n.t('admin/items/items___aantal-keer-gedeeld-met-leerlingen'),
-		icon: 'link-2',
+		tooltip: tText('admin/items/items___aantal-keer-gedeeld-met-leerlingen'),
+		icon: IconName.link2,
 		sortable: true,
 		visibleByDefault: true,
 		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'in_assignment',
-		tooltip: i18n.t(
+		tooltip: tText(
 			'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
 		),
-		icon: 'clipboard',
+		icon: IconName.clipboard,
 		sortable: true,
 		dataType: TableColumnDataType.number,
 	},
 	{
 		id: 'actions',
-		tooltip: i18n.t('admin/items/items___acties'),
+		tooltip: tText('admin/items/items___acties'),
 		visibleByDefault: true,
 	},
 ];
 
-export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn[] = () => [
-	{
-		id: 'title',
-		label: i18n.t('admin/items/items___titel'),
-		sortable: true,
-		visibleByDefault: true,
-		dataType: TableColumnDataType.string,
-	},
-	{
-		id: 'pid',
-		label: i18n.t('admin/items/items___pid'),
-		sortable: true,
-		visibleByDefault: true,
-		dataType: TableColumnDataType.string,
-	},
-	{
-		id: 'updated_at',
-		label: i18n.t('admin/items/items___aangepast-op-mam'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'DateRangeDropdown',
-		dataType: TableColumnDataType.dateTime,
-	},
-	{
-		id: 'status',
-		label: i18n.t('admin/items/items___status'),
-		sortable: true,
-		visibleByDefault: true,
-		filterType: 'CheckboxDropdownModal',
-		filterProps: {
-			options: [
-				{
-					label: i18n.t('admin/items/items___nieuw'),
-					id: 'NEW',
-				},
-				{
-					label: i18n.t('admin/items/items___update'),
-					id: 'UPDATE',
-				},
-			],
+export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn<UnpublishedItemsOverviewTableCols>[] =
+	() => [
+		{
+			id: 'title',
+			label: tText('admin/items/items___titel'),
+			sortable: true,
+			visibleByDefault: true,
+			dataType: TableColumnDataType.string,
 		},
+		{
+			id: 'pid',
+			label: tText('admin/items/items___pid'),
+			sortable: true,
+			visibleByDefault: true,
+			dataType: TableColumnDataType.string,
+		},
+		{
+			id: 'updated_at',
+			label: tText('admin/items/items___aangepast-op-mam'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'DateRangeDropdown',
+			dataType: TableColumnDataType.dateTime,
+		},
+		{
+			id: 'status',
+			label: tText('admin/items/items___status'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'CheckboxDropdownModal',
+			filterProps: {
+				options: [
+					{
+						label: tText('admin/items/items___nieuw'),
+						id: 'NEW',
+					},
+					{
+						label: tText('admin/items/items___update'),
+						id: 'UPDATE',
+					},
+				],
+			},
 
-		dataType: TableColumnDataType.string,
-	},
-	{
-		id: 'actions',
-		tooltip: i18n.t('admin/items/items___acties'),
-		visibleByDefault: true,
-	},
-];
+			dataType: TableColumnDataType.string,
+		},
+		{
+			id: 'actions',
+			tooltip: tText('admin/items/items___acties'),
+			visibleByDefault: true,
+		},
+	];

@@ -1,6 +1,7 @@
 import { Button, StickyEdgeBar } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 import './StickySaveBar.scss';
 
@@ -15,7 +16,7 @@ export const StickySaveBar: FunctionComponent<StickySaveBarProps> = ({
 	onSave,
 	onCancel,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	if (!isVisible) {
 		return null;
@@ -23,18 +24,18 @@ export const StickySaveBar: FunctionComponent<StickySaveBarProps> = ({
 	return (
 		<StickyEdgeBar className="c-sticky-save-bar">
 			<strong className="c-sticky-save-bar__cta">
-				{t('assignment/views/assignment-edit___wijzigingen-opslaan')}
+				{tHtml('assignment/views/assignment-edit___wijzigingen-opslaan')}
 			</strong>
 
 			<Button
 				className="u-spacer-right-s"
-				label={t('assignment/views/assignment-edit___annuleer')}
+				label={tText('assignment/views/assignment-edit___annuleer')}
 				onClick={onCancel}
 			/>
 
 			<Button
 				type="tertiary"
-				label={t('assignment/views/assignment-edit___opslaan')}
+				label={tText('assignment/views/assignment-edit___opslaan')}
 				onClick={onSave}
 			/>
 		</StickyEdgeBar>

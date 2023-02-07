@@ -1,0 +1,95 @@
+query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
+	app_assignments_v2(
+		where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false } }
+		order_by: [{ deadline_at: desc }]
+	) {
+		id
+		title
+		description
+		assignment_type
+		answer_url
+		created_at
+		updated_at
+		available_at
+		deadline_at
+		is_collaborative
+		is_deleted
+		owner_profile_id
+		owner {
+			full_name
+		}
+		profile {
+			id
+			avatar
+			user: usersByuserId {
+				first_name
+				last_name
+				id
+			}
+			organisation {
+				logo_url
+				name
+				or_id
+			}
+			profile_user_group {
+				group {
+					label
+					id
+				}
+			}
+		}
+		labels(order_by: { assignment_label: { label: asc } }) {
+			id
+			assignment_label {
+				color_enum_value
+				color_override
+				enum_color {
+					label
+					value
+				}
+				id
+				label
+				type
+				owner_profile_id
+			}
+		}
+		responses(where: { owner_profile_id: { _eq: $pupilUuid } }) {
+			id
+			assignment_id
+			collection_title
+			created_at
+			updated_at
+			owner_profile_id
+			owner {
+				full_name
+			}
+			assignment {
+				id
+				title
+				deadline_at
+				owner {
+					full_name
+				}
+				owner_profile_id
+			}
+			pupil_collection_blocks(
+				where: { is_deleted: { _eq: false } }
+				order_by: { position: asc }
+			) {
+				id
+				position
+				type
+				custom_title
+				thumbnail_path
+				use_custom_fields
+				custom_description
+				created_at
+				updated_at
+				fragment_id
+				start_oc
+				end_oc
+				assignment_response_id
+			}
+		}
+	}
+}

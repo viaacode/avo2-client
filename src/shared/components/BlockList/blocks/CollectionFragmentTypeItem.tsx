@@ -1,10 +1,8 @@
-import { DefaultProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { AssignmentBlock } from '@viaa/avo2-types/types/assignment';
+import { DefaultProps, IconName } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import { AssignmentBlock, BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import CollectionFragmentFlowPlayer, {
 	CollectionFragmentFlowPlayerProps,
@@ -12,6 +10,7 @@ import CollectionFragmentFlowPlayer, {
 import CollectionFragmentTitle, {
 	CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
+import useTranslation from '../../../../shared/hooks/useTranslation';
 import {
 	BlockItemMetadata,
 	BlockItemMetadataProps,
@@ -21,7 +20,7 @@ import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';
 import './CollectionFragmentTypeItem.scss';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
-	block: Avo.Core.BlockItemBase;
+	block: BaseBlockWithMeta;
 	flowPlayer?: CollectionFragmentFlowPlayerProps;
 	meta?: Omit<BlockItemMetadataProps, 'block'>; // TODO @Ian cleanup configs and having to pass block multiple times
 	title?: CollectionFragmentTitleProps;
@@ -36,18 +35,18 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 	className,
 	canOpenOriginal,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
-	const cast = block as AssignmentBlock;
-	const custom = cast.use_custom_fields && cast.custom_description;
-	const original = cast.original_description || cast.item_meta?.description;
+	const custom = block.use_custom_fields && block.custom_description;
+	const original =
+		(block as AssignmentBlock).original_description || block.item_meta?.description;
 
 	const customDescription = useMemo(
 		() => (
 			<>
 				{canOpenOriginal && (
 					<b>
-						{t(
+						{tHtml(
 							'shared/components/block-list/blocks/collection-fragment-type-item___beschrijving-leerling'
 						)}
 					</b>
@@ -62,7 +61,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				/>
 			</>
 		),
-		[canOpenOriginal, block, t]
+		[canOpenOriginal, block, tHtml]
 	);
 
 	const originalDescription = useMemo(
@@ -70,7 +69,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 			<>
 				{canOpenOriginal && (
 					<b>
-						{t(
+						{tHtml(
 							'shared/components/block-list/blocks/collection-fragment-type-item___originele-beschrijving'
 						)}
 					</b>
@@ -79,7 +78,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 				<TextWithTimestamps content={original || ''} />
 			</>
 		),
-		[canOpenOriginal, original, t]
+		[canOpenOriginal, original, tHtml]
 	);
 
 	return (
@@ -103,13 +102,13 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 					{custom && canOpenOriginal && (
 						<CollapsibleColumn
 							button={{
-								icon: (expanded) => (expanded ? 'eye-off' : 'eye'),
+								icon: (expanded) => (expanded ? IconName.eyeOff : IconName.eye),
 								label: (expanded) =>
 									expanded
-										? t(
+										? tText(
 												'shared/components/block-list/blocks/collection-fragment-type-item___verberg'
 										  )
-										: t(
+										: tText(
 												'shared/components/block-list/blocks/collection-fragment-type-item___toon'
 										  ),
 							}}

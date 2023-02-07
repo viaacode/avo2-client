@@ -1,7 +1,16 @@
-import { DutchContentType, EnglishContentType } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import { BlockItemBaseSchema } from '@viaa/avo2-types/types/core';
-import { invert } from 'lodash-es';
+import type { Avo } from '@viaa/avo2-types';
+
+import { BaseBlockWithMeta } from '../assignment/assignment.types';
+import {
+	GetCollectionMarcomEntriesQuery,
+	GetPublicCollectionsByIdQuery,
+	GetPublicCollectionsByTitleQuery,
+} from '../shared/generated/graphql-db-types';
+
+export type Collection = (
+	| GetPublicCollectionsByIdQuery
+	| GetPublicCollectionsByTitleQuery
+)['app_collections'][0];
 
 export enum ContentTypeNumber {
 	audio = 1,
@@ -19,7 +28,7 @@ export enum ContentTypeString {
 	searchquery = 'zoekopdracht',
 }
 
-const CONTENT_TYPE_TRANSLATIONS = {
+const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.ContentType.English> = {
 	item: 'item',
 	audio: 'audio',
 	video: 'video',
@@ -30,7 +39,9 @@ const CONTENT_TYPE_TRANSLATIONS = {
 	zoekopdracht: 'searchquery',
 };
 
-export function blockTypeToContentType(type: BlockItemBaseSchema['type']): EnglishContentType {
+export function blockTypeToContentType(
+	type: Avo.Core.BlockItemBase['type']
+): Avo.ContentType.English {
 	let r: string = CONTENT_TYPE_TRANSLATIONS.item;
 
 	switch (type) {
@@ -43,15 +54,11 @@ export function blockTypeToContentType(type: BlockItemBaseSchema['type']): Engli
 			break;
 	}
 
-	return r as EnglishContentType;
+	return r as Avo.ContentType.English;
 }
 
-export function toEnglishContentType(label: DutchContentType): EnglishContentType {
-	return CONTENT_TYPE_TRANSLATIONS[label] as EnglishContentType;
-}
-
-export function toDutchContentType(label: EnglishContentType): DutchContentType {
-	return invert(CONTENT_TYPE_TRANSLATIONS)[label] as DutchContentType;
+export function toEnglishContentType(label: Avo.ContentType.Dutch): Avo.ContentType.English {
+	return CONTENT_TYPE_TRANSLATIONS[label];
 }
 
 export type CollectionLabelLookup = { [id: string]: string };
@@ -76,16 +83,8 @@ export type EditCollectionTab =
 	| 'quality_check'
 	| 'marcom';
 
-export interface MarcomEntry {
-	id: string;
-	channel_name: string | null;
-	channel_type: string | null;
-	external_link: string | null;
-	publish_date: string;
-	collection_id: string;
-	parent_collection: { title: string } | null;
-}
+export type MarcomEntry = GetCollectionMarcomEntriesQuery['app_collection_marcom_log'][0];
 
 export interface BlockItemComponent {
-	block?: Avo.Core.BlockItemBase;
+	block?: BaseBlockWithMeta;
 }

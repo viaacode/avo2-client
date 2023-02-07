@@ -1,4 +1,4 @@
-import { ToggleButton, ToggleButtonProps } from '@viaa/avo2-components';
+import { IconName, ToggleButton, ToggleButtonProps } from '@viaa/avo2-components';
 import React, { ReactNode } from 'react';
 
 export type renderBookmarkButtonProps = Pick<
@@ -7,5 +7,5 @@ export type renderBookmarkButtonProps = Pick<
 >;
 
 export const defaultRenderBookmarkButton = (props: renderBookmarkButtonProps): ReactNode => (
-	<ToggleButton type="tertiary" icon="bookmark" {...props} />
+	<ToggleButton type="tertiary" icon={IconName.bookmark} {...props} />
 );

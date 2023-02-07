@@ -1,7 +1,8 @@
 import useResizeObserver from '@react-hook/resize-observer';
 import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
 import React, { FC, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 import './CollapsibleColumn.scss';
 
@@ -13,7 +14,7 @@ export type CollapsibleColumnProps = DefaultProps & {
 };
 
 const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, children, button }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const el = useRef<HTMLDivElement>(null);
 
 	const [overflowing, setOverflowing] = useState(false);
@@ -35,12 +36,12 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, child
 		}
 	});
 
-	const getButtonIcon = () => {
+	const getButtonIcon = (): IconName => {
 		if (button?.icon) {
 			return button.icon(expanded);
 		}
 
-		return expanded ? 'close' : 'plus';
+		return expanded ? IconName.close : IconName.plus;
 	};
 
 	const getButtonLabel = () => {
@@ -49,8 +50,8 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, child
 		}
 
 		return expanded
-			? t('shared/components/collapsible-column/collapsible-column___toon-minder')
-			: t('shared/components/collapsible-column/collapsible-column___toon-meer');
+			? tText('shared/components/collapsible-column/collapsible-column___toon-minder')
+			: tText('shared/components/collapsible-column/collapsible-column___toon-meer');
 	};
 
 	return (

@@ -1,16 +1,16 @@
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import { Alert, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { Alert, BlockHeading, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
-
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
-export interface RegisterStamboekProps extends RouteComponentProps {}
+export type RegisterStamboekProps = RouteComponentProps;
 
 export type StamboekValidationStatus =
 	| 'INCOMPLETE'
@@ -24,7 +24,7 @@ export type StamboekValidationStatus =
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
 const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');
 
@@ -38,29 +38,28 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-beschrijving'
 						)}
 					/>
 				</MetaTags>
 				<div className="c-content">
 					<BlockHeading type="h2">
-						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in">
-							Geef hieronder je lerarenkaart- of stamboeknummer in.
-						</Trans>
+						{tHtml(
+							'authentication/views/registration-flow/r-3-stamboek___geef-hieronder-je-lerarenkaart-of-stamboeknummer-in'
+						)}
 					</BlockHeading>
 					<p>
-						<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___zo-gaan-wij-na-of-jij-een-actieve-lesgever-bent-aan-een-vlaamse-erkende-onderwijsinstelling">
-							Zo gaan wij na of jij een actieve lesgever bent aan een Vlaamse erkende
-							onderwijsinstelling.
-						</Trans>
+						{tHtml(
+							'authentication/views/registration-flow/r-3-stamboek___zo-gaan-wij-na-of-jij-een-actieve-lesgever-bent-aan-een-vlaamse-erkende-onderwijsinstelling'
+						)}
 					</p>
 					<Spacer margin="top-small">
 						<Alert type="info">
@@ -68,16 +67,16 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 								href="/faq-lesgever/waarom-lerarenkaart-of-stamboeknummer"
 								target="_blank"
 							>
-								<Trans i18nKey="authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig">
-									Waarom hebben jullie mijn stamboeknummer nodig?
-								</Trans>
+								{tHtml(
+									'authentication/views/registration-flow/r-3-stamboek___waarom-hebben-jullie-mijn-stamboeknummer-nodig'
+								)}
 							</a>
 						</Alert>
 					</Spacer>
 				</div>
 				<Spacer margin={['top-large', 'bottom']}>
 					<FormGroup
-						label={t(
+						label={tText(
 							'authentication/views/registration-flow/r-3-stamboek___lerarenkaart-of-stamboeknummer'
 						)}
 						labelFor="stamboekInput"
@@ -88,7 +87,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 				</Spacer>
 				<FormGroup>
 					<Button
-						label={t(
+						label={tText(
 							'authentication/views/registration-flow/r-3-stamboek___account-aanmaken'
 						)}
 						type="primary"

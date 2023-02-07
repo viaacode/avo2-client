@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { SettingsService } from '../../settings/settings.service';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers';
-import { ToastService } from '../services';
+import { ToastService } from '../services/toast-service';
 
 type UseEducationLevelsTuple = [string[], boolean];
 
 export const useEducationLevels = (): UseEducationLevelsTuple => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [educationLevels, setEducationLevels] = useState<string[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,7 +25,7 @@ export const useEducationLevels = (): UseEducationLevelsTuple => {
 					new CustomError('Failed to get educationLevels from the database', err)
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'shared/hooks/use-education-levels___ophalen-van-de-opleidingsniveaus-is-mislukt'
 					)
 				);
@@ -33,7 +33,7 @@ export const useEducationLevels = (): UseEducationLevelsTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [t]);
+	}, [tText]);
 
 	return [educationLevels, isLoading];
 };

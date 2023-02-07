@@ -1,0 +1,15 @@
+query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) {
+	app_collections(
+		order_by: { title: asc }
+		where: {
+			type_id: { _eq: $typeId }
+			title: { _ilike: $title }
+			is_public: { _eq: true }
+			is_deleted: { _eq: false }
+		}
+		limit: $limit
+	) {
+		id
+		title
+	}
+}

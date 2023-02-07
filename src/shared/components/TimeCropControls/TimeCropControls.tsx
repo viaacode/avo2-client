@@ -2,11 +2,11 @@ import { Container, MultiRange, TextInput } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { clamp } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { formatDurationHoursMinutesSeconds, parseDuration, toSeconds } from '../../helpers';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
-import { ToastService } from '../../services';
+import { ToastService } from '../../services/toast-service';
 
 import './TimeCropControls.scss';
 
@@ -27,7 +27,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 	onChange,
 	className,
 }) => {
-	const { t } = useTranslation();
+	const { tHtml } = useTranslation();
 	const [fragmentStartString, setFragmentStartString] = useState<string>(
 		formatDurationHoursMinutesSeconds(startTime)
 	);
@@ -95,7 +95,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 					setFragmentStartTime(0);
 					setFragmentStartString(formatDurationHoursMinutesSeconds(0));
 					ToastService.danger(
-						t(
+						tHtml(
 							'item/components/modals/add-to-collection-modal___de-ingevulde-starttijd-heeft-niet-het-correcte-formaat-uu-mm-ss'
 						)
 					);
@@ -115,7 +115,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 						formatDurationHoursMinutesSeconds(toSeconds(endTime) || 0)
 					);
 					ToastService.danger(
-						t(
+						tHtml(
 							'item/components/modals/add-to-collection-modal___de-ingevulde-eidntijd-heeft-niet-het-correcte-formaat-uu-mm-ss'
 						)
 					);

@@ -1,3 +1,4 @@
+import { RichEditorState } from '@meemoo/react-components';
 import {
 	DefaultProps,
 	Form,
@@ -7,17 +8,18 @@ import {
 	Toggle,
 	ToggleProps,
 } from '@viaa/avo2-components';
-import { RichEditorState } from '@viaa/avo2-components/dist/esm/wysiwyg';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 
 import { LabeledFormField } from '../../types';
-import WYSIWYGWrapper, { WYSIWYGWrapperProps } from '../WYSIWYGWrapper/WYSIWYGWrapper';
+import RichTextEditorWrapper, {
+	RichTextEditorWrapperProps,
+} from '../RichTextEditorWrapper/RichTextEditorWrapper';
 
 import './CustomiseItemForm.scss';
 
 export type CustomiseItemFormToggleField = LabeledFormField & ToggleProps;
 export type CustomiseItemFormTitleField = LabeledFormField & TextInputProps;
-export type CustomiseItemFormDescriptionField = LabeledFormField & WYSIWYGWrapperProps;
+export type CustomiseItemFormDescriptionField = LabeledFormField & RichTextEditorWrapperProps;
 
 export interface CustomiseItemFormProps extends DefaultProps {
 	id: string | number;
@@ -57,7 +59,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
 	const getId = (key: string | number) => `${id}--${key}`;
 
 	/**
-	 * We keep track of temp fields here so we can trigger onChange events onBlur, which improves perceived performance
+	 * We keep track of temp fields here, so we can trigger onChange events onBlur, which improves perceived performance
 	 * Ideally we would like to move away from the braft rich text editor causing this lag and use something like:
 	 * https://github.com/ianstormtaylor/slate
 	 */
@@ -68,7 +70,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
 	 * Synchronise the temp fields with incoming values
 	 */
 
-	// See WYSIWYGInternal.tsx:162
+	// See RichTextEditorInternal.tsx:162
 	useEffect(() => {
 		setTempDescription(undefined);
 	}, [description?.initialHtml]);
@@ -125,7 +127,7 @@ export const CustomiseItemForm: FC<CustomiseItemFormProps> = ({
 							label={description.label}
 							labelFor={getId(CustomiseItemFormIds.description)}
 						>
-							<WYSIWYGWrapper
+							<RichTextEditorWrapper
 								{...description}
 								state={tempDescription}
 								onChange={setTempDescription}

@@ -1,3 +1,4 @@
+import { IconName } from '@viaa/avo2-components';
 import { TFunction } from 'i18next';
 import { isNil, kebabCase, sortBy } from 'lodash-es';
 import React from 'react';
@@ -18,7 +19,7 @@ const NAVIGATION_COMPONENTS: { [componentLabel: string]: any } = {
 
 export type BooleanDictionary = { [id: string]: boolean };
 
-export function getLocation(navItem: AppContentNavElement, t: TFunction): string {
+export function getLocation(navItem: AppContentNavElement, tText: TFunction): string {
 	if (!isNil(navItem.content_id)) {
 		// Link to content block page
 		return `/${navItem.content_id}/${kebabCase(navItem.label)}`;
@@ -33,20 +34,20 @@ export function getLocation(navItem: AppContentNavElement, t: TFunction): string
 		APP_PATH.ERROR.route,
 		{},
 		{
-			message: t(
+			message: tText(
 				'shared/helpers/navigation___de-pagina-voor-dit-navigatie-item-kon-niet-worden-gevonden'
 			),
-			icon: 'search',
+			icon: IconName.search,
 		}
 	);
 }
 
 export function mapNavElementsToNavigationItems(
 	navItems: AppContentNavElement[],
-	t: TFunction
+	tText: TFunction
 ): NavigationItemInfo[] {
 	return sortBy(navItems, 'position').map((navItem: AppContentNavElement): NavigationItemInfo => {
-		const navLocation: string = getLocation(navItem, t);
+		const navLocation: string = getLocation(navItem, tText);
 
 		if (NAVIGATION_COMPONENTS[navLocation]) {
 			if (isMobileWidth()) {
@@ -77,7 +78,7 @@ export function mapNavElementsToNavigationItems(
 			label: navItem.label,
 			icon: navItem.icon_name,
 			tooltip: navItem.tooltip,
-			location: getLocation(navItem, t),
+			location: getLocation(navItem, tText),
 			target: navItem.link_target,
 			key: `nav-item-${navItem.id}`,
 		};

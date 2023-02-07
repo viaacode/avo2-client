@@ -1,56 +1,52 @@
 /**
  This script runs over all the code and looks for either:
- <Trans>Aanvraagformulier</Trans>
- or
- t('Aanvraagformulier')
+tHtml('Aanvraagformulier')
+or
+tText('Aanvraagformulier')
 
- and replaces them with:
- <Trans i18nKey="authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier">Aanvraagformulier</Trans>
- or
- t('authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier')
+and replaces them with:
+tHTml('authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier')
+or
+tText('authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier')
 
 
- and it also outputs a json file with the translatable strings:
- {
-  "authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier": "Aanvraagformulier"
- }
+and it also outputs a json file with the translatable strings:
+{
+	"authentication/views/registration-flow/r-4-manual-registration___aanvraagformulier": "Aanvraagformulier"
+}
 
- Every time the `npm run extract-translations` command is run, it will extract new translations that it finds
- (without i18nKey or not containing "___")
- and add them to the json file without overwriting the existing strings.
+Every time the `npm run extract-translations` command is run, it will extract new translations that it finds
+(without i18nKey or not containing "___")
+and add them to the json file without overwriting the existing strings.
 
- We can now give the src/shared/translations/nl.json file to claire to enter the final copy.
-
- In the future we could add a build step to replace the translate tags with the actual translations,
- so we don't have to load the translation framework anymore and do the bindings at runtime, but this is a nice to have.
+We can now give the src/shared/translations/nl.json file to team meemoo to enter the final copy.
  */
 
 import * as fs from 'fs';
-import glob from 'glob';
-import * as _ from 'lodash';
-import fetch from 'node-fetch';
 import * as path from 'path';
+
+import glob from 'glob';
+import { intersection, kebabCase, keys, without } from 'lodash';
+import fetch from 'node-fetch';
 
 import localTranslations from '../src/shared/translations/nl.json';
 
-type keyMap = { [key: string]: string };
+type keyMap = Record<string, string>;
 
 const oldTranslations: keyMap = localTranslations;
-
-const sortObject = require('sort-object-keys');
 
 function getFormattedKey(filePath: string, key: string) {
 	try {
 		const fileKey = filePath
-			.replace(/[\\\/]+/g, '/')
+			.replace(/[\\/]+/g, '/')
 			.split('.')[0]
-			.split(/[\\\/]/g)
-			.map((part) => _.kebabCase(part))
+			.split(/[\\/]/g)
+			.map((part) => kebabCase(part))
 			.join('/')
 			.toLowerCase()
 			.replace(/(^\/+|\/+$)/g, '')
 			.trim();
-		const formattedKey = _.kebabCase(key);
+		const formattedKey = kebabCase(key);
 
 		return `${fileKey}___${formattedKey}`;
 	} catch (err) {
@@ -68,7 +64,7 @@ function getFormattedTranslation(translation: string) {
 async function getFilesByGlob(globPattern: string): Promise<string[]> {
 	return new Promise<string[]>((resolve, reject) => {
 		const options = {
-			ignore: '**/*.d.ts',
+			ignore: ['**/*.d.ts', '**/*.test.ts', '**/*.spec.ts'],
 			cwd: path.join(__dirname, '../src'),
 		};
 		glob(globPattern, options, (err, files) => {
@@ -87,43 +83,11 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 	codeFiles.forEach((relativeFilePath: string) => {
 		try {
 			const absoluteFilePath = path.resolve(__dirname, '../src', relativeFilePath);
-			let content: string = fs.readFileSync(absoluteFilePath).toString();
+			const content: string = fs.readFileSync(absoluteFilePath).toString();
 
-			// Replace Trans objects
-			content = content.replace(
-				/<Trans( i18nKey="([^"]+)")?>([\s\S]*?)<\/Trans>/g,
-				// @ts-ignore
-				(match: string, keyAttribute: string, key: string, translation: string) => {
-					let formattedKey: string | undefined = key;
-
-					const formattedTranslation: string = getFormattedTranslation(translation);
-					if (!key) {
-						// new Trans without a key
-						formattedKey = getFormattedKey(relativeFilePath, formattedTranslation);
-					}
-
-					if (!formattedKey) {
-						return match; // Do not modify the translations, since we cannot generate a key
-					}
-
-					const hasKeyAlready = formattedTranslation.includes('___');
-
-					newTranslations[formattedKey] =
-						(hasKeyAlready
-							? getFormattedTranslation((oldTranslations as keyMap)[formattedKey])
-							: formattedTranslation) || '';
-
-					if (hasKeyAlready) {
-						return match;
-					} else {
-						return `<Trans i18nKey="${formattedKey}">${formattedTranslation}</Trans>`;
-					}
-				}
-			);
-
-			// Replace t() functions ( including i18n.t() )
+			// Replace tHtml() and tText() functions
 			const beforeTFunction = '([^a-zA-Z])';
-			const tFuncStart = 't\\(';
+			const tFuncStart = '(tHtml|tText)\\(';
 			const whitespace = '\\s*';
 			const quote = '[\'"]';
 			const translation = '([\\s\\S]+?)';
@@ -148,6 +112,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 				(
 					match: string,
 					prefix: string,
+					tFunction: string,
 					translation: string,
 					translationParams: string | undefined
 				) => {
@@ -171,6 +136,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 							{
 								match,
 								prefix,
+								tFunction,
 								translation,
 								translationParams,
 								absoluteFilePath,
@@ -190,7 +156,7 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 					if (hasKeyAlready) {
 						return match;
 					} else {
-						return `${prefix}t('${formattedKey}'${translationParams || ''})`;
+						return `${prefix}${tFunction}('${formattedKey}'${translationParams || ''})`;
 					}
 				}
 			);
@@ -206,14 +172,17 @@ function extractTranslationsFromCodeFiles(codeFiles: string[]) {
 }
 
 async function getOnlineTranslations() {
-	const response = await fetch(`https://avo2-proxy-qas.hetarchief.be/translations/nl.json`, {
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	});
+	const response = await fetch(
+		'https://avo2-proxy-qas.hetarchief.be/admin/translations/frontend.json',
+		{
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}
+	);
 
-	return (await response.json()).value;
+	return await response.json();
 }
 
 function checkTranslationsForKeysAsValue(translationJson: string) {
@@ -229,9 +198,20 @@ function checkTranslationsForKeysAsValue(translationJson: string) {
 	} while (matches);
 
 	if (faultyTranslations.length) {
-		throw new Error(`Failed to extract translations, the following translations would be overridden by their key:
-\t${faultyTranslations.join('\n\t')}`);
+		throw new Error(`
+			Failed to extract translations, the following translations would be overridden by their key:
+				\t${faultyTranslations.join('\n\t')}
+		`);
 	}
+}
+
+function sortObjectKeys(objToSort: Record<string, any>): Record<string, any> {
+	return Object.keys(objToSort)
+		.sort()
+		.reduce((obj: Record<string, string>, key) => {
+			obj[key] = objToSort[key];
+			return obj;
+		}, {});
 }
 
 async function updateTranslations(): Promise<void> {
@@ -242,20 +222,17 @@ async function updateTranslations(): Promise<void> {
 	const newTranslations: keyMap = extractTranslationsFromCodeFiles(codeFiles);
 
 	// Compare existing translations to the new translations
-	const oldTranslationKeys: string[] = _.keys(oldTranslations);
-	const newTranslationKeys: string[] = _.keys(newTranslations);
-	const addedTranslationKeys: string[] = _.without(newTranslationKeys, ...oldTranslationKeys);
-	const removedTranslationKeys: string[] = _.without(oldTranslationKeys, ...newTranslationKeys);
-	const existingTranslationKeys: string[] = _.intersection(
-		newTranslationKeys,
-		oldTranslationKeys
-	);
+	const oldTranslationKeys: string[] = keys(oldTranslations);
+	const newTranslationKeys: string[] = keys(newTranslations);
+	const addedTranslationKeys: string[] = without(newTranslationKeys, ...oldTranslationKeys);
+	const removedTranslationKeys: string[] = without(oldTranslationKeys, ...newTranslationKeys);
+	const existingTranslationKeys: string[] = intersection(newTranslationKeys, oldTranslationKeys);
 
 	// Console log translations that were found in the json file but not in the code
-	console.warn(
-		`The following translation keys were removed:
-	\t${removedTranslationKeys.join('\n\t')}`
-	);
+	console.warn(`
+		The following translation keys were removed:
+			\t${removedTranslationKeys.map((key) => key.trim()).join('\n\t')}
+	`);
 
 	// Combine the translations in the json with the freshly extracted translations from the code
 	const combinedTranslations: keyMap = {};
@@ -266,7 +243,7 @@ async function updateTranslations(): Promise<void> {
 		combinedTranslations[key] = onlineTranslations[key] || newTranslations[key];
 	});
 
-	const nlJsonContent = JSON.stringify(sortObject(combinedTranslations), null, 2);
+	const nlJsonContent = JSON.stringify(sortObjectKeys(combinedTranslations), null, 2);
 	checkTranslationsForKeysAsValue(nlJsonContent); // Throws error if any key is found as a value
 
 	fs.writeFileSync(
@@ -276,12 +253,11 @@ async function updateTranslations(): Promise<void> {
 
 	const totalTranslations = existingTranslationKeys.length + addedTranslationKeys.length;
 
-	console.info(
-		`Wrote ${totalTranslations} src/shared/translations/nl.json file
-	\t${addedTranslationKeys.length} translations added
-	\t${removedTranslationKeys.length} translations deleted`
-	);
+	console.info(`
+		Wrote ${totalTranslations} src/shared/translations/nl.json file
+			\t${addedTranslationKeys.length} translations added
+			\t${removedTranslationKeys.length} translations deleted
+	`);
 }
 
-// deepcode ignore UsageOfUndefinedReturnValue: False positive
 updateTranslations().catch((err) => console.error('Update of translations failed: ', err));

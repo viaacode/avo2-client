@@ -1,8 +1,6 @@
-import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -16,7 +14,8 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getQueryFilter } from '../../shared/helpers/filters';
@@ -28,6 +27,7 @@ import {
 } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
+	InteractiveTour,
 	InteractiveTourOverviewTableCols,
 	InteractiveTourTableState,
 } from '../interactive-tour.types';
@@ -37,13 +37,11 @@ type InteractiveTourOverviewProps = DefaultSecureRouteProps;
 const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewProps> = ({
 	history,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [interactiveTourIdToDelete, setInteractiveTourIdToDelete] = useState<number | null>(null);
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState<boolean>(false);
-	const [interactiveTours, setInteractiveTours] = useState<
-		Avo.InteractiveTour.InteractiveTour[] | null
-	>(null);
+	const [interactiveTours, setInteractiveTours] = useState<InteractiveTour[] | null>(null);
 	const [interactiveTourCount, setInteractiveTourCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<InteractiveTourTableState>>({});
@@ -82,13 +80,13 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'admin/interactive-tour/views/interactive-tour-overview___het-ophalen-van-de-interactive-tours-is-mislukt'
 				),
 			});
 		}
 		setIsLoading(false);
-	}, [setInteractiveTours, setLoadingInfo, t, tableState]);
+	}, [setInteractiveTours, setLoadingInfo, tText, tableState]);
 
 	useEffect(() => {
 		fetchInteractiveTours();
@@ -105,7 +103,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			setIsConfirmModalOpen(false);
 			if (!interactiveTourIdToDelete) {
 				ToastService.danger(
-					t(
+					tHtml(
 						'admin/interactive-tour/views/interactive-tour-overview___het-verwijderen-van-de-interactieve-tour-is-mislukt-probeer-de-pagina-te-herladen'
 					)
 				);
@@ -115,7 +113,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			await InteractiveTourService.deleteInteractiveTour(interactiveTourIdToDelete);
 			await fetchInteractiveTours();
 			ToastService.success(
-				t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-overview___de-interactieve-tour-is-verwijdert'
 				)
 			);
@@ -127,7 +125,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-overview___het-verwijderen-van-de-interactieve-tour-is-mislukt'
 				)
 			);
@@ -137,7 +135,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 	const openModal = (interactiveTourId: number | undefined): void => {
 		if (isNil(interactiveTourId)) {
 			ToastService.danger(
-				t(
+				tHtml(
 					'admin/interactive-tour/views/interactive-tour-overview___de-interactieve-tour-kon-niet-worden-verwijdert-probeer-de-pagina-te-herladen'
 				)
 			);
@@ -148,7 +146,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 	};
 
 	const renderTableCell = (
-		rowData: Avo.InteractiveTour.InteractiveTour,
+		rowData: InteractiveTour,
 		columnId: InteractiveTourOverviewTableCols
 	) => {
 		switch (columnId) {
@@ -179,43 +177,43 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 					<ButtonToolbar>
 						<Button
 							type="secondary"
-							icon="eye"
+							icon={IconName.eye}
 							onClick={() =>
 								navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
 									id: rowData.id,
 								})
 							}
-							title={t(
+							title={tText(
 								'admin/interactive-tour/views/interactive-tour-overview___bekijk-de-rondleiding-detail-pagina'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/interactive-tour/views/interactive-tour-overview___bekijk-de-rondleiding-detail-pagina'
 							)}
 						/>
 						<Button
-							icon="edit"
+							icon={IconName.edit}
 							onClick={() =>
 								navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
 									id: rowData.id,
 								})
 							}
 							size="small"
-							title={t(
+							title={tText(
 								'admin/interactive-tour/views/interactive-tour-overview___bewerk-de-rondleiding'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/interactive-tour/views/interactive-tour-overview___bewerk-de-rondleiding'
 							)}
 							type="secondary"
 						/>
 						<Button
-							icon="delete"
+							icon={IconName.delete}
 							onClick={() => openModal(rowData.id)}
 							size="small"
-							title={t(
+							title={tText(
 								'admin/interactive-tour/views/interactive-tour-overview___verwijder-de-rondleiding'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'admin/interactive-tour/views/interactive-tour-overview___verwijder-de-rondleiding'
 							)}
 							type="danger-hover"
@@ -231,19 +229,19 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={t(
+				message={tText(
 					'admin/interactive-tour/views/interactive-tour-overview___er-zijn-nog-geen-interactieve-tours-aangemaakt'
 				)}
 			>
 				<p>
-					<Trans i18nKey="admin/interactive-tour/views/interactive-tour-overview___beschrijving-hoe-interactieve-tours-toe-voegen">
-						Beschrijving hoe interactieve tours toe voegen
-					</Trans>
+					{tHtml(
+						'admin/interactive-tour/views/interactive-tour-overview___beschrijving-hoe-interactieve-tours-toe-voegen'
+					)}
 				</p>
 				<Spacer margin="top">
 					<Button
-						icon="plus"
-						label={t(
+						icon={IconName.plus}
+						label={tText(
 							'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-aanmaken'
 						)}
 						onClick={() => history.push(INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_CREATE)}
@@ -263,16 +261,16 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 					columns={GET_INTERACTIVE_TOUR_OVERVIEW_TABLE_COLS()}
 					data={interactiveTours || []}
 					dataCount={interactiveTourCount}
-					renderCell={(rowData: Avo.InteractiveTour.InteractiveTour, columnId: string) =>
+					renderCell={(rowData: InteractiveTour, columnId: string) =>
 						renderTableCell(rowData, columnId as InteractiveTourOverviewTableCols)
 					}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/interactive-tour/views/interactive-tour-overview___zoek-op-label-beschrijving'
 					)}
 					renderNoResults={renderNoResults}
 					onTableStateChanged={setTableState}
 					itemsPerPage={ITEMS_PER_PAGE}
-					noContentMatchingFiltersMessage={t(
+					noContentMatchingFiltersMessage={tText(
 						'admin/interactive-tour/views/interactive-tour-overview___er-zijn-geen-interactieve-tours-die-voldoen-aan-de-filters'
 					)}
 					isLoading={isLoading}
@@ -288,14 +286,14 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 
 	return (
 		<AdminLayout
-			pageTitle={t(
+			pageTitle={tText(
 				'admin/interactive-tour/views/interactive-tour-overview___interactieve-tours'
 			)}
 			size="full-width"
 		>
 			<AdminLayoutTopBarRight>
 				<Button
-					label={t(
+					label={tText(
 						'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-toevoegen'
 					)}
 					onClick={() => {
@@ -310,14 +308,14 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				<MetaTags>
 					<title>
 						{GENERATE_SITE_TITLE(
-							t(
+							tText(
 								'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-titel'
 							)
 						)}
 					</title>
 					<meta
 						name="description"
-						content={t(
+						content={tText(
 							'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-beschrijving'
 						)}
 					/>

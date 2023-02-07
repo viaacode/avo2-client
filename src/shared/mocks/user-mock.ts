@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 
 const mockUser: Avo.User.User = {
 	first_name: 'Bert',

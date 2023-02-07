@@ -1,5 +1,5 @@
-import { Button, ButtonToolbar, TagList } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { Button, ButtonToolbar, IconName, TagList } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { get, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -9,7 +9,6 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
@@ -28,9 +27,9 @@ import {
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import { ITEMS_PER_PAGE } from '../../content/content.const';
 import FilterTable, {
 	FilterableColumn,
 	getFilters,
@@ -41,6 +40,7 @@ import { useUserGroups } from '../../user-groups/hooks';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	GET_COLLECTION_MARCOM_COLUMNS,
+	ITEMS_PER_PAGE,
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
@@ -55,7 +55,7 @@ type CollectionOrBundleMarcomOverviewProps = DefaultSecureRouteProps;
 const CollectionOrBundleMarcomOverview: FunctionComponent<
 	CollectionOrBundleMarcomOverviewProps
 > = ({ location, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [collectionCount, setCollectionCount] = useState<number>(0);
@@ -76,7 +76,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
+				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
 				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
 					NULL_FILTER
 				),
@@ -91,14 +91,14 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				})
 			),
 		],
-		[tableState, userGroups, t]
+		[tableState, userGroups, tText]
 	);
 
 	const collectionLabelOptions = useMemo(
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t(
+				label: tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 				),
 				checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
@@ -113,7 +113,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				})
 			),
 		],
-		[collectionLabels, t, tableState]
+		[collectionLabels, tText, tableState]
 	);
 
 	const channelNameOptions = useMemo(() => {
@@ -127,7 +127,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 		return [
 			{
 				id: NULL_FILTER,
-				label: t(
+				label: tText(
 					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___geen-kanaal'
 				),
 				checked: (tableState?.marcom_last_communication_channel_name || []).includes(
@@ -155,7 +155,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 		() => [
 			{
 				id: NULL_FILTER,
-				label: t(
+				label: tText(
 					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___geen-organisatie'
 				),
 				checked: get(tableState, 'organisation', [] as string[]).includes(NULL_FILTER),
@@ -170,7 +170,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				})
 			),
 		],
-		[organisations, t, tableState]
+		[organisations, tText, tableState]
 	);
 
 	const tableColumns = useMemo(
@@ -237,16 +237,16 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t(
+					? tText(
 							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___het-ophalen-van-de-collectie-actualisaties-is-mislukt'
 					  )
-					: t(
+					: tText(
 							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___het-ophalen-van-de-bundel-actualisaties-is-mislukt'
 					  ),
 			});
 		}
 		setIsLoading(false);
-	}, [tableColumns, tableState, generateWhereObject, isCollection, t]);
+	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();
@@ -276,7 +276,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				generateWhereObject(getFilters(tableState))
 			);
 			ToastService.info(
-				t(
+				tHtml(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___je-hebt-num-of-selected-collections-collecties-geselecteerd',
 					{
 						numOfSelectedCollections: collectionIds.length,
@@ -292,7 +292,11 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 					{ tableState }
 				)
 			);
-			ToastService.danger('Het ophalen van de collectie ids is mislukt');
+			ToastService.danger(
+				tHtml(
+					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___het-ophalen-van-de-collectie-ids-is-mislukt'
+				)
+			);
 		}
 		setIsLoading(false);
 	};
@@ -311,16 +315,14 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				return (
 					<Link to={editLink}>
 						<span>{title}</span>
-						{!!get(rowData, 'relations[0].object') && (
+						{!!rowData.relations?.[0].object && (
 							<a
 								href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
-									id: get(rowData, 'relations[0].object'),
+									id: rowData.relations?.[0].object,
 								})}
 							>
 								<TagList
-									tags={[
-										{ id: get(rowData, 'relations[0].object'), label: 'Kopie' },
-									]}
+									tags={[{ id: rowData.relations?.[0].object, label: 'Kopie' }]}
 									swatches={false}
 								/>
 							</a>
@@ -335,22 +337,22 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 						<Link to={editLink}>
 							<Button
 								type="secondary"
-								icon="edit"
+								icon={IconName.edit}
 								ariaLabel={
 									isCollection
-										? t(
+										? tText(
 												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
 										  )
-										: t(
+										: tText(
 												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
 										  )
 								}
 								title={
 									isCollection
-										? t(
+										? tText(
 												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
 										  )
-										: t(
+										: tText(
 												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
 										  )
 								}
@@ -367,14 +369,14 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={t(
+				message={tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___er-bestaan-nog-geen-collecties'
 				)}
 			>
 				<p>
-					<Trans i18nKey="admin/collections-or-bundles/views/collections-or-bundles-overview___beschrijving-wanneer-er-nog-geen-collecties-zijn">
-						Beschrijving wanneer er nog geen collecties zijn
-					</Trans>
+					{tHtml(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___beschrijving-wanneer-er-nog-geen-collecties-zijn'
+					)}
 				</p>
 			</ErrorView>
 		);
@@ -391,15 +393,15 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 					data={collections}
 					dataCount={collectionCount}
 					renderCell={renderTableCell as any}
-					searchTextPlaceholder={t(
+					searchTextPlaceholder={tText(
 						'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___zoek-op-titel-beschrijving-auteur'
 					)}
 					noContentMatchingFiltersMessage={
 						isCollection
-							? t(
+							? tText(
 									'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___er-zijn-geen-collectie-marcom-items-die-voldoen-aan-de-opgegeven-filters'
 							  )
-							: t(
+							: tText(
 									'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___er-zijn-geen-collectie-marcom-items-die-voldoen-aan-de-opgegeven-filters'
 							  )
 					}
@@ -420,10 +422,10 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 		<AdminLayout
 			pageTitle={
 				isCollection
-					? t(
+					? tText(
 							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collecties-marcom'
 					  )
-					: t(
+					: tText(
 							'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundels-marcom'
 					  )
 			}
@@ -434,10 +436,10 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
-								? t(
+								? tText(
 										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collectie-marcom-beheer-overview-pagina-titel'
 								  )
-								: t(
+								: tText(
 										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundel-marcom-beheer-overview-pagina-titel'
 								  )
 						)}
@@ -446,10 +448,10 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 						name="description"
 						content={
 							isCollection
-								? t(
+								? tText(
 										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___collectie-marcom-beheer-overview-pagina-beschrijving'
 								  )
-								: t(
+								: tText(
 										'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bundel-marcom-beheer-overview-pagina-beschrijving'
 								  )
 						}

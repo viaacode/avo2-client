@@ -1,0 +1,27 @@
+mutation insertQuickLanes($objects: [app_quick_lanes_insert_input!]!) {
+	insert_app_quick_lanes(objects: $objects) {
+		affected_rows
+		returning {
+			id
+			content_id
+			content_label
+			title
+			view_mode
+			created_at
+			updated_at
+			owner {
+				id
+				avatar
+				user: usersByuserId {
+					full_name
+					first_name
+					last_name
+				}
+				organisation {
+					name
+					logo_url
+				}
+			}
+		}
+	}
+}

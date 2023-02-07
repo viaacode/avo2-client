@@ -1,6 +1,7 @@
 import fs from 'fs';
-import fetch from 'node-fetch';
 import path from 'path';
+
+import fetch from 'node-fetch';
 
 async function updateSitemap(): Promise<void> {
 	if (!process.env.PROXY_URL) {
@@ -21,4 +22,4 @@ console.info('Updating sitemap...');
 // deepcode ignore UsageOfUndefinedReturnValue: False positive
 updateSitemap()
 	.then(() => console.info('Updating sitemap... done'))
-	.catch(err => console.error('Failed to update sitemap: ', err));
+	.catch((err) => console.error('Failed to update sitemap: ', err));

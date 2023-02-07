@@ -1,21 +1,20 @@
-import { get } from 'lodash-es';
-
+import {
+	GetTranslationsDocument,
+	GetTranslationsQuery,
+	UpdateTranslationsDocument,
+	UpdateTranslationsMutation,
+} from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
-import { ApolloCacheManager, dataService } from '../../shared/services';
-
-import { GET_TRANSLATIONS, UPDATE_TRANSLATIONS } from './translations.gql';
-
-const TRANSLATIONS_RESULT_PATH = 'app_site_variables';
+import { dataService } from '../../shared/services/data-service';
 
 export const fetchTranslations = async (): Promise<any> => {
 	try {
 		// retrieve translations
-		const response = await dataService.query({
-			query: GET_TRANSLATIONS,
-			fetchPolicy: 'no-cache',
+		const response = await dataService.query<GetTranslationsQuery>({
+			query: GetTranslationsDocument,
 		});
 
-		return get(response, `data.${TRANSLATIONS_RESULT_PATH}`, null);
+		return response?.app_site_variables || null;
 	} catch (err) {
 		const error = new CustomError('Failed to fetch translations', err, {
 			query: 'GET_TRANSLATIONS',
@@ -30,13 +29,12 @@ export const fetchTranslations = async (): Promise<any> => {
 export const updateTranslations = async (name: string, translations: any) => {
 	try {
 		// update translation by name
-		await dataService.mutate({
-			mutation: UPDATE_TRANSLATIONS,
+		await dataService.query<UpdateTranslationsMutation>({
+			query: UpdateTranslationsDocument,
 			variables: {
 				name,
 				translations,
 			},
-			update: ApolloCacheManager.clearTranslations,
 		});
 	} catch (err) {
 		const error = new CustomError('Failed to update translations', err, {

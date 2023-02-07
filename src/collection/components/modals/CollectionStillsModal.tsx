@@ -1,12 +1,10 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import {
 	Blankslate,
 	Button,
 	ButtonToolbar,
 	Flex,
 	Form,
+	IconName,
 	ImageGrid,
 	Modal,
 	ModalBody,
@@ -17,9 +15,11 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { ToastService } from '../../../shared/services';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { STILL_DIMENSIONS } from '../../collection.const';
 
@@ -34,7 +34,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	isOpen,
 	collection,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);
 	const [selectedCoverImages, setSelectedCoverImages] = useState<string[]>(
@@ -52,7 +52,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 			} catch (err) {
 				console.error(err);
 				ToastService.danger(
-					t(
+					tHtml(
 						'collection/components/modals/collection-stills-modal___het-ophalen-van-de-media-thumbnails-is-mislukt'
 					)
 				);
@@ -61,12 +61,12 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 		};
 
 		fetchThumbnailImages();
-	}, [isOpen, collection, t]);
+	}, [isOpen, collection, tText]);
 
 	const saveCoverImage = () => {
 		onClose({ ...collection, thumbnail_path: selectedCoverImages[0] });
 		ToastService.success(
-			t(
+			tHtml(
 				'collection/components/modals/collection-stills-modal___de-cover-afbeelding-is-ingesteld'
 			)
 		);
@@ -75,7 +75,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t(
+			title={tText(
 				'collection/components/modals/collection-stills-modal___stel-een-cover-afbeelding-in'
 			)}
 			size="large"
@@ -92,8 +92,8 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 						) : !videoStills.length ? (
 							<Blankslate
 								body=""
-								icon="search"
-								title={t(
+								icon={IconName.search}
+								title={tText(
 									'collection/components/modals/collection-stills-modal___er-zijn-geen-thumbnails-beschikbaar-voor-de-fragmenten-in-de-collectie'
 								)}
 							/>
@@ -115,7 +115,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 						<ToolbarItem>
 							<ButtonToolbar>
 								<Button
-									label={t(
+									label={tText(
 										'collection/components/modals/collection-stills-modal___annuleren'
 									)}
 									type="secondary"
@@ -125,7 +125,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 									}}
 								/>
 								<Button
-									label={t(
+									label={tText(
 										'collection/components/modals/collection-stills-modal___opslaan'
 									)}
 									type="primary"

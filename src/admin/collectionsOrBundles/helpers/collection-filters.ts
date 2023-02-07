@@ -1,11 +1,10 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { first, get, isNil, without } from 'lodash-es';
 
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import {
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -166,11 +165,13 @@ export function generateCollectionWhereObject(
 	if (!isNil(isCopy)) {
 		if (isCopy === 'true') {
 			andFilters.push({
-				relations: { predicate: { _eq: 'IS_COPY_OF' } },
+				relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
 			});
 		} else if (isCopy === 'false') {
 			andFilters.push({
-				_not: { relations: { predicate: { _eq: 'IS_COPY_OF' } } },
+				_not: {
+					relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
+				},
 			});
 		}
 	}

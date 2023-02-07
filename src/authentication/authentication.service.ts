@@ -1,10 +1,9 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import queryString from 'query-string';
 
-import { Avo } from '@viaa/avo2-types';
-
 import { getEnv } from '../shared/helpers';
-import { fetchWithLogout } from '../shared/helpers/fetch-with-logout';
 
 import { SpecialPermissionGroups } from './authentication.types';
 
@@ -18,20 +17,19 @@ export async function verifyStamboekNumber(
 	if (stamboekValidationCache[stamboekNumber]) {
 		return 'VALID';
 	}
-	const response = await fetchWithLogout(
+	const data = await fetchWithLogoutJson<Avo.Stamboek.ValidateResponse>(
 		`${getEnv('PROXY_URL')}/stamboek/validate?${queryString.stringify({
 			stamboekNumber,
-		})}`,
-		{
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			credentials: 'include',
-		}
+		})}`
 	);
-
-	const data: Avo.Stamboek.ValidateResponse = await response.json();
+	if (!data) {
+		throw new Error(
+			JSON.stringify({
+				message: 'Failed to validate stamboek number',
+				additionalInfo: { stamboekNumber },
+			})
+		);
+	}
 	if (data.status === 'VALID') {
 		// Cache values as much as possible, to avoid multiple requests to the stamboek api
 		stamboekValidationCache[stamboekNumber] = true;

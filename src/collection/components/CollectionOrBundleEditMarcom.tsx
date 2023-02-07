@@ -1,5 +1,5 @@
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
-	BlockHeading,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -8,6 +8,7 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
+	IconName,
 	Select,
 	Spacer,
 	Spinner,
@@ -15,17 +16,19 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { get, uniq } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Link, RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
+import { App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ToastService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { ToastService } from '../../shared/services/toast-service';
+import { ValueOf } from '../../shared/types';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
@@ -45,7 +48,7 @@ interface CollectionOrBundleEditMarcomProps {
 const CollectionOrBundleEditMarcom: FunctionComponent<
 	CollectionOrBundleEditMarcomProps & UserProps
 > = ({ collection, changeCollectionState }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
 
@@ -65,12 +68,12 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-marcom___het-ophalen-van-de-marcom-entries-is-mislukt'
 				)
 			);
 		}
-	}, [collection.id, t, setMarcomEntries]);
+	}, [collection.id, tText, setMarcomEntries]);
 
 	useEffect(() => {
 		fetchMarcomEntries();
@@ -131,17 +134,17 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				return (
 					<ButtonToolbar>
 						<Button
-							icon="delete"
+							icon={IconName.delete}
 							onClick={() => {
 								if (rowData.id) {
 									deleteMarcomEntry(rowData);
 								}
 							}}
 							size="small"
-							title={t(
+							title={tText(
 								'collection/components/collection-or-bundle-edit-marcom___verwijder-de-marcom-entry'
 							)}
-							ariaLabel={t(
+							ariaLabel={tText(
 								'collection/components/collection-or-bundle-edit-marcom___verwijder-de-marcom-entry'
 							)}
 							type="danger-hover"
@@ -155,7 +158,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	};
 
 	const addMarcomEntry = async () => {
-		let marcomEntry: Partial<MarcomEntry> | null = null;
+		let marcomEntry: App_Collection_Marcom_Log_Insert_Input | null = null;
 		try {
 			marcomEntry = {
 				channel_type: marcomChannelType || null,
@@ -173,12 +176,18 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				await CollectionService.insertMarcomEntriesForBundleCollections(
 					collection.id,
 					collectionIds,
-					marcomEntry
+					{
+						collection_id: marcomEntry.collection_id,
+						channel_name: marcomEntry.channel_name,
+						channel_type: marcomEntry.channel_type,
+						external_link: marcomEntry.external_link,
+						publish_date: marcomEntry.publish_date,
+					}
 				);
 			}
 			await fetchMarcomEntries();
 			ToastService.success(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-gelukt'
 				)
 			);
@@ -193,7 +202,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-marcom___het-toevoegen-van-de-marcom-entry-is-mislukt'
 				)
 			);
@@ -213,10 +222,10 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 			await fetchMarcomEntries();
 			ToastService.success(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-edit-marcom___de-communicatie-entry-is-verwijderd-voor-deze-collectie'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-edit-marcom___de-communicatie-entry-is-verwijderd-voor-de-bundel-en-alle-collecties-in-deze-bundel'
 					  )
 			);
@@ -227,7 +236,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				})
 			);
 			ToastService.danger(
-				t(
+				tHtml(
 					'collection/components/collection-or-bundle-edit-marcom___het-verwijderen-van-de-marcom-entry-is-mislukt'
 				)
 			);
@@ -238,13 +247,13 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 		if (isCollection) {
 			// Collection
 			// Without filters
-			return t(
+			return tText(
 				'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie'
 			);
 		} else {
 			// Bundle
 			// Without filters
-			return t(
+			return tText(
 				'collection/components/collection-or-bundle-edit-marcom___er-zijn-nog-geen-marcom-entries-voor-deze-collectie'
 			);
 		}
@@ -256,14 +265,14 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				<Container mode="horizontal">
 					<Form>
 						<BlockHeading type="h3">
-							{t(
+							{tText(
 								'collection/components/collection-or-bundle-edit-marcom___meest-recente-communicatie'
 							)}
 						</BlockHeading>
 						<Flex justify="between" spaced="wide">
 							<FlexItem>
 								<FormGroup
-									label={t(
+									label={tText(
 										'collection/components/collection-or-bundle-edit-marcom___datum-communicatie'
 									)}
 								>
@@ -272,7 +281,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</FlexItem>
 							<FlexItem>
 								<FormGroup
-									label={t(
+									label={tText(
 										'collection/components/collection-or-bundle-edit-marcom___kanaal-type'
 									)}
 								>
@@ -287,7 +296,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</FlexItem>
 							<FlexItem>
 								<FormGroup
-									label={t(
+									label={tText(
 										'collection/components/collection-or-bundle-edit-marcom___kanaal-naam'
 									)}
 								>
@@ -302,7 +311,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							</FlexItem>
 							<FlexItem>
 								<FormGroup
-									label={t(
+									label={tText(
 										'collection/components/collection-or-bundle-edit-marcom___link'
 									)}
 								>
@@ -315,7 +324,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							<FlexItem>
 								<FormGroup label=" ">
 									<Button
-										label={t(
+										label={tText(
 											'collection/components/collection-or-bundle-edit-marcom___toevoegen'
 										)}
 										onClick={addMarcomEntry}
@@ -326,7 +335,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 						</Flex>
 						<Spacer margin={['top-extra-large', 'bottom-large']}>
 							<BlockHeading type="h3" className="u-padding-top u-padding-bottom">
-								{t(
+								{tText(
 									'collection/components/collection-or-bundle-edit-marcom___eerdere-communicatie'
 								)}
 							</BlockHeading>
@@ -349,7 +358,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							)}
 						</Spacer>
 						<FormGroup
-							label={t(
+							label={tText(
 								'collection/components/collection-or-bundle-edit-marcom___opmerkingen'
 							)}
 						>
@@ -362,7 +371,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 										collectionPropValue: {
 											...get(collection, 'marcom_note', {}),
 											note: newNote,
-										},
+										} as ValueOf<Avo.Collection.Collection>,
 									});
 								}}
 							/>

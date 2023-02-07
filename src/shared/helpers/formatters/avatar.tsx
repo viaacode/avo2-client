@@ -1,10 +1,17 @@
-import { Avatar, AvatarList, AvatarProps } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { Avatar, AvatarProps } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
+import { Assignment_v2 } from '../../../assignment/assignment.types';
+
 export const getProfile = (
-	obj: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
+	obj:
+		| Avo.User.Profile
+		| { profile: Avo.User.Profile }
+		| Assignment_v2['profile']
+		| null
+		| undefined
 ): Avo.User.Profile | null => {
 	if (!obj) {
 		return null;
@@ -20,7 +27,7 @@ export const getProfile = (
 
 export const getInitialChar = (value: string | undefined | null): string => (value ? value[0] : '');
 
-export const getInitials = (profile: Avo.User.Profile | null) =>
+export const getInitials = (profile: Avo.User.Profile | null): string =>
 	getInitialChar(get(profile, 'user.first_name')) +
 	getInitialChar(get(profile, 'user.last_name'));
 
@@ -46,11 +53,11 @@ export const getFullName = (
 	}`;
 };
 
-export const getAbbreviatedFullName = (profile: Avo.User.Profile | null) =>
-	`${get(profile, 'user.first_name', '')[0]}. ${get(profile, 'user.last_name')}`;
+export const getAbbreviatedFullName = (profile: Avo.User.Profile | null): string =>
+	`${(profile?.user?.first_name || '')[0]}. ${profile?.user?.last_name || ''}`;
 
-export const getAvatarImage = (profile: Avo.User.Profile | null) =>
-	get(profile, 'organisation.logo_url') || get(profile, 'avatar') || undefined;
+export const getAvatarImage = (profile: Avo.User.Profile | null): string =>
+	get(profile, 'organisation.logo_url') || get(profile, 'avatar') || '';
 
 export const getAvatarProps = (
 	profile: Avo.User.Profile | null,
@@ -72,7 +79,11 @@ export const getAvatarProps = (
 };
 
 export const renderAvatar = (
-	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null,
+	userOrProfile:
+		| Avo.User.Profile
+		| { profile: Avo.User.Profile }
+		| Assignment_v2['profile']
+		| null,
 	options: {
 		small?: boolean;
 		abbreviatedName?: boolean;
@@ -88,17 +99,4 @@ export const renderAvatar = (
 	const props: AvatarProps = getAvatarProps(profile, options);
 
 	return <Avatar dark={options.dark} {...props} />;
-};
-
-export const renderAvatars = (
-	profiles: Avo.User.Profile[],
-	options: {
-		small?: boolean;
-		abbreviatedName?: boolean;
-	} = {}
-): ReactNode | null => {
-	const avatarsProps = profiles.map((profile: Avo.User.Profile) =>
-		getAvatarProps(profile, options)
-	);
-	return <AvatarList avatars={avatarsProps} isOpen={false} />;
 };

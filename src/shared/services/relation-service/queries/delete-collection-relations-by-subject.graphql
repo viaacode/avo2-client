@@ -1,0 +1,10 @@
+mutation deleteCollectionRelationsBySubject(
+	$subjectId: uuid!
+	$relationType: lookup_enum_relation_types_enum!
+) {
+	delete_app_collection_relations(
+		where: { subject: { _eq: $subjectId }, predicate: { _eq: $relationType } }
+	) {
+		affected_rows
+	}
+}

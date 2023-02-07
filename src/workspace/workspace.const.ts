@@ -1,5 +1,7 @@
+import { IconName } from '@viaa/avo2-components';
+
 import { ROUTE_PARTS } from '../shared/constants';
-import i18n from '../shared/translations/i18n';
+import { tText } from '../shared/helpers/translate';
 
 import { WorkspaceTab } from './workspace.types';
 
@@ -12,32 +14,32 @@ export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
 
 export const GET_TABS: () => WorkspaceTab[] = () => [
 	{
-		label: i18n.t('workspace/workspace___collecties'),
-		icon: 'collection',
+		label: tText('workspace/workspace___collecties'),
+		icon: IconName.collection,
 		id: COLLECTIONS_ID,
 	},
 	{
-		label: i18n.t('workspace/workspace___bundels'),
-		icon: 'folder',
+		label: tText('workspace/workspace___bundels'),
+		icon: IconName.folder,
 		id: BUNDLES_ID,
 	},
 	{
-		label: i18n.t('workspace/workspace___opdrachten'),
-		icon: 'clipboard',
+		label: tText('workspace/workspace___opdrachten'),
+		icon: IconName.clipboard,
 		id: ASSIGNMENTS_ID,
 	},
 	{
-		label: i18n.t('workspace/workspace___gedeelde-links'),
-		icon: 'link-2',
+		label: tText('workspace/workspace___gedeelde-links'),
+		icon: IconName.link2,
 		id: QUICK_LANE_ID,
 	},
 	{
-		label: i18n.t('workspace/workspace___bladwijzers'),
-		icon: 'bookmark',
+		label: tText('workspace/workspace___bladwijzers'),
+		icon: IconName.bookmark,
 		id: BOOKMARKS_ID,
 	},
 	{
-		label: i18n.t('workspace/workspace___organisatie-content'),
+		label: tText('workspace/workspace___organisatie-content'),
 		id: ORGANISATION_CONTENT_ID,
 	},
 ];

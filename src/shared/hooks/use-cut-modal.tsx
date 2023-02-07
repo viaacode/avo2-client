@@ -1,25 +1,25 @@
-import { Button, ButtonProps } from '@viaa/avo2-components';
+import { Button, ButtonProps, IconName } from '@viaa/avo2-components';
 import React, { ReactNode, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import CutFragmentModal, {
 	CutFragmentModalProps,
 } from '../../collection/components/modals/CutFragmentModal';
+import useTranslation from '../../shared/hooks/useTranslation';
 
 export function useCutModal(): [
 	(props?: Partial<ButtonProps>) => ReactNode,
 	(props?: Partial<CutFragmentModalProps>) => ReactNode
 ] {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [isCutModalOpen, setIsCutModalOpen] = useState<boolean>(false);
 
 	const renderButton = (props?: Partial<ButtonProps>) => {
 		return (
 			<Button
-				icon="scissors"
-				label={t('collection/components/fragment/fragment-edit___knippen')}
-				title={t(
+				icon={IconName.scissors}
+				label={tText('collection/components/fragment/fragment-edit___knippen')}
+				title={tText(
 					'collection/components/fragment/fragment-edit___knip-een-fragment-uit-dit-video-audio-fragment'
 				)}
 				type="secondary"

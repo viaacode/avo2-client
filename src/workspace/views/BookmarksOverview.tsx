@@ -1,5 +1,6 @@
 import {
 	Button,
+	IconName,
 	MetaData,
 	MetaDataItem,
 	Pagination,
@@ -10,7 +11,6 @@ import {
 } from '@viaa/avo2-components';
 import { orderBy } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -30,12 +30,16 @@ import {
 	isMobileWidth,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
-import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE } from '../../shared/services/bookmarks-views-plays-service';
+import useTranslation from '../../shared/hooks/useTranslation';
+import {
+	BookmarksViewsPlaysService,
+	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
+} from '../../shared/services/bookmarks-views-plays-service';
 import {
 	BookmarkInfo,
 	EventContentType,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 const ITEMS_PER_PAGE = 5;
@@ -51,7 +55,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	history,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [bookmarks, setBookmarks] = useState<BookmarkInfo[] | null>(null);
@@ -67,7 +71,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		{ id: 'contentThumbnailPath', label: '', col: '2' },
 		{
 			id: 'contentTitle',
-			label: t('collection/views/collection-overview___titel'),
+			label: tText('collection/views/collection-overview___titel'),
 			col: '6',
 			sortable: true,
 			visibleByDefault: true,
@@ -78,14 +82,14 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			: [
 					{
 						id: 'createdAt',
-						label: t('workspace/views/bookmarks___aangemaakt-op'),
+						label: tText('workspace/views/bookmarks___aangemaakt-op'),
 						col: '3',
 						sortable: true,
 						visibleByDefault: true,
 						dataType: TableColumnDataType.dateTime,
 					},
 			  ]),
-		{ id: 'actions', tooltip: t('workspace/views/bookmarks-overview___acties'), col: '1' },
+		{ id: 'actions', tooltip: tText('workspace/views/bookmarks-overview___acties'), col: '1' },
 	] as TableColumn[];
 
 	const fetchBookmarks = useCallback(async () => {
@@ -97,10 +101,12 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			console.error(new CustomError('Failed to get all bookmarks for user', err, { user }));
 			setLoadingInfo({
 				state: 'error',
-				message: t('workspace/views/bookmarks___het-ophalen-van-je-bladwijzers-is-mislukt'),
+				message: tText(
+					'workspace/views/bookmarks___het-ophalen-van-je-bladwijzers-is-mislukt'
+				),
 			});
 		}
-	}, [user, setBookmarks, setLoadingInfo, t]);
+	}, [user, setBookmarks, setLoadingInfo, tText]);
 
 	useEffect(() => {
 		fetchBookmarks();
@@ -122,7 +128,9 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			setIsDeleteModalOpen(false);
 			if (!bookmarkToDelete) {
 				ToastService.danger(
-					t('workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt')
+					tHtml(
+						'workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt'
+					)
 				);
 				return;
 			}
@@ -135,13 +143,13 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 			await fetchBookmarks();
 			onUpdate();
-			ToastService.success(t('workspace/views/bookmarks___de-bladwijzer-is-verwijderd'));
+			ToastService.success(tHtml('workspace/views/bookmarks___de-bladwijzer-is-verwijderd'));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed t delete bookmark', err, { bookmarkToDelete, user })
 			);
 			ToastService.danger(
-				t('workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt')
+				tHtml('workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt')
 			);
 		}
 
@@ -222,7 +230,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 							</span>
 						)}
 					</MetaDataItem>
-					<MetaDataItem icon="eye" label={String(contentViews || 0)} />
+					<MetaDataItem icon={IconName.eye} label={String(contentViews || 0)} />
 				</MetaData>
 			</div>
 		</div>
@@ -230,9 +238,9 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 	const renderDeleteAction = (bookmarkInfo: BookmarkInfo) => (
 		<Button
-			title={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-			ariaLabel={t('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-			icon="delete"
+			title={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+			ariaLabel={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
+			icon={IconName.delete}
 			type="danger-hover"
 			onClick={() => {
 				setBookmarkToDelete(bookmarkInfo);
@@ -266,7 +274,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			<Table
 				columns={BOOKMARK_COLUMNS}
 				data={paginatedBookmarks}
-				emptyStateMessage={t(
+				emptyStateMessage={tText(
 					'collection/views/collection-overview___geen-resultaten-gevonden'
 				)}
 				renderCell={renderCell}
@@ -288,20 +296,20 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 	const renderEmptyFallback = () => (
 		<ErrorView
-			icon="bookmark"
-			message={t('workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt')}
+			icon={IconName.bookmark}
+			message={tText('workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt')}
 		>
 			<p>
-				<Trans i18nKey="workspace/views/bookmarks___een-bladwijzer-kan-je-gebruiken-om-eenvoudig-items-terug-te-vinden">
-					Een bladwijzer kan je gebruiken om eenvoudig items terug te vinden.
-				</Trans>
+				{tHtml(
+					'workspace/views/bookmarks___een-bladwijzer-kan-je-gebruiken-om-eenvoudig-items-terug-te-vinden'
+				)}
 			</p>
 			<Spacer margin="top">
 				<Button
 					type="primary"
-					icon="search"
-					label={t('workspace/views/bookmarks___zoek-een-item')}
-					title={t(
+					icon={IconName.search}
+					label={tText('workspace/views/bookmarks___zoek-een-item')}
+					title={tText(
 						'workspace/views/bookmarks-overview___zoek-een-item-en-maak-er-een-bladwijzer-van'
 					)}
 					onClick={() => history.push(APP_PATH.SEARCH.route)}
@@ -314,8 +322,8 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		<>
 			{bookmarks && bookmarks.length ? renderTable() : renderEmptyFallback()}
 			<DeleteObjectModal
-				title={t('workspace/views/bookmarks___verwijder-bladwijzer')}
-				body={t(
+				title={tText('workspace/views/bookmarks___verwijder-bladwijzer')}
+				body={tText(
 					'workspace/views/bookmarks-overview___ben-je-zeker-dat-je-deze-bladwijzer-wil-verwijderen-br-deze-actie-kan-niet-ongedaan-gemaakt-worden'
 				)}
 				isOpen={isDeleteModalOpen}

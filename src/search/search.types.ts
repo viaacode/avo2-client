@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { ReactNode } from 'react';
 import { Dispatch } from 'redux';
 import { UrlUpdateType } from 'use-query-params';
@@ -28,13 +28,7 @@ export interface SearchFiltersAndResultsProps
 	) => Dispatch;
 }
 
-export interface SearchFiltersAndResultsPropsManual {
-	enabledFilters?: (keyof Avo.Search.Filters)[];
-	enabledTypeOptions?: Avo.Core.ContentType[];
-	enabledOrderProperties?: SearchOrderProperty[];
-	bookmarks: boolean;
-	filterState: FilterState;
-	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
+interface RenderLinks {
 	renderDetailLink: (
 		linkText: string | ReactNode,
 		id: string,
@@ -45,6 +39,15 @@ export interface SearchFiltersAndResultsPropsManual {
 		newFilters: FilterState,
 		className?: string
 	) => ReactNode;
+}
+
+export interface SearchFiltersAndResultsPropsManual extends RenderLinks {
+	enabledFilters?: (keyof Avo.Search.Filters)[];
+	enabledTypeOptions?: Avo.Core.ContentType[];
+	enabledOrderProperties?: SearchOrderProperty[];
+	bookmarks: boolean;
+	filterState: FilterState;
+	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
 }
 
 export interface SortOrder {
@@ -71,37 +74,17 @@ export interface SearchFilterControlsProps {
 	collectionLabels: QualityLabel[];
 }
 
-interface SearchResultItemHandlers {
+interface SearchResultItemHandlers extends RenderLinks {
 	handleBookmarkToggle: (uuid: string, active: boolean) => void;
 	handleTagClicked?: (id: string) => void;
-	renderDetailLink: (
-		linkText: string | ReactNode,
-		id: string,
-		type: Avo.Core.ContentType
-	) => ReactNode;
-	renderSearchLink: (
-		linkText: string | ReactNode,
-		newFilters: FilterState,
-		className?: string
-	) => ReactNode;
 }
 
-export interface SearchResultItemProps extends SearchResultItemHandlers {
+export interface SearchResultItemProps extends SearchResultItemHandlers, RenderLinks {
 	id: string;
 	result: Avo.Search.ResultItem;
 	collectionLabelLookup: CollectionLabelLookup;
 	isBookmarked: boolean | null;
 	bookmarkButton: boolean;
-	renderDetailLink: (
-		linkText: string | ReactNode,
-		id: string,
-		type: Avo.Core.ContentType
-	) => ReactNode;
-	renderSearchLink: (
-		linkText: string | ReactNode,
-		newFilters: FilterState,
-		className?: string
-	) => ReactNode;
 }
 
 export interface SearchResultsProps extends SearchResultItemHandlers {

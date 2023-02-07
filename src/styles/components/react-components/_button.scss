@@ -1,0 +1,220 @@
+@use 'sass:math';
+@import '../../settings/colors';
+@import '../../settings/variables';
+
+/* ==========================================================================
+   Component: Buttons
+   ---
+   This code is about button layout.
+   ========================================================================== */
+
+/* Variables
+   ========================================================================== */
+
+// Border radius
+$c-button-border-radius: 0.3rem !default;
+
+// Sizes (heights)
+
+$c-button-height: 3.6rem !default;
+$c-button-height-small: 2.8rem !default;
+
+// Font size
+
+$c-button-font-size: 1.5rem;
+$c-button-font-size-small: 1.3rem;
+
+// Line height
+
+$c-button-line-height: 2.4rem;
+$c-button-line-height-small: 1.8rem;
+
+// Horizontal padding (border included)
+
+$c-button-padding-horizontal: 1.6rem !default;
+$c-button-padding-horizontal-small: 1rem !default;
+
+// Spacing between icon and label
+
+$c-button-icon-spacing: 0.4rem !default;
+$c-button-icon-spacing-small: 0.2rem !default;
+
+/* Default size
+   ========================================================================== */
+
+.c-button {
+	appearance: none; // Fix for Mobile Safari
+	text-decoration: none; // to reset <a> element
+	cursor: pointer;
+	vertical-align: middle;
+	border-radius: $c-button-border-radius;
+	padding: math.div(($c-button-height - $c-button-line-height), 2) $c-button-padding-horizontal;
+	max-height: $c-button-height;
+	font-size: $c-button-font-size;
+	text-align: center;
+	align-items: center;
+	font-weight: 400;
+
+	&--disabled {
+		cursor: default;
+		background: $color-gray-100 !important;
+		color: $color-gray-200 !important;
+		border: 1px solid $color-gray-100 !important;
+	}
+
+	&--neutral {
+		border: 1px solid $color-gray-200;
+		background-color: $color-gray-50;
+		color: $color-gray-700;
+
+		&:hover,
+		&:active,
+		&:focus,
+		&.c-button--active,
+		&.c-button--active:focus {
+			background-color: #fff;
+		}
+	}
+
+	&--copy-to-clipboard {
+		border: 1px solid $color-gray-200;
+		background-color: $color-gray-50;
+		color: $color-gray-700;
+	}
+
+	.c-button__icon {
+		pointer-events: none;
+	}
+}
+
+a.c-button {
+	display: inline-flex;
+	justify-content: center;
+}
+
+.c-button {
+	appearance: none;
+	margin: 0;
+
+	&::-moz-focus-inner {
+		border: 0;
+		padding: 0;
+	}
+}
+
+.c-button .c-button__content {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+}
+
+.c-button__label {
+	line-height: $c-button-line-height;
+	white-space: nowrap;
+}
+
+.c-button__icon + .c-button__label,
+.c-button__label + .c-button__icon {
+	margin-left: $c-button-icon-spacing;
+}
+
+/* Small size
+   ========================================================================== */
+
+.c-button--small {
+	font-size: $c-button-font-size-small;
+	padding: math.div(($c-button-height-small - $c-button-line-height-small), 2)
+		$c-button-padding-horizontal-small;
+
+	.c-button__label {
+		line-height: $c-button-line-height-small;
+	}
+
+	.c-button__icon {
+		height: $c-button-line-height-small;
+		width: $c-button-line-height-small;
+	}
+
+	.c-button__icon + .c-button__label,
+	.c-button__label + .c-button__icon {
+		margin-left: $c-button-icon-spacing-small;
+	}
+
+	&.c-button--icon {
+		padding: math.div(($c-button-height-small - $c-button-line-height-small), 2);
+	}
+}
+
+/* Large size
+   ========================================================================== */
+
+.c-button--large {
+	padding: 0.9rem 1.8rem;
+	max-height: 4.3rem;
+}
+
+/* Icon-only Button (Square)
+   ========================================================================== */
+
+.c-button.c-button--icon {
+	padding: math.div(($c-button-height - $c-button-line-height), 2);
+}
+
+.c-button--small.c-button--icon {
+	padding: math.div(($c-button-height-small - $c-button-line-height-small), 2);
+}
+
+/* Block button
+   ========================================================================== */
+
+.c-button--block {
+	width: 100%;
+	text-align: center;
+}
+
+/* Auto height button
+   ========================================================================== */
+
+.c-button--auto {
+	max-height: none;
+	min-height: $c-button-height;
+
+	.c-button__label {
+		white-space: normal;
+	}
+}
+
+/* Button action
+   ========================================================================== */
+
+.c-button-action {
+	.o-svg-icon--action-active {
+		display: none;
+	}
+
+	&.c-button--active {
+		.o-svg-icon--action-active {
+			display: block;
+			color: $color-teal-bright;
+		}
+
+		.o-svg-icon--action-inactive {
+			display: none;
+		}
+	}
+}
+
+/* Button spacing
+   ========================================================================== */
+
+.c-button-toolbar {
+	* + .c-button {
+		margin-left: $g-spacer-unit;
+	}
+
+	.c-button-group {
+		.c-button + .c-button {
+			margin-left: 0;
+		}
+	}
+}

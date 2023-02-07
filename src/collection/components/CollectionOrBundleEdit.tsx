@@ -5,29 +5,31 @@ import {
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
+	IconName,
 	MoreOptionsDropdown,
 	Navbar,
 	TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { cloneDeep, get, isEmpty, set } from 'lodash-es';
 import React, {
 	FunctionComponent,
+	ReactNode,
 	ReactText,
 	useCallback,
 	useEffect,
 	useReducer,
 	useState,
 } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
@@ -50,12 +52,15 @@ import {
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
-import { BookmarksViewsPlaysService, ToastService } from '../../shared/services';
-import { DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS } from '../../shared/services/bookmarks-views-plays-service';
+import {
+	BookmarksViewsPlaysService,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import i18n from '../../shared/translations/i18n';
+import { ToastService } from '../../shared/services/toast-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { MAX_TITLE_LENGTH } from '../collection.const';
@@ -134,7 +139,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	CollectionOrBundleEditProps &
 		DefaultSecureRouteProps<{ id: string; tabId: EditCollectionTab | undefined }>
 > = ({ type, history, location, match, user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [collectionId] = useState<string>(match.params.id);
@@ -212,10 +217,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 		if (!newCurrentCollection) {
 			ToastService.danger(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-edit___de-collectie-is-nog-niet-geladen'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-edit___de-bundel-is-nog-niet-geladen'
 					  )
 			);
@@ -239,10 +244,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				) {
 					ToastService.danger(
 						isCollection
-							? t(
+							? tHtml(
 									'collection/components/collection-or-bundle-edit___de-collectie-lijkt-geen-fragmenten-te-bevatten'
 							  )
-							: t(
+							: tHtml(
 									'collection/components/collection-or-bundle-edit___deze-bundel-lijkt-geen-collecties-te-bevatten'
 							  )
 					);
@@ -401,13 +406,13 @@ const CollectionOrBundleEdit: FunctionComponent<
 				setLoadingInfo({
 					state: 'error',
 					message: isCollection
-						? t(
+						? tText(
 								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-collectie-te-bewerken'
 						  )
-						: t(
+						: tText(
 								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken'
 						  ),
-					icon: 'alert-triangle',
+					icon: IconName.alertTriangle,
 				});
 				return;
 			}
@@ -421,11 +426,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 				setLoadingInfo({
 					state: 'error',
 					message: isCollection
-						? t(
+						? tText(
 								'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 						  )
-						: t('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
-					icon: 'search',
+						: tText('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
+					icon: IconName.search,
 				});
 				return;
 			}
@@ -441,7 +446,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					})
 				);
 				ToastService.danger(
-					t(
+					tHtml(
 						'collection/views/collection-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
 					)
 				);
@@ -473,16 +478,16 @@ const CollectionOrBundleEdit: FunctionComponent<
 			setLoadingInfo({
 				state: 'error',
 				message: isCollection
-					? t(
+					? tText(
 							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
 					  )
-					: t(
+					: tText(
 							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-tijdens-het-ophalen-van-de-bundel'
 					  ),
-				icon: 'alert-triangle',
+				icon: IconName.alertTriangle,
 			});
 		}
-	}, [user, collectionId, setLoadingInfo, t, isCollection, type]);
+	}, [user, collectionId, setLoadingInfo, tText, isCollection, type]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
@@ -534,7 +539,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS,
 				  ]
 		);
-		const showEditorialTabs: boolean =
+		const showEditorialTabs = !!(
 			(isCollection &&
 				get(collectionState, 'currentCollection.is_managed') &&
 				PermissionService.hasPerm(
@@ -543,24 +548,25 @@ const CollectionOrBundleEdit: FunctionComponent<
 				)) ||
 			(!isCollection &&
 				get(collectionState, 'currentCollection.is_managed') &&
-				PermissionService.hasPerm(user, PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS));
+				PermissionService.hasPerm(user, PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS))
+		);
 		return [
 			{
 				id: 'content',
-				label: i18n.t('collection/collection___inhoud'),
-				icon: 'collection',
+				label: tText('collection/collection___inhoud'),
+				icon: IconName.collection,
 			},
 			{
 				id: 'metadata',
-				label: i18n.t('collection/collection___publicatiedetails'),
-				icon: 'file-text',
+				label: tText('collection/collection___publicatiedetails'),
+				icon: IconName.fileText,
 			},
 			...(showAdminTab
 				? [
 						{
 							id: 'admin',
-							label: i18n.t('collection/collection___beheer'),
-							icon: 'settings',
+							label: tText('collection/collection___beheer'),
+							icon: IconName.settings,
 						} as TabProps,
 				  ]
 				: []),
@@ -568,24 +574,24 @@ const CollectionOrBundleEdit: FunctionComponent<
 				? [
 						{
 							id: 'actualisation',
-							label: i18n.t(
+							label: tText(
 								'collection/components/collection-or-bundle-edit___actualisatie'
 							),
-							icon: 'check-circle',
+							icon: IconName.checkCircle,
 						} as TabProps,
 						{
 							id: 'quality_check',
-							label: i18n.t(
+							label: tText(
 								'collection/components/collection-or-bundle-edit___kwaliteitscontrole'
 							),
-							icon: 'check-square',
+							icon: IconName.checkSquare,
 						} as TabProps,
 						{
 							id: 'marcom',
-							label: i18n.t(
+							label: tText(
 								'collection/components/collection-or-bundle-edit___marcom'
 							),
-							icon: 'send',
+							icon: IconName.send,
 						} as TabProps,
 				  ]
 				: []),
@@ -598,7 +604,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		active: currentTab === tab.id,
 	}));
 
-	const isCollectionValid = (): string | null => {
+	const isCollectionValid = (): ReactNode | null => {
 		if (
 			get(collectionState.currentCollection, 'is_managed', true) &&
 			(!!get(collectionState.currentCollection, 'management_language_check[0]') ||
@@ -620,10 +626,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				)
 			);
 			return isCollection
-				? t(
+				? tHtml(
 						'collection/components/collection-or-bundle-edit___een-collectie-met-redactie-moet-een-kwaliteitscontrole-verantwoordelijke-hebben'
 				  )
-				: t(
+				: tHtml(
 						'collection/components/collection-or-bundle-edit___een-bundel-met-redactie-moet-een-kwaliteitscontrole-verantwoordelijke-hebben'
 				  );
 		}
@@ -634,7 +640,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
 		try {
-			const validationError: string | null = isCollectionValid();
+			const validationError: ReactNode | null = isCollectionValid();
 			if (validationError) {
 				ToastService.danger(validationError);
 				setIsSavingCollection(false);
@@ -652,10 +658,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 					checkPermissionsAndGetCollection();
 					ToastService.success(
 						isCollection
-							? t(
+							? tHtml(
 									'collection/components/collection-or-bundle-edit___collectie-opgeslagen'
 							  )
-							: t(
+							: tHtml(
 									'collection/components/collection-or-bundle-edit___bundle-opgeslagen'
 							  )
 					);
@@ -673,10 +679,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 			console.error('Failed to save collection/bundle to the database', err);
 			ToastService.danger(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-edit___het-opslaan-van-de-collectie-is-mislukt'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-edit___het-opslaan-van-de-bundel-is-mislukt'
 					  )
 			);
@@ -694,10 +700,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 			if (!collectionState.initialCollection) {
 				ToastService.info(
 					isCollection
-						? t(
+						? tHtml(
 								'collection/components/collection-or-bundle-edit___de-collectie-naam-kon-niet-geupdate-worden-collectie-is-niet-gedefinieerd'
 						  )
-						: t(
+						: tHtml(
 								'collection/components/collection-or-bundle-edit___de-bundel-naam-kon-niet-geupdate-worden-bundel-is-niet-gedefinieerd'
 						  )
 				);
@@ -728,10 +734,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 				ToastService.success(
 					isCollection
-						? t(
+						? tHtml(
 								'collection/components/collection-or-bundle-edit___de-collectie-naam-is-aangepast'
 						  )
-						: t(
+						: tHtml(
 								'collection/components/collection-or-bundle-edit___de-bundel-naam-is-aangepast'
 						  )
 				);
@@ -740,10 +746,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 			console.error(err);
 			ToastService.info(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-edit___het-hernoemen-van-de-collectie-is-mislukt'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-edit___het-hernoemen-van-de-bundel-is-mislukt'
 					  )
 			);
@@ -761,10 +767,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				console.error(`Failed to delete ${type} since currentCollection is undefined`);
 				ToastService.info(
 					isCollection
-						? t(
+						? tHtml(
 								'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt-collectie-niet-ingesteld'
 						  )
-						: t(
+						: tHtml(
 								'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-bundel-is-mislukt-bundel-niet-ingesteld'
 						  )
 				);
@@ -783,16 +789,16 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID });
 			ToastService.success(
-				t('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
+				tHtml('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
 			);
 		} catch (err) {
 			console.error(err);
 			ToastService.info(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-bundel-is-mislukt'
 					  )
 			);
@@ -822,7 +828,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			case 'openPublishModal':
 				if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
 					ToastService.info(
-						t(
+						tHtml(
 							'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 						)
 					);
@@ -908,7 +914,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					index: getFragmentsFromCollection(collectionState.currentCollection).length,
 				});
 				ToastService.success(
-					t(
+					tHtml(
 						'collection/components/collection-or-bundle-edit___het-item-is-toegevoegd-aan-de-collectie'
 					)
 				);
@@ -918,7 +924,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					await CollectionService.fetchCollectionOrBundleById(id, 'collection');
 				if (!collection) {
 					ToastService.danger(
-						t(
+						tHtml(
 							'collection/components/collection-or-bundle-edit___de-collectie-met-dit-id-kon-niet-worden-gevonden'
 						)
 					);
@@ -949,7 +955,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					index: getFragmentsFromCollection(collectionState.currentCollection).length,
 				});
 				ToastService.success(
-					t(
+					tHtml(
 						'collection/components/collection-or-bundle-edit___de-collectie-is-toegevoegd-aan-de-bundel'
 					)
 				);
@@ -966,10 +972,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 			);
 			ToastService.danger(
 				isCollection
-					? t(
+					? tHtml(
 							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-bij-het-toevoegen-van-het-item'
 					  )
-					: t(
+					: tHtml(
 							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-bij-het-toevoegen-van-de-collectie'
 					  )
 			);
@@ -1043,7 +1049,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				'rename',
 				isCollection
 					? 'Collectie hernoemen'
-					: t('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
+					: tText('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
 				'folder'
 			),
 			createDropdownMenuItem('delete', 'Verwijderen', 'delete'),
@@ -1060,8 +1066,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				createDropdownMenuItem(
 					'addItemById',
 					isCollection
-						? t('collection/components/collection-or-bundle-edit___voeg-item-toe')
-						: t('collection/components/collection-or-bundle-edit___voeg-collectie-toe'),
+						? tText('collection/components/collection-or-bundle-edit___voeg-item-toe')
+						: tText(
+								'collection/components/collection-or-bundle-edit___voeg-collectie-toe'
+						  ),
 					'plus'
 				)
 			);
@@ -1071,24 +1079,26 @@ const CollectionOrBundleEdit: FunctionComponent<
 			collectionState.currentCollection && collectionState.currentCollection.is_public;
 		let publishButtonTooltip: string;
 		if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
-			publishButtonTooltip = t(
+			publishButtonTooltip = tText(
 				'collection/components/collection-or-bundle-edit___u-moet-uw-wijzigingen-eerst-opslaan'
 			);
 		} else if (isPublic) {
 			if (isCollection) {
-				publishButtonTooltip = t(
+				publishButtonTooltip = tText(
 					'collection/views/collection-detail___maak-deze-collectie-prive'
 				);
 			} else {
-				publishButtonTooltip = t('bundle/views/bundle-detail___maak-deze-bundel-prive');
+				publishButtonTooltip = tText('bundle/views/bundle-detail___maak-deze-bundel-prive');
 			}
 		} else {
 			if (isCollection) {
-				publishButtonTooltip = t(
+				publishButtonTooltip = tText(
 					'collection/views/collection-detail___maak-deze-collectie-openbaar'
 				);
 			} else {
-				publishButtonTooltip = t('bundle/views/bundle-detail___maak-deze-bundel-openbaar');
+				publishButtonTooltip = tText(
+					'bundle/views/bundle-detail___maak-deze-bundel-openbaar'
+				);
 			}
 		}
 
@@ -1102,19 +1112,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 						}
 						title={publishButtonTooltip}
 						ariaLabel={publishButtonTooltip}
-						icon={isPublic ? 'unlock-3' : 'lock'}
+						icon={isPublic ? IconName.unlock3 : IconName.lock}
 						onClick={() => executeAction('openPublishModal')}
 					/>
 				)}
 				<Button
 					type="secondary"
-					label={t('collection/components/collection-or-bundle-edit___bekijk')}
+					label={tText('collection/components/collection-or-bundle-edit___bekijk')}
 					title={
 						isCollection
-							? t(
+							? tText(
 									'collection/components/collection-or-bundle-edit___bekijk-hoe-de-collectie-er-zal-uit-zien'
 							  )
-							: t(
+							: tText(
 									'collection/components/collection-or-bundle-edit___bekijk-hoe-de-bundel-er-zal-uit-zien'
 							  )
 					}
@@ -1138,24 +1148,24 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const COLLECTION_DROPDOWN_ITEMS = [
 			createDropdownMenuItem(
 				'save',
-				t('collection/views/collection-edit___opslaan'),
+				tText('collection/views/collection-edit___opslaan'),
 				'download'
 			),
 			createDropdownMenuItem(
 				'openPublishModal',
-				t('collection/components/collection-or-bundle-edit___delen'),
+				tText('collection/components/collection-or-bundle-edit___delen'),
 				'share-2'
 			),
 			createDropdownMenuItem(
 				'redirectToDetail',
-				t('collection/components/collection-or-bundle-edit___bekijk'),
+				tText('collection/components/collection-or-bundle-edit___bekijk'),
 				'eye'
 			),
 			createDropdownMenuItem(
 				'rename',
 				isCollection
 					? 'Collectie hernoemen'
-					: t('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
+					: tText('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
 				'folder'
 			),
 			createDropdownMenuItem('delete', 'Verwijderen', 'delete'),
@@ -1231,15 +1241,17 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<InputModal
 					title={
 						isCollection
-							? t('collection/views/collection-edit___hernoem-deze-collectie')
-							: t(
+							? tText('collection/views/collection-edit___hernoem-deze-collectie')
+							: tText(
 									'collection/components/collection-or-bundle-edit___hernoem-deze-bundel'
 							  )
 					}
 					inputLabel={
 						isCollection
-							? t('collection/components/collection-or-bundle-edit___naam-collectie')
-							: t('collection/components/collection-or-bundle-edit___naam-bundel')
+							? tText(
+									'collection/components/collection-or-bundle-edit___naam-collectie'
+							  )
+							: tText('collection/components/collection-or-bundle-edit___naam-bundel')
 					}
 					inputValue={title}
 					maxLength={MAX_TITLE_LENGTH}
@@ -1248,10 +1260,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 					inputCallback={onRenameCollection}
 					emptyMessage={
 						isCollection
-							? t(
+							? tText(
 									'collection/components/collection-or-bundle-edit___gelieve-een-collectie-titel-in-te-vullen'
 							  )
-							: t(
+							: tText(
 									'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
 							  )
 					}
@@ -1259,20 +1271,20 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<InputModal
 					title={
 						isCollection
-							? t(
+							? tText(
 									'collection/components/collection-or-bundle-edit___voeg-item-toe-via-pid'
 							  )
-							: t(
+							: tText(
 									'collection/components/collection-or-bundle-edit___voeg-collectie-toe-via-id'
 							  )
 					}
-					inputLabel={t('collection/components/collection-or-bundle-edit___id')}
+					inputLabel={tText('collection/components/collection-or-bundle-edit___id')}
 					inputPlaceholder={
 						isCollection
-							? t(
+							? tText(
 									'collection/components/collection-or-bundle-edit___bijvoorbeeld-zg-6-g-181-x-5-j'
 							  )
-							: t(
+							: tText(
 									'collection/components/collection-or-bundle-edit___bijvoorbeeld-c-8-a-48-b-7-e-d-27-d-4-b-9-a-a-793-9-ba-79-fff-41-df'
 							  )
 					}
@@ -1295,10 +1307,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collectionState.currentCollection,
 							'title',
 							isCollection
-								? t(
+								? tText(
 										'collection/components/collection-or-bundle-edit___collectie-bewerken-titel-fallback'
 								  )
-								: t(
+								: tText(
 										'collection/components/collection-or-bundle-edit___bundel-bewerken-titel-fallback'
 								  )
 						)

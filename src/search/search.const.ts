@@ -1,6 +1,6 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 
-import i18n from '../shared/translations/i18n';
+import { tText } from '../shared/helpers/translate';
 
 import { SortOrder } from './search.types';
 
@@ -75,24 +75,27 @@ export enum SearchOrderProperty {
 
 export const GET_SEARCH_ORDER_OPTIONS = (): { label: string; value: SearchOrderProperty }[] => [
 	{
-		label: i18n.t('search/views/search___meest-relevant'),
+		label: tText('search/views/search___meest-relevant'),
 		value: SearchOrderProperty.relevanceDesc,
 	},
-	{ label: i18n.t('search/views/search___meest-bekeken'), value: SearchOrderProperty.viewsDesc },
 	{
-		label: i18n.t('search/views/search___uitzenddatum-aflopend'),
+		label: tText('search/views/search___meest-bekeken'),
+		value: SearchOrderProperty.viewsDesc,
+	},
+	{
+		label: tText('search/views/search___uitzenddatum-aflopend'),
 		value: SearchOrderProperty.broadcastDateDesc,
 	},
 	{
-		label: i18n.t('search/views/search___uitzenddatum-oplopend'),
+		label: tText('search/views/search___uitzenddatum-oplopend'),
 		value: SearchOrderProperty.broadcastDateAsc,
 	},
 	{
-		label: i18n.t('search/views/search___laatst-toegevoegd'),
+		label: tText('search/views/search___laatst-toegevoegd'),
 		value: SearchOrderProperty.createdAtDesc,
 	},
 	{
-		label: i18n.t('search/views/search___laatst-gewijzigd'),
+		label: tText('search/views/search___laatst-gewijzigd'),
 		value: SearchOrderProperty.updatedAtDesc,
 	},
 ];

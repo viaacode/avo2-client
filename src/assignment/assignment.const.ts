@@ -1,11 +1,11 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
 import { ContentTypeString } from '../collection/collection.types';
 import { SearchFilter, SearchOrderProperty } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
-import i18n from '../shared/translations/i18n';
+import { tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
@@ -16,6 +16,7 @@ import {
 	AssignmentResponseFormState,
 	AssignmentResponseTableColumns,
 	AssignmentType,
+	BaseBlockWithMeta,
 } from './assignment.types';
 
 export const ITEMS_PER_PAGE = 20;
@@ -35,7 +36,7 @@ const getLabelsColumn = (): AssignmentColumn[] => {
 	return [
 		{
 			id: 'labels' as AssignmentOverviewTableColumns,
-			label: i18n.t('assignment/assignment___label'),
+			label: tText('assignment/assignment___label'),
 			sortable: false,
 		},
 	];
@@ -47,7 +48,7 @@ const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 		: [
 				{
 					id: 'author' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/views/assignment-overview___leerkracht'),
+					label: tText('assignment/views/assignment-overview___leerkracht'),
 					sortable: true,
 					dataType: TableColumnDataType.string as ColumnDataType,
 				},
@@ -59,7 +60,7 @@ const getClassColumn = (canEditAssignments: boolean | null): AssignmentColumn[] 
 		? [
 				{
 					id: 'class_room' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/views/assignment-overview___klas'),
+					label: tText('assignment/views/assignment-overview___klas'),
 					sortable: false,
 					dataType: TableColumnDataType.string,
 				},
@@ -72,7 +73,7 @@ const getLastEditColumn = (canEditAssignments: boolean | null): AssignmentColumn
 		? [
 				{
 					id: 'updated_at' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/assignment___laatst-bewerkt'),
+					label: tText('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
 					dataType: TableColumnDataType.dateTime,
 				},
@@ -85,7 +86,7 @@ const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn
 		? [
 				{
 					id: 'responses' as AssignmentOverviewTableColumns,
-					label: i18n.t('assignment/assignment___respons'),
+					label: tText('assignment/assignment___respons'),
 					sortable: true,
 					dataType: TableColumnDataType.number,
 				},
@@ -104,7 +105,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 ): AssignmentColumn[] => [
 	{
 		id: 'title',
-		label: i18n.t('assignment/views/assignment-overview___titel'),
+		label: tText('assignment/views/assignment-overview___titel'),
 		sortable: true,
 		dataType: TableColumnDataType.string,
 	},
@@ -113,7 +114,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 	...getTeacherColumn(canEditAssignments),
 	{
 		id: 'deadline_at' as AssignmentOverviewTableColumns,
-		label: i18n.t('assignment/views/assignment-overview___deadline'),
+		label: tText('assignment/views/assignment-overview___deadline'),
 		sortable: true,
 		dataType: TableColumnDataType.dateTime,
 	},
@@ -152,10 +153,10 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 };
 
 /// Zoek & bouw
-export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormState> => {
+export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<AssignmentFormState> => {
 	return object({
 		id: string().optional(),
-		title: string().required(t('assignment/assignment___titel-is-verplicht')),
+		title: string().required(tText('assignment/assignment___titel-is-verplicht')),
 		labels: array(
 			object({
 				assignment_label: object()
@@ -179,22 +180,22 @@ export const ASSIGNMENT_FORM_SCHEMA = (t: TFunction): SchemaOf<AssignmentFormSta
 		answer_url: string().nullable().optional(),
 		available_at: string().nullable().optional(),
 		deadline_at: string().nullable().optional(),
-	});
+	}) as any;
 };
 
 export const PUPIL_COLLECTION_FORM_SCHEMA = (
-	t: TFunction
+	tText: TFunction
 ): SchemaOf<AssignmentResponseFormState> => {
 	return object({
 		id: string().optional(),
-		collection_title: string().required(t('assignment/assignment___titel-is-verplicht')),
+		collection_title: string().required(tText('assignment/assignment___titel-is-verplicht')),
 		pupil_collection_blocks: array(),
 	});
 };
 
-export const ASSIGNMENT_FORM_DEFAULT = (t: TFunction): AssignmentFormState => ({
+export const ASSIGNMENT_FORM_DEFAULT = (): Partial<AssignmentFormState> => ({
 	id: undefined,
-	title: t('assignment/assignment___titel-opdracht'),
+	title: tText('assignment/assignment___titel-opdracht'),
 	labels: [],
 	blocks: [],
 	available_at: new Date().toISOString(),
@@ -218,7 +219,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 ): AssignmentResponseColumn[] => [
 	{
 		id: 'pupil',
-		label: i18n.t('assignment/assignment___leerling'),
+		label: tText('assignment/assignment___leerling'),
 		sortable: true,
 		dataType: TableColumnDataType.string,
 	},
@@ -226,19 +227,19 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		? [
 				{
 					id: 'collection_title' as AssignmentResponseTableColumns,
-					label: i18n.t('assignment/assignment___leerlingencollectie'),
+					label: tText('assignment/assignment___leerlingencollectie'),
 					sortable: true,
 					dataType: TableColumnDataType.string as ColumnDataType,
 				},
 				{
 					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
-					label: i18n.t('assignment/assignment___fragmenten'),
+					label: tText('assignment/assignment___fragmenten'),
 					sortable: true,
 					dataType: TableColumnDataType.number as ColumnDataType,
 				},
 				{
 					id: 'updated_at' as AssignmentResponseTableColumns,
-					label: i18n.t('assignment/assignment___laatst-bewerkt'),
+					label: tText('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
 					dataType: TableColumnDataType.dateTime as ColumnDataType,
 				},
@@ -246,7 +247,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		: [
 				{
 					id: 'updated_at' as AssignmentResponseTableColumns,
-					label: i18n.t('assignment/assignment___laatst-bekeken'),
+					label: tText('assignment/assignment___laatst-bekeken'),
 					sortable: true,
 					dataType: TableColumnDataType.dateTime as ColumnDataType,
 				},
@@ -289,6 +290,6 @@ export const ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH: SearchOrderProperty[] = [
 
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 
-export const isNewAssignmentBlock = (item: Pick<Avo.Core.BlockItemBase, 'id'>): boolean => {
+export const isNewAssignmentBlock = (item: Pick<BaseBlockWithMeta, 'id'>): boolean => {
 	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
 };

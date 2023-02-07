@@ -1,9 +1,8 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-
 import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { SettingsService } from '../../../settings/settings.service';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
 import { stringToTagInfo } from '../../helpers/string-to-select-options';
 
@@ -16,7 +15,7 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 	onChange,
 	value,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [educationLevels, setEducationLevels] = useState<TagInfo[]>([]);
 
@@ -40,7 +39,7 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 
 	return (
 		<FormGroup
-			label={t('collection/views/collection-edit-meta-data___onderwijsniveau')}
+			label={tText('collection/views/collection-edit-meta-data___onderwijsniveau')}
 			labelFor="classificationId"
 		>
 			<TagsInput

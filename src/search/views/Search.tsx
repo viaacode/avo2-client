@@ -1,6 +1,7 @@
 import {
 	Container,
 	Flex,
+	IconName,
 	MoreOptionsDropdown,
 	Navbar,
 	Toolbar,
@@ -9,10 +10,10 @@ import {
 	ToolbarRight,
 	ToolbarTitle,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -30,7 +31,6 @@ import {
 	PermissionGuardFail,
 	PermissionGuardPass,
 } from '../../authentication/components';
-import { PermissionName } from '../../authentication/helpers/permission-names';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -38,15 +38,16 @@ import { InteractiveTour } from '../../shared/components';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { ToastService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
+import { ToastService } from '../../shared/services/toast-service';
 import { SearchFiltersAndResults } from '../components';
 import { FilterState } from '../search.types';
 
 import './Search.scss';
 
 const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
 	const queryParamConfig = {
@@ -92,7 +93,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 	const onCopySearchLinkClicked = () => {
 		copySearchLink();
 		setIsOptionsMenuOpen(false);
-		ToastService.success(t('search/views/search___de-link-is-succesvol-gekopieerd'));
+		ToastService.success(tHtml('search/views/search___de-link-is-succesvol-gekopieerd'));
 	};
 
 	const renderDetailLink = (
@@ -115,10 +116,12 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 	return (
 		<>
 			<MetaTags>
-				<title>{GENERATE_SITE_TITLE(t('search/views/search___zoeken-pagina-titel'))}</title>
+				<title>
+					{GENERATE_SITE_TITLE(tText('search/views/search___zoeken-pagina-titel'))}
+				</title>
 				<meta
 					name="description"
-					content={t('search/views/search___zoeken-pagina-beschrijving')}
+					content={tText('search/views/search___zoeken-pagina-beschrijving')}
 				/>
 			</MetaTags>
 			<PermissionGuard permissions={PermissionName.SEARCH} user={user || null}>
@@ -129,7 +132,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 								<ToolbarLeft>
 									<ToolbarItem>
 										<ToolbarTitle>
-											{t('search/views/search___zoekresultaten')}
+											{tText('search/views/search___zoekresultaten')}
 										</ToolbarTitle>
 									</ToolbarItem>
 								</ToolbarLeft>
@@ -143,9 +146,9 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 											label={getMoreOptionsLabel()}
 											menuItems={[
 												{
-													icon: 'link',
+													icon: IconName.link,
 													id: 'copy_link',
-													label: t(
+													label: tText(
 														'search/views/search___kopieer-vaste-link-naar-deze-zoekopdracht'
 													),
 												},
@@ -167,18 +170,20 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 						/>
 					) : (
 						<ErrorView
-							message={t('search/views/search___je-hebt-geen-rechten-om-te-zoeken')}
+							message={tText(
+								'search/views/search___je-hebt-geen-rechten-om-te-zoeken'
+							)}
 							actionButtons={['home', 'helpdesk']}
-							icon="lock"
+							icon={IconName.lock}
 						/>
 					)}
 				</PermissionGuardPass>
 				<PermissionGuardFail>
 					<ErrorView
-						message={t(
+						message={tText(
 							'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
 						)}
-						icon="lock"
+						icon={IconName.lock}
 						actionButtons={['home']}
 					/>
 				</PermissionGuardFail>

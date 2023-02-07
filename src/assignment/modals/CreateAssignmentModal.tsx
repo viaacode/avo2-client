@@ -13,7 +13,8 @@ import {
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '../../shared/hooks/useTranslation';
 
 interface CreateAssignmentModalProps {
 	isOpen: boolean;
@@ -32,7 +33,7 @@ const CreateAssignmentModal: FunctionComponent<CreateAssignmentModalProps> = ({
 	createAssignmentCallback,
 	translations,
 }) => {
-	const [t] = useTranslation();
+	const { tHtml } = useTranslation();
 
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
 
@@ -67,11 +68,9 @@ const CreateAssignmentModal: FunctionComponent<CreateAssignmentModalProps> = ({
 	const renderModalBody = () => {
 		return (
 			<>
-				<p>
-					{t(
-						'assignment/modals/create-assignment-modal___wil-je-de-beschrijving-van-de-fragmenten-mee-importeren'
-					)}
-				</p>
+				{tHtml(
+					'assignment/modals/create-assignment-modal___wil-je-de-beschrijving-van-de-fragmenten-mee-importeren'
+				)}
 				<Flex>
 					<Toggle
 						checked={createWithDescription}

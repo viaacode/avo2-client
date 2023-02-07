@@ -1,18 +1,24 @@
-import { Flex, Spinner } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import {
+	ContentPageInfo,
+	ContentPageRenderer,
+	ContentPageService,
+	DbContentPage,
+} from '@meemoo/admin-core-ui';
+import { Flex, IconName, Spinner } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import MetaTags from 'react-meta-tags';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
+import { compose, Dispatch } from 'redux';
 
-import { ContentPageInfo } from '../../admin/content/content.types';
-import { getPublishedDate } from '../../admin/content/helpers/get-published-state';
+import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
+import { withAdminCoreConfig } from '../../admin/shared/hoc/with-admin-core-config';
 import { SpecialPermissionGroups } from '../../authentication/authentication.types';
-import { PermissionName, PermissionService } from '../../authentication/helpers/permission-service';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToErrorPage } from '../../authentication/helpers/redirects';
 import { getLoginStateAction } from '../../authentication/store/actions';
 import {
@@ -22,11 +28,9 @@ import {
 } from '../../authentication/store/selectors';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { ContentPage } from '../../content-page/views';
 import { ErrorView } from '../../error/views';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import Html from '../../shared/components/Html/Html';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import {
 	buildLink,
@@ -36,7 +40,7 @@ import {
 	getFullName,
 	stripHtml,
 } from '../../shared/helpers';
-import { ContentPageService } from '../../shared/services/content-page-service';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 import { AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
@@ -63,7 +67,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	loginStateError,
 	loginStateLoading,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	// State
 	const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
@@ -74,7 +78,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			if (!loginState) {
 				setLoadingInfo({
 					state: 'error',
-					message: t(
+					message: tText(
 						'dynamic-route-resolver/views/dynamic-route-resolver___het-controleren-van-je-login-status-is-mislukt'
 					),
 					actionButtons: ['home', 'helpdesk'],
@@ -162,6 +166,11 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				// Path is indeed a content page url
 				setRouteInfo({ type: 'contentPage', data: contentPage });
 			} catch (err) {
+				console.error({
+					message: 'Failed to check if path corresponds to a content page',
+					innerException: err,
+					additionalInfo: { pathname },
+				});
 				if (JSON.stringify(err).includes('CONTENT_PAGE_DEPUBLISHED')) {
 					const type = get(
 						err,
@@ -183,10 +192,18 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			setLoadingInfo({
 				state: 'error',
 				message: getPageNotFoundError(loginState?.message === 'LOGGED_IN'),
-				icon: 'search',
+				icon: IconName.search,
 			});
 		}
-	}, [loginState, location.pathname, location.hash, setRouteInfo, setLoadingInfo, history, t]);
+	}, [
+		loginState,
+		location.pathname,
+		location.hash,
+		setRouteInfo,
+		setLoadingInfo,
+		history,
+		tText,
+	]);
 
 	// Check if current user is logged in
 	useEffect(() => {
@@ -201,7 +218,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			redirectToErrorPage(
 				{
-					message: t(
+					message: tText(
 						'dynamic-route-resolver/views/dynamic-route-resolver___er-ging-iets-mis-bij-het-inloggen'
 					),
 					actionButtons: ['home', 'helpdesk'],
@@ -209,7 +226,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				location
 			);
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, t, location]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, location]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {
@@ -226,11 +243,13 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
-			const routeUserGroupIds = get(routeInfo, 'data.user_group_ids', []);
+			const routeUserGroupIds = ((routeInfo.data as DbContentPage).userGroupIds ?? []).map(
+				(id) => String(id)
+			);
 			// Check if the page requires the user to be logged in and not both logged in or out
 			if (
-				routeUserGroupIds.includes[SpecialPermissionGroups.loggedInUsers] &&
-				!routeUserGroupIds.includes[SpecialPermissionGroups.loggedOutUsers]
+				routeUserGroupIds.includes(String(SpecialPermissionGroups.loggedInUsers)) &&
+				!routeUserGroupIds.includes(String(SpecialPermissionGroups.loggedOutUsers))
 			) {
 				return (
 					<Redirect
@@ -265,23 +284,20 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 						publishedAt={getPublishedDate(routeInfo.data)}
 						updatedAt={get(routeInfo.data, 'updated_at')}
 					/>
-					<ContentPage
-						contentPageInfo={routeInfo.data}
-						onLoaded={() => scrollTo({ top: 0 })}
-					/>
+					{routeInfo.data && (
+						<ContentPageRenderer
+							contentPageInfo={routeInfo.data as ContentPageInfo}
+							onLoaded={() => scrollTo({ top: 0 })}
+						/>
+					)}
 				</>
 			);
 		}
 		if (routeInfo && routeInfo.type === 'depublishedContentPage') {
 			return (
-				<ErrorView icon="clock" actionButtons={['home', 'helpdesk']} message="">
-					<Html
-						content={
-							GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
-							GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]
-						}
-						sanitizePreset={'link'}
-					/>
+				<ErrorView icon={IconName.clock} actionButtons={['home', 'helpdesk']} message="">
+					{GET_ERROR_MESSAGES()[`DEPUBLISHED_${routeInfo.data.type}`] ||
+						GET_ERROR_MESSAGES()[`DEPUBLISHED_PAGINA`]}
 				</ErrorView>
 			);
 		}
@@ -324,4 +340,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	getLoginState: () => dispatch(getLoginStateAction() as any),
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(DynamicRouteResolver));
+export default compose(
+	withRouter,
+	connect(mapStateToProps, mapDispatchToProps),
+	withAdminCoreConfig
+)(DynamicRouteResolver) as FunctionComponent;

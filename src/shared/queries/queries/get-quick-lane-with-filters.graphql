@@ -1,0 +1,76 @@
+query getQuickLanesWithFilters(
+	$filterString: String
+	$filters: [app_quick_lanes_bool_exp!]
+	$orderBy: [app_quick_lanes_order_by!]
+	$limit: Int = 100
+	$offset: Int = 0
+) {
+	app_quick_lanes(
+		where: {
+			_and: [
+				{
+					_or: [
+						{ title: { _ilike: $filterString } }
+						{
+							owner: {
+								_or: [
+									{ usersByuserId: { first_name: { _ilike: $filterString } } }
+									{ usersByuserId: { last_name: { _ilike: $filterString } } }
+								]
+							}
+						}
+					]
+				}
+				{ _and: $filters }
+			]
+		}
+		order_by: $orderBy
+		offset: $offset
+		limit: $limit
+	) {
+		id
+		content_id
+		content_label
+		title
+		view_mode
+		created_at
+		updated_at
+		owner {
+			id
+			avatar
+			user: usersByuserId {
+				full_name
+				first_name
+				last_name
+			}
+			organisation {
+				name
+				logo_url
+			}
+		}
+	}
+	app_quick_lanes_aggregate(
+		where: {
+			_and: [
+				{
+					_or: [
+						{ title: { _ilike: $filterString } }
+						{
+							owner: {
+								_or: [
+									{ usersByuserId: { first_name: { _ilike: $filterString } } }
+									{ usersByuserId: { last_name: { _ilike: $filterString } } }
+								]
+							}
+						}
+					]
+				}
+				{ _and: $filters }
+			]
+		}
+	) {
+		aggregate {
+			count
+		}
+	}
+}

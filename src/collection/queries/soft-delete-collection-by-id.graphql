@@ -1,0 +1,5 @@
+mutation softDeleteCollectionById($id: uuid!) {
+	update_app_collections(where: { id: { _eq: $id } }, _set: { is_deleted: true }) {
+		affected_rows
+	}
+}

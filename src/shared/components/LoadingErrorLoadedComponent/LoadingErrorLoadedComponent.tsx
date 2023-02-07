@@ -1,9 +1,9 @@
-import { Container, Flex, Spinner } from '@viaa/avo2-components';
+import { Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
 import React, { FunctionComponent, ReactElement } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { ErrorView } from '../../../error/views';
 import { ErrorViewQueryParams } from '../../../error/views/ErrorView';
+import useTranslation from '../../../shared/hooks/useTranslation';
 
 export type LoadingState = 'loading' | 'loaded' | 'error';
 
@@ -26,7 +26,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 	dataObject,
 	render,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const renderSpinner = () => (
 		<Container mode="vertical">
@@ -40,11 +40,11 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 		<ErrorView
 			message={
 				loadingInfo.message ||
-				t(
+				tHtml(
 					'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-is-iets-mis-gegaan-bij-het-laden-van-de-gegevens'
 				)
 			}
-			icon={loadingInfo.icon || 'alert-triangle'}
+			icon={loadingInfo.icon || IconName.alertTriangle}
 			actionButtons={loadingInfo.actionButtons || ['home']}
 		/>
 	);
@@ -62,11 +62,11 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 				<ErrorView
 					message={
 						notFoundError ||
-						t(
+						tText(
 							'shared/components/loading-error-loaded-component/loading-error-loaded-component___het-gevraagde-object-is-niet-gevonden'
 						)
 					}
-					icon={'search'}
+					icon={IconName.search}
 					actionButtons={['home', 'helpdesk']}
 				/>
 			);

@@ -1,6 +1,5 @@
+import type { Avo } from '@viaa/avo2-types';
 import moment from 'moment';
-
-import { Avo } from '@viaa/avo2-types';
 
 import { LoginMessage } from '../authentication.types';
 

@@ -1,7 +1,6 @@
-import { Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
+import { IconName, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
 import { get } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -11,7 +10,7 @@ import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import i18n from '../../shared/translations/i18n';
+import useTranslation from '../../shared/hooks/useTranslation';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 // Constants
@@ -31,7 +30,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 	numberOfItems,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [organisationContent, setOrganisationContent] = useState<
@@ -74,13 +73,13 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 			setLoadingInfo({
 				state: 'error',
-				message: t(
+				message: tText(
 					'workspace/views/organisation-content-overview___het-ophalen-van-de-organisatieinhoud-is-mislukt'
 				),
 				actionButtons: ['home'],
 			});
 		}
-	}, [page, sortColumn, sortOrder, t, user]);
+	}, [page, sortColumn, sortOrder, tText, user]);
 
 	useEffect(() => {
 		fetchOrganisationContent();
@@ -125,13 +124,13 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		// Account for `npm run extract-translations`
 		switch (item.type.label) {
 			case 'audio':
-				return t('workspace/views/organisation-content-overview___audio');
+				return tText('workspace/views/organisation-content-overview___audio');
 			case 'bundel':
-				return t('workspace/views/organisation-content-overview___bundel');
+				return tText('workspace/views/organisation-content-overview___bundel');
 			case 'collectie':
-				return t('workspace/views/organisation-content-overview___collectie');
+				return tText('workspace/views/organisation-content-overview___collectie');
 			case 'video':
-				return t('workspace/views/organisation-content-overview___video');
+				return tText('workspace/views/organisation-content-overview___video');
 			default:
 				return '-';
 		}
@@ -168,19 +167,19 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 			return [
 				{
 					id: 'title',
-					label: t('workspace/views/organisation-content-overview___titel'),
+					label: tText('workspace/views/organisation-content-overview___titel'),
 					col: '6',
 					dataType: TableColumnDataType.string,
 				},
 				{
 					id: 'type',
-					label: t('workspace/views/organisation-content-overview___type'),
+					label: tText('workspace/views/organisation-content-overview___type'),
 					col: '3',
 					dataType: TableColumnDataType.string,
 				},
 				{
 					id: 'author',
-					label: t('workspace/views/organisation-content-overview___auteur'),
+					label: tText('workspace/views/organisation-content-overview___auteur'),
 					col: '3',
 					dataType: TableColumnDataType.string,
 				},
@@ -190,37 +189,39 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		return [
 			{
 				id: 'title',
-				label: t('workspace/views/organisation-content-overview___titel'),
+				label: tText('workspace/views/organisation-content-overview___titel'),
 				col: '4',
 				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'type',
-				label: t('workspace/views/organisation-content-overview___type'),
+				label: tText('workspace/views/organisation-content-overview___type'),
 				col: '2',
 				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'author',
-				label: t('workspace/views/organisation-content-overview___auteur'),
+				label: tText('workspace/views/organisation-content-overview___auteur'),
 				col: '2',
 				dataType: TableColumnDataType.string,
 			},
 			{
 				id: 'created_at',
-				label: t('workspace/views/organisation-content-overview___aangemaakt'),
+				label: tText('workspace/views/organisation-content-overview___aangemaakt'),
 				col: '1',
 				dataType: TableColumnDataType.dateTime,
 			},
 			{
 				id: 'updated_at',
-				label: t('workspace/views/organisation-content-overview___laatst-bewerkt'),
+				label: tText('workspace/views/organisation-content-overview___laatst-bewerkt'),
 				col: '1',
 				dataType: TableColumnDataType.dateTime,
 			},
 			{
 				id: 'last_edited',
-				label: t('workspace/views/organisation-content-overview___laatste-bewerkt-door'),
+				label: tText(
+					'workspace/views/organisation-content-overview___laatste-bewerkt-door'
+				),
 				col: '2',
 				dataType: TableColumnDataType.string,
 			},
@@ -240,7 +241,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 			<Table
 				columns={getColumns()}
 				data={items}
-				emptyStateMessage={t(
+				emptyStateMessage={tText(
 					'collection/views/collection-overview___geen-resultaten-gevonden'
 				)}
 				renderCell={renderCell}
@@ -255,8 +256,8 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 	const renderEmptyFallback = () => (
 		<ErrorView
-			icon="folder"
-			message={t(
+			icon={IconName.folder}
+			message={tText(
 				'workspace/views/organisation-content-overview___geen-content-binnen-uw-organsatie'
 			)}
 		/>
@@ -264,14 +265,12 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 	const renderNoOrganisationFallback = () => (
 		<ErrorView
-			message={i18n.t(
+			message={tText(
 				'workspace/views/organisation-content-overview___u-hebt-geen-organisatie'
 			)}
 		>
 			<p>
-				<Trans i18nKey="workspace/views/organisation-content-overview___u-hebt-geen-organisatie">
-					U hebt geen organisatie.
-				</Trans>
+				{tHtml('workspace/views/organisation-content-overview___u-hebt-geen-organisatie')}
 			</p>
 		</ErrorView>
 	);

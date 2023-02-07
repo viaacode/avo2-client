@@ -1,17 +1,14 @@
-import { Avo } from '@viaa/avo2-types';
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import { PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 
-import {
-	PermissionName,
-	PermissionService,
-} from '../../../../../authentication/helpers/permission-service';
+import { PermissionService } from '../../../../../authentication/helpers/permission-service';
 import { CustomError } from '../../../../../shared/helpers';
 import { TableColumnDataType } from '../../../../../shared/types/table-column-data-type';
 import { UserService } from '../../../../users/user.service';
 import { PickerSelectItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
-const shouldFetchUsersInCompany = (user?: UserSchema) => {
+const shouldFetchUsersInCompany = (user?: Avo.User.User) => {
 	return (
 		user &&
 		PermissionService.hasPerm(user, PermissionName.VIEW_USERS_IN_SAME_COMPANY) &&
@@ -22,12 +19,12 @@ const shouldFetchUsersInCompany = (user?: UserSchema) => {
 // Fetch profiles from GQL
 export const retrieveProfiles = async (
 	name: string | null,
-	limit: number = 5,
-	user?: UserSchema
+	limit = 5,
+	user?: Avo.User.User
 ): Promise<PickerSelectItem[]> => {
 	try {
 		const where = {
-			...(!!name
+			...(name
 				? {
 						_or: [
 							{ full_name: { _ilike: `%${name}%` } },

@@ -1,7 +1,7 @@
-import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
+import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { NEW_FRAGMENT } from '../../collection.const';
 import { CollectionAction } from '../CollectionOrBundleEdit';
 
@@ -18,7 +18,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 	numberOfFragments,
 	changeCollectionState,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const TEXT_BLOCK_FRAGMENT: any = {
 		...NEW_FRAGMENT.text,
@@ -49,12 +49,14 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 				<ToolbarItem>
 					<Button
 						type="secondary"
-						icon="add"
+						icon={IconName.add}
 						onClick={handleAddFragmentClick}
-						ariaLabel={t(
+						ariaLabel={tText(
 							'collection/components/fragment/fragment-add___sectie-toevoegen'
 						)}
-						title={t('collection/components/fragment/fragment-add___sectie-toevoegen')}
+						title={tText(
+							'collection/components/fragment/fragment-add___sectie-toevoegen'
+						)}
 					/>
 				</ToolbarItem>
 				{renderDivider()}

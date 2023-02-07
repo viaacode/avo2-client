@@ -7,22 +7,23 @@ import {
 	DropdownContent,
 	DropdownProps,
 	Flex,
+	IconName,
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { FC, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { APP_PATH } from '../../constants';
 import { buildLink, copyToClipboard } from '../../shared/helpers';
-import { ToastService } from '../../shared/services';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { ToastService } from '../../shared/services/toast-service';
+import { Assignment_v2_With_Blocks, Assignment_v2_With_Labels } from '../assignment.types';
 
 import './ShareAssignmentWithPupil.scss';
 
 export type ShareAssignmentWithPupilProps = {
-	assignment?: Avo.Assignment.Assignment_v2;
+	assignment?: Assignment_v2_With_Labels & Assignment_v2_With_Blocks;
 	onDetailLinkClicked?: () => void;
 	onContentLinkClicked?: () => void;
 	button?: Partial<ButtonProps>;
@@ -36,7 +37,7 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 	button,
 	dropdown,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// UI
 
@@ -68,7 +69,7 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 		copyToClipboard(assignmentShareLink);
 		setIsShareDropdownOpen(false);
 		ToastService.success(
-			t(
+			tHtml(
 				'assignment/components/share-assignment-with-pupil___de-link-is-naar-je-klembord-gekopieerd'
 			)
 		);
@@ -93,9 +94,9 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 		>
 			<DropdownButton>
 				<Button
-					ariaLabel={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					label={t('assignment/views/assignment-create___delen-met-leerlingen')}
-					title={t(
+					ariaLabel={tText('assignment/views/assignment-create___delen-met-leerlingen')}
+					label={tText('assignment/views/assignment-create___delen-met-leerlingen')}
+					title={tText(
 						'assignment/components/share-assignment-with-pupil___bezorg-deze-opdrachtlink-aan-je-leerlingen'
 					)}
 					onClick={handleShareButtonClicked}
@@ -113,8 +114,10 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 					<Flex>
 						<TextInput value={assignmentShareLink} />
 						<Button
-							label={t('assignment/components/share-assignment-with-pupil___kopieer')}
-							icon="copy"
+							label={tText(
+								'assignment/components/share-assignment-with-pupil___kopieer'
+							)}
+							icon={IconName.copy}
 							onClick={handleCopyButtonClicked}
 							type="tertiary"
 						/>
@@ -128,18 +131,18 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 									<>
 										<h4>
 											<strong>
-												{t(
+												{tText(
 													'assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar'
 												)}
 											</strong>
 										</h4>
 										{!hasAssignmentContent && (
 											<p>
-												{t(
+												{tText(
 													'assignment/components/share-assignment-with-pupil___deze-opdracht-bevat-nog-geen'
 												) + ' '}
 												<Button
-													label={t(
+													label={tText(
 														'assignment/components/share-assignment-with-pupil___inhoud'
 													)}
 													type="inline-link"
@@ -150,18 +153,18 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 										)}
 										{!isAssignmentDetailsComplete && (
 											<p>
-												{t(
+												{tText(
 													'assignment/components/share-assignment-with-pupil___vul-de-ontbrekende-informatie-onder'
 												) + ' '}
 												<Button
-													label={t(
+													label={tText(
 														'assignment/components/share-assignment-with-pupil___details'
 													)}
 													type="inline-link"
 													onClick={handleDetailLinkClicked}
 												/>
 												{' ' +
-													t(
+													tText(
 														'assignment/components/share-assignment-with-pupil___aan'
 													)}
 											</p>

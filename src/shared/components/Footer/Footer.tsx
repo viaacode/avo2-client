@@ -1,10 +1,10 @@
 import { Container, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { RouteComponentProps } from 'react-router';
 
 import meemooLogo from '../../../assets/images/meemoo-logo.png';
 import vlaamseOverheidLogo from '../../../assets/images/vlaanderen-logo.png';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import withUser, { UserProps } from '../../hocs/withUser';
 import {
@@ -13,7 +13,7 @@ import {
 	NavItemMap,
 } from '../../services/navigation-items-service';
 import { NavigationItemInfo } from '../../types';
-import NavigationItem from '../Navigation/NavigationItem';
+import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 
@@ -23,7 +23,7 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 	match,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
 	const [primaryNavItems, setPrimaryNavItems] = useState<AppContentNavElement[]>([]);
@@ -40,14 +40,14 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 				// Do not notify the user, since this will happen in the header navigation component already
 				// And we don't want to show 2 error toast messages
 			});
-	}, [history, t, user]);
+	}, [history, tText, user]);
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems, t);
+		return mapNavElementsToNavigationItems(primaryNavItems, tText);
 	};
 
 	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(secondaryNavItems, t);
+		return mapNavElementsToNavigationItems(secondaryNavItems, tText);
 	};
 
 	const mapNavItems = (navItems: NavigationItemInfo[]) => {
@@ -74,15 +74,15 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 					<li>
 						<a
 							href="https://meemoo.be/nl"
-							title={t('shared/components/footer/footer___meemoo')}
+							title={tText('shared/components/footer/footer___meemoo')}
 						>
 							<span className="c-nav__item-label">
-								{t('shared/components/footer/footer___een-initiatief-van')}
+								{tText('shared/components/footer/footer___een-initiatief-van')}
 							</span>
 							<Spacer margin="left-small">
 								<img
 									src={meemooLogo}
-									alt={t('shared/components/footer/footer___logo-van-meemoo')}
+									alt={tText('shared/components/footer/footer___logo-van-meemoo')}
 								/>
 							</Spacer>
 						</a>
@@ -94,15 +94,15 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 					<li>
 						<a
 							href="https://www.vlaanderen.be/"
-							title={t('shared/components/footer/footer___vlaamse-overheid')}
+							title={tText('shared/components/footer/footer___vlaamse-overheid')}
 						>
 							<span className="c-nav__item-label">
-								{t('shared/components/footer/footer___gesteund-door')}
+								{tText('shared/components/footer/footer___gesteund-door')}
 							</span>
 							<Spacer margin="left-small">
 								<img
 									src={vlaamseOverheidLogo}
-									alt={t(
+									alt={tText(
 										'shared/components/footer/footer___logo-van-vlaamse-overheid'
 									)}
 								/>

@@ -1,5 +1,5 @@
 import { IconName } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { ReactElement } from 'react';
 
 export * from './quick-lane';
@@ -40,6 +40,6 @@ export interface LabeledFormField {
 	help?: string;
 }
 
-export type Positioned<T> = T & { id: string | number; position: number };
+export type Positioned = { id: string | number; position: number };
 
 export type UnpublishableItem = (Avo.Item.Item & { replacement_for?: string }) | null;

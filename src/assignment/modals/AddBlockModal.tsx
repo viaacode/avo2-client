@@ -1,20 +1,20 @@
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
-	BlockHeading,
 	Button,
 	Icon,
+	IconName,
 	Modal,
 	ModalBody,
 	ModalProps,
 	Spacer,
 } from '@viaa/avo2-components';
 import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
-import { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { BLOCK_ITEM_ICONS } from '../../shared/components/BlockList/BlockList.consts';
-import { AssignmentBlockType } from '../assignment.types';
+import useTranslation from '../../shared/hooks/useTranslation';
+import { AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
 
 import './AddBlockModal.scss';
 
@@ -33,7 +33,7 @@ interface AddBlockModalOption {
 }
 
 export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	blocks: Avo.Core.BlockItemBase[];
+	blocks: BaseBlockWithMeta[];
 	onConfirm?: (type: AddBlockModalType) => void;
 }
 
@@ -43,7 +43,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 	onClose,
 	onConfirm,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const disableSearchBlock = !!blocks.find(
 		(block) =>
@@ -55,29 +55,29 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 				type: AssignmentBlockType.ITEM,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ITEM]({
 					item_meta: { type: { label: 'video', id: 0 } },
-				} as Avo.Core.BlockItemBase),
-				title: t('assignment/modals/add-block___kijken-luisteren-fragment'),
-				description: t(
+				} as BaseBlockWithMeta),
+				title: tHtml('assignment/modals/add-block___kijken-luisteren-fragment'),
+				description: tHtml(
 					'assignment/modals/add-block___voeg-een-fragment-uit-je-werkruimte-toe-om-te-laten-bekijken-of-beluisteren'
 				),
 			},
 			{
 				type: 'COLLECTIE',
-				icon: 'collection',
-				title: t('assignment/modals/add-block___kijken-luisteren-collectie'),
-				description: t(
+				icon: IconName.collection,
+				title: tHtml('assignment/modals/add-block___kijken-luisteren-collectie'),
+				description: tHtml(
 					'assignment/modals/add-block___start-je-opdracht-vanaf-een-bestaande-collectie-fragmenten-uit-je-werkruimte'
 				),
 			},
 			{
 				type: AssignmentBlockType.ZOEK as AddBlockModalType,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.ZOEK](),
-				title: t('assignment/modals/add-block___zoeken-bouwen'),
+				title: tHtml('assignment/modals/add-block___zoeken-bouwen'),
 				description: disableSearchBlock
-					? t(
+					? tHtml(
 							'assignment/modals/add-block-modal___het-is-niet-mogelijk-om-meer-dan-een-zoekoefening-per-opdracht-te-gebruiken'
 					  )
-					: t(
+					: tHtml(
 							'assignment/modals/add-block___leer-leerlingen-zelf-bronnen-zoeken-of-laat-ze-een-collectie-samenstellen'
 					  ),
 				disabled: disableSearchBlock,
@@ -85,19 +85,19 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 			{
 				type: AssignmentBlockType.TEXT,
 				icon: BLOCK_ITEM_ICONS()[AssignmentBlockType.TEXT](),
-				title: t('assignment/modals/add-block___instructies-tekst'),
-				description: t(
+				title: tHtml('assignment/modals/add-block___instructies-tekst'),
+				description: tHtml(
 					'assignment/modals/add-block___voeg-een-tekstblok-toe-met-instructies-of-wat-extra-informatie'
 				),
 			},
 		],
-		[blocks, t]
+		[blocks, tHtml]
 	);
 
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={t('assignment/modals/add-block___toevoegen')}
+			title={tText('assignment/modals/add-block___toevoegen')}
 			size="large"
 			onClose={onClose}
 			scrollable
@@ -131,7 +131,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 										{!item.disabled && (
 											<Button
 												id={`c-add-block__${item.type}-button`}
-												icon="plus"
+												icon={IconName.plus}
 												type="primary"
 												onClick={() => {
 													onConfirm && onConfirm(item.type);

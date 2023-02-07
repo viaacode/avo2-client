@@ -1,7 +1,7 @@
 import { ContentPickerType } from '@viaa/avo2-components';
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import type { Avo } from '@viaa/avo2-types';
 
-import i18n from '../../../../shared/translations/i18n';
+import { tText } from '../../../../shared/helpers/translate';
 import { PickerTypeOption } from '../../types';
 
 import { retrieveAnchors } from './item-providers/anchors';
@@ -12,20 +12,20 @@ import { retrieveItems } from './item-providers/item';
 import { retrieveProfiles } from './item-providers/profile';
 
 export const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => ({
-	CONTENT_PAGE: i18n.t('admin/content/content___content'),
-	INTERNAL_LINK: i18n.t('admin/content/content___statisch'),
-	COLLECTION: i18n.t('admin/content/content___collecties'),
-	ITEM: i18n.t('admin/content/content___items'),
-	BUNDLE: i18n.t('admin/content/content___bundels'),
-	EXTERNAL_LINK: i18n.t('admin/shared/components/content-picker/content-picker___externe-url'),
-	SEARCH_QUERY: i18n.t('admin/shared/components/content-picker/content-picker___zoekfilters'),
-	PROJECTS: i18n.t('admin/shared/components/content-picker/content-picker___projecten'),
-	PROFILE: i18n.t('admin/shared/components/content-picker/content-picker___gebruiker'),
-	ANCHOR_LINK: i18n.t('admin/shared/components/content-picker/content-picker___anchors'),
-	FILE: i18n.t('admin/shared/components/content-picker/content-picker___bestand'),
+	CONTENT_PAGE: tText('admin/content/content___content'),
+	INTERNAL_LINK: tText('admin/content/content___statisch'),
+	COLLECTION: tText('admin/content/content___collecties'),
+	ITEM: tText('admin/content/content___items'),
+	BUNDLE: tText('admin/content/content___bundels'),
+	EXTERNAL_LINK: tText('admin/shared/components/content-picker/content-picker___externe-url'),
+	SEARCH_QUERY: tText('admin/shared/components/content-picker/content-picker___zoekfilters'),
+	PROJECTS: tText('admin/shared/components/content-picker/content-picker___projecten'),
+	PROFILE: tText('admin/shared/components/content-picker/content-picker___gebruiker'),
+	ANCHOR_LINK: tText('admin/shared/components/content-picker/content-picker___anchors'),
+	FILE: tText('admin/shared/components/content-picker/content-picker___bestand'),
 });
 
-export const GET_CONTENT_TYPES: (user?: UserSchema) => PickerTypeOption[] = (user) => {
+export const GET_CONTENT_TYPES: (user?: Avo.User.User) => PickerTypeOption[] = (user) => {
 	const labels = GET_CONTENT_TYPE_LABELS();
 	return [
 		{
@@ -75,7 +75,7 @@ export const GET_CONTENT_TYPES: (user?: UserSchema) => PickerTypeOption[] = (use
 			label: labels['SEARCH_QUERY'],
 			disabled: false,
 			picker: 'TEXT_INPUT',
-			placeholder: i18n.t(
+			placeholder: tText(
 				'admin/shared/components/content-picker/content-picker___plak-hier-uw-zoekpagina-url'
 			),
 		},

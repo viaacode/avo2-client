@@ -1,16 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
-	BlockHeading,
 	Box,
 	Container,
 	Flex,
 	Icon,
+	IconName,
 	Spacer,
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, {
 	Dispatch,
@@ -21,7 +20,6 @@ import React, {
 	useState,
 } from 'react';
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
 	JsonParam,
@@ -38,8 +36,9 @@ import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPromp
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
-import { ToastService } from '../../../shared/services';
+import { ToastService } from '../../../shared/services/toast-service';
 import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	PUPIL_COLLECTION_FORM_SCHEMA,
@@ -47,8 +46,13 @@ import {
 import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
+	Assignment_Response_v2,
+	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Responses,
 	AssignmentResponseFormState,
+	AssignmentResponseInfo,
 	AssignmentType,
+	BaseBlockWithMeta,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../assignment.types';
@@ -66,11 +70,18 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { BlockHeading } from '@meemoo/admin-core-ui';
 
 interface AssignmentResponseEditProps {
-	assignment: Avo.Assignment.Assignment_v2;
-	assignmentResponse: Avo.Assignment.Response_v2;
-	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response_v2>>;
+	assignment: Assignment_v2_With_Responses;
+	assignmentResponse:
+		| (Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined })
+		| null;
+	setAssignmentResponse: Dispatch<
+		SetStateAction<
+			(Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined }) | null
+		>
+	>;
 	showBackButton: boolean;
 	isPreview?: boolean;
 	onAssignmentChanged: () => Promise<void>;
@@ -87,11 +98,13 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	onShowPreviewClicked,
 	user,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Data
-	const [assignmentResponseOriginal, setAssignmentResponseOriginal] =
-		useState<Avo.Assignment.Response_v2>(assignmentResponse);
+	const [assignmentResponseOriginal, setAssignmentResponseOriginal] = useState<Omit<
+		AssignmentResponseInfo,
+		'assignment'
+	> | null>(assignmentResponse);
 
 	const {
 		control,
@@ -101,11 +114,12 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		setValue,
 		trigger,
 	} = useForm<AssignmentResponseFormState>({
-		defaultValues: assignmentResponseOriginal || {
-			collection_title: '',
-			pupil_collection_blocks: [] as PupilCollectionFragment[],
+		defaultValues: {
+			collection_title: assignmentResponseOriginal?.collection_title ?? '',
+			pupil_collection_blocks: (assignmentResponseOriginal?.pupil_collection_blocks ||
+				[]) as Omit<PupilCollectionFragment, 'item_meta'>[],
 		},
-		resolver: yupResolver(PUPIL_COLLECTION_FORM_SCHEMA(t)),
+		resolver: yupResolver(PUPIL_COLLECTION_FORM_SCHEMA(tText)),
 		mode: 'onChange',
 	});
 
@@ -173,7 +187,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const handleFormErrors = (...args: any[]) => {
 		if (isPreview) {
 			ToastService.info(
-				t(
+				tHtml(
 					'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
 				)
 			);
@@ -185,7 +199,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		try {
 			if (isPreview) {
 				ToastService.info(
-					t(
+					tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
 					)
 				);
@@ -198,10 +212,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			const updated = await AssignmentService.updateAssignmentResponse(
 				assignmentResponseOriginal,
 				{
-					collection_title: formState.collection_title,
+					collection_title: formState.collection_title || '',
 					pupil_collection_blocks: cleanupTitleAndDescriptions(
 						formState.pupil_collection_blocks
-					),
+					) as PupilCollectionFragment[],
 				}
 			);
 
@@ -231,7 +245,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				await onAssignmentChanged();
 
 				ToastService.success(
-					t(
+					tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit___de-collectie-is-opgeslagen'
 					)
 				);
@@ -239,22 +253,22 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
-				t(
+				tHtml(
 					'assignment/views/assignment-response-edit/assignment-response-edit___het-opslaan-van-de-collectie-is-mislukt'
 				)
 			);
 		}
 	};
 
-	const appendBlockToPupilCollection = (newBlock: Avo.Core.BlockItemBase) => {
+	const appendBlockToPupilCollection = (newBlock: BaseBlockWithMeta) => {
 		const newBlocks = setPositionToIndex([
-			...(assignmentResponse.pupil_collection_blocks || []),
+			...(assignmentResponse?.pupil_collection_blocks || []),
 			newBlock,
 		]);
 		setAssignmentResponse({
 			...assignmentResponse,
-			pupil_collection_blocks: newBlocks,
-		});
+			pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
+		} as Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined });
 		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -267,17 +281,17 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderBackButton = useMemo(
 		() => (
 			<Link className="c-return" to={backToOverview}>
-				<Icon name="chevron-left" size="small" type="arrows" />
-				{t('assignment/views/assignment-edit___mijn-opdrachten')}
+				<Icon name={IconName.chevronLeft} size="small" type="arrows" />
+				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[t, backToOverview]
+		[tText, backToOverview]
 	);
 
 	const renderedTitle = useMemo(
 		() => (
 			<Flex center className={classnames({ 'u-spacer-top-l': showBackButton })}>
-				<Icon name="clipboard" size="large" />
+				<Icon name={IconName.clipboard} size="large" />
 
 				<BlockHeading className="u-spacer-left" type="h2">
 					{assignment?.title}
@@ -302,7 +316,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				return (
 					<AssignmentResponseSearchTab
 						assignment={assignment}
-						assignmentResponse={assignmentResponse}
+						assignmentResponse={assignmentResponse as AssignmentResponseInfo}
 						filterState={filterState}
 						setFilterState={(
 							newFilterState: FilterState,
@@ -337,10 +351,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				return (
 					<AssignmentResponsePupilCollectionTab
 						pastDeadline={pastDeadline}
-						assignmentResponse={assignmentResponse}
+						assignmentResponse={assignmentResponse as AssignmentResponseInfo}
 						setAssignmentResponse={
 							setAssignmentResponse as Dispatch<
-								SetStateAction<Avo.Assignment.Response_v2>
+								SetStateAction<Assignment_Response_v2>
 							>
 						}
 						setValue={setValue}
@@ -356,7 +370,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return (
 					<AssignmentResponseAssignmentTab
-						blocks={assignment?.blocks || []}
+						blocks={(assignment as unknown as Assignment_v2_With_Blocks)?.blocks || []} // TODO figure out if blocks are available on this assignment, typings suggest they are not
 						pastDeadline={pastDeadline}
 						setTab={setTab}
 						buildSearchLink={buildAssignmentSearchLink(setFilterState)}
@@ -389,7 +403,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 									{!!assignment.answer_url && (
 										<Box backgroundColor="soft-white" condensed>
 											<p>
-												{t(
+												{tText(
 													'assignment/views/assignment-detail___geef-je-antwoorden-in-op'
 												)}{' '}
 												<a href={assignment.answer_url}>
@@ -407,7 +421,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						{pastDeadline && (
 							<Spacer margin={['top-large']}>
 								<Alert type="info">
-									{t(
+									{tText(
 										'assignment/views/assignment-response-edit___deze-opdracht-is-afgelopen-de-deadline-was-deadline',
 										{
 											deadline,

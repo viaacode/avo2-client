@@ -1,10 +1,9 @@
+import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { cloneDeep } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
-
-import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 
 import { generateRandomId } from '../../../shared/helpers/uuid';
+import useTranslation from '../../../shared/hooks/useTranslation';
 import { InteractiveTourAction } from '../helpers/reducers';
 import {
 	EditableInteractiveTour,
@@ -23,7 +22,7 @@ const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
 	interactiveTour,
 	changeInteractiveTourState,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const getStepsAfterInsertNewStep = (): EditableStep[] => {
 		const steps = cloneDeep(interactiveTour.steps || []);
@@ -61,12 +60,12 @@ const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
 				<ToolbarItem>
 					<Button
 						type="secondary"
-						icon="add"
+						icon={IconName.add}
 						onClick={handleAddStepClick}
-						ariaLabel={t(
+						ariaLabel={tText(
 							'admin/interactive-tour/components/interactive-tour-step-add___stap-toevoegen'
 						)}
-						title={t(
+						title={tText(
 							'admin/interactive-tour/components/interactive-tour-step-add___stap-toevoegen'
 						)}
 					/>

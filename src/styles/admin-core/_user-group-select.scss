@@ -1,0 +1,28 @@
+@import '../settings/colors';
+@import '../settings/variables';
+
+.c-user-group-select {
+	.c-checkbox-group {
+		border: 1px solid #bac7d1;
+		border-radius: 0.3rem;
+		background-color: white;
+
+		.c-checkbox {
+			display: block;
+			padding: 0.8rem;
+			border-radius: 0.3rem;
+
+			.c-checkbox__input {
+				margin-top: 0.2rem;
+			}
+
+			.c-checkbox__check-icon {
+				display: none;
+			}
+
+			&:hover {
+				background-color: $color-gray-50;
+			}
+		}
+	}
+}

@@ -1,10 +1,9 @@
 import { DefaultProps } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { FC, ReactNode } from 'react';
 
 import ConfirmModal, { ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
-import Html from '../../shared/components/Html/Html';
+import useTranslation from '../../shared/hooks/useTranslation';
 
 type AssignmentConfirmSaveProps = DefaultProps & {
 	hasBlocks?: boolean;
@@ -17,29 +16,31 @@ const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
 	hasResponses,
 	modal,
 }) => {
-	const [t] = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
-	let bodyHtml = t(
+	let bodyHtml: ReactNode = tHtml(
 		'assignment/components/assignment-confirm-save___weet-je-zeker-dat-je-de-wijzigingen-wil-opslaan'
 	);
 
 	if (hasBlocks) {
-		bodyHtml = t(
+		bodyHtml = tHtml(
 			'assignment/views/assignment-edit___waarschuwing-leerlingencollecties-bestaan-reeds-verwijderen'
 		);
 	} else if (hasResponses) {
-		bodyHtml = t('assignment/views/assignment-edit___waarschuwing-leerlingen-reeds-bekeken');
+		bodyHtml = tHtml(
+			'assignment/views/assignment-edit___waarschuwing-leerlingen-reeds-bekeken'
+		);
 	}
 
 	return (
 		<ConfirmModal
 			isOpen={modal?.isOpen || false}
-			body={<Html content={bodyHtml} />}
+			body={bodyHtml}
 			onClose={modal?.onClose || noop}
 			confirmCallback={modal?.confirmCallback || noop}
-			cancelLabel={t('assignment/views/assignment-edit___annuleer')}
-			confirmLabel={t('assignment/views/assignment-edit___opslaan')}
-			title={t('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
+			cancelLabel={tText('assignment/views/assignment-edit___annuleer')}
+			confirmLabel={tText('assignment/views/assignment-edit___opslaan')}
+			title={tText('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
 			confirmButtonType="primary"
 		/>
 	);

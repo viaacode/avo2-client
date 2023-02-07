@@ -1,6 +1,3 @@
-import classnames from 'classnames';
-import React, { FunctionComponent, ReactNode } from 'react';
-
 import {
 	ButtonToolbar,
 	Container,
@@ -9,6 +6,8 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 } from '@viaa/avo2-components';
+import classnames from 'classnames';
+import React, { FunctionComponent, ReactNode } from 'react';
 
 import './ActionsBar.scss';
 

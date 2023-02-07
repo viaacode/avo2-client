@@ -4,10 +4,12 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	IconName,
 } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FunctionComponent, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '../../shared/hooks/useTranslation';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
@@ -33,16 +35,16 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	duplicate,
 	remove,
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 
 	const renderPreviewButton = (config?: Partial<ButtonProps>) => (
 		<Button
-			label={t('assignment/views/assignment-edit___bekijk-als-leerling')}
-			title={t(
+			label={tText('assignment/views/assignment-edit___bekijk-als-leerling')}
+			title={tText(
 				'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 			)}
-			ariaLabel={t(
+			ariaLabel={tText(
 				'assignment/views/assignment-edit___bekijk-de-opdracht-zoals-een-leerling-die-zal-zien'
 			)}
 			type="secondary"
@@ -53,10 +55,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const renderOverflowButton = (config?: Partial<ButtonProps>) => (
 		<Button
-			icon="more-horizontal"
+			icon={IconName.moreHorizontal}
 			type="secondary"
-			ariaLabel={t('assignment/views/assignment-detail___meer-opties')}
-			title={t('assignment/views/assignment-detail___meer-opties')}
+			ariaLabel={tText('assignment/views/assignment-detail___meer-opties')}
+			title={tText('assignment/views/assignment-detail___meer-opties')}
 			{...overflow}
 			{...config}
 		/>
@@ -98,7 +100,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		/>
 	);
 
-	const renderActions = useMemo(
+	return useMemo(
 		() => (
 			<>
 				{renderPreviewButton({
@@ -121,7 +123,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 							{renderPreviewButton({
 								block: true,
 								className: 'c-assignment-heading__show-on-mobile',
-								icon: 'eye',
+								icon: IconName.eye,
 								type: 'borderless',
 							})}
 							{renderDuplicateButton({ block: true, type: 'borderless' })}
@@ -133,7 +135,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 								button: {
 									block: true,
 									className: 'c-assignment-heading__show-on-mobile',
-									icon: 'share-2',
+									icon: IconName.share2,
 									type: 'borderless',
 								},
 							})}
@@ -148,10 +150,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				})}
 			</>
 		),
-		[t, isOverflowDropdownOpen]
+		[tText, isOverflowDropdownOpen]
 	);
-
-	return renderActions;
 };
 
 export default AssignmentActions;

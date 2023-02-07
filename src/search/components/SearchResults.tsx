@@ -3,14 +3,15 @@ import {
 	Button,
 	Container,
 	Flex,
+	IconName,
 	Pagination,
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent } from 'react';
-import { useTranslation } from 'react-i18next';
 
+import useTranslation from '../../shared/hooks/useTranslation';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
 import { SearchResultsProps } from '../search.types';
 
@@ -30,7 +31,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	collectionLabels,
 	...resultProps
 }) => {
-	const [t] = useTranslation();
+	const { tText } = useTranslation();
 
 	const getIsBookmarked = (result: Avo.Search.ResultItem) => {
 		if (!bookmarkStatuses) {
@@ -82,13 +83,13 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 				) : (
 					<Blankslate
 						body=""
-						icon="search"
-						title={t(
+						icon={IconName.search}
+						title={tText(
 							'search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters'
 						)}
 					>
 						<Button
-							label={t('search/components/search-results___vraag-een-item-aan')}
+							label={tText('search/components/search-results___vraag-een-item-aan')}
 							onClick={navigateUserRequestForm}
 						/>
 					</Blankslate>

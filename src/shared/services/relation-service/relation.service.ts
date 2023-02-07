@@ -1,48 +1,55 @@
-import { get } from 'lodash-es';
-
-import { Avo } from '@viaa/avo2-types';
-import { RelationEntry, RelationType } from '@viaa/avo2-types/types/collection';
-
-import { CustomError } from '../../helpers';
-import { ApolloCacheManager, dataService } from '../data-service';
+import type { Avo } from '@viaa/avo2-types';
 
 import {
-	DELETE_COLLECTION_RELATIONS_BY_OBJECT,
-	DELETE_COLLECTION_RELATIONS_BY_SUBJECT,
-	DELETE_ITEM_RELATIONS_BY_OBJECT,
-	DELETE_ITEM_RELATIONS_BY_SUBJECT,
-	FETCH_COLLECTION_RELATIONS_BY_OBJECTS,
-	FETCH_COLLECTION_RELATIONS_BY_SUBJECTS,
-	FETCH_ITEM_RELATIONS_BY_OBJECTS,
-	FETCH_ITEM_RELATIONS_BY_SUBJECTS,
-	INSERT_COLLECTION_RELATION,
-	INSERT_ITEM_RELATION,
-} from './relation.gql';
+	DeleteCollectionRelationsByObjectDocument,
+	DeleteCollectionRelationsByObjectMutation,
+	DeleteCollectionRelationsBySubjectDocument,
+	DeleteCollectionRelationsBySubjectMutation,
+	DeleteItemRelationsByObjectDocument,
+	DeleteItemRelationsByObjectMutation,
+	DeleteItemRelationsBySubjectDocument,
+	DeleteItemRelationsBySubjectMutation,
+	GetCollectionRelationsByObjectDocument,
+	GetCollectionRelationsByObjectQuery,
+	GetCollectionRelationsBySubjectDocument,
+	GetCollectionRelationsBySubjectQuery,
+	GetItemRelationsByObjectDocument,
+	GetItemRelationsByObjectQuery,
+	GetItemRelationsBySubjectDocument,
+	GetItemRelationsBySubjectQuery,
+	InsertCollectionRelationDocument,
+	InsertCollectionRelationMutation,
+	InsertItemRelationDocument,
+	InsertItemRelationMutation,
+	Lookup_Enum_Relation_Types_Enum,
+} from '../../generated/graphql-db-types';
+import { CustomError } from '../../helpers';
+import { dataService } from '../data-service';
 
 export class RelationService {
 	public static async fetchRelationsByObject(
 		type: 'collection' | 'item',
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectIds: string[]
-	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		return this.fetchRelations(type, null, relationType, objectIds);
 	}
 
 	public static async fetchRelationsBySubject(
 		type: 'collection' | 'item',
 		subjectIds: string[],
-		relationType: RelationType
-	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+		relationType: Lookup_Enum_Relation_Types_Enum
+	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
 		return this.fetchRelations(type, subjectIds, relationType, null);
 	}
 
 	private static async fetchRelations(
 		type: 'collection' | 'item',
 		subjectIds: string[] | null,
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectIds: string[] | null
-	): Promise<RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
-		let variables: any;
+	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+		let variables: any = undefined;
 		const isCollection = type === 'collection';
 		try {
 			variables = {
@@ -51,24 +58,31 @@ export class RelationService {
 				...(subjectIds ? { subjectIds } : {}),
 			};
 			const collectionQuery = objectIds
-				? FETCH_COLLECTION_RELATIONS_BY_OBJECTS
-				: FETCH_COLLECTION_RELATIONS_BY_SUBJECTS;
+				? GetCollectionRelationsByObjectDocument
+				: GetCollectionRelationsBySubjectDocument;
 			const itemQuery = objectIds
-				? FETCH_ITEM_RELATIONS_BY_OBJECTS
-				: FETCH_ITEM_RELATIONS_BY_SUBJECTS;
-			const response = await dataService.mutate({
+				? GetItemRelationsByObjectDocument
+				: GetItemRelationsBySubjectDocument;
+			const response = await dataService.query<
+				| GetCollectionRelationsByObjectQuery
+				| GetCollectionRelationsBySubjectQuery
+				| GetItemRelationsByObjectQuery
+				| GetItemRelationsBySubjectQuery
+			>({
 				variables,
-				mutation: isCollection ? collectionQuery : itemQuery,
+				query: isCollection ? collectionQuery : itemQuery,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
+			if (isCollection) {
+				return ((
+					response as
+						| GetCollectionRelationsByObjectQuery
+						| GetCollectionRelationsBySubjectQuery
+				).app_collection_relations ||
+					[]) as Avo.Collection.RelationEntry<Avo.Collection.Collection>[];
+			} else {
+				return ((response as GetItemRelationsByObjectQuery | GetItemRelationsBySubjectQuery)
+					.app_item_relations || []) as Avo.Collection.RelationEntry<Avo.Item.Item>[];
 			}
-			return (
-				get(
-					response,
-					isCollection ? 'data.app_collection_relations' : 'data.app_item_relations'
-				) || []
-			);
 		} catch (err) {
 			throw new CustomError('Failed to get relation from the database', err, {
 				variables,
@@ -89,7 +103,7 @@ export class RelationService {
 	public static async insertRelation(
 		type: 'collection' | 'item',
 		subjectId: string,
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string
 	): Promise<number> {
 		let variables: any;
@@ -100,22 +114,20 @@ export class RelationService {
 				objectId,
 				subjectId,
 			};
-			const response = await dataService.mutate({
+			const response = await dataService.query<
+				InsertCollectionRelationMutation | InsertItemRelationMutation
+			>({
 				variables,
-				mutation: isCollection ? INSERT_COLLECTION_RELATION : INSERT_ITEM_RELATION,
-				update: isCollection
-					? ApolloCacheManager.clearCollectionCache
-					: ApolloCacheManager.clearItemCache,
+				query: isCollection ? InsertCollectionRelationDocument : InsertItemRelationDocument,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
+			let relationId;
+			if (isCollection) {
+				relationId = (response as InsertCollectionRelationMutation)
+					.insert_app_collection_relations?.returning?.[0]?.id;
+			} else {
+				relationId = (response as InsertItemRelationMutation).insert_app_item_relations
+					?.returning?.[0]?.id;
 			}
-			const relationId = get(
-				response,
-				`data.${
-					isCollection ? 'insert_app_collection_relations' : 'insert_app_item_relations'
-				}.returning[0].id`
-			);
 			if (!relationId) {
 				throw new CustomError('Response does not contain a relation id', null, {
 					response,
@@ -132,7 +144,7 @@ export class RelationService {
 
 	public static async deleteRelationsByObject(
 		type: 'collection' | 'item',
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string
 	): Promise<void> {
 		return RelationService.deleteRelations(type, null, relationType, objectId);
@@ -141,7 +153,7 @@ export class RelationService {
 	public static async deleteRelationsBySubject(
 		type: 'collection' | 'item',
 		subjectId: string,
-		relationType: RelationType
+		relationType: Lookup_Enum_Relation_Types_Enum
 	): Promise<void> {
 		return RelationService.deleteRelations(type, subjectId, relationType, null);
 	}
@@ -149,7 +161,7 @@ export class RelationService {
 	private static async deleteRelations(
 		type: 'collection' | 'item',
 		subjectId: string | null,
-		relationType: RelationType,
+		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string | null
 	): Promise<void> {
 		const isCollection = type === 'collection';
@@ -161,21 +173,20 @@ export class RelationService {
 				...(subjectId ? { subjectId } : {}),
 			};
 			const collectionQuery = objectId
-				? DELETE_COLLECTION_RELATIONS_BY_OBJECT
-				: DELETE_COLLECTION_RELATIONS_BY_SUBJECT;
+				? DeleteCollectionRelationsByObjectDocument
+				: DeleteCollectionRelationsBySubjectDocument;
 			const itemQuery = objectId
-				? DELETE_ITEM_RELATIONS_BY_OBJECT
-				: DELETE_ITEM_RELATIONS_BY_SUBJECT;
-			const response = await dataService.mutate({
+				? DeleteItemRelationsByObjectDocument
+				: DeleteItemRelationsBySubjectDocument;
+			await dataService.query<
+				| DeleteCollectionRelationsByObjectMutation
+				| DeleteCollectionRelationsBySubjectMutation
+				| DeleteItemRelationsByObjectMutation
+				| DeleteItemRelationsBySubjectMutation
+			>({
 				variables,
-				mutation: isCollection ? collectionQuery : itemQuery,
-				update: isCollection
-					? ApolloCacheManager.clearCollectionCache
-					: ApolloCacheManager.clearItemCache,
+				query: isCollection ? collectionQuery : itemQuery,
 			});
-			if (response.errors) {
-				throw new CustomError('Failed due to graphql errors', null, { response });
-			}
 		} catch (err) {
 			throw new CustomError('Failed to delete relation from the database', err, {
 				variables,
