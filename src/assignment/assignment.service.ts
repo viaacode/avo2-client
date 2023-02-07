@@ -1,5 +1,5 @@
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, isNil, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
@@ -790,8 +790,8 @@ export class AssignmentService {
 			// Get the assignment from graphql
 			const assignmentResponse =
 				await dataService.query<GetAssignmentResponsesByAssignmentIdQuery>({
-					variables,
 					query: GetAssignmentResponsesByAssignmentIdDocument,
+					variables,
 				});
 
 			if (
@@ -804,8 +804,26 @@ export class AssignmentService {
 				});
 			}
 
+			const assignmentResponses = assignmentResponse.app_assignment_responses_v2 || [];
+
+			// Enrich assignmentResponses with item infos
+			const fragmentExternalIds = compact(
+				assignmentResponses.flatMap((response) =>
+					response.pupil_collection_blocks?.map((block) => block.fragment_id)
+				)
+			);
+			const itemMetas = await ItemsService.fetchItemsByExternalIds(fragmentExternalIds);
+			assignmentResponses.forEach((response) => {
+				response.pupil_collection_blocks?.forEach((block) => {
+					(block as any).item_meta = itemMetas.find(
+						(itemMeta) =>
+							!!itemMeta?.external_id && itemMeta?.external_id === block.fragment_id
+					);
+				});
+			});
+
 			return {
-				assignmentResponses: assignmentResponse.app_assignment_responses_v2 || [],
+				assignmentResponses,
 				count: assignmentResponse.count.aggregate?.count || 0,
 			};
 		} catch (err) {
