@@ -1,3 +1,4 @@
+import { IconName } from '@viaa/avo2-components';
 import { TFunction } from 'i18next';
 import { isNil, kebabCase, sortBy } from 'lodash-es';
 import React from 'react';
@@ -36,7 +37,7 @@ export function getLocation(navItem: AppContentNavElement, tText: TFunction): st
 			message: tText(
 				'shared/helpers/navigation___de-pagina-voor-dit-navigatie-item-kon-niet-worden-gevonden'
 			),
-			icon: 'search',
+			icon: IconName.search,
 		}
 	);
 }

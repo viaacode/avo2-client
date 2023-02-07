@@ -1,5 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Box, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
+import {
+	Alert,
+	Box,
+	Container,
+	Flex,
+	Icon,
+	IconName,
+	Spacer,
+	Spinner,
+	Tabs,
+} from '@viaa/avo2-components';
 import classnames from 'classnames';
 import React, {
 	Dispatch,
@@ -271,7 +281,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderBackButton = useMemo(
 		() => (
 			<Link className="c-return" to={backToOverview}>
-				<Icon name="chevron-left" size="small" type="arrows" />
+				<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
@@ -281,7 +291,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderedTitle = useMemo(
 		() => (
 			<Flex center className={classnames({ 'u-spacer-top-l': showBackButton })}>
-				<Icon name="clipboard" size="large" />
+				<Icon name={IconName.clipboard} size="large" />
 
 				<BlockHeading className="u-spacer-left" type="h2">
 					{assignment?.title}

@@ -1,4 +1,4 @@
-import { Button, ButtonProps, DefaultProps } from '@viaa/avo2-components';
+import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
 import React, { FC, useState } from 'react';
 import { compose } from 'redux';
 
@@ -35,7 +35,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 				ariaLabel={tText(
 					'assignment/components/delete-assignment-button___verwijder-de-opdracht'
 				)}
-				icon="delete"
+				icon={IconName.delete}
 				label={tText('assignment/components/delete-assignment-button___verwijder')}
 				title={tText(
 					'assignment/components/delete-assignment-button___verwijder-de-opdracht'

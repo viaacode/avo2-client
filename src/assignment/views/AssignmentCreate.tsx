@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Container, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import { Button, Container, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -203,7 +203,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				content: (item) => item && renderBlockContent(item),
 				divider: (position: number) => (
 					<Button
-						icon="plus"
+						icon={IconName.plus}
 						type="secondary"
 						onClick={() => {
 							addBlockModal.setEntity(position);
@@ -224,7 +224,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const renderBackButton = useMemo(
 		() => (
 			<Link className="c-return" to={backToOverview()}>
-				<Icon name="chevron-left" size="small" type="arrows" />
+				<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),

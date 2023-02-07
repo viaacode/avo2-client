@@ -43,14 +43,14 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ i
 			{!isFirst && (
 				<Button
 					type="secondary"
-					icon="chevron-up"
+					icon={IconName.chevronUp}
 					onClick={() => item.onPositionChange?.(item, -1)}
 				/>
 			)}
 			{!isLast && (
 				<Button
 					type="secondary"
-					icon="chevron-down"
+					icon={IconName.chevronDown}
 					onClick={() => item.onPositionChange?.(item, 1)}
 				/>
 			)}
@@ -59,7 +59,7 @@ export const ListSorterPosition: FC<{ item: ListSorterItem; i?: number }> = ({ i
 };
 
 export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
-	<Button type="secondary" icon="delete" onClick={() => item.onSlice?.(item)} />
+	<Button type="secondary" icon={IconName.delete} onClick={() => item.onSlice?.(item)} />
 );
 
 // Main renderer

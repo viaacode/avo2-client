@@ -12,17 +12,17 @@ export const BLOCK_ITEM_ICONS: () => Record<
 		if (block?.item_meta) {
 			switch (block?.item_meta?.type?.label) {
 				case 'audio':
-					return 'headphone';
+					return IconName.headphone;
 				case 'video':
-					return 'video'; // TODO: add custom icon
+					return IconName.video; // TODO: add custom icon
 			}
 		}
-		return 'x';
+		return IconName.x;
 	},
-	TEXT: () => 'type',
-	ZOEK: () => 'search',
-	BOUW: () => 'search',
-	COLLECTION: () => 'collection',
+	TEXT: () => IconName.type,
+	ZOEK: () => IconName.search,
+	BOUW: () => IconName.search,
+	COLLECTION: () => IconName.collection,
 });
 
 export const BLOCK_ITEM_LABELS = (): Record<Avo.Core.BlockItemType, string> => ({

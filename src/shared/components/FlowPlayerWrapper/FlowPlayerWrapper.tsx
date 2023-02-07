@@ -2,6 +2,7 @@ import { FlowPlayer, FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/
 import {
 	AspectRatioWrapper,
 	Icon,
+	IconName,
 	MediaCard,
 	MediaCardThumbnail,
 	Thumbnail,
@@ -301,14 +302,14 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						/>
 						<div className="c-play-overlay">
 							<div className="c-play-overlay__inner">
-								<Icon name="play" className="c-play-overlay__button" />
+								<Icon name={IconName.play} className="c-play-overlay__button" />
 							</div>
 						</div>
 						{!isNil(start) &&
 							!isNil(end) &&
 							(start !== 0 || end !== toSeconds(item?.duration)) && (
 								<div className="c-cut-overlay">
-									<Icon name="scissors" />
+									<Icon name={IconName.scissors} />
 									{`${formatDurationHoursMinutesSeconds(
 										start
 									)} - ${formatDurationHoursMinutesSeconds(end)}`}

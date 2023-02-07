@@ -1,5 +1,5 @@
 import { ContentPageLabelService } from '@meemoo/admin-core-ui';
-import { Button, ButtonToolbar } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -236,7 +236,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				return (
 					<ButtonToolbar>
 						<Button
-							icon="info"
+							icon={IconName.info}
 							onClick={() =>
 								navigate(
 									history,
@@ -256,7 +256,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 							type="secondary"
 						/>
 						<Button
-							icon="edit"
+							icon={IconName.edit}
 							onClick={() =>
 								navigate(history, CONTENT_PAGE_LABEL_PATH.CONTENT_PAGE_LABEL_EDIT, {
 									id: rowData.id,
@@ -272,7 +272,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 							type="secondary"
 						/>
 						<Button
-							icon="delete"
+							icon={IconName.delete}
 							onClick={() => openModal(rowData)}
 							size="small"
 							ariaLabel={tText(

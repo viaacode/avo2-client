@@ -1,6 +1,7 @@
 import {
 	Container,
 	Flex,
+	IconName,
 	MoreOptionsDropdown,
 	Navbar,
 	Toolbar,
@@ -145,7 +146,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 											label={getMoreOptionsLabel()}
 											menuItems={[
 												{
-													icon: 'link',
+													icon: IconName.link,
 													id: 'copy_link',
 													label: tText(
 														'search/views/search___kopieer-vaste-link-naar-deze-zoekopdracht'
@@ -173,7 +174,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 								'search/views/search___je-hebt-geen-rechten-om-te-zoeken'
 							)}
 							actionButtons={['home', 'helpdesk']}
-							icon="lock"
+							icon={IconName.lock}
 						/>
 					)}
 				</PermissionGuardPass>
@@ -182,7 +183,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 						message={tText(
 							'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
 						)}
-						icon="lock"
+						icon={IconName.lock}
 						actionButtons={['home']}
 					/>
 				</PermissionGuardFail>

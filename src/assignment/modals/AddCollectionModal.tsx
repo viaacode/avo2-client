@@ -8,6 +8,7 @@ import {
 	Form,
 	FormGroup,
 	Icon,
+	IconName,
 	Modal,
 	ModalBody,
 	ModalFooterLeft,
@@ -241,7 +242,8 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 								: tText('assignment/modals/add-collection-modal___niet-publiek')
 						}
 					>
-						<Icon name={collection.is_public ? 'unlock-3' : 'lock'} />
+						{/* TODO make this a helper function to render lock or unlock everywhere */}
+						<Icon name={collection.is_public ? IconName.unlock3 : IconName.lock} />
 					</div>
 				);
 
@@ -324,7 +326,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 									<FormGroup inlineMode="grow">
 										<TextInput
 											className="c-assignment-overview__search-input"
-											icon="filter"
+											icon={IconName.filter}
 											value={filterString}
 											onChange={setFilterString}
 											disabled={!collections}

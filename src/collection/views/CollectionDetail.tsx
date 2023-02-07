@@ -9,6 +9,7 @@ import {
 	Header,
 	HeaderButtons,
 	HeaderRow,
+	IconName,
 	MenuContent,
 	MoreOptionsDropdown,
 	Spacer,
@@ -336,7 +337,7 @@ const CollectionDetail: FunctionComponent<
 						message: tText(
 							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 						),
-						icon: 'alert-triangle',
+						icon: IconName.alertTriangle,
 					});
 
 					return;
@@ -371,7 +372,7 @@ const CollectionDetail: FunctionComponent<
 					message: tText(
 						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 					),
-					icon: 'search',
+					icon: IconName.search,
 				});
 				return;
 			}
@@ -421,7 +422,7 @@ const CollectionDetail: FunctionComponent<
 				message: tText(
 					'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
 				),
-				icon: 'alert-triangle',
+				icon: IconName.alertTriangle,
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
@@ -776,7 +777,7 @@ const CollectionDetail: FunctionComponent<
 						ariaLabel={tText(
 							'collection/views/collection-detail___speelt-de-collectie-af'
 						)}
-						icon="play"
+						icon={IconName.play}
 						onClick={() =>
 							executeAction(COLLECTION_ACTIONS.openAutoplayCollectionModal)
 						}
@@ -813,7 +814,7 @@ const CollectionDetail: FunctionComponent<
 				{permissions?.canCreateQuickLane && !permissions?.canCreateAssignments && (
 					<Button
 						type="secondary"
-						icon="link-2"
+						icon={IconName.link2}
 						label={tText('item/views/item___delen-met-leerlingen')}
 						ariaLabel={tText(
 							'collection/views/collection-detail___delen-met-leerlingen'
@@ -843,14 +844,14 @@ const CollectionDetail: FunctionComponent<
 										'collection/views/collection-detail___maak-deze-collectie-openbaar'
 								  )
 						}
-						icon={isPublic ? 'unlock-3' : 'lock'}
+						icon={isPublic ? IconName.unlock3 : IconName.lock}
 						onClick={() => executeAction(COLLECTION_ACTIONS.openPublishCollectionModal)}
 					/>
 				)}
 				<ToggleButton
 					title={tText('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
-					icon="bookmark"
+					icon={IconName.bookmark}
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction(COLLECTION_ACTIONS.toggleBookmark)}
@@ -859,7 +860,7 @@ const CollectionDetail: FunctionComponent<
 					<Button
 						title={tText('collection/views/collection-detail___deel')}
 						type="secondary"
-						icon="share-2"
+						icon={IconName.share2}
 						ariaLabel={tText('collection/views/collection-detail___deel')}
 						onClick={() => executeAction(COLLECTION_ACTIONS.openShareThroughEmail)}
 					/>
@@ -876,7 +877,7 @@ const CollectionDetail: FunctionComponent<
 					<Spacer margin="left-small">
 						<Button
 							type="primary"
-							icon="edit"
+							icon={IconName.edit}
 							label={tText('collection/views/collection-detail___bewerken')}
 							title={tText(
 								'collection/views/collection-detail___pas-deze-collectie-aan'
@@ -1273,7 +1274,7 @@ const CollectionDetail: FunctionComponent<
 		if (showNoAccessPopup) {
 			return (
 				<ErrorView
-					icon="lock"
+					icon={IconName.lock}
 					message={tText(
 						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
 					)}
@@ -1285,7 +1286,7 @@ const CollectionDetail: FunctionComponent<
 		if (loadingInfo.state === 'error') {
 			return (
 				<ErrorView
-					icon="alert-triangle"
+					icon={IconName.alertTriangle}
 					message={tText(
 						'collection/views/collection-detail___het-laden-van-de-collectie-is-mislukt'
 					)}

@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '@viaa/avo2-components';
+import { Button, ButtonProps, IconName } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
 import React, { ReactNode, useState } from 'react';
 
@@ -18,7 +18,7 @@ export function useDraggableListModal(config?: {
 
 	const button = (
 		<Button
-			icon="shuffle"
+			icon={IconName.shuffle}
 			{...config?.button}
 			type="secondary"
 			label={tText('collection/components/collection-or-bundle-edit___herorden-fragmenten')}

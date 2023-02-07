@@ -30,7 +30,7 @@ export function useAssignmentPupilTabs(
 				{
 					id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT,
 					label: tText('assignment/hooks/assignment-pupil-tabs___opdracht'),
-					icon: 'clipboard' as IconName,
+					icon: IconName.clipboard as IconName,
 				},
 				...(assignment?.assignment_type &&
 				[AssignmentType.ZOEK, AssignmentType.BOUW].includes(
@@ -41,7 +41,7 @@ export function useAssignmentPupilTabs(
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
 								label: tText('assignment/hooks/assignment-pupil-tabs___zoeken'),
-								icon: 'search' as IconName,
+								icon: IconName.search as IconName,
 							},
 					  ]
 					: []),
@@ -75,7 +75,7 @@ export function useAssignmentPupilTabs(
 										</Pill>
 									</>
 								),
-								icon: 'briefcase' as IconName,
+								icon: IconName.briefcase as IconName,
 							},
 					  ]
 					: []),

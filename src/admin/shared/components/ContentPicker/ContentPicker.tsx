@@ -4,6 +4,7 @@ import {
 	Flex,
 	FlexItem,
 	FormGroup,
+	IconName,
 	LinkTarget,
 	TextInput,
 } from '@viaa/avo2-components';
@@ -344,7 +345,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 				<Button
 					size="large"
 					type={'borderless'}
-					icon={isTargetSelf ? 'arrow-down-circle' : 'external-link'}
+					icon={isTargetSelf ? IconName.arrowDownCircle : IconName.externalLink}
 					title={
 						isTargetSelf
 							? tText(

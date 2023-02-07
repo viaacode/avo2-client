@@ -1,3 +1,5 @@
+import { IconName } from '@viaa/avo2-components';
+
 import { ROUTE_PARTS } from '../shared/constants';
 import { tText } from '../shared/helpers/translate';
 
@@ -13,27 +15,27 @@ export const QUICK_LANE_ID = ROUTE_PARTS.quickLane;
 export const GET_TABS: () => WorkspaceTab[] = () => [
 	{
 		label: tText('workspace/workspace___collecties'),
-		icon: 'collection',
+		icon: IconName.collection,
 		id: COLLECTIONS_ID,
 	},
 	{
 		label: tText('workspace/workspace___bundels'),
-		icon: 'folder',
+		icon: IconName.folder,
 		id: BUNDLES_ID,
 	},
 	{
 		label: tText('workspace/workspace___opdrachten'),
-		icon: 'clipboard',
+		icon: IconName.clipboard,
 		id: ASSIGNMENTS_ID,
 	},
 	{
 		label: tText('workspace/workspace___gedeelde-links'),
-		icon: 'link-2',
+		icon: IconName.link2,
 		id: QUICK_LANE_ID,
 	},
 	{
 		label: tText('workspace/workspace___bladwijzers'),
-		icon: 'bookmark',
+		icon: IconName.bookmark,
 		id: BOOKMARKS_ID,
 	},
 	{

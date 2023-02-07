@@ -1,5 +1,13 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import { Container, Navbar, Tabs, Toolbar, ToolbarLeft, ToolbarRight } from '@viaa/avo2-components';
+import {
+	Container,
+	IconName,
+	Navbar,
+	Tabs,
+	Toolbar,
+	ToolbarLeft,
+	ToolbarRight,
+} from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
@@ -131,7 +139,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 		return (
 			<ErrorView
 				message={getPageNotFoundError(!!props.user)}
-				icon="search"
+				icon={IconName.search}
 				actionButtons={['home', 'helpdesk']}
 			/>
 		);

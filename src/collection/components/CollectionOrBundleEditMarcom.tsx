@@ -8,6 +8,7 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
+	IconName,
 	Select,
 	Spacer,
 	Spinner,
@@ -133,7 +134,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 				return (
 					<ButtonToolbar>
 						<Button
-							icon="delete"
+							icon={IconName.delete}
 							onClick={() => {
 								if (rowData.id) {
 									deleteMarcomEntry(rowData);

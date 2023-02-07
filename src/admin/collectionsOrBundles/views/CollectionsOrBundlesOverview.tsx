@@ -1,4 +1,4 @@
-import { Button, ButtonToolbar, TagInfo, TagList } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, TagInfo, TagList } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { compact, get, truncate } from 'lodash-es';
 import React, {
@@ -554,7 +554,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					<ButtonToolbar>
 						<Button
 							type="secondary"
-							icon="eye"
+							icon={IconName.eye}
 							onClick={() => navigateToCollectionDetail(rowData.id)}
 							ariaLabel={
 								isCollection
@@ -577,7 +577,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						/>
 						<Button
 							type="secondary"
-							icon="edit"
+							icon={IconName.edit}
 							onClick={() => navigateToCollectionEdit(rowData.id)}
 							ariaLabel={
 								isCollection

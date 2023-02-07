@@ -21,12 +21,12 @@ export function useAssignmentTeacherTabs(): [
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud,
 					label: tText('assignment/hooks/assignment-tabs___inhoud'),
-					icon: 'collection' as IconName,
+					icon: IconName.collection as IconName,
 				},
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.Details,
 					label: tText('assignment/hooks/assignment-tabs___details'),
-					icon: 'settings' as IconName,
+					icon: IconName.settings as IconName,
 				},
 			].map((item) => ({
 				...item,

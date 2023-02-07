@@ -73,7 +73,8 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 	const errorMessage: string | ReactNode = isNil(messageText)
 		? getPageNotFoundError(!!user)
 		: messageText;
-	const errorIcon = (queryParams.icon || icon || 'search') as IconName;
+	const errorIcon: IconName =
+		(queryParams.icon as IconName | undefined) || icon || IconName.search;
 	const buttons = uniq([
 		...actionButtons,
 		...(isArray(queryParams.actionButtons) ? queryParams.actionButtons : []),

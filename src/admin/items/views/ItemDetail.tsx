@@ -5,6 +5,7 @@ import {
 	ButtonToolbar,
 	Container,
 	Icon,
+	IconName,
 	Spacer,
 	Table,
 	Toolbar,
@@ -301,7 +302,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								  )
 						}
 					>
-						<Icon name={rowData.is_public ? 'unlock-3' : 'lock'} />
+						<Icon name={rowData.is_public ? IconName.unlock3 : IconName.lock} />
 					</div>
 				);
 
@@ -309,7 +310,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				return (
 					<Button
 						type="borderless"
-						icon="eye"
+						icon={IconName.eye}
 						title={tText(
 							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
 						)}

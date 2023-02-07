@@ -4,6 +4,7 @@ import {
 	Container,
 	Flex,
 	FormGroup,
+	IconName,
 	MoreOptionsDropdown,
 	TextInput,
 	Toolbar,
@@ -142,7 +143,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				content: (item) => item && renderBlockContent(item),
 				divider: (position: number) => (
 					<Button
-						icon="plus"
+						icon={IconName.plus}
 						type="secondary"
 						onClick={() => {
 							const newBlocks = insertMultipleAtPosition(

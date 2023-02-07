@@ -8,6 +8,7 @@ import {
 	FormGroup,
 	Grid,
 	Icon,
+	IconName,
 	Spacer,
 	Table,
 	TagInfo,
@@ -241,7 +242,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 								  )
 						}
 					>
-						<Icon name={rowData.is_public ? 'unlock-3' : 'lock'} />
+						<Icon name={rowData.is_public ? IconName.unlock3 : IconName.lock} />
 					</div>
 				);
 
@@ -249,7 +250,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				return (
 					<Button
 						type="borderless"
-						icon="eye"
+						icon={IconName.eye}
 						title={tText(
 							'collection/components/collection-or-bundle-edit-admin___ga-naar-de-bundel-detail-pagina'
 						)}

@@ -2,6 +2,7 @@ import { ColorOption } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	ButtonToolbar,
+	IconName,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
@@ -242,7 +243,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 						)}
 						onClick={() => handleRowDelete(assignmentLabel.id)}
 						type="danger-hover"
-						icon="delete"
+						icon={IconName.delete}
 					/>
 				);
 		}
@@ -261,7 +262,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				<Spacer margin="bottom-large">
 					<Button
 						label={translations.buttons.addLabel}
-						icon="plus"
+						icon={IconName.plus}
 						onClick={handleAddLabelClick}
 						type="secondary"
 					/>

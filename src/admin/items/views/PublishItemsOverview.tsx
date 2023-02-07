@@ -1,4 +1,4 @@
-import { Button, ButtonToolbar } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -243,7 +243,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 						<ButtonToolbar>
 							<Button
 								type="secondary"
-								icon="eye"
+								icon={IconName.eye}
 								onClick={() => navigateToItemDetail(itemExternalId)}
 								title={tText(
 									'admin/items/views/items-overview___bekijk-item-in-de-website'
@@ -254,7 +254,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 							/>
 							<Button
 								type="secondary"
-								icon="edit"
+								icon={IconName.edit}
 								onClick={() => navigateToAdminItemDetail(itemUid)}
 								title={tText(
 									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
@@ -332,13 +332,13 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			<AdminLayoutTopBarRight>
 				<ButtonToolbar>
 					<Button
-						icon="external-link"
+						icon={IconName.externalLink}
 						type="danger"
 						label={tText('admin/items/views/publish-items-overview___publiceren')}
 						onClick={publishSelection}
 					/>
 					<Button
-						icon="download"
+						icon={IconName.download}
 						type="primary"
 						label={tText(
 							'admin/items/views/publish-items-overview___synchroniseren-met-mam'

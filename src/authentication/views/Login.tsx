@@ -1,4 +1,4 @@
-import { Button, Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
@@ -82,7 +82,7 @@ const Login: FunctionComponent<LoginProps> = ({
 		return (
 			<ErrorView
 				message={tText('authentication/views/login___het-inloggen-is-mislukt')}
-				icon="lock"
+				icon={IconName.lock}
 			>
 				<Button
 					type="link"

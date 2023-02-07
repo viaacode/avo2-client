@@ -99,7 +99,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 					<ToolbarRight>
 						<ToolbarItem>
 							<Button
-								icon="delete"
+								icon={IconName.delete}
 								type="danger"
 								onClick={() => {
 									changeInteractiveTourState({
@@ -197,7 +197,11 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 						<Tooltip position="top">
 							<TooltipTrigger>
 								<span>
-									<Icon className="a-info-icon" name="info" size="small" />
+									<Icon
+										className="a-info-icon"
+										name={IconName.info}
+										size="small"
+									/>
 								</span>
 							</TooltipTrigger>
 							<TooltipContent>

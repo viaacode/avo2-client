@@ -1,4 +1,4 @@
-import { Icon, IconProps } from '@viaa/avo2-components';
+import { Icon, IconName, IconProps } from '@viaa/avo2-components';
 import React, { FC } from 'react';
 
 import './IconBar.scss';
@@ -10,7 +10,7 @@ export interface IconBarProps {
 const IconBar: FC<IconBarProps> = ({
 	children,
 	icon = {
-		name: 'x',
+		name: IconName.x,
 	},
 }) => (
 	<div className="c-icon-bar">

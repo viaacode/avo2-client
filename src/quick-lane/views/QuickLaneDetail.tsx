@@ -5,6 +5,7 @@ import {
 	Flex,
 	FlexItem,
 	HeaderAvatar,
+	IconName,
 	Navbar,
 	Toolbar,
 	ToolbarItem,
@@ -69,7 +70,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						message: tText(
 							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 						),
-						icon: 'search',
+						icon: IconName.search,
 					});
 
 					return;
@@ -86,7 +87,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 							tText(
 								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
 							) + (response.content as Avo.Item.Item).depublish_reason,
-						icon: 'camera-off',
+						icon: IconName.cameraOff,
 					});
 
 					return;
@@ -98,7 +99,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 					setLoadingInfo({
 						state: 'error',
 						message: tText('item/views/item___dit-item-werd-niet-gevonden'),
-						icon: 'search',
+						icon: IconName.search,
 					});
 
 					return;
@@ -160,7 +161,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				message: tText(
 					'quick-lane/views/quick-lane-detail___je-hebt-geen-rechten-om-deze-gedeelde-link-te-bekijken'
 				),
-				icon: 'lock',
+				icon: IconName.lock,
 			});
 		}
 	}, [fetchQuickLaneAndContent, user, tText]);
@@ -210,7 +211,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			default:
 				return (
 					<ErrorView
-						icon="alert-triangle"
+						icon={IconName.alertTriangle}
 						message={tText(
 							'quick-lane/views/quick-lane-detail___onverwacht-inhoudstype',
 							{
@@ -272,7 +273,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 														title={tText(
 															'quick-lane/views/quick-lane-detail___bekijk-als-leerkracht'
 														)}
-														icon="eye"
+														icon={IconName.eye}
 														onClick={() => {
 															if (!quickLane.content_id) {
 																return;

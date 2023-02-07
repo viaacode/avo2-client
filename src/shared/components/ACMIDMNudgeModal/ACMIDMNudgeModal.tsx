@@ -1,4 +1,4 @@
-import { Button, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
+import { Button, IconName, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FC, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
@@ -139,7 +139,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 						block
 						className="c-button-leerid"
 						type="tertiary"
-						icon="leerid"
+						icon={IconName.leerid}
 						iconType="multicolor"
 						label={tText(
 							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___leerling-id'
@@ -162,7 +162,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 						block
 						className="c-button-itsme"
 						type="tertiary"
-						icon="itsme"
+						icon={IconName.itsme}
 						iconType="multicolor"
 						label={tText(
 							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___itsme'
@@ -183,7 +183,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 						block
 						className="c-button-acmidm"
 						type="tertiary"
-						icon="eid"
+						icon={IconName.eid}
 						label={tText(
 							'shared/components/acmidm-nudge-modal/acmidm-nudge-modal___e-id-of-een-digitale-sleutel'
 						)}

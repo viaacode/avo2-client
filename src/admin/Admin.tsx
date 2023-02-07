@@ -1,4 +1,4 @@
-import { Flex } from '@viaa/avo2-components';
+import { Flex, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
@@ -41,7 +41,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 		} else {
 			setLoadingInfo({
 				state: 'error',
-				icon: 'lock',
+				icon: IconName.lock,
 				message: tText(
 					'admin/admin___je-hebt-geen-rechten-om-het-beheer-dashboard-te-bekijken-view-admin-dashboard'
 				),

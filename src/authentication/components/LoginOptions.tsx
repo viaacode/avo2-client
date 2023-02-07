@@ -1,4 +1,4 @@
-import { Button, Icon, Spacer, Tabs } from '@viaa/avo2-components';
+import { Button, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
 import { RouteComponentProps } from 'react-router';
@@ -42,12 +42,12 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			{
 				label: tText('authentication/components/login-options___lesgever'),
 				id: LoginOptionsTabs.TEACHER,
-				icon: 'user-teacher',
+				icon: IconName.userTeacher,
 			},
 			{
 				label: tText('authentication/components/login-options___leerling'),
 				id: LoginOptionsTabs.STUDENT,
-				icon: 'user-student',
+				icon: IconName.userStudent,
 			},
 		],
 		localStorage?.getItem(LoginOptionsPreferredTabStorageKey) || LoginOptionsTabs.TEACHER
@@ -63,7 +63,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			case LoginOptionsTabs.TEACHER:
 				return (
 					<>
-						<Icon name="user-teacher" />
+						<Icon name={IconName.userTeacher} />
 						{tHtml('authentication/components/login-options___log-in-als-lesgever')}
 					</>
 				);
@@ -71,7 +71,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			case LoginOptionsTabs.STUDENT:
 				return (
 					<>
-						<Icon name="user-student" />
+						<Icon name={IconName.userStudent} />
 						{tHtml('authentication/components/login-options___log-in-als-leerling')}
 					</>
 				);
@@ -91,7 +91,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						label={tText(
 							'authentication/components/login-options___inloggen-met-e-mailadres'
 						)}
-						icon="at"
+						icon={IconName.at}
 						type="primary"
 						className="c-login-with-archief c-button-mail"
 						onClick={() => {
@@ -105,7 +105,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						block
 						type="secondary"
 						className="c-button-itsme"
-						icon="itsme"
+						icon={IconName.itsme}
 						iconType="multicolor"
 						label={tText('authentication/components/login-options___itsme')}
 						onClick={() => {
@@ -119,7 +119,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						block
 						type="secondary"
 						className="c-button-acmidm"
-						icon="eid"
+						icon={IconName.eid}
 						label={tText(
 							'authentication/components/login-options___e-id-of-een-digitale-sleutel'
 						)}
@@ -133,7 +133,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						key="login-button-smartschool"
 						block
 						className="c-button-smartschool"
-						icon="smartschool"
+						icon={IconName.smartschool}
 						label={tText(
 							'authentication/components/login-options___inloggen-met-smartschool'
 						)}
@@ -147,7 +147,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						key="login-button-klascement"
 						block
 						className="c-button-klascement"
-						icon="klascement"
+						icon={IconName.klascement}
 						label={tText(
 							'authentication/components/login-options___inloggen-met-klas-cement'
 						)}
@@ -166,7 +166,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						label={tText(
 							'authentication/components/login-options___inloggen-met-e-mailadres'
 						)}
-						icon="at"
+						icon={IconName.at}
 						type="primary"
 						className="c-login-with-archief c-button-mail"
 						onClick={() => {
@@ -180,7 +180,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						block
 						type="secondary"
 						className="c-button-leerid"
-						icon="leerid"
+						icon={IconName.leerid}
 						iconType="multicolor"
 						label={tText('authentication/components/login-options___leerling-id')}
 						onClick={() => {
@@ -193,7 +193,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						key="login-button-smartschool-pupil"
 						block
 						className="c-button-smartschool"
-						icon="smartschool"
+						icon={IconName.smartschool}
 						label={tText(
 							'authentication/components/login-options___inloggen-met-smartschool'
 						)}

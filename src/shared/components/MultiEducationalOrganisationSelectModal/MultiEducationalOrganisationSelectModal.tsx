@@ -2,6 +2,7 @@ import {
 	Button,
 	Checkbox,
 	Icon,
+	IconName,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
@@ -104,7 +105,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 							)}
 							<Icon
 								className="c-button__icon"
-								name={isOpen ? 'caret-up' : 'caret-down'}
+								name={isOpen ? IconName.caretUp : IconName.caretDown}
 								size="small"
 								type="arrows"
 							/>

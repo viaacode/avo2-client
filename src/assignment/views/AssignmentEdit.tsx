@@ -1,5 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Button, Container, Flex, Icon, Spacer, Spinner, Tabs } from '@viaa/avo2-components';
+import {
+	Alert,
+	Button,
+	Container,
+	Flex,
+	Icon,
+	IconName,
+	Spacer,
+	Spinner,
+	Tabs,
+} from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import React, {
@@ -132,7 +142,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 						message: tText(
 							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 						),
-						icon: 'lock',
+						icon: IconName.lock,
 						actionButtons: ['home'],
 					});
 					setAssigmentLoading(false);
@@ -142,7 +152,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					message: tText(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
-					icon: 'alert-triangle',
+					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
 				setAssigmentLoading(false);
@@ -154,7 +164,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					message: tText(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
-					icon: 'alert-triangle',
+					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
 				setAssigmentLoading(false);
@@ -174,7 +184,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					message: tText(
 						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 					),
-					icon: 'lock',
+					icon: IconName.lock,
 					actionButtons: ['home'],
 				});
 				setAssigmentLoading(false);
@@ -192,7 +202,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				message: tText(
 					'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
 				),
-				icon: 'alert-triangle',
+				icon: IconName.alertTriangle,
 			});
 		}
 		setAssigmentLoading(false);
@@ -341,7 +351,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				content: (item) => item && renderBlockContent(item),
 				divider: (position: number) => (
 					<Button
-						icon="plus"
+						icon={IconName.plus}
 						type="secondary"
 						onClick={() => {
 							addBlockModal.setEntity(position);
@@ -362,7 +372,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const renderBackButton = useMemo(
 		() => (
 			<Link className="c-return" to={backToOverview()}>
-				<Icon name="chevron-left" size="small" type="arrows" />
+				<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),

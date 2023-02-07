@@ -1,4 +1,4 @@
-import { Button, ButtonToolbar } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
@@ -276,7 +276,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 						<Link to={getItemDetailLink(rowData.external_id)}>
 							<Button
 								type="secondary"
-								icon="eye"
+								icon={IconName.eye}
 								title={tText(
 									'admin/items/views/items-overview___bekijk-item-in-de-website'
 								)}
@@ -288,7 +288,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 						<Link to={getItemAdminDetailLink(rowData.uid)}>
 							<Button
 								type="secondary"
-								icon="edit"
+								icon={IconName.edit}
 								title={tText(
 									'admin/items/views/items-overview___bekijk-item-details-in-het-beheer'
 								)}

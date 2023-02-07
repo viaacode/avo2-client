@@ -52,7 +52,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 		case AssignmentRetrieveError.DELETED:
 			return {
 				message: tText('assignment/views/assignment-detail___de-opdracht-werd-verwijderd'),
-				icon: 'delete',
+				icon: IconName.delete,
 			};
 
 		case AssignmentRetrieveError.NOT_YET_AVAILABLE:
@@ -60,7 +60,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 				message: tText(
 					'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
 				),
-				icon: 'clock',
+				icon: IconName.clock,
 			};
 
 		default:
@@ -68,7 +68,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 				message: tText(
 					'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
 				),
-				icon: 'alert-triangle',
+				icon: IconName.alertTriangle,
 			};
 	}
 }

@@ -7,6 +7,7 @@ import {
 	Form,
 	FormGroup,
 	Icon,
+	IconName,
 	Spacer,
 	TagList,
 } from '@viaa/avo2-components';
@@ -146,7 +147,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 							)}
 							<Icon
 								className="c-button__icon"
-								name={isOpen ? 'caret-up' : 'caret-down'}
+								name={isOpen ? IconName.caretUp : IconName.caretDown}
 								size="small"
 								type="arrows"
 							/>

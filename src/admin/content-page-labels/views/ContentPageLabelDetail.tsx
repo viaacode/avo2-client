@@ -1,5 +1,5 @@
 import { ContentPageLabelService } from '@meemoo/admin-core-ui';
-import { Button, ButtonToolbar, Table } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, Table } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 
@@ -38,7 +38,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 			if (!contentPageLabelObj) {
 				setLoadingInfo({
 					state: 'error',
-					icon: 'search',
+					icon: IconName.search,
 					message: tText(
 						'admin/content-page-labels/views/content-page-label-detail___deze-content-pagina-label-werd-niet-gevonden'
 					),
