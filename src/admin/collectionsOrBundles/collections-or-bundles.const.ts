@@ -1,4 +1,4 @@
-import { ButtonType, SelectOption } from '@viaa/avo2-components';
+import { ButtonType, IconName, SelectOption } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
@@ -275,7 +275,7 @@ const getCollectionManagedColumn = (): FilterableColumn<CollectionTableCols> => 
 const getCollectionViewsColumn = (): FilterableColumn<CollectionTableCols> => ({
 	id: 'views',
 	tooltip: tText('admin/collections-or-bundles/collections-or-bundles___bekeken'),
-	icon: 'eye',
+	icon: IconName.eye,
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.number,
@@ -286,7 +286,7 @@ const getCollectionBookmarksColumn = (): FilterableColumn<CollectionTableCols> =
 	tooltip: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bladwijzer'
 	),
-	icon: 'bookmark',
+	icon: IconName.bookmark,
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.number,
@@ -297,7 +297,7 @@ const getCollectionCopiesColumn = (): FilterableColumn<CollectionTableCols> => (
 	tooltip: tText(
 		'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-gekopieerd'
 	),
-	icon: 'copy',
+	icon: IconName.copy,
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.number,
@@ -313,7 +313,7 @@ const getCollectionInBundleColumn = (
 				tooltip: tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-bundel'
 				),
-				icon: 'folder',
+				icon: IconName.folder,
 				sortable: true,
 				visibleByDefault: true,
 				dataType: TableColumnDataType.number,
@@ -333,7 +333,7 @@ const getCollectionInAssignmentColumn = (
 				tooltip: tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___aantal-keer-opgenomen-in-een-opdracht'
 				),
-				icon: 'clipboard',
+				icon: IconName.clipboard,
 				sortable: true,
 				visibleByDefault: true,
 				dataType: TableColumnDataType.number,
@@ -348,7 +348,7 @@ const getCollectionQuickLanesColumn = (): FilterableColumn<CollectionTableCols> 
 	tooltip: tText(
 		'admin/collections-or-bundles/collections-or-bundles___aantal-keer-gedeeld-met-leerlingen'
 	),
-	icon: 'link-2',
+	icon: IconName.link2,
 	sortable: true,
 	visibleByDefault: true,
 	dataType: TableColumnDataType.number,

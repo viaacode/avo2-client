@@ -7,6 +7,7 @@ import {
 	FormGroup,
 	Grid,
 	Icon,
+	IconName,
 	Spacer,
 	TagInfo,
 	TagsInput,
@@ -218,7 +219,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 					<Button
 						type="secondary"
 						onClick={history.goBack}
-						icon="arrow-left"
+						icon={IconName.arrowLeft}
 						title={tText(
 							'authentication/views/registration-flow/r-4-manual-registration___ga-terug-naar-de-stamboek-pagina'
 						)}
@@ -269,7 +270,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							<Tooltip position="bottom" contentClassName="m-email-tooltip">
 								<TooltipTrigger>
 									<span>
-										<Icon className="a-info-icon" name="info" size="small" />
+										<Icon
+											className="a-info-icon"
+											name={IconName.info}
+											size="small"
+										/>
 									</span>
 								</TooltipTrigger>
 								<TooltipContent>

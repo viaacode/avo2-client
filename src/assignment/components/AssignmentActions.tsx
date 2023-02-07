@@ -4,6 +4,7 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	IconName,
 } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FunctionComponent, useMemo, useState } from 'react';
@@ -54,7 +55,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const renderOverflowButton = (config?: Partial<ButtonProps>) => (
 		<Button
-			icon="more-horizontal"
+			icon={IconName.moreHorizontal}
 			type="secondary"
 			ariaLabel={tText('assignment/views/assignment-detail___meer-opties')}
 			title={tText('assignment/views/assignment-detail___meer-opties')}
@@ -122,7 +123,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 							{renderPreviewButton({
 								block: true,
 								className: 'c-assignment-heading__show-on-mobile',
-								icon: 'eye',
+								icon: IconName.eye,
 								type: 'borderless',
 							})}
 							{renderDuplicateButton({ block: true, type: 'borderless' })}
@@ -134,7 +135,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 								button: {
 									block: true,
 									className: 'c-assignment-heading__show-on-mobile',
-									icon: 'share-2',
+									icon: IconName.share2,
 									type: 'borderless',
 								},
 							})}

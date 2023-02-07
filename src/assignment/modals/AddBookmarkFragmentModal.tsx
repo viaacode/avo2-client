@@ -6,6 +6,7 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
+	IconName,
 	Modal,
 	ModalBody,
 	ModalFooterRight,
@@ -223,7 +224,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 						<FormGroup inlineMode="grow">
 							<TextInput
 								className="c-assignment-overview__search-input"
-								icon="filter"
+								icon={IconName.filter}
 								value={filterString}
 								onChange={setFilterString}
 								disabled={!bookmarks}

@@ -8,6 +8,7 @@ import {
 	FlexItem,
 	Grid,
 	HeaderContentType,
+	IconName,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
@@ -208,7 +209,7 @@ const BundleDetail: FunctionComponent<
 					message: tText(
 						'bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'
 					),
-					icon: 'search',
+					icon: IconName.search,
 				});
 				return;
 			}
@@ -308,7 +309,7 @@ const BundleDetail: FunctionComponent<
 				message: tText(
 					'bundle/views/bundle-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-bundel'
 				),
-				icon: 'alert-triangle',
+				icon: IconName.alertTriangle,
 			});
 		});
 	}, [user, bundleId, setLoadingInfo, setShowLoginPopup, tText]);
@@ -522,7 +523,7 @@ const BundleDetail: FunctionComponent<
 								<MetaData category="collection">
 									<MetaDataItem
 										label={String(viewCountsById[fragment.external_id] || 0)}
-										icon="eye"
+										icon={IconName.eye}
 									/>
 									<MetaDataItem label={formatDate(collection.updated_at)} />
 								</MetaData>
@@ -648,7 +649,7 @@ const BundleDetail: FunctionComponent<
 								? tText('bundle/views/bundle-detail___maak-deze-bundel-prive')
 								: tText('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
 						}
-						icon={isPublic ? 'unlock-3' : 'lock'}
+						icon={isPublic ? IconName.unlock3 : IconName.lock}
 						onClick={() => executeAction('openPublishModal')}
 						type="secondary"
 					/>
@@ -664,7 +665,7 @@ const BundleDetail: FunctionComponent<
 				<ToggleButton
 					title={tText('collection/views/collection-detail___bladwijzer')}
 					type="secondary"
-					icon="bookmark"
+					icon={IconName.bookmark}
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction('toggleBookmark')}
@@ -673,7 +674,7 @@ const BundleDetail: FunctionComponent<
 					<Button
 						title={tText('bundle/views/bundle-detail___share-bundel')}
 						type="secondary"
-						icon="share-2"
+						icon={IconName.share2}
 						ariaLabel={tText('bundle/views/bundle-detail___share-bundel')}
 						onClick={() => executeAction('openShareThroughEmailModal')}
 					/>
@@ -782,13 +783,13 @@ const BundleDetail: FunctionComponent<
 														/>
 													</MetaDataItem>
 													<MetaDataItem
-														icon="eye"
+														icon={IconName.eye}
 														label={String(
 															bookmarkViewPlayCounts.viewCount || 0
 														)}
 													/>
 													<MetaDataItem
-														icon="bookmark"
+														icon={IconName.bookmark}
 														label={String(
 															bookmarkViewPlayCounts.bookmarkCount ||
 																0

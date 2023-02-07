@@ -77,16 +77,16 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 			description: isPupil
 				? tHtml('settings/components/linked-accounts___aanmelden-met-je-leer-id')
 				: tHtml('settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'),
-			iconNames: isPupil ? ['leerid'] : ['itsme', 'eid'],
+			iconNames: isPupil ? [IconName.leerid] : [IconName.itsme, IconName.eid],
 			idpParameters: isPupil ? 'authMech=leerid' : 'authMech=itsme',
 		},
 		SMARTSCHOOL: {
 			label: tHtml('settings/components/linked-accounts___smartschool'),
-			iconNames: ['smartschool'],
+			iconNames: [IconName.smartschool],
 		},
 		KLASCEMENT: {
 			label: tHtml('settings/components/linked-accounts___klas-cement'),
-			iconNames: ['klascement'],
+			iconNames: [IconName.klascement],
 			hideForPupil: true,
 		},
 	};
@@ -125,7 +125,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 									<Icon
 										className="c-account-link__icon"
 										type="multicolor"
-										name="circle-check"
+										name={IconName.circleCheck}
 									/>
 									{tText('settings/components/linked-accounts___gekoppeld')}
 								</span>

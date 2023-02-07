@@ -3,6 +3,7 @@ import {
 	Button,
 	Container,
 	Flex,
+	IconName,
 	Pagination,
 	Spacer,
 	Spinner,
@@ -82,7 +83,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 				) : (
 					<Blankslate
 						body=""
-						icon="search"
+						icon={IconName.search}
 						title={tText(
 							'search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters'
 						)}

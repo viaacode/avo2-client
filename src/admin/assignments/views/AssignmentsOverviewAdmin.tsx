@@ -1,4 +1,4 @@
-import { Button } from '@viaa/avo2-components';
+import { Button, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, {
@@ -349,7 +349,11 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			default:
 				return (
 					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id })}>
-						<Button icon="edit-2" ariaLabel="Bewerk deze opdracht" type="secondary" />
+						<Button
+							icon={IconName.edit2}
+							ariaLabel="Bewerk deze opdracht"
+							type="secondary"
+						/>
 					</Link>
 				);
 		}

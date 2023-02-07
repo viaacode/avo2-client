@@ -1,4 +1,4 @@
-import { Button } from '@viaa/avo2-components';
+import { Button, IconName } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { Dispatch, FC, FunctionComponent, SetStateAction, useState } from 'react';
 
@@ -43,7 +43,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 
 	const renderClosePreviewButton = () => (
 		<Button
-			icon="close"
+			icon={IconName.close}
 			label={
 				isMobileWidth()
 					? undefined
@@ -57,7 +57,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 	return (
 		<>
 			<AlertBar
-				icon="info"
+				icon={IconName.info}
 				textLeft={tHtml(
 					'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-leerling'
 				)}

@@ -7,6 +7,7 @@ import {
 	DropdownContent,
 	DropdownProps,
 	Flex,
+	IconName,
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
@@ -116,7 +117,7 @@ export const ShareAssignmentWithPupil: FC<ShareAssignmentWithPupilProps> = ({
 							label={tText(
 								'assignment/components/share-assignment-with-pupil___kopieer'
 							)}
-							icon="copy"
+							icon={IconName.copy}
 							onClick={handleCopyButtonClicked}
 							type="tertiary"
 						/>

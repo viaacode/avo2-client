@@ -3,6 +3,7 @@ import {
 	Button,
 	ButtonToolbar,
 	Icon,
+	IconName,
 	MetaData,
 	MetaDataItem,
 	MoreOptionsDropdown,
@@ -78,7 +79,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
 	const [permissions, setPermissions] = useState<{
-		[collectionId: string]: { canEdit?: boolean; canDelete?: boolean };
+		[collectionUuid: string]: { canEdit?: boolean; canDelete?: boolean };
 	}>({});
 	const [showPublicState, setShowPublicState] = useState(false);
 
@@ -86,7 +87,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState<boolean>(false);
-	const [selected, setSelected] = useState<string | null>(null);
+	const [selectedCollectionUuid, setSelectedCollectionUuid] = useState<string | null>(null);
 	const [selectedDetail, setSelectedDetail] = useState<Avo.Collection.Collection | undefined>(
 		undefined
 	);
@@ -98,9 +99,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const { mutateAsync: triggerCollectionDelete } = useSoftDeleteCollectionByIdMutation();
 
 	// Listeners
-	const onClickDelete = (collectionId: string) => {
-		setDropdownOpen({ [collectionId]: false });
-		setSelected(collectionId);
+	const onClickDelete = (collectionUuid: string) => {
+		setDropdownOpen({ [collectionUuid]: false });
+		setSelectedCollectionUuid(collectionUuid);
 		setIsDeleteModalOpen(true);
 	};
 
@@ -231,20 +232,20 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	}, [setLoadingInfo, collections]);
 
 	useEffect(() => {
-		if (selected) {
+		if (selectedCollectionUuid) {
 			CollectionService.fetchCollectionOrBundleById(
-				selected,
+				selectedCollectionUuid,
 				isCollection ? 'collection' : 'bundle'
 			).then((res) => setSelectedDetail(res || undefined));
 		} else {
 			setSelectedDetail(undefined);
 		}
-	}, [selected, isCollection]);
+	}, [selectedCollectionUuid, isCollection]);
 
 	const onDeleteCollection = async () => {
 		try {
 			setIsDeleteModalOpen(false);
-			if (!selected) {
+			if (!selectedCollectionUuid) {
 				ToastService.danger(
 					isCollection
 						? tHtml(
@@ -258,7 +259,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			}
 			await triggerCollectionDelete(
 				{
-					id: parseInt(selected),
+					id: selectedCollectionUuid,
 				},
 				{
 					onSuccess: async () => {
@@ -270,7 +271,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 			trackEvents(
 				{
-					object: String(selected),
+					object: String(selectedCollectionUuid),
 					object_type: type,
 					action: 'delete',
 				},
@@ -301,7 +302,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			);
 		}
 
-		setSelected(null);
+		setSelectedCollectionUuid(null);
 	};
 
 	const onClickCreate = () =>
@@ -329,7 +330,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const onCreateAssignmentFromCollection = async (withDescription: boolean): Promise<void> => {
 		const collection = await CollectionService.fetchCollectionOrBundleById(
-			selected as string,
+			selectedCollectionUuid as string,
 			'collection'
 		);
 		if (collection) {
@@ -377,7 +378,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						</span>
 					</MetaDataItem>
 					<MetaDataItem
-						icon="eye"
+						icon={IconName.eye}
 						label={get(collection, 'view_counts_aggregate.aggregate.sum.count') || '0'}
 					/>
 				</MetaData>
@@ -385,9 +386,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		</div>
 	);
 
-	const renderActions = (collectionId: string) => {
+	const renderActions = (collectionUuid: string) => {
 		const ROW_DROPDOWN_ITEMS = [
-			...(permissions[collectionId] && permissions[collectionId].canEdit
+			...(permissions[collectionUuid] && permissions[collectionUuid].canEdit
 				? [
 						createDropdownMenuItem(
 							'edit',
@@ -414,7 +415,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						),
 				  ]
 				: []),
-			...(permissions[collectionId] && permissions[collectionId].canDelete
+			...(permissions[collectionUuid] && permissions[collectionUuid].canDelete
 				? [
 						createDropdownMenuItem(
 							'delete',
@@ -426,28 +427,28 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 		// Listeners
 		const onClickDropdownItem = (item: ReactText) => {
-			setDropdownOpen({ [collectionId]: false });
+			setDropdownOpen({ [collectionUuid]: false });
 			switch (item) {
 				case 'edit':
 					navigate(
 						history,
 						isCollection ? APP_PATH.COLLECTION_EDIT.route : BUNDLE_PATH.BUNDLE_EDIT,
-						{ id: collectionId }
+						{ id: collectionUuid }
 					);
 					break;
 
 				case 'createAssignment':
-					setSelected(collectionId);
+					setSelectedCollectionUuid(collectionUuid);
 					setIsCreateAssignmentModalOpen(true);
 					break;
 
 				case 'createQuickLane':
-					setSelected(collectionId);
+					setSelectedCollectionUuid(collectionUuid);
 					setIsQuickLaneModalOpen(true);
 					break;
 
 				case 'delete':
-					onClickDelete(collectionId);
+					onClickDelete(collectionUuid);
 					break;
 
 				default:
@@ -462,9 +463,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		return (
 			<ButtonToolbar>
 				<MoreOptionsDropdown
-					isOpen={dropdownOpen[collectionId] || false}
-					onOpen={() => setDropdownOpen({ [collectionId]: true })}
-					onClose={() => setDropdownOpen({ [collectionId]: false })}
+					isOpen={dropdownOpen[collectionUuid] || false}
+					onOpen={() => setDropdownOpen({ [collectionUuid]: true })}
+					onClose={() => setDropdownOpen({ [collectionUuid]: false })}
 					label={getMoreOptionsLabel()}
 					menuItems={ROW_DROPDOWN_ITEMS}
 					onOptionClicked={onClickDropdownItem}
@@ -472,14 +473,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 				{!isMobileWidth() && (
 					<Button
-						icon="chevron-right"
+						icon={IconName.chevronRight}
 						onClick={() =>
 							navigate(
 								history,
 								isCollection
 									? APP_PATH.COLLECTION_DETAIL.route
 									: BUNDLE_PATH.BUNDLE_DETAIL,
-								{ id: collectionId }
+								{ id: collectionUuid }
 							)
 						}
 						title={
@@ -510,7 +511,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 			case 'inFolder': {
 				const isInFolder = true; // TODO: Check if collection is in bundle
-				return isInFolder && <Button icon="folder" type="borderless" />;
+				return isInFolder && <Button icon={IconName.folder} type="borderless" />;
 			}
 			case 'is_public':
 				return (
@@ -525,7 +526,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 								  )
 						}
 					>
-						<Icon name={collection.is_public ? 'unlock-3' : 'lock'} />
+						<Icon name={collection.is_public ? IconName.unlock3 : IconName.lock} />
 					</div>
 				);
 
@@ -657,7 +658,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderEmptyFallback = () => (
 		<ErrorView
-			icon={isCollection ? 'collection' : 'folder'}
+			icon={isCollection ? IconName.collection : IconName.folder}
 			message={
 				isCollection
 					? tText(
@@ -680,7 +681,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			<Spacer margin="top">
 				<Button
 					type="primary"
-					icon="search"
+					icon={IconName.search}
 					autoHeight
 					label={
 						isCollection
@@ -703,7 +704,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					onClose={() => {
-						setSelected(null);
+						setSelectedCollectionUuid(null);
 						setIsDeleteModalOpen(false);
 					}}
 					deleteObjectCallback={onDeleteCollection}
@@ -720,7 +721,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				)}
 				isOpen={isDeleteModalOpen}
 				onClose={() => {
-					setSelected(null);
+					setSelectedCollectionUuid(null);
 					setIsDeleteModalOpen(false);
 				}}
 				confirmCallback={onDeleteCollection}
@@ -739,7 +740,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					content={selectedDetail}
 					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
 					onClose={() => {
-						setSelected(null);
+						setSelectedCollectionUuid(null);
 						setIsQuickLaneModalOpen(false);
 					}}
 					onUpdate={() => fetchCollections()}
@@ -772,7 +773,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderCollections = () => (
 		<>
 			{collections && collections.length ? renderTable(collections) : renderEmptyFallback()}
-			{!isNil(selected) && renderDeleteModal()}
+			{!isNil(selectedCollectionUuid) && renderDeleteModal()}
 			{renderQuickLaneModal()}
 			{renderCreateAssignmentModal()}
 		</>

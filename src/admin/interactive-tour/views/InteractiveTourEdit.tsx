@@ -8,6 +8,7 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
+	IconName,
 	Select,
 	SelectOption,
 	Spacer,
@@ -137,7 +138,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				if (!interactiveTourObj) {
 					setLoadingInfo({
 						state: 'error',
-						icon: 'search',
+						icon: IconName.search,
 						message: tText(
 							'admin/interactive-tour/views/interactive-tour-edit___deze-interactieve-tour-werd-niet-gevonden'
 						),

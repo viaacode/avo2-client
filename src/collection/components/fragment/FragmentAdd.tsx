@@ -1,4 +1,4 @@
-import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
+import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -49,7 +49,7 @@ const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
 				<ToolbarItem>
 					<Button
 						type="secondary"
-						icon="add"
+						icon={IconName.add}
 						onClick={handleAddFragmentClick}
 						ariaLabel={tText(
 							'collection/components/fragment/fragment-add___sectie-toevoegen'

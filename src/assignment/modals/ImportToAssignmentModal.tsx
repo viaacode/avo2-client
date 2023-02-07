@@ -6,6 +6,7 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
+	IconName,
 	Modal,
 	ModalBody,
 	ModalFooterLeft,
@@ -218,7 +219,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 						<FormGroup inlineMode="grow">
 							<TextInput
 								className="c-assignment-overview__search-input"
-								icon="filter"
+								icon={IconName.filter}
 								value={filterString}
 								onChange={setFilterString}
 								disabled={!assignments}

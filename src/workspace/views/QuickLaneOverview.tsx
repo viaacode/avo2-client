@@ -1,4 +1,4 @@
-import { MoreOptionsDropdown } from '@viaa/avo2-components';
+import { IconName, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { MenuItemInfoSchema } from '@viaa/avo2-components/dist/esm/components/Menu/MenuContent/MenuContent';
 import { isEqual } from 'lodash';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
@@ -272,17 +272,17 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 
 				const items = [
 					{
-						icon: 'edit',
+						icon: IconName.edit,
 						id: 'edit',
 						label: tText('workspace/views/quick-lane-overview___bewerk'),
 					},
 					{
-						icon: 'copy',
+						icon: IconName.copy,
 						id: 'copy',
 						label: tText('workspace/views/quick-lane-overview___kopieer-link'),
 					},
 					{
-						icon: 'delete',
+						icon: IconName.delete,
 						id: 'delete',
 						label: tText('workspace/views/quick-lane-overview___verwijder'),
 					},

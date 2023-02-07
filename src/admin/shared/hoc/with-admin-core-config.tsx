@@ -22,7 +22,7 @@ export const withAdminCoreConfig = (WrappedComponent: ComponentType): ComponentT
 
 		useEffect(() => {
 			initConfigValue();
-		}, [initConfigValue]);
+		}, [initConfigValue, user?.profile?.id]);
 
 		if (!adminCoreConfig) {
 			return <Spinner size="large" />;

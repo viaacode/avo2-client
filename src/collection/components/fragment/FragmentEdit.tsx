@@ -375,7 +375,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 									{!isLast(index) && renderReorderButton(index, 'down')}
 									{itemMetaData && !isThisFragmentACollection && (
 										<Button
-											icon="scissors"
+											icon={IconName.scissors}
 											label={tText(
 												'collection/components/fragment/fragment-edit___knippen'
 											)}

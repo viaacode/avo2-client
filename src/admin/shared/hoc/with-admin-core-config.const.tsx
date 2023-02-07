@@ -2,7 +2,7 @@ import { AdminConfig, ContentBlockType, LinkInfo, ToastInfo } from '@meemoo/admi
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { DatabaseType } from '@viaa/avo2-types';
-import { compact, noop } from 'lodash-es';
+import { capitalize, compact, lowerCase, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -35,7 +35,8 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 		firstName: user?.first_name || undefined,
 		lastName: user?.last_name || undefined,
-		fullName: user?.full_name || undefined,
+		fullName:
+			user?.full_name || [user?.first_name, user?.last_name].join(' ').trim() || undefined,
 		lastAccessAt: user?.last_access_at || undefined, // TODO enable once last_access_at field is added to the database
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		permissions: user?.profile?.permissions as any[],
@@ -63,32 +64,25 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		icon: {
 			component: ({ name }: { name: string }) => <Icon name={name as IconName} />,
 			componentProps: {
-				add: { name: 'plus' },
-				view: { name: 'eye' },
-				angleDown: { name: 'caret-down' },
-				angleUp: { name: 'caret-up' },
-				angleLeft: { name: 'caret-left' },
-				angleRight: { name: 'caret-right' },
-				delete: { name: 'delete' },
-				edit: { name: 'edit' },
-				filter: { name: 'search' },
-				arrowUp: { name: 'arrow-up' },
-				sortTable: { name: 'chevrons-up-and-down' },
-				arrowDown: { name: 'arrow-down' },
-				chevronLeft: { name: 'chevron-left' },
+				add: { name: IconName.plus },
+				view: { name: IconName.eye },
+				angleDown: { name: IconName.caretDown },
+				angleUp: { name: IconName.caretUp },
+				angleLeft: { name: IconName.caretLeft },
+				angleRight: { name: IconName.caretRight },
+				delete: { name: IconName.delete },
+				edit: { name: IconName.edit },
+				filter: { name: IconName.search },
+				arrowUp: { name: IconName.arrowUp },
+				sortTable: { name: IconName.chevronsUpAndDown },
+				arrowDown: { name: IconName.arrowDown },
+				chevronLeft: { name: IconName.chevronLeft },
 			},
-			list: () => [],
+			list: GET_ICON_LIST_CONFIG,
 		},
 		components: {
 			loader: {
 				component: () => <Spinner size="large" />,
-			},
-			table: {
-				sortingIcons: {
-					asc: <Icon className="c-sorting-icon" name="chevron-up" />,
-					default: <Icon className="c-sorting-icon" name="chevrons-up-and-down" />,
-					desc: <Icon className="c-sorting-icon" name="chevron-down" />,
-				},
 			},
 			buttonTypes: () => [
 				{
@@ -240,3 +234,10 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 	};
 }
+
+export const GET_ICON_LIST_CONFIG = (): { value: IconName; label: string }[] => {
+	return Object.values(IconName).map((iconName: IconName) => ({
+		value: iconName,
+		label: capitalize(lowerCase(iconName)),
+	}));
+};

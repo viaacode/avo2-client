@@ -1,5 +1,5 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import { Container, Icon } from '@viaa/avo2-components';
+import { Container, Icon, IconName } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
@@ -112,7 +112,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 		() =>
 			assignment && (
 				<Link className="c-return" to={toAssignmentResponsesOverview(assignment)}>
-					<Icon name="chevron-left" size="small" type="arrows" />
+					<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 					{tText('assignment/views/assignment-pupil-collection-detail___alle-responsen')}
 				</Link>
 			),
@@ -173,7 +173,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 						message={tText(
 							'assignment/views/assignment-pupil-collection-detail___deze-leerlingencollectie-bevat-geen-fragmenten'
 						)}
-						icon={'search'}
+						icon={IconName.search}
 					/>
 				)}
 			</>

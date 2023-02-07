@@ -1,4 +1,4 @@
-import { Button } from '@viaa/avo2-components';
+import { Button, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, {
@@ -351,7 +351,11 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 							{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION }
 						)}
 					>
-						<Button icon="edit-2" ariaLabel="Bewerk deze opdracht" type="secondary" />
+						<Button
+							icon={IconName.edit2}
+							ariaLabel="Bewerk deze opdracht"
+							type="secondary"
+						/>
 					</Link>
 				);
 		}

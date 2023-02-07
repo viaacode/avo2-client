@@ -209,7 +209,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						message: tText(
 							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
 						),
-						icon: 'lock',
+						icon: IconName.lock,
 					});
 				} else {
 					setLoadingInfo({
@@ -217,7 +217,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						message: tText(
 							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
 						),
-						icon: 'lock',
+						icon: IconName.lock,
 					});
 				}
 				return;
@@ -228,7 +228,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				setLoadingInfo({
 					state: 'error',
 					message: tText('item/views/item___dit-item-werd-niet-gevonden'),
-					icon: 'search',
+					icon: IconName.search,
 				});
 				return;
 			}
@@ -240,7 +240,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						tText(
 							'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
 						) + itemObj.depublish_reason,
-					icon: 'camera-off',
+					icon: IconName.cameraOff,
 				});
 				return;
 			}
@@ -716,7 +716,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					{PermissionService.hasPerm(user, PermissionName.CREATE_COLLECTIONS) && (
 						<Button
 							type="tertiary"
-							icon="scissors"
+							icon={IconName.scissors}
 							label={tText('item/views/item___voeg-fragment-toe-aan-collectie')}
 							title={tText(
 								'item/views/item-detail___knip-fragment-bij-en-of-voeg-toe-aan-een-collectie'
@@ -733,7 +733,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
 						<Dropdown
 							buttonType="tertiary"
-							icon="clipboard"
+							icon={IconName.clipboard}
 							label={tText('item/views/item-detail___voeg-toe-aan-opdracht')}
 							isOpen={isCreateAssignmentDropdownOpen}
 							onClose={() => setIsCreateAssignmentDropdownOpen(false)}
@@ -765,7 +765,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (
 						<Button
 							type="tertiary"
-							icon="link-2"
+							icon={IconName.link2}
 							label={tText('item/views/item___delen-met-leerlingen')}
 							ariaLabel={tText(
 								'item/views/item-detail___deel-dit-met-alle-leerlingen'
@@ -790,7 +790,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 					<Button
 						type="tertiary"
-						icon="share-2"
+						icon={IconName.share2}
 						ariaLabel={tText('item/views/item___share-item')}
 						title={tText('item/views/item___share-item')}
 						onClick={() => {
@@ -800,7 +800,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 					<Button
 						type="tertiary"
-						icon="flag"
+						icon={IconName.flag}
 						ariaLabel={tText('item/views/item___rapporteer-item')}
 						title={tText('item/views/item___rapporteer-item')}
 						onClick={() => {
@@ -851,7 +851,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							<MetaData category={englishContentType}>
 								<MetaDataItem
 									label={String(bookmarkViewPlayCounts.viewCount || 0)}
-									icon="eye"
+									icon={IconName.eye}
 								/>
 								{renderBookmarkCount &&
 									renderBookmarkCount({

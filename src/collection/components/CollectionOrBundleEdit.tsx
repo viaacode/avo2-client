@@ -5,6 +5,7 @@ import {
 	Header,
 	HeaderAvatar,
 	HeaderButtons,
+	IconName,
 	MoreOptionsDropdown,
 	Navbar,
 	TabProps,
@@ -411,7 +412,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						: tText(
 								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken'
 						  ),
-					icon: 'alert-triangle',
+					icon: IconName.alertTriangle,
 				});
 				return;
 			}
@@ -429,7 +430,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 								'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 						  )
 						: tText('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
-					icon: 'search',
+					icon: IconName.search,
 				});
 				return;
 			}
@@ -483,7 +484,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					: tText(
 							'collection/components/collection-or-bundle-edit___er-ging-iets-mis-tijdens-het-ophalen-van-de-bundel'
 					  ),
-				icon: 'alert-triangle',
+				icon: IconName.alertTriangle,
 			});
 		}
 	}, [user, collectionId, setLoadingInfo, tText, isCollection, type]);
@@ -553,19 +554,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 			{
 				id: 'content',
 				label: tText('collection/collection___inhoud'),
-				icon: 'collection',
+				icon: IconName.collection,
 			},
 			{
 				id: 'metadata',
 				label: tText('collection/collection___publicatiedetails'),
-				icon: 'file-text',
+				icon: IconName.fileText,
 			},
 			...(showAdminTab
 				? [
 						{
 							id: 'admin',
 							label: tText('collection/collection___beheer'),
-							icon: 'settings',
+							icon: IconName.settings,
 						} as TabProps,
 				  ]
 				: []),
@@ -576,21 +577,21 @@ const CollectionOrBundleEdit: FunctionComponent<
 							label: tText(
 								'collection/components/collection-or-bundle-edit___actualisatie'
 							),
-							icon: 'check-circle',
+							icon: IconName.checkCircle,
 						} as TabProps,
 						{
 							id: 'quality_check',
 							label: tText(
 								'collection/components/collection-or-bundle-edit___kwaliteitscontrole'
 							),
-							icon: 'check-square',
+							icon: IconName.checkSquare,
 						} as TabProps,
 						{
 							id: 'marcom',
 							label: tText(
 								'collection/components/collection-or-bundle-edit___marcom'
 							),
-							icon: 'send',
+							icon: IconName.send,
 						} as TabProps,
 				  ]
 				: []),
@@ -1111,7 +1112,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						}
 						title={publishButtonTooltip}
 						ariaLabel={publishButtonTooltip}
-						icon={isPublic ? 'unlock-3' : 'lock'}
+						icon={isPublic ? IconName.unlock3 : IconName.lock}
 						onClick={() => executeAction('openPublishModal')}
 					/>
 				)}

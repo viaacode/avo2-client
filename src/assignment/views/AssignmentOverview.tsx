@@ -390,7 +390,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								? []
 								: [
 										{
-											icon: 'edit-2',
+											icon: IconName.edit2,
 											id: 'edit',
 											label: tText(
 												'assignment/views/assignment-overview___bewerk'
@@ -398,12 +398,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										} as MenuItemInfoSchema,
 								  ]),
 							{
-								icon: 'copy',
+								icon: IconName.copy,
 								id: 'duplicate',
 								label: tText('assignment/views/assignment-overview___dupliceer'),
 							},
 							{
-								icon: 'delete',
+								icon: IconName.delete,
 								id: 'delete',
 								label: tText('assignment/views/assignment-overview___verwijder'),
 							},
@@ -506,7 +506,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				const renderTitle = () => (
 					<Flex>
 						<Spacer margin="right">
-							<Icon name="clipboard" subtle />
+							<Icon name={IconName.clipboard} subtle />
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
@@ -700,7 +700,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							<FormGroup inlineMode="grow">
 								<TextInput
 									className="c-assignment-overview__search-input"
-									icon="filter"
+									icon={IconName.filter}
 									value={filterString}
 									onChange={setFilterString}
 									onKeyUp={handleSearchFieldKeyUp}
@@ -789,15 +789,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		if (canEditAssignments) {
 			// Teacher
 			if (query.view === AssignmentView.ACTIVE) {
-				return 'clipboard';
+				return IconName.clipboard;
 			}
-			return 'archive';
+			return IconName.archive;
 		}
 		// Pupil
 		if (query.view === AssignmentView.ACTIVE) {
-			return 'clipboard';
+			return IconName.clipboard;
 		}
-		return 'clock';
+		return IconName.clock;
 	};
 
 	const renderEmptyFallback = () => (
@@ -809,7 +809,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					<Spacer margin="top">
 						<Button
 							type="primary"
-							icon="search"
+							icon={IconName.search}
 							label={tText(
 								'assignment/views/assignment-overview___zoek-een-fragment-of-collectie-en-maak-je-eerste-opdracht'
 							)}

@@ -1,4 +1,4 @@
-import { Button, ButtonToolbar, TagList } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, TagList } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get, truncate } from 'lodash-es';
 import React, {
@@ -301,7 +301,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 						<Link to={editLink}>
 							<Button
 								type="secondary"
-								icon="edit"
+								icon={IconName.edit}
 								ariaLabel={
 									isCollection
 										? tText(

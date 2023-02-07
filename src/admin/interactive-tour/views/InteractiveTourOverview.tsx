@@ -1,4 +1,4 @@
-import { Button, ButtonToolbar, Spacer } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -177,7 +177,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 					<ButtonToolbar>
 						<Button
 							type="secondary"
-							icon="eye"
+							icon={IconName.eye}
 							onClick={() =>
 								navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_DETAIL, {
 									id: rowData.id,
@@ -191,7 +191,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 							)}
 						/>
 						<Button
-							icon="edit"
+							icon={IconName.edit}
 							onClick={() =>
 								navigate(history, INTERACTIVE_TOUR_PATH.INTERACTIVE_TOUR_EDIT, {
 									id: rowData.id,
@@ -207,7 +207,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 							type="secondary"
 						/>
 						<Button
-							icon="delete"
+							icon={IconName.delete}
 							onClick={() => openModal(rowData.id)}
 							size="small"
 							title={tText(
@@ -240,7 +240,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				</p>
 				<Spacer margin="top">
 					<Button
-						icon="plus"
+						icon={IconName.plus}
 						label={tText(
 							'admin/interactive-tour/views/interactive-tour-overview___interactieve-tour-aanmaken'
 						)}

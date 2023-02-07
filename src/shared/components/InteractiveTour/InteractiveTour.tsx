@@ -1,5 +1,5 @@
 import { Color } from '@meemoo/admin-core-ui';
-import { Button } from '@viaa/avo2-components';
+import { Button, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
@@ -264,7 +264,7 @@ const InteractiveTour: FunctionComponent<
 						title={tText(
 							'shared/components/interactive-tour/interactive-tour___start-een-rondleiding-om-wegwijs-te-geraken-op-deze-pagina'
 						)}
-						icon="info"
+						icon={IconName.info}
 						onClick={() => {
 							setTour({ ...tour, seen: false });
 						}}

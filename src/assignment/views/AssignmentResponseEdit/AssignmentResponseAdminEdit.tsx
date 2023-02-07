@@ -1,4 +1,4 @@
-import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
+import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
 import React, {
@@ -68,7 +68,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 					message: tText(
 						'assignment/views/assignment-response-edit/assignment-response-admin-edit___enkel-een-admin-kan-leerlingencollecties-bewerken'
 					),
-					icon: 'user-student',
+					icon: IconName.userStudent,
 				});
 				setAssignmentLoading(false);
 				return;
@@ -109,7 +109,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 					message: tText(
 						'assignment/views/assignment-response-edit/assignment-response-admin-edit___de-leerlingencollectie-kon-niet-opgehaald-worden'
 					),
-					icon: 'user-student',
+					icon: IconName.userStudent,
 				});
 				setAssignmentLoading(false);
 				return;
@@ -163,7 +163,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 					message={tText(
 						'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden'
 					)}
-					icon={'search'}
+					icon={IconName.search}
 				/>
 			);
 		}
@@ -194,7 +194,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 					message={tText(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
 					)}
-					icon="alert-triangle"
+					icon={IconName.alertTriangle}
 				/>
 			);
 		}

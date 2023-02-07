@@ -1,4 +1,4 @@
-import { Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
+import { IconName, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
 import { get } from 'lodash';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -256,7 +256,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 	const renderEmptyFallback = () => (
 		<ErrorView
-			icon="folder"
+			icon={IconName.folder}
 			message={tText(
 				'workspace/views/organisation-content-overview___geen-content-binnen-uw-organsatie'
 			)}

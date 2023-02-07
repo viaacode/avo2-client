@@ -7,6 +7,7 @@ import {
 	Form,
 	FormGroup,
 	Icon,
+	IconName,
 	MenuContent,
 	Navbar,
 	Pill,
@@ -312,7 +313,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					message: tText(
 						'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken'
 					),
-					icon: 'lock',
+					icon: IconName.lock,
 				});
 			}
 		}
@@ -365,7 +366,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 									{currentFilter ? currentFilter.label : filter.options[0].label}
 								</div>
 								<div className="c-filter-dropdown__options">
-									<Icon name="caret-down" />
+									<Icon name={IconName.caretDown} />
 								</div>
 							</div>
 						</DropdownButton>

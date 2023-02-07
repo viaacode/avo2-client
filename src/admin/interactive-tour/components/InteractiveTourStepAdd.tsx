@@ -1,4 +1,4 @@
-import { Button, Container, Toolbar, ToolbarItem } from '@viaa/avo2-components';
+import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { cloneDeep } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
@@ -60,7 +60,7 @@ const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
 				<ToolbarItem>
 					<Button
 						type="secondary"
-						icon="add"
+						icon={IconName.add}
 						onClick={handleAddStepClick}
 						ariaLabel={tText(
 							'admin/interactive-tour/components/interactive-tour-step-add___stap-toevoegen'

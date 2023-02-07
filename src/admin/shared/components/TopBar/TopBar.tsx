@@ -3,6 +3,7 @@ import {
 	Button,
 	Container,
 	Flex,
+	IconName,
 	Navbar,
 	Spacer,
 	Toolbar,
@@ -46,7 +47,7 @@ export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProp
 									<Spacer margin="right">
 										<Button
 											className="c-top-bar__back"
-											icon="chevron-left"
+											icon={IconName.chevronLeft}
 											ariaLabel={tText(
 												'admin/shared/components/top-bar/top-bar___ga-terug-naar-het-vorig-scherm'
 											)}

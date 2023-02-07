@@ -6,6 +6,7 @@ import {
 	Form,
 	FormGroup,
 	Icon,
+	IconName,
 	Pagination,
 	Spacer,
 	Table,
@@ -209,7 +210,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					message: tText(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
-					icon: 'lock',
+					icon: IconName.lock,
 					state: 'error',
 				});
 			}
@@ -224,7 +225,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					message: tText(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
-					icon: 'lock',
+					icon: IconName.lock,
 					state: 'error',
 				});
 				return;
@@ -335,7 +336,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				message: tText(
 					'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 				),
-				icon: 'lock',
+				icon: IconName.lock,
 				state: 'error',
 			});
 		}
@@ -381,7 +382,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		<Button
 			title={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
 			ariaLabel={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
-			icon="delete"
+			icon={IconName.delete}
 			type="danger-hover"
 			onClick={() => {
 				setMarkedAssignmentResponse(assignmentResponse);
@@ -489,7 +490,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 							<FormGroup inlineMode="grow">
 								<TextInput
 									className="c-assignment-overview__search-input"
-									icon="filter"
+									icon={IconName.filter}
 									value={filterString}
 									onChange={setFilterString}
 									disabled={!assignmentResponses}
@@ -514,7 +515,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		<>
 			{renderHeader()}
 			<ErrorView
-				icon="clipboard"
+				icon={IconName.clipboard}
 				message={tText(
 					'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht'
 				)}
@@ -598,12 +599,12 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 								tabId: ASSIGNMENTS_ID,
 							})}
 						>
-							<Icon name="chevron-left" size="small" type="arrows" />
+							<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 							{tHtml('assignment/views/assignment-responses___opdrachten')}
 						</Link>
 
 						<Flex center className="u-spacer-top-l">
-							<Icon name="clipboard" size="large" />
+							<Icon name={IconName.clipboard} size="large" />
 
 							<BlockHeading className="u-spacer-left" type="h2">
 								{assignment?.title}

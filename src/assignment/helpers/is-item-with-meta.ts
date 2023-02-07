@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { Avo } from '@viaa/avo2-types';
 
 import { BaseBlockWithMeta } from '../assignment.types';
 

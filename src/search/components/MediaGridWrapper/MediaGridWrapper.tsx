@@ -5,7 +5,7 @@ import {
 	MediaGridBlockState,
 	MediaListItem,
 } from '@meemoo/admin-core-ui';
-import { ButtonAction, RenderLinkFunction } from '@viaa/avo2-components';
+import { ButtonAction, IconName, RenderLinkFunction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isEmpty, isNil } from 'lodash-es';
 import React, {
@@ -194,7 +194,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				? toEnglishContentType(ContentTypeString.collection)
 				: toEnglishContentType(ContentTypeString.bundle),
 			metadata: [
-				{ icon: 'eye', label: String(viewCount || 0) },
+				{ icon: IconName.eye, label: String(viewCount || 0) },
 				{ label: formatDate(itemOrCollection?.created_at) },
 			],
 			buttonLabel: element.buttonLabel,

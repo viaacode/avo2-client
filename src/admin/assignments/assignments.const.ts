@@ -1,4 +1,4 @@
-import { ButtonType, SelectOption } from '@viaa/avo2-components';
+import { ButtonType, IconName, SelectOption } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 
@@ -107,7 +107,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn<Assignme
 		},
 		{
 			id: 'views',
-			icon: 'eye',
+			icon: IconName.eye,
 			tooltip: 'views',
 			sortable: true,
 			visibleByDefault: true,
