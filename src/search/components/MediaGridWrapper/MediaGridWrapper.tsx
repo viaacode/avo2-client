@@ -20,6 +20,7 @@ import React, {
 import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
 import { ContentTypeString, toEnglishContentType } from '../../../collection/collection.types';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { formatDate, isMobileWidth } from '../../../shared/helpers';
 import { parseIntOrDefault } from '../../../shared/helpers/parsers/number';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -171,6 +172,13 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 		}
 	}, [resolvedResults]);
 
+	const getThumbnailFromItem = (itemOrCollection: ResolvedItemOrCollection) => {
+		if (itemOrCollection.type?.label === 'audio') {
+			return DEFAULT_AUDIO_STILL;
+		}
+		return itemOrCollection?.thumbnail_path || '';
+	};
+
 	const mapCollectionOrItemData = (
 		itemOrCollection: ResolvedItemOrCollection,
 		index: number
@@ -218,7 +226,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				meta: isItem
 					? itemDuration
 					: `${collectionItems} ${isCollection ? 'items' : 'collecties'}`,
-				src: itemOrCollection?.thumbnail_path || '',
+				src: getThumbnailFromItem(itemOrCollection),
 			},
 			src: itemOrCollection?.src,
 			item_collaterals: get(itemOrCollection, 'item_collaterals', null),
