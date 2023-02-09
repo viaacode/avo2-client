@@ -36,7 +36,7 @@ export interface MultiEducationalOrganisationSelectModalProps {
 export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 	MultiEducationalOrganisationSelectModalProps
 > = ({ label, id, values, disabled, onChange, showSelectedValuesOnCollapsed = true }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const [includeEmpty, setIncludeEmpty] = useState<boolean>(false);
@@ -115,7 +115,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 				<Modal
 					isOpen={isOpen}
 					onClose={closeModal}
-					title={tText(
+					title={tHtml(
 						'shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___educatieve-organisaties'
 					)}
 					size={'medium'}

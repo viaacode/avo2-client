@@ -40,7 +40,7 @@ const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
 			confirmCallback={modal?.confirmCallback || noop}
 			cancelLabel={tText('assignment/views/assignment-edit___annuleer')}
 			confirmLabel={tText('assignment/views/assignment-edit___opslaan')}
-			title={tText('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
+			title={tHtml('assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan')}
 			confirmButtonType="primary"
 		/>
 	);

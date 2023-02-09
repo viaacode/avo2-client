@@ -22,7 +22,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	onClose,
 	collectionFragments,
 }) => {
-	const { tText } = useTranslation();
+	const { tHtml } = useTranslation();
 	const [sourceList, setSourceList] = useState<FlowplayerSourceList | null>(null);
 
 	const fetchPlayableUrls = useCallback(async () => {
@@ -76,7 +76,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText(
+			title={tHtml(
 				'collection/components/modals/autoplay-collection-modal___speel-de-collectie-af'
 			)}
 			size="extra-large"

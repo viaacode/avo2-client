@@ -733,7 +733,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		return (
 			selectedDetail && (
 				<QuickLaneModal
-					modalTitle={tText(
+					modalTitle={tHtml(
 						'collection/views/collection-overview___delen-met-leerlingen'
 					)}
 					isOpen={isQuickLaneModalOpen}
@@ -756,7 +756,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				onClose={() => setIsCreateAssignmentModalOpen(false)}
 				createAssignmentCallback={onCreateAssignmentFromCollection}
 				translations={{
-					title: tText(
+					title: tHtml(
 						'collection/components/collection-or-bundle-overview___maak-nieuwe-opdracht'
 					),
 					primaryButton: tText(

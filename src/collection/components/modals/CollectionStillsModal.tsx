@@ -75,7 +75,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText(
+			title={tHtml(
 				'collection/components/modals/collection-stills-modal___stel-een-cover-afbeelding-in'
 			)}
 			size="large"

@@ -8,7 +8,7 @@ export interface QuickLaneModalProps {
 	content?: Avo.Assignment.Content;
 	error?: ReactNode;
 	isOpen: boolean;
-	modalTitle: string;
+	modalTitle: string | ReactNode;
 	onClose?: () => void;
 	onUpdate?: (content: Avo.Assignment.Content) => void; // TODO investigate typing, since this is also used in collection detail
 }

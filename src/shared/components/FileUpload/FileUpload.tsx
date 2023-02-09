@@ -267,7 +267,7 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 					<Spinner size="large" />
 				))}
 			<ConfirmModal
-				title={tText(
+				title={tHtml(
 					'shared/components/file-upload/file-upload___ben-je-zeker-dat-je-dit-bestand-wil-verwijderen'
 				)}
 				body={tHtml(

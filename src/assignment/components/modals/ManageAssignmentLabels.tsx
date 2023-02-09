@@ -252,7 +252,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	return (
 		<Modal
 			className="m-manage-assignment-labels"
-			title={translations.modal.title}
+			title={tHtml(translations.modal.title)}
 			size="large"
 			isOpen={isOpen}
 			onClose={onClose}

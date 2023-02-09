@@ -19,13 +19,11 @@ export interface ManageAssignmentLabelsTranslations {
 export const getManageAssignmentLabelsTranslations = (
 	tText: TFunction,
 	type: ManageAssignmentLabelsProps['type']
-) => {
+): ManageAssignmentLabelsTranslations => {
 	return type === 'LABEL'
 		? {
 				modal: {
-					title: tText(
-						'assignment/components/modals/manage-assignment-labels___beheer-labels'
-					),
+					title: 'assignment/components/modals/manage-assignment-labels___beheer-labels',
 				},
 				buttons: {
 					addLabel: tText(
@@ -44,9 +42,7 @@ export const getManageAssignmentLabelsTranslations = (
 		  }
 		: {
 				modal: {
-					title: tText(
-						'assignment/components/modals/manage-assignment-labels___beheer-klassen'
-					),
+					title: 'assignment/components/modals/manage-assignment-labels___beheer-klassen',
 				},
 				buttons: {
 					addLabel: tText(

@@ -1,4 +1,3 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	ButtonToolbar,
@@ -16,7 +15,7 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import useTranslation from '../../hooks/useTranslation';
 
 export interface ConfirmModalProps {
-	title?: string;
+	title?: string | ReactNode;
 	body?: string | ReactNode;
 	cancelLabel?: string;
 	confirmLabel?: string;
@@ -40,19 +39,18 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	confirmCallback = noop,
 	className,
 }) => {
-	const { tText } = useTranslation();
+	const { tHtml } = useTranslation();
 
 	return (
 		<Modal
 			className={className}
 			isOpen={isOpen}
-			title={sanitizeHtml(
+			title={
 				title ||
-					tText(
-						'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
-					),
-				SanitizePreset.basic
-			)}
+				tHtml(
+					'shared/components/delete-object-modal/delete-object-modal___ben-je-zeker-dat-je-deze-actie-wil-uitvoeren'
+				)
+			}
 			size={size}
 			onClose={onClose}
 			scrollable
