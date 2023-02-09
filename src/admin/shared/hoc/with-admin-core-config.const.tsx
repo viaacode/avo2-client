@@ -2,7 +2,7 @@ import { AdminConfig, ContentBlockType, LinkInfo, ToastInfo } from '@meemoo/admi
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { DatabaseType } from '@viaa/avo2-types';
-import { capitalize, compact, lowerCase, noop } from 'lodash-es';
+import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
@@ -16,6 +16,7 @@ import { tHtml, tText } from '../../../shared/helpers/translate';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { FileUploadService } from '../../../shared/services/file-upload-service';
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
+import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
 export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
@@ -78,7 +79,7 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				arrowDown: { name: IconName.arrowDown },
 				chevronLeft: { name: IconName.chevronLeft },
 			},
-			list: GET_ICON_LIST_CONFIG,
+			list: GET_ADMIN_ICON_OPTIONS,
 		},
 		components: {
 			loader: {
@@ -234,10 +235,3 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		},
 	};
 }
-
-export const GET_ICON_LIST_CONFIG = (): { value: IconName; label: string }[] => {
-	return Object.values(IconName).map((iconName: IconName) => ({
-		value: iconName,
-		label: capitalize(lowerCase(iconName)),
-	}));
-};
