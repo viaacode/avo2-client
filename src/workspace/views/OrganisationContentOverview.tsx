@@ -257,7 +257,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 	const renderEmptyFallback = () => (
 		<ErrorView
 			icon={IconName.folder}
-			message={tText(
+			message={tHtml(
 				'workspace/views/organisation-content-overview___geen-content-binnen-uw-organsatie'
 			)}
 		/>
@@ -265,7 +265,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 	const renderNoOrganisationFallback = () => (
 		<ErrorView
-			message={tText(
+			message={tHtml(
 				'workspace/views/organisation-content-overview___u-hebt-geen-organisatie'
 			)}
 		>

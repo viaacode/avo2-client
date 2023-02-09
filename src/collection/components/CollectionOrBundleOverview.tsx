@@ -661,10 +661,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			icon={isCollection ? IconName.collection : IconName.folder}
 			message={
 				isCollection
-					? tText(
+					? tHtml(
 							'collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt'
 					  )
-					: tText(
+					: tHtml(
 							'collection/components/collection-or-bundle-overview___je-hebt-nog-geen-bundels-aangemaakt'
 					  )
 			}

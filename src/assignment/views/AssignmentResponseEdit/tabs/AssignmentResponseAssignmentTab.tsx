@@ -20,7 +20,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 	pastDeadline,
 	setTab,
 }) => {
-	const { tText } = useTranslation();
+	const { tHtml } = useTranslation();
 
 	// Render
 
@@ -28,7 +28,7 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 		if ((blocks?.length || 0) === 0) {
 			return (
 				<ErrorView
-					message={tText(
+					message={tHtml(
 						'assignment/views/assignment-response-edit___deze-opdracht-heeft-nog-geen-inhoud'
 					)}
 					icon={IconName.search}

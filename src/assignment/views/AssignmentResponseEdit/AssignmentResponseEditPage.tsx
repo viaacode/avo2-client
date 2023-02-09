@@ -63,7 +63,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
 			) {
 				setAssignmentError({
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-kan-geen-antwoorden-indienen-op-deze-opdracht-aangezien-je-geen-leerling-bent-gebruikt-de-bekijk-als-leerling-knop-om-te-zien-we-je-leerlingen-zien'
 					),
 					icon: IconName.userStudent,
@@ -74,7 +74,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			if (!canViewAnAssignment(user)) {
 				setAssignmentError({
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
 					icon: IconName.lock,
@@ -169,7 +169,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				<ErrorView
 					message={
 						assignmentError.message ||
-						tText(
+						tHtml(
 							'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
 						)
 					}
@@ -180,7 +180,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 		if (!assignment) {
 			return (
 				<ErrorView
-					message={tText(
+					message={tHtml(
 						'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden'
 					)}
 					icon={IconName.search}
@@ -211,7 +211,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 		if (!assignmentResponse) {
 			return (
 				<ErrorView
-					message={tText(
+					message={tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
 					)}
 					icon={IconName.alertTriangle}

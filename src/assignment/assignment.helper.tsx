@@ -1,7 +1,8 @@
 import { IconName } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
+import { ReactNode } from 'react';
 
-import { tText } from '../shared/helpers/translate';
+import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
 
 import {
@@ -45,19 +46,19 @@ export function setPositionToIndex(items: Positioned[]): Positioned[] {
 }
 
 export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
-	message: string;
+	message: string | ReactNode;
 	icon: IconName;
 } {
 	switch (errorType) {
 		case AssignmentRetrieveError.DELETED:
 			return {
-				message: tText('assignment/views/assignment-detail___de-opdracht-werd-verwijderd'),
+				message: tHtml('assignment/views/assignment-detail___de-opdracht-werd-verwijderd'),
 				icon: IconName.delete,
 			};
 
 		case AssignmentRetrieveError.NOT_YET_AVAILABLE:
 			return {
-				message: tText(
+				message: tHtml(
 					'assignment/views/assignment-detail___de-opdracht-is-nog-niet-beschikbaar'
 				),
 				icon: IconName.clock,
@@ -65,7 +66,7 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 
 		default:
 			return {
-				message: tText(
+				message: tHtml(
 					'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
 				),
 				icon: IconName.alertTriangle,
