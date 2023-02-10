@@ -15,6 +15,7 @@
 
 .o-app > .o-container {
 	overflow-x: hidden;
+	padding-bottom: 10rem; // Add room for dropdown on the complete profile page: https://onderwijs-qas.hetarchief.be/vervolledig-profiel
 
 	.o-container {
 		width: 100%;
