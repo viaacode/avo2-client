@@ -246,8 +246,6 @@ node_modules
 .env.test.local
 .env.production.local
 
-.prettierignore
-
 
 # App specific
 env-config.js
