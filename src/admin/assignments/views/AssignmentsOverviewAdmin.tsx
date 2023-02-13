@@ -362,12 +362,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={tText(
+				message={tHtml(
 					'admin/assignments/views/assignments-overview-admin___er-bestaan-nog-geen-opdrachten'
 				)}
 			>
 				<p>
-					{tText(
+					{tHtml(
 						'admin/assignments/views/assignments-overview-admin___beschrijving-wanneer-er-nog-geen-opdrachten-zijn'
 					)}
 				</p>

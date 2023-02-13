@@ -229,7 +229,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={tText(
+				message={tHtml(
 					'admin/interactive-tour/views/interactive-tour-overview___er-zijn-nog-geen-interactieve-tours-aangemaakt'
 				)}
 			>

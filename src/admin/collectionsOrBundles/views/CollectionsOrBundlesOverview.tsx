@@ -609,7 +609,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={tText(
+				message={tHtml(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___er-bestaan-nog-geen-collecties'
 				)}
 			>

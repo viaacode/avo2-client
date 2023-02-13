@@ -308,7 +308,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={tText('admin/items/views/items-overview___er-bestaan-nog-geen-items')}
+				message={tHtml('admin/items/views/items-overview___er-bestaan-nog-geen-items')}
 			>
 				<p>
 					{tHtml(

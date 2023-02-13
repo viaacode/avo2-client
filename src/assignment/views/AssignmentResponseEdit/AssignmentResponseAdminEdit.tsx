@@ -65,7 +65,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
 			if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENT_RESPONSES)) {
 				setAssignmentError({
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-admin-edit___enkel-een-admin-kan-leerlingencollecties-bewerken'
 					),
 					icon: IconName.userStudent,
@@ -149,7 +149,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 				<ErrorView
 					message={
 						assignmentError.message ||
-						tText(
+						tHtml(
 							'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
 						)
 					}
@@ -160,7 +160,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 		if (!assignment) {
 			return (
 				<ErrorView
-					message={tText(
+					message={tHtml(
 						'assignment/views/assignment-response-edit___de-opdracht-is-niet-gevonden'
 					)}
 					icon={IconName.search}
@@ -191,7 +191,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 		if (!assignmentResponse) {
 			return (
 				<ErrorView
-					message={tText(
+					message={tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___de-opdracht-antwoord-entry-kon-niet-worden-aangemaakt'
 					)}
 					icon={IconName.alertTriangle}

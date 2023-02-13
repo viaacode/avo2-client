@@ -297,7 +297,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const renderEmptyFallback = () => (
 		<ErrorView
 			icon={IconName.bookmark}
-			message={tText('workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt')}
+			message={tHtml('workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt')}
 		>
 			<p>
 				{tHtml(

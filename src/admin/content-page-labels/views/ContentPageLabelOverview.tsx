@@ -294,7 +294,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={tText(
+				message={tHtml(
 					'admin/content-page-labels/views/content-page-label-overview___er-zijn-nog-geen-content-pagina-labels-aangemaakt'
 				)}
 			>

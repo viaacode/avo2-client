@@ -26,7 +26,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 	dataObject,
 	render,
 }) => {
-	const { tText, tHtml } = useTranslation();
+	const { tHtml } = useTranslation();
 
 	const renderSpinner = () => (
 		<Container mode="vertical">
@@ -62,7 +62,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 				<ErrorView
 					message={
 						notFoundError ||
-						tText(
+						tHtml(
 							'shared/components/loading-error-loaded-component/loading-error-loaded-component___het-gevraagde-object-is-niet-gevonden'
 						)
 					}

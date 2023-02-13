@@ -726,40 +726,40 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			// Teacher
 			if (query.view === AssignmentView.ACTIVE) {
 				if (hasFilters) {
-					return tText(
+					return tHtml(
 						'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm'
 					);
 				}
-				return tText(
+				return tHtml(
 					'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-aangemaakt'
 				);
 			}
 			if (hasFilters) {
-				return tText(
+				return tHtml(
 					'assignment/views/assignment-overview___er-zijn-geen-verlopen-opdrachten-die-voldoen-aan-je-zoekterm'
 				);
 			}
-			return tText(
+			return tHtml(
 				'assignment/views/assignment-overview___je-hebt-nog-geen-verlopen-opdrachten'
 			);
 		}
 		// Pupil
 		if (query.view === AssignmentView.ACTIVE) {
 			if (hasFilters) {
-				return tText(
+				return tHtml(
 					'assignment/views/assignment-overview___er-zijn-geen-actieve-opdrachten-die-voldoen-aan-je-zoekterm'
 				);
 			}
-			return tText(
+			return tHtml(
 				'assignment/views/assignment-overview___je-hebt-nog-geen-opdrachten-ontvangen-van-je-leerkracht'
 			);
 		}
 		if (hasFilters) {
-			return tText(
+			return tHtml(
 				'assignment/views/assignment-overview___er-zijn-geen-verlopen-opdrachten-die-voldoen-aan-je-zoekterm'
 			);
 		}
-		return tText('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-verlopen');
+		return tHtml('assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-verlopen');
 	};
 
 	const getEmptyFallbackDescription = () => {

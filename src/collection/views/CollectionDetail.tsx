@@ -1275,7 +1275,7 @@ const CollectionDetail: FunctionComponent<
 			return (
 				<ErrorView
 					icon={IconName.lock}
-					message={tText(
+					message={tHtml(
 						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
 					)}
 					actionButtons={['home']}
@@ -1287,7 +1287,7 @@ const CollectionDetail: FunctionComponent<
 			return (
 				<ErrorView
 					icon={IconName.alertTriangle}
-					message={tText(
+					message={tHtml(
 						'collection/views/collection-detail___het-laden-van-de-collectie-is-mislukt'
 					)}
 					actionButtons={['home']}
