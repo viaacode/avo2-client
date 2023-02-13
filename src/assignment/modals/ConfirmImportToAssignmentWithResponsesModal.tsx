@@ -7,14 +7,14 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 
 interface ConfirmImportToAssignmentWithResponsesModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	confirmCallback: () => void;
 	translations: {
-		title: string;
+		title: string | ReactNode;
 		warningCallout: string;
 		warningMessage: string;
 		warningBody: string;

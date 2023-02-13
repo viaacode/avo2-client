@@ -124,10 +124,10 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 			isOpen={isOpen}
 			title={
 				isCollection()
-					? tText(
+					? tHtml(
 							'collection/components/modals/share-collection-modal___deel-deze-collectie'
 					  )
-					: tText(
+					: tHtml(
 							'collection/components/modals/publish-collection-modal___deel-deze-bundel'
 					  )
 			}

@@ -372,7 +372,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText('assignment/modals/add-collection-modal___importeer-collectie')}
+			title={tHtml('assignment/modals/add-collection-modal___importeer-collectie')}
 			size="large"
 			onClose={resetStateAndCallOnClose}
 			scrollable

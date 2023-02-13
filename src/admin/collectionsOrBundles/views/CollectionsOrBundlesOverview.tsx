@@ -672,7 +672,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					}}
 				/>
 				<AddOrRemoveLinkedElementsModal
-					title={tText(
+					title={tHtml(
 						'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
 					)}
 					addOrRemoveLabel={tText(

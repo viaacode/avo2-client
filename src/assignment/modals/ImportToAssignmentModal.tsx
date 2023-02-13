@@ -18,7 +18,14 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	FunctionComponent,
+	ReactNode,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
@@ -54,7 +61,7 @@ interface ImportToAssignmentModalProps {
 	importToAssignmentCallback: (assignmentId: string, createWithDescription: boolean) => void;
 	showToggle: boolean;
 	translations: {
-		title: string;
+		title: string | ReactNode;
 		primaryButton: string;
 		secondaryButton: string;
 	};

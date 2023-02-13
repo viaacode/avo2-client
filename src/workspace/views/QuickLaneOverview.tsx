@@ -364,7 +364,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			/>
 
 			<QuickLaneModal
-				modalTitle={tText('workspace/views/quick-lane-overview___gedeelde-link-aanpassen')}
+				modalTitle={tHtml('workspace/views/quick-lane-overview___gedeelde-link-aanpassen')}
 				isOpen={isQuickLaneModalOpen}
 				content={selected?.content}
 				content_label={selected?.content_label}

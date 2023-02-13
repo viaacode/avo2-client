@@ -1168,7 +1168,7 @@ const CollectionDetail: FunctionComponent<
 				)}
 				{!!collection && (
 					<QuickLaneModal
-						modalTitle={tText(
+						modalTitle={tHtml(
 							'collection/views/collection-detail___delen-met-leerlingen'
 						)}
 						isOpen={isQuickLaneModalOpen}
@@ -1198,7 +1198,7 @@ const CollectionDetail: FunctionComponent<
 							onClose={() => setIsCreateAssignmentModalOpen(false)}
 							createAssignmentCallback={onCreateAssignment}
 							translations={{
-								title: tText(
+								title: tHtml(
 									'assignment/modals/create-assignment-modal___importeer-naar-nieuwe-opdracht'
 								),
 								primaryButton: tText(
@@ -1216,7 +1216,7 @@ const CollectionDetail: FunctionComponent<
 							importToAssignmentCallback={onImportToAssignment}
 							showToggle={true}
 							translations={{
-								title: tText(
+								title: tHtml(
 									'assignment/modals/import-to-assignment-modal___importeer-naar-bestaande-opdracht'
 								),
 								primaryButton: tText(
@@ -1234,7 +1234,7 @@ const CollectionDetail: FunctionComponent<
 							}
 							confirmCallback={onConfirmImportAssignment}
 							translations={{
-								title: tText(
+								title: tHtml(
 									'assignment/modals/confirm-import-to-assignment-with-responses-modal___collectie-importeren'
 								),
 								warningCallout: tText(

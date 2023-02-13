@@ -996,7 +996,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					user={user}
 				/>
 				<QuickLaneModal
-					modalTitle={tText('item/views/item___snel-delen-met-leerlingen')}
+					modalTitle={tHtml('item/views/item___snel-delen-met-leerlingen')}
 					isOpen={isQuickLaneModalOpen}
 					content={item}
 					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Item}
@@ -1011,7 +1011,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					importToAssignmentCallback={onImportToAssignment}
 					showToggle={false}
 					translations={{
-						title: tText('item/views/item-detail___voeg-toe-aan-bestaande-opdracht'),
+						title: tHtml('item/views/item-detail___voeg-toe-aan-bestaande-opdracht'),
 						primaryButton: tText('item/views/item-detail___voeg-toe'),
 						secondaryButton: tText('item/views/item-detail___annuleer'),
 					}}
@@ -1021,7 +1021,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					onClose={() => setIsConfirmImportToAssignmentWithResponsesModalOpen(false)}
 					confirmCallback={onConfirmImportAssignment}
 					translations={{
-						title: tText('item/views/item-detail___fragment-toevoegen'),
+						title: tHtml('item/views/item-detail___fragment-toevoegen'),
 						warningCallout: tText('item/views/item-detail___opgelet'),
 						warningMessage: tText(
 							'item/views/item-detail___leerlingen-hebben-deze-opdracht-reeds-bekeken'

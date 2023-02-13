@@ -184,7 +184,7 @@ const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText(
+			title={tHtml(
 				'admin/items/components/depublish-item-modal/depublish-item-modal___item-depubliceren'
 			)}
 			size="medium"

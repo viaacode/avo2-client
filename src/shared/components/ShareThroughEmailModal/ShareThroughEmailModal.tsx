@@ -9,7 +9,7 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useState } from 'react';
 
 import { copyToClipboard } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -21,7 +21,7 @@ import { ToastService } from '../../services/toast-service';
 import './ShareThroughEmailModal.scss';
 
 interface AddToCollectionModalProps {
-	modalTitle: string;
+	modalTitle: string | ReactNode;
 	type: EmailTemplateType;
 	emailLinkHref: string;
 	emailLinkTitle: string;

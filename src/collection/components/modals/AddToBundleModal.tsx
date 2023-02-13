@@ -228,7 +228,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 	return (
 		<Modal
-			title={tText(
+			title={tHtml(
 				'collection/components/modals/add-to-bundle-modal___voeg-collectie-toe-aan-bundel'
 			)}
 			size="medium"
