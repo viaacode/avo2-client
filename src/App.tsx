@@ -24,7 +24,6 @@ import ConfirmModal from './shared/components/ConfirmModal/ConfirmModal';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
-import { tText } from './shared/helpers/translate';
 import withUser, { UserProps } from './shared/hocs/withUser';
 import useTranslation from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
@@ -140,7 +139,7 @@ let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 const queryClient = new QueryClient();
 
 const Root: FunctionComponent = () => {
-	const { tHtml } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
 
 	return (
@@ -169,7 +168,7 @@ const Root: FunctionComponent = () => {
 							}}
 							cancelLabel={tText('app___blijven')}
 							confirmLabel={tText('app___verlaten')}
-							title={tText('app___wijzigingen-opslaan')}
+							title={tHtml('app___wijzigingen-opslaan')}
 							body={tHtml(
 								'app___er-zijn-nog-niet-opgeslagen-wijzigingen-weet-u-zeker-dat-u-de-pagina-wil-verlaten'
 							)}

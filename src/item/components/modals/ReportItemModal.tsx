@@ -125,7 +125,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 	const renderReportItemModal = () => {
 		return (
 			<Modal
-				title={tText(
+				title={tHtml(
 					'item/components/modals/report-item-modal___waarom-wil-je-dit-fragment-rapporteren'
 				)}
 				size="medium"

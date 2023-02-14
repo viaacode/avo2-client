@@ -170,7 +170,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 						/>
 					) : (
 						<ErrorView
-							message={tText(
+							message={tHtml(
 								'search/views/search___je-hebt-geen-rechten-om-te-zoeken'
 							)}
 							actionButtons={['home', 'helpdesk']}
@@ -180,7 +180,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 				</PermissionGuardPass>
 				<PermissionGuardFail>
 					<ErrorView
-						message={tText(
+						message={tHtml(
 							'search/views/search___je-hebt-geen-rechten-om-de-zoek-pagina-te-bekijken'
 						)}
 						icon={IconName.lock}

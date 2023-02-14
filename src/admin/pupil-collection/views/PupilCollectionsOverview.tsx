@@ -364,12 +364,12 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 	const renderNoResults = () => {
 		return (
 			<ErrorView
-				message={tText(
+				message={tHtml(
 					'admin/pupil-collection/views/pupil-collections-overview___er-bestaan-nog-geen-leerlingencollecties'
 				)}
 			>
 				<p>
-					{tText(
+					{tHtml(
 						'admin/pupil-collection/views/pupil-collections-overview___beschrijving-wanneer-er-nog-geen-leerlingencollecties-zijn'
 					)}
 				</p>

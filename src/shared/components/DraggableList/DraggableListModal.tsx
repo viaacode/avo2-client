@@ -24,7 +24,7 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 	onClose,
 	size = 'medium',
 }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [reorderedElements, setReorderedElements] = useState<any[] | null>(null);
 
@@ -37,7 +37,7 @@ const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
 
 	return (
 		<Modal
-			title={tText('shared/components/draggable-list/draggable-list-modal___herschik-items')}
+			title={tHtml('shared/components/draggable-list/draggable-list-modal___herschik-items')}
 			isOpen={isOpen}
 			size={size}
 			scrollable

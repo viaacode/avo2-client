@@ -269,7 +269,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText(
+			title={tHtml(
 				'assignment/modals/add-bookmark-fragment-modal___fragment-toevoegen-uit-bladwijzers'
 			)}
 			size="large"

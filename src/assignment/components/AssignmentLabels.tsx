@@ -1,5 +1,13 @@
 import { ColorOption } from '@meemoo/admin-core-ui';
-import { Button, Flex, FlexItem, IconName, Spacer, TagList, TagOption } from '@viaa/avo2-components';
+import {
+	Button,
+	Flex,
+	FlexItem,
+	IconName,
+	Spacer,
+	TagList,
+	TagOption,
+} from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
 import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';

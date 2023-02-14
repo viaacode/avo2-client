@@ -1241,8 +1241,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<InputModal
 					title={
 						isCollection
-							? tText('collection/views/collection-edit___hernoem-deze-collectie')
-							: tText(
+							? tHtml('collection/views/collection-edit___hernoem-deze-collectie')
+							: tHtml(
 									'collection/components/collection-or-bundle-edit___hernoem-deze-bundel'
 							  )
 					}
@@ -1271,10 +1271,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<InputModal
 					title={
 						isCollection
-							? tText(
+							? tHtml(
 									'collection/components/collection-or-bundle-edit___voeg-item-toe-via-pid'
 							  )
-							: tText(
+							: tHtml(
 									'collection/components/collection-or-bundle-edit___voeg-collectie-toe-via-id'
 							  )
 					}

@@ -516,12 +516,12 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			{renderHeader()}
 			<ErrorView
 				icon={IconName.clipboard}
-				message={tText(
+				message={tHtml(
 					'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht'
 				)}
 			>
 				<p>
-					{tText(
+					{tHtml(
 						'assignment/views/assignment-responses___deel-de-link-van-deze-opdracht-met-je-leerlingen'
 					)}
 				</p>

@@ -1,7 +1,9 @@
-import { tText } from '../helpers/translate';
+import { ReactNode } from 'react';
 
-export function getPageNotFoundError(loggedIn: boolean): string {
+import { tHtml } from '../helpers/translate';
+
+export function getPageNotFoundError(loggedIn: boolean): ReactNode {
 	return loggedIn
-		? tText('error/views/error-view___de-pagina-werd-niet-gevonden-ingelogd')
-		: tText('error/views/error-view___de-pagina-werd-niet-gevonden-niet-ingelogd');
+		? tHtml('error/views/error-view___de-pagina-werd-niet-gevonden-ingelogd')
+		: tHtml('error/views/error-view___de-pagina-werd-niet-gevonden-niet-ingelogd');
 }

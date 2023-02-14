@@ -276,7 +276,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 
 		return (
 			<Modal
-				title={tText(
+				title={tHtml(
 					'item/components/modals/add-to-collection-modal___voeg-fragment-toe-aan-collectie'
 				)}
 				size="extra-large"

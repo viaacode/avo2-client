@@ -144,6 +144,16 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		}
 	};
 
+	const handleReturnToSearchResults = () => {
+		setIsAddToAssignmentModalOpen(false);
+		setSelectedItem(null);
+		setFilterState({
+			...filterState,
+			focus: filterState.selectedSearchResultId,
+			selectedSearchResultId: undefined,
+		});
+	};
+
 	// Render
 
 	const renderDetailLink = (linkText: string | ReactNode, id: string) => {
@@ -235,13 +245,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 							<Button
 								type="link"
 								className="c-return--search-results"
-								onClick={() => {
-									setFilterState({
-										...filterState,
-										focus: filterState.selectedSearchResultId,
-										selectedSearchResultId: undefined,
-									});
-								}}
+								onClick={handleReturnToSearchResults}
 							>
 								<Icon name={IconName.chevronLeft} size="small" type="arrows" />
 								{tText(
@@ -258,7 +262,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		if (!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)) {
 			return (
 				<ErrorView
-					message={tText(
+					message={tHtml(
 						'assignment/views/assignment-response-edit___je-hebt-geen-rechten-om-te-zoeken-binnen-een-opdracht'
 					)}
 					actionButtons={['home', 'helpdesk']}

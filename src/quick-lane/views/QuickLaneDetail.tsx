@@ -45,7 +45,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	user,
 	...rest
 }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>();
@@ -212,7 +212,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				return (
 					<ErrorView
 						icon={IconName.alertTriangle}
-						message={tText(
+						message={tHtml(
 							'quick-lane/views/quick-lane-detail___onverwacht-inhoudstype',
 							{
 								type: contentLabel || undefined,

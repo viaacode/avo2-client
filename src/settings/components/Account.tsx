@@ -53,7 +53,7 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 	) {
 		return (
 			<ErrorView
-				message={tText(
+				message={tHtml(
 					'settings/components/account___je-hebt-geen-toegang-tot-de-account-pagina'
 				)}
 				icon={IconName.lock}

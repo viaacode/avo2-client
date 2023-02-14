@@ -139,7 +139,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			} catch (err) {
 				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
 					setAssigmentError({
-						message: tText(
+						message: tHtml(
 							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 						),
 						icon: IconName.lock,
@@ -149,7 +149,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					return;
 				}
 				setAssigmentError({
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
 					icon: IconName.alertTriangle,
@@ -161,7 +161,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 			if (!tempAssignment) {
 				setAssigmentError({
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
 					icon: IconName.alertTriangle,
@@ -181,7 +181,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				))
 			) {
 				setAssigmentError({
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 					),
 					icon: IconName.lock,
@@ -199,7 +199,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
 			setAssigmentError({
-				message: tText(
+				message: tHtml(
 					'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
 				),
 				icon: IconName.alertTriangle,

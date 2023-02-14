@@ -12,7 +12,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
 
@@ -21,7 +21,7 @@ interface CreateAssignmentModalProps {
 	onClose?: () => void;
 	createAssignmentCallback: (withDescription: boolean) => void;
 	translations: {
-		title: string;
+		title: string | ReactNode;
 		primaryButton: string;
 		secondaryButton: string;
 	};

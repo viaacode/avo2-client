@@ -28,7 +28,7 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 	initialAuthor,
 	callback,
 }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [author, setAuthor] = useState<PickerItem | undefined>(initialAuthor);
 
@@ -40,7 +40,7 @@ const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText(
+			title={tHtml(
 				'admin/shared/components/change-author-modal/change-author-modal___selecteer-een-auteur'
 			)}
 			size="small"

@@ -89,7 +89,7 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText('assignment/modals/confirm-slice___type-verwijderen', label)}
+			title={tHtml('assignment/modals/confirm-slice___type-verwijderen', label)}
 			size="medium"
 			onClose={onClose}
 			scrollable

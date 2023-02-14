@@ -297,7 +297,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	const renderEmptyFallback = () => (
 		<ErrorView
 			icon={IconName.bookmark}
-			message={tText('workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt')}
+			message={tHtml('workspace/views/bookmarks___je-hebt-nog-geen-bladwijzers-aangemaakt')}
 		>
 			<p>
 				{tHtml(
@@ -322,8 +322,8 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 		<>
 			{bookmarks && bookmarks.length ? renderTable() : renderEmptyFallback()}
 			<DeleteObjectModal
-				title={tText('workspace/views/bookmarks___verwijder-bladwijzer')}
-				body={tText(
+				title={tHtml('workspace/views/bookmarks___verwijder-bladwijzer')}
+				body={tHtml(
 					'workspace/views/bookmarks-overview___ben-je-zeker-dat-je-deze-bladwijzer-wil-verwijderen-br-deze-actie-kan-niet-ongedaan-gemaakt-worden'
 				)}
 				isOpen={isDeleteModalOpen}

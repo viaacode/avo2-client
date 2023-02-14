@@ -142,7 +142,7 @@ const TranslationsOverviewPage: FunctionComponent = () => {
 		onSave,
 		onClose,
 	}: {
-		title: string;
+		title: string | ReactNode;
 		body: ReactNode;
 		onSave: () => void;
 		onClose: () => void;
