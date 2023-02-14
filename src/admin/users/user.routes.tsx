@@ -3,7 +3,9 @@ import React, { ReactNode } from 'react';
 import { SecuredRoute } from '../../authentication/components';
 
 import { USER_PATH } from './user.const';
-import { UserDetailPage, UserEditPage, UserOverviewPage } from './views';
+import UserDetailPage from './views/UserDetailPage';
+import UserEditPage from './views/UserEditPage';
+import UserOverviewPage from './views/UserOverviewPage';
 
 export const renderAdminUserRoutes = (): ReactNode[] => [
 	<SecuredRoute

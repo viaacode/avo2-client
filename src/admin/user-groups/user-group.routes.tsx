@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react';
 import { SecuredRoute } from '../../authentication/components';
 
 import { USER_GROUP_PATH } from './user-group.const';
-import { UserGroupOverviewPage } from './views';
+import UserGroupOverviewPage from './views/UserGroupOverviewPage';
 
 export const renderAdminUserGroupRoutes = (): ReactNode[] => [
 	<SecuredRoute
