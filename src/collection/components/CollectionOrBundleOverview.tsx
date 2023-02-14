@@ -661,10 +661,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			icon={isCollection ? IconName.collection : IconName.folder}
 			message={
 				isCollection
-					? tText(
+					? tHtml(
 							'collection/views/collection-overview___je-hebt-nog-geen-collecties-aangemaakt'
 					  )
-					: tText(
+					: tHtml(
 							'collection/components/collection-or-bundle-overview___je-hebt-nog-geen-bundels-aangemaakt'
 					  )
 			}
@@ -733,7 +733,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		return (
 			selectedDetail && (
 				<QuickLaneModal
-					modalTitle={tText(
+					modalTitle={tHtml(
 						'collection/views/collection-overview___delen-met-leerlingen'
 					)}
 					isOpen={isQuickLaneModalOpen}
@@ -756,7 +756,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				onClose={() => setIsCreateAssignmentModalOpen(false)}
 				createAssignmentCallback={onCreateAssignmentFromCollection}
 				translations={{
-					title: tText(
+					title: tHtml(
 						'collection/components/collection-or-bundle-overview___maak-nieuwe-opdracht'
 					),
 					primaryButton: tText(

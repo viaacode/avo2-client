@@ -38,7 +38,7 @@ interface AddToAssignmentModalProps {
 const AddToAssignmentModal: FunctionComponent<
 	AddToAssignmentModalProps & RouteComponentProps & UserProps
 > = ({ itemMetaData, isOpen, onClose, onAddToAssignmentCallback }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
 	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
@@ -69,7 +69,7 @@ const AddToAssignmentModal: FunctionComponent<
 
 		return (
 			<Modal
-				title={tText(
+				title={tHtml(
 					'item/components/modals/add-to-assignment-modal___knip-fragment-optioneel'
 				)}
 				size="extra-large"

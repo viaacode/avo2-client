@@ -391,7 +391,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		if (searchResultsError) {
 			return (
 				<ErrorView
-					message={tText('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
+					message={tHtml('search/views/search___fout-tijdens-ophalen-zoek-resultaten')}
 					actionButtons={['home']}
 				/>
 			);

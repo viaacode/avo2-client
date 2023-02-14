@@ -73,7 +73,7 @@ query getAssignmentsByResponseOwnerId(
 		where: {
 			responses: { owner_profile_id: { _eq: $owner_profile_id } }
 			is_deleted: { _eq: false }
-			_or: $filter
+			_and: $filter
 		}
 	) {
 		aggregate {

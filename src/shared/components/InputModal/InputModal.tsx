@@ -11,13 +11,13 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 
 interface InputModalProps {
-	title?: string;
+	title?: string | ReactNode;
 	inputLabel?: string;
 	cancelLabel?: string;
 	confirmLabel?: string;
@@ -82,7 +82,7 @@ const InputModal: FunctionComponent<InputModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={title || tText('shared/components/input-modal/input-modal___vul-in')}
+			title={title || tHtml('shared/components/input-modal/input-modal___vul-in')}
 			size="small"
 			onClose={onClickClose}
 			scrollable

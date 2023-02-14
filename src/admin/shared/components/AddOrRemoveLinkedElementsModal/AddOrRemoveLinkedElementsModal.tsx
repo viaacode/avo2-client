@@ -14,14 +14,14 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useState } from 'react';
 
 import useTranslation from '../../../../shared/hooks/useTranslation';
 
 export type AddOrRemove = 'add' | 'remove';
 
 interface AddOrRemoveLinkedElementsProps {
-	title: string; // eg: change subjects
+	title: string | ReactNode; // eg: change subjects
 	addOrRemoveLabel: string; // eg: add or remove subjects
 	contentLabel: string; // eg: subjects
 	isOpen: boolean;

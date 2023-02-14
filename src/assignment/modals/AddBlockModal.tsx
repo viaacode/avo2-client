@@ -43,7 +43,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 	onClose,
 	onConfirm,
 }) => {
-	const { tText, tHtml } = useTranslation();
+	const { tHtml } = useTranslation();
 
 	const disableSearchBlock = !!blocks.find(
 		(block) =>
@@ -97,7 +97,7 @@ const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText('assignment/modals/add-block___toevoegen')}
+			title={tHtml('assignment/modals/add-block___toevoegen')}
 			size="large"
 			onClose={onClose}
 			scrollable

@@ -23,7 +23,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	onClose = noop,
 	deleteObjectCallback,
 }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const handleDelete = async () => {
 		deleteObjectCallback();
@@ -74,7 +74,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tText(
+			title={tHtml(
 				'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
 			)}
 			size="large"
