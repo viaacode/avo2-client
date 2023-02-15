@@ -164,9 +164,7 @@ const CollectionDetail: FunctionComponent<
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
-			console.log(collectionId);
 			if (isUuid(collectionId)) {
-				console.log('entered');
 				setRelatedCollections(await getRelatedItems(collectionId, 'collections', 4));
 			}
 		} catch (err) {
@@ -352,7 +350,6 @@ const CollectionDetail: FunctionComponent<
 			}
 
 			const permissionObj = await getPermissions(collectionId, user);
-			console.log(permissionObj);
 
 			let showNoAccessPopup = false;
 
@@ -436,7 +433,6 @@ const CollectionDetail: FunctionComponent<
 	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
-		console.log(collectionInfo?.permissions?.canViewOwnCollection);
 		if (collectionInfo?.permissions?.canViewPublishedCollections) {
 			getRelatedCollections();
 		}
