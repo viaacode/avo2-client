@@ -78,6 +78,8 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				sortTable: { name: IconName.chevronsUpAndDown },
 				arrowDown: { name: IconName.arrowDown },
 				chevronLeft: { name: IconName.chevronLeft },
+				extraOptions: { name: IconName.moreHorizontal },
+				copy: { name: IconName.copy },
 			},
 			list: GET_ADMIN_ICON_OPTIONS,
 		},

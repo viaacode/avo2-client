@@ -119,7 +119,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						block
 						type="secondary"
 						className="c-button-acmidm"
-						icon={IconName.leerid}
+						icon={IconName.eid}
 						label={tText(
 							'authentication/components/login-options___e-id-of-een-digitale-sleutel'
 						)}
