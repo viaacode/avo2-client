@@ -400,6 +400,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				canDelete: rawPermissions[1],
 				canCreate: rawPermissions[2],
 				canViewItems: rawPermissions[3],
+				canPublish: rawPermissions[4],
 			};
 
 			if (!permissionObj.canEdit) {
