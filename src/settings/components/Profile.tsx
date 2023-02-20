@@ -104,6 +104,7 @@ const Profile: FunctionComponent<
 	const firstName = user?.first_name || '';
 	const lastName = user?.last_name || '';
 	const email = user?.mail || '';
+	const [alias, setAlias] = useState<string>(user?.profile?.alias ?? '');
 	const [avatar, setAvatar] = useState<string | null>(
 		get(getProfileFromUser(user, true), 'avatar', null)
 	);
@@ -122,6 +123,9 @@ const Profile: FunctionComponent<
 		get(getProfileFromUser(user, true), 'company_id', null)
 	);
 	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
+	const [profileErrors, setProfileErrors] = useState<
+		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
+	>({});
 	const [usersInSameCompany, setUsersInSameCompany] = useState<Partial<Avo.User.Profile>[]>([]);
 
 	const isExceptionAccount = get(user, 'profile.is_exception', false);
@@ -326,6 +330,7 @@ const Profile: FunctionComponent<
 			const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {
 				firstName,
 				lastName,
+				alias,
 				title,
 				bio,
 				userId: user.uid,
@@ -353,6 +358,17 @@ const Profile: FunctionComponent<
 				await SettingsService.updateProfileInfo(newProfileInfo);
 			} catch (err) {
 				setIsSaving(false);
+				if (JSON.stringify(err).includes('DUPLICATE_ALIAS')) {
+					ToastService.danger(
+						tText('settings/components/profile___deze-schermnaam-is-reeds-in-gebruik')
+					);
+					setProfileErrors({
+						alias: tText(
+							'settings/components/profile___schermnaam-is-reeds-in-gebruik'
+						),
+					});
+					return;
+				}
 				throw err;
 			}
 
@@ -714,6 +730,22 @@ const Profile: FunctionComponent<
 												labelFor="email"
 											>
 												{email}
+											</FormGroup>
+											<FormGroup
+												label={tText(
+													'settings/components/profile___nickname'
+												)}
+												labelFor="alias"
+												error={get(profileErrors, 'alias')}
+											>
+												<TextInput
+													id="alias"
+													placeholder={tText(
+														'settings/components/profile___een-unieke-gebruikersnaam'
+													)}
+													value={alias || ''}
+													onChange={setAlias}
+												/>
 											</FormGroup>
 											<FormGroup
 												label={tText(
