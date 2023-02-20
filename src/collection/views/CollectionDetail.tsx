@@ -93,7 +93,7 @@ export const COLLECTION_ACTIONS = {
 };
 
 type CollectionDetailPermissions = Partial<{
-	canViewCollections: boolean;
+	canViewOwnCollection: boolean;
 	canViewPublishedCollections: boolean;
 	canViewUnpublishedCollections: boolean;
 	canEditCollections: boolean;
@@ -308,7 +308,7 @@ const CollectionDetail: FunctionComponent<
 		]);
 
 		return {
-			canViewCollections: rawPermissions[0],
+			canViewOwnCollection: rawPermissions[0],
 			canViewPublishedCollections: rawPermissions[1],
 			canViewUnpublishedCollections: rawPermissions[2],
 			canEditCollections: rawPermissions[3],
@@ -354,7 +354,7 @@ const CollectionDetail: FunctionComponent<
 			let showNoAccessPopup = false;
 
 			if (
-				!permissionObj.canViewCollections &&
+				!permissionObj.canViewOwnCollection &&
 				!permissionObj.canViewPublishedCollections &&
 				!permissionObj.canViewUnpublishedCollections
 			) {
@@ -391,10 +391,10 @@ const CollectionDetail: FunctionComponent<
 			}
 
 			if (
-				(!permissionObj.canViewCollections &&
+				(!permissionObj.canViewOwnCollection &&
 					collectionObj.is_public &&
 					!permissionObj.canViewPublishedCollections) ||
-				(!permissionObj.canViewCollections &&
+				(!permissionObj.canViewOwnCollection &&
 					!collectionObj.is_public &&
 					!permissionObj.canViewUnpublishedCollections)
 			) {
@@ -433,20 +433,20 @@ const CollectionDetail: FunctionComponent<
 	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
-		if (collectionInfo?.permissions?.canViewCollections) {
+		if (collectionInfo?.permissions?.canViewPublishedCollections) {
 			getRelatedCollections();
 		}
 	}, [collectionInfo, getRelatedCollections]);
 
 	useEffect(() => {
-		if (collectionInfo?.permissions?.canViewCollections) {
+		if (collectionInfo?.permissions?.canViewOwnCollection) {
 			getPublishedBundles();
 		}
 	}, [collectionInfo, getPublishedBundles]);
 
 	useEffect(() => {
 		if (
-			collectionInfo?.permissions?.canViewCollections ||
+			collectionInfo?.permissions?.canViewOwnCollection ||
 			collectionInfo?.permissions?.canViewPublishedCollections ||
 			collectionInfo?.permissions?.canViewUnpublishedCollections
 		) {
