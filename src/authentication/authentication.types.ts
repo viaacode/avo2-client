@@ -4,6 +4,6 @@ export enum LoginMessage {
 }
 
 export enum SpecialPermissionGroups {
-	loggedOutUsers = -1,
-	loggedInUsers = -2,
+	loggedOutUsers = '-1',
+	loggedInUsers = '-2',
 }

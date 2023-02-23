@@ -67,7 +67,7 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 
 	useEffect(() => {
 		// Hide zendesk when a pupil is logged in
-		if (props?.user?.profile?.userGroupIds?.[0] === SpecialUserGroup.Pupil) {
+		if (String(props?.user?.profile?.userGroupIds?.[0]) === SpecialUserGroup.Pupil) {
 			document.body.classList.add('hide-zendesk-widget');
 		} else {
 			document.body.classList.remove('hide-zendesk-widget');

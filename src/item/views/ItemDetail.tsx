@@ -203,7 +203,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						location.pathname.includes(`/${ROUTE_PARTS.assignments}/`))
 				)
 			) {
-				if (user.profile?.userGroupIds[0] === SpecialUserGroup.Pupil) {
+				if (String(user.profile?.userGroupIds[0]) === SpecialUserGroup.Pupil) {
 					setLoadingInfo({
 						state: 'error',
 						message: tText(

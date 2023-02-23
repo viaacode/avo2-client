@@ -1,5 +1,4 @@
 import { ContentPageRenderer } from '@meemoo/admin-core-ui';
-import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -18,7 +17,7 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, use
 	const { data: contentPageInfo } = useGetContentPageByPath(`/${ROUTE_PARTS.loggedInHome}`);
 
 	// /start when user is a pupil => should be redirected to /werkruimte/opdrachten
-	if (getUserGroupId(get(user, 'profile')) === SpecialUserGroup.Pupil) {
+	if (getUserGroupId(user?.profile) === SpecialUserGroup.Pupil) {
 		history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 		return null;
 	}

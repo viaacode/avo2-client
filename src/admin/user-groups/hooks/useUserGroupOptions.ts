@@ -32,7 +32,7 @@ export const useUserGroupOptions = (
 						allOptions.map(
 							(opt): TagInfo => ({
 								label: opt.label as string,
-								value: opt.id as number,
+								value: String(opt.id),
 							})
 						)
 					);

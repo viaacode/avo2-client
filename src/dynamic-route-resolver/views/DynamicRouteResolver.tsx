@@ -248,8 +248,8 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			// Check if the page requires the user to be logged in and not both logged in or out
 			if (
-				routeUserGroupIds.includes(String(SpecialPermissionGroups.loggedInUsers)) &&
-				!routeUserGroupIds.includes(String(SpecialPermissionGroups.loggedOutUsers)) &&
+				routeUserGroupIds.includes(SpecialPermissionGroups.loggedInUsers) &&
+				!routeUserGroupIds.includes(SpecialPermissionGroups.loggedOutUsers) &&
 				loginState?.message !== 'LOGGED_IN'
 			) {
 				return (

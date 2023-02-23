@@ -2,7 +2,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
-import { CustomError, getFullName, getProfile } from '../../shared/helpers';
+import { CustomError, getProfile } from '../../shared/helpers';
 
 export const getFirstName = (user: Avo.User.User | undefined, defaultName = ''): string => {
 	if (!user) {
@@ -51,12 +51,12 @@ export const getUserGroupLabel = (
 };
 
 export const getUserGroupId = (
-	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined
-): number => {
-	const groups = (userOrProfile as Avo.User.Profile).userGroupIds;
+	userOrProfile: Avo.User.Profile | null | undefined
+): SpecialUserGroup | '0' => {
+	const groups: (string | number)[] = (userOrProfile as Avo.User.Profile).userGroupIds;
 
 	if (groups && groups.length) {
-		return groups[0];
+		return String(groups[0]) as SpecialUserGroup;
 	}
 
 	if (!userOrProfile) {
@@ -65,19 +65,19 @@ export const getUserGroupId = (
 				'Failed to get profile user group id because the provided profile is undefined'
 			)
 		);
-		return 0;
+		return '0';
 	}
 
 	const profile = getProfile(userOrProfile);
-	const userGroupId = Number(
-		get(profile, 'userGroupIds[0]') || get(profile, 'profile_user_group.group.id') || '0'
+	const userGroupId = String(
+		profile?.userGroupIds?.[0] || (profile as any)?.profile_user_group?.group?.id || '0'
 	);
 
 	if (!userGroupId) {
 		console.error('Failed to get user group id from profile');
 	}
 
-	return userGroupId;
+	return userGroupId as SpecialUserGroup | '0';
 };
 
 export function getProfileFromUser(
@@ -90,22 +90,11 @@ export function getProfileFromUser(
 		}
 		throw new CustomError('Failed to get profile because the logged in user is undefined');
 	}
-	const profile = get(user, 'profile');
+	const profile = user?.profile;
 	if (!profile) {
 		throw new CustomError('No profile could be found for the logged in user');
 	}
 	return profile;
-}
-
-export function getProfileName(user: Avo.User.User | undefined): string {
-	if (!user) {
-		throw new CustomError('Failed to get profile name because the logged in user is undefined');
-	}
-	const profileName = getFullName(user as any, true, false);
-	if (!profileName) {
-		throw new CustomError('No profile name could be found for the logged in user');
-	}
-	return profileName;
 }
 
 export function getProfileAvatar(user: Avo.User.User | undefined): string {
@@ -131,7 +120,7 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 	const profile = get(user, 'profile');
 
 	// Only teachers have to fill in their profile for now
-	const userGroupId = getUserGroupId(get(user, 'profile'));
+	const userGroupId = getUserGroupId(user?.profile);
 	if (
 		userGroupId !== SpecialUserGroup.Teacher &&
 		userGroupId !== SpecialUserGroup.TeacherSecondary
