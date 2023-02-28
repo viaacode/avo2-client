@@ -27,7 +27,7 @@ export type AssignmentLabelsProps = {
 	labels: { assignment_label: Assignment_Label_v2 }[];
 	id?: string;
 	onChange: (changed: { assignment_label: Assignment_Label_v2 }[]) => void;
-	user: Avo.User.User;
+	commonUser: Avo.User.CommonUser;
 	dictionary?: {
 		placeholder: string;
 		empty: string;
@@ -38,7 +38,7 @@ export type AssignmentLabelsProps = {
 const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	id,
 	labels,
-	user,
+	commonUser,
 	onChange,
 	type = 'LABEL',
 	...props
@@ -54,12 +54,12 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		if (user.profile) {
+		if (commonUser?.profileId) {
 			// Fetch labels every time the manage labels modal closes and once at startup
-			const labels = await AssignmentLabelsService.getLabelsForProfile(user.profile.id);
+			const labels = await AssignmentLabelsService.getLabelsForProfile(commonUser.profileId);
 			setAllAssignmentLabels(labels);
 		}
-	}, [user, setAllAssignmentLabels]);
+	}, [commonUser?.profileId, setAllAssignmentLabels]);
 
 	useEffect(() => {
 		fetchAssignmentLabels();
@@ -170,7 +170,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 			<ManageAssignmentLabels
 				onClose={handleManageAssignmentLabelsModalClosed}
 				isOpen={isManageLabelsModalOpen}
-				user={user}
+				commonUser={commonUser}
 				type={type}
 			/>
 		</>

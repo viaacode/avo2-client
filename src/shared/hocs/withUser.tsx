@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
-import { selectUser } from '../../authentication/store/selectors';
+import { selectCommonUser, selectUser } from '../../authentication/store/selectors';
 import { AppState } from '../../store';
 
 const withUser = (WrappedComponent: FunctionComponent) => {
@@ -14,10 +14,12 @@ const withUser = (WrappedComponent: FunctionComponent) => {
 
 const mapStateToProps = (state: AppState) => ({
 	user: selectUser(state),
+	commonUser: selectCommonUser(state),
 });
 
 export default compose(connect(mapStateToProps), withUser);
 
 export interface UserProps {
 	user: Avo.User.User | undefined;
+	commonUser: Avo.User.CommonUser | undefined;
 }

@@ -1,5 +1,5 @@
 import { Container, Spacer } from '@viaa/avo2-components';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 
 import meemooLogo from '../../../assets/images/meemoo-logo.png';
@@ -17,12 +17,7 @@ import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 
-export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
-	history,
-	location,
-	match,
-	user,
-}) => {
+const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match, commonUser }) => {
 	const { tText } = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
@@ -40,7 +35,7 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 				// Do not notify the user, since this will happen in the header navigation component already
 				// And we don't want to show 2 error toast messages
 			});
-	}, [history, tText, user]);
+	}, [history, tText, commonUser]);
 
 	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
 		return mapNavElementsToNavigationItems(primaryNavItems, tText);
@@ -115,4 +110,4 @@ export const Footer: FunctionComponent<RouteComponentProps & UserProps> = ({
 	);
 };
 
-export default withUser(Footer) as FunctionComponent<RouteComponentProps>;
+export default withUser(Footer) as FC<RouteComponentProps>;

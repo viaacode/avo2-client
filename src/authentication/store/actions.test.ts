@@ -10,7 +10,8 @@ describe('login > store > actions', () => {
 	it('Should create an action to set the loginState', () => {
 		const loginResult: Avo.Auth.LoginResponse = {
 			message: LoginMessage.LOGGED_IN,
-			userInfo: {} as any,
+			userInfo: {} as Avo.User.User,
+			commonUserInfo: {} as Avo.User.CommonUser,
 			acceptedConditions: true,
 			sessionExpiresAt: moment().add(1, 'days').toString(),
 		};
