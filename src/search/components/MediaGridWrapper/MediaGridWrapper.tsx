@@ -1,5 +1,4 @@
 import {
-	AdminConfigManager,
 	BlockMediaGrid,
 	MediaGridBlockComponentState,
 	MediaGridBlockState,
@@ -8,14 +7,7 @@ import {
 import { ButtonAction, IconName, RenderLinkFunction } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { get, isEmpty, isNil } from 'lodash-es';
-import React, {
-	FunctionComponent,
-	ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
 import { ContentTypeString, toEnglishContentType } from '../../../collection/collection.types';
@@ -35,7 +27,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	renderLink: RenderLinkFunction;
 	buttonAltTitle?: string;
 	ctaButtonAltTitle?: string;
-	user: Avo.User.User;
+	commonUser: Avo.User.CommonUser;
 	mediaItemClicked: (mediaListItem: MediaListItem) => void;
 }
 
@@ -62,7 +54,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	searchQueryLimit,
 	elements,
 	results,
-	user,
+	commonUser,
 	renderLink,
 	mediaItemClicked,
 }: any) => {
@@ -76,8 +68,6 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	const [lastSearchQuery, setLastSearchQuery] = useState<string | null>(null);
 	const [lastSearchQueryLimit, setLastSearchQueryLimit] = useState<number | null>(null);
 
-	const configUser = useMemo(() => user || AdminConfigManager.getConfig().user, [user]);
-
 	const resolveMediaResults = useCallback(async () => {
 		try {
 			if (results && results.length) {
@@ -90,7 +80,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 				setResolvedResults(results);
 				return;
 			}
-			if (configUser) {
+			if (commonUser) {
 				// If we are logged in and get no results, but we do get elements, then the block is loaded in preview mode,
 				// and we should resolve the results ourselves using a separate route on the server
 				const searchQueryLimitNumber =
@@ -152,7 +142,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	}, [
 		results,
 		elements,
-		configUser,
+		commonUser,
 		searchQuery,
 		searchQueryLimit,
 		lastSearchQuery,

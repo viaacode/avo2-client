@@ -1,27 +1,31 @@
-import { get } from 'lodash-es';
+import { Avo } from '@viaa/avo2-types';
 
 import { AppState } from '../../store';
 
 export const selectLogin = ({ loginState }: AppState) => {
-	return get(loginState, ['data']);
+	return loginState?.data;
 };
 
 export const selectLoginLoading = ({ loginState }: AppState) => {
-	return get(loginState, ['loading']);
+	return loginState?.loading;
 };
 
 export const selectLoginError = ({ loginState }: AppState) => {
-	return get(loginState, ['error']);
+	return loginState?.error;
 };
 
 export const selectUser = ({ loginState }: AppState) => {
-	return get(loginState, ['data', 'userInfo']);
+	return (loginState?.data as Avo.Auth.LoginResponseLoggedIn)?.userInfo;
+};
+
+export const selectCommonUser = ({ loginState }: AppState) => {
+	return (loginState?.data as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
 };
 
 export const selectLoginMessage = ({ loginState }: AppState) => {
-	return get(loginState, ['data', 'message']);
+	return loginState?.data?.message;
 };
 
 export const selectAcceptedConditions = ({ loginState }: AppState) => {
-	return get(loginState, ['data', 'acceptedConditions']);
+	return (loginState?.data as Avo.Auth.LoginResponseLoggedIn)?.acceptedConditions;
 };

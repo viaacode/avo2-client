@@ -1,8 +1,8 @@
-import { AdminConfigManager, fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { ButtonAction } from '@viaa/avo2-components';
 
 import { ResolvedItemOrCollection } from '../../../search/components/MediaGridWrapper/MediaGridWrapper.types';
-import { CustomError } from '../../../shared/helpers';
+import { CustomError, getEnv } from '../../../shared/helpers';
 
 export class ContentPageService {
 	public static async resolveMediaItems(
@@ -17,7 +17,7 @@ export class ContentPageService {
 		let url: string | undefined = undefined;
 		let body: any | undefined = undefined;
 		try {
-			url = AdminConfigManager.getConfig().database.proxyUrl + '/content-pages/media';
+			url = (getEnv('PROXY_URL') as string) + '/content-pages/media';
 			body = {
 				searchQuery,
 				searchQueryLimit,

@@ -15,13 +15,12 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { compact, get, intersection, sortBy, without } from 'lodash-es';
+import { compact, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
 import { ColorSelect } from '../../../admin/content-page/components/ColorSelect/ColorSelect';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -31,17 +30,18 @@ import './ManageAssignmentLabels.scss';
 
 import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
 
-export interface ManageAssignmentLabelsProps extends UserProps {
+export interface ManageAssignmentLabelsProps {
 	isOpen: boolean;
 	onClose: () => void;
 	type?: Avo.Assignment.LabelType;
+	commonUser?: Avo.User.CommonUser;
 }
 
 const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = ({
 	isOpen,
 	onClose,
 	type,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const translations = getManageAssignmentLabelsTranslations(tText, type);
@@ -53,11 +53,13 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	const [assignmentLabelColors, setAssignmentLabelColors] = useState<AssignmentLabelColor[]>([]);
 	const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
+	const profileId = commonUser?.profileId;
+
 	const fetchAssignmentLabels = useCallback(async () => {
 		try {
-			if (user?.profile?.id) {
+			if (profileId) {
 				const labels = sortBy(
-					await AssignmentLabelsService.getLabelsForProfile(user.profile.id, type),
+					await AssignmentLabelsService.getLabelsForProfile(profileId, type),
 					'label'
 				);
 				setAssignmentLabels(labels);
@@ -65,7 +67,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			}
 		} catch (err) {
 			console.error(
-				new CustomError('Failed to fetch assignment labels for user', err, { user })
+				new CustomError('Failed to fetch assignment labels for user', err, { commonUser })
 			);
 			ToastService.danger(
 				tHtml(
@@ -73,7 +75,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				)
 			);
 		}
-	}, [user, setAssignmentLabels, tText, type]);
+	}, [commonUser, setAssignmentLabels, tText, type]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
@@ -103,7 +105,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				id: generateRandomId(),
 				label: '',
 				color_enum_value: assignmentLabelColors[0].value,
-				owner_profile_id: get(user, 'profile.id'),
+				owner_profile_id: profileId,
 				color_override: null,
 				enum_color: assignmentLabelColors[0],
 				type: type || 'LABEL',
@@ -148,7 +150,6 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				updatedIds.map((updatedId) => assignmentLabels.find((l) => l.id === updatedId))
 			);
 
-			const profileId = user?.profile?.id;
 			await Promise.all([
 				AssignmentLabelsService.insertLabels(
 					newLabels.map((item) =>

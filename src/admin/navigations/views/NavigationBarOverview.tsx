@@ -1,5 +1,5 @@
 import { NavigationOverview } from '@meemoo/admin-core-ui';
-import React, { FunctionComponent } from 'react';
+import React, { FC } from 'react';
 import MetaTags from 'react-meta-tags';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -11,7 +11,7 @@ import './NavigationBarOverview.scss';
 
 type NavigationBarOverviewProps = DefaultSecureRouteProps;
 
-const NavigationBarOverview: FunctionComponent<NavigationBarOverviewProps> = () => {
+const NavigationBarOverview: FC<NavigationBarOverviewProps> = () => {
 	const { tText } = useTranslation();
 
 	return (
@@ -34,4 +34,4 @@ const NavigationBarOverview: FunctionComponent<NavigationBarOverviewProps> = () 
 	);
 };
 
-export default withAdminCoreConfig(NavigationBarOverview as FunctionComponent);
+export default withAdminCoreConfig(NavigationBarOverview as FC) as FC;

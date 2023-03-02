@@ -45,7 +45,7 @@ export interface AssignmentDetailsFormEditableProps {
 
 const AssignmentDetailsFormEditable: FC<
 	AssignmentDetailsFormEditableProps & UserProps & DefaultProps
-> = ({ assignment, setAssignment, setValue, className, style, user }) => {
+> = ({ assignment, setAssignment, setValue, className, style, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const getId = useCallback(
@@ -55,7 +55,7 @@ const AssignmentDetailsFormEditable: FC<
 
 	// Render
 
-	if (!user) {
+	if (!commonUser) {
 		return (
 			<Spacer margin="top-extra-large">
 				<Flex orientation="horizontal" center>
@@ -81,7 +81,7 @@ const AssignmentDetailsFormEditable: FC<
 						labels={assignment.labels.filter(
 							(item) => item.assignment_label.type === 'CLASS'
 						)}
-						user={user}
+						commonUser={commonUser}
 						dictionary={{
 							placeholder: tText(
 								'assignment/components/assignment-details-form-editable___voeg-een-klas-toe'
@@ -134,7 +134,7 @@ const AssignmentDetailsFormEditable: FC<
 						labels={assignment.labels.filter(
 							(item) => item.assignment_label.type === 'LABEL'
 						)}
-						user={user}
+						commonUser={commonUser}
 						dictionary={{
 							placeholder: tText(
 								'assignment/components/assignment-details-form-editable___voeg-een-label-toe'
