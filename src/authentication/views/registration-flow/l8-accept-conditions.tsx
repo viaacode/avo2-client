@@ -11,7 +11,7 @@ import { Dispatch } from 'redux';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CampaignMonitorService } from '../../../shared/services/campaign-monitor-service';
 import { NotificationService } from '../../../shared/services/notification-service';
@@ -32,13 +32,14 @@ export interface AcceptConditionsProps {
 
 const AcceptConditions: FunctionComponent<
 	AcceptConditionsProps & DefaultSecureRouteProps & UserProps
-> = ({ history, location, commonUser, acceptConditions, loginState }) => {
+> = ({ history, location, acceptConditions, loginState }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// The term of use and the privacy conditions
 	const [pages, setPages] = useState<(ContentPageInfo | null)[]>([]);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
+	const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
 
 	const fetchContentPage = useCallback(async () => {
 		try {
@@ -209,4 +210,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps, withUser)(AcceptConditions));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AcceptConditions));
