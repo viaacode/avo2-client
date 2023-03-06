@@ -361,6 +361,19 @@ const CollectionDetail: FunctionComponent<
 				showNoAccessPopup = true;
 			}
 
+			if (!user) {
+				setCollectionInfo({
+					showNoAccessPopup: false,
+					showLoginPopup: true,
+					permissions: permissionObj,
+					collection: null,
+				});
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				return;
+			}
+
 			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
 				uuid,
 				'collection'
@@ -373,19 +386,6 @@ const CollectionDetail: FunctionComponent<
 						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 					),
 					icon: IconName.search,
-				});
-				return;
-			}
-
-			if (!user) {
-				setCollectionInfo({
-					showNoAccessPopup: false,
-					showLoginPopup: true,
-					permissions: permissionObj,
-					collection: collectionObj || null,
-				});
-				setLoadingInfo({
-					state: 'loaded',
 				});
 				return;
 			}
@@ -1295,7 +1295,7 @@ const CollectionDetail: FunctionComponent<
 			);
 		}
 
-		const { profile, title } = collection as Avo.Collection.Collection;
+		// const { profile, title } = collection as Avo.Collection.Collection;
 
 		return (
 			<div
@@ -1304,25 +1304,30 @@ const CollectionDetail: FunctionComponent<
 					showLoginPopup ? 'hide-behind-login-popup' : ''
 				)}
 			>
-				<Header
-					title={title}
-					category="collection"
-					showMetaData
-					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
-					views={String(bookmarkViewPlayCounts.viewCount || 0)}
-				>
-					{!showLoginPopup && (
-						<HeaderButtons>
-							{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
-						</HeaderButtons>
-					)}
+				{collection && (
+					<Header
+						title={collection.title}
+						category="collection"
+						showMetaData
+						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
+						views={String(bookmarkViewPlayCounts.viewCount || 0)}
+					>
+						{!showLoginPopup && (
+							<HeaderButtons>
+								{isMobileWidth()
+									? renderHeaderButtonsMobile()
+									: renderHeaderButtons()}
+							</HeaderButtons>
+						)}
 
-					<HeaderRow>
-						<Spacer margin={'top-small'}>
-							{profile && renderAvatar(profile, { dark: true })}
-						</Spacer>
-					</HeaderRow>
-				</Header>
+						<HeaderRow>
+							<Spacer margin={'top-small'}>
+								{collection.profile &&
+									renderAvatar(collection.profile, { dark: true })}
+							</Spacer>
+						</HeaderRow>
+					</Header>
+				)}
 
 				{/*/!* Start *!/*/}
 
@@ -1358,7 +1363,7 @@ const CollectionDetail: FunctionComponent<
 
 				{/*/!* End *!/*/}
 
-				{renderCollectionBody()}
+				{collection && renderCollectionBody()}
 				{!showLoginPopup && renderModals()}
 				{showLoginPopup && <RegisterOrLogin />}
 			</div>

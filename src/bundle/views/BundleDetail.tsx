@@ -198,6 +198,14 @@ const BundleDetail: FunctionComponent<
 				}
 			}
 
+			if (!user) {
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				setShowLoginPopup(showPopup);
+				return;
+			}
+
 			const bundleObj = await CollectionService.fetchCollectionOrBundleById(
 				bundleId,
 				'bundle'
@@ -706,6 +714,10 @@ const BundleDetail: FunctionComponent<
 	};
 
 	const renderBundle = () => {
+		if (!bundle && showLoginPopup) {
+			return <RegisterOrLogin />;
+		}
+
 		const { is_public, thumbnail_path, title, description_long } =
 			bundle as Avo.Collection.Collection;
 
