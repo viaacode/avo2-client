@@ -1,13 +1,16 @@
 import { UserOverview } from '@meemoo/admin-core-ui';
-import React, { FunctionComponent } from 'react';
+import { Avo } from '@viaa/avo2-types';
+import React, { FC } from 'react';
 import MetaTags from 'react-meta-tags';
+import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 
-const UserOverviewPage: FunctionComponent = () => {
+const UserOverviewPage: FC<UserProps> = ({ commonUser }) => {
 	const { tText } = useTranslation();
 
 	return (
@@ -32,10 +35,10 @@ const UserOverviewPage: FunctionComponent = () => {
 					/>
 				</MetaTags>
 
-				<UserOverview />
+				<UserOverview commonUser={commonUser as Avo.User.CommonUser} />
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
 };
 
-export default withAdminCoreConfig(UserOverviewPage);
+export default compose(withAdminCoreConfig, withUser)(UserOverviewPage) as FC;

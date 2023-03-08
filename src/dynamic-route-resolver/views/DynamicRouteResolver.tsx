@@ -143,10 +143,11 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 			// Special route exception
 			// /klaar/archief: redirect teachers to search page with klaar filter
+			const userInfo = (loginState as Avo.Auth.LoginResponseLoggedIn)?.userInfo;
 			if (
 				pathname === '/klaar/archief' &&
-				(loginState as any).userInfo &&
-				PermissionService.hasPerm((loginState as any).userInfo, PermissionName.SEARCH)
+				userInfo &&
+				PermissionService.hasPerm(userInfo, PermissionName.SEARCH)
 			) {
 				history.replace(
 					generateSearchLinkString(
@@ -248,8 +249,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			// Check if the page requires the user to be logged in and not both logged in or out
 			if (
-				routeUserGroupIds.includes(String(SpecialPermissionGroups.loggedInUsers)) &&
-				!routeUserGroupIds.includes(String(SpecialPermissionGroups.loggedOutUsers))
+				routeUserGroupIds.includes(SpecialPermissionGroups.loggedInUsers) &&
+				!routeUserGroupIds.includes(SpecialPermissionGroups.loggedOutUsers) &&
+				loginState?.message !== 'LOGGED_IN'
 			) {
 				return (
 					<Redirect
@@ -288,6 +290,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 						<ContentPageRenderer
 							contentPageInfo={routeInfo.data as ContentPageInfo}
 							onLoaded={() => scrollTo({ top: 0 })}
+							commonUser={
+								(loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
+							}
 						/>
 					)}
 				</>

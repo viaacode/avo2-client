@@ -1,4 +1,4 @@
-import { CommonUser, UserService } from '@meemoo/admin-core-ui';
+import { UserService } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Dropdown,
@@ -11,6 +11,7 @@ import {
 	Spacer,
 	TagList,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { uniqBy } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
@@ -57,7 +58,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 	useEffect(() => {
 		if (values.length) {
 			UserService.getNamesByProfileIds(values)
-				.then((users: Partial<CommonUser>[]) => {
+				.then((users: Partial<Avo.User.CommonUser>[]) => {
 					setSelectedProfiles(
 						users.map(
 							(user): PickerItem => ({

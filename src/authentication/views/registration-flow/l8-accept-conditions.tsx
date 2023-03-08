@@ -11,6 +11,7 @@ import { Dispatch } from 'redux';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
+import { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CampaignMonitorService } from '../../../shared/services/campaign-monitor-service';
 import { NotificationService } from '../../../shared/services/notification-service';
@@ -19,29 +20,26 @@ import { AppState } from '../../../store';
 import { DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { acceptConditionsAction } from '../../store/actions';
-import { selectLogin, selectUser } from '../../store/selectors';
+import { selectLogin } from '../../store/selectors';
 
 export const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
 	'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
 
-export interface AcceptConditionsProps extends DefaultSecureRouteProps {
+export interface AcceptConditionsProps {
 	acceptConditions: () => Dispatch;
 	loginState: Avo.Auth.LoginResponse | null;
 }
 
-const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
-	history,
-	location,
-	user,
-	acceptConditions,
-	loginState,
-}) => {
+const AcceptConditions: FunctionComponent<
+	AcceptConditionsProps & DefaultSecureRouteProps & UserProps
+> = ({ history, location, acceptConditions, loginState }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// The term of use and the privacy conditions
 	const [pages, setPages] = useState<(ContentPageInfo | null)[]>([]);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
+	const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
 
 	const fetchContentPage = useCallback(async () => {
 		try {
@@ -99,7 +97,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 			setAcceptInProgress(true);
 			await NotificationService.setNotification(
 				ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS,
-				user.profile?.id || '',
+				commonUser?.profileId || '',
 				true,
 				true
 			);
@@ -111,7 +109,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				console.error(
 					'Failed to update newsletter preferences during handleAcceptConditions',
 					err,
-					{ user }
+					{ commonUser }
 				);
 			}
 
@@ -121,7 +119,7 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				new CustomError(
 					'Failed to set accept conditions notification in the database',
 					err,
-					{ user }
+					{ commonUser }
 				)
 			);
 			ToastService.danger(
@@ -139,11 +137,17 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 				<Spacer margin="bottom-large">
 					{/* terms of use */}
 					{!!pages[0] && (
-						<ContentPageRenderer contentPageInfo={pages[0] as ContentPageInfo} />
+						<ContentPageRenderer
+							contentPageInfo={pages[0] as ContentPageInfo}
+							commonUser={commonUser}
+						/>
 					)}
 					{/* privacy conditions */}
 					{!!pages[1] && (
-						<ContentPageRenderer contentPageInfo={pages[1] as ContentPageInfo} />
+						<ContentPageRenderer
+							contentPageInfo={pages[1] as ContentPageInfo}
+							commonUser={commonUser}
+						/>
 					)}
 				</Spacer>
 				<Spacer margin="large">
@@ -197,7 +201,6 @@ const AcceptConditions: FunctionComponent<AcceptConditionsProps> = ({
 };
 
 const mapStateToProps = (state: AppState) => ({
-	user: selectUser(state),
 	loginState: selectLogin(state),
 });
 

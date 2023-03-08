@@ -1,12 +1,13 @@
 import { ContentPageOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { FunctionComponent, useCallback } from 'react';
+import React, { FC, FunctionComponent, useCallback } from 'react';
 import MetaTags from 'react-meta-tags';
+import { compose } from 'redux';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -16,16 +17,19 @@ import './ContentPage.scss';
 
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
-const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ history, user }) => {
+const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps & UserProps> = ({
+	history,
+	commonUser,
+}) => {
 	const { tText } = useTranslation();
 
 	const hasPerm = useCallback(
-		(permission: PermissionName) => PermissionService.hasPerm(user, permission),
-		[user]
+		(permission: PermissionName) => commonUser?.permissions?.includes(permission),
+		[commonUser]
 	);
 
 	const renderPageContent = () => {
-		return <ContentPageOverview />;
+		return <ContentPageOverview commonUser={commonUser} />;
 	};
 
 	return (
@@ -69,4 +73,4 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps> = ({ h
 	);
 };
 
-export default withAdminCoreConfig(ContentPageOverviewPage as FunctionComponent);
+export default compose(withAdminCoreConfig, withUser)(ContentPageOverviewPage) as FC;

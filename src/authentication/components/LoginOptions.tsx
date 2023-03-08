@@ -181,7 +181,7 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						type="secondary"
 						className="c-button-leerid"
 						icon={IconName.leerid}
-						iconType="multicolor"
+						iconType="custom"
 						label={tText('authentication/components/login-options___leerling-id')}
 						onClick={() => {
 							onOptionClicked();

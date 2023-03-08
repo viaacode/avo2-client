@@ -41,7 +41,14 @@ export class UserGroupService {
 				);
 			}
 
-			return [userGroups as UserGroup[], userGroupCount];
+			const userGroupsCleaned: UserGroup[] = userGroups.map((userGroup) => ({
+				id: String(userGroup.id),
+				label: userGroup.label,
+				description: userGroup.description,
+				created_at: userGroup.created_at,
+				updated_at: userGroup.updated_at,
+			}));
+			return [userGroupsCleaned, userGroupCount];
 		} catch (err) {
 			throw new CustomError('Failed to fetch user groups from graphql', err, {
 				variables,

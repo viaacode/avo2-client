@@ -1,6 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import queryString from 'query-string';
 
 import { getEnv } from '../shared/helpers';
@@ -37,9 +36,9 @@ export async function verifyStamboekNumber(
 	return data.status;
 }
 
-export function getUserGroupIds(user: Avo.User.User | null | undefined): number[] {
+export function getUserGroupIds(user: Avo.User.User | null | undefined): string[] {
 	return [
-		...get(user, 'profile.userGroupIds', []),
+		...(user?.profile?.userGroupIds ?? []).map((groupId) => String(groupId)),
 		user ? SpecialPermissionGroups.loggedInUsers : SpecialPermissionGroups.loggedOutUsers,
 	];
 }

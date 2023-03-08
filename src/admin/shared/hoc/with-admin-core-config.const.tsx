@@ -1,6 +1,5 @@
 import { AdminConfig, ContentBlockType, LinkInfo, ToastInfo } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
@@ -18,30 +17,9 @@ import { FileUploadService } from '../../../shared/services/file-upload-service'
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
 import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
-export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
+export function getAdminCoreConfig(): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
 		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
-	};
-
-	const commonUser: any = {
-		uid: user?.uid,
-		profileId: user?.profile?.id as string,
-		userId: user?.uid,
-		// idp: user?.idp,
-		email: user?.mail,
-		acceptedTosAt: '1970-01-01', // TODO see where this is stored in avo
-		userGroup: {
-			name: String(user?.profile?.userGroupIds[0]), // TODO figure out a label in a synchronous way
-			id: user?.profile?.userGroupIds[0],
-		},
-		firstName: user?.first_name || undefined,
-		lastName: user?.last_name || undefined,
-		fullName:
-			user?.full_name || [user?.first_name, user?.last_name].join(' ').trim() || undefined,
-		lastAccessAt: user?.last_access_at || undefined, // TODO enable once last_access_at field is added to the database
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		permissions: user?.profile?.permissions as any[],
-		tempAccess: null,
 	};
 
 	const proxyUrl = getEnv('PROXY_URL') as string;
@@ -78,6 +56,8 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 				sortTable: { name: IconName.chevronsUpAndDown },
 				arrowDown: { name: IconName.arrowDown },
 				chevronLeft: { name: IconName.chevronLeft },
+				extraOptions: { name: IconName.moreHorizontal },
+				copy: { name: IconName.copy },
 			},
 			list: GET_ADMIN_ICON_OPTIONS,
 		},
@@ -196,7 +176,6 @@ export function getAdminCoreConfig(user?: Avo.User.User): AdminConfig {
 		handlers: {
 			onExternalLink: noop,
 		},
-		user: commonUser,
 		routes: {
 			BUNDLE_DETAIL: `/${ROUTE_PARTS.bundles}/:id`,
 			BUNDLE_EDIT: `/${ROUTE_PARTS.bundles}/:id/${ROUTE_PARTS.edit}`,

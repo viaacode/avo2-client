@@ -24,14 +24,14 @@ export const GET_SPECIAL_USER_GROUPS: () => Partial<UserGroup>[] = () => [
 ];
 
 export enum SpecialUserGroup {
-	Admin = 1,
-	Teacher = 2,
-	TeacherSecondary = 3,
-	Pupil = 4,
-	Editor = 7,
-	EditorInChief = 8,
-	ContentPartner = 9,
-	EducativeAuthor = 10,
-	EducativePublisher = 11,
-	EducativePartner = 12,
+	Admin = '1',
+	Teacher = '2',
+	TeacherSecondary = '3',
+	Pupil = '4',
+	Editor = '7',
+	EditorInChief = '8',
+	ContentPartner = '9',
+	EducativeAuthor = '10',
+	EducativePublisher = '11',
+	EducativePartner = '12',
 }
