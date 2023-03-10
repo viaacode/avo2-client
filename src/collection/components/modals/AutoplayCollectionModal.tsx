@@ -26,6 +26,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	const [sourceList, setSourceList] = useState<FlowplayerSourceList | null>(null);
 
 	const fetchPlayableUrls = useCallback(async () => {
+		console.log('fetchPlayableUrls: ', collectionFragments);
 		const playableFragments = collectionFragments.filter(
 			(fragment) => !!fragment.item_meta?.external_id
 		);
@@ -73,6 +74,12 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 		return <FlowPlayerWrapper src={sourceList} canPlay autoplay />;
 	};
 
+	const handleClose = () => {
+		setSourceList(null);
+		onClose?.();
+	};
+
+	console.log('render autoplay collection modal');
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -80,7 +87,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 				'collection/components/modals/autoplay-collection-modal___speel-de-collectie-af'
 			)}
 			size="extra-large"
-			onClose={onClose}
+			onClose={handleClose}
 			className="c-modal__autoplay-modal"
 			scrollable={isMobileWidth()}
 		>
