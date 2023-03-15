@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
-import { AddToAssignmentModal } from '../../item/components';
+import { CutFragmentModal } from '../../item/components';
 import { ItemTrimInfo } from '../../item/item.types';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -132,13 +132,13 @@ export function useBlockListModals(
 					/>
 
 					{item && (
-						<AddToAssignmentModal // re-use Trim modal
+						<CutFragmentModal // re-use Trim modal
 							itemMetaData={item}
 							isOpen={isTrimItemModalOpen}
 							onClose={() => {
 								setIsTrimItemModalOpen(false);
 							}}
-							onAddToAssignmentCallback={async (itemTrimInfo: ItemTrimInfo) => {
+							afterCutCallback={async (itemTrimInfo: ItemTrimInfo) => {
 								const assignmentBlock: Partial<BaseBlockWithMeta> & Positioned = {
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 									item_meta: item,
