@@ -338,7 +338,7 @@ const BundleDetail: FunctionComponent<
 	const onDeleteBundle = async () => {
 		try {
 			setIsDeleteModalOpen(false);
-			await CollectionService.deleteCollection(bundleId);
+			await CollectionService.deleteCollectionOrBundle(bundleId);
 
 			trackEvents(
 				{

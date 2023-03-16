@@ -1,5 +1,0 @@
-mutation deleteCollectionBookmarks($id: uuid!) {
-	delete_app_collection_bookmarks(where: { collection_uuid: { _eq: $id } }) {
-		affected_rows
-	}
-}
