@@ -7,18 +7,25 @@ import { ItemTrimInfo } from '../item/item.types';
 import {
 	BulkUpdateAuthorForPupilCollectionsDocument,
 	BulkUpdateAuthorForPupilCollectionsMutation,
+	BulkUpdateAuthorForPupilCollectionsMutationVariables,
 	DeleteAssignmentResponsesDocument,
 	DeleteAssignmentResponsesMutation,
+	DeleteAssignmentResponsesMutationVariables,
 	GetMaxPositionPupilCollectionBlocksDocument,
 	GetMaxPositionPupilCollectionBlocksQuery,
+	GetMaxPositionPupilCollectionBlocksQueryVariables,
 	GetPupilCollectionIdsDocument,
 	GetPupilCollectionIdsQuery,
+	GetPupilCollectionIdsQueryVariables,
 	GetPupilCollectionsAdminOverviewDocument,
 	GetPupilCollectionsAdminOverviewQuery,
+	GetPupilCollectionsAdminOverviewQueryVariables,
 	InsertPupilCollectionBlocksDocument,
 	InsertPupilCollectionBlocksMutation,
+	InsertPupilCollectionBlocksMutationVariables,
 	UpdatePupilCollectionBlockDocument,
 	UpdatePupilCollectionBlockMutation,
+	UpdatePupilCollectionBlockMutationVariables,
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
@@ -55,7 +62,10 @@ export class PupilCollectionService {
 				),
 			};
 
-			const response = await dataService.query<GetPupilCollectionsAdminOverviewQuery>({
+			const response = await dataService.query<
+				GetPupilCollectionsAdminOverviewQuery,
+				GetPupilCollectionsAdminOverviewQueryVariables
+			>({
 				variables,
 				query: GetPupilCollectionsAdminOverviewDocument,
 			});
@@ -87,7 +97,10 @@ export class PupilCollectionService {
 				where,
 			};
 
-			const response = await dataService.query<GetPupilCollectionIdsQuery>({
+			const response = await dataService.query<
+				GetPupilCollectionIdsQuery,
+				GetPupilCollectionIdsQueryVariables
+			>({
 				variables,
 				query: GetPupilCollectionIdsDocument,
 			});
@@ -116,7 +129,10 @@ export class PupilCollectionService {
 		pupilCollectionIds: string[]
 	): Promise<number> {
 		try {
-			const response = await dataService.query<BulkUpdateAuthorForPupilCollectionsMutation>({
+			const response = await dataService.query<
+				BulkUpdateAuthorForPupilCollectionsMutation,
+				BulkUpdateAuthorForPupilCollectionsMutationVariables
+			>({
 				query: BulkUpdateAuthorForPupilCollectionsDocument,
 				variables: {
 					pupilCollectionIds,
@@ -141,7 +157,10 @@ export class PupilCollectionService {
 
 	static async deleteAssignmentResponses(assignmentResponseIds: string[]): Promise<void> {
 		try {
-			await dataService.query<DeleteAssignmentResponsesMutation>({
+			await dataService.query<
+				DeleteAssignmentResponsesMutation,
+				DeleteAssignmentResponsesMutationVariables
+			>({
 				query: DeleteAssignmentResponsesDocument,
 				variables: { assignmentResponseIds },
 			});
@@ -189,13 +208,19 @@ export class PupilCollectionService {
 				.map(cleanup)
 				.filter((block) => block.id)
 				.map((block) =>
-					dataService.query<UpdatePupilCollectionBlockMutation>({
+					dataService.query<
+						UpdatePupilCollectionBlockMutation,
+						UpdatePupilCollectionBlockMutationVariables
+					>({
 						query: UpdatePupilCollectionBlockDocument,
 						variables: { blockId: block.id, update: block },
 					})
 				),
 			...deleted.map(cleanup).map((block) =>
-				dataService.query<UpdatePupilCollectionBlockMutation>({
+				dataService.query<
+					UpdatePupilCollectionBlockMutation,
+					UpdatePupilCollectionBlockMutationVariables
+				>({
 					query: UpdatePupilCollectionBlockDocument,
 					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
 				})
@@ -204,7 +229,10 @@ export class PupilCollectionService {
 
 		if (created.length > 0) {
 			promises.push(
-				dataService.query<InsertPupilCollectionBlocksMutation>({
+				dataService.query<
+					InsertPupilCollectionBlocksMutation,
+					InsertPupilCollectionBlocksMutationVariables
+				>({
 					query: InsertPupilCollectionBlocksDocument,
 					variables: {
 						pupilCollectionBlocks: created
@@ -228,7 +256,10 @@ export class PupilCollectionService {
 	static async getPupilCollectionBlockMaxPosition(
 		assignmentResponseId: string
 	): Promise<number | null> {
-		const result = await dataService.query<GetMaxPositionPupilCollectionBlocksQuery>({
+		const result = await dataService.query<
+			GetMaxPositionPupilCollectionBlocksQuery,
+			GetMaxPositionPupilCollectionBlocksQueryVariables
+		>({
 			query: GetMaxPositionPupilCollectionBlocksDocument,
 			variables: { assignmentResponseId },
 		});
@@ -273,7 +304,10 @@ export class PupilCollectionService {
 			thumbnail_path: thumbnailPath,
 		};
 
-		const response = await dataService.query<InsertPupilCollectionBlocksMutation>({
+		const response = await dataService.query<
+			InsertPupilCollectionBlocksMutation,
+			InsertPupilCollectionBlocksMutationVariables
+		>({
 			query: InsertPupilCollectionBlocksDocument,
 			variables: {
 				pupilCollectionBlocks: [block],

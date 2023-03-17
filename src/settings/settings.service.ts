@@ -5,8 +5,10 @@ import { sortBy } from 'lodash-es';
 import {
 	GetEducationLevelsDocument,
 	GetEducationLevelsQuery,
+	GetEducationLevelsQueryVariables,
 	GetSubjectsDocument,
 	GetSubjectsQuery,
+	GetSubjectsQueryVariables,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { dataService } from '../shared/services/data-service';
@@ -33,7 +35,10 @@ export class SettingsService {
 
 	public static async fetchSubjects(): Promise<string[]> {
 		try {
-			const response: GetSubjectsQuery = await dataService.query<GetSubjectsQuery>({
+			const response: GetSubjectsQuery = await dataService.query<
+				GetSubjectsQuery,
+				GetSubjectsQueryVariables
+			>({
 				query: GetSubjectsDocument,
 			});
 
@@ -51,7 +56,10 @@ export class SettingsService {
 
 	public static async fetchEducationLevels(): Promise<string[]> {
 		try {
-			const response = await dataService.query<GetEducationLevelsQuery>({
+			const response = await dataService.query<
+				GetEducationLevelsQuery,
+				GetEducationLevelsQueryVariables
+			>({
 				query: GetEducationLevelsDocument,
 			});
 

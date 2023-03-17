@@ -26,7 +26,10 @@ export class UserGroupService {
 				limit: ITEMS_PER_PAGE,
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
-			const response = await dataService.query<GetUserGroupsWithFiltersQuery>({
+			const response = await dataService.query<
+				GetUserGroupsWithFiltersQuery,
+				GetUserGroupsWithFiltersQueryVariables
+			>({
 				variables,
 				query: GetUserGroupsWithFiltersDocument,
 			});

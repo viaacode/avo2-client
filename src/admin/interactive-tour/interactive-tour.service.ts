@@ -4,15 +4,19 @@ import { isNil } from 'lodash-es';
 import {
 	DeleteInteractiveTourDocument,
 	DeleteInteractiveTourMutation,
+	DeleteInteractiveTourMutationVariables,
 	GetInteractiveTourByIdDocument,
 	GetInteractiveTourByIdQuery,
+	GetInteractiveTourByIdQueryVariables,
 	GetInteractiveToursDocument,
 	GetInteractiveToursQuery,
 	GetInteractiveToursQueryVariables,
 	InsertInteractiveTourDocument,
 	InsertInteractiveTourMutation,
+	InsertInteractiveTourMutationVariables,
 	UpdateInteractiveTourDocument,
 	UpdateInteractiveTourMutation,
+	UpdateInteractiveTourMutationVariables,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
@@ -39,7 +43,10 @@ export class InteractiveTourService {
 				limit: ITEMS_PER_PAGE,
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
-			const response = await dataService.query<GetInteractiveToursQuery>({
+			const response = await dataService.query<
+				GetInteractiveToursQuery,
+				GetInteractiveToursQueryVariables
+			>({
 				variables,
 				query: GetInteractiveToursDocument,
 			});
@@ -70,7 +77,10 @@ export class InteractiveTourService {
 			variables = {
 				id,
 			};
-			const response = await dataService.query<GetInteractiveTourByIdQuery>({
+			const response = await dataService.query<
+				GetInteractiveTourByIdQuery,
+				GetInteractiveTourByIdQueryVariables
+			>({
 				variables,
 				query: GetInteractiveTourByIdDocument,
 			});
@@ -95,7 +105,10 @@ export class InteractiveTourService {
 		interactiveTour: EditableInteractiveTour
 	): Promise<number> {
 		try {
-			const response = await dataService.query<InsertInteractiveTourMutation>({
+			const response = await dataService.query<
+				InsertInteractiveTourMutation,
+				InsertInteractiveTourMutationVariables
+			>({
 				query: InsertInteractiveTourDocument,
 				variables: {
 					interactiveTour: {
@@ -124,7 +137,16 @@ export class InteractiveTourService {
 
 	static async updateInteractiveTour(interactiveTour: EditableInteractiveTour): Promise<void> {
 		try {
-			await dataService.query<UpdateInteractiveTourMutation>({
+			if (!interactiveTour.id) {
+				throw new CustomError(
+					'Cannot update interactive tour because the id is undefined',
+					null
+				);
+			}
+			await dataService.query<
+				UpdateInteractiveTourMutation,
+				UpdateInteractiveTourMutationVariables
+			>({
 				query: UpdateInteractiveTourDocument,
 				variables: {
 					interactiveTour: {
@@ -145,7 +167,10 @@ export class InteractiveTourService {
 
 	static async deleteInteractiveTour(interactiveTourId: number): Promise<void> {
 		try {
-			await dataService.query<DeleteInteractiveTourMutation>({
+			await dataService.query<
+				DeleteInteractiveTourMutation,
+				DeleteInteractiveTourMutationVariables
+			>({
 				query: DeleteInteractiveTourDocument,
 				variables: {
 					interactiveTourId,

@@ -5,19 +5,24 @@ import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
 import {
 	DeleteCollectionBookmarksForUserMutation,
+	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkMutation,
+	DeleteItemBookmarkMutationVariables,
 	GetBookmarksForUserDocument,
 	GetBookmarksForUserQuery,
 	GetBookmarksForUserQueryVariables,
 	GetBookmarkStatusesDocument,
 	GetBookmarkStatusesQuery,
+	GetBookmarkStatusesQueryVariables,
 	GetCollectionBookmarkViewPlayCountsDocument,
 	GetCollectionBookmarkViewPlayCountsQuery,
+	GetCollectionBookmarkViewPlayCountsQueryVariables,
 	GetItemBookmarksForUserDocument,
 	GetItemBookmarksForUserQuery,
 	GetItemBookmarksForUserQueryVariables,
 	GetItemBookmarkViewPlayCountsDocument,
 	GetItemBookmarkViewPlayCountsQuery,
+	GetItemBookmarkViewPlayCountsQueryVariables,
 	GetMultipleCollectionViewCountsDocument,
 	GetMultipleCollectionViewCountsQuery,
 	GetMultipleCollectionViewCountsQueryVariables,
@@ -25,11 +30,17 @@ import {
 	GetMultipleItemViewCountsQuery,
 	GetMultipleItemViewCountsQueryVariables,
 	IncrementCollectionPlaysMutation,
+	IncrementCollectionPlaysMutationVariables,
 	IncrementCollectionViewsMutation,
+	IncrementCollectionViewsMutationVariables,
 	IncrementItemPlaysMutation,
+	IncrementItemPlaysMutationVariables,
 	IncrementItemViewsMutation,
+	IncrementItemViewsMutationVariables,
 	InsertCollectionBookmarkMutation,
+	InsertCollectionBookmarkMutationVariables,
 	InsertItemBookmarkMutation,
+	InsertItemBookmarkMutationVariables,
 } from '../../generated/graphql-db-types';
 import { CustomError, normalizeTimestamp } from '../../helpers';
 import { dataService } from '../data-service';
@@ -74,7 +85,11 @@ export class BookmarksViewsPlaysService {
 					| InsertItemBookmarkMutation
 					| InsertCollectionBookmarkMutation
 					| DeleteItemBookmarkMutation
-					| DeleteCollectionBookmarksForUserMutation
+					| DeleteCollectionBookmarksForUserMutation,
+					| InsertItemBookmarkMutationVariables
+					| InsertCollectionBookmarkMutationVariables
+					| DeleteItemBookmarkMutationVariables
+					| DeleteCollectionBookmarksForUserMutationVariables
 				>({
 					query,
 					variables,
@@ -101,7 +116,10 @@ export class BookmarksViewsPlaysService {
 		itemUuid: string,
 		user: Avo.User.User | null
 	): Promise<BookmarkViewPlayCounts> {
-		const response = await dataService.query<GetItemBookmarkViewPlayCountsQuery>({
+		const response = await dataService.query<
+			GetItemBookmarkViewPlayCountsQuery,
+			GetItemBookmarkViewPlayCountsQueryVariables
+		>({
 			query: GetItemBookmarkViewPlayCountsDocument,
 			variables: { itemUuid, profileId: get(user, 'profile.id', null) },
 		});
@@ -121,7 +139,10 @@ export class BookmarksViewsPlaysService {
 		collectionUuid: string,
 		user: Avo.User.User | null
 	): Promise<BookmarkViewPlayCounts> {
-		const response = await dataService.query<GetCollectionBookmarkViewPlayCountsQuery>({
+		const response = await dataService.query<
+			GetCollectionBookmarkViewPlayCountsQuery,
+			GetCollectionBookmarkViewPlayCountsQueryVariables
+		>({
 			query: GetCollectionBookmarkViewPlayCountsDocument,
 			variables: { collectionUuid, profileId: user?.profile?.id || null },
 		});
@@ -222,7 +243,10 @@ export class BookmarksViewsPlaysService {
 			filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
 			order: orderObject,
 		};
-		const response = await dataService.query<GetItemBookmarksForUserQuery>({
+		const response = await dataService.query<
+			GetItemBookmarksForUserQuery,
+			GetItemBookmarksForUserQueryVariables
+		>({
 			query: GetItemBookmarksForUserDocument,
 			variables,
 		});
@@ -239,7 +263,10 @@ export class BookmarksViewsPlaysService {
 	 */
 	public static async getAllBookmarksForUser(user: Avo.User.User): Promise<BookmarkInfo[]> {
 		const variables: GetBookmarksForUserQueryVariables = { profileId: user?.profile?.id };
-		const response = await dataService.query<GetBookmarksForUserQuery>({
+		const response = await dataService.query<
+			GetBookmarksForUserQuery,
+			GetBookmarksForUserQueryVariables
+		>({
 			query: GetBookmarksForUserDocument,
 			variables,
 		});
@@ -314,7 +341,8 @@ export class BookmarksViewsPlaysService {
 			| GetMultipleItemViewCountsQueryVariables
 			| GetMultipleCollectionViewCountsQueryVariables = { uuids: contentIds };
 		const response = await dataService.query<
-			GetMultipleItemViewCountsQuery | GetMultipleCollectionViewCountsQuery
+			GetMultipleItemViewCountsQuery | GetMultipleCollectionViewCountsQuery,
+			GetMultipleItemViewCountsQueryVariables | GetMultipleCollectionViewCountsQueryVariables
 		>({
 			query:
 				type === 'item'
@@ -346,7 +374,11 @@ export class BookmarksViewsPlaysService {
 				| IncrementItemPlaysMutation
 				| IncrementItemViewsMutation
 				| IncrementCollectionViewsMutation
-				| IncrementCollectionPlaysMutation
+				| IncrementCollectionPlaysMutation,
+				| IncrementItemPlaysMutationVariables
+				| IncrementItemViewsMutationVariables
+				| IncrementCollectionViewsMutationVariables
+				| IncrementCollectionPlaysMutationVariables
 			>({
 				query,
 				variables,
@@ -404,7 +436,10 @@ export class BookmarksViewsPlaysService {
 			const collectionUuids: string[] = collectionObjectInfos.map(
 				(objectInfo) => objectInfo.uuid
 			);
-			const response = await dataService.query<GetBookmarkStatusesQuery>({
+			const response = await dataService.query<
+				GetBookmarkStatusesQuery,
+				GetBookmarkStatusesQueryVariables
+			>({
 				query: GetBookmarkStatusesDocument,
 				variables: {
 					profileId,

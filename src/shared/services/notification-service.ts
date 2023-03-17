@@ -1,10 +1,13 @@
 import {
 	GetNotificationDocument,
 	GetNotificationQuery,
+	GetNotificationQueryVariables,
 	InsertNotificationDocument,
 	InsertNotificationMutation,
+	InsertNotificationMutationVariables,
 	UpdateNotificationDocument,
 	UpdateNotificationMutation,
+	UpdateNotificationMutationVariables,
 } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
@@ -21,7 +24,10 @@ export class NotificationService {
 		profileId: string
 	): Promise<NotificationInfo | null> {
 		try {
-			const response = await dataService.query<GetNotificationQuery>({
+			const response = await dataService.query<
+				GetNotificationQuery,
+				GetNotificationQueryVariables
+			>({
 				query: GetNotificationDocument,
 				variables: {
 					key,
@@ -55,7 +61,10 @@ export class NotificationService {
 			const mutation = notificationEntryExists
 				? UpdateNotificationDocument
 				: InsertNotificationDocument;
-			await dataService.query<UpdateNotificationMutation | InsertNotificationMutation>({
+			await dataService.query<
+				UpdateNotificationMutation | InsertNotificationMutation,
+				UpdateNotificationMutationVariables | InsertNotificationMutationVariables
+			>({
 				query: mutation,
 				variables: {
 					profileId,

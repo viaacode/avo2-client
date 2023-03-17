@@ -3,24 +3,34 @@ import type { Avo } from '@viaa/avo2-types';
 import {
 	DeleteCollectionRelationsByObjectDocument,
 	DeleteCollectionRelationsByObjectMutation,
+	DeleteCollectionRelationsByObjectMutationVariables,
 	DeleteCollectionRelationsBySubjectDocument,
 	DeleteCollectionRelationsBySubjectMutation,
+	DeleteCollectionRelationsBySubjectMutationVariables,
 	DeleteItemRelationsByObjectDocument,
 	DeleteItemRelationsByObjectMutation,
+	DeleteItemRelationsByObjectMutationVariables,
 	DeleteItemRelationsBySubjectDocument,
 	DeleteItemRelationsBySubjectMutation,
+	DeleteItemRelationsBySubjectMutationVariables,
 	GetCollectionRelationsByObjectDocument,
 	GetCollectionRelationsByObjectQuery,
+	GetCollectionRelationsByObjectQueryVariables,
 	GetCollectionRelationsBySubjectDocument,
 	GetCollectionRelationsBySubjectQuery,
+	GetCollectionRelationsBySubjectQueryVariables,
 	GetItemRelationsByObjectDocument,
 	GetItemRelationsByObjectQuery,
+	GetItemRelationsByObjectQueryVariables,
 	GetItemRelationsBySubjectDocument,
 	GetItemRelationsBySubjectQuery,
+	GetItemRelationsBySubjectQueryVariables,
 	InsertCollectionRelationDocument,
 	InsertCollectionRelationMutation,
+	InsertCollectionRelationMutationVariables,
 	InsertItemRelationDocument,
 	InsertItemRelationMutation,
+	InsertItemRelationMutationVariables,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
@@ -67,7 +77,11 @@ export class RelationService {
 				| GetCollectionRelationsByObjectQuery
 				| GetCollectionRelationsBySubjectQuery
 				| GetItemRelationsByObjectQuery
-				| GetItemRelationsBySubjectQuery
+				| GetItemRelationsBySubjectQuery,
+				| GetCollectionRelationsByObjectQueryVariables
+				| GetCollectionRelationsBySubjectQueryVariables
+				| GetItemRelationsByObjectQueryVariables
+				| GetItemRelationsBySubjectQueryVariables
 			>({
 				variables,
 				query: isCollection ? collectionQuery : itemQuery,
@@ -115,7 +129,8 @@ export class RelationService {
 				subjectId,
 			};
 			const response = await dataService.query<
-				InsertCollectionRelationMutation | InsertItemRelationMutation
+				InsertCollectionRelationMutation | InsertItemRelationMutation,
+				InsertCollectionRelationMutationVariables | InsertItemRelationMutationVariables
 			>({
 				variables,
 				query: isCollection ? InsertCollectionRelationDocument : InsertItemRelationDocument,
@@ -182,7 +197,11 @@ export class RelationService {
 				| DeleteCollectionRelationsByObjectMutation
 				| DeleteCollectionRelationsBySubjectMutation
 				| DeleteItemRelationsByObjectMutation
-				| DeleteItemRelationsBySubjectMutation
+				| DeleteItemRelationsBySubjectMutation,
+				| DeleteCollectionRelationsByObjectMutationVariables
+				| DeleteCollectionRelationsBySubjectMutationVariables
+				| DeleteItemRelationsByObjectMutationVariables
+				| DeleteItemRelationsBySubjectMutationVariables
 			>({
 				variables,
 				query: isCollection ? collectionQuery : itemQuery,

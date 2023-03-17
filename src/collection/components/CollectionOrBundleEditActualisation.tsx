@@ -119,20 +119,23 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 										)}
 									>
 										<ContentPicker
-											initialValue={{
-												label:
-													getFullName(
-														get(collection, 'management.manager'),
-														false,
-														true
-													) || '',
-												value: get(
-													collection,
-													'management.manager_profile_id',
-													''
-												),
-												type: 'PROFILE',
-											}}
+											initialValue={
+												collection?.management?.manager_profile_id
+													? {
+															label:
+																getFullName(
+																	collection?.management
+																		?.manager as unknown as Avo.User.Profile,
+																	false,
+																	true
+																) || '',
+															value:
+																collection?.management
+																	?.manager_profile_id ?? '',
+															type: 'PROFILE',
+													  }
+													: null
+											}
 											placeholder={tText(
 												'collection/components/collection-or-bundle-edit-actualisation___selecteer-een-verantwoordelijke'
 											)}

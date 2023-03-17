@@ -1,8 +1,10 @@
 import {
 	GetTranslationsDocument,
 	GetTranslationsQuery,
+	GetTranslationsQueryVariables,
 	UpdateTranslationsDocument,
 	UpdateTranslationsMutation,
+	UpdateTranslationsMutationVariables,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
@@ -10,7 +12,10 @@ import { dataService } from '../../shared/services/data-service';
 export const fetchTranslations = async (): Promise<any> => {
 	try {
 		// retrieve translations
-		const response = await dataService.query<GetTranslationsQuery>({
+		const response = await dataService.query<
+			GetTranslationsQuery,
+			GetTranslationsQueryVariables
+		>({
 			query: GetTranslationsDocument,
 		});
 
@@ -29,7 +34,7 @@ export const fetchTranslations = async (): Promise<any> => {
 export const updateTranslations = async (name: string, translations: any) => {
 	try {
 		// update translation by name
-		await dataService.query<UpdateTranslationsMutation>({
+		await dataService.query<UpdateTranslationsMutation, UpdateTranslationsMutationVariables>({
 			query: UpdateTranslationsDocument,
 			variables: {
 				name,
