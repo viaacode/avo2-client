@@ -408,6 +408,19 @@ const CollectionDetail: FunctionComponent<
 				collection: collectionObj || null,
 			});
 		} catch (err) {
+			if ((err as CustomError)?.innerException?.statusCode === 404 && !user) {
+				// If not logged in and the collection is not found => the collection might be private and the user might need to login to see it
+				setCollectionInfo({
+					showNoAccessPopup: false,
+					showLoginPopup: true,
+					permissions: {},
+					collection: null,
+				});
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				return;
+			}
 			console.error(
 				new CustomError(
 					'Failed to check permissions or get collection from the database',
@@ -1295,8 +1308,6 @@ const CollectionDetail: FunctionComponent<
 			);
 		}
 
-		// const { profile, title } = collection as Avo.Collection.Collection;
-
 		return (
 			<div
 				className={classnames(
@@ -1328,40 +1339,6 @@ const CollectionDetail: FunctionComponent<
 						</HeaderRow>
 					</Header>
 				)}
-
-				{/*/!* Start *!/*/}
-
-				{/*<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">*/}
-				{/*	<BlockList*/}
-				{/*		blocks={collection.collection_fragments}*/}
-				{/*		config={{*/}
-				{/*			TEXT: {*/}
-				{/*				title: {*/}
-				{/*					canClickHeading: permissions?.canViewAnyPublishedItems,*/}
-				{/*				},*/}
-				{/*			},*/}
-				{/*			ITEM: {*/}
-				{/*				meta: {*/}
-				{/*					canClickSeries: permissions?.canViewAnyPublishedItems,*/}
-				{/*				},*/}
-				{/*				flowPlayer: {*/}
-				{/*					canPlay:*/}
-				{/*						!isAddToBundleModalOpen &&*/}
-				{/*						!isDeleteModalOpen &&*/}
-				{/*						!isPublishModalOpen &&*/}
-				{/*						!isShareThroughEmailModalOpen &&*/}
-				{/*						!isAutoplayCollectionModalOpen,*/}
-				{/*				},*/}
-				{/*			},*/}
-				{/*		}}*/}
-				{/*	/>*/}
-				{/*</Container>*/}
-
-				{/*<br />*/}
-				{/*<hr />*/}
-				{/*<br />*/}
-
-				{/*/!* End *!/*/}
 
 				{collection && renderCollectionBody()}
 				{!showLoginPopup && renderModals()}
