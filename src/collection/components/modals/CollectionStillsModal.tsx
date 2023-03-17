@@ -93,7 +93,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 							<Blankslate
 								body=""
 								icon={IconName.search}
-								title={tText(
+								title={tHtml(
 									'collection/components/modals/collection-stills-modal___er-zijn-geen-thumbnails-beschikbaar-voor-de-fragmenten-in-de-collectie'
 								)}
 							/>
