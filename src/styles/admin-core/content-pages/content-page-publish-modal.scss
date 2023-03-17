@@ -1,0 +1,15 @@
+.p-content-page-publish-modal {
+	.avo__c-datepicker {
+		width: 23rem;
+	}
+
+	.c-content-page-publish-modal__display-date {
+		.avo__c-datepicker {
+			display: inline-block;
+
+			+ .c-tooltip-trigger {
+				margin-left: 1.6rem;
+			}
+		}
+	}
+}
