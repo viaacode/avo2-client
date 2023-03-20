@@ -64,7 +64,11 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
@@ -165,7 +169,14 @@ const CollectionDetail: FunctionComponent<
 	const getRelatedCollections = useCallback(async () => {
 		try {
 			if (isUuid(collectionId)) {
-				setRelatedCollections(await getRelatedItems(collectionId, 'collections', 4));
+				setRelatedCollections(
+					await getRelatedItems(
+						collectionId,
+						ObjectTypes.collections,
+						ObjectTypesAll.all,
+						4
+					)
+				);
 			}
 		} catch (err) {
 			console.error('Failed to get related items', err, {
@@ -325,6 +336,9 @@ const CollectionDetail: FunctionComponent<
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
+			setLoadingInfo({
+				state: 'loading',
+			});
 			let uuid: string | null;
 			if (isUuid(collectionId)) {
 				uuid = collectionId;
@@ -1099,7 +1113,8 @@ const CollectionDetail: FunctionComponent<
 								</Column>
 							)}
 						</Grid>
-						{renderRelatedItems(relatedCollections, defaultRenderDetailLink)}
+						{!!relatedCollections &&
+							renderRelatedItems(relatedCollections, defaultRenderDetailLink)}
 					</Container>
 				</Container>
 			</>
@@ -1159,7 +1174,7 @@ const CollectionDetail: FunctionComponent<
 					isOpen={isShareThroughEmailModalOpen}
 					onClose={() => setIsShareThroughEmailModalOpen(false)}
 				/>
-				{!!collection_fragments && collection && (
+				{!!collection_fragments && collection && isAutoplayCollectionModalOpen && (
 					<AutoplayCollectionModal
 						isOpen={isAutoplayCollectionModalOpen}
 						onClose={() => setIsAutoplayCollectionModalOpen(false)}

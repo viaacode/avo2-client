@@ -73,6 +73,11 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 		return <FlowPlayerWrapper src={sourceList} canPlay autoplay />;
 	};
 
+	const handleClose = () => {
+		setSourceList(null);
+		onClose?.();
+	};
+
 	return (
 		<Modal
 			isOpen={isOpen}
@@ -80,7 +85,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 				'collection/components/modals/autoplay-collection-modal___speel-de-collectie-af'
 			)}
 			size="extra-large"
-			onClose={onClose}
+			onClose={handleClose}
 			className="c-modal__autoplay-modal"
 			scrollable={isMobileWidth()}
 		>

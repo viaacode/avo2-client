@@ -18,6 +18,7 @@ import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import { useScrollToSelector } from '../../../../shared/hooks/scroll-to-selector';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
+import { ObjectTypesAll } from '../../../../shared/services/related-items-service';
 import { ToastService } from '../../../../shared/services/toast-service';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
@@ -229,6 +230,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				goToDetailLink={goToDetailLink}
 				goToSearchLink={goToSearchLink}
 				enabledMetaData={ENABLED_FILTERS_PUPIL_SEARCH}
+				relatedObjectTypes={ObjectTypesAll.items}
 				renderActionButtons={renderItemDetailActionButton}
 				renderBookmarkCount={() => null}
 				renderInteractiveTour={() => null}

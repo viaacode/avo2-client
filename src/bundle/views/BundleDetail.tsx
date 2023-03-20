@@ -75,7 +75,11 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 
 import './BundleDetail.scss';
@@ -279,7 +283,7 @@ const BundleDetail: FunctionComponent<
 					);
 				}
 
-				getRelatedItems(bundleId, 'bundles', 4)
+				getRelatedItems(bundleId, ObjectTypes.bundles, ObjectTypesAll.all, 4)
 					.then((relatedItems) => {
 						setRelatedBundles(relatedItems);
 					})
