@@ -1,13 +1,4 @@
-import {
-	Column,
-	Container,
-	Flex,
-	FlexItem,
-	Grid,
-	Modal,
-	ModalBody,
-	Spacer,
-} from '@viaa/avo2-components';
+import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 import MetaTags from 'react-meta-tags';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -44,21 +35,17 @@ const RegisterOrLogin: FunctionComponent<RouteComponentProps> = ({ history, loca
 					<ModalBody>
 						<Grid className="u-bg-gray-100">
 							<Column size="3-6">
-								<Flex className="u-maximize-height" center orientation="vertical">
-									<FlexItem className="c-register-login-view__text">
-										<h2 className="c-h2 u-m-0">
-											{tHtml(
-												'authentication/views/register-or-login___welkom-op-het-archief-voor-onderwijs'
-											)}
-										</h2>
+								<h2 className="c-h2 u-m-0">
+									{tHtml(
+										'authentication/views/register-or-login___welkom-op-het-archief-voor-onderwijs'
+									)}
+								</h2>
 
-										<Spacer margin={['top-small']}>
-											{tHtml(
-												'authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas'
-											)}
-										</Spacer>
-									</FlexItem>
-								</Flex>
+								<p>
+									{tHtml(
+										'authentication/views/register-or-login___maak-een-gratis-account-aan-en-verrijk-je-lessen-met-beeld-en-geluid-op-maat-van-de-klas'
+									)}
+								</p>
 							</Column>
 							<Column size="3-6" className="u-bg-white">
 								<LoginOptions history={history} location={location} match={match} />
