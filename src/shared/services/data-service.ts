@@ -31,9 +31,9 @@ export const fetchData = <TData, TVariables>(
 
 		const json = await res.json();
 
-		if (json.errors) {
-			const { message } = json.errors[0] || {};
-			throw new Error(message || 'Error');
+		if (json?.errors || res.status >= 400) {
+			const { message } = json?.errors?.[0] || {};
+			throw new Error(message || res.statusText || 'Error');
 		}
 
 		return json.data;

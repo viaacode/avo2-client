@@ -42,6 +42,7 @@ import { blockTypeToContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import {
 	DeleteObjectModal,
@@ -307,6 +308,14 @@ const BundleDetail: FunctionComponent<
 		};
 
 		checkPermissionsAndGetBundle().catch((err) => {
+			if ((err as CustomError)?.innerException?.statusCode === 404 && !user) {
+				// If not logged in and the bundle is not found => the bundle might be private and the user might need to login to see it
+				setShowLoginPopup(true);
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				return;
+			}
 			console.error(
 				new CustomError(
 					'Failed to check permissions or get bundle from the database',
@@ -891,6 +900,15 @@ const BundleDetail: FunctionComponent<
 		);
 	};
 
+	if (loadingInfo.state === 'error') {
+		return (
+			<ErrorView
+				icon={IconName.alertTriangle}
+				message={tHtml('bundle/views/bundle-detail___het-laden-van-de-bundel-is-mislukt')}
+				actionButtons={['home']}
+			/>
+		);
+	}
 	return (
 		<>
 			<LoadingErrorLoadedComponent
