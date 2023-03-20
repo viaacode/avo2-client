@@ -777,7 +777,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 				return;
 			}
-			await CollectionService.deleteCollection(collectionState.currentCollection.id);
+			await CollectionService.deleteCollectionOrBundle(collectionState.currentCollection.id);
 
 			trackEvents(
 				{

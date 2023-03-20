@@ -36,7 +36,7 @@ import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModa
 import { getMoreOptionsLabel } from '../../shared/constants';
 import {
 	Lookup_Enum_Assignment_Content_Labels_Enum,
-	useSoftDeleteCollectionByIdMutation,
+	useDeleteCollectionOrBundleByUuidMutation,
 } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
@@ -96,7 +96,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [page, setPage] = useState<number>(0);
 
 	// Mutations
-	const { mutateAsync: triggerCollectionDelete } = useSoftDeleteCollectionByIdMutation();
+	const { mutateAsync: triggerCollectionOrBundleDelete } =
+		useDeleteCollectionOrBundleByUuidMutation();
 
 	// Listeners
 	const onClickDelete = (collectionUuid: string) => {
@@ -257,9 +258,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				);
 				return;
 			}
-			await triggerCollectionDelete(
+			await triggerCollectionOrBundleDelete(
 				{
-					id: selectedCollectionUuid,
+					collectionOrBundleUuid: selectedCollectionUuid,
+					collectionOrBundleUuidAsText: selectedCollectionUuid,
 				},
 				{
 					onSuccess: async () => {

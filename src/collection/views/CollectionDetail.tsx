@@ -635,7 +635,7 @@ const CollectionDetail: FunctionComponent<
 
 	const onDeleteCollection = async (): Promise<void> => {
 		try {
-			await CollectionService.deleteCollection(collectionId);
+			await CollectionService.deleteCollectionOrBundle(collectionId);
 
 			trackEvents(
 				{
