@@ -3,23 +3,26 @@ import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import { UrlUpdateType } from 'use-query-params';
 
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
-import { AddToAssignmentModal } from '../../../../item/components';
+import { CutFragmentModal } from '../../../../item/components';
 import { ItemTrimInfo } from '../../../../item/item.types';
 import ItemDetail from '../../../../item/views/ItemDetail';
 import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';
 import { SearchFiltersAndResults } from '../../../../search/components';
 import { FilterState } from '../../../../search/search.types';
+import { selectSearchResults } from '../../../../search/store/selectors';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
-import { useScrollToSelector } from '../../../../shared/hooks/scroll-to-selector';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
 import { ObjectTypesAll } from '../../../../shared/services/related-items-service';
 import { ToastService } from '../../../../shared/services/toast-service';
+import { AppState } from '../../../../store';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
@@ -42,13 +45,14 @@ interface AssignmentResponseSearchTabProps {
 }
 
 const AssignmentResponseSearchTab: FunctionComponent<
-	AssignmentResponseSearchTabProps & UserProps
+	AssignmentResponseSearchTabProps & { searchResults: Avo.Search.Search } & UserProps
 > = ({
 	filterState,
 	setFilterState,
 	assignment,
 	assignmentResponse,
 	appendBlockToPupilCollection,
+	searchResults,
 	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -58,17 +62,27 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	// UI
 	const [isAddToAssignmentModalOpen, setIsAddToAssignmentModalOpen] = useState<boolean>(false);
 	const [selectedItem, setSelectedItem] = useState<Avo.Item.Item | null>(null);
-	useScrollToSelector(filterState.focus ? `#search-result-${filterState.focus}` : null);
 
 	// HTTP
 
 	// Effects
+
+	useEffect(() => {
+		// If search results change, wait for render and scroll down to result if available
+		setTimeout(() => {
+			const item = document.querySelector(
+				`#search-result-${filterState.focus}`
+			) as HTMLElement | null;
+			item?.scrollIntoView({ block: 'center' });
+		}, 100);
+	}, [searchResults]);
 
 	// Events
 	const goToDetailLink = (id: string): void => {
 		setFilterState({
 			...(filterState as PupilSearchFilterState),
 			selectedSearchResultId: id,
+			focus: undefined,
 		});
 	};
 
@@ -224,6 +238,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		// Render fragment detail page
 		return (
 			<ItemDetail
+				key={'item-detail-' + filterState.selectedSearchResultId}
 				id={filterState.selectedSearchResultId}
 				renderDetailLink={renderDetailLink}
 				renderSearchLink={renderSearchLink}
@@ -291,18 +306,24 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	return (
 		<>
 			{renderSearchContent()}
-			{selectedItem && (
-				<AddToAssignmentModal
+			{selectedItem && isAddToAssignmentModalOpen && (
+				<CutFragmentModal
+					key={'cut-fragment-modal-' + selectedItem.external_id}
 					itemMetaData={selectedItem}
 					isOpen={isAddToAssignmentModalOpen}
 					onClose={() => setIsAddToAssignmentModalOpen(false)}
-					onAddToAssignmentCallback={handleAddToPupilCollectionConfirmed}
+					afterCutCallback={handleAddToPupilCollectionConfirmed}
 				/>
 			)}
 		</>
 	);
 };
 
-export default withUser(
-	AssignmentResponseSearchTab
-) as FunctionComponent<AssignmentResponseSearchTabProps>;
+const mapStateToProps = (state: AppState) => ({
+	searchResults: selectSearchResults(state),
+});
+
+export default compose(
+	connect(mapStateToProps),
+	withUser
+)(AssignmentResponseSearchTab) as FunctionComponent<AssignmentResponseSearchTabProps>;
