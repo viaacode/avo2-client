@@ -2,22 +2,22 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
-import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, fromPairs, get, isEqual, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
 	App_Collection_Marcom_Log_Insert_Input,
-	DeleteCollectionBookmarksDocument,
-	DeleteCollectionBookmarksMutation,
-	DeleteCollectionBookmarksMutationVariables,
 	DeleteCollectionFragmentByIdDocument,
 	DeleteCollectionFragmentByIdMutation,
 	DeleteCollectionFragmentByIdMutationVariables,
 	DeleteCollectionLabelsDocument,
 	DeleteCollectionLabelsMutation,
 	DeleteCollectionLabelsMutationVariables,
+	DeleteCollectionOrBundleByUuidDocument,
+	DeleteCollectionOrBundleByUuidMutation,
+	DeleteCollectionOrBundleByUuidMutationVariables,
 	DeleteMarcomEntriesByParentCollectionIdDocument,
 	DeleteMarcomEntriesByParentCollectionIdMutation,
 	DeleteMarcomEntriesByParentCollectionIdMutationVariables,
@@ -86,9 +86,6 @@ import {
 	InsertMarcomNoteMutationVariables,
 	Lookup_Enum_Collection_Management_Qc_Label_Enum,
 	Lookup_Enum_Relation_Types_Enum,
-	SoftDeleteCollectionByIdDocument,
-	SoftDeleteCollectionByIdMutation,
-	SoftDeleteCollectionByIdMutationVariables,
 	UpdateCollectionByIdDocument,
 	UpdateCollectionByIdMutation,
 	UpdateCollectionByIdMutationVariables,
@@ -352,11 +349,10 @@ export class CollectionService {
 
 			// set updated_at date if collection has changes (without taking into account the management fields)
 			if (
-				JSON.stringify(keepCoreCollectionProperties(updatedCollection)) !==
-					JSON.stringify(keepCoreCollectionProperties(initialCollection)) ||
-				newFragments.length ||
-				deleteFragmentIds.length ||
-				updateFragmentIds.length
+				!isEqual(
+					keepCoreCollectionProperties(updatedCollection),
+					keepCoreCollectionProperties(initialCollection)
+				)
 			) {
 				cleanedCollection.updated_at = new Date().toISOString();
 				cleanedCollection.updated_by_profile_id = getProfileId(user);
@@ -673,36 +669,28 @@ export class CollectionService {
 	};
 
 	/**
-	 * Delete collection by id.
+	 * Delete collection or bundle by its uuid and also deletes bookmarks,
+	 * and corresponding fragments from bundels in case of collection delete
 	 *
-	 * @param collectionId Unique identifier of the collection.
+	 * @param collectionOrBundleUuid Unique identifier of the collection.
 	 */
-	static deleteCollection = async (collectionId: string): Promise<void> => {
+	static deleteCollectionOrBundle = async (collectionOrBundleUuid: string): Promise<void> => {
 		try {
-			// delete collection by id
 			await Promise.all([
 				dataService.query<
-					SoftDeleteCollectionByIdMutation,
-					SoftDeleteCollectionByIdMutationVariables
+					DeleteCollectionOrBundleByUuidMutation,
+					DeleteCollectionOrBundleByUuidMutationVariables
 				>({
-					query: SoftDeleteCollectionByIdDocument,
+					query: DeleteCollectionOrBundleByUuidDocument,
 					variables: {
-						id: collectionId,
-					} as SoftDeleteCollectionByIdMutationVariables,
-				}),
-				dataService.query<
-					DeleteCollectionBookmarksMutation,
-					DeleteCollectionBookmarksMutationVariables
-				>({
-					query: DeleteCollectionBookmarksDocument,
-					variables: {
-						id: collectionId,
-					} as DeleteCollectionBookmarksMutationVariables,
+						collectionOrBundleUuid: collectionOrBundleUuid,
+						collectionOrBundleUuidAsText: collectionOrBundleUuid,
+					},
 				}),
 			]);
 		} catch (err) {
 			throw new CustomError(`Failed to delete collection or bundle'}`, err, {
-				collectionId,
+				collectionId: collectionOrBundleUuid,
 			});
 		}
 	};

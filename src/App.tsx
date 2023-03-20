@@ -52,6 +52,7 @@ wrapHistory(history, {
 const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	const { tHtml } = useTranslation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
+	const isPupilUser = String(props?.user?.profile?.userGroupIds?.[0]) === SpecialUserGroup.Pupil;
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -67,12 +68,12 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 
 	useEffect(() => {
 		// Hide zendesk when a pupil is logged in
-		if (String(props?.user?.profile?.userGroupIds?.[0]) === SpecialUserGroup.Pupil) {
+		if (isPupilUser || isAdminRoute) {
 			document.body.classList.add('hide-zendesk-widget');
 		} else {
 			document.body.classList.remove('hide-zendesk-widget');
 		}
-	}, [props.user]);
+	}, [isPupilUser, isAdminRoute]);
 
 	useEffect(() => {
 		if (loadingInfo.state === 'loaded') {
@@ -113,10 +114,10 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 						{!isLoginRoute && <Navigation {...props} />}
 						{renderRoutes()}
 						{!isLoginRoute && <Footer {...props} />}
-						<ZendeskWrapper />
 						<ACMIDMNudgeModal />
 					</>
 				)}
+				<ZendeskWrapper />
 			</div>
 		);
 	};

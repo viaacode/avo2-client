@@ -64,7 +64,11 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
@@ -165,7 +169,14 @@ const CollectionDetail: FunctionComponent<
 	const getRelatedCollections = useCallback(async () => {
 		try {
 			if (isUuid(collectionId)) {
-				setRelatedCollections(await getRelatedItems(collectionId, 'collections', 4));
+				setRelatedCollections(
+					await getRelatedItems(
+						collectionId,
+						ObjectTypes.collections,
+						ObjectTypesAll.all,
+						4
+					)
+				);
 			}
 		} catch (err) {
 			console.error('Failed to get related items', err, {
@@ -325,6 +336,9 @@ const CollectionDetail: FunctionComponent<
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
+			setLoadingInfo({
+				state: 'loading',
+			});
 			let uuid: string | null;
 			if (isUuid(collectionId)) {
 				uuid = collectionId;
@@ -408,6 +422,19 @@ const CollectionDetail: FunctionComponent<
 				collection: collectionObj || null,
 			});
 		} catch (err) {
+			if ((err as CustomError)?.innerException?.statusCode === 404 && !user) {
+				// If not logged in and the collection is not found => the collection might be private and the user might need to login to see it
+				setCollectionInfo({
+					showNoAccessPopup: false,
+					showLoginPopup: true,
+					permissions: {},
+					collection: null,
+				});
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				return;
+			}
 			console.error(
 				new CustomError(
 					'Failed to check permissions or get collection from the database',
@@ -621,7 +648,7 @@ const CollectionDetail: FunctionComponent<
 
 	const onDeleteCollection = async (): Promise<void> => {
 		try {
-			await CollectionService.deleteCollection(collectionId);
+			await CollectionService.deleteCollectionOrBundle(collectionId);
 
 			trackEvents(
 				{
@@ -1099,7 +1126,8 @@ const CollectionDetail: FunctionComponent<
 								</Column>
 							)}
 						</Grid>
-						{renderRelatedItems(relatedCollections, defaultRenderDetailLink)}
+						{!!relatedCollections &&
+							renderRelatedItems(relatedCollections, defaultRenderDetailLink)}
 					</Container>
 				</Container>
 			</>
@@ -1159,7 +1187,7 @@ const CollectionDetail: FunctionComponent<
 					isOpen={isShareThroughEmailModalOpen}
 					onClose={() => setIsShareThroughEmailModalOpen(false)}
 				/>
-				{!!collection_fragments && collection && (
+				{!!collection_fragments && collection && isAutoplayCollectionModalOpen && (
 					<AutoplayCollectionModal
 						isOpen={isAutoplayCollectionModalOpen}
 						onClose={() => setIsAutoplayCollectionModalOpen(false)}
@@ -1295,8 +1323,6 @@ const CollectionDetail: FunctionComponent<
 			);
 		}
 
-		// const { profile, title } = collection as Avo.Collection.Collection;
-
 		return (
 			<div
 				className={classnames(
@@ -1328,40 +1354,6 @@ const CollectionDetail: FunctionComponent<
 						</HeaderRow>
 					</Header>
 				)}
-
-				{/*/!* Start *!/*/}
-
-				{/*<Container mode="vertical" className="u-padding-top-l u-padding-bottom-l">*/}
-				{/*	<BlockList*/}
-				{/*		blocks={collection.collection_fragments}*/}
-				{/*		config={{*/}
-				{/*			TEXT: {*/}
-				{/*				title: {*/}
-				{/*					canClickHeading: permissions?.canViewAnyPublishedItems,*/}
-				{/*				},*/}
-				{/*			},*/}
-				{/*			ITEM: {*/}
-				{/*				meta: {*/}
-				{/*					canClickSeries: permissions?.canViewAnyPublishedItems,*/}
-				{/*				},*/}
-				{/*				flowPlayer: {*/}
-				{/*					canPlay:*/}
-				{/*						!isAddToBundleModalOpen &&*/}
-				{/*						!isDeleteModalOpen &&*/}
-				{/*						!isPublishModalOpen &&*/}
-				{/*						!isShareThroughEmailModalOpen &&*/}
-				{/*						!isAutoplayCollectionModalOpen,*/}
-				{/*				},*/}
-				{/*			},*/}
-				{/*		}}*/}
-				{/*	/>*/}
-				{/*</Container>*/}
-
-				{/*<br />*/}
-				{/*<hr />*/}
-				{/*<br />*/}
-
-				{/*/!* End *!/*/}
 
 				{collection && renderCollectionBody()}
 				{!showLoginPopup && renderModals()}
