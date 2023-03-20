@@ -2,7 +2,7 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
-import { cloneDeep, compact, fromPairs, get, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, fromPairs, get, isEqual, isNil, without } from 'lodash-es';
 import queryString from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -330,11 +330,10 @@ export class CollectionService {
 
 			// set updated_at date if collection has changes (without taking into account the management fields)
 			if (
-				JSON.stringify(keepCoreCollectionProperties(updatedCollection)) !==
-					JSON.stringify(keepCoreCollectionProperties(initialCollection)) ||
-				newFragments.length ||
-				deleteFragmentIds.length ||
-				updateFragmentIds.length
+				!isEqual(
+					keepCoreCollectionProperties(updatedCollection),
+					keepCoreCollectionProperties(initialCollection)
+				)
 			) {
 				cleanedCollection.updated_at = new Date().toISOString();
 				cleanedCollection.updated_by_profile_id = getProfileId(user);
