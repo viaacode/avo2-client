@@ -39,7 +39,10 @@ export function getAdminCoreConfig(): AdminConfig {
 			defaultPageWidth: 'EXTRA_LARGE',
 			onSaveContentPage: () => new Promise(noop),
 		},
-		navigationBars: { enableIcons: false },
+		navigationBars: {
+			enableIcons: false,
+			customNavigationElements: ['<PupilOrTeacherDropdown>', '<LoginOptionsDropdown>'],
+		},
 		icon: {
 			component: ({ name }: { name: string }) => <Icon name={name as IconName} />,
 			componentProps: {
@@ -205,6 +208,7 @@ export function getAdminCoreConfig(): AdminConfig {
 			USER_GROUP_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.userGroup}`,
 			USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.users}`,
 			SEARCH: `/${ROUTE_PARTS.search}`,
+			ALERTS_OVERVIEW: `/${ROUTE_PARTS.alerts}`,
 		},
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
