@@ -31,7 +31,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	collectionLabels,
 	...resultProps
 }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	const getIsBookmarked = (result: Avo.Search.ResultItem) => {
 		if (!bookmarkStatuses) {
@@ -84,7 +84,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 					<Blankslate
 						body=""
 						icon={IconName.search}
-						title={tText(
+						title={tHtml(
 							'search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters'
 						)}
 					>
