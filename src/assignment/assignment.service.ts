@@ -287,14 +287,14 @@ export class AssignmentService {
 			)
 		) {
 			assignmentToSave.assignment_type = 'ZOEK';
-		}
-
-		if (
+		} else if (
 			assignment.blocks?.some(
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.BOUW
 			)
 		) {
 			assignmentToSave.assignment_type = 'BOUW';
+		} else {
+			assignmentToSave.assignment_type = 'KIJK';
 		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
