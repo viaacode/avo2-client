@@ -26,7 +26,6 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 	const [sourceList, setSourceList] = useState<FlowplayerSourceList | null>(null);
 
 	const fetchPlayableUrls = useCallback(async () => {
-		console.log('fetchPlayableUrls: ', collectionFragments);
 		const playableFragments = collectionFragments.filter(
 			(fragment) => !!fragment.item_meta?.external_id
 		);
@@ -79,7 +78,6 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 		onClose?.();
 	};
 
-	console.log('render autoplay collection modal');
 	return (
 		<Modal
 			isOpen={isOpen}
