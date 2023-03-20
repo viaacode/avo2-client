@@ -5,9 +5,23 @@ import { stringify } from 'query-string';
 import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError, getEnv } from '../helpers';
 
+export enum ObjectTypes {
+	items = 'items',
+	collections = 'collections',
+	bundles = 'bundles',
+}
+
+export enum ObjectTypesAll {
+	items = 'items',
+	collections = 'collections',
+	bundels = 'bundles',
+	all = 'all',
+}
+
 export async function getRelatedItems(
 	id: string | number,
-	type: 'items' | 'collections' | 'bundles',
+	type: ObjectTypes,
+	returnType: ObjectTypesAll = ObjectTypesAll.all,
 	limit = 5
 ): Promise<Avo.Search.ResultItem[]> {
 	let url: string | undefined;
@@ -16,6 +30,7 @@ export async function getRelatedItems(
 		url = `${getEnv('PROXY_URL')}/search/related?${stringify({
 			id,
 			type,
+			returnType,
 			limit,
 		})}`;
 		const resolvedResponse = await fetchWithLogoutJson<{ results: Avo.Search.ResultItem[] }>(

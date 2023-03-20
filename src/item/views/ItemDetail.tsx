@@ -98,7 +98,11 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { UnpublishableItem } from '../../shared/types';
 import { AddToAssignmentModal, AddToCollectionModal, ItemVideoDescription } from '../components';
@@ -124,6 +128,11 @@ interface ItemDetailProps {
 	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
 	goToSearchLink: (newFilters: FilterState) => void;
 	enabledMetaData: SearchFilter[];
+	/**
+	 * Render related objects: only items (video/audio) or all types: video/audio/collections/bundels
+	 * Pupils can only see items
+	 */
+	relatedObjectTypes: ObjectTypesAll;
 	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
 	renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
 	renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
@@ -146,6 +155,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	goToDetailLink = defaultGoToDetailLink(history),
 	goToSearchLink = defaultGoToSearchLink(history),
 	enabledMetaData = ALL_SEARCH_FILTERS,
+	relatedObjectTypes = ObjectTypesAll.items,
 	renderActionButtons,
 	renderBookmarkButton = defaultRenderBookmarkButton,
 	renderBookmarkCount = defaultRenderBookmarkCount,
@@ -180,7 +190,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	const [assignmentId, setAssignmentId] = useState<string>();
 
 	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
-		getRelatedItems(currentItemId, 'items', limit)
+		getRelatedItems(currentItemId, ObjectTypes.items, relatedObjectTypes, limit)
 			.then(setRelatedItems)
 			.catch((err) => {
 				console.error('Failed to get related items', err, {
