@@ -868,13 +868,22 @@ export class AssignmentService {
 			(blocks || []).map(async (block): Promise<BaseBlockWithMeta> => {
 				if (block.fragment_id) {
 					try {
+						const item_meta =
+							items.find((item) => item?.external_id === block.fragment_id) ||
+							(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
+							undefined;
+
+						// * For collection items, we want to use the original_title and original_description.
+						//     This is what the collection creator entered as a custom title and description for the item when it was added to the collection
+						// * For items that were directly added to the assignment, we need to use the fragment title and description,
+						//     so when those are updated, the fragment in the assignment also updates
 						return {
 							...block,
-							item_meta:
-								items.find((item) => item?.external_id === block.fragment_id) ||
-								(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
-								undefined,
-						};
+							original_title: (block as any).original_title || item_meta?.title,
+							original_description:
+								(block as any).original_description || item_meta?.description,
+							item_meta,
+						} as BaseBlockWithMeta;
 					} catch (error) {
 						console.warn(`Unable to fetch meta data for ${block.fragment_id}`, error);
 					}
