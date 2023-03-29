@@ -17,6 +17,41 @@ import { FileUploadService } from '../../../shared/services/file-upload-service'
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
 import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
+const alertIcons: IconName[] = [
+	IconName.notification,
+	IconName.user,
+	IconName.alertCircle,
+	IconName.alertOctagon,
+	IconName.alertTriangle,
+	IconName.info,
+	IconName.unlock,
+	IconName.calendar,
+	IconName.book,
+];
+
+const getAlertIconNames = (): Partial<Record<IconName, string>> => ({
+	[IconName.notification]: tText('notificatie'),
+	[IconName.user]: tText('gebruiker'),
+	[IconName.alertCircle]: tText('waarschuwing cirkel'),
+	[IconName.alertOctagon]: tText('waarschuwing achthoek'),
+	[IconName.alertTriangle]: tText('waarschuwing driehoek'),
+	[IconName.info]: tText('info'),
+	[IconName.unlock]: tText('slot'),
+	[IconName.calendar]: tText('kalender'),
+	[IconName.book]: tText('boek'),
+});
+
+export const ALERT_ICON_LIST_CONFIG = (): {
+	key: IconName;
+	value: IconName;
+	label: string;
+}[] =>
+	alertIcons.map((iconKey: IconName) => ({
+		key: iconKey,
+		value: iconKey,
+		label: getAlertIconNames()[iconKey] || iconKey,
+	}));
+
 export function getAdminCoreConfig(): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
 		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
@@ -61,8 +96,13 @@ export function getAdminCoreConfig(): AdminConfig {
 				chevronLeft: { name: IconName.chevronLeft },
 				extraOptions: { name: IconName.moreHorizontal },
 				copy: { name: IconName.copy },
+				check: { name: IconName.check },
+				clock: { name: IconName.clock },
+				calendar: { name: IconName.calendar },
+				export: { name: IconName.download },
 			},
 			list: GET_ADMIN_ICON_OPTIONS,
+			alerts: ALERT_ICON_LIST_CONFIG,
 		},
 		components: {
 			loader: {

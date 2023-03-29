@@ -30,8 +30,8 @@
   "dependencies": {
     "@flowplayer/player": "3.2.8",
     "@hookform/resolvers": "^2.9.9",
-    "@meemoo/admin-core-ui": "2.0.59",
-    "@meemoo/react-components": "2.25.1",
+    "@meemoo/admin-core-ui": "2.0.63",
+    "@meemoo/react-components": "2.25.3",
     "@react-hook/resize-observer": "^1.2.6",
     "@storybook/addon-actions": "^6.5.12",
     "@tanstack/react-query": "^4.14.1",
