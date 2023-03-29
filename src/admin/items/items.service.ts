@@ -6,8 +6,10 @@ import queryString, { stringifyUrl } from 'query-string';
 import {
 	DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
 	DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
+	DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables,
 	GetDistinctSeriesDocument,
 	GetDistinctSeriesQuery,
+	GetDistinctSeriesQueryVariables,
 	GetItemByUuidDocument,
 	GetItemByUuidQuery,
 	GetItemByUuidQueryVariables,
@@ -16,6 +18,7 @@ import {
 	GetItemDepublishReasonByExternalIdQueryVariables,
 	GetItemsByExternalIdDocument,
 	GetItemsByExternalIdQuery,
+	GetItemsByExternalIdQueryVariables,
 	GetItemsWithFiltersDocument,
 	GetItemsWithFiltersQuery,
 	GetItemsWithFiltersQueryVariables,
@@ -40,6 +43,7 @@ import {
 	ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables,
 	SetSharedItemsStatusDocument,
 	SetSharedItemsStatusMutation,
+	SetSharedItemsStatusMutationVariables,
 	UpdateItemDepublishReasonDocument,
 	UpdateItemDepublishReasonMutation,
 	UpdateItemDepublishReasonMutationVariables,
@@ -87,7 +91,10 @@ export class ItemsService {
 				),
 			};
 
-			const response = await dataService.query<GetItemsWithFiltersQuery>({
+			const response = await dataService.query<
+				GetItemsWithFiltersQuery,
+				GetItemsWithFiltersQueryVariables
+			>({
 				variables,
 				query: GetItemsWithFiltersDocument,
 			});
@@ -125,7 +132,10 @@ export class ItemsService {
 				orderBy: [{ [sortColumn]: sortOrder }],
 			};
 
-			const response = await dataService.query<GetUnpublishedItemsWithFiltersQuery>({
+			const response = await dataService.query<
+				GetUnpublishedItemsWithFiltersQuery,
+				GetUnpublishedItemsWithFiltersQueryVariables
+			>({
 				variables,
 				query: GetUnpublishedItemsWithFiltersDocument,
 			});
@@ -155,7 +165,10 @@ export class ItemsService {
 				uuid,
 			};
 
-			const response = await dataService.query<GetItemByUuidQuery>({
+			const response = await dataService.query<
+				GetItemByUuidQuery,
+				GetItemByUuidQueryVariables
+			>({
 				variables,
 				query: GetItemByUuidDocument,
 			});
@@ -184,7 +197,10 @@ export class ItemsService {
 				itemUuid,
 				isPublished,
 			};
-			await dataService.query<UpdateItemPublishedStateMutation>({
+			await dataService.query<
+				UpdateItemPublishedStateMutation,
+				UpdateItemPublishedStateMutationVariables
+			>({
 				query: UpdateItemPublishedStateDocument,
 				variables,
 			});
@@ -207,7 +223,10 @@ export class ItemsService {
 				itemUuid,
 				reason,
 			};
-			await dataService.query<UpdateItemDepublishReasonMutation>({
+			await dataService.query<
+				UpdateItemDepublishReasonMutation,
+				UpdateItemDepublishReasonMutationVariables
+			>({
 				variables,
 				query: UpdateItemDepublishReasonDocument,
 			});
@@ -230,7 +249,7 @@ export class ItemsService {
 				itemUuid,
 				note,
 			};
-			await dataService.query<UpdateItemNotesMutation>({
+			await dataService.query<UpdateItemNotesMutation, UpdateItemNotesMutationVariables>({
 				variables,
 				query: UpdateItemNotesDocument,
 			});
@@ -247,10 +266,12 @@ export class ItemsService {
 	): Promise<GetPublicItemsQuery['app_item_meta'] | null> {
 		const variables: GetPublicItemsQueryVariables = { limit };
 
-		const response = await dataService.query<GetPublicItemsQuery>({
-			query: GetPublicItemsDocument,
-			variables,
-		});
+		const response = await dataService.query<GetPublicItemsQuery, GetPublicItemsQueryVariables>(
+			{
+				query: GetPublicItemsDocument,
+				variables,
+			}
+		);
 
 		return response.app_item_meta;
 	}
@@ -259,7 +280,10 @@ export class ItemsService {
 		externalId: string
 	): Promise<string | null> {
 		const variables: GetItemDepublishReasonByExternalIdQueryVariables = { externalId };
-		const response = await dataService.query<GetItemDepublishReasonByExternalIdQuery>({
+		const response = await dataService.query<
+			GetItemDepublishReasonByExternalIdQuery,
+			GetItemDepublishReasonByExternalIdQueryVariables
+		>({
 			query: GetItemDepublishReasonByExternalIdDocument,
 			variables,
 		});
@@ -278,7 +302,10 @@ export class ItemsService {
 		}
 
 		try {
-			const response = await dataService.query<GetItemsByExternalIdQuery>({
+			const response = await dataService.query<
+				GetItemsByExternalIdQuery,
+				GetItemsByExternalIdQueryVariables
+			>({
 				query: GetItemsByExternalIdDocument,
 				variables: {
 					externalIds,
@@ -397,7 +424,10 @@ export class ItemsService {
 				externalId: titleOrExternalId,
 			};
 
-			const response = await dataService.query<GetPublicItemsByTitleOrExternalIdQuery>({
+			const response = await dataService.query<
+				GetPublicItemsByTitleOrExternalIdQuery,
+				GetPublicItemsByTitleOrExternalIdQueryVariables
+			>({
 				query: GetPublicItemsByTitleOrExternalIdDocument,
 				variables,
 			});
@@ -420,7 +450,10 @@ export class ItemsService {
 
 	public static async fetchAllSeries(): Promise<string[]> {
 		try {
-			const response = await dataService.query<GetDistinctSeriesQuery>({
+			const response = await dataService.query<
+				GetDistinctSeriesQuery,
+				GetDistinctSeriesQueryVariables
+			>({
 				query: GetDistinctSeriesDocument,
 			});
 
@@ -437,7 +470,10 @@ export class ItemsService {
 		itemExternalId: string
 	): Promise<void> {
 		try {
-			await dataService.query<DeleteItemFromCollectionBookmarksAndAssignmentsMutation>({
+			await dataService.query<
+				DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
+				DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables
+			>({
 				query: DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
 				variables: {
 					itemUid,
@@ -467,7 +503,10 @@ export class ItemsService {
 				newItemUid,
 			};
 
-			const response = await dataService.query<GetUserWithEitherBookmarkQuery>({
+			const response = await dataService.query<
+				GetUserWithEitherBookmarkQuery,
+				GetUserWithEitherBookmarkQueryVariables
+			>({
 				query: GetUserWithEitherBookmarkDocument,
 				variables,
 			});
@@ -484,7 +523,10 @@ export class ItemsService {
 					newItemExternalId,
 					usersWithBothBookmarks,
 				};
-			await dataService.query<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation>({
+			await dataService.query<
+				ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
+				ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables
+			>({
 				query: ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
 				variables: variablesReplace,
 			});
@@ -501,7 +543,10 @@ export class ItemsService {
 
 	public static async setSharedItemsStatus(pids: string[], status: string): Promise<void> {
 		try {
-			await dataService.query<SetSharedItemsStatusMutation>({
+			await dataService.query<
+				SetSharedItemsStatusMutation,
+				SetSharedItemsStatusMutationVariables
+			>({
 				query: SetSharedItemsStatusDocument,
 				variables: {
 					pids,
@@ -550,7 +595,10 @@ export class ItemsService {
 			variables = {
 				where: where || undefined,
 			};
-			const response = await dataService.query<GetUnpublishedItemPidsQuery>({
+			const response = await dataService.query<
+				GetUnpublishedItemPidsQuery,
+				GetUnpublishedItemPidsQueryVariables
+			>({
 				query: GetUnpublishedItemPidsDocument,
 				variables,
 			});

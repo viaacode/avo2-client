@@ -1,6 +1,7 @@
 import {
 	GetProfilePreferenceDocument,
 	GetProfilePreferenceQuery,
+	GetProfilePreferenceQueryVariables,
 	SetProfilePreferenceDocument,
 	SetProfilePreferenceMutation,
 	SetProfilePreferenceMutationVariables,
@@ -22,7 +23,10 @@ export class ProfilePreferencesService {
 		key: ProfilePreferenceKey
 	): Promise<ProfilePreference[]> {
 		try {
-			const response = await dataService.query<GetProfilePreferenceQuery>({
+			const response = await dataService.query<
+				GetProfilePreferenceQuery,
+				GetProfilePreferenceQueryVariables
+			>({
 				query: GetProfilePreferenceDocument,
 				variables: { profileId, key },
 			});
@@ -42,7 +46,10 @@ export class ProfilePreferencesService {
 	): Promise<number> {
 		try {
 			const variables: SetProfilePreferenceMutationVariables = { profileId, key };
-			const response = await dataService.query<SetProfilePreferenceMutation>({
+			const response = await dataService.query<
+				SetProfilePreferenceMutation,
+				SetProfilePreferenceMutationVariables
+			>({
 				query: SetProfilePreferenceDocument,
 				variables,
 			});

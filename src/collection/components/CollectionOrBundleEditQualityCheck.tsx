@@ -158,23 +158,26 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 										)}
 									>
 										<ContentPicker
-											initialValue={{
-												label:
-													getFullName(
-														get(
-															collection,
-															'management_language_check[0].assignee'
-														),
-														false,
-														true
-													) || '',
-												value: get(
-													collection,
-													'management_language_check[0].assignee_profile_id',
-													''
-												),
-												type: 'PROFILE',
-											}}
+											initialValue={
+												collection?.management_language_check?.[0]
+													?.assignee_profile_id
+													? {
+															label:
+																getFullName(
+																	collection
+																		?.management_language_check?.[0]
+																		?.assignee as unknown as Avo.User.Profile,
+																	false,
+																	true
+																) || '',
+															value:
+																collection
+																	?.management_language_check?.[0]
+																	?.assignee_profile_id ?? '',
+															type: 'PROFILE',
+													  }
+													: null
+											}
 											hideTargetSwitch
 											hideTypeDropdown
 											placeholder={tText(

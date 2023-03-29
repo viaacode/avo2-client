@@ -1,6 +1,7 @@
 import {
 	GetQuickLanesByContentIdDocument,
 	GetQuickLanesByContentIdQuery,
+	GetQuickLanesByContentIdQueryVariables,
 } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
@@ -15,7 +16,10 @@ export class QuickLaneContainingService {
 				contentId,
 			};
 
-			const response = await dataService.query<GetQuickLanesByContentIdQuery>({
+			const response = await dataService.query<
+				GetQuickLanesByContentIdQuery,
+				GetQuickLanesByContentIdQueryVariables
+			>({
 				variables,
 				query: GetQuickLanesByContentIdDocument,
 			});

@@ -11,6 +11,7 @@ import {
 	App_Collection_Marcom_Log_Insert_Input,
 	DeleteCollectionFragmentByIdDocument,
 	DeleteCollectionFragmentByIdMutation,
+	DeleteCollectionFragmentByIdMutationVariables,
 	DeleteCollectionLabelsDocument,
 	DeleteCollectionLabelsMutation,
 	DeleteCollectionLabelsMutationVariables,
@@ -31,11 +32,13 @@ import {
 	GetBundleTitlesByOwnerQueryVariables,
 	GetCollectionByTitleOrDescriptionDocument,
 	GetCollectionByTitleOrDescriptionQuery,
+	GetCollectionByTitleOrDescriptionQueryVariables,
 	GetCollectionMarcomEntriesDocument,
 	GetCollectionMarcomEntriesQuery,
 	GetCollectionMarcomEntriesQueryVariables,
 	GetCollectionsByItemUuidDocument,
 	GetCollectionsByItemUuidQuery,
+	GetCollectionsByItemUuidQueryVariables,
 	GetCollectionsByOwnerDocument,
 	GetCollectionsByOwnerQuery,
 	GetCollectionsByOwnerQueryVariables,
@@ -53,10 +56,13 @@ import {
 	GetPublicCollectionsByTitleQueryVariables,
 	GetPublicCollectionsDocument,
 	GetPublicCollectionsQuery,
+	GetPublicCollectionsQueryVariables,
 	GetPublishedBundlesContainingCollectionDocument,
 	GetPublishedBundlesContainingCollectionQuery,
+	GetPublishedBundlesContainingCollectionQueryVariables,
 	GetQualityLabelsDocument,
 	GetQualityLabelsQuery,
+	GetQualityLabelsQueryVariables,
 	InsertCollectionDocument,
 	InsertCollectionFragmentsDocument,
 	InsertCollectionFragmentsMutation,
@@ -66,10 +72,12 @@ import {
 	InsertCollectionLabelsMutationVariables,
 	InsertCollectionManagementEntryDocument,
 	InsertCollectionManagementEntryMutation,
+	InsertCollectionManagementEntryMutationVariables,
 	InsertCollectionManagementQualityCheckEntryDocument,
 	InsertCollectionManagementQualityCheckEntryMutation,
 	InsertCollectionManagementQualityCheckEntryMutationVariables,
 	InsertCollectionMutation,
+	InsertCollectionMutationVariables,
 	InsertMarcomEntryDocument,
 	InsertMarcomEntryMutation,
 	InsertMarcomEntryMutationVariables,
@@ -86,8 +94,10 @@ import {
 	UpdateCollectionFragmentByIdMutationVariables,
 	UpdateCollectionManagementEntryDocument,
 	UpdateCollectionManagementEntryMutation,
+	UpdateCollectionManagementEntryMutationVariables,
 	UpdateMarcomNoteDocument,
 	UpdateMarcomNoteMutation,
+	UpdateMarcomNoteMutationVariables,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
@@ -142,10 +152,13 @@ export class CollectionService {
 			const cleanedCollection = cleanCollectionBeforeSave(newCollection);
 
 			// insert collection
-			const insertResponse = await dataService.query<InsertCollectionMutation>({
+			const insertResponse = await dataService.query<
+				InsertCollectionMutation,
+				InsertCollectionMutationVariables
+			>({
 				query: InsertCollectionDocument,
 				variables: {
-					collection: cleanedCollection,
+					collection: cleanedCollection as any,
 				},
 			});
 
@@ -264,9 +277,12 @@ export class CollectionService {
 
 			// delete fragments
 			const deletePromises = deleteFragmentIds.map((id: number | string) =>
-				dataService.query<DeleteCollectionFragmentByIdMutation>({
+				dataService.query<
+					DeleteCollectionFragmentByIdMutation,
+					DeleteCollectionFragmentByIdMutationVariables
+				>({
 					query: DeleteCollectionFragmentByIdDocument,
-					variables: { id },
+					variables: { id } as DeleteCollectionFragmentByIdMutationVariables,
 				})
 			);
 
@@ -303,7 +319,10 @@ export class CollectionService {
 							id: fragmentToUpdate.id as number,
 						},
 					};
-					return dataService.query<UpdateCollectionFragmentByIdMutation>({
+					return dataService.query<
+						UpdateCollectionFragmentByIdMutation,
+						UpdateCollectionFragmentByIdMutationVariables
+					>({
 						query: UpdateCollectionFragmentByIdDocument,
 						variables,
 					});
@@ -550,7 +569,10 @@ export class CollectionService {
 		managementData: Partial<Avo.Collection.Management>
 	) => {
 		try {
-			await dataService.query<InsertCollectionManagementEntryMutation>({
+			await dataService.query<
+				InsertCollectionManagementEntryMutation,
+				InsertCollectionManagementEntryMutationVariables
+			>({
 				query: InsertCollectionManagementEntryDocument,
 				variables: {
 					...managementData,
@@ -571,7 +593,10 @@ export class CollectionService {
 		managementData: Partial<Avo.Collection.Management>
 	) => {
 		try {
-			await dataService.query<UpdateCollectionManagementEntryMutation>({
+			await dataService.query<
+				UpdateCollectionManagementEntryMutation,
+				UpdateCollectionManagementEntryMutationVariables
+			>({
 				query: UpdateCollectionManagementEntryDocument,
 				variables: {
 					...managementData,
@@ -596,7 +621,10 @@ export class CollectionService {
 				...managementQCData,
 				collection_id: collectionId,
 			};
-			await dataService.query<InsertCollectionManagementQualityCheckEntryMutation>({
+			await dataService.query<
+				InsertCollectionManagementQualityCheckEntryMutation,
+				InsertCollectionManagementQualityCheckEntryMutationVariables
+			>({
 				query: InsertCollectionManagementQualityCheckEntryDocument,
 				variables,
 			});
@@ -624,7 +652,10 @@ export class CollectionService {
 				id,
 				collection: dbCollection,
 			};
-			await dataService.query<UpdateCollectionByIdMutation>({
+			await dataService.query<
+				UpdateCollectionByIdMutation,
+				UpdateCollectionByIdMutationVariables
+			>({
 				query: UpdateCollectionByIdDocument,
 				variables,
 			});
@@ -645,15 +676,16 @@ export class CollectionService {
 	 */
 	static deleteCollectionOrBundle = async (collectionOrBundleUuid: string): Promise<void> => {
 		try {
-			// delete collection by id
-			const variables: DeleteCollectionOrBundleByUuidMutationVariables = {
-				collectionOrBundleUuid: collectionOrBundleUuid,
-				collectionOrBundleUuidAsText: collectionOrBundleUuid,
-			};
 			await Promise.all([
-				dataService.query<DeleteCollectionOrBundleByUuidMutation>({
+				dataService.query<
+					DeleteCollectionOrBundleByUuidMutation,
+					DeleteCollectionOrBundleByUuidMutationVariables
+				>({
 					query: DeleteCollectionOrBundleByUuidDocument,
-					variables,
+					variables: {
+						collectionOrBundleUuid: collectionOrBundleUuid,
+						collectionOrBundleUuidAsText: collectionOrBundleUuid,
+					},
 				}),
 			]);
 		} catch (err) {
@@ -760,7 +792,10 @@ export class CollectionService {
 	): Promise<GetPublicCollectionsQuery['app_collections']> {
 		try {
 			// retrieve collections
-			const response = await dataService.query<GetPublicCollectionsQuery>({
+			const response = await dataService.query<
+				GetPublicCollectionsQuery,
+				GetPublicCollectionsQueryVariables
+			>({
 				query: GetPublicCollectionsDocument,
 				variables: { limit, typeId },
 			});
@@ -788,7 +823,10 @@ export class CollectionService {
 				order,
 				company_id: companyId,
 			};
-			const response = await dataService.query<GetOrganisationContentQuery>({
+			const response = await dataService.query<
+				GetOrganisationContentQuery,
+				GetOrganisationContentQueryVariables
+			>({
 				query: GetOrganisationContentDocument,
 				variables,
 			});
@@ -809,12 +847,12 @@ export class CollectionService {
 	): Promise<Collection[]> {
 		try {
 			const isUuidFormat = isUuid(titleOrId);
-			const variables: Partial<
-				GetPublicCollectionsByIdQueryVariables | GetPublicCollectionsByTitleQueryVariables
-			> = {
+			const variables:
+				| GetPublicCollectionsByIdQueryVariables
+				| GetPublicCollectionsByTitleQueryVariables = {
 				limit,
 				typeId: isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
-			};
+			} as GetPublicCollectionsByIdQueryVariables | GetPublicCollectionsByTitleQueryVariables;
 			if (isUuidFormat) {
 				(variables as GetPublicCollectionsByIdQueryVariables).id = titleOrId;
 			} else {
@@ -822,7 +860,8 @@ export class CollectionService {
 			}
 
 			const response = await dataService.query<
-				GetPublicCollectionsByIdQuery | GetPublicCollectionsByTitleQuery
+				GetPublicCollectionsByIdQuery | GetPublicCollectionsByTitleQuery,
+				GetPublicCollectionsByIdQueryVariables | GetPublicCollectionsByTitleQueryVariables
 			>({
 				query: isUuidFormat
 					? GetPublicCollectionsByIdDocument
@@ -867,7 +906,10 @@ export class CollectionService {
 
 	static async fetchQualityLabels(): Promise<QualityLabel[]> {
 		try {
-			const response = await dataService.query<GetQualityLabelsQuery>({
+			const response = await dataService.query<
+				GetQualityLabelsQuery,
+				GetQualityLabelsQueryVariables
+			>({
 				query: GetQualityLabelsDocument,
 			});
 
@@ -898,7 +940,8 @@ export class CollectionService {
 				| GetBundleTitlesByOwnerQueryVariables = { owner_profile_id: getProfileId(user) };
 
 			const response = await dataService.query<
-				GetCollectionTitlesByOwnerQuery | GetBundleTitlesByOwnerQuery
+				GetCollectionTitlesByOwnerQuery | GetBundleTitlesByOwnerQuery,
+				GetCollectionTitlesByOwnerQueryVariables | GetBundleTitlesByOwnerQueryVariables
 			>({
 				query:
 					type === 'collection'
@@ -952,7 +995,10 @@ export class CollectionService {
 	static async getPublishedBundlesContainingCollection(
 		id: string
 	): Promise<Avo.Collection.Collection[]> {
-		const response = await dataService.query<GetPublishedBundlesContainingCollectionQuery>({
+		const response = await dataService.query<
+			GetPublishedBundlesContainingCollectionQuery,
+			GetPublishedBundlesContainingCollectionQueryVariables
+		>({
 			query: GetPublishedBundlesContainingCollectionDocument,
 			variables: { id },
 		});
@@ -979,7 +1025,10 @@ export class CollectionService {
 			const variables: InsertCollectionFragmentsMutationVariables = {
 				fragments: cleanedFragments,
 			};
-			const response = await dataService.query<InsertCollectionFragmentsMutation>({
+			const response = await dataService.query<
+				InsertCollectionFragmentsMutation,
+				InsertCollectionFragmentsMutationVariables
+			>({
 				query: InsertCollectionFragmentsDocument,
 				variables,
 			});
@@ -1090,7 +1139,10 @@ export class CollectionService {
 					collection_uuid: collectionId,
 				})),
 			};
-			await dataService.query<InsertCollectionLabelsMutation>({
+			await dataService.query<
+				InsertCollectionLabelsMutation,
+				InsertCollectionLabelsMutationVariables
+			>({
 				query: InsertCollectionLabelsDocument,
 				variables,
 			});
@@ -1109,7 +1161,10 @@ export class CollectionService {
 				collectionId,
 				labels,
 			};
-			await dataService.query<DeleteCollectionLabelsMutation>({
+			await dataService.query<
+				DeleteCollectionLabelsMutation,
+				DeleteCollectionLabelsMutationVariables
+			>({
 				query: DeleteCollectionLabelsDocument,
 				variables,
 			});
@@ -1153,9 +1208,12 @@ export class CollectionService {
 		typeId: ContentTypeNumber
 	): Promise<{ byTitle: boolean; byDescription: boolean }> {
 		try {
-			const response = await dataService.query<GetCollectionByTitleOrDescriptionQuery>({
+			const response = await dataService.query<
+				GetCollectionByTitleOrDescriptionQuery,
+				GetCollectionByTitleOrDescriptionQueryVariables
+			>({
 				query: GetCollectionByTitleOrDescriptionDocument,
-				variables: { title, description, collectionId, typeId },
+				variables: { title, description: description || '', collectionId, typeId },
 			});
 
 			const collectionWithSameTitleExists = !!(response.collectionByTitle || []).length;
@@ -1185,7 +1243,10 @@ export class CollectionService {
 	): Promise<Avo.Collection.Collection[]> {
 		try {
 			// retrieve collections
-			const response = await dataService.query<GetCollectionsByItemUuidQuery>({
+			const response = await dataService.query<
+				GetCollectionsByItemUuidQuery,
+				GetCollectionsByItemUuidQueryVariables
+			>({
 				query: GetCollectionsByItemUuidDocument,
 				variables: { fragmentId },
 			});
@@ -1224,7 +1285,10 @@ export class CollectionService {
 				owner_profile_id: getProfileId(user),
 				where: filterArray.length ? filterArray : {},
 			};
-			const response = await dataService.query<GetCollectionsByOwnerQuery>({
+			const response = await dataService.query<
+				GetCollectionsByOwnerQuery,
+				GetCollectionsByOwnerQueryVariables
+			>({
 				query: GetCollectionsByOwnerDocument,
 				variables,
 			});
@@ -1261,7 +1325,10 @@ export class CollectionService {
 				owner_profile_id: getProfileId(user),
 				where: filterArray.length ? filterArray : {},
 			};
-			const response = await dataService.query<GetBookmarkedCollectionsByOwnerQuery>({
+			const response = await dataService.query<
+				GetBookmarkedCollectionsByOwnerQuery,
+				GetBookmarkedCollectionsByOwnerQueryVariables
+			>({
 				query: GetBookmarkedCollectionsByOwnerDocument,
 				variables,
 			});
@@ -1298,7 +1365,10 @@ export class CollectionService {
 			variables = {
 				collectionUuid,
 			};
-			const response = await dataService.query<GetCollectionMarcomEntriesQuery>({
+			const response = await dataService.query<
+				GetCollectionMarcomEntriesQuery,
+				GetCollectionMarcomEntriesQueryVariables
+			>({
 				query: GetCollectionMarcomEntriesDocument,
 				variables,
 			});
@@ -1324,7 +1394,7 @@ export class CollectionService {
 			variables = {
 				objects: marcomEntries,
 			};
-			await dataService.query<InsertMarcomEntryMutation>({
+			await dataService.query<InsertMarcomEntryMutation, InsertMarcomEntryMutationVariables>({
 				query: InsertMarcomEntryDocument,
 				variables,
 			});
@@ -1355,7 +1425,7 @@ export class CollectionService {
 			const variables: DeleteMarcomEntryMutationVariables = {
 				id,
 			};
-			await dataService.query<DeleteMarcomEntryMutation>({
+			await dataService.query<DeleteMarcomEntryMutation, DeleteMarcomEntryMutationVariables>({
 				query: DeleteMarcomEntryDocument,
 				variables,
 			});
@@ -1379,7 +1449,10 @@ export class CollectionService {
 				publishDateGte: startOfDay(new Date(marcomEntry.publish_date)),
 				publishDateLte: endOfDay(new Date(marcomEntry.publish_date)),
 			};
-			await dataService.query<DeleteMarcomEntriesByParentCollectionIdMutation>({
+			await dataService.query<
+				DeleteMarcomEntriesByParentCollectionIdMutation,
+				DeleteMarcomEntriesByParentCollectionIdMutationVariables
+			>({
 				query: DeleteMarcomEntriesByParentCollectionIdDocument,
 				variables,
 			});
@@ -1402,7 +1475,10 @@ export class CollectionService {
 				collectionId,
 				note,
 			};
-			const response = await dataService.query<InsertMarcomNoteMutation>({
+			const response = await dataService.query<
+				InsertMarcomNoteMutation,
+				InsertMarcomNoteMutationVariables
+			>({
 				variables,
 				query: InsertMarcomNoteDocument,
 			});
@@ -1423,7 +1499,7 @@ export class CollectionService {
 				id,
 				note,
 			};
-			await dataService.query<UpdateMarcomNoteMutation>({
+			await dataService.query<UpdateMarcomNoteMutation, UpdateMarcomNoteMutationVariables>({
 				variables,
 				query: UpdateMarcomNoteDocument,
 			});

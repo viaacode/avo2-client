@@ -40,14 +40,16 @@ export const fetchData = <TData, TVariables>(
 	};
 };
 
-export interface QueryInfo {
+export interface QueryInfo<TVariables> {
 	query: string;
-	variables?: Record<string, any>;
+	variables?: TVariables;
 }
 
 export class dataService {
-	public static async query<T>(queryInfo: QueryInfo): Promise<T> {
-		return (await fetchData(queryInfo.query, queryInfo.variables)()) as T;
+	public static async query<TQueryResponse, TVariables>(
+		queryInfo: QueryInfo<TVariables>
+	): Promise<TQueryResponse> {
+		return (await fetchData(queryInfo.query, queryInfo.variables)()) as TQueryResponse;
 	}
 }
 

@@ -7,17 +7,23 @@ import {
 	DeleteAssignmentLabelsMutationVariables,
 	GetAllAssignmentLabelColorsDocument,
 	GetAllAssignmentLabelColorsQuery,
+	GetAllAssignmentLabelColorsQueryVariables,
 	GetAssignmentLabelsByProfileIdDocument,
 	GetAssignmentLabelsByProfileIdQuery,
+	GetAssignmentLabelsByProfileIdQueryVariables,
 	InsertAssignmentLabelsDocument,
 	InsertAssignmentLabelsMutation,
 	InsertAssignmentLabelsMutationVariables,
 	LinkAssignmentLabelsToAssignmentDocument,
 	LinkAssignmentLabelsToAssignmentMutation,
+	LinkAssignmentLabelsToAssignmentMutationVariables,
+	Lookup_Enum_Colors_Enum,
 	UnlinkAssignmentLabelsFromAssignmentDocument,
 	UnlinkAssignmentLabelsFromAssignmentMutation,
+	UnlinkAssignmentLabelsFromAssignmentMutationVariables,
 	UpdateAssignmentLabelsDocument,
 	UpdateAssignmentLabelsMutation,
+	UpdateAssignmentLabelsMutationVariables,
 } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
 import { dataService } from '../data-service';
@@ -28,7 +34,10 @@ export class AssignmentLabelsService {
 		type?: string
 	): Promise<Assignment_Label_v2[]> {
 		try {
-			const response = await dataService.query<GetAssignmentLabelsByProfileIdQuery>({
+			const response = await dataService.query<
+				GetAssignmentLabelsByProfileIdQuery,
+				GetAssignmentLabelsByProfileIdQueryVariables
+			>({
 				query: GetAssignmentLabelsByProfileIdDocument,
 				variables: {
 					profileId,
@@ -53,7 +62,10 @@ export class AssignmentLabelsService {
 					omit(labelObj, ['__typename', 'enum_color', 'id'])
 				),
 			};
-			const response = await dataService.query<InsertAssignmentLabelsMutation>({
+			const response = await dataService.query<
+				InsertAssignmentLabelsMutation,
+				InsertAssignmentLabelsMutationVariables
+			>({
 				query: InsertAssignmentLabelsDocument,
 				variables,
 			});
@@ -73,9 +85,9 @@ export class AssignmentLabelsService {
 		profileId: string,
 		labelId: string,
 		label: string,
-		colorEnumValue: string
+		colorEnumValue: Lookup_Enum_Colors_Enum
 	): Promise<void> {
-		let variables;
+		let variables: UpdateAssignmentLabelsMutationVariables | null = null;
 		try {
 			variables = {
 				profileId,
@@ -83,14 +95,17 @@ export class AssignmentLabelsService {
 				label,
 				colorEnumValue,
 			};
-			await dataService.query<UpdateAssignmentLabelsMutation>({
+			await dataService.query<
+				UpdateAssignmentLabelsMutation,
+				UpdateAssignmentLabelsMutationVariables
+			>({
 				query: UpdateAssignmentLabelsDocument,
 				variables,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to update assignment label', err, {
-				variables,
 				query: 'UPDATE_ASSIGNMENT_LABELS',
+				variables,
 			});
 		}
 	}
@@ -102,7 +117,10 @@ export class AssignmentLabelsService {
 				profileId,
 				labelIds,
 			};
-			await dataService.query<DeleteAssignmentLabelsMutation>({
+			await dataService.query<
+				DeleteAssignmentLabelsMutation,
+				DeleteAssignmentLabelsMutationVariables
+			>({
 				query: DeleteAssignmentLabelsDocument,
 				variables,
 			});
@@ -129,7 +147,10 @@ export class AssignmentLabelsService {
 					assignment_label_id: labelId,
 				})),
 			};
-			await dataService.query<LinkAssignmentLabelsToAssignmentMutation>({
+			await dataService.query<
+				LinkAssignmentLabelsToAssignmentMutation,
+				LinkAssignmentLabelsToAssignmentMutationVariables
+			>({
 				query: LinkAssignmentLabelsToAssignmentDocument,
 				variables,
 			});
@@ -154,7 +175,10 @@ export class AssignmentLabelsService {
 				assignmentUuid,
 				labelIds,
 			};
-			await dataService.query<UnlinkAssignmentLabelsFromAssignmentMutation>({
+			await dataService.query<
+				UnlinkAssignmentLabelsFromAssignmentMutation,
+				UnlinkAssignmentLabelsFromAssignmentMutationVariables
+			>({
 				query: UnlinkAssignmentLabelsFromAssignmentDocument,
 				variables,
 			});
@@ -168,7 +192,10 @@ export class AssignmentLabelsService {
 
 	public static async getLabelColors(): Promise<AssignmentLabelColor[]> {
 		try {
-			const response = await dataService.query<GetAllAssignmentLabelColorsQuery>({
+			const response = await dataService.query<
+				GetAllAssignmentLabelColorsQuery,
+				GetAllAssignmentLabelColorsQueryVariables
+			>({
 				query: GetAllAssignmentLabelColorsDocument,
 			});
 

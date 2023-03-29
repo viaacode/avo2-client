@@ -6,16 +6,20 @@ import { CollectionService } from '../collection/collection.service';
 import {
 	GetQuickLaneByContentAndOwnerDocument,
 	GetQuickLaneByContentAndOwnerQuery,
+	GetQuickLaneByContentAndOwnerQueryVariables,
 	GetQuickLaneByIdDocument,
 	GetQuickLaneByIdQuery,
+	GetQuickLaneByIdQueryVariables,
 	InsertQuickLanesDocument,
 	InsertQuickLanesMutation,
+	InsertQuickLanesMutationVariables,
 	Lookup_Enum_Assignment_Content_Labels_Enum,
 	RemoveQuickLanesDocument,
 	RemoveQuickLanesMutation,
 	RemoveQuickLanesMutationVariables,
 	UpdateQuickLaneByIdDocument,
 	UpdateQuickLaneByIdMutation,
+	UpdateQuickLaneByIdMutationVariables,
 } from '../shared/generated/graphql-db-types';
 import { CustomError } from '../shared/helpers';
 import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
@@ -75,7 +79,10 @@ export class QuickLaneService {
 		const now: string = new Date().toISOString();
 
 		try {
-			const response = await dataService.query<InsertQuickLanesMutation>({
+			const response = await dataService.query<
+				InsertQuickLanesMutation,
+				InsertQuickLanesMutationVariables
+			>({
 				query: InsertQuickLanesDocument,
 				variables: {
 					objects: objects.map((object) => {
@@ -85,7 +92,7 @@ export class QuickLaneService {
 							updated_at: now,
 						};
 					}),
-				},
+				} as InsertQuickLanesMutationVariables,
 			});
 
 			const success =
@@ -117,7 +124,10 @@ export class QuickLaneService {
 
 	static async fetchQuickLaneById(id: string): Promise<QuickLaneUrlObject> {
 		try {
-			const response = await dataService.query<GetQuickLaneByIdQuery>({
+			const response = await dataService.query<
+				GetQuickLaneByIdQuery,
+				GetQuickLaneByIdQueryVariables
+			>({
 				query: GetQuickLaneByIdDocument,
 				variables: { id },
 			});
@@ -168,7 +178,10 @@ export class QuickLaneService {
 		profileId: string
 	): Promise<QuickLaneUrlObject[]> {
 		try {
-			const response = await dataService.query<GetQuickLaneByContentAndOwnerQuery>({
+			const response = await dataService.query<
+				GetQuickLaneByContentAndOwnerQuery,
+				GetQuickLaneByContentAndOwnerQueryVariables
+			>({
 				query: GetQuickLaneByContentAndOwnerDocument,
 				variables: { contentId, contentLabel, profileId },
 			});
@@ -207,7 +220,10 @@ export class QuickLaneService {
 		const now: string = new Date().toISOString();
 
 		try {
-			const response = await dataService.query<UpdateQuickLaneByIdMutation>({
+			const response = await dataService.query<
+				UpdateQuickLaneByIdMutation,
+				UpdateQuickLaneByIdMutationVariables
+			>({
 				query: UpdateQuickLaneByIdDocument,
 				variables: {
 					id,
@@ -249,7 +265,10 @@ export class QuickLaneService {
 				ids,
 				profileId,
 			};
-			const response = await dataService.query<RemoveQuickLanesMutation>({
+			const response = await dataService.query<
+				RemoveQuickLanesMutation,
+				RemoveQuickLanesMutationVariables
+			>({
 				query: RemoveQuickLanesDocument,
 				variables,
 			});
