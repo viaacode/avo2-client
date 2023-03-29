@@ -348,7 +348,12 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		updateBlocksInAssignmentState,
 		{
 			listSorter: {
-				content: (item) => item && renderBlockContent(item),
+				content: (item) => {
+					if (item) {
+						return renderBlockContent(item);
+					}
+					return null;
+				},
 				divider: (position: number) => (
 					<Button
 						icon={IconName.plus}

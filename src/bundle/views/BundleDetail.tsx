@@ -42,6 +42,7 @@ import { blockTypeToContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import {
 	DeleteObjectModal,
@@ -75,7 +76,11 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 
 import './BundleDetail.scss';
@@ -198,6 +203,14 @@ const BundleDetail: FunctionComponent<
 				}
 			}
 
+			if (!user) {
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				setShowLoginPopup(showPopup);
+				return;
+			}
+
 			const bundleObj = await CollectionService.fetchCollectionOrBundleById(
 				bundleId,
 				'bundle'
@@ -271,7 +284,7 @@ const BundleDetail: FunctionComponent<
 					);
 				}
 
-				getRelatedItems(bundleId, 'bundles', 4)
+				getRelatedItems(bundleId, ObjectTypes.bundles, ObjectTypesAll.all, 4)
 					.then((relatedItems) => {
 						setRelatedBundles(relatedItems);
 					})
@@ -295,6 +308,14 @@ const BundleDetail: FunctionComponent<
 		};
 
 		checkPermissionsAndGetBundle().catch((err) => {
+			if ((err as CustomError)?.innerException?.statusCode === 404 && !user) {
+				// If not logged in and the bundle is not found => the bundle might be private and the user might need to login to see it
+				setShowLoginPopup(true);
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				return;
+			}
 			console.error(
 				new CustomError(
 					'Failed to check permissions or get bundle from the database',
@@ -330,7 +351,7 @@ const BundleDetail: FunctionComponent<
 	const onDeleteBundle = async () => {
 		try {
 			setIsDeleteModalOpen(false);
-			await CollectionService.deleteCollection(bundleId);
+			await CollectionService.deleteCollectionOrBundle(bundleId);
 
 			trackEvents(
 				{
@@ -706,6 +727,10 @@ const BundleDetail: FunctionComponent<
 	};
 
 	const renderBundle = () => {
+		if (!bundle && showLoginPopup) {
+			return <RegisterOrLogin />;
+		}
+
 		const { is_public, thumbnail_path, title, description_long } =
 			bundle as Avo.Collection.Collection;
 
@@ -875,6 +900,15 @@ const BundleDetail: FunctionComponent<
 		);
 	};
 
+	if (loadingInfo.state === 'error') {
+		return (
+			<ErrorView
+				icon={IconName.alertTriangle}
+				message={tHtml('bundle/views/bundle-detail___het-laden-van-de-bundel-is-mislukt')}
+				actionButtons={['home']}
+			/>
+		);
+	}
 	return (
 		<>
 			<LoadingErrorLoadedComponent

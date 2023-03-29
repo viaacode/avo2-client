@@ -2,8 +2,10 @@ import type { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import {
+	App_Quick_Lanes_Bool_Exp,
 	GetQuickLanesWithFiltersDocument,
 	GetQuickLanesWithFiltersQuery,
+	GetQuickLanesWithFiltersQueryVariables,
 	Lookup_Enum_Assignment_Content_Labels_Enum,
 } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
@@ -80,7 +82,7 @@ export class QuickLaneFilterService {
 		params?: QuickLaneFilters
 	): Promise<{ urls: QuickLaneUrlObject[]; count: number }> {
 		try {
-			const variables = {
+			const variables: GetQuickLanesWithFiltersQueryVariables = {
 				limit: params?.limit,
 				offset: params?.offset,
 				filterString: `%${params?.filterString ?? ''}%`,
@@ -115,12 +117,17 @@ export class QuickLaneFilterService {
 
 			if (timestampFilters) {
 				// Circumvent const typing
-				variables.filters.push(timestampFilters as any);
+				(variables.filters as Array<App_Quick_Lanes_Bool_Exp>).push(
+					timestampFilters as any
+				);
 			}
 
-			const response = await dataService.query<GetQuickLanesWithFiltersQuery>({
-				variables,
+			const response = await dataService.query<
+				GetQuickLanesWithFiltersQuery,
+				GetQuickLanesWithFiltersQueryVariables
+			>({
 				query: GetQuickLanesWithFiltersDocument,
+				variables,
 			});
 
 			const urls: QuickLaneUrlObject[] =

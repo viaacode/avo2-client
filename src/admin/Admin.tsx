@@ -48,12 +48,6 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 				actionButtons: ['home', 'helpdesk'],
 			});
 		}
-
-		// Remove zendesk when loading beheer after visiting the client side of the app
-		const zendeskWidget = document.querySelector('iframe#launcher');
-		if (zendeskWidget) {
-			zendeskWidget.remove();
-		}
 	}, [user, setLoadingInfo, tText]);
 
 	useEffect(() => {
@@ -61,13 +55,6 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 			setLoadingInfo({ state: 'loaded' });
 		}
 	}, [userPermissions, navigationItems, setLoadingInfo]);
-
-	useEffect(() => {
-		const widget = document.querySelector('iframe#launcher');
-		if (widget) {
-			widget.remove();
-		}
-	}, []);
 
 	const renderAdminPage = () => {
 		if (!navigationItems || !userPermissions) {

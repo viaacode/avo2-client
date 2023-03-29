@@ -31,23 +31,25 @@ export const fetchData = <TData, TVariables>(
 
 		const json = await res.json();
 
-		if (json.errors) {
-			const { message } = json.errors[0] || {};
-			throw new Error(message || 'Error');
+		if (json?.errors || res.status >= 400) {
+			const { message } = json?.errors?.[0] || {};
+			throw new Error(message || res.statusText || 'Error');
 		}
 
 		return json.data;
 	};
 };
 
-export interface QueryInfo {
+export interface QueryInfo<TVariables> {
 	query: string;
-	variables?: Record<string, any>;
+	variables?: TVariables;
 }
 
 export class dataService {
-	public static async query<T>(queryInfo: QueryInfo): Promise<T> {
-		return (await fetchData(queryInfo.query, queryInfo.variables)()) as T;
+	public static async query<TQueryResponse, TVariables>(
+		queryInfo: QueryInfo<TVariables>
+	): Promise<TQueryResponse> {
+		return (await fetchData(queryInfo.query, queryInfo.variables)()) as TQueryResponse;
 	}
 }
 

@@ -42,6 +42,7 @@ import {
 import {
 	GetWorkspaceTabCountsDocument,
 	GetWorkspaceTabCountsQuery,
+	GetWorkspaceTabCountsQueryVariables,
 } from '../../shared/generated/graphql-db-types';
 import { buildLink, isMobileWidth, navigate } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -119,7 +120,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 
 	const updatePermissionsAndCounts = useCallback(() => {
 		Promise.all([
-			dataService.query<GetWorkspaceTabCountsQuery>({
+			dataService.query<GetWorkspaceTabCountsQuery, GetWorkspaceTabCountsQueryVariables>({
 				query: GetWorkspaceTabCountsDocument,
 				variables: {
 					owner_profile_id: getProfileId(user),

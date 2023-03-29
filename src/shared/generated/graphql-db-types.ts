@@ -43426,6 +43426,14 @@ export type DeleteCollectionLabelsMutationVariables = Exact<{
 
 export type DeleteCollectionLabelsMutation = { __typename?: 'mutation_root', delete_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
 
+export type DeleteCollectionOrBundleByUuidMutationVariables = Exact<{
+  collectionOrBundleUuid: Scalars['uuid'];
+  collectionOrBundleUuidAsText: Scalars['String'];
+}>;
+
+
+export type DeleteCollectionOrBundleByUuidMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null, delete_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
+
 export type DeleteMarcomEntriesByParentCollectionIdMutationVariables = Exact<{
   parentCollectionId?: InputMaybe<Scalars['uuid']>;
   channelName?: InputMaybe<Scalars['String']>;
@@ -43611,13 +43619,6 @@ export type InsertMarcomNoteMutationVariables = Exact<{
 
 
 export type InsertMarcomNoteMutation = { __typename?: 'mutation_root', insert_app_collection_marcom_notes?: { __typename?: 'app_collection_marcom_notes_mutation_response', returning: Array<{ __typename?: 'app_collection_marcom_notes', id: number }> } | null };
-
-export type SoftDeleteCollectionByIdMutationVariables = Exact<{
-  id: Scalars['uuid'];
-}>;
-
-
-export type SoftDeleteCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
 
 export type UpdateCollectionByIdMutationVariables = Exact<{
   id: Scalars['uuid'];
@@ -43853,13 +43854,6 @@ export type DeleteCollectionBookmarksForUserMutationVariables = Exact<{
 
 
 export type DeleteCollectionBookmarksForUserMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
-
-export type DeleteCollectionBookmarksMutationVariables = Exact<{
-  id: Scalars['uuid'];
-}>;
-
-
-export type DeleteCollectionBookmarksMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
 
 export type DeleteItemBookmarkMutationVariables = Exact<{
   itemUuid: Scalars['uuid'];
@@ -46511,6 +46505,35 @@ export const useDeleteCollectionLabelsMutation = <
       (variables?: DeleteCollectionLabelsMutationVariables) => fetchData<DeleteCollectionLabelsMutation, DeleteCollectionLabelsMutationVariables>(DeleteCollectionLabelsDocument, variables)(),
       options
     );
+export const DeleteCollectionOrBundleByUuidDocument = `
+    mutation deleteCollectionOrBundleByUuid($collectionOrBundleUuid: uuid!, $collectionOrBundleUuidAsText: String!) {
+  update_app_collections(
+    where: {id: {_eq: $collectionOrBundleUuid}}
+    _set: {is_deleted: true}
+  ) {
+    affected_rows
+  }
+  delete_app_collection_fragments(
+    where: {type: {_eq: "COLLECTION"}, external_id: {_eq: $collectionOrBundleUuidAsText}}
+  ) {
+    affected_rows
+  }
+  delete_app_collection_bookmarks(
+    where: {collection_uuid: {_eq: $collectionOrBundleUuid}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionOrBundleByUuidMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionOrBundleByUuidMutation, TError, DeleteCollectionOrBundleByUuidMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionOrBundleByUuidMutation, TError, DeleteCollectionOrBundleByUuidMutationVariables, TContext>(
+      ['deleteCollectionOrBundleByUuid'],
+      (variables?: DeleteCollectionOrBundleByUuidMutationVariables) => fetchData<DeleteCollectionOrBundleByUuidMutation, DeleteCollectionOrBundleByUuidMutationVariables>(DeleteCollectionOrBundleByUuidDocument, variables)(),
+      options
+    );
 export const DeleteMarcomEntriesByParentCollectionIdDocument = `
     mutation deleteMarcomEntriesByParentCollectionId($parentCollectionId: uuid, $channelName: String, $channelType: String, $publishDateGte: timestamptz, $publishDateLte: timestamptz) {
   delete_app_collection_marcom_log(
@@ -47113,22 +47136,6 @@ export const useInsertMarcomNoteMutation = <
     useMutation<InsertMarcomNoteMutation, TError, InsertMarcomNoteMutationVariables, TContext>(
       ['insertMarcomNote'],
       (variables?: InsertMarcomNoteMutationVariables) => fetchData<InsertMarcomNoteMutation, InsertMarcomNoteMutationVariables>(InsertMarcomNoteDocument, variables)(),
-      options
-    );
-export const SoftDeleteCollectionByIdDocument = `
-    mutation softDeleteCollectionById($id: uuid!) {
-  update_app_collections(where: {id: {_eq: $id}}, _set: {is_deleted: true}) {
-    affected_rows
-  }
-}
-    `;
-export const useSoftDeleteCollectionByIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<SoftDeleteCollectionByIdMutation, TError, SoftDeleteCollectionByIdMutationVariables, TContext>) =>
-    useMutation<SoftDeleteCollectionByIdMutation, TError, SoftDeleteCollectionByIdMutationVariables, TContext>(
-      ['softDeleteCollectionById'],
-      (variables?: SoftDeleteCollectionByIdMutationVariables) => fetchData<SoftDeleteCollectionByIdMutation, SoftDeleteCollectionByIdMutationVariables>(SoftDeleteCollectionByIdDocument, variables)(),
       options
     );
 export const UpdateCollectionByIdDocument = `
@@ -47895,22 +47902,6 @@ export const useDeleteCollectionBookmarksForUserMutation = <
     useMutation<DeleteCollectionBookmarksForUserMutation, TError, DeleteCollectionBookmarksForUserMutationVariables, TContext>(
       ['deleteCollectionBookmarksForUser'],
       (variables?: DeleteCollectionBookmarksForUserMutationVariables) => fetchData<DeleteCollectionBookmarksForUserMutation, DeleteCollectionBookmarksForUserMutationVariables>(DeleteCollectionBookmarksForUserDocument, variables)(),
-      options
-    );
-export const DeleteCollectionBookmarksDocument = `
-    mutation deleteCollectionBookmarks($id: uuid!) {
-  delete_app_collection_bookmarks(where: {collection_uuid: {_eq: $id}}) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteCollectionBookmarksMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteCollectionBookmarksMutation, TError, DeleteCollectionBookmarksMutationVariables, TContext>) =>
-    useMutation<DeleteCollectionBookmarksMutation, TError, DeleteCollectionBookmarksMutationVariables, TContext>(
-      ['deleteCollectionBookmarks'],
-      (variables?: DeleteCollectionBookmarksMutationVariables) => fetchData<DeleteCollectionBookmarksMutation, DeleteCollectionBookmarksMutationVariables>(DeleteCollectionBookmarksDocument, variables)(),
       options
     );
 export const DeleteItemBookmarkDocument = `

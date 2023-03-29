@@ -26,18 +26,28 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { ItemTrimInfo } from '../../item.types';
 import ItemVideoDescription from '../ItemVideoDescription';
 
-import './AddToAssignmentModal.scss';
+import './CutFragmentModal.scss';
 
-interface AddToAssignmentModalProps {
+interface CutFragmentModalProps {
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
-	onAddToAssignmentCallback: (trimInfo: ItemTrimInfo) => void;
+	afterCutCallback: (trimInfo: ItemTrimInfo) => void;
 }
 
-const AddToAssignmentModal: FunctionComponent<
-	AddToAssignmentModalProps & RouteComponentProps & UserProps
-> = ({ itemMetaData, isOpen, onClose, onAddToAssignmentCallback }) => {
+/**
+ * Used to optionally cut a video/audio fragment
+ * Used for teachers that want to add a video/audio to an assignment
+ * But also for pupils that want to add a video/audio to their assignment collection
+ * @param itemMetaData
+ * @param isOpen
+ * @param onClose
+ * @param afterCutCallback
+ * @constructor
+ */
+const CutFragmentModal: FunctionComponent<
+	CutFragmentModalProps & RouteComponentProps & UserProps
+> = ({ itemMetaData, isOpen, onClose, afterCutCallback }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [fragmentStartTime, setFragmentStartTime] = useState<number>(0);
@@ -56,10 +66,10 @@ const AddToAssignmentModal: FunctionComponent<
 	const onApply = () => {
 		const hasCut =
 			fragmentEndTime !== toSeconds(itemMetaData.duration) || fragmentStartTime !== 0;
-		return onAddToAssignmentCallback({ hasCut, fragmentStartTime, fragmentEndTime });
+		return afterCutCallback({ hasCut, fragmentStartTime, fragmentEndTime });
 	};
 
-	const renderAddToAssignmentModal = () => {
+	const renderCutFragmentModal = () => {
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
 		const [start, end] = getValidStartAndEnd(
 			fragmentStartTime,
@@ -123,7 +133,7 @@ const AddToAssignmentModal: FunctionComponent<
 																type="secondary"
 																block
 																onClick={() =>
-																	onAddToAssignmentCallback({
+																	afterCutCallback({
 																		hasCut: false,
 																		fragmentStartTime: 0,
 																		fragmentEndTime: 0,
@@ -153,10 +163,10 @@ const AddToAssignmentModal: FunctionComponent<
 		);
 	};
 
-	return renderAddToAssignmentModal();
+	return renderCutFragmentModal();
 };
 
 export default compose(
 	withRouter,
 	withUser
-)(AddToAssignmentModal) as FunctionComponent<AddToAssignmentModalProps>;
+)(CutFragmentModal) as FunctionComponent<CutFragmentModalProps>;

@@ -98,10 +98,14 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
-import { getRelatedItems } from '../../shared/services/related-items-service';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { UnpublishableItem } from '../../shared/types';
-import { AddToAssignmentModal, AddToCollectionModal, ItemVideoDescription } from '../components';
+import { AddToCollectionModal, CutFragmentModal, ItemVideoDescription } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
@@ -124,6 +128,11 @@ interface ItemDetailProps {
 	goToDetailLink: (id: string, type: Avo.Core.ContentType) => void;
 	goToSearchLink: (newFilters: FilterState) => void;
 	enabledMetaData: SearchFilter[];
+	/**
+	 * Render related objects: only items (video/audio) or all types: video/audio/collections/bundels
+	 * Pupils can only see items
+	 */
+	relatedObjectTypes: ObjectTypesAll;
 	renderActionButtons?: (item: Avo.Item.Item) => ReactNode;
 	renderBookmarkButton?: (props: renderBookmarkButtonProps) => ReactNode;
 	renderBookmarkCount?: (props: renderBookmarkCountProps) => ReactNode;
@@ -146,6 +155,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	goToDetailLink = defaultGoToDetailLink(history),
 	goToSearchLink = defaultGoToSearchLink(history),
 	enabledMetaData = ALL_SEARCH_FILTERS,
+	relatedObjectTypes = ObjectTypesAll.items,
 	renderActionButtons,
 	renderBookmarkButton = defaultRenderBookmarkButton,
 	renderBookmarkCount = defaultRenderBookmarkCount,
@@ -180,7 +190,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	const [assignmentId, setAssignmentId] = useState<string>();
 
 	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
-		getRelatedItems(currentItemId, 'items', limit)
+		getRelatedItems(currentItemId, ObjectTypes.items, relatedObjectTypes, limit)
 			.then(setRelatedItems)
 			.catch((err) => {
 				console.error('Failed to get related items', err, {
@@ -953,87 +963,104 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						</Grid>
 					</Container>
 				</Container>
-				{!isNil(match.params.id) && isAddToCollectionModalOpen && (
-					<AddToCollectionModal
-						history={history}
-						location={location}
-						match={match}
+				{!isNil(match.params.id) &&
+					isAddToCollectionModalOpen &&
+					PermissionService.hasPerm(user, PermissionName.CREATE_COLLECTIONS) && (
+						<AddToCollectionModal
+							history={history}
+							location={location}
+							match={match}
+							user={user}
+							itemMetaData={item}
+							externalId={match.params.id as string}
+							isOpen={isAddToCollectionModalOpen}
+							onClose={() => {
+								setIsAddToCollectionModalOpen(false);
+							}}
+						/>
+					)}
+				{!isNil(match.params.id) &&
+					isAddToFragmentModalOpen &&
+					PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+						<CutFragmentModal
+							itemMetaData={item}
+							isOpen={isAddToFragmentModalOpen}
+							onClose={() => {
+								setIsAddToFragmentModalOpen(false);
+							}}
+							afterCutCallback={doImportToAssignment}
+						/>
+					)}
+				{!renderActionButtons && (
+					<ShareThroughEmailModal
+						modalTitle={tText('item/views/item-detail___deel-dit-item')}
+						type="item"
+						emailLinkHref={window.location.href}
+						emailLinkTitle={item.title}
+						isOpen={isShareThroughEmailModalOpen}
+						onClose={() => {
+							setIsShareThroughEmailModalOpen(false);
+						}}
+					/>
+				)}
+				{!renderActionButtons && (
+					<ReportItemModal
+						externalId={match.params.id}
+						isOpen={isReportItemModalOpen}
+						onClose={() => {
+							setIsReportItemModalOpen(false);
+						}}
 						user={user}
-						itemMetaData={item}
-						externalId={match.params.id as string}
-						isOpen={isAddToCollectionModalOpen}
+					/>
+				)}
+				{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (
+					<QuickLaneModal
+						modalTitle={tHtml('item/views/item___snel-delen-met-leerlingen')}
+						isOpen={isQuickLaneModalOpen}
+						content={item}
+						content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Item}
 						onClose={() => {
-							setIsAddToCollectionModalOpen(false);
+							setIsQuickLaneModalOpen(false);
 						}}
 					/>
 				)}
-				{!isNil(match.params.id) && isAddToFragmentModalOpen && (
-					<AddToAssignmentModal
-						itemMetaData={item}
-						isOpen={isAddToFragmentModalOpen}
-						onClose={() => {
-							setIsAddToFragmentModalOpen(false);
+				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+					<ImportToAssignmentModal
+						user={user}
+						isOpen={isImportToAssignmentModalOpen}
+						onClose={() => setIsImportToAssignmentModalOpen(false)}
+						importToAssignmentCallback={onImportToAssignment}
+						showToggle={false}
+						translations={{
+							title: tHtml(
+								'item/views/item-detail___voeg-toe-aan-bestaande-opdracht'
+							),
+							primaryButton: tText('item/views/item-detail___voeg-toe'),
+							secondaryButton: tText('item/views/item-detail___annuleer'),
 						}}
-						onAddToAssignmentCallback={doImportToAssignment}
 					/>
 				)}
-				<ShareThroughEmailModal
-					modalTitle={tText('item/views/item-detail___deel-dit-item')}
-					type="item"
-					emailLinkHref={window.location.href}
-					emailLinkTitle={item.title}
-					isOpen={isShareThroughEmailModalOpen}
-					onClose={() => {
-						setIsShareThroughEmailModalOpen(false);
-					}}
-				/>
-				<ReportItemModal
-					externalId={match.params.id}
-					isOpen={isReportItemModalOpen}
-					onClose={() => {
-						setIsReportItemModalOpen(false);
-					}}
-					user={user}
-				/>
-				<QuickLaneModal
-					modalTitle={tHtml('item/views/item___snel-delen-met-leerlingen')}
-					isOpen={isQuickLaneModalOpen}
-					content={item}
-					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Item}
-					onClose={() => {
-						setIsQuickLaneModalOpen(false);
-					}}
-				/>
-				<ImportToAssignmentModal
-					user={user}
-					isOpen={isImportToAssignmentModalOpen}
-					onClose={() => setIsImportToAssignmentModalOpen(false)}
-					importToAssignmentCallback={onImportToAssignment}
-					showToggle={false}
-					translations={{
-						title: tHtml('item/views/item-detail___voeg-toe-aan-bestaande-opdracht'),
-						primaryButton: tText('item/views/item-detail___voeg-toe'),
-						secondaryButton: tText('item/views/item-detail___annuleer'),
-					}}
-				/>
-				<ConfirmImportToAssignmentWithResponsesModal
-					isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
-					onClose={() => setIsConfirmImportToAssignmentWithResponsesModalOpen(false)}
-					confirmCallback={onConfirmImportAssignment}
-					translations={{
-						title: tHtml('item/views/item-detail___fragment-toevoegen'),
-						warningCallout: tText('item/views/item-detail___opgelet'),
-						warningMessage: tText(
-							'item/views/item-detail___leerlingen-hebben-deze-opdracht-reeds-bekeken'
-						),
-						warningBody: tText(
-							'item/views/item-detail___ben-je-zeker-dat-je-het-fragment-wil-toevoegen-aan-deze-opdracht'
-						),
-						primaryButton: tText('item/views/item-detail___voeg-toe'),
-						secondaryButton: tText('item/views/item-detail___annuleer'),
-					}}
-				/>
-				{item &&
+				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+					<ConfirmImportToAssignmentWithResponsesModal
+						isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
+						onClose={() => setIsConfirmImportToAssignmentWithResponsesModalOpen(false)}
+						confirmCallback={onConfirmImportAssignment}
+						translations={{
+							title: tHtml('item/views/item-detail___fragment-toevoegen'),
+							warningCallout: tText('item/views/item-detail___opgelet'),
+							warningMessage: tText(
+								'item/views/item-detail___leerlingen-hebben-deze-opdracht-reeds-bekeken'
+							),
+							warningBody: tText(
+								'item/views/item-detail___ben-je-zeker-dat-je-het-fragment-wil-toevoegen-aan-deze-opdracht'
+							),
+							primaryButton: tText('item/views/item-detail___voeg-toe'),
+							secondaryButton: tText('item/views/item-detail___annuleer'),
+						}}
+					/>
+				)}
+				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) &&
+					item &&
 					cutModal({
 						itemMetaData: item,
 						fragment: {

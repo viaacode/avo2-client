@@ -61,16 +61,15 @@ export const AssignmentBlockDescriptionButtons: FunctionComponent<
 			updated = {
 				...updated,
 				ownTitle:
-					block.ownTitle ?? (block.custom_title || block.item_meta?.title || undefined),
+					block.ownTitle ?? (block.custom_title || block.original_title || undefined),
 				ownDescription:
 					block.ownDescription ??
-					(block.custom_description || block.item_meta?.description || undefined),
+					(block.custom_description || block.original_description || undefined),
 			};
 		} else if (editMode === AssignmentBlockItemDescriptionType.none) {
 			updated = {
 				...updated,
-				noTitle:
-					block.noTitle ?? (block.custom_title || block.item_meta?.title || undefined),
+				noTitle: block.noTitle ?? (block.custom_title || block.original_title || undefined),
 			};
 		}
 

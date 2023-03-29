@@ -96,7 +96,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 					<CollapsibleColumn>
 						{meta && <BlockItemMetadata {...meta} block={block} />}
 
-						{custom ? customDescription : originalDescription}
+						{custom ? customDescription : custom === false ? originalDescription : null}
 					</CollapsibleColumn>
 
 					{custom && canOpenOriginal && (

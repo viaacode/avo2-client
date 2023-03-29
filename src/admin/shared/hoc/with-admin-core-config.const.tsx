@@ -17,6 +17,45 @@ import { FileUploadService } from '../../../shared/services/file-upload-service'
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
 import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
+const alertIcons: IconName[] = [
+	IconName.notification,
+	IconName.user,
+	IconName.alertCircle,
+	IconName.alertOctagon,
+	IconName.alertTriangle,
+	IconName.info,
+	IconName.unlock,
+	IconName.calendar,
+	IconName.book,
+];
+
+const getAlertIconNames = (): Partial<Record<IconName, string>> => ({
+	[IconName.notification]: tText('admin/shared/hoc/with-admin-core-config___notificatie'),
+	[IconName.user]: tText('admin/shared/hoc/with-admin-core-config___gebruiker'),
+	[IconName.alertCircle]: tText('admin/shared/hoc/with-admin-core-config___waarschuwing-cirkel'),
+	[IconName.alertOctagon]: tText(
+		'admin/shared/hoc/with-admin-core-config___waarschuwing-achthoek'
+	),
+	[IconName.alertTriangle]: tText(
+		'admin/shared/hoc/with-admin-core-config___waarschuwing-driehoek'
+	),
+	[IconName.info]: tText('admin/shared/hoc/with-admin-core-config___info'),
+	[IconName.unlock]: tText('admin/shared/hoc/with-admin-core-config___slot'),
+	[IconName.calendar]: tText('admin/shared/hoc/with-admin-core-config___kalender'),
+	[IconName.book]: tText('admin/shared/hoc/with-admin-core-config___boek'),
+});
+
+export const ALERT_ICON_LIST_CONFIG = (): {
+	key: IconName;
+	value: IconName;
+	label: string;
+}[] =>
+	alertIcons.map((iconKey: IconName) => ({
+		key: iconKey,
+		value: iconKey,
+		label: getAlertIconNames()[iconKey] || iconKey,
+	}));
+
 export function getAdminCoreConfig(): AdminConfig {
 	const InternalLink = (linkInfo: LinkInfo) => {
 		return <Link {...linkInfo} to={() => linkInfo.to || ''} />;
@@ -39,7 +78,10 @@ export function getAdminCoreConfig(): AdminConfig {
 			defaultPageWidth: 'EXTRA_LARGE',
 			onSaveContentPage: () => new Promise(noop),
 		},
-		navigationBars: { enableIcons: false },
+		navigationBars: {
+			enableIcons: false,
+			customNavigationElements: ['<PupilOrTeacherDropdown>', '<LoginOptionsDropdown>'],
+		},
 		icon: {
 			component: ({ name }: { name: string }) => <Icon name={name as IconName} />,
 			componentProps: {
@@ -58,8 +100,13 @@ export function getAdminCoreConfig(): AdminConfig {
 				chevronLeft: { name: IconName.chevronLeft },
 				extraOptions: { name: IconName.moreHorizontal },
 				copy: { name: IconName.copy },
+				check: { name: IconName.check },
+				clock: { name: IconName.clock },
+				calendar: { name: IconName.calendar },
+				export: { name: IconName.download },
 			},
 			list: GET_ADMIN_ICON_OPTIONS,
+			alerts: ALERT_ICON_LIST_CONFIG,
 		},
 		components: {
 			loader: {
@@ -205,6 +252,7 @@ export function getAdminCoreConfig(): AdminConfig {
 			USER_GROUP_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.userGroup}`,
 			USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.users}`,
 			SEARCH: `/${ROUTE_PARTS.search}`,
+			ALERTS_OVERVIEW: `/${ROUTE_PARTS.alerts}`,
 		},
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],

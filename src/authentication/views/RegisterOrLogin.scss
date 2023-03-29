@@ -31,6 +31,17 @@ $grid-gutter: 2.4rem;
 		}
 
 		[class*='o-grid-col'] {
+			&:first-child {
+				display: flex;
+				padding: 3.2rem;
+				flex-direction: column;
+				justify-content: center;
+
+				p {
+					margin-top: 0.8rem;
+				}
+			}
+
 			&:not(:first-child) {
 				@media screen and (min-width: $g-bp3) {
 					border-left: 1px solid $c-register-login-view-modal-border-color;

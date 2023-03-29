@@ -12,22 +12,28 @@ import {
 	App_Assignments_V2_Set_Input,
 	AssignmentPupilBlocksDocument,
 	AssignmentPupilBlocksQuery,
+	AssignmentPupilBlocksQueryVariables,
 	BulkUpdateAuthorForAssignmentsDocument,
 	BulkUpdateAuthorForAssignmentsMutation,
+	BulkUpdateAuthorForAssignmentsMutationVariables,
 	DeleteAssignmentByIdDocument,
 	DeleteAssignmentByIdMutation,
+	DeleteAssignmentByIdMutationVariables,
 	DeleteAssignmentResponseByIdDocument,
 	DeleteAssignmentResponseByIdMutation,
 	DeleteAssignmentResponseByIdMutationVariables,
 	DeleteAssignmentsByIdDocument,
 	DeleteAssignmentsByIdMutation,
+	DeleteAssignmentsByIdMutationVariables,
 	GetAssignmentBlocksDocument,
 	GetAssignmentBlocksQuery,
+	GetAssignmentBlocksQueryVariables,
 	GetAssignmentByUuidDocument,
 	GetAssignmentByUuidQuery,
 	GetAssignmentByUuidQueryVariables,
 	GetAssignmentIdsDocument,
 	GetAssignmentIdsQuery,
+	GetAssignmentIdsQueryVariables,
 	GetAssignmentResponseByIdDocument,
 	GetAssignmentResponseByIdQuery,
 	GetAssignmentResponseByIdQueryVariables,
@@ -42,6 +48,7 @@ import {
 	GetAssignmentResponsesQueryVariables,
 	GetAssignmentsAdminOverviewDocument,
 	GetAssignmentsAdminOverviewQuery,
+	GetAssignmentsAdminOverviewQueryVariables,
 	GetAssignmentsByOwnerDocument,
 	GetAssignmentsByOwnerQuery,
 	GetAssignmentsByOwnerQueryVariables,
@@ -53,18 +60,22 @@ import {
 	GetAssignmentWithResponseQueryVariables,
 	GetMaxPositionAssignmentBlocksDocument,
 	GetMaxPositionAssignmentBlocksQuery,
+	GetMaxPositionAssignmentBlocksQueryVariables,
 	IncrementAssignmentViewCountDocument,
 	IncrementAssignmentViewCountMutation,
 	IncrementAssignmentViewCountMutationVariables,
 	InsertAssignmentBlocksDocument,
 	InsertAssignmentBlocksMutation,
+	InsertAssignmentBlocksMutationVariables,
 	InsertAssignmentDocument,
 	InsertAssignmentMutation,
 	InsertAssignmentMutationVariables,
 	InsertAssignmentResponseDocument,
 	InsertAssignmentResponseMutation,
+	InsertAssignmentResponseMutationVariables,
 	UpdateAssignmentBlockDocument,
 	UpdateAssignmentBlockMutation,
+	UpdateAssignmentBlockMutationVariables,
 	UpdateAssignmentByIdDocument,
 	UpdateAssignmentByIdMutation,
 	UpdateAssignmentByIdMutationVariables,
@@ -195,7 +206,8 @@ export class AssignmentService {
 
 			// Get the assignment from graphql
 			const assignmentResponse = await dataService.query<
-				GetAssignmentsByOwnerQuery | GetAssignmentsByResponseOwnerIdQuery
+				GetAssignmentsByOwnerQuery | GetAssignmentsByResponseOwnerIdQuery,
+				GetAssignmentsByOwnerQueryVariables | GetAssignmentsByResponseOwnerIdQueryVariables
 			>({
 				variables,
 				query: canEditAssignments
@@ -230,7 +242,10 @@ export class AssignmentService {
 		try {
 			// Get the assignment from graphql
 			const variables: GetAssignmentByUuidQueryVariables = { id: assignmentId };
-			const response = await dataService.query<GetAssignmentByUuidQuery>({
+			const response = await dataService.query<
+				GetAssignmentByUuidQuery,
+				GetAssignmentByUuidQueryVariables
+			>({
 				query: GetAssignmentByUuidDocument,
 				variables,
 			});
@@ -256,7 +271,10 @@ export class AssignmentService {
 	}
 
 	static async hasPupilCollectionBlocks(assignmentId: string): Promise<boolean> {
-		const pupilBlocks = await dataService.query<AssignmentPupilBlocksQuery>({
+		const pupilBlocks = await dataService.query<
+			AssignmentPupilBlocksQuery,
+			AssignmentPupilBlocksQueryVariables
+		>({
 			query: AssignmentPupilBlocksDocument,
 			variables: { assignmentId },
 		});
@@ -264,7 +282,10 @@ export class AssignmentService {
 	}
 
 	static async fetchAssignmentBlocks(assignmentId: string): Promise<AssignmentBlock[]> {
-		const blocks = await dataService.query<GetAssignmentBlocksQuery>({
+		const blocks = await dataService.query<
+			GetAssignmentBlocksQuery,
+			GetAssignmentBlocksQueryVariables
+		>({
 			query: GetAssignmentBlocksDocument,
 			variables: { assignmentId },
 		});
@@ -287,14 +308,14 @@ export class AssignmentService {
 			)
 		) {
 			assignmentToSave.assignment_type = 'ZOEK';
-		}
-
-		if (
+		} else if (
 			assignment.blocks?.some(
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.BOUW
 			)
 		) {
 			assignmentToSave.assignment_type = 'BOUW';
+		} else {
+			assignmentToSave.assignment_type = 'KIJK';
 		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
@@ -323,7 +344,10 @@ export class AssignmentService {
 
 	static async deleteAssignment(assignmentId: string): Promise<void> {
 		try {
-			await dataService.query<DeleteAssignmentByIdMutation>({
+			await dataService.query<
+				DeleteAssignmentByIdMutation,
+				DeleteAssignmentByIdMutationVariables
+			>({
 				query: DeleteAssignmentByIdDocument,
 				variables: { assignmentId },
 			});
@@ -336,7 +360,10 @@ export class AssignmentService {
 
 	static async deleteAssignments(assignmentIds: string[]): Promise<void> {
 		try {
-			await dataService.query<DeleteAssignmentsByIdMutation>({
+			await dataService.query<
+				DeleteAssignmentsByIdMutation,
+				DeleteAssignmentsByIdMutationVariables
+			>({
 				query: DeleteAssignmentsByIdDocument,
 				variables: { assignmentIds },
 			});
@@ -376,7 +403,10 @@ export class AssignmentService {
 				assignment,
 				assignmentId: original.id,
 			};
-			await dataService.query<UpdateAssignmentByIdMutation>({
+			await dataService.query<
+				UpdateAssignmentByIdMutation,
+				UpdateAssignmentByIdMutationVariables
+			>({
 				query: UpdateAssignmentByIdDocument,
 				variables,
 			});
@@ -408,7 +438,10 @@ export class AssignmentService {
 				assignmentId,
 				updatedAt: new Date().toISOString(),
 			};
-			await dataService.query<UpdateAssignmentUpdatedAtDateMutation>({
+			await dataService.query<
+				UpdateAssignmentUpdatedAtDateMutation,
+				UpdateAssignmentUpdatedAtDateMutationVariables
+			>({
 				query: UpdateAssignmentUpdatedAtDateDocument,
 				variables,
 			});
@@ -444,7 +477,10 @@ export class AssignmentService {
 				updatedAt: new Date().toISOString(),
 				assignmentResponseId: original.id,
 			};
-			await dataService.query<UpdateAssignmentResponseMutation>({
+			await dataService.query<
+				UpdateAssignmentResponseMutation,
+				UpdateAssignmentResponseMutationVariables
+			>({
 				query: UpdateAssignmentResponseDocument,
 				variables,
 			});
@@ -521,13 +557,19 @@ export class AssignmentService {
 				.map(cleanup)
 				.filter((block) => block.id)
 				.map((block) =>
-					dataService.query<UpdateAssignmentBlockMutation>({
+					dataService.query<
+						UpdateAssignmentBlockMutation,
+						UpdateAssignmentBlockMutationVariables
+					>({
 						query: UpdateAssignmentBlockDocument,
 						variables: { blockId: block.id, update: block },
 					})
 				),
 			...deleted.map(cleanup).map((block) =>
-				dataService.query<UpdateAssignmentBlockMutation>({
+				dataService.query<
+					UpdateAssignmentBlockMutation,
+					UpdateAssignmentBlockMutationVariables
+				>({
 					query: UpdateAssignmentBlockDocument,
 					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
 				})
@@ -536,7 +578,10 @@ export class AssignmentService {
 
 		if (created.length > 0) {
 			promises.push(
-				dataService.query<InsertAssignmentBlocksMutation>({
+				dataService.query<
+					InsertAssignmentBlocksMutation,
+					InsertAssignmentBlocksMutationVariables
+				>({
 					query: InsertAssignmentBlocksDocument,
 					variables: {
 						assignmentBlocks: created
@@ -570,7 +615,10 @@ export class AssignmentService {
 			const variables: InsertAssignmentMutationVariables = {
 				assignment: assignmentToSave,
 			};
-			const response = await dataService.query<InsertAssignmentMutation>({
+			const response = await dataService.query<
+				InsertAssignmentMutation,
+				InsertAssignmentMutationVariables
+			>({
 				query: InsertAssignmentDocument,
 				variables,
 			});
@@ -674,7 +722,10 @@ export class AssignmentService {
 				return newBlock;
 			});
 
-			await dataService.query<InsertAssignmentBlocksMutation>({
+			await dataService.query<
+				InsertAssignmentBlocksMutation,
+				InsertAssignmentBlocksMutationVariables
+			>({
 				query: InsertAssignmentBlocksDocument,
 				variables: {
 					assignmentBlocks: newBlocks,
@@ -698,7 +749,10 @@ export class AssignmentService {
 				assignmentId,
 				pupilUuid: pupilProfileId,
 			};
-			const response = await dataService.query<GetAssignmentWithResponseQuery>({
+			const response = await dataService.query<
+				GetAssignmentWithResponseQuery,
+				GetAssignmentWithResponseQueryVariables
+			>({
 				query: GetAssignmentWithResponseDocument,
 				variables,
 			});
@@ -788,11 +842,13 @@ export class AssignmentService {
 			};
 
 			// Get the assignment from graphql
-			const assignmentResponse =
-				await dataService.query<GetAssignmentResponsesByAssignmentIdQuery>({
-					query: GetAssignmentResponsesByAssignmentIdDocument,
-					variables,
-				});
+			const assignmentResponse = await dataService.query<
+				GetAssignmentResponsesByAssignmentIdQuery,
+				GetAssignmentResponsesByAssignmentIdQueryVariables
+			>({
+				query: GetAssignmentResponsesByAssignmentIdDocument,
+				variables,
+			});
 
 			if (
 				!assignmentResponse ||
@@ -840,7 +896,10 @@ export class AssignmentService {
 			const variables: DeleteAssignmentResponseByIdMutationVariables = {
 				assignmentResponseId,
 			};
-			await dataService.query<DeleteAssignmentResponseByIdMutation>({
+			await dataService.query<
+				DeleteAssignmentResponseByIdMutation,
+				DeleteAssignmentResponseByIdMutationVariables
+			>({
 				query: DeleteAssignmentResponseByIdDocument,
 				variables,
 			});
@@ -868,13 +927,22 @@ export class AssignmentService {
 			(blocks || []).map(async (block): Promise<BaseBlockWithMeta> => {
 				if (block.fragment_id) {
 					try {
+						const item_meta =
+							items.find((item) => item?.external_id === block.fragment_id) ||
+							(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
+							undefined;
+
+						// * For collection items, we want to use the original_title and original_description.
+						//     This is what the collection creator entered as a custom title and description for the item when it was added to the collection
+						// * For items that were directly added to the assignment, we need to use the fragment title and description,
+						//     so when those are updated, the fragment in the assignment also updates
 						return {
 							...block,
-							item_meta:
-								items.find((item) => item?.external_id === block.fragment_id) ||
-								(await ItemsService.fetchItemByExternalId(block.fragment_id)) ||
-								undefined,
-						};
+							original_title: (block as any).original_title || item_meta?.title,
+							original_description:
+								(block as any).original_description || item_meta?.description,
+							item_meta,
+						} as BaseBlockWithMeta;
 					} catch (error) {
 						console.warn(`Unable to fetch meta data for ${block.fragment_id}`, error);
 					}
@@ -898,7 +966,10 @@ export class AssignmentService {
 	): Promise<GetAssignmentResponsesQuery['app_assignment_responses_v2']> {
 		try {
 			const variables: GetAssignmentResponsesQueryVariables = { profileId, assignmentId };
-			const response = await dataService.query<GetAssignmentResponsesQuery>({
+			const response = await dataService.query<
+				GetAssignmentResponsesQuery,
+				GetAssignmentResponsesQueryVariables
+			>({
 				query: GetAssignmentResponsesDocument,
 				variables,
 			});
@@ -922,7 +993,10 @@ export class AssignmentService {
 	): Promise<Omit<AssignmentResponseInfo, 'assignment'> | undefined> {
 		try {
 			const variables: GetAssignmentResponseQueryVariables = { profileId, assignmentId };
-			const response = await dataService.query<GetAssignmentResponseQuery>({
+			const response = await dataService.query<
+				GetAssignmentResponseQuery,
+				GetAssignmentResponseQueryVariables
+			>({
 				query: GetAssignmentResponseDocument,
 				variables,
 			});
@@ -956,7 +1030,10 @@ export class AssignmentService {
 	): Promise<AssignmentResponseInfo | null> {
 		try {
 			const variables: GetAssignmentResponseByIdQueryVariables = { assignmentResponseId };
-			const response = await dataService.query<GetAssignmentResponseByIdQuery>({
+			const response = await dataService.query<
+				GetAssignmentResponseByIdQuery,
+				GetAssignmentResponseByIdQueryVariables
+			>({
 				query: GetAssignmentResponseByIdDocument,
 				variables,
 			});
@@ -1028,10 +1105,13 @@ export class AssignmentService {
 						? tText('assignment/assignment___nieuwe-collectie')
 						: null,
 			};
-			const response = await dataService.query<InsertAssignmentResponseMutation>({
+			const response = await dataService.query<
+				InsertAssignmentResponseMutation,
+				InsertAssignmentResponseMutationVariables
+			>({
 				query: InsertAssignmentResponseDocument,
 				variables: {
-					assignmentResponses: [assignmentResponse],
+					assignmentResponses: [assignmentResponse as any],
 				},
 			});
 
@@ -1060,7 +1140,10 @@ export class AssignmentService {
 	}
 
 	static async getAssignmentBlockMaxPosition(assignmentId: string): Promise<number | null> {
-		const result = await dataService.query<GetMaxPositionAssignmentBlocksQuery>({
+		const result = await dataService.query<
+			GetMaxPositionAssignmentBlocksQuery,
+			GetMaxPositionAssignmentBlocksQueryVariables
+		>({
 			query: GetMaxPositionAssignmentBlocksDocument,
 			variables: { assignmentId },
 		});
@@ -1113,7 +1196,10 @@ export class AssignmentService {
 			try {
 				// Insert fragments into assignment and update the updated_at date in parallel
 				await Promise.all([
-					dataService.query<InsertAssignmentBlocksMutation>({
+					dataService.query<
+						InsertAssignmentBlocksMutation,
+						InsertAssignmentBlocksMutationVariables
+					>({
 						query: InsertAssignmentBlocksDocument,
 						variables: {
 							assignmentBlocks: blocks,
@@ -1147,7 +1233,10 @@ export class AssignmentService {
 			},
 		};
 
-		const assignment = await dataService.query<InsertAssignmentMutation>({
+		const assignment = await dataService.query<
+			InsertAssignmentMutation,
+			InsertAssignmentMutationVariables
+		>({
 			query: InsertAssignmentDocument,
 			variables,
 		});
@@ -1200,7 +1289,10 @@ export class AssignmentService {
 			},
 		};
 
-		const assignment = await dataService.query<InsertAssignmentMutation>({
+		const assignment = await dataService.query<
+			InsertAssignmentMutation,
+			InsertAssignmentMutationVariables
+		>({
 			query: InsertAssignmentDocument,
 			variables,
 		});
@@ -1227,7 +1319,10 @@ export class AssignmentService {
 			end_oc: item.end_oc,
 		};
 
-		await dataService.query<InsertAssignmentBlocksMutation>({
+		await dataService.query<
+			InsertAssignmentBlocksMutation,
+			InsertAssignmentBlocksMutationVariables
+		>({
 			query: InsertAssignmentBlocksDocument,
 			variables: {
 				assignmentBlocks: [block],
@@ -1274,7 +1369,10 @@ export class AssignmentService {
 
 		// Insert fragment into assignment and update the updated_at date in parallel
 		await Promise.all([
-			dataService.query<InsertAssignmentBlocksMutation>({
+			dataService.query<
+				InsertAssignmentBlocksMutation,
+				InsertAssignmentBlocksMutationVariables
+			>({
 				query: InsertAssignmentBlocksDocument,
 				variables: {
 					assignmentBlocks: [block],
@@ -1313,7 +1411,10 @@ export class AssignmentService {
 				),
 			};
 
-			const response = await dataService.query<GetAssignmentsAdminOverviewQuery>({
+			const response = await dataService.query<
+				GetAssignmentsAdminOverviewQuery,
+				GetAssignmentsAdminOverviewQueryVariables
+			>({
 				query: GetAssignmentsAdminOverviewDocument,
 				variables,
 			});
@@ -1349,7 +1450,10 @@ export class AssignmentService {
 				where: whereWithoutDeleted,
 			};
 
-			const response = await dataService.query<GetAssignmentIdsQuery>({
+			const response = await dataService.query<
+				GetAssignmentIdsQuery,
+				GetAssignmentIdsQueryVariables
+			>({
 				variables,
 				query: GetAssignmentIdsDocument,
 			});
@@ -1378,7 +1482,10 @@ export class AssignmentService {
 		assignmentIds: string[]
 	): Promise<number> {
 		try {
-			const response = await dataService.query<BulkUpdateAuthorForAssignmentsMutation>({
+			const response = await dataService.query<
+				BulkUpdateAuthorForAssignmentsMutation,
+				BulkUpdateAuthorForAssignmentsMutationVariables
+			>({
 				query: BulkUpdateAuthorForAssignmentsDocument,
 				variables: {
 					assignmentIds,
@@ -1402,7 +1509,10 @@ export class AssignmentService {
 			const variables: IncrementAssignmentViewCountMutationVariables = {
 				assignmentId,
 			};
-			const response = await dataService.query<IncrementAssignmentViewCountMutation>({
+			const response = await dataService.query<
+				IncrementAssignmentViewCountMutation,
+				IncrementAssignmentViewCountMutationVariables
+			>({
 				query: IncrementAssignmentViewCountDocument,
 				variables,
 			});

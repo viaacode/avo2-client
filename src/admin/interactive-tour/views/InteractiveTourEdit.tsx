@@ -33,6 +33,7 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import {
 	GetInteractiveTourByIdDocument,
 	GetInteractiveTourByIdQuery,
+	GetInteractiveTourByIdQueryVariables,
 } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -128,9 +129,12 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			});
 		} else {
 			try {
-				const response = await dataService.query<GetInteractiveTourByIdQuery>({
+				const response = await dataService.query<
+					GetInteractiveTourByIdQuery,
+					GetInteractiveTourByIdQueryVariables
+				>({
 					query: GetInteractiveTourByIdDocument,
-					variables: { id: match.params.id },
+					variables: { id: parseInt(match.params.id) },
 				});
 
 				const interactiveTourObj = response.app_interactive_tour[0];

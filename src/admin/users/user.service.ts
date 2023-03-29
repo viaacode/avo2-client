@@ -16,6 +16,7 @@ import {
 	GetUsersQueryVariables,
 	UpdateUserTempAccessByIdDocument,
 	UpdateUserTempAccessByIdMutation,
+	UpdateUserTempAccessByIdMutationVariables,
 } from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -36,7 +37,10 @@ export class UserService {
 	): Promise<void> => {
 		try {
 			// Update a users temp access
-			await dataService.query<UpdateUserTempAccessByIdMutation>({
+			await dataService.query<
+				UpdateUserTempAccessByIdMutation,
+				UpdateUserTempAccessByIdMutationVariables
+			>({
 				query: UpdateUserTempAccessByIdDocument,
 				variables: {
 					user_id: userId,
@@ -163,9 +167,14 @@ export class UserService {
 				),
 			};
 
-			const response = await dataService.query<GetUsersQuery | GetUsersInSameCompanyQuery>({
-				variables,
+			const response = await dataService.query<
+				GetUsersQuery | GetUsersInSameCompanyQuery,
+				GetUsersQueryVariables | GetUsersInSameCompanyQueryVariables
+			>({
 				query,
+				variables: variables as
+					| GetUsersQueryVariables
+					| GetUsersInSameCompanyQueryVariables,
 			});
 
 			const users = response.users_summary_view;
@@ -243,7 +252,10 @@ export class UserService {
 			variables = {
 				where: where || undefined,
 			};
-			const response = await dataService.query<GetProfileIdsQuery>({
+			const response = await dataService.query<
+				GetProfileIdsQuery,
+				GetProfileIdsQueryVariables
+			>({
 				variables,
 				query: GetProfileIdsDocument,
 			});

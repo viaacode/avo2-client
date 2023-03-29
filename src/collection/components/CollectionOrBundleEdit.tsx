@@ -400,6 +400,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				canDelete: rawPermissions[1],
 				canCreate: rawPermissions[2],
 				canViewItems: rawPermissions[3],
+				canPublish: rawPermissions[4],
 			};
 
 			if (!permissionObj.canEdit) {
@@ -776,7 +777,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 				return;
 			}
-			await CollectionService.deleteCollection(collectionState.currentCollection.id);
+			await CollectionService.deleteCollectionOrBundle(collectionState.currentCollection.id);
 
 			trackEvents(
 				{

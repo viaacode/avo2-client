@@ -4,16 +4,22 @@ import { flatten } from 'lodash-es';
 import {
 	BulkAddLabelsToCollectionsDocument,
 	BulkAddLabelsToCollectionsMutation,
+	BulkAddLabelsToCollectionsMutationVariables,
 	BulkDeleteCollectionsDocument,
 	BulkDeleteCollectionsMutation,
+	BulkDeleteCollectionsMutationVariables,
 	BulkDeleteLabelsFromCollectionsDocument,
 	BulkDeleteLabelsFromCollectionsMutation,
+	BulkDeleteLabelsFromCollectionsMutationVariables,
 	BulkUpdateAuthorForCollectionsDocument,
 	BulkUpdateAuthorForCollectionsMutation,
+	BulkUpdateAuthorForCollectionsMutationVariables,
 	BulkUpdateDateAndLastAuthorCollectionsDocument,
 	BulkUpdateDateAndLastAuthorCollectionsMutation,
+	BulkUpdateDateAndLastAuthorCollectionsMutationVariables,
 	BulkUpdatePublishStateForCollectionsDocument,
 	BulkUpdatePublishStateForCollectionsMutation,
+	BulkUpdatePublishStateForCollectionsMutationVariables,
 	GetCollectionActualisationsQuery,
 	GetCollectionActualisationsQueryVariables,
 	GetCollectionMarcomQuery,
@@ -71,7 +77,10 @@ export class CollectionsOrBundlesService {
 				),
 			};
 
-			const response = await dataService.query<GetCollectionsQuery>({
+			const response = await dataService.query<
+				GetCollectionsQuery,
+				GetCollectionsQueryVariables
+			>({
 				variables,
 				query: GetCollectionsDocument,
 			});
@@ -113,7 +122,10 @@ export class CollectionsOrBundlesService {
 		where: GetCollectionsByIdsQueryVariables['where']
 	): Promise<string[]> {
 		try {
-			const response = await dataService.query<GetCollectionsByIdsQuery>({
+			const response = await dataService.query<
+				GetCollectionsByIdsQuery,
+				GetCollectionsByIdsQueryVariables
+			>({
 				variables: {
 					where,
 				},
@@ -169,7 +181,10 @@ export class CollectionsOrBundlesService {
 			const response = await dataService.query<
 				| GetCollectionActualisationsQuery
 				| GetCollectionQualityCheckQuery
-				| GetCollectionMarcomQuery
+				| GetCollectionMarcomQuery,
+				| GetCollectionActualisationsQueryVariables
+				| GetCollectionQualityCheckQueryVariables
+				| GetCollectionMarcomQueryVariables
 			>({
 				query: EDITORIAL_QUERIES[editorialType],
 				variables,
@@ -205,7 +220,10 @@ export class CollectionsOrBundlesService {
 		updatedByProfileId: string
 	): Promise<number> {
 		try {
-			const response = await dataService.query<BulkUpdatePublishStateForCollectionsMutation>({
+			const response = await dataService.query<
+				BulkUpdatePublishStateForCollectionsMutation,
+				BulkUpdatePublishStateForCollectionsMutationVariables
+			>({
 				query: BulkUpdatePublishStateForCollectionsDocument,
 				variables: {
 					isPublic,
@@ -235,7 +253,10 @@ export class CollectionsOrBundlesService {
 		updatedByProfileId: string
 	): Promise<number> {
 		try {
-			const response = await dataService.query<BulkUpdateAuthorForCollectionsMutation>({
+			const response = await dataService.query<
+				BulkUpdateAuthorForCollectionsMutation,
+				BulkUpdateAuthorForCollectionsMutationVariables
+			>({
 				query: BulkUpdateAuthorForCollectionsDocument,
 				variables: {
 					authorId,
@@ -260,7 +281,10 @@ export class CollectionsOrBundlesService {
 		updatedByProfileId: string
 	): Promise<number> {
 		try {
-			const response = await dataService.query<BulkDeleteCollectionsMutation>({
+			const response = await dataService.query<
+				BulkDeleteCollectionsMutation,
+				BulkDeleteCollectionsMutationVariables
+			>({
 				query: BulkDeleteCollectionsDocument,
 				variables: {
 					collectionIds,
@@ -292,7 +316,10 @@ export class CollectionsOrBundlesService {
 			);
 
 			// Add the labels
-			const response = await dataService.query<BulkAddLabelsToCollectionsMutation>({
+			const response = await dataService.query<
+				BulkAddLabelsToCollectionsMutation,
+				BulkAddLabelsToCollectionsMutationVariables
+			>({
 				query: BulkAddLabelsToCollectionsDocument,
 				variables: {
 					labels: flatten(
@@ -324,7 +351,10 @@ export class CollectionsOrBundlesService {
 		updatedByProfileId: string
 	): Promise<number> {
 		try {
-			const response = await dataService.query<BulkDeleteLabelsFromCollectionsMutation>({
+			const response = await dataService.query<
+				BulkDeleteLabelsFromCollectionsMutation,
+				BulkDeleteLabelsFromCollectionsMutationVariables
+			>({
 				query: BulkDeleteLabelsFromCollectionsDocument,
 				variables: {
 					labels,
@@ -348,7 +378,10 @@ export class CollectionsOrBundlesService {
 		collectionIds: string[],
 		updatedByProfileId: string
 	): Promise<void> {
-		await dataService.query<BulkUpdateDateAndLastAuthorCollectionsMutation>({
+		await dataService.query<
+			BulkUpdateDateAndLastAuthorCollectionsMutation,
+			BulkUpdateDateAndLastAuthorCollectionsMutationVariables
+		>({
 			query: BulkUpdateDateAndLastAuthorCollectionsDocument,
 			variables: {
 				collectionIds,

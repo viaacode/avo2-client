@@ -4,12 +4,16 @@ import { sortBy } from 'lodash-es';
 import {
 	GetAllOrganisationsDocument,
 	GetAllOrganisationsQuery,
+	GetAllOrganisationsQueryVariables,
 	GetDistinctOrganisationsDocument,
 	GetDistinctOrganisationsQuery,
+	GetDistinctOrganisationsQueryVariables,
 	GetOrganisationsWithUsersDocument,
 	GetOrganisationsWithUsersQuery,
+	GetOrganisationsWithUsersQueryVariables,
 	GetUsersByCompanyIdDocument,
 	GetUsersByCompanyIdQuery,
+	GetUsersByCompanyIdQueryVariables,
 } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 
@@ -21,7 +25,8 @@ export class OrganisationService {
 	): Promise<Partial<Avo.Organization.Organization>[]> {
 		try {
 			const response = await dataService.query<
-				GetDistinctOrganisationsQuery | GetAllOrganisationsQuery
+				GetDistinctOrganisationsQuery | GetAllOrganisationsQuery,
+				GetDistinctOrganisationsQueryVariables | GetAllOrganisationsQueryVariables
 			>({
 				query: onlyWithItems
 					? GetDistinctOrganisationsDocument
@@ -55,7 +60,10 @@ export class OrganisationService {
 		Partial<Avo.Organization.Organization>[]
 	> {
 		try {
-			const response = await dataService.query<GetOrganisationsWithUsersQuery>({
+			const response = await dataService.query<
+				GetOrganisationsWithUsersQuery,
+				GetOrganisationsWithUsersQueryVariables
+			>({
 				query: GetOrganisationsWithUsersDocument,
 			});
 
@@ -79,7 +87,10 @@ export class OrganisationService {
 		companyId: string
 	): Promise<Partial<Avo.User.Profile>[]> {
 		try {
-			const response = await dataService.query<GetUsersByCompanyIdQuery>({
+			const response = await dataService.query<
+				GetUsersByCompanyIdQuery,
+				GetUsersByCompanyIdQueryVariables
+			>({
 				query: GetUsersByCompanyIdDocument,
 				variables: {
 					companyId,
