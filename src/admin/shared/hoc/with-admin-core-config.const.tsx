@@ -30,15 +30,19 @@ const alertIcons: IconName[] = [
 ];
 
 const getAlertIconNames = (): Partial<Record<IconName, string>> => ({
-	[IconName.notification]: tText('notificatie'),
-	[IconName.user]: tText('gebruiker'),
-	[IconName.alertCircle]: tText('waarschuwing cirkel'),
-	[IconName.alertOctagon]: tText('waarschuwing achthoek'),
-	[IconName.alertTriangle]: tText('waarschuwing driehoek'),
-	[IconName.info]: tText('info'),
-	[IconName.unlock]: tText('slot'),
-	[IconName.calendar]: tText('kalender'),
-	[IconName.book]: tText('boek'),
+	[IconName.notification]: tText('admin/shared/hoc/with-admin-core-config___notificatie'),
+	[IconName.user]: tText('admin/shared/hoc/with-admin-core-config___gebruiker'),
+	[IconName.alertCircle]: tText('admin/shared/hoc/with-admin-core-config___waarschuwing-cirkel'),
+	[IconName.alertOctagon]: tText(
+		'admin/shared/hoc/with-admin-core-config___waarschuwing-achthoek'
+	),
+	[IconName.alertTriangle]: tText(
+		'admin/shared/hoc/with-admin-core-config___waarschuwing-driehoek'
+	),
+	[IconName.info]: tText('admin/shared/hoc/with-admin-core-config___info'),
+	[IconName.unlock]: tText('admin/shared/hoc/with-admin-core-config___slot'),
+	[IconName.calendar]: tText('admin/shared/hoc/with-admin-core-config___kalender'),
+	[IconName.book]: tText('admin/shared/hoc/with-admin-core-config___boek'),
 });
 
 export const ALERT_ICON_LIST_CONFIG = (): {

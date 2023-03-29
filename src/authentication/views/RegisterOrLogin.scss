@@ -6,62 +6,62 @@
 $grid-gutter: 2.4rem;
 
 .c-register-login-view {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
 }
 
 .c-register-login-view__modal {
-  background-image: url('../../assets/images/login-bg.jpg');
-  background-size: cover;
+	background-image: url('../../assets/images/login-bg.jpg');
+	background-size: cover;
 
-  .c-modal.c-modal--medium {
-	width: 700px; // rem causes some funky behaviour here
-  }
-
-  .c-modal__body {
-	padding: 0;
-	border-radius: 0.3rem;
-
-	@media screen and (min-width: $g-bp2) {
-	  border: 1px solid $c-register-login-view-modal-border-color;
-	  background: $c-register-login-view-modal-background-color;
+	.c-modal.c-modal--medium {
+		width: 700px; // rem causes some funky behaviour here
 	}
 
-	[class*='o-grid-col'] {
-	  &:first-child {
-		display: flex;
-		padding: 3.2rem;
-		flex-direction: column;
-		justify-content: center;
+	.c-modal__body {
+		padding: 0;
+		border-radius: 0.3rem;
 
-		p {
-		  margin-top: 0.8rem;
+		@media screen and (min-width: $g-bp2) {
+			border: 1px solid $c-register-login-view-modal-border-color;
+			background: $c-register-login-view-modal-background-color;
 		}
-	  }
 
-	  &:not(:first-child) {
-		@media screen and (min-width: $g-bp3) {
-		  border-left: 1px solid $c-register-login-view-modal-border-color;
+		[class*='o-grid-col'] {
+			&:first-child {
+				display: flex;
+				padding: 3.2rem;
+				flex-direction: column;
+				justify-content: center;
+
+				p {
+					margin-top: 0.8rem;
+				}
+			}
+
+			&:not(:first-child) {
+				@media screen and (min-width: $g-bp3) {
+					border-left: 1px solid $c-register-login-view-modal-border-color;
+				}
+			}
 		}
-	  }
-	}
 
-	.c-tabs {
-	  @media screen and (max-width: ($g-bp3 - 1)) {
-		border-top: 1px solid $c-register-login-view-modal-border-color;
-	  }
-	}
+		.c-tabs {
+			@media screen and (max-width: ($g-bp3 - 1)) {
+				border-top: 1px solid $c-register-login-view-modal-border-color;
+			}
+		}
 
-	.m-login-options__wrapper {
-	  min-height: 453px; // Adjust this based on max tab height
+		.m-login-options__wrapper {
+			min-height: 453px; // Adjust this based on max tab height
+		}
 	}
-  }
 }
 
 .c-register-login-view__text {
-  background: $c-register-login-view-modal-background-color;
-  padding: $g-spacer-unit * 4;
+	background: $c-register-login-view-modal-background-color;
+	padding: $g-spacer-unit * 4;
 }
