@@ -19,7 +19,7 @@ pipeline {
                       - key: ibm-cloud.kubernetes.io/worker-pool-name
                         operator: In
                         values:
-                          - CI-workers
+                          - infra-workers
           tolerations:
             - key: loadType
               operator: Equal
