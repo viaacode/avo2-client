@@ -104,6 +104,7 @@ export function getAdminCoreConfig(): AdminConfig {
 				clock: { name: IconName.clock },
 				calendar: { name: IconName.calendar },
 				export: { name: IconName.download },
+				info: { name: IconName.info },
 			},
 			list: GET_ADMIN_ICON_OPTIONS,
 			alerts: ALERT_ICON_LIST_CONFIG,
