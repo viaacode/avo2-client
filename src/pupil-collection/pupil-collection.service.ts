@@ -197,6 +197,8 @@ export class PupilCollectionService {
 			delete (block as any).icon;
 			delete (block as any).onSlice;
 			delete (block as any).onPositionChange;
+			delete (block as any).original_title; // Only needed for assignment blocks
+			delete (block as any).original_description; // Only needed for assignment blocks
 
 			block.updated_at = new Date().toISOString();
 
