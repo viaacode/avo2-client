@@ -71,7 +71,7 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 				: tText('collection/collection___de-lange-beschrijving-van-deze-bundel-is-te-lang'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!(collection as any).description_long ||
-			(collection as any).description_long.length <= MAX_LONG_DESCRIPTION_LENGTH,
+			stripHtml((collection as any).description_long).length <= MAX_LONG_DESCRIPTION_LENGTH,
 	},
 ];
 
