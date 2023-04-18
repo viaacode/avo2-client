@@ -96,7 +96,6 @@ export function getAdminCoreConfig(): AdminConfig {
 				filter: { name: IconName.search },
 				arrowUp: { name: IconName.arrowUp },
 				arrowDown: { name: IconName.arrowDown },
-				arrowRight: { name: IconName.arrowRight },
 				sortTable: { name: IconName.chevronsUpAndDown },
 				chevronLeft: { name: IconName.chevronLeft },
 				extraOptions: { name: IconName.moreHorizontal },
