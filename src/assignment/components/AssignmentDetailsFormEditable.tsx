@@ -22,6 +22,7 @@ import {
 	Assignment_v2_With_Labels,
 	AssignmentFormState,
 } from '../assignment.types';
+import { endOfAcademicYear } from '../helpers/academic-year';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
 
@@ -166,6 +167,7 @@ const AssignmentDetailsFormEditable: FC<
 						value={availableAt}
 						showTimeInput
 						minDate={new Date()}
+						maxDate={endOfAcademicYear()}
 						onChange={(value: Date | null) => {
 							setValue('available_at', value?.toISOString(), {
 								shouldDirty: true,
@@ -188,6 +190,7 @@ const AssignmentDetailsFormEditable: FC<
 						value={deadline}
 						showTimeInput
 						minDate={new Date()}
+						maxDate={endOfAcademicYear()}
 						onChange={(value) => {
 							setValue('deadline_at', value?.toISOString(), {
 								shouldDirty: true,
