@@ -20,6 +20,7 @@ export const GET_ADMIN_ICON_OPTIONS: () => ReactSelectOption<IconName>[] = () =>
 	{ label: tText('admin/shared/constants/index___opdracht'), value: IconName.clipboard },
 	{ label: tText('admin/shared/constants/index___profiel'), value: IconName.user },
 	{ label: tText('admin/shared/constants/index___smartschool'), value: IconName.smartschool },
+	{ label: tText('admin/shared/constants/index___leerid'), value: IconName.leerid },
 	{ label: tText('admin/shared/constants/index___tekstbestand'), value: IconName.fileText },
 	{ label: tText('admin/shared/constants/index___uploaden'), value: IconName.upload },
 	{ label: tText('admin/shared/constants/index___video'), value: IconName.video },
