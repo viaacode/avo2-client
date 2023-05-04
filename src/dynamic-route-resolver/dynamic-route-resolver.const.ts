@@ -35,6 +35,7 @@ export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 	'/klaar.json': `${getEnv('PROXY_URL')}/klaar/klaar.json`,
 	'/projecten/klaar': '/projecten/uitgeklaard',
 	'/beheer': '/admin',
+	'/leerlingen-toegang-geven': '/starten-met-de-leerlingenruimte',
 });
 
 export const GET_ERROR_MESSAGES: () => { [key: string]: ReactNode } = () => ({
