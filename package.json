@@ -19,7 +19,8 @@
     "licenses": "license-checker --csv --out licenses.csv",
     "analyse": "npm run build && source-map-explorer 'build/static/js/*.js'",
     "generate-database-types": "dotenv -e .env graphql-codegen -- --verbose --config codegen.yml",
-    "bump": "bump-package-versions --part=patch --strategy=highest ./package.json"
+    "bump": "bump-package-versions --part=patch --strategy=highest ./package.json",
+    "list-of-changed-translations": "git diff 296b12bc26a4d5c83b8bb35be5f05115ac6356fe b56c8382a7622a13a7f983c682c1094daa514c94 --no-ext-diff --unified=0 --exit-code -a --no-prefix src/shared/translations/nl.json > translation-changes.txt"
   },
   "contributors": [
     "Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -31,8 +32,8 @@
   "dependencies": {
     "@flowplayer/player": "3.2.8",
     "@hookform/resolvers": "^2.9.9",
-    "@meemoo/admin-core-ui": "2.2.0",
-    "@meemoo/react-components": "2.25.3",
+    "@meemoo/admin-core-ui": "2.2.2",
+    "@meemoo/react-components": "2.25.8",
     "@react-hook/resize-observer": "^1.2.6",
     "@storybook/addon-actions": "^6.5.12",
     "@tanstack/react-query": "^4.14.1",
