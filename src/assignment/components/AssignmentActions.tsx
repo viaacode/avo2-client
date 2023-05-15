@@ -9,16 +9,14 @@ import {
 import classNames from 'classnames';
 import React, { FunctionComponent, useMemo, useState } from 'react';
 
+import { ShareDropdown } from '../../shared/components';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
 	DuplicateAssignmentButtonProps,
 } from './DuplicateAssignmentButton';
-import {
-	ShareAssignmentWithPupil,
-	ShareAssignmentWithPupilProps,
-} from './ShareAssignmentWithPupil';
+import { ShareAssignmentWithPupilProps } from './ShareAssignmentWithPupil';
 
 interface AssignmentActionsProps {
 	preview?: Partial<ButtonProps>;
@@ -31,7 +29,7 @@ interface AssignmentActionsProps {
 const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	preview,
 	overflow,
-	share,
+	// share,
 	duplicate,
 	remove,
 }) => {
@@ -71,7 +69,13 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				config?.button?.className
 			)}
 		>
-			<ShareAssignmentWithPupil {...share} {...config} />
+			{/* <ShareAssignmentWithPupil {...share} {...config} /> */}
+
+			<ShareDropdown
+			// onAddNewUser={console.log}
+			// onDeleteUser={console.log}
+			// onEditRights={console.log}
+			/>
 		</div>
 	);
 

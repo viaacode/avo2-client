@@ -1,0 +1,88 @@
+@import '../../../styles/settings/variables';
+
+$border: 1px solid $color-gray-200;
+$borderPink: 1px solid $color-gray-100;
+.c-assignment-heading__actions .c-dropdown__content-open {
+	padding-top: 0 !important;
+}
+
+.c-dropdown__content-open {
+	border: $border;
+	background-color: $g-base-background;
+	margin-top: 1rem;
+	width: 545px;
+	// background-color: red;
+
+	.c-tabs {
+		width: 100%;
+		display: flex;
+
+		.c-tab-item {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 50%;
+			background-color: #d7dee2;
+			border-bottom: $border;
+			padding: 1.5rem 0;
+			margin-bottom: 0;
+			cursor: pointer;
+			box-shadow: none;
+
+			&:first-child {
+				border-right: $border;
+			}
+
+			&__active {
+				color: $color-gray-1000;
+				background-color: $g-base-background;
+				border-bottom: none;
+			}
+		}
+	}
+}
+
+.c-share-dropdown__content {
+	padding: 1rem;
+}
+
+.c-add-colleague {
+	display: flex;
+
+	.c-button.c-button--primary {
+		border-radius: 0;
+		width: max-content;
+
+		&:active,
+		:active:focus {
+			background-color: $g-base-background;
+		}
+	}
+
+	&__select.c-button {
+		&.c-button--primary {
+			border: $borderPink;
+			background-color: $g-base-background;
+			color: $color-gray-1000;
+
+			&:hover,
+			:active,
+			:active:focus {
+				background-color: $g-base-background;
+			}
+
+			svg * {
+				fill: $color-gray-1000;
+			}
+		}
+	}
+
+	.c-input {
+		// width: 40%;
+		border: $borderPink;
+		border-radius: 0;
+	}
+
+	.c-button.c-button--primary {
+	}
+}
