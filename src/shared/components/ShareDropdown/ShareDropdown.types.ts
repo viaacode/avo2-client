@@ -5,9 +5,9 @@ export enum ShareUserInfoRights {
 }
 
 export interface ShareUserInfo {
-	firstName: string;
-	lastName: string;
 	email: string;
-	profileImage?: string;
 	rights: ShareUserInfoRights;
+	firstName?: string;
+	lastName?: string;
+	profileImage?: string;
 }
