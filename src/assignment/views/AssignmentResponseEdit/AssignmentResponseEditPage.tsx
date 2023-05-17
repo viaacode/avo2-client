@@ -9,6 +9,7 @@ import { compose } from 'redux';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorNoAccess } from '../../../error/components';
 import { ErrorView } from '../../../error/views';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -174,6 +175,18 @@ const AssignmentResponseEditPage: FunctionComponent<
 						)
 					}
 					icon={assignmentError.icon || 'alert-triangle'}
+				/>
+			);
+		}
+		if (!assignment?.contributors?.find((contributor) => contributor.id === user.uid)) {
+			return (
+				<ErrorNoAccess
+					title={tHtml(
+						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-toegang'
+					)}
+					message={tHtml(
+						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-toegang-beschrijving'
+					)}
 				/>
 			);
 		}
