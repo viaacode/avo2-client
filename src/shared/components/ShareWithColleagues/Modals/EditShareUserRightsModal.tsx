@@ -34,7 +34,9 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	const options = Object.values(ShareUserInfoRights).map((right) => ({
 		label:
 			right === ShareUserInfoRights.OWNER
-				? tText('Eigenaarschap overdragen')
+				? tText(
+						'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen'
+				  )
 				: capitalize(right),
 		value: right,
 	}));
@@ -52,13 +54,19 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tHtml('Rol van gebruiker aanpassen')}
+			title={tHtml(
+				'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___rol-van-gebruiker-aanpassen'
+			)}
 			size="small"
 			onClose={handleClose}
 		>
 			<ModalBody>
 				<Form>
-					<FormGroup label={tText('Rol van gebruiker')}>
+					<FormGroup
+						label={tText(
+							'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___rol-van-gebruiker'
+						)}
+					>
 						<Select
 							className="c-rights-select"
 							options={options}
@@ -75,13 +83,17 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={tText('Annuleer')}
+									label={tText(
+										'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___annuleer'
+									)}
 									onClick={handleClose}
 								/>
 
 								<Button
 									type="primary"
-									label={tText('Bevestigen')}
+									label={tText(
+										'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___bevestigen'
+									)}
 									onClick={handleOnConfirm}
 								/>
 							</ButtonToolbar>
