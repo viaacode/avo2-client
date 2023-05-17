@@ -15,6 +15,7 @@ import React, { FC, useState } from 'react';
 import withUser, { UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 
+import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import { shareUserRightToString, sortShareUsers } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
 import { ShareUserInfo, ShareUserInfoRights } from './ShareWithColleagues.types';
@@ -41,6 +42,8 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		rights: undefined,
 	});
 	const [error, setError] = useState<string | null>(null);
+	const [isEditRightsModalOpen, setIsEditRightsModalOpen] = useState<boolean>(false);
+	const [toEditShareUser, setToEditShareUser] = useState<ShareUserInfo>();
 
 	const handleRightsButtonClicked = () => {
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
@@ -59,8 +62,14 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		}
 	};
 
-	const handleEditUserRights = (info: ShareUserInfo, newRights: ShareUserInfoRights) => {
-		onEditRights(info, newRights);
+	const handleEditUserRights = (user: ShareUserInfo) => {
+		setToEditShareUser(user);
+		setIsEditRightsModalOpen(true);
+	};
+
+	const handleConfirmEditUserRights = (right: ShareUserInfoRights) => {
+		onEditRights(toEditShareUser as ShareUserInfo, right);
+		setToEditShareUser(undefined);
 	};
 
 	const handleDeleteUser = (info: ShareUserInfo) => {
@@ -79,7 +88,10 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			return (
 				<ul className="c-colleagues-info-list">
 					{sortShareUsers(users).map((user, index) => (
-						<li key={index} className="c-colleague-info-row">
+						<li
+							key={`colleagues-info-list-item-${index}`}
+							className="c-colleague-info-row"
+						>
 							<div className="c-colleague-info-row__avatar">
 								<Avatar
 									initials={
@@ -111,12 +123,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									currentUser.email !== user.email && (
 										<button
 											className="c-icon-button"
-											onClick={() =>
-												handleEditUserRights(
-													user,
-													ShareUserInfoRights.CONTRIBUTOR
-												)
-											}
+											onClick={() => handleEditUserRights(user)}
 										>
 											<Icon name={IconName.edit2} />
 										</button>
@@ -214,6 +221,15 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					</div>
 
 					{error && <p className="c-add-colleague__error">{error}</p>}
+
+					<EditShareUserRightsModal
+						isOpen={isEditRightsModalOpen}
+						handleClose={() => setIsEditRightsModalOpen(false)}
+						handleConfirm={(right) => {
+							handleConfirmEditUserRights(right);
+							setIsEditRightsModalOpen(false);
+						}}
+					/>
 				</>
 			)}
 
