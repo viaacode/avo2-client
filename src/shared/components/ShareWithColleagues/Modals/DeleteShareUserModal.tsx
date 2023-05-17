@@ -26,19 +26,27 @@ const DeleteShareUserModal: FC<DeleteShareUserModalProps> = ({
 		if (currentUser && user) {
 			if (currentUser.email === user.email) {
 				setContent({
-					title: tText('Opdracht verlaten'),
-					body: tText(
-						'Ben je zeker dat deze opdracht wilt verlaten als kijker? Deze actie kan niet ongedaan gemaakt worden.'
+					title: tText(
+						'shared/components/share-with-colleagues/modals/delete-share-user-modal___opdracht-verlaten'
 					),
-					confirm: tText('Verlaat opdracht'),
+					body: tText(
+						'shared/components/share-with-colleagues/modals/delete-share-user-modal___ben-je-zeker-dat-deze-opdracht-wilt-verlaten-als-kijker-deze-actie-kan-niet-ongedaan-gemaakt-worden'
+					),
+					confirm: tText(
+						'shared/components/share-with-colleagues/modals/delete-share-user-modal___verlaat-opdracht'
+					),
 				});
 			} else {
 				setContent({
-					title: tText('Toegang intrekken'),
-					body: tText(
-						'Ben je zeker dat je voor deze lesgever de toegang wil intrekken? Dit wil zeggen dat deze persoon de opdracht niet meer kan bekijken of bewerken. '
+					title: tText(
+						'shared/components/share-with-colleagues/modals/delete-share-user-modal___toegang-intrekken'
 					),
-					confirm: tText('Trek toegang in'),
+					body: tText(
+						'shared/components/share-with-colleagues/modals/delete-share-user-modal___ben-je-zeker-dat-je-voor-deze-lesgever-de-toegang-wil-intrekken-dit-wil-zeggen-dat-deze-persoon-de-opdracht-niet-meer-kan-bekijken-of-bewerken'
+					),
+					confirm: tText(
+						'shared/components/share-with-colleagues/modals/delete-share-user-modal___trek-toegang-in'
+					),
 				});
 			}
 		}
