@@ -15,6 +15,7 @@ import React, { FC, useState } from 'react';
 import withUser, { UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 
+import DeleteShareUserModal from './Modals/DeleteShareUserModal';
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import { shareUserRightToString, sortShareUsers } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
@@ -44,6 +45,8 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	const [error, setError] = useState<string | null>(null);
 	const [isEditRightsModalOpen, setIsEditRightsModalOpen] = useState<boolean>(false);
 	const [toEditShareUser, setToEditShareUser] = useState<ShareUserInfo>();
+	const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState<boolean>(false);
+	const [toDeleteShareUser, setToDeleteShareUser] = useState<ShareUserInfo>();
 
 	const handleRightsButtonClicked = () => {
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
@@ -70,10 +73,18 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	const handleConfirmEditUserRights = (right: ShareUserInfoRights) => {
 		onEditRights(toEditShareUser as ShareUserInfo, right);
 		setToEditShareUser(undefined);
+		setIsEditRightsModalOpen(false);
 	};
 
-	const handleDeleteUser = (info: ShareUserInfo) => {
-		onDeleteUser(info);
+	const handleDeleteUser = (user: ShareUserInfo) => {
+		setToDeleteShareUser(user);
+		setIsDeleteUserModalOpen(true);
+	};
+
+	const handleConfirmDeleteUser = () => {
+		onDeleteUser(toDeleteShareUser as ShareUserInfo);
+		setToDeleteShareUser(undefined);
+		setIsDeleteUserModalOpen(false);
 	};
 
 	const updateNewShareUserInfo = (value: Record<string, string>) => {
@@ -226,10 +237,15 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 						currentRight={toEditShareUser?.rights as ShareUserInfoRights}
 						isOpen={isEditRightsModalOpen}
 						handleClose={() => setIsEditRightsModalOpen(false)}
-						handleConfirm={(right) => {
-							handleConfirmEditUserRights(right);
-							setIsEditRightsModalOpen(false);
-						}}
+						handleConfirm={(right) => handleConfirmEditUserRights(right)}
+					/>
+
+					<DeleteShareUserModal
+						user={toDeleteShareUser as ShareUserInfo}
+						currentUser={currentUser}
+						isOpen={isDeleteUserModalOpen}
+						onConfirm={handleConfirmDeleteUser}
+						onClose={() => setIsDeleteUserModalOpen(false)}
 					/>
 				</>
 			)}

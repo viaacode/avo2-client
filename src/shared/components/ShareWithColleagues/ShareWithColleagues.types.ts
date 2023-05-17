@@ -11,3 +11,9 @@ export interface ShareUserInfo {
 	lastName?: string;
 	profileImage?: string;
 }
+
+export interface DeleteShareUserModalContent {
+	title: string;
+	body: string;
+	confirm: string;
+}
