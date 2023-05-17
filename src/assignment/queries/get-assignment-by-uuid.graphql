@@ -64,5 +64,8 @@ query getAssignmentByUuid($id: uuid!) {
 			is_deleted
 			assignment_id
 		}
+		contributors {
+			id
+		}
 	}
 }

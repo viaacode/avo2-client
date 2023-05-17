@@ -751,6 +751,8 @@
 	"assignment/views/assignment-edit___het-opslaan-van-de-opdracht-is-mislukt": "Het opslaan van de opdracht is mislukt. Contacteer ons via de Feedback-knop mocht dit probleem zich blijven voordoen.",
 	"assignment/views/assignment-edit___instructies-of-omschrijving": "Instructies of omschrijving",
 	"assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken": "Je hebt geen rechten om deze opdracht te bewerken",
+	"assignment/views/assignment-edit___je-hebt-geen-toegang": "Je hebt geen toegang",
+	"assignment/views/assignment-edit___je-hebt-geen-toegang-beschrijving": "Ben je echter zeker dat je wel toegang zou moeten hebben? Bekijk hieronder dan waar het eventueel misgelopen is en contacteer de eigenaar indien mogelijk.",
 	"assignment/views/assignment-edit___mediaspeler-met-beschrijving": "Fragment inclusief beschrijving",
 	"assignment/views/assignment-edit___mijn-opdrachten": "Mijn opdrachten",
 	"assignment/views/assignment-edit___nieuwe-wijzigingen-opslaan": "Nieuwe wijzigingen opslaan?",

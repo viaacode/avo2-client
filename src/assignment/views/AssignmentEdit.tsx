@@ -30,6 +30,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
@@ -572,6 +573,18 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		if (assignmentError) {
 			return <ErrorView {...assignmentError} />;
 		}
+
+		if (!assignment?.contributors?.find((contributor) => contributor.id === user.uid)) {
+			return (
+				<ErrorNoAccess
+					title={tHtml('assignment/views/assignment-edit___je-hebt-geen-toegang')}
+					message={tHtml(
+						'assignment/views/assignment-edit___je-hebt-geen-toegang-beschrijving'
+					)}
+				/>
+			);
+		}
+
 		if (isViewAsPupilEnabled && assignment) {
 			return (
 				<AssignmentPupilPreview
