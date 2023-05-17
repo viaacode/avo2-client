@@ -122,8 +122,10 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							</div>
 
 							<div className="c-colleague-info-row__action">
-								{(currentUser.rights === ShareUserInfoRights.OWNER ||
-									currentUser.email === user.email) && (
+								{((currentUser.rights === ShareUserInfoRights.OWNER &&
+									currentUser.email !== user.email) ||
+									(currentUser.rights !== ShareUserInfoRights.OWNER &&
+										currentUser.email === user.email)) && (
 									<button
 										className="c-icon-button"
 										onClick={() => handleDeleteUser(user)}
