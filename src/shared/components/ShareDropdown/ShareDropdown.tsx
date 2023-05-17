@@ -5,9 +5,12 @@ import React, { FC, useState } from 'react';
 import { useTabs } from '../../hooks';
 import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
+import {
+	ShareUserInfo,
+	ShareUserInfoRights,
+} from '../ShareWithColleagues/ShareWithColleagues.types';
 
 import './ShareDropdown.scss';
-import { ShareUserInfo, ShareUserInfoRights } from './ShareDropdown.types';
 
 type ShareDropdownProps = {
 	users: ShareUserInfo[];

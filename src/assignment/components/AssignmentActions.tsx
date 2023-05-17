@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import React, { FunctionComponent, useMemo, useState } from 'react';
 
 import { ShareDropdown } from '../../shared/components';
-import { ShareUserInfo } from '../../shared/components/ShareDropdown/ShareDropdown.types';
+import { ShareUserInfo } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { mockShareUsers } from '../../shared/mocks/share-user-mock';
 

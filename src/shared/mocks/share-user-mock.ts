@@ -1,7 +1,7 @@
 import {
 	ShareUserInfo,
 	ShareUserInfoRights,
-} from '../components/ShareDropdown/ShareDropdown.types';
+} from '../components/ShareWithColleagues/ShareWithColleagues.types';
 
 export const mockShareUsers: ShareUserInfo[] = [
 	{

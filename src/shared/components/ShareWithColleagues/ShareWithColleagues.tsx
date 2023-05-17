@@ -14,9 +14,10 @@ import React, { FC, useState } from 'react';
 
 import withUser, { UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
-import { shareUserRightToString } from '../ShareDropdown/ShareDropdown.helpers';
-import { ShareUserInfo, ShareUserInfoRights } from '../ShareDropdown/ShareDropdown.types';
+
+import { shareUserRightToString, sortShareUsers } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
+import { ShareUserInfo, ShareUserInfoRights } from './ShareWithColleagues.types';
 
 type ShareWithColleaguesProps = {
 	users: ShareUserInfo[];
@@ -77,7 +78,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		if (users.length > 0) {
 			return (
 				<ul className="c-colleagues-info-list">
-					{users.map((user, index) => (
+					{sortShareUsers(users).map((user, index) => (
 						<li key={index} className="c-colleague-info-row">
 							<div className="c-colleague-info-row__avatar">
 								<Avatar
@@ -106,19 +107,20 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							<div className="c-colleague-info-row__rights">
 								<span>{shareUserRightToString(user.rights)}</span>
 
-								{currentUser.rights === ShareUserInfoRights.OWNER && (
-									<button
-										className="c-icon-button"
-										onClick={() =>
-											handleEditUserRights(
-												user,
-												ShareUserInfoRights.CONTRIBUTOR
-											)
-										}
-									>
-										<Icon name={IconName.edit2} />
-									</button>
-								)}
+								{currentUser.rights === ShareUserInfoRights.OWNER &&
+									currentUser.email !== user.email && (
+										<button
+											className="c-icon-button"
+											onClick={() =>
+												handleEditUserRights(
+													user,
+													ShareUserInfoRights.CONTRIBUTOR
+												)
+											}
+										>
+											<Icon name={IconName.edit2} />
+										</button>
+									)}
 							</div>
 
 							<div className="c-colleague-info-row__action">
