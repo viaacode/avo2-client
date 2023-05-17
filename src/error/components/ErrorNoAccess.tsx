@@ -3,12 +3,9 @@ import React, { FunctionComponent, ReactNode } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
-import {
-	redirectToLoggedInHome,
-	redirectToLoggedOutHome,
-} from '../../authentication/helpers/redirects';
+import { APP_PATH } from '../../constants';
 import { OrderedList } from '../../shared/components/OrderedList/OrderedList';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ErrorNoAccess.scss';
@@ -18,20 +15,15 @@ interface ErrorNoAccessProps {
 	message: string | ReactNode;
 }
 
-const ErrorNoAccess: FunctionComponent<ErrorNoAccessProps & RouteComponentProps & UserProps> = ({
+const ErrorNoAccess: FunctionComponent<ErrorNoAccessProps & RouteComponentProps> = ({
 	title,
 	message,
-	location,
-	user,
+	history,
 }) => {
 	const { tText } = useTranslation();
 
-	const goToHome = () => {
-		if (user) {
-			redirectToLoggedInHome(location);
-		} else {
-			redirectToLoggedOutHome(location);
-		}
+	const goToWorkspace = () => {
+		history.push(APP_PATH.WORKSPACE.route);
 	};
 
 	return (
@@ -53,7 +45,7 @@ const ErrorNoAccess: FunctionComponent<ErrorNoAccessProps & RouteComponentProps 
 					]}
 				/>
 				<Button
-					onClick={goToHome}
+					onClick={goToWorkspace}
 					label={tText('error/components/error-no-access___terug-naar-werkruimte')}
 					className="c-ordered-list-container__button"
 				/>
