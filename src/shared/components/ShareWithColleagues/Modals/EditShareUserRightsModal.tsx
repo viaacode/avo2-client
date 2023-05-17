@@ -12,7 +12,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { capitalize } from 'lodash';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
 import { ShareUserInfoRights } from '../ShareWithColleagues.types';
@@ -21,15 +21,16 @@ type EditShareUserRightsModalProps = {
 	isOpen: boolean;
 	handleClose: () => void;
 	handleConfirm: (right: ShareUserInfoRights) => void;
+	currentRight: ShareUserInfoRights;
 };
 
 const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	isOpen,
 	handleClose,
 	handleConfirm,
+	currentRight,
 }) => {
-	const initialRight = ShareUserInfoRights.VIEWER;
-	const [currentRight, setCurrentRight] = useState<ShareUserInfoRights>(initialRight);
+	const [right, setRight] = useState<ShareUserInfoRights>();
 	const options = Object.values(ShareUserInfoRights).map((right) => ({
 		label:
 			right === ShareUserInfoRights.OWNER
@@ -38,9 +39,14 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 		value: right,
 	}));
 
+	useEffect(() => {
+		setRight(currentRight);
+	}, [currentRight]);
+
 	const handleOnConfirm = () => {
-		handleConfirm(currentRight);
-		setCurrentRight(initialRight);
+		if (right) {
+			handleConfirm(right);
+		}
 	};
 
 	return (
@@ -56,8 +62,8 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 						<Select
 							className="c-rights-select"
 							options={options}
-							value={currentRight}
-							onChange={(value) => setCurrentRight(value as ShareUserInfoRights)}
+							value={right}
+							onChange={(value) => setRight(value as ShareUserInfoRights)}
 						/>
 					</FormGroup>
 				</Form>

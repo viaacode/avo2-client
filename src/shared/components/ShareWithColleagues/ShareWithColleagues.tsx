@@ -223,6 +223,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					{error && <p className="c-add-colleague__error">{error}</p>}
 
 					<EditShareUserRightsModal
+						currentRight={toEditShareUser?.rights as ShareUserInfoRights}
 						isOpen={isEditRightsModalOpen}
 						handleClose={() => setIsEditRightsModalOpen(false)}
 						handleConfirm={(right) => {
