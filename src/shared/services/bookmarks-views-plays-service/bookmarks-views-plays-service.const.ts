@@ -1,5 +1,4 @@
 import type { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 
 import {
 	DeleteCollectionBookmarksForUserDocument,
@@ -40,7 +39,7 @@ export interface QueryDefinition {
 	query?: string;
 	get?: string;
 	increment?: string;
-	variables: (uuid: string, user?: Avo.User.User) => any;
+	variables: (uuid: string, user?: Avo.User.User | Avo.User.CommonUser) => any;
 	getResponseCount?: (response: any) => number;
 }
 
@@ -54,19 +53,25 @@ export const GET_EVENT_QUERIES: () => {
 	bookmark: {
 		item: {
 			query: InsertItemBookmarkDocument,
-			variables: (itemUuid: string, user?: Avo.User.User) => ({
+			variables: (itemUuid: string, user?: Avo.User.User | Avo.User.CommonUser) => ({
 				bookmarkItem: {
 					item_id: itemUuid,
-					profile_id: get(user, 'profile.id', null),
+					profile_id:
+						(user as Avo.User.User)?.profile?.id ||
+						(user as Avo.User.CommonUser)?.profileId ||
+						null,
 				},
 			}),
 		},
 		collection: {
 			query: InsertCollectionBookmarkDocument,
-			variables: (collectionUuid: string, user?: Avo.User.User) => ({
+			variables: (collectionUuid: string, user?: Avo.User.User | Avo.User.CommonUser) => ({
 				bookmarkItem: {
 					collection_uuid: collectionUuid,
-					profile_id: get(user, 'profile.id', null),
+					profile_id:
+						(user as Avo.User.User)?.profile?.id ||
+						(user as Avo.User.CommonUser)?.profileId ||
+						null,
 				},
 			}),
 		},
@@ -76,20 +81,26 @@ export const GET_EVENT_QUERIES: () => {
 			query: DeleteItemBookmarkDocument,
 			variables: (
 				itemUuid: string,
-				user?: Avo.User.User
+				user?: Avo.User.User | Avo.User.CommonUser
 			): DeleteItemBookmarkMutationVariables => ({
 				itemUuid,
-				profileId: user?.profile?.id || null,
+				profileId:
+					(user as Avo.User.User)?.profile?.id ||
+					(user as Avo.User.CommonUser)?.profileId ||
+					null,
 			}),
 		},
 		collection: {
 			query: DeleteCollectionBookmarksForUserDocument,
 			variables: (
 				collectionUuid: string,
-				user?: Avo.User.User
+				user?: Avo.User.User | Avo.User.CommonUser
 			): DeleteCollectionBookmarksForUserMutationVariables => ({
 				collectionUuid,
-				profileId: user?.profile?.id || null,
+				profileId:
+					(user as Avo.User.User)?.profile?.id ||
+					(user as Avo.User.CommonUser)?.profileId ||
+					null,
 			}),
 		},
 	},
