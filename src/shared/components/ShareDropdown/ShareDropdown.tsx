@@ -47,7 +47,11 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	};
 
 	return (
-		<Dropdown isOpen={isShareDropdownOpen} className="c-share-dropdown">
+		<Dropdown
+			isOpen={isShareDropdownOpen}
+			onClose={() => setIsShareDropdownOpen(false)}
+			className="c-share-dropdown"
+		>
 			<DropdownButton>
 				<Button
 					ariaLabel={tText('shared/components/share-dropdown/share-dropdown___delen')}
@@ -61,19 +65,21 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 			</DropdownButton>
 
 			<DropdownContent>
-				<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+				<div className="c-share-dropdown__container">
+					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 
-				<div className="c-share-dropdown__content">
-					{tab === 'colleagues' ? (
-						<ShareWithColleagues
-							users={users}
-							onAddNewUser={onAddNewUser}
-							onDeleteUser={onDeleteUser}
-							onEditRights={onEditRights}
-						/>
-					) : (
-						'leerlingen'
-					)}
+					<div className="c-share-dropdown__content">
+						{tab === 'colleagues' ? (
+							<ShareWithColleagues
+								users={users}
+								onAddNewUser={onAddNewUser}
+								onDeleteUser={onDeleteUser}
+								onEditRights={onEditRights}
+							/>
+						) : (
+							'leerlingen'
+						)}
+					</div>
 				</div>
 			</DropdownContent>
 		</Dropdown>

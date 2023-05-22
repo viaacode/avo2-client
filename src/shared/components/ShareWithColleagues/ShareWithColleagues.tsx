@@ -12,6 +12,7 @@ import {
 import { isEmpty, isNil, truncate } from 'lodash';
 import React, { FC, useState } from 'react';
 
+import { validateEmailAddress } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 
@@ -37,6 +38,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const currentUser = users.find((u) => u.email === user?.mail) as ShareUserInfo;
+	const isOwner = currentUser.rights === ShareUserInfoRights.OWNER;
 	const [isRightsDropdownOpen, setIsRightsDropdownOpen] = useState<boolean>(false);
 	const [newShareUser, setNewShareUser] = useState<Partial<ShareUserInfo>>({
 		email: undefined,
@@ -53,7 +55,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	};
 
 	const handleAddNewUser = () => {
-		if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(newShareUser.email as string)) {
+		if (validateEmailAddress(newShareUser.email as string)) {
 			onAddNewUser(newShareUser);
 			setError(null);
 		} else {
@@ -130,22 +132,19 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							<div className="c-colleague-info-row__rights">
 								<span>{shareUserRightToString(user.rights)}</span>
 
-								{currentUser.rights === ShareUserInfoRights.OWNER &&
-									currentUser.email !== user.email && (
-										<button
-											className="c-icon-button"
-											onClick={() => handleEditUserRights(user)}
-										>
-											<Icon name={IconName.edit2} />
-										</button>
-									)}
+								{isOwner && currentUser.email !== user.email && (
+									<button
+										className="c-icon-button"
+										onClick={() => handleEditUserRights(user)}
+									>
+										<Icon name={IconName.edit2} />
+									</button>
+								)}
 							</div>
 
 							<div className="c-colleague-info-row__action">
-								{((currentUser.rights === ShareUserInfoRights.OWNER &&
-									currentUser.email !== user.email) ||
-									(currentUser.rights !== ShareUserInfoRights.OWNER &&
-										currentUser.email === user.email)) && (
+								{((isOwner && currentUser.email !== user.email) ||
+									(!isOwner && currentUser.email === user.email)) && (
 									<button
 										className="c-icon-button"
 										onClick={() => handleDeleteUser(user)}
