@@ -1,5 +1,5 @@
 import { Dropdown, DropdownButton, DropdownContent } from '@meemoo/react-components';
-import { Button, IconName, Tabs } from '@viaa/avo2-components';
+import { Button, ButtonProps, DropdownProps, IconName, Tabs } from '@viaa/avo2-components';
 import React, { FC, useState } from 'react';
 
 import { useTabs } from '../../hooks';
@@ -9,20 +9,27 @@ import {
 	ShareUserInfo,
 	ShareUserInfoRights,
 } from '../ShareWithColleagues/ShareWithColleagues.types';
+import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './ShareDropdown.scss';
 
-type ShareDropdownProps = {
+export type ShareDropdownProps = {
 	users: ShareUserInfo[];
 	onAddNewUser: (info: Partial<ShareUserInfo>) => void;
 	onEditRights: (info: ShareUserInfo, newRights: ShareUserInfoRights) => void;
 	onDeleteUser: (info: ShareUserInfo) => void;
+	button?: Partial<ButtonProps>;
+	dropdown?: Partial<DropdownProps>;
+	share?: ShareWithPupilsProps;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
 	users,
 	onAddNewUser,
 	onEditRights,
 	onDeleteUser,
+	dropdown,
+	button,
+	share,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -39,7 +46,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 				icon: IconName.userStudent,
 			},
 		],
-		'colleagues'
+		'pupils'
 	);
 
 	const handleShareButtonClicked = () => {
@@ -51,6 +58,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 			isOpen={isShareDropdownOpen}
 			onClose={() => setIsShareDropdownOpen(false)}
 			className="c-share-dropdown"
+			{...dropdown}
 		>
 			<DropdownButton>
 				<Button
@@ -61,6 +69,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					)}
 					onClick={handleShareButtonClicked}
 					disabled={false}
+					{...button}
 				/>
 			</DropdownButton>
 
@@ -77,7 +86,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 								onEditRights={onEditRights}
 							/>
 						) : (
-							'leerlingen'
+							<ShareWithPupil {...share} />
 						)}
 					</div>
 				</div>

@@ -22,3 +22,4 @@ export * from './ListSorter';
 export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 export { default as ShareDropdown } from './ShareDropdown/ShareDropdown';
 export { default as ShareWithColleagues } from './ShareWithColleagues/ShareWithColleagues';
+export * from './ShareWithPupils/ShareWithPupils';

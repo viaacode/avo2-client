@@ -9,7 +9,8 @@ import {
 import classNames from 'classnames';
 import React, { FunctionComponent, useMemo, useState } from 'react';
 
-import { ShareDropdown } from '../../shared/components';
+import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
+import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
 import { ShareUserInfo } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { mockShareUsers } from '../../shared/mocks/share-user-mock';
@@ -18,12 +19,11 @@ import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAss
 import DuplicateAssignmentButton, {
 	DuplicateAssignmentButtonProps,
 } from './DuplicateAssignmentButton';
-import { ShareAssignmentWithPupilProps } from './ShareAssignmentWithPupil';
 
 interface AssignmentActionsProps {
 	preview?: Partial<ButtonProps>;
 	overflow?: Partial<ButtonProps>;
-	share?: ShareAssignmentWithPupilProps;
+	share?: ShareWithPupilsProps;
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
 }
@@ -33,6 +33,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	overflow,
 	duplicate,
 	remove,
+	share,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -63,7 +64,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		/>
 	);
 
-	const renderShareButton = (config?: ShareAssignmentWithPupilProps) => (
+	const renderShareButton = (config?: Partial<ShareDropdownProps>) => (
 		<div
 			className={classNames(
 				'c-assignment-heading__dropdown-wrapper',
@@ -75,6 +76,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				onAddNewUser={(value: Partial<ShareUserInfo>) => console.log(value)}
 				onDeleteUser={(value) => console.log(value)}
 				onEditRights={(user, newRights) => console.log(user, newRights)}
+				{...config}
+				share={share}
 			/>
 		</div>
 	);
