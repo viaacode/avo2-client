@@ -1,4 +1,4 @@
-@import '../../styles/settings/variables';
+@import "../../styles/settings/variables";
 
 .c-search-view {
 	.c-search-view__sort-select {
@@ -55,7 +55,7 @@
 					}
 
 					&:after {
-						content: '';
+						content: "";
 						display: block;
 						position: absolute;
 						inset: 100% 0 -1px 0;

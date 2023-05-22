@@ -123,7 +123,7 @@
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
-    "bump-package-versions": "^1.0.2",
+    "bump-package-versions": "^1.0.5",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "dotenv-cli": "^3.1.0",

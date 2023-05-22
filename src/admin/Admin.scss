@@ -1,4 +1,4 @@
-@import '../styles/settings/colors';
+@import "../styles/settings/colors";
 
 .m-resizable-panels {
 	> div {
@@ -12,7 +12,7 @@
 			height: 100vh !important;
 
 			&:after {
-				content: '||';
+				content: "||";
 				border: solid 1px #666;
 				border-width: 0 1px;
 				margin: -10px 0 0 3.5px;
