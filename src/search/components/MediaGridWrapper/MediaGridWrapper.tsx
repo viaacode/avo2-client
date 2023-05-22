@@ -211,8 +211,12 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			setActiveItemBookmarkStatus(!activeItemBookmarkStatus);
 			ToastService.success(
 				activeItemBookmarkStatus
-					? tText('De bladwijzer is verwijderd')
-					: tText('De bladwijzer is aangemaakt')
+					? tText(
+							'search/components/media-grid-wrapper/media-grid-wrapper___de-bladwijzer-is-verwijderd'
+					  )
+					: tText(
+							'search/components/media-grid-wrapper/media-grid-wrapper___de-bladwijzer-is-aangemaakt'
+					  )
 			);
 		} catch (err) {
 			console.error(
@@ -225,8 +229,12 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 			);
 			ToastService.danger(
 				activeItemBookmarkStatus
-					? tText('Het verwijderen van de bladwijzer is mislukt')
-					: tText('Het aanmaken van de bladwijzer is mislukt')
+					? tText(
+							'search/components/media-grid-wrapper/media-grid-wrapper___het-verwijderen-van-de-bladwijzer-is-mislukt'
+					  )
+					: tText(
+							'search/components/media-grid-wrapper/media-grid-wrapper___het-aanmaken-van-de-bladwijzer-is-mislukt'
+					  )
 			);
 		}
 	};
@@ -320,8 +328,12 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 		}
 		return defaultRenderBookmarkButton({
 			active: activeItemBookmarkStatus,
-			ariaLabel: tText('Toggle bladwijzer'),
-			title: tText('Toggle bladwijzer'),
+			ariaLabel: tText(
+				'search/components/media-grid-wrapper/media-grid-wrapper___toggle-bladwijzer'
+			),
+			title: tText(
+				'search/components/media-grid-wrapper/media-grid-wrapper___toggle-bladwijzer'
+			),
 			onClick: toggleBookmark,
 		});
 	};
