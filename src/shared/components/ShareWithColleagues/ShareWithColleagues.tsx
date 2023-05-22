@@ -12,6 +12,7 @@ import {
 import { isEmpty, isNil, truncate } from 'lodash';
 import React, { FC, useState } from 'react';
 
+import { validateEmailAddress } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 
@@ -50,7 +51,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	};
 
 	const handleAddNewUser = () => {
-		if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(newShareUser.email as string)) {
+		if (validateEmailAddress(newShareUser.email as string)) {
 			onAddNewUser(newShareUser);
 			setError(null);
 		} else {
