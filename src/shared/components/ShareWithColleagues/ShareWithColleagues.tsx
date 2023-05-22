@@ -48,7 +48,8 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 
 	const handleAddNewUser = () => {
 		if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(newShareUser.email as string)) {
-			onAddNewUser(newShareUser);
+			await onAddNewUser(newShareUser);
+			setNewShareUser({ email: undefined, rights: undefined });
 			setError(null);
 		} else {
 			setError(
