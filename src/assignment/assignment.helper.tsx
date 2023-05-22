@@ -1,12 +1,14 @@
-import { IconName } from '@viaa/avo2-components';
+import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
+import { formatDate } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
 
 import {
 	Assignment_Label_v2,
+	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
 	AssignmentLayout,
 	AssignmentRetrieveError,
@@ -73,3 +75,28 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 			};
 	}
 }
+
+// TODO: add lom_context and lom_classification to show "Niveau's" and "Vakken" (see collection.helpers.tsx)
+export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): ReactNode => {
+	const { created_at, updated_at } = assignment;
+	return (
+		<>
+			<Column size="3-3">
+				<Spacer margin="top-large">
+					<p className="u-text-bold">
+						{tText('collection/views/collection-detail___aangemaakt-op')}
+					</p>
+					<p className="c-body-1">{formatDate(created_at)}</p>
+				</Spacer>
+			</Column>
+			<Column size="3-3">
+				<Spacer margin="top-large">
+					<p className="u-text-bold">
+						{tText('collection/views/collection-detail___laatst-aangepast')}
+					</p>
+					<p className="c-body-1">{formatDate(updated_at)}</p>
+				</Spacer>
+			</Column>
+		</>
+	);
+};

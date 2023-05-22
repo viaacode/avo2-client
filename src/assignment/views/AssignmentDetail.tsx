@@ -1,6 +1,7 @@
 import {
 	Button,
 	ButtonToolbar,
+	Container,
 	Flex,
 	Header,
 	HeaderButtons,
@@ -23,9 +24,12 @@ import BlockList from '../../shared/components/BlockList/BlockList';
 import { renderAvatar } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
+import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { Assignment_v2_With_Blocks, BaseBlockWithMeta } from '../assignment.types';
 import { useAssignmentForm } from '../hooks';
+
+import './AssignmentDetail.scss';
 
 const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
@@ -201,6 +205,24 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		);
 	};
 
+	const renderMetadata = () => {
+		return (
+			<Container mode="vertical" className="c-assignment-detail--metadata">
+				<Container mode="horizontal">
+					<div className="c-assignment-detail--metadata__inner-container">
+						<h3 className="c-h3">
+							{tText('assignment/views/assignment-edit___over-deze-opdracht')}
+						</h3>
+						{!!assignment &&
+							renderCommonMetadata(assignment as Assignment_v2_With_Blocks)}
+
+						{/* TODO: Insert related items here */}
+					</div>
+				</Container>
+			</Container>
+		);
+	};
+
 	const renderPageContent = () => {
 		if (assignmentLoading) {
 			return (
@@ -215,7 +237,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			return <ErrorView {...assignmentError} />;
 		}
 
-		return <div>{renderAssignmentBlocks()}</div>;
+		return renderAssignmentBlocks();
 	};
 
 	return (
@@ -236,6 +258,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			</MetaTags>
 			{renderHeader()}
 			{renderPageContent()}
+			{renderMetadata()}
 		</>
 	);
 };
