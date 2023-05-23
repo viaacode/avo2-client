@@ -158,7 +158,6 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const renderHeader = () => {
 		if (assignment) {
 			return (
-				// TODO: add 'assignment' to Header component in avo2-components
 				<Header title={assignment.title || ''} category="assignment" showMetaData>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
 
@@ -239,7 +238,11 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			return <ErrorView {...assignmentError} />;
 		}
 
-		return renderAssignmentBlocks();
+		return (
+			<Spacer margin={['top-extra-large', 'bottom-extra-large']}>
+				{renderAssignmentBlocks()}
+			</Spacer>
+		);
 	};
 
 	return (
