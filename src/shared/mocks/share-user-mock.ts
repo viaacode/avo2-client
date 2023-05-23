@@ -27,12 +27,12 @@ export const mockShareUsers: ShareUserInfo[] = [
 		firstName: 'Joe',
 		lastName: 'Average',
 		email: 'averagejoe@email.com',
-		rights: ShareUserInfoRights.CONTRIBUTOR,
+		rights: ShareUserInfoRights.OWNER,
 	},
 	{
 		firstName: 'Meemoo',
 		lastName: 'Admin',
 		email: 'hetarchief2.0+bztmeemooadmin@meemoo.be',
-		rights: ShareUserInfoRights.OWNER,
+		rights: ShareUserInfoRights.CONTRIBUTOR,
 	},
 ];

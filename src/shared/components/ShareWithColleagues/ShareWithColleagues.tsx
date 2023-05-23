@@ -9,16 +9,20 @@ import {
 	MenuContent,
 	TextInput,
 } from '@viaa/avo2-components';
-import { isEmpty, isNil, truncate } from 'lodash';
+import { isEmpty, truncate } from 'lodash-es';
 import React, { FC, useState } from 'react';
 
 import { validateEmailAddress } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
+import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
-import DeleteShareUserModal from './Modals/DeleteShareUserModal';
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
-import { shareUserRightToString, sortShareUsers } from './ShareWithColleagues.helpers';
+import {
+	compareUsersEmail,
+	shareUserRightToString,
+	sortShareUsers,
+} from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
 import { ShareUserInfo, ShareUserInfoRights } from './ShareWithColleagues.types';
 
@@ -38,7 +42,6 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const currentUser = users.find((u) => u.email === user?.mail) as ShareUserInfo;
-	const isOwner = currentUser.rights === ShareUserInfoRights.OWNER;
 	const [isRightsDropdownOpen, setIsRightsDropdownOpen] = useState<boolean>(false);
 	const [newShareUser, setNewShareUser] = useState<Partial<ShareUserInfo>>({
 		email: undefined,
@@ -46,24 +49,31 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	});
 	const [error, setError] = useState<string | null>(null);
 	const [isEditRightsModalOpen, setIsEditRightsModalOpen] = useState<boolean>(false);
-	const [toEditShareUser, setToEditShareUser] = useState<ShareUserInfo>();
+	const [toEditShareUser, setToEditShareUser] = useState<ShareUserInfo | null>(null);
 	const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState<boolean>(false);
-	const [toDeleteShareUser, setToDeleteShareUser] = useState<ShareUserInfo>();
+	const [toDeleteShareUser, setToDeleteShareUser] = useState<ShareUserInfo | null>(null);
 
 	const handleRightsButtonClicked = () => {
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
 	};
 
-	const handleAddNewUser = () => {
-		if (validateEmailAddress(newShareUser.email as string)) {
-			onAddNewUser(newShareUser);
-			setError(null);
-		} else {
+	const handleAddNewUser = async () => {
+		if (!newShareUser.email) {
+			setError(
+				tText(
+					'shared/components/share-with-colleagues/share-with-colleagues___email-is-verplicht'
+				)
+			);
+		} else if (!validateEmailAddress(newShareUser.email)) {
 			setError(
 				tText(
 					'shared/components/share-with-colleagues/share-with-colleagues___email-is-geen-geldig-emailadres'
 				)
 			);
+		} else {
+			await onAddNewUser(newShareUser);
+			setNewShareUser({ email: undefined, rights: undefined });
+			setError(null);
 		}
 	};
 
@@ -74,7 +84,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 
 	const handleConfirmEditUserRights = (right: ShareUserInfoRights) => {
 		onEditRights(toEditShareUser as ShareUserInfo, right);
-		setToEditShareUser(undefined);
+		setToEditShareUser(null);
 		setIsEditRightsModalOpen(false);
 	};
 
@@ -85,7 +95,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 
 	const handleConfirmDeleteUser = () => {
 		onDeleteUser(toDeleteShareUser as ShareUserInfo);
-		setToDeleteShareUser(undefined);
+		setToDeleteShareUser(null);
 		setIsDeleteUserModalOpen(false);
 	};
 
@@ -100,61 +110,66 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		if (users.length > 0) {
 			return (
 				<ul className="c-colleagues-info-list">
-					{sortShareUsers(users).map((user, index) => (
-						<li
-							key={`colleagues-info-list-item-${index}`}
-							className="c-colleague-info-row"
-						>
-							<div className="c-colleague-info-row__avatar">
-								<Avatar
-									initials={
-										user.firstName && user.lastName
-											? user.firstName[0] + user.lastName[0]
-											: user.email.slice(0, 2).toUpperCase()
-									}
-									image={user.profileImage}
-								/>
-							</div>
+					{sortShareUsers(users).map((contributorUser, index) => {
+						const isOwner = currentUser.rights === ShareUserInfoRights.OWNER;
+						const isCurrentUser = currentUser.email === contributorUser.email;
+						const canEdit = isOwner && !isCurrentUser;
 
-							<div className="c-colleague-info-row__info">
-								{(user.firstName || user.lastName) && (
-									<p>{`${user.firstName} ${user.lastName}`}</p>
-								)}
+						// Only the owner can delete any user except for himself
+						// And contributor and viewers can only delete themselves
+						const canDelete =
+							(isOwner && !isCurrentUser) || (!isOwner && isCurrentUser);
 
-								<p className="c-colleague-info-row__info__email">
-									{truncate(user.email, {
-										length: 32,
-										separator: ' ',
-									})}
-								</p>
-							</div>
+						return (
+							<li key={index} className="c-colleague-info-row">
+								<div className="c-colleague-info-row__avatar">
+									<Avatar
+										initials={
+											contributorUser.firstName && contributorUser.lastName
+												? contributorUser.firstName[0] +
+												  contributorUser.lastName[0]
+												: contributorUser.email.slice(0, 2).toUpperCase()
+										}
+										image={contributorUser.profileImage}
+									/>
+								</div>
 
-							<div className="c-colleague-info-row__rights">
-								<span>{shareUserRightToString(user.rights)}</span>
+								<div className="c-colleague-info-row__info">
+									{(contributorUser.firstName || contributorUser.lastName) && (
+										<p>{`${contributorUser.firstName} ${contributorUser.lastName}`}</p>
+									)}
 
-								{isOwner && currentUser.email !== user.email && (
-									<button
-										className="c-icon-button"
-										onClick={() => handleEditUserRights(user)}
-									>
-										<Icon name={IconName.edit2} />
-									</button>
-								)}
-							</div>
+									<p className="c-colleague-info-row__info__email">
+										{truncate(contributorUser.email, { length: 32 })}
+									</p>
+								</div>
 
-							<div className="c-colleague-info-row__action">
-								{((isOwner && currentUser.email !== user.email) ||
-									(!isOwner && currentUser.email === user.email)) && (
-									<button
-										className="c-icon-button"
-										onClick={() => handleDeleteUser(user)}
-									>
-										<Icon name={IconName.delete} />
-									</button>
-								)}
-							</div>
-						</li>
-					))}
+								<div className="c-colleague-info-row__rights">
+									<span>{shareUserRightToString(contributorUser.rights)}</span>
+
+									{canEdit && (
+										<button
+											className="c-icon-button"
+											onClick={() => handleEditUserRights(contributorUser)}
+										>
+											<Icon name={IconName.edit2} />
+										</button>
+									)}
+								</div>
+
+								<div className="c-colleague-info-row__action">
+									{canDelete && (
+										<button
+											className="c-icon-button"
+											onClick={() => handleDeleteUser(contributorUser)}
+										>
+											<Icon name={IconName.delete} />
+										</button>
+									)}
+								</div>
+							</li>
+						);
+					})}
 				</ul>
 			);
 		}
@@ -226,7 +241,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							)}
 							className="c-add-colleague__button"
 							onClick={handleAddNewUser}
-							disabled={isEmpty(newShareUser.email) || isNil(newShareUser.rights)}
+							disabled={isEmpty(newShareUser.email) || !newShareUser.rights}
 						/>
 					</div>
 
@@ -235,17 +250,50 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					<EditShareUserRightsModal
 						currentRight={toEditShareUser?.rights as ShareUserInfoRights}
 						isOpen={isEditRightsModalOpen}
-						handleClose={() => setIsEditRightsModalOpen(false)}
+						handleClose={() => {
+							setIsEditRightsModalOpen(false);
+							setToEditShareUser(null);
+						}}
 						handleConfirm={(right) => handleConfirmEditUserRights(right)}
 					/>
 
-					<DeleteShareUserModal
-						user={toDeleteShareUser as ShareUserInfo}
-						currentUser={currentUser}
-						isOpen={isDeleteUserModalOpen}
-						onConfirm={handleConfirmDeleteUser}
-						onClose={() => setIsDeleteUserModalOpen(false)}
-					/>
+					{toDeleteShareUser && (
+						<ConfirmModal
+							title={
+								compareUsersEmail(toDeleteShareUser as ShareUserInfo, currentUser)
+									? tText(
+											'shared/components/share-with-colleagues/share-with-colleagues___opdracht-verlaten'
+									  )
+									: tText(
+											'shared/components/share-with-colleagues/share-with-colleagues___toegang-intrekken'
+									  )
+							}
+							body={
+								compareUsersEmail(toDeleteShareUser as ShareUserInfo, currentUser)
+									? tText(
+											'shared/components/share-with-colleagues/share-with-colleagues___ben-je-zeker-dat-je-deze-opdracht-wilt-verlaten-als-kijker-deze-actie-kan-niet-ongedaan-gemaakt-worden'
+									  )
+									: tText(
+											'shared/components/share-with-colleagues/share-with-colleagues___ben-je-zeker-dat-je-voor-deze-lesgever-de-toegang-wil-intrekken-dit-wil-zeggen-dat-deze-persoon-de-opdracht-niet-meer-kan-bekijken-of-bewerken'
+									  )
+							}
+							confirmLabel={
+								compareUsersEmail(toDeleteShareUser as ShareUserInfo, currentUser)
+									? tText(
+											'shared/components/share-with-colleagues/share-with-colleagues___verlaat-opdracht'
+									  )
+									: tText(
+											'shared/components/share-with-colleagues/share-with-colleagues___trek-toegang-in'
+									  )
+							}
+							isOpen={isDeleteUserModalOpen}
+							confirmCallback={handleConfirmDeleteUser}
+							onClose={() => {
+								setIsDeleteUserModalOpen(false);
+								setToDeleteShareUser(null);
+							}}
+						/>
+					)}
 				</>
 			)}
 

@@ -11,6 +11,7 @@ import {
 } from '../ShareWithColleagues/ShareWithColleagues.types';
 
 import './ShareDropdown.scss';
+import { ShareDropdownTabs } from './ShareDropdown.types';
 
 type ShareDropdownProps = {
 	users: ShareUserInfo[];
@@ -29,17 +30,17 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	const [tab, setActiveTab, tabs] = useTabs(
 		[
 			{
-				id: 'colleagues',
+				id: ShareDropdownTabs.COLLEAGUES,
 				label: tText('shared/components/share-dropdown/share-dropdown___collegas'),
 				icon: IconName.userTeacher,
 			},
 			{
-				id: 'pupils',
+				id: ShareDropdownTabs.PUPILS,
 				label: tText('shared/components/share-dropdown/share-dropdown___leerlingen'),
 				icon: IconName.userStudent,
 			},
 		],
-		'colleagues'
+		ShareDropdownTabs.PUPILS
 	);
 
 	const handleShareButtonClicked = () => {
@@ -69,7 +70,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 
 					<div className="c-share-dropdown__content">
-						{tab === 'colleagues' ? (
+						{tab === ShareDropdownTabs.COLLEAGUES ? (
 							<ShareWithColleagues
 								users={users}
 								onAddNewUser={onAddNewUser}
