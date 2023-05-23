@@ -1,3 +1,4 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, compact, isNil, without } from 'lodash-es';
 
@@ -7,6 +8,7 @@ import { getUserGroupIds } from '../authentication/authentication.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
+import { ShareUserInfo } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	App_Assignments_V2_Insert_Input,
 	App_Assignments_V2_Set_Input,
@@ -86,7 +88,7 @@ import {
 	UpdateAssignmentUpdatedAtDateMutation,
 	UpdateAssignmentUpdatedAtDateMutationVariables,
 } from '../shared/generated/graphql-db-types';
-import { CustomError } from '../shared/helpers';
+import { CustomError, getEnv } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { tText } from '../shared/helpers/translate';
 import { AssignmentLabelsService } from '../shared/services/assignment-labels-service';
@@ -1522,6 +1524,22 @@ export class AssignmentService {
 			throw new CustomError('Failed to increase assignment view count in the database', err, {
 				assignmentId,
 				query: 'INCREMENT_ASSIGNMENT_VIEW_COUNT',
+			});
+		}
+	}
+
+	static async addShareAssignmentUser(assignmentId: string, user: Partial<ShareUserInfo>) {
+		try {
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor?email=${
+					user.email
+				}&rights=${user.rights}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to add share assignment user', err, {
+				assignmentId,
+				user,
 			});
 		}
 	}

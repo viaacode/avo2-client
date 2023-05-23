@@ -11,9 +11,9 @@ import React, { FunctionComponent, useMemo, useState } from 'react';
 
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
-import { ShareUserInfo } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { mockShareUsers } from '../../shared/mocks/share-user-mock';
+import { AssignmentService } from '../assignment.service';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
@@ -73,9 +73,11 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		>
 			<ShareDropdown
 				users={mockShareUsers}
-				onAddNewUser={(value: Partial<ShareUserInfo>) => console.log(value)}
 				onDeleteUser={(value) => console.log(value)}
 				onEditRights={(user, newRights) => console.log(user, newRights)}
+				onAddNewUser={(info) =>
+					AssignmentService.addShareAssignmentUser(share?.assignment?.id, info)
+				}
 				{...config}
 				share={share}
 			/>
