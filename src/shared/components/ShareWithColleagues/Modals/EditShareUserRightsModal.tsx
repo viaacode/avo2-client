@@ -30,7 +30,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	handleConfirm,
 	currentRight,
 }) => {
-	const [right, setRight] = useState<ShareUserInfoRights>();
+	const [right, setRight] = useState<ShareUserInfoRights>(currentRight);
 	const options = Object.values(ShareUserInfoRights).map((right) => ({
 		label:
 			right === ShareUserInfoRights.OWNER
@@ -42,8 +42,10 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	}));
 
 	useEffect(() => {
-		setRight(currentRight);
-	}, [currentRight]);
+		if (isOpen) {
+			setRight(currentRight);
+		}
+	}, [currentRight, isOpen]);
 
 	const handleOnConfirm = () => {
 		if (right) {
