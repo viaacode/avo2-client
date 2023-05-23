@@ -5,7 +5,7 @@ import { ErrorView } from '../../../error/views';
 import { ErrorViewQueryParams } from '../../../error/views/ErrorView';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
-export type LoadingState = 'loading' | 'loaded' | 'error';
+export type LoadingState = 'loading' | 'loaded' | 'error' | 'forbidden';
 
 export interface LoadingInfo extends ErrorViewQueryParams {
 	state: LoadingState;
@@ -52,6 +52,7 @@ export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedCo
 	// Render
 	switch (loadingInfo.state) {
 		case 'error':
+		case 'forbidden':
 			return renderError();
 
 		case 'loaded':
