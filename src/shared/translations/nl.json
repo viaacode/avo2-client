@@ -1681,6 +1681,7 @@
   "shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___rol-van-gebruiker-aanpassen": "Rol van gebruiker aanpassen",
   "shared/components/share-with-colleagues/share-with-colleagues___bijdrager": "Bijdrager",
   "shared/components/share-with-colleagues/share-with-colleagues___email-is-geen-geldig-emailadres": "Email is geen geldig emailadres",
+  "shared/components/share-with-colleagues/share-with-colleagues___email-is-verplicht": "Email is verplicht",
   "shared/components/share-with-colleagues/share-with-colleagues___emailadres": "Emailadres",
   "shared/components/share-with-colleagues/share-with-colleagues___kijker": "Kijker",
   "shared/components/share-with-colleagues/share-with-colleagues___rol": "Rol",
