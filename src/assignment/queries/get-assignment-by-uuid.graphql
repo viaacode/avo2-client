@@ -64,5 +64,12 @@ query getAssignmentByUuid($id: uuid!) {
 			is_deleted
 			assignment_id
 		}
+		loms {
+			thesaurus {
+				id
+				label
+				scheme
+			}
+		}
 	}
 }

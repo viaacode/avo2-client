@@ -1,6 +1,7 @@
 import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import React, { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 
 import { formatDate } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
@@ -76,15 +77,72 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 	}
 }
 
-// TODO: add lom_context and lom_classification to show "Niveau's" and "Vakken" (see collection.helpers.tsx)
+interface Thesaurus {
+	id: string;
+	label: string;
+	scheme?: string | null | undefined;
+}
+
+export const renderLoms = (lomValues: Thesaurus[], title: string) => {
+	return (
+		<Spacer margin="top-large">
+			<p className="u-text-bold">{title}</p>
+			<p className="c-body-1">
+				{lomValues.length > 0 ? (
+					lomValues.map((lomValue, index) => {
+						return (
+							<>
+								<Link
+									key={lomValue.id + `--${index}`}
+									to={{ pathname: lomValue.id }}
+									target="_blank"
+								>
+									{lomValue.label}
+								</Link>{' '}
+							</>
+						);
+					})
+				) : (
+					<span className="u-d-block">-</span>
+				)}
+			</p>
+		</Spacer>
+	);
+};
+
 export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): ReactNode => {
-	const { created_at, updated_at } = assignment;
+	const { created_at, updated_at, loms } = assignment;
+	const levels: Thesaurus[] = [];
+	const subjects: Thesaurus[] = [];
+
+	// extract levels and subjects
+	if (loms && loms.length > 0) {
+		loms.filter((lom) => {
+			if (lom.thesaurus.scheme && lom.thesaurus.scheme.endsWith('structuur')) {
+				levels.push(lom.thesaurus);
+			}
+			if (lom.thesaurus.scheme && lom.thesaurus.scheme.endsWith('vak')) {
+				subjects.push(lom.thesaurus);
+			}
+		});
+	}
+
+	const addMetaDataColumn = levels.length > 0 || subjects.length > 0;
+
 	return (
 		<>
+			{addMetaDataColumn && (
+				<Column size="3-3">
+					{levels &&
+						renderLoms(levels, tText('assignment/views/assignment-detail___niveaus'))}
+					{subjects &&
+						renderLoms(subjects, tText('assignment/views/assignment-detail___vakken'))}
+				</Column>
+			)}
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
-						{tText('collection/views/collection-detail___aangemaakt-op')}
+						{tText('assignment/views/assignment-detail___aangemaakt-op')}
 					</p>
 					<p className="c-body-1">{formatDate(created_at)}</p>
 				</Spacer>
@@ -92,7 +150,7 @@ export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): Rea
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
-						{tText('collection/views/collection-detail___laatst-aangepast')}
+						{tText('assignment/views/assignment-detail___laatst-aangepast')}
 					</p>
 					<p className="c-body-1">{formatDate(updated_at)}</p>
 				</Spacer>

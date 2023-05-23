@@ -3,6 +3,7 @@ import {
 	ButtonToolbar,
 	Container,
 	Flex,
+	Grid,
 	Header,
 	HeaderButtons,
 	HeaderRow,
@@ -213,9 +214,10 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 						<h3 className="c-h3">
 							{tText('assignment/views/assignment-edit___over-deze-opdracht')}
 						</h3>
-						{!!assignment &&
-							renderCommonMetadata(assignment as Assignment_v2_With_Blocks)}
-
+						<Grid>
+							{!!assignment &&
+								renderCommonMetadata(assignment as Assignment_v2_With_Blocks)}
+						</Grid>
 						{/* TODO: Insert related items here */}
 					</div>
 				</Container>
