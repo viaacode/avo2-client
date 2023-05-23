@@ -9,7 +9,7 @@ import {
 	MenuContent,
 	TextInput,
 } from '@viaa/avo2-components';
-import { isEmpty, isNil, truncate } from 'lodash';
+import { isEmpty, truncate } from 'lodash-es';
 import React, { FC, useState } from 'react';
 
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -46,17 +46,23 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
 	};
 
-	const handleAddNewUser = () => {
-		if (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(newShareUser.email as string)) {
-			await onAddNewUser(newShareUser);
-			setNewShareUser({ email: undefined, rights: undefined });
-			setError(null);
-		} else {
+	const handleAddNewUser = async () => {
+		if (!newShareUser.email) {
+			setError(
+				tText(
+					'shared/components/share-with-colleagues/share-with-colleagues___email-is-verplicht'
+				)
+			);
+		} else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(newShareUser.email)) {
 			setError(
 				tText(
 					'shared/components/share-with-colleagues/share-with-colleagues___email-is-geen-geldig-emailadres'
 				)
 			);
+		} else {
+			await onAddNewUser(newShareUser);
+			setNewShareUser({ email: undefined, rights: undefined });
+			setError(null);
 		}
 	};
 
@@ -79,42 +85,49 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		if (users.length > 0) {
 			return (
 				<ul className="c-colleagues-info-list">
-					{sortShareUsers(users).map((user, index) => (
-						<li key={index} className="c-colleague-info-row">
-							<div className="c-colleague-info-row__avatar">
-								<Avatar
-									initials={
-										user.firstName && user.lastName
-											? user.firstName[0] + user.lastName[0]
-											: user.email.slice(0, 2).toUpperCase()
-									}
-									image={user.profileImage}
-								/>
-							</div>
+					{sortShareUsers(users).map((contributorUser, index) => {
+						const isOwner = currentUser.rights === ShareUserInfoRights.OWNER;
+						const isCurrentUser = currentUser.email === contributorUser.email;
+						const canEdit = isOwner && !isCurrentUser;
 
-							<div className="c-colleague-info-row__info">
-								{(user.firstName || user.lastName) && (
-									<p>{`${user.firstName} ${user.lastName}`}</p>
-								)}
+						// Only the owner can delete any user except for himself
+						// And contributor and viewers can only delete themselves
+						const canDelete =
+							(isOwner && !isCurrentUser) || (!isOwner && isCurrentUser);
 
-								<p className="c-colleague-info-row__info__email">
-									{truncate(user.email, {
-										length: 32,
-										separator: ' ',
-									})}
-								</p>
-							</div>
+						return (
+							<li key={index} className="c-colleague-info-row">
+								<div className="c-colleague-info-row__avatar">
+									<Avatar
+										initials={
+											contributorUser.firstName && contributorUser.lastName
+												? contributorUser.firstName[0] +
+												  contributorUser.lastName[0]
+												: contributorUser.email.slice(0, 2).toUpperCase()
+										}
+										image={contributorUser.profileImage}
+									/>
+								</div>
 
-							<div className="c-colleague-info-row__rights">
-								<span>{shareUserRightToString(user.rights)}</span>
+								<div className="c-colleague-info-row__info">
+									{(contributorUser.firstName || contributorUser.lastName) && (
+										<p>{`${contributorUser.firstName} ${contributorUser.lastName}`}</p>
+									)}
 
-								{currentUser.rights === ShareUserInfoRights.OWNER &&
-									currentUser.email !== user.email && (
+									<p className="c-colleague-info-row__info__email">
+										{truncate(contributorUser.email, { length: 32 })}
+									</p>
+								</div>
+
+								<div className="c-colleague-info-row__rights">
+									<span>{shareUserRightToString(contributorUser.rights)}</span>
+
+									{canEdit && (
 										<button
 											className="c-icon-button"
 											onClick={() =>
 												handleEditUserRights(
-													user,
+													contributorUser,
 													ShareUserInfoRights.CONTRIBUTOR
 												)
 											}
@@ -122,23 +135,21 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 											<Icon name={IconName.edit2} />
 										</button>
 									)}
-							</div>
+								</div>
 
-							<div className="c-colleague-info-row__action">
-								{((currentUser.rights === ShareUserInfoRights.OWNER &&
-									currentUser.email !== user.email) ||
-									(currentUser.rights !== ShareUserInfoRights.OWNER &&
-										currentUser.email === user.email)) && (
-									<button
-										className="c-icon-button"
-										onClick={() => handleDeleteUser(user)}
-									>
-										<Icon name={IconName.delete} />
-									</button>
-								)}
-							</div>
-						</li>
-					))}
+								<div className="c-colleague-info-row__action">
+									{canDelete && (
+										<button
+											className="c-icon-button"
+											onClick={() => handleDeleteUser(contributorUser)}
+										>
+											<Icon name={IconName.delete} />
+										</button>
+									)}
+								</div>
+							</li>
+						);
+					})}
 				</ul>
 			);
 		}
@@ -210,7 +221,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							)}
 							className="c-add-colleague__button"
 							onClick={handleAddNewUser}
-							disabled={!isValidEmail(newShareUser.email) || !newShareUser.rights}
+							disabled={isEmpty(newShareUser.email) || !newShareUser.rights}
 						/>
 					</div>
 
