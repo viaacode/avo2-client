@@ -1357,7 +1357,7 @@
   "item/views/item-detail___bestaande-opdracht": "Bestaande opdracht",
   "item/views/item-detail___deel-dit-item": "Deel dit fragment",
   "item/views/item-detail___deel-dit-met-alle-leerlingen": "Deel dit met alle leerlingen.",
-  "item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden": "Dit item werd gedepubliceerd omdat:",
+  "item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden": "<p><strong>Dit fragment werd gedepubliceerd.</strong></p><p>Reden: </p>",
   "item/views/item-detail___fragment-toevoegen": "Fragment toevoegen?",
   "item/views/item-detail___het-aanmaken-van-de-bladwijzer-is-mislukt": "Het aanmaken van de bladwijzer is mislukt.",
   "item/views/item-detail___het-fragment-is-toegevoegd-aan-de-opdracht": "Het fragment is toegevoegd aan de opdracht",
