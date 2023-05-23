@@ -7,15 +7,12 @@ export const sortShareUsers = (users: ShareUserInfo[]): ShareUserInfo[] => {
 		users,
 		'rights'
 	);
-	console.log(groupedUsers);
-	const test = [
+
+	return [
 		...(groupedUsers[ShareUserInfoRights.OWNER] || []),
 		...(groupedUsers[ShareUserInfoRights.CONTRIBUTOR] || []),
 		...(groupedUsers[ShareUserInfoRights.VIEWER] || []),
 	];
-
-	console.log(test);
-	return test;
 };
 
 export const shareUserRightToString = (right: ShareUserInfoRights) => {
@@ -23,6 +20,5 @@ export const shareUserRightToString = (right: ShareUserInfoRights) => {
 };
 
 export const compareUsersEmail = (user: ShareUserInfo, toCompareUser: ShareUserInfo) => {
-	console.log(user, toCompareUser);
 	return user.email === toCompareUser.email;
 };
