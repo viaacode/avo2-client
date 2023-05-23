@@ -383,9 +383,13 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 								itemMetaData={activeItem as unknown as Avo.Item.Item}
 								verticalLayout
 								showTitle
-								titleLink={buildLink(APP_PATH.ITEM_DETAIL.route, {
-									id: activeItem.external_id,
-								})}
+								titleLink={
+									commonUser
+										? buildLink(APP_PATH.ITEM_DETAIL.route, {
+												id: activeItem.external_id,
+										  })
+										: undefined
+								}
 								collapseDescription={false}
 								renderButtons={renderBookmarkButton}
 							/>
