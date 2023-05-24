@@ -19,13 +19,18 @@ import { generatePath } from 'react-router';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { renderAvatar } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
-import { renderCommonMetadata } from '../assignment.helper';
+import {
+	isUserAssignmentContributor,
+	isUserAssignmentOwner,
+	renderCommonMetadata,
+} from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { Assignment_v2_With_Blocks, BaseBlockWithMeta } from '../assignment.types';
 import { useAssignmentForm } from '../hooks';
@@ -236,6 +241,21 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		}
 		if (assignmentError) {
 			return <ErrorView {...assignmentError} />;
+		}
+
+		if (
+			assignment &&
+			!isUserAssignmentOwner(user, assignment) &&
+			!isUserAssignmentContributor(user, assignment)
+		) {
+			return (
+				<ErrorNoAccess
+					title={tHtml('assignment/views/assignment-edit___je-hebt-geen-toegang')}
+					message={tHtml(
+						'assignment/views/assignment-edit___je-hebt-geen-toegang-beschrijving'
+					)}
+				/>
+			);
 		}
 
 		return (
