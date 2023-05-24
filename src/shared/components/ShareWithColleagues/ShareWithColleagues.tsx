@@ -12,9 +12,11 @@ import {
 import { isEmpty, truncate } from 'lodash-es';
 import React, { FC, useState } from 'react';
 
+import { validateEmailAddress } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 
+import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import { shareUserRightToString, sortShareUsers } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
 import { ShareUserInfo, ShareUserInfoRights } from './ShareWithColleagues.types';
@@ -41,6 +43,8 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		rights: undefined,
 	});
 	const [error, setError] = useState<string | null>(null);
+	const [isEditRightsModalOpen, setIsEditRightsModalOpen] = useState<boolean>(false);
+	const [toEditShareUser, setToEditShareUser] = useState<ShareUserInfo>();
 
 	const handleRightsButtonClicked = () => {
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
@@ -53,7 +57,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					'shared/components/share-with-colleagues/share-with-colleagues___email-is-verplicht'
 				)
 			);
-		} else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(newShareUser.email)) {
+		} else if (!validateEmailAddress(newShareUser.email)) {
 			setError(
 				tText(
 					'shared/components/share-with-colleagues/share-with-colleagues___email-is-geen-geldig-emailadres'
@@ -66,8 +70,14 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		}
 	};
 
-	const handleEditUserRights = (info: ShareUserInfo, newRights: ShareUserInfoRights) => {
-		onEditRights(info, newRights);
+	const handleEditUserRights = (user: ShareUserInfo) => {
+		setToEditShareUser(user);
+		setIsEditRightsModalOpen(true);
+	};
+
+	const handleConfirmEditUserRights = (right: ShareUserInfoRights) => {
+		onEditRights(toEditShareUser as ShareUserInfo, right);
+		setToEditShareUser(undefined);
 	};
 
 	const handleDeleteUser = (info: ShareUserInfo) => {
@@ -125,12 +135,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									{canEdit && (
 										<button
 											className="c-icon-button"
-											onClick={() =>
-												handleEditUserRights(
-													contributorUser,
-													ShareUserInfoRights.CONTRIBUTOR
-												)
-											}
+											onClick={() => handleEditUserRights(contributorUser)}
 										>
 											<Icon name={IconName.edit2} />
 										</button>
@@ -226,6 +231,20 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					</div>
 
 					{error && <p className="c-add-colleague__error">{error}</p>}
+
+					<EditShareUserRightsModal
+						currentRight={toEditShareUser?.rights as ShareUserInfoRights}
+						isOpen={isEditRightsModalOpen}
+						handleClose={() => {
+							setIsEditRightsModalOpen(false);
+							setToEditShareUser(undefined);
+						}}
+						handleConfirm={(right) => {
+							handleConfirmEditUserRights(right);
+							setToEditShareUser(undefined);
+							setIsEditRightsModalOpen(false);
+						}}
+					/>
 				</>
 			)}
 
