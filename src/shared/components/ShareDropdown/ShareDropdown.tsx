@@ -5,19 +5,16 @@ import React, { FC, useState } from 'react';
 import { useTabs } from '../../hooks';
 import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
-import {
-	ShareUserInfo,
-	ShareUserInfoRights,
-} from '../ShareWithColleagues/ShareWithColleagues.types';
+import { ShareRightsType, ShareUserInfo } from '../ShareWithColleagues/ShareWithColleagues.types';
 import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './ShareDropdown.scss';
 import { ShareDropdownTabs } from './ShareDropdown.types';
 
 export type ShareDropdownProps = {
-	users: ShareUserInfo[];
+	users?: ShareUserInfo[];
 	onAddNewUser: (info: Partial<ShareUserInfo>) => void;
-	onEditRights: (info: ShareUserInfo, newRights: ShareUserInfoRights) => void;
+	onEditRights: (info: ShareUserInfo, newRights: ShareRightsType) => void;
 	onDeleteUser: (info: ShareUserInfo) => void;
 	button?: Partial<ButtonProps>;
 	dropdown?: Partial<DropdownProps>;
@@ -80,12 +77,16 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 
 					<div className="c-share-dropdown__content">
 						{tab === ShareDropdownTabs.COLLEAGUES ? (
-							<ShareWithColleagues
-								users={users}
-								onAddNewUser={onAddNewUser}
-								onDeleteUser={onDeleteUser}
-								onEditRights={onEditRights}
-							/>
+							<>
+								{users && (
+									<ShareWithColleagues
+										users={users}
+										onAddNewUser={onAddNewUser}
+										onDeleteUser={onDeleteUser}
+										onEditRights={onEditRights}
+									/>
+								)}
+							</>
 						) : (
 							<ShareWithPupil {...share} />
 						)}

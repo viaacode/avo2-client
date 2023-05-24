@@ -11,16 +11,17 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { capitalize } from 'lodash';
+import { capitalize } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
-import { ShareUserInfoRights } from '../ShareWithColleagues.types';
+import { findRightByValue } from '../ShareWithColleagues.helpers';
+import { ShareRightsType, ShareUserInfoRights } from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;
 	handleClose: () => void;
-	handleConfirm: (right: ShareUserInfoRights) => void;
+	handleConfirm: (right: ShareRightsType) => void;
 	currentRight: ShareUserInfoRights;
 };
 
@@ -49,7 +50,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 
 	const handleOnConfirm = () => {
 		if (right) {
-			handleConfirm(right);
+			handleConfirm(findRightByValue(right));
 		}
 	};
 

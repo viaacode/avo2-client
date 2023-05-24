@@ -7,12 +7,17 @@ import {
 	IconName,
 } from '@viaa/avo2-components';
 import classNames from 'classnames';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+import { isNil } from 'lodash-es';
+import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
 
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
+import {
+	ShareUserInfo,
+	ShareUserInfoRights,
+} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { mockShareUsers } from '../../shared/mocks/share-user-mock';
+// import { mockShareUsers } from '../../shared/mocks/share-user-mock';
 import { AssignmentService } from '../assignment.service';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
@@ -37,6 +42,42 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
+	const [contributors, setContributors] = useState<ShareUserInfo[]>();
+
+	console.log(contributors);
+
+	useEffect(() => {
+		if (share) {
+			if (!isNil(share.assignment)) {
+				const defaultContributors: ShareUserInfo[] = [
+					{
+						email: share.assignment.profile.user?.mail as string,
+						rights: ShareUserInfoRights.OWNER,
+						firstName: share.assignment.profile.user?.first_name as string | undefined,
+						lastName: share.assignment.profile.user?.last_name as string | undefined,
+						profileImage: share.assignment.profile.avatar as string | undefined,
+						profileId: share.assignment.profile.id,
+					},
+				];
+				const mappedContributors = share.assignment.contributors.map((contributor) => {
+					return {
+						email: contributor.profile.usersByuserId?.mail,
+						rights: ShareUserInfoRights[
+							contributor.enum_right_type.value as keyof typeof ShareUserInfoRights
+						],
+						firstName: contributor.profile.usersByuserId?.first_name,
+						lastName: contributor.profile.usersByuserId?.last_name,
+						profileImage: contributor.profile.avatar,
+						profileId: contributor.profile.user_id,
+					} as ShareUserInfo;
+				});
+
+				const mergedContributors = defaultContributors.concat(mappedContributors);
+
+				setContributors(mergedContributors);
+			}
+		}
+	}, [share]);
 
 	const renderPreviewButton = (config?: Partial<ButtonProps>) => (
 		<Button
@@ -72,7 +113,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			)}
 		>
 			<ShareDropdown
-				users={mockShareUsers}
+				users={contributors}
 				onDeleteUser={(value) => console.log(value)}
 				onEditRights={(user, newRights) => console.log(user, newRights)}
 				onAddNewUser={(info) =>

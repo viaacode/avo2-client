@@ -20,6 +20,7 @@ query getAssignmentByUuid($id: uuid!) {
 				first_name
 				last_name
 				id
+				mail
 			}
 			avatar
 			organisation {
@@ -63,6 +64,22 @@ query getAssignmentByUuid($id: uuid!) {
 			end_oc
 			is_deleted
 			assignment_id
+		}
+		contributors {
+			enum_right_type {
+				description
+				value
+			}
+			profile {
+				avatar
+				user_id
+				usersByuserId {
+					last_name
+					first_name
+					mail
+					full_name
+				}
+			}
 		}
 	}
 }

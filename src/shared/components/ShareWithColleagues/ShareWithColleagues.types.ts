@@ -4,12 +4,15 @@ export enum ShareUserInfoRights {
 	OWNER = 'EIGENAAR',
 }
 
+export type ShareRightsType = keyof typeof ShareUserInfoRights;
+
 export interface ShareUserInfo {
 	email: string;
-	rights: ShareUserInfoRights;
+	rights: ShareUserInfoRights | ShareRightsType;
 	firstName?: string;
 	lastName?: string;
 	profileImage?: string;
+	profileId?: string;
 }
 
 export interface DeleteShareUserModalContent {

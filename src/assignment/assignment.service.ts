@@ -1543,4 +1543,17 @@ export class AssignmentService {
 			});
 		}
 	}
+
+	static async deleteShareAssignmentUser(assignmentId: string, userId: string) {
+		try {
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${assignmentId}?contributorId=${userId}`
+			);
+		} catch (err) {
+			throw new CustomError('Failed to add share assignment user', err, {
+				assignmentId,
+				userId,
+			});
+		}
+	}
 }

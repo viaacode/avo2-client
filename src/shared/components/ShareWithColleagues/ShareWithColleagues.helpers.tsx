@@ -1,6 +1,6 @@
 import { groupBy } from 'lodash-es';
 
-import { ShareUserInfo, ShareUserInfoRights } from './ShareWithColleagues.types';
+import { ShareRightsType, ShareUserInfo, ShareUserInfoRights } from './ShareWithColleagues.types';
 
 export const sortShareUsers = (users: ShareUserInfo[]): ShareUserInfo[] => {
 	const groupedUsers: Partial<Record<ShareUserInfoRights, ShareUserInfo[]>> = groupBy(
@@ -21,4 +21,10 @@ export const shareUserRightToString = (right: ShareUserInfoRights) => {
 
 export const compareUsersEmail = (user: ShareUserInfo, toCompareUser: ShareUserInfo) => {
 	return user.email === toCompareUser.email;
+};
+
+export const findRightByValue = (right: ShareUserInfoRights): ShareRightsType => {
+	return Object.keys(ShareUserInfoRights)[
+		Object.values(ShareUserInfoRights).indexOf(right)
+	] as ShareRightsType;
 };

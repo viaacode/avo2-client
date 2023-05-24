@@ -20,16 +20,17 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import {
 	compareUsersEmail,
+	findRightByValue,
 	shareUserRightToString,
 	sortShareUsers,
 } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
-import { ShareUserInfo, ShareUserInfoRights } from './ShareWithColleagues.types';
+import { ShareRightsType, ShareUserInfo, ShareUserInfoRights } from './ShareWithColleagues.types';
 
 type ShareWithColleaguesProps = {
 	users: ShareUserInfo[];
 	onAddNewUser: (info: Partial<ShareUserInfo>) => void;
-	onEditRights: (info: ShareUserInfo, newRights: ShareUserInfoRights) => void;
+	onEditRights: (info: ShareUserInfo, newRights: ShareRightsType) => void;
 	onDeleteUser: (info: ShareUserInfo) => void;
 };
 
@@ -71,7 +72,10 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 				)
 			);
 		} else {
-			await onAddNewUser(newShareUser);
+			await onAddNewUser({
+				...newShareUser,
+				rights: findRightByValue(newShareUser.rights as ShareUserInfoRights),
+			});
 			setNewShareUser({ email: undefined, rights: undefined });
 			setError(null);
 		}
@@ -82,7 +86,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		setIsEditRightsModalOpen(true);
 	};
 
-	const handleConfirmEditUserRights = (right: ShareUserInfoRights) => {
+	const handleConfirmEditUserRights = (right: ShareRightsType) => {
 		onEditRights(toEditShareUser as ShareUserInfo, right);
 		setToEditShareUser(null);
 		setIsEditRightsModalOpen(false);
@@ -145,7 +149,11 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 								</div>
 
 								<div className="c-colleague-info-row__rights">
-									<span>{shareUserRightToString(contributorUser.rights)}</span>
+									<span>
+										{shareUserRightToString(
+											contributorUser.rights as ShareUserInfoRights
+										)}
+									</span>
 
 									{canEdit && (
 										<button
@@ -201,7 +209,9 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									onClick={handleRightsButtonClicked}
 									label={
 										newShareUser.rights
-											? shareUserRightToString(newShareUser.rights)
+											? shareUserRightToString(
+													newShareUser.rights as ShareUserInfoRights
+											  )
 											: tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___rol'
 											  )
