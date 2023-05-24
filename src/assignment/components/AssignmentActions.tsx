@@ -13,11 +13,12 @@ import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
 import {
+	ShareRightsType,
 	ShareUserInfo,
 	ShareUserInfoRights,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import useTranslation from '../../shared/hooks/useTranslation';
-// import { mockShareUsers } from '../../shared/mocks/share-user-mock';
+import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
@@ -44,11 +45,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 	const [contributors, setContributors] = useState<ShareUserInfo[]>();
 
-	console.log(contributors);
-
 	useEffect(() => {
 		if (share) {
 			if (!isNil(share.assignment)) {
+				console.log(share.assignment);
 				const defaultContributors: ShareUserInfo[] = [
 					{
 						email: share.assignment.profile.user?.mail as string,
@@ -59,6 +59,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 						profileId: share.assignment.profile.id,
 					},
 				];
+
 				const mappedContributors = share.assignment.contributors.map((contributor) => {
 					return {
 						email: contributor.profile.usersByuserId?.mail,
@@ -69,6 +70,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 						lastName: contributor.profile.usersByuserId?.last_name,
 						profileImage: contributor.profile.avatar,
 						profileId: contributor.profile.user_id,
+						contributorId: contributor.id,
 					} as ShareUserInfo;
 				});
 
@@ -78,6 +80,43 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			}
 		}
 	}, [share]);
+
+	const onEditUser = async (user: ShareUserInfo, newRights: ShareRightsType) => {
+		try {
+			await AssignmentService.editShareAssignmentUserRights(
+				share?.assignment?.id,
+				user.contributorId as string,
+				newRights
+			);
+
+			ToastService.success('Rol van gebruiker is aangepast');
+		} catch (err) {
+			ToastService.danger('Er liep iets fout');
+		}
+	};
+
+	const onAddNewUser = async (info: Partial<ShareUserInfo>) => {
+		try {
+			await AssignmentService.addShareAssignmentUser(share?.assignment?.id, info);
+
+			ToastService.success('Aanvraag tot samenwerken is verstuurd');
+		} catch (err) {
+			ToastService.danger('Er liep iets fout');
+		}
+	};
+
+	const onDeleteUser = async (info: ShareUserInfo) => {
+		try {
+			await AssignmentService.deleteShareAssignmentUser(
+				share?.assignment?.id,
+				info.contributorId as string
+			);
+
+			ToastService.success('Gebruiker is verwijderd van de opdracht');
+		} catch (err) {
+			ToastService.danger('Er liep iets fout');
+		}
+	};
 
 	const renderPreviewButton = (config?: Partial<ButtonProps>) => (
 		<Button
@@ -114,11 +153,9 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		>
 			<ShareDropdown
 				users={contributors}
-				onDeleteUser={(value) => console.log(value)}
-				onEditRights={(user, newRights) => console.log(user, newRights)}
-				onAddNewUser={(info) =>
-					AssignmentService.addShareAssignmentUser(share?.assignment?.id, info)
-				}
+				onDeleteUser={(info) => onDeleteUser(info)}
+				onEditRights={(user, newRights) => onEditUser(user, newRights)}
+				onAddNewUser={(info) => onAddNewUser(info)}
 				{...config}
 				share={share}
 			/>
@@ -200,7 +237,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				})}
 			</>
 		),
-		[tText, isOverflowDropdownOpen]
+		[tText, isOverflowDropdownOpen, contributors]
 	);
 };
 

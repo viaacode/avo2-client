@@ -8,7 +8,10 @@ import { getUserGroupIds } from '../authentication/authentication.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
-import { ShareUserInfo } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import {
+	ShareRightsType,
+	ShareUserInfo,
+} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	App_Assignments_V2_Insert_Input,
 	App_Assignments_V2_Set_Input,
@@ -1544,15 +1547,37 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteShareAssignmentUser(assignmentId: string, userId: string) {
+	static async editShareAssignmentUserRights(
+		assignmentId: string,
+		contributorId: string,
+		rights: ShareRightsType
+	) {
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/assignments/${assignmentId}?contributorId=${userId}`
+				`${getEnv(
+					'PROXY_URL'
+				)}/assignments/${assignmentId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
+				{ method: 'PATCH' }
 			);
 		} catch (err) {
 			throw new CustomError('Failed to add share assignment user', err, {
 				assignmentId,
-				userId,
+				rights,
+				contributorId,
+			});
+		}
+	}
+
+	static async deleteShareAssignmentUser(assignmentId: string, contributorId: string) {
+		try {
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${assignmentId}?contributorId=${contributorId}`,
+				{ method: 'DELETE' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to add share assignment user', err, {
+				assignmentId,
+				contributorId,
 			});
 		}
 	}

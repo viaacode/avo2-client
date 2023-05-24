@@ -66,10 +66,6 @@ query getAssignmentByUuid($id: uuid!) {
 			assignment_id
 		}
 		contributors {
-			enum_right_type {
-				description
-				value
-			}
 			profile {
 				avatar
 				user_id
@@ -79,6 +75,11 @@ query getAssignmentByUuid($id: uuid!) {
 					mail
 					full_name
 				}
+			}
+			id
+			enum_right_type {
+				description
+				value
 			}
 		}
 	}

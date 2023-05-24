@@ -42,7 +42,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	onEditRights,
 }) => {
 	const { tText } = useTranslation();
-	const currentUser = users.find((u) => u.email === user?.mail) as ShareUserInfo;
+	const currentUser = users.find((u) => u.profileId === user?.profile?.id) as ShareUserInfo;
 	const [isRightsDropdownOpen, setIsRightsDropdownOpen] = useState<boolean>(false);
 	const [newShareUser, setNewShareUser] = useState<Partial<ShareUserInfo>>({
 		email: undefined,

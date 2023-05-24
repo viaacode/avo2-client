@@ -13,6 +13,7 @@ export interface ShareUserInfo {
 	lastName?: string;
 	profileImage?: string;
 	profileId?: string;
+	contributorId?: string;
 }
 
 export interface DeleteShareUserModalContent {
