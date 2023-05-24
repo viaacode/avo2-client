@@ -975,7 +975,7 @@ export class CollectionService {
 		type: 'collection' | 'bundle'
 	): Promise<Avo.Collection.Collection | null> {
 		try {
-			return fetchWithLogoutJson(
+			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
 					id: collectionId,
@@ -985,6 +985,10 @@ export class CollectionService {
 			if (JSON.stringify(err).includes('COLLECTION_NOT_FOUND')) {
 				return null;
 			}
+			if ((err as CustomError)?.additionalInfo?.statusCode === 403) {
+				throw new CustomError('Forbidden', { statusCode: 403 });
+			}
+
 			throw new CustomError('Failed to get collection or bundle with items', err, {
 				collectionId,
 				type,
