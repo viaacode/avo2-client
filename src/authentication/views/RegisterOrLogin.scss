@@ -1,7 +1,7 @@
-@use 'sass:math';
+@use "sass:math";
 
-@import '../../styles/settings/colors';
-@import '../../styles/settings/variables';
+@import "../../styles/settings/colors";
+@import "../../styles/settings/variables";
 
 $grid-gutter: 2.4rem;
 
@@ -14,7 +14,7 @@ $grid-gutter: 2.4rem;
 }
 
 .c-register-login-view__modal {
-	background-image: url('../../assets/images/login-bg.jpg');
+	background-image: url("../../assets/images/login-bg.jpg");
 	background-size: cover;
 
 	.c-modal.c-modal--medium {
@@ -30,7 +30,7 @@ $grid-gutter: 2.4rem;
 			background: $c-register-login-view-modal-background-color;
 		}
 
-		[class*='o-grid-col'] {
+		[class*="o-grid-col"] {
 			&:first-child {
 				display: flex;
 				padding: 3.2rem;

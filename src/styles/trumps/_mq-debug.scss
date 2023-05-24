@@ -3,7 +3,7 @@
    ========================================================================== */
 
 .t-mq-debug:before {
-	content: 'No breakpoint';
+	content: "No breakpoint";
 	position: fixed;
 	top: 3rem;
 	right: 3rem;
@@ -15,24 +15,24 @@
 
 @media (min-width: $g-bp1) {
 	.t-mq-debug:before {
-		content: 'Breakpoint 1';
+		content: "Breakpoint 1";
 	}
 }
 
 @media (min-width: $g-bp2) {
 	.t-mq-debug:before {
-		content: 'Breakpoint 2';
+		content: "Breakpoint 2";
 	}
 }
 
 @media (min-width: $g-bp3) {
 	.t-mq-debug:before {
-		content: 'Breakpoint 3';
+		content: "Breakpoint 3";
 	}
 }
 
 @media (min-width: $g-bp4) {
 	.t-mq-debug:before {
-		content: 'Breakpoint 4';
+		content: "Breakpoint 4";
 	}
 }

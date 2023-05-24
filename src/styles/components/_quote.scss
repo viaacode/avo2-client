@@ -14,13 +14,13 @@
 	margin: 0 0 2.4rem 0;
 
 	&:before {
-		content: '\201C';
+		content: "\201C";
 		position: absolute;
 		transform: translateX(-150%);
 	}
 
 	&:after {
-		content: '\201D';
+		content: "\201D";
 	}
 }
 

@@ -1,6 +1,6 @@
-@import '../../styles/settings/variables';
+@import "../../styles/settings/variables";
 
-$component: 'c-assignment-block-description-buttons';
+$component: "c-assignment-block-description-buttons";
 
 .#{$component} {
 	&--default {
