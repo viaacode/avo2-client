@@ -1127,6 +1127,8 @@
 	"collection/components/collection-or-bundle-edit___id": "id",
 	"collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken": "Je hebt geen rechten om deze bundel te bewerken",
 	"collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-collectie-te-bewerken": "Je hebt geen rechten om deze collectie te bewerken",
+	"collection/components/collection-or-bundle-edit___je-hebt-geen-toegang": "Je hebt geen toegang",
+	"collection/components/collection-or-bundle-edit___je-hebt-geen-toegang-beschrijving": "Ben je echter zeker dat je wel toegang zou moeten hebben? Bekijk hieronder dan waar het eventueel misgelopen is en contacteer de eigenaar indien mogelijk.",
 	"collection/components/collection-or-bundle-edit___kwaliteitscontrole": "Kwaliteitscontrole",
 	"collection/components/collection-or-bundle-edit___marcom": "Communicatie",
 	"collection/components/collection-or-bundle-edit___naam-bundel": "Naam bundel:",

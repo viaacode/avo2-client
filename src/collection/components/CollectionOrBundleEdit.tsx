@@ -32,6 +32,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorNoAccess } from '../../error/components';
 import {
 	InputModal,
 	InteractiveTour,
@@ -467,6 +468,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 				newCollection: collectionObj || null,
 			});
 		} catch (err) {
+			if ((err as CustomError)?.innerException?.statusCode === 403) {
+				// If forbidden to access, show no acces error
+				setLoadingInfo({
+					state: 'forbidden',
+				});
+				return;
+			}
+
 			console.error(
 				new CustomError(
 					`Failed to check permissions or get ${type} from the database`,
@@ -1187,6 +1196,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const renderCollectionOrBundleEdit = () => {
 		const { profile, title } = collectionState.currentCollection as Avo.Collection.Collection;
+
+		if (loadingInfo.state === 'forbidden') {
+			return (
+				<ErrorNoAccess
+					title={tHtml(
+						'collection/components/collection-or-bundle-edit___je-hebt-geen-toegang'
+					)}
+					message={tHtml(
+						'collection/components/collection-or-bundle-edit___je-hebt-geen-toegang-beschrijving'
+					)}
+				/>
+			);
+		}
 
 		return (
 			<>

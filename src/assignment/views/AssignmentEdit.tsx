@@ -42,6 +42,7 @@ import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import { isUserAssignmentContributor, isUserAssignmentOwner } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2_With_Blocks,
@@ -574,7 +575,11 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			return <ErrorView {...assignmentError} />;
 		}
 
-		if (!assignment?.contributors?.find((contributor) => contributor.id === user.uid)) {
+		if (
+			assignment &&
+			!isUserAssignmentOwner(user, assignment) &&
+			!isUserAssignmentContributor(user, assignment)
+		) {
 			return (
 				<ErrorNoAccess
 					title={tHtml('assignment/views/assignment-edit___je-hebt-geen-toegang')}

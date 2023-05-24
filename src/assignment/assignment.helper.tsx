@@ -1,5 +1,6 @@
 import { IconName } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
+import { UserSchema } from '@viaa/avo2-types/types/user';
 import { ReactNode } from 'react';
 
 import { tHtml, tText } from '../shared/helpers/translate';
@@ -8,6 +9,7 @@ import { Positioned } from '../shared/types';
 import {
 	Assignment_Label_v2,
 	Assignment_v2_With_Labels,
+	AssignmentFormState,
 	AssignmentLayout,
 	AssignmentRetrieveError,
 } from './assignment.types';
@@ -72,4 +74,25 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 				icon: IconName.alertTriangle,
 			};
 	}
+}
+
+export function isUserAssignmentOwner(
+	user: UserSchema,
+	assignment: Partial<AssignmentFormState>
+): boolean {
+	return assignment?.owner_profile_id === user.profile?.id;
+}
+
+export function isUserAssignmentContributor(
+	user: UserSchema,
+	assignment: Partial<AssignmentFormState>
+): boolean {
+	if (assignment.contributors) {
+		return !!assignment.contributors.find(
+			(contributor) =>
+				contributor.profile.user_id === user.profile?.id &&
+				contributor.enum_right_type.value !== 'VIEWER'
+		);
+	}
+	return false;
 }

@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  _text: any;
   bigint: any;
   bpchar: any;
   date: any;
@@ -81,6 +82,19 @@ export type String_Comparison_Exp = {
   _regex?: InputMaybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: InputMaybe<Scalars['String']>;
+};
+
+/** Boolean expression to compare columns of type "_text". All fields are combined with logical 'AND'. */
+export type _Text_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['_text']>;
+  _gt?: InputMaybe<Scalars['_text']>;
+  _gte?: InputMaybe<Scalars['_text']>;
+  _in?: InputMaybe<Array<Scalars['_text']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']>;
+  _lt?: InputMaybe<Scalars['_text']>;
+  _lte?: InputMaybe<Scalars['_text']>;
+  _neq?: InputMaybe<Scalars['_text']>;
+  _nin?: InputMaybe<Array<Scalars['_text']>>;
 };
 
 /** Reference table for lniking assignments and user tags. */
@@ -4525,7 +4539,7 @@ export type App_Assignments_V2_Lom_Links = {
   id: Scalars['uuid'];
   lom_id: Scalars['String'];
   /** An object relationship */
-  thesaurus: Lookup_Thesaurus;
+  thesaurus: Lookup_Thesaurus_Old;
 };
 
 /** aggregated selection of "app.assignments_v2_lom_links" */
@@ -4584,7 +4598,7 @@ export type App_Assignments_V2_Lom_Links_Bool_Exp = {
   assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   lom_id?: InputMaybe<String_Comparison_Exp>;
-  thesaurus?: InputMaybe<Lookup_Thesaurus_Bool_Exp>;
+  thesaurus?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "app.assignments_v2_lom_links" */
@@ -4601,7 +4615,7 @@ export type App_Assignments_V2_Lom_Links_Insert_Input = {
   assignment_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
   lom_id?: InputMaybe<Scalars['String']>;
-  thesaurus?: InputMaybe<Lookup_Thesaurus_Obj_Rel_Insert_Input>;
+  thesaurus?: InputMaybe<Lookup_Thesaurus_Old_Obj_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
@@ -4656,7 +4670,7 @@ export type App_Assignments_V2_Lom_Links_Order_By = {
   assignment_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   lom_id?: InputMaybe<Order_By>;
-  thesaurus?: InputMaybe<Lookup_Thesaurus_Order_By>;
+  thesaurus?: InputMaybe<Lookup_Thesaurus_Old_Order_By>;
 };
 
 /** primary key columns input for table: app.assignments_v2_lom_links */
@@ -4834,6 +4848,204 @@ export type App_Assignments_V2_Order_By = {
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
   view_count?: InputMaybe<App_Assignment_V2_Views_Order_By>;
+};
+
+/** columns and relationships of "app.assignments_v2_overview" */
+export type App_Assignments_V2_Overview = {
+  __typename?: 'app_assignments_v2_overview';
+  answer_url?: Maybe<Scalars['String']>;
+  assignment_type?: Maybe<Scalars['String']>;
+  available_at?: Maybe<Scalars['timestamptz']>;
+  collaborator_profile_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  deadline_at?: Maybe<Scalars['timestamptz']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  is_collaborative?: Maybe<Scalars['Boolean']>;
+  is_deleted?: Maybe<Scalars['Boolean']>;
+  is_public?: Maybe<Scalars['Boolean']>;
+  lom_learning_resource_type?: Maybe<Scalars['jsonb']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  share_type?: Maybe<Scalars['String']>;
+  thumbnail_path?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+
+/** columns and relationships of "app.assignments_v2_overview" */
+export type App_Assignments_V2_OverviewLom_Learning_Resource_TypeArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "app.assignments_v2_overview" */
+export type App_Assignments_V2_Overview_Aggregate = {
+  __typename?: 'app_assignments_v2_overview_aggregate';
+  aggregate?: Maybe<App_Assignments_V2_Overview_Aggregate_Fields>;
+  nodes: Array<App_Assignments_V2_Overview>;
+};
+
+/** aggregate fields of "app.assignments_v2_overview" */
+export type App_Assignments_V2_Overview_Aggregate_Fields = {
+  __typename?: 'app_assignments_v2_overview_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<App_Assignments_V2_Overview_Max_Fields>;
+  min?: Maybe<App_Assignments_V2_Overview_Min_Fields>;
+};
+
+
+/** aggregate fields of "app.assignments_v2_overview" */
+export type App_Assignments_V2_Overview_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<App_Assignments_V2_Overview_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "app.assignments_v2_overview". All fields are combined with a logical 'AND'. */
+export type App_Assignments_V2_Overview_Bool_Exp = {
+  _and?: InputMaybe<Array<App_Assignments_V2_Overview_Bool_Exp>>;
+  _not?: InputMaybe<App_Assignments_V2_Overview_Bool_Exp>;
+  _or?: InputMaybe<Array<App_Assignments_V2_Overview_Bool_Exp>>;
+  answer_url?: InputMaybe<String_Comparison_Exp>;
+  assignment_type?: InputMaybe<String_Comparison_Exp>;
+  available_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  collaborator_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  deadline_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  description?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  is_collaborative?: InputMaybe<Boolean_Comparison_Exp>;
+  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_public?: InputMaybe<Boolean_Comparison_Exp>;
+  lom_learning_resource_type?: InputMaybe<Jsonb_Comparison_Exp>;
+  published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  share_type?: InputMaybe<String_Comparison_Exp>;
+  thumbnail_path?: InputMaybe<String_Comparison_Exp>;
+  title?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type App_Assignments_V2_Overview_Max_Fields = {
+  __typename?: 'app_assignments_v2_overview_max_fields';
+  answer_url?: Maybe<Scalars['String']>;
+  assignment_type?: Maybe<Scalars['String']>;
+  available_at?: Maybe<Scalars['timestamptz']>;
+  collaborator_profile_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  deadline_at?: Maybe<Scalars['timestamptz']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  share_type?: Maybe<Scalars['String']>;
+  thumbnail_path?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type App_Assignments_V2_Overview_Min_Fields = {
+  __typename?: 'app_assignments_v2_overview_min_fields';
+  answer_url?: Maybe<Scalars['String']>;
+  assignment_type?: Maybe<Scalars['String']>;
+  available_at?: Maybe<Scalars['timestamptz']>;
+  collaborator_profile_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  deadline_at?: Maybe<Scalars['timestamptz']>;
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['uuid']>;
+  published_at?: Maybe<Scalars['timestamptz']>;
+  share_type?: Maybe<Scalars['String']>;
+  thumbnail_path?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** Ordering options when selecting data from "app.assignments_v2_overview". */
+export type App_Assignments_V2_Overview_Order_By = {
+  answer_url?: InputMaybe<Order_By>;
+  assignment_type?: InputMaybe<Order_By>;
+  available_at?: InputMaybe<Order_By>;
+  collaborator_profile_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  deadline_at?: InputMaybe<Order_By>;
+  description?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_collaborative?: InputMaybe<Order_By>;
+  is_deleted?: InputMaybe<Order_By>;
+  is_public?: InputMaybe<Order_By>;
+  lom_learning_resource_type?: InputMaybe<Order_By>;
+  published_at?: InputMaybe<Order_By>;
+  share_type?: InputMaybe<Order_By>;
+  thumbnail_path?: InputMaybe<Order_By>;
+  title?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "app.assignments_v2_overview" */
+export enum App_Assignments_V2_Overview_Select_Column {
+  /** column name */
+  AnswerUrl = 'answer_url',
+  /** column name */
+  AssignmentType = 'assignment_type',
+  /** column name */
+  AvailableAt = 'available_at',
+  /** column name */
+  CollaboratorProfileId = 'collaborator_profile_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DeadlineAt = 'deadline_at',
+  /** column name */
+  Description = 'description',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsCollaborative = 'is_collaborative',
+  /** column name */
+  IsDeleted = 'is_deleted',
+  /** column name */
+  IsPublic = 'is_public',
+  /** column name */
+  LomLearningResourceType = 'lom_learning_resource_type',
+  /** column name */
+  PublishedAt = 'published_at',
+  /** column name */
+  ShareType = 'share_type',
+  /** column name */
+  ThumbnailPath = 'thumbnail_path',
+  /** column name */
+  Title = 'title',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "app_assignments_v2_overview" */
+export type App_Assignments_V2_Overview_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: App_Assignments_V2_Overview_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type App_Assignments_V2_Overview_Stream_Cursor_Value_Input = {
+  answer_url?: InputMaybe<Scalars['String']>;
+  assignment_type?: InputMaybe<Scalars['String']>;
+  available_at?: InputMaybe<Scalars['timestamptz']>;
+  collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  deadline_at?: InputMaybe<Scalars['timestamptz']>;
+  description?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  is_collaborative?: InputMaybe<Scalars['Boolean']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_public?: InputMaybe<Scalars['Boolean']>;
+  lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
+  published_at?: InputMaybe<Scalars['timestamptz']>;
+  share_type?: InputMaybe<Scalars['String']>;
+  thumbnail_path?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
 /** primary key columns input for table: app.assignments_v2 */
@@ -11099,7 +11311,7 @@ export type App_Collections_Lom_Links = {
   id: Scalars['uuid'];
   lom_id: Scalars['String'];
   /** An object relationship */
-  thesaurus: Lookup_Thesaurus;
+  thesaurus: Lookup_Thesaurus_Old;
 };
 
 /** aggregated selection of "app.collections_lom_links" */
@@ -11158,7 +11370,7 @@ export type App_Collections_Lom_Links_Bool_Exp = {
   collection_id?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   lom_id?: InputMaybe<String_Comparison_Exp>;
-  thesaurus?: InputMaybe<Lookup_Thesaurus_Bool_Exp>;
+  thesaurus?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
 };
 
 /** unique or primary key constraints on table "app.collections_lom_links" */
@@ -11175,7 +11387,7 @@ export type App_Collections_Lom_Links_Insert_Input = {
   collection_id?: InputMaybe<Scalars['uuid']>;
   id?: InputMaybe<Scalars['uuid']>;
   lom_id?: InputMaybe<Scalars['String']>;
-  thesaurus?: InputMaybe<Lookup_Thesaurus_Obj_Rel_Insert_Input>;
+  thesaurus?: InputMaybe<Lookup_Thesaurus_Old_Obj_Rel_Insert_Input>;
 };
 
 /** aggregate max on columns */
@@ -11230,7 +11442,7 @@ export type App_Collections_Lom_Links_Order_By = {
   collection_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   lom_id?: InputMaybe<Order_By>;
-  thesaurus?: InputMaybe<Lookup_Thesaurus_Order_By>;
+  thesaurus?: InputMaybe<Lookup_Thesaurus_Old_Order_By>;
 };
 
 /** primary key columns input for table: app.collections_lom_links */
@@ -22041,12 +22253,165 @@ export type Lookup_Enum_Search_Bookmark_Types_Updates = {
   where: Lookup_Enum_Search_Bookmark_Types_Bool_Exp;
 };
 
+/** columns and relationships of "lookup.graph" */
+export type Lookup_Graph = {
+  __typename?: 'lookup_graph';
+  object: Scalars['String'];
+  predicate: Scalars['String'];
+  subject: Scalars['String'];
+};
+
+/** aggregated selection of "lookup.graph" */
+export type Lookup_Graph_Aggregate = {
+  __typename?: 'lookup_graph_aggregate';
+  aggregate?: Maybe<Lookup_Graph_Aggregate_Fields>;
+  nodes: Array<Lookup_Graph>;
+};
+
+/** aggregate fields of "lookup.graph" */
+export type Lookup_Graph_Aggregate_Fields = {
+  __typename?: 'lookup_graph_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Lookup_Graph_Max_Fields>;
+  min?: Maybe<Lookup_Graph_Min_Fields>;
+};
+
+
+/** aggregate fields of "lookup.graph" */
+export type Lookup_Graph_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Lookup_Graph_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "lookup.graph". All fields are combined with a logical 'AND'. */
+export type Lookup_Graph_Bool_Exp = {
+  _and?: InputMaybe<Array<Lookup_Graph_Bool_Exp>>;
+  _not?: InputMaybe<Lookup_Graph_Bool_Exp>;
+  _or?: InputMaybe<Array<Lookup_Graph_Bool_Exp>>;
+  object?: InputMaybe<String_Comparison_Exp>;
+  predicate?: InputMaybe<String_Comparison_Exp>;
+  subject?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "lookup.graph" */
+export enum Lookup_Graph_Constraint {
+  /** unique or primary key constraint on columns "object", "predicate", "subject" */
+  GraphPkey = 'graph_pkey'
+}
+
+/** input type for inserting data into table "lookup.graph" */
+export type Lookup_Graph_Insert_Input = {
+  object?: InputMaybe<Scalars['String']>;
+  predicate?: InputMaybe<Scalars['String']>;
+  subject?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Lookup_Graph_Max_Fields = {
+  __typename?: 'lookup_graph_max_fields';
+  object?: Maybe<Scalars['String']>;
+  predicate?: Maybe<Scalars['String']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Lookup_Graph_Min_Fields = {
+  __typename?: 'lookup_graph_min_fields';
+  object?: Maybe<Scalars['String']>;
+  predicate?: Maybe<Scalars['String']>;
+  subject?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "lookup.graph" */
+export type Lookup_Graph_Mutation_Response = {
+  __typename?: 'lookup_graph_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Lookup_Graph>;
+};
+
+/** on_conflict condition type for table "lookup.graph" */
+export type Lookup_Graph_On_Conflict = {
+  constraint: Lookup_Graph_Constraint;
+  update_columns?: Array<Lookup_Graph_Update_Column>;
+  where?: InputMaybe<Lookup_Graph_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "lookup.graph". */
+export type Lookup_Graph_Order_By = {
+  object?: InputMaybe<Order_By>;
+  predicate?: InputMaybe<Order_By>;
+  subject?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: lookup.graph */
+export type Lookup_Graph_Pk_Columns_Input = {
+  object: Scalars['String'];
+  predicate: Scalars['String'];
+  subject: Scalars['String'];
+};
+
+/** select columns of table "lookup.graph" */
+export enum Lookup_Graph_Select_Column {
+  /** column name */
+  Object = 'object',
+  /** column name */
+  Predicate = 'predicate',
+  /** column name */
+  Subject = 'subject'
+}
+
+/** input type for updating data in table "lookup.graph" */
+export type Lookup_Graph_Set_Input = {
+  object?: InputMaybe<Scalars['String']>;
+  predicate?: InputMaybe<Scalars['String']>;
+  subject?: InputMaybe<Scalars['String']>;
+};
+
+/** Streaming cursor of the table "lookup_graph" */
+export type Lookup_Graph_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Lookup_Graph_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Lookup_Graph_Stream_Cursor_Value_Input = {
+  object?: InputMaybe<Scalars['String']>;
+  predicate?: InputMaybe<Scalars['String']>;
+  subject?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "lookup.graph" */
+export enum Lookup_Graph_Update_Column {
+  /** column name */
+  Object = 'object',
+  /** column name */
+  Predicate = 'predicate',
+  /** column name */
+  Subject = 'subject'
+}
+
+export type Lookup_Graph_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Lookup_Graph_Set_Input>;
+  where: Lookup_Graph_Bool_Exp;
+};
+
 /** columns and relationships of "lookup.thesaurus" */
 export type Lookup_Thesaurus = {
   __typename?: 'lookup_thesaurus';
-  id: Scalars['String'];
-  label: Scalars['String'];
+  broader?: Maybe<Scalars['String']>;
+  definition?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  member?: Maybe<Scalars['_text']>;
+  narrower?: Maybe<Scalars['_text']>;
+  related?: Maybe<Scalars['_text']>;
   scheme?: Maybe<Scalars['String']>;
+  topconceptof?: Maybe<Scalars['String']>;
 };
 
 /** aggregated selection of "lookup.thesaurus" */
@@ -22076,77 +22441,145 @@ export type Lookup_Thesaurus_Bool_Exp = {
   _and?: InputMaybe<Array<Lookup_Thesaurus_Bool_Exp>>;
   _not?: InputMaybe<Lookup_Thesaurus_Bool_Exp>;
   _or?: InputMaybe<Array<Lookup_Thesaurus_Bool_Exp>>;
+  broader?: InputMaybe<String_Comparison_Exp>;
+  definition?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  label?: InputMaybe<String_Comparison_Exp>;
+  member?: InputMaybe<_Text_Comparison_Exp>;
+  narrower?: InputMaybe<_Text_Comparison_Exp>;
+  related?: InputMaybe<_Text_Comparison_Exp>;
+  scheme?: InputMaybe<String_Comparison_Exp>;
+  topconceptof?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Lookup_Thesaurus_Max_Fields = {
+  __typename?: 'lookup_thesaurus_max_fields';
+  broader?: Maybe<Scalars['String']>;
+  definition?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  scheme?: Maybe<Scalars['String']>;
+  topconceptof?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Lookup_Thesaurus_Min_Fields = {
+  __typename?: 'lookup_thesaurus_min_fields';
+  broader?: Maybe<Scalars['String']>;
+  definition?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  label?: Maybe<Scalars['String']>;
+  scheme?: Maybe<Scalars['String']>;
+  topconceptof?: Maybe<Scalars['String']>;
+};
+
+/** columns and relationships of "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old = {
+  __typename?: 'lookup_thesaurus_old';
+  id: Scalars['String'];
+  label: Scalars['String'];
+  scheme?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old_Aggregate = {
+  __typename?: 'lookup_thesaurus_old_aggregate';
+  aggregate?: Maybe<Lookup_Thesaurus_Old_Aggregate_Fields>;
+  nodes: Array<Lookup_Thesaurus_Old>;
+};
+
+/** aggregate fields of "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old_Aggregate_Fields = {
+  __typename?: 'lookup_thesaurus_old_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Lookup_Thesaurus_Old_Max_Fields>;
+  min?: Maybe<Lookup_Thesaurus_Old_Min_Fields>;
+};
+
+
+/** aggregate fields of "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Lookup_Thesaurus_Old_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "lookup.thesaurus_old". All fields are combined with a logical 'AND'. */
+export type Lookup_Thesaurus_Old_Bool_Exp = {
+  _and?: InputMaybe<Array<Lookup_Thesaurus_Old_Bool_Exp>>;
+  _not?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
+  _or?: InputMaybe<Array<Lookup_Thesaurus_Old_Bool_Exp>>;
   id?: InputMaybe<String_Comparison_Exp>;
   label?: InputMaybe<String_Comparison_Exp>;
   scheme?: InputMaybe<String_Comparison_Exp>;
 };
 
-/** unique or primary key constraints on table "lookup.thesaurus" */
-export enum Lookup_Thesaurus_Constraint {
+/** unique or primary key constraints on table "lookup.thesaurus_old" */
+export enum Lookup_Thesaurus_Old_Constraint {
   /** unique or primary key constraint on columns "id" */
   ThesaurusPkey = 'thesaurus_pkey'
 }
 
-/** input type for inserting data into table "lookup.thesaurus" */
-export type Lookup_Thesaurus_Insert_Input = {
+/** input type for inserting data into table "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old_Insert_Input = {
   id?: InputMaybe<Scalars['String']>;
   label?: InputMaybe<Scalars['String']>;
   scheme?: InputMaybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
-export type Lookup_Thesaurus_Max_Fields = {
-  __typename?: 'lookup_thesaurus_max_fields';
+export type Lookup_Thesaurus_Old_Max_Fields = {
+  __typename?: 'lookup_thesaurus_old_max_fields';
   id?: Maybe<Scalars['String']>;
   label?: Maybe<Scalars['String']>;
   scheme?: Maybe<Scalars['String']>;
 };
 
 /** aggregate min on columns */
-export type Lookup_Thesaurus_Min_Fields = {
-  __typename?: 'lookup_thesaurus_min_fields';
+export type Lookup_Thesaurus_Old_Min_Fields = {
+  __typename?: 'lookup_thesaurus_old_min_fields';
   id?: Maybe<Scalars['String']>;
   label?: Maybe<Scalars['String']>;
   scheme?: Maybe<Scalars['String']>;
 };
 
-/** response of any mutation on the table "lookup.thesaurus" */
-export type Lookup_Thesaurus_Mutation_Response = {
-  __typename?: 'lookup_thesaurus_mutation_response';
+/** response of any mutation on the table "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old_Mutation_Response = {
+  __typename?: 'lookup_thesaurus_old_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
-  returning: Array<Lookup_Thesaurus>;
+  returning: Array<Lookup_Thesaurus_Old>;
 };
 
-/** input type for inserting object relation for remote table "lookup.thesaurus" */
-export type Lookup_Thesaurus_Obj_Rel_Insert_Input = {
-  data: Lookup_Thesaurus_Insert_Input;
+/** input type for inserting object relation for remote table "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old_Obj_Rel_Insert_Input = {
+  data: Lookup_Thesaurus_Old_Insert_Input;
   /** upsert condition */
-  on_conflict?: InputMaybe<Lookup_Thesaurus_On_Conflict>;
+  on_conflict?: InputMaybe<Lookup_Thesaurus_Old_On_Conflict>;
 };
 
-/** on_conflict condition type for table "lookup.thesaurus" */
-export type Lookup_Thesaurus_On_Conflict = {
-  constraint: Lookup_Thesaurus_Constraint;
-  update_columns?: Array<Lookup_Thesaurus_Update_Column>;
-  where?: InputMaybe<Lookup_Thesaurus_Bool_Exp>;
+/** on_conflict condition type for table "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old_On_Conflict = {
+  constraint: Lookup_Thesaurus_Old_Constraint;
+  update_columns?: Array<Lookup_Thesaurus_Old_Update_Column>;
+  where?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
 };
 
-/** Ordering options when selecting data from "lookup.thesaurus". */
-export type Lookup_Thesaurus_Order_By = {
+/** Ordering options when selecting data from "lookup.thesaurus_old". */
+export type Lookup_Thesaurus_Old_Order_By = {
   id?: InputMaybe<Order_By>;
   label?: InputMaybe<Order_By>;
   scheme?: InputMaybe<Order_By>;
 };
 
-/** primary key columns input for table: lookup.thesaurus */
-export type Lookup_Thesaurus_Pk_Columns_Input = {
+/** primary key columns input for table: lookup.thesaurus_old */
+export type Lookup_Thesaurus_Old_Pk_Columns_Input = {
   id: Scalars['String'];
 };
 
-/** select columns of table "lookup.thesaurus" */
-export enum Lookup_Thesaurus_Select_Column {
+/** select columns of table "lookup.thesaurus_old" */
+export enum Lookup_Thesaurus_Old_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
@@ -22155,12 +22588,78 @@ export enum Lookup_Thesaurus_Select_Column {
   Scheme = 'scheme'
 }
 
-/** input type for updating data in table "lookup.thesaurus" */
-export type Lookup_Thesaurus_Set_Input = {
+/** input type for updating data in table "lookup.thesaurus_old" */
+export type Lookup_Thesaurus_Old_Set_Input = {
   id?: InputMaybe<Scalars['String']>;
   label?: InputMaybe<Scalars['String']>;
   scheme?: InputMaybe<Scalars['String']>;
 };
+
+/** Streaming cursor of the table "lookup_thesaurus_old" */
+export type Lookup_Thesaurus_Old_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Lookup_Thesaurus_Old_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Lookup_Thesaurus_Old_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']>;
+  label?: InputMaybe<Scalars['String']>;
+  scheme?: InputMaybe<Scalars['String']>;
+};
+
+/** update columns of table "lookup.thesaurus_old" */
+export enum Lookup_Thesaurus_Old_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Label = 'label',
+  /** column name */
+  Scheme = 'scheme'
+}
+
+export type Lookup_Thesaurus_Old_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Lookup_Thesaurus_Old_Set_Input>;
+  where: Lookup_Thesaurus_Old_Bool_Exp;
+};
+
+/** Ordering options when selecting data from "lookup.thesaurus". */
+export type Lookup_Thesaurus_Order_By = {
+  broader?: InputMaybe<Order_By>;
+  definition?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  label?: InputMaybe<Order_By>;
+  member?: InputMaybe<Order_By>;
+  narrower?: InputMaybe<Order_By>;
+  related?: InputMaybe<Order_By>;
+  scheme?: InputMaybe<Order_By>;
+  topconceptof?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "lookup.thesaurus" */
+export enum Lookup_Thesaurus_Select_Column {
+  /** column name */
+  Broader = 'broader',
+  /** column name */
+  Definition = 'definition',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Label = 'label',
+  /** column name */
+  Member = 'member',
+  /** column name */
+  Narrower = 'narrower',
+  /** column name */
+  Related = 'related',
+  /** column name */
+  Scheme = 'scheme',
+  /** column name */
+  Topconceptof = 'topconceptof'
+}
 
 /** Streaming cursor of the table "lookup_thesaurus" */
 export type Lookup_Thesaurus_Stream_Cursor_Input = {
@@ -22172,25 +22671,15 @@ export type Lookup_Thesaurus_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type Lookup_Thesaurus_Stream_Cursor_Value_Input = {
+  broader?: InputMaybe<Scalars['String']>;
+  definition?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['String']>;
   label?: InputMaybe<Scalars['String']>;
+  member?: InputMaybe<Scalars['_text']>;
+  narrower?: InputMaybe<Scalars['_text']>;
+  related?: InputMaybe<Scalars['_text']>;
   scheme?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "lookup.thesaurus" */
-export enum Lookup_Thesaurus_Update_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  Scheme = 'scheme'
-}
-
-export type Lookup_Thesaurus_Updates = {
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Lookup_Thesaurus_Set_Input>;
-  where: Lookup_Thesaurus_Bool_Exp;
+  topconceptof?: InputMaybe<Scalars['String']>;
 };
 
 /** Table met de oorspronkelijke datum van toevoeging op avo1. */
@@ -22828,10 +23317,14 @@ export type Mutation_Root = {
   delete_lookup_enum_search_bookmark_types?: Maybe<Lookup_Enum_Search_Bookmark_Types_Mutation_Response>;
   /** delete single row from the table: "lookup.enum_search_bookmark_types" */
   delete_lookup_enum_search_bookmark_types_by_pk?: Maybe<Lookup_Enum_Search_Bookmark_Types>;
-  /** delete data from the table: "lookup.thesaurus" */
-  delete_lookup_thesaurus?: Maybe<Lookup_Thesaurus_Mutation_Response>;
-  /** delete single row from the table: "lookup.thesaurus" */
-  delete_lookup_thesaurus_by_pk?: Maybe<Lookup_Thesaurus>;
+  /** delete data from the table: "lookup.graph" */
+  delete_lookup_graph?: Maybe<Lookup_Graph_Mutation_Response>;
+  /** delete single row from the table: "lookup.graph" */
+  delete_lookup_graph_by_pk?: Maybe<Lookup_Graph>;
+  /** delete data from the table: "lookup.thesaurus_old" */
+  delete_lookup_thesaurus_old?: Maybe<Lookup_Thesaurus_Old_Mutation_Response>;
+  /** delete single row from the table: "lookup.thesaurus_old" */
+  delete_lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
   /** delete data from the table: "migrate.original_publishdate" */
   delete_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
   /** delete single row from the table: "migrate.original_publishdate" */
@@ -23200,10 +23693,14 @@ export type Mutation_Root = {
   insert_lookup_enum_search_bookmark_types?: Maybe<Lookup_Enum_Search_Bookmark_Types_Mutation_Response>;
   /** insert a single row into the table: "lookup.enum_search_bookmark_types" */
   insert_lookup_enum_search_bookmark_types_one?: Maybe<Lookup_Enum_Search_Bookmark_Types>;
-  /** insert data into the table: "lookup.thesaurus" */
-  insert_lookup_thesaurus?: Maybe<Lookup_Thesaurus_Mutation_Response>;
-  /** insert a single row into the table: "lookup.thesaurus" */
-  insert_lookup_thesaurus_one?: Maybe<Lookup_Thesaurus>;
+  /** insert data into the table: "lookup.graph" */
+  insert_lookup_graph?: Maybe<Lookup_Graph_Mutation_Response>;
+  /** insert a single row into the table: "lookup.graph" */
+  insert_lookup_graph_one?: Maybe<Lookup_Graph>;
+  /** insert data into the table: "lookup.thesaurus_old" */
+  insert_lookup_thesaurus_old?: Maybe<Lookup_Thesaurus_Old_Mutation_Response>;
+  /** insert a single row into the table: "lookup.thesaurus_old" */
+  insert_lookup_thesaurus_old_one?: Maybe<Lookup_Thesaurus_Old>;
   /** insert data into the table: "migrate.original_publishdate" */
   insert_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
   /** insert a single row into the table: "migrate.original_publishdate" */
@@ -23694,12 +24191,18 @@ export type Mutation_Root = {
   update_lookup_enum_search_bookmark_types_by_pk?: Maybe<Lookup_Enum_Search_Bookmark_Types>;
   /** update multiples rows of table: "lookup.enum_search_bookmark_types" */
   update_lookup_enum_search_bookmark_types_many?: Maybe<Array<Maybe<Lookup_Enum_Search_Bookmark_Types_Mutation_Response>>>;
-  /** update data of the table: "lookup.thesaurus" */
-  update_lookup_thesaurus?: Maybe<Lookup_Thesaurus_Mutation_Response>;
-  /** update single row of the table: "lookup.thesaurus" */
-  update_lookup_thesaurus_by_pk?: Maybe<Lookup_Thesaurus>;
-  /** update multiples rows of table: "lookup.thesaurus" */
-  update_lookup_thesaurus_many?: Maybe<Array<Maybe<Lookup_Thesaurus_Mutation_Response>>>;
+  /** update data of the table: "lookup.graph" */
+  update_lookup_graph?: Maybe<Lookup_Graph_Mutation_Response>;
+  /** update single row of the table: "lookup.graph" */
+  update_lookup_graph_by_pk?: Maybe<Lookup_Graph>;
+  /** update multiples rows of table: "lookup.graph" */
+  update_lookup_graph_many?: Maybe<Array<Maybe<Lookup_Graph_Mutation_Response>>>;
+  /** update data of the table: "lookup.thesaurus_old" */
+  update_lookup_thesaurus_old?: Maybe<Lookup_Thesaurus_Old_Mutation_Response>;
+  /** update single row of the table: "lookup.thesaurus_old" */
+  update_lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
+  /** update multiples rows of table: "lookup.thesaurus_old" */
+  update_lookup_thesaurus_old_many?: Maybe<Array<Maybe<Lookup_Thesaurus_Old_Mutation_Response>>>;
   /** update data of the table: "migrate.original_publishdate" */
   update_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
   /** update single row of the table: "migrate.original_publishdate" */
@@ -24622,13 +25125,27 @@ export type Mutation_RootDelete_Lookup_Enum_Search_Bookmark_Types_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Lookup_ThesaurusArgs = {
-  where: Lookup_Thesaurus_Bool_Exp;
+export type Mutation_RootDelete_Lookup_GraphArgs = {
+  where: Lookup_Graph_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootDelete_Lookup_Thesaurus_By_PkArgs = {
+export type Mutation_RootDelete_Lookup_Graph_By_PkArgs = {
+  object: Scalars['String'];
+  predicate: Scalars['String'];
+  subject: Scalars['String'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Lookup_Thesaurus_OldArgs = {
+  where: Lookup_Thesaurus_Old_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Lookup_Thesaurus_Old_By_PkArgs = {
   id: Scalars['String'];
 };
 
@@ -25860,16 +26377,30 @@ export type Mutation_RootInsert_Lookup_Enum_Search_Bookmark_Types_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Lookup_ThesaurusArgs = {
-  objects: Array<Lookup_Thesaurus_Insert_Input>;
-  on_conflict?: InputMaybe<Lookup_Thesaurus_On_Conflict>;
+export type Mutation_RootInsert_Lookup_GraphArgs = {
+  objects: Array<Lookup_Graph_Insert_Input>;
+  on_conflict?: InputMaybe<Lookup_Graph_On_Conflict>;
 };
 
 
 /** mutation root */
-export type Mutation_RootInsert_Lookup_Thesaurus_OneArgs = {
-  object: Lookup_Thesaurus_Insert_Input;
-  on_conflict?: InputMaybe<Lookup_Thesaurus_On_Conflict>;
+export type Mutation_RootInsert_Lookup_Graph_OneArgs = {
+  object: Lookup_Graph_Insert_Input;
+  on_conflict?: InputMaybe<Lookup_Graph_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Lookup_Thesaurus_OldArgs = {
+  objects: Array<Lookup_Thesaurus_Old_Insert_Input>;
+  on_conflict?: InputMaybe<Lookup_Thesaurus_Old_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Lookup_Thesaurus_Old_OneArgs = {
+  object: Lookup_Thesaurus_Old_Insert_Input;
+  on_conflict?: InputMaybe<Lookup_Thesaurus_Old_On_Conflict>;
 };
 
 
@@ -27704,22 +28235,42 @@ export type Mutation_RootUpdate_Lookup_Enum_Search_Bookmark_Types_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Lookup_ThesaurusArgs = {
-  _set?: InputMaybe<Lookup_Thesaurus_Set_Input>;
-  where: Lookup_Thesaurus_Bool_Exp;
+export type Mutation_RootUpdate_Lookup_GraphArgs = {
+  _set?: InputMaybe<Lookup_Graph_Set_Input>;
+  where: Lookup_Graph_Bool_Exp;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Lookup_Thesaurus_By_PkArgs = {
-  _set?: InputMaybe<Lookup_Thesaurus_Set_Input>;
-  pk_columns: Lookup_Thesaurus_Pk_Columns_Input;
+export type Mutation_RootUpdate_Lookup_Graph_By_PkArgs = {
+  _set?: InputMaybe<Lookup_Graph_Set_Input>;
+  pk_columns: Lookup_Graph_Pk_Columns_Input;
 };
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Lookup_Thesaurus_ManyArgs = {
-  updates: Array<Lookup_Thesaurus_Updates>;
+export type Mutation_RootUpdate_Lookup_Graph_ManyArgs = {
+  updates: Array<Lookup_Graph_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Lookup_Thesaurus_OldArgs = {
+  _set?: InputMaybe<Lookup_Thesaurus_Old_Set_Input>;
+  where: Lookup_Thesaurus_Old_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Lookup_Thesaurus_Old_By_PkArgs = {
+  _set?: InputMaybe<Lookup_Thesaurus_Old_Set_Input>;
+  pk_columns: Lookup_Thesaurus_Old_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Lookup_Thesaurus_Old_ManyArgs = {
+  updates: Array<Lookup_Thesaurus_Old_Updates>;
 };
 
 
@@ -28532,6 +29083,10 @@ export type Query_Root = {
   app_assignments_v2_lom_links_aggregate: App_Assignments_V2_Lom_Links_Aggregate;
   /** fetch data from the table: "app.assignments_v2_lom_links" using primary key columns */
   app_assignments_v2_lom_links_by_pk?: Maybe<App_Assignments_V2_Lom_Links>;
+  /** fetch data from the table: "app.assignments_v2_overview" */
+  app_assignments_v2_overview: Array<App_Assignments_V2_Overview>;
+  /** fetch aggregated fields from the table: "app.assignments_v2_overview" */
+  app_assignments_v2_overview_aggregate: App_Assignments_V2_Overview_Aggregate;
   /** fetch data from the table: "app.collection_actualisation_overview" */
   app_collection_actualisation_overview: Array<App_Collection_Actualisation_Overview>;
   /** fetch aggregated fields from the table: "app.collection_actualisation_overview" */
@@ -28858,12 +29413,22 @@ export type Query_Root = {
   lookup_enum_search_bookmark_types_aggregate: Lookup_Enum_Search_Bookmark_Types_Aggregate;
   /** fetch data from the table: "lookup.enum_search_bookmark_types" using primary key columns */
   lookup_enum_search_bookmark_types_by_pk?: Maybe<Lookup_Enum_Search_Bookmark_Types>;
+  /** fetch data from the table: "lookup.graph" */
+  lookup_graph: Array<Lookup_Graph>;
+  /** fetch aggregated fields from the table: "lookup.graph" */
+  lookup_graph_aggregate: Lookup_Graph_Aggregate;
+  /** fetch data from the table: "lookup.graph" using primary key columns */
+  lookup_graph_by_pk?: Maybe<Lookup_Graph>;
   /** fetch data from the table: "lookup.thesaurus" */
   lookup_thesaurus: Array<Lookup_Thesaurus>;
   /** fetch aggregated fields from the table: "lookup.thesaurus" */
   lookup_thesaurus_aggregate: Lookup_Thesaurus_Aggregate;
-  /** fetch data from the table: "lookup.thesaurus" using primary key columns */
-  lookup_thesaurus_by_pk?: Maybe<Lookup_Thesaurus>;
+  /** fetch data from the table: "lookup.thesaurus_old" */
+  lookup_thesaurus_old: Array<Lookup_Thesaurus_Old>;
+  /** fetch aggregated fields from the table: "lookup.thesaurus_old" */
+  lookup_thesaurus_old_aggregate: Lookup_Thesaurus_Old_Aggregate;
+  /** fetch data from the table: "lookup.thesaurus_old" using primary key columns */
+  lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
   /** fetch data from the table: "migrate.original_publishdate" */
   migrate_original_publishdate: Array<Migrate_Original_Publishdate>;
   /** fetch aggregated fields from the table: "migrate.original_publishdate" */
@@ -29394,6 +29959,24 @@ export type Query_RootApp_Assignments_V2_Lom_Links_AggregateArgs = {
 
 export type Query_RootApp_Assignments_V2_Lom_Links_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+export type Query_RootApp_Assignments_V2_OverviewArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Overview_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Overview_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Overview_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Assignments_V2_Overview_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Overview_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Overview_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Overview_Bool_Exp>;
 };
 
 
@@ -30676,6 +31259,31 @@ export type Query_RootLookup_Enum_Search_Bookmark_Types_By_PkArgs = {
 };
 
 
+export type Query_RootLookup_GraphArgs = {
+  distinct_on?: InputMaybe<Array<Lookup_Graph_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Lookup_Graph_Order_By>>;
+  where?: InputMaybe<Lookup_Graph_Bool_Exp>;
+};
+
+
+export type Query_RootLookup_Graph_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Lookup_Graph_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Lookup_Graph_Order_By>>;
+  where?: InputMaybe<Lookup_Graph_Bool_Exp>;
+};
+
+
+export type Query_RootLookup_Graph_By_PkArgs = {
+  object: Scalars['String'];
+  predicate: Scalars['String'];
+  subject: Scalars['String'];
+};
+
+
 export type Query_RootLookup_ThesaurusArgs = {
   distinct_on?: InputMaybe<Array<Lookup_Thesaurus_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -30694,7 +31302,25 @@ export type Query_RootLookup_Thesaurus_AggregateArgs = {
 };
 
 
-export type Query_RootLookup_Thesaurus_By_PkArgs = {
+export type Query_RootLookup_Thesaurus_OldArgs = {
+  distinct_on?: InputMaybe<Array<Lookup_Thesaurus_Old_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Lookup_Thesaurus_Old_Order_By>>;
+  where?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
+};
+
+
+export type Query_RootLookup_Thesaurus_Old_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Lookup_Thesaurus_Old_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Lookup_Thesaurus_Old_Order_By>>;
+  where?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
+};
+
+
+export type Query_RootLookup_Thesaurus_Old_By_PkArgs = {
   id: Scalars['String'];
 };
 
@@ -34633,6 +35259,12 @@ export type Subscription_Root = {
   app_assignments_v2_lom_links_by_pk?: Maybe<App_Assignments_V2_Lom_Links>;
   /** fetch data from the table in a streaming manner: "app.assignments_v2_lom_links" */
   app_assignments_v2_lom_links_stream: Array<App_Assignments_V2_Lom_Links>;
+  /** fetch data from the table: "app.assignments_v2_overview" */
+  app_assignments_v2_overview: Array<App_Assignments_V2_Overview>;
+  /** fetch aggregated fields from the table: "app.assignments_v2_overview" */
+  app_assignments_v2_overview_aggregate: App_Assignments_V2_Overview_Aggregate;
+  /** fetch data from the table in a streaming manner: "app.assignments_v2_overview" */
+  app_assignments_v2_overview_stream: Array<App_Assignments_V2_Overview>;
   /** fetch data from the table in a streaming manner: "app.assignments_v2" */
   app_assignments_v2_stream: Array<App_Assignments_V2>;
   /** fetch data from the table: "app.collection_actualisation_overview" */
@@ -35077,12 +35709,26 @@ export type Subscription_Root = {
   lookup_enum_search_bookmark_types_by_pk?: Maybe<Lookup_Enum_Search_Bookmark_Types>;
   /** fetch data from the table in a streaming manner: "lookup.enum_search_bookmark_types" */
   lookup_enum_search_bookmark_types_stream: Array<Lookup_Enum_Search_Bookmark_Types>;
+  /** fetch data from the table: "lookup.graph" */
+  lookup_graph: Array<Lookup_Graph>;
+  /** fetch aggregated fields from the table: "lookup.graph" */
+  lookup_graph_aggregate: Lookup_Graph_Aggregate;
+  /** fetch data from the table: "lookup.graph" using primary key columns */
+  lookup_graph_by_pk?: Maybe<Lookup_Graph>;
+  /** fetch data from the table in a streaming manner: "lookup.graph" */
+  lookup_graph_stream: Array<Lookup_Graph>;
   /** fetch data from the table: "lookup.thesaurus" */
   lookup_thesaurus: Array<Lookup_Thesaurus>;
   /** fetch aggregated fields from the table: "lookup.thesaurus" */
   lookup_thesaurus_aggregate: Lookup_Thesaurus_Aggregate;
-  /** fetch data from the table: "lookup.thesaurus" using primary key columns */
-  lookup_thesaurus_by_pk?: Maybe<Lookup_Thesaurus>;
+  /** fetch data from the table: "lookup.thesaurus_old" */
+  lookup_thesaurus_old: Array<Lookup_Thesaurus_Old>;
+  /** fetch aggregated fields from the table: "lookup.thesaurus_old" */
+  lookup_thesaurus_old_aggregate: Lookup_Thesaurus_Old_Aggregate;
+  /** fetch data from the table: "lookup.thesaurus_old" using primary key columns */
+  lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
+  /** fetch data from the table in a streaming manner: "lookup.thesaurus_old" */
+  lookup_thesaurus_old_stream: Array<Lookup_Thesaurus_Old>;
   /** fetch data from the table in a streaming manner: "lookup.thesaurus" */
   lookup_thesaurus_stream: Array<Lookup_Thesaurus>;
   /** fetch data from the table: "migrate.original_publishdate" */
@@ -35780,6 +36426,31 @@ export type Subscription_RootApp_Assignments_V2_Lom_Links_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Assignments_V2_Lom_Links_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Assignments_V2_OverviewArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Overview_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Overview_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Overview_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Assignments_V2_Overview_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Overview_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Overview_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Overview_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Assignments_V2_Overview_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<App_Assignments_V2_Overview_Stream_Cursor_Input>>;
+  where?: InputMaybe<App_Assignments_V2_Overview_Bool_Exp>;
 };
 
 
@@ -37475,6 +38146,38 @@ export type Subscription_RootLookup_Enum_Search_Bookmark_Types_StreamArgs = {
 };
 
 
+export type Subscription_RootLookup_GraphArgs = {
+  distinct_on?: InputMaybe<Array<Lookup_Graph_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Lookup_Graph_Order_By>>;
+  where?: InputMaybe<Lookup_Graph_Bool_Exp>;
+};
+
+
+export type Subscription_RootLookup_Graph_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Lookup_Graph_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Lookup_Graph_Order_By>>;
+  where?: InputMaybe<Lookup_Graph_Bool_Exp>;
+};
+
+
+export type Subscription_RootLookup_Graph_By_PkArgs = {
+  object: Scalars['String'];
+  predicate: Scalars['String'];
+  subject: Scalars['String'];
+};
+
+
+export type Subscription_RootLookup_Graph_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Lookup_Graph_Stream_Cursor_Input>>;
+  where?: InputMaybe<Lookup_Graph_Bool_Exp>;
+};
+
+
 export type Subscription_RootLookup_ThesaurusArgs = {
   distinct_on?: InputMaybe<Array<Lookup_Thesaurus_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -37493,8 +38196,33 @@ export type Subscription_RootLookup_Thesaurus_AggregateArgs = {
 };
 
 
-export type Subscription_RootLookup_Thesaurus_By_PkArgs = {
+export type Subscription_RootLookup_Thesaurus_OldArgs = {
+  distinct_on?: InputMaybe<Array<Lookup_Thesaurus_Old_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Lookup_Thesaurus_Old_Order_By>>;
+  where?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
+};
+
+
+export type Subscription_RootLookup_Thesaurus_Old_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Lookup_Thesaurus_Old_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Lookup_Thesaurus_Old_Order_By>>;
+  where?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
+};
+
+
+export type Subscription_RootLookup_Thesaurus_Old_By_PkArgs = {
   id: Scalars['String'];
+};
+
+
+export type Subscription_RootLookup_Thesaurus_Old_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Lookup_Thesaurus_Old_Stream_Cursor_Input>>;
+  where?: InputMaybe<Lookup_Thesaurus_Old_Bool_Exp>;
 };
 
 
@@ -46365,7 +47093,7 @@ export type GetAssignmentByUuidQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentByUuidQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, assignment_type: string, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, blocks: Array<{ __typename?: 'app_assignment_blocks_v2', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, original_title?: string | null, original_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_id: any }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any }> }> };
+export type GetAssignmentByUuidQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, assignment_type: string, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number, mail?: string | null } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, blocks: Array<{ __typename?: 'app_assignment_blocks_v2', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, original_title?: string | null, original_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_id: any }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, usersByuserId?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null }, enum_right_type: { __typename?: 'lookup_enum_right_types', description: string, value: string } }> }> };
 
 export type GetAssignmentIdsQueryVariables = Exact<{
   where: App_Assignments_V2_Bool_Exp;
@@ -48696,6 +49424,7 @@ export const GetAssignmentByUuidDocument = `
         first_name
         last_name
         id
+        mail
       }
       avatar
       organisation {
@@ -48741,7 +49470,21 @@ export const GetAssignmentByUuidDocument = `
       assignment_id
     }
     contributors {
+      profile {
+        avatar
+        user_id
+        usersByuserId {
+          last_name
+          first_name
+          mail
+          full_name
+        }
+      }
       id
+      enum_right_type {
+        description
+        value
+      }
     }
   }
 }
