@@ -31,6 +31,7 @@ type ShareWithColleaguesProps = {
 	onAddNewUser: (info: Partial<ShareUserInfo>) => void;
 	onEditRights: (info: ShareUserInfo, newRights: ShareUserInfoRights) => void;
 	onDeleteUser: (info: ShareUserInfo) => void;
+	hasModalOpen: (open: boolean) => void;
 };
 
 const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
@@ -39,6 +40,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	onAddNewUser,
 	onDeleteUser,
 	onEditRights,
+	hasModalOpen,
 }) => {
 	const { tText } = useTranslation();
 	const currentUser = users.find((u) => u.email === user?.mail) as ShareUserInfo;
@@ -80,23 +82,35 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	const handleEditUserRights = (user: ShareUserInfo) => {
 		setToEditShareUser(user);
 		setIsEditRightsModalOpen(true);
+		hasModalOpen(true);
 	};
 
 	const handleConfirmEditUserRights = (right: ShareUserInfoRights) => {
 		onEditRights(toEditShareUser as ShareUserInfo, right);
-		setToEditShareUser(null);
+		handleOnCloseEditUserRights();
+	};
+
+	const handleOnCloseEditUserRights = () => {
 		setIsEditRightsModalOpen(false);
+		setToEditShareUser(null);
+		hasModalOpen(false);
 	};
 
 	const handleDeleteUser = (user: ShareUserInfo) => {
 		setToDeleteShareUser(user);
 		setIsDeleteUserModalOpen(true);
+		hasModalOpen(true);
 	};
 
 	const handleConfirmDeleteUser = () => {
 		onDeleteUser(toDeleteShareUser as ShareUserInfo);
+		handleOnCloseDeleteUser();
+	};
+
+	const handleOnCloseDeleteUser = () => {
 		setToDeleteShareUser(null);
 		setIsDeleteUserModalOpen(false);
+		hasModalOpen(false);
 	};
 
 	const updateNewShareUserInfo = (value: Record<string, string>) => {
@@ -250,10 +264,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					<EditShareUserRightsModal
 						currentRight={toEditShareUser?.rights as ShareUserInfoRights}
 						isOpen={isEditRightsModalOpen}
-						handleClose={() => {
-							setIsEditRightsModalOpen(false);
-							setToEditShareUser(null);
-						}}
+						handleClose={() => handleOnCloseEditUserRights()}
 						handleConfirm={(right) => handleConfirmEditUserRights(right)}
 					/>
 
@@ -288,10 +299,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							}
 							isOpen={isDeleteUserModalOpen}
 							confirmCallback={handleConfirmDeleteUser}
-							onClose={() => {
-								setIsDeleteUserModalOpen(false);
-								setToDeleteShareUser(null);
-							}}
+							onClose={() => handleOnCloseDeleteUser()}
 						/>
 					)}
 				</>

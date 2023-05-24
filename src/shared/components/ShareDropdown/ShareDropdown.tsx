@@ -42,15 +42,22 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 		],
 		ShareDropdownTabs.PUPILS
 	);
+	const [hasModalOpen, setHasModalOpen] = useState<boolean>(false);
 
 	const handleShareButtonClicked = () => {
 		setIsShareDropdownOpen(!isShareDropdownOpen);
 	};
 
+	const handleOnClose = () => {
+		if (!hasModalOpen) {
+			setIsShareDropdownOpen(false);
+		}
+	};
+
 	return (
 		<Dropdown
 			isOpen={isShareDropdownOpen}
-			onClose={() => setIsShareDropdownOpen(false)}
+			onClose={() => handleOnClose()}
 			className="c-share-dropdown"
 		>
 			<DropdownButton>
@@ -76,6 +83,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 								onAddNewUser={onAddNewUser}
 								onDeleteUser={onDeleteUser}
 								onEditRights={onEditRights}
+								hasModalOpen={(open: boolean) => setHasModalOpen(open)}
 							/>
 						) : (
 							'leerlingen'
