@@ -34,6 +34,7 @@ import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { InteractiveTour, LoadingInfo, ShareThroughEmailModal } from '../../shared/components';
@@ -76,7 +77,6 @@ import { ContentTypeString, Relation } from '../collection.types';
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
-
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
@@ -435,6 +435,21 @@ const CollectionDetail: FunctionComponent<
 				});
 				return;
 			}
+
+			if ((err as CustomError)?.innerException?.statusCode === 403) {
+				// If forbidden to access, show no acces error
+				setCollectionInfo({
+					showNoAccessPopup: false,
+					showLoginPopup: false,
+					permissions: {},
+					collection: null,
+				});
+				setLoadingInfo({
+					state: 'forbidden',
+				});
+				return;
+			}
+
 			console.error(
 				new CustomError(
 					'Failed to check permissions or get collection from the database',
@@ -1307,6 +1322,17 @@ const CollectionDetail: FunctionComponent<
 						'collection/views/collection-detail___je-hebt-geen-rechten-om-deze-collectie-te-bekijken'
 					)}
 					actionButtons={['home']}
+				/>
+			);
+		}
+
+		if (loadingInfo.state === 'forbidden') {
+			return (
+				<ErrorNoAccess
+					title={tHtml('collection/views/collection-detail___je-hebt-geen-toegang')}
+					message={tHtml(
+						'collection/views/collection-detail___je-hebt-geen-toegang-beschrijving'
+					)}
 				/>
 			);
 		}
