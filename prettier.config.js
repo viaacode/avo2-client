@@ -13,5 +13,12 @@ module.exports = {
 				printWidth: 1000,
 			},
 		},
+		{
+			files: ['src/shared/translations/nl.json'],
+			options: {
+				useTabs: false,
+				tabWidth: 2,
+			},
+		},
 	],
 };

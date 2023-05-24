@@ -1,6 +1,6 @@
-@import '../../styles/settings/colors';
+@import "../../styles/settings/colors";
 
-$component: 'c-assignment-block-toggle';
+$component: "c-assignment-block-toggle";
 
 .#{$component} {
 	border-top: 1px solid $color-gray-100;

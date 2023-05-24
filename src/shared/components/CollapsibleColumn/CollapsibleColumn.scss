@@ -1,6 +1,6 @@
-@import '../../../styles/settings/variables';
+@import "../../../styles/settings/variables";
 
-$component: 'c-collapsible-column';
+$component: "c-collapsible-column";
 
 .#{$component} {
 	overflow: hidden;
@@ -16,14 +16,9 @@ $component: 'c-collapsible-column';
 
 		&:before {
 			background: rgb(255, 255, 255);
-			background: linear-gradient(
-				0deg,
-				rgba(255, 255, 255, 1) 0%,
-				rgba(255, 255, 255, 0.667) 50%,
-				rgba(255, 255, 255, 0) 100%
-			);
+			background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.667) 50%, rgba(255, 255, 255, 0) 100%);
 			bottom: 100%;
-			content: '';
+			content: "";
 			display: block;
 			height: 1em;
 			position: absolute;
