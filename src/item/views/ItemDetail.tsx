@@ -422,7 +422,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 		const assignmentId = await AssignmentService.createAssignmentFromFragment(user, source);
 
-		history.push(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentId }));
+		history.push(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 	};
 
 	const onImportToAssignment = async (importToAssignmentId: string): Promise<void> => {

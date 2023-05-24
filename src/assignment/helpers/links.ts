@@ -15,7 +15,7 @@ export function backToOverview(): string {
 }
 
 export function toAssignmentDetail(assignment: Pick<Assignment_v2, 'id'>): string {
-	return buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id });
+	return buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment.id });
 }
 
 export function toAssignmentResponsesOverview(assignment: Pick<Assignment_v2, 'id'>): string {

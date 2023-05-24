@@ -289,7 +289,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		switch (columnId) {
 			case 'title':
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id })}>
+					<Link to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id })}>
 						{truncateTableValue(assignment.title)}
 					</Link>
 				);
