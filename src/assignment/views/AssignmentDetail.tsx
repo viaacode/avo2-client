@@ -11,13 +11,12 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -25,7 +24,6 @@ import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { renderAvatar } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import {
 	isUserAssignmentContributor,
 	isUserAssignmentOwner,
@@ -62,17 +60,6 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
 			} catch (err) {
-				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
-					setAssigmentError({
-						message: tHtml(
-							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
-						),
-						icon: IconName.lock,
-						actionButtons: ['home'],
-					});
-					setAssigmentLoading(false);
-					return;
-				}
 				setAssigmentError({
 					message: tHtml(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
@@ -90,26 +77,6 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
 					icon: IconName.alertTriangle,
-					actionButtons: ['home'],
-				});
-				setAssigmentLoading(false);
-				return;
-			}
-
-			if (
-				!(await PermissionService.hasPermissions(
-					[
-						PermissionName.EDIT_ANY_ASSIGNMENTS,
-						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
-					],
-					user
-				))
-			) {
-				setAssigmentError({
-					message: tHtml(
-						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
-					),
-					icon: IconName.lock,
 					actionButtons: ['home'],
 				});
 				setAssigmentLoading(false);
@@ -139,21 +106,20 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		return (
 			<ButtonToolbar>
 				<Spacer margin="left-small">
-					<Button
-						type="primary"
-						icon={IconName.edit}
-						label={tText('assignment/views/assignment-response-edit___bewerken')}
-						title={tText(
-							'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
-						)}
-						onClick={() =>
-							history.replace(
-								generatePath(APP_PATH.ASSIGNMENT_EDIT.route, {
-									id,
-								})
-							)
-						}
-					/>
+					<Link
+						to={generatePath(APP_PATH.ASSIGNMENT_EDIT.route, {
+							id,
+						})}
+					>
+						<Button
+							type="primary"
+							icon={IconName.edit}
+							label={tText('assignment/views/assignment-response-edit___bewerken')}
+							title={tText(
+								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
+							)}
+						/>
+					</Link>
 				</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
