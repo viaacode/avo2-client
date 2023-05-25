@@ -87,12 +87,9 @@ export function isUserAssignmentContributor(
 	user: UserSchema,
 	assignment: Partial<AssignmentFormState>
 ): boolean {
-	if (assignment.contributors) {
-		return !!assignment.contributors.find(
-			(contributor) =>
-				contributor.profile.user_id === user.profile?.id &&
-				contributor.enum_right_type.value !== 'VIEWER'
-		);
-	}
-	return false;
+	return !!assignment.contributors?.find(
+		(contributor) =>
+			contributor.profile?.id === user.profile?.id &&
+			contributor.enum_right_type.value !== 'VIEWER'
+	);
 }
