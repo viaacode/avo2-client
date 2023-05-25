@@ -10,48 +10,48 @@
 /* Settings: preprocessor variables, colors, global settings
    ========================================================================== */
 
-@import './settings/index';
+@import "./settings/index";
 
 /* Generic: CSS reset, box-sizing, global CSS tweaks
    ========================================================================== */
 
-@import './generic/reset';
-@import './generic/global';
+@import "./generic/reset";
+@import "./generic/global";
 
 /* Elements: element selectors, CMS-generated content
    ========================================================================== */
 
-@import './elements/base';
+@import "./elements/base";
 
 /* Objects: layout-related CSS, grid, SVG icons frame, flexbox classes
    ========================================================================== */
 
-@import './objects/app';
+@import "./objects/app";
 
 /* Components: separately styled components (buttons, form inputs, toolbars...)
    ========================================================================== */
 
-@import './components/index';
+@import "./components/index";
 
 /* Vendor
    3rd party code
    ========================================================================== */
 
-@import '~react-toastify/dist/ReactToastify.minimal.css';
+@import "~react-toastify/dist/ReactToastify.minimal.css";
 // We only include the minimal styling from react-toastify
 // this way we don't have to override all unwanted styles
 // Below we only include the parts we need
-@import '~react-toastify/scss/variables';
-@import '~react-toastify/scss/animations/slide';
+@import "~react-toastify/scss/variables";
+@import "~react-toastify/scss/animations/slide";
 
 /* Utilities: specific helper classes, overrides
    ========================================================================== */
 
-@import './utilities/index';
+@import "./utilities/index";
 
 /* Trumps
    ========================================================================== */
 
-@import './trumps/mq-debug';
+@import "./trumps/mq-debug";
 
-@import './admin-core';
+@import "./admin-core";

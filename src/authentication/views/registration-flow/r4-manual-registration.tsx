@@ -24,7 +24,7 @@ import { RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants';
-import { CustomError } from '../../../shared/helpers';
+import { CustomError, validateEmailAddress } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { fetchEducationLevels } from '../../../shared/services/education-levels-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
@@ -93,7 +93,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		}
 		if (!email) {
 			errors.push(`Email ${requiredError}`);
-		} else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]+$/.test(email)) {
+		} else if (!validateEmailAddress(email)) {
 			errors.push(
 				tText(
 					'authentication/views/registration-flow/r-4-manual-registration___email-is-geen-geldig-email-adres'

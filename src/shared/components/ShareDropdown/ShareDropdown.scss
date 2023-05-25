@@ -1,0 +1,53 @@
+@import '../../../styles/settings/variables';
+
+$border: 1px solid $color-gray-200;
+
+.c-assignment-heading__actions .c-dropdown__content-open {
+	padding-top: 0 !important;
+}
+
+.c-share-dropdown__container {
+	border: $border;
+	border-radius: 0.5rem;
+	background-color: $g-base-background;
+	margin-top: 1rem;
+	width: 54rem;
+	filter: drop-shadow(0 0.25rem 0.25rem rgba($color-navy, 0.25));
+
+	.c-tabs {
+		width: 100%;
+		display: flex;
+
+		.c-tab-item {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 50%;
+			background-color: #d7dee2;
+			border-bottom: $border;
+			padding: 1.5rem 0;
+			margin-bottom: 0;
+			cursor: pointer;
+			box-shadow: none;
+
+			&:first-child {
+				border-right: $border;
+				border-radius: 0.5rem 0 0 0;
+			}
+
+			&:last-child {
+				border-radius: 0 0.5rem 0 0;
+			}
+
+			&__active {
+				color: $color-gray-1000;
+				background-color: $g-base-background;
+				border-bottom: none;
+			}
+		}
+	}
+}
+
+.c-share-dropdown__content {
+	padding: 2rem;
+}

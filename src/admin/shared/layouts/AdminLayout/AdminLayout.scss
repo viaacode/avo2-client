@@ -1,5 +1,5 @@
-@import '../../../../styles/settings/colors';
-@import '../../../../styles/settings/variables';
+@import "../../../../styles/settings/colors";
+@import "../../../../styles/settings/variables";
 
 .l-admin {
 	display: flex;
@@ -76,7 +76,7 @@
 		}
 	}
 
-	[class^='TranslationsOverviewPage_c-translations-overview'] .c-table td:nth-child(2) {
+	[class^="TranslationsOverviewPage_c-translations-overview"] .c-table td:nth-child(2) {
 		border-left: 1px solid lightgray;
 		padding: 3rem;
 	}

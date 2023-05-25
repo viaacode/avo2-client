@@ -9,16 +9,16 @@ import {
 import classNames from 'classnames';
 import React, { FunctionComponent, useMemo, useState } from 'react';
 
+import { ShareDropdown } from '../../shared/components';
+import { ShareUserInfo } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { mockShareUsers } from '../../shared/mocks/share-user-mock';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
 	DuplicateAssignmentButtonProps,
 } from './DuplicateAssignmentButton';
-import {
-	ShareAssignmentWithPupil,
-	ShareAssignmentWithPupilProps,
-} from './ShareAssignmentWithPupil';
+import { ShareAssignmentWithPupilProps } from './ShareAssignmentWithPupil';
 
 interface AssignmentActionsProps {
 	preview?: Partial<ButtonProps>;
@@ -31,7 +31,6 @@ interface AssignmentActionsProps {
 const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	preview,
 	overflow,
-	share,
 	duplicate,
 	remove,
 }) => {
@@ -71,7 +70,12 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				config?.button?.className
 			)}
 		>
-			<ShareAssignmentWithPupil {...share} {...config} />
+			<ShareDropdown
+				users={mockShareUsers}
+				onAddNewUser={(value: Partial<ShareUserInfo>) => console.log(value)}
+				onDeleteUser={(value) => console.log(value)}
+				onEditRights={(user, newRights) => console.log(user, newRights)}
+			/>
 		</div>
 	);
 

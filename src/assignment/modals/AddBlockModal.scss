@@ -1,6 +1,6 @@
-@import '../../styles/settings/variables';
+@import "../../styles/settings/variables";
 
-$component: 'c-add-block';
+$component: "c-add-block";
 
 .c-modal .#{$component} {
 	&__list {

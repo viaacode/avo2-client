@@ -1,4 +1,4 @@
-@import './colors';
+@import "./colors";
 
 /* ==========================================================================
    Variables
@@ -9,15 +9,12 @@
 /* Typography
    ========================================================================== */
 
-$g-base-font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
-	Arial, sans-serif;
-$g-code-font-family: Consolas, 'Lucida Console', 'Lucida Sans Typewriter', 'DejaVu Sans Mono',
-	'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', Monaco, 'Courier New', Courier,
-	monospace;
+$g-base-font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+$g-code-font-family: Consolas, "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
 $g-base-font-size: 1.5rem;
 $g-base-line-height: 1.5;
 $g-headings-font-weight: 500;
-$g-headings-font-family: 'Avenir LT Std', 'Avenir Next', Avenir, Montserrat, sans-serif;
+$g-headings-font-family: "Avenir LT Std", "Avenir Next", Avenir, Montserrat, sans-serif;
 
 /* Colors
    ========================================================================== */

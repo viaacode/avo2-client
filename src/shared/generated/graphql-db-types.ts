@@ -50274,7 +50274,7 @@ export const GetAssignmentWithResponseDocument = `
         }
       }
     }
-    labels(order_by: {assignment_label: {label: asc}}) {
+    assignment_labels(order_by: {assignment_label: {label: asc}}) {
       id
       assignment_label {
         color_enum_value
@@ -50463,7 +50463,7 @@ export const GetAssignmentsByOwnerDocument = `
     responses {
       id
     }
-    labels(order_by: {assignment_label: {label: asc}}) {
+    assignment_labels(order_by: {assignment_label: {label: asc}}) {
       id
       assignment_label {
         color_enum_value
@@ -50545,8 +50545,7 @@ export const GetAssignmentsByResponseOwnerIdDocument = `
     }
     responses {
       id
-    }
-    labels(order_by: {assignment_label: {label: asc}}) {
+			assignment_labels(order_by: {assignment_label: {label: asc}}) {
       id
       assignment_label {
         color_enum_value
