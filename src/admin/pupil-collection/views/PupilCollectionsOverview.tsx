@@ -313,7 +313,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 
 			case 'assignmentTitle':
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment_id })}>
+					<Link to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment_id })}>
 						{truncateTableValue(assignment?.title || '-')}
 					</Link>
 				);

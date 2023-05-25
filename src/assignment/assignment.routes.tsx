@@ -4,6 +4,7 @@ import SecuredRoute from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
 import AssignmentCreate from './views/AssignmentCreate';
+import AssignmentDetail from './views/AssignmentDetail';
 import AssignmentEdit from './views/AssignmentEdit';
 import AssignmentPupilCollectionDetail from './views/AssignmentPupilCollectionDetail';
 import AssignmentResponseAdminEdit from './views/AssignmentResponseEdit/AssignmentResponseAdminEdit';
@@ -16,6 +17,12 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 		exact={false}
 		path={APP_PATH.ASSIGNMENT_CREATE.route}
 		key={APP_PATH.ASSIGNMENT_CREATE.route}
+	/>,
+	<SecuredRoute
+		component={AssignmentDetail}
+		exact
+		path={APP_PATH.ASSIGNMENT_DETAIL.route}
+		key={APP_PATH.ASSIGNMENT_DETAIL.route}
 	/>,
 	<SecuredRoute
 		component={AssignmentEdit}
