@@ -1,0 +1,26 @@
+@import '../../styles/settings/variables';
+.c-error-no-access {
+	.o-container {
+		display: flex;
+		justify-content: center;
+		max-width: 50rem;
+	}
+
+	.c-blankslate {
+		.c-h4 {
+			font-size: x-large;
+			font-family: $g-headings-font-family;
+		}
+	}
+
+	.c-ordered-list-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-top: $g-spacer-unit * 2 !important;
+
+		&__button {
+			margin: $g-spacer-unit * 4 0 !important ;
+		}
+	}
+}

@@ -1,6 +1,6 @@
-@use 'sass:math';
-@import '../../settings/colors';
-@import '../../settings/variables';
+@use "sass:math";
+@import "../../settings/colors";
+@import "../../settings/variables";
 
 /* ==========================================================================
    Component: Buttons
@@ -123,8 +123,7 @@ a.c-button {
 
 .c-button--small {
 	font-size: $c-button-font-size-small;
-	padding: math.div(($c-button-height-small - $c-button-line-height-small), 2)
-		$c-button-padding-horizontal-small;
+	padding: math.div(($c-button-height-small - $c-button-line-height-small), 2) $c-button-padding-horizontal-small;
 
 	.c-button__label {
 		line-height: $c-button-line-height-small;

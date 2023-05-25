@@ -65,7 +65,7 @@ export class BookmarksViewsPlaysService {
 		action: EventAction,
 		contentType: EventContentType,
 		contentUuid: string,
-		user?: Avo.User.User,
+		user?: Avo.User.User | Avo.User.CommonUser,
 		silent = true
 	): Promise<void> {
 		try {
@@ -168,7 +168,7 @@ export class BookmarksViewsPlaysService {
 	 */
 	public static async toggleBookmark(
 		contentId: string,
-		user: Avo.User.User,
+		user: Avo.User.User | Avo.User.CommonUser,
 		type: EventContentType,
 		isBookmarked: boolean
 	): Promise<void> {
@@ -309,18 +309,15 @@ export class BookmarksViewsPlaysService {
 		queryType: QueryType,
 		contentType: EventContentType,
 		contentUuid: string,
-		user: Avo.User.User | undefined
+		user: Avo.User.User | Avo.User.CommonUser | undefined
 	) {
 		// bundle is handled the same way as a collection
 		const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
 
 		const eventQueries = GET_EVENT_QUERIES();
 		const query = get(eventQueries, [action, contentTypeSimplified, queryType]);
-		const getVariablesFunc = get(
-			GET_EVENT_QUERIES(),
-			[action, contentTypeSimplified, 'variables'],
-			noop
-		);
+		const getVariablesFunc =
+			GET_EVENT_QUERIES()?.[action]?.[contentTypeSimplified]?.variables ?? noop;
 		const variables = getVariablesFunc(contentUuid, user);
 		if (!query || !variables) {
 			throw new CustomError('Failed to find query/variables in query lookup table');
@@ -358,7 +355,7 @@ export class BookmarksViewsPlaysService {
 		action: EventAction,
 		contentType: EventContentType,
 		contentUuid: string,
-		user?: Avo.User.User,
+		user?: Avo.User.User | Avo.User.CommonUser,
 		silent = true
 	) {
 		try {

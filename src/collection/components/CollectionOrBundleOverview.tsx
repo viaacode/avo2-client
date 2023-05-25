@@ -342,7 +342,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				withDescription
 			);
 
-			history.push(buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignmentId }));
+			history.push(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 		}
 	};
 

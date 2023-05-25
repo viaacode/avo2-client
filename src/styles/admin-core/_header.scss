@@ -1,4 +1,4 @@
-$base: 'c-admin-core';
+$base: "c-admin-core";
 
 .#{$base} {
 	&.c-admin {
@@ -22,7 +22,7 @@ $base: 'c-admin-core';
 			&::before {
 				background-color: $color-gray-50;
 				border-bottom: 0.1rem solid $color-gray-100;
-				content: '';
+				content: "";
 				display: block;
 				inset: 0 0 0 0;
 				position: absolute;

@@ -78,14 +78,27 @@ query getAssignmentByUuid($id: uuid!) {
 			assignment_id
 			rights
 			profile {
-				id
 				avatar
+				user_id
 				usersByuserId {
 					last_name
 					first_name
 					mail
 					full_name
 				}
+				id
+			}
+			id
+			enum_right_type {
+				description
+				value
+			}
+		}
+		loms {
+			thesaurus {
+				id
+				label
+				scheme
 			}
 		}
 	}

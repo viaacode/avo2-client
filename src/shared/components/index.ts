@@ -12,6 +12,7 @@ export { default as IconBar } from './IconBar/IconBar';
 export { default as InputModal } from './InputModal/InputModal';
 export { default as InteractiveTour } from './InteractiveTour/InteractiveTour';
 export { default as Navigation } from './Navigation/Navigation';
+export { default as OrderedList } from './OrderedList/OrderedList';
 export { default as ResizablePanels } from './ResizablePanels/ResizablePanels';
 export { default as ShareThroughEmailModal } from './ShareThroughEmailModal/ShareThroughEmailModal';
 export { default as ShortDescriptionField } from './ShortDescriptionField/ShortDescriptionField';
