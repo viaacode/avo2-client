@@ -96,7 +96,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 								)}
 							</>
 						) : (
-							<ShareWithPupil {...share} />
+							<ShareWithPupil {...(share as ShareWithPupilsProps)} />
 						)}
 					</div>
 				</div>

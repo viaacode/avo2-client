@@ -63,6 +63,9 @@ import {
 	GetAssignmentWithResponseDocument,
 	GetAssignmentWithResponseQuery,
 	GetAssignmentWithResponseQueryVariables,
+	GetContributorsByAssignmentIdDocument,
+	GetContributorsByAssignmentIdQuery,
+	GetContributorsByAssignmentIdQueryVariables,
 	GetMaxPositionAssignmentBlocksDocument,
 	GetMaxPositionAssignmentBlocksQuery,
 	GetMaxPositionAssignmentBlocksQueryVariables,
@@ -1531,6 +1534,38 @@ export class AssignmentService {
 		}
 	}
 
+	static async fetchContributorsByAssignmentId(assignmentId: string) {
+		try {
+			const variables: GetContributorsByAssignmentIdQueryVariables = { id: assignmentId };
+			const response = await dataService.query<
+				GetContributorsByAssignmentIdQuery,
+				GetContributorsByAssignmentIdQueryVariables
+			>({
+				query: GetContributorsByAssignmentIdDocument,
+				variables,
+			});
+
+			const contributors = response.app_assignments_v2_contributors;
+
+			if (!contributors) {
+				throw new CustomError('Response does not contain contributors', null, {
+					response,
+				});
+			}
+
+			return contributors;
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get contributors by assignment id from database',
+				err,
+				{
+					assignmentId,
+					query: 'GET_CONTRIBUTORS_BY_ASSIGNMENT_ID',
+				}
+			);
+		}
+	}
+
 	static async addShareAssignmentUser(assignmentId: string, user: Partial<ShareUserInfo>) {
 		try {
 			return await fetchWithLogoutJson(
@@ -1571,7 +1606,9 @@ export class AssignmentService {
 	static async deleteShareAssignmentUser(assignmentId: string, contributorId: string) {
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/assignments/${assignmentId}?contributorId=${contributorId}`,
+				`${getEnv(
+					'PROXY_URL'
+				)}/assignments/${assignmentId}/share/delete-contributor?contributorId=${contributorId}`,
 				{ method: 'DELETE' }
 			);
 		} catch (err) {

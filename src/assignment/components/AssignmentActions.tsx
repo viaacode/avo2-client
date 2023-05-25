@@ -6,19 +6,20 @@ import {
 	DropdownContent,
 	IconName,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
-import { isNil } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
 import {
 	ShareRightsType,
 	ShareUserInfo,
-	ShareUserInfoRights,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
+import { Contributor } from '../../shared/types/contributor';
 import { AssignmentService } from '../assignment.service';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
@@ -43,55 +44,38 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
-	const [contributors, setContributors] = useState<ShareUserInfo[]>();
+	const [contributors, setContributors] = useState<Contributor[]>();
+
+	const fetchContributors = useCallback(async () => {
+		if (!share?.assignment?.id) {
+			return;
+		}
+		const response = await AssignmentService.fetchContributorsByAssignmentId(
+			share?.assignment?.id
+		);
+
+		setContributors(response as Contributor[]);
+	}, [share]);
 
 	useEffect(() => {
-		if (share) {
-			if (!isNil(share.assignment)) {
-				console.log(share.assignment);
-				const defaultContributors: ShareUserInfo[] = [
-					{
-						email: share.assignment.profile.user?.mail as string,
-						rights: ShareUserInfoRights.OWNER,
-						firstName: share.assignment.profile.user?.first_name as string | undefined,
-						lastName: share.assignment.profile.user?.last_name as string | undefined,
-						profileImage: share.assignment.profile.avatar as string | undefined,
-						profileId: share.assignment.profile.id,
-					},
-				];
-
-				const mappedContributors = share.assignment.contributors.map((contributor) => {
-					return {
-						email: contributor.profile.usersByuserId?.mail,
-						rights: ShareUserInfoRights[
-							contributor.enum_right_type.value as keyof typeof ShareUserInfoRights
-						],
-						firstName: contributor.profile.usersByuserId?.first_name,
-						lastName: contributor.profile.usersByuserId?.last_name,
-						profileImage: contributor.profile.avatar,
-						profileId: contributor.profile.user_id,
-						contributorId: contributor.id,
-					} as ShareUserInfo;
-				});
-
-				const mergedContributors = defaultContributors.concat(mappedContributors);
-
-				setContributors(mergedContributors);
-			}
-		}
+		fetchContributors();
 	}, [share]);
 
 	const onEditUser = async (user: ShareUserInfo, newRights: ShareRightsType) => {
 		try {
-			await AssignmentService.editShareAssignmentUserRights(
-				share?.assignment?.id,
-				user.contributorId as string,
-				newRights
-			);
+			if (share) {
+				await AssignmentService.editShareAssignmentUserRights(
+					share.assignment?.id,
+					user.profileId as string,
+					newRights
+				);
 
-			ToastService.success('Rol van gebruiker is aangepast');
+				await fetchContributors();
+
+				ToastService.success('Rol van de gebruiker is aangepast.');
+			}
 		} catch (err) {
-			ToastService.danger('Er liep iets fout');
+			ToastService.danger('Er liep iets fout met het aanpassen van de collega rol.');
 		}
 	};
 
@@ -99,9 +83,9 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		try {
 			await AssignmentService.addShareAssignmentUser(share?.assignment?.id, info);
 
-			ToastService.success('Aanvraag tot samenwerken is verstuurd');
+			ToastService.success('Uitnodiging tot samenwerken is verstuurd');
 		} catch (err) {
-			ToastService.danger('Er liep iets fout');
+			ToastService.danger('Er liep iets fout met het uitnodigen van een collega');
 		}
 	};
 
@@ -109,12 +93,12 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		try {
 			await AssignmentService.deleteShareAssignmentUser(
 				share?.assignment?.id,
-				info.contributorId as string
+				info.profileId as string
 			);
 
 			ToastService.success('Gebruiker is verwijderd van de opdracht');
 		} catch (err) {
-			ToastService.danger('Er liep iets fout');
+			ToastService.danger('Er liep iets fout met het verwijderen van een collega');
 		}
 	};
 
@@ -152,10 +136,15 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			)}
 		>
 			<ShareDropdown
-				users={contributors}
-				onDeleteUser={(info) => onDeleteUser(info)}
-				onEditRights={(user, newRights) => onEditUser(user, newRights)}
-				onAddNewUser={(info) => onAddNewUser(info)}
+				users={transformContributorsToSimpleContributors(
+					share?.assignment?.owner as Avo.User.User,
+					contributors as Contributor[]
+				)}
+				onDeleteUser={(info: ShareUserInfo) => onDeleteUser(info)}
+				onEditRights={(user: ShareUserInfo, newRights: ShareRightsType) =>
+					onEditUser(user, newRights)
+				}
+				onAddNewUser={(info: Partial<ShareUserInfo>) => onAddNewUser(info)}
 				{...config}
 				share={share}
 			/>

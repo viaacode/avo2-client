@@ -1,0 +1,19 @@
+query getContributorsByAssignmentId($id: uuid!) {
+	app_assignments_v2_contributors(where: { assignment_id: { _eq: $id } }) {
+		assignment_id
+		invite_email
+		invite_token
+		rights
+		profile_id
+		id
+		profile {
+			avatar
+			usersByuserId {
+				first_name
+				full_name
+				last_name
+				mail
+			}
+		}
+	}
+}
