@@ -1,14 +1,15 @@
-export enum ShareUserInfoRights {
+export enum ContributorInfoRights {
 	CONTRIBUTOR = 'BIJDRAGER',
 	VIEWER = 'KIJKER',
 	OWNER = 'EIGENAAR',
 }
 
-export type ShareRightsType = keyof typeof ShareUserInfoRights;
+export type ShareRightsType = keyof typeof ContributorInfoRights;
 
-export interface ShareUserInfo {
-	email: string;
-	rights: ShareUserInfoRights | ShareRightsType;
+export interface ContributorInfo {
+	email?: string;
+	inviteEmail?: string;
+	rights: ContributorInfoRights | ShareRightsType;
 	firstName?: string;
 	lastName?: string;
 	profileImage?: string;
@@ -16,7 +17,7 @@ export interface ShareUserInfo {
 	contributorId?: string;
 }
 
-export interface DeleteShareUserModalContent {
+export interface DeleteContributorModalContent {
 	title: string;
 	body: string;
 	confirm: string;

@@ -5,17 +5,17 @@ import React, { FC, useState } from 'react';
 import { useTabs } from '../../hooks';
 import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
-import { ShareRightsType, ShareUserInfo } from '../ShareWithColleagues/ShareWithColleagues.types';
+import { ContributorInfo, ShareRightsType } from '../ShareWithColleagues/ShareWithColleagues.types';
 import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './ShareDropdown.scss';
 import { ShareDropdownTabs } from './ShareDropdown.types';
 
 export type ShareDropdownProps = {
-	users?: ShareUserInfo[];
-	onAddNewUser: (info: Partial<ShareUserInfo>) => void;
-	onEditRights: (info: ShareUserInfo, newRights: ShareRightsType) => void;
-	onDeleteUser: (info: ShareUserInfo) => void;
+	users?: ContributorInfo[];
+	onAddNewUser: (info: Partial<ContributorInfo>) => void;
+	onEditRights: (info: ContributorInfo, newRights: ShareRightsType) => void;
+	onDeleteUser: (info: ContributorInfo) => void;
 	button?: Partial<ButtonProps>;
 	dropdown?: Partial<DropdownProps>;
 	share?: ShareWithPupilsProps;
@@ -74,6 +74,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					)}
 					onClick={handleShareButtonClicked}
 					disabled={false}
+					icon={IconName.userGroup}
 					{...button}
 				/>
 			</DropdownButton>
@@ -87,9 +88,9 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 							<>
 								{users && (
 									<ShareWithColleagues
-										users={users}
-										onAddNewUser={onAddNewUser}
-										onDeleteUser={onDeleteUser}
+										contributors={users}
+										onAddNewContributor={onAddNewUser}
+										onDeleteContributor={onDeleteUser}
 										onEditRights={onEditRights}
 										hasModalOpen={(open: boolean) => setHasModalOpen(open)}
 									/>

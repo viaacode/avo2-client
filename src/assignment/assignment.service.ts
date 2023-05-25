@@ -9,8 +9,8 @@ import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
+	ContributorInfo,
 	ShareRightsType,
-	ShareUserInfo,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	App_Assignments_V2_Insert_Input,
@@ -1566,7 +1566,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async addShareAssignmentUser(assignmentId: string, user: Partial<ShareUserInfo>) {
+	static async addShareAssignmentUser(assignmentId: string, user: Partial<ContributorInfo>) {
 		try {
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor?email=${

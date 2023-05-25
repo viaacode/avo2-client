@@ -4,6 +4,8 @@ export interface Contributor {
 	id: string;
 	profile_id: string;
 	assignment_id?: string;
+	invite_email?: string;
+	invite_token?: string;
 	collection_id?: string;
 	rights: ShareRightsType;
 	profile: {

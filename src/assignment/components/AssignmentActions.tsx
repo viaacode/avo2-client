@@ -10,12 +10,13 @@ import { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
+import { ShareDropdown } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
 import {
+	ContributorInfo,
 	ShareRightsType,
-	ShareUserInfo,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
@@ -61,7 +62,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		fetchContributors();
 	}, [share]);
 
-	const onEditUser = async (user: ShareUserInfo, newRights: ShareRightsType) => {
+	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
 		try {
 			if (share) {
 				await AssignmentService.editShareAssignmentUserRights(
@@ -79,9 +80,11 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		}
 	};
 
-	const onAddNewUser = async (info: Partial<ShareUserInfo>) => {
+	const onAddNewUser = async (info: Partial<ContributorInfo>) => {
 		try {
 			await AssignmentService.addShareAssignmentUser(share?.assignment?.id, info);
+
+			await fetchContributors();
 
 			ToastService.success('Uitnodiging tot samenwerken is verstuurd');
 		} catch (err) {
@@ -89,12 +92,14 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		}
 	};
 
-	const onDeleteUser = async (info: ShareUserInfo) => {
+	const onDeleteUser = async (info: ContributorInfo) => {
 		try {
 			await AssignmentService.deleteShareAssignmentUser(
 				share?.assignment?.id,
 				info.profileId as string
 			);
+
+			await fetchContributors();
 
 			ToastService.success('Gebruiker is verwijderd van de opdracht');
 		} catch (err) {
@@ -140,11 +145,11 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 					share?.assignment?.owner as Avo.User.User,
 					contributors as Contributor[]
 				)}
-				onDeleteUser={(info: ShareUserInfo) => onDeleteUser(info)}
-				onEditRights={(user: ShareUserInfo, newRights: ShareRightsType) =>
+				onDeleteUser={(info: ContributorInfo) => onDeleteUser(info)}
+				onEditRights={(user: ContributorInfo, newRights: ShareRightsType) =>
 					onEditUser(user, newRights)
 				}
-				onAddNewUser={(info: Partial<ShareUserInfo>) => onAddNewUser(info)}
+				onAddNewUser={(info: Partial<ContributorInfo>) => onAddNewUser(info)}
 				{...config}
 				share={share}
 			/>
