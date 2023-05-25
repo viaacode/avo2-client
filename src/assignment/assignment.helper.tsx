@@ -140,40 +140,38 @@ export const renderLoms = (lomValues: LomEntry[], title: string) => {
 	);
 };
 
-export const groupLoms = (loms: LomEntry[]) => {
-	return groupBy(loms, (lom) => lom.scheme);
+export const groupLoms = (
+	loms: { thesaurus: LomEntry }[]
+): Partial<Record<LomSchemeType, LomEntry[]>> => {
+	return groupBy(
+		(loms || []).map((lom) => lom.thesaurus),
+		(lom) => lom.scheme
+	);
+};
+
+export const renderLomFieldsByGroup = (loms: { thesaurus: LomEntry }[]) => {
+	const groupedLoms = groupLoms(loms);
+
+	const educationLevels: LomEntry[] = groupedLoms[LomSchemeType.structure] || [];
+	const subjects: LomEntry[] = groupedLoms[LomSchemeType.subject] || [];
+	const themes: LomEntry[] = groupedLoms[LomSchemeType.theme] || [];
+
+	return (
+		<Column size="3-3">
+			{educationLevels &&
+				renderLoms(educationLevels, tText('assignment/views/assignment-detail___niveaus'))}
+			{subjects && renderLoms(subjects, tText('assignment/views/assignment-detail___vakken'))}
+			{themes && renderLoms(themes, tText('assignment/views/assignment-detail___themas'))}
+		</Column>
+	);
 };
 
 export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): ReactNode => {
 	const { created_at, updated_at, loms } = assignment;
 
-	if (!loms || loms.length === 0) {
-		return null;
-	}
-
-	const groupedLoms = groupLoms(loms.map((lom) => lom.thesaurus));
-	const educationLevels: LomEntry[] = groupedLoms[LomSchemeType.structure] || [];
-	const subjects: LomEntry[] = groupedLoms[LomSchemeType.subject] || [];
-	const themes: LomEntry[] = groupedLoms[LomSchemeType.theme] || [];
-
-	const addMetaDataColumn =
-		educationLevels.length > 0 || subjects.length > 0 || themes.length > 0;
-
 	return (
 		<>
-			{addMetaDataColumn && (
-				<Column size="3-3">
-					{educationLevels &&
-						renderLoms(
-							educationLevels,
-							tText('assignment/views/assignment-detail___niveaus')
-						)}
-					{subjects &&
-						renderLoms(subjects, tText('assignment/views/assignment-detail___vakken'))}
-					{themes &&
-						renderLoms(themes, tText('assignment/views/assignment-detail___themas'))}
-				</Column>
-			)}
+			{loms && renderLomFieldsByGroup(loms)}
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
