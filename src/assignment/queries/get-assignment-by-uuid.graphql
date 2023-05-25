@@ -75,6 +75,7 @@ query getAssignmentByUuid($id: uuid!) {
 					mail
 					full_name
 				}
+				id
 			}
 			id
 			enum_right_type {

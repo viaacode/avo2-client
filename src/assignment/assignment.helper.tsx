@@ -1,6 +1,7 @@
 import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import { UserSchema } from '@viaa/avo2-types/types/user';
+import { groupBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -93,20 +94,26 @@ export function isUserAssignmentContributor(
 	if (assignment.contributors) {
 		return !!assignment.contributors.find(
 			(contributor) =>
-				contributor.profile.user_id === user.profile?.id &&
+				contributor.profile?.id === user.profile?.id &&
 				contributor.enum_right_type.value !== 'VIEWER'
 		);
 	}
 	return false;
 }
 
-interface Thesaurus {
+export enum LomSchemeType {
+	subject = 'https://w3id.org/onderwijs-vlaanderen/id/vak',
+	structure = 'https://w3id.org/onderwijs-vlaanderen/id/structuur',
+	theme = 'https://data.hetarchief.be/id/onderwijs/thema',
+}
+
+interface LomEntry {
 	id: string;
 	label: string;
 	scheme?: string | null | undefined;
 }
 
-export const renderLoms = (lomValues: Thesaurus[], title: string) => {
+export const renderLoms = (lomValues: LomEntry[], title: string) => {
 	return (
 		<Spacer margin="top-large">
 			<p className="u-text-bold">{title}</p>
@@ -133,33 +140,38 @@ export const renderLoms = (lomValues: Thesaurus[], title: string) => {
 	);
 };
 
+export const groupLoms = (loms: LomEntry[]) => {
+	return groupBy(loms, (lom) => lom.scheme);
+};
+
 export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): ReactNode => {
 	const { created_at, updated_at, loms } = assignment;
-	const levels: Thesaurus[] = [];
-	const subjects: Thesaurus[] = [];
 
-	// extract levels and subjects
-	if (loms && loms.length > 0) {
-		loms.filter((lom) => {
-			if (lom.thesaurus.scheme && lom.thesaurus.scheme.endsWith('structuur')) {
-				levels.push(lom.thesaurus);
-			}
-			if (lom.thesaurus.scheme && lom.thesaurus.scheme.endsWith('vak')) {
-				subjects.push(lom.thesaurus);
-			}
-		});
+	if (!loms || loms.length === 0) {
+		return null;
 	}
 
-	const addMetaDataColumn = levels.length > 0 || subjects.length > 0;
+	const groupedLoms = groupLoms(loms.map((lom) => lom.thesaurus));
+	const educationLevels: LomEntry[] = groupedLoms[LomSchemeType.structure] || [];
+	const subjects: LomEntry[] = groupedLoms[LomSchemeType.subject] || [];
+	const themes: LomEntry[] = groupedLoms[LomSchemeType.theme] || [];
+
+	const addMetaDataColumn =
+		educationLevels.length > 0 || subjects.length > 0 || themes.length > 0;
 
 	return (
 		<>
 			{addMetaDataColumn && (
 				<Column size="3-3">
-					{levels &&
-						renderLoms(levels, tText('assignment/views/assignment-detail___niveaus'))}
+					{educationLevels &&
+						renderLoms(
+							educationLevels,
+							tText('assignment/views/assignment-detail___niveaus')
+						)}
 					{subjects &&
 						renderLoms(subjects, tText('assignment/views/assignment-detail___vakken'))}
+					{themes &&
+						renderLoms(themes, tText('assignment/views/assignment-detail___themas'))}
 				</Column>
 			)}
 			<Column size="3-3">
