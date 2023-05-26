@@ -172,7 +172,9 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									<p className="c-colleague-info-row__info__email">
 										{!isNil(contributor.profileId)
 											? truncate(contributor.email, { length: 32 })
-											: `${contributor.inviteEmail} (${tText('pending')})`}
+											: `${contributor.inviteEmail} (${tText(
+													'shared/components/share-with-colleagues/share-with-colleagues___pending'
+											  )})`}
 									</p>
 								</div>
 
