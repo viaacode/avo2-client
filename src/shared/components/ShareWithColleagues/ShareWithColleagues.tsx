@@ -62,6 +62,10 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState<boolean>(false);
 	const [toDeleteContributor, setToDeleteContributor] = useState<ContributorInfo | null>(null);
 
+	console.log(contributors);
+	console.log(user);
+	console.log(currentUser);
+
 	const handleRightsButtonClicked = () => {
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
 	};
@@ -135,6 +139,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			return (
 				<ul className="c-colleagues-info-list">
 					{sortContributors(contributors).map((contributor, index) => {
+						console.log(contributor.rights);
 						const isOwner = currentUser.rights === ContributorInfoRights.OWNER;
 						const isCurrentUser = currentUser.email === contributor.email;
 						const canEdit = isOwner && !isCurrentUser && contributor.profileId;

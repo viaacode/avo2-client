@@ -65,7 +65,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
 		try {
 			if (share) {
-				await AssignmentService.editShareAssignmentUserRights(
+				await AssignmentService.editContributorRights(
 					share.assignment?.id,
 					user.profileId as string,
 					newRights
@@ -82,7 +82,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const onAddNewUser = async (info: Partial<ContributorInfo>) => {
 		try {
-			await AssignmentService.addShareAssignmentUser(share?.assignment?.id, info);
+			await AssignmentService.addContributor(share?.assignment?.id, info);
 
 			await fetchContributors();
 
@@ -94,7 +94,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const onDeleteUser = async (info: ContributorInfo) => {
 		try {
-			await AssignmentService.deleteShareAssignmentUser(
+			await AssignmentService.deleteContributor(
 				share?.assignment?.id,
 				info.profileId as string
 			);

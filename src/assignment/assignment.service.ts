@@ -1566,7 +1566,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async addShareAssignmentUser(assignmentId: string, user: Partial<ContributorInfo>) {
+	static async addContributor(assignmentId: string, user: Partial<ContributorInfo>) {
 		try {
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor?email=${
@@ -1575,14 +1575,14 @@ export class AssignmentService {
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
-			throw new CustomError('Failed to add share assignment user', err, {
+			throw new CustomError('Failed to add assignment contributor', err, {
 				assignmentId,
 				user,
 			});
 		}
 	}
 
-	static async editShareAssignmentUserRights(
+	static async editContributorRights(
 		assignmentId: string,
 		contributorId: string,
 		rights: ShareRightsType
@@ -1595,7 +1595,7 @@ export class AssignmentService {
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
-			throw new CustomError('Failed to add share assignment user', err, {
+			throw new CustomError('Failed to edit assignment contributor rights', err, {
 				assignmentId,
 				rights,
 				contributorId,
@@ -1603,7 +1603,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteShareAssignmentUser(assignmentId: string, contributorId: string) {
+	static async deleteContributor(assignmentId: string, contributorId: string) {
 		try {
 			return await fetchWithLogoutJson(
 				`${getEnv(
@@ -1612,7 +1612,7 @@ export class AssignmentService {
 				{ method: 'DELETE' }
 			);
 		} catch (err) {
-			throw new CustomError('Failed to add share assignment user', err, {
+			throw new CustomError('Failed to remove assignment contributor', err, {
 				assignmentId,
 				contributorId,
 			});

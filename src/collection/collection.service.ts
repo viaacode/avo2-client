@@ -8,6 +8,10 @@ import queryString from 'query-string';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
+	ContributorInfo,
+	ShareRightsType,
+} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import {
 	App_Collection_Marcom_Log_Insert_Input,
 	DeleteCollectionFragmentByIdDocument,
 	DeleteCollectionFragmentByIdMutation,
@@ -45,6 +49,9 @@ import {
 	GetCollectionTitlesByOwnerDocument,
 	GetCollectionTitlesByOwnerQuery,
 	GetCollectionTitlesByOwnerQueryVariables,
+	GetContributorsByCollectionUuidDocument,
+	GetContributorsByCollectionUuidQuery,
+	GetContributorsByCollectionUuidQueryVariables,
 	GetOrganisationContentDocument,
 	GetOrganisationContentQuery,
 	GetOrganisationContentQueryVariables,
@@ -1511,6 +1518,91 @@ export class CollectionService {
 			throw new CustomError('Failed to update marcom note in the database', err, {
 				variables,
 				query: 'UPDATE_MARCOM_NOTE',
+			});
+		}
+	}
+
+	static async fetchContributorsByCollectionId(assignmentId: string) {
+		try {
+			const variables: GetContributorsByCollectionUuidQueryVariables = { id: assignmentId };
+			const response = await dataService.query<
+				GetContributorsByCollectionUuidQuery,
+				GetContributorsByCollectionUuidQueryVariables
+			>({
+				query: GetContributorsByCollectionUuidDocument,
+				variables,
+			});
+
+			const contributors = response.app_collections_contributors;
+
+			if (!contributors) {
+				throw new CustomError('Response does not contain contributors', null, {
+					response,
+				});
+			}
+
+			return contributors;
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get contributors by collection id from database',
+				err,
+				{
+					assignmentId,
+					query: 'GET_CONTRIBUTORS_BY_COLLECTION_ID',
+				}
+			);
+		}
+	}
+
+	static async addContributor(collectionId: string, user: Partial<ContributorInfo>) {
+		try {
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/collections/${collectionId}/share/add-contributor?email=${
+					user.email
+				}&rights=${user.rights}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to add collection contributor', err, {
+				collectionId,
+				user,
+			});
+		}
+	}
+
+	static async editContributorRights(
+		collectionId: string,
+		contributorId: string,
+		rights: ShareRightsType
+	) {
+		try {
+			return await fetchWithLogoutJson(
+				`${getEnv(
+					'PROXY_URL'
+				)}/collections/${collectionId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to edit collection contributor rights', err, {
+				collectionId,
+				rights,
+				contributorId,
+			});
+		}
+	}
+
+	static async deleteContributor(collectionId: string, contributorId: string) {
+		try {
+			return await fetchWithLogoutJson(
+				`${getEnv(
+					'PROXY_URL'
+				)}/collections/${collectionId}/share/delete-contributor?contributorId=${contributorId}`,
+				{ method: 'DELETE' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to remove collection contributor', err, {
+				collectionId,
+				contributorId,
 			});
 		}
 	}

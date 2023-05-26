@@ -37,8 +37,13 @@ import {
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
+	ShareDropdown,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import {
+	ContributorInfo,
+	ShareRightsType,
+} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import {
@@ -50,6 +55,7 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
 import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -62,6 +68,7 @@ import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-pl
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ValueOf } from '../../shared/types';
+import { Contributor } from '../../shared/types/contributor';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { MAX_TITLE_LENGTH } from '../collection.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
@@ -168,6 +175,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	useWarningBeforeUnload({
 		when: unsavedChanges,
 	});
+	const [contributors, setContributors] = useState<Contributor[]>();
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -181,6 +189,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 			JSON.stringify(convertRteToString(currentCollection));
 		setUnsavedChanges(hasChanges);
 	};
+
+	const fetchContributors = useCallback(async () => {
+		if (!collectionId) {
+			return;
+		}
+		const response = await CollectionService.fetchContributorsByCollectionId(collectionId);
+
+		setContributors(response as Contributor[]);
+	}, [collectionId]);
+
+	useEffect(() => {
+		fetchContributors();
+	}, [collectionId]);
 
 	// Main collection reducer
 	function currentCollectionReducer(
@@ -983,6 +1004,48 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
+	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
+		try {
+			if (collectionId) {
+				await CollectionService.editContributorRights(
+					collectionId,
+					user.profileId as string,
+					newRights
+				);
+
+				await fetchContributors();
+
+				ToastService.success('Rol van de gebruiker is aangepast.');
+			}
+		} catch (err) {
+			ToastService.danger('Er liep iets fout met het aanpassen van de collega rol.');
+		}
+	};
+
+	const onAddNewUser = async (info: Partial<ContributorInfo>) => {
+		try {
+			await CollectionService.addContributor(collectionId, info);
+
+			await fetchContributors();
+
+			ToastService.success('Uitnodiging tot samenwerken is verstuurd');
+		} catch (err) {
+			ToastService.danger('Er liep iets fout met het uitnodigen van een collega');
+		}
+	};
+
+	const onDeleteUser = async (info: ContributorInfo) => {
+		try {
+			await CollectionService.deleteContributor(collectionId, info.profileId as string);
+
+			await fetchContributors();
+
+			ToastService.success('Gebruiker is verwijderd van de opdracht');
+		} catch (err) {
+			ToastService.danger('Er liep iets fout met het verwijderen van een collega');
+		}
+	};
+
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
@@ -1141,6 +1204,24 @@ const CollectionOrBundleEdit: FunctionComponent<
 					onOptionClicked={executeAction}
 				/>
 				<InteractiveTour showButton />
+
+				{isCollection && (
+					<ShareDropdown
+						users={transformContributorsToSimpleContributors(
+							{
+								...collectionState.currentCollection?.profile?.user,
+								profile: collectionState.currentCollection?.profile,
+							} as Avo.User.User,
+							contributors as Contributor[]
+						)}
+						onDeleteUser={(info: ContributorInfo) => onDeleteUser(info)}
+						onEditRights={(user: ContributorInfo, newRights: ShareRightsType) =>
+							onEditUser(user, newRights)
+						}
+						onAddNewUser={(info: Partial<ContributorInfo>) => onAddNewUser(info)}
+						withPupils={false}
+					/>
+				)}
 			</ButtonToolbar>
 		);
 	};

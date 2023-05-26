@@ -19,6 +19,7 @@ export type ShareDropdownProps = {
 	button?: Partial<ButtonProps>;
 	dropdown?: Partial<DropdownProps>;
 	share?: ShareWithPupilsProps;
+	withPupils?: boolean;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
 	users,
@@ -28,7 +29,9 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	dropdown,
 	button,
 	share,
+	withPupils = true,
 }) => {
+	console.log(users);
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
 	const [tab, setActiveTab, tabs] = useTabs(
@@ -63,6 +66,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 			isOpen={isShareDropdownOpen}
 			onClose={() => handleOnClose()}
 			className="c-share-dropdown"
+			placement="bottom-end"
 			{...dropdown}
 		>
 			<DropdownButton>
@@ -70,7 +74,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					ariaLabel={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					label={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					title={tText(
-						'assignment/components/share-assignment-with-pupil___bezorg-deze-opdrachtlink-aan-je-leerlingen'
+						"Bezorg deze opdrachtlink aan je leerlingen of werk samen met je collega's"
 					)}
 					onClick={handleShareButtonClicked}
 					disabled={false}
@@ -81,25 +85,43 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 
 			<DropdownContent>
 				<div className="c-share-dropdown__container">
-					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+					{withPupils ? (
+						<>
+							<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 
-					<div className="c-share-dropdown__content">
-						{tab === ShareDropdownTabs.COLLEAGUES ? (
-							<>
-								{users && (
-									<ShareWithColleagues
-										contributors={users}
-										onAddNewContributor={onAddNewUser}
-										onDeleteContributor={onDeleteUser}
-										onEditRights={onEditRights}
-										hasModalOpen={(open: boolean) => setHasModalOpen(open)}
-									/>
+							<div className="c-share-dropdown__content">
+								{tab === ShareDropdownTabs.COLLEAGUES ? (
+									<>
+										{users && (
+											<ShareWithColleagues
+												contributors={users}
+												onAddNewContributor={onAddNewUser}
+												onDeleteContributor={onDeleteUser}
+												onEditRights={onEditRights}
+												hasModalOpen={(open: boolean) =>
+													setHasModalOpen(open)
+												}
+											/>
+										)}
+									</>
+								) : (
+									<ShareWithPupil {...(share as ShareWithPupilsProps)} />
 								)}
-							</>
-						) : (
-							<ShareWithPupil {...(share as ShareWithPupilsProps)} />
-						)}
-					</div>
+							</div>
+						</>
+					) : (
+						<div className="c-share-dropdown__content">
+							{users && (
+								<ShareWithColleagues
+									contributors={users}
+									onAddNewContributor={onAddNewUser}
+									onDeleteContributor={onDeleteUser}
+									onEditRights={onEditRights}
+									hasModalOpen={(open: boolean) => setHasModalOpen(open)}
+								/>
+							)}
+						</div>
+					)}
 				</div>
 			</DropdownContent>
 		</Dropdown>

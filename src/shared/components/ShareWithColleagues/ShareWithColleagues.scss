@@ -43,6 +43,7 @@ $borderLight: 1px solid $color-gray-100;
 
 	.c-dropdown__trigger {
 		min-width: max-content;
+		margin-left: 0 !important;
 	}
 
 	&__button.c-button.c-button--primary {
@@ -50,6 +51,7 @@ $borderLight: 1px solid $color-gray-100;
 		border: $borderLight;
 		border-radius: 0 $c-input-border-radius $c-input-border-radius 0;
 		background-color: $color-gray-50;
+		margin-left: 0;
 	}
 
 	.c-dropdown__content-open {

@@ -10,6 +10,7 @@ export const transformContributorsToSimpleContributors = (
 	owner: Avo.User.User,
 	contributors: Contributor[]
 ) => {
+	console.log(owner, contributors);
 	if (!owner || !contributors) {
 		return;
 	}

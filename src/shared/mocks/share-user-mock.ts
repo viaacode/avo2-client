@@ -34,5 +34,6 @@ export const mockShareUsers: ContributorInfo[] = [
 		lastName: 'Admin',
 		email: 'hetarchief2.0+bztmeemooadmin@meemoo.be',
 		rights: ContributorInfoRights.OWNER,
+		profileId: '31051baa-94ab-4fc2-a859-750a52774d3a',
 	},
 ];
