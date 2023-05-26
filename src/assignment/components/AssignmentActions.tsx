@@ -73,10 +73,18 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 				await fetchContributors();
 
-				ToastService.success('Rol van de gebruiker is aangepast.');
+				ToastService.success(
+					tText(
+						'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
+					)
+				);
 			}
 		} catch (err) {
-			ToastService.danger('Er liep iets fout met het aanpassen van de collega rol.');
+			ToastService.danger(
+				tText(
+					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-aanpassen-van-de-collega-rol'
+				)
+			);
 		}
 	};
 
@@ -86,9 +94,17 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 			await fetchContributors();
 
-			ToastService.success('Uitnodiging tot samenwerken is verstuurd');
+			ToastService.success(
+				tText(
+					'assignment/components/assignment-actions___uitnodiging-tot-samenwerken-is-verstuurd'
+				)
+			);
 		} catch (err) {
-			ToastService.danger('Er liep iets fout met het uitnodigen van een collega');
+			ToastService.danger(
+				tText(
+					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-uitnodigen-van-een-collega'
+				)
+			);
 		}
 	};
 
@@ -101,9 +117,17 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 			await fetchContributors();
 
-			ToastService.success('Gebruiker is verwijderd van de opdracht');
+			ToastService.success(
+				tText(
+					'assignment/components/assignment-actions___gebruiker-is-verwijderd-van-de-opdracht'
+				)
+			);
 		} catch (err) {
-			ToastService.danger('Er liep iets fout met het verwijderen van een collega');
+			ToastService.danger(
+				tText(
+					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-verwijderen-van-een-collega'
+				)
+			);
 		}
 	};
 
