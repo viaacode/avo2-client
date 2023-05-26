@@ -225,6 +225,9 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				</div>
 
 				{renderShareButton({
+					dropdown: {
+						placement: 'bottom-end',
+					},
 					button: {
 						className: 'c-assignment-heading__hide-on-mobile',
 					},
