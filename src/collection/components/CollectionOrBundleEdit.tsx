@@ -1004,7 +1004,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
-	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
+	const onEditContributor = async (user: ContributorInfo, newRights: ShareRightsType) => {
 		try {
 			if (collectionId) {
 				await CollectionService.editContributorRights(
@@ -1015,34 +1015,58 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 				await fetchContributors();
 
-				ToastService.success('Rol van de gebruiker is aangepast.');
+				ToastService.success(
+					tText(
+						'collection/components/collection-or-bundle-edit___rol-van-de-gebruiker-is-aangepast'
+					)
+				);
 			}
 		} catch (err) {
-			ToastService.danger('Er liep iets fout met het aanpassen van de collega rol.');
+			ToastService.danger(
+				tText(
+					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-aanpassen-van-de-collega-rol'
+				)
+			);
 		}
 	};
 
-	const onAddNewUser = async (info: Partial<ContributorInfo>) => {
+	const onAddContributor = async (info: Partial<ContributorInfo>) => {
 		try {
 			await CollectionService.addContributor(collectionId, info);
 
 			await fetchContributors();
 
-			ToastService.success('Uitnodiging tot samenwerken is verstuurd');
+			ToastService.success(
+				tText(
+					'collection/components/collection-or-bundle-edit___uitnodiging-tot-samenwerken-is-verstuurd'
+				)
+			);
 		} catch (err) {
-			ToastService.danger('Er liep iets fout met het uitnodigen van een collega');
+			ToastService.danger(
+				tText(
+					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-uitnodigen-van-een-collega'
+				)
+			);
 		}
 	};
 
-	const onDeleteUser = async (info: ContributorInfo) => {
+	const onDeleteContributor = async (info: ContributorInfo) => {
 		try {
 			await CollectionService.deleteContributor(collectionId, info.profileId as string);
 
 			await fetchContributors();
 
-			ToastService.success('Gebruiker is verwijderd van de opdracht');
+			ToastService.success(
+				tText(
+					'collection/components/collection-or-bundle-edit___gebruiker-is-verwijderd-van-de-collectie'
+				)
+			);
 		} catch (err) {
-			ToastService.danger('Er liep iets fout met het verwijderen van een collega');
+			ToastService.danger(
+				tText(
+					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-verwijderen-van-een-collega'
+				)
+			);
 		}
 	};
 
@@ -1207,18 +1231,21 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 				{isCollection && (
 					<ShareDropdown
-						users={transformContributorsToSimpleContributors(
+						contributors={transformContributorsToSimpleContributors(
 							{
 								...collectionState.currentCollection?.profile?.user,
 								profile: collectionState.currentCollection?.profile,
 							} as Avo.User.User,
 							contributors as Contributor[]
 						)}
-						onDeleteUser={(info: ContributorInfo) => onDeleteUser(info)}
-						onEditRights={(user: ContributorInfo, newRights: ShareRightsType) =>
-							onEditUser(user, newRights)
+						onDeleteContributor={(info: ContributorInfo) => onDeleteContributor(info)}
+						onEditContributorRights={(
+							user: ContributorInfo,
+							newRights: ShareRightsType
+						) => onEditContributor(user, newRights)}
+						onAddContributor={(info: Partial<ContributorInfo>) =>
+							onAddContributor(info)
 						}
-						onAddNewUser={(info: Partial<ContributorInfo>) => onAddNewUser(info)}
 						withPupils={false}
 					/>
 				)}

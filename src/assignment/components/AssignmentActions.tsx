@@ -141,15 +141,15 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			)}
 		>
 			<ShareDropdown
-				users={transformContributorsToSimpleContributors(
+				contributors={transformContributorsToSimpleContributors(
 					share?.assignment?.owner as Avo.User.User,
 					contributors as Contributor[]
 				)}
-				onDeleteUser={(info: ContributorInfo) => onDeleteUser(info)}
-				onEditRights={(user: ContributorInfo, newRights: ShareRightsType) =>
+				onDeleteContributor={(info: ContributorInfo) => onDeleteUser(info)}
+				onEditContributorRights={(user: ContributorInfo, newRights: ShareRightsType) =>
 					onEditUser(user, newRights)
 				}
-				onAddNewUser={(info: Partial<ContributorInfo>) => onAddNewUser(info)}
+				onAddContributor={(info: Partial<ContributorInfo>) => onAddNewUser(info)}
 				{...config}
 				share={share}
 			/>
