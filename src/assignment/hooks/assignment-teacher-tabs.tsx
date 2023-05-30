@@ -28,6 +28,11 @@ export function useAssignmentTeacherTabs(): [
 					label: tText('assignment/hooks/assignment-tabs___details'),
 					icon: IconName.settings as IconName,
 				},
+				{
+					id: ASSIGNMENT_CREATE_UPDATE_TABS.Kliks,
+					label: tText('Kliks'),
+					icon: IconName.pointer as IconName,
+				},
 			].map((item) => ({
 				...item,
 				active: item.id === tab,

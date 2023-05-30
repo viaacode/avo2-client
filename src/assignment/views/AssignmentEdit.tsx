@@ -12,6 +12,7 @@ import {
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
+import { noop } from 'lodash-es';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -73,8 +74,14 @@ import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import AssignmentResponses from './AssignmentResponses';
 
-const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
+interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string }> {
+	onUpdate: () => void | Promise<void>;
+}
+
+const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
+	onUpdate = noop,
 	match,
 	user,
 	history,
@@ -450,6 +457,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							setValue={setValue}
 						/>
 					</div>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.Kliks:
+				return (
+					<AssignmentResponses
+						history={history}
+						match={match}
+						user={user}
+						onUpdate={onUpdate}
+					/>
 				);
 
 			default:
