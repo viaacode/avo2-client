@@ -60,6 +60,20 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 		}
 	};
 
+	const renderShareWithColleagues = () => {
+		if (contributors) {
+			return (
+				<ShareWithColleagues
+					contributors={contributors}
+					onAddNewContributor={onAddContributor}
+					onDeleteContributor={onDeleteContributor}
+					onEditRights={onEditContributorRights}
+					hasModalOpen={(open: boolean) => setHasModalOpen(open)}
+				/>
+			);
+		}
+	};
+
 	return (
 		<Dropdown
 			isOpen={isShareDropdownOpen}
@@ -110,15 +124,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 						</>
 					) : (
 						<div className="c-share-dropdown__content">
-							{contributors && (
-								<ShareWithColleagues
-									contributors={contributors}
-									onAddNewContributor={onAddContributor}
-									onDeleteContributor={onDeleteContributor}
-									onEditRights={onEditContributorRights}
-									hasModalOpen={(open: boolean) => setHasModalOpen(open)}
-								/>
-							)}
+							{renderShareWithColleagues()}
 						</div>
 					)}
 				</div>
