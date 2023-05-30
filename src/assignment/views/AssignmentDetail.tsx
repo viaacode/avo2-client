@@ -8,22 +8,33 @@ import {
 	HeaderButtons,
 	HeaderRow,
 	IconName,
+	isUuid,
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionService } from '../../authentication/helpers/permission-service';
+import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { renderAvatar } from '../../shared/helpers';
+import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
+import { ToastService } from '../../shared/services/toast-service';
 import {
 	isUserAssignmentContributor,
 	isUserAssignmentOwner,
@@ -34,6 +45,10 @@ import { Assignment_v2_With_Blocks, BaseBlockWithMeta } from '../assignment.type
 import { useAssignmentForm } from '../hooks';
 
 import './AssignmentDetail.scss';
+
+type AssignmentDetailPermissions = Partial<{
+	canEditAssignments: boolean;
+}>;
 
 const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
@@ -47,8 +62,57 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		null
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
+	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
+		canEditAssignments: false,
+	});
+	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
+		null
+	);
 
 	const id = match.params.id;
+
+	const getPermissions = useCallback(
+		async (
+			assignmentId: string,
+			user: Avo.User.User | undefined
+		): Promise<AssignmentDetailPermissions> => {
+			if (!user) {
+				return {};
+			}
+			const rawPermissions = await Promise.all([
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: assignmentId },
+						{ name: PermissionName.EDIT_ANY_ASSIGNMENTS },
+					],
+					user
+				),
+			]);
+
+			return {
+				canEditAssignments: rawPermissions[0],
+			};
+		},
+		[user, match.params.id]
+	);
+
+	const getRelatedAssignments = useCallback(async () => {
+		try {
+			if (isUuid(id)) {
+				setRelatedAssignments(
+					await getRelatedItems(id, ObjectTypes.assignments, ObjectTypesAll.all, 4)
+				);
+			}
+		} catch (err) {
+			console.error('Failed to get related items', err, {
+				id,
+				index: 'assignments',
+				limit: 4,
+			});
+
+			ToastService.danger('Het ophalen van de gerelateerde opdrachten is mislukt');
+		}
+	}, [setRelatedAssignments, id]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
@@ -92,13 +156,31 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				icon: IconName.alertTriangle,
 			});
 		}
+
+		try {
+			const permissionObj = await getPermissions(id, user);
+			setPermissions(permissionObj);
+		} catch (err) {
+			setAssigmentError({
+				message: 'Ophalen van permissies is mislukt',
+				icon: IconName.alertTriangle,
+				actionButtons: ['home'],
+			});
+			setAssigmentLoading(false);
+			return;
+		}
 		setAssigmentLoading(false);
 	}, [user, match.params.id, tText, history, setAssignment]);
 
 	// Fetch initial data
 	useEffect(() => {
 		fetchAssignment();
+		getPermissions(id, user);
 	}, [fetchAssignment]);
+
+	useEffect(() => {
+		getRelatedAssignments();
+	}, [getRelatedAssignments]);
 
 	// Render
 
@@ -106,20 +188,24 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		return (
 			<ButtonToolbar>
 				<Spacer margin="left-small">
-					<Link
-						to={generatePath(APP_PATH.ASSIGNMENT_EDIT.route, {
-							id,
-						})}
-					>
-						<Button
-							type="primary"
-							icon={IconName.edit}
-							label={tText('assignment/views/assignment-response-edit___bewerken')}
-							title={tText(
-								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
-							)}
-						/>
-					</Link>
+					{permissions?.canEditAssignments && (
+						<Link
+							to={generatePath(APP_PATH.ASSIGNMENT_EDIT.route, {
+								id,
+							})}
+						>
+							<Button
+								type="primary"
+								icon={IconName.edit}
+								label={tText(
+									'assignment/views/assignment-response-edit___bewerken'
+								)}
+								title={tText(
+									'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
+								)}
+							/>
+						</Link>
+					)}
 				</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
@@ -188,7 +274,8 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 							{!!assignment &&
 								renderCommonMetadata(assignment as Assignment_v2_With_Blocks)}
 						</Grid>
-						{/* TODO: Insert related items here */}
+						{!!relatedAssignments &&
+							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}
 					</div>
 				</Container>
 			</Container>
