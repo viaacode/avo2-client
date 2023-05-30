@@ -8,22 +8,32 @@ import {
 	HeaderButtons,
 	HeaderRow,
 	IconName,
+	isUuid,
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { renderAvatar } from '../../shared/helpers';
+import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
+import {
+	getRelatedItems,
+	ObjectTypes,
+	ObjectTypesAll,
+} from '../../shared/services/related-items-service';
+import { ToastService } from '../../shared/services/toast-service';
 import {
 	isUserAssignmentContributor,
 	isUserAssignmentOwner,
@@ -47,8 +57,29 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		null
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
+	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
+		null
+	);
 
 	const id = match.params.id;
+
+	const getRelatedAssignments = useCallback(async () => {
+		try {
+			if (isUuid(id)) {
+				setRelatedAssignments(
+					await getRelatedItems(id, ObjectTypes.assignments, ObjectTypesAll.all, 4)
+				);
+			}
+		} catch (err) {
+			console.error('Failed to get related items', err, {
+				id,
+				index: 'assignments',
+				limit: 4,
+			});
+
+			ToastService.danger('Het ophalen van de gerelateerde opdrachten is mislukt');
+		}
+	}, [setRelatedAssignments, id]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
@@ -99,6 +130,10 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	useEffect(() => {
 		fetchAssignment();
 	}, [fetchAssignment]);
+
+	useEffect(() => {
+		getRelatedAssignments();
+	}, [getRelatedAssignments]);
 
 	// Render
 
@@ -188,7 +223,8 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 							{!!assignment &&
 								renderCommonMetadata(assignment as Assignment_v2_With_Blocks)}
 						</Grid>
-						{/* TODO: Insert related items here */}
+						{!!relatedAssignments &&
+							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}
 					</div>
 				</Container>
 			</Container>
