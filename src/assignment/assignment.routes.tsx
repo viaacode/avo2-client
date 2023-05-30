@@ -9,7 +9,6 @@ import AssignmentEdit from './views/AssignmentEdit';
 import AssignmentPupilCollectionDetail from './views/AssignmentPupilCollectionDetail';
 import AssignmentResponseAdminEdit from './views/AssignmentResponseEdit/AssignmentResponseAdminEdit';
 import AssignmentResponseEditPage from './views/AssignmentResponseEdit/AssignmentResponseEditPage';
-import AssignmentResponses from './views/AssignmentResponses';
 
 export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
@@ -31,10 +30,10 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 		key={APP_PATH.ASSIGNMENT_EDIT.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentResponses}
+		component={AssignmentEdit}
 		exact
-		path={APP_PATH.ASSIGNMENT_RESPONSES.route}
-		key={APP_PATH.ASSIGNMENT_RESPONSES.route}
+		path={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
+		key={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
 	/>,
 	<SecuredRoute
 		component={AssignmentResponseEditPage}

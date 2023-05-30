@@ -76,7 +76,7 @@ import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
 import AssignmentResponses from './AssignmentResponses';
 
-interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string }> {
+interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
 }
 
@@ -97,6 +97,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
+	// const [tabId, setTabId] = useState<string | null>(null);
 
 	const {
 		control,
@@ -119,12 +120,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		updateBlocksInAssignmentState
 	);
 
+	useEffect(() => {
+		const param = match.params.tabId;
+		param && setTab(param as ASSIGNMENT_CREATE_UPDATE_TABS);
+	}, [match.params.tabId]);
+
 	// UI
 	useWarningBeforeUnload({
 		when: isDirty,
 	});
 
-	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
+	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs(
+		history,
+		assignment?.id as string
+	);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
 	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
 		useState<boolean>(false);
@@ -400,7 +409,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD:
 				if (pastDeadline) {
 					return <BlockList blocks={assignment?.blocks || []} />;
 				}
@@ -418,7 +427,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					</div>
 				);
 
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS:
 				if (pastDeadline) {
 					if (!assignment) {
 						if (!assignment) {
@@ -459,7 +468,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					</div>
 				);
 
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Kliks:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS:
 				return (
 					<AssignmentResponses
 						history={history}
@@ -520,9 +529,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							share={{
 								assignment: original || undefined, // Needs to be saved before you can share
 								onContentLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud),
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD),
 								onDetailLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details),
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS),
 							}}
 							remove={{
 								assignment: original || undefined,

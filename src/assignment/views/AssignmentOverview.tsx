@@ -71,7 +71,10 @@ import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Label_v2,
@@ -465,7 +468,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 
 		return renderDataCell(
-			<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}>
+			<Link
+				to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+					id: assignment.id,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS,
+				})}
+			>
 				<span
 					title={tText(
 						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'

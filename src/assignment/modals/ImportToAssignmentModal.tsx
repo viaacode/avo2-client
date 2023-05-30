@@ -42,7 +42,10 @@ import { useTableSort } from '../../shared/hooks';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL,
+} from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import {
@@ -207,7 +210,10 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 					'0'
 				) : (
 					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}
+						to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+							id: assignment.id,
+							tabId: ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS,
+						})}
 					>
 						{(cellData || []).length}
 					</Link>

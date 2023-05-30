@@ -39,10 +39,10 @@ export type RouteId =
 	| 'ASSIGNMENT_CREATE'
 	| 'ASSIGNMENT_DETAIL'
 	| 'ASSIGNMENT_EDIT'
+	| 'ASSIGNMENT_EDIT_TAB'
 	| 'ASSIGNMENT_RESPONSE_CREATE'
 	| 'ASSIGNMENT_RESPONSE_DETAIL'
 	| 'ASSIGNMENT_RESPONSE_EDIT'
-	| 'ASSIGNMENT_RESPONSES'
 	| 'ASSIGNMENT_PUPIL_COLLECTION_DETAIL'
 	| 'ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT'
 	| 'LINK_YOUR_ACCOUNT'
@@ -210,8 +210,8 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
-	ASSIGNMENT_RESPONSES: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.responses}`,
+	ASSIGNMENT_EDIT_TAB: {
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}/:tabId`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
