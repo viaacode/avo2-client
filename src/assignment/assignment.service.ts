@@ -1572,7 +1572,7 @@ export class AssignmentService {
 		user: Partial<ContributorInfo>
 	): Promise<void> {
 		try {
-			return await fetchWithLogoutJson(
+			await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor?email=${
 					user.email
 				}&rights=${user.rights}`,
