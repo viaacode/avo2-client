@@ -71,10 +71,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import {
-	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
-	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
-} from '../assignment.const';
+import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Label_v2,
@@ -488,14 +485,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		colKey: AssignmentOverviewTableColumns
 	) => {
 		const cellData: any = (assignment as any)[colKey];
-		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id });
-		const detailLink = buildLink(
-			APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route,
-			{
-				id: assignment.id,
-			},
-			{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT }
-		);
+		const detailLink = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+			id: assignment.id,
+		});
 
 		const labels = assignment.labels.filter(
 			({ assignment_label: item }) => item.type === 'LABEL'
@@ -512,9 +504,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						</Spacer>
 						<div className="c-content-header c-content-header--small">
 							<h3 className="c-content-header__header u-m-0">
-								<Link to={canEditAssignments ? editLink : detailLink}>
-									{truncateTableValue(assignment.title)}
-								</Link>
+								<Link to={detailLink}>{truncateTableValue(assignment.title)}</Link>
 							</h3>
 						</div>
 					</Flex>

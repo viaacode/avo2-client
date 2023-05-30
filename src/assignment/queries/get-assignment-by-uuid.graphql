@@ -83,5 +83,12 @@ query getAssignmentByUuid($id: uuid!) {
 				value
 			}
 		}
+		loms {
+			lom {
+				id
+				label
+				scheme
+			}
+		}
 	}
 }

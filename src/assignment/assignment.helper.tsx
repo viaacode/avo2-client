@@ -1,13 +1,19 @@
-import { IconName } from '@viaa/avo2-components';
+import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { ReactNode } from 'react';
+import { groupBy } from 'lodash-es';
+import React, { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import { Maybe } from 'yup/lib/types';
 
+import { Lookup_Thesaurus } from '../shared/generated/graphql-db-types';
+import { formatDate } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
 
 import {
 	Assignment_Label_v2,
+	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
 	AssignmentFormState,
 	AssignmentLayout,
@@ -87,9 +93,99 @@ export function isUserAssignmentContributor(
 	user: UserSchema,
 	assignment: Partial<AssignmentFormState>
 ): boolean {
-	return !!assignment.contributors?.find(
-		(contributor) =>
-			contributor.profile?.id === user.profile?.id &&
-			contributor.enum_right_type.value !== 'VIEWER'
-	);
+	if (assignment.contributors) {
+		return !!assignment.contributors.find(
+			(contributor) =>
+				contributor.profile?.id === user.profile?.id &&
+				contributor.enum_right_type.value !== 'VIEWER'
+		);
+	}
+	return false;
 }
+
+export enum LomSchemeType {
+	subject = 'https://w3id.org/onderwijs-vlaanderen/id/vak',
+	structure = 'https://w3id.org/onderwijs-vlaanderen/id/structuur',
+	theme = 'https://data.hetarchief.be/id/onderwijs/thema',
+}
+
+type LomEntry = Maybe<Lookup_Thesaurus>;
+
+export const renderLoms = (lomValues: LomEntry[], title: string) => {
+	return (
+		<Spacer margin="top-large">
+			<p className="u-text-bold">{title}</p>
+			<p className="c-body-1">
+				{lomValues.length > 0 ? (
+					lomValues.map((lomValue, index) => {
+						return (
+							<>
+								<Link
+									key={lomValue?.id + `--${index}`}
+									to={{ pathname: lomValue?.id as string }}
+									target="_blank"
+								>
+									{lomValue?.label}
+								</Link>{' '}
+							</>
+						);
+					})
+				) : (
+					<span className="u-d-block">-</span>
+				)}
+			</p>
+		</Spacer>
+	);
+};
+
+export const groupLoms = (
+	loms: { lom?: LomEntry }[]
+): Partial<Record<LomSchemeType, LomEntry[]>> => {
+	return groupBy(
+		(loms || []).map((lom) => lom.lom),
+		(lom) => lom?.scheme
+	);
+};
+
+export const renderLomFieldsByGroup = (loms: { lom?: LomEntry }[]) => {
+	const groupedLoms = groupLoms(loms);
+
+	const educationLevels: LomEntry[] = groupedLoms[LomSchemeType.structure] || [];
+	const subjects: LomEntry[] = groupedLoms[LomSchemeType.subject] || [];
+	const themes: LomEntry[] = groupedLoms[LomSchemeType.theme] || [];
+
+	return (
+		<Column size="3-3">
+			{educationLevels &&
+				renderLoms(educationLevels, tText('assignment/views/assignment-detail___niveaus'))}
+			{subjects && renderLoms(subjects, tText('assignment/views/assignment-detail___vakken'))}
+			{themes && renderLoms(themes, tText('assignment/views/assignment-detail___themas'))}
+		</Column>
+	);
+};
+
+export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): ReactNode => {
+	const { created_at, updated_at, loms } = assignment;
+
+	return (
+		<>
+			{loms && renderLomFieldsByGroup(loms)}
+			<Column size="3-3">
+				<Spacer margin="top-large">
+					<p className="u-text-bold">
+						{tText('assignment/views/assignment-detail___aangemaakt-op')}
+					</p>
+					<p className="c-body-1">{formatDate(created_at)}</p>
+				</Spacer>
+			</Column>
+			<Column size="3-3">
+				<Spacer margin="top-large">
+					<p className="u-text-bold">
+						{tText('assignment/views/assignment-detail___laatst-aangepast')}
+					</p>
+					<p className="c-body-1">{formatDate(updated_at)}</p>
+				</Spacer>
+			</Column>
+		</>
+	);
+};

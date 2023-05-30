@@ -37,6 +37,7 @@ export type RouteId =
 	| 'WORKSPACE_ASSIGNMENTS'
 	| 'WORKSPACE_BOOKMARKS'
 	| 'ASSIGNMENT_CREATE'
+	| 'ASSIGNMENT_DETAIL'
 	| 'ASSIGNMENT_EDIT'
 	| 'ASSIGNMENT_RESPONSE_CREATE'
 	| 'ASSIGNMENT_RESPONSE_DETAIL'
@@ -197,6 +198,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	ASSIGNMENT_CREATE: {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
 		showInContentPicker: true,
+		showForInteractiveTour: true,
+	},
+	ASSIGNMENT_DETAIL: {
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id`,
+		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_EDIT: {
