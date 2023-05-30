@@ -77,11 +77,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				limit: 4,
 			});
 
-			ToastService.danger(
-				tHtml(
-					'assignment/views/assignment-edit___het-opslaan-van-de-gerelateerde-opdrachten-is-mislukt'
-				)
-			);
+			ToastService.danger('Het ophalen van de gerelateerde opdrachten is mislukt');
 		}
 	}, [setRelatedAssignments, id]);
 
