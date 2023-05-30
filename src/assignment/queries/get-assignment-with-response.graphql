@@ -93,6 +93,7 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 		contributors {
 			id
 		}
+		share_type
 		lom_learning_resource_type
 	}
 }

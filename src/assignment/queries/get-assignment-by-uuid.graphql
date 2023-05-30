@@ -89,6 +89,7 @@ query getAssignmentByUuid($id: uuid!) {
 				scheme
 			}
 		}
+		share_type
 		lom_learning_resource_type
 	}
 }

@@ -18,6 +18,9 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
@@ -79,6 +82,7 @@ import {
 	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
 	AssignmentOverviewTableColumns,
+	AssignmentShareType,
 	AssignmentView,
 } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
@@ -493,6 +497,20 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
+		const shareTypeText =
+			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
+				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				? tText('assignment/views/assignment-overview___gedeeld-met-anderen')
+				: tText('assignment/views/assignment-overview___niet-gedeeld');
+
+		const shareTypeIcon =
+			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+				? IconName.user
+				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				? IconName.users
+				: IconName.userX;
+
 		switch (
 			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
 		) {
@@ -564,6 +582,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					),
 					desktop: renderActions(assignment),
 				});
+
+			case 'shared':
+				return (
+					<Tooltip position="top">
+						<TooltipTrigger>
+							<div className="c-assignment-overview__shared" title={shareTypeText}>
+								<Icon name={shareTypeIcon} />
+							</div>
+						</TooltipTrigger>
+						<TooltipContent>{shareTypeText}</TooltipContent>
+					</Tooltip>
+				);
 
 			default:
 				return JSON.stringify(cellData);

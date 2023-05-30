@@ -144,6 +144,12 @@ export enum AssignmentRetrieveError {
 	NOT_YET_AVAILABLE = 'NOT_YET_AVAILABLE',
 }
 
+export enum AssignmentShareType {
+	GEDEELD_MET_MIJ = 'GEDEELD_MET_MIJ',
+	GEDEELD_MET_ANDERE = 'GEDEELD_MET_ANDERE',
+	NIET_GEDEELD = 'NIET_GEDEELD',
+}
+
 export interface AssignmentLabelColor {
 	label: string; // #FF0000
 	value: Lookup_Enum_Colors_Enum; // BRIGHT_RED

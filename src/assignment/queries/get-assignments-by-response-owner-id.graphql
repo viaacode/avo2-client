@@ -67,6 +67,7 @@ query getAssignmentsByResponseOwnerId(
 				owner_profile_id
 			}
 		}
+		share_type
 		lom_learning_resource_type
 	}
 	count: app_assignments_v2_overview_aggregate(

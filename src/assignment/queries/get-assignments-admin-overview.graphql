@@ -48,6 +48,7 @@ query getAssignmentsAdminOverview(
 				count
 			}
 		}
+		share_type
 		lom_learning_resource_type
 	}
 	app_assignments_v2_overview_aggregate(where: $where) {
