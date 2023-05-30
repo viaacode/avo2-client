@@ -84,7 +84,7 @@ query getAssignmentByUuid($id: uuid!) {
 			}
 		}
 		loms {
-			thesaurus {
+			lom {
 				id
 				label
 				scheme
