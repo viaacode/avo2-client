@@ -9,12 +9,14 @@ export enum ObjectTypes {
 	items = 'items',
 	collections = 'collections',
 	bundles = 'bundles',
+	assignments = 'assignments',
 }
 
 export enum ObjectTypesAll {
 	items = 'items',
 	collections = 'collections',
 	bundels = 'bundles',
+	assignments = 'assignments',
 	all = 'all',
 }
 

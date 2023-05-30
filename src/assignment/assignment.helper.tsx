@@ -4,7 +4,9 @@ import { UserSchema } from '@viaa/avo2-types/types/user';
 import { groupBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { Maybe } from 'yup/lib/types';
 
+import { Lookup_Thesaurus } from '../shared/generated/graphql-db-types';
 import { formatDate } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
@@ -107,11 +109,7 @@ export enum LomSchemeType {
 	theme = 'https://data.hetarchief.be/id/onderwijs/thema',
 }
 
-interface LomEntry {
-	id: string;
-	label: string;
-	scheme?: string | null | undefined;
-}
+type LomEntry = Maybe<Lookup_Thesaurus>;
 
 export const renderLoms = (lomValues: LomEntry[], title: string) => {
 	return (
@@ -123,11 +121,11 @@ export const renderLoms = (lomValues: LomEntry[], title: string) => {
 						return (
 							<>
 								<Link
-									key={lomValue.id + `--${index}`}
-									to={{ pathname: lomValue.id }}
+									key={lomValue?.id + `--${index}`}
+									to={{ pathname: lomValue?.id as string }}
 									target="_blank"
 								>
-									{lomValue.label}
+									{lomValue?.label}
 								</Link>{' '}
 							</>
 						);
@@ -141,15 +139,15 @@ export const renderLoms = (lomValues: LomEntry[], title: string) => {
 };
 
 export const groupLoms = (
-	loms: { thesaurus: LomEntry }[]
+	loms: { lom?: LomEntry }[]
 ): Partial<Record<LomSchemeType, LomEntry[]>> => {
 	return groupBy(
-		(loms || []).map((lom) => lom.thesaurus),
-		(lom) => lom.scheme
+		(loms || []).map((lom) => lom.lom),
+		(lom) => lom?.scheme
 	);
 };
 
-export const renderLomFieldsByGroup = (loms: { thesaurus: LomEntry }[]) => {
+export const renderLomFieldsByGroup = (loms: { lom?: LomEntry }[]) => {
 	const groupedLoms = groupLoms(loms);
 
 	const educationLevels: LomEntry[] = groupedLoms[LomSchemeType.structure] || [];
