@@ -2,12 +2,12 @@ import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-componen
 import React, { FC, MouseEvent } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
-import { Assignment_v2 } from '../assignment.types';
+import { Assignment_v2, Assignment_v2_With_Blocks } from '../assignment.types';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 export type DuplicateAssignmentButtonProps = DefaultProps &
 	Omit<ButtonProps, 'onClick'> & {
-		assignment?: Assignment_v2;
+		assignment?: Assignment_v2_With_Blocks;
 		onClick?(event: MouseEvent<HTMLElement>, duplicated?: Assignment_v2): void;
 	};
 
