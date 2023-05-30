@@ -1,12 +1,11 @@
 query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
-	app_assignments_v2(
+	app_assignments_v2_overview(
 		where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false } }
 		order_by: [{ deadline_at: desc }]
 	) {
 		id
 		title
 		description
-		assignment_type
 		answer_url
 		created_at
 		updated_at
@@ -94,5 +93,6 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 		contributors {
 			id
 		}
+		lom_learning_resource_type
 	}
 }

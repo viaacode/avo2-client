@@ -215,14 +215,17 @@ export class AssignmentService {
 					: GetAssignmentsByResponseOwnerIdDocument,
 			});
 
-			if (!assignmentResponse?.app_assignments_v2 || isNil(assignmentResponse.count)) {
+			if (
+				!assignmentResponse?.app_assignments_v2_overview ||
+				isNil(assignmentResponse.count)
+			) {
 				throw new CustomError('Response does not have the expected format', null, {
 					assignmentResponse,
 				});
 			}
 
 			return {
-				assignments: assignmentResponse.app_assignments_v2 || [],
+				assignments: assignmentResponse.app_assignments_v2_overview || [],
 				count: assignmentResponse.count.aggregate?.count || 0,
 			};
 		} catch (err) {
@@ -250,7 +253,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignment = response.app_assignments_v2[0];
+			const assignment = response.app_assignments_v2_overview[0];
 
 			if (!assignment) {
 				throw new CustomError('Response does not contain an assignment', null, {
@@ -307,15 +310,15 @@ export class AssignmentService {
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.ZOEK
 			)
 		) {
-			assignmentToSave.assignment_type = 'ZOEK';
+			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.ZOEK);
 		} else if (
 			assignment.blocks?.some(
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.BOUW
 			)
 		) {
-			assignmentToSave.assignment_type = 'BOUW';
+			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.BOUW);
 		} else {
-			assignmentToSave.assignment_type = 'KIJK';
+			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.KIJK);
 		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
@@ -757,7 +760,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const tempAssignment = response.app_assignments_v2[0];
+			const tempAssignment = response.app_assignments_v2_overview[0];
 
 			if (!tempAssignment) {
 				throw new CustomError('Failed to find assignment by id');
@@ -1084,7 +1087,7 @@ export class AssignmentService {
 			);
 
 			if (existingAssignmentResponse) {
-				if (assignment.assignment_type === AssignmentType.BOUW) {
+				if (assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
 					existingAssignmentResponse.collection_title =
 						existingAssignmentResponse.collection_title ||
 						tText('assignment/assignment___nieuwe-collectie');
@@ -1100,10 +1103,11 @@ export class AssignmentService {
 			const assignmentResponse: Partial<Assignment_Response_v2> = {
 				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
-				collection_title:
-					assignment.assignment_type === AssignmentType.BOUW
-						? tText('assignment/assignment___nieuwe-collectie')
-						: null,
+				collection_title: assignment.lom_learning_resource_type.includes(
+					AssignmentType.BOUW
+				)
+					? tText('assignment/assignment___nieuwe-collectie')
+					: null,
 			};
 			const response = await dataService.query<
 				InsertAssignmentResponseMutation,
@@ -1391,7 +1395,7 @@ export class AssignmentService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[GetAssignmentsAdminOverviewQuery['app_assignments_v2'], number]> {
+	): Promise<[GetAssignmentsAdminOverviewQuery['app_assignments_v2_overview'], number]> {
 		let variables;
 		try {
 			const whereWithoutDeleted = {
@@ -1419,9 +1423,10 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignments = response?.app_assignments_v2;
+			const assignments = response?.app_assignments_v2_overview;
 
-			const assignmentCount = response?.app_assignments_v2_aggregate?.aggregate?.count || 0;
+			const assignmentCount =
+				response?.app_assignments_v2_overview_aggregate?.aggregate?.count || 0;
 
 			if (!assignments) {
 				throw new CustomError('Response does not contain any assignments', null, {

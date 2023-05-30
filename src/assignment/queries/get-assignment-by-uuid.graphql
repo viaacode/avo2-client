@@ -1,9 +1,8 @@
 query getAssignmentByUuid($id: uuid!) {
-	app_assignments_v2(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
+	app_assignments_v2_overview(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
 		id
 		title
 		description
-		assignment_type
 		answer_url
 		created_at
 		updated_at
@@ -90,5 +89,6 @@ query getAssignmentByUuid($id: uuid!) {
 				scheme
 			}
 		}
+		lom_learning_resource_type
 	}
 }

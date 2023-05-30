@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Alert,
 	Box,
@@ -70,7 +71,6 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { BlockHeading } from '@meemoo/admin-core-ui';
 
 interface AssignmentResponseEditProps {
 	assignment: Assignment_v2_With_Responses;
@@ -307,8 +307,8 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		switch (activeTab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
 				if (
-					assignment.assignment_type !== AssignmentType.ZOEK &&
-					assignment.assignment_type !== AssignmentType.BOUW
+					!assignment.lom_learning_resource_type.includes(AssignmentType.ZOEK) &&
+					!assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)
 				) {
 					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
 					return null;
@@ -335,7 +335,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
-				if (assignment.assignment_type !== AssignmentType.BOUW) {
+				if (!assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
 					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
 					return null;
 				}

@@ -19,34 +19,34 @@ import {
 import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
 
 export type Assignment_v2_With_Blocks = Exclude<
-	GetAssignmentByUuidQuery['app_assignments_v2'][0],
+	GetAssignmentByUuidQuery['app_assignments_v2_overview'][0],
 	undefined | null
 >;
 
 export type Assignment_v2_With_Responses = Exclude<
-	GetAssignmentWithResponseQuery['app_assignments_v2'][0],
+	GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0],
 	undefined | null
 >;
 
 export type Assignment_v2_With_Labels = Exclude<
-	| GetAssignmentByUuidQuery['app_assignments_v2'][0]
-	| GetAssignmentsByOwnerQuery['app_assignments_v2'][0]
-	| GetAssignmentsByResponseOwnerIdQuery['app_assignments_v2'][0]
-	| GetAssignmentWithResponseQuery['app_assignments_v2'][0],
+	| GetAssignmentByUuidQuery['app_assignments_v2_overview'][0]
+	| GetAssignmentsByOwnerQuery['app_assignments_v2_overview'][0]
+	| GetAssignmentsByResponseOwnerIdQuery['app_assignments_v2_overview'][0]
+	| GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0],
 	undefined | null
 >;
 
 export type Assignment_v2 = Exclude<
-	| GetAssignmentsByOwnerQuery['app_assignments_v2'][0]
-	| GetAssignmentsByResponseOwnerIdQuery['app_assignments_v2'][0]
-	| GetAssignmentsAdminOverviewQuery['app_assignments_v2'][0]
-	| GetAssignmentWithResponseQuery['app_assignments_v2'][0]
-	| GetAssignmentByUuidQuery['app_assignments_v2'][0],
+	| GetAssignmentsByOwnerQuery['app_assignments_v2_overview'][0]
+	| GetAssignmentsByResponseOwnerIdQuery['app_assignments_v2_overview'][0]
+	| GetAssignmentsAdminOverviewQuery['app_assignments_v2_overview'][0]
+	| GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0]
+	| GetAssignmentByUuidQuery['app_assignments_v2_overview'][0],
 	undefined | null
 >;
 
 export type Assignment_Response_v2 = Exclude<
-	| GetAssignmentWithResponseQuery['app_assignments_v2'][0]['responses'][0]
+	| GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0]['responses'][0]
 	| GetAssignmentResponsesByAssignmentIdQuery['app_assignment_responses_v2'][0]
 	| GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0],
 	undefined | null
@@ -58,7 +58,7 @@ export type AssignmentResponseInfo = Omit<Assignment_Response_v2, 'pupil_collect
 
 export type AssignmentBlock = Exclude<
 	| GetAssignmentBlocksQuery['app_assignment_blocks_v2'][0]
-	| GetAssignmentByUuidQuery['app_assignments_v2'][0]['blocks'][0]
+	| GetAssignmentByUuidQuery['app_assignments_v2_overview'][0]['blocks'][0]
 	| UpdateAssignmentBlockMutation['update_app_assignment_blocks_v2_by_pk'],
 	undefined | null
 >;
@@ -94,7 +94,8 @@ export type AssignmentOverviewTableColumns =
 	| 'status'
 	| 'responses'
 	| 'views'
-	| 'actions';
+	| 'actions'
+	| 'shared';
 
 export type AssignmentResponseTableColumns =
 	| 'pupil'
