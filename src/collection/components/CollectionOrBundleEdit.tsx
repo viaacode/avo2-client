@@ -202,7 +202,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	useEffect(() => {
 		fetchContributors();
-	}, [collectionId]);
+	}, [fetchContributors]);
 
 	// Main collection reducer
 	function currentCollectionReducer(
@@ -1247,14 +1247,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 							} as Avo.User.User,
 							contributors as Contributor[]
 						)}
-						onDeleteContributor={(info: ContributorInfo) => onDeleteContributor(info)}
-						onEditContributorRights={(
-							user: ContributorInfo,
-							newRights: ShareRightsType
-						) => onEditContributor(user, newRights)}
-						onAddContributor={(info: Partial<ContributorInfo>) =>
-							onAddContributor(info)
-						}
+						onDeleteContributor={onDeleteContributor}
+						onEditContributorRights={onEditContributor}
+						onAddContributor={onAddContributor}
 						withPupils={false}
 					/>
 				)}

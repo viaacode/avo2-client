@@ -114,6 +114,7 @@ import { dataService } from '../shared/services/data-service';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
+import { Contributor } from '../shared/types/contributor';
 
 import {
 	cleanCollectionBeforeSave,
@@ -1522,7 +1523,7 @@ export class CollectionService {
 		}
 	}
 
-	static async fetchContributorsByCollectionId(assignmentId: string) {
+	static async fetchContributorsByCollectionId(assignmentId: string): Promise<Contributor[]> {
 		try {
 			const variables: GetContributorsByCollectionUuidQueryVariables = { id: assignmentId };
 			const response = await dataService.query<
@@ -1541,7 +1542,7 @@ export class CollectionService {
 				});
 			}
 
-			return contributors;
+			return contributors as Contributor[];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get contributors by collection id from database',
@@ -1554,7 +1555,10 @@ export class CollectionService {
 		}
 	}
 
-	static async addContributor(collectionId: string, user: Partial<ContributorInfo>) {
+	static async addContributor(
+		collectionId: string,
+		user: Partial<ContributorInfo>
+	): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/collections/${collectionId}/share/add-contributor?email=${
@@ -1574,7 +1578,7 @@ export class CollectionService {
 		collectionId: string,
 		contributorId: string,
 		rights: ShareRightsType
-	) {
+	): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
 				`${getEnv(
@@ -1591,7 +1595,7 @@ export class CollectionService {
 		}
 	}
 
-	static async deleteContributor(collectionId: string, contributorId: string) {
+	static async deleteContributor(collectionId: string, contributorId: string): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
 				`${getEnv(

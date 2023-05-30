@@ -169,11 +169,9 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 					share?.assignment?.owner as Avo.User.User,
 					contributors as Contributor[]
 				)}
-				onDeleteContributor={(info: ContributorInfo) => onDeleteUser(info)}
-				onEditContributorRights={(user: ContributorInfo, newRights: ShareRightsType) =>
-					onEditUser(user, newRights)
-				}
-				onAddContributor={(info: Partial<ContributorInfo>) => onAddNewUser(info)}
+				onDeleteContributor={onDeleteUser}
+				onEditContributorRights={onEditUser}
+				onAddContributor={onAddNewUser}
 				{...config}
 				share={share}
 			/>
