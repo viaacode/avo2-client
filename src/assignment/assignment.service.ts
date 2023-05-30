@@ -1612,7 +1612,7 @@ export class AssignmentService {
 		contributorId: string
 	): Promise<void> {
 		try {
-			return await fetchWithLogoutJson(
+			await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
 				)}/assignments/${assignmentId}/share/delete-contributor?contributorId=${contributorId}`,
