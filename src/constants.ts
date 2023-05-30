@@ -206,7 +206,7 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_EDIT: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}`,
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}/${ROUTE_PARTS.contentTab}`,
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
