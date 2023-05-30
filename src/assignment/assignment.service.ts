@@ -1592,7 +1592,7 @@ export class AssignmentService {
 		rights: ShareRightsType
 	): Promise<void> {
 		try {
-			return await fetchWithLogoutJson(
+			await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
 				)}/assignments/${assignmentId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
