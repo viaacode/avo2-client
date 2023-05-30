@@ -12,13 +12,14 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
@@ -45,6 +46,10 @@ import { useAssignmentForm } from '../hooks';
 
 import './AssignmentDetail.scss';
 
+type AssignmentDetailPermissions = Partial<{
+	canEditAssignments: boolean;
+}>;
+
 const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
 	user,
@@ -57,11 +62,39 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		null
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
+	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
+		canEditAssignments: false,
+	});
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
 
 	const id = match.params.id;
+
+	const getPermissions = useCallback(
+		async (
+			assignmentId: string,
+			user: Avo.User.User | undefined
+		): Promise<AssignmentDetailPermissions> => {
+			if (!user) {
+				return {};
+			}
+			const rawPermissions = await Promise.all([
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: assignmentId },
+						{ name: PermissionName.EDIT_ANY_ASSIGNMENTS },
+					],
+					user
+				),
+			]);
+
+			return {
+				canEditAssignments: rawPermissions[0],
+			};
+		},
+		[user, match.params.id]
+	);
 
 	const getRelatedAssignments = useCallback(async () => {
 		try {
@@ -123,12 +156,26 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				icon: IconName.alertTriangle,
 			});
 		}
+
+		try {
+			const permissionObj = await getPermissions(id, user);
+			setPermissions(permissionObj);
+		} catch (err) {
+			setAssigmentError({
+				message: 'Ophalen van permissies is mislukt',
+				icon: IconName.alertTriangle,
+				actionButtons: ['home'],
+			});
+			setAssigmentLoading(false);
+			return;
+		}
 		setAssigmentLoading(false);
 	}, [user, match.params.id, tText, history, setAssignment]);
 
 	// Fetch initial data
 	useEffect(() => {
 		fetchAssignment();
+		getPermissions(id, user);
 	}, [fetchAssignment]);
 
 	useEffect(() => {
@@ -141,20 +188,24 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		return (
 			<ButtonToolbar>
 				<Spacer margin="left-small">
-					<Link
-						to={generatePath(APP_PATH.ASSIGNMENT_EDIT.route, {
-							id,
-						})}
-					>
-						<Button
-							type="primary"
-							icon={IconName.edit}
-							label={tText('assignment/views/assignment-response-edit___bewerken')}
-							title={tText(
-								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
-							)}
-						/>
-					</Link>
+					{permissions?.canEditAssignments && (
+						<Link
+							to={generatePath(APP_PATH.ASSIGNMENT_EDIT.route, {
+								id,
+							})}
+						>
+							<Button
+								type="primary"
+								icon={IconName.edit}
+								label={tText(
+									'assignment/views/assignment-response-edit___bewerken'
+								)}
+								title={tText(
+									'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
+								)}
+							/>
+						</Link>
+					)}
 				</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
