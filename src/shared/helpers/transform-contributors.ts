@@ -11,7 +11,7 @@ export const transformContributorsToSimpleContributors = (
 	contributors: Contributor[]
 ) => {
 	if (!owner || !contributors) {
-		return;
+		return [];
 	}
 	const defaultContributors: ContributorInfo[] = [
 		{
