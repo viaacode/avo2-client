@@ -91,5 +91,8 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 				assignment_response_id
 			}
 		}
+		contributors {
+			id
+		}
 	}
 }

@@ -60,7 +60,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	useEffect(() => {
 		fetchContributors();
-	}, [share]);
+	}, [fetchContributors]);
 
 	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
 		try {

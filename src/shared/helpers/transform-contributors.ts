@@ -9,10 +9,7 @@ import { Contributor } from '../types/contributor';
 export const transformContributorsToSimpleContributors = (
 	owner: Avo.User.User,
 	contributors: Contributor[]
-) => {
-	if (!owner || !contributors) {
-		return;
-	}
+): ContributorInfo[] => {
 	const defaultContributors: ContributorInfo[] = [
 		{
 			email: owner.mail as string,
@@ -24,18 +21,23 @@ export const transformContributorsToSimpleContributors = (
 		} as ContributorInfo,
 	];
 
-	const mappedContributors = contributors.map((contributor) => {
-		return {
-			email: contributor.profile?.usersByuserId.mail,
-			inviteEmail: contributor.invite_email,
-			rights: ContributorInfoRights[contributor.rights as keyof typeof ContributorInfoRights],
-			firstName: contributor.profile?.usersByuserId.first_name,
-			lastName: contributor.profile?.usersByuserId.last_name,
-			profileImage: contributor.profile?.avatar,
-			profileId: contributor.profile_id,
-			contributorId: contributor.id,
-		} as ContributorInfo;
-	});
+	if (contributors) {
+		const mappedContributors = contributors.map((contributor) => {
+			return {
+				email: contributor.profile?.usersByuserId.mail,
+				inviteEmail: contributor.invite_email,
+				rights: ContributorInfoRights[
+					contributor.rights as keyof typeof ContributorInfoRights
+				],
+				firstName: contributor.profile?.usersByuserId.first_name,
+				lastName: contributor.profile?.usersByuserId.last_name,
+				profileImage: contributor.profile?.avatar,
+				profileId: contributor.profile_id,
+				contributorId: contributor.id,
+			} as ContributorInfo;
+		});
+		return defaultContributors.concat(mappedContributors);
+	}
 
-	return defaultContributors.concat(mappedContributors);
+	return defaultContributors;
 };

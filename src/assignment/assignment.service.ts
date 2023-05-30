@@ -665,7 +665,7 @@ export class AssignmentService {
 
 	static async duplicateAssignment(
 		newTitle: string,
-		initialAssignment: Partial<Assignment_v2> | null
+		initialAssignment: Partial<Assignment_v2_With_Blocks> | null
 	): Promise<Assignment_v2> {
 		if (!initialAssignment || !initialAssignment.id) {
 			throw new CustomError(
@@ -676,7 +676,7 @@ export class AssignmentService {
 		}
 
 		// clone the assignment
-		const newAssignment: Partial<Assignment_v2> = {
+		const newAssignment: Partial<Assignment_v2_With_Blocks> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
 			available_at: new Date().toISOString(),

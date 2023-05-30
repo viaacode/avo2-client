@@ -76,6 +76,7 @@ import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Label_v2,
 	Assignment_v2,
+	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
 	AssignmentOverviewTableColumns,
 	AssignmentView,
@@ -334,9 +335,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 			case 'duplicate':
 				try {
-					const latest: Assignment_v2 = await AssignmentService.fetchAssignmentById(
-						dataRow.id as unknown as string
-					);
+					const latest: Assignment_v2_With_Blocks =
+						await AssignmentService.fetchAssignmentById(
+							dataRow.id as unknown as string
+						);
 
 					await duplicateAssignment(latest);
 					await updateAndReset();
