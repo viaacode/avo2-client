@@ -61,7 +61,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	return (
 		<Dropdown
 			isOpen={isShareDropdownOpen}
-			onClose={() => handleOnClose()}
+			onClose={handleOnClose}
 			className="c-share-dropdown"
 			{...dropdown}
 		>
