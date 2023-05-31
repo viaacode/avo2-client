@@ -95,7 +95,7 @@ export type AssignmentOverviewTableColumns =
 	| 'responses'
 	| 'views'
 	| 'actions'
-	| 'shared';
+	| 'share_type';
 
 export type AssignmentResponseTableColumns =
 	| 'pupil'

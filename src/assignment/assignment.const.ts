@@ -103,10 +103,10 @@ const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 const getSharedColumn = () => {
 	return [
 		{
-			id: 'shared' as AssignmentOverviewTableColumns,
+			id: 'share_type' as AssignmentOverviewTableColumns,
 			label: tText('assignment/assignment___gedeeld'),
-			sortable: false,
-			dataType: TableColumnDataType.boolean,
+			sortable: true,
+			dataType: TableColumnDataType.string,
 		},
 	];
 };

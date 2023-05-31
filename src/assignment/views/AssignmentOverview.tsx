@@ -607,7 +607,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					desktop: renderActions(assignment),
 				});
 
-			case 'shared':
+			case 'share_type':
 				return (
 					<Tooltip position="top">
 						<TooltipTrigger>
