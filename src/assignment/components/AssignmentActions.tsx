@@ -6,24 +6,32 @@ import {
 	DropdownContent,
 	IconName,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ShareDropdown } from '../../shared/components';
-import { ShareUserInfo } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
+import {
+	ContributorInfo,
+	ShareRightsType,
+} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { mockShareUsers } from '../../shared/mocks/share-user-mock';
+import { ToastService } from '../../shared/services/toast-service';
+import { Contributor } from '../../shared/types/contributor';
+import { AssignmentService } from '../assignment.service';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
 	DuplicateAssignmentButtonProps,
 } from './DuplicateAssignmentButton';
-import { ShareAssignmentWithPupilProps } from './ShareAssignmentWithPupil';
 
 interface AssignmentActionsProps {
 	preview?: Partial<ButtonProps>;
 	overflow?: Partial<ButtonProps>;
-	share?: ShareAssignmentWithPupilProps;
+	share?: ShareWithPupilsProps;
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
 }
@@ -33,9 +41,95 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	overflow,
 	duplicate,
 	remove,
+	share,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
+	const [contributors, setContributors] = useState<Contributor[]>();
+
+	const fetchContributors = useCallback(async () => {
+		if (!share?.assignment?.id) {
+			return;
+		}
+		const response = await AssignmentService.fetchContributorsByAssignmentId(
+			share?.assignment?.id
+		);
+
+		setContributors(response as Contributor[]);
+	}, [share]);
+
+	useEffect(() => {
+		fetchContributors();
+	}, [fetchContributors]);
+
+	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
+		try {
+			if (share) {
+				await AssignmentService.editShareAssignmentUserRights(
+					share.assignment?.id,
+					user.profileId as string,
+					newRights
+				);
+
+				await fetchContributors();
+
+				ToastService.success(
+					tText(
+						'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
+					)
+				);
+			}
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-aanpassen-van-de-collega-rol'
+				)
+			);
+		}
+	};
+
+	const onAddNewUser = async (info: Partial<ContributorInfo>) => {
+		try {
+			await AssignmentService.addShareAssignmentUser(share?.assignment?.id, info);
+
+			await fetchContributors();
+
+			ToastService.success(
+				tText(
+					'assignment/components/assignment-actions___uitnodiging-tot-samenwerken-is-verstuurd'
+				)
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-uitnodigen-van-een-collega'
+				)
+			);
+		}
+	};
+
+	const onDeleteUser = async (info: ContributorInfo) => {
+		try {
+			await AssignmentService.deleteShareAssignmentUser(
+				share?.assignment?.id,
+				info.profileId as string
+			);
+
+			await fetchContributors();
+
+			ToastService.success(
+				tText(
+					'assignment/components/assignment-actions___gebruiker-is-verwijderd-van-de-opdracht'
+				)
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-verwijderen-van-een-collega'
+				)
+			);
+		}
+	};
 
 	const renderPreviewButton = (config?: Partial<ButtonProps>) => (
 		<Button
@@ -63,7 +157,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		/>
 	);
 
-	const renderShareButton = (config?: ShareAssignmentWithPupilProps) => (
+	const renderShareButton = (config?: Partial<ShareDropdownProps>) => (
 		<div
 			className={classNames(
 				'c-assignment-heading__dropdown-wrapper',
@@ -71,10 +165,17 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			)}
 		>
 			<ShareDropdown
-				users={mockShareUsers}
-				onAddNewUser={(value: Partial<ShareUserInfo>) => console.log(value)}
-				onDeleteUser={(value) => console.log(value)}
-				onEditRights={(user, newRights) => console.log(user, newRights)}
+				users={transformContributorsToSimpleContributors(
+					share?.assignment?.owner as Avo.User.User,
+					contributors as Contributor[]
+				)}
+				onDeleteUser={(info: ContributorInfo) => onDeleteUser(info)}
+				onEditRights={(user: ContributorInfo, newRights: ShareRightsType) =>
+					onEditUser(user, newRights)
+				}
+				onAddNewUser={(info: Partial<ContributorInfo>) => onAddNewUser(info)}
+				{...config}
+				share={share}
 			/>
 		</div>
 	);
@@ -148,13 +249,16 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				</div>
 
 				{renderShareButton({
+					dropdown: {
+						placement: 'bottom-end',
+					},
 					button: {
 						className: 'c-assignment-heading__hide-on-mobile',
 					},
 				})}
 			</>
 		),
-		[tText, isOverflowDropdownOpen]
+		[tText, isOverflowDropdownOpen, contributors]
 	);
 };
 
