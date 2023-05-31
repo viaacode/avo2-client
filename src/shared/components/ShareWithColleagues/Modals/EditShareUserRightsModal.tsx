@@ -11,17 +11,18 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { capitalize } from 'lodash';
+import { capitalize } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
-import { ShareUserInfoRights } from '../ShareWithColleagues.types';
+import { findRightByValue } from '../ShareWithColleagues.helpers';
+import { ShareRightsType, ContributorInfoRights } from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;
 	handleClose: () => void;
-	handleConfirm: (right: ShareUserInfoRights) => void;
-	currentRight: ShareUserInfoRights;
+	handleConfirm: (right: ShareRightsType) => void;
+	currentRight: ContributorInfoRights;
 };
 
 const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
@@ -30,10 +31,10 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	handleConfirm,
 	currentRight,
 }) => {
-	const [right, setRight] = useState<ShareUserInfoRights>(currentRight);
-	const options = Object.values(ShareUserInfoRights).map((right) => ({
+	const [right, setRight] = useState<ContributorInfoRights>(currentRight);
+	const options = Object.values(ContributorInfoRights).map((right) => ({
 		label:
-			right === ShareUserInfoRights.OWNER
+			right === ContributorInfoRights.OWNER
 				? tText(
 						'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen'
 				  )
@@ -49,7 +50,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 
 	const handleOnConfirm = () => {
 		if (right) {
-			handleConfirm(right);
+			handleConfirm(findRightByValue(right));
 		}
 	};
 
@@ -73,7 +74,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 							className="c-rights-select"
 							options={options}
 							value={right}
-							onChange={(value) => setRight(value as ShareUserInfoRights)}
+							onChange={(value) => setRight(value as ContributorInfoRights)}
 						/>
 					</FormGroup>
 				</Form>

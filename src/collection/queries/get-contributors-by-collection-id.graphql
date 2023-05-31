@@ -1,0 +1,19 @@
+query getContributorsByCollectionUuid($id: uuid!) {
+	app_collections_contributors(where: { collection_id: { _eq: $id } }) {
+		collection_id
+		invite_email
+		invite_token
+		rights
+		profile_id
+		id
+		profile {
+			avatar
+			usersByuserId {
+				first_name
+				full_name
+				last_name
+				mail
+			}
+		}
+	}
+}

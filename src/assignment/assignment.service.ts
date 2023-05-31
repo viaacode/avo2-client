@@ -1,3 +1,4 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, compact, isNil, without } from 'lodash-es';
 
@@ -7,6 +8,10 @@ import { getUserGroupIds } from '../authentication/authentication.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
+import {
+	ContributorInfo,
+	ShareRightsType,
+} from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	App_Assignments_V2_Insert_Input,
 	App_Assignments_V2_Set_Input,
@@ -58,6 +63,9 @@ import {
 	GetAssignmentWithResponseDocument,
 	GetAssignmentWithResponseQuery,
 	GetAssignmentWithResponseQueryVariables,
+	GetContributorsByAssignmentIdDocument,
+	GetContributorsByAssignmentIdQuery,
+	GetContributorsByAssignmentIdQueryVariables,
 	GetMaxPositionAssignmentBlocksDocument,
 	GetMaxPositionAssignmentBlocksQuery,
 	GetMaxPositionAssignmentBlocksQueryVariables,
@@ -86,13 +94,14 @@ import {
 	UpdateAssignmentUpdatedAtDateMutation,
 	UpdateAssignmentUpdatedAtDateMutationVariables,
 } from '../shared/generated/graphql-db-types';
-import { CustomError } from '../shared/helpers';
+import { CustomError, getEnv } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { tText } from '../shared/helpers/translate';
 import { AssignmentLabelsService } from '../shared/services/assignment-labels-service';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
+import { Contributor } from '../shared/types/contributor';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
@@ -657,7 +666,7 @@ export class AssignmentService {
 
 	static async duplicateAssignment(
 		newTitle: string,
-		initialAssignment: Partial<Assignment_v2> | null
+		initialAssignment: Partial<Assignment_v2_With_Blocks> | null
 	): Promise<Assignment_v2> {
 		if (!initialAssignment || !initialAssignment.id) {
 			throw new CustomError(
@@ -668,7 +677,7 @@ export class AssignmentService {
 		}
 
 		// clone the assignment
-		const newAssignment: Partial<Assignment_v2> = {
+		const newAssignment: Partial<Assignment_v2_With_Blocks> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
 			available_at: new Date().toISOString(),
@@ -1522,6 +1531,94 @@ export class AssignmentService {
 			throw new CustomError('Failed to increase assignment view count in the database', err, {
 				assignmentId,
 				query: 'INCREMENT_ASSIGNMENT_VIEW_COUNT',
+			});
+		}
+	}
+
+	static async fetchContributorsByAssignmentId(assignmentId: string): Promise<Contributor[]> {
+		try {
+			const variables: GetContributorsByAssignmentIdQueryVariables = { id: assignmentId };
+			const response = await dataService.query<
+				GetContributorsByAssignmentIdQuery,
+				GetContributorsByAssignmentIdQueryVariables
+			>({
+				query: GetContributorsByAssignmentIdDocument,
+				variables,
+			});
+
+			const contributors = response.app_assignments_v2_contributors;
+
+			if (!contributors) {
+				throw new CustomError('Response does not contain contributors', null, {
+					response,
+				});
+			}
+
+			return contributors as Contributor[];
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get contributors by assignment id from database',
+				err,
+				{
+					assignmentId,
+					query: 'GET_CONTRIBUTORS_BY_ASSIGNMENT_ID',
+				}
+			);
+		}
+	}
+
+	static async addContributor(
+		assignmentId: string,
+		user: Partial<ContributorInfo>
+	): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor?email=${
+					user.email
+				}&rights=${user.rights}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to add assignment contributor', err, {
+				assignmentId,
+				user,
+			});
+		}
+	}
+
+	static async editContributorRights(
+		assignmentId: string,
+		contributorId: string,
+		rights: ShareRightsType
+	): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				`${getEnv(
+					'PROXY_URL'
+				)}/assignments/${assignmentId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to edit assignment contributor rights', err, {
+				assignmentId,
+				rights,
+				contributorId,
+			});
+		}
+	}
+
+	static async deleteContributor(assignmentId: string, contributorId: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				`${getEnv(
+					'PROXY_URL'
+				)}/assignments/${assignmentId}/share/delete-contributor?contributorId=${contributorId}`,
+				{ method: 'DELETE' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to remove assignment contributor', err, {
+				assignmentId,
+				contributorId,
 			});
 		}
 	}

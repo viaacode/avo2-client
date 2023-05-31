@@ -32,13 +32,19 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { ErrorNoAccess } from '../../error/components';
 import {
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
+	ShareDropdown,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import {
+	ContributorInfo,
+	ShareRightsType,
+} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import {
@@ -50,6 +56,7 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
 import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -62,6 +69,7 @@ import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-pl
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ValueOf } from '../../shared/types';
+import { Contributor } from '../../shared/types/contributor';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { MAX_TITLE_LENGTH } from '../collection.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
@@ -168,6 +176,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	useWarningBeforeUnload({
 		when: unsavedChanges,
 	});
+	const [contributors, setContributors] = useState<Contributor[]>();
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -181,6 +190,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 			JSON.stringify(convertRteToString(currentCollection));
 		setUnsavedChanges(hasChanges);
 	};
+
+	const fetchContributors = useCallback(async () => {
+		if (!collectionId) {
+			return;
+		}
+		const response = await CollectionService.fetchContributorsByCollectionId(collectionId);
+
+		setContributors(response as Contributor[]);
+	}, [collectionId]);
+
+	useEffect(() => {
+		fetchContributors();
+	}, [fetchContributors]);
 
 	// Main collection reducer
 	function currentCollectionReducer(
@@ -467,6 +489,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 				newCollection: collectionObj || null,
 			});
 		} catch (err) {
+			if ((err as CustomError)?.innerException?.statusCode === 403) {
+				// If forbidden to access, show no acces error
+				setLoadingInfo({
+					state: 'forbidden',
+				});
+				return;
+			}
+
 			console.error(
 				new CustomError(
 					`Failed to check permissions or get ${type} from the database`,
@@ -983,6 +1013,72 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
+	const onEditContributor = async (user: ContributorInfo, newRights: ShareRightsType) => {
+		try {
+			if (collectionId) {
+				await CollectionService.editContributorRights(
+					collectionId,
+					user.profileId as string,
+					newRights
+				);
+
+				await fetchContributors();
+
+				ToastService.success(
+					tText(
+						'collection/components/collection-or-bundle-edit___rol-van-de-gebruiker-is-aangepast'
+					)
+				);
+			}
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-aanpassen-van-de-collega-rol'
+				)
+			);
+		}
+	};
+
+	const onAddContributor = async (info: Partial<ContributorInfo>) => {
+		try {
+			await CollectionService.addContributor(collectionId, info);
+
+			await fetchContributors();
+
+			ToastService.success(
+				tText(
+					'collection/components/collection-or-bundle-edit___uitnodiging-tot-samenwerken-is-verstuurd'
+				)
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-uitnodigen-van-een-collega'
+				)
+			);
+		}
+	};
+
+	const onDeleteContributor = async (info: ContributorInfo) => {
+		try {
+			await CollectionService.deleteContributor(collectionId, info.profileId as string);
+
+			await fetchContributors();
+
+			ToastService.success(
+				tText(
+					'collection/components/collection-or-bundle-edit___gebruiker-is-verwijderd-van-de-collectie'
+				)
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-verwijderen-van-een-collega'
+				)
+			);
+		}
+	};
+
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
@@ -1141,6 +1237,22 @@ const CollectionOrBundleEdit: FunctionComponent<
 					onOptionClicked={executeAction}
 				/>
 				<InteractiveTour showButton />
+
+				{isCollection && (
+					<ShareDropdown
+						contributors={transformContributorsToSimpleContributors(
+							{
+								...collectionState.currentCollection?.profile?.user,
+								profile: collectionState.currentCollection?.profile,
+							} as Avo.User.User,
+							contributors as Contributor[]
+						)}
+						onDeleteContributor={onDeleteContributor}
+						onEditContributorRights={onEditContributor}
+						onAddContributor={onAddContributor}
+						withPupils={false}
+					/>
+				)}
 			</ButtonToolbar>
 		);
 	};
@@ -1187,6 +1299,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const renderCollectionOrBundleEdit = () => {
 		const { profile, title } = collectionState.currentCollection as Avo.Collection.Collection;
+
+		if (loadingInfo.state === 'forbidden') {
+			return (
+				<ErrorNoAccess
+					title={tHtml(
+						'collection/components/collection-or-bundle-edit___je-hebt-geen-toegang'
+					)}
+					message={tHtml(
+						'collection/components/collection-or-bundle-edit___je-hebt-geen-toegang-beschrijving'
+					)}
+				/>
+			);
+		}
 
 		return (
 			<>
