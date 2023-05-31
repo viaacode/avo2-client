@@ -8,7 +8,10 @@ import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.con
 import { toEnglishContentType } from '../../../collection/collection.types';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
-type ParentType = Pick<Avo.Assignment.Assignment, 'content_label' | 'content_id'>; // TODO switch to assignments v2
+type ParentType = {
+	content_label: string | null;
+	content_id: string;
+};
 type ContentType = Avo.Assignment.Content | null;
 
 export interface ContentLinkProps {
