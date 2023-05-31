@@ -101,6 +101,7 @@ import { AssignmentLabelsService } from '../shared/services/assignment-labels-se
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
+import { Contributor } from '../shared/types/contributor';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
@@ -1534,7 +1535,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchContributorsByAssignmentId(assignmentId: string) {
+	static async fetchContributorsByAssignmentId(assignmentId: string): Promise<Contributor[]> {
 		try {
 			const variables: GetContributorsByAssignmentIdQueryVariables = { id: assignmentId };
 			const response = await dataService.query<
@@ -1553,7 +1554,7 @@ export class AssignmentService {
 				});
 			}
 
-			return contributors;
+			return contributors as Contributor[];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get contributors by assignment id from database',
@@ -1566,9 +1567,12 @@ export class AssignmentService {
 		}
 	}
 
-	static async addContributor(assignmentId: string, user: Partial<ContributorInfo>) {
+	static async addShareAssignmentUser(
+		assignmentId: string,
+		user: Partial<ContributorInfo>
+	): Promise<void> {
 		try {
-			return await fetchWithLogoutJson(
+			await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor?email=${
 					user.email
 				}&rights=${user.rights}`,
@@ -1586,9 +1590,9 @@ export class AssignmentService {
 		assignmentId: string,
 		contributorId: string,
 		rights: ShareRightsType
-	) {
+	): Promise<void> {
 		try {
-			return await fetchWithLogoutJson(
+			await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
 				)}/assignments/${assignmentId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
@@ -1603,9 +1607,12 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteContributor(assignmentId: string, contributorId: string) {
+	static async deleteShareAssignmentUser(
+		assignmentId: string,
+		contributorId: string
+	): Promise<void> {
 		try {
-			return await fetchWithLogoutJson(
+			await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
 				)}/assignments/${assignmentId}/share/delete-contributor?contributorId=${contributorId}`,
