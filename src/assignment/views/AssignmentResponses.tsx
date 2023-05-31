@@ -588,13 +588,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	};
 
 	const renderAssignmentResponsePage = () => {
-		return (
-			// <div className="c-assignment-responses">
-
-			<>{renderAssignmentResponsesView()}</>
-
-			// </div>
-		);
+		return <>{renderAssignmentResponsesView()}</>;
 	};
 
 	return canViewAssignmentResponses !== null ? (

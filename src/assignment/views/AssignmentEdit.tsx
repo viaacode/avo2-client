@@ -97,7 +97,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
-	// const [tabId, setTabId] = useState<string | null>(null);
 
 	const {
 		control,

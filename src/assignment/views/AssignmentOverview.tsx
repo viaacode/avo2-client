@@ -333,7 +333,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 		switch (actionId) {
 			case 'edit':
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: dataRow.id });
+				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+					id: dataRow.id,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+				});
 				break;
 			case 'duplicate':
 				try {

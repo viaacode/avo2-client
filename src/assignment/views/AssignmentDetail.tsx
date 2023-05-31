@@ -24,6 +24,7 @@ import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { renderAvatar } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import {
 	isUserAssignmentContributor,
 	isUserAssignmentOwner,
@@ -107,8 +108,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			<ButtonToolbar>
 				<Spacer margin="left-small">
 					<Link
-						to={generatePath(APP_PATH.ASSIGNMENT_EDIT.route, {
+						to={generatePath(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 							id,
+							tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
 						})}
 					>
 						<Button

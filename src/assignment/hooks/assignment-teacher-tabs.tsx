@@ -51,14 +51,14 @@ export function useAssignmentTeacherTabs(
 	);
 
 	const onTabClick = useCallback(
-		(id: string | number) => {
-			setTab(id as ASSIGNMENT_CREATE_UPDATE_TABS);
+		(tabId: string | number) => {
+			setTab(tabId as ASSIGNMENT_CREATE_UPDATE_TABS);
 
 			if (assignmentId) {
 				navigate(
 					history,
 					APP_PATH.ASSIGNMENT_EDIT_TAB.route,
-					{ id: assignmentId, tabId: id },
+					{ id: assignmentId, tabId: tabId },
 					undefined,
 					'replace'
 				);
