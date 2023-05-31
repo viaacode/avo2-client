@@ -48515,6 +48515,13 @@ export type GetCollectionsByOwnerQueryVariables = Exact<{
 
 export type GetCollectionsByOwnerQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, updated_at: any, type_id: number, title: string, publish_at?: any | null, owner_profile_id?: any | null, is_public: boolean, external_id?: string | null, depublish_at?: any | null, created_at: any, thumbnail_path?: string | null, type: { __typename?: 'shared_types', label: string, id: number }, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null } }> };
 
+export type GetContributorsByCollectionUuidQueryVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type GetContributorsByCollectionUuidQuery = { __typename?: 'query_root', app_collections_contributors: Array<{ __typename?: 'app_collections_contributors', collection_id: any, invite_email?: string | null, invite_token?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile_id?: any | null, id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, usersByuserId?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null, mail?: string | null } | null } | null }> };
+
 export type GetOrganisationContentQueryVariables = Exact<{
   offset?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -51931,6 +51938,39 @@ export const useGetCollectionsByOwnerQuery = <
     useQuery<GetCollectionsByOwnerQuery, TError, TData>(
       variables === undefined ? ['getCollectionsByOwner'] : ['getCollectionsByOwner', variables],
       fetchData<GetCollectionsByOwnerQuery, GetCollectionsByOwnerQueryVariables>(GetCollectionsByOwnerDocument, variables),
+      options
+    );
+export const GetContributorsByCollectionUuidDocument = `
+    query getContributorsByCollectionUuid($id: uuid!) {
+  app_collections_contributors(where: {collection_id: {_eq: $id}}) {
+    collection_id
+    invite_email
+    invite_token
+    rights
+    profile_id
+    id
+    profile {
+      avatar
+      usersByuserId {
+        first_name
+        full_name
+        last_name
+        mail
+      }
+    }
+  }
+}
+    `;
+export const useGetContributorsByCollectionUuidQuery = <
+      TData = GetContributorsByCollectionUuidQuery,
+      TError = unknown
+    >(
+      variables: GetContributorsByCollectionUuidQueryVariables,
+      options?: UseQueryOptions<GetContributorsByCollectionUuidQuery, TError, TData>
+    ) =>
+    useQuery<GetContributorsByCollectionUuidQuery, TError, TData>(
+      ['getContributorsByCollectionUuid', variables],
+      fetchData<GetContributorsByCollectionUuidQuery, GetContributorsByCollectionUuidQueryVariables>(GetContributorsByCollectionUuidDocument, variables),
       options
     );
 export const GetOrganisationContentDocument = `

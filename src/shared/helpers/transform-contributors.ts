@@ -33,6 +33,7 @@ export const transformContributorsToSimpleContributors = (
 				lastName: contributor.profile?.usersByuserId.last_name,
 				profileImage: contributor.profile?.avatar,
 				profileId: contributor.profile_id,
+				contributorId: contributor.id,
 			} as ContributorInfo;
 		});
 		return defaultContributors.concat(mappedContributors);

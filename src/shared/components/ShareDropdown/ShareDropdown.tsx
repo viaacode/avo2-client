@@ -12,22 +12,24 @@ import './ShareDropdown.scss';
 import { ShareDropdownTabs } from './ShareDropdown.types';
 
 export type ShareDropdownProps = {
-	users?: ContributorInfo[];
-	onAddNewUser: (info: Partial<ContributorInfo>) => void;
-	onEditRights: (info: ContributorInfo, newRights: ShareRightsType) => void;
-	onDeleteUser: (info: ContributorInfo) => void;
+	contributors?: ContributorInfo[];
+	onAddContributor: (info: Partial<ContributorInfo>) => void;
+	onEditContributorRights: (info: ContributorInfo, newRights: ShareRightsType) => void;
+	onDeleteContributor: (info: ContributorInfo) => void;
 	button?: Partial<ButtonProps>;
 	dropdown?: Partial<DropdownProps>;
 	share?: ShareWithPupilsProps;
+	withPupils?: boolean;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
-	users,
-	onAddNewUser,
-	onEditRights,
-	onDeleteUser,
+	contributors,
+	onAddContributor,
+	onEditContributorRights,
+	onDeleteContributor,
 	dropdown,
 	button,
 	share,
+	withPupils = true,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -58,11 +60,26 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 		}
 	};
 
+	const renderShareWithColleagues = () => {
+		if (contributors) {
+			return (
+				<ShareWithColleagues
+					contributors={contributors}
+					onAddNewContributor={onAddContributor}
+					onDeleteContributor={onDeleteContributor}
+					onEditRights={onEditContributorRights}
+					hasModalOpen={(open: boolean) => setHasModalOpen(open)}
+				/>
+			);
+		}
+	};
+
 	return (
 		<Dropdown
 			isOpen={isShareDropdownOpen}
 			onClose={handleOnClose}
 			className="c-share-dropdown"
+			placement="bottom-end"
 			{...dropdown}
 		>
 			<DropdownButton>
@@ -70,7 +87,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					ariaLabel={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					label={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					title={tText(
-						'assignment/components/share-assignment-with-pupil___bezorg-deze-opdrachtlink-aan-je-leerlingen'
+						'shared/components/share-dropdown/share-dropdown___bezorg-deze-opdrachtlink-aan-je-leerlingen-of-werk-samen-met-je-collegas'
 					)}
 					onClick={handleShareButtonClicked}
 					disabled={false}
@@ -81,25 +98,35 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 
 			<DropdownContent>
 				<div className="c-share-dropdown__container">
-					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+					{withPupils ? (
+						<>
+							<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 
-					<div className="c-share-dropdown__content">
-						{tab === ShareDropdownTabs.COLLEAGUES ? (
-							<>
-								{users && (
-									<ShareWithColleagues
-										contributors={users}
-										onAddNewContributor={onAddNewUser}
-										onDeleteContributor={onDeleteUser}
-										onEditRights={onEditRights}
-										hasModalOpen={(open: boolean) => setHasModalOpen(open)}
-									/>
+							<div className="c-share-dropdown__content">
+								{tab === ShareDropdownTabs.COLLEAGUES ? (
+									<>
+										{contributors && (
+											<ShareWithColleagues
+												contributors={contributors}
+												onAddNewContributor={onAddContributor}
+												onDeleteContributor={onDeleteContributor}
+												onEditRights={onEditContributorRights}
+												hasModalOpen={(open: boolean) =>
+													setHasModalOpen(open)
+												}
+											/>
+										)}
+									</>
+								) : (
+									<ShareWithPupil {...(share as ShareWithPupilsProps)} />
 								)}
-							</>
-						) : (
-							<ShareWithPupil {...(share as ShareWithPupilsProps)} />
-						)}
-					</div>
+							</div>
+						</>
+					) : (
+						<div className="c-share-dropdown__content">
+							{renderShareWithColleagues()}
+						</div>
+					)}
 				</div>
 			</DropdownContent>
 		</Dropdown>
