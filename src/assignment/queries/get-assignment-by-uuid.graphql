@@ -75,6 +75,9 @@ query getAssignmentByUuid($id: uuid!) {
 					full_name
 				}
 				id
+				organisation {
+					name
+				}
 			}
 			id
 			enum_right_type {

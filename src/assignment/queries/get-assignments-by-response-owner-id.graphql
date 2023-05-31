@@ -69,6 +69,27 @@ query getAssignmentsByResponseOwnerId(
 		}
 		share_type
 		lom_learning_resource_type
+		contributors {
+			profile {
+				avatar
+				user_id
+				usersByuserId {
+					last_name
+					first_name
+					mail
+					full_name
+				}
+				id
+				organisation {
+					name
+				}
+			}
+			id
+			enum_right_type {
+				description
+				value
+			}
+		}
 	}
 	count: app_assignments_v2_overview_aggregate(
 		where: {

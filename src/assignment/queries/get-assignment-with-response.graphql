@@ -91,6 +91,20 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 			}
 		}
 		contributors {
+			profile {
+				avatar
+				user_id
+				usersByuserId {
+					last_name
+					first_name
+					mail
+					full_name
+				}
+				id
+				organisation {
+					name
+				}
+			}
 			id
 		}
 		share_type

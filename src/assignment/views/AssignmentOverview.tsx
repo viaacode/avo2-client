@@ -23,7 +23,6 @@ import {
 	TooltipTrigger,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
@@ -398,7 +397,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 											label: tText(
 												'assignment/views/assignment-overview___bewerk'
 											),
-										} as MenuItemInfoSchema,
+										},
 								  ]),
 							{
 								icon: IconName.copy,
@@ -497,19 +496,44 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
-		const shareTypeText =
+		const sharedWithNames = assignment.contributors.map((contributor) => {
+			if (contributor.profile?.organisation?.name) {
+				return (
+					contributor.profile?.usersByuserId?.full_name +
+					' ' +
+					'(' +
+					contributor.profile?.organisation?.name +
+					')' +
+					' '
+				);
+			} else {
+				return contributor.profile?.usersByuserId?.full_name + ' ';
+			}
+		});
+
+		const shareTypeTitle =
 			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
 				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
 				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
 				? tText('assignment/views/assignment-overview___gedeeld-met-anderen')
-				: tText('assignment/views/assignment-overview___niet-gedeeld');
+				: tText('assignment/views/assignment-overview___mijn-opdracht');
+
+		const shareTypeText =
+			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
+				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				? tHtml('assignment/views/assignment-overview___gedeeld-met-count-anderen-names', {
+						count: sharedWithNames.length,
+						names: sharedWithNames,
+				  })
+				: tText('assignment/views/assignment-overview___mijn-opdracht');
 
 		const shareTypeIcon =
 			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
-				? IconName.user
+				? IconName.userGroup
 				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
-				? IconName.users
-				: IconName.userX;
+				? IconName.userGroup2
+				: IconName.user2;
 
 		switch (
 			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
@@ -587,7 +611,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return (
 					<Tooltip position="top">
 						<TooltipTrigger>
-							<div className="c-assignment-overview__shared" title={shareTypeText}>
+							<div className="c-assignment-overview__shared" title={shareTypeTitle}>
 								<Icon name={shareTypeIcon} />
 							</div>
 						</TooltipTrigger>
