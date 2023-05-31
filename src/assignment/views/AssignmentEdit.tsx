@@ -518,6 +518,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 									},
 								},
 							}}
+							refetch={async () => await fetchAssignment()}
 						/>
 					}
 					tabs={renderTabs}

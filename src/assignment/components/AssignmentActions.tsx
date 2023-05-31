@@ -34,6 +34,7 @@ interface AssignmentActionsProps {
 	share?: ShareWithPupilsProps;
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
+	refetch?: () => void;
 }
 
 const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
@@ -42,6 +43,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	duplicate,
 	remove,
 	share,
+	refetch,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -65,19 +67,35 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
 		try {
 			if (share) {
-				await AssignmentService.editContributorRights(
-					share.assignment?.id,
-					user.profileId as string,
-					newRights
-				);
+				if (newRights === 'OWNER' && refetch) {
+					console.log('transfer ownership');
+					await AssignmentService.transferAssignmentOwnerShip(
+						share.assignment?.id,
+						user.profileId as string
+					);
 
-				await fetchContributors();
+					await refetch();
 
-				ToastService.success(
-					tText(
-						'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
-					)
-				);
+					ToastService.success(
+						tText(
+							'assignment/components/assignment-actions___eigenaarschap-is-succesvol-overgedragen'
+						)
+					);
+				} else {
+					await AssignmentService.editContributorRights(
+						share.assignment?.id,
+						user.profileId as string,
+						newRights
+					);
+
+					await fetchContributors();
+
+					ToastService.success(
+						tText(
+							'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
+						)
+					);
+				}
 			}
 		} catch (err) {
 			ToastService.danger(

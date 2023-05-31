@@ -1567,7 +1567,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async addShareAssignmentUser(
+	static async addContributor(
 		assignmentId: string,
 		user: Partial<ContributorInfo>
 	): Promise<void> {
@@ -1607,10 +1607,7 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteShareAssignmentUser(
-		assignmentId: string,
-		contributorId: string
-	): Promise<void> {
+	static async deleteContributor(assignmentId: string, contributorId: string): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
 				`${getEnv(
@@ -1621,6 +1618,24 @@ export class AssignmentService {
 		} catch (err) {
 			throw new CustomError('Failed to remove assignment contributor', err, {
 				assignmentId,
+				contributorId,
+			});
+		}
+	}
+
+	static async transferAssignmentOwnerShip(
+		assignmentId: string,
+		contributorId: string
+	): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				`${getEnv(
+					'PROXY_URL'
+				)}/assignments/${assignmentId}/share/transfer-owner?newOwnerId=${contributorId}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to transfer assignment ownership', err, {
 				contributorId,
 			});
 		}
