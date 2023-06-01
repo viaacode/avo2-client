@@ -1,0 +1,54 @@
+@use "sass:math";
+
+@import "../../../styles/settings/variables";
+
+$sticky-bar-spacing-horizontal: $g-spacer-unit * 4;
+$sticky-bar-width: 800px;
+
+$sticky-bar-threshold: $sticky-bar-width + (math.div($sticky-bar-spacing-horizontal * 2, 1rem) * 10px);
+
+.c-sticky-bar__wrapper {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	justify-content: space-between; // Keep the save indicator at the bottom
+
+	.c-sticky-bar {
+		align-items: baseline; // Better than center here
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+		margin-left: $sticky-bar-spacing-horizontal;
+		margin-right: $sticky-bar-spacing-horizontal;
+		margin-top: auto;
+		z-index: 999999;
+
+		@media screen and (min-width: $sticky-bar-threshold) {
+			margin-left: auto;
+			margin-right: auto;
+			width: $sticky-bar-width;
+		}
+
+		@media screen and (min-width: $g-bp3) {
+			justify-content: space-between;
+		}
+
+		@media screen and (max-width: ($g-bp3 - 1px)) {
+			flex-wrap: wrap;
+
+			&__cta {
+				flex-basis: 100%;
+				margin-bottom: 2rem;
+				text-align: center;
+			}
+
+			.c-button {
+				margin-right: 0 !important;
+			}
+		}
+
+		&__cta {
+			flex-grow: 1;
+		}
+	}
+}

@@ -1574,10 +1574,14 @@ export class AssignmentService {
 	): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor?email=${
-					user.email
-				}&rights=${user.rights}`,
-				{ method: 'PATCH' }
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor`,
+					query: {
+						email: user.email || '',
+						rights: user.rights,
+					},
+				}),
+				{ method: 'POST' }
 			);
 		} catch (err) {
 			throw new CustomError('Failed to add assignment contributor', err, {
@@ -1594,9 +1598,15 @@ export class AssignmentService {
 	): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
-				`${getEnv(
-					'PROXY_URL'
-				)}/assignments/${assignmentId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/assignments/${assignmentId}/share/change-contributor-rights`,
+					query: {
+						contributorId,
+						rights,
+					},
+				}),
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
@@ -1611,15 +1621,58 @@ export class AssignmentService {
 	static async deleteContributor(assignmentId: string, contributorId: string): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
-				`${getEnv(
-					'PROXY_URL'
-				)}/assignments/${assignmentId}/share/delete-contributor?contributorId=${contributorId}`,
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/assignments/${assignmentId}/share/delete-contributor`,
+					query: {
+						contributorId,
+					},
+				}),
 				{ method: 'DELETE' }
 			);
 		} catch (err) {
 			throw new CustomError('Failed to remove assignment contributor', err, {
 				assignmentId,
 				contributorId,
+			});
+		}
+	}
+
+	static async acceptSharedAssignment(assignmentId: string, inviteToken: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/accept-invite`,
+					query: {
+						inviteToken,
+					},
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to accept to share assignment', err, {
+				assignmentId,
+				inviteToken,
+			});
+		}
+	}
+
+	static async declineSharedAssignment(assignmentId: string, inviteToken: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/reject-invite`,
+					query: {
+						inviteToken,
+					},
+				}),
+				{ method: 'DELETE' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to decline to share assignment', err, {
+				assignmentId,
+				inviteToken,
 			});
 		}
 	}

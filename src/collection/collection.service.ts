@@ -3,7 +3,7 @@ import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
 import { cloneDeep, compact, fromPairs, get, isEqual, isNil, without } from 'lodash-es';
-import queryString from 'query-string';
+import queryString, { stringifyUrl } from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
@@ -1561,9 +1561,13 @@ export class CollectionService {
 	): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/collections/${collectionId}/share/add-contributor?email=${
-					user.email
-				}&rights=${user.rights}`,
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/add-contributor`,
+					query: {
+						email: user.email || '',
+						rights: user.rights,
+					},
+				}),
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
@@ -1581,9 +1585,15 @@ export class CollectionService {
 	): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv(
-					'PROXY_URL'
-				)}/collections/${collectionId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/share/change-contributor-rights`,
+					query: {
+						contributorId,
+						rights,
+					},
+				}),
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
@@ -1598,9 +1608,12 @@ export class CollectionService {
 	static async deleteContributor(collectionId: string, contributorId: string): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv(
-					'PROXY_URL'
-				)}/collections/${collectionId}/share/delete-contributor?contributorId=${contributorId}`,
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/share/delete-contributor`,
+					query: { contributorId },
+				}),
 				{ method: 'DELETE' }
 			);
 		} catch (err) {

@@ -17,6 +17,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -26,6 +27,7 @@ import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
+import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { renderAvatar } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -68,6 +70,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
+
+	const [query] = useQueryParams({ shareToken: StringParam });
+	const { shareToken } = query;
 
 	const id = match.params.id;
 
@@ -282,6 +287,23 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		);
 	};
 
+	const onAcceptShareAssignment = async () => {
+		if (!assignment || !shareToken) {
+			return;
+		}
+
+		try {
+			const res = await AssignmentService.acceptSharedAssignment(
+				assignment?.id as string,
+				shareToken
+			);
+
+			console.log(res);
+		} catch (err) {
+			ToastService.danger(tText('Er liep iets fout bij het accepteren van de uitnodiging'));
+		}
+	};
+
 	const renderPageContent = () => {
 		if (assignmentLoading) {
 			return (
@@ -319,25 +341,44 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	};
 
 	return (
-		<>
-			<MetaTags>
-				<title>
-					{GENERATE_SITE_TITLE(
-						tText('assignment/views/assignment-edit___bewerk-opdracht-pagina-titel')
-					)}
-				</title>
+		<div className="c-sticky-bar__wrapper">
+			<div>
+				<MetaTags>
+					<title>
+						{GENERATE_SITE_TITLE(
+							tText('assignment/views/assignment-edit___bewerk-opdracht-pagina-titel')
+						)}
+					</title>
 
-				<meta
-					name="description"
-					content={tText(
-						'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
-					)}
-				/>
-			</MetaTags>
-			{renderHeader()}
-			{renderPageContent()}
-			{renderMetadata()}
-		</>
+					<meta
+						name="description"
+						content={tText(
+							'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
+						)}
+					/>
+				</MetaTags>
+				{renderHeader()}
+				{renderPageContent()}
+				{renderMetadata()}
+			</div>
+
+			<StickyBar
+				title={tHtml('Wil je de opdracht ‘{{title}}’ toevoegen aan je werkruimte?', {
+					title: assignment?.title,
+				})}
+				isVisible={!!shareToken}
+				actionButtonProps={{
+					label: tText('Toevoegen'),
+					onClick: onAcceptShareAssignment,
+					type: 'tertiary',
+				}}
+				cancelButtonProps={{
+					label: tText('Weigeren'),
+					onClick: console.log,
+					type: 'tertiary',
+				}}
+			/>
+		</div>
 	);
 };
 
