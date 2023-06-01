@@ -64,9 +64,9 @@ import {
 	GetAssignmentWithResponseDocument,
 	GetAssignmentWithResponseQuery,
 	GetAssignmentWithResponseQueryVariables,
-	GetContributorsByAssignmentIdDocument,
-	GetContributorsByAssignmentIdQuery,
-	GetContributorsByAssignmentIdQueryVariables,
+	GetContributorsByAssignmentUuidDocument,
+	GetContributorsByAssignmentUuidQuery,
+	GetContributorsByAssignmentUuidQueryVariables,
 	GetMaxPositionAssignmentBlocksDocument,
 	GetMaxPositionAssignmentBlocksQuery,
 	GetMaxPositionAssignmentBlocksQueryVariables,
@@ -124,6 +124,7 @@ import {
 	AssignmentResponseInfo,
 	AssignmentType,
 	BaseBlockWithMeta,
+	GqlAssignmentContributor,
 	PupilCollectionFragment,
 } from './assignment.types';
 import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
@@ -1538,12 +1539,12 @@ export class AssignmentService {
 
 	static async fetchContributorsByAssignmentId(assignmentId: string): Promise<Contributor[]> {
 		try {
-			const variables: GetContributorsByAssignmentIdQueryVariables = { id: assignmentId };
+			const variables: GetContributorsByAssignmentUuidQueryVariables = { id: assignmentId };
 			const response = await dataService.query<
-				GetContributorsByAssignmentIdQuery,
-				GetContributorsByAssignmentIdQueryVariables
+				GetContributorsByAssignmentUuidQuery,
+				GetContributorsByAssignmentUuidQueryVariables
 			>({
-				query: GetContributorsByAssignmentIdDocument,
+				query: GetContributorsByAssignmentUuidDocument,
 				variables,
 			});
 
@@ -1618,7 +1619,11 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteContributor(assignmentId: string, contributorId: string): Promise<void> {
+	static async deleteContributor(
+		assignmentId: string,
+		contributorId?: string,
+		profileId?: string
+	): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
 				stringifyUrl({
@@ -1627,6 +1632,7 @@ export class AssignmentService {
 					)}/assignments/${assignmentId}/share/delete-contributor`,
 					query: {
 						contributorId,
+						profileId,
 					},
 				}),
 				{ method: 'DELETE' }
@@ -1639,9 +1645,12 @@ export class AssignmentService {
 		}
 	}
 
-	static async acceptSharedAssignment(assignmentId: string, inviteToken: string): Promise<void> {
+	static async acceptSharedAssignment(
+		assignmentId: string,
+		inviteToken: string
+	): Promise<GqlAssignmentContributor> {
 		try {
-			await fetchWithLogoutJson(
+			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/accept-invite`,
 					query: {

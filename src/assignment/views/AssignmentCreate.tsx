@@ -311,7 +311,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create c-sticky-save-bar__wrapper">
+		<div className="c-assignment-page c-assignment-page--create c-sticky-bar__wrapper">
 			<div>
 				<AssignmentHeading
 					back={renderBackButton}
@@ -335,7 +335,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 			</div>
 
 			{/* Always show on create */}
-			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 			<StickySaveBar
 				isVisible={true}
 				onSave={handleSubmit(submit, (...args) => console.error(args))}

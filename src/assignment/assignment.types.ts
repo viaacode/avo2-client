@@ -176,3 +176,14 @@ export interface EditBlockProps {
 export type EditableAssignmentBlock = AssignmentBlock &
 	Pick<Avo.Core.BlockItemBase, 'item_meta'> &
 	EditableBlockFields;
+
+export interface GqlAssignmentContributor {
+	id: string;
+	profile_id: string | null;
+	assignment_id: string;
+	rights: Avo.Share.Rights;
+	created_at: string;
+	updated_at: string;
+	invite_token: string | null;
+	invite_email: string | null;
+}

@@ -28,7 +28,7 @@ import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { renderAvatar } from '../../shared/helpers';
+import { navigate, renderAvatar } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -71,8 +71,8 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		null
 	);
 
-	const [query] = useQueryParams({ shareToken: StringParam });
-	const { shareToken } = query;
+	const [query] = useQueryParams({ inviteToken: StringParam });
+	const { inviteToken } = query;
 
 	const id = match.params.id;
 
@@ -288,19 +288,51 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	};
 
 	const onAcceptShareAssignment = async () => {
-		if (!assignment || !shareToken) {
+		if (!assignment || !inviteToken) {
 			return;
 		}
 
 		try {
 			const res = await AssignmentService.acceptSharedAssignment(
 				assignment?.id as string,
-				shareToken
+				inviteToken
 			);
 
-			console.log(res);
+			navigate(history, match.url);
+
+			ToastService.success(
+				res.rights === 'CONTRIBUTOR'
+					? tText('assignment/views/assignment-detail___je-kan-nu-deze-opdracht-bewerken')
+					: tText('assignment/views/assignment-detail___je-kan-nu-deze-opdracht-bekijken')
+			);
 		} catch (err) {
-			ToastService.danger(tText('Er liep iets fout bij het accepteren van de uitnodiging'));
+			ToastService.danger(
+				tText(
+					'assignment/views/assignment-detail___er-liep-iets-fout-bij-het-accepteren-van-de-uitnodiging'
+				)
+			);
+		}
+	};
+
+	const onDeclineShareAssignment = async () => {
+		if (!assignment || !inviteToken) {
+			return;
+		}
+
+		try {
+			await AssignmentService.declineSharedAssignment(assignment?.id as string, inviteToken);
+
+			navigate(history, APP_PATH.WORKSPACE_ASSIGNMENTS.route);
+
+			ToastService.success(
+				tText('assignment/views/assignment-detail___de-uitnodiging-werd-afgewezen')
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'assignment/views/assignment-detail___er-liep-iets-fout-bij-het-afwijzen-van-de-uitnodiging'
+				)
+			);
 		}
 	};
 
@@ -363,18 +395,21 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			</div>
 
 			<StickyBar
-				title={tHtml('Wil je de opdracht ‘{{title}}’ toevoegen aan je werkruimte?', {
-					title: assignment?.title,
-				})}
-				isVisible={!!shareToken}
+				title={tHtml(
+					'assignment/views/assignment-detail___wil-je-de-opdracht-title-toevoegen-aan-je-werkruimte',
+					{
+						title: assignment?.title,
+					}
+				)}
+				isVisible={!!inviteToken}
 				actionButtonProps={{
-					label: tText('Toevoegen'),
+					label: tText('assignment/views/assignment-detail___toevoegen'),
 					onClick: onAcceptShareAssignment,
 					type: 'tertiary',
 				}}
 				cancelButtonProps={{
-					label: tText('Weigeren'),
-					onClick: console.log,
+					label: tText('assignment/views/assignment-detail___weigeren'),
+					onClick: onDeclineShareAssignment,
 					type: 'tertiary',
 				}}
 			/>

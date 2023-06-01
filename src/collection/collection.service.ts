@@ -1605,14 +1605,18 @@ export class CollectionService {
 		}
 	}
 
-	static async deleteContributor(collectionId: string, contributorId: string): Promise<void> {
+	static async deleteContributor(
+		collectionId: string,
+		contributorId?: string,
+		profileId?: string
+	): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(
 						'PROXY_URL'
 					)}/collections/${collectionId}/share/delete-contributor`,
-					query: { contributorId },
+					query: { contributorId, profileId },
 				}),
 				{ method: 'DELETE' }
 			);
@@ -1620,6 +1624,48 @@ export class CollectionService {
 			throw new CustomError('Failed to remove collection contributor', err, {
 				collectionId,
 				contributorId,
+				profileId,
+			});
+		}
+	}
+
+	static async acceptSharedCollection(
+		collectionId: string,
+		inviteToken: string
+	): Promise<Avo.Collection.Contributor> {
+		try {
+			return await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/accept-invite`,
+					query: {
+						inviteToken,
+					},
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to accept to share collection', err, {
+				assignmentId: collectionId,
+				inviteToken,
+			});
+		}
+	}
+
+	static async declineSharedCollection(collectionId: string, inviteToken: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/reject-invite`,
+					query: {
+						inviteToken,
+					},
+				}),
+				{ method: 'DELETE' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to decline to share collection', err, {
+				assignmentId: collectionId,
+				inviteToken,
 			});
 		}
 	}

@@ -484,7 +484,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--edit c-sticky-save-bar__wrapper">
+		<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
 			<div>
 				<AssignmentHeading
 					back={renderBackButton}
@@ -556,7 +556,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				</Container>
 			</div>
 
-			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
 		</div>
 	);

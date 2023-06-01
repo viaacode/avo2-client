@@ -49,6 +49,7 @@ import {
 	generateContentLinkString,
 	getFullName,
 	isMobileWidth,
+	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
 import {
@@ -78,6 +79,9 @@ import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '.
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
 import './CollectionDetail.scss';
+import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
+
+import { StringParam, useQueryParams } from 'use-query-params';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -165,6 +169,9 @@ const CollectionDetail: FunctionComponent<
 
 	const [assignmentId, setAssignmentId] = useState<string>();
 	const [importWithDescription, setImportWithDescription] = useState<boolean>(false);
+
+	const [query] = useQueryParams({ inviteToken: StringParam });
+	const { inviteToken } = query;
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
@@ -761,6 +768,59 @@ const CollectionDetail: FunctionComponent<
 			ToastService.danger(
 				tHtml(
 					'collection/views/collection-detail___de-collectie-kon-niet-worden-geimporteerd-naar-de-opdracht'
+				)
+			);
+		}
+	};
+
+	const onAcceptShareCollection = async () => {
+		if (!collection || !inviteToken) {
+			return;
+		}
+
+		try {
+			const res = await CollectionService.acceptSharedCollection(
+				collection?.id as string,
+				inviteToken
+			);
+
+			navigate(history, match.url);
+
+			ToastService.success(
+				res.rights === 'CONTRIBUTOR'
+					? tText(
+							'collection/views/collection-detail___je-kan-nu-deze-collectie-bewerken'
+					  )
+					: tText(
+							'collection/views/collection-detail___je-kan-nu-deze-collectie-bekijken'
+					  )
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'collection/views/collection-detail___er-liep-iets-fout-bij-het-accepteren-van-de-uitnodiging'
+				)
+			);
+		}
+	};
+
+	const onDeclineShareCollection = async () => {
+		if (!collection || !inviteToken) {
+			return;
+		}
+
+		try {
+			await CollectionService.declineSharedCollection(collection?.id as string, inviteToken);
+
+			navigate(history, APP_PATH.WORKSPACE_COLLECTIONS.route);
+
+			ToastService.success(
+				tText('collection/views/collection-detail___de-uitnodiging-werd-afgewezen')
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'collection/views/collection-detail___er-liep-iets-fout-bij-het-afwijzen-van-de-uitnodiging'
 				)
 			);
 		}
@@ -1390,37 +1450,62 @@ const CollectionDetail: FunctionComponent<
 
 	const renderPageContent = () => {
 		return (
-			<>
-				<MetaTags>
-					<title>
-						{GENERATE_SITE_TITLE(
-							get(
-								collection,
-								'title',
-								tText(
-									'collection/views/collection-detail___collectie-detail-titel-fallback'
+			<div className="c-sticky-bar__wrapper">
+				<div>
+					<MetaTags>
+						<title>
+							{GENERATE_SITE_TITLE(
+								get(
+									collection,
+									'title',
+									tText(
+										'collection/views/collection-detail___collectie-detail-titel-fallback'
+									)
 								)
-							)
-						)}
-					</title>
-					<meta name="description" content={get(collection, 'description') || ''} />
-				</MetaTags>
-				<JsonLd
-					url={window.location.href}
-					title={get(collection, 'title', '')}
-					description={get(collection, 'description')}
-					image={get(collection, 'thumbnail_path')}
-					isOrganisation={!!get(collection, 'profile.organisation')}
-					author={getFullName(get(collection, 'profile'), true, false)}
-					publishedAt={get(collection, 'published_at')}
-					updatedAt={get(collection, 'updated_at')}
-					keywords={[
-						...(get(collection, 'lom_classification') || []),
-						...(get(collection, 'lom_context') || []),
-					]}
+							)}
+						</title>
+
+						<meta name="description" content={get(collection, 'description') || ''} />
+					</MetaTags>
+
+					<JsonLd
+						url={window.location.href}
+						title={get(collection, 'title', '')}
+						description={get(collection, 'description')}
+						image={get(collection, 'thumbnail_path')}
+						isOrganisation={!!get(collection, 'profile.organisation')}
+						author={getFullName(get(collection, 'profile'), true, false)}
+						publishedAt={get(collection, 'published_at')}
+						updatedAt={get(collection, 'updated_at')}
+						keywords={[
+							...(get(collection, 'lom_classification') || []),
+							...(get(collection, 'lom_context') || []),
+						]}
+					/>
+
+					{renderCollection()}
+				</div>
+
+				<StickyBar
+					title={tHtml(
+						'collection/views/collection-detail___wil-je-de-collectie-title-toevoegen-aan-je-werkruimte',
+						{
+							title: collection?.title,
+						}
+					)}
+					isVisible={!!inviteToken}
+					actionButtonProps={{
+						label: tText('collection/views/collection-detail___toevoegen'),
+						onClick: onAcceptShareCollection,
+						type: 'tertiary',
+					}}
+					cancelButtonProps={{
+						label: tText('collection/views/collection-detail___weigeren'),
+						onClick: onDeclineShareCollection,
+						type: 'tertiary',
+					}}
 				/>
-				{renderCollection()}
-			</>
+			</div>
 		);
 	};
 
