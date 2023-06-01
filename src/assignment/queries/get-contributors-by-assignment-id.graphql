@@ -1,4 +1,4 @@
-query getContributorsByAssignmentId($id: uuid!) {
+query getContributorsByAssignmentUuid($id: uuid!) {
 	app_assignments_v2_contributors(where: { assignment_id: { _eq: $id } }) {
 		assignment_id
 		invite_email

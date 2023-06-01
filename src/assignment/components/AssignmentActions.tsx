@@ -66,9 +66,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
 		try {
-			if (share) {
-				if (newRights === 'OWNER' && refetch) {
-					console.log('transfer ownership');
+			if (share && refetch) {
+				if (newRights === 'OWNER') {
 					await AssignmentService.transferAssignmentOwnerShip(
 						share.assignment?.id,
 						user.profileId as string
@@ -130,7 +129,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		try {
 			await AssignmentService.deleteContributor(
 				share?.assignment?.id,
-				info.profileId as string
+				info.contributorId as string
 			);
 
 			await fetchContributors();

@@ -1549,7 +1549,7 @@ export class CollectionService {
 				err,
 				{
 					assignmentId,
-					query: 'GET_CONTRIBUTORS_BY_COLLECTION_ID',
+					query: 'GET_CONTRIBUTORS_BY_COLLECTION_UUID',
 				}
 			);
 		}

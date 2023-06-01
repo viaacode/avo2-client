@@ -63,9 +63,9 @@ import {
 	GetAssignmentWithResponseDocument,
 	GetAssignmentWithResponseQuery,
 	GetAssignmentWithResponseQueryVariables,
-	GetContributorsByAssignmentIdDocument,
-	GetContributorsByAssignmentIdQuery,
-	GetContributorsByAssignmentIdQueryVariables,
+	GetContributorsByAssignmentUuidDocument,
+	GetContributorsByAssignmentUuidQuery,
+	GetContributorsByAssignmentUuidQueryVariables,
 	GetMaxPositionAssignmentBlocksDocument,
 	GetMaxPositionAssignmentBlocksQuery,
 	GetMaxPositionAssignmentBlocksQueryVariables,
@@ -1537,12 +1537,12 @@ export class AssignmentService {
 
 	static async fetchContributorsByAssignmentId(assignmentId: string): Promise<Contributor[]> {
 		try {
-			const variables: GetContributorsByAssignmentIdQueryVariables = { id: assignmentId };
+			const variables: GetContributorsByAssignmentUuidQueryVariables = { id: assignmentId };
 			const response = await dataService.query<
-				GetContributorsByAssignmentIdQuery,
-				GetContributorsByAssignmentIdQueryVariables
+				GetContributorsByAssignmentUuidQuery,
+				GetContributorsByAssignmentUuidQueryVariables
 			>({
-				query: GetContributorsByAssignmentIdDocument,
+				query: GetContributorsByAssignmentUuidDocument,
 				variables,
 			});
 
@@ -1561,7 +1561,7 @@ export class AssignmentService {
 				err,
 				{
 					assignmentId,
-					query: 'GET_CONTRIBUTORS_BY_ASSIGNMENT_ID',
+					query: 'GET_CONTRIBUTORS_BY_ASSIGNMENT_UUID',
 				}
 			);
 		}

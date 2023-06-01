@@ -1024,6 +1024,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 					await checkPermissionsAndGetCollection();
 
+					await fetchContributors();
+
 					ToastService.success(
 						tText(
 							'collection/components/collection-or-bundle-edit___eigenaarschap-succesvol-overgedragen'
@@ -1076,7 +1078,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const onDeleteContributor = async (info: ContributorInfo) => {
 		try {
-			await CollectionService.deleteContributor(collectionId, info.profileId as string);
+			await CollectionService.deleteContributor(collectionId, info.contributorId as string);
 
 			await fetchContributors();
 

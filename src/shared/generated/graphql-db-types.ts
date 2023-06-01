@@ -48338,12 +48338,12 @@ export type GetAssignmentsByResponseOwnerIdQueryVariables = Exact<{
 
 export type GetAssignmentsByResponseOwnerIdQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, assignment_type: string, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }> }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
 
-export type GetContributorsByAssignmentIdQueryVariables = Exact<{
+export type GetContributorsByAssignmentUuidQueryVariables = Exact<{
   id: Scalars['uuid'];
 }>;
 
 
-export type GetContributorsByAssignmentIdQuery = { __typename?: 'query_root', app_assignments_v2_contributors: Array<{ __typename?: 'app_assignments_v2_contributors', assignment_id: any, invite_email?: string | null, invite_token?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile_id?: any | null, id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, usersByuserId?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null, mail?: string | null } | null } | null }> };
+export type GetContributorsByAssignmentUuidQuery = { __typename?: 'query_root', app_assignments_v2_contributors: Array<{ __typename?: 'app_assignments_v2_contributors', assignment_id: any, invite_email?: string | null, invite_token?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile_id?: any | null, id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, usersByuserId?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null, mail?: string | null } | null } | null }> };
 
 export type GetMaxPositionAssignmentBlocksQueryVariables = Exact<{
   assignmentId: Scalars['uuid'];
@@ -51275,8 +51275,8 @@ export const useGetAssignmentsByResponseOwnerIdQuery = <
       fetchData<GetAssignmentsByResponseOwnerIdQuery, GetAssignmentsByResponseOwnerIdQueryVariables>(GetAssignmentsByResponseOwnerIdDocument, variables),
       options
     );
-export const GetContributorsByAssignmentIdDocument = `
-    query getContributorsByAssignmentId($id: uuid!) {
+export const GetContributorsByAssignmentUuidDocument = `
+    query getContributorsByAssignmentUuid($id: uuid!) {
   app_assignments_v2_contributors(where: {assignment_id: {_eq: $id}}) {
     assignment_id
     invite_email
@@ -51296,16 +51296,16 @@ export const GetContributorsByAssignmentIdDocument = `
   }
 }
     `;
-export const useGetContributorsByAssignmentIdQuery = <
-      TData = GetContributorsByAssignmentIdQuery,
+export const useGetContributorsByAssignmentUuidQuery = <
+      TData = GetContributorsByAssignmentUuidQuery,
       TError = unknown
     >(
-      variables: GetContributorsByAssignmentIdQueryVariables,
-      options?: UseQueryOptions<GetContributorsByAssignmentIdQuery, TError, TData>
+      variables: GetContributorsByAssignmentUuidQueryVariables,
+      options?: UseQueryOptions<GetContributorsByAssignmentUuidQuery, TError, TData>
     ) =>
-    useQuery<GetContributorsByAssignmentIdQuery, TError, TData>(
-      ['getContributorsByAssignmentId', variables],
-      fetchData<GetContributorsByAssignmentIdQuery, GetContributorsByAssignmentIdQueryVariables>(GetContributorsByAssignmentIdDocument, variables),
+    useQuery<GetContributorsByAssignmentUuidQuery, TError, TData>(
+      ['getContributorsByAssignmentUuid', variables],
+      fetchData<GetContributorsByAssignmentUuidQuery, GetContributorsByAssignmentUuidQueryVariables>(GetContributorsByAssignmentUuidDocument, variables),
       options
     );
 export const GetMaxPositionAssignmentBlocksDocument = `
