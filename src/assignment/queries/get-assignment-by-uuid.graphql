@@ -11,6 +11,7 @@ query getAssignmentByUuid($id: uuid!) {
 		deadline_at
 		is_collaborative
 		is_deleted
+		is_public
 		owner_profile_id
 		owner {
 			first_name

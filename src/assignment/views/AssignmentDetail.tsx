@@ -71,6 +71,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	);
 
 	const id = match.params.id;
+	const isPublic = !!assignment && assignment.is_public;
 
 	const getPermissions = useCallback(
 		async (
@@ -188,6 +189,22 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const renderHeaderButtons = () => {
 		return (
 			<ButtonToolbar>
+				<Button
+					type="secondary"
+					title={
+						isPublic
+							? tText('Maak deze opdracht privé.')
+							: tText('Maak deze opdracht openbaar.')
+					}
+					ariaLabel={
+						isPublic
+							? tText('Maak deze opdracht privé.')
+							: tText('Maak deze opdracht openbaar.')
+					}
+					icon={isPublic ? IconName.unlock3 : IconName.lock}
+					onClick={console.log}
+				/>
+
 				<Spacer margin="left-small">
 					{permissions?.canEditAssignments && (
 						<Link
