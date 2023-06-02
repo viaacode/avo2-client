@@ -28,6 +28,7 @@ import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
+import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { navigate, renderAvatar } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -38,12 +39,16 @@ import {
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import {
-	isUserAssignmentContributor,
-	isUserAssignmentOwner,
+	// isUserAssignmentContributor,
+	// isUserAssignmentOwner,
 	renderCommonMetadata,
 } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { Assignment_v2_With_Blocks, BaseBlockWithMeta } from '../assignment.types';
+import {
+	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Labels,
+	BaseBlockWithMeta,
+} from '../assignment.types';
 import { useAssignmentForm } from '../hooks';
 
 import './AssignmentDetail.scss';
@@ -70,6 +75,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
+	const [isForbidden, setIsforbidden] = useState<boolean>(false);
 
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
@@ -79,9 +85,10 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const getPermissions = useCallback(
 		async (
 			assignmentId: string,
-			user: Avo.User.User | undefined
+			user: Avo.User.User | undefined,
+			assignment: Assignment_v2_With_Blocks & Assignment_v2_With_Labels
 		): Promise<AssignmentDetailPermissions> => {
-			if (!user) {
+			if (!user || !assignment) {
 				return {};
 			}
 			const rawPermissions = await Promise.all([
@@ -94,11 +101,21 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				),
 			]);
 
+			if (assignment.contributors && user.profile && user.profile.id) {
+				const contributorInfo = assignment.contributors.find(
+					(contributor) => contributor.profile_id === user?.profile?.id
+				);
+
+				if (contributorInfo?.rights == Lookup_Enum_Right_Types_Enum.Contributor) {
+					return { canEditAssignments: true };
+				}
+			}
+
 			return {
 				canEditAssignments: rawPermissions[0],
 			};
 		},
-		[user, match.params.id]
+		[user, assignment, match.params.id]
 	);
 
 	const getRelatedAssignments = useCallback(async () => {
@@ -128,14 +145,22 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
-			} catch (err) {
-				setAssigmentError({
-					message: tHtml(
-						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
-					),
-					icon: IconName.alertTriangle,
-					actionButtons: ['home'],
-				});
+			} catch (err: any) {
+				if (err.innerException.additionalInfo.statusCode === 403) {
+					setIsforbidden(true);
+				} else {
+					setAssigmentError({
+						message:
+							err.innerException.additionalInfo.statusCode === 403
+								? tHtml('Je hebt geen rechten om deze pagina te')
+								: tHtml(
+										'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
+								  ),
+						icon: IconName.alertTriangle,
+						actionButtons: ['home'],
+					});
+				}
+
 				setAssigmentLoading(false);
 				return;
 			}
@@ -153,6 +178,20 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			}
 
 			setAssignment(tempAssignment);
+
+			try {
+				const permissionObj = await getPermissions(id, user, tempAssignment);
+				setPermissions(permissionObj);
+			} catch (err) {
+				setAssigmentError({
+					message: 'Ophalen van permissies is mislukt',
+					icon: IconName.alertTriangle,
+					actionButtons: ['home'],
+				});
+				setAssigmentLoading(false);
+
+				return;
+			}
 		} catch (err) {
 			setAssigmentError({
 				message: tHtml(
@@ -162,25 +201,12 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			});
 		}
 
-		try {
-			const permissionObj = await getPermissions(id, user);
-			setPermissions(permissionObj);
-		} catch (err) {
-			setAssigmentError({
-				message: 'Ophalen van permissies is mislukt',
-				icon: IconName.alertTriangle,
-				actionButtons: ['home'],
-			});
-			setAssigmentLoading(false);
-			return;
-		}
 		setAssigmentLoading(false);
 	}, [user, match.params.id, tText, history, setAssignment]);
 
 	// Fetch initial data
 	useEffect(() => {
 		fetchAssignment();
-		getPermissions(id, user);
 	}, [fetchAssignment]);
 
 	useEffect(() => {
@@ -350,21 +376,6 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			return <ErrorView {...assignmentError} />;
 		}
 
-		if (
-			assignment &&
-			!isUserAssignmentOwner(user, assignment) &&
-			!isUserAssignmentContributor(user, assignment)
-		) {
-			return (
-				<ErrorNoAccess
-					title={tHtml('assignment/views/assignment-edit___je-hebt-geen-toegang')}
-					message={tHtml(
-						'assignment/views/assignment-edit___je-hebt-geen-toegang-beschrijving'
-					)}
-				/>
-			);
-		}
-
 		return (
 			<Spacer margin={['top-extra-large', 'bottom-extra-large']}>
 				{renderAssignmentBlocks()}
@@ -373,47 +384,60 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	};
 
 	return (
-		<div className="c-sticky-bar__wrapper">
-			<div>
-				<MetaTags>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText('assignment/views/assignment-edit___bewerk-opdracht-pagina-titel')
-						)}
-					</title>
+		<>
+			{assignment && isForbidden ? (
+				<ErrorNoAccess
+					title={tHtml('assignment/views/assignment-edit___je-hebt-geen-toegang')}
+					message={tHtml(
+						'assignment/views/assignment-edit___je-hebt-geen-toegang-beschrijving'
+					)}
+				/>
+			) : (
+				<div className="c-sticky-bar__wrapper">
+					<div>
+						<MetaTags>
+							<title>
+								{GENERATE_SITE_TITLE(
+									tText(
+										'assignment/views/assignment-edit___bewerk-opdracht-pagina-titel'
+									)
+								)}
+							</title>
 
-					<meta
-						name="description"
-						content={tText(
-							'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
+							<meta
+								name="description"
+								content={tText(
+									'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
+								)}
+							/>
+						</MetaTags>
+						{renderHeader()}
+						{renderPageContent()}
+						{renderMetadata()}
+					</div>
+
+					<StickyBar
+						title={tHtml(
+							'assignment/views/assignment-detail___wil-je-de-opdracht-title-toevoegen-aan-je-werkruimte',
+							{
+								title: assignment?.title,
+							}
 						)}
+						isVisible={!!inviteToken}
+						actionButtonProps={{
+							label: tText('assignment/views/assignment-detail___toevoegen'),
+							onClick: onAcceptShareAssignment,
+							type: 'tertiary',
+						}}
+						cancelButtonProps={{
+							label: tText('assignment/views/assignment-detail___weigeren'),
+							onClick: onDeclineShareAssignment,
+							type: 'tertiary',
+						}}
 					/>
-				</MetaTags>
-				{renderHeader()}
-				{renderPageContent()}
-				{renderMetadata()}
-			</div>
-
-			<StickyBar
-				title={tHtml(
-					'assignment/views/assignment-detail___wil-je-de-opdracht-title-toevoegen-aan-je-werkruimte',
-					{
-						title: assignment?.title,
-					}
-				)}
-				isVisible={!!inviteToken}
-				actionButtonProps={{
-					label: tText('assignment/views/assignment-detail___toevoegen'),
-					onClick: onAcceptShareAssignment,
-					type: 'tertiary',
-				}}
-				cancelButtonProps={{
-					label: tText('assignment/views/assignment-detail___weigeren'),
-					onClick: onDeclineShareAssignment,
-					type: 'tertiary',
-				}}
-			/>
-		</div>
+				</div>
+			)}
+		</>
 	);
 };
 

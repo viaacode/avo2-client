@@ -10,7 +10,6 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import React, {
 	Dispatch,
@@ -26,7 +25,6 @@ import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -35,6 +33,7 @@ import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
+import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -86,7 +85,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	// Data
 	const [original, setOriginal] = useState<Assignment_v2_With_Blocks | null>(null);
 	const [assignmentLoading, setAssigmentLoading] = useState(false);
-	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
+	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
@@ -132,7 +131,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 	const fetchAssignment = useCallback(async () => {
 		try {
 			setAssigmentLoading(true);
-			setAssigmentError(null);
+			setAssignmentError(null);
 			const id = match.params.id;
 			let tempAssignment: Assignment_v2_With_Blocks | null = null;
 
@@ -140,7 +139,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
 			} catch (err) {
 				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
-					setAssigmentError({
+					setAssignmentError({
 						message: tHtml(
 							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 						),
@@ -150,7 +149,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					setAssigmentLoading(false);
 					return;
 				}
-				setAssigmentError({
+				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
@@ -162,7 +161,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			}
 
 			if (!tempAssignment) {
-				setAssigmentError({
+				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
@@ -173,24 +172,25 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return;
 			}
 
-			if (
-				!(await PermissionService.hasPermissions(
-					[
-						PermissionName.EDIT_ANY_ASSIGNMENTS,
-						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
-					],
-					user
-				))
-			) {
-				setAssigmentError({
-					message: tHtml(
-						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
-					),
-					icon: IconName.lock,
-					actionButtons: ['home'],
-				});
-				setAssigmentLoading(false);
-				return;
+			if (tempAssignment.contributors && user && user.profile && user.profile.id) {
+				const contributorInfo = tempAssignment.contributors.find(
+					(contributor) => contributor.profile_id === user?.profile?.id
+				);
+
+				if (
+					!contributorInfo ||
+					contributorInfo.rights === Lookup_Enum_Right_Types_Enum.Viewer
+				) {
+					setAssignmentError({
+						message: tHtml(
+							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
+						),
+						icon: IconName.lock,
+						actionButtons: ['home'],
+					});
+					setAssigmentLoading(false);
+					return;
+				}
 			}
 
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
@@ -200,7 +200,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 			setAssignmentHasResponses(tempAssignment.responses.length > 0);
 			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
-			setAssigmentError({
+			setAssignmentError({
 				message: tHtml(
 					'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
 				),
