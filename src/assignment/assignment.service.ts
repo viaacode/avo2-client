@@ -124,7 +124,6 @@ import {
 	AssignmentResponseInfo,
 	AssignmentType,
 	BaseBlockWithMeta,
-	GqlAssignmentContributor,
 	PupilCollectionFragment,
 } from './assignment.types';
 import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
@@ -1648,7 +1647,7 @@ export class AssignmentService {
 	static async acceptSharedAssignment(
 		assignmentId: string,
 		inviteToken: string
-	): Promise<GqlAssignmentContributor> {
+	): Promise<Avo.Assignment.Contributor> {
 		try {
 			return await fetchWithLogoutJson(
 				stringifyUrl({
