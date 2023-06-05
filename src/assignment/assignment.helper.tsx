@@ -1,5 +1,6 @@
 import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
+import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { groupBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
@@ -7,10 +8,11 @@ import { Link } from 'react-router-dom';
 import { Maybe } from 'yup/lib/types';
 
 import { Lookup_Thesaurus } from '../shared/generated/graphql-db-types';
-import { formatDate } from '../shared/helpers';
+import { formatDate, stripHtml } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
 
+import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './assignment.const';
 import {
 	Assignment_Label_v2,
 	Assignment_v2_With_Blocks,
@@ -189,3 +191,86 @@ export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): Rea
 		</>
 	);
 };
+
+export const getValidationErrorsForPublish = async (
+	assignment: Partial<Avo.Assignment.Assignment>
+): Promise<string[]> => {
+	const validationErrors = [
+		...GET_VALIDATION_RULES_FOR_SAVE(),
+		...VALIDATION_RULES_FOR_PUBLISH,
+	].map((rule) => {
+		return rule.isValid(assignment) ? null : getError(rule, assignment);
+	});
+	const duplicateErrors = await getDuplicateTitleOrDescriptionErrors(assignment);
+	return compact([...validationErrors, ...duplicateErrors]);
+};
+
+type ValidationRule<T> = {
+	error: string | ((object: T) => string);
+	isValid: (object: T) => boolean;
+};
+
+const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
+	Partial<Avo.Assignment.Assignment>
+>[] = () => [
+	{
+		error: tText('assignment/assignment___de-bundel-beschrijving-is-te-lang'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!assignment.description ||
+			assignment.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
+	},
+	{
+		error: tText('assignment/assignment___de-lange-beschrijving-van-deze-bundel-is-te-lang'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!(assignment as any).description_long ||
+			stripHtml((assignment as any).description_long).length <= MAX_LONG_DESCRIPTION_LENGTH,
+	},
+];
+
+const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assignment>>[] = [
+	{
+		error: tText('assignment/assignment___de-bundel-heeft-geen-titel'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => !!assignment.title,
+	},
+	{
+		error: tText('assignment/assignment___de-bundel-heeft-geen-beschrijving'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => !!assignment.description,
+	},
+	{
+		error: tText('assignment/assignment___de-bundel-heeft-geen-onderwijsniveaus'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!!(assignment.lom_context && assignment.lom_context.length),
+	},
+	{
+		error: tText('assignment/assignment___de-bundel-heeft-geen-vakken'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!!(assignment.lom_classification && assignment.lom_classification.length),
+	},
+	{
+		error: tText('assignment/assignment___de-bundel-heeft-geen-collecties'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!!(assignment.assignment_fragments && assignment.assignment_fragments.length),
+	},
+	{
+		error: tText('assignment/assignment___de-collecties-moeten-een-titel-hebben'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!assignment.assignment_fragments ||
+			validateFragments(
+				assignment.assignment_fragments,
+				assignment.type_id === ContentTypeNumber.assignment ? 'video' : 'assignment'
+			),
+	},
+	{
+		error: tText(
+			'assignment/assignment___uw-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
+		),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => {
+			return (
+				assignment.type_id === ContentTypeNumber.bundle ||
+				!assignment.assignment_fragments ||
+				validateFragments(assignment.assignment_fragments, 'text')
+			);
+		},
+	},
+	// TODO: Add check if owner or write-rights.
+];

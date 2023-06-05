@@ -21,6 +21,10 @@ import {
 
 export const ITEMS_PER_PAGE = 20;
 
+export const MAX_TITLE_LENGTH = 110;
+export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
+export const MAX_LONG_DESCRIPTION_LENGTH = 1200;
+
 export const CONTENT_LABEL_TO_ROUTE_PARTS: {
 	/* eslint-disable @typescript-eslint/no-unused-vars */
 	[contentType in Avo.Assignment.ContentLabel]: string /* eslint-enable @typescript-eslint/no-unused-vars */;

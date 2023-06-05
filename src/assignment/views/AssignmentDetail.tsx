@@ -69,6 +69,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 
 	const id = match.params.id;
 	const isPublic = !!assignment && assignment.is_public;
@@ -202,7 +203,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 							: tText('Maak deze opdracht openbaar.')
 					}
 					icon={isPublic ? IconName.unlock3 : IconName.lock}
-					onClick={console.log}
+					onClick={() => setIsPublishModalOpen(true)}
 				/>
 
 				<Spacer margin="left-small">
@@ -356,6 +357,29 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			{renderHeader()}
 			{renderPageContent()}
 			{renderMetadata()}
+
+			{/* {!!collection && !!user && (
+				<PublishCollectionModal
+					collection={collection}
+					isOpen={isPublishModalOpen}
+					onClose={(newCollection: Avo.Collection.Collection | undefined) => {
+						setIsPublishModalOpen(false);
+
+						if (newCollection) {
+							setCollectionInfo((oldCollectionInfo) => ({
+								showLoginPopup: oldCollectionInfo?.showLoginPopup || false,
+								showNoAccessPopup: oldCollectionInfo?.showNoAccessPopup || false,
+								permissions: oldCollectionInfo?.permissions || {},
+								collection: newCollection || null,
+							}));
+						}
+					}}
+					history={history}
+					location={location}
+					match={match}
+					user={user}
+				/>
+			)} */}
 		</>
 	);
 };
