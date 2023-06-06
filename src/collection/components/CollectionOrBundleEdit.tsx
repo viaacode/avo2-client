@@ -13,7 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
-import { cloneDeep, get, isEmpty, set } from 'lodash-es';
+import { cloneDeep, get, isEmpty, omit, set } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -680,12 +680,32 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			if (collectionState.currentCollection) {
 				const newCollection = await CollectionService.updateCollection(
-					collectionState.initialCollection,
-					collectionState.currentCollection,
+					omit(collectionState.initialCollection, ['loms', 'contributors']),
+					omit(collectionState.currentCollection, ['loms', 'contributors']),
 					user
 				);
 
 				if (newCollection) {
+					try {
+						await CollectionService.deleteCollectionLomLinks(newCollection.id);
+
+						await CollectionService.insertCollectionLomLinks(
+							newCollection.id,
+							collectionState.currentCollection.loms || []
+						);
+					} catch (err) {
+						console.error('Failed to update collection/bundle loms', err);
+						ToastService.danger(
+							isCollection
+								? tHtml(
+										'Er is iets misgegaan met het updaten van de publicatie details van de collectie'
+								  )
+								: tHtml(
+										'Er is iets misgegaan met het updaten van de publicatie details van de bundel'
+								  )
+						);
+					}
+
 					checkPermissionsAndGetCollection();
 					ToastService.success(
 						isCollection

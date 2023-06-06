@@ -6,6 +6,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { CustomError } from '../../helpers';
 import useTranslation from '../../hooks/useTranslation';
 import { LomService } from '../../services/lom.service';
+import { LomFieldsByScheme } from '../../types/lom';
 
 import { mapLomFieldsToOptions, mapOptionsToLomFields } from './LomFieldsInput.helpers';
 
@@ -14,10 +15,7 @@ type LomFieldsInputProps = {
 	educationLevels: Avo.Lom.LomField[];
 	subjects: Avo.Lom.LomField[];
 	themes: Avo.Lom.LomField[];
-	onChangeContexts: (newContexts: Avo.Lom.LomField[]) => void;
-	onChangeEducationLevels: (newEducationLevels: Avo.Lom.LomField[]) => void;
-	onChangeSubjects: (newSubjects: Avo.Lom.LomField[]) => void;
-	onChangeThemes: (newThemes: Avo.Lom.LomField[]) => void;
+	onChange: (lomFields: Partial<LomFieldsByScheme>) => void;
 };
 
 const LomFieldsInput: FC<LomFieldsInputProps> = ({
@@ -25,10 +23,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	educationLevels,
 	subjects,
 	themes,
-	onChangeContexts,
-	onChangeEducationLevels,
-	onChangeSubjects,
-	onChangeThemes,
+	onChange,
 }) => {
 	const { tText } = useTranslation();
 	const [educationLevelsOptions, setEducationLevelsOptions] = useState<Avo.Lom.LomField[]>([]);
@@ -86,10 +81,11 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	}, [setThemesOptions]);
 
 	const handleEducationLevelsChange = (levels: Avo.Lom.LomField[]) => {
-		onChangeEducationLevels(levels);
+		// onChangeEducationLevels(levels);
+		onChange({ educationLevels: levels });
 
 		if (isEmpty(levels)) {
-			onChangeContexts([]);
+			onChange({ educationLevels: levels, contexts: [] });
 			return;
 		}
 
@@ -115,9 +111,14 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 		// Ìf there is a parent lom field , add or remove accordingly
 		if (!isNil(parentContext)) {
 			if (added) {
-				onChangeContexts([...contexts, parentContext]);
+				// onChangeContexts([...contexts, parentContext]);
+				onChange({ contexts: [...contexts, parentContext], educationLevels: levels });
 			} else {
-				onChangeContexts(without([...contexts], parentContext));
+				// onChangeContexts(without([...contexts], parentContext));
+				onChange({
+					contexts: without([...contexts], parentContext),
+					educationLevels: levels,
+				});
 			}
 		}
 	};
@@ -147,7 +148,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					<TagsInput
 						options={mapLomFieldsToOptions(subjectsOptions)}
 						value={mapLomFieldsToOptions(subjects) || []}
-						onChange={(value) => onChangeSubjects(mapOptionsToLomFields(value))}
+						onChange={(value) => onChange({ subjects: mapOptionsToLomFields(value) })}
 					/>
 				</FormGroup>
 
@@ -158,7 +159,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					<TagsInput
 						options={mapLomFieldsToOptions(themesOptions)}
 						value={mapLomFieldsToOptions(themes) || []}
-						onChange={(value) => onChangeThemes(mapOptionsToLomFields(value))}
+						onChange={(value) => onChange({ themes: mapOptionsToLomFields(value) })}
 					/>
 				</FormGroup>
 			</Spacer>

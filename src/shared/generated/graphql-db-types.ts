@@ -48428,6 +48428,13 @@ export type DeleteCollectionLabelsMutationVariables = Exact<{
 
 export type DeleteCollectionLabelsMutation = { __typename?: 'mutation_root', delete_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
 
+export type DeleteCollectionLomLinksMutationVariables = Exact<{
+  collectionId: Scalars['uuid'];
+}>;
+
+
+export type DeleteCollectionLomLinksMutation = { __typename?: 'mutation_root', delete_app_collections_lom_links?: { __typename?: 'app_collections_lom_links_mutation_response', affected_rows: number } | null };
+
 export type DeleteCollectionOrBundleByUuidMutationVariables = Exact<{
   collectionOrBundleUuid: Scalars['uuid'];
   collectionOrBundleUuidAsText: Scalars['String'];
@@ -48583,6 +48590,13 @@ export type InsertCollectionLabelsMutationVariables = Exact<{
 
 
 export type InsertCollectionLabelsMutation = { __typename?: 'mutation_root', insert_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
+
+export type InsertCollectionLomLinksMutationVariables = Exact<{
+  lomObjects: Array<App_Collections_Lom_Links_Insert_Input> | App_Collections_Lom_Links_Insert_Input;
+}>;
+
+
+export type InsertCollectionLomLinksMutation = { __typename?: 'mutation_root', insert_app_collections_lom_links?: { __typename?: 'app_collections_lom_links_mutation_response', affected_rows: number } | null };
 
 export type InsertCollectionManagementEntryMutationVariables = Exact<{
   collection_id: Scalars['uuid'];
@@ -51587,6 +51601,22 @@ export const useDeleteCollectionLabelsMutation = <
       (variables?: DeleteCollectionLabelsMutationVariables) => fetchData<DeleteCollectionLabelsMutation, DeleteCollectionLabelsMutationVariables>(DeleteCollectionLabelsDocument, variables)(),
       options
     );
+export const DeleteCollectionLomLinksDocument = `
+    mutation deleteCollectionLomLinks($collectionId: uuid!) {
+  delete_app_collections_lom_links(where: {collection_id: {_eq: $collectionId}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionLomLinksMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionLomLinksMutation, TError, DeleteCollectionLomLinksMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionLomLinksMutation, TError, DeleteCollectionLomLinksMutationVariables, TContext>(
+      ['deleteCollectionLomLinks'],
+      (variables?: DeleteCollectionLomLinksMutationVariables) => fetchData<DeleteCollectionLomLinksMutation, DeleteCollectionLomLinksMutationVariables>(DeleteCollectionLomLinksDocument, variables)(),
+      options
+    );
 export const DeleteCollectionOrBundleByUuidDocument = `
     mutation deleteCollectionOrBundleByUuid($collectionOrBundleUuid: uuid!, $collectionOrBundleUuidAsText: String!) {
   update_app_collections(
@@ -52156,6 +52186,22 @@ export const useInsertCollectionLabelsMutation = <
     useMutation<InsertCollectionLabelsMutation, TError, InsertCollectionLabelsMutationVariables, TContext>(
       ['insertCollectionLabels'],
       (variables?: InsertCollectionLabelsMutationVariables) => fetchData<InsertCollectionLabelsMutation, InsertCollectionLabelsMutationVariables>(InsertCollectionLabelsDocument, variables)(),
+      options
+    );
+export const InsertCollectionLomLinksDocument = `
+    mutation insertCollectionLomLinks($lomObjects: [app_collections_lom_links_insert_input!]!) {
+  insert_app_collections_lom_links(objects: $lomObjects) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertCollectionLomLinksMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionLomLinksMutation, TError, InsertCollectionLomLinksMutationVariables, TContext>) =>
+    useMutation<InsertCollectionLomLinksMutation, TError, InsertCollectionLomLinksMutationVariables, TContext>(
+      ['insertCollectionLomLinks'],
+      (variables?: InsertCollectionLomLinksMutationVariables) => fetchData<InsertCollectionLomLinksMutation, InsertCollectionLomLinksMutationVariables>(InsertCollectionLomLinksDocument, variables)(),
       options
     );
 export const InsertCollectionManagementEntryDocument = `

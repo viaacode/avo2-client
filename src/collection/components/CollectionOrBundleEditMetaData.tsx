@@ -9,27 +9,25 @@ import {
 	Grid,
 	Image,
 	Spacer,
-	TagInfo,
 	TextArea,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { Avo, LomSchemeTypeEnum } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
-import React, { FunctionComponent, useState } from 'react';
+import { isEmpty } from 'lodash';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import {
-	EducationLevelsField,
-	FileUpload,
-	ShortDescriptionField,
-	SubjectsField,
-} from '../../shared/components';
+import { FileUpload, ShortDescriptionField } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { mapLomsToLomFields } from '../../shared/components/LomFieldsInput/LomFieldsInput.helpers';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES,
 } from '../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { stripHtml } from '../../shared/helpers';
+import { groupLoms } from '../../shared/helpers/lom';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { LomFieldsByScheme } from '../../shared/types/lom';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
@@ -54,39 +52,52 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 	const [descriptionLongEditorState, setDescriptionLongEditorState] = useState<
 		RichEditorState | undefined
 	>(undefined);
-	const [educationLevels, setEducationLevels] = useState<Avo.Lom.LomField[]>([]);
-	const [subjects, setSubjects] = useState<Avo.Lom.LomField[]>([]);
-	const [themes, setThemes] = useState<Avo.Lom.LomField[]>([]);
-	const [contexts, setContexts] = useState<Avo.Lom.LomField[]>([]);
+	const [lomFields, setLomFields] = useState<LomFieldsByScheme>({
+		contexts: [],
+		educationLevels: [],
+		subjects: [],
+		themes: [],
+	});
 
 	const isCollection = type === 'collection';
 
-	const updateCollectionMultiProperty = (
-		selectedTagOptions: TagInfo[],
-		collectionProp: keyof Avo.Collection.Collection
-	) => {
+	useEffect(() => {
+		if (!isEmpty(collection) && collection.loms) {
+			const groupedLoms = groupLoms(collection.loms);
+
+			setLomFields({
+				...lomFields,
+				educationLevels:
+					mapLomsToLomFields(
+						groupedLoms[LomSchemeTypeEnum.structure] as Avo.Lom.LomEntry[]
+					) || [],
+				subjects:
+					mapLomsToLomFields(
+						groupedLoms[LomSchemeTypeEnum.subject] as Avo.Lom.LomEntry[]
+					) || [],
+				themes:
+					mapLomsToLomFields(
+						groupedLoms[LomSchemeTypeEnum.theme] as Avo.Lom.LomEntry[]
+					) || [],
+			});
+		}
+	}, []);
+
+	const updateCollectionLoms = async (selectedLomFieldOptions: Partial<LomFieldsByScheme>) => {
+		const newLomFields = {
+			...lomFields,
+			...selectedLomFieldOptions,
+		};
+
+		setLomFields(newLomFields);
+
+		const flatLomFields = Object.values(lomFields).flatMap((lomField) => lomField);
+
 		changeCollectionState({
-			collectionProp,
+			collectionProp: 'loms',
 			type: 'UPDATE_COLLECTION_PROP',
-			collectionPropValue: (selectedTagOptions || []).map((tag) => tag.value as string),
+			collectionPropValue: flatLomFields.map((lom) => lom.id as string),
 		});
-	};
-
-	const onChangeEducationLevels = (value: Avo.Lom.LomField[]) => {
-		setEducationLevels(value);
-	};
-	const onChangeSubjects = (value: Avo.Lom.LomField[]) => {
-		setSubjects(value);
-		console.log(value);
-	};
-	const onChangeThemes = (value: Avo.Lom.LomField[]) => {
-		setThemes(value);
-		console.log(value);
-	};
-
-	const onChangeContexts = (value: Avo.Lom.LomField[]) => {
-		setContexts(value);
-		console.log(value);
 	};
 
 	return (
@@ -98,31 +109,10 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 							<Grid>
 								<Column size="3-7">
 									<LomFieldsInput
-										contexts={contexts}
-										educationLevels={educationLevels}
-										subjects={subjects}
-										themes={themes}
-										onChangeContexts={onChangeContexts}
-										onChangeEducationLevels={onChangeEducationLevels}
-										onChangeSubjects={onChangeSubjects}
-										onChangeThemes={onChangeThemes}
+										{...lomFields}
+										onChange={updateCollectionLoms}
 									/>
 
-									<EducationLevelsField
-										value={collection.lom_context}
-										onChange={(values: TagInfo[]) =>
-											updateCollectionMultiProperty(values, 'lom_context')
-										}
-									/>
-									<SubjectsField
-										value={collection.lom_classification}
-										onChange={(values: TagInfo[]) =>
-											updateCollectionMultiProperty(
-												values,
-												'lom_classification'
-											)
-										}
-									/>
 									<ShortDescriptionField
 										value={collection.description}
 										onChange={(value: string) =>

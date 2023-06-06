@@ -15,3 +15,9 @@ export const mapOptionsToLomFields = (options: TagInfoSchema[]): Avo.Lom.LomFiel
 		(option) => ({ id: option.value, label: capitalize(option.label) } as Avo.Lom.LomField)
 	);
 };
+
+export const mapLomsToLomFields = (loms: Avo.Lom.LomEntry[]): Avo.Lom.LomField[] => {
+	return (loms || []).map(
+		(lom) => ({ id: lom.id, label: capitalize(lom.label) } as Avo.Lom.LomField)
+	);
+};
