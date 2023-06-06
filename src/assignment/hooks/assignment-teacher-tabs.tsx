@@ -38,7 +38,7 @@ export function useAssignmentTeacherTabs(
 					? [
 							{
 								id: ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS,
-								label: tText('Kliks'),
+								label: tText('assignment/hooks/assignment-teacher-tabs___kliks'),
 								icon: IconName.pointer as IconName,
 							},
 					  ]

@@ -22,6 +22,7 @@ import {
 	ShortDescriptionField,
 	SubjectsField,
 } from '../../shared/components';
+import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES,
@@ -53,6 +54,10 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 	const [descriptionLongEditorState, setDescriptionLongEditorState] = useState<
 		RichEditorState | undefined
 	>(undefined);
+	const [educationLevels, setEducationLevels] = useState<Avo.Lom.LomField[]>([]);
+	const [subjects, setSubjects] = useState<Avo.Lom.LomField[]>([]);
+	const [themes, setThemes] = useState<Avo.Lom.LomField[]>([]);
+	const [contexts, setContexts] = useState<Avo.Lom.LomField[]>([]);
 
 	const isCollection = type === 'collection';
 
@@ -67,6 +72,23 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 		});
 	};
 
+	const onChangeEducationLevels = (value: Avo.Lom.LomField[]) => {
+		setEducationLevels(value);
+	};
+	const onChangeSubjects = (value: Avo.Lom.LomField[]) => {
+		setSubjects(value);
+		console.log(value);
+	};
+	const onChangeThemes = (value: Avo.Lom.LomField[]) => {
+		setThemes(value);
+		console.log(value);
+	};
+
+	const onChangeContexts = (value: Avo.Lom.LomField[]) => {
+		setContexts(value);
+		console.log(value);
+	};
+
 	return (
 		<>
 			<Container mode="vertical">
@@ -75,6 +97,17 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
+									<LomFieldsInput
+										contexts={contexts}
+										educationLevels={educationLevels}
+										subjects={subjects}
+										themes={themes}
+										onChangeContexts={onChangeContexts}
+										onChangeEducationLevels={onChangeEducationLevels}
+										onChangeSubjects={onChangeSubjects}
+										onChangeThemes={onChangeThemes}
+									/>
+
 									<EducationLevelsField
 										value={collection.lom_context}
 										onChange={(values: TagInfo[]) =>
