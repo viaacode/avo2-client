@@ -30,14 +30,14 @@ import {
 } from '../../../assignment.const';
 import { AssignmentService } from '../../../assignment.service';
 import {
-	Assignment_v2,
 	AssignmentResponseInfo,
+	AssignmentType,
 	BaseBlockWithMeta,
 	PupilSearchFilterState,
 } from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
-	assignment: Assignment_v2 | null;
+	assignment: Avo.Assignment.Assignment | null;
 	assignmentResponse: AssignmentResponseInfo | null;
 	filterState: any;
 	setFilterState: any;
@@ -213,7 +213,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	};
 
 	const renderItemDetailActionButton = (item: Avo.Item.Item) => {
-		if (assignment?.assignment_type !== 'BOUW') {
+		if (!assignment?.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
 			return null;
 		}
 		return (

@@ -53,7 +53,6 @@ import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Response_v2,
-	Assignment_v2,
 	AssignmentOverviewTableColumns,
 	AssignmentResponseInfo,
 	AssignmentResponseTableColumns,
@@ -84,7 +83,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	// Data
-	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentResponses, setAssignmentResponses] = useState<AssignmentResponseInfo[] | null>(
 		null
 	);
@@ -116,7 +115,8 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const tableColumns = useMemo(
 		() =>
 			GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS(
-				(assignment?.assignment_type || AssignmentType.KIJK) as AssignmentType
+				(assignment?.lom_learning_resource_type?.[0] ||
+					AssignmentType.KIJK) as AssignmentType
 			),
 		[assignment]
 	);

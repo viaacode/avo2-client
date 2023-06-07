@@ -113,7 +113,6 @@ import {
 import {
 	Assignment_Label_v2,
 	Assignment_Response_v2,
-	Assignment_v2,
 	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
 	Assignment_v2_With_Responses,
@@ -224,14 +223,17 @@ export class AssignmentService {
 					: GetAssignmentsByResponseOwnerIdDocument,
 			});
 
-			if (!assignmentResponse?.app_assignments_v2 || isNil(assignmentResponse.count)) {
+			if (
+				!assignmentResponse?.app_assignments_v2_overview ||
+				isNil(assignmentResponse.count)
+			) {
 				throw new CustomError('Response does not have the expected format', null, {
 					assignmentResponse,
 				});
 			}
 
 			return {
-				assignments: assignmentResponse.app_assignments_v2 || [],
+				assignments: assignmentResponse.app_assignments_v2_overview || [],
 				count: assignmentResponse.count.aggregate?.count || 0,
 			};
 		} catch (err) {
@@ -259,7 +261,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignment = response.app_assignments_v2[0];
+			const assignment = response.app_assignments_v2_overview[0];
 
 			if (!assignment) {
 				throw new CustomError('Response does not contain an assignment', null, {
@@ -316,15 +318,15 @@ export class AssignmentService {
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.ZOEK
 			)
 		) {
-			assignmentToSave.assignment_type = 'ZOEK';
+			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.ZOEK);
 		} else if (
 			assignment.blocks?.some(
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.BOUW
 			)
 		) {
-			assignmentToSave.assignment_type = 'BOUW';
+			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.BOUW);
 		} else {
-			assignmentToSave.assignment_type = 'KIJK';
+			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.KIJK);
 		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
@@ -348,7 +350,7 @@ export class AssignmentService {
 		delete (assignmentToSave as any).descriptionRichEditorState;
 		delete assignmentToSave.blocks;
 
-		return assignmentToSave as Assignment_v2;
+		return assignmentToSave as Avo.Assignment.Assignment;
 	}
 
 	static async deleteAssignment(assignmentId: string): Promise<void> {
@@ -386,7 +388,7 @@ export class AssignmentService {
 	static async updateAssignment(
 		original: Assignment_v2_With_Blocks,
 		update: Partial<Assignment_v2_With_Blocks>
-	): Promise<Assignment_v2 | null> {
+	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			if (isNil(original.id)) {
 				throw new CustomError(
@@ -615,7 +617,7 @@ export class AssignmentService {
 	static async insertAssignment(
 		assignment: Partial<Assignment_v2_With_Blocks>,
 		addedLabels?: Assignment_Label_v2[]
-	): Promise<Assignment_v2 | null> {
+	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			const assignmentToSave = AssignmentService.transformAssignment({
 				...assignment,
@@ -656,7 +658,7 @@ export class AssignmentService {
 			await this.updateAssignmentBlocks(assignmentId, [], assignment.blocks || []);
 
 			return {
-				...(assignment as Assignment_v2), // Do not copy the auto modified fields from the validation back into the input controls
+				...(assignment as Avo.Assignment.Assignment), // Do not copy the auto modified fields from the validation back into the input controls
 				id: assignmentId,
 			};
 		} catch (err) {
@@ -667,7 +669,7 @@ export class AssignmentService {
 	static async duplicateAssignment(
 		newTitle: string,
 		initialAssignment: Partial<Assignment_v2_With_Blocks> | null
-	): Promise<Assignment_v2> {
+	): Promise<Avo.Assignment.Assignment> {
 		if (!initialAssignment || !initialAssignment.id) {
 			throw new CustomError(
 				'Failed to copy assignment because the duplicateAssignment function received an empty assignment',
@@ -766,7 +768,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const tempAssignment = response.app_assignments_v2[0];
+			const tempAssignment = response.app_assignments_v2_overview[0];
 
 			if (!tempAssignment) {
 				throw new CustomError('Failed to find assignment by id');
@@ -804,7 +806,7 @@ export class AssignmentService {
 	}
 
 	static isOwnerOfAssignment(
-		assignment: Assignment_v2,
+		assignment: Avo.Assignment.Assignment,
 		user: Avo.User.User | undefined
 	): boolean {
 		return getProfileId(user) === assignment.owner_profile_id;
@@ -1078,7 +1080,7 @@ export class AssignmentService {
 	 * @param user
 	 */
 	static async createOrFetchAssignmentResponseObject(
-		assignment: Assignment_v2,
+		assignment: Avo.Assignment.Assignment,
 		user: Avo.User.User | undefined
 	): Promise<Omit<AssignmentResponseInfo, 'assignment'> | null> {
 		try {
@@ -1093,7 +1095,7 @@ export class AssignmentService {
 			);
 
 			if (existingAssignmentResponse) {
-				if (assignment.assignment_type === AssignmentType.BOUW) {
+				if (assignment.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
 					existingAssignmentResponse.collection_title =
 						existingAssignmentResponse.collection_title ||
 						tText('assignment/assignment___nieuwe-collectie');
@@ -1109,10 +1111,11 @@ export class AssignmentService {
 			const assignmentResponse: Partial<Assignment_Response_v2> = {
 				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
-				collection_title:
-					assignment.assignment_type === AssignmentType.BOUW
-						? tText('assignment/assignment___nieuwe-collectie')
-						: null,
+				collection_title: assignment.lom_learning_resource_type?.includes(
+					AssignmentType.BOUW
+				)
+					? tText('assignment/assignment___nieuwe-collectie')
+					: null,
 			};
 			const response = await dataService.query<
 				InsertAssignmentResponseMutation,
@@ -1400,7 +1403,7 @@ export class AssignmentService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[GetAssignmentsAdminOverviewQuery['app_assignments_v2'], number]> {
+	): Promise<[Avo.Assignment.Assignment[], number]> {
 		let variables;
 		try {
 			const whereWithoutDeleted = {
@@ -1428,9 +1431,10 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignments = response?.app_assignments_v2;
+			const assignments = response?.app_assignments_v2_overview;
 
-			const assignmentCount = response?.app_assignments_v2_aggregate?.aggregate?.count || 0;
+			const assignmentCount =
+				response?.app_assignments_v2_overview_aggregate?.aggregate?.count || 0;
 
 			if (!assignments) {
 				throw new CustomError('Response does not contain any assignments', null, {
@@ -1438,7 +1442,7 @@ export class AssignmentService {
 				});
 			}
 
-			return [assignments, assignmentCount];
+			return [assignments as Avo.Assignment.Assignment[], assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get assignments from the database', err, {
 				variables,

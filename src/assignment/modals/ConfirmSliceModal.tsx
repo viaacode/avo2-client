@@ -14,10 +14,10 @@ import React, { FunctionComponent } from 'react';
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { Assignment_v2, AssignmentBlock, AssignmentBlockType } from '../assignment.types';
+import { AssignmentBlock, AssignmentBlockType } from '../assignment.types';
 
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
-	responses?: Assignment_v2[];
+	responses?: Avo.Assignment.Assignment[];
 	block?: Pick<AssignmentBlock, 'type'>;
 	onConfirm?: () => void;
 }

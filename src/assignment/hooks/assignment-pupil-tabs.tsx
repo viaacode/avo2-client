@@ -3,12 +3,13 @@ import React, { useCallback, useMemo, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
-import { Assignment_v2, AssignmentType } from '../assignment.types';
+import { AssignmentType } from '../assignment.types';
 
 import { useAssignmentPastDeadline } from './assignment-past-deadline';
+import { Avo } from '@viaa/avo2-types';
 
 export function useAssignmentPupilTabs(
-	assignment: Assignment_v2 | null,
+	assignment: Avo.Assignment.Assignment | null,
 	numOfPupilCollectionFragments: number,
 	activeTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	setTab: (newTab: string) => void
@@ -32,11 +33,9 @@ export function useAssignmentPupilTabs(
 					label: tText('assignment/hooks/assignment-pupil-tabs___opdracht'),
 					icon: IconName.clipboard as IconName,
 				},
-				...(assignment?.assignment_type &&
-				[AssignmentType.ZOEK, AssignmentType.BOUW].includes(
-					assignment?.assignment_type as AssignmentType
-				) &&
-				!pastDeadline
+				...(assignment?.lom_learning_resource_type?.includes(
+					AssignmentType.ZOEK || AssignmentType.BOUW
+				) && !pastDeadline
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
@@ -45,8 +44,7 @@ export function useAssignmentPupilTabs(
 							},
 					  ]
 					: []),
-				...(assignment?.assignment_type &&
-				[AssignmentType.BOUW].includes(assignment?.assignment_type as AssignmentType)
+				...(assignment?.lom_learning_resource_type?.includes(AssignmentType.BOUW)
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION,
