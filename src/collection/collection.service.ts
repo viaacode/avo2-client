@@ -2,7 +2,7 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
-import { cloneDeep, compact, fromPairs, get, isEqual, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, fromPairs, get, isEmpty, isEqual, isNil, without } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -1559,12 +1559,16 @@ export class CollectionService {
 		collectionId: string,
 		user: Partial<ContributorInfo>
 	): Promise<void> {
+		if (isNil(user.email) || isEmpty(user.email)) {
+			throw new CustomError('User has no email address');
+		}
+
 		try {
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/add-contributor`,
 					query: {
-						email: user.email || '',
+						email: user.email,
 						rights: user.rights,
 					},
 				}),

@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, isEmpty, isNil, without } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -1572,12 +1572,16 @@ export class AssignmentService {
 		assignmentId: string,
 		user: Partial<ContributorInfo>
 	): Promise<void> {
+		if (isNil(user.email) || isEmpty(user.email)) {
+			throw new CustomError('User has no email address');
+		}
+
 		try {
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor`,
 					query: {
-						email: user.email || '',
+						email: user.email,
 						rights: user.rights,
 					},
 				}),
