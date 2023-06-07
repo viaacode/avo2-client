@@ -216,8 +216,9 @@ export const ASSIGNMENT_FORM_DEFAULT = (): Partial<AssignmentFormState> => ({
 });
 
 export enum ASSIGNMENT_CREATE_UPDATE_TABS {
-	Inhoud,
-	Details,
+	INHOUD = 'inhoud',
+	DETAILS = 'details',
+	KLIKS = 'kliks',
 }
 
 export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {

@@ -1,4 +1,4 @@
-@import '../../../styles/settings/variables';
+@import "../../../styles/settings/variables";
 
 $borderLight: 1px solid $color-gray-100;
 
@@ -43,6 +43,7 @@ $borderLight: 1px solid $color-gray-100;
 
 	.c-dropdown__trigger {
 		min-width: max-content;
+		margin-left: 0 !important;
 	}
 
 	&__button.c-button.c-button--primary {
@@ -50,6 +51,7 @@ $borderLight: 1px solid $color-gray-100;
 		border: $borderLight;
 		border-radius: 0 $c-input-border-radius $c-input-border-radius 0;
 		background-color: $color-gray-50;
+		margin-left: 0;
 	}
 
 	.c-dropdown__content-open {
@@ -77,6 +79,13 @@ $borderLight: 1px solid $color-gray-100;
 		.c-avatar img {
 			width: 100%;
 			height: 100%;
+		}
+
+		&--pending {
+			width: 3.2rem;
+			height: 3.2rem;
+			border-radius: 50%;
+			border: dashed 1px $color-gray-200;
 		}
 	}
 

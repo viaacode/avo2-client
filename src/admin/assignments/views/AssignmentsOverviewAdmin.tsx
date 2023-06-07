@@ -13,6 +13,7 @@ import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { AssignmentService } from '../../../assignment/assignment.service';
 import {
 	Assignment_v2,
@@ -350,7 +351,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			case 'actions':
 			default:
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id })}>
+					<Link
+						to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+							id: assignment.id,
+							tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+						})}
+					>
 						<Button
 							icon={IconName.edit2}
 							ariaLabel="Bewerk deze opdracht"

@@ -63,7 +63,14 @@ import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
 	getMoreOptionsLabel,
 } from '../../shared/constants';
-import { buildLink, formatDate, isMobileWidth, navigate, renderAvatar } from '../../shared/helpers';
+import {
+	buildLink,
+	CustomError,
+	formatDate,
+	isMobileWidth,
+	navigate,
+	renderAvatar,
+} from '../../shared/helpers';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
@@ -73,7 +80,10 @@ import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
-import { GET_ASSIGNMENT_OVERVIEW_COLUMNS } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Label_v2,
@@ -269,6 +279,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
+			console.error(new CustomError('Failed to fetch assignments from the database', err));
 			setLoadingInfo({
 				state: 'error',
 				message: tText(
@@ -334,7 +345,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 		switch (actionId) {
 			case 'edit':
-				navigate(history, APP_PATH.ASSIGNMENT_EDIT.route, { id: dataRow.id });
+				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+					id: dataRow.id,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+				});
 				break;
 			case 'duplicate':
 				try {
@@ -470,7 +484,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 
 		return renderDataCell(
-			<Link to={buildLink(APP_PATH.ASSIGNMENT_RESPONSES.route, { id: assignment.id })}>
+			<Link
+				to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+					id: assignment.id,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS,
+				})}
+			>
 				<span
 					title={tText(
 						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'

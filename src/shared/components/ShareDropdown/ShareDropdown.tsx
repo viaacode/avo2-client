@@ -1,29 +1,35 @@
 import { Dropdown, DropdownButton, DropdownContent } from '@meemoo/react-components';
-import { Button, IconName, Tabs } from '@viaa/avo2-components';
+import { Button, ButtonProps, DropdownProps, IconName, Tabs } from '@viaa/avo2-components';
 import React, { FC, useState } from 'react';
 
 import { useTabs } from '../../hooks';
 import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
-import {
-	ShareUserInfo,
-	ShareUserInfoRights,
-} from '../ShareWithColleagues/ShareWithColleagues.types';
+import { ContributorInfo, ShareRightsType } from '../ShareWithColleagues/ShareWithColleagues.types';
+import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import './ShareDropdown.scss';
 import { ShareDropdownTabs } from './ShareDropdown.types';
 
-type ShareDropdownProps = {
-	users: ShareUserInfo[];
-	onAddNewUser: (info: Partial<ShareUserInfo>) => void;
-	onEditRights: (info: ShareUserInfo, newRights: ShareUserInfoRights) => void;
-	onDeleteUser: (info: ShareUserInfo) => void;
+export type ShareDropdownProps = {
+	contributors?: ContributorInfo[];
+	onAddContributor: (info: Partial<ContributorInfo>) => void;
+	onEditContributorRights: (info: ContributorInfo, newRights: ShareRightsType) => void;
+	onDeleteContributor: (info: ContributorInfo) => void;
+	button?: Partial<ButtonProps>;
+	dropdown?: Partial<DropdownProps>;
+	share?: ShareWithPupilsProps;
+	withPupils?: boolean;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
-	users,
-	onAddNewUser,
-	onEditRights,
-	onDeleteUser,
+	contributors,
+	onAddContributor,
+	onEditContributorRights,
+	onDeleteContributor,
+	dropdown,
+	button,
+	share,
+	withPupils = true,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -42,45 +48,85 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 		],
 		ShareDropdownTabs.PUPILS
 	);
+	const [hasModalOpen, setHasModalOpen] = useState<boolean>(false);
 
 	const handleShareButtonClicked = () => {
 		setIsShareDropdownOpen(!isShareDropdownOpen);
 	};
 
+	const handleOnClose = () => {
+		if (!hasModalOpen) {
+			setIsShareDropdownOpen(false);
+		}
+	};
+
+	const renderShareWithColleagues = () => {
+		if (contributors) {
+			return (
+				<ShareWithColleagues
+					contributors={contributors}
+					onAddNewContributor={onAddContributor}
+					onDeleteContributor={onDeleteContributor}
+					onEditRights={onEditContributorRights}
+					hasModalOpen={(open: boolean) => setHasModalOpen(open)}
+				/>
+			);
+		}
+	};
+
 	return (
 		<Dropdown
 			isOpen={isShareDropdownOpen}
-			onClose={() => setIsShareDropdownOpen(false)}
+			onClose={handleOnClose}
 			className="c-share-dropdown"
+			placement="bottom-end"
+			{...dropdown}
 		>
 			<DropdownButton>
 				<Button
 					ariaLabel={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					label={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					title={tText(
-						'assignment/components/share-assignment-with-pupil___bezorg-deze-opdrachtlink-aan-je-leerlingen'
+						'shared/components/share-dropdown/share-dropdown___bezorg-deze-opdrachtlink-aan-je-leerlingen-of-werk-samen-met-je-collegas'
 					)}
 					onClick={handleShareButtonClicked}
 					disabled={false}
+					icon={IconName.userGroup}
+					{...button}
 				/>
 			</DropdownButton>
 
 			<DropdownContent>
 				<div className="c-share-dropdown__container">
-					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+					{withPupils ? (
+						<>
+							<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 
-					<div className="c-share-dropdown__content">
-						{tab === ShareDropdownTabs.COLLEAGUES ? (
-							<ShareWithColleagues
-								users={users}
-								onAddNewUser={onAddNewUser}
-								onDeleteUser={onDeleteUser}
-								onEditRights={onEditRights}
-							/>
-						) : (
-							'leerlingen'
-						)}
-					</div>
+							<div className="c-share-dropdown__content">
+								{tab === ShareDropdownTabs.COLLEAGUES ? (
+									<>
+										{contributors && (
+											<ShareWithColleagues
+												contributors={contributors}
+												onAddNewContributor={onAddContributor}
+												onDeleteContributor={onDeleteContributor}
+												onEditRights={onEditContributorRights}
+												hasModalOpen={(open: boolean) =>
+													setHasModalOpen(open)
+												}
+											/>
+										)}
+									</>
+								) : (
+									<ShareWithPupil {...(share as ShareWithPupilsProps)} />
+								)}
+							</div>
+						</>
+					) : (
+						<div className="c-share-dropdown__content">
+							{renderShareWithColleagues()}
+						</div>
+					)}
 				</div>
 			</DropdownContent>
 		</Dropdown>
