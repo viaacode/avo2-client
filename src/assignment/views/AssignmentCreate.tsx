@@ -240,7 +240,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD: // TODO remove warning
+			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT: // TODO remove warning
 				return (
 					<div className="c-assignment-contents-tab">
 						{(assignment?.blocks?.length || 0) > 0 && (

@@ -19,13 +19,13 @@ export function useAssignmentTeacherTabs(
 	const { tText } = useTranslation();
 
 	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
-		ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD
+		ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT
 	);
 	const tabs: TabProps[] = useMemo(
 		() =>
 			[
 				{
-					id: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+					id: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 					label: tText('assignment/hooks/assignment-tabs___inhoud'),
 					icon: IconName.collection as IconName,
 				},
@@ -34,10 +34,15 @@ export function useAssignmentTeacherTabs(
 					label: tText('assignment/hooks/assignment-tabs___details'),
 					icon: IconName.settings as IconName,
 				},
+				{
+					id: ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH,
+					label: tText('Publicatiedetails'),
+					icon: IconName.fileText as IconName,
+				},
 				...(history.location.pathname !== APP_PATH.ASSIGNMENT_CREATE.route
 					? [
 							{
-								id: ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS,
+								id: ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS,
 								label: tText('assignment/hooks/assignment-teacher-tabs___kliks'),
 								icon: IconName.pointer as IconName,
 							},

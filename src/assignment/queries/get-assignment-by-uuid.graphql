@@ -96,6 +96,7 @@ query getAssignmentByUuid($id: uuid!) {
 		}
 		loms {
 			lom {
+				broader
 				id
 				label
 				scheme

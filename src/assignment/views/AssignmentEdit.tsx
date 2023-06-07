@@ -57,6 +57,7 @@ import AssignmentActions from '../components/AssignmentActions';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
+import AssignmentEditMetaData from '../components/AssignmentEditMetaData';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
@@ -99,6 +100,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
+	const [assignmentLoms, setAssignmentLoms] = useState<string[]>([]);
 
 	const {
 		control,
@@ -303,6 +305,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
+	const onMetaDataChange = (values: string[]) => {
+		setAssignmentLoms(values);
+	};
+
 	const reset = useCallback(() => {
 		original && setAssignment(original);
 		resetForm();
@@ -410,7 +416,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT:
 				if (pastDeadline) {
 					return <BlockList blocks={assignment?.blocks || []} />;
 				}
@@ -469,7 +475,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					</div>
 				);
 
-			case ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH:
+				return (
+					<div className="c-assignment-details-tab">
+						<AssignmentEditMetaData assignment={original} onChange={console.log} />
+					</div>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS:
 				return (
 					<AssignmentResponses
 						history={history}
@@ -530,7 +543,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							share={{
 								assignment: original || undefined, // Needs to be saved before you can share
 								onContentLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD),
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT),
 								onDetailLinkClicked: () =>
 									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS),
 							}}
