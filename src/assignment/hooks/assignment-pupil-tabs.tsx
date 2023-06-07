@@ -32,9 +32,9 @@ export function useAssignmentPupilTabs(
 					label: tText('assignment/hooks/assignment-pupil-tabs___opdracht'),
 					icon: IconName.clipboard as IconName,
 				},
-				...(assignment?.assignment_type &&
-				[AssignmentType.ZOEK, AssignmentType.BOUW].includes(
-					assignment?.assignment_type as AssignmentType
+				...(assignment?.lom_learning_resource_type &&
+				assignment?.lom_learning_resource_type.includes(
+					AssignmentType.ZOEK || AssignmentType.BOUW
 				) &&
 				!pastDeadline
 					? [
@@ -45,8 +45,8 @@ export function useAssignmentPupilTabs(
 							},
 					  ]
 					: []),
-				...(assignment?.assignment_type &&
-				[AssignmentType.BOUW].includes(assignment?.assignment_type as AssignmentType)
+				...(assignment?.lom_learning_resource_type &&
+				assignment?.lom_learning_resource_type.includes(AssignmentType.BOUW)
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION,

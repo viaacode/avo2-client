@@ -11,6 +11,7 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { isPast } from 'date-fns';
+import { noop } from 'lodash-es';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -74,8 +75,14 @@ import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import AssignmentResponses from './AssignmentResponses';
 
-const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>> = ({
+interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
+	onUpdate: () => void | Promise<void>;
+}
+
+const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
+	onUpdate = noop,
 	match,
 	user,
 	history,
@@ -113,12 +120,20 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 		updateBlocksInAssignmentState
 	);
 
+	useEffect(() => {
+		const param = match.params.tabId;
+		param && setTab(param as ASSIGNMENT_CREATE_UPDATE_TABS);
+	}, [match.params.tabId]);
+
 	// UI
 	useWarningBeforeUnload({
 		when: isDirty,
 	});
 
-	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs();
+	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs(
+		history,
+		match.params.id as string
+	);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
 	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
 		useState<boolean>(false);
@@ -396,7 +411,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD:
 				if (pastDeadline) {
 					return <BlockList blocks={assignment?.blocks || []} />;
 				}
@@ -414,7 +429,7 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 					</div>
 				);
 
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS:
 				if (pastDeadline) {
 					if (!assignment) {
 						if (!assignment) {
@@ -453,6 +468,16 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							setValue={setValue}
 						/>
 					</div>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS:
+				return (
+					<AssignmentResponses
+						history={history}
+						match={match}
+						user={user}
+						onUpdate={onUpdate}
+					/>
 				);
 
 			default:
@@ -506,9 +531,9 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 							share={{
 								assignment: original || undefined, // Needs to be saved before you can share
 								onContentLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud),
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD),
 								onDetailLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.Details),
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS),
 							}}
 							remove={{
 								assignment: original || undefined,

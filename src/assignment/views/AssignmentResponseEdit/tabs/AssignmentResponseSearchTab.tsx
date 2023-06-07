@@ -32,6 +32,7 @@ import { AssignmentService } from '../../../assignment.service';
 import {
 	Assignment_v2,
 	AssignmentResponseInfo,
+	AssignmentType,
 	BaseBlockWithMeta,
 	PupilSearchFilterState,
 } from '../../../assignment.types';
@@ -213,7 +214,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	};
 
 	const renderItemDetailActionButton = (item: Avo.Item.Item) => {
-		if (assignment?.assignment_type !== 'BOUW') {
+		if (!assignment?.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
 			return null;
 		}
 		return (

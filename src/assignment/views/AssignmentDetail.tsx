@@ -38,6 +38,7 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import {
@@ -217,8 +218,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				<Spacer margin="left-small">
 					{permissions?.canEditAssignments && (
 						<Link
-							to={generatePath(APP_PATH.ASSIGNMENT_EDIT.route, {
+							to={generatePath(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 								id,
+								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
 							})}
 						>
 							<Button

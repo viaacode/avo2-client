@@ -13,10 +13,12 @@ import MetaTags from 'react-meta-tags';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { AssignmentService } from '../../../assignment/assignment.service';
 import {
 	Assignment_v2,
 	AssignmentOverviewTableColumns,
+	AssignmentType,
 } from '../../../assignment/assignment.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -331,7 +333,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 						</Link>
 					);
 				}
-				if (assignment.assignment_type === 'BOUW') {
+				if (assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
 					return tText(
 						'admin/assignments/views/assignments-overview-admin___aantal-leerlingen-collecties'
 					);
@@ -341,14 +343,20 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 			case 'views':
 				return (
-					(assignment as GetAssignmentsAdminOverviewQuery['app_assignments_v2'][0])
-						?.view_count?.count || '0'
+					(
+						assignment as GetAssignmentsAdminOverviewQuery['app_assignments_v2_overview'][0]
+					)?.view_count?.count || '0'
 				);
 
 			case 'actions':
 			default:
 				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_EDIT.route, { id: assignment.id })}>
+					<Link
+						to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+							id: assignment.id,
+							tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+						})}
+					>
 						<Button
 							icon={IconName.edit2}
 							ariaLabel="Bewerk deze opdracht"

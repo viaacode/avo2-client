@@ -1,11 +1,9 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Button,
-	Container,
 	Flex,
 	Form,
 	FormGroup,
-	Icon,
 	IconName,
 	Pagination,
 	Spacer,
@@ -50,7 +48,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { ASSIGNMENTS_ID, ITEMS_PER_PAGE } from '../../workspace/workspace.const';
+import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
@@ -69,7 +67,8 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
 
-interface AssignmentResponsesProps extends DefaultSecureRouteProps<{ id: string }> {
+interface AssignmentResponsesProps
+	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {
 	onUpdate: () => void | Promise<void>;
 }
 
@@ -117,7 +116,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const tableColumns = useMemo(
 		() =>
 			GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS(
-				(assignment?.assignment_type || AssignmentType.KIJK) as AssignmentType
+				(assignment?.lom_learning_resource_type[0] || AssignmentType.KIJK) as AssignmentType
 			),
 		[assignment]
 	);
@@ -589,35 +588,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	};
 
 	const renderAssignmentResponsePage = () => {
-		return (
-			<div className="c-assignment-responses">
-				<Container background="alt" mode="vertical" size="small">
-					<Container mode="horizontal" className="c-assignment-responses-header">
-						<Link
-							className="c-return"
-							to={buildLink(APP_PATH.WORKSPACE_TAB.route, {
-								tabId: ASSIGNMENTS_ID,
-							})}
-						>
-							<Icon name={IconName.chevronLeft} size="small" type="arrows" />
-							{tHtml('assignment/views/assignment-responses___opdrachten')}
-						</Link>
-
-						<Flex center className="u-spacer-top-l">
-							<Icon name={IconName.clipboard} size="large" />
-
-							<BlockHeading className="u-spacer-left" type="h2">
-								{assignment?.title}
-							</BlockHeading>
-						</Flex>
-					</Container>
-				</Container>
-
-				<Container mode="vertical" size="small">
-					<Container mode="horizontal">{renderAssignmentResponsesView()}</Container>
-				</Container>
-			</div>
-		);
+		return <>{renderAssignmentResponsesView()}</>;
 	};
 
 	return canViewAssignmentResponses !== null ? (
