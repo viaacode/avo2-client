@@ -38,11 +38,7 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
-import {
-	// isUserAssignmentContributor,
-	// isUserAssignmentOwner,
-	renderCommonMetadata,
-} from '../assignment.helper';
+import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2_With_Blocks,

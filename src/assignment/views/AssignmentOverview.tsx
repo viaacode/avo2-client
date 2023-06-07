@@ -266,6 +266,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
+			console.log(err);
 			setLoadingInfo({
 				state: 'error',
 				message: tText(

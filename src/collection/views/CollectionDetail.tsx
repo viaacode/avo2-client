@@ -774,13 +774,13 @@ const CollectionDetail: FunctionComponent<
 	};
 
 	const onAcceptShareCollection = async () => {
-		if (!collection || !inviteToken) {
-			return;
+		if (!collection?.id || !inviteToken) {
+			throw new CustomError('There was no collection id or invitetoken present');
 		}
 
 		try {
 			const res = await CollectionService.acceptSharedCollection(
-				collection?.id as string,
+				collection.id as string,
 				inviteToken
 			);
 

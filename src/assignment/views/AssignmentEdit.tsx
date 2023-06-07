@@ -172,14 +172,15 @@ const AssignmentEdit: FunctionComponent<DefaultSecureRouteProps<{ id: string }>>
 				return;
 			}
 
-			if (tempAssignment.contributors && user && user.profile && user.profile.id) {
+			if (tempAssignment.contributors && user && user?.profile?.id) {
 				const contributorInfo = tempAssignment.contributors.find(
 					(contributor) => contributor.profile_id === user?.profile?.id
 				);
+				const isOwner = tempAssignment.owner_profile_id === user.profile.id;
 
 				if (
-					!contributorInfo ||
-					contributorInfo.rights === Lookup_Enum_Right_Types_Enum.Viewer
+					(!contributorInfo && !isOwner) ||
+					contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer
 				) {
 					setAssignmentError({
 						message: tHtml(
