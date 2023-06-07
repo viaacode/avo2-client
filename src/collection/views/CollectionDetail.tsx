@@ -805,12 +805,12 @@ const CollectionDetail: FunctionComponent<
 	};
 
 	const onDeclineShareCollection = async () => {
-		if (!collection || !inviteToken) {
-			return;
+		if (!collection?.id || !inviteToken) {
+			throw new CustomError('There was no collection id or invitetoken present');
 		}
 
 		try {
-			await CollectionService.declineSharedCollection(collection?.id as string, inviteToken);
+			await CollectionService.declineSharedCollection(collection.id as string, inviteToken);
 
 			navigate(history, APP_PATH.WORKSPACE_COLLECTIONS.route);
 
