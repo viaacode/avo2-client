@@ -48508,12 +48508,12 @@ export type GetCollectionsByOwnerQueryVariables = Exact<{
   type_id?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
-  order?: InputMaybe<Array<App_Collections_Order_By> | App_Collections_Order_By>;
-  where?: InputMaybe<Array<App_Collections_Bool_Exp> | App_Collections_Bool_Exp>;
+  order?: InputMaybe<Array<App_Collections_Overview_Order_By> | App_Collections_Overview_Order_By>;
+  where?: InputMaybe<Array<App_Collections_Overview_Bool_Exp> | App_Collections_Overview_Bool_Exp>;
 }>;
 
 
-export type GetCollectionsByOwnerQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, updated_at: any, type_id: number, title: string, publish_at?: any | null, owner_profile_id?: any | null, is_public: boolean, external_id?: string | null, depublish_at?: any | null, created_at: any, thumbnail_path?: string | null, type: { __typename?: 'shared_types', label: string, id: number }, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null } }> };
+export type GetCollectionsByOwnerQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null }, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', usersByuserId?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
 
 export type GetContributorsByCollectionUuidQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -51961,8 +51961,8 @@ export const useGetCollectionsByItemUuidQuery = <
       options
     );
 export const GetCollectionsByOwnerDocument = `
-    query getCollectionsByOwner($owner_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_order_by!] = {updated_at: desc}, $where: [app_collections_bool_exp!] = []) {
-  app_collections(
+    query getCollectionsByOwner($owner_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_overview_order_by!] = {updated_at: desc}, $where: [app_collections_overview_bool_exp!] = []) {
+  app_collections_overview(
     where: {type_id: {_eq: $type_id}, owner_profile_id: {_eq: $owner_profile_id}, is_deleted: {_eq: false}, _and: $where}
     offset: $offset
     limit: $limit
@@ -51976,7 +51976,7 @@ export const GetCollectionsByOwnerDocument = `
       id
     }
     title
-    publish_at
+    published_at
     owner_profile_id
     profile {
       id
@@ -52017,6 +52017,26 @@ export const GetCollectionsByOwnerDocument = `
         sum {
           count
         }
+      }
+    }
+    share_type
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        usersByuserId {
+          full_name
+          first_name
+          last_name
+          uid
+        }
+        organisation {
+          name
+        }
+      }
+      collection {
+        id
       }
     }
   }
