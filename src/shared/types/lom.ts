@@ -6,3 +6,5 @@ export interface LomFieldsByScheme {
 	subjects: Avo.Lom.LomField[];
 	themes: Avo.Lom.LomField[];
 }
+
+export type LomSchemeType = keyof LomFieldsByScheme;

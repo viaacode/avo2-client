@@ -1,11 +1,21 @@
 import { Avo, LomSchemeTypeEnum } from '@viaa/avo2-types';
-import { groupBy } from 'lodash-es';
+import { filter, groupBy, isNil } from 'lodash-es';
 
-export const groupLoms = (
-	loms: { lom?: Avo.Lom.LomEntry }[]
-): Partial<Record<LomSchemeTypeEnum, Avo.Lom.LomEntry[]>> => {
-	return groupBy(
+import { LomFieldsByScheme } from '../types/lom';
+
+export const groupLoms = (loms: { lom?: Avo.Lom.LomField }[]): LomFieldsByScheme => {
+	const groupedLoms = groupBy(
 		(loms || []).map((lom) => lom.lom),
 		(lom) => lom?.scheme
 	);
+
+	return {
+		educationLevels: filter(
+			groupedLoms[LomSchemeTypeEnum.structure],
+			(lom) => !isNil(lom?.broader)
+		),
+		subjects: (groupedLoms[LomSchemeTypeEnum.subject] as Avo.Lom.LomField[]) || [],
+		themes: (groupedLoms[LomSchemeTypeEnum.theme] as Avo.Lom.LomField[]) || [],
+		contexts: filter(groupedLoms[LomSchemeTypeEnum.structure], { broader: null }),
+	} as LomFieldsByScheme;
 };

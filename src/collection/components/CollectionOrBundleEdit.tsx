@@ -13,6 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { cloneDeep, get, isEmpty, omit, set } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -666,6 +667,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 		return null;
 	};
+	const stripCollectionFieldsBeforeInsertOrUpdate = (collection: CollectionSchema | null) => {
+		return omit(collection, ['loms', 'contributors']);
+	};
 
 	// Listeners
 	const onSaveCollection = async () => {
@@ -680,8 +684,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			if (collectionState.currentCollection) {
 				const newCollection = await CollectionService.updateCollection(
-					omit(collectionState.initialCollection, ['loms', 'contributors']),
-					omit(collectionState.currentCollection, ['loms', 'contributors']),
+					stripCollectionFieldsBeforeInsertOrUpdate(collectionState.initialCollection),
+					stripCollectionFieldsBeforeInsertOrUpdate(collectionState.currentCollection),
 					user
 				);
 
@@ -691,17 +695,17 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 						await CollectionService.insertCollectionLomLinks(
 							newCollection.id,
-							collectionState.currentCollection.loms || []
+							(collectionState.currentCollection.loms || []).map((lom) => lom.lom.id)
 						);
 					} catch (err) {
 						console.error('Failed to update collection/bundle loms', err);
 						ToastService.danger(
 							isCollection
 								? tHtml(
-										'Er is iets misgegaan met het updaten van de publicatie details van de collectie'
+										'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-collectie-is-mislukt'
 								  )
 								: tHtml(
-										'Er is iets misgegaan met het updaten van de publicatie details van de bundel'
+										'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-bundel-is-mislukt'
 								  )
 						);
 					}

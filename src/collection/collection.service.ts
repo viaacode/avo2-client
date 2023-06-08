@@ -1623,6 +1623,7 @@ export class CollectionService {
 				collection_id: collectionId,
 				lom_id: lomId,
 			}));
+
 			const variables: InsertCollectionLomLinksMutationVariables = { lomObjects };
 
 			await dataService.query<
