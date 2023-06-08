@@ -21,14 +21,14 @@ export class LomService {
 		}
 	}
 
-	static async fetchSubjects(subjectIds: string[]): Promise<Avo.Lom.LomField[]> {
+	static async fetchSubjects(educationLevelsIds: string[]): Promise<Avo.Lom.LomField[]> {
 		try {
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/lom-fields`,
 					query: {
 						type: 'subject',
-						parents: subjectIds,
+						parents: educationLevelsIds,
 					},
 				}),
 				{ method: 'GET' }
@@ -38,14 +38,14 @@ export class LomService {
 		}
 	}
 
-	static async fetchThemes(themesIds: string[]): Promise<Avo.Lom.LomField[]> {
+	static async fetchThemes(lomIds: string[]): Promise<Avo.Lom.LomField[]> {
 		try {
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/lom-fields`,
 					query: {
 						type: 'theme',
-						parents: themesIds,
+						parents: lomIds,
 					},
 				}),
 				{ method: 'GET' }

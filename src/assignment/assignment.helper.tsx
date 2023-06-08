@@ -1,6 +1,6 @@
 import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import { Avo, LomSchemeTypeEnum } from '@viaa/avo2-types';
+import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
@@ -102,7 +102,7 @@ export function isUserAssignmentContributor(
 	return false;
 }
 
-export const renderLoms = (lomValues: Avo.Lom.LomEntry[], title: string) => {
+export const renderLoms = (lomValues: Avo.Lom.LomField[], title: string) => {
 	return (
 		<Spacer margin="top-large">
 			<p className="u-text-bold">{title}</p>
@@ -129,12 +129,12 @@ export const renderLoms = (lomValues: Avo.Lom.LomEntry[], title: string) => {
 	);
 };
 
-export const renderLomFieldsByGroup = (loms: { lom?: Avo.Lom.LomEntry }[]) => {
+export const renderLomFieldsByGroup = (loms: { lom?: Avo.Lom.LomField }[]) => {
 	const groupedLoms = groupLoms(loms);
 
-	const educationLevels: Avo.Lom.LomEntry[] = groupedLoms[LomSchemeTypeEnum.structure] || [];
-	const subjects: Avo.Lom.LomEntry[] = groupedLoms[LomSchemeTypeEnum.subject] || [];
-	const themes: Avo.Lom.LomEntry[] = groupedLoms[LomSchemeTypeEnum.theme] || [];
+	const educationLevels: Avo.Lom.LomField[] = groupedLoms['educationLevels'] || [];
+	const subjects: Avo.Lom.LomField[] = groupedLoms['subjects'] || [];
+	const themes: Avo.Lom.LomField[] = groupedLoms['themes'] || [];
 
 	return (
 		<Column size="3-3">
@@ -151,7 +151,7 @@ export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): Rea
 
 	return (
 		<>
-			{loms && renderLomFieldsByGroup(loms as { lom?: Avo.Lom.LomEntry }[])}
+			{loms && renderLomFieldsByGroup(loms as { lom?: Avo.Lom.LomField }[])}
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">

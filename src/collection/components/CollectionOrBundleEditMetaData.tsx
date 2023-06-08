@@ -11,23 +11,19 @@ import {
 	Spacer,
 	TextArea,
 } from '@viaa/avo2-components';
-import { Avo, LomSchemeTypeEnum } from '@viaa/avo2-types';
+import { Avo } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
-import { isEmpty } from 'lodash';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 
 import { FileUpload, ShortDescriptionField } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
-import { mapLomsToLomFields } from '../../shared/components/LomFieldsInput/LomFieldsInput.helpers';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES,
 } from '../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { stripHtml } from '../../shared/helpers';
-import { groupLoms } from '../../shared/helpers/lom';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { LomFieldsByScheme } from '../../shared/types/lom';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 import { CollectionStillsModal } from '../components';
@@ -52,51 +48,14 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 	const [descriptionLongEditorState, setDescriptionLongEditorState] = useState<
 		RichEditorState | undefined
 	>(undefined);
-	const [lomFields, setLomFields] = useState<LomFieldsByScheme>({
-		contexts: [],
-		educationLevels: [],
-		subjects: [],
-		themes: [],
-	});
 
 	const isCollection = type === 'collection';
 
-	useEffect(() => {
-		if (!isEmpty(collection) && collection.loms) {
-			const groupedLoms = groupLoms(collection.loms);
-
-			setLomFields({
-				...lomFields,
-				educationLevels:
-					mapLomsToLomFields(
-						groupedLoms[LomSchemeTypeEnum.structure] as Avo.Lom.LomEntry[]
-					) || [],
-				subjects:
-					mapLomsToLomFields(
-						groupedLoms[LomSchemeTypeEnum.subject] as Avo.Lom.LomEntry[]
-					) || [],
-				themes:
-					mapLomsToLomFields(
-						groupedLoms[LomSchemeTypeEnum.theme] as Avo.Lom.LomEntry[]
-					) || [],
-			});
-		}
-	}, []);
-
-	const updateCollectionLoms = async (selectedLomFieldOptions: Partial<LomFieldsByScheme>) => {
-		const newLomFields = {
-			...lomFields,
-			...selectedLomFieldOptions,
-		};
-
-		setLomFields(newLomFields);
-
-		const flatLomFields = Object.values(lomFields).flatMap((lomField) => lomField);
-
+	const updateCollectionLoms = (loms: Avo.Lom.LomField[]) => {
 		changeCollectionState({
 			collectionProp: 'loms',
 			type: 'UPDATE_COLLECTION_PROP',
-			collectionPropValue: flatLomFields.map((lom) => lom.id as string),
+			collectionPropValue: loms.map((lom) => ({ lom })),
 		});
 	};
 
@@ -108,10 +67,12 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
-									<LomFieldsInput
-										{...lomFields}
-										onChange={updateCollectionLoms}
-									/>
+									{collection.loms && (
+										<LomFieldsInput
+											loms={collection.loms}
+											onChange={updateCollectionLoms}
+										/>
+									)}
 
 									<ShortDescriptionField
 										value={collection.description}
