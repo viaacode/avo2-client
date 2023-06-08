@@ -140,7 +140,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		when: isDirty,
 	});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs();
+	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs(history, assignment?.id as string);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	// Render
@@ -240,7 +240,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Inhoud: // TODO remove warning
+			case ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD: // TODO remove warning
 				return (
 					<div className="c-assignment-contents-tab">
 						{(assignment?.blocks?.length || 0) > 0 && (
@@ -271,7 +271,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					</div>
 				);
 
-			case ASSIGNMENT_CREATE_UPDATE_TABS.Details:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS:
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable

@@ -9,7 +9,8 @@ export type AssignmentsOverviewTableCols =
 	| 'status'
 	| 'pupilCollections'
 	| 'views'
-	| 'actions';
+	| 'actions'
+	| 'share_type';
 
 export interface AssignmentsOverviewTableState extends FilterableTableState {
 	title: string;
@@ -19,6 +20,7 @@ export interface AssignmentsOverviewTableState extends FilterableTableState {
 	deadline_at: string;
 	status: ('true' | 'false')[];
 	pupilCollections: ('true' | 'false')[];
+	share_type: string;
 }
 
 export type AssignmentsBulkAction = 'delete' | 'change_author';

@@ -13,6 +13,7 @@ export const ROUTE_PARTS = Object.freeze({
 	collections: 'collecties',
 	completeProfile: 'vervolledig-profiel',
 	content: 'content',
+	contentTab: 'inhoud',
 	contentPageLabels: 'content-pagina-labels',
 	cookiePolicy: 'cookiebeleid',
 	create: 'maak',
