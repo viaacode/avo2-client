@@ -18,7 +18,7 @@ import {
 } from './LomFieldsInput.helpers';
 
 type LomFieldsInputProps = {
-	loms: Avo.Lom.Lom[];
+	loms: Avo.Lom.LomField[];
 	onChange: (newLoms: Avo.Lom.LomField[]) => void;
 };
 
@@ -26,7 +26,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 	const { tText } = useTranslation();
 
 	const lomFields = useMemo(() => {
-		return groupLoms(loms as { lom?: Avo.Lom.LomField }[]);
+		return groupLoms(loms);
 	}, [loms]);
 	const { data: allEducationLevels, isLoading: isEducationLevelsLoading } =
 		useGetLomEducationLevels();

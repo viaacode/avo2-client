@@ -1,0 +1,5 @@
+mutation insertAssignmentLomLinks($lomObjects: [app_assignments_v2_lom_links_insert_input!]!) {
+	insert_app_assignments_v2_lom_links(objects: $lomObjects) {
+		affected_rows
+	}
+}

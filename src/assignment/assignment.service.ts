@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, isNil, map, uniq, without } from 'lodash-es';
 
 import { ItemsService } from '../admin/items/items.service';
 import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
@@ -24,6 +24,9 @@ import {
 	DeleteAssignmentByIdDocument,
 	DeleteAssignmentByIdMutation,
 	DeleteAssignmentByIdMutationVariables,
+	DeleteAssignmentLomLinksDocument,
+	DeleteAssignmentLomLinksMutation,
+	DeleteAssignmentLomLinksMutationVariables,
 	DeleteAssignmentResponseByIdDocument,
 	DeleteAssignmentResponseByIdMutation,
 	DeleteAssignmentResponseByIdMutationVariables,
@@ -76,6 +79,9 @@ import {
 	InsertAssignmentBlocksMutation,
 	InsertAssignmentBlocksMutationVariables,
 	InsertAssignmentDocument,
+	InsertAssignmentLomLinksDocument,
+	InsertAssignmentLomLinksMutation,
+	InsertAssignmentLomLinksMutationVariables,
 	InsertAssignmentMutation,
 	InsertAssignmentMutationVariables,
 	InsertAssignmentResponseDocument,
@@ -347,6 +353,8 @@ export class AssignmentService {
 		delete (assignmentToSave as any).__typename;
 		delete (assignmentToSave as any).descriptionRichEditorState;
 		delete assignmentToSave.blocks;
+		delete assignmentToSave.loms;
+		delete assignmentToSave.contributors;
 
 		return assignmentToSave as Assignment_v2;
 	}
@@ -403,6 +411,13 @@ export class AssignmentService {
 				original.blocks || [],
 				update.blocks || []
 			);
+
+			await AssignmentService.deleteAssignmentLomLinks(original.id);
+
+			const loms = map(update.loms, 'lom_id');
+			const uniqueLoms = uniq(loms);
+
+			await AssignmentService.insertAssignmentLomLinks(original.id, uniqueLoms);
 
 			const assignment = AssignmentService.transformAssignment({
 				...update,
@@ -1619,6 +1634,50 @@ export class AssignmentService {
 			throw new CustomError('Failed to remove assignment contributor', err, {
 				assignmentId,
 				contributorId,
+			});
+		}
+	}
+
+	static async insertAssignmentLomLinks(assignmentId: string, lomIds: string[]): Promise<void> {
+		try {
+			const lomObjects = lomIds.map((lomId) => ({
+				assignment_id: assignmentId,
+				lom_id: lomId,
+			}));
+
+			const variables: InsertAssignmentLomLinksMutationVariables = { lomObjects };
+
+			await dataService.query<
+				InsertAssignmentLomLinksMutation,
+				InsertAssignmentLomLinksMutationVariables
+			>({
+				query: InsertAssignmentLomLinksDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert lom links in assignment database', err, {
+				assignmentId,
+				lomIds,
+				query: 'INSERT_ASSIGNMENT_LOM_LINKS',
+			});
+		}
+	}
+
+	static async deleteAssignmentLomLinks(assignmentId: string): Promise<void> {
+		try {
+			const variables: DeleteAssignmentLomLinksMutationVariables = { assignmentId };
+
+			await dataService.query<
+				DeleteAssignmentLomLinksMutation,
+				DeleteAssignmentLomLinksMutationVariables
+			>({
+				query: DeleteAssignmentLomLinksDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert lom links in assignment database', err, {
+				collectionId: assignmentId,
+				query: 'DELETE_ASSIGNMENT_LOM_LINKS',
 			});
 		}
 	}

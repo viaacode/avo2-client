@@ -10,9 +10,9 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
-import { noop } from 'lodash-es';
+import { map, noop } from 'lodash-es';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -35,6 +35,7 @@ import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -57,7 +58,6 @@ import AssignmentActions from '../components/AssignmentActions';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
-import AssignmentEditMetaData from '../components/AssignmentEditMetaData';
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
@@ -100,7 +100,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
-	const [assignmentLoms, setAssignmentLoms] = useState<string[]>([]);
 
 	const {
 		control,
@@ -155,6 +154,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
+				console.log(tempAssignment);
 			} catch (err) {
 				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
 					setAssigmentError({
@@ -305,8 +305,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const onMetaDataChange = (values: string[]) => {
-		setAssignmentLoms(values);
+	const onMetaDataChange = (loms: Avo.Lom.LomField[]) => {
+		const mappedLoms = loms.map((lom) => ({
+			id: null,
+			lom_id: lom.id,
+			assignment_id: assignment?.id,
+			lom,
+		}));
+
+		setValue('loms', mappedLoms, {
+			shouldDirty: true,
+			shouldTouch: true,
+		});
+
+		setAssignment((prev) => ({
+			...prev,
+			loms: mappedLoms,
+			blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
+		}));
 	};
 
 	const reset = useCallback(() => {
@@ -478,7 +494,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			case ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH:
 				return (
 					<div className="c-assignment-details-tab">
-						<AssignmentEditMetaData assignment={original} onChange={console.log} />
+						<LomFieldsInput
+							loms={(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) || []}
+							onChange={onMetaDataChange}
+						/>
 					</div>
 				);
 

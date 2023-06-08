@@ -3,11 +3,8 @@ import { filter, groupBy, isNil } from 'lodash-es';
 
 import { LomFieldsByScheme } from '../types/lom';
 
-export const groupLoms = (loms: { lom?: Avo.Lom.LomField }[]): LomFieldsByScheme => {
-	const groupedLoms = groupBy(
-		(loms || []).map((lom) => lom.lom),
-		(lom) => lom?.scheme
-	);
+export const groupLoms = (loms: Avo.Lom.LomField[]): LomFieldsByScheme => {
+	const groupedLoms = groupBy(loms, (lom) => lom?.scheme);
 
 	return {
 		educationLevels: filter(

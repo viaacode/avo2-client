@@ -2,6 +2,7 @@ import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
+import { map } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -129,7 +130,7 @@ export const renderLoms = (lomValues: Avo.Lom.LomField[], title: string) => {
 	);
 };
 
-export const renderLomFieldsByGroup = (loms: { lom?: Avo.Lom.LomField }[]) => {
+export const renderLomFieldsByGroup = (loms: Avo.Lom.LomField[]) => {
 	const groupedLoms = groupLoms(loms);
 
 	const educationLevels: Avo.Lom.LomField[] = groupedLoms['educationLevels'] || [];
@@ -151,7 +152,7 @@ export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): Rea
 
 	return (
 		<>
-			{loms && renderLomFieldsByGroup(loms as { lom?: Avo.Lom.LomField }[])}
+			{loms && renderLomFieldsByGroup(map(loms, 'lom') as Avo.Lom.LomField[])}
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
