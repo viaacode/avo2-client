@@ -76,7 +76,6 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
-
 	const id = match.params.id;
 
 	const getPermissions = useCallback(
