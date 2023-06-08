@@ -34,9 +34,6 @@ import {
 	GetAssignmentBlocksDocument,
 	GetAssignmentBlocksQuery,
 	GetAssignmentBlocksQueryVariables,
-	GetAssignmentByUuidDocument,
-	GetAssignmentByUuidQuery,
-	GetAssignmentByUuidQueryVariables,
 	GetAssignmentIdsDocument,
 	GetAssignmentIdsQuery,
 	GetAssignmentIdsQueryVariables,
@@ -253,21 +250,17 @@ export class AssignmentService {
 		assignmentId: string
 	): Promise<Assignment_v2_With_Blocks & Assignment_v2_With_Labels> {
 		try {
-			// Get the assignment from graphql
-			const variables: GetAssignmentByUuidQueryVariables = { id: assignmentId };
-			const response = await dataService.query<
-				GetAssignmentByUuidQuery,
-				GetAssignmentByUuidQueryVariables
-			>({
-				query: GetAssignmentByUuidDocument,
-				variables,
-			});
-
-			const assignment = response.app_assignments_v2_overview[0];
+			const assignment: Assignment_v2_With_Blocks & Assignment_v2_With_Labels =
+				await fetchWithLogoutJson(
+					stringifyUrl({
+						url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
+					}),
+					{ method: 'GET' }
+				);
 
 			if (!assignment) {
 				throw new CustomError('Response does not contain an assignment', null, {
-					response,
+					response: assignment,
 				});
 			}
 
