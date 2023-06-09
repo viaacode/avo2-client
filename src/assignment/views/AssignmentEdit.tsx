@@ -154,7 +154,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
-				console.log(tempAssignment);
 			} catch (err) {
 				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
 					setAssigmentError({
