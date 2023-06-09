@@ -75,13 +75,14 @@ export interface Relation {
 	};
 }
 
-export type EditCollectionTab =
-	| 'content'
-	| 'metadata'
-	| 'admin'
-	| 'actualisation'
-	| 'quality_check'
-	| 'marcom';
+export enum COLLECTION_CREATE_UPDATE_TABS {
+	CONTENT = 'inhoud',
+	PUBLISH = 'publicatiedetail',
+	ADMIN = 'beheer',
+	ACTUALISATION = 'actualisatie',
+	QUALITY_CHECK = 'kwaliteitscontrole',
+	MARCOM = 'communicatie',
+}
 
 export type MarcomEntry = GetCollectionMarcomEntriesQuery['app_collection_marcom_log'][0];
 

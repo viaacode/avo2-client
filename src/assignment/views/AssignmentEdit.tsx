@@ -10,9 +10,9 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
-import { noop } from 'lodash-es';
+import { map, noop } from 'lodash-es';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -35,6 +35,7 @@ import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -303,6 +304,26 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
+	const onMetaDataChange = (loms: Avo.Lom.LomField[]) => {
+		const mappedLoms = loms.map((lom) => ({
+			id: null,
+			lom_id: lom.id,
+			assignment_id: assignment?.id,
+			lom,
+		}));
+
+		setValue('loms', mappedLoms, {
+			shouldDirty: true,
+			shouldTouch: true,
+		});
+
+		setAssignment((prev) => ({
+			...prev,
+			loms: mappedLoms,
+			blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
+		}));
+	};
+
 	const reset = useCallback(() => {
 		original && setAssignment(original);
 		resetForm();
@@ -410,7 +431,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT:
 				if (pastDeadline) {
 					return <BlockList blocks={assignment?.blocks || []} />;
 				}
@@ -469,7 +490,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					</div>
 				);
 
-			case ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH:
+				return (
+					<div className="c-assignment-details-tab">
+						<LomFieldsInput
+							loms={(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) || []}
+							onChange={onMetaDataChange}
+						/>
+					</div>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS:
 				return (
 					<AssignmentResponses
 						history={history}
@@ -530,7 +561,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							share={{
 								assignment: original || undefined, // Needs to be saved before you can share
 								onContentLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD),
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT),
 								onDetailLinkClicked: () =>
 									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS),
 							}}

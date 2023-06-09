@@ -211,7 +211,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 						<Link
 							to={generatePath(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 								id,
-								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 							})}
 						>
 							<Button

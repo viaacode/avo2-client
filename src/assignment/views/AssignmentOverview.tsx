@@ -336,7 +336,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			case 'edit':
 				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 					id: dataRow.id,
-					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 				});
 				break;
 			case 'duplicate':
@@ -476,7 +476,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			<Link
 				to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 					id: assignment.id,
-					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS,
 				})}
 			>
 				<span

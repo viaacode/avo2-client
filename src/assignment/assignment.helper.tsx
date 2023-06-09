@@ -2,13 +2,12 @@ import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import { Avo } from '@viaa/avo2-types';
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { groupBy } from 'lodash-es';
+import { map } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { Maybe } from 'yup/lib/types';
 
-import { Lookup_Thesaurus } from '../shared/generated/graphql-db-types';
 import { formatDate, stripHtml } from '../shared/helpers';
+import { groupLoms } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
 
@@ -105,15 +104,7 @@ export function isUserAssignmentContributor(
 	return false;
 }
 
-export enum LomSchemeType {
-	subject = 'https://w3id.org/onderwijs-vlaanderen/id/vak',
-	structure = 'https://w3id.org/onderwijs-vlaanderen/id/structuur',
-	theme = 'https://data.hetarchief.be/id/onderwijs/thema',
-}
-
-type LomEntry = Maybe<Lookup_Thesaurus>;
-
-export const renderLoms = (lomValues: LomEntry[], title: string) => {
+export const renderLoms = (lomValues: Avo.Lom.LomField[], title: string) => {
 	return (
 		<Spacer margin="top-large">
 			<p className="u-text-bold">{title}</p>
@@ -140,21 +131,12 @@ export const renderLoms = (lomValues: LomEntry[], title: string) => {
 	);
 };
 
-export const groupLoms = (
-	loms: { lom?: LomEntry }[]
-): Partial<Record<LomSchemeType, LomEntry[]>> => {
-	return groupBy(
-		(loms || []).map((lom) => lom.lom),
-		(lom) => lom?.scheme
-	);
-};
-
-export const renderLomFieldsByGroup = (loms: { lom?: LomEntry }[]) => {
+export const renderLomFieldsByGroup = (loms: Avo.Lom.LomField[]) => {
 	const groupedLoms = groupLoms(loms);
 
-	const educationLevels: LomEntry[] = groupedLoms[LomSchemeType.structure] || [];
-	const subjects: LomEntry[] = groupedLoms[LomSchemeType.subject] || [];
-	const themes: LomEntry[] = groupedLoms[LomSchemeType.theme] || [];
+	const educationLevels: Avo.Lom.LomField[] = groupedLoms['educationLevels'] || [];
+	const subjects: Avo.Lom.LomField[] = groupedLoms['subjects'] || [];
+	const themes: Avo.Lom.LomField[] = groupedLoms['themes'] || [];
 
 	return (
 		<Column size="3-3">
@@ -171,7 +153,7 @@ export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): Rea
 
 	return (
 		<>
-			{loms && renderLomFieldsByGroup(loms)}
+			{loms && renderLomFieldsByGroup(map(loms, 'lom') as Avo.Lom.LomField[])}
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
