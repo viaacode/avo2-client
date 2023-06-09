@@ -83,6 +83,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												collectionPropValue: value,
 											})
 										}
+										placeholder={tText(
+											'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
+										)}
 									/>
 									{!isCollection && (
 										<FormGroup

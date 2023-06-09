@@ -15,19 +15,19 @@ import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getValidationErrorsForPublish } from '../../collection/collection.helpers';
-import { CollectionService } from '../../collection/collection.service';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { getValidationErrorsForPublish } from '../assignment.helper';
+import { AssignmentService } from '../assignment.service';
 
-interface PublishCollectionModalProps extends DefaultSecureRouteProps {
+interface PublishAssignmentModalProps extends DefaultSecureRouteProps {
 	isOpen: boolean;
 	onClose: (assignment?: Avo.Assignment.Assignment) => void;
 	assignment: Avo.Assignment.Assignment;
 }
 
-const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = ({
+const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = ({
 	onClose,
 	isOpen,
 	assignment,
@@ -64,11 +64,11 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 				}
 			}
 
-			const newCollectionProps: Partial<Avo.Collection.Collection> = {
+			const newAssignmentProps: Partial<Avo.Assignment.Assignment> = {
 				is_public: isAssignmentPublic,
 				published_at: new Date().toISOString(),
 			};
-			await CollectionService.updateCollectionProperties(assignment.id, newCollectionProps);
+			await AssignmentService.updateAssignmentProperties(assignment.id, newAssignmentProps);
 			setValidationError(undefined);
 			ToastService.success(
 				isAssignmentPublic
@@ -77,7 +77,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 			);
 			closeModal({
 				...assignment,
-				...newCollectionProps,
+				...newAssignmentProps,
 			});
 
 			// Public status changed => log as event
@@ -98,9 +98,9 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 		}
 	};
 
-	const closeModal = (newCollection?: Avo.Assignment.Assignment) => {
+	const closeModal = (newAssignment?: Avo.Assignment.Assignment) => {
 		setValidationError(undefined);
-		onClose(newCollection);
+		onClose(newAssignment);
 	};
 
 	return (
@@ -159,4 +159,4 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 	);
 };
 
-export default PublishCollectionModal;
+export default PublishAssignmentModal;

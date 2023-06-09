@@ -42,8 +42,13 @@ import {
 	renderCommonMetadata,
 } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { Assignment_v2_With_Blocks, BaseBlockWithMeta } from '../assignment.types';
+import {
+	Assignment_v2_With_Blocks,
+	AssignmentFormState,
+	BaseBlockWithMeta,
+} from '../assignment.types';
 import { useAssignmentForm } from '../hooks';
+import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import './AssignmentDetail.scss';
 
@@ -55,6 +60,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
 	user,
 	history,
+	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -354,32 +360,29 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 					)}
 				/>
 			</MetaTags>
+
 			{renderHeader()}
+
 			{renderPageContent()}
+
 			{renderMetadata()}
 
-			{/* {!!collection && !!user && (
-				<PublishCollectionModal
-					collection={collection}
-					isOpen={isPublishModalOpen}
-					onClose={(newCollection: Avo.Collection.Collection | undefined) => {
+			{!!assignment && !!user && (
+				<PublishAssignmentModal
+					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
 						setIsPublishModalOpen(false);
-
-						if (newCollection) {
-							setCollectionInfo((oldCollectionInfo) => ({
-								showLoginPopup: oldCollectionInfo?.showLoginPopup || false,
-								showNoAccessPopup: oldCollectionInfo?.showNoAccessPopup || false,
-								permissions: oldCollectionInfo?.permissions || {},
-								collection: newCollection || null,
-							}));
+						if (newAssignment) {
+							setAssignment(newAssignment as Partial<AssignmentFormState>);
 						}
 					}}
+					isOpen={isPublishModalOpen}
+					assignment={assignment as Avo.Assignment.Assignment}
 					history={history}
 					location={location}
 					match={match}
 					user={user}
 				/>
-			)} */}
+			)}
 		</>
 	);
 };

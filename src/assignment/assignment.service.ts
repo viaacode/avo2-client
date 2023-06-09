@@ -36,6 +36,9 @@ import {
 	GetAssignmentBlocksDocument,
 	GetAssignmentBlocksQuery,
 	GetAssignmentBlocksQueryVariables,
+	GetAssignmentByTitleOrDescriptionDocument,
+	GetAssignmentByTitleOrDescriptionQuery,
+	GetAssignmentByTitleOrDescriptionQueryVariables,
 	GetAssignmentByUuidDocument,
 	GetAssignmentByUuidQuery,
 	GetAssignmentByUuidQueryVariables,
@@ -626,6 +629,29 @@ export class AssignmentService {
 
 		return await Promise.all(promises);
 	}
+
+	static updateAssignmentProperties = async (
+		assignmentId: string,
+		assignment: Partial<Avo.Assignment.Assignment>
+	): Promise<void> => {
+		try {
+			const variables: UpdateAssignmentByIdMutationVariables = { assignmentId, assignment };
+
+			await dataService.query<
+				UpdateAssignmentByIdMutation,
+				UpdateAssignmentByIdMutationVariables
+			>({
+				query: UpdateAssignmentByIdDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to update assignment properties', err, {
+				id: assignmentId,
+				assigment: assignment,
+				query: 'UPDATE_ASSIGNMENT ',
+			});
+		}
+	};
 
 	static async insertAssignment(
 		assignment: Partial<Assignment_v2_With_Blocks>,
@@ -1498,6 +1524,41 @@ export class AssignmentService {
 				variables,
 				query: 'GET_ASSIGNMENT_IDS',
 			});
+		}
+	}
+
+	static async getAssignmentsByTitleOrDescription(
+		title: string,
+		description: string | null,
+		assignmentId: string
+	): Promise<{ byTitle: boolean; byDescription: boolean }> {
+		try {
+			const variables: GetAssignmentByTitleOrDescriptionQueryVariables = {
+				title,
+				description: description || '',
+				assignmentId,
+			};
+
+			const response = await dataService.query<
+				GetAssignmentByTitleOrDescriptionQuery,
+				GetAssignmentByTitleOrDescriptionQueryVariables
+			>({ query: GetAssignmentByTitleOrDescriptionDocument, variables });
+
+			const assignmentWithSameTitleExists = !!(response.collectionByTitle || []).length;
+
+			const assignmentWithSameDescriptionExists = !!(response.collectionByDescription || [])
+				.length;
+
+			return {
+				byTitle: assignmentWithSameTitleExists,
+				byDescription: assignmentWithSameDescriptionExists,
+			};
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get duplicate assignments by title or description',
+				err,
+				{ title, description, query: 'GET_ASSIGNMENT_BY_TITLE_OR_DESCRIPTION' }
+			);
 		}
 	}
 

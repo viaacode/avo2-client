@@ -1,0 +1,28 @@
+query getAssignmentByTitleOrDescription(
+	$title: String!
+	$description: String!
+	$assignmentId: uuid!
+) {
+	collectionByTitle: app_assignments_v2(
+		where: {
+			title: { _eq: $title }
+			is_deleted: { _eq: false }
+			is_public: { _eq: true }
+			id: { _neq: $assignmentId }
+		}
+		limit: 1
+	) {
+		id
+	}
+	collectionByDescription: app_assignments_v2(
+		where: {
+			description: { _eq: $description }
+			is_deleted: { _eq: false }
+			is_public: { _eq: true }
+			id: { _neq: $assignmentId }
+		}
+		limit: 1
+	) {
+		id
+	}
+}
