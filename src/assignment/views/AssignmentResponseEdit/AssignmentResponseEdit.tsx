@@ -387,7 +387,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderAssignmentResponseEditView = () => {
 		const deadline = formatTimestamp(assignment?.deadline_at, false);
 		return (
-			<div className="c-assignment-response-page c-assignment-response-page--edit c-sticky-save-bar__wrapper">
+			<div className="c-assignment-response-page c-assignment-response-page--edit c-sticky-bar__wrapper">
 				<div>
 					<AssignmentHeading
 						back={showBackButton ? renderBackButton : undefined}
@@ -440,7 +440,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 					<BeforeUnloadPrompt when={isDirty} />
 				</div>
 
-				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+				{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 				<StickySaveBar
 					isVisible={isDirty}
 					onCancel={() => resetForm()}

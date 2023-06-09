@@ -64,13 +64,13 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		fetchContributors();
 	}, [fetchContributors]);
 
-	const onEditUser = async (user: ContributorInfo, newRights: ShareRightsType) => {
+	const onEditContributor = async (contributor: ContributorInfo, newRights: ShareRightsType) => {
 		try {
 			if (share && refetch) {
 				if (newRights === 'OWNER') {
 					await AssignmentService.transferAssignmentOwnerShip(
 						share.assignment?.id,
-						user.profileId as string
+						contributor.contributorId as string
 					);
 
 					await refetch();
@@ -83,7 +83,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				} else {
 					await AssignmentService.editContributorRights(
 						share.assignment?.id,
-						user.profileId as string,
+						contributor.contributorId as string,
 						newRights
 					);
 
@@ -105,7 +105,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		}
 	};
 
-	const onAddNewUser = async (info: Partial<ContributorInfo>) => {
+	const onAddNewContributor = async (info: Partial<ContributorInfo>) => {
 		try {
 			await AssignmentService.addContributor(share?.assignment?.id, info);
 
@@ -125,11 +125,12 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		}
 	};
 
-	const onDeleteUser = async (info: ContributorInfo) => {
+	const onDeleteContributor = async (info: ContributorInfo) => {
 		try {
 			await AssignmentService.deleteContributor(
 				share?.assignment?.id,
-				info.contributorId as string
+				info.contributorId,
+				info.profileId
 			);
 
 			await fetchContributors();
@@ -186,9 +187,9 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 					share?.assignment?.owner as Avo.User.User,
 					contributors as Contributor[]
 				)}
-				onDeleteContributor={onDeleteUser}
-				onEditContributorRights={onEditUser}
-				onAddContributor={onAddNewUser}
+				onDeleteContributor={onDeleteContributor}
+				onEditContributorRights={onEditContributor}
+				onAddContributor={onAddNewContributor}
 				{...config}
 				share={share}
 			/>
