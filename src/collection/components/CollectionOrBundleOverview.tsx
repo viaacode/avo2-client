@@ -508,17 +508,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		const { id } = collection;
 
 		const sharedWithNames = collection.contributors.map((contributor) => {
+			const fullName = contributor.profile?.usersByuserId?.full_name;
+			const orgName = contributor.profile?.organisation?.name;
+
 			if (contributor.profile?.organisation?.name) {
-				return (
-					contributor.profile?.usersByuserId?.full_name +
-					' ' +
-					'(' +
-					contributor.profile?.organisation?.name +
-					')' +
-					' '
-				);
+				return `${fullName} (${orgName}) `;
 			} else {
-				return contributor.profile?.usersByuserId?.full_name + ' ';
+				return `${fullName} `;
 			}
 		});
 
