@@ -10,7 +10,7 @@ import {
 export type Collection = (
 	| GetPublicCollectionsByIdQuery
 	| GetPublicCollectionsByTitleQuery
-)['app_collections'][0];
+)['app_collections_overview'][0];
 
 export enum ContentTypeNumber {
 	audio = 1,
@@ -62,6 +62,12 @@ export function toEnglishContentType(label: Avo.ContentType.Dutch): Avo.ContentT
 }
 
 export type CollectionLabelLookup = { [id: string]: string };
+
+export enum CollectionShareType {
+	GEDEELD_MET_MIJ = 'GEDEELD_MET_MIJ',
+	GEDEELD_MET_ANDERE = 'GEDEELD_MET_ANDERE',
+	NIET_GEDEELD = 'NIET_GEDEELD',
+}
 
 export interface QualityLabel {
 	description: string;

@@ -10,7 +10,7 @@
     "build": "cross-env DISABLE_ESLINT_PLUGIN=true node --max_old_space_size=2048 node_modules/react-scripts/bin/react-scripts build",
     "postbuild": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/add-cookiebot-ignore-attributes.ts",
     "unit-tests": "react-scripts test --transformIgnorePatterns \"node_modules/(?!(lodash-es|moment))/\"",
-    "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --cache",
+    "lint": "eslint \"{src ,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --cache",
     "lint:fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --fix",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,scss,graphql}\"",
     "translations:extract": "ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format:fix",

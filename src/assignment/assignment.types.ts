@@ -36,15 +36,6 @@ export type Assignment_v2_With_Labels = Exclude<
 	undefined | null
 >;
 
-export type Assignment_v2 = Exclude<
-	| GetAssignmentsByOwnerQuery['app_assignments_v2_overview'][0]
-	| GetAssignmentsByResponseOwnerIdQuery['app_assignments_v2_overview'][0]
-	| GetAssignmentsAdminOverviewQuery['app_assignments_v2_overview'][0]
-	| GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0]
-	| GetAssignmentByUuidQuery['app_assignments_v2_overview'][0],
-	undefined | null
->;
-
 export type Assignment_Response_v2 = Exclude<
 	| GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0]['responses'][0]
 	| GetAssignmentResponsesByAssignmentIdQuery['app_assignment_responses_v2'][0]
@@ -157,10 +148,7 @@ export interface AssignmentLabelColor {
 
 /// Zoek & bouw
 
-export type AssignmentFormState = Omit<
-	Assignment_v2_With_Blocks & Assignment_v2_With_Labels,
-	'id'
-> & { id: string | null };
+export type AssignmentFormState = Omit<Avo.Assignment.Assignment, 'id'> & { id: string | null };
 
 export type AssignmentResponseFormState = Pick<
 	AssignmentResponseInfo,

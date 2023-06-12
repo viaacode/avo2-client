@@ -35,7 +35,7 @@ export const retrieveBundles = async (
 const parseCollections = (type: ContentPickerType, raw: Collection[]): PickerSelectItem[] => {
 	return raw.map(
 		(item: Collection): PickerSelectItem => ({
-			label: item.title,
+			label: item.title || '',
 			value: parsePickerItem(type, item.id.toString()),
 		})
 	);

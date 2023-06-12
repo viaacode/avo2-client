@@ -30,7 +30,7 @@ import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState
 import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
-import { ContentTypeNumber } from '../../collection/collection.types';
+import { Collection, ContentTypeNumber } from '../../collection/collection.types';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, formatTimestamp } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -116,7 +116,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [createWithDescription, setCreateWithDescription] = useState<boolean>(false);
-	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
+	const [collections, setCollections] = useState<Collection[] | null>(null);
 	const [selectedCollectionId, setSelectedCollectionId] = useState<string | null>(null);
 	const [activeView, setActiveView] = useState<AddCollectionTab>(AddCollectionTab.myCollections);
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
@@ -137,7 +137,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			const columnDataType: TableColumnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
 
-			let collections: Avo.Collection.Collection[];
+			let collections: Collection[];
 			if (activeView === AddCollectionTab.myCollections) {
 				collections = await CollectionService.fetchCollectionsByOwner(
 					user,

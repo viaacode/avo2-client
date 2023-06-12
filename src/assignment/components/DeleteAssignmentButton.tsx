@@ -6,12 +6,12 @@ import { DeleteObjectModal } from '../../shared/components';
 import { ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { Assignment_v2 } from '../assignment.types';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
+import { Avo } from '@viaa/avo2-types';
 
 export type DeleteAssignmentButtonProps = DefaultProps &
 	Partial<UserProps> & {
-		assignment?: Assignment_v2;
+		assignment?: Avo.Assignment.Assignment;
 		button?: Partial<ButtonProps>;
 		modal?: Partial<ConfirmModalProps>;
 	};

@@ -17,7 +17,6 @@ import { AssignmentService } from './assignment.service';
 import {
 	Assignment_Label_v2,
 	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
 	AssignmentFormState,
 	AssignmentLayout,
 	AssignmentRetrieveError,
@@ -38,7 +37,7 @@ export class AssignmentHelper {
 	}
 
 	public static getLabels(
-		assignment: Assignment_v2_With_Labels,
+		assignment: Avo.Assignment.Assignment,
 		type: string
 	): { assignment_label: Assignment_Label_v2 }[] {
 		return assignment?.labels?.filter((label) => label.assignment_label.type === type) || [];

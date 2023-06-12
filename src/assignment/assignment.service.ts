@@ -120,7 +120,6 @@ import {
 import {
 	Assignment_Label_v2,
 	Assignment_Response_v2,
-	Assignment_v2,
 	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
 	Assignment_v2_With_Responses,
@@ -322,15 +321,15 @@ export class AssignmentService {
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.ZOEK
 			)
 		) {
-			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.ZOEK);
+			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.ZOEK);
 		} else if (
 			assignment.blocks?.some(
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.BOUW
 			)
 		) {
-			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.BOUW);
+			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.BOUW);
 		} else {
-			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.KIJK);
+			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.KIJK);
 		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
@@ -356,7 +355,7 @@ export class AssignmentService {
 		delete assignmentToSave.loms;
 		delete assignmentToSave.contributors;
 
-		return assignmentToSave as Assignment_v2;
+		return assignmentToSave as Avo.Assignment.Assignment;
 	}
 
 	static async deleteAssignment(assignmentId: string): Promise<void> {
@@ -394,7 +393,7 @@ export class AssignmentService {
 	static async updateAssignment(
 		original: Assignment_v2_With_Blocks,
 		update: Partial<Assignment_v2_With_Blocks>
-	): Promise<Assignment_v2 | null> {
+	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			if (isNil(original.id)) {
 				throw new CustomError(
@@ -652,7 +651,7 @@ export class AssignmentService {
 	static async insertAssignment(
 		assignment: Partial<Assignment_v2_With_Blocks>,
 		addedLabels?: Assignment_Label_v2[]
-	): Promise<Assignment_v2 | null> {
+	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			const assignmentToSave = AssignmentService.transformAssignment({
 				...assignment,
@@ -693,7 +692,7 @@ export class AssignmentService {
 			await this.updateAssignmentBlocks(assignmentId, [], assignment.blocks || []);
 
 			return {
-				...(assignment as Assignment_v2), // Do not copy the auto modified fields from the validation back into the input controls
+				...(assignment as Avo.Assignment.Assignment), // Do not copy the auto modified fields from the validation back into the input controls
 				id: assignmentId,
 			};
 		} catch (err) {
@@ -704,7 +703,7 @@ export class AssignmentService {
 	static async duplicateAssignment(
 		newTitle: string,
 		initialAssignment: Partial<Assignment_v2_With_Blocks> | null
-	): Promise<Assignment_v2> {
+	): Promise<Avo.Assignment.Assignment> {
 		if (!initialAssignment || !initialAssignment.id) {
 			throw new CustomError(
 				'Failed to copy assignment because the duplicateAssignment function received an empty assignment',
@@ -841,7 +840,7 @@ export class AssignmentService {
 	}
 
 	static isOwnerOfAssignment(
-		assignment: Assignment_v2,
+		assignment: Avo.Assignment.Assignment,
 		user: Avo.User.User | undefined
 	): boolean {
 		return getProfileId(user) === assignment.owner_profile_id;
@@ -1115,7 +1114,7 @@ export class AssignmentService {
 	 * @param user
 	 */
 	static async createOrFetchAssignmentResponseObject(
-		assignment: Assignment_v2,
+		assignment: Avo.Assignment.Assignment,
 		user: Avo.User.User | undefined
 	): Promise<Omit<AssignmentResponseInfo, 'assignment'> | null> {
 		try {
@@ -1130,7 +1129,7 @@ export class AssignmentService {
 			);
 
 			if (existingAssignmentResponse) {
-				if (assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
+				if (assignment.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
 					existingAssignmentResponse.collection_title =
 						existingAssignmentResponse.collection_title ||
 						tText('assignment/assignment___nieuwe-collectie');
@@ -1146,7 +1145,7 @@ export class AssignmentService {
 			const assignmentResponse: Partial<Assignment_Response_v2> = {
 				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
-				collection_title: assignment.lom_learning_resource_type.includes(
+				collection_title: assignment.lom_learning_resource_type?.includes(
 					AssignmentType.BOUW
 				)
 					? tText('assignment/assignment___nieuwe-collectie')
@@ -1438,7 +1437,7 @@ export class AssignmentService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[GetAssignmentsAdminOverviewQuery['app_assignments_v2_overview'], number]> {
+	): Promise<[Avo.Assignment.Assignment[], number]> {
 		let variables;
 		try {
 			const whereWithoutDeleted = {
@@ -1477,7 +1476,7 @@ export class AssignmentService {
 				});
 			}
 
-			return [assignments, assignmentCount];
+			return [assignments as Avo.Assignment.Assignment[], assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get assignments from the database', err, {
 				variables,
@@ -1635,7 +1634,7 @@ export class AssignmentService {
 				err,
 				{
 					assignmentId,
-					query: 'GET_CONTRIBUTORS_BY_ASSIGNMENT_ID',
+					query: 'GET_CONTRIBUTORS_BY_ASSIGNMENT_UUID',
 				}
 			);
 		}
@@ -1758,6 +1757,24 @@ export class AssignmentService {
 			throw new CustomError('Failed to decline to share assignment', err, {
 				assignmentId,
 				inviteToken,
+			});
+		}
+	}
+
+	static async transferAssignmentOwnerShip(
+		assignmentId: string,
+		contributorId: string
+	): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				`${getEnv(
+					'PROXY_URL'
+				)}/assignments/${assignmentId}/share/transfer-owner?newOwnerId=${contributorId}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to transfer assignment ownership', err, {
+				contributorId,
 			});
 		}
 	}
