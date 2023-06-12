@@ -67,6 +67,14 @@ query getAssignmentsAdminOverview(
 			}
 			id
 		}
+		loms {
+			lom {
+				id
+				label
+				scheme
+				broader
+			}
+		}
 	}
 	app_assignments_v2_overview_aggregate(where: $where) {
 		aggregate {

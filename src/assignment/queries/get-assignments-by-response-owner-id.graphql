@@ -90,6 +90,14 @@ query getAssignmentsByResponseOwnerId(
 				value
 			}
 		}
+		loms {
+			lom {
+				id
+				label
+				scheme
+				broader
+			}
+		}
 	}
 	count: app_assignments_v2_overview_aggregate(
 		where: {

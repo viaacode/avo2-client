@@ -107,6 +107,14 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 			}
 			id
 		}
+		loms {
+			lom {
+				id
+				label
+				scheme
+				broader
+			}
+		}
 		share_type
 		lom_learning_resource_type
 	}
