@@ -74,7 +74,7 @@ import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { MAX_TITLE_LENGTH } from '../collection.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { COLLECTION_CREATE_UPDATE_TABS } from '../collection.types';
+import { CollectionCreateUpdateTab } from '../collection.types';
 import { PublishCollectionModal } from '../components';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
@@ -145,13 +145,13 @@ interface CollectionOrBundleEditProps {
 
 const CollectionOrBundleEdit: FunctionComponent<
 	CollectionOrBundleEditProps &
-		DefaultSecureRouteProps<{ id: string; tabId: COLLECTION_CREATE_UPDATE_TABS | undefined }>
+		DefaultSecureRouteProps<{ id: string; tabId: CollectionCreateUpdateTab | undefined }>
 > = ({ type, history, location, match, user }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [collectionId] = useState<string>(match.params.id);
-	const [currentTab, setCurrentTab] = useState<COLLECTION_CREATE_UPDATE_TABS | null>(null);
+	const [currentTab, setCurrentTab] = useState<CollectionCreateUpdateTab | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -538,12 +538,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	// react to route changes by navigating back wih the browser history back button
 	useEffect(() => {
-		setCurrentTab(match.params.tabId || COLLECTION_CREATE_UPDATE_TABS.CONTENT);
+		setCurrentTab(match.params.tabId || CollectionCreateUpdateTab.CONTENT);
 	}, [match.params.tabId]);
 
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
-		const tabName = String(selectedTab) as COLLECTION_CREATE_UPDATE_TABS;
+		const tabName = String(selectedTab) as CollectionCreateUpdateTab;
 		navigate(
 			history,
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
@@ -583,19 +583,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 		);
 		return [
 			{
-				id: COLLECTION_CREATE_UPDATE_TABS.CONTENT,
+				id: CollectionCreateUpdateTab.CONTENT,
 				label: tText('collection/collection___inhoud'),
 				icon: IconName.collection,
 			},
 			{
-				id: COLLECTION_CREATE_UPDATE_TABS.PUBLISH,
+				id: CollectionCreateUpdateTab.PUBLISH,
 				label: tText('collection/collection___publicatiedetails'),
 				icon: IconName.fileText,
 			},
 			...(showAdminTab
 				? [
 						{
-							id: COLLECTION_CREATE_UPDATE_TABS.ADMIN,
+							id: CollectionCreateUpdateTab.ADMIN,
 							label: tText('collection/collection___beheer'),
 							icon: IconName.settings,
 						} as TabProps,
@@ -604,21 +604,21 @@ const CollectionOrBundleEdit: FunctionComponent<
 			...(showEditorialTabs
 				? [
 						{
-							id: COLLECTION_CREATE_UPDATE_TABS.ACTUALISATION,
+							id: CollectionCreateUpdateTab.ACTUALISATION,
 							label: tText(
 								'collection/components/collection-or-bundle-edit___actualisatie'
 							),
 							icon: IconName.checkCircle,
 						} as TabProps,
 						{
-							id: COLLECTION_CREATE_UPDATE_TABS.QUALITY_CHECK,
+							id: CollectionCreateUpdateTab.QUALITY_CHECK,
 							label: tText(
 								'collection/components/collection-or-bundle-edit___kwaliteitscontrole'
 							),
 							icon: IconName.checkSquare,
 						} as TabProps,
 						{
-							id: COLLECTION_CREATE_UPDATE_TABS.MARCOM,
+							id: CollectionCreateUpdateTab.MARCOM,
 							label: tText(
 								'collection/components/collection-or-bundle-edit___marcom'
 							),
@@ -666,6 +666,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 		return null;
 	};
+
 	const stripCollectionFieldsBeforeInsertOrUpdate = (collection: CollectionSchema | null) => {
 		return omit(collection, ['loms', 'contributors']);
 	};
@@ -1109,7 +1110,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
-				case COLLECTION_CREATE_UPDATE_TABS.CONTENT:
+				case CollectionCreateUpdateTab.CONTENT:
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
@@ -1121,7 +1122,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							user={user}
 						/>
 					);
-				case COLLECTION_CREATE_UPDATE_TABS.PUBLISH:
+				case CollectionCreateUpdateTab.PUBLISH:
 					return (
 						<CollectionOrBundleEditMetaData
 							type={type}
@@ -1129,7 +1130,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							changeCollectionState={changeCollectionState}
 						/>
 					);
-				case COLLECTION_CREATE_UPDATE_TABS.ADMIN:
+				case CollectionCreateUpdateTab.ADMIN:
 					return (
 						<CollectionOrBundleEditAdmin
 							collection={collectionState.currentCollection}
@@ -1137,7 +1138,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							history={history}
 						/>
 					);
-				case COLLECTION_CREATE_UPDATE_TABS.ACTUALISATION:
+				case CollectionCreateUpdateTab.ACTUALISATION:
 					return (
 						<CollectionOrBundleEditActualisation
 							collection={collectionState.currentCollection}
@@ -1145,7 +1146,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							history={history}
 						/>
 					);
-				case COLLECTION_CREATE_UPDATE_TABS.QUALITY_CHECK:
+				case CollectionCreateUpdateTab.QUALITY_CHECK:
 					return (
 						<CollectionOrBundleEditQualityCheck
 							collection={collectionState.currentCollection}
@@ -1153,7 +1154,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							history={history}
 						/>
 					);
-				case COLLECTION_CREATE_UPDATE_TABS.MARCOM:
+				case CollectionCreateUpdateTab.MARCOM:
 					return (
 						<CollectionOrBundleEditMarcom
 							collection={collectionState.currentCollection}
