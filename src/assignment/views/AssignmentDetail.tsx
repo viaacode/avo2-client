@@ -148,7 +148,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 					setAssigmentError({
 						message:
 							err.innerException.additionalInfo.statusCode === 403
-								? tHtml('Je hebt geen rechten om deze pagina te')
+								? tHtml(
+										'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-pagina-te'
+								  )
 								: tHtml(
 										'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 								  ),
