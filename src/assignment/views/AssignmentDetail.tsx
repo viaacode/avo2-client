@@ -11,6 +11,7 @@ import {
 	isUuid,
 	Spacer,
 	Spinner,
+	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import React, { FC, useCallback, useEffect, useState } from 'react';
@@ -214,6 +215,15 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const renderHeaderButtons = () => {
 		return (
 			<ButtonToolbar>
+				<ToggleButton
+					title={tText('collection/views/collection-detail___bladwijzer')}
+					type="secondary"
+					icon={IconName.bookmark}
+					active={true}
+					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
+					onClick={console.log}
+				/>
+
 				<Spacer margin="left-small">
 					{permissions?.canEditAssignments && (
 						<Link
