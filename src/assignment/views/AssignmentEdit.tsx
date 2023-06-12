@@ -10,8 +10,9 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
-import { map, noop } from 'lodash-es';
+import { noop } from 'lodash-es';
 import React, {
 	Dispatch,
 	FunctionComponent,
@@ -33,7 +34,6 @@ import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
@@ -58,6 +58,7 @@ import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
 import AssignmentHeading from '../components/AssignmentHeading';
+import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataFormEditable';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
@@ -73,6 +74,7 @@ import {
 	useEditBlocks,
 } from '../hooks';
 import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
+import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -87,6 +89,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	match,
 	user,
 	history,
+	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -99,6 +102,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const isPublic = !!assignment && assignment.is_public;
 
 	const {
 		control,
@@ -305,26 +310,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const onMetaDataChange = (loms: Avo.Lom.LomField[]) => {
-		const mappedLoms = loms.map((lom) => ({
-			id: null,
-			lom_id: lom.id,
-			assignment_id: assignment?.id,
-			lom,
-		}));
-
-		setValue('loms', mappedLoms, {
-			shouldDirty: true,
-			shouldTouch: true,
-		});
-
-		setAssignment((prev) => ({
-			...prev,
-			loms: mappedLoms,
-			blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
-		}));
-	};
-
 	const reset = useCallback(() => {
 		original && setAssignment(original);
 		resetForm();
@@ -494,9 +479,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			case ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH:
 				return (
 					<div className="c-assignment-details-tab">
-						<LomFieldsInput
-							loms={(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) || []}
-							onChange={onMetaDataChange}
+						<AssignmentMetaDataFormEditable
+							assignment={
+								assignment as Assignment_v2_With_Labels &
+									Assignment_v2_With_Responses &
+									Assignment_v2_With_Blocks
+							}
+							setAssignment={
+								setAssignment as Dispatch<
+									SetStateAction<
+										Assignment_v2_With_Labels & Assignment_v2_With_Blocks
+									>
+								>
+							}
+							setValue={setValue}
 						/>
 					</div>
 				);
@@ -548,6 +544,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					title={renderTitle}
 					actions={
 						<AssignmentActions
+							publish={{
+								title: isPublic
+									? tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+									  )
+									: tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+									  ),
+								ariaLabel: isPublic
+									? tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+									  )
+									: tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+									  ),
+								icon: isPublic ? IconName.unlock3 : IconName.lock,
+								onClick: () => setIsPublishModalOpen(true),
+							}}
 							duplicate={{
 								assignment: original || undefined,
 								onClick: (_e, duplicated) => {
@@ -679,6 +693,23 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			{renderPageContent()}
 
 			<BeforeUnloadPrompt when={isDirty} />
+
+			{!!assignment && !!user && (
+				<PublishAssignmentModal
+					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
+						setIsPublishModalOpen(false);
+						if (newAssignment) {
+							setAssignment(newAssignment as Partial<AssignmentFormState>);
+						}
+					}}
+					isOpen={isPublishModalOpen}
+					assignment={assignment as Avo.Assignment.Assignment}
+					history={history}
+					location={location}
+					match={match}
+					user={user}
+				/>
+			)}
 		</>
 	);
 };

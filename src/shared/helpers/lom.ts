@@ -7,12 +7,9 @@ export const groupLoms = (loms: Avo.Lom.LomField[]): LomFieldsByScheme => {
 	const groupedLoms = groupBy(loms, (lom) => lom?.scheme);
 
 	return {
-		educationLevels: filter(
-			groupedLoms[LomSchemeType.structure],
-			(lom) => !isNil(lom?.broader)
-		),
-		subjects: (groupedLoms[LomSchemeType.subject] as Avo.Lom.LomField[]) || [],
-		themes: (groupedLoms[LomSchemeType.theme] as Avo.Lom.LomField[]) || [],
-		contexts: filter(groupedLoms[LomSchemeType.structure], { broader: null }),
+		educationLevel: filter(groupedLoms[LomSchemeType.structure], (lom) => !isNil(lom?.broader)),
+		subject: (groupedLoms[LomSchemeType.subject] as Avo.Lom.LomField[]) || [],
+		theme: (groupedLoms[LomSchemeType.theme] as Avo.Lom.LomField[]) || [],
+		context: filter(groupedLoms[LomSchemeType.structure], { broader: null }),
 	} as LomFieldsByScheme;
 };
