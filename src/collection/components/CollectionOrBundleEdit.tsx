@@ -667,6 +667,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 		return null;
 	};
+
 	const stripCollectionFieldsBeforeInsertOrUpdate = (collection: CollectionSchema | null) => {
 		return omit(collection, ['loms', 'contributors']);
 	};

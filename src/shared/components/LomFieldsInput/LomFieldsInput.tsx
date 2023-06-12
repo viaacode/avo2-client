@@ -1,7 +1,7 @@
 import { Form, FormGroup, Spacer, TagsInput } from '@viaa/avo2-components';
 import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
 import { Avo } from '@viaa/avo2-types';
-import { concat, filter, isNil, map, uniq } from 'lodash-es';
+import { filter, isNil, map, uniq } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 
 import { groupLoms } from '../../helpers/lom';
@@ -45,12 +45,12 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 		const mappedLoms = mapOptionsToLomFields(values, allSchemeLoms);
 		const newLoms = { ...lomFields, [scheme]: mappedLoms };
 		let flatLomList: Avo.Lom.LomField[];
-		flatLomList = Object.values(newLoms).flatMap((lomField) => lomField);
+		flatLomList = Object.values(newLoms).flat();
 
 		if (scheme === 'educationLevels') {
 			const parentContexts = getParentContext(mappedLoms, allEducationLevels || []);
 
-			flatLomList = concat(flatLomList, parentContexts);
+			flatLomList = [...flatLomList, ...parentContexts];
 		}
 
 		onChange(uniq(flatLomList));
