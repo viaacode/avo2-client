@@ -18,9 +18,11 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { MenuItemInfoSchema } from '@viaa/avo2-components/src/components/Menu/MenuContent/MenuContent';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
@@ -61,7 +63,14 @@ import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
 	getMoreOptionsLabel,
 } from '../../shared/constants';
-import { buildLink, formatDate, isMobileWidth, navigate, renderAvatar } from '../../shared/helpers';
+import {
+	buildLink,
+	CustomError,
+	formatDate,
+	isMobileWidth,
+	navigate,
+	renderAvatar,
+} from '../../shared/helpers';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
@@ -82,6 +91,7 @@ import {
 	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
 	AssignmentOverviewTableColumns,
+	AssignmentShareType,
 	AssignmentView,
 } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
@@ -269,6 +279,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
+			console.error(new CustomError('Failed to fetch assignments from the database', err));
 			setLoadingInfo({
 				state: 'error',
 				message: tText(
@@ -400,7 +411,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 											label: tText(
 												'assignment/views/assignment-overview___bewerk'
 											),
-										} as MenuItemInfoSchema,
+										},
 								  ]),
 							{
 								icon: IconName.copy,
@@ -504,6 +515,45 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
+		const sharedWithNames = assignment.contributors.map((contributor) => {
+			if (contributor.profile?.organisation?.name) {
+				return (
+					contributor.profile?.usersByuserId?.full_name +
+					' ' +
+					'(' +
+					contributor.profile?.organisation?.name +
+					')' +
+					' '
+				);
+			} else {
+				return contributor.profile?.usersByuserId?.full_name + ' ';
+			}
+		});
+
+		const shareTypeTitle =
+			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
+				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				? tText('assignment/views/assignment-overview___gedeeld-met-anderen')
+				: tText('assignment/views/assignment-overview___mijn-opdracht');
+
+		const shareTypeText =
+			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
+				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				? tHtml('assignment/views/assignment-overview___gedeeld-met-count-anderen-names', {
+						count: sharedWithNames.length,
+						names: sharedWithNames,
+				  })
+				: tText('assignment/views/assignment-overview___mijn-opdracht');
+
+		const shareTypeIcon =
+			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+				? IconName.userGroup
+				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				? IconName.userGroup2
+				: IconName.user2;
+
 		switch (
 			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
 		) {
@@ -575,6 +625,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					),
 					desktop: renderActions(assignment),
 				});
+
+			case 'share_type':
+				return (
+					<Tooltip position="top">
+						<TooltipTrigger>
+							<div className="c-assignment-overview__shared" title={shareTypeTitle}>
+								<Icon name={shareTypeIcon} />
+							</div>
+						</TooltipTrigger>
+						<TooltipContent>{shareTypeText}</TooltipContent>
+					</Tooltip>
+				);
 
 			default:
 				return JSON.stringify(cellData);
