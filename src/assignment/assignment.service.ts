@@ -138,6 +138,7 @@ export class AssignmentService {
 		filterString: string | undefined,
 		labelIds: string[] | undefined,
 		classIds: string[] | undefined,
+		shareTypeIds: string[] | undefined,
 		limit: number | null = ITEMS_PER_PAGE
 	): Promise<{
 		assignments: Assignment_v2_With_Labels[];
@@ -173,6 +174,11 @@ export class AssignmentService {
 			if (classIds && classIds.length) {
 				filterArray.push({
 					labels: { assignment_label_id: { _in: classIds } },
+				});
+			}
+			if (shareTypeIds && shareTypeIds.length) {
+				filterArray.push({
+					share_type: { _in: shareTypeIds },
 				});
 			}
 			if (!isNil(pastDeadline)) {

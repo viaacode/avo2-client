@@ -39,6 +39,7 @@ import React, {
 } from 'react';
 import { Link } from 'react-router-dom';
 import {
+	ArrayParam,
 	DelimitedArrayParam,
 	NumberParam,
 	StringParam,
@@ -149,6 +150,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [query, setQuery] = useQueryParams({
 		selectedAssignmentLabelIds: DelimitedArrayParam,
 		selectedClassLabelIds: DelimitedArrayParam,
+		selectedShareTypeLabelIds: ArrayParam,
 		filter: StringParam,
 		view: withDefault(StringParam, AssignmentView.ACTIVE),
 		page: NumberParam,
@@ -174,10 +176,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const handleQueryChanged = (value: any, id: string) => {
 		let newQuery: any = cloneDeep(query);
+		let newValue = value;
+		// Show both shareTypes for 'mijn opdrachten' option
+		if (value.includes(AssignmentShareType.NIET_GEDEELD)) {
+			newValue = [...value, AssignmentShareType.GEDEELD_MET_ANDERE];
+		}
 
 		newQuery = {
 			...newQuery,
-			[id]: value,
+			[id]: newValue,
 			...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
 		};
 
@@ -271,7 +278,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				query.page || 0,
 				query.filter || '',
 				(query.selectedAssignmentLabelIds as string[]) || [],
-				(query.selectedClassLabelIds as string[]) || []
+				(query.selectedClassLabelIds as string[]) || [],
+				(query.selectedShareTypeLabelIds as string[]) || []
 			);
 
 			setAssignments(response.assignments);
@@ -644,6 +652,26 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const getLabelOptions = (labelType: Avo.Assignment.LabelType): CheckboxOption[] => {
+		if (labelType === 'SHARE_TYPE') {
+			return compact([
+				{
+					label: tText('assignment/views/assignment-overview___gedeeld-met-mij'),
+					id: AssignmentShareType.GEDEELD_MET_MIJ,
+					checked: [...(query.selectedShareTypeLabelIds || [])].includes(
+						AssignmentShareType.GEDEELD_MET_MIJ
+					),
+				},
+				{
+					// add GEDEELD MET ANDEREN to this option
+					label: tText('assignment/views/assignment-overview___mijn-opdrachten'),
+					id: AssignmentShareType.NIET_GEDEELD,
+					checked: [...(query.selectedShareTypeLabelIds || [])].includes(
+						AssignmentShareType.NIET_GEDEELD
+					),
+				},
+			]);
+		}
+
 		return compact(
 			allAssignmentLabels
 				.filter((labelObj: Assignment_Label_v2) => labelObj.type === labelType)
@@ -730,6 +758,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							})}
 							{canEditAssignments && (
 								<>
+									<CheckboxDropdownModal
+										label={tText(
+											'assignment/views/assignment-overview___soort'
+										)}
+										id="Soort"
+										options={getLabelOptions('SHARE_TYPE')}
+										onChange={(selectedLabels) =>
+											handleQueryChanged(
+												selectedLabels,
+												'selectedShareTypeLabelIds'
+											)
+										}
+									/>
 									<CheckboxDropdownModal
 										label={tText('assignment/views/assignment-overview___klas')}
 										id="Klas"
