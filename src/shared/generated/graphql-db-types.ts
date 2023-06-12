@@ -48855,7 +48855,7 @@ export type GetPublicCollectionsByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicCollectionsByIdQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
+export type GetPublicCollectionsByIdQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', usersByuserId?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null }> }> };
 
 export type GetPublicCollectionsByTitleQueryVariables = Exact<{
   title: Scalars['String'];
@@ -48864,7 +48864,7 @@ export type GetPublicCollectionsByTitleQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicCollectionsByTitleQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
+export type GetPublicCollectionsByTitleQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string } | null, usersByuserId?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null } | null }> }> };
 
 export type GetPublicCollectionsQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -48872,7 +48872,7 @@ export type GetPublicCollectionsQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicCollectionsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
+export type GetPublicCollectionsQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string } | null, usersByuserId?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null } | null }> }> };
 
 export type GetPublishedBundlesContainingCollectionQueryVariables = Exact<{
   id: Scalars['String'];
@@ -52441,13 +52441,33 @@ export const useGetOrganisationContentQuery = <
     );
 export const GetPublicCollectionsByIdDocument = `
     query getPublicCollectionsById($id: uuid!, $typeId: Int!, $limit: Int!) {
-  app_collections(
+  app_collections_overview(
     order_by: {title: asc}
     where: {type_id: {_eq: $typeId}, id: {_eq: $id}, is_public: {_eq: true}, is_deleted: {_eq: false}}
     limit: $limit
   ) {
     id
     title
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        usersByuserId {
+          first_name
+          full_name
+          last_name
+        }
+        organisation {
+          name
+        }
+      }
+    }
+    share_type
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
   }
 }
     `;
@@ -52465,13 +52485,33 @@ export const useGetPublicCollectionsByIdQuery = <
     );
 export const GetPublicCollectionsByTitleDocument = `
     query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) {
-  app_collections(
+  app_collections_overview(
     order_by: {title: asc}
     where: {type_id: {_eq: $typeId}, title: {_ilike: $title}, is_public: {_eq: true}, is_deleted: {_eq: false}}
     limit: $limit
   ) {
     id
     title
+    share_type
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        organisation {
+          name
+        }
+        usersByuserId {
+          first_name
+          full_name
+          last_name
+        }
+      }
+    }
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
   }
 }
     `;
@@ -52489,13 +52529,33 @@ export const useGetPublicCollectionsByTitleQuery = <
     );
 export const GetPublicCollectionsDocument = `
     query getPublicCollections($limit: Int!, $typeId: Int!) {
-  app_collections(
+  app_collections_overview(
     order_by: {title: asc}
     where: {type_id: {_eq: $typeId}, is_public: {_eq: true}, is_deleted: {_eq: false}}
     limit: $limit
   ) {
     id
     title
+    share_type
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        organisation {
+          name
+        }
+        usersByuserId {
+          first_name
+          full_name
+          last_name
+        }
+      }
+    }
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
   }
 }
     `;

@@ -797,7 +797,7 @@ export class CollectionService {
 	static async fetchCollectionsOrBundles(
 		limit: number,
 		typeId: ContentTypeNumber
-	): Promise<GetPublicCollectionsQuery['app_collections']> {
+	): Promise<GetPublicCollectionsQuery['app_collections_overview']> {
 		try {
 			// retrieve collections
 			const response = await dataService.query<
@@ -808,7 +808,7 @@ export class CollectionService {
 				variables: { limit, typeId },
 			});
 
-			return response.app_collections || [];
+			return response.app_collections_overview || [];
 		} catch (err) {
 			throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_PUBLIC_COLLECTIONS',
@@ -876,7 +876,7 @@ export class CollectionService {
 					: GetPublicCollectionsByTitleDocument,
 				variables,
 			});
-			return response.app_collections;
+			return response.app_collections_overview;
 		} catch (err) {
 			throw new CustomError('Failed to fetch collections or bundles', err, {
 				query: 'GET_PUBLIC_COLLECTIONS_BY_ID or GET_PUBLIC_COLLECTIONS_BY_TITLE',
@@ -1279,7 +1279,7 @@ export class CollectionService {
 		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined
-	): Promise<Avo.Collection.Collection[]> {
+	): Promise<Collection[]> {
 		let variables: GetCollectionsByOwnerQueryVariables | null = null;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
@@ -1305,7 +1305,7 @@ export class CollectionService {
 				variables,
 			});
 
-			return response.app_collections_overview as unknown as Avo.Collection.Collection[];
+			return response.app_collections_overview as unknown as Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
@@ -1320,7 +1320,7 @@ export class CollectionService {
 		limit: number | null,
 		order: GetBookmarkedCollectionsByOwnerQueryVariables['order'],
 		filterString: string | undefined
-	): Promise<Avo.Collection.Collection[]> {
+	): Promise<Collection[]> {
 		let variables: GetBookmarkedCollectionsByOwnerQueryVariables | undefined = undefined;
 		try {
 			const trimmedFilterString = filterString?.trim();
