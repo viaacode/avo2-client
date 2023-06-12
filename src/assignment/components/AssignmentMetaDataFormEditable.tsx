@@ -63,7 +63,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 								<ShortDescriptionField
 									value={assignment?.description || ''}
 									placeholder={tText(
-										'Beschrijf je opdracht in maximum 300 tekens. Dit is de tekst die ander gebruikers bij jouw opdracht zien in de zoekresultaten. Hiermee kunnen ze dan bepalen of deze beantwoord aan wat ze zoeken.'
+										'assignment/components/assignment-meta-data-form-editable___beschrijf-je-opdracht-in-maximum-300-tekens-dit-is-de-tekst-die-ander-gebruikers-bij-jouw-opdracht-zien-in-de-zoekresultaten-hiermee-kunnen-ze-dan-bepalen-of-deze-beantwoord-aan-wat-ze-zoeken'
 									)}
 									onChange={(value: string) => {
 										{

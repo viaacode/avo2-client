@@ -546,11 +546,19 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						<AssignmentActions
 							publish={{
 								title: isPublic
-									? tText('Maak deze opdracht privé.')
-									: tText('Maak deze opdracht openbaar.'),
+									? tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+									  )
+									: tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+									  ),
 								ariaLabel: isPublic
-									? tText('Maak deze opdracht privé.')
-									: tText('Maak deze opdracht openbaar.'),
+									? tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+									  )
+									: tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+									  ),
 								icon: isPublic ? IconName.unlock3 : IconName.lock,
 								onClick: () => setIsPublishModalOpen(true),
 							}}

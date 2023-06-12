@@ -72,8 +72,12 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 			setValidationError(undefined);
 			ToastService.success(
 				isAssignmentPublic
-					? tHtml('De opdracht staat nu publiek.')
-					: tHtml('De opdracht staat nu niet meer publiek.')
+					? tHtml(
+							'assignment/modals/publish-assignment-modal___de-opdracht-staat-nu-publiek'
+					  )
+					: tHtml(
+							'assignment/modals/publish-assignment-modal___de-opdracht-staat-nu-niet-meer-publiek'
+					  )
 			);
 			closeModal({
 				...assignment,
@@ -106,7 +110,7 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tHtml('Deel deze opdracht.')}
+			title={tHtml('assignment/modals/publish-assignment-modal___deel-deze-opdracht')}
 			size="large"
 			onClose={onClose}
 			scrollable
@@ -114,24 +118,28 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 			<ModalBody>
 				<p>
 					{tHtml(
-						'Bepaal in hoeverre jouw opdracht toegankelijk is voor andere personen.'
+						'assignment/modals/publish-assignment-modal___bepaal-in-hoeverre-jouw-opdracht-toegankelijk-is-voor-andere-personen'
 					)}
 				</p>
 				<FormGroup error={validationError}>
 					<Spacer margin="top-large">
 						<BlockHeading className="u-m-0" type="h4">
-							{tHtml('zichtbaarheid')}
+							{tHtml('assignment/modals/publish-assignment-modal___zichtbaarheid')}
 						</BlockHeading>
 					</Spacer>
 					<RadioButtonGroup
 						options={[
 							{
 								value: 'private',
-								label: tText('Niet openbaar'),
+								label: tText(
+									'assignment/modals/publish-assignment-modal___niet-openbaar'
+								),
 							},
 							{
 								value: 'public',
-								label: tText('Openbaar'),
+								label: tText(
+									'assignment/modals/publish-assignment-modal___openbaar'
+								),
 							},
 						]}
 						value={isAssignmentPublic ? 'public' : 'private'}
@@ -146,10 +154,18 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={tText('annuleren')}
+									label={tText(
+										'assignment/modals/publish-assignment-modal___annuleren'
+									)}
 									onClick={() => onClose()}
 								/>
-								<Button type="primary" label={tText('opslaan')} onClick={onSave} />
+								<Button
+									type="primary"
+									label={tText(
+										'assignment/modals/publish-assignment-modal___opslaan'
+									)}
+									onClick={onSave}
+								/>
 							</ButtonToolbar>
 						</ToolbarItem>
 					</ToolbarRight>

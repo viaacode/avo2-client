@@ -3,7 +3,7 @@ query getAssignmentByTitleOrDescription(
 	$description: String!
 	$assignmentId: uuid!
 ) {
-	collectionByTitle: app_assignments_v2(
+	assignmentByTitle: app_assignments_v2(
 		where: {
 			title: { _eq: $title }
 			is_deleted: { _eq: false }
@@ -14,7 +14,7 @@ query getAssignmentByTitleOrDescription(
 	) {
 		id
 	}
-	collectionByDescription: app_assignments_v2(
+	assignmentByDescription: app_assignments_v2(
 		where: {
 			description: { _eq: $description }
 			is_deleted: { _eq: false }

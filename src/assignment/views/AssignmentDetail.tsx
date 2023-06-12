@@ -152,7 +152,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 					setAssigmentError({
 						message:
 							err.innerException.additionalInfo.statusCode === 403
-								? tHtml('Je hebt geen rechten om deze pagina te')
+								? tHtml(
+										'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-pagina-te'
+								  )
 								: tHtml(
 										'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 								  ),
@@ -222,13 +224,17 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 					type="secondary"
 					title={
 						isPublic
-							? tText('Maak deze opdracht privé.')
-							: tText('Maak deze opdracht openbaar.')
+							? tText('assignment/views/assignment-detail___maak-deze-opdracht-prive')
+							: tText(
+									'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
+							  )
 					}
 					ariaLabel={
 						isPublic
-							? tText('Maak deze opdracht privé.')
-							: tText('Maak deze opdracht openbaar.')
+							? tText('assignment/views/assignment-detail___maak-deze-opdracht-prive')
+							: tText(
+									'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
+							  )
 					}
 					icon={isPublic ? IconName.unlock3 : IconName.lock}
 					onClick={() => setIsPublishModalOpen(true)}

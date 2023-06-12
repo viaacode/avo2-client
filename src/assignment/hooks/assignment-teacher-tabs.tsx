@@ -36,7 +36,7 @@ export function useAssignmentTeacherTabs(
 				},
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH,
-					label: tText('Publicatiedetails'),
+					label: tText('assignment/hooks/assignment-teacher-tabs___publicatiedetails'),
 					icon: IconName.fileText as IconName,
 				},
 				...(history.location.pathname !== APP_PATH.ASSIGNMENT_CREATE.route

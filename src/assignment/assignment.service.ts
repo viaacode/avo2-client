@@ -1546,9 +1546,9 @@ export class AssignmentService {
 				GetAssignmentByTitleOrDescriptionQueryVariables
 			>({ query: GetAssignmentByTitleOrDescriptionDocument, variables });
 
-			const assignmentWithSameTitleExists = !!(response.collectionByTitle || []).length;
+			const assignmentWithSameTitleExists = !!(response.assignmentByTitle || []).length;
 
-			const assignmentWithSameDescriptionExists = !!(response.collectionByDescription || [])
+			const assignmentWithSameDescriptionExists = !!(response.assignmentByDescription || [])
 				.length;
 
 			return {

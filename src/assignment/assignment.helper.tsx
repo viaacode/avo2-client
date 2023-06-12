@@ -199,13 +199,13 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	Partial<Avo.Assignment.Assignment>
 >[] = () => [
 	{
-		error: tText('De beschrijving van de opdracht is te lang'),
+		error: tText('assignment/assignment___de-beschrijving-van-de-opdracht-is-te-lang'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!assignment.description ||
 			assignment.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
 	},
 	{
-		error: tText('De lange beschrijving van de opdracht is te lang'),
+		error: tText('assignment/assignment___de-lange-beschrijving-van-de-opdracht-is-te-lang'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!(assignment as any).description_long ||
 			stripHtml((assignment as any).description_long).length <= MAX_LONG_DESCRIPTION_LENGTH,
@@ -214,41 +214,45 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 
 const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assignment>>[] = [
 	{
-		error: tText('De opdracht heeft geen titel'),
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-titel'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => !!assignment.title,
 	},
 	{
-		error: tText('De opdracht heeft geen beschrijving'),
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-beschrijving'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => !!assignment.description,
 	},
 	{
-		error: tText("De opdracht bevat geen onderwijsniveau's"),
+		error: tText('assignment/assignment___de-opdracht-bevat-geen-onderwijsniveaus'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			// !assignment.loms ||
 			validateLoms(assignment?.loms, 'educationLevels'),
 	},
 	{
-		error: tText('De opdracht heeft geen vakken'),
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			validateLoms(assignment?.loms, 'subjects'),
 	},
 	{
-		error: tText("De opdracht heeft geen thema's"),
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-themas'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			validateLoms(assignment?.loms, 'themes'),
 	},
 	{
-		error: tText('de tekst items moeten een titel of beschrijving bevatten'),
+		error: tText(
+			'assignment/assignment___de-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
+		),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!assignment.blocks || validateBlocks(assignment.blocks, 'TEXT'),
 	},
 	{
-		error: tText('de collecties moeten een titel hebben'),
+		error: tText('assignment/assignment___de-collecties-moeten-een-titel-hebben'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!assignment.blocks || validateBlocks(assignment.blocks, 'COLLECTION'),
 	},
 	{
-		error: tText('de video items moeten een titel en beschrijving bevatten'),
+		error: tText(
+			'assignment/assignment___de-video-items-moeten-een-titel-en-beschrijving-bevatten'
+		),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!assignment.blocks || validateBlocks(assignment.blocks, 'ITEM'),
 	},
@@ -328,11 +332,17 @@ export const getDuplicateTitleOrDescriptionErrors = async (
 	);
 
 	if (duplicates.byTitle) {
-		errors.push(tText('Een publieke opdracht met deze titel bestaat reeds'));
+		errors.push(
+			tText('assignment/assignment___een-publieke-opdracht-met-deze-titel-bestaat-reeds')
+		);
 	}
 
 	if (duplicates.byDescription) {
-		errors.push(tText('Een publieke opdracht met deze beschrijving bestaat reeds'));
+		errors.push(
+			tText(
+				'assignment/assignment___een-publieke-opdracht-met-deze-beschrijving-bestaat-reeds'
+			)
+		);
 	}
 
 	return errors;

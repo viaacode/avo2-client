@@ -48580,7 +48580,7 @@ export type GetAssignmentByTitleOrDescriptionQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentByTitleOrDescriptionQuery = { __typename?: 'query_root', collectionByTitle: Array<{ __typename?: 'app_assignments_v2', id: any }>, collectionByDescription: Array<{ __typename?: 'app_assignments_v2', id: any }> };
+export type GetAssignmentByTitleOrDescriptionQuery = { __typename?: 'query_root', assignmentByTitle: Array<{ __typename?: 'app_assignments_v2', id: any }>, assignmentByDescription: Array<{ __typename?: 'app_assignments_v2', id: any }> };
 
 export type GetAssignmentByUuidQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -50950,13 +50950,13 @@ export const useGetAssignmentBlocksQuery = <
     );
 export const GetAssignmentByTitleOrDescriptionDocument = `
     query getAssignmentByTitleOrDescription($title: String!, $description: String!, $assignmentId: uuid!) {
-  collectionByTitle: app_assignments_v2(
+  assignmentByTitle: app_assignments_v2(
     where: {title: {_eq: $title}, is_deleted: {_eq: false}, is_public: {_eq: true}, id: {_neq: $assignmentId}}
     limit: 1
   ) {
     id
   }
-  collectionByDescription: app_assignments_v2(
+  assignmentByDescription: app_assignments_v2(
     where: {description: {_eq: $description}, is_deleted: {_eq: false}, is_public: {_eq: true}, id: {_neq: $assignmentId}}
     limit: 1
   ) {
