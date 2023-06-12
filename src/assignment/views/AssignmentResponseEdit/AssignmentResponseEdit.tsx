@@ -71,9 +71,10 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { Avo } from '@viaa/avo2-types';
 
 interface AssignmentResponseEditProps {
-	assignment: Assignment_v2_With_Responses;
+	assignment: Avo.Assignment.Assignment;
 	assignmentResponse:
 		| (Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined })
 		| null;
@@ -307,8 +308,8 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		switch (activeTab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
 				if (
-					!assignment.lom_learning_resource_type.includes(AssignmentType.ZOEK) &&
-					!assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)
+					!assignment.lom_learning_resource_type?.includes(AssignmentType.ZOEK) &&
+					!assignment.lom_learning_resource_type?.includes(AssignmentType.BOUW)
 				) {
 					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
 					return null;
@@ -335,7 +336,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
-				if (!assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
+				if (!assignment.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
 					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
 					return null;
 				}

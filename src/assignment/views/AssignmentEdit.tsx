@@ -10,6 +10,7 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -90,7 +91,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<Assignment_v2_With_Blocks | null>(null);
+	const [original, setOriginal] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssigmentLoading] = useState(false);
 	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
@@ -148,7 +149,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			setAssigmentLoading(true);
 			setAssignmentError(null);
 			const id = match.params.id;
-			let tempAssignment: Assignment_v2_With_Blocks | null = null;
+			let tempAssignment: Avo.Assignment.Assignment | null = null;
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
@@ -544,6 +545,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									},
 								},
 							}}
+							refetch={async () => await fetchAssignment()}
 						/>
 					}
 					tabs={renderTabs}

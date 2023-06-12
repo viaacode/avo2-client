@@ -87,7 +87,6 @@ import {
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_Label_v2,
-	Assignment_v2,
 	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
 	AssignmentOverviewTableColumns,
@@ -127,7 +126,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignments, setAssignments] = useState<Assignment_v2[] | null>(null);
+	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
@@ -135,7 +134,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		null
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
-	const [markedAssignment, setMarkedAssignment] = useState<Assignment_v2 | null>(null);
+	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(
+		null
+	);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
@@ -332,10 +333,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 	const handleExtraOptionsItemClicked = async (
 		actionId: ExtraAssignmentOptions,
-		dataRow: Assignment_v2
+		assignmentRow: Avo.Assignment.Assignment
 	) => {
 		setDropdownOpenForAssignmentId(null);
-		if (!dataRow.id) {
+		if (!assignmentRow.id) {
 			ToastService.danger(
 				tHtml(
 					'assignment/views/assignment-overview___het-opdracht-id-van-de-geselecteerde-rij-is-niet-ingesteld'
@@ -346,7 +347,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		switch (actionId) {
 			case 'edit':
 				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
-					id: dataRow.id,
+					id: assignmentRow.id,
 					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
 				});
 				break;
@@ -354,14 +355,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				try {
 					const latest: Assignment_v2_With_Blocks =
 						await AssignmentService.fetchAssignmentById(
-							dataRow.id as unknown as string
+							assignmentRow.id as unknown as string
 						);
 
 					await duplicateAssignment(latest);
 					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
-						assignmentId: dataRow.id,
+						assignmentId: assignmentRow.id,
 					});
 					ToastService.danger(
 						tHtml(
@@ -373,7 +374,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 
 			case 'delete':
-				setMarkedAssignment(dataRow);
+				setMarkedAssignment(assignmentRow);
 				setDeleteAssignmentModalOpen(true);
 				break;
 			default:
@@ -386,19 +387,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setMarkedAssignment(null);
 	};
 
-	const renderActions = (rowData: Assignment_v2) => {
+	const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
 		const handleOptionClicked = async (actionId: ReactText) => {
 			await handleExtraOptionsItemClicked(
 				actionId.toString() as ExtraAssignmentOptions,
-				rowData
+				assignmentRow
 			);
 		};
 		return (
 			<ButtonToolbar className="c-assignment-overview__actions">
 				{canEditAssignments && (
 					<MoreOptionsDropdown
-						isOpen={dropdownOpenForAssignmentId === rowData.id}
-						onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
+						isOpen={dropdownOpenForAssignmentId === assignmentRow.id}
+						onOpen={() => setDropdownOpenForAssignmentId(assignmentRow.id)}
 						onClose={() => setDropdownOpenForAssignmentId(null)}
 						label={getMoreOptionsLabel()}
 						menuItems={[
@@ -469,7 +470,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			desktop: <span className={className}>{value || '-'}</span>,
 		});
 
-	const renderResponsesCell = (cellData: any, assignment: Assignment_v2) => {
+	const renderResponsesCell = (cellData: any, assignment: Avo.Assignment.Assignment) => {
 		if ((cellData || []).length === 0) {
 			return renderDataCell(
 				<span

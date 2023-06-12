@@ -14,11 +14,11 @@ import { Positioned } from '../shared/types';
 import {
 	Assignment_Label_v2,
 	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
 	AssignmentFormState,
 	AssignmentLayout,
 	AssignmentRetrieveError,
 } from './assignment.types';
+import { Avo } from '@viaa/avo2-types';
 
 export class AssignmentHelper {
 	public static getContentLayoutOptions(): RadioOption[] {
@@ -35,7 +35,7 @@ export class AssignmentHelper {
 	}
 
 	public static getLabels(
-		assignment: Assignment_v2_With_Labels,
+		assignment: Avo.Assignment.Assignment,
 		type: string
 	): { assignment_label: Assignment_Label_v2 }[] {
 		return assignment?.labels?.filter((label) => label.assignment_label.type === type) || [];

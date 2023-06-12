@@ -1549,7 +1549,7 @@ export class CollectionService {
 				err,
 				{
 					assignmentId,
-					query: 'GET_CONTRIBUTORS_BY_COLLECTION_ID',
+					query: 'GET_CONTRIBUTORS_BY_COLLECTION_UUID',
 				}
 			);
 		}
@@ -1670,6 +1670,24 @@ export class CollectionService {
 			throw new CustomError('Failed to decline to share collection', err, {
 				assignmentId: collectionId,
 				inviteToken,
+			});
+		}
+	}
+
+	static async transferCollectionOwnerShip(
+		collectionId: string,
+		contributorId: string
+	): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				`${getEnv(
+					'PROXY_URL'
+				)}/collections/${collectionId}/share/transfer-owner?newOwnerId=${contributorId}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to transfer assignment ownership', err, {
+				contributorId,
 			});
 		}
 	}

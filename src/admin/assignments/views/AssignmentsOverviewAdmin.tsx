@@ -16,7 +16,6 @@ import { compose } from 'redux';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { AssignmentService } from '../../../assignment/assignment.service';
 import {
-	Assignment_v2,
 	AssignmentOverviewTableColumns,
 	AssignmentType,
 } from '../../../assignment/assignment.types';
@@ -50,7 +49,7 @@ import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignm
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [assignments, setAssignments] = useState<Assignment_v2[] | null>(null);
+	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssignmentCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<AssignmentsOverviewTableState>>({
@@ -283,7 +282,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	};
 
 	const renderTableCell = (
-		assignment: Partial<Assignment_v2>,
+		assignment: Partial<Avo.Assignment.Assignment>,
 		columnId: AssignmentOverviewTableColumns
 	) => {
 		const { id, created_at, updated_at, deadline_at } = assignment;
@@ -333,7 +332,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 						</Link>
 					);
 				}
-				if (assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
+				if (assignment.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
 					return tText(
 						'admin/assignments/views/assignments-overview-admin___aantal-leerlingen-collecties'
 					);
@@ -342,11 +341,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			}
 
 			case 'views':
-				return (
-					(
-						assignment as GetAssignmentsAdminOverviewQuery['app_assignments_v2_overview'][0]
-					)?.view_count?.count || '0'
-				);
+				return assignment?.view_count?.count || '0';
 
 			case 'actions':
 			default:
@@ -393,7 +388,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					columns={columns}
 					data={assignments}
 					dataCount={assignmentCount}
-					renderCell={(rowData: Partial<Assignment_v2>, columnId: string) =>
+					renderCell={(rowData: Partial<Avo.Assignment.Assignment>, columnId: string) =>
 						renderTableCell(rowData, columnId as AssignmentOverviewTableColumns)
 					}
 					searchTextPlaceholder={tText(

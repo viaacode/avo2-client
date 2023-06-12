@@ -1016,19 +1016,36 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const onEditContributor = async (user: ContributorInfo, newRights: ShareRightsType) => {
 		try {
 			if (collectionId) {
-				await CollectionService.editContributorRights(
-					collectionId,
-					user.contributorId as string,
-					newRights
-				);
+				if (newRights === 'OWNER') {
+					await CollectionService.transferCollectionOwnerShip(
+						collectionId,
+						user.contributorId as string
+					);
 
-				await fetchContributors();
+					await checkPermissionsAndGetCollection();
 
-				ToastService.success(
-					tText(
-						'collection/components/collection-or-bundle-edit___rol-van-de-gebruiker-is-aangepast'
-					)
-				);
+					await fetchContributors();
+
+					ToastService.success(
+						tText(
+							'collection/components/collection-or-bundle-edit___eigenaarschap-succesvol-overgedragen'
+						)
+					);
+				} else {
+					await CollectionService.editContributorRights(
+						collectionId,
+						user.contributorId as string,
+						newRights
+					);
+
+					await fetchContributors();
+
+					ToastService.success(
+						tText(
+							'collection/components/collection-or-bundle-edit___rol-van-de-gebruiker-is-aangepast'
+						)
+					);
+				}
 			}
 		} catch (err) {
 			ToastService.danger(
