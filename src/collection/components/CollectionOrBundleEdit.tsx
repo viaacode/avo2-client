@@ -1042,7 +1042,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			if (collectionId) {
 				await CollectionService.editContributorRights(
 					collectionId,
-					user.profileId as string,
+					user.contributorId as string,
 					newRights
 				);
 
@@ -1085,7 +1085,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const onDeleteContributor = async (info: ContributorInfo) => {
 		try {
-			await CollectionService.deleteContributor(collectionId, info.profileId as string);
+			await CollectionService.deleteContributor(
+				collectionId,
+				info.contributorId,
+				info.profileId
+			);
 
 			await fetchContributors();
 
@@ -1360,10 +1364,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 					</Container>
 				</Navbar>
 
-				<div className="c-sticky-save-bar__wrapper">
+				<div className="c-sticky-bar__wrapper">
 					{renderTab()}
 
-					{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+					{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 					<StickySaveBar
 						isVisible={unsavedChanges}
 						onSave={() => executeAction('save')}

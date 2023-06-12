@@ -48,7 +48,7 @@ export async function deleteAssignment(
 }
 
 export function deleteAssignmentWarning(assignment?: Assignment_v2): ReactNode {
-	if (assignment?.assignment_type === AssignmentType.BOUW) {
+	if (assignment?.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
 		return tHtml(
 			'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
 		);

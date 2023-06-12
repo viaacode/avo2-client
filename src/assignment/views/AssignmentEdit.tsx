@@ -27,7 +27,6 @@ import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -36,6 +35,7 @@ import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
+import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -96,7 +96,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	// Data
 	const [original, setOriginal] = useState<Assignment_v2_With_Blocks | null>(null);
 	const [assignmentLoading, setAssigmentLoading] = useState(false);
-	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
+	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
@@ -152,7 +152,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const fetchAssignment = useCallback(async () => {
 		try {
 			setAssigmentLoading(true);
-			setAssigmentError(null);
+			setAssignmentError(null);
 			const id = match.params.id;
 			let tempAssignment: Assignment_v2_With_Blocks | null = null;
 
@@ -160,7 +160,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
 			} catch (err) {
 				if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
-					setAssigmentError({
+					setAssignmentError({
 						message: tHtml(
 							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
 						),
@@ -170,7 +170,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					setAssigmentLoading(false);
 					return;
 				}
-				setAssigmentError({
+				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
@@ -182,7 +182,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 
 			if (!tempAssignment) {
-				setAssigmentError({
+				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 					),
@@ -193,24 +193,26 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 
-			if (
-				!(await PermissionService.hasPermissions(
-					[
-						PermissionName.EDIT_ANY_ASSIGNMENTS,
-						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
-					],
-					user
-				))
-			) {
-				setAssigmentError({
-					message: tHtml(
-						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
-					),
-					icon: IconName.lock,
-					actionButtons: ['home'],
-				});
-				setAssigmentLoading(false);
-				return;
+			if (tempAssignment.contributors && user && user?.profile?.id) {
+				const contributorInfo = tempAssignment.contributors.find(
+					(contributor) => contributor.profile_id === user?.profile?.id
+				);
+				const isOwner = tempAssignment.owner_profile_id === user.profile.id;
+
+				if (
+					(!contributorInfo && !isOwner) ||
+					contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer
+				) {
+					setAssignmentError({
+						message: tHtml(
+							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
+						),
+						icon: IconName.lock,
+						actionButtons: ['home'],
+					});
+					setAssigmentLoading(false);
+					return;
+				}
 			}
 
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
@@ -220,7 +222,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			setAssignmentHasResponses(tempAssignment.responses.length > 0);
 			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
-			setAssigmentError({
+			setAssignmentError({
 				message: tHtml(
 					'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
 				),
@@ -535,7 +537,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	// Render
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--edit c-sticky-save-bar__wrapper">
+		<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
 			<div>
 				<AssignmentHeading
 					back={renderBackButton}
@@ -617,7 +619,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				</Container>
 			</div>
 
-			{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
 		</div>
 	);
