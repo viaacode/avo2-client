@@ -13,6 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
+import { map } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
 import { FileUpload, ShortDescriptionField } from '../../shared/components';
@@ -69,7 +70,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 								<Column size="3-7">
 									{collection.loms && (
 										<LomFieldsInput
-											loms={collection.loms}
+											loms={map(collection.loms, 'lom')}
 											onChange={updateCollectionLoms}
 										/>
 									)}
@@ -83,6 +84,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												collectionPropValue: value,
 											})
 										}
+										placeholder={tText(
+											'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
+										)}
 									/>
 									{!isCollection && (
 										<FormGroup

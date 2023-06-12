@@ -22,6 +22,6 @@ export function toAssignmentDetail(assignment: Pick<Assignment_v2, 'id'>): strin
 export function toAssignmentResponsesOverview(assignment: Pick<Assignment_v2, 'id'>): string {
 	return buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 		id: assignment.id,
-		tabId: ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS,
+		tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS,
 	});
 }

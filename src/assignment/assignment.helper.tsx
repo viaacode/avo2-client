@@ -1,15 +1,19 @@
 import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import { Avo } from '@viaa/avo2-types';
+import { Avo, LomType } from '@viaa/avo2-types';
+import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
 import { UserSchema } from '@viaa/avo2-types/types/user';
+import { compact, map } from 'lodash-es';
 import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { formatDate } from '../shared/helpers';
+import { formatDate, stripHtml } from '../shared/helpers';
 import { groupLoms } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
 
+import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './assignment.const';
+import { AssignmentService } from './assignment.service';
 import {
 	Assignment_Label_v2,
 	Assignment_v2_With_Blocks,
@@ -95,8 +99,7 @@ export function isUserAssignmentContributor(
 	if (assignment.contributors) {
 		return !!assignment.contributors.find(
 			(contributor) =>
-				contributor.profile?.id === user.profile?.id &&
-				contributor.enum_right_type.value !== 'VIEWER'
+				contributor.profile_id === user.profile?.id && contributor.rights !== 'VIEWER'
 		);
 	}
 	return false;
@@ -129,19 +132,19 @@ export const renderLoms = (lomValues: Avo.Lom.LomField[], title: string) => {
 	);
 };
 
-export const renderLomFieldsByGroup = (loms: { lom?: Avo.Lom.LomField }[]) => {
+export const renderLomFieldsByGroup = (loms: Avo.Lom.LomField[]) => {
 	const groupedLoms = groupLoms(loms);
 
-	const educationLevels: Avo.Lom.LomField[] = groupedLoms['educationLevels'] || [];
-	const subjects: Avo.Lom.LomField[] = groupedLoms['subjects'] || [];
-	const themes: Avo.Lom.LomField[] = groupedLoms['themes'] || [];
+	const educationLevel: Avo.Lom.LomField[] = groupedLoms[LomType.educationLevel] || [];
+	const subject: Avo.Lom.LomField[] = groupedLoms[LomType.subject] || [];
+	const theme: Avo.Lom.LomField[] = groupedLoms[LomType.theme] || [];
 
 	return (
 		<Column size="3-3">
-			{educationLevels &&
-				renderLoms(educationLevels, tText('assignment/views/assignment-detail___niveaus'))}
-			{subjects && renderLoms(subjects, tText('assignment/views/assignment-detail___vakken'))}
-			{themes && renderLoms(themes, tText('assignment/views/assignment-detail___themas'))}
+			{educationLevel &&
+				renderLoms(educationLevel, tText('assignment/views/assignment-detail___niveaus'))}
+			{subject && renderLoms(subject, tText('assignment/views/assignment-detail___vakken'))}
+			{theme && renderLoms(theme, tText('assignment/views/assignment-detail___themas'))}
 		</Column>
 	);
 };
@@ -151,7 +154,7 @@ export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): Rea
 
 	return (
 		<>
-			{loms && renderLomFieldsByGroup(loms as { lom?: Avo.Lom.LomField }[])}
+			{loms && renderLomFieldsByGroup(map(loms, 'lom') as Avo.Lom.LomField[])}
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
@@ -170,4 +173,176 @@ export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): Rea
 			</Column>
 		</>
 	);
+};
+
+export const getValidationErrorsForPublish = async (
+	assignment: Partial<Avo.Assignment.Assignment>
+): Promise<string[]> => {
+	const validationErrors = [
+		...GET_VALIDATION_RULES_FOR_SAVE(),
+		...VALIDATION_RULES_FOR_PUBLISH,
+	].map((rule) => {
+		return rule.isValid(assignment) ? null : getError(rule, assignment);
+	});
+
+	const duplicateErrors = await getDuplicateTitleOrDescriptionErrors(assignment);
+	return compact([...validationErrors, ...duplicateErrors]);
+};
+
+type ValidationRule<T> = {
+	error: string | ((object: T) => string);
+	isValid: (object: T) => boolean;
+};
+
+const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
+	Partial<Avo.Assignment.Assignment>
+>[] = () => [
+	{
+		error: tText('assignment/assignment___de-beschrijving-van-de-opdracht-is-te-lang'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!assignment.description ||
+			assignment.description.length <= MAX_SEARCH_DESCRIPTION_LENGTH,
+	},
+	{
+		error: tText('assignment/assignment___de-lange-beschrijving-van-de-opdracht-is-te-lang'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!(assignment as any).description_long ||
+			stripHtml((assignment as any).description_long).length <= MAX_LONG_DESCRIPTION_LENGTH,
+	},
+];
+
+const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assignment>>[] = [
+	{
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-titel'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => !!assignment.title,
+	},
+	{
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-beschrijving'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => !!assignment.description,
+	},
+	{
+		error: tText('assignment/assignment___de-opdracht-bevat-geen-onderwijsniveaus'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			// !assignment.loms ||
+			validateLoms(assignment?.loms, LomType.educationLevel),
+	},
+	{
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			validateLoms(assignment?.loms, LomType.subject),
+	},
+	{
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-themas'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			validateLoms(assignment?.loms, LomType.theme),
+	},
+	{
+		error: tText(
+			'assignment/assignment___de-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
+		),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!assignment.blocks || validateBlocks(assignment.blocks, 'TEXT'),
+	},
+	{
+		error: tText('assignment/assignment___de-collecties-moeten-een-titel-hebben'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!assignment.blocks || validateBlocks(assignment.blocks, 'COLLECTION'),
+	},
+	{
+		error: tText(
+			'assignment/assignment___de-video-items-moeten-een-titel-en-beschrijving-bevatten'
+		),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			!assignment.blocks || validateBlocks(assignment.blocks, 'ITEM'),
+	},
+];
+
+const validateLoms = (loms: Avo.Lom.Lom[] | undefined, scheme: LomType) => {
+	if (!loms) {
+		return false;
+	}
+
+	const lomFields = map(loms, 'lom');
+	const groupedLoms = groupLoms(lomFields);
+
+	return !!groupedLoms[scheme]?.length;
+};
+
+const validateBlocks = (blocks: Avo.Assignment.Block[], type: BlockItemTypeSchema): boolean => {
+	if (!blocks || !blocks.length) {
+		return false;
+	}
+
+	const blocksByType = blocks.filter((block) => block.type === type);
+
+	let isValid = true;
+
+	switch (type) {
+		case 'BOUW':
+		case 'COLLECTION':
+			blocksByType.forEach((block) => {
+				if (block.use_custom_fields && !block.custom_title) {
+					isValid = false;
+				}
+			});
+			break;
+		case 'ITEM':
+			blocksByType.forEach((block) => {
+				if (block.use_custom_fields && (!block.custom_title || !block.custom_description)) {
+					isValid = false;
+				}
+			});
+			break;
+		case 'TEXT':
+			blocksByType.forEach((block) => {
+				if (
+					!stripHtml(block.custom_title || '').trim() &&
+					!stripHtml(block.custom_description || '').trim()
+				) {
+					isValid = false;
+				}
+			});
+			break;
+
+		case 'ZOEK':
+		default:
+			break;
+	}
+
+	return isValid;
+};
+
+function getError<T>(rule: ValidationRule<T>, object: T) {
+	if (typeof rule.error === 'string') {
+		return rule.error;
+	}
+	return rule.error(object);
+}
+
+export const getDuplicateTitleOrDescriptionErrors = async (
+	assignment: Partial<Avo.Assignment.Assignment>
+): Promise<string[]> => {
+	const errors = [];
+
+	const duplicates = await AssignmentService.getAssignmentsByTitleOrDescription(
+		assignment.title || '',
+		assignment.description || '',
+		assignment.id as string
+	);
+
+	if (duplicates.byTitle) {
+		errors.push(
+			tText('assignment/assignment___een-publieke-opdracht-met-deze-titel-bestaat-reeds')
+		);
+	}
+
+	if (duplicates.byDescription) {
+		errors.push(
+			tText(
+				'assignment/assignment___een-publieke-opdracht-met-deze-beschrijving-bestaat-reeds'
+			)
+		);
+	}
+
+	return errors;
 };

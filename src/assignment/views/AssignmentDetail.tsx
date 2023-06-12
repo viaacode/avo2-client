@@ -44,9 +44,11 @@ import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2_With_Blocks,
 	Assignment_v2_With_Labels,
+	AssignmentFormState,
 	BaseBlockWithMeta,
 } from '../assignment.types';
 import { useAssignmentForm } from '../hooks';
+import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import './AssignmentDetail.scss';
 
@@ -58,6 +60,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
 	user,
 	history,
+	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -73,10 +76,12 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		null
 	);
 	const [isForbidden, setIsforbidden] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
 	const id = match.params.id;
+	const isPublic = !!assignment && assignment.is_public;
 
 	const getPermissions = useCallback(
 		async (
@@ -148,7 +153,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 					setAssigmentError({
 						message:
 							err.innerException.additionalInfo.statusCode === 403
-								? tHtml('Je hebt geen rechten om deze pagina te')
+								? tHtml(
+										'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-pagina-te'
+								  )
 								: tHtml(
 										'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 								  ),
@@ -214,12 +221,32 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const renderHeaderButtons = () => {
 		return (
 			<ButtonToolbar>
+				<Button
+					type="secondary"
+					title={
+						isPublic
+							? tText('assignment/views/assignment-detail___maak-deze-opdracht-prive')
+							: tText(
+									'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
+							  )
+					}
+					ariaLabel={
+						isPublic
+							? tText('assignment/views/assignment-detail___maak-deze-opdracht-prive')
+							: tText(
+									'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
+							  )
+					}
+					icon={isPublic ? IconName.unlock3 : IconName.lock}
+					onClick={() => setIsPublishModalOpen(true)}
+				/>
+
 				<Spacer margin="left-small">
 					{permissions?.canEditAssignments && (
 						<Link
 							to={generatePath(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 								id,
-								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 							})}
 						>
 							<Button
@@ -408,8 +435,11 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 								)}
 							/>
 						</MetaTags>
+
 						{renderHeader()}
+
 						{renderPageContent()}
+
 						{renderMetadata()}
 					</div>
 
@@ -433,6 +463,23 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 						}}
 					/>
 				</div>
+			)}
+
+			{!!assignment && !!user && (
+				<PublishAssignmentModal
+					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
+						setIsPublishModalOpen(false);
+						if (newAssignment) {
+							setAssignment(newAssignment as Partial<AssignmentFormState>);
+						}
+					}}
+					isOpen={isPublishModalOpen}
+					assignment={assignment as Avo.Assignment.Assignment}
+					history={history}
+					location={location}
+					match={match}
+					user={user}
+				/>
 			)}
 		</>
 	);

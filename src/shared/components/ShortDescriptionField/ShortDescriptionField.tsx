@@ -10,11 +10,13 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 interface ShortDescriptionFieldProps extends Pick<FormGroupPropsSchema, 'error'> {
 	onChange: (value: string) => void;
 	value: string | null;
+	placeholder?: string;
 }
 
 const ShortDescriptionField: FunctionComponent<ShortDescriptionFieldProps> = ({
 	onChange,
 	value,
+	placeholder,
 }) => {
 	const { tText } = useTranslation();
 
@@ -40,9 +42,7 @@ const ShortDescriptionField: FunctionComponent<ShortDescriptionFieldProps> = ({
 				value={value || ''}
 				id="shortDescriptionId"
 				height="medium"
-				placeholder={tText(
-					'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
-				)}
+				placeholder={placeholder}
 				onChange={onChange}
 			/>
 			<label>{error(false)}</label>

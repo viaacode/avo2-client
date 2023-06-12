@@ -10,6 +10,7 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -57,6 +58,7 @@ import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
 import AssignmentHeading from '../components/AssignmentHeading';
+import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataFormEditable';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
@@ -72,6 +74,7 @@ import {
 	useEditBlocks,
 } from '../hooks';
 import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
+import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
@@ -86,6 +89,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	match,
 	user,
 	history,
+	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -98,6 +102,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const isPublic = !!assignment && assignment.is_public;
 
 	const {
 		control,
@@ -411,7 +417,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT:
 				if (pastDeadline) {
 					return <BlockList blocks={assignment?.blocks || []} />;
 				}
@@ -470,7 +476,28 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					</div>
 				);
 
-			case ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS:
+			case ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH:
+				return (
+					<div className="c-assignment-details-tab">
+						<AssignmentMetaDataFormEditable
+							assignment={
+								assignment as Assignment_v2_With_Labels &
+									Assignment_v2_With_Responses &
+									Assignment_v2_With_Blocks
+							}
+							setAssignment={
+								setAssignment as Dispatch<
+									SetStateAction<
+										Assignment_v2_With_Labels & Assignment_v2_With_Blocks
+									>
+								>
+							}
+							setValue={setValue}
+						/>
+					</div>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS:
 				return (
 					<AssignmentResponses
 						history={history}
@@ -517,6 +544,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					title={renderTitle}
 					actions={
 						<AssignmentActions
+							publish={{
+								title: isPublic
+									? tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+									  )
+									: tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+									  ),
+								ariaLabel: isPublic
+									? tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+									  )
+									: tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+									  ),
+								icon: isPublic ? IconName.unlock3 : IconName.lock,
+								onClick: () => setIsPublishModalOpen(true),
+							}}
 							duplicate={{
 								assignment: original || undefined,
 								onClick: (_e, duplicated) => {
@@ -531,7 +576,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							share={{
 								assignment: original || undefined, // Needs to be saved before you can share
 								onContentLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD),
+									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT),
 								onDetailLinkClicked: () =>
 									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS),
 							}}
@@ -648,6 +693,23 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			{renderPageContent()}
 
 			<BeforeUnloadPrompt when={isDirty} />
+
+			{!!assignment && !!user && (
+				<PublishAssignmentModal
+					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
+						setIsPublishModalOpen(false);
+						if (newAssignment) {
+							setAssignment(newAssignment as Partial<AssignmentFormState>);
+						}
+					}}
+					isOpen={isPublishModalOpen}
+					assignment={assignment as Avo.Assignment.Assignment}
+					history={history}
+					location={location}
+					match={match}
+					user={user}
+				/>
+			)}
 		</>
 	);
 };

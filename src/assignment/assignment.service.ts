@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isEmpty, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, isEmpty, isNil, map, uniq, without } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -25,6 +25,9 @@ import {
 	DeleteAssignmentByIdDocument,
 	DeleteAssignmentByIdMutation,
 	DeleteAssignmentByIdMutationVariables,
+	DeleteAssignmentLomLinksDocument,
+	DeleteAssignmentLomLinksMutation,
+	DeleteAssignmentLomLinksMutationVariables,
 	DeleteAssignmentResponseByIdDocument,
 	DeleteAssignmentResponseByIdMutation,
 	DeleteAssignmentResponseByIdMutationVariables,
@@ -34,6 +37,9 @@ import {
 	GetAssignmentBlocksDocument,
 	GetAssignmentBlocksQuery,
 	GetAssignmentBlocksQueryVariables,
+	GetAssignmentByTitleOrDescriptionDocument,
+	GetAssignmentByTitleOrDescriptionQuery,
+	GetAssignmentByTitleOrDescriptionQueryVariables,
 	GetAssignmentIdsDocument,
 	GetAssignmentIdsQuery,
 	GetAssignmentIdsQueryVariables,
@@ -74,6 +80,9 @@ import {
 	InsertAssignmentBlocksMutation,
 	InsertAssignmentBlocksMutationVariables,
 	InsertAssignmentDocument,
+	InsertAssignmentLomLinksDocument,
+	InsertAssignmentLomLinksMutation,
+	InsertAssignmentLomLinksMutationVariables,
 	InsertAssignmentMutation,
 	InsertAssignmentMutationVariables,
 	InsertAssignmentResponseDocument,
@@ -344,6 +353,8 @@ export class AssignmentService {
 		delete (assignmentToSave as any).__typename;
 		delete (assignmentToSave as any).descriptionRichEditorState;
 		delete assignmentToSave.blocks;
+		delete assignmentToSave.loms;
+		delete assignmentToSave.contributors;
 
 		return assignmentToSave as Assignment_v2;
 	}
@@ -400,6 +411,13 @@ export class AssignmentService {
 				original.blocks || [],
 				update.blocks || []
 			);
+
+			await AssignmentService.deleteAssignmentLomLinks(original.id);
+
+			const loms = map(update.loms, 'lom_id');
+			const uniqueLoms = uniq(loms);
+
+			await AssignmentService.insertAssignmentLomLinks(original.id, uniqueLoms);
 
 			const assignment = AssignmentService.transformAssignment({
 				...update,
@@ -608,6 +626,29 @@ export class AssignmentService {
 
 		return await Promise.all(promises);
 	}
+
+	static updateAssignmentProperties = async (
+		assignmentId: string,
+		assignment: Partial<Avo.Assignment.Assignment>
+	): Promise<void> => {
+		try {
+			const variables: UpdateAssignmentByIdMutationVariables = { assignmentId, assignment };
+
+			await dataService.query<
+				UpdateAssignmentByIdMutation,
+				UpdateAssignmentByIdMutationVariables
+			>({
+				query: UpdateAssignmentByIdDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to update assignment properties', err, {
+				id: assignmentId,
+				assigment: assignment,
+				query: 'UPDATE_ASSIGNMENT ',
+			});
+		}
+	};
 
 	static async insertAssignment(
 		assignment: Partial<Assignment_v2_With_Blocks>,
@@ -1485,6 +1526,41 @@ export class AssignmentService {
 		}
 	}
 
+	static async getAssignmentsByTitleOrDescription(
+		title: string,
+		description: string | null,
+		assignmentId: string
+	): Promise<{ byTitle: boolean; byDescription: boolean }> {
+		try {
+			const variables: GetAssignmentByTitleOrDescriptionQueryVariables = {
+				title,
+				description: description || '',
+				assignmentId,
+			};
+
+			const response = await dataService.query<
+				GetAssignmentByTitleOrDescriptionQuery,
+				GetAssignmentByTitleOrDescriptionQueryVariables
+			>({ query: GetAssignmentByTitleOrDescriptionDocument, variables });
+
+			const assignmentWithSameTitleExists = !!(response.assignmentByTitle || []).length;
+
+			const assignmentWithSameDescriptionExists = !!(response.assignmentByDescription || [])
+				.length;
+
+			return {
+				byTitle: assignmentWithSameTitleExists,
+				byDescription: assignmentWithSameDescriptionExists,
+			};
+		} catch (err) {
+			throw new CustomError(
+				'Failed to get duplicate assignments by title or description',
+				err,
+				{ title, description, query: 'GET_ASSIGNMENT_BY_TITLE_OR_DESCRIPTION' }
+			);
+		}
+	}
+
 	static async changeAssignmentsAuthor(
 		profileId: string,
 		assignmentIds: string[]
@@ -1683,6 +1759,50 @@ export class AssignmentService {
 			throw new CustomError('Failed to decline to share assignment', err, {
 				assignmentId,
 				inviteToken,
+			});
+		}
+	}
+
+	static async insertAssignmentLomLinks(assignmentId: string, lomIds: string[]): Promise<void> {
+		try {
+			const lomObjects = lomIds.map((lomId) => ({
+				assignment_id: assignmentId,
+				lom_id: lomId,
+			}));
+
+			const variables: InsertAssignmentLomLinksMutationVariables = { lomObjects };
+
+			await dataService.query<
+				InsertAssignmentLomLinksMutation,
+				InsertAssignmentLomLinksMutationVariables
+			>({
+				query: InsertAssignmentLomLinksDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert lom links in assignment database', err, {
+				assignmentId,
+				lomIds,
+				query: 'INSERT_ASSIGNMENT_LOM_LINKS',
+			});
+		}
+	}
+
+	static async deleteAssignmentLomLinks(assignmentId: string): Promise<void> {
+		try {
+			const variables: DeleteAssignmentLomLinksMutationVariables = { assignmentId };
+
+			await dataService.query<
+				DeleteAssignmentLomLinksMutation,
+				DeleteAssignmentLomLinksMutationVariables
+			>({
+				query: DeleteAssignmentLomLinksDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert lom links in assignment database', err, {
+				collectionId: assignmentId,
+				query: 'DELETE_ASSIGNMENT_LOM_LINKS',
 			});
 		}
 	}

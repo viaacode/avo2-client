@@ -10,6 +10,8 @@ query getAssignmentByUuid($id: uuid!) {
 		deadline_at
 		is_collaborative
 		is_deleted
+		is_public
+		thumbnail_path
 		owner_profile_id
 		owner {
 			first_name
@@ -97,7 +99,11 @@ query getAssignmentByUuid($id: uuid!) {
 			}
 		}
 		loms {
+			id
+			assignment_id
+			lom_id
 			lom {
+				broader
 				id
 				label
 				scheme
