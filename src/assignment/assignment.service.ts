@@ -1,6 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isNil, without } from 'lodash-es';
+import { cloneDeep, compact, isEmpty, isNil, without } from 'lodash-es';
+import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
 import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
@@ -33,9 +34,6 @@ import {
 	GetAssignmentBlocksDocument,
 	GetAssignmentBlocksQuery,
 	GetAssignmentBlocksQueryVariables,
-	GetAssignmentByUuidDocument,
-	GetAssignmentByUuidQuery,
-	GetAssignmentByUuidQueryVariables,
 	GetAssignmentIdsDocument,
 	GetAssignmentIdsQuery,
 	GetAssignmentIdsQueryVariables,
@@ -224,14 +222,17 @@ export class AssignmentService {
 					: GetAssignmentsByResponseOwnerIdDocument,
 			});
 
-			if (!assignmentResponse?.app_assignments_v2 || isNil(assignmentResponse.count)) {
+			if (
+				!assignmentResponse?.app_assignments_v2_overview ||
+				isNil(assignmentResponse.count)
+			) {
 				throw new CustomError('Response does not have the expected format', null, {
 					assignmentResponse,
 				});
 			}
 
 			return {
-				assignments: assignmentResponse.app_assignments_v2 || [],
+				assignments: assignmentResponse.app_assignments_v2_overview || [],
 				count: assignmentResponse.count.aggregate?.count || 0,
 			};
 		} catch (err) {
@@ -249,21 +250,17 @@ export class AssignmentService {
 		assignmentId: string
 	): Promise<Assignment_v2_With_Blocks & Assignment_v2_With_Labels> {
 		try {
-			// Get the assignment from graphql
-			const variables: GetAssignmentByUuidQueryVariables = { id: assignmentId };
-			const response = await dataService.query<
-				GetAssignmentByUuidQuery,
-				GetAssignmentByUuidQueryVariables
-			>({
-				query: GetAssignmentByUuidDocument,
-				variables,
-			});
-
-			const assignment = response.app_assignments_v2[0];
+			const assignment: Assignment_v2_With_Blocks & Assignment_v2_With_Labels =
+				await fetchWithLogoutJson(
+					stringifyUrl({
+						url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
+					}),
+					{ method: 'GET' }
+				);
 
 			if (!assignment) {
 				throw new CustomError('Response does not contain an assignment', null, {
-					response,
+					response: assignment,
 				});
 			}
 
@@ -316,15 +313,15 @@ export class AssignmentService {
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.ZOEK
 			)
 		) {
-			assignmentToSave.assignment_type = 'ZOEK';
+			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.ZOEK);
 		} else if (
 			assignment.blocks?.some(
 				(block: AssignmentBlock) => block.type === AssignmentBlockType.BOUW
 			)
 		) {
-			assignmentToSave.assignment_type = 'BOUW';
+			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.BOUW);
 		} else {
-			assignmentToSave.assignment_type = 'KIJK';
+			assignmentToSave.lom_learning_resource_type.includes(AssignmentType.KIJK);
 		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
@@ -766,7 +763,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const tempAssignment = response.app_assignments_v2[0];
+			const tempAssignment = response.app_assignments_v2_overview[0];
 
 			if (!tempAssignment) {
 				throw new CustomError('Failed to find assignment by id');
@@ -1093,7 +1090,7 @@ export class AssignmentService {
 			);
 
 			if (existingAssignmentResponse) {
-				if (assignment.assignment_type === AssignmentType.BOUW) {
+				if (assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
 					existingAssignmentResponse.collection_title =
 						existingAssignmentResponse.collection_title ||
 						tText('assignment/assignment___nieuwe-collectie');
@@ -1109,10 +1106,11 @@ export class AssignmentService {
 			const assignmentResponse: Partial<Assignment_Response_v2> = {
 				owner_profile_id: getProfileId(user),
 				assignment_id: assignment.id,
-				collection_title:
-					assignment.assignment_type === AssignmentType.BOUW
-						? tText('assignment/assignment___nieuwe-collectie')
-						: null,
+				collection_title: assignment.lom_learning_resource_type.includes(
+					AssignmentType.BOUW
+				)
+					? tText('assignment/assignment___nieuwe-collectie')
+					: null,
 			};
 			const response = await dataService.query<
 				InsertAssignmentResponseMutation,
@@ -1400,7 +1398,7 @@ export class AssignmentService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[GetAssignmentsAdminOverviewQuery['app_assignments_v2'], number]> {
+	): Promise<[GetAssignmentsAdminOverviewQuery['app_assignments_v2_overview'], number]> {
 		let variables;
 		try {
 			const whereWithoutDeleted = {
@@ -1428,9 +1426,10 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignments = response?.app_assignments_v2;
+			const assignments = response?.app_assignments_v2_overview;
 
-			const assignmentCount = response?.app_assignments_v2_aggregate?.aggregate?.count || 0;
+			const assignmentCount =
+				response?.app_assignments_v2_overview_aggregate?.aggregate?.count || 0;
 
 			if (!assignments) {
 				throw new CustomError('Response does not contain any assignments', null, {
@@ -1571,12 +1570,20 @@ export class AssignmentService {
 		assignmentId: string,
 		user: Partial<ContributorInfo>
 	): Promise<void> {
+		if (isNil(user.email) || isEmpty(user.email)) {
+			throw new CustomError('User has no email address');
+		}
+
 		try {
 			await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor?email=${
-					user.email
-				}&rights=${user.rights}`,
-				{ method: 'PATCH' }
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor`,
+					query: {
+						email: user.email,
+						rights: user.rights,
+					},
+				}),
+				{ method: 'POST' }
 			);
 		} catch (err) {
 			throw new CustomError('Failed to add assignment contributor', err, {
@@ -1593,9 +1600,15 @@ export class AssignmentService {
 	): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
-				`${getEnv(
-					'PROXY_URL'
-				)}/assignments/${assignmentId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/assignments/${assignmentId}/share/change-contributor-rights`,
+					query: {
+						contributorId,
+						rights,
+					},
+				}),
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
@@ -1607,18 +1620,69 @@ export class AssignmentService {
 		}
 	}
 
-	static async deleteContributor(assignmentId: string, contributorId: string): Promise<void> {
+	static async deleteContributor(
+		assignmentId: string,
+		contributorId?: string,
+		profileId?: string
+	): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
-				`${getEnv(
-					'PROXY_URL'
-				)}/assignments/${assignmentId}/share/delete-contributor?contributorId=${contributorId}`,
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/assignments/${assignmentId}/share/delete-contributor`,
+					query: {
+						contributorId,
+						profileId,
+					},
+				}),
 				{ method: 'DELETE' }
 			);
 		} catch (err) {
 			throw new CustomError('Failed to remove assignment contributor', err, {
 				assignmentId,
 				contributorId,
+			});
+		}
+	}
+
+	static async acceptSharedAssignment(
+		assignmentId: string,
+		inviteToken: string
+	): Promise<Avo.Assignment.Contributor> {
+		try {
+			return await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/accept-invite`,
+					query: {
+						inviteToken,
+					},
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to accept to share assignment', err, {
+				assignmentId,
+				inviteToken,
+			});
+		}
+	}
+
+	static async declineSharedAssignment(assignmentId: string, inviteToken: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/reject-invite`,
+					query: {
+						inviteToken,
+					},
+				}),
+				{ method: 'DELETE' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to decline to share assignment', err, {
+				assignmentId,
+				inviteToken,
 			});
 		}
 	}

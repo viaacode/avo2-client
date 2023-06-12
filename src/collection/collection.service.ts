@@ -2,8 +2,8 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
-import { cloneDeep, compact, fromPairs, get, isEqual, isNil, without } from 'lodash-es';
-import queryString from 'query-string';
+import { cloneDeep, compact, fromPairs, get, isEmpty, isEqual, isNil, without } from 'lodash-es';
+import queryString, { stringifyUrl } from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
@@ -1565,11 +1565,19 @@ export class CollectionService {
 		collectionId: string,
 		user: Partial<ContributorInfo>
 	): Promise<void> {
+		if (isNil(user.email) || isEmpty(user.email)) {
+			throw new CustomError('User has no email address');
+		}
+
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv('PROXY_URL')}/collections/${collectionId}/share/add-contributor?email=${
-					user.email
-				}&rights=${user.rights}`,
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/add-contributor`,
+					query: {
+						email: user.email,
+						rights: user.rights,
+					},
+				}),
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
@@ -1587,9 +1595,15 @@ export class CollectionService {
 	): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv(
-					'PROXY_URL'
-				)}/collections/${collectionId}/share/change-contributor-rights?contributorId=${contributorId}&rights=${rights}`,
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/share/change-contributor-rights`,
+					query: {
+						contributorId,
+						rights,
+					},
+				}),
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
@@ -1601,18 +1615,67 @@ export class CollectionService {
 		}
 	}
 
-	static async deleteContributor(collectionId: string, contributorId: string): Promise<void> {
+	static async deleteContributor(
+		collectionId: string,
+		contributorId?: string,
+		profileId?: string
+	): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(
-				`${getEnv(
-					'PROXY_URL'
-				)}/collections/${collectionId}/share/delete-contributor?contributorId=${contributorId}`,
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/share/delete-contributor`,
+					query: { contributorId, profileId },
+				}),
 				{ method: 'DELETE' }
 			);
 		} catch (err) {
 			throw new CustomError('Failed to remove collection contributor', err, {
 				collectionId,
 				contributorId,
+				profileId,
+			});
+		}
+	}
+
+	static async acceptSharedCollection(
+		collectionId: string,
+		inviteToken: string
+	): Promise<Avo.Collection.Contributor> {
+		try {
+			return await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/accept-invite`,
+					query: {
+						inviteToken,
+					},
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to accept to share collection', err, {
+				assignmentId: collectionId,
+				inviteToken,
+			});
+		}
+	}
+
+	static async declineSharedCollection(collectionId: string, inviteToken: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/${collectionId}/share/reject-invite`,
+					query: {
+						inviteToken,
+					},
+				}),
+				{ method: 'DELETE' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to decline to share collection', err, {
+				assignmentId: collectionId,
+				inviteToken,
 			});
 		}
 	}

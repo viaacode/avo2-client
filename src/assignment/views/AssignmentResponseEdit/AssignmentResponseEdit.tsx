@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Alert,
 	Box,
@@ -70,7 +71,6 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { BlockHeading } from '@meemoo/admin-core-ui';
 
 interface AssignmentResponseEditProps {
 	assignment: Assignment_v2_With_Responses;
@@ -307,8 +307,8 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		switch (activeTab) {
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH:
 				if (
-					assignment.assignment_type !== AssignmentType.ZOEK &&
-					assignment.assignment_type !== AssignmentType.BOUW
+					!assignment.lom_learning_resource_type.includes(AssignmentType.ZOEK) &&
+					!assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)
 				) {
 					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
 					return null;
@@ -335,7 +335,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				);
 
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.MY_COLLECTION:
-				if (assignment.assignment_type !== AssignmentType.BOUW) {
+				if (!assignment.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
 					setTab(ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT);
 					return null;
 				}
@@ -386,7 +386,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	const renderAssignmentResponseEditView = () => {
 		const deadline = formatTimestamp(assignment?.deadline_at, false);
 		return (
-			<div className="c-assignment-response-page c-assignment-response-page--edit c-sticky-save-bar__wrapper">
+			<div className="c-assignment-response-page c-assignment-response-page--edit c-sticky-bar__wrapper">
 				<div>
 					<AssignmentHeading
 						back={showBackButton ? renderBackButton : undefined}
@@ -439,7 +439,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 					<BeforeUnloadPrompt when={isDirty} />
 				</div>
 
-				{/* Must always be the second and last element inside the c-sticky-save-bar__wrapper */}
+				{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 				<StickySaveBar
 					isVisible={isDirty}
 					onCancel={() => resetForm()}
