@@ -75,7 +75,7 @@ export interface Relation {
 	};
 }
 
-export enum COLLECTION_CREATE_UPDATE_TABS {
+export enum CollectionCreateUpdateTab {
 	CONTENT = 'inhoud',
 	PUBLISH = 'publicatiedetail',
 	ADMIN = 'beheer',
