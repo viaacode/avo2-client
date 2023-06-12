@@ -415,9 +415,8 @@ export class AssignmentService {
 			await AssignmentService.deleteAssignmentLomLinks(original.id);
 
 			const loms = map(update.loms, 'lom_id');
-			const uniqueLoms = uniq(loms);
 
-			await AssignmentService.insertAssignmentLomLinks(original.id, uniqueLoms);
+			await AssignmentService.insertAssignmentLomLinks(original.id, loms);
 
 			const assignment = AssignmentService.transformAssignment({
 				...update,
@@ -1765,7 +1764,8 @@ export class AssignmentService {
 
 	static async insertAssignmentLomLinks(assignmentId: string, lomIds: string[]): Promise<void> {
 		try {
-			const lomObjects = lomIds.map((lomId) => ({
+			const uniqueLoms = uniq(lomIds);
+			const lomObjects = uniqueLoms.map((lomId) => ({
 				assignment_id: assignmentId,
 				lom_id: lomId,
 			}));

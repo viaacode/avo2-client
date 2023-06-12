@@ -103,7 +103,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
-	const isPublic = !!assignment && assignment.is_public;
+	const isPublic = assignment?.is_public || false;
 
 	const {
 		control,

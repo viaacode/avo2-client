@@ -278,7 +278,6 @@ const validateBlocks = (blocks: Avo.Assignment.Block[], type: BlockItemTypeSchem
 	let isValid = true;
 
 	switch (type) {
-		case 'BOUW':
 		case 'COLLECTION':
 			blocksByType.forEach((block) => {
 				if (block.use_custom_fields && !block.custom_title) {
@@ -305,6 +304,7 @@ const validateBlocks = (blocks: Avo.Assignment.Block[], type: BlockItemTypeSchem
 			break;
 
 		case 'ZOEK':
+		case 'BOUW':
 		default:
 			break;
 	}

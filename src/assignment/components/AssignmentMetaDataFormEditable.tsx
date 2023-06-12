@@ -71,10 +71,13 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 												shouldDirty: true,
 												shouldTouch: true,
 											});
-											setAssignment({
-												...assignment,
+											setAssignment((prev) => ({
+												...prev,
 												description: value,
-											});
+												blocks:
+													(prev as Assignment_v2_With_Blocks)?.blocks ||
+													[],
+											}));
 										}
 									}}
 								/>

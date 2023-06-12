@@ -9,7 +9,6 @@ import { useGetLomEducationLevels } from '../../hooks/useGetLomEducationLevels';
 import { useGetLomSubjects } from '../../hooks/useGetLomSubjects';
 import { useGetLomThemes } from '../../hooks/useGetLomThemes';
 import useTranslation from '../../hooks/useTranslation';
-import { LomSchemeType } from '../../types/lom';
 
 import {
 	getParentContext,
@@ -39,7 +38,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 
 	const handleChange = (
 		values: TagInfoSchema[],
-		scheme: LomSchemeType,
+		scheme: LomType,
 		allSchemeLoms: Avo.Lom.LomField[]
 	) => {
 		const mappedLoms = mapOptionsToLomFields(values, allSchemeLoms);

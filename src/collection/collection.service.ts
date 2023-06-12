@@ -2,7 +2,17 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
-import { cloneDeep, compact, fromPairs, get, isEmpty, isEqual, isNil, without } from 'lodash-es';
+import {
+	cloneDeep,
+	compact,
+	fromPairs,
+	get,
+	isEmpty,
+	isEqual,
+	isNil,
+	uniq,
+	without,
+} from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -1682,7 +1692,8 @@ export class CollectionService {
 
 	static async insertCollectionLomLinks(collectionId: string, lomIds: string[]): Promise<void> {
 		try {
-			const lomObjects = lomIds.map((lomId) => ({
+			const uniqueLoms = uniq(lomIds);
+			const lomObjects = uniqueLoms.map((lomId) => ({
 				collection_id: collectionId,
 				lom_id: lomId,
 			}));
