@@ -1305,7 +1305,7 @@ export class CollectionService {
 				variables,
 			});
 
-			return response.app_collections as unknown as Avo.Collection.Collection[];
+			return response.app_collections_overview as unknown as Avo.Collection.Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
