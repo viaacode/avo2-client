@@ -1,6 +1,6 @@
 import { FormGroup, Spacer, TagsInput } from '@viaa/avo2-components';
 import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
-import { Avo } from '@viaa/avo2-types';
+import { Avo, LomType } from '@viaa/avo2-types';
 import { concat, filter, isNil, map, uniq } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 
@@ -31,10 +31,10 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 	const { data: allEducationLevels, isLoading: isEducationLevelsLoading } =
 		useGetLomEducationLevels();
 	const { data: allSubjects, isLoading: isSubjectsLoading } = useGetLomSubjects(
-		map(lomFields.educationLevels, 'id')
+		map(lomFields.educationLevel, 'id')
 	);
 	const { data: allThemes, isLoading: isThemesLoading } = useGetLomThemes(
-		map([...lomFields.educationLevels, ...lomFields.subjects], 'id')
+		map([...lomFields.educationLevel, ...lomFields.subject], 'id')
 	);
 
 	const handleChange = (
@@ -47,7 +47,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 		let flatLomList: Avo.Lom.LomField[];
 		flatLomList = Object.values(newLoms).flatMap((lomField) => lomField);
 
-		if (scheme === 'educationLevels') {
+		if (scheme === LomType.educationLevel) {
 			const parentContexts = getParentContext(mappedLoms, allEducationLevels || []);
 
 			flatLomList = concat(flatLomList, parentContexts);
@@ -71,9 +71,9 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 				<TagsInput
 					isLoading={isEducationLevelsLoading}
 					options={mapLomFieldsToOptions(filterAllEduLevels(allEducationLevels || []))}
-					value={mapLomFieldsToOptions(lomFields.educationLevels) || []}
+					value={mapLomFieldsToOptions(lomFields.educationLevel) || []}
 					onChange={(values) =>
-						handleChange(values, 'educationLevels', allEducationLevels || [])
+						handleChange(values, LomType.educationLevel, allEducationLevels || [])
 					}
 				/>
 			</FormGroup>
@@ -85,8 +85,8 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 				<TagsInput
 					isLoading={isSubjectsLoading}
 					options={mapLomFieldsToOptions(allSubjects || [])}
-					value={mapLomFieldsToOptions(lomFields.subjects) || []}
-					onChange={(values) => handleChange(values, 'subjects', allSubjects || [])}
+					value={mapLomFieldsToOptions(lomFields.subject) || []}
+					onChange={(values) => handleChange(values, LomType.subject, allSubjects || [])}
 				/>
 			</FormGroup>
 
@@ -97,8 +97,8 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 				<TagsInput
 					isLoading={isThemesLoading}
 					options={mapLomFieldsToOptions(allThemes || [])}
-					value={mapLomFieldsToOptions(lomFields.themes) || []}
-					onChange={(values) => handleChange(values, 'themes', allThemes || [])}
+					value={mapLomFieldsToOptions(lomFields.theme) || []}
+					onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
 				/>
 			</FormGroup>
 		</Spacer>

@@ -1,6 +1,6 @@
 import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import { Avo } from '@viaa/avo2-types';
+import { Avo, LomType } from '@viaa/avo2-types';
 import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { compact, map } from 'lodash-es';
@@ -11,7 +11,6 @@ import { formatDate, stripHtml } from '../shared/helpers';
 import { groupLoms } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
-import { LomSchemeType } from '../shared/types/lom';
 
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './assignment.const';
 import { AssignmentService } from './assignment.service';
@@ -136,16 +135,16 @@ export const renderLoms = (lomValues: Avo.Lom.LomField[], title: string) => {
 export const renderLomFieldsByGroup = (loms: Avo.Lom.LomField[]) => {
 	const groupedLoms = groupLoms(loms);
 
-	const educationLevels: Avo.Lom.LomField[] = groupedLoms['educationLevels'] || [];
-	const subjects: Avo.Lom.LomField[] = groupedLoms['subjects'] || [];
-	const themes: Avo.Lom.LomField[] = groupedLoms['themes'] || [];
+	const educationLevel: Avo.Lom.LomField[] = groupedLoms[LomType.educationLevel] || [];
+	const subject: Avo.Lom.LomField[] = groupedLoms[LomType.subject] || [];
+	const theme: Avo.Lom.LomField[] = groupedLoms[LomType.theme] || [];
 
 	return (
 		<Column size="3-3">
-			{educationLevels &&
-				renderLoms(educationLevels, tText('assignment/views/assignment-detail___niveaus'))}
-			{subjects && renderLoms(subjects, tText('assignment/views/assignment-detail___vakken'))}
-			{themes && renderLoms(themes, tText('assignment/views/assignment-detail___themas'))}
+			{educationLevel &&
+				renderLoms(educationLevel, tText('assignment/views/assignment-detail___niveaus'))}
+			{subject && renderLoms(subject, tText('assignment/views/assignment-detail___vakken'))}
+			{theme && renderLoms(theme, tText('assignment/views/assignment-detail___themas'))}
 		</Column>
 	);
 };
@@ -225,17 +224,17 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 		error: tText('assignment/assignment___de-opdracht-bevat-geen-onderwijsniveaus'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			// !assignment.loms ||
-			validateLoms(assignment?.loms, 'educationLevels'),
+			validateLoms(assignment?.loms, LomType.educationLevel),
 	},
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			validateLoms(assignment?.loms, 'subjects'),
+			validateLoms(assignment?.loms, LomType.subject),
 	},
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-themas'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			validateLoms(assignment?.loms, 'themes'),
+			validateLoms(assignment?.loms, LomType.theme),
 	},
 	{
 		error: tText(
@@ -258,7 +257,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 	},
 ];
 
-const validateLoms = (loms: Avo.Lom.Lom[] | undefined, scheme: LomSchemeType) => {
+const validateLoms = (loms: Avo.Lom.Lom[] | undefined, scheme: LomType) => {
 	if (!loms) {
 		return false;
 	}

@@ -43,6 +43,7 @@ import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import {
 	Assignment_v2_With_Blocks,
+	Assignment_v2_With_Labels,
 	AssignmentFormState,
 	BaseBlockWithMeta,
 } from '../assignment.types';
