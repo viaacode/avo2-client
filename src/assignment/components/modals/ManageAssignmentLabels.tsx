@@ -15,6 +15,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
 import { compact, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
@@ -24,6 +25,7 @@ import { generateRandomId } from '../../../shared/helpers/uuid';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
+import { MAX_LABEL_LENGTH } from '../../assignment.const';
 import { Assignment_Label_v2, AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
@@ -133,11 +135,28 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		setAssignmentLabels([...assignmentLabels.filter((labelObj) => labelObj.id !== id)]);
 	};
 
+	const labelsExceedMaxLenght = (labels: Assignment_Label_v2[]) => {
+		let isValid = true;
+
+		labels.forEach((label) => {
+			const exceedsMaxLength = (label.label?.length || 0) > MAX_LABEL_LENGTH;
+			if (exceedsMaxLength) {
+				isValid = false;
+			}
+		});
+
+		return isValid;
+	};
+
 	const handleSaveLabels = async () => {
 		try {
 			setIsProcessing(true);
 			const initialAssignmentLabelIds = initialAssignmentLabels.map((l) => l.id);
 			const updatedAssignmentLabelIds = assignmentLabels.map((l) => l.id);
+
+			if (!labelsExceedMaxLenght(assignmentLabels)) {
+				throw new CustomError('One or more labels is longer then max length', 'invalid');
+			}
 
 			const newIds = without(updatedAssignmentLabelIds, ...initialAssignmentLabelIds);
 			const oldIds = without(initialAssignmentLabelIds, ...updatedAssignmentLabelIds);
@@ -182,17 +201,25 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				)
 			);
 		} catch (err) {
-			console.error(
-				new CustomError('Failed to save label changes', err, {
-					initialAssignmentLabels,
-					assignmentLabels,
-				})
-			);
-			ToastService.danger(
-				tHtml(
-					'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt'
-				)
-			);
+			if (err.innerException === 'invalid') {
+				ToastService.danger(
+					tHtml('Een of meerdere labels is langer dan {{maxLength}} karakters', {
+						maxLength: MAX_LABEL_LENGTH,
+					})
+				);
+			} else {
+				console.error(
+					new CustomError('Failed to save label changes', err, {
+						initialAssignmentLabels,
+						assignmentLabels,
+					})
+				);
+				ToastService.danger(
+					tHtml(
+						'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt'
+					)
+				);
+			}
 		}
 		setIsProcessing(false);
 	};
@@ -230,6 +257,15 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 								handleRowLabelChanged(assignmentLabel, newLabel)
 							}
 						/>
+
+						<label
+							className={classnames('c-max-length', {
+								'c-max-length--invalid':
+									(assignmentLabel.label?.length || 0) > MAX_LABEL_LENGTH,
+							})}
+						>
+							{`${assignmentLabel.label?.length || 0}/${MAX_LABEL_LENGTH}`}
+						</label>
 					</Spacer>
 				);
 
