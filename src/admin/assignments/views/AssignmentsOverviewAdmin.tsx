@@ -349,7 +349,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					<Link
 						to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 							id: assignment.id,
-							tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+							tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 						})}
 					>
 						<Button

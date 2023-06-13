@@ -35,6 +35,7 @@ interface AssignmentActionsProps {
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
 	refetch?: () => void;
+	publish?: Partial<ButtonProps>;
 }
 
 const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
@@ -44,6 +45,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	remove,
 	share,
 	refetch,
+	publish,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -175,6 +177,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		/>
 	);
 
+	const renderPublishButton = (config?: Partial<ButtonProps>) => (
+		<Button type="secondary" {...config} />
+	);
+
 	const renderShareButton = (config?: Partial<ShareDropdownProps>) => (
 		<div
 			className={classNames(
@@ -227,6 +233,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				{renderPreviewButton({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
+
+				{renderPublishButton(publish)}
 
 				<div className="c-assignment-heading__dropdown-wrapper">
 					<Dropdown

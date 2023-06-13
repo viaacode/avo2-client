@@ -2,7 +2,17 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
-import { cloneDeep, compact, fromPairs, get, isEmpty, isEqual, isNil, without } from 'lodash-es';
+import {
+	cloneDeep,
+	compact,
+	fromPairs,
+	get,
+	isEmpty,
+	isEqual,
+	isNil,
+	uniq,
+	without,
+} from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -19,6 +29,9 @@ import {
 	DeleteCollectionLabelsDocument,
 	DeleteCollectionLabelsMutation,
 	DeleteCollectionLabelsMutationVariables,
+	DeleteCollectionLomLinksDocument,
+	DeleteCollectionLomLinksMutation,
+	DeleteCollectionLomLinksMutationVariables,
 	DeleteCollectionOrBundleByUuidDocument,
 	DeleteCollectionOrBundleByUuidMutation,
 	DeleteCollectionOrBundleByUuidMutationVariables,
@@ -77,6 +90,9 @@ import {
 	InsertCollectionLabelsDocument,
 	InsertCollectionLabelsMutation,
 	InsertCollectionLabelsMutationVariables,
+	InsertCollectionLomLinksDocument,
+	InsertCollectionLomLinksMutation,
+	InsertCollectionLomLinksMutationVariables,
 	InsertCollectionManagementEntryDocument,
 	InsertCollectionManagementEntryMutation,
 	InsertCollectionManagementEntryMutationVariables,
@@ -214,8 +230,8 @@ export class CollectionService {
 	 * @param user
 	 */
 	static async updateCollection(
-		initialColl: Avo.Collection.Collection | null,
-		updatedColl: Partial<Avo.Collection.Collection>,
+		initialColl: Omit<Avo.Collection.Collection, 'loms' | 'contributors'> | null,
+		updatedColl: Partial<Omit<Avo.Collection.Collection, 'loms' | 'contributors'>>,
 		user: Avo.User.User
 	): Promise<Avo.Collection.Collection | null> {
 		try {
@@ -1688,6 +1704,51 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to transfer assignment ownership', err, {
 				contributorId,
+			});
+		}
+	}
+
+	static async insertCollectionLomLinks(collectionId: string, lomIds: string[]): Promise<void> {
+		try {
+			const uniqueLoms = uniq(lomIds);
+			const lomObjects = uniqueLoms.map((lomId) => ({
+				collection_id: collectionId,
+				lom_id: lomId,
+			}));
+
+			const variables: InsertCollectionLomLinksMutationVariables = { lomObjects };
+
+			await dataService.query<
+				InsertCollectionLomLinksMutation,
+				InsertCollectionLomLinksMutationVariables
+			>({
+				query: InsertCollectionLomLinksDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert lom links in collection database', err, {
+				collectionId,
+				lomIds,
+				query: 'INSERT_COLLECTION_LOM_LINKS',
+			});
+		}
+	}
+
+	static async deleteCollectionLomLinks(collectionId: string): Promise<void> {
+		try {
+			const variables: DeleteCollectionLomLinksMutationVariables = { collectionId };
+
+			await dataService.query<
+				DeleteCollectionLomLinksMutation,
+				DeleteCollectionLomLinksMutationVariables
+			>({
+				query: DeleteCollectionLomLinksDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert lom links in collection database', err, {
+				collectionId,
+				query: 'DELETE_COLLECTION_LOM_LINKS',
 			});
 		}
 	}
