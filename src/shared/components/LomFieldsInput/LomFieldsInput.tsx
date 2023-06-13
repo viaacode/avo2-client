@@ -23,7 +23,6 @@ type LomFieldsInputProps = {
 
 const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 	const { tText } = useTranslation();
-
 	const lomFields = useMemo(() => {
 		return groupLoms(loms);
 	}, [loms]);

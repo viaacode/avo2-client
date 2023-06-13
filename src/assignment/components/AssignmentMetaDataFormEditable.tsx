@@ -52,7 +52,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 				<Form>
 					<Spacer margin="bottom">
 						<Grid>
-							<Column size="3-7">
+							<Column size="4-7">
 								<LomFieldsInput
 									loms={
 										(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) || []
