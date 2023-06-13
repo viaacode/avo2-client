@@ -1,4 +1,5 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
@@ -16,12 +17,7 @@ import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
-import {
-	Assignment_v2_With_Labels,
-	Assignment_v2_With_Responses,
-	AssignmentResponseInfo,
-	AssignmentRetrieveError,
-} from '../../assignment.types';
+import { AssignmentRetrieveError } from '../../assignment.types';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 import { canViewAnAssignment } from '../../helpers/can-view-an-assignment';
@@ -38,13 +34,11 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 	// Data
 	const assignmentId = match.params.id;
-	const [assignment, setAssignment] = useState<
-		(Assignment_v2_With_Labels & Assignment_v2_With_Responses) | null
-	>(null);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<any | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Omit<
-		AssignmentResponseInfo,
+		Avo.Assignment.Response,
 		'assignment'
 	> | null>(null);
 
@@ -94,7 +88,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
-			const assignmentOrError: Assignment_v2_With_Labels & Assignment_v2_With_Responses =
+			const assignmentOrError: Avo.Assignment.Assignment =
 				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
 
 			if (isString(assignmentOrError)) {

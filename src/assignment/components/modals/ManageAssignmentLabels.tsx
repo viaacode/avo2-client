@@ -19,12 +19,13 @@ import { compact, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
 import { ColorSelect } from '../../../admin/content-page/components/ColorSelect/ColorSelect';
+import { Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { Assignment_Label_v2, AssignmentLabelColor } from '../../assignment.types';
+import { AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
 
@@ -46,8 +47,8 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	const { tText, tHtml } = useTranslation();
 	const translations = getManageAssignmentLabelsTranslations(tText, type);
 
-	const [assignmentLabels, setAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
-	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Assignment_Label_v2[]>(
+	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
+	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Avo.Assignment.Label[]>(
 		[]
 	);
 	const [assignmentLabelColors, setAssignmentLabelColors] = useState<AssignmentLabelColor[]>([]);
@@ -105,7 +106,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				id: generateRandomId(),
 				label: '',
 				color_enum_value: assignmentLabelColors[0].value,
-				owner_profile_id: profileId,
+				owner_profile_id: profileId as string,
 				color_override: null,
 				enum_color: assignmentLabelColors[0],
 				type: type || 'LABEL',
@@ -114,7 +115,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	};
 
 	const handleRowColorChanged = (
-		assignmentLabel: Assignment_Label_v2,
+		assignmentLabel: Avo.Assignment.Label,
 		newColor?: ColorOption
 	) => {
 		if (!newColor) {
@@ -124,7 +125,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		setAssignmentLabels([...assignmentLabels]);
 	};
 
-	const handleRowLabelChanged = (assignmentLabel: Assignment_Label_v2, newLabel: string) => {
+	const handleRowLabelChanged = (assignmentLabel: Avo.Assignment.Label, newLabel: string) => {
 		assignmentLabel.label = newLabel;
 		setAssignmentLabels([...assignmentLabels]);
 	};
@@ -169,7 +170,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 									profileId,
 									l.id,
 									l.label || '',
-									l.color_enum_value
+									l.color_enum_value as Lookup_Enum_Colors_Enum
 								)
 							),
 					  ]
@@ -198,7 +199,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	};
 
 	const renderCell = (rowData: any, columnId: string) => {
-		const assignmentLabel = rowData as Assignment_Label_v2;
+		const assignmentLabel = rowData as Avo.Assignment.Label;
 		const colorOptions: ColorOption[] = assignmentLabelColors.map((assignmentLabelColor) => ({
 			label: '',
 			value: assignmentLabelColor.value,

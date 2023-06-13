@@ -1,14 +1,13 @@
 import { IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 
-import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 import { tText } from '../../helpers/translate';
 
 export const BLOCK_ITEM_ICONS: () => Record<
 	Avo.Core.BlockItemType,
-	(block?: BaseBlockWithMeta) => IconName
+	(block?: Avo.Core.BlockItemBase) => IconName
 > = () => ({
-	ITEM: (block: BaseBlockWithMeta | undefined): IconName => {
+	ITEM: (block: Avo.Core.BlockItemBase | undefined): IconName => {
 		if (block?.item_meta) {
 			switch (block?.item_meta?.type?.label) {
 				case 'audio':

@@ -1,7 +1,9 @@
-import { get, omit } from 'lodash-es';
+import type { Avo } from '@viaa/avo2-types';
+import { omit } from 'lodash-es';
 
-import { Assignment_Label_v2, AssignmentLabelColor } from '../../../assignment/assignment.types';
+import { AssignmentLabelColor } from '../../../assignment/assignment.types';
 import {
+	App_Assignment_Labels_V2_Insert_Input,
 	DeleteAssignmentLabelsDocument,
 	DeleteAssignmentLabelsMutation,
 	DeleteAssignmentLabelsMutationVariables,
@@ -32,7 +34,7 @@ export class AssignmentLabelsService {
 	public static async getLabelsForProfile(
 		profileId: string,
 		type?: string
-	): Promise<Assignment_Label_v2[]> {
+	): Promise<Avo.Assignment.Label[]> {
 		try {
 			const response = await dataService.query<
 				GetAssignmentLabelsByProfileIdQuery,
@@ -45,7 +47,7 @@ export class AssignmentLabelsService {
 				},
 			});
 
-			return response.app_assignment_labels_v2 || [];
+			return (response.app_assignment_labels_v2 || []) as Avo.Assignment.Label[];
 		} catch (err) {
 			throw new CustomError('Failed to get assignment labels', err, {
 				profileId,
@@ -54,13 +56,13 @@ export class AssignmentLabelsService {
 		}
 	}
 
-	public static async insertLabels(labels: Assignment_Label_v2[]): Promise<number[]> {
+	public static async insertLabels(labels: Avo.Assignment.Label[]): Promise<number[]> {
 		let variables: InsertAssignmentLabelsMutationVariables | null = null;
 		try {
 			variables = {
 				objects: labels.map((labelObj) =>
 					omit(labelObj, ['__typename', 'enum_color', 'id'])
-				),
+				) as App_Assignment_Labels_V2_Insert_Input[],
 			};
 			const response = await dataService.query<
 				InsertAssignmentLabelsMutation,
@@ -70,7 +72,7 @@ export class AssignmentLabelsService {
 				variables,
 			});
 
-			return get(response, 'insert_app_assignment_labels.returning', []).map(
+			return (response?.insert_app_assignment_labels_v2?.returning || []).map(
 				(label: any) => label.id
 			);
 		} catch (err) {

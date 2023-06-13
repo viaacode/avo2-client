@@ -1,6 +1,7 @@
 import { FormGroup, Spacer, TagsInput } from '@viaa/avo2-components';
 import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
-import { Avo, LomType } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { LomType } from '@viaa/avo2-types';
 import { filter, isNil, map, uniq } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 

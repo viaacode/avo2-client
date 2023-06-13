@@ -1,19 +1,15 @@
 import { Flex } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
-import {
-	Assignment_v2_With_Labels,
-	Assignment_v2_With_Responses,
-	AssignmentResponseInfo,
-} from '../assignment.types';
 
 import './AssignmentMetadata.scss';
 
 type AssignmentMetadataProps = {
-	assignment: Assignment_v2_With_Labels & Assignment_v2_With_Responses;
-	assignmentResponse?: Omit<AssignmentResponseInfo, 'assignment'> | null;
+	assignment: Avo.Assignment.Assignment;
+	assignmentResponse?: Omit<Avo.Assignment.Response, 'assignment'> | null;
 	who: 'teacher' | 'pupil';
 };
 

@@ -1,12 +1,11 @@
 import type { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 
-import { BaseBlockWithMeta } from '../../../assignment/assignment.types';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { formatDate } from '../../helpers';
 
 export type BlockItemMetadataProps = {
-	block: BaseBlockWithMeta;
+	block: Avo.Core.BlockItemBase;
 	buildSeriesLink?: (series: string) => ReactNode | string;
 };
 

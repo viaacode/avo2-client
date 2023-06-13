@@ -17,14 +17,10 @@ import { compose } from 'redux';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
-import {
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
-	AssignmentFormState,
-} from '../assignment.types';
 import { endOfAcademicYear } from '../helpers/academic-year';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
+import { AssignmentFields } from '../hooks/assignment-form';
 
 import AssignmentLabels from './AssignmentLabels';
 
@@ -39,9 +35,9 @@ export const AssignmentDetailsFormIds = {
 };
 
 export interface AssignmentDetailsFormEditableProps {
-	assignment: Assignment_v2_With_Labels & Assignment_v2_With_Blocks;
-	setAssignment: Dispatch<SetStateAction<Assignment_v2_With_Labels & Assignment_v2_With_Blocks>>;
-	setValue: UseFormSetValue<AssignmentFormState>;
+	assignment: Partial<AssignmentFields>;
+	setAssignment: Dispatch<SetStateAction<AssignmentFields>>;
+	setValue: UseFormSetValue<AssignmentFields>;
 }
 
 const AssignmentDetailsFormEditable: FC<
@@ -79,7 +75,7 @@ const AssignmentDetailsFormEditable: FC<
 					<AssignmentLabels
 						type="CLASS"
 						id={getId(AssignmentDetailsFormIds.classrooms)}
-						labels={assignment.labels.filter(
+						labels={(assignment.labels || []).filter(
 							(item) => item.assignment_label.type === 'CLASS'
 						)}
 						commonUser={commonUser}
@@ -104,12 +100,12 @@ const AssignmentDetailsFormEditable: FC<
 							}
 
 							const newLabels = mergeWithOtherLabels(
-								assignment.labels,
+								assignment.labels || [],
 								target,
 								'CLASS'
 							);
 
-							setValue('labels', newLabels, {
+							(setValue as any)('labels', newLabels, {
 								shouldDirty: true,
 								shouldTouch: true,
 							});
@@ -117,7 +113,7 @@ const AssignmentDetailsFormEditable: FC<
 							setAssignment((prev) => ({
 								...prev,
 								labels: newLabels,
-								blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
+								blocks: (prev as AssignmentFields)?.blocks || [],
 							}));
 						}}
 					/>
@@ -132,7 +128,7 @@ const AssignmentDetailsFormEditable: FC<
 					<AssignmentLabels
 						type="LABEL"
 						id={getId(AssignmentDetailsFormIds.labels)}
-						labels={assignment.labels.filter(
+						labels={(assignment.labels || []).filter(
 							(item) => item.assignment_label.type === 'LABEL'
 						)}
 						commonUser={commonUser}
@@ -145,14 +141,14 @@ const AssignmentDetailsFormEditable: FC<
 							),
 						}}
 						onChange={(changed) => {
-							setValue('labels', changed, {
+							(setValue as any)('labels', changed, {
 								shouldDirty: true,
 								shouldTouch: true,
 							});
 							setAssignment((prev) => ({
 								...prev,
-								labels: mergeWithOtherLabels(prev.labels, changed, 'LABEL'),
-								blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
+								labels: mergeWithOtherLabels(prev.labels || [], changed, 'LABEL'),
+								blocks: (prev as AssignmentFields)?.blocks || [],
 							}));
 						}}
 					/>
@@ -169,7 +165,7 @@ const AssignmentDetailsFormEditable: FC<
 						minDate={new Date()}
 						maxDate={endOfAcademicYear()}
 						onChange={(value: Date | null) => {
-							setValue('available_at', value?.toISOString(), {
+							(setValue as any)('available_at', value?.toISOString(), {
 								shouldDirty: true,
 								shouldTouch: true,
 							});
@@ -192,7 +188,7 @@ const AssignmentDetailsFormEditable: FC<
 						minDate={new Date()}
 						maxDate={endOfAcademicYear()}
 						onChange={(value) => {
-							setValue('deadline_at', value?.toISOString(), {
+							(setValue as any)('deadline_at', value?.toISOString(), {
 								shouldDirty: true,
 								shouldTouch: true,
 							});
@@ -233,11 +229,14 @@ const AssignmentDetailsFormEditable: FC<
 					<TextInput
 						id={getId(AssignmentDetailsFormIds.answer_url)}
 						onChange={(answerUrl) => {
-							setValue('answer_url', answerUrl, {
+							(setValue as any)('answer_url', answerUrl, {
 								shouldDirty: true,
 								shouldTouch: true,
 							});
-							setAssignment({ ...assignment, answer_url: answerUrl });
+							setAssignment({
+								...assignment,
+								answer_url: answerUrl,
+							} as AssignmentFields);
 						}}
 						value={assignment.answer_url || undefined}
 					/>

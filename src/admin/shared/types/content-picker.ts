@@ -9,16 +9,11 @@ export interface PickerItem {
 	target?: LinkTarget;
 }
 
-export interface PickerSelectItem {
-	label: string;
-	value: PickerItem;
-}
-
 export interface PickerTypeOption<T = ContentPickerType> {
 	value: T;
 	label: string;
 	disabled?: boolean;
 	picker: PickerItemControls;
-	fetch?: (keyword: string | null, limit: number) => Promise<PickerSelectItem[]>;
+	fetch?: (keyword: string | null, limit: number) => Promise<PickerItem[]>;
 	placeholder?: string;
 }

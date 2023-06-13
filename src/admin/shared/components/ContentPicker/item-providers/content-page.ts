@@ -1,14 +1,14 @@
 import { ContentPageInfo, ContentPageService, DbContentPage } from '@meemoo/admin-core-ui';
 
 import { CustomError } from '../../../../../shared/helpers';
-import { PickerSelectItem } from '../../../types';
+import { PickerItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch content items from GQL
 export const retrieveContentPages = async (
 	title: string | null,
 	limit = 5
-): Promise<PickerSelectItem[]> => {
+): Promise<PickerItem[]> => {
 	try {
 		const contentItems: Pick<DbContentPage, 'path' | 'title'>[] | null = title
 			? await ContentPageService.getPublicContentItemsByTitle(`%${title}%`, limit)
@@ -27,7 +27,7 @@ export const retrieveContentPages = async (
 export const retrieveProjectContentPages = async (
 	title: string | null,
 	limit = 5
-): Promise<PickerSelectItem[]> => {
+): Promise<PickerItem[]> => {
 	const contentItems: Partial<ContentPageInfo>[] | null = title
 		? await ContentPageService.getPublicProjectContentItemsByTitle(`%${title}%`, limit)
 		: await ContentPageService.getPublicProjectContentItems(limit);
@@ -36,11 +36,11 @@ export const retrieveProjectContentPages = async (
 };
 
 // Parse raw content items to react-select options
-const parseContentPages = (raw: Partial<ContentPageInfo>[]): PickerSelectItem[] => {
+const parseContentPages = (raw: Partial<ContentPageInfo>[]): PickerItem[] => {
 	return raw.map(
-		(item: Partial<ContentPageInfo>): PickerSelectItem => ({
+		(item: Partial<ContentPageInfo>): PickerItem => ({
+			...parsePickerItem('CONTENT_PAGE', item.path as string),
 			label: item.title || '',
-			value: parsePickerItem('CONTENT_PAGE', item.path as string), // TODO enforce path in database
 		})
 	);
 };

@@ -1,4 +1,5 @@
 import { Button, IconName } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { Dispatch, FC, FunctionComponent, SetStateAction, useState } from 'react';
 
@@ -6,16 +7,10 @@ import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import { isMobileWidth } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import {
-	Assignment_Response_v2,
-	Assignment_v2_With_Responses,
-	AssignmentFormState,
-	AssignmentResponseInfo,
-} from '../assignment.types';
 import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
 export type AssignmentPupilPreviewProps = {
-	assignment: Partial<AssignmentFormState>;
+	assignment: Partial<Avo.Assignment.Assignment>;
 	isPreview?: boolean;
 	onClose: () => void;
 };
@@ -27,11 +22,11 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
-	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo>({
+	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response>({
 		collection_title: '',
 		pupil_collection_blocks: [],
 		assignment_id: assignment.id as string,
-		assignment: assignment as unknown as Assignment_Response_v2['assignment'],
+		assignment: assignment as unknown as Avo.Assignment.Assignment,
 		owner: {
 			full_name: tText('assignment/components/assignment-pupil-preview___naam-leerling'),
 		},
@@ -39,7 +34,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 		id: '///fake-assignment-response-id',
 		created_at: new Date().toISOString(),
 		updated_at: new Date().toISOString(),
-	} as AssignmentResponseInfo);
+	} as Avo.Assignment.Response);
 
 	const renderClosePreviewButton = () => (
 		<Button
@@ -65,12 +60,12 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 			/>
 			{assignmentResponse && (
 				<AssignmentResponseEdit
-					assignment={assignment as Assignment_v2_With_Responses}
+					assignment={assignment as Avo.Assignment.Assignment}
 					assignmentResponse={assignmentResponse}
 					setAssignmentResponse={
 						setAssignmentResponse as Dispatch<
 							SetStateAction<
-								| (Omit<AssignmentResponseInfo, 'assignment' | 'id'> & {
+								| (Omit<Avo.Assignment.Response, 'assignment' | 'id'> & {
 										id: string | undefined;
 								  })
 								| null

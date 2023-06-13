@@ -23,7 +23,7 @@ import {
 	TooltipTrigger,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
+import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isNil, noop } from 'lodash-es';
@@ -85,11 +85,7 @@ import {
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import {
-	AssignmentOverviewTableColumns,
-	AssignmentShareType,
-	AssignmentView,
-} from '../assignment.types';
+import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
@@ -530,16 +526,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		});
 
 		const shareTypeTitle =
-			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
 				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
-				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				: assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
 				? tText('assignment/views/assignment-overview___gedeeld-met-anderen')
 				: tText('assignment/views/assignment-overview___mijn-opdracht');
 
 		const shareTypeText =
-			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
 				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
-				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				: assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
 				? tHtml('assignment/views/assignment-overview___gedeeld-met-count-anderen-names', {
 						count: sharedWithNames.length,
 						names: sharedWithNames,
@@ -547,9 +543,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				: tText('assignment/views/assignment-overview___mijn-opdracht');
 
 		const shareTypeIcon =
-			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
 				? IconName.userGroup
-				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				: assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
 				? IconName.userGroup2
 				: IconName.user2;
 
