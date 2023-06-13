@@ -7,43 +7,13 @@ import {
 	GetAssignmentByUuidQuery,
 	GetAssignmentLabelsByProfileIdQuery,
 	GetAssignmentResponseByIdQuery,
-	GetAssignmentResponsesByAssignmentIdQuery,
-	GetAssignmentsAdminOverviewQuery,
-	GetAssignmentsByOwnerQuery,
-	GetAssignmentsByResponseOwnerIdQuery,
-	GetAssignmentWithResponseQuery,
 	Lookup_Enum_Colors_Enum,
 	UpdateAssignmentBlockMutation,
 } from '../shared/generated/graphql-db-types';
 
 import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
 
-export type Assignment_v2_With_Blocks = Exclude<
-	GetAssignmentByUuidQuery['app_assignments_v2_overview'][0],
-	undefined | null
->;
-
-export type Assignment_v2_With_Responses = Exclude<
-	GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0],
-	undefined | null
->;
-
-export type Assignment_v2_With_Labels = Exclude<
-	| GetAssignmentByUuidQuery['app_assignments_v2_overview'][0]
-	| GetAssignmentsByOwnerQuery['app_assignments_v2_overview'][0]
-	| GetAssignmentsByResponseOwnerIdQuery['app_assignments_v2_overview'][0]
-	| GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0],
-	undefined | null
->;
-
-export type Assignment_Response_v2 = Exclude<
-	| GetAssignmentWithResponseQuery['app_assignments_v2_overview'][0]['responses'][0]
-	| GetAssignmentResponsesByAssignmentIdQuery['app_assignment_responses_v2'][0]
-	| GetAssignmentResponseByIdQuery['app_assignment_responses_v2'][0],
-	undefined | null
->;
-
-export type AssignmentResponseInfo = Omit<Assignment_Response_v2, 'pupil_collection_blocks'> & {
+export type AssignmentResponseInfo = Omit<Avo.Assignment.Response, 'pupil_collection_blocks'> & {
 	pupil_collection_blocks: BaseBlockWithMeta[];
 };
 
@@ -70,11 +40,6 @@ export type EditablePupilCollectionFragment = PupilCollectionFragment & Editable
 
 export type BaseBlockWithMeta = (PupilCollectionFragment | AssignmentBlock) &
 	Pick<Avo.Core.BlockItemBase, 'item_meta'> & { type: string };
-
-export type Assignment_Label_v2 = Exclude<
-	GetAssignmentLabelsByProfileIdQuery['app_assignment_labels_v2'][0],
-	undefined | null
->;
 
 export type AssignmentOverviewTableColumns =
 	| 'title'
@@ -171,14 +136,3 @@ export interface EditBlockProps {
 export type EditableAssignmentBlock = AssignmentBlock &
 	Pick<Avo.Core.BlockItemBase, 'item_meta'> &
 	EditableBlockFields;
-
-export interface GqlAssignmentContributor {
-	id: string;
-	profile_id: string | null;
-	assignment_id: string;
-	rights: Avo.Share.Rights;
-	created_at: string;
-	updated_at: string;
-	invite_token: string | null;
-	invite_email: string | null;
-}

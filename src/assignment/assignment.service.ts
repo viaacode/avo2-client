@@ -118,11 +118,6 @@ import {
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
 import {
-	Assignment_Label_v2,
-	Assignment_Response_v2,
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
-	Assignment_v2_With_Responses,
 	AssignmentBlock,
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
@@ -148,7 +143,7 @@ export class AssignmentService {
 		classIds: string[] | undefined,
 		limit: number | null = ITEMS_PER_PAGE
 	): Promise<{
-		assignments: Assignment_v2_With_Labels[];
+		assignments: Avo.Assignment.Assignment[];
 		count: number;
 	}> {
 		let variables:
@@ -240,7 +235,8 @@ export class AssignmentService {
 			}
 
 			return {
-				assignments: assignmentResponse.app_assignments_v2_overview || [],
+				assignments: (assignmentResponse.app_assignments_v2_overview ||
+					[]) as unknown as Avo.Assignment.Assignment[],
 				count: assignmentResponse.count.aggregate?.count || 0,
 			};
 		} catch (err) {
@@ -254,17 +250,14 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchAssignmentById(
-		assignmentId: string
-	): Promise<Assignment_v2_With_Blocks & Assignment_v2_With_Labels> {
+	static async fetchAssignmentById(assignmentId: string): Promise<Avo.Assignment.Assignment> {
 		try {
-			const assignment: Assignment_v2_With_Blocks & Assignment_v2_With_Labels =
-				await fetchWithLogoutJson(
-					stringifyUrl({
-						url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
-					}),
-					{ method: 'GET' }
-				);
+			const assignment: Avo.Assignment.Assignment = await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
+				}),
+				{ method: 'GET' }
+			);
 
 			if (!assignment) {
 				throw new CustomError('Response does not contain an assignment', null, {
@@ -274,7 +267,9 @@ export class AssignmentService {
 
 			return {
 				...assignment,
-				blocks: await this.enrichBlocksWithMeta<AssignmentBlock>(assignment.blocks),
+				blocks: (await this.enrichBlocksWithMeta<AssignmentBlock>(
+					assignment.blocks
+				)) as Avo.Assignment.Block[],
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get assignment by id from database', err, {
@@ -295,7 +290,7 @@ export class AssignmentService {
 		return pupilBlocks.app_pupil_collection_blocks.length > 0;
 	}
 
-	static async fetchAssignmentBlocks(assignmentId: string): Promise<AssignmentBlock[]> {
+	static async fetchAssignmentBlocks(assignmentId: string): Promise<Avo.Assignment.Block[]> {
 		const blocks = await dataService.query<
 			GetAssignmentBlocksQuery,
 			GetAssignmentBlocksQueryVariables
@@ -303,7 +298,7 @@ export class AssignmentService {
 			query: GetAssignmentBlocksDocument,
 			variables: { assignmentId },
 		});
-		return blocks.app_assignment_blocks_v2 || [];
+		return (blocks.app_assignment_blocks_v2 || []) as Avo.Assignment.Block[];
 	}
 
 	/**
@@ -312,7 +307,7 @@ export class AssignmentService {
 	 * @param assignment
 	 */
 	private static transformAssignment(
-		assignment: Partial<Assignment_v2_With_Blocks>
+		assignment: Partial<Avo.Assignment.Assignment>
 	): App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input {
 		const assignmentToSave = cloneDeep(assignment);
 
@@ -391,8 +386,8 @@ export class AssignmentService {
 	}
 
 	static async updateAssignment(
-		original: Assignment_v2_With_Blocks,
-		update: Partial<Assignment_v2_With_Blocks>
+		original: Avo.Assignment.Assignment,
+		update: Partial<Avo.Assignment.Assignment>
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			if (isNil(original.id)) {
@@ -435,7 +430,7 @@ export class AssignmentService {
 
 			await this.updateAssignmentLabels(
 				original.id,
-				original.labels.map(({ assignment_label }) => assignment_label),
+				(original.labels || []).map(({ assignment_label }) => assignment_label),
 				(update.labels || []).map(({ assignment_label }) => assignment_label)
 			);
 
@@ -484,7 +479,7 @@ export class AssignmentService {
 			collection_title: string;
 			pupil_collection_blocks: PupilCollectionFragment[];
 		}
-	): Promise<Omit<Assignment_Response_v2, 'assignment'> | null> {
+	): Promise<Omit<Avo.Assignment.Response, 'assignment'> | null> {
 		try {
 			if (isNil(original.id)) {
 				throw new CustomError(
@@ -517,7 +512,7 @@ export class AssignmentService {
 			return {
 				...original,
 				...update,
-			};
+			} as Omit<Avo.Assignment.Response, 'assignment'>;
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment', err, {
 				original,
@@ -531,8 +526,8 @@ export class AssignmentService {
 
 	static async updateAssignmentLabels(
 		id: string,
-		original: Assignment_Label_v2[],
-		update: Assignment_Label_v2[]
+		original: Avo.Assignment.Label[],
+		update: Avo.Assignment.Label[]
 	): Promise<[void, void]> {
 		const initial = original.map((label) => label.id);
 		const updated = update.map((label) => label.id);
@@ -649,8 +644,8 @@ export class AssignmentService {
 	};
 
 	static async insertAssignment(
-		assignment: Partial<Assignment_v2_With_Blocks>,
-		addedLabels?: Assignment_Label_v2[]
+		assignment: Partial<Avo.Assignment.Assignment>,
+		addedLabels?: Avo.Assignment.Label[]
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			const assignmentToSave = AssignmentService.transformAssignment({
@@ -787,7 +782,7 @@ export class AssignmentService {
 	static async fetchAssignmentAndContent(
 		pupilProfileId: string,
 		assignmentId: string
-	): Promise<Assignment_v2_With_Labels & Assignment_v2_With_Responses> {
+	): Promise<Avo.Assignment.Assignment> {
 		try {
 			// Load assignment
 			const variables: GetAssignmentWithResponseQueryVariables = {
@@ -809,18 +804,17 @@ export class AssignmentService {
 			}
 
 			// Load content (collection, item or search query) according to assignment
-			const initialAssignmentBlocks = await AssignmentService.fetchAssignmentBlocks(
-				assignmentId
-			);
+			const initialAssignmentBlocks: Avo.Assignment.Block[] =
+				await AssignmentService.fetchAssignmentBlocks(assignmentId);
 
-			const blocks = await this.enrichBlocksWithMeta<AssignmentBlock>(
+			const blocks = await this.enrichBlocksWithMeta<Avo.Assignment.Block>(
 				initialAssignmentBlocks
 			);
 
 			return {
 				...tempAssignment,
 				blocks,
-			};
+			} as unknown as Avo.Assignment.Assignment;
 		} catch (err: any) {
 			const graphqlError = err?.graphQLErrors?.[0]?.message;
 
@@ -856,7 +850,7 @@ export class AssignmentService {
 		page: number,
 		filterString: string | undefined
 	): Promise<{
-		assignmentResponses: Assignment_Response_v2[];
+		assignmentResponses: Avo.Assignment.Response[];
 		count: number;
 	}> {
 		let variables: GetAssignmentResponsesByAssignmentIdQueryVariables | undefined = undefined;
@@ -1054,6 +1048,7 @@ export class AssignmentService {
 
 			return {
 				...assignmentResponse,
+				owner: assignmentResponse.owner || undefined,
 				pupil_collection_blocks:
 					await AssignmentService.enrichBlocksWithMeta<PupilCollectionFragment>(
 						assignmentResponse.pupil_collection_blocks
@@ -1097,7 +1092,7 @@ export class AssignmentService {
 					await AssignmentService.enrichBlocksWithMeta<PupilCollectionFragment>(
 						assignmentResponse.pupil_collection_blocks
 					),
-			};
+			} as AssignmentResponseInfo | null;
 		} catch (err) {
 			throw new CustomError('Failed to get assignment response from database', err, {
 				assignmentResponseId,
@@ -1174,6 +1169,7 @@ export class AssignmentService {
 
 			return {
 				...insertedAssignmentResponse,
+				owner: assignmentResponse.owner || undefined,
 				pupil_collection_blocks: await this.enrichBlocksWithMeta<PupilCollectionFragment>(
 					insertedAssignmentResponse.pupil_collection_blocks
 				),
@@ -1476,7 +1472,7 @@ export class AssignmentService {
 				});
 			}
 
-			return [assignments as Avo.Assignment.Assignment[], assignmentCount];
+			return [assignments as unknown as Avo.Assignment.Assignment[], assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get assignments from the database', err, {
 				variables,

@@ -86,9 +86,6 @@ import {
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
-	Assignment_Label_v2,
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
 	AssignmentOverviewTableColumns,
 	AssignmentShareType,
 	AssignmentView,
@@ -128,7 +125,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
@@ -331,6 +328,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			copySearchTermsToQueryState();
 		}
 	};
+
 	const handleExtraOptionsItemClicked = async (
 		actionId: ExtraAssignmentOptions,
 		assignmentRow: Avo.Assignment.Assignment
@@ -348,12 +346,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			case 'edit':
 				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 					id: assignmentRow.id,
-					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 				});
 				break;
 			case 'duplicate':
 				try {
-					const latest: Assignment_v2_With_Blocks =
+					const latest: Avo.Assignment.Assignment =
 						await AssignmentService.fetchAssignmentById(
 							assignmentRow.id as unknown as string
 						);
@@ -432,7 +430,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: { assignment_label: Assignment_Label_v2 }[], label: string) => {
+	const renderLabels = (labels: { assignment_label: Avo.Assignment.Label }[], label: string) => {
 		if (!labels.length) {
 			return '-';
 		}
@@ -504,7 +502,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderCell = (
-		assignment: Assignment_v2_With_Labels,
+		assignment: Avo.Assignment.Assignment,
 		colKey: AssignmentOverviewTableColumns
 	) => {
 		const cellData: any = (assignment as any)[colKey];
@@ -512,14 +510,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			id: assignment.id,
 		});
 
-		const labels = assignment.labels.filter(
+		const labels = (assignment.labels || []).filter(
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
-		const sharedWithNames = assignment.contributors.map((contributor) => {
+		const sharedWithNames = (assignment.contributors || []).map((contributor) => {
 			if (contributor.profile?.organisation?.name) {
 				return (
-					contributor.profile?.usersByuserId?.full_name +
+					contributor.profile?.user?.full_name +
 					' ' +
 					'(' +
 					contributor.profile?.organisation?.name +
@@ -527,7 +525,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					' '
 				);
 			} else {
-				return contributor.profile?.usersByuserId?.full_name + ' ';
+				return contributor.profile?.user?.full_name + ' ';
 			}
 		});
 
@@ -583,7 +581,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'class_room':
 				return renderLabels(
-					assignment.labels.filter(({ assignment_label: item }) => item.type === 'CLASS'),
+					(assignment.labels || []).filter(
+						({ assignment_label: item }) => item.type === 'CLASS'
+					),
 					tText('assignment/views/assignment-overview___klas')
 				);
 
@@ -647,8 +647,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const getLabelOptions = (labelType: Avo.Assignment.LabelType): CheckboxOption[] => {
 		return compact(
 			allAssignmentLabels
-				.filter((labelObj: Assignment_Label_v2) => labelObj.type === labelType)
-				.map((labelObj: Assignment_Label_v2): CheckboxOption | null => {
+				.filter((labelObj: Avo.Assignment.Label) => labelObj.type === labelType)
+				.map((labelObj: Avo.Assignment.Label): CheckboxOption | null => {
 					if (!labelObj.label) {
 						return null;
 					}
@@ -914,7 +914,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
 							  )
 					}
-					renderCell={(rowData: Assignment_v2_With_Labels, colKey: string) =>
+					renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
 						renderCell(rowData, colKey as AssignmentOverviewTableColumns)
 					}
 					rowKey="id"
