@@ -10,3 +10,16 @@
 		height: 28px;
 	}
 }
+
+.m-collection-overview-shared {
+	display: flex;
+	padding: 0.6rem;
+	border-radius: 50%;
+	color: white;
+	background-color: $color-teal-bright;
+
+	.o-svg-icon {
+		width: 1.6rem;
+		height: 1.6rem;
+	}
+}

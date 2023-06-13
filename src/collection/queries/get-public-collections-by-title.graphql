@@ -1,5 +1,5 @@
 query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) {
-	app_collections(
+	app_collections_overview(
 		order_by: { title: asc }
 		where: {
 			type_id: { _eq: $typeId }
@@ -11,5 +11,25 @@ query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) 
 	) {
 		id
 		title
+		share_type
+		contributors {
+			enum_right_type {
+				value
+			}
+			profile {
+				organisation {
+					name
+				}
+				usersByuserId {
+					first_name
+					full_name
+					last_name
+				}
+			}
+		}
+		updated_at
+		is_public
+		thumbnail_path
+		created_at
 	}
 }

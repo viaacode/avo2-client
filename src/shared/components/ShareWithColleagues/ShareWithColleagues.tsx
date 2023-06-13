@@ -48,9 +48,18 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	hasModalOpen,
 }) => {
 	const { tText } = useTranslation();
-	const currentUser = contributors.find(
-		(contributor) => contributor.profileId === user?.profile?.id
-	) as ContributorInfo;
+	const currentUser =
+		(contributors.find(
+			(contributor) => contributor.profileId === user?.profile?.id
+		) as ContributorInfo) ||
+		({
+			rights: 'OWNER',
+			email: user?.mail,
+			firstName: user?.first_name,
+			lastName: user?.last_name,
+			profileId: user?.profile?.id,
+			profileImage: user?.profile?.avatar,
+		} as ContributorInfo);
 	const [isRightsDropdownOpen, setIsRightsDropdownOpen] = useState<boolean>(false);
 	const [contributor, setNewContributor] = useState<Partial<ContributorInfo>>({
 		email: undefined,

@@ -34,6 +34,8 @@ interface AssignmentActionsProps {
 	share?: ShareWithPupilsProps;
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
+	refetch?: () => void;
+	publish?: Partial<ButtonProps>;
 }
 
 const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
@@ -42,6 +44,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	duplicate,
 	remove,
 	share,
+	refetch,
+	publish,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -64,20 +68,35 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const onEditContributor = async (contributor: ContributorInfo, newRights: ShareRightsType) => {
 		try {
-			if (share) {
-				await AssignmentService.editContributorRights(
-					share.assignment?.id,
-					contributor.contributorId as string,
-					newRights
-				);
+			if (share && refetch) {
+				if (newRights === 'OWNER') {
+					await AssignmentService.transferAssignmentOwnerShip(
+						share.assignment?.id,
+						contributor.contributorId as string
+					);
 
-				await fetchContributors();
+					await refetch();
 
-				ToastService.success(
-					tText(
-						'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
-					)
-				);
+					ToastService.success(
+						tText(
+							'assignment/components/assignment-actions___eigenaarschap-is-succesvol-overgedragen'
+						)
+					);
+				} else {
+					await AssignmentService.editContributorRights(
+						share.assignment?.id,
+						contributor.contributorId as string,
+						newRights
+					);
+
+					await fetchContributors();
+
+					ToastService.success(
+						tText(
+							'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
+						)
+					);
+				}
 			}
 		} catch (err) {
 			ToastService.danger(
@@ -158,6 +177,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		/>
 	);
 
+	const renderPublishButton = (config?: Partial<ButtonProps>) => (
+		<Button type="secondary" {...config} />
+	);
+
 	const renderShareButton = (config?: Partial<ShareDropdownProps>) => (
 		<div
 			className={classNames(
@@ -210,6 +233,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				{renderPreviewButton({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
+
+				{renderPublishButton(publish)}
 
 				<div className="c-assignment-heading__dropdown-wrapper">
 					<Dropdown

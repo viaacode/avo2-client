@@ -16,7 +16,6 @@ import { CustomError } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentService } from '../assignment.service';
 import {
-	Assignment_v2,
 	Assignment_v2_With_Labels,
 	Assignment_v2_With_Responses,
 	AssignmentResponseInfo,
@@ -44,7 +43,9 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 	const assignmentResponseId = match.params.responseId;
 
 	const fetchAssignmentResponse = useCallback(
-		async (tempAssignment: Assignment_v2): Promise<AssignmentResponseInfo | null> => {
+		async (
+			tempAssignment: Avo.Assignment.Assignment
+		): Promise<AssignmentResponseInfo | null> => {
 			const canViewAssignmentResponses = await PermissionService.hasPermissions(
 				[
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
@@ -69,9 +70,8 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 
 	const fetchAssignment = useCallback(async () => {
 		try {
-			const tempAssignment: Assignment_v2 = await AssignmentService.fetchAssignmentById(
-				assignmentId
-			);
+			const tempAssignment: Avo.Assignment.Assignment =
+				await AssignmentService.fetchAssignmentById(assignmentId);
 
 			setAssignmentResponse(await fetchAssignmentResponse(tempAssignment));
 

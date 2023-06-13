@@ -9,19 +9,15 @@ import {
 	Grid,
 	Image,
 	Spacer,
-	TagInfo,
 	TextArea,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { Avo } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
+import { map } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import {
-	EducationLevelsField,
-	FileUpload,
-	ShortDescriptionField,
-	SubjectsField,
-} from '../../shared/components';
+import { FileUpload, ShortDescriptionField } from '../../shared/components';
+import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
 	RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES,
@@ -56,14 +52,11 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 
 	const isCollection = type === 'collection';
 
-	const updateCollectionMultiProperty = (
-		selectedTagOptions: TagInfo[],
-		collectionProp: keyof Avo.Collection.Collection
-	) => {
+	const updateCollectionLoms = (loms: Avo.Lom.LomField[]) => {
 		changeCollectionState({
-			collectionProp,
+			collectionProp: 'loms',
 			type: 'UPDATE_COLLECTION_PROP',
-			collectionPropValue: (selectedTagOptions || []).map((tag) => tag.value as string),
+			collectionPropValue: loms.map((lom) => ({ lom } as Avo.Lom.Lom)),
 		});
 	};
 
@@ -75,21 +68,13 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 						<Spacer margin="bottom">
 							<Grid>
 								<Column size="3-7">
-									<EducationLevelsField
-										value={collection.lom_context}
-										onChange={(values: TagInfo[]) =>
-											updateCollectionMultiProperty(values, 'lom_context')
-										}
-									/>
-									<SubjectsField
-										value={collection.lom_classification}
-										onChange={(values: TagInfo[]) =>
-											updateCollectionMultiProperty(
-												values,
-												'lom_classification'
-											)
-										}
-									/>
+									{collection.loms && (
+										<LomFieldsInput
+											loms={map(collection.loms, 'lom')}
+											onChange={updateCollectionLoms}
+										/>
+									)}
+
 									<ShortDescriptionField
 										value={collection.description}
 										onChange={(value: string) =>
@@ -99,6 +84,9 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												collectionPropValue: value,
 											})
 										}
+										placeholder={tText(
+											'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
+										)}
 									/>
 									{!isCollection && (
 										<FormGroup

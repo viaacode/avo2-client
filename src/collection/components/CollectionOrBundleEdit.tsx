@@ -11,9 +11,9 @@ import {
 	TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
-import { cloneDeep, get, isEmpty, set } from 'lodash-es';
+import { Avo, PermissionName } from '@viaa/avo2-types';
+import { CollectionSchema } from '@viaa/avo2-types/types/collection';
+import { cloneDeep, get, isEmpty, omit, set } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -74,7 +74,7 @@ import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { MAX_TITLE_LENGTH } from '../collection.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { EditCollectionTab } from '../collection.types';
+import { CollectionCreateUpdateTab } from '../collection.types';
 import { PublishCollectionModal } from '../components';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
@@ -145,13 +145,13 @@ interface CollectionOrBundleEditProps {
 
 const CollectionOrBundleEdit: FunctionComponent<
 	CollectionOrBundleEditProps &
-		DefaultSecureRouteProps<{ id: string; tabId: EditCollectionTab | undefined }>
+		DefaultSecureRouteProps<{ id: string; tabId: CollectionCreateUpdateTab | undefined }>
 > = ({ type, history, location, match, user }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [collectionId] = useState<string>(match.params.id);
-	const [currentTab, setCurrentTab] = useState<EditCollectionTab | null>(null);
+	const [currentTab, setCurrentTab] = useState<CollectionCreateUpdateTab | null>(null);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
@@ -538,12 +538,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	// react to route changes by navigating back wih the browser history back button
 	useEffect(() => {
-		setCurrentTab(match.params.tabId || 'content');
+		setCurrentTab(match.params.tabId || CollectionCreateUpdateTab.CONTENT);
 	}, [match.params.tabId]);
 
 	// Change page on tab selection
 	const selectTab = (selectedTab: ReactText) => {
-		const tabName = String(selectedTab) as EditCollectionTab;
+		const tabName = String(selectedTab) as CollectionCreateUpdateTab;
 		navigate(
 			history,
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
@@ -583,19 +583,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 		);
 		return [
 			{
-				id: 'content',
+				id: CollectionCreateUpdateTab.CONTENT,
 				label: tText('collection/collection___inhoud'),
 				icon: IconName.collection,
 			},
 			{
-				id: 'metadata',
+				id: CollectionCreateUpdateTab.PUBLISH,
 				label: tText('collection/collection___publicatiedetails'),
 				icon: IconName.fileText,
 			},
 			...(showAdminTab
 				? [
 						{
-							id: 'admin',
+							id: CollectionCreateUpdateTab.ADMIN,
 							label: tText('collection/collection___beheer'),
 							icon: IconName.settings,
 						} as TabProps,
@@ -604,21 +604,21 @@ const CollectionOrBundleEdit: FunctionComponent<
 			...(showEditorialTabs
 				? [
 						{
-							id: 'actualisation',
+							id: CollectionCreateUpdateTab.ACTUALISATION,
 							label: tText(
 								'collection/components/collection-or-bundle-edit___actualisatie'
 							),
 							icon: IconName.checkCircle,
 						} as TabProps,
 						{
-							id: 'quality_check',
+							id: CollectionCreateUpdateTab.QUALITY_CHECK,
 							label: tText(
 								'collection/components/collection-or-bundle-edit___kwaliteitscontrole'
 							),
 							icon: IconName.checkSquare,
 						} as TabProps,
 						{
-							id: 'marcom',
+							id: CollectionCreateUpdateTab.MARCOM,
 							label: tText(
 								'collection/components/collection-or-bundle-edit___marcom'
 							),
@@ -667,6 +667,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return null;
 	};
 
+	const stripCollectionFieldsBeforeInsertOrUpdate = (collection: CollectionSchema | null) => {
+		return omit(collection, ['loms', 'contributors']);
+	};
+
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
@@ -680,12 +684,32 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			if (collectionState.currentCollection) {
 				const newCollection = await CollectionService.updateCollection(
-					collectionState.initialCollection,
-					collectionState.currentCollection,
+					stripCollectionFieldsBeforeInsertOrUpdate(collectionState.initialCollection),
+					stripCollectionFieldsBeforeInsertOrUpdate(collectionState.currentCollection),
 					user
 				);
 
 				if (newCollection) {
+					try {
+						await CollectionService.deleteCollectionLomLinks(newCollection.id);
+
+						await CollectionService.insertCollectionLomLinks(
+							newCollection.id,
+							(collectionState.currentCollection.loms || []).map((lom) => lom.lom.id)
+						);
+					} catch (err) {
+						console.error('Failed to update collection/bundle loms', err);
+						ToastService.danger(
+							isCollection
+								? tHtml(
+										'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-collectie-is-mislukt'
+								  )
+								: tHtml(
+										'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-bundel-is-mislukt'
+								  )
+						);
+					}
+
 					checkPermissionsAndGetCollection();
 					ToastService.success(
 						isCollection
@@ -1016,19 +1040,36 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const onEditContributor = async (user: ContributorInfo, newRights: ShareRightsType) => {
 		try {
 			if (collectionId) {
-				await CollectionService.editContributorRights(
-					collectionId,
-					user.contributorId as string,
-					newRights
-				);
+				if (newRights === 'OWNER') {
+					await CollectionService.transferCollectionOwnerShip(
+						collectionId,
+						user.contributorId as string
+					);
 
-				await fetchContributors();
+					await checkPermissionsAndGetCollection();
 
-				ToastService.success(
-					tText(
-						'collection/components/collection-or-bundle-edit___rol-van-de-gebruiker-is-aangepast'
-					)
-				);
+					await fetchContributors();
+
+					ToastService.success(
+						tText(
+							'collection/components/collection-or-bundle-edit___eigenaarschap-succesvol-overgedragen'
+						)
+					);
+				} else {
+					await CollectionService.editContributorRights(
+						collectionId,
+						user.contributorId as string,
+						newRights
+					);
+
+					await fetchContributors();
+
+					ToastService.success(
+						tText(
+							'collection/components/collection-or-bundle-edit___rol-van-de-gebruiker-is-aangepast'
+						)
+					);
+				}
 			}
 		} catch (err) {
 			ToastService.danger(
@@ -1086,7 +1127,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
-				case 'content':
+				case CollectionCreateUpdateTab.CONTENT:
 					return (
 						<CollectionOrBundleEditContent
 							type={type}
@@ -1098,7 +1139,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							user={user}
 						/>
 					);
-				case 'metadata':
+				case CollectionCreateUpdateTab.PUBLISH:
 					return (
 						<CollectionOrBundleEditMetaData
 							type={type}
@@ -1106,7 +1147,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							changeCollectionState={changeCollectionState}
 						/>
 					);
-				case 'admin':
+				case CollectionCreateUpdateTab.ADMIN:
 					return (
 						<CollectionOrBundleEditAdmin
 							collection={collectionState.currentCollection}
@@ -1114,7 +1155,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							history={history}
 						/>
 					);
-				case 'actualisation':
+				case CollectionCreateUpdateTab.ACTUALISATION:
 					return (
 						<CollectionOrBundleEditActualisation
 							collection={collectionState.currentCollection}
@@ -1122,7 +1163,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							history={history}
 						/>
 					);
-				case 'quality_check':
+				case CollectionCreateUpdateTab.QUALITY_CHECK:
 					return (
 						<CollectionOrBundleEditQualityCheck
 							collection={collectionState.currentCollection}
@@ -1130,7 +1171,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							history={history}
 						/>
 					);
-				case 'marcom':
+				case CollectionCreateUpdateTab.MARCOM:
 					return (
 						<CollectionOrBundleEditMarcom
 							collection={collectionState.currentCollection}
