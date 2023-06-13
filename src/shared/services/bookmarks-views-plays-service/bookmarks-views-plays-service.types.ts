@@ -25,7 +25,7 @@ export interface BookmarkInfo {
 export interface BookmarkViewPlayCounts {
 	bookmarkCount: number;
 	viewCount: number;
-	playCount: number;
+	playCount?: number;
 	isBookmarked: boolean;
 }
 
@@ -70,5 +70,5 @@ export interface AppCollectionBookmark {
 
 export type EventAction = 'bookmark' | 'unbookmark' | 'view' | 'play';
 export type QueryType = 'query' | 'get' | 'increment';
-export type EventContentTypeSimplified = 'item' | 'collection';
+export type EventContentTypeSimplified = 'item' | 'collection' | 'assignment';
 export type EventContentType = EventContentTypeSimplified | 'bundle';

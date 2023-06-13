@@ -30,9 +30,14 @@ import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
-import { navigate, renderAvatar } from '../../shared/helpers';
+import { CustomError, navigate, renderAvatar } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
+import {
+	BookmarksViewsPlaysService,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import {
 	getRelatedItems,
 	ObjectTypes,
@@ -78,6 +83,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	);
 	const [isForbidden, setIsforbidden] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
@@ -182,6 +190,12 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			}
 
 			setAssignment(tempAssignment);
+			setBookmarkViewCounts(
+				await BookmarksViewsPlaysService.getAssignmentCounts(
+					tempAssignment.id as string,
+					user
+				)
+			);
 
 			try {
 				const permissionObj = await getPermissions(id, user, tempAssignment);
@@ -217,6 +231,55 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		getRelatedAssignments();
 	}, [getRelatedAssignments]);
 
+	const toggleBookmark = async () => {
+		try {
+			if (!user) {
+				ToastService.danger(
+					tHtml(
+						'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
+					)
+				);
+				return;
+			}
+
+			if (!assignment) {
+				ToastService.danger(
+					tHtml('Er ging iets mis met het ophalen van de ophalen van de opdracht')
+				);
+			}
+
+			await BookmarksViewsPlaysService.toggleBookmark(
+				assignment?.id as string,
+				user,
+				'assignment',
+				bookmarkViewCounts.isBookmarked
+			);
+			setBookmarkViewCounts({
+				...bookmarkViewCounts,
+				isBookmarked: !bookmarkViewCounts.isBookmarked,
+			});
+			ToastService.success(
+				bookmarkViewCounts.isBookmarked
+					? tHtml('De bladwijzer is verwijderd')
+					: tHtml('De bladwijzer is aangemaakt')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle bookmark', err, {
+					assignment,
+					user,
+					type: 'collection',
+					isBookmarked: bookmarkViewCounts.isBookmarked,
+				})
+			);
+			ToastService.danger(
+				bookmarkViewCounts.isBookmarked
+					? tHtml('Het verwijderen van de bladwijzer is mislukt')
+					: tHtml('Het aanmaken van de bladwijzer is mislukt')
+			);
+		}
+	};
+
 	// Render
 
 	const renderHeaderButtons = () => {
@@ -243,12 +306,12 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				/>
 
 				<ToggleButton
-					title={tText('collection/views/collection-detail___bladwijzer')}
+					title={tText('Bladwijzer')}
 					type="secondary"
 					icon={IconName.bookmark}
-					active={true}
-					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
-					onClick={console.log}
+					active={bookmarkViewCounts.isBookmarked}
+					ariaLabel={tText('Bladwijzer')}
+					onClick={toggleBookmark}
 				/>
 
 				<Spacer margin="left-small">

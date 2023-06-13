@@ -8,6 +8,9 @@ import {
 	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkMutation,
 	DeleteItemBookmarkMutationVariables,
+	GetAssignmentBookmarkViewCountsDocument,
+	GetAssignmentBookmarkViewCountsQuery,
+	GetAssignmentBookmarkViewCountsQueryVariables,
 	GetBookmarksForUserDocument,
 	GetBookmarksForUserQuery,
 	GetBookmarksForUserQueryVariables,
@@ -154,6 +157,26 @@ export class BookmarksViewsPlaysService {
 			bookmarkCount,
 			viewCount,
 			playCount,
+			isBookmarked,
+		};
+	}
+
+	public static async getAssignmentCounts(assignmentUuid: string, user: Avo.User.User | null) {
+		const response = await dataService.query<
+			GetAssignmentBookmarkViewCountsQuery,
+			GetAssignmentBookmarkViewCountsQueryVariables
+		>({
+			query: GetAssignmentBookmarkViewCountsDocument,
+			variables: { assignmentUuid, profileId: user?.profile?.id || null },
+		});
+
+		const isBookmarked = !!response.app_assignments_v2_bookmarks[0];
+		const bookmarkCount = response.app_assignments_v2_bookmarks_aggregate.aggregate?.count || 0;
+		const viewCount = response.app_assignment_v2_views[0]?.count ?? 0;
+
+		return {
+			bookmarkCount,
+			viewCount,
 			isBookmarked,
 		};
 	}
@@ -416,10 +439,12 @@ export class BookmarksViewsPlaysService {
 	 *       }
 	 *     }
 	 */
+
+	//TODO: If we ever need the status for assigmnent boomarks, remove the type omit
 	public static async getBookmarkStatuses(
 		profileId: string,
 		objectInfos: BookmarkRequestInfo[]
-	): Promise<BookmarkStatusLookup> {
+	): Promise<Omit<BookmarkStatusLookup, 'assignment'>> {
 		try {
 			const groupedObjectInfos: {
 				[type: string]: BookmarkRequestInfo[];

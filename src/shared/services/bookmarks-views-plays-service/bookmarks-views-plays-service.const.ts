@@ -1,6 +1,8 @@
 import type { Avo } from '@viaa/avo2-types';
 
 import {
+	DeleteAssignmentBookmarksForUserDocument,
+	DeleteAssignmentBookmarksForUserMutationVariables,
 	DeleteCollectionBookmarksForUserDocument,
 	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkDocument,
@@ -17,6 +19,8 @@ import {
 	IncrementCollectionViewsDocument,
 	IncrementItemPlaysDocument,
 	IncrementItemViewsDocument,
+	InsertAssignmentBookmarkDocument,
+	InsertAssignmentBookmarkMutationVariables,
 	InsertCollectionBookmarkDocument,
 	InsertItemBookmarkDocument,
 } from '../../generated/graphql-db-types';
@@ -75,6 +79,21 @@ export const GET_EVENT_QUERIES: () => {
 				},
 			}),
 		},
+		assignment: {
+			query: InsertAssignmentBookmarkDocument,
+			variables: (
+				assignmentUuid: string,
+				user?: Avo.User.User | Avo.User.CommonUser
+			): InsertAssignmentBookmarkMutationVariables => ({
+				bookmarkAssignment: {
+					assignment_id: assignmentUuid,
+					profile_id:
+						(user as Avo.User.User)?.profile?.id ||
+						(user as Avo.User.CommonUser)?.profileId ||
+						null,
+				},
+			}),
+		},
 	},
 	unbookmark: {
 		item: {
@@ -96,7 +115,20 @@ export const GET_EVENT_QUERIES: () => {
 				collectionUuid: string,
 				user?: Avo.User.User | Avo.User.CommonUser
 			): DeleteCollectionBookmarksForUserMutationVariables => ({
-				collectionUuid,
+				collectionUuid: collectionUuid,
+				profileId:
+					(user as Avo.User.User)?.profile?.id ||
+					(user as Avo.User.CommonUser)?.profileId ||
+					null,
+			}),
+		},
+		assignment: {
+			query: DeleteAssignmentBookmarksForUserDocument,
+			variables: (
+				assignmentUuid: string,
+				user?: Avo.User.User | Avo.User.CommonUser
+			): DeleteAssignmentBookmarksForUserMutationVariables => ({
+				assignmentUuid,
 				profileId:
 					(user as Avo.User.User)?.profile?.id ||
 					(user as Avo.User.CommonUser)?.profileId ||
@@ -123,6 +155,14 @@ export const GET_EVENT_QUERIES: () => {
 			getResponseCount: (response: GetCollectionViewCountQuery): number =>
 				response.app_collections[0]?.view_counts?.[0]?.count || 0,
 		},
+		// Added empty event for future use and solving typing issues
+		assignment: {
+			get: '',
+			increment: '',
+			variables: (assignmentUuid: string) => ({
+				assignmentUuid,
+			}),
+		},
 	},
 	play: {
 		item: {
@@ -142,6 +182,14 @@ export const GET_EVENT_QUERIES: () => {
 			}),
 			getResponseCount: (response: GetCollectionPlayCountQuery): number =>
 				response.app_collections[0]?.play_counts?.[0]?.count || 0,
+		},
+		// Added empty event for future use and solving typing issues
+		assignment: {
+			get: '',
+			increment: '',
+			variables: (assignmentUuid: string) => ({
+				assignmentUuid,
+			}),
 		},
 	},
 });
