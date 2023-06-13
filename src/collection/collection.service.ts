@@ -1288,13 +1288,14 @@ export class CollectionService {
 		}
 	}
 
-	static async fetchCollectionsByOwner(
+	static async fetchCollectionsByOwnerOrContributorProfileId(
 		user: Avo.User.User,
 		offset: number,
 		limit: number | null,
 		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
-		filterString: string | undefined
+		filterString: string | undefined,
+		shareTypeIds?: string[] | undefined
 	): Promise<Collection[]> {
 		let variables: GetCollectionsByOwnerQueryVariables | null = null;
 		try {
@@ -1303,6 +1304,11 @@ export class CollectionService {
 			if (trimmedFilterString) {
 				filterArray.push({
 					title: { _ilike: `%${trimmedFilterString}%` },
+				});
+			}
+			if (shareTypeIds?.length) {
+				filterArray.push({
+					share_type: { _in: shareTypeIds },
 				});
 			}
 			variables = {
