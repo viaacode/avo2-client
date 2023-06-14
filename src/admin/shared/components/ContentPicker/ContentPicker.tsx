@@ -10,7 +10,7 @@ import {
 } from '@viaa/avo2-components';
 import { get, isNull } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import ReactSelect, { ActionMeta, ValueType } from 'react-select';
+import ReactSelect, { ActionMeta, PropsValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
 import { FileUpload } from '../../../../shared/components';
@@ -18,7 +18,7 @@ import { CustomError } from '../../../../shared/helpers';
 import withUser, { UserProps } from '../../../../shared/hocs/withUser';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { PickerItem, PickerSelectItem, PickerTypeOption } from '../../types';
+import { PickerItem, PickerTypeOption } from '../../types';
 
 import {
 	DEFAULT_ALLOWED_TYPES,
@@ -61,10 +61,10 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	);
 
 	// available options for the item picker.
-	const [itemOptions, setItemOptions] = useState<PickerSelectItem[]>([]);
+	const [itemOptions, setItemOptions] = useState<PickerItem[]>([]);
 
 	// selected option, keep track of whether initial item from `initialValue` has been applied
-	const [selectedItem, setSelectedItem] = useState<ValueType<PickerItem, any>>();
+	const [selectedItem, setSelectedItem] = useState<PropsValue<PickerItem>>();
 	const [hasAppliedInitialItem, setHasAppliedInitialItem] = useState<boolean>(false);
 
 	// apply initial input if INPUT-based type, default to ''
@@ -78,30 +78,26 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 
 	// inflate item picker
 	const fetchPickerOptions = useCallback(
-		async (keyword: string | null): Promise<PickerSelectItem[]> => {
+		async (keyword: string | null): Promise<PickerItem[]> => {
 			try {
 				if (!selectedType || !selectedType.fetch) {
 					return []; // Search query and external link don't have a fetch function
 				}
-				let items: PickerSelectItem[] = await selectedType.fetch(keyword, 20);
+				let items: PickerItem[] = await selectedType.fetch(keyword, 20);
 
 				if (!hasAppliedInitialItem && initialValue) {
 					items = [
 						{
 							label: get(initialValue, 'label', ''),
-							value: {
-								type: get(initialValue, 'type') as ContentPickerType,
-								value: get(initialValue, 'value', ''),
-							},
+							type: get(initialValue, 'type') as ContentPickerType,
+							value: get(initialValue, 'value', ''),
 						},
-						...items.filter(
-							(item: PickerSelectItem) => item.label !== get(initialValue, 'label')
-						),
+						...items.filter((item: PickerItem) => item.label !== initialValue?.label),
 					];
 				}
 
 				setItemOptions(items);
-				if (keyword && keyword.length && get(items[0], 'value.value', null) === keyword) {
+				if (keyword && keyword.length && (items[0]?.value || null) === keyword) {
 					setSelectedItem(items[0] as any);
 				}
 				return items;
@@ -137,7 +133,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	}, [itemOptions, hasAppliedInitialItem, initialValue]);
 
 	// events
-	const onSelectType = async (selected: ValueType<PickerTypeOption, any>) => {
+	const onSelectType = async (selected: PropsValue<PickerTypeOption>) => {
 		if (selectedType !== selected) {
 			const selectedOption = selected as PickerTypeOption<ContentPickerType>;
 			setSelectedType(selectedOption);
@@ -146,7 +142,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 		}
 	};
 
-	const onSelectItem = (selectedItem: ValueType<PickerItem, any>, event?: ActionMeta<any>) => {
+	const onSelectItem = (selectedItem: PropsValue<PickerItem>, event?: ActionMeta<any>) => {
 		// reset `selectedItem` when clearing item picker
 		if (get(event, 'action') === 'clear') {
 			propertyChanged('selectedItem', null);
@@ -186,13 +182,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 
 	const propertyChanged = (
 		prop: 'type' | 'selectedItem' | 'value' | 'target' | 'label',
-		propValue:
-			| ContentPickerType
-			| ValueType<PickerItem, any>
-			| string
-			| number
-			| null
-			| LinkTarget
+		propValue: ContentPickerType | PropsValue<PickerItem> | string | number | null | LinkTarget
 	) => {
 		let newType: ContentPickerType;
 		if (prop === 'type') {

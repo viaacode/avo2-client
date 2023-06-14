@@ -12,7 +12,8 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
@@ -41,13 +42,6 @@ import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import {
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
-	AssignmentFormState,
-	BaseBlockWithMeta,
-} from '../assignment.types';
-import { useAssignmentForm } from '../hooks';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import './AssignmentDetail.scss';
@@ -68,7 +62,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
-	const [assignment, setAssignment] = useAssignmentForm(undefined);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
 		canEditAssignments: false,
 	});
@@ -87,7 +81,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		async (
 			assignmentId: string,
 			user: Avo.User.User | undefined,
-			assignment: Assignment_v2_With_Blocks & Assignment_v2_With_Labels
+			assignment: Avo.Assignment.Assignment
 		): Promise<AssignmentDetailPermissions> => {
 			if (!user || !assignment) {
 				return {};
@@ -142,7 +136,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			setAssigmentLoading(true);
 			setAssigmentError(null);
 
-			let tempAssignment: Assignment_v2_With_Blocks | null = null;
+			let tempAssignment: Avo.Assignment.Assignment | null = null;
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
@@ -180,7 +174,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				return;
 			}
 
-			setAssignment(tempAssignment);
+			setAssignment(tempAssignment as any);
 
 			try {
 				const permissionObj = await getPermissions(id, user, tempAssignment);
@@ -300,7 +294,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 		return (
 			<BlockList
-				blocks={(blocks || []) as BaseBlockWithMeta[]}
+				blocks={(blocks || []) as Avo.Core.BlockItemBase[]}
 				config={{
 					TEXT: {
 						title: {
@@ -327,7 +321,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 						</h3>
 						<Grid>
 							{!!assignment &&
-								renderCommonMetadata(assignment as Assignment_v2_With_Blocks)}
+								renderCommonMetadata(assignment as Avo.Assignment.Assignment)}
 						</Grid>
 						{!!relatedAssignments &&
 							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}
@@ -470,7 +464,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
 						setIsPublishModalOpen(false);
 						if (newAssignment) {
-							setAssignment(newAssignment as Partial<AssignmentFormState>);
+							setAssignment(newAssignment);
 						}
 					}}
 					isOpen={isPublishModalOpen}

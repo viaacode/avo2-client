@@ -1,5 +1,5 @@
 import { UserOverview } from '@meemoo/admin-core-ui';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 import MetaTags from 'react-meta-tags';
 import { compose } from 'redux';

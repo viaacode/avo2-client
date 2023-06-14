@@ -1,12 +1,9 @@
 import { LinkTarget } from '@viaa/avo2-components';
 
 import { CustomError } from '../../../../../shared/helpers';
-import { PickerSelectItem } from '../../../types';
+import { PickerItem } from '../../../types';
 
-export const retrieveAnchors = async (
-	name: string | null,
-	limit = 5
-): Promise<PickerSelectItem[]> => {
+export const retrieveAnchors = async (name: string | null, limit = 5): Promise<PickerItem[]> => {
 	try {
 		const anchorIds: string[] = [];
 		document.querySelectorAll('[data-anchor]').forEach((block) => {
@@ -25,16 +22,13 @@ export const retrieveAnchors = async (
 };
 
 // Convert anchors to react-select options
-const parseAnchors = (anchorIds: string[]): PickerSelectItem[] => {
+const parseAnchors = (anchorIds: string[]): PickerItem[] => {
 	return anchorIds.map(
-		(anchorId): PickerSelectItem => ({
+		(anchorId): PickerItem => ({
+			type: 'ANCHOR_LINK',
+			value: anchorId,
 			label: anchorId,
-			value: {
-				type: 'ANCHOR_LINK',
-				value: anchorId,
-				label: anchorId,
-				target: LinkTarget.Self,
-			},
+			target: LinkTarget.Self,
 		})
 	);
 };

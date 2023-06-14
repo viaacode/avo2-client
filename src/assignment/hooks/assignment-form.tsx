@@ -1,26 +1,56 @@
+import type { Avo, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { ASSIGNMENT_FORM_DEFAULT } from '../assignment.const';
-import { AssignmentFormState } from '../assignment.types';
+
+// Avoid circular references in type while using the react-hook-form library
+export interface AssignmentFields {
+	id: string;
+	title: string;
+	description: string;
+	/**
+	 * @deprecated use lom_learning_resource_type instead
+	 */
+	assignment_type?: Avo.Assignment.Type;
+	lom_learning_resource_type: Avo.Assignment.Type[] | null;
+	answer_url?: string | null;
+	available_at?: string | null; // ISO date string
+	deadline_at?: string | null; // ISO date string
+	owner_profile_id: string;
+	is_deleted: boolean;
+	is_collaborative: boolean;
+	created_at: string; // ISO date string
+	updated_at: string; // ISO date string
+	view_count?: {
+		count: number;
+	};
+	is_public?: boolean;
+	published_at?: string;
+	updated_by_profile_id?: string | null;
+	last_user_edit_at?: string | null;
+	blocks?: Avo.Assignment.Block[];
+	labels?: { assignment_label: Avo.Assignment.Label }[];
+	share_type?: ShareWithColleagueTypeEnum; // Only available when fetching assignments from the assignments_v2_overview table
+}
 
 export type useAssignmentFormState = [
-	AssignmentFormState,
-	Dispatch<SetStateAction<Partial<AssignmentFormState> | undefined>>
+	AssignmentFields,
+	Dispatch<SetStateAction<Partial<AssignmentFields> | undefined>>
 ];
 
 export function useAssignmentForm(
-	initial?: AssignmentFormState,
+	initial?: AssignmentFields,
 	state?: useAssignmentFormState
 ): [
-	Partial<AssignmentFormState> | undefined,
-	Dispatch<SetStateAction<Partial<AssignmentFormState> | undefined>>,
-	Partial<AssignmentFormState> | undefined
+	Partial<AssignmentFields> | undefined,
+	Dispatch<SetStateAction<Partial<AssignmentFields> | undefined>>,
+	Partial<AssignmentFields> | undefined
 ] {
 	// Data
-	const [defaultValues] = useState<Partial<AssignmentFormState> | undefined>(
+	const [defaultValues] = useState<Partial<AssignmentFields> | undefined>(
 		initial || ASSIGNMENT_FORM_DEFAULT()
 	);
-	const [assignment, setAssignment] = useState<Partial<AssignmentFormState> | undefined>(
+	const [assignment, setAssignment] = useState<Partial<AssignmentFields> | undefined>(
 		defaultValues
 	);
 

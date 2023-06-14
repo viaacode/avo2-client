@@ -1,17 +1,17 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { Button, convertToHtml, DefaultProps, Flex, Spacer } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { FC } from 'react';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
-import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionFragmentRichText } from '../../../../collection/components';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 
 import './AssignmentBlockTypeSearch.scss';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
-	block: BaseBlockWithMeta;
+	block: Avo.Core.BlockItemBase;
 	showCollectionButton: boolean;
 	pastDeadline: boolean;
 	onSearchButtonClicked: () => void;
