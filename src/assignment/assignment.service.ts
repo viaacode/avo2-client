@@ -410,12 +410,10 @@ export class AssignmentService {
 				original.blocks || [],
 				update.blocks || []
 			);
-			console.log(update);
 
 			await AssignmentService.deleteAssignmentLomLinks(original.id);
 
 			const loms = update.loms.map((lom) => lom.lom.id);
-			console.log(loms);
 
 			await AssignmentService.insertAssignmentLomLinks(original.id, loms);
 
