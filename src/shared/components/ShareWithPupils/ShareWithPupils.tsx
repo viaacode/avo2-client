@@ -1,11 +1,8 @@
 import { Alert, Button, Flex, IconName, Spacer, TextInput } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { FC } from 'react';
 
-import {
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
-} from '../../../assignment/assignment.types';
 import { APP_PATH } from '../../../constants';
 import { buildLink, copyToClipboard } from '../../helpers';
 import useTranslation from '../../hooks/useTranslation';
@@ -14,7 +11,7 @@ import { ToastService } from '../../services/toast-service';
 import './ShareWithPupils.scss';
 
 export type ShareWithPupilsProps = {
-	assignment?: Assignment_v2_With_Labels & Assignment_v2_With_Blocks;
+	assignment?: Avo.Assignment.Assignment;
 	onDetailLinkClicked?: () => void;
 	onContentLinkClicked?: () => void;
 };
@@ -34,7 +31,9 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 		  })
 		: '';
 	const isAssignmentDetailsComplete =
-		!!assignment?.labels.filter((l) => l.assignment_label.type === 'CLASS')?.length &&
+		!!(assignment?.labels || []).filter(
+			(l: { assignment_label: Avo.Assignment.Label }) => l.assignment_label.type === 'CLASS'
+		)?.length &&
 		// Disabled due to https://meemoo.atlassian.net/browse/AVO-2051
 		// !!assignment?.labels.filter((l) => l.assignment_label.type === 'LABEL')?.length &&
 		!!assignment?.available_at &&

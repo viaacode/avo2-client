@@ -1,6 +1,7 @@
 import { Column, IconName, Spacer } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import { Avo, LomType } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { LomType } from '@viaa/avo2-types';
 import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { compact, map } from 'lodash-es';
@@ -14,13 +15,7 @@ import { Positioned } from '../shared/types';
 
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './assignment.const';
 import { AssignmentService } from './assignment.service';
-import {
-	Assignment_Label_v2,
-	Assignment_v2_With_Blocks,
-	AssignmentFormState,
-	AssignmentLayout,
-	AssignmentRetrieveError,
-} from './assignment.types';
+import { AssignmentLayout, AssignmentRetrieveError } from './assignment.types';
 
 export class AssignmentHelper {
 	public static getContentLayoutOptions(): RadioOption[] {
@@ -39,7 +34,7 @@ export class AssignmentHelper {
 	public static getLabels(
 		assignment: Avo.Assignment.Assignment,
 		type: string
-	): { assignment_label: Assignment_Label_v2 }[] {
+	): { assignment_label: Avo.Assignment.Label }[] {
 		return assignment?.labels?.filter((label) => label.assignment_label.type === type) || [];
 	}
 }
@@ -86,14 +81,14 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 
 export function isUserAssignmentOwner(
 	user: UserSchema,
-	assignment: Partial<AssignmentFormState>
+	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
 	return assignment?.owner_profile_id === user.profile?.id;
 }
 
 export function isUserAssignmentContributor(
 	user: UserSchema,
-	assignment: Partial<AssignmentFormState>
+	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
 	if (assignment.contributors) {
 		return !!assignment.contributors.find(
@@ -148,7 +143,7 @@ export const renderLomFieldsByGroup = (loms: Avo.Lom.LomField[]) => {
 	);
 };
 
-export const renderCommonMetadata = (assignment: Assignment_v2_With_Blocks): ReactNode => {
+export const renderCommonMetadata = (assignment: Avo.Assignment.Assignment): ReactNode => {
 	const { created_at, updated_at, loms } = assignment;
 
 	return (

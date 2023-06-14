@@ -5,7 +5,7 @@ import { PermissionService } from '../../../../../authentication/helpers/permiss
 import { CustomError } from '../../../../../shared/helpers';
 import { TableColumnDataType } from '../../../../../shared/types/table-column-data-type';
 import { UserService } from '../../../../users/user.service';
-import { PickerSelectItem } from '../../../types';
+import { PickerItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
 const shouldFetchUsersInCompany = (user?: Avo.User.User) => {
@@ -21,7 +21,7 @@ export const retrieveProfiles = async (
 	name: string | null,
 	limit = 5,
 	user?: Avo.User.User
-): Promise<PickerSelectItem[]> => {
+): Promise<PickerItem[]> => {
 	try {
 		const where = {
 			...(name
@@ -60,11 +60,11 @@ export const retrieveProfiles = async (
 };
 
 // Convert profiles to react-select options
-const parseProfiles = (profiles: Avo.User.Profile[]): PickerSelectItem[] => {
+const parseProfiles = (profiles: Avo.User.Profile[]): PickerItem[] => {
 	return profiles.map(
-		(profile): PickerSelectItem => ({
+		(profile): PickerItem => ({
+			...parsePickerItem('PROFILE', profile.id),
 			label: `${profile.user.full_name} (${profile.user.mail})`,
-			value: parsePickerItem('PROFILE', profile.id),
 		})
 	);
 };

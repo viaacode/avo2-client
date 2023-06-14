@@ -29,19 +29,14 @@ import {
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
 } from '../../../assignment.const';
 import { AssignmentService } from '../../../assignment.service';
-import {
-	AssignmentResponseInfo,
-	AssignmentType,
-	BaseBlockWithMeta,
-	PupilSearchFilterState,
-} from '../../../assignment.types';
+import { AssignmentType, PupilSearchFilterState } from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
 	assignment: Avo.Assignment.Assignment | null;
-	assignmentResponse: AssignmentResponseInfo | null;
+	assignmentResponse: Avo.Assignment.Response | null;
 	filterState: any;
 	setFilterState: any;
-	appendBlockToPupilCollection: (block: BaseBlockWithMeta) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
+	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
 const AssignmentResponseSearchTab: FunctionComponent<
