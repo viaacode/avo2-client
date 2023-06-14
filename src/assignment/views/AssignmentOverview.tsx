@@ -87,7 +87,11 @@ import {
 import { AssignmentService } from '../assignment.service';
 import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
-import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
+import {
+	deleteAssignment,
+	deleteAssignmentWarning,
+	removeContributorFromAssignment,
+} from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 import './AssignmentOverview.scss';
@@ -131,6 +135,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		null
 	);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
+
+	const isContributor =
+		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
 		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
@@ -379,6 +386,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const handleDeleteModalClose = () => {
 		setDeleteAssignmentModalOpen(false);
 		setMarkedAssignment(null);
+	};
+
+	const handleDeleteConfirm = async () => {
+		if (isContributor) {
+			await removeContributorFromAssignment(markedAssignment?.id, user.uid, user.uid);
+		} else {
+			await deleteAssignment(markedAssignment?.id, user);
+		}
+
+		handleDeleteModalClose();
+
+		await updateAndReset();
+		await fetchAssignments();
 	};
 
 	const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
@@ -935,14 +955,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					body={deleteAssignmentWarning(markedAssignment || undefined)}
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
-					confirmCallback={async () => {
-						await deleteAssignment(markedAssignment?.id, user);
-
-						handleDeleteModalClose();
-
-						await updateAndReset();
-						await fetchAssignments();
-					}}
+					confirmCallback={handleDeleteConfirm}
 				/>
 			</>
 		);

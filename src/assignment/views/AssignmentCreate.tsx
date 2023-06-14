@@ -36,12 +36,15 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
-
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
 import { AssignmentFields } from '../hooks/assignment-form';
 
-const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
+const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
+	user,
+	history,
+	location,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Data
@@ -307,6 +310,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 							duplicate={{ disabled: true }}
 							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
 							remove={{ button: { disabled: true } }}
+							route={location.pathname}
 						/>
 					}
 					tabs={renderTabs}

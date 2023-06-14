@@ -65,6 +65,7 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
+import { AssignmentFields } from '../hooks/assignment-form';
 import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
@@ -72,7 +73,6 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { AssignmentFields } from '../hooks/assignment-form';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -567,6 +567,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								},
 							}}
 							refetch={async () => await fetchAssignment()}
+							route={location.pathname}
 						/>
 					}
 					tabs={renderTabs}

@@ -1,7 +1,10 @@
-import type { Avo } from '@viaa/avo2-types';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { type Avo, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { isNil } from 'lodash';
+import { stringifyUrl } from 'query-string';
 import { ReactNode } from 'react';
 
+import { CustomError, getEnv } from '../../shared/helpers';
 import { tHtml } from '../../shared/helpers/translate';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -48,6 +51,20 @@ export async function deleteAssignment(
 }
 
 export function deleteAssignmentWarning(assignment?: Avo.Assignment.Assignment): ReactNode {
+	const isSharedWithOthers =
+		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
+	const isContributor = assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+
+	if (isSharedWithOthers) {
+		return tHtml('assignment/views/assignment-overview___delete-shared-assignment', {
+			count: assignment?.contributors?.length,
+		});
+	}
+
+	if (isContributor) {
+		return tHtml('assignment/views/assignment-overview___delete-contributor-assignment');
+	}
+
 	if (assignment?.assignment_type?.includes(AssignmentType.BOUW)) {
 		return tHtml(
 			'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
@@ -63,4 +80,28 @@ export function deleteAssignmentWarning(assignment?: Avo.Assignment.Assignment):
 	return tHtml(
 		'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 	);
+}
+
+export async function removeContributorFromAssignment(
+	assignmentId: string,
+	contributorId: string,
+	profileId: string
+): Promise<void> {
+	try {
+		await fetchWithLogoutJson(
+			stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/delete-contributor`,
+				query: {
+					contributorId,
+					profileId,
+				},
+			}),
+			{ method: 'DELETE' }
+		);
+	} catch (err) {
+		throw new CustomError('Failed to remove contributor from assignment', err, {
+			assignmentId,
+			contributorId,
+		});
+	}
 }
