@@ -49245,10 +49245,11 @@ export type GetBookmarkStatusesQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   itemUuids: Array<Scalars['uuid']> | Scalars['uuid'];
   collectionUuids: Array<Scalars['uuid']> | Scalars['uuid'];
+  assignmentUuids: Array<Scalars['uuid']> | Scalars['uuid'];
 }>;
 
 
-export type GetBookmarkStatusesQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any }>, app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any }> };
+export type GetBookmarkStatusesQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any }>, app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', assignment_id: any }> };
 
 export type GetBookmarksForUserQueryVariables = Exact<{
   profileId: Scalars['uuid'];
@@ -53737,7 +53738,7 @@ export const useGetAssignmentBookmarkViewCountsQuery = <
       options
     );
 export const GetBookmarkStatusesDocument = `
-    query getBookmarkStatuses($profileId: uuid!, $itemUuids: [uuid!]!, $collectionUuids: [uuid!]!) {
+    query getBookmarkStatuses($profileId: uuid!, $itemUuids: [uuid!]!, $collectionUuids: [uuid!]!, $assignmentUuids: [uuid!]!) {
   app_collection_bookmarks(
     where: {profile_id: {_eq: $profileId}, collection_uuid: {_in: $collectionUuids}}
   ) {
@@ -53747,6 +53748,11 @@ export const GetBookmarkStatusesDocument = `
     where: {profile_id: {_eq: $profileId}, item_id: {_in: $itemUuids}}
   ) {
     item_id
+  }
+  app_assignments_v2_bookmarks(
+    where: {profile_id: {_eq: $profileId, _in: $assignmentUuids}}
+  ) {
+    assignment_id
   }
 }
     `;
