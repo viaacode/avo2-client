@@ -524,26 +524,28 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 
 		const sharedWithNames = assignment.contributors.map((contributor) => {
+			const fullName = contributor.profile?.usersByuserId?.full_name;
+			const orgName = contributor.profile?.organisation?.name;
 			if (contributor.profile?.organisation?.name) {
-				return (
-					contributor.profile?.usersByuserId?.full_name +
-					' ' +
-					'(' +
-					contributor.profile?.organisation?.name +
-					')' +
-					' '
-				);
+				return `${fullName} (${orgName}) `;
 			} else {
-				return contributor.profile?.usersByuserId?.full_name + ' ';
+				return `${fullName} `;
 			}
 		});
 
 		const shareTypeTitle =
-			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
-				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
-				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
-				? tText('assignment/views/assignment-overview___gedeeld-met-anderen')
-				: tText('assignment/views/assignment-overview___mijn-opdracht');
+			assignment.share_type &&
+			{
+				[AssignmentShareType.GEDEELD_MET_MIJ]: tText(
+					'assignment/views/assignment-overview___gedeeld-met-mij'
+				),
+				[AssignmentShareType.GEDEELD_MET_ANDERE]: tText(
+					'assignment/views/assignment-overview___gedeeld-met-anderen'
+				),
+				[AssignmentShareType.NIET_GEDEELD]: tText(
+					'assignment/views/assignment-overview___mijn-opdracht'
+				),
+			}[assignment.share_type];
 
 		const shareTypeText =
 			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
@@ -638,7 +640,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return (
 					<Tooltip position="top">
 						<TooltipTrigger>
-							<div className="c-assignment-overview__shared" title={shareTypeTitle}>
+							<div
+								className="c-assignment-overview__shared"
+								title={shareTypeTitle || ''}
+							>
 								<Icon name={shareTypeIcon} />
 							</div>
 						</TooltipTrigger>
@@ -652,26 +657,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const getLabelOptions = (labelType: Avo.Assignment.LabelType): CheckboxOption[] => {
-		if (labelType === 'SHARE_TYPE') {
-			return compact([
-				{
-					label: tText('assignment/views/assignment-overview___gedeeld-met-mij'),
-					id: AssignmentShareType.GEDEELD_MET_MIJ,
-					checked: [...(query.selectedShareTypeLabelIds || [])].includes(
-						AssignmentShareType.GEDEELD_MET_MIJ
-					),
-				},
-				{
-					// add GEDEELD MET ANDEREN to this option
-					label: tText('assignment/views/assignment-overview___mijn-opdrachten'),
-					id: AssignmentShareType.NIET_GEDEELD,
-					checked: [...(query.selectedShareTypeLabelIds || [])].includes(
-						AssignmentShareType.NIET_GEDEELD
-					),
-				},
-			]);
-		}
-
 		return compact(
 			allAssignmentLabels
 				.filter((labelObj: Assignment_Label_v2) => labelObj.type === labelType)
@@ -689,6 +674,25 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					};
 				})
 		);
+	};
+
+	const getShareTypeLabels = (): CheckboxOption[] => {
+		return compact([
+			{
+				label: tText('assignment/views/assignment-overview___gedeeld-met-mij'),
+				id: AssignmentShareType.GEDEELD_MET_MIJ,
+				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
+					AssignmentShareType.GEDEELD_MET_MIJ
+				),
+			},
+			{
+				label: tText('assignment/views/assignment-overview___mijn-opdrachten'),
+				id: AssignmentShareType.NIET_GEDEELD,
+				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
+					AssignmentShareType.NIET_GEDEELD
+				),
+			},
+		]);
 	};
 
 	const renderHeader = () => {
@@ -763,7 +767,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 											'assignment/views/assignment-overview___soort'
 										)}
 										id="Soort"
-										options={getLabelOptions('SHARE_TYPE')}
+										options={getShareTypeLabels()}
 										onChange={(selectedLabels) =>
 											handleQueryChanged(
 												selectedLabels,

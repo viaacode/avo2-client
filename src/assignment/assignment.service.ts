@@ -176,7 +176,7 @@ export class AssignmentService {
 					labels: { assignment_label_id: { _in: classIds } },
 				});
 			}
-			if (shareTypeIds && shareTypeIds.length) {
+			if (shareTypeIds?.length) {
 				filterArray.push({
 					share_type: { _in: shareTypeIds },
 				});
