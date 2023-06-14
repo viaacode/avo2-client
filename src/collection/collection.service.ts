@@ -1295,7 +1295,7 @@ export class CollectionService {
 		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined,
-		shareTypeIds?: string[] | undefined
+		shareTypeIds: string[] | undefined
 	): Promise<Collection[]> {
 		let variables: GetCollectionsByOwnerQueryVariables | null = null;
 		try {
