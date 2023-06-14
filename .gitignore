@@ -263,3 +263,4 @@ public/sitemap.xml
 scripts/client-whitelist.json
 .graphqlconfig
 schema.graphql
+/tracing_output_folder

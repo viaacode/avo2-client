@@ -1,5 +1,5 @@
 import { Column, Container, Form, Grid, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { map } from 'lodash-es';
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
@@ -7,16 +7,11 @@ import { UseFormSetValue } from 'react-hook-form';
 import { ShortDescriptionField } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import useTranslation from '../../shared/hooks/useTranslation';
-import {
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
-	AssignmentFormState,
-} from '../assignment.types';
 
 type AssignmentMetaDataFormEditableProps = {
-	assignment: Assignment_v2_With_Labels & Assignment_v2_With_Blocks;
-	setAssignment: Dispatch<SetStateAction<Assignment_v2_With_Labels & Assignment_v2_With_Blocks>>;
-	setValue: UseFormSetValue<AssignmentFormState>;
+	assignment: Avo.Assignment.Assignment;
+	setAssignment: Dispatch<SetStateAction<Avo.Assignment.Assignment>>;
+	setValue: UseFormSetValue<Avo.Assignment.Assignment>;
 };
 
 const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = ({
@@ -34,7 +29,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 			lom,
 		}));
 
-		setValue('loms', mappedLoms, {
+		(setValue as any)('loms', mappedLoms, {
 			shouldDirty: true,
 			shouldTouch: true,
 		});
@@ -42,7 +37,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 		setAssignment((prev) => ({
 			...prev,
 			loms: mappedLoms,
-			blocks: (prev as Assignment_v2_With_Blocks)?.blocks || [],
+			blocks: (prev as Avo.Assignment.Assignment)?.blocks || [],
 		}));
 	};
 
@@ -67,7 +62,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 									)}
 									onChange={(value: string) => {
 										{
-											setValue('description', value, {
+											(setValue as any)('description', value, {
 												shouldDirty: true,
 												shouldTouch: true,
 											});
@@ -75,7 +70,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 												...prev,
 												description: value,
 												blocks:
-													(prev as Assignment_v2_With_Blocks)?.blocks ||
+													(prev as Avo.Assignment.Assignment)?.blocks ||
 													[],
 											}));
 										}

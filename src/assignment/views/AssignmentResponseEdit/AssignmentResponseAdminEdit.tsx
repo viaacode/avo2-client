@@ -1,5 +1,5 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
 import React, {
 	Dispatch,
@@ -22,12 +22,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
-import {
-	Assignment_v2_With_Labels,
-	Assignment_v2_With_Responses,
-	AssignmentResponseInfo,
-	AssignmentRetrieveError,
-} from '../../assignment.types';
+import { AssignmentRetrieveError } from '../../assignment.types';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 
@@ -44,12 +39,10 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 	// Data
 	const assignmentId = match.params.assignmentId;
 	const assignmentResponseId = match.params.responseId;
-	const [assignment, setAssignment] = useState<
-		(Assignment_v2_With_Labels & Assignment_v2_With_Responses) | null
-	>(null);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
 	const [assignmentError, setAssignmentError] = useState<any | null>(null);
-	const [assignmentResponse, setAssignmentResponse] = useState<AssignmentResponseInfo | null>(
+	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response | null>(
 		null
 	);
 
@@ -206,7 +199,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 				setAssignmentResponse={
 					setAssignmentResponse as Dispatch<
 						SetStateAction<
-							| (Omit<AssignmentResponseInfo, 'assignment' | 'id'> & {
+							| (Omit<Avo.Assignment.Response, 'assignment' | 'id'> & {
 									id: string | undefined;
 							  })
 							| null

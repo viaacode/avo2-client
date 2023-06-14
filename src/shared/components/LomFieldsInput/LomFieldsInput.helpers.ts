@@ -1,6 +1,6 @@
 import { SelectOptionSchema } from '@viaa/avo2-components/dist/esm/components/Select/Select';
 import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { capitalize, compact, isNil } from 'lodash-es';
 
 export const mapLomFieldsToOptions = (lomFields: Avo.Lom.LomField[]): SelectOptionSchema[] => {

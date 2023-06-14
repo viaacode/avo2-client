@@ -20,7 +20,7 @@ query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) 
 				organisation {
 					name
 				}
-				usersByuserId {
+				user: usersByuserId {
 					first_name
 					full_name
 					last_name

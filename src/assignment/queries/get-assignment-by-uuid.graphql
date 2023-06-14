@@ -81,7 +81,7 @@ query getAssignmentByUuid($id: uuid!) {
 			profile {
 				avatar
 				user_id
-				usersByuserId {
+				user: usersByuserId {
 					last_name
 					first_name
 					mail

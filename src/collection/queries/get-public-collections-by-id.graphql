@@ -16,7 +16,7 @@ query getPublicCollectionsById($id: uuid!, $typeId: Int!, $limit: Int!) {
 				value
 			}
 			profile {
-				usersByuserId {
+				user: usersByuserId {
 					first_name
 					full_name
 					last_name

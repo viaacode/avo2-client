@@ -1,15 +1,15 @@
 import { DefaultProps, Form, FormGroup } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { Assignment_v2_With_Labels } from '../assignment.types';
 
 import './AssignmentDetailsForm.scss';
 
 export interface AssignmentDetailsFormReadonlyProps {
-	assignment: Assignment_v2_With_Labels;
+	assignment: Avo.Assignment.Assignment;
 }
 
 const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & DefaultProps> = ({
@@ -24,18 +24,30 @@ const AssignmentDetailsFormReadonly: FC<AssignmentDetailsFormReadonlyProps & Def
 			<Form>
 				<FormGroup label={tText('assignment/assignment___klas')}>
 					<p>
-						{assignment.labels
-							.filter((item) => item.assignment_label.type === 'CLASS')
-							.map((item) => item.assignment_label.label)
+						{(assignment.labels || [])
+							.filter(
+								(item: { assignment_label: Avo.Assignment.Label }) =>
+									item.assignment_label.type === 'CLASS'
+							)
+							.map(
+								(item: { assignment_label: Avo.Assignment.Label }) =>
+									item.assignment_label.label
+							)
 							.join(', ') || '-'}
 					</p>
 				</FormGroup>
 
 				<FormGroup label={tText('assignment/assignment___label')}>
 					<p>
-						{assignment.labels
-							.filter((item) => item.assignment_label.type === 'LABEL')
-							.map((item) => item.assignment_label.label)
+						{(assignment.labels || [])
+							.filter(
+								(item: { assignment_label: Avo.Assignment.Label }) =>
+									item.assignment_label.type === 'LABEL'
+							)
+							.map(
+								(item: { assignment_label: Avo.Assignment.Label }) =>
+									item.assignment_label.label
+							)
 							.join(', ') || '-'}
 					</p>
 				</FormGroup>

@@ -2,7 +2,6 @@ import { DefaultProps, IconName } from '@viaa/avo2-components';
 import classNames from 'classnames';
 import React, { FC, useMemo } from 'react';
 
-import { AssignmentBlock, BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import CollectionFragmentFlowPlayer, {
 	CollectionFragmentFlowPlayerProps,
@@ -17,10 +16,12 @@ import {
 } from '../../BlockItemMetadata/BlockItemMetadata';
 import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
 import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';
+
 import './CollectionFragmentTypeItem.scss';
+import type { Avo } from '@viaa/avo2-types';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
-	block: BaseBlockWithMeta;
+	block: Avo.Core.BlockItemBase;
 	flowPlayer?: CollectionFragmentFlowPlayerProps;
 	meta?: Omit<BlockItemMetadataProps, 'block'>; // TODO @Ian cleanup configs and having to pass block multiple times
 	title?: CollectionFragmentTitleProps;
@@ -39,7 +40,7 @@ const CollectionFragmentTypeItem: FC<CollectionFragmentTypeItemProps> = ({
 
 	const custom = block.use_custom_fields && block.custom_description;
 	const original =
-		(block as AssignmentBlock).original_description || block.item_meta?.description;
+		(block as Avo.Assignment.Block).original_description || block.item_meta?.description;
 
 	const customDescription = useMemo(
 		() => (
