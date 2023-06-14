@@ -11,6 +11,7 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, {
 	Dispatch,
@@ -47,13 +48,8 @@ import {
 import { setPositionToIndex } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
-	Assignment_Response_v2,
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Responses,
 	AssignmentResponseFormState,
-	AssignmentResponseInfo,
 	AssignmentType,
-	BaseBlockWithMeta,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../assignment.types';
@@ -71,18 +67,13 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { Avo } from '@viaa/avo2-types';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment;
-	assignmentResponse:
-		| (Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined })
-		| null;
-	setAssignmentResponse: Dispatch<
-		SetStateAction<
-			(Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined }) | null
-		>
-	>;
+	assignmentResponse: Omit<Avo.Assignment.Response, 'assignment'> | null;
+	setAssignmentResponse: (
+		newResponse: Omit<Avo.Assignment.Response, 'assignment'> | null
+	) => void;
 	showBackButton: boolean;
 	isPreview?: boolean;
 	onAssignmentChanged: () => Promise<void>;
@@ -103,7 +94,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	// Data
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] = useState<Omit<
-		AssignmentResponseInfo,
+		Avo.Assignment.Response,
 		'assignment'
 	> | null>(assignmentResponse);
 
@@ -211,7 +202,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			}
 
 			const updated = await AssignmentService.updateAssignmentResponse(
-				assignmentResponseOriginal,
+				assignmentResponseOriginal as Omit<Avo.Assignment.Response, 'assignment'>,
 				{
 					collection_title: formState.collection_title || '',
 					pupil_collection_blocks: cleanupTitleAndDescriptions(
@@ -261,7 +252,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		}
 	};
 
-	const appendBlockToPupilCollection = (newBlock: BaseBlockWithMeta) => {
+	const appendBlockToPupilCollection = (newBlock: Avo.Core.BlockItemBase) => {
 		const newBlocks = setPositionToIndex([
 			...(assignmentResponse?.pupil_collection_blocks || []),
 			newBlock,
@@ -269,7 +260,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 		setAssignmentResponse({
 			...assignmentResponse,
 			pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
-		} as Omit<AssignmentResponseInfo, 'assignment' | 'id'> & { id: string | undefined });
+		} as Omit<Avo.Assignment.Response, 'assignment'>);
 		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
 			shouldDirty: true,
 			shouldTouch: true,
@@ -317,7 +308,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				return (
 					<AssignmentResponseSearchTab
 						assignment={assignment}
-						assignmentResponse={assignmentResponse as AssignmentResponseInfo}
+						assignmentResponse={assignmentResponse as Avo.Assignment.Response}
 						filterState={filterState}
 						setFilterState={(
 							newFilterState: FilterState,
@@ -352,10 +343,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 				return (
 					<AssignmentResponsePupilCollectionTab
 						pastDeadline={pastDeadline}
-						assignmentResponse={assignmentResponse as AssignmentResponseInfo}
+						assignmentResponse={assignmentResponse as Avo.Assignment.Response}
 						setAssignmentResponse={
 							setAssignmentResponse as Dispatch<
-								SetStateAction<Assignment_Response_v2>
+								SetStateAction<Avo.Assignment.Response>
 							>
 						}
 						setValue={setValue}
@@ -371,7 +362,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 			case ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT:
 				return (
 					<AssignmentResponseAssignmentTab
-						blocks={(assignment as unknown as Assignment_v2_With_Blocks)?.blocks || []} // TODO figure out if blocks are available on this assignment, typings suggest they are not
+						blocks={(assignment as unknown as Avo.Assignment.Assignment)?.blocks || []} // TODO figure out if blocks are available on this assignment, typings suggest they are not
 						pastDeadline={pastDeadline}
 						setTab={setTab}
 						buildSearchLink={buildAssignmentSearchLink(setFilterState)}

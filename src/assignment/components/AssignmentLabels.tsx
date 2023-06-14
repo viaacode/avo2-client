@@ -17,16 +17,15 @@ import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { Assignment_Label_v2 } from '../assignment.types';
 
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
 import './AssignmentLabels.scss';
 
 export type AssignmentLabelsProps = {
-	labels: { assignment_label: Assignment_Label_v2 }[];
+	labels: { assignment_label: Avo.Assignment.Label }[];
 	id?: string;
-	onChange: (changed: { assignment_label: Assignment_Label_v2 }[]) => void;
+	onChange: (changed: { assignment_label: Avo.Assignment.Label }[]) => void;
 	commonUser: Avo.User.CommonUser;
 	dictionary?: {
 		placeholder: string;
@@ -50,7 +49,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		...(props.dictionary ? props.dictionary : {}),
 	};
 
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [isManageLabelsModalOpen, setIsManageLabelsModalOpen] = useState<boolean>(false);
 
 	const fetchAssignmentLabels = useCallback(async () => {
@@ -65,7 +64,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		fetchAssignmentLabels();
 	}, [fetchAssignmentLabels]);
 
-	const getAssignmentLabelOptions = (labels: Assignment_Label_v2[]): TagOption[] => {
+	const getAssignmentLabelOptions = (labels: Avo.Assignment.Label[]): TagOption[] => {
 		return labels.map((labelObj) => ({
 			label: labelObj.label || '',
 			id: labelObj.id,
@@ -80,7 +79,7 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 		setIsManageLabelsModalOpen(false);
 	};
 
-	const getColorOptions = (labels: Assignment_Label_v2[]): ColorOption[] => {
+	const getColorOptions = (labels: Avo.Assignment.Label[]): ColorOption[] => {
 		return labels
 			.filter((item) => !type || item.type === type)
 			.map((labelObj) => ({

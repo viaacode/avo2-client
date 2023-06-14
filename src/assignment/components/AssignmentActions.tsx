@@ -6,17 +6,16 @@ import {
 	DropdownContent,
 	IconName,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ShareDropdown } from '../../shared/components';
+import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
 import {
 	ContributorInfo,
 	ShareRightsType,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
@@ -71,7 +70,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			if (share && refetch) {
 				if (newRights === 'OWNER') {
 					await AssignmentService.transferAssignmentOwnerShip(
-						share.assignment?.id,
+						share.assignment?.id as string,
 						contributor.contributorId as string
 					);
 
@@ -84,7 +83,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 					);
 				} else {
 					await AssignmentService.editContributorRights(
-						share.assignment?.id,
+						share.assignment?.id as string,
 						contributor.contributorId as string,
 						newRights
 					);
@@ -109,7 +108,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const onAddNewContributor = async (info: Partial<ContributorInfo>) => {
 		try {
-			await AssignmentService.addContributor(share?.assignment?.id, info);
+			await AssignmentService.addContributor(share?.assignment?.id as string, info);
 
 			await fetchContributors();
 
@@ -130,7 +129,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	const onDeleteContributor = async (info: ContributorInfo) => {
 		try {
 			await AssignmentService.deleteContributor(
-				share?.assignment?.id,
+				share?.assignment?.id as string,
 				info.contributorId,
 				info.profileId
 			);

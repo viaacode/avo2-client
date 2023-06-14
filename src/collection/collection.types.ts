@@ -1,6 +1,5 @@
 import type { Avo } from '@viaa/avo2-types';
 
-import { BaseBlockWithMeta } from '../assignment/assignment.types';
 import {
 	GetCollectionMarcomEntriesQuery,
 	GetPublicCollectionsByIdQuery,
@@ -93,5 +92,5 @@ export enum CollectionCreateUpdateTab {
 export type MarcomEntry = GetCollectionMarcomEntriesQuery['app_collection_marcom_log'][0];
 
 export interface BlockItemComponent {
-	block?: BaseBlockWithMeta;
+	block?: Avo.Core.BlockItemBase;
 }

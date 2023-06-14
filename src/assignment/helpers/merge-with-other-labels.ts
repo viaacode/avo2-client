@@ -1,9 +1,7 @@
 import type { Avo } from '@viaa/avo2-types';
 
-import { Assignment_Label_v2 } from '../assignment.types';
-
 const addTypeToLabel = (
-	item: { assignment_label: Assignment_Label_v2 },
+	item: { assignment_label: Avo.Assignment.Label },
 	type: Avo.Assignment.LabelType
 ) => ({
 	...item,
@@ -14,10 +12,10 @@ const addTypeToLabel = (
 });
 
 export const mergeWithOtherLabels = (
-	prev: { assignment_label: Assignment_Label_v2 }[],
-	changed: { assignment_label: Assignment_Label_v2 }[],
+	prev: { assignment_label: Avo.Assignment.Label }[],
+	changed: { assignment_label: Avo.Assignment.Label }[],
 	type: Avo.Assignment.LabelType
-): { assignment_label: Assignment_Label_v2 }[] => [
+): { assignment_label: Avo.Assignment.Label }[] => [
 	...prev.filter((item) => item.assignment_label.type !== type),
 	...changed.map((item) => addTypeToLabel(item, type)),
 ];

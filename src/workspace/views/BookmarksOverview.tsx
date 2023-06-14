@@ -176,6 +176,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				item: APP_PATH.ITEM_DETAIL.route,
 				collection: APP_PATH.COLLECTION_DETAIL.route,
 				bundle: APP_PATH.BUNDLE_DETAIL.route,
+				assignment: APP_PATH.ASSIGNMENT_DETAIL.route,
 			}[contentType],
 			{
 				id: contentLinkId,

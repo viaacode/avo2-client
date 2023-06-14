@@ -1,8 +1,8 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
-import { AssignmentBlock } from '../../assignment/assignment.types';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
 import { CollectionBlockType } from '../collection.const';
@@ -19,7 +19,7 @@ const CollectionFragmentTitle: FC<CollectionFragmentTitleProps> = ({ block, canC
 		<BlockHeading type="h2" className="c-collection-fragment-title">
 			{block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
 				? block.custom_title || block?.item_meta?.title
-				: (block as AssignmentBlock).original_title || block?.item_meta?.title}
+				: (block as Avo.Assignment.Block).original_title || block?.item_meta?.title}
 		</BlockHeading>
 	);
 

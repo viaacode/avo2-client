@@ -1,9 +1,7 @@
 import { ContentPickerType } from '@viaa/avo2-components';
-import { get } from 'lodash';
-// eslint-disable-next-line import/namespace
-import { ValueType } from 'react-select/src/types';
+import { PropsValue } from 'react-select/dist/react-select.cjs';
 
-import { PickerItem, PickerItemControls, PickerSelectItem, PickerTypeOption } from '../../types';
+import { PickerItem, PickerItemControls, PickerTypeOption } from '../../types';
 
 export const filterTypes = (
 	types: PickerTypeOption<ContentPickerType>[],
@@ -29,11 +27,10 @@ export const setInitialInput = (
 };
 
 export const setInitialItem = (
-	options: PickerSelectItem[],
+	options: PickerItem[],
 	initialValue?: PickerItem
-): ValueType<PickerItem, any> => {
+): PropsValue<PickerItem> | undefined => {
 	return options.find(
-		(option: PickerSelectItem) =>
-			option.value.value === get(initialValue, 'value', 'EMPTY_SELECTION')
-	) as ValueType<PickerItem, any>;
+		(option: PickerItem) => option.value === (initialValue?.value || 'EMPTY_SELECTION')
+	) as PropsValue<PickerItem> | undefined;
 };

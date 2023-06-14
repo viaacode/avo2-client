@@ -1,6 +1,7 @@
+import type { Avo } from '@viaa/avo2-types';
+
 import {
 	AssignmentBlockType,
-	BaseBlockWithMeta,
 	EditableAssignmentBlock,
 	EditablePupilCollectionFragment,
 } from '../assignment.types';
@@ -24,7 +25,7 @@ import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBloc
  */
 export function cleanupTitleAndDescriptions(
 	blocks: (EditablePupilCollectionFragment | EditableAssignmentBlock)[] = []
-): BaseBlockWithMeta[] {
+): Avo.Core.BlockItemBase[] {
 	return blocks.map((block) => {
 		if (block.type === AssignmentBlockType.ITEM) {
 			switch (block.editMode) {
