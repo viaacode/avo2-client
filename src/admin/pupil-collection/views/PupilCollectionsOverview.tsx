@@ -14,7 +14,6 @@ import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
-import { Assignment_Response_v2 } from '../../../assignment/assignment.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
@@ -46,9 +45,9 @@ import { PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [pupilCollections, setPupilCollections] = useState<
-		Omit<Assignment_Response_v2, 'pupil_collection_blocks'>[] | null
-	>(null);
+	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response[] | null>(
+		null
+	);
 	const [pupilCollectionsCount, setPupilCollectionsCount] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<PupilCollectionsOverviewTableState>>({
@@ -290,7 +289,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 	};
 
 	const renderTableCell = (
-		pupilCollection: Partial<Assignment_Response_v2>,
+		pupilCollection: Partial<Avo.Assignment.Response>,
 		columnId: PupilCollectionOverviewTableColumns
 	) => {
 		const { id, created_at, updated_at, assignment_id, assignment } = pupilCollection;
@@ -387,7 +386,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					columns={columns}
 					data={pupilCollections}
 					dataCount={pupilCollectionsCount}
-					renderCell={(rowData: Partial<Assignment_Response_v2>, columnId: string) =>
+					renderCell={(rowData: Partial<Avo.Assignment.Response>, columnId: string) =>
 						renderTableCell(rowData, columnId as PupilCollectionOverviewTableColumns)
 					}
 					searchTextPlaceholder={tText(

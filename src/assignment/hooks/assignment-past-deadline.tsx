@@ -1,7 +1,6 @@
+import type { Avo } from '@viaa/avo2-types';
 import { isPast } from 'date-fns/esm';
 import { useMemo } from 'react';
-
-import { Avo } from '@viaa/avo2-types';
 
 export function useAssignmentPastDeadline(assignment: Avo.Assignment.Assignment | null): boolean {
 	return useMemo(

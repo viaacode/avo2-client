@@ -1,22 +1,19 @@
+import type { Avo } from '@viaa/avo2-types';
 import React, { ReactNode } from 'react';
 
 import { FilterState } from '../../search/search.types';
-import {
-	AssignmentBlockType,
-	BaseBlockWithMeta,
-	EditableAssignmentBlock,
-} from '../assignment.types';
+import { AssignmentBlockType, EditableAssignmentBlock } from '../assignment.types';
 import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
 import { AssignmentBlockEditItem } from '../components/blocks/AssignmentBlockEditItem';
 import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockEditSearch';
 import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText';
 
 export function useEditBlocks(
-	setBlock: (updatedBlock: BaseBlockWithMeta) => void,
+	setBlock: (updatedBlock: Avo.Core.BlockItemBase) => void,
 	buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string,
 	AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[]
-): (block: BaseBlockWithMeta) => ReactNode | null {
-	return function useEditBlocks(block: BaseBlockWithMeta) {
+): (block: Avo.Core.BlockItemBase) => ReactNode | null {
+	return function useEditBlocks(block: Avo.Core.BlockItemBase) {
 		switch (block.type) {
 			case AssignmentBlockType.TEXT:
 				return (

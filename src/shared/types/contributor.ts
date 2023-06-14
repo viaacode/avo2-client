@@ -11,7 +11,7 @@ export interface Contributor {
 	profile: {
 		id: string;
 		avatar: string;
-		usersByuserId: {
+		user: {
 			last_name: string;
 			first_name: string;
 			mail: string;

@@ -10,14 +10,13 @@ import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	AssignmentColumn,
-	AssignmentFormState,
 	AssignmentOverviewTableColumns,
 	AssignmentResponseColumn,
 	AssignmentResponseFormState,
 	AssignmentResponseTableColumns,
 	AssignmentType,
-	BaseBlockWithMeta,
 } from './assignment.types';
+import { AssignmentFields } from './hooks/assignment-form';
 
 export const ITEMS_PER_PAGE = 20;
 
@@ -170,7 +169,7 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 };
 
 /// Zoek & bouw
-export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<AssignmentFormState> => {
+export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<Avo.Assignment.Assignment> => {
 	return object({
 		id: string().optional(),
 		title: string().required(tText('assignment/assignment___titel-is-verplicht')),
@@ -202,7 +201,7 @@ export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<AssignmentFor
 
 export const PUPIL_COLLECTION_FORM_SCHEMA = (
 	tText: TFunction
-): SchemaOf<AssignmentResponseFormState> => {
+): SchemaOf<Partial<AssignmentResponseFormState>> => {
 	return object({
 		id: string().optional(),
 		collection_title: string().required(tText('assignment/assignment___titel-is-verplicht')),
@@ -210,7 +209,7 @@ export const PUPIL_COLLECTION_FORM_SCHEMA = (
 	});
 };
 
-export const ASSIGNMENT_FORM_DEFAULT = (): Partial<AssignmentFormState> => ({
+export const ASSIGNMENT_FORM_DEFAULT = (): Partial<AssignmentFields> => ({
 	id: undefined,
 	title: tText('assignment/assignment___titel-opdracht'),
 	labels: [],
@@ -309,6 +308,6 @@ export const ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH: SearchOrderProperty[] = [
 
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 
-export const isNewAssignmentBlock = (item: Pick<BaseBlockWithMeta, 'id'>): boolean => {
+export const isNewAssignmentBlock = (item: Pick<Avo.Core.BlockItemBase, 'id'>): boolean => {
 	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
 };

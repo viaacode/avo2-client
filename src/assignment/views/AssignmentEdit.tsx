@@ -10,7 +10,7 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -45,14 +45,6 @@ import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { isUserAssignmentContributor, isUserAssignmentOwner } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import {
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
-	Assignment_v2_With_Responses,
-	AssignmentBlock,
-	AssignmentFormState,
-	BaseBlockWithMeta,
-} from '../assignment.types';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
@@ -76,9 +68,11 @@ import {
 import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
+import AssignmentResponses from './AssignmentResponses';
+
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import AssignmentResponses from './AssignmentResponses';
+import { AssignmentFields } from '../hooks/assignment-form';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -112,14 +106,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		reset: resetForm,
 		setValue,
 		trigger,
-	} = useForm<AssignmentFormState>({
-		defaultValues: useMemo(() => original || undefined, [original]),
+	} = useForm<AssignmentFields>({
+		defaultValues: useMemo(() => (original as AssignmentFields) || undefined, [original]),
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
 	});
 
-	const updateBlocksInAssignmentState = (newBlocks: BaseBlockWithMeta[]) => {
-		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
-		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
+	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks as Avo.Assignment.Block[] }));
+		(setValue as any)('blocks', newBlocks as Avo.Assignment.Block[], { shouldDirty: true });
 	};
 	const setBlock = useAssignmentBlockChangeHandler(
 		assignment?.blocks || [],
@@ -217,9 +211,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
 
-			setOriginal(tempAssignment);
-			setAssignment(tempAssignment);
-			setAssignmentHasResponses(tempAssignment.responses.length > 0);
+			setOriginal(tempAssignment as AssignmentFields);
+			setAssignment(tempAssignment as any);
+			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
 			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
 			setAssignmentError({
@@ -279,9 +273,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				{
 					...original,
 					...assignment,
+					id: (original.id || assignment?.id) as string | undefined,
 					blocks: cleanupTitleAndDescriptions(
 						assignment?.blocks || []
-					) as AssignmentBlock[],
+					) as Avo.Assignment.Block[],
 				}
 			);
 
@@ -311,7 +306,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	};
 
 	const reset = useCallback(() => {
-		original && setAssignment(original);
+		original && setAssignment(original as any);
 		resetForm();
 	}, [resetForm, setAssignment, original]);
 
@@ -349,7 +344,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		modal: {
 			items: assignment?.blocks,
-			onClose: (update?: AssignmentBlock[]) => {
+			onClose: (update?: Avo.Assignment.Block[]) => {
 				if (update) {
 					const blocks = update.map((item, i) => ({
 						...item,
@@ -361,7 +356,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						blocks,
 					}));
 
-					setValue('blocks', blocks, { shouldDirty: true });
+					(setValue as any)('blocks', blocks, { shouldDirty: true });
 				}
 			},
 		},
@@ -409,7 +404,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	);
 
 	const renderTitle = useMemo(
-		() => <AssignmentTitle control={control} setAssignment={setAssignment} />,
+		() => <AssignmentTitle control={control} setAssignment={setAssignment as any} />,
 		[tText, control, setAssignment]
 	);
 
@@ -451,7 +446,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					return (
 						<div className="c-assignment-details-tab">
 							<AssignmentDetailsFormReadonly
-								assignment={assignment as Assignment_v2_With_Labels}
+								assignment={assignment as Avo.Assignment.Assignment}
 							/>
 						</div>
 					);
@@ -459,18 +454,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={
-								assignment as Assignment_v2_With_Labels &
-									Assignment_v2_With_Responses &
-									Assignment_v2_With_Blocks
-							}
-							setAssignment={
-								setAssignment as Dispatch<
-									SetStateAction<
-										Assignment_v2_With_Labels & Assignment_v2_With_Blocks
-									>
-								>
-							}
+							assignment={assignment || {}}
+							setAssignment={setAssignment as any}
 							setValue={setValue}
 						/>
 					</div>
@@ -480,19 +465,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentMetaDataFormEditable
-							assignment={
-								assignment as Assignment_v2_With_Labels &
-									Assignment_v2_With_Responses &
-									Assignment_v2_With_Blocks
-							}
+							assignment={assignment as Avo.Assignment.Assignment}
 							setAssignment={
-								setAssignment as Dispatch<
-									SetStateAction<
-										Assignment_v2_With_Labels & Assignment_v2_With_Blocks
-									>
-								>
+								setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
 							}
-							setValue={setValue}
+							setValue={setValue as any}
 						/>
 					</div>
 				);
@@ -522,12 +499,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	// Synchronise the React state that triggers renders with the useForm hook
 	useEffect(() => {
 		Object.keys(assignment || {}).forEach((key) => {
-			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment?.[cast]);
+			const cast = key as keyof AssignmentFields;
+			(setValue as any)(cast, assignment?.[cast]);
 		});
 
 		trigger();
-	}, [assignment, setValue, trigger]);
+	}, [assignment as any, setValue, trigger]);
 
 	// Reset the form when the original changes
 	useEffect(() => {
@@ -700,7 +677,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
 						setIsPublishModalOpen(false);
 						if (newAssignment) {
-							setAssignment(newAssignment as Partial<AssignmentFormState>);
+							setAssignment(newAssignment as any);
 						}
 					}}
 					isOpen={isPublishModalOpen}

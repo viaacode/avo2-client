@@ -1,4 +1,5 @@
-import { Avo, LomSchemeType } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { LomSchemeType } from '@viaa/avo2-types';
 import { filter, groupBy, isNil } from 'lodash-es';
 
 import { LomFieldsByScheme } from '../types/lom';
