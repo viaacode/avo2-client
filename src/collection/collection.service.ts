@@ -10,6 +10,7 @@ import {
 	isEmpty,
 	isEqual,
 	isNil,
+	isNumber,
 	uniq,
 	without,
 } from 'lodash-es';
@@ -282,7 +283,10 @@ export class CollectionService {
 
 			// Fragments to insert do not have an id yet
 			const newFragments = getFragmentsFromCollection(newCollection).filter(
-				(fragment) => fragment.id < 0 || Object.is(fragment.id, -0) || isNil(fragment.id)
+				(fragment) =>
+					(isNumber(fragment.id) && fragment.id < 0) ||
+					Object.is(fragment.id, -0) ||
+					isNil(fragment.id)
 			);
 
 			// delete fragments that were removed from collection
