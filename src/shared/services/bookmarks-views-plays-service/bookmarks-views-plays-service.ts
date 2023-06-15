@@ -8,6 +8,9 @@ import {
 	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkMutation,
 	DeleteItemBookmarkMutationVariables,
+	GetAssignmentBookmarkViewCountsDocument,
+	GetAssignmentBookmarkViewCountsQuery,
+	GetAssignmentBookmarkViewCountsQueryVariables,
 	GetBookmarksForUserDocument,
 	GetBookmarksForUserQuery,
 	GetBookmarksForUserQueryVariables,
@@ -155,6 +158,28 @@ export class BookmarksViewsPlaysService {
 			viewCount,
 			playCount,
 			isBookmarked,
+		};
+	}
+
+	public static async getAssignmentCounts(assignmentUuid: string, user: Avo.User.User | null) {
+		const response = await dataService.query<
+			GetAssignmentBookmarkViewCountsQuery,
+			GetAssignmentBookmarkViewCountsQueryVariables
+		>({
+			query: GetAssignmentBookmarkViewCountsDocument,
+			variables: { assignmentUuid, profileId: user?.profile?.id || null },
+		});
+
+		const isBookmarked = !!response.app_assignments_v2_bookmarks[0];
+		const bookmarkCount = response.app_assignments_v2_bookmarks_aggregate.aggregate?.count || 0;
+		const viewCount = response.app_assignment_v2_views[0]?.count ?? 0;
+		const playCount = 0;
+
+		return {
+			bookmarkCount,
+			viewCount,
+			isBookmarked,
+			playCount,
 		};
 	}
 
@@ -416,6 +441,7 @@ export class BookmarksViewsPlaysService {
 	 *       }
 	 *     }
 	 */
+
 	public static async getBookmarkStatuses(
 		profileId: string,
 		objectInfos: BookmarkRequestInfo[]
@@ -427,10 +453,15 @@ export class BookmarksViewsPlaysService {
 			const itemObjectInfos: BookmarkRequestInfo[] = groupedObjectInfos['item'] || [];
 			const collectionObjectInfos: BookmarkRequestInfo[] =
 				groupedObjectInfos['collection'] || [];
+			const assignmentObjectInfos: BookmarkRequestInfo[] =
+				groupedObjectInfos['assignment'] || [];
 
 			// Get list of item ids and collection ids from the object infos
 			const itemUuids: string[] = itemObjectInfos.map((objectInfo) => objectInfo.uuid);
 			const collectionUuids: string[] = collectionObjectInfos.map(
+				(objectInfo) => objectInfo.uuid
+			);
+			const assignmentUuids: string[] = assignmentObjectInfos.map(
 				(objectInfo) => objectInfo.uuid
 			);
 			const response = await dataService.query<
@@ -442,6 +473,7 @@ export class BookmarksViewsPlaysService {
 					profileId,
 					itemUuids,
 					collectionUuids,
+					assignmentUuids,
 				},
 			});
 			// Extract the ids of the bookmark items that were found
@@ -450,6 +482,9 @@ export class BookmarksViewsPlaysService {
 			);
 			const collectionBookmarkIds = (response.app_collection_bookmarks ?? []).map(
 				(itemBookmark: { collection_uuid: string }) => itemBookmark.collection_uuid
+			);
+			const assigmnentBookmarkIds = (response.app_assignments_v2_bookmarks ?? []).map(
+				(itemBookmark: { assignment_id: string }) => itemBookmark.assignment_id
 			);
 			// Map the ids that were found to the original id
 			// if the id was found we set the isBookmarked status to true
@@ -464,9 +499,16 @@ export class BookmarksViewsPlaysService {
 					return [objectInfo.uuid, collectionBookmarkIds.includes(objectInfo.uuid)];
 				})
 			);
+
+			const assignmentBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
+				assignmentObjectInfos.map((objectInfo) => {
+					return [objectInfo.uuid, assigmnentBookmarkIds.includes(objectInfo.uuid)];
+				})
+			);
 			return {
 				item: itemBookmarkStatuses,
 				collection: collectionBookmarkStatuses,
+				assignment: assignmentBookmarkStatuses,
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get bookmark statuses', err, {

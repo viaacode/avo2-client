@@ -49209,6 +49209,14 @@ export type UpdateAssignmentLabelsMutationVariables = Exact<{
 
 export type UpdateAssignmentLabelsMutation = { __typename?: 'mutation_root', update_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', affected_rows: number } | null };
 
+export type DeleteAssignmentBookmarksForUserMutationVariables = Exact<{
+  assignmentUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type DeleteAssignmentBookmarksForUserMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_bookmarks?: { __typename?: 'app_assignments_v2_bookmarks_mutation_response', affected_rows: number } | null };
+
 export type DeleteCollectionBookmarksForUserMutationVariables = Exact<{
   collectionUuid: Scalars['uuid'];
   profileId?: InputMaybe<Scalars['uuid']>;
@@ -49225,21 +49233,30 @@ export type DeleteItemBookmarkMutationVariables = Exact<{
 
 export type DeleteItemBookmarkMutation = { __typename?: 'mutation_root', delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
 
+export type GetAssignmentBookmarkViewCountsQueryVariables = Exact<{
+  assignmentUuid: Scalars['uuid'];
+  profileId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentBookmarkViewCountsQuery = { __typename?: 'query_root', app_assignments_v2_bookmarks_aggregate: { __typename?: 'app_assignments_v2_bookmarks_aggregate', aggregate?: { __typename?: 'app_assignments_v2_bookmarks_aggregate_fields', count: number } | null }, app_assignment_v2_views: Array<{ __typename?: 'app_assignment_v2_views', count: number }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', id: any }> };
+
 export type GetBookmarkStatusesQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   itemUuids: Array<Scalars['uuid']> | Scalars['uuid'];
   collectionUuids: Array<Scalars['uuid']> | Scalars['uuid'];
+  assignmentUuids: Array<Scalars['uuid']> | Scalars['uuid'];
 }>;
 
 
-export type GetBookmarkStatusesQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any }>, app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any }> };
+export type GetBookmarkStatusesQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any }>, app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', assignment_id: any }> };
 
 export type GetBookmarksForUserQueryVariables = Exact<{
   profileId: Scalars['uuid'];
 }>;
 
 
-export type GetBookmarksForUserQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any, created_at: any, bookmarkedItem?: { __typename?: 'app_item_meta', title: string, thumbnail_path: string, duration?: any | null, issued?: any | null, item?: { __typename?: 'shared_items', external_id: string, item_meta?: { __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, organisation?: { __typename?: 'shared_organisations', name: string } | null, type?: { __typename?: 'shared_types', label: string } | null } | null } | null, view_counts: Array<{ __typename?: 'app_item_views', count?: number | null }> } | null }>, app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any, created_at: any, bookmarkedCollection?: { __typename?: 'app_collections', title: string, thumbnail_path?: string | null, created_at: any, type_id: number, view_counts: Array<{ __typename?: 'app_collection_views', count?: number | null }> } | null }> };
+export type GetBookmarksForUserQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any, created_at: any, bookmarkedItem?: { __typename?: 'app_item_meta', title: string, thumbnail_path: string, duration?: any | null, issued?: any | null, item?: { __typename?: 'shared_items', external_id: string, item_meta?: { __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, organisation?: { __typename?: 'shared_organisations', name: string } | null, type?: { __typename?: 'shared_types', label: string } | null } | null } | null, view_counts: Array<{ __typename?: 'app_item_views', count?: number | null }> } | null }>, app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any, created_at: any, bookmarkedCollection?: { __typename?: 'app_collections', title: string, thumbnail_path?: string | null, created_at: any, type_id: number, view_counts: Array<{ __typename?: 'app_collection_views', count?: number | null }> } | null }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', assignment_id: any, created_at: any, assignment: { __typename?: 'app_assignments_v2', title?: string | null, thumbnail_path?: string | null, type_id: number, created_at: any, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null } }> };
 
 export type GetCollectionBookmarkViewPlayCountsQueryVariables = Exact<{
   collectionUuid: Scalars['uuid'];
@@ -49335,6 +49352,13 @@ export type IncrementItemViewsMutationVariables = Exact<{
 
 
 export type IncrementItemViewsMutation = { __typename?: 'mutation_root', update_app_item_views?: { __typename?: 'app_item_views_mutation_response', affected_rows: number } | null };
+
+export type InsertAssignmentBookmarkMutationVariables = Exact<{
+  bookmarkAssignment: App_Assignments_V2_Bookmarks_Insert_Input;
+}>;
+
+
+export type InsertAssignmentBookmarkMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_bookmarks_one?: { __typename?: 'app_assignments_v2_bookmarks', id: any } | null };
 
 export type InsertCollectionBookmarkMutationVariables = Exact<{
   bookmarkItem: App_Collection_Bookmarks_Insert_Input;
@@ -53628,6 +53652,24 @@ export const useUpdateAssignmentLabelsMutation = <
       (variables?: UpdateAssignmentLabelsMutationVariables) => fetchData<UpdateAssignmentLabelsMutation, UpdateAssignmentLabelsMutationVariables>(UpdateAssignmentLabelsDocument, variables)(),
       options
     );
+export const DeleteAssignmentBookmarksForUserDocument = `
+    mutation deleteAssignmentBookmarksForUser($assignmentUuid: uuid!, $profileId: uuid) {
+  delete_app_assignments_v2_bookmarks(
+    where: {assignment_id: {_eq: $assignmentUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentBookmarksForUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentBookmarksForUserMutation, TError, DeleteAssignmentBookmarksForUserMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentBookmarksForUserMutation, TError, DeleteAssignmentBookmarksForUserMutationVariables, TContext>(
+      ['deleteAssignmentBookmarksForUser'],
+      (variables?: DeleteAssignmentBookmarksForUserMutationVariables) => fetchData<DeleteAssignmentBookmarksForUserMutation, DeleteAssignmentBookmarksForUserMutationVariables>(DeleteAssignmentBookmarksForUserDocument, variables)(),
+      options
+    );
 export const DeleteCollectionBookmarksForUserDocument = `
     mutation deleteCollectionBookmarksForUser($collectionUuid: uuid!, $profileId: uuid) {
   delete_app_collection_bookmarks(
@@ -53664,8 +53706,39 @@ export const useDeleteItemBookmarkMutation = <
       (variables?: DeleteItemBookmarkMutationVariables) => fetchData<DeleteItemBookmarkMutation, DeleteItemBookmarkMutationVariables>(DeleteItemBookmarkDocument, variables)(),
       options
     );
+export const GetAssignmentBookmarkViewCountsDocument = `
+    query getAssignmentBookmarkViewCounts($assignmentUuid: uuid!, $profileId: uuid!) {
+  app_assignments_v2_bookmarks_aggregate(
+    where: {assignment_id: {_eq: $assignmentUuid}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  app_assignment_v2_views(where: {assignment_uuid: {_eq: $assignmentUuid}}) {
+    count
+  }
+  app_assignments_v2_bookmarks(
+    where: {assignment_id: {_eq: $assignmentUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    id
+  }
+}
+    `;
+export const useGetAssignmentBookmarkViewCountsQuery = <
+      TData = GetAssignmentBookmarkViewCountsQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentBookmarkViewCountsQueryVariables,
+      options?: UseQueryOptions<GetAssignmentBookmarkViewCountsQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentBookmarkViewCountsQuery, TError, TData>(
+      ['getAssignmentBookmarkViewCounts', variables],
+      fetchData<GetAssignmentBookmarkViewCountsQuery, GetAssignmentBookmarkViewCountsQueryVariables>(GetAssignmentBookmarkViewCountsDocument, variables),
+      options
+    );
 export const GetBookmarkStatusesDocument = `
-    query getBookmarkStatuses($profileId: uuid!, $itemUuids: [uuid!]!, $collectionUuids: [uuid!]!) {
+    query getBookmarkStatuses($profileId: uuid!, $itemUuids: [uuid!]!, $collectionUuids: [uuid!]!, $assignmentUuids: [uuid!]!) {
   app_collection_bookmarks(
     where: {profile_id: {_eq: $profileId}, collection_uuid: {_in: $collectionUuids}}
   ) {
@@ -53675,6 +53748,11 @@ export const GetBookmarkStatusesDocument = `
     where: {profile_id: {_eq: $profileId}, item_id: {_in: $itemUuids}}
   ) {
     item_id
+  }
+  app_assignments_v2_bookmarks(
+    where: {profile_id: {_eq: $profileId, _in: $assignmentUuids}}
+  ) {
+    assignment_id
   }
 }
     `;
@@ -53729,6 +53807,19 @@ export const GetBookmarksForUserDocument = `
       }
     }
     collection_uuid
+    created_at
+  }
+  app_assignments_v2_bookmarks(where: {profile_id: {_eq: $profileId}}) {
+    assignment {
+      title
+      thumbnail_path
+      type_id
+      created_at
+      view_count {
+        count
+      }
+    }
+    assignment_id
     created_at
   }
 }
@@ -54054,6 +54145,22 @@ export const useIncrementItemViewsMutation = <
     useMutation<IncrementItemViewsMutation, TError, IncrementItemViewsMutationVariables, TContext>(
       ['incrementItemViews'],
       (variables?: IncrementItemViewsMutationVariables) => fetchData<IncrementItemViewsMutation, IncrementItemViewsMutationVariables>(IncrementItemViewsDocument, variables)(),
+      options
+    );
+export const InsertAssignmentBookmarkDocument = `
+    mutation insertAssignmentBookmark($bookmarkAssignment: app_assignments_v2_bookmarks_insert_input!) {
+  insert_app_assignments_v2_bookmarks_one(object: $bookmarkAssignment) {
+    id
+  }
+}
+    `;
+export const useInsertAssignmentBookmarkMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentBookmarkMutation, TError, InsertAssignmentBookmarkMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentBookmarkMutation, TError, InsertAssignmentBookmarkMutationVariables, TContext>(
+      ['insertAssignmentBookmark'],
+      (variables?: InsertAssignmentBookmarkMutationVariables) => fetchData<InsertAssignmentBookmarkMutation, InsertAssignmentBookmarkMutationVariables>(InsertAssignmentBookmarkDocument, variables)(),
       options
     );
 export const InsertCollectionBookmarkDocument = `
