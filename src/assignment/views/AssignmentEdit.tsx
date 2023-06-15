@@ -211,7 +211,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
 
-			setOriginal(tempAssignment as AssignmentFields);
+			setOriginal(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
 			setAssignmentHasPupilBlocks(hasPupilBlocks);

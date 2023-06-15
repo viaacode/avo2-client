@@ -27,7 +27,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { MAX_LABEL_LENGTH } from '../../assignment.const';
-import { Assignment_Label_v2, AssignmentLabelColor } from '../../assignment.types';
+import { AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
 
@@ -136,17 +136,8 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		setAssignmentLabels([...assignmentLabels.filter((labelObj) => labelObj.id !== id)]);
 	};
 
-	const labelsExceedMaxLenght = (labels: Assignment_Label_v2[]) => {
-		let isValid = true;
-
-		labels.forEach((label) => {
-			const exceedsMaxLength = (label.label?.length || 0) > MAX_LABEL_LENGTH;
-			if (exceedsMaxLength) {
-				isValid = false;
-			}
-		});
-
-		return isValid;
+	const labelsExceedMaxLength = (labels: Avo.Assignment.Label[]) => {
+		return !labels.find((label) => (label.label?.length || 0) > MAX_LABEL_LENGTH);
 	};
 
 	const handleSaveLabels = async () => {
@@ -155,8 +146,14 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 			const initialAssignmentLabelIds = initialAssignmentLabels.map((l) => l.id);
 			const updatedAssignmentLabelIds = assignmentLabels.map((l) => l.id);
 
-			if (!labelsExceedMaxLenght(assignmentLabels)) {
-				throw new CustomError('One or more labels is longer then max length', 'invalid');
+			if (!labelsExceedMaxLength(assignmentLabels)) {
+				ToastService.danger(
+					tHtml('Een of meerdere labels is langer dan {{maxLength}} karakters', {
+						maxLength: MAX_LABEL_LENGTH,
+					})
+				);
+				setIsProcessing(false);
+				return;
 			}
 
 			const newIds = without(updatedAssignmentLabelIds, ...initialAssignmentLabelIds);
@@ -202,25 +199,17 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 				)
 			);
 		} catch (err) {
-			if (err.innerException === 'invalid') {
-				ToastService.danger(
-					tHtml('Een of meerdere labels is langer dan {{maxLength}} karakters', {
-						maxLength: MAX_LABEL_LENGTH,
-					})
-				);
-			} else {
-				console.error(
-					new CustomError('Failed to save label changes', err, {
-						initialAssignmentLabels,
-						assignmentLabels,
-					})
-				);
-				ToastService.danger(
-					tHtml(
-						'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt'
-					)
-				);
-			}
+			console.error(
+				new CustomError('Failed to save label changes', err, {
+					initialAssignmentLabels,
+					assignmentLabels,
+				})
+			);
+			ToastService.danger(
+				tHtml(
+					'assignment/components/modals/manage-assignment-labels___het-opslaan-van-de-labels-is-mislukt'
+				)
+			);
 		}
 		setIsProcessing(false);
 	};
