@@ -406,7 +406,7 @@ export class AssignmentService {
 
 			await AssignmentService.deleteAssignmentLomLinks(original.id);
 
-			const loms = update.loms.map((lom) => lom.lom.id);
+			const loms = (update.loms || []).map((lom) => lom.lom.id);
 
 			await AssignmentService.insertAssignmentLomLinks(original.id, loms);
 
