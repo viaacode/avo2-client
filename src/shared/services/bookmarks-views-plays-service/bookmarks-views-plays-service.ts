@@ -173,11 +173,13 @@ export class BookmarksViewsPlaysService {
 		const isBookmarked = !!response.app_assignments_v2_bookmarks[0];
 		const bookmarkCount = response.app_assignments_v2_bookmarks_aggregate.aggregate?.count || 0;
 		const viewCount = response.app_assignment_v2_views[0]?.count ?? 0;
+		const playCount = 0;
 
 		return {
 			bookmarkCount,
 			viewCount,
 			isBookmarked,
+			playCount,
 		};
 	}
 

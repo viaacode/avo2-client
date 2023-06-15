@@ -155,7 +155,7 @@ export const GET_EVENT_QUERIES: () => {
 			getResponseCount: (response: GetCollectionViewCountQuery): number =>
 				response.app_collections[0]?.view_counts?.[0]?.count || 0,
 		},
-		// Added empty event for future use and solving typing issues
+		// TODO: Add request views of an assignment https://meemoo.atlassian.net/browse/AVO-2725
 		assignment: {
 			get: '',
 			increment: '',
@@ -183,7 +183,7 @@ export const GET_EVENT_QUERIES: () => {
 			getResponseCount: (response: GetCollectionPlayCountQuery): number =>
 				response.app_collections[0]?.play_counts?.[0]?.count || 0,
 		},
-		// Added empty event for future use and solving typing issues
+		// TODO: Add request plays of an assignment https://meemoo.atlassian.net/browse/AVO-2725
 		assignment: {
 			get: '',
 			increment: '',

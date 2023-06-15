@@ -25,7 +25,7 @@ export interface BookmarkInfo {
 export interface BookmarkViewPlayCounts {
 	bookmarkCount: number;
 	viewCount: number;
-	playCount?: number;
+	playCount: number;
 	isBookmarked: boolean;
 }
 

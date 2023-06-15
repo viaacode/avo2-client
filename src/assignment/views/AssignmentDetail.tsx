@@ -238,8 +238,11 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 			if (!assignment) {
 				ToastService.danger(
-					tHtml('Er ging iets mis met het ophalen van de ophalen van de opdracht')
+					tHtml(
+						'assignment/views/assignment-detail___er-ging-iets-mis-met-het-ophalen-van-de-ophalen-van-de-opdracht'
+					)
 				);
+				return;
 			}
 
 			await BookmarksViewsPlaysService.toggleBookmark(
@@ -254,8 +257,8 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			});
 			ToastService.success(
 				bookmarkViewCounts.isBookmarked
-					? tHtml('De bladwijzer is verwijderd')
-					: tHtml('De bladwijzer is aangemaakt')
+					? tHtml('assignment/views/assignment-detail___de-bladwijzer-is-verwijderd')
+					: tHtml('assignment/views/assignment-detail___de-bladwijzer-is-aangemaakt')
 			);
 		} catch (err) {
 			console.error(
@@ -268,8 +271,12 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			);
 			ToastService.danger(
 				bookmarkViewCounts.isBookmarked
-					? tHtml('Het verwijderen van de bladwijzer is mislukt')
-					: tHtml('Het aanmaken van de bladwijzer is mislukt')
+					? tHtml(
+							'assignment/views/assignment-detail___het-verwijderen-van-de-bladwijzer-is-mislukt'
+					  )
+					: tHtml(
+							'assignment/views/assignment-detail___het-aanmaken-van-de-bladwijzer-is-mislukt'
+					  )
 			);
 		}
 	};
@@ -300,11 +307,11 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				/>
 
 				<ToggleButton
-					title={tText('Bladwijzer')}
+					title={tText('assignment/views/assignment-detail___bladwijzer')}
 					type="secondary"
 					icon={IconName.bookmark}
 					active={bookmarkViewCounts.isBookmarked}
-					ariaLabel={tText('Bladwijzer')}
+					ariaLabel={tText('assignment/views/assignment-detail___bladwijzer')}
 					onClick={toggleBookmark}
 				/>
 
