@@ -172,8 +172,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		let newQuery: any = cloneDeep(query);
 		let newValue = value;
 		// Show both shareTypes for 'mijn opdrachten' option
-		if (value.includes(AssignmentShareType.NIET_GEDEELD)) {
-			newValue = [...value, AssignmentShareType.GEDEELD_MET_ANDERE];
+		if (value.includes(ShareWithColleagueTypeEnum.NIET_GEDEELD)) {
+			newValue = [...value, ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE];
 		}
 
 		newQuery = {
@@ -518,8 +518,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
-		const sharedWithNames = assignment.contributors.map((contributor) => {
-			const fullName = contributor.profile?.usersByuserId?.full_name;
+		const sharedWithNames = (assignment?.contributors || []).map((contributor) => {
+			const fullName = contributor.profile?.user?.full_name;
 			const orgName = contributor.profile?.organisation?.name;
 			if (contributor.profile?.organisation?.name) {
 				return `${fullName} (${orgName}) `;
@@ -531,13 +531,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		const shareTypeTitle =
 			assignment.share_type &&
 			{
-				[AssignmentShareType.GEDEELD_MET_MIJ]: tText(
+				[ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ]: tText(
 					'assignment/views/assignment-overview___gedeeld-met-mij'
 				),
-				[AssignmentShareType.GEDEELD_MET_ANDERE]: tText(
+				[ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE]: tText(
 					'assignment/views/assignment-overview___gedeeld-met-anderen'
 				),
-				[AssignmentShareType.NIET_GEDEELD]: tText(
+				[ShareWithColleagueTypeEnum.NIET_GEDEELD]: tText(
 					'assignment/views/assignment-overview___mijn-opdracht'
 				),
 			}[assignment.share_type];
@@ -677,16 +677,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		return compact([
 			{
 				label: tText('assignment/views/assignment-overview___gedeeld-met-mij'),
-				id: AssignmentShareType.GEDEELD_MET_MIJ,
+				id: ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ,
 				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
-					AssignmentShareType.GEDEELD_MET_MIJ
+					ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
 				),
 			},
 			{
 				label: tText('assignment/views/assignment-overview___mijn-opdrachten'),
-				id: AssignmentShareType.NIET_GEDEELD,
+				id: ShareWithColleagueTypeEnum.NIET_GEDEELD,
 				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
-					AssignmentShareType.NIET_GEDEELD
+					ShareWithColleagueTypeEnum.NIET_GEDEELD
 				),
 			},
 		]);
