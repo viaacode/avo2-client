@@ -15,6 +15,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import classnames from 'classnames';
 import { compact, intersection, sortBy, without } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 
@@ -25,6 +26,7 @@ import { generateRandomId } from '../../../shared/helpers/uuid';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
+import { MAX_LABEL_LENGTH } from '../../assignment.const';
 import { AssignmentLabelColor } from '../../assignment.types';
 
 import './ManageAssignmentLabels.scss';
@@ -134,11 +136,25 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 		setAssignmentLabels([...assignmentLabels.filter((labelObj) => labelObj.id !== id)]);
 	};
 
+	const labelsExceedMaxLength = (labels: Avo.Assignment.Label[]) => {
+		return !labels.find((label) => (label.label?.length || 0) > MAX_LABEL_LENGTH);
+	};
+
 	const handleSaveLabels = async () => {
 		try {
 			setIsProcessing(true);
 			const initialAssignmentLabelIds = initialAssignmentLabels.map((l) => l.id);
 			const updatedAssignmentLabelIds = assignmentLabels.map((l) => l.id);
+
+			if (!labelsExceedMaxLength(assignmentLabels)) {
+				ToastService.danger(
+					tHtml('Een of meerdere labels is langer dan {{maxLength}} karakters', {
+						maxLength: MAX_LABEL_LENGTH,
+					})
+				);
+				setIsProcessing(false);
+				return;
+			}
 
 			const newIds = without(updatedAssignmentLabelIds, ...initialAssignmentLabelIds);
 			const oldIds = without(initialAssignmentLabelIds, ...updatedAssignmentLabelIds);
@@ -231,6 +247,15 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 								handleRowLabelChanged(assignmentLabel, newLabel)
 							}
 						/>
+
+						<label
+							className={classnames('c-max-length', {
+								'c-max-length--invalid':
+									(assignmentLabel.label?.length || 0) > MAX_LABEL_LENGTH,
+							})}
+						>
+							{`${assignmentLabel.label?.length || 0}/${MAX_LABEL_LENGTH}`}
+						</label>
 					</Spacer>
 				);
 
