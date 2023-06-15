@@ -6,17 +6,16 @@ import {
 	DropdownContent,
 	IconName,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ShareDropdown } from '../../shared/components';
+import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
 import {
 	ContributorInfo,
 	ShareRightsType,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { ShareWithPupilsProps } from '../../shared/components/ShareWithPupils/ShareWithPupils';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
@@ -34,6 +33,8 @@ interface AssignmentActionsProps {
 	share?: ShareWithPupilsProps;
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
+	refetch?: () => void;
+	publish?: Partial<ButtonProps>;
 }
 
 const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
@@ -42,6 +43,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	duplicate,
 	remove,
 	share,
+	refetch,
+	publish,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -64,20 +67,35 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const onEditContributor = async (contributor: ContributorInfo, newRights: ShareRightsType) => {
 		try {
-			if (share) {
-				await AssignmentService.editContributorRights(
-					share.assignment?.id,
-					contributor.contributorId as string,
-					newRights
-				);
+			if (share && refetch) {
+				if (newRights === 'OWNER') {
+					await AssignmentService.transferAssignmentOwnerShip(
+						share.assignment?.id as string,
+						contributor.contributorId as string
+					);
 
-				await fetchContributors();
+					await refetch();
 
-				ToastService.success(
-					tText(
-						'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
-					)
-				);
+					ToastService.success(
+						tText(
+							'assignment/components/assignment-actions___eigenaarschap-is-succesvol-overgedragen'
+						)
+					);
+				} else {
+					await AssignmentService.editContributorRights(
+						share.assignment?.id as string,
+						contributor.contributorId as string,
+						newRights
+					);
+
+					await fetchContributors();
+
+					ToastService.success(
+						tText(
+							'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
+						)
+					);
+				}
 			}
 		} catch (err) {
 			ToastService.danger(
@@ -90,7 +108,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const onAddNewContributor = async (info: Partial<ContributorInfo>) => {
 		try {
-			await AssignmentService.addContributor(share?.assignment?.id, info);
+			await AssignmentService.addContributor(share?.assignment?.id as string, info);
 
 			await fetchContributors();
 
@@ -111,7 +129,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	const onDeleteContributor = async (info: ContributorInfo) => {
 		try {
 			await AssignmentService.deleteContributor(
-				share?.assignment?.id,
+				share?.assignment?.id as string,
 				info.contributorId,
 				info.profileId
 			);
@@ -156,6 +174,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			{...overflow}
 			{...config}
 		/>
+	);
+
+	const renderPublishButton = (config?: Partial<ButtonProps>) => (
+		<Button type="secondary" {...config} />
 	);
 
 	const renderShareButton = (config?: Partial<ShareDropdownProps>) => (
@@ -210,6 +232,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				{renderPreviewButton({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
+
+				{renderPublishButton(publish)}
 
 				<div className="c-assignment-heading__dropdown-wrapper">
 					<Dropdown

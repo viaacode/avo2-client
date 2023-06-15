@@ -2,7 +2,7 @@ import { ContentPickerType } from '@viaa/avo2-components';
 
 import { CollectionService } from '../../../../../collection/collection.service';
 import { Collection, ContentTypeNumber } from '../../../../../collection/collection.types';
-import { PickerSelectItem } from '../../../types';
+import { PickerItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
 // TODO: move fetchBundles and fetchBundlesByTitle to a separate bundle service, not collection service.
@@ -11,7 +11,7 @@ import { parsePickerItem } from '../helpers/parse-picker';
 export const retrieveCollections = async (
 	titleOrId: string | null,
 	limit = 5
-): Promise<PickerSelectItem[]> => {
+): Promise<PickerItem[]> => {
 	const collections: Collection[] | null = titleOrId
 		? await CollectionService.fetchCollectionsByTitleOrId(titleOrId, limit)
 		: await CollectionService.fetchCollectionsOrBundles(limit, ContentTypeNumber.collection);
@@ -23,7 +23,7 @@ export const retrieveCollections = async (
 export const retrieveBundles = async (
 	titleOrId: string | null,
 	limit = 5
-): Promise<PickerSelectItem[]> => {
+): Promise<PickerItem[]> => {
 	const bundles: Collection[] | null = titleOrId
 		? await CollectionService.fetchBundlesByTitleOrId(titleOrId, limit)
 		: await CollectionService.fetchCollectionsOrBundles(limit, ContentTypeNumber.bundle);
@@ -32,11 +32,11 @@ export const retrieveBundles = async (
 };
 
 // parse raw data to react-select options
-const parseCollections = (type: ContentPickerType, raw: Collection[]): PickerSelectItem[] => {
+const parseCollections = (type: ContentPickerType, raw: Collection[]): PickerItem[] => {
 	return raw.map(
-		(item: Collection): PickerSelectItem => ({
-			label: item.title,
-			value: parsePickerItem(type, item.id.toString()),
+		(item: Collection): PickerItem => ({
+			...parsePickerItem(type, item.id.toString()),
+			label: item.title || '',
 		})
 	);
 };

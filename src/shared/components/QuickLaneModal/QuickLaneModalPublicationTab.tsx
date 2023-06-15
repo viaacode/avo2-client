@@ -92,6 +92,9 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 							description,
 						});
 					}}
+					placeholder={tText(
+						'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
+					)}
 				/>
 			</Spacer>
 

@@ -9,18 +9,13 @@ import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/Rich
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import {
-	AssignmentBlock,
-	BaseBlockWithMeta,
-	EditableAssignmentBlock,
-	EditBlockProps,
-} from '../../assignment.types';
+import { EditableAssignmentBlock, EditBlockProps } from '../../assignment.types';
 import {
 	AssignmentBlockDescriptionButtons,
 	AssignmentBlockItemDescriptionType,
 } from '../AssignmentBlockDescriptionButtons';
 
-function getBlockEditMode(block: BaseBlockWithMeta | EditableAssignmentBlock) {
+function getBlockEditMode(block: Avo.Core.BlockItemBase | EditableAssignmentBlock) {
 	if ((block as EditableAssignmentBlock).editMode) {
 		return (block as EditableAssignmentBlock).editMode;
 	}
@@ -66,7 +61,7 @@ export const AssignmentBlockEditItem: FC<
 	let title: string | undefined = undefined;
 	if (editableBlock.editMode === AssignmentBlockItemDescriptionType.original) {
 		title =
-			(editableBlock as unknown as AssignmentBlock).original_title ||
+			(editableBlock as unknown as Avo.Assignment.Block).original_title ||
 			editableBlock.item_meta?.title;
 	} else if (editableBlock.editMode === AssignmentBlockItemDescriptionType.custom) {
 		title = editableBlock.ownTitle;
@@ -77,7 +72,7 @@ export const AssignmentBlockEditItem: FC<
 	let description: string | undefined = undefined;
 	if (editableBlock.editMode === AssignmentBlockItemDescriptionType.original) {
 		description =
-			(block as AssignmentBlock).original_description ||
+			(block as Avo.Assignment.Block).original_description ||
 			block.item_meta?.description ||
 			undefined;
 	} else if (editableBlock.editMode === AssignmentBlockItemDescriptionType.custom) {

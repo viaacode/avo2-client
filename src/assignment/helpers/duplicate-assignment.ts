@@ -1,12 +1,13 @@
+import type { Avo } from '@viaa/avo2-types';
+
 import { CustomError } from '../../shared/helpers';
 import { tHtml, tText } from '../../shared/helpers/translate';
 import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
-import { Assignment_v2, Assignment_v2_With_Blocks } from '../assignment.types';
 
 export async function duplicateAssignment(
-	assignment?: Assignment_v2_With_Blocks
-): Promise<Assignment_v2 | undefined> {
+	assignment?: Avo.Assignment.Assignment
+): Promise<Avo.Assignment.Assignment | undefined> {
 	try {
 		if (!assignment) {
 			throw new CustomError(

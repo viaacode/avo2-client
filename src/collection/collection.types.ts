@@ -1,6 +1,5 @@
 import type { Avo } from '@viaa/avo2-types';
 
-import { BaseBlockWithMeta } from '../assignment/assignment.types';
 import {
 	GetCollectionMarcomEntriesQuery,
 	GetPublicCollectionsByIdQuery,
@@ -10,7 +9,7 @@ import {
 export type Collection = (
 	| GetPublicCollectionsByIdQuery
 	| GetPublicCollectionsByTitleQuery
-)['app_collections'][0];
+)['app_collections_overview'][0];
 
 export enum ContentTypeNumber {
 	audio = 1,
@@ -63,6 +62,12 @@ export function toEnglishContentType(label: Avo.ContentType.Dutch): Avo.ContentT
 
 export type CollectionLabelLookup = { [id: string]: string };
 
+export enum CollectionShareType {
+	GEDEELD_MET_MIJ = 'GEDEELD_MET_MIJ',
+	GEDEELD_MET_ANDERE = 'GEDEELD_MET_ANDERE',
+	NIET_GEDEELD = 'NIET_GEDEELD',
+}
+
 export interface QualityLabel {
 	description: string;
 	value: string;
@@ -75,16 +80,17 @@ export interface Relation {
 	};
 }
 
-export type EditCollectionTab =
-	| 'content'
-	| 'metadata'
-	| 'admin'
-	| 'actualisation'
-	| 'quality_check'
-	| 'marcom';
+export enum CollectionCreateUpdateTab {
+	CONTENT = 'inhoud',
+	PUBLISH = 'publicatiedetail',
+	ADMIN = 'beheer',
+	ACTUALISATION = 'actualisatie',
+	QUALITY_CHECK = 'kwaliteitscontrole',
+	MARCOM = 'communicatie',
+}
 
 export type MarcomEntry = GetCollectionMarcomEntriesQuery['app_collection_marcom_log'][0];
 
 export interface BlockItemComponent {
-	block?: BaseBlockWithMeta;
+	block?: Avo.Core.BlockItemBase;
 }

@@ -15,8 +15,8 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, {
@@ -52,13 +52,9 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
-	Assignment_Response_v2,
-	Assignment_v2,
 	AssignmentOverviewTableColumns,
-	AssignmentResponseInfo,
 	AssignmentResponseTableColumns,
 	AssignmentType,
-	BaseBlockWithMeta,
 	PupilCollectionFragment,
 } from '../assignment.types';
 import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
@@ -84,10 +80,10 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	// Data
-	const [assignment, setAssignment] = useState<Assignment_v2 | null>(null);
-	const [assignmentResponses, setAssignmentResponses] = useState<AssignmentResponseInfo[] | null>(
-		null
-	);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
+	const [assignmentResponses, setAssignmentResponses] = useState<
+		Avo.Assignment.Response[] | null
+	>(null);
 	const [assignmentResponsesCount, setAssigmentResponsesCount] = useState<number>(0);
 	const [assignmentResponsesFragments, setAssignmentResponsesFragments] = useState<string[]>([]);
 
@@ -106,7 +102,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const [isDeleteAssignmentResponseModalOpen, setDeleteAssignmentResponseModalOpen] =
 		useState<boolean>(false);
 	const [markedAssignmentResponse, setMarkedAssignmentResponse] =
-		useState<Assignment_Response_v2 | null>(null);
+		useState<Avo.Assignment.Response | null>(null);
 
 	// Permissions
 	const [canViewAssignmentResponses, setCanViewAssignmentResponses] = useState<boolean | null>(
@@ -116,7 +112,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const tableColumns = useMemo(
 		() =>
 			GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS(
-				(assignment?.lom_learning_resource_type[0] || AssignmentType.KIJK) as AssignmentType
+				(assignment?.assignment_type?.[0] || AssignmentType.KIJK) as AssignmentType
 			),
 		[assignment]
 	);
@@ -303,11 +299,10 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				(assignmentResponses || []).map(async (response) => {
 					return {
 						...response,
-						pupil_collection_blocks:
-							await AssignmentService.enrichBlocksWithMeta<BaseBlockWithMeta>(
-								response.pupil_collection_blocks,
-								fragments
-							),
+						pupil_collection_blocks: (await AssignmentService.enrichBlocksWithMeta(
+							response.pupil_collection_blocks,
+							fragments
+						)) as Avo.Core.BlockItemBase[],
 					};
 				})
 			)
@@ -377,7 +372,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		}
 	};
 
-	const renderDeleteAction = (assignmentResponse: Assignment_Response_v2) => (
+	const renderDeleteAction = (assignmentResponse: Avo.Assignment.Response) => (
 		<Button
 			title={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
 			ariaLabel={tText('workspace/views/bookmarks___verwijder-uit-bladwijzers')}
@@ -408,7 +403,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		);
 
 	const renderCell = (
-		assignmentResponse: Assignment_Response_v2,
+		assignmentResponse: Avo.Assignment.Response,
 		colKey: AssignmentResponseTableColumns
 	) => {
 		const cellData: any = (assignmentResponse as any)[colKey];
@@ -433,7 +428,9 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			}
 			case 'pupil_collection_block_count':
 				return renderDataCell(
-					assignmentResponse.pupil_collection_blocks?.filter(isItemWithMeta).length || '',
+					(
+						assignmentResponse.pupil_collection_blocks as Avo.Core.BlockItemBase[]
+					)?.filter(isItemWithMeta).length || '',
 					tText('assignment/views/assignment-responses___fragmenten'),
 					'c-assignment-responses__block-count'
 				);
@@ -551,7 +548,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 									'assignment/views/assignment-responses___er-zijn-nog-geen-antwoorden-geregistreerd-voor-deze-opdracht'
 							  )
 					}
-					renderCell={(rowData: Assignment_Response_v2, colKey: string) =>
+					renderCell={(rowData: Avo.Assignment.Response, colKey: string) =>
 						renderCell(rowData, colKey as AssignmentResponseTableColumns)
 					}
 					rowKey="id"

@@ -12,6 +12,9 @@ import {
 	Table,
 	TableColumn,
 	Thumbnail,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { PermissionName } from '@viaa/avo2-types';
@@ -54,7 +57,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
-import { ContentTypeNumber } from '../collection.types';
+import { Collection, CollectionShareType, ContentTypeNumber } from '../collection.types';
 
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
@@ -77,7 +80,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	// State
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
+	const [collections, setCollections] = useState<Collection[] | null>(null);
 	const [permissions, setPermissions] = useState<{
 		[collectionUuid: string]: { canEdit?: boolean; canDelete?: boolean };
 	}>({});
@@ -124,7 +127,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 			if (isCollection) {
 				perms = await Promise.all(
-					(collections || []).map((collection: Avo.Collection.Collection) => {
+					(collections || []).map((collection: Collection) => {
 						const editPermission = PermissionService.hasPermissions(
 							[
 								{
@@ -151,7 +154,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			} else {
 				// bundles
 				perms = await Promise.all(
-					collections.map((bundle: Avo.Collection.Collection) => {
+					collections.map((bundle: Collection) => {
 						const editPermission = PermissionService.hasPermissions(
 							[
 								{
@@ -354,8 +357,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		}),
 	});
 
-	const renderThumbnail = ({ id, title, thumbnail_path }: Avo.Collection.Collection) => (
-		<Link {...getLinkProps(id, title)}>
+	const renderThumbnail = ({ id, title, thumbnail_path }: Collection) => (
+		<Link {...getLinkProps(id, title || '')}>
 			<Thumbnail
 				alt="thumbnail"
 				category={type}
@@ -365,10 +368,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		</Link>
 	);
 
-	const renderTitle = (collection: Avo.Collection.Collection) => (
+	const renderTitle = (collection: Collection) => (
 		<div className="c-content-header">
 			<h3 className="c-content-header__header">
-				<Link {...getLinkProps(collection.id, collection.title)}>
+				<Link {...getLinkProps(collection.id, collection.title || '')}>
 					{truncateTableValue(collection.title)}
 				</Link>
 			</h3>
@@ -501,8 +504,43 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		);
 	};
 
-	const renderCell = (collection: Avo.Collection.Collection, colKey: string) => {
+	const renderCell = (collection: Collection, colKey: string) => {
 		const { id } = collection;
+
+		const sharedWithNames = collection.contributors.map((contributor) => {
+			const fullName = contributor.profile?.user?.full_name;
+			const orgName = contributor.profile?.organisation?.name;
+
+			if (contributor.profile?.organisation?.name) {
+				return `${fullName} (${orgName}) `;
+			} else {
+				return `${fullName} `;
+			}
+		});
+
+		const shareTypeTitle =
+			collection.share_type === CollectionShareType.GEDEELD_MET_MIJ
+				? tText('collection/views/collection-overview___gedeeld-met-mij')
+				: collection.share_type === CollectionShareType.GEDEELD_MET_ANDERE
+				? tText('collection/views/collection-overview___gedeeld-met-anderen')
+				: tText('collection/views/collection-overview___mijn-collectie');
+
+		const shareTypeText =
+			collection.share_type === CollectionShareType.GEDEELD_MET_MIJ
+				? tText('collection/views/collection-overview___gedeeld-met-mij')
+				: collection.share_type === CollectionShareType.GEDEELD_MET_ANDERE
+				? tHtml('collection/views/collection-overview___gedeeld-met-count-anderen-names', {
+						count: sharedWithNames.length,
+						names: sharedWithNames,
+				  })
+				: tText('collection/views/collection-overview___mijn-collectie');
+
+		const shareTypeIcon =
+			collection.share_type === CollectionShareType.GEDEELD_MET_MIJ
+				? IconName.userGroup
+				: collection.share_type === CollectionShareType.GEDEELD_MET_ANDERE
+				? IconName.userGroup2
+				: IconName.user2;
 
 		switch (colKey) {
 			case 'thumbnail':
@@ -551,6 +589,17 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				const cellData = collection[colKey as 'created_at' | 'updated_at'];
 				return <span title={formatTimestamp(cellData)}>{formatDate(cellData)}</span>;
 			}
+			case 'share_type':
+				return (
+					<Tooltip position="top">
+						<TooltipTrigger>
+							<div className="m-collection-overview-shared" title={shareTypeTitle}>
+								<Icon name={shareTypeIcon} />
+							</div>
+						</TooltipTrigger>
+						<TooltipContent>{shareTypeText}</TooltipContent>
+					</Tooltip>
+				);
 			default:
 				return null;
 		}
@@ -593,6 +642,12 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				col: '3',
 				sortable: true,
 				dataType: TableColumnDataType.dateTime,
+			},
+			{
+				id: 'share_type',
+				label: tText('collection/collection___gedeeld'),
+				sortable: true,
+				dataType: TableColumnDataType.string,
 			},
 			...(showPublicState
 				? [
@@ -639,7 +694,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		/>
 	);
 
-	const renderTable = (collections: Avo.Collection.Collection[]) => (
+	const renderTable = (collections: Collection[]) => (
 		<>
 			<Table
 				columns={getColumns()}

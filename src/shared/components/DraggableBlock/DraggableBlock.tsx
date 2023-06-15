@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { truncate } from 'lodash';
 import React, { FC } from 'react';
 
-import { AssignmentBlock } from '../../../assignment/assignment.types';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { stripHtml } from '../../helpers';
 
@@ -28,10 +27,10 @@ const DraggableBlock: FC<DraggableBlockProps> = ({ block, className }) => {
 
 	const label = [
 		block.custom_title,
-		(block as AssignmentBlock).original_title,
+		(block as Avo.Assignment.Block).original_title,
 		block.item_meta?.title,
 		block.custom_description,
-		(block as AssignmentBlock).original_description,
+		(block as Avo.Assignment.Block).original_description,
 		block.item_meta?.description,
 	].find((string) => string && string.length > 0);
 

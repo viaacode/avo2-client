@@ -10,7 +10,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { Positioned } from '../../shared/types';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
-import { AssignmentBlock, AssignmentBlockType, BaseBlockWithMeta } from '../assignment.types';
+import { AssignmentBlockType } from '../assignment.types';
 import { insertMultipleAtPosition } from '../helpers/insert-at-position';
 import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal, {
@@ -20,18 +20,18 @@ import AddCollectionModal, { AddCollectionModalProps } from '../modals/AddCollec
 import ConfirmSliceModal, { ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
 
 export function useBlockListModals(
-	blocks: BaseBlockWithMeta[],
-	setBlocks: (newBlocks: BaseBlockWithMeta[]) => void,
+	blocks: Avo.Core.BlockItemBase[],
+	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
 	config?: {
 		confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
 		addBlockConfig?: Partial<AddBlockModalProps>;
 		addBookmarkFragmentConfig?: Partial<AddBookmarkFragmentModalProps>;
 		addCollectionConfig?: Partial<AddCollectionModalProps>;
 	}
-): [JSX.Element, SingleEntityModal<Pick<AssignmentBlock, 'id'>>, SingleEntityModal<number>] {
+): [JSX.Element, SingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>, SingleEntityModal<number>] {
 	const { tHtml } = useTranslation();
 
-	const slice = useSingleEntityModal<Pick<AssignmentBlock, 'id'>>();
+	const slice = useSingleEntityModal<Pick<Avo.Assignment.Block, 'id'>>();
 	const {
 		isOpen: isConfirmSliceModalOpen,
 		setOpen: setConfirmSliceModalOpen,
@@ -55,7 +55,7 @@ export function useBlockListModals(
 			<ConfirmSliceModal
 				{...config?.confirmSliceConfig}
 				isOpen={!!isConfirmSliceModalOpen}
-				block={getConfirmSliceModalBlock as AssignmentBlock}
+				block={getConfirmSliceModalBlock as Avo.Assignment.Block}
 				onClose={() => setConfirmSliceModalOpen(false)}
 				onConfirm={() => {
 					const newBlocks = blocks.filter(
@@ -103,7 +103,7 @@ export function useBlockListModals(
 										assignmentBlock
 									);
 
-									setBlocks(newBlocks as BaseBlockWithMeta[]);
+									setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
 									break;
 								}
 
@@ -139,7 +139,8 @@ export function useBlockListModals(
 								setIsTrimItemModalOpen(false);
 							}}
 							afterCutCallback={async (itemTrimInfo: ItemTrimInfo) => {
-								const assignmentBlock: Partial<BaseBlockWithMeta> & Positioned = {
+								const assignmentBlock: Partial<Avo.Core.BlockItemBase> &
+									Positioned = {
 									id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 									item_meta: item,
 									type: AssignmentBlockType.ITEM,
@@ -154,7 +155,7 @@ export function useBlockListModals(
 								};
 								const newBlocks = insertMultipleAtPosition(blocks, assignmentBlock);
 
-								setBlocks(newBlocks as BaseBlockWithMeta[]);
+								setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
 
 								// Finish by triggering any configured callback
 								const callback =
@@ -191,10 +192,10 @@ export function useBlockListModals(
 
 							if (collection.collection_fragments) {
 								const mapped = collection.collection_fragments.map(
-									(collectionItem, index): Partial<BaseBlockWithMeta> => {
+									(collectionItem, index): Partial<Avo.Core.BlockItemBase> => {
 										// Note: logic almost identical as in AssignmentService.importCollectionToAssignment
 										// But with minor differences (id, item_meta, ..)
-										const block: Partial<BaseBlockWithMeta> = {
+										const block: Partial<Avo.Core.BlockItemBase> = {
 											id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${
 												new Date().valueOf() + index
 											}`,
@@ -240,7 +241,7 @@ export function useBlockListModals(
 									...(mapped as Positioned[])
 								);
 
-								setBlocks(newBlocks as BaseBlockWithMeta[]);
+								setBlocks(newBlocks as Avo.Core.BlockItemBase[]);
 
 								// Finish by triggering any configured callback
 								const callback = config?.addCollectionConfig?.addCollectionCallback;
