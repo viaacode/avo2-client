@@ -103,4 +103,13 @@
 			width: calc(100% - 100px);
 		}
 	}
+
+	.c-tag {
+		.c-label-text {
+			text-overflow: ellipsis;
+			max-width: 15rem;
+			white-space: nowrap;
+			overflow: hidden;
+		}
+	}
 }

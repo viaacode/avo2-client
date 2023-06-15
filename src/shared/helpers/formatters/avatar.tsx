@@ -3,13 +3,11 @@ import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
-import { Assignment_v2 } from '../../../assignment/assignment.types';
-
 export const getProfile = (
 	obj:
 		| Avo.User.Profile
 		| { profile: Avo.User.Profile }
-		| Assignment_v2['profile']
+		| Avo.Assignment.Assignment['profile']
 		| null
 		| undefined
 ): Avo.User.Profile | null => {
@@ -82,7 +80,7 @@ export const renderAvatar = (
 	userOrProfile:
 		| Avo.User.Profile
 		| { profile: Avo.User.Profile }
-		| Assignment_v2['profile']
+		| Avo.Assignment.Assignment['profile']
 		| null,
 	options: {
 		small?: boolean;

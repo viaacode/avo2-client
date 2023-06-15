@@ -38,4 +38,17 @@ query getBookmarksForUser($profileId: uuid!) {
 		collection_uuid
 		created_at
 	}
+	app_assignments_v2_bookmarks(where: { profile_id: { _eq: $profileId } }) {
+		assignment {
+			title
+			thumbnail_path
+			type_id
+			created_at
+			view_count {
+				count
+			}
+		}
+		assignment_id
+		created_at
+	}
 }

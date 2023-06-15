@@ -1,10 +1,30 @@
 query getPublicCollections($limit: Int!, $typeId: Int!) {
-	app_collections(
+	app_collections_overview(
 		order_by: { title: asc }
 		where: { type_id: { _eq: $typeId }, is_public: { _eq: true }, is_deleted: { _eq: false } }
 		limit: $limit
 	) {
 		id
 		title
+		share_type
+		contributors {
+			enum_right_type {
+				value
+			}
+			profile {
+				organisation {
+					name
+				}
+				user: usersByuserId {
+					first_name
+					full_name
+					last_name
+				}
+			}
+		}
+		updated_at
+		is_public
+		thumbnail_path
+		created_at
 	}
 }

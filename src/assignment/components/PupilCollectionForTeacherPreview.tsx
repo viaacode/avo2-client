@@ -1,18 +1,18 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { Button, Container, IconName } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { isMobileWidth } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AssignmentResponseInfo, BaseBlockWithMeta } from '../assignment.types';
 
 import AssignmentHeading from './AssignmentHeading';
 
 export type PupilCollectionForTeacherPreviewProps = {
 	onClose: () => void;
-	assignmentResponse: Omit<AssignmentResponseInfo, 'assignment'>;
+	assignmentResponse: Omit<Avo.Assignment.Response, 'assignment'>;
 	metadata: ReactNode;
 };
 
@@ -56,7 +56,8 @@ export const PupilCollectionForTeacherPreview: FC<PupilCollectionForTeacherPrevi
 			<Container mode="horizontal">
 				<BlockList
 					blocks={
-						(assignmentResponse?.pupil_collection_blocks || []) as BaseBlockWithMeta[]
+						(assignmentResponse?.pupil_collection_blocks ||
+							[]) as Avo.Core.BlockItemBase[]
 					}
 					config={{
 						ITEM: {

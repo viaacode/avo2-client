@@ -6,7 +6,7 @@ import { tHtml } from '../../shared/helpers/translate';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
-import { Assignment_v2, Assignment_v2_With_Responses, AssignmentType } from '../assignment.types';
+import { AssignmentType } from '../assignment.types';
 
 export async function deleteAssignment(
 	id?: string | null,
@@ -47,14 +47,14 @@ export async function deleteAssignment(
 	}
 }
 
-export function deleteAssignmentWarning(assignment?: Assignment_v2): ReactNode {
-	if (assignment?.lom_learning_resource_type.includes(AssignmentType.BOUW)) {
+export function deleteAssignmentWarning(assignment?: Avo.Assignment.Assignment): ReactNode {
+	if (assignment?.assignment_type?.includes(AssignmentType.BOUW)) {
 		return tHtml(
 			'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
 		);
 	}
 
-	if ((assignment as Assignment_v2_With_Responses)?.responses?.length) {
+	if (assignment?.responses?.length) {
 		return tHtml(
 			'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
 		);

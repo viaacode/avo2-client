@@ -23,7 +23,7 @@ import {
 	TooltipTrigger,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
+import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isNil, noop } from 'lodash-es';
@@ -86,15 +86,7 @@ import {
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import {
-	Assignment_Label_v2,
-	Assignment_v2,
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
-	AssignmentOverviewTableColumns,
-	AssignmentShareType,
-	AssignmentView,
-} from '../assignment.types';
+import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
@@ -128,15 +120,17 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignments, setAssignments] = useState<Assignment_v2[] | null>(null);
+	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
 	const [assignmentCount, setAssigmentCount] = useState<number>(0);
-	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Assignment_Label_v2[]>([]);
+	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
 		null
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
-	const [markedAssignment, setMarkedAssignment] = useState<Assignment_v2 | null>(null);
+	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(
+		null
+	);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
@@ -338,12 +332,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			copySearchTermsToQueryState();
 		}
 	};
+
 	const handleExtraOptionsItemClicked = async (
 		actionId: ExtraAssignmentOptions,
-		dataRow: Assignment_v2
+		assignmentRow: Avo.Assignment.Assignment
 	) => {
 		setDropdownOpenForAssignmentId(null);
-		if (!dataRow.id) {
+		if (!assignmentRow.id) {
 			ToastService.danger(
 				tHtml(
 					'assignment/views/assignment-overview___het-opdracht-id-van-de-geselecteerde-rij-is-niet-ingesteld'
@@ -354,22 +349,22 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		switch (actionId) {
 			case 'edit':
 				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
-					id: dataRow.id,
-					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+					id: assignmentRow.id,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 				});
 				break;
 			case 'duplicate':
 				try {
-					const latest: Assignment_v2_With_Blocks =
+					const latest: Avo.Assignment.Assignment =
 						await AssignmentService.fetchAssignmentById(
-							dataRow.id as unknown as string
+							assignmentRow.id as unknown as string
 						);
 
 					await duplicateAssignment(latest);
 					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
-						assignmentId: dataRow.id,
+						assignmentId: assignmentRow.id,
 					});
 					ToastService.danger(
 						tHtml(
@@ -381,7 +376,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 
 			case 'delete':
-				setMarkedAssignment(dataRow);
+				setMarkedAssignment(assignmentRow);
 				setDeleteAssignmentModalOpen(true);
 				break;
 			default:
@@ -394,19 +389,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setMarkedAssignment(null);
 	};
 
-	const renderActions = (rowData: Assignment_v2) => {
+	const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
 		const handleOptionClicked = async (actionId: ReactText) => {
 			await handleExtraOptionsItemClicked(
 				actionId.toString() as ExtraAssignmentOptions,
-				rowData
+				assignmentRow
 			);
 		};
 		return (
 			<ButtonToolbar className="c-assignment-overview__actions">
 				{canEditAssignments && (
 					<MoreOptionsDropdown
-						isOpen={dropdownOpenForAssignmentId === rowData.id}
-						onOpen={() => setDropdownOpenForAssignmentId(rowData.id)}
+						isOpen={dropdownOpenForAssignmentId === assignmentRow.id}
+						onOpen={() => setDropdownOpenForAssignmentId(assignmentRow.id)}
 						onClose={() => setDropdownOpenForAssignmentId(null)}
 						label={getMoreOptionsLabel()}
 						menuItems={[
@@ -439,7 +434,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		);
 	};
 
-	const renderLabels = (labels: { assignment_label: Assignment_Label_v2 }[], label: string) => {
+	const renderLabels = (labels: { assignment_label: Avo.Assignment.Label }[], label: string) => {
 		if (!labels.length) {
 			return '-';
 		}
@@ -477,7 +472,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			desktop: <span className={className}>{value || '-'}</span>,
 		});
 
-	const renderResponsesCell = (cellData: any, assignment: Assignment_v2) => {
+	const renderResponsesCell = (cellData: any, assignment: Avo.Assignment.Assignment) => {
 		if ((cellData || []).length === 0) {
 			return renderDataCell(
 				<span
@@ -495,7 +490,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			<Link
 				to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 					id: assignment.id,
-					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.KLIKS,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS,
 				})}
 			>
 				<span
@@ -511,7 +506,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderCell = (
-		assignment: Assignment_v2_With_Labels,
+		assignment: Avo.Assignment.Assignment,
 		colKey: AssignmentOverviewTableColumns
 	) => {
 		const cellData: any = (assignment as any)[colKey];
@@ -519,7 +514,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			id: assignment.id,
 		});
 
-		const labels = assignment.labels.filter(
+		const labels = (assignment.labels || []).filter(
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
@@ -548,9 +543,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			}[assignment.share_type];
 
 		const shareTypeText =
-			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
 				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
-				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				: assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
 				? tHtml('assignment/views/assignment-overview___gedeeld-met-count-anderen-names', {
 						count: sharedWithNames.length,
 						names: sharedWithNames,
@@ -558,9 +553,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				: tText('assignment/views/assignment-overview___mijn-opdracht');
 
 		const shareTypeIcon =
-			assignment.share_type === AssignmentShareType.GEDEELD_MET_MIJ
+			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
 				? IconName.userGroup
-				: assignment.share_type === AssignmentShareType.GEDEELD_MET_ANDERE
+				: assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
 				? IconName.userGroup2
 				: IconName.user2;
 
@@ -592,7 +587,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			case 'class_room':
 				return renderLabels(
-					assignment.labels.filter(({ assignment_label: item }) => item.type === 'CLASS'),
+					(assignment.labels || []).filter(
+						({ assignment_label: item }) => item.type === 'CLASS'
+					),
 					tText('assignment/views/assignment-overview___klas')
 				);
 
@@ -659,8 +656,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const getLabelOptions = (labelType: Avo.Assignment.LabelType): CheckboxOption[] => {
 		return compact(
 			allAssignmentLabels
-				.filter((labelObj: Assignment_Label_v2) => labelObj.type === labelType)
-				.map((labelObj: Assignment_Label_v2): CheckboxOption | null => {
+				.filter((labelObj: Avo.Assignment.Label) => labelObj.type === labelType)
+				.map((labelObj: Avo.Assignment.Label): CheckboxOption | null => {
 					if (!labelObj.label) {
 						return null;
 					}
@@ -958,7 +955,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
 							  )
 					}
-					renderCell={(rowData: Assignment_v2_With_Labels, colKey: string) =>
+					renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
 						renderCell(rowData, colKey as AssignmentOverviewTableColumns)
 					}
 					rowKey="id"

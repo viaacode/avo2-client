@@ -2,7 +2,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { without } from 'lodash-es';
 
 import { isNewAssignmentBlock } from '../assignment/assignment.const';
-import { BaseBlockWithMeta, PupilCollectionFragment } from '../assignment/assignment.types';
+import { PupilCollectionFragment } from '../assignment/assignment.types';
 import { ItemTrimInfo } from '../item/item.types';
 import {
 	BulkUpdateAuthorForPupilCollectionsDocument,
@@ -47,7 +47,7 @@ export class PupilCollectionService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {},
 		itemsPerPage: number = ITEMS_PER_PAGE
-	): Promise<[GetPupilCollectionsAdminOverviewQuery['app_assignment_responses_v2'], number]> {
+	): Promise<[Avo.Assignment.Response[], number]> {
 		let variables;
 		try {
 			variables = {
@@ -81,7 +81,7 @@ export class PupilCollectionService {
 				});
 			}
 
-			return [pupilCollections, assignmentCount];
+			return [pupilCollections as Avo.Assignment.Response[], assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get pupil collections from the database', err, {
 				variables,
@@ -192,7 +192,7 @@ export class PupilCollectionService {
 				!created.map((d) => d.id).includes(block.id)
 		);
 
-		const cleanup = (block: BaseBlockWithMeta) => {
+		const cleanup = (block: Avo.Core.BlockItemBase) => {
 			delete block.item_meta;
 			delete (block as any).icon;
 			delete (block as any).onSlice;
@@ -275,7 +275,7 @@ export class PupilCollectionService {
 		item: Avo.Item.Item,
 		assignmentResponseId: string,
 		itemTrimInfo?: ItemTrimInfo
-	): Promise<BaseBlockWithMeta> {
+	): Promise<Avo.Core.BlockItemBase> {
 		// Handle trim settings and thumbnail
 		const trimInfo: ItemTrimInfo = itemTrimInfo || {
 			hasCut: false,
@@ -332,6 +332,6 @@ export class PupilCollectionService {
 
 		const returnObject = { ...insertedBlock, item_meta: item };
 
-		return returnObject as BaseBlockWithMeta;
+		return returnObject as Avo.Core.BlockItemBase;
 	}
 }

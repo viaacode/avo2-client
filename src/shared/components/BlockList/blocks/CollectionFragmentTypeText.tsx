@@ -1,6 +1,6 @@
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 
-import { BaseBlockWithMeta } from '../../../../assignment/assignment.types';
 import { CollectionFragmentRichText } from '../../../../collection/components';
 import CollectionFragmentTitle, {
 	CollectionFragmentTitleProps,
@@ -8,7 +8,7 @@ import CollectionFragmentTitle, {
 
 export interface CollectionFragmentTypeTextProps {
 	title?: CollectionFragmentTitleProps;
-	block?: BaseBlockWithMeta;
+	block?: Avo.Core.BlockItemBase;
 }
 
 const CollectionFragmentTypeText: FC<CollectionFragmentTypeTextProps> = ({ title, block }) => {

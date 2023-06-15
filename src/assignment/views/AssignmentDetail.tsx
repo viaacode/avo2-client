@@ -11,8 +11,10 @@ import {
 	isUuid,
 	Spacer,
 	Spinner,
+	ToggleButton,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
@@ -29,9 +31,14 @@ import { InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
-import { navigate, renderAvatar } from '../../shared/helpers';
+import { CustomError, navigate, renderAvatar } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
+import {
+	BookmarksViewsPlaysService,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service';
+import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import {
 	getRelatedItems,
 	ObjectTypes,
@@ -41,12 +48,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import {
-	Assignment_v2_With_Blocks,
-	Assignment_v2_With_Labels,
-	BaseBlockWithMeta,
-} from '../assignment.types';
-import { useAssignmentForm } from '../hooks';
+import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import './AssignmentDetail.scss';
 
@@ -58,6 +60,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
 	user,
 	history,
+	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -65,7 +68,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
-	const [assignment, setAssignment] = useAssignmentForm(undefined);
+	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
 		canEditAssignments: false,
 	});
@@ -73,16 +76,21 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		null
 	);
 	const [isForbidden, setIsforbidden] = useState<boolean>(false);
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
 	const id = match.params.id;
+	const isPublic = assignment?.is_public || false;
 
 	const getPermissions = useCallback(
 		async (
 			assignmentId: string,
 			user: Avo.User.User | undefined,
-			assignment: Assignment_v2_With_Blocks & Assignment_v2_With_Labels
+			assignment: Avo.Assignment.Assignment
 		): Promise<AssignmentDetailPermissions> => {
 			if (!user || !assignment) {
 				return {};
@@ -137,7 +145,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			setAssigmentLoading(true);
 			setAssigmentError(null);
 
-			let tempAssignment: Assignment_v2_With_Blocks | null = null;
+			let tempAssignment: Avo.Assignment.Assignment | null = null;
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
@@ -148,7 +156,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 					setAssigmentError({
 						message:
 							err.innerException.additionalInfo.statusCode === 403
-								? tHtml('Je hebt geen rechten om deze pagina te')
+								? tHtml(
+										'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-pagina-te'
+								  )
 								: tHtml(
 										'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
 								  ),
@@ -173,7 +183,13 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				return;
 			}
 
-			setAssignment(tempAssignment);
+			setAssignment(tempAssignment as any);
+			setBookmarkViewCounts(
+				await BookmarksViewsPlaysService.getAssignmentCounts(
+					tempAssignment.id as string,
+					user
+				)
+			);
 
 			try {
 				const permissionObj = await getPermissions(id, user, tempAssignment);
@@ -209,17 +225,102 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		getRelatedAssignments();
 	}, [getRelatedAssignments]);
 
+	const toggleBookmark = async () => {
+		try {
+			if (!user) {
+				ToastService.danger(
+					tHtml(
+						'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
+					)
+				);
+				return;
+			}
+
+			if (!assignment) {
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-detail___er-ging-iets-mis-met-het-ophalen-van-de-ophalen-van-de-opdracht'
+					)
+				);
+				return;
+			}
+
+			await BookmarksViewsPlaysService.toggleBookmark(
+				assignment?.id as string,
+				user,
+				'assignment',
+				bookmarkViewCounts.isBookmarked
+			);
+			setBookmarkViewCounts({
+				...bookmarkViewCounts,
+				isBookmarked: !bookmarkViewCounts.isBookmarked,
+			});
+			ToastService.success(
+				bookmarkViewCounts.isBookmarked
+					? tHtml('assignment/views/assignment-detail___de-bladwijzer-is-verwijderd')
+					: tHtml('assignment/views/assignment-detail___de-bladwijzer-is-aangemaakt')
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to toggle bookmark', err, {
+					assignment,
+					user,
+					type: 'collection',
+					isBookmarked: bookmarkViewCounts.isBookmarked,
+				})
+			);
+			ToastService.danger(
+				bookmarkViewCounts.isBookmarked
+					? tHtml(
+							'assignment/views/assignment-detail___het-verwijderen-van-de-bladwijzer-is-mislukt'
+					  )
+					: tHtml(
+							'assignment/views/assignment-detail___het-aanmaken-van-de-bladwijzer-is-mislukt'
+					  )
+			);
+		}
+	};
+
 	// Render
 
 	const renderHeaderButtons = () => {
 		return (
 			<ButtonToolbar>
+				<Button
+					type="secondary"
+					title={
+						isPublic
+							? tText('assignment/views/assignment-detail___maak-deze-opdracht-prive')
+							: tText(
+									'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
+							  )
+					}
+					ariaLabel={
+						isPublic
+							? tText('assignment/views/assignment-detail___maak-deze-opdracht-prive')
+							: tText(
+									'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
+							  )
+					}
+					icon={isPublic ? IconName.unlock3 : IconName.lock}
+					onClick={() => setIsPublishModalOpen(true)}
+				/>
+
+				<ToggleButton
+					title={tText('assignment/views/assignment-detail___bladwijzer')}
+					type="secondary"
+					icon={IconName.bookmark}
+					active={bookmarkViewCounts.isBookmarked}
+					ariaLabel={tText('assignment/views/assignment-detail___bladwijzer')}
+					onClick={toggleBookmark}
+				/>
+
 				<Spacer margin="left-small">
 					{permissions?.canEditAssignments && (
 						<Link
 							to={generatePath(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 								id,
-								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD,
+								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 							})}
 						>
 							<Button
@@ -273,7 +374,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 		return (
 			<BlockList
-				blocks={(blocks || []) as BaseBlockWithMeta[]}
+				blocks={(blocks || []) as Avo.Core.BlockItemBase[]}
 				config={{
 					TEXT: {
 						title: {
@@ -300,7 +401,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 						</h3>
 						<Grid>
 							{!!assignment &&
-								renderCommonMetadata(assignment as Assignment_v2_With_Blocks)}
+								renderCommonMetadata(assignment as Avo.Assignment.Assignment)}
 						</Grid>
 						{!!relatedAssignments &&
 							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}
@@ -408,8 +509,11 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 								)}
 							/>
 						</MetaTags>
+
 						{renderHeader()}
+
 						{renderPageContent()}
+
 						{renderMetadata()}
 					</div>
 
@@ -433,6 +537,23 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 						}}
 					/>
 				</div>
+			)}
+
+			{!!assignment && !!user && (
+				<PublishAssignmentModal
+					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
+						setIsPublishModalOpen(false);
+						if (newAssignment) {
+							setAssignment(newAssignment);
+						}
+					}}
+					isOpen={isPublishModalOpen}
+					assignment={assignment as Avo.Assignment.Assignment}
+					history={history}
+					location={location}
+					match={match}
+					user={user}
+				/>
 			)}
 		</>
 	);

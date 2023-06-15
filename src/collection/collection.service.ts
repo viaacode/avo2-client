@@ -2,7 +2,18 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { endOfDay, startOfDay } from 'date-fns';
-import { cloneDeep, compact, fromPairs, get, isEmpty, isEqual, isNil, without } from 'lodash-es';
+import {
+	cloneDeep,
+	compact,
+	fromPairs,
+	get,
+	isEmpty,
+	isEqual,
+	isNil,
+	isNumber,
+	uniq,
+	without,
+} from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
 import { getProfileId } from '../authentication/helpers/get-profile-id';
@@ -19,6 +30,9 @@ import {
 	DeleteCollectionLabelsDocument,
 	DeleteCollectionLabelsMutation,
 	DeleteCollectionLabelsMutationVariables,
+	DeleteCollectionLomLinksDocument,
+	DeleteCollectionLomLinksMutation,
+	DeleteCollectionLomLinksMutationVariables,
 	DeleteCollectionOrBundleByUuidDocument,
 	DeleteCollectionOrBundleByUuidMutation,
 	DeleteCollectionOrBundleByUuidMutationVariables,
@@ -77,6 +91,9 @@ import {
 	InsertCollectionLabelsDocument,
 	InsertCollectionLabelsMutation,
 	InsertCollectionLabelsMutationVariables,
+	InsertCollectionLomLinksDocument,
+	InsertCollectionLomLinksMutation,
+	InsertCollectionLomLinksMutationVariables,
 	InsertCollectionManagementEntryDocument,
 	InsertCollectionManagementEntryMutation,
 	InsertCollectionManagementEntryMutationVariables,
@@ -214,8 +231,8 @@ export class CollectionService {
 	 * @param user
 	 */
 	static async updateCollection(
-		initialColl: Avo.Collection.Collection | null,
-		updatedColl: Partial<Avo.Collection.Collection>,
+		initialColl: Omit<Avo.Collection.Collection, 'loms' | 'contributors'> | null,
+		updatedColl: Partial<Omit<Avo.Collection.Collection, 'loms' | 'contributors'>>,
 		user: Avo.User.User
 	): Promise<Avo.Collection.Collection | null> {
 		try {
@@ -266,7 +283,10 @@ export class CollectionService {
 
 			// Fragments to insert do not have an id yet
 			const newFragments = getFragmentsFromCollection(newCollection).filter(
-				(fragment) => fragment.id < 0 || Object.is(fragment.id, -0) || isNil(fragment.id)
+				(fragment) =>
+					(isNumber(fragment.id) && fragment.id < 0) ||
+					Object.is(fragment.id, -0) ||
+					isNil(fragment.id)
 			);
 
 			// delete fragments that were removed from collection
@@ -797,7 +817,7 @@ export class CollectionService {
 	static async fetchCollectionsOrBundles(
 		limit: number,
 		typeId: ContentTypeNumber
-	): Promise<GetPublicCollectionsQuery['app_collections']> {
+	): Promise<GetPublicCollectionsQuery['app_collections_overview']> {
 		try {
 			// retrieve collections
 			const response = await dataService.query<
@@ -808,7 +828,7 @@ export class CollectionService {
 				variables: { limit, typeId },
 			});
 
-			return response.app_collections || [];
+			return response.app_collections_overview || [];
 		} catch (err) {
 			throw new CustomError('Het ophalen van de collecties is mislukt.', err, {
 				query: 'GET_PUBLIC_COLLECTIONS',
@@ -876,7 +896,7 @@ export class CollectionService {
 					: GetPublicCollectionsByTitleDocument,
 				variables,
 			});
-			return response.app_collections;
+			return response.app_collections_overview;
 		} catch (err) {
 			throw new CustomError('Failed to fetch collections or bundles', err, {
 				query: 'GET_PUBLIC_COLLECTIONS_BY_ID or GET_PUBLIC_COLLECTIONS_BY_TITLE',
@@ -1279,7 +1299,7 @@ export class CollectionService {
 		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined
-	): Promise<Avo.Collection.Collection[]> {
+	): Promise<Collection[]> {
 		let variables: GetCollectionsByOwnerQueryVariables | null = null;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
@@ -1305,7 +1325,7 @@ export class CollectionService {
 				variables,
 			});
 
-			return response.app_collections as unknown as Avo.Collection.Collection[];
+			return response.app_collections_overview as unknown as Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
@@ -1320,7 +1340,7 @@ export class CollectionService {
 		limit: number | null,
 		order: GetBookmarkedCollectionsByOwnerQueryVariables['order'],
 		filterString: string | undefined
-	): Promise<Avo.Collection.Collection[]> {
+	): Promise<Collection[]> {
 		let variables: GetBookmarkedCollectionsByOwnerQueryVariables | undefined = undefined;
 		try {
 			const trimmedFilterString = filterString?.trim();
@@ -1549,7 +1569,7 @@ export class CollectionService {
 				err,
 				{
 					assignmentId,
-					query: 'GET_CONTRIBUTORS_BY_COLLECTION_ID',
+					query: 'GET_CONTRIBUTORS_BY_COLLECTION_UUID',
 				}
 			);
 		}
@@ -1670,6 +1690,69 @@ export class CollectionService {
 			throw new CustomError('Failed to decline to share collection', err, {
 				assignmentId: collectionId,
 				inviteToken,
+			});
+		}
+	}
+
+	static async transferCollectionOwnerShip(
+		collectionId: string,
+		contributorId: string
+	): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				`${getEnv(
+					'PROXY_URL'
+				)}/collections/${collectionId}/share/transfer-owner?newOwnerId=${contributorId}`,
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to transfer assignment ownership', err, {
+				contributorId,
+			});
+		}
+	}
+
+	static async insertCollectionLomLinks(collectionId: string, lomIds: string[]): Promise<void> {
+		try {
+			const uniqueLoms = uniq(lomIds);
+			const lomObjects = uniqueLoms.map((lomId) => ({
+				collection_id: collectionId,
+				lom_id: lomId,
+			}));
+
+			const variables: InsertCollectionLomLinksMutationVariables = { lomObjects };
+
+			await dataService.query<
+				InsertCollectionLomLinksMutation,
+				InsertCollectionLomLinksMutationVariables
+			>({
+				query: InsertCollectionLomLinksDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert lom links in collection database', err, {
+				collectionId,
+				lomIds,
+				query: 'INSERT_COLLECTION_LOM_LINKS',
+			});
+		}
+	}
+
+	static async deleteCollectionLomLinks(collectionId: string): Promise<void> {
+		try {
+			const variables: DeleteCollectionLomLinksMutationVariables = { collectionId };
+
+			await dataService.query<
+				DeleteCollectionLomLinksMutation,
+				DeleteCollectionLomLinksMutationVariables
+			>({
+				query: DeleteCollectionLomLinksDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert lom links in collection database', err, {
+				collectionId,
+				query: 'DELETE_COLLECTION_LOM_LINKS',
 			});
 		}
 	}

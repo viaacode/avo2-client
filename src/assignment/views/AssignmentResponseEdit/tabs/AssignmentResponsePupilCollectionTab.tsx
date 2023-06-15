@@ -29,10 +29,7 @@ import {
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
 import {
-	Assignment_Response_v2,
 	AssignmentResponseFormState,
-	AssignmentResponseInfo,
-	BaseBlockWithMeta,
 	PupilCollectionFragment,
 	PupilSearchFilterState,
 } from '../../../assignment.types';
@@ -47,6 +44,7 @@ import {
 } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
+import type { Avo } from '@viaa/avo2-types';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -55,8 +53,8 @@ enum MobileActionId {
 
 interface AssignmentResponsePupilCollectionTabProps {
 	pastDeadline: boolean;
-	assignmentResponse: AssignmentResponseInfo;
-	setAssignmentResponse: Dispatch<SetStateAction<Assignment_Response_v2>>;
+	assignmentResponse: Avo.Assignment.Response;
+	setAssignmentResponse: Dispatch<SetStateAction<Avo.Assignment.Response>>;
 	onShowPreviewClicked: () => void;
 	setTab: (tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void;
 	setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void;
@@ -79,9 +77,9 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	const [isMobileOptionsMenuOpen, setIsMobileOptionsMenuOpen] = useState<boolean>(false);
 	const [isDraggableListModalOpen, setIsDraggableListModalOpen] = useState<boolean>(false);
 
-	const updateBlocksInAssignmentResponseState = (newBlocks: BaseBlockWithMeta[]) => {
+	const updateBlocksInAssignmentResponseState = (newBlocks: Avo.Core.BlockItemBase[]) => {
 		setAssignmentResponse(
-			(prev: Assignment_Response_v2) =>
+			(prev: Avo.Assignment.Response) =>
 				({
 					...prev,
 					pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
@@ -156,7 +154,9 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 								} as PupilCollectionFragment
 							);
 
-							updateBlocksInAssignmentResponseState(newBlocks as BaseBlockWithMeta[]);
+							updateBlocksInAssignmentResponseState(
+								newBlocks as Avo.Core.BlockItemBase[]
+							);
 						}}
 					/>
 				),
@@ -330,7 +330,8 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 			<Container mode="vertical">
 				<BlockList
 					blocks={
-						(assignmentResponse?.pupil_collection_blocks || []) as BaseBlockWithMeta[]
+						(assignmentResponse?.pupil_collection_blocks ||
+							[]) as Avo.Core.BlockItemBase[]
 					}
 				/>
 			</Container>

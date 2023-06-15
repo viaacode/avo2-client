@@ -94,7 +94,7 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 			profile {
 				avatar
 				user_id
-				usersByuserId {
+				user: usersByuserId {
 					last_name
 					first_name
 					mail
@@ -106,6 +106,14 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 				}
 			}
 			id
+		}
+		loms {
+			lom {
+				id
+				label
+				scheme
+				broader
+			}
 		}
 		share_type
 		lom_learning_resource_type

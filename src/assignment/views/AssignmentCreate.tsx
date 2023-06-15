@@ -1,14 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
-import React, {
-	Dispatch,
-	FunctionComponent,
-	SetStateAction,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import type { Avo } from '@viaa/avo2-types';
+import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -27,12 +20,6 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import {
-	Assignment_v2_With_Blocks,
-	AssignmentBlock,
-	AssignmentFormState,
-	BaseBlockWithMeta,
-} from '../assignment.types';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentHeading from '../components/AssignmentHeading';
@@ -52,6 +39,7 @@ import {
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
+import { AssignmentFields } from '../hooks/assignment-form';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
 	const { tText, tHtml } = useTranslation();
@@ -59,7 +47,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Data
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm();
 
-	const form = useForm<AssignmentFormState>({
+	const form = useForm<Avo.Assignment.Assignment>({
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
 	});
@@ -72,9 +60,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 		formState: { isDirty },
 	} = form;
 
-	const updateBlocksInAssignmentState = (newBlocks: BaseBlockWithMeta[]) => {
-		setAssignment((prev) => ({ ...prev, blocks: newBlocks as AssignmentBlock[] }));
-		setValue('blocks', newBlocks as AssignmentBlock[], { shouldDirty: true });
+	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
+		setAssignment((prev) => ({ ...prev, blocks: newBlocks as Avo.Assignment.Block[] }));
+		(setValue as any)('blocks', newBlocks as Avo.Assignment.Block[], { shouldDirty: true });
 	};
 	const setBlock = useAssignmentBlockChangeHandler(
 		assignment?.blocks || [],
@@ -90,11 +78,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					...assignment,
 					blocks: cleanupTitleAndDescriptions(
 						assignment?.blocks || []
-					) as AssignmentBlock[],
+					) as Avo.Assignment.Block[],
 					owner_profile_id: user.profile?.id,
 					labels: [],
-				},
-				assignment?.labels?.map((label) => label.assignment_label) || []
+				} as Partial<Avo.Assignment.Assignment>,
+				(assignment?.labels || []).map((label) => label.assignment_label) || []
 			);
 
 			if (created) {
@@ -177,7 +165,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		modal: {
 			items: assignment?.blocks || [],
-			onClose: (update?: AssignmentBlock[]) => {
+			onClose: (update?: Avo.Assignment.Block[]) => {
 				if (update) {
 					const blocks = update.map((item, i) => ({
 						...item,
@@ -189,7 +177,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 						blocks,
 					}));
 
-					setValue('blocks', blocks, { shouldDirty: true });
+					(setValue as any)('blocks', blocks, { shouldDirty: true });
 				}
 			},
 		},
@@ -232,7 +220,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	);
 
 	const renderTitle = useMemo(
-		() => <AssignmentTitle control={control} setAssignment={setAssignment} />,
+		() => <AssignmentTitle control={control} setAssignment={setAssignment as any} />,
 		[tText, control, setAssignment]
 	);
 
@@ -240,7 +228,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
-			case ASSIGNMENT_CREATE_UPDATE_TABS.INHOUD: // TODO remove warning
+			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT: // TODO remove warning
 				return (
 					<div className="c-assignment-contents-tab">
 						{(assignment?.blocks?.length || 0) > 0 && (
@@ -275,11 +263,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 				return (
 					<div className="c-assignment-details-tab">
 						<AssignmentDetailsFormEditable
-							assignment={assignment as Assignment_v2_With_Blocks}
-							setAssignment={
-								setAssignment as Dispatch<SetStateAction<Assignment_v2_With_Blocks>>
-							}
-							setValue={setValue}
+							assignment={assignment as AssignmentFields}
+							setAssignment={setAssignment as any}
+							setValue={setValue as any}
 						/>
 					</div>
 				);
@@ -294,12 +280,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	// Synchronise the React state that triggers renders with the useForm hook
 	useEffect(() => {
 		Object.keys(assignment || {}).forEach((key) => {
-			const cast = key as keyof AssignmentFormState;
-			setValue(cast, assignment?.[cast]);
+			const cast = key as keyof AssignmentFields;
+			(setValue as any)(cast, assignment?.[cast]);
 		});
 
 		trigger();
-	}, [assignment, setValue, trigger]);
+	}, [assignment as any, setValue, trigger]);
 
 	// Set the loading state when the form is ready
 	useEffect(() => {
