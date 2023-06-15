@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isEmpty, isNil, map, uniq, without } from 'lodash-es';
+import { cloneDeep, compact, isEmpty, isNil, uniq, without } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -406,7 +406,7 @@ export class AssignmentService {
 
 			await AssignmentService.deleteAssignmentLomLinks(original.id);
 
-			const loms: string[] = compact(map(update.loms, 'lom_id'));
+			const loms = update.loms.map((lom) => lom.lom.id);
 
 			await AssignmentService.insertAssignmentLomLinks(original.id, loms);
 
