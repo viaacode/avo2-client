@@ -7,3 +7,4 @@ export * from './useSlot';
 export * from './useSubjects';
 export * from './useTableSort';
 export * from './useTabs';
+export * from './useGetQualityLabels';

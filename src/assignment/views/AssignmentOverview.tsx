@@ -352,7 +352,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							assignmentRow.id as unknown as string
 						);
 
-					await duplicateAssignment(latest);
+					await duplicateAssignment(user, latest);
 					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {

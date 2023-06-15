@@ -3128,6 +3128,7 @@ export type App_Assignments_V2 = {
   bookmarks: Array<App_Assignments_V2_Bookmarks>;
   /** An aggregate relationship */
   bookmarks_aggregate: App_Assignments_V2_Bookmarks_Aggregate;
+  briefing_id?: Maybe<Scalars['String']>;
   /** An array relationship */
   contributors: Array<App_Assignments_V2_Contributors>;
   /** An aggregate relationship */
@@ -3154,21 +3155,23 @@ export type App_Assignments_V2 = {
   owner_profile_id: Scalars['uuid'];
   /** An object relationship */
   profile: Users_Profiles;
-  /** An object relationship */
-  profile_by_updated_by_profile?: Maybe<Users_Profiles>;
   published_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
-  quality_labels: Array<App_Assignments_V2_Labels>;
+  quality_labels: Array<App_Assignments_V2_Quality_Labels>;
   /** An aggregate relationship */
-  quality_labels_aggregate: App_Assignments_V2_Labels_Aggregate;
+  quality_labels_aggregate: App_Assignments_V2_Quality_Labels_Aggregate;
   /** An array relationship */
   responses: Array<App_Assignment_Responses_V2>;
   /** An aggregate relationship */
   responses_aggregate: App_Assignment_Responses_V2_Aggregate;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  /** An object relationship */
+  type: Shared_Types;
   type_id: Scalars['Int'];
   updated_at: Scalars['timestamptz'];
+  /** An object relationship */
+  updated_by?: Maybe<Users_Profiles>;
   updated_by_profile_id?: Maybe<Scalars['uuid']>;
   /** An object relationship */
   view_count?: Maybe<App_Assignment_V2_Views>;
@@ -3283,21 +3286,21 @@ export type App_Assignments_V2Loms_AggregateArgs = {
 
 /** columns and relationships of "app.assignments_v2" */
 export type App_Assignments_V2Quality_LabelsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
 };
 
 
 /** columns and relationships of "app.assignments_v2" */
 export type App_Assignments_V2Quality_Labels_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
 };
 
 
@@ -3958,6 +3961,7 @@ export type App_Assignments_V2_Bool_Exp = {
   blocks_aggregate?: InputMaybe<App_Assignment_Blocks_V2_Aggregate_Bool_Exp>;
   bookmarks?: InputMaybe<App_Assignments_V2_Bookmarks_Bool_Exp>;
   bookmarks_aggregate?: InputMaybe<App_Assignments_V2_Bookmarks_Aggregate_Bool_Exp>;
+  briefing_id?: InputMaybe<String_Comparison_Exp>;
   contributors?: InputMaybe<App_Assignments_V2_Contributors_Bool_Exp>;
   contributors_aggregate?: InputMaybe<App_Assignments_V2_Contributors_Aggregate_Bool_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -3976,16 +3980,17 @@ export type App_Assignments_V2_Bool_Exp = {
   owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
-  profile_by_updated_by_profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  quality_labels?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-  quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Labels_Aggregate_Bool_Exp>;
+  quality_labels?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+  quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Bool_Exp>;
   responses?: InputMaybe<App_Assignment_Responses_V2_Bool_Exp>;
   responses_aggregate?: InputMaybe<App_Assignment_Responses_V2_Aggregate_Bool_Exp>;
   thumbnail_path?: InputMaybe<String_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<Shared_Types_Bool_Exp>;
   type_id?: InputMaybe<Int_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  updated_by?: InputMaybe<Users_Profiles_Bool_Exp>;
   updated_by_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   view_count?: InputMaybe<App_Assignment_V2_Views_Bool_Exp>;
 };
@@ -4394,6 +4399,7 @@ export type App_Assignments_V2_Insert_Input = {
   available_at?: InputMaybe<Scalars['timestamptz']>;
   blocks?: InputMaybe<App_Assignment_Blocks_V2_Arr_Rel_Insert_Input>;
   bookmarks?: InputMaybe<App_Assignments_V2_Bookmarks_Arr_Rel_Insert_Input>;
+  briefing_id?: InputMaybe<Scalars['String']>;
   contributors?: InputMaybe<App_Assignments_V2_Contributors_Arr_Rel_Insert_Input>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   deadline_at?: InputMaybe<Scalars['timestamptz']>;
@@ -4409,240 +4415,17 @@ export type App_Assignments_V2_Insert_Input = {
   owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
-  profile_by_updated_by_profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
-  quality_labels?: InputMaybe<App_Assignments_V2_Labels_Arr_Rel_Insert_Input>;
+  quality_labels?: InputMaybe<App_Assignments_V2_Quality_Labels_Arr_Rel_Insert_Input>;
   responses?: InputMaybe<App_Assignment_Responses_V2_Arr_Rel_Insert_Input>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Shared_Types_Obj_Rel_Insert_Input>;
   type_id?: InputMaybe<Scalars['Int']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
+  updated_by?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   updated_by_profile_id?: InputMaybe<Scalars['uuid']>;
   view_count?: InputMaybe<App_Assignment_V2_Views_Obj_Rel_Insert_Input>;
-};
-
-/** Quality labels */
-export type App_Assignments_V2_Labels = {
-  __typename?: 'app_assignments_v2_labels';
-  /** An object relationship */
-  assignment: App_Assignments_V2;
-  assignment_id: Scalars['uuid'];
-  created_at: Scalars['timestamptz'];
-  /** An object relationship */
-  enum_collection_label: Lookup_Enum_Collection_Labels;
-  id: Scalars['uuid'];
-  label: Scalars['String'];
-  updated_at: Scalars['timestamptz'];
-};
-
-/** aggregated selection of "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Aggregate = {
-  __typename?: 'app_assignments_v2_labels_aggregate';
-  aggregate?: Maybe<App_Assignments_V2_Labels_Aggregate_Fields>;
-  nodes: Array<App_Assignments_V2_Labels>;
-};
-
-export type App_Assignments_V2_Labels_Aggregate_Bool_Exp = {
-  count?: InputMaybe<App_Assignments_V2_Labels_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignments_V2_Labels_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Aggregate_Fields = {
-  __typename?: 'app_assignments_v2_labels_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignments_V2_Labels_Max_Fields>;
-  min?: Maybe<App_Assignments_V2_Labels_Min_Fields>;
-};
-
-
-/** aggregate fields of "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Aggregate_Order_By = {
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignments_V2_Labels_Max_Order_By>;
-  min?: InputMaybe<App_Assignments_V2_Labels_Min_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignments_V2_Labels_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignments_V2_Labels_On_Conflict>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignments_v2_labels". All fields are combined with a logical 'AND'. */
-export type App_Assignments_V2_Labels_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignments_V2_Labels_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignments_V2_Labels_Bool_Exp>>;
-  assignment?: InputMaybe<App_Assignments_V2_Bool_Exp>;
-  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  enum_collection_label?: InputMaybe<Lookup_Enum_Collection_Labels_Bool_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  label?: InputMaybe<String_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignments_v2_labels" */
-export enum App_Assignments_V2_Labels_Constraint {
-  /** unique or primary key constraint on columns "label", "assignment_id" */
-  AssignmentsV2LabelsAssignmentIdLabelKey = 'assignments_v2_labels_assignment_id_label_key',
-  /** unique or primary key constraint on columns "id" */
-  AssignmentsV2LabelsPkey = 'assignments_v2_labels_pkey'
-}
-
-/** input type for inserting data into table "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Insert_Input = {
-  assignment?: InputMaybe<App_Assignments_V2_Obj_Rel_Insert_Input>;
-  assignment_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  enum_collection_label?: InputMaybe<Lookup_Enum_Collection_Labels_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['uuid']>;
-  label?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate max on columns */
-export type App_Assignments_V2_Labels_Max_Fields = {
-  __typename?: 'app_assignments_v2_labels_max_fields';
-  assignment_id?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['uuid']>;
-  label?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** order by max() on columns of table "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Max_Order_By = {
-  assignment_id?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignments_V2_Labels_Min_Fields = {
-  __typename?: 'app_assignments_v2_labels_min_fields';
-  assignment_id?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['uuid']>;
-  label?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** order by min() on columns of table "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Min_Order_By = {
-  assignment_id?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Mutation_Response = {
-  __typename?: 'app_assignments_v2_labels_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignments_V2_Labels>;
-};
-
-/** on_conflict condition type for table "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_On_Conflict = {
-  constraint: App_Assignments_V2_Labels_Constraint;
-  update_columns?: Array<App_Assignments_V2_Labels_Update_Column>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignments_v2_labels". */
-export type App_Assignments_V2_Labels_Order_By = {
-  assignment?: InputMaybe<App_Assignments_V2_Order_By>;
-  assignment_id?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  enum_collection_label?: InputMaybe<Lookup_Enum_Collection_Labels_Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: app.assignments_v2_labels */
-export type App_Assignments_V2_Labels_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "app.assignments_v2_labels" */
-export enum App_Assignments_V2_Labels_Select_Column {
-  /** column name */
-  AssignmentId = 'assignment_id',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** input type for updating data in table "app.assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Set_Input = {
-  assignment_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  label?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** Streaming cursor of the table "app_assignments_v2_labels" */
-export type App_Assignments_V2_Labels_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignments_V2_Labels_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignments_V2_Labels_Stream_Cursor_Value_Input = {
-  assignment_id?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  label?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** update columns of table "app.assignments_v2_labels" */
-export enum App_Assignments_V2_Labels_Update_Column {
-  /** column name */
-  AssignmentId = 'assignment_id',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-export type App_Assignments_V2_Labels_Updates = {
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignments_V2_Labels_Set_Input>;
-  where: App_Assignments_V2_Labels_Bool_Exp;
 };
 
 /** columns and relationships of "app.assignments_v2_lom_links" */
@@ -4847,6 +4630,7 @@ export type App_Assignments_V2_Max_Fields = {
   answer_url?: Maybe<Scalars['String']>;
   assignment_type?: Maybe<Scalars['String']>;
   available_at?: Maybe<Scalars['timestamptz']>;
+  briefing_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   deadline_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
@@ -4866,6 +4650,7 @@ export type App_Assignments_V2_Max_Order_By = {
   answer_url?: InputMaybe<Order_By>;
   assignment_type?: InputMaybe<Order_By>;
   available_at?: InputMaybe<Order_By>;
+  briefing_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   deadline_at?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
@@ -4886,6 +4671,7 @@ export type App_Assignments_V2_Min_Fields = {
   answer_url?: Maybe<Scalars['String']>;
   assignment_type?: Maybe<Scalars['String']>;
   available_at?: Maybe<Scalars['timestamptz']>;
+  briefing_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   deadline_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
@@ -4905,6 +4691,7 @@ export type App_Assignments_V2_Min_Order_By = {
   answer_url?: InputMaybe<Order_By>;
   assignment_type?: InputMaybe<Order_By>;
   available_at?: InputMaybe<Order_By>;
+  briefing_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   deadline_at?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
@@ -4949,6 +4736,7 @@ export type App_Assignments_V2_Order_By = {
   available_at?: InputMaybe<Order_By>;
   blocks_aggregate?: InputMaybe<App_Assignment_Blocks_V2_Aggregate_Order_By>;
   bookmarks_aggregate?: InputMaybe<App_Assignments_V2_Bookmarks_Aggregate_Order_By>;
+  briefing_id?: InputMaybe<Order_By>;
   contributors_aggregate?: InputMaybe<App_Assignments_V2_Contributors_Aggregate_Order_By>;
   created_at?: InputMaybe<Order_By>;
   deadline_at?: InputMaybe<Order_By>;
@@ -4964,14 +4752,15 @@ export type App_Assignments_V2_Order_By = {
   owner?: InputMaybe<Users_Summary_View_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
-  profile_by_updated_by_profile?: InputMaybe<Users_Profiles_Order_By>;
   published_at?: InputMaybe<Order_By>;
-  quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Labels_Aggregate_Order_By>;
+  quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Order_By>;
   responses_aggregate?: InputMaybe<App_Assignment_Responses_V2_Aggregate_Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
+  type?: InputMaybe<Shared_Types_Order_By>;
   type_id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
+  updated_by?: InputMaybe<Users_Profiles_Order_By>;
   updated_by_profile_id?: InputMaybe<Order_By>;
   view_count?: InputMaybe<App_Assignment_V2_Views_Order_By>;
 };
@@ -5017,9 +4806,9 @@ export type App_Assignments_V2_Overview = {
   profile?: Maybe<Users_Profiles>;
   published_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
-  quality_labels: Array<App_Assignments_V2_Labels>;
+  quality_labels: Array<App_Assignments_V2_Quality_Labels>;
   /** An aggregate relationship */
-  quality_labels_aggregate: App_Assignments_V2_Labels_Aggregate;
+  quality_labels_aggregate: App_Assignments_V2_Quality_Labels_Aggregate;
   /** An array relationship */
   responses: Array<App_Assignment_Responses_V2>;
   /** An aggregate relationship */
@@ -5141,21 +4930,21 @@ export type App_Assignments_V2_OverviewLoms_AggregateArgs = {
 
 /** columns and relationships of "app.assignments_v2_overview" */
 export type App_Assignments_V2_OverviewQuality_LabelsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
 };
 
 
 /** columns and relationships of "app.assignments_v2_overview" */
 export type App_Assignments_V2_OverviewQuality_Labels_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
 };
 
 
@@ -5230,8 +5019,8 @@ export type App_Assignments_V2_Overview_Bool_Exp = {
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
   published_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  quality_labels?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-  quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Labels_Aggregate_Bool_Exp>;
+  quality_labels?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+  quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Bool_Exp>;
   responses?: InputMaybe<App_Assignment_Responses_V2_Bool_Exp>;
   responses_aggregate?: InputMaybe<App_Assignment_Responses_V2_Aggregate_Bool_Exp>;
   share_type?: InputMaybe<String_Comparison_Exp>;
@@ -5299,7 +5088,7 @@ export type App_Assignments_V2_Overview_Order_By = {
   owner_profile_id?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
   published_at?: InputMaybe<Order_By>;
-  quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Labels_Aggregate_Order_By>;
+  quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Order_By>;
   responses_aggregate?: InputMaybe<App_Assignment_Responses_V2_Aggregate_Order_By>;
   share_type?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
@@ -5385,6 +5174,230 @@ export type App_Assignments_V2_Prepend_Input = {
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
 };
 
+/** Quality labels */
+export type App_Assignments_V2_Quality_Labels = {
+  __typename?: 'app_assignments_v2_quality_labels';
+  /** An object relationship */
+  assignment: App_Assignments_V2;
+  assignment_id: Scalars['uuid'];
+  created_at: Scalars['timestamptz'];
+  /** An object relationship */
+  enum_collection_label: Lookup_Enum_Collection_Labels;
+  id: Scalars['uuid'];
+  label: Scalars['String'];
+  updated_at: Scalars['timestamptz'];
+};
+
+/** aggregated selection of "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Aggregate = {
+  __typename?: 'app_assignments_v2_quality_labels_aggregate';
+  aggregate?: Maybe<App_Assignments_V2_Quality_Labels_Aggregate_Fields>;
+  nodes: Array<App_Assignments_V2_Quality_Labels>;
+};
+
+export type App_Assignments_V2_Quality_Labels_Aggregate_Bool_Exp = {
+  count?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Bool_Exp_Count>;
+};
+
+export type App_Assignments_V2_Quality_Labels_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+  filter?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Aggregate_Fields = {
+  __typename?: 'app_assignments_v2_quality_labels_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<App_Assignments_V2_Quality_Labels_Max_Fields>;
+  min?: Maybe<App_Assignments_V2_Quality_Labels_Min_Fields>;
+};
+
+
+/** aggregate fields of "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<App_Assignments_V2_Quality_Labels_Max_Order_By>;
+  min?: InputMaybe<App_Assignments_V2_Quality_Labels_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Arr_Rel_Insert_Input = {
+  data: Array<App_Assignments_V2_Quality_Labels_Insert_Input>;
+  /** upsert condition */
+  on_conflict?: InputMaybe<App_Assignments_V2_Quality_Labels_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "app.assignments_v2_quality_labels". All fields are combined with a logical 'AND'. */
+export type App_Assignments_V2_Quality_Labels_Bool_Exp = {
+  _and?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Bool_Exp>>;
+  _not?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+  _or?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Bool_Exp>>;
+  assignment?: InputMaybe<App_Assignments_V2_Bool_Exp>;
+  assignment_id?: InputMaybe<Uuid_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  enum_collection_label?: InputMaybe<Lookup_Enum_Collection_Labels_Bool_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
+  label?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "app.assignments_v2_quality_labels" */
+export enum App_Assignments_V2_Quality_Labels_Constraint {
+  /** unique or primary key constraint on columns "label", "assignment_id" */
+  AssignmentsV2LabelsAssignmentIdLabelKey = 'assignments_v2_labels_assignment_id_label_key',
+  /** unique or primary key constraint on columns "id" */
+  AssignmentsV2LabelsPkey = 'assignments_v2_labels_pkey'
+}
+
+/** input type for inserting data into table "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Insert_Input = {
+  assignment?: InputMaybe<App_Assignments_V2_Obj_Rel_Insert_Input>;
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  enum_collection_label?: InputMaybe<Lookup_Enum_Collection_Labels_Obj_Rel_Insert_Input>;
+  id?: InputMaybe<Scalars['uuid']>;
+  label?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type App_Assignments_V2_Quality_Labels_Max_Fields = {
+  __typename?: 'app_assignments_v2_quality_labels_max_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  label?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** order by max() on columns of table "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Max_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  label?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type App_Assignments_V2_Quality_Labels_Min_Fields = {
+  __typename?: 'app_assignments_v2_quality_labels_min_fields';
+  assignment_id?: Maybe<Scalars['uuid']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  id?: Maybe<Scalars['uuid']>;
+  label?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** order by min() on columns of table "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Min_Order_By = {
+  assignment_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  label?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** response of any mutation on the table "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Mutation_Response = {
+  __typename?: 'app_assignments_v2_quality_labels_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<App_Assignments_V2_Quality_Labels>;
+};
+
+/** on_conflict condition type for table "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_On_Conflict = {
+  constraint: App_Assignments_V2_Quality_Labels_Constraint;
+  update_columns?: Array<App_Assignments_V2_Quality_Labels_Update_Column>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "app.assignments_v2_quality_labels". */
+export type App_Assignments_V2_Quality_Labels_Order_By = {
+  assignment?: InputMaybe<App_Assignments_V2_Order_By>;
+  assignment_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  enum_collection_label?: InputMaybe<Lookup_Enum_Collection_Labels_Order_By>;
+  id?: InputMaybe<Order_By>;
+  label?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** primary key columns input for table: app.assignments_v2_quality_labels */
+export type App_Assignments_V2_Quality_Labels_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "app.assignments_v2_quality_labels" */
+export enum App_Assignments_V2_Quality_Labels_Select_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Label = 'label',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "app.assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Set_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  label?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** Streaming cursor of the table "app_assignments_v2_quality_labels" */
+export type App_Assignments_V2_Quality_Labels_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: App_Assignments_V2_Quality_Labels_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type App_Assignments_V2_Quality_Labels_Stream_Cursor_Value_Input = {
+  assignment_id?: InputMaybe<Scalars['uuid']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  id?: InputMaybe<Scalars['uuid']>;
+  label?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** update columns of table "app.assignments_v2_quality_labels" */
+export enum App_Assignments_V2_Quality_Labels_Update_Column {
+  /** column name */
+  AssignmentId = 'assignment_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Label = 'label',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+export type App_Assignments_V2_Quality_Labels_Updates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<App_Assignments_V2_Quality_Labels_Set_Input>;
+  where: App_Assignments_V2_Quality_Labels_Bool_Exp;
+};
+
 /** select columns of table "app.assignments_v2" */
 export enum App_Assignments_V2_Select_Column {
   /** column name */
@@ -5393,6 +5406,8 @@ export enum App_Assignments_V2_Select_Column {
   AssignmentType = 'assignment_type',
   /** column name */
   AvailableAt = 'available_at',
+  /** column name */
+  BriefingId = 'briefing_id',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -5452,6 +5467,7 @@ export type App_Assignments_V2_Set_Input = {
   answer_url?: InputMaybe<Scalars['String']>;
   assignment_type?: InputMaybe<Scalars['String']>;
   available_at?: InputMaybe<Scalars['timestamptz']>;
+  briefing_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   deadline_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
@@ -5516,6 +5532,7 @@ export type App_Assignments_V2_Stream_Cursor_Value_Input = {
   answer_url?: InputMaybe<Scalars['String']>;
   assignment_type?: InputMaybe<Scalars['String']>;
   available_at?: InputMaybe<Scalars['timestamptz']>;
+  briefing_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   deadline_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
@@ -5553,6 +5570,8 @@ export enum App_Assignments_V2_Update_Column {
   AssignmentType = 'assignment_type',
   /** column name */
   AvailableAt = 'available_at',
+  /** column name */
+  BriefingId = 'briefing_id',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -5675,6 +5694,110 @@ export type App_Assignments_Variance_Fields = {
 export type App_Assignments_Variance_Order_By = {
   content_layout?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "app.bundels_index" */
+export type App_Bundels_Index = {
+  __typename?: 'app_bundels_index';
+  document?: Maybe<Scalars['json']>;
+  document_id?: Maybe<Scalars['uuid']>;
+  index_id?: Maybe<Scalars['String']>;
+  is_deleted?: Maybe<Scalars['Boolean']>;
+  is_public?: Maybe<Scalars['Boolean']>;
+};
+
+
+/** columns and relationships of "app.bundels_index" */
+export type App_Bundels_IndexDocumentArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "app.bundels_index" */
+export type App_Bundels_Index_Aggregate = {
+  __typename?: 'app_bundels_index_aggregate';
+  aggregate?: Maybe<App_Bundels_Index_Aggregate_Fields>;
+  nodes: Array<App_Bundels_Index>;
+};
+
+/** aggregate fields of "app.bundels_index" */
+export type App_Bundels_Index_Aggregate_Fields = {
+  __typename?: 'app_bundels_index_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<App_Bundels_Index_Max_Fields>;
+  min?: Maybe<App_Bundels_Index_Min_Fields>;
+};
+
+
+/** aggregate fields of "app.bundels_index" */
+export type App_Bundels_Index_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<App_Bundels_Index_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "app.bundels_index". All fields are combined with a logical 'AND'. */
+export type App_Bundels_Index_Bool_Exp = {
+  _and?: InputMaybe<Array<App_Bundels_Index_Bool_Exp>>;
+  _not?: InputMaybe<App_Bundels_Index_Bool_Exp>;
+  _or?: InputMaybe<Array<App_Bundels_Index_Bool_Exp>>;
+  document?: InputMaybe<Json_Comparison_Exp>;
+  document_id?: InputMaybe<Uuid_Comparison_Exp>;
+  index_id?: InputMaybe<String_Comparison_Exp>;
+  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_public?: InputMaybe<Boolean_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type App_Bundels_Index_Max_Fields = {
+  __typename?: 'app_bundels_index_max_fields';
+  document_id?: Maybe<Scalars['uuid']>;
+  index_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type App_Bundels_Index_Min_Fields = {
+  __typename?: 'app_bundels_index_min_fields';
+  document_id?: Maybe<Scalars['uuid']>;
+  index_id?: Maybe<Scalars['String']>;
+};
+
+/** Ordering options when selecting data from "app.bundels_index". */
+export type App_Bundels_Index_Order_By = {
+  document?: InputMaybe<Order_By>;
+  document_id?: InputMaybe<Order_By>;
+  index_id?: InputMaybe<Order_By>;
+  is_deleted?: InputMaybe<Order_By>;
+  is_public?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "app.bundels_index" */
+export enum App_Bundels_Index_Select_Column {
+  /** column name */
+  Document = 'document',
+  /** column name */
+  DocumentId = 'document_id',
+  /** column name */
+  IndexId = 'index_id',
+  /** column name */
+  IsDeleted = 'is_deleted',
+  /** column name */
+  IsPublic = 'is_public'
+}
+
+/** Streaming cursor of the table "app_bundels_index" */
+export type App_Bundels_Index_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: App_Bundels_Index_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type App_Bundels_Index_Stream_Cursor_Value_Input = {
+  document?: InputMaybe<Scalars['json']>;
+  document_id?: InputMaybe<Scalars['uuid']>;
+  index_id?: InputMaybe<Scalars['String']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_public?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** columns and relationships of "app.collection_actualisation_overview" */
@@ -11591,6 +11714,8 @@ export type App_Collections_Index = {
   document?: Maybe<Scalars['json']>;
   document_id?: Maybe<Scalars['uuid']>;
   index_id?: Maybe<Scalars['String']>;
+  is_deleted?: Maybe<Scalars['Boolean']>;
+  is_public?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -11629,6 +11754,8 @@ export type App_Collections_Index_Bool_Exp = {
   document?: InputMaybe<Json_Comparison_Exp>;
   document_id?: InputMaybe<Uuid_Comparison_Exp>;
   index_id?: InputMaybe<String_Comparison_Exp>;
+  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
+  is_public?: InputMaybe<Boolean_Comparison_Exp>;
 };
 
 /** aggregate max on columns */
@@ -11650,6 +11777,8 @@ export type App_Collections_Index_Order_By = {
   document?: InputMaybe<Order_By>;
   document_id?: InputMaybe<Order_By>;
   index_id?: InputMaybe<Order_By>;
+  is_deleted?: InputMaybe<Order_By>;
+  is_public?: InputMaybe<Order_By>;
 };
 
 /** select columns of table "app.collections_index" */
@@ -11659,7 +11788,11 @@ export enum App_Collections_Index_Select_Column {
   /** column name */
   DocumentId = 'document_id',
   /** column name */
-  IndexId = 'index_id'
+  IndexId = 'index_id',
+  /** column name */
+  IsDeleted = 'is_deleted',
+  /** column name */
+  IsPublic = 'is_public'
 }
 
 /** Streaming cursor of the table "app_collections_index" */
@@ -11675,6 +11808,8 @@ export type App_Collections_Index_Stream_Cursor_Value_Input = {
   document?: InputMaybe<Scalars['json']>;
   document_id?: InputMaybe<Scalars['uuid']>;
   index_id?: InputMaybe<Scalars['String']>;
+  is_deleted?: InputMaybe<Scalars['Boolean']>;
+  is_public?: InputMaybe<Scalars['Boolean']>;
 };
 
 /** input type for inserting data into table "app.collections" */
@@ -24371,14 +24506,14 @@ export type Mutation_Root = {
   delete_app_assignments_v2_contributors?: Maybe<App_Assignments_V2_Contributors_Mutation_Response>;
   /** delete single row from the table: "app.assignments_v2_contributors" */
   delete_app_assignments_v2_contributors_by_pk?: Maybe<App_Assignments_V2_Contributors>;
-  /** delete data from the table: "app.assignments_v2_labels" */
-  delete_app_assignments_v2_labels?: Maybe<App_Assignments_V2_Labels_Mutation_Response>;
-  /** delete single row from the table: "app.assignments_v2_labels" */
-  delete_app_assignments_v2_labels_by_pk?: Maybe<App_Assignments_V2_Labels>;
   /** delete data from the table: "app.assignments_v2_lom_links" */
   delete_app_assignments_v2_lom_links?: Maybe<App_Assignments_V2_Lom_Links_Mutation_Response>;
   /** delete single row from the table: "app.assignments_v2_lom_links" */
   delete_app_assignments_v2_lom_links_by_pk?: Maybe<App_Assignments_V2_Lom_Links>;
+  /** delete data from the table: "app.assignments_v2_quality_labels" */
+  delete_app_assignments_v2_quality_labels?: Maybe<App_Assignments_V2_Quality_Labels_Mutation_Response>;
+  /** delete single row from the table: "app.assignments_v2_quality_labels" */
+  delete_app_assignments_v2_quality_labels_by_pk?: Maybe<App_Assignments_V2_Quality_Labels>;
   /** delete data from the table: "app.collection_bookmarks" */
   delete_app_collection_bookmarks?: Maybe<App_Collection_Bookmarks_Mutation_Response>;
   /** delete single row from the table: "app.collection_bookmarks" */
@@ -24743,16 +24878,16 @@ export type Mutation_Root = {
   insert_app_assignments_v2_contributors?: Maybe<App_Assignments_V2_Contributors_Mutation_Response>;
   /** insert a single row into the table: "app.assignments_v2_contributors" */
   insert_app_assignments_v2_contributors_one?: Maybe<App_Assignments_V2_Contributors>;
-  /** insert data into the table: "app.assignments_v2_labels" */
-  insert_app_assignments_v2_labels?: Maybe<App_Assignments_V2_Labels_Mutation_Response>;
-  /** insert a single row into the table: "app.assignments_v2_labels" */
-  insert_app_assignments_v2_labels_one?: Maybe<App_Assignments_V2_Labels>;
   /** insert data into the table: "app.assignments_v2_lom_links" */
   insert_app_assignments_v2_lom_links?: Maybe<App_Assignments_V2_Lom_Links_Mutation_Response>;
   /** insert a single row into the table: "app.assignments_v2_lom_links" */
   insert_app_assignments_v2_lom_links_one?: Maybe<App_Assignments_V2_Lom_Links>;
   /** insert a single row into the table: "app.assignments_v2" */
   insert_app_assignments_v2_one?: Maybe<App_Assignments_V2>;
+  /** insert data into the table: "app.assignments_v2_quality_labels" */
+  insert_app_assignments_v2_quality_labels?: Maybe<App_Assignments_V2_Quality_Labels_Mutation_Response>;
+  /** insert a single row into the table: "app.assignments_v2_quality_labels" */
+  insert_app_assignments_v2_quality_labels_one?: Maybe<App_Assignments_V2_Quality_Labels>;
   /** insert data into the table: "app.collection_bookmarks" */
   insert_app_collection_bookmarks?: Maybe<App_Collection_Bookmarks_Mutation_Response>;
   /** insert a single row into the table: "app.collection_bookmarks" */
@@ -25143,12 +25278,6 @@ export type Mutation_Root = {
   update_app_assignments_v2_contributors_by_pk?: Maybe<App_Assignments_V2_Contributors>;
   /** update multiples rows of table: "app.assignments_v2_contributors" */
   update_app_assignments_v2_contributors_many?: Maybe<Array<Maybe<App_Assignments_V2_Contributors_Mutation_Response>>>;
-  /** update data of the table: "app.assignments_v2_labels" */
-  update_app_assignments_v2_labels?: Maybe<App_Assignments_V2_Labels_Mutation_Response>;
-  /** update single row of the table: "app.assignments_v2_labels" */
-  update_app_assignments_v2_labels_by_pk?: Maybe<App_Assignments_V2_Labels>;
-  /** update multiples rows of table: "app.assignments_v2_labels" */
-  update_app_assignments_v2_labels_many?: Maybe<Array<Maybe<App_Assignments_V2_Labels_Mutation_Response>>>;
   /** update data of the table: "app.assignments_v2_lom_links" */
   update_app_assignments_v2_lom_links?: Maybe<App_Assignments_V2_Lom_Links_Mutation_Response>;
   /** update single row of the table: "app.assignments_v2_lom_links" */
@@ -25157,6 +25286,12 @@ export type Mutation_Root = {
   update_app_assignments_v2_lom_links_many?: Maybe<Array<Maybe<App_Assignments_V2_Lom_Links_Mutation_Response>>>;
   /** update multiples rows of table: "app.assignments_v2" */
   update_app_assignments_v2_many?: Maybe<Array<Maybe<App_Assignments_V2_Mutation_Response>>>;
+  /** update data of the table: "app.assignments_v2_quality_labels" */
+  update_app_assignments_v2_quality_labels?: Maybe<App_Assignments_V2_Quality_Labels_Mutation_Response>;
+  /** update single row of the table: "app.assignments_v2_quality_labels" */
+  update_app_assignments_v2_quality_labels_by_pk?: Maybe<App_Assignments_V2_Quality_Labels>;
+  /** update multiples rows of table: "app.assignments_v2_quality_labels" */
+  update_app_assignments_v2_quality_labels_many?: Maybe<Array<Maybe<App_Assignments_V2_Quality_Labels_Mutation_Response>>>;
   /** update data of the table: "app.collection_bookmarks" */
   update_app_collection_bookmarks?: Maybe<App_Collection_Bookmarks_Mutation_Response>;
   /** update single row of the table: "app.collection_bookmarks" */
@@ -25783,18 +25918,6 @@ export type Mutation_RootDelete_App_Assignments_V2_Contributors_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_App_Assignments_V2_LabelsArgs = {
-  where: App_Assignments_V2_Labels_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignments_V2_Labels_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_App_Assignments_V2_Lom_LinksArgs = {
   where: App_Assignments_V2_Lom_Links_Bool_Exp;
 };
@@ -25802,6 +25925,18 @@ export type Mutation_RootDelete_App_Assignments_V2_Lom_LinksArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_App_Assignments_V2_Lom_Links_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_App_Assignments_V2_Quality_LabelsArgs = {
+  where: App_Assignments_V2_Quality_Labels_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_App_Assignments_V2_Quality_Labels_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -26924,20 +27059,6 @@ export type Mutation_RootInsert_App_Assignments_V2_Contributors_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_App_Assignments_V2_LabelsArgs = {
-  objects: Array<App_Assignments_V2_Labels_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignments_V2_Labels_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignments_V2_Labels_OneArgs = {
-  object: App_Assignments_V2_Labels_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignments_V2_Labels_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_App_Assignments_V2_Lom_LinksArgs = {
   objects: Array<App_Assignments_V2_Lom_Links_Insert_Input>;
   on_conflict?: InputMaybe<App_Assignments_V2_Lom_Links_On_Conflict>;
@@ -26955,6 +27076,20 @@ export type Mutation_RootInsert_App_Assignments_V2_Lom_Links_OneArgs = {
 export type Mutation_RootInsert_App_Assignments_V2_OneArgs = {
   object: App_Assignments_V2_Insert_Input;
   on_conflict?: InputMaybe<App_Assignments_V2_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_App_Assignments_V2_Quality_LabelsArgs = {
+  objects: Array<App_Assignments_V2_Quality_Labels_Insert_Input>;
+  on_conflict?: InputMaybe<App_Assignments_V2_Quality_Labels_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_App_Assignments_V2_Quality_Labels_OneArgs = {
+  object: App_Assignments_V2_Quality_Labels_Insert_Input;
+  on_conflict?: InputMaybe<App_Assignments_V2_Quality_Labels_On_Conflict>;
 };
 
 
@@ -28347,26 +28482,6 @@ export type Mutation_RootUpdate_App_Assignments_V2_Contributors_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_App_Assignments_V2_LabelsArgs = {
-  _set?: InputMaybe<App_Assignments_V2_Labels_Set_Input>;
-  where: App_Assignments_V2_Labels_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignments_V2_Labels_By_PkArgs = {
-  _set?: InputMaybe<App_Assignments_V2_Labels_Set_Input>;
-  pk_columns: App_Assignments_V2_Labels_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignments_V2_Labels_ManyArgs = {
-  updates: Array<App_Assignments_V2_Labels_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_App_Assignments_V2_Lom_LinksArgs = {
   _set?: InputMaybe<App_Assignments_V2_Lom_Links_Set_Input>;
   where: App_Assignments_V2_Lom_Links_Bool_Exp;
@@ -28389,6 +28504,26 @@ export type Mutation_RootUpdate_App_Assignments_V2_Lom_Links_ManyArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_App_Assignments_V2_ManyArgs = {
   updates: Array<App_Assignments_V2_Updates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Assignments_V2_Quality_LabelsArgs = {
+  _set?: InputMaybe<App_Assignments_V2_Quality_Labels_Set_Input>;
+  where: App_Assignments_V2_Quality_Labels_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Assignments_V2_Quality_Labels_By_PkArgs = {
+  _set?: InputMaybe<App_Assignments_V2_Quality_Labels_Set_Input>;
+  pk_columns: App_Assignments_V2_Quality_Labels_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_App_Assignments_V2_Quality_Labels_ManyArgs = {
+  updates: Array<App_Assignments_V2_Quality_Labels_Updates>;
 };
 
 
@@ -30327,12 +30462,6 @@ export type Query_Root = {
   app_assignments_v2_index: Array<App_Assignments_V2_Index>;
   /** fetch aggregated fields from the table: "app.assignments_v2_index" */
   app_assignments_v2_index_aggregate: App_Assignments_V2_Index_Aggregate;
-  /** fetch data from the table: "app.assignments_v2_labels" */
-  app_assignments_v2_labels: Array<App_Assignments_V2_Labels>;
-  /** fetch aggregated fields from the table: "app.assignments_v2_labels" */
-  app_assignments_v2_labels_aggregate: App_Assignments_V2_Labels_Aggregate;
-  /** fetch data from the table: "app.assignments_v2_labels" using primary key columns */
-  app_assignments_v2_labels_by_pk?: Maybe<App_Assignments_V2_Labels>;
   /** fetch data from the table: "app.assignments_v2_lom_links" */
   app_assignments_v2_lom_links: Array<App_Assignments_V2_Lom_Links>;
   /** fetch aggregated fields from the table: "app.assignments_v2_lom_links" */
@@ -30343,6 +30472,16 @@ export type Query_Root = {
   app_assignments_v2_overview: Array<App_Assignments_V2_Overview>;
   /** fetch aggregated fields from the table: "app.assignments_v2_overview" */
   app_assignments_v2_overview_aggregate: App_Assignments_V2_Overview_Aggregate;
+  /** fetch data from the table: "app.assignments_v2_quality_labels" */
+  app_assignments_v2_quality_labels: Array<App_Assignments_V2_Quality_Labels>;
+  /** fetch aggregated fields from the table: "app.assignments_v2_quality_labels" */
+  app_assignments_v2_quality_labels_aggregate: App_Assignments_V2_Quality_Labels_Aggregate;
+  /** fetch data from the table: "app.assignments_v2_quality_labels" using primary key columns */
+  app_assignments_v2_quality_labels_by_pk?: Maybe<App_Assignments_V2_Quality_Labels>;
+  /** fetch data from the table: "app.bundels_index" */
+  app_bundels_index: Array<App_Bundels_Index>;
+  /** fetch aggregated fields from the table: "app.bundels_index" */
+  app_bundels_index_aggregate: App_Bundels_Index_Aggregate;
   /** fetch data from the table: "app.collection_actualisation_overview" */
   app_collection_actualisation_overview: Array<App_Collection_Actualisation_Overview>;
   /** fetch aggregated fields from the table: "app.collection_actualisation_overview" */
@@ -31198,29 +31337,6 @@ export type Query_RootApp_Assignments_V2_Index_AggregateArgs = {
 };
 
 
-export type Query_RootApp_Assignments_V2_LabelsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignments_V2_Labels_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignments_V2_Labels_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
 export type Query_RootApp_Assignments_V2_Lom_LinksArgs = {
   distinct_on?: InputMaybe<Array<App_Assignments_V2_Lom_Links_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -31259,6 +31375,47 @@ export type Query_RootApp_Assignments_V2_Overview_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<App_Assignments_V2_Overview_Order_By>>;
   where?: InputMaybe<App_Assignments_V2_Overview_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Assignments_V2_Quality_LabelsArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Assignments_V2_Quality_Labels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Assignments_V2_Quality_Labels_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootApp_Bundels_IndexArgs = {
+  distinct_on?: InputMaybe<Array<App_Bundels_Index_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Bundels_Index_Order_By>>;
+  where?: InputMaybe<App_Bundels_Index_Bool_Exp>;
+};
+
+
+export type Query_RootApp_Bundels_Index_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Bundels_Index_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Bundels_Index_Order_By>>;
+  where?: InputMaybe<App_Bundels_Index_Bool_Exp>;
 };
 
 
@@ -36567,14 +36724,6 @@ export type Subscription_Root = {
   app_assignments_v2_index_aggregate: App_Assignments_V2_Index_Aggregate;
   /** fetch data from the table in a streaming manner: "app.assignments_v2_index" */
   app_assignments_v2_index_stream: Array<App_Assignments_V2_Index>;
-  /** fetch data from the table: "app.assignments_v2_labels" */
-  app_assignments_v2_labels: Array<App_Assignments_V2_Labels>;
-  /** fetch aggregated fields from the table: "app.assignments_v2_labels" */
-  app_assignments_v2_labels_aggregate: App_Assignments_V2_Labels_Aggregate;
-  /** fetch data from the table: "app.assignments_v2_labels" using primary key columns */
-  app_assignments_v2_labels_by_pk?: Maybe<App_Assignments_V2_Labels>;
-  /** fetch data from the table in a streaming manner: "app.assignments_v2_labels" */
-  app_assignments_v2_labels_stream: Array<App_Assignments_V2_Labels>;
   /** fetch data from the table: "app.assignments_v2_lom_links" */
   app_assignments_v2_lom_links: Array<App_Assignments_V2_Lom_Links>;
   /** fetch aggregated fields from the table: "app.assignments_v2_lom_links" */
@@ -36589,8 +36738,22 @@ export type Subscription_Root = {
   app_assignments_v2_overview_aggregate: App_Assignments_V2_Overview_Aggregate;
   /** fetch data from the table in a streaming manner: "app.assignments_v2_overview" */
   app_assignments_v2_overview_stream: Array<App_Assignments_V2_Overview>;
+  /** fetch data from the table: "app.assignments_v2_quality_labels" */
+  app_assignments_v2_quality_labels: Array<App_Assignments_V2_Quality_Labels>;
+  /** fetch aggregated fields from the table: "app.assignments_v2_quality_labels" */
+  app_assignments_v2_quality_labels_aggregate: App_Assignments_V2_Quality_Labels_Aggregate;
+  /** fetch data from the table: "app.assignments_v2_quality_labels" using primary key columns */
+  app_assignments_v2_quality_labels_by_pk?: Maybe<App_Assignments_V2_Quality_Labels>;
+  /** fetch data from the table in a streaming manner: "app.assignments_v2_quality_labels" */
+  app_assignments_v2_quality_labels_stream: Array<App_Assignments_V2_Quality_Labels>;
   /** fetch data from the table in a streaming manner: "app.assignments_v2" */
   app_assignments_v2_stream: Array<App_Assignments_V2>;
+  /** fetch data from the table: "app.bundels_index" */
+  app_bundels_index: Array<App_Bundels_Index>;
+  /** fetch aggregated fields from the table: "app.bundels_index" */
+  app_bundels_index_aggregate: App_Bundels_Index_Aggregate;
+  /** fetch data from the table in a streaming manner: "app.bundels_index" */
+  app_bundels_index_stream: Array<App_Bundels_Index>;
   /** fetch data from the table: "app.collection_actualisation_overview" */
   app_collection_actualisation_overview: Array<App_Collection_Actualisation_Overview>;
   /** fetch aggregated fields from the table: "app.collection_actualisation_overview" */
@@ -37730,36 +37893,6 @@ export type Subscription_RootApp_Assignments_V2_Index_StreamArgs = {
 };
 
 
-export type Subscription_RootApp_Assignments_V2_LabelsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_V2_Labels_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_V2_Labels_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootApp_Assignments_V2_Labels_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignments_V2_Labels_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignments_V2_Labels_Bool_Exp>;
-};
-
-
 export type Subscription_RootApp_Assignments_V2_Lom_LinksArgs = {
   distinct_on?: InputMaybe<Array<App_Assignments_V2_Lom_Links_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -37815,10 +37948,65 @@ export type Subscription_RootApp_Assignments_V2_Overview_StreamArgs = {
 };
 
 
+export type Subscription_RootApp_Assignments_V2_Quality_LabelsArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Assignments_V2_Quality_Labels_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Quality_Labels_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Assignments_V2_Quality_Labels_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootApp_Assignments_V2_Quality_Labels_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<App_Assignments_V2_Quality_Labels_Stream_Cursor_Input>>;
+  where?: InputMaybe<App_Assignments_V2_Quality_Labels_Bool_Exp>;
+};
+
+
 export type Subscription_RootApp_Assignments_V2_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Assignments_V2_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Assignments_V2_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Bundels_IndexArgs = {
+  distinct_on?: InputMaybe<Array<App_Bundels_Index_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Bundels_Index_Order_By>>;
+  where?: InputMaybe<App_Bundels_Index_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Bundels_Index_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Bundels_Index_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Bundels_Index_Order_By>>;
+  where?: InputMaybe<App_Bundels_Index_Bool_Exp>;
+};
+
+
+export type Subscription_RootApp_Bundels_Index_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<App_Bundels_Index_Stream_Cursor_Input>>;
+  where?: InputMaybe<App_Bundels_Index_Bool_Exp>;
 };
 
 
@@ -48552,6 +48740,13 @@ export type DeleteAssignmentLomLinksMutationVariables = Exact<{
 
 export type DeleteAssignmentLomLinksMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_lom_links?: { __typename?: 'app_assignments_v2_lom_links_mutation_response', affected_rows: number } | null };
 
+export type DeleteAssignmentQualityLabelsMutationVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type DeleteAssignmentQualityLabelsMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_quality_labels?: { __typename?: 'app_assignments_v2_quality_labels_mutation_response', affected_rows: number } | null };
+
 export type DeleteAssignmentResponseByIdMutationVariables = Exact<{
   assignmentResponseId: Scalars['uuid'];
 }>;
@@ -48587,7 +48782,7 @@ export type GetAssignmentByUuidQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentByUuidQuery = { __typename?: 'query_root', app_assignments_v2_overview: Array<{ __typename?: 'app_assignments_v2_overview', id?: any | null, title?: string | null, description?: string | null, answer_url?: string | null, created_at?: any | null, updated_at?: any | null, available_at?: any | null, deadline_at?: any | null, is_collaborative?: boolean | null, is_deleted?: boolean | null, is_public?: boolean | null, thumbnail_path?: string | null, owner_profile_id?: any | null, share_type?: string | null, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', first_name?: string | null, full_name?: string | null, mail?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, avatar?: string | null } | null } | null, profile?: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number, mail?: string | null } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null } | null, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, blocks: Array<{ __typename?: 'app_assignment_blocks_v2', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, original_title?: string | null, original_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_id: any }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, assignment_id: any, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, enum_right_type: { __typename?: 'lookup_enum_right_types', description: string, value: string } }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', id: any, assignment_id: any, lom_id: string, lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, id?: string | null, label?: string | null, scheme?: string | null } | null }> }> };
+export type GetAssignmentByUuidQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, thumbnail_path?: string | null, owner_profile_id: any, briefing_id?: string | null, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', first_name?: string | null, full_name?: string | null, mail?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, avatar?: string | null } | null } | null, profile: { __typename?: 'users_profiles', avatar?: string | null, id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number, mail?: string | null } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null }, updated_by?: { __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, role?: { __typename?: 'shared_user_roles', id: number, label: string } | null } | null } | null, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, blocks: Array<{ __typename?: 'app_assignment_blocks_v2', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, original_title?: string | null, original_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_id: any }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, assignment_id: any, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, enum_right_type: { __typename?: 'lookup_enum_right_types', description: string, value: string } }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', id: any, assignment_id: any, lom_id: string, lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, id?: string | null, label?: string | null, scheme?: string | null } | null }> }> };
 
 export type GetAssignmentIdsQueryVariables = Exact<{
   where: App_Assignments_V2_Bool_Exp;
@@ -48704,6 +48899,13 @@ export type InsertAssignmentLomLinksMutationVariables = Exact<{
 
 
 export type InsertAssignmentLomLinksMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_lom_links?: { __typename?: 'app_assignments_v2_lom_links_mutation_response', affected_rows: number } | null };
+
+export type InsertAssignmentQualityLabelsMutationVariables = Exact<{
+  qualityLabels: Array<App_Assignments_V2_Quality_Labels_Insert_Input> | App_Assignments_V2_Quality_Labels_Insert_Input;
+}>;
+
+
+export type InsertAssignmentQualityLabelsMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_quality_labels?: { __typename?: 'app_assignments_v2_quality_labels_mutation_response', affected_rows: number } | null };
 
 export type InsertAssignmentResponseMutationVariables = Exact<{
   assignmentResponses: Array<App_Assignment_Responses_V2_Insert_Input> | App_Assignment_Responses_V2_Insert_Input;
@@ -50879,6 +51081,24 @@ export const useDeleteAssignmentLomLinksMutation = <
       (variables?: DeleteAssignmentLomLinksMutationVariables) => fetchData<DeleteAssignmentLomLinksMutation, DeleteAssignmentLomLinksMutationVariables>(DeleteAssignmentLomLinksDocument, variables)(),
       options
     );
+export const DeleteAssignmentQualityLabelsDocument = `
+    mutation deleteAssignmentQualityLabels($assignmentId: uuid!) {
+  delete_app_assignments_v2_quality_labels(
+    where: {assignment_id: {_eq: $assignmentId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentQualityLabelsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentQualityLabelsMutation, TError, DeleteAssignmentQualityLabelsMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentQualityLabelsMutation, TError, DeleteAssignmentQualityLabelsMutationVariables, TContext>(
+      ['deleteAssignmentQualityLabels'],
+      (variables?: DeleteAssignmentQualityLabelsMutationVariables) => fetchData<DeleteAssignmentQualityLabelsMutation, DeleteAssignmentQualityLabelsMutationVariables>(DeleteAssignmentQualityLabelsDocument, variables)(),
+      options
+    );
 export const DeleteAssignmentResponseByIdDocument = `
     mutation deleteAssignmentResponseById($assignmentResponseId: uuid!) {
   delete_app_assignment_responses_v2(where: {id: {_eq: $assignmentResponseId}}) {
@@ -50978,7 +51198,7 @@ export const useGetAssignmentByTitleOrDescriptionQuery = <
     );
 export const GetAssignmentByUuidDocument = `
     query getAssignmentByUuid($id: uuid!) {
-  app_assignments_v2_overview(where: {id: {_eq: $id}, is_deleted: {_eq: false}}) {
+  app_assignments_v2(where: {id: {_eq: $id}, is_deleted: {_eq: false}}) {
     id
     title
     description
@@ -51016,6 +51236,19 @@ export const GetAssignmentByUuidDocument = `
         or_id
       }
       id
+    }
+    briefing_id
+    updated_by {
+      id
+      user: usersByuserId {
+        id
+        first_name
+        last_name
+        role {
+          id
+          label
+        }
+      }
     }
     responses {
       id
@@ -51088,7 +51321,6 @@ export const GetAssignmentByUuidDocument = `
         scheme
       }
     }
-    share_type
     lom_learning_resource_type
   }
 }
@@ -51881,6 +52113,22 @@ export const useInsertAssignmentLomLinksMutation = <
     useMutation<InsertAssignmentLomLinksMutation, TError, InsertAssignmentLomLinksMutationVariables, TContext>(
       ['insertAssignmentLomLinks'],
       (variables?: InsertAssignmentLomLinksMutationVariables) => fetchData<InsertAssignmentLomLinksMutation, InsertAssignmentLomLinksMutationVariables>(InsertAssignmentLomLinksDocument, variables)(),
+      options
+    );
+export const InsertAssignmentQualityLabelsDocument = `
+    mutation insertAssignmentQualityLabels($qualityLabels: [app_assignments_v2_quality_labels_insert_input!]!) {
+  insert_app_assignments_v2_quality_labels(objects: $qualityLabels) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertAssignmentQualityLabelsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentQualityLabelsMutation, TError, InsertAssignmentQualityLabelsMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentQualityLabelsMutation, TError, InsertAssignmentQualityLabelsMutationVariables, TContext>(
+      ['insertAssignmentQualityLabels'],
+      (variables?: InsertAssignmentQualityLabelsMutationVariables) => fetchData<InsertAssignmentQualityLabelsMutation, InsertAssignmentQualityLabelsMutationVariables>(InsertAssignmentQualityLabelsDocument, variables)(),
       options
     );
 export const InsertAssignmentResponseDocument = `

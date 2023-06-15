@@ -1,0 +1,5 @@
+mutation deleteAssignmentQualityLabels($assignmentId: uuid!) {
+	delete_app_assignments_v2_quality_labels(where: { assignment_id: { _eq: $assignmentId } }) {
+		affected_rows
+	}
+}

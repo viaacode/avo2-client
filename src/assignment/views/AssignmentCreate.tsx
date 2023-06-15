@@ -41,9 +41,12 @@ import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
 import { AssignmentFields } from '../hooks/assignment-form';
 
-const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, history }) => {
+const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
+	user,
+	history,
+	location,
+}) => {
 	const { tText, tHtml } = useTranslation();
-
 	// Data
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm();
 
@@ -82,6 +85,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 					owner_profile_id: user.profile?.id,
 					labels: [],
 				} as Partial<Avo.Assignment.Assignment>,
+				user,
 				(assignment?.labels || []).map((label) => label.assignment_label) || []
 			);
 
@@ -295,7 +299,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
 	// Render
-
 	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--create c-sticky-bar__wrapper">
 			<div>
@@ -307,6 +310,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({ user, hi
 							duplicate={{ disabled: true }}
 							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
 							remove={{ button: { disabled: true } }}
+							route={location.pathname}
 						/>
 					}
 					tabs={renderTabs}

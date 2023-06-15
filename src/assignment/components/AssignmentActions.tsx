@@ -10,6 +10,7 @@ import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { APP_PATH } from '../../constants';
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
 import {
@@ -35,6 +36,7 @@ interface AssignmentActionsProps {
 	remove?: Partial<DeleteAssignmentButtonProps>;
 	refetch?: () => void;
 	publish?: Partial<ButtonProps>;
+	route: string;
 }
 
 const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
@@ -45,11 +47,11 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	share,
 	refetch,
 	publish,
+	route,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 	const [contributors, setContributors] = useState<Contributor[]>();
-
 	const fetchContributors = useCallback(async () => {
 		if (!share?.assignment?.id) {
 			return;
@@ -180,26 +182,30 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		<Button type="secondary" {...config} />
 	);
 
-	const renderShareButton = (config?: Partial<ShareDropdownProps>) => (
-		<div
-			className={classNames(
-				'c-assignment-heading__dropdown-wrapper',
-				config?.button?.className
-			)}
-		>
-			<ShareDropdown
-				contributors={transformContributorsToSimpleContributors(
-					share?.assignment?.owner as Avo.User.User,
-					contributors as Contributor[]
-				)}
-				onDeleteContributor={onDeleteContributor}
-				onEditContributorRights={onEditContributor}
-				onAddContributor={onAddNewContributor}
-				{...config}
-				share={share}
-			/>
-		</div>
-	);
+	const renderShareButton = (config?: Partial<ShareDropdownProps>) => {
+		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
+			return (
+				<div
+					className={classNames(
+						'c-assignment-heading__dropdown-wrapper',
+						config?.button?.className
+					)}
+				>
+					<ShareDropdown
+						contributors={transformContributorsToSimpleContributors(
+							share?.assignment?.owner as Avo.User.User,
+							contributors as Contributor[]
+						)}
+						onDeleteContributor={onDeleteContributor}
+						onEditContributorRights={onEditContributor}
+						onAddContributor={onAddNewContributor}
+						{...config}
+						share={share}
+					/>
+				</div>
+			);
+		}
+	};
 
 	const renderDuplicateButton = (config?: Partial<DuplicateAssignmentButtonProps>) => (
 		<DuplicateAssignmentButton
