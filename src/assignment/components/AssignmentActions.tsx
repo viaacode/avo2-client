@@ -180,7 +180,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	);
 
 	const renderPublishButton = (config?: Partial<ButtonProps>) => {
-		if (route !== APP_PATH.ASSIGNMENT_DETAIL.route) {
+		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
 			return <Button type="secondary" {...config} />;
 		}
 	};
