@@ -133,9 +133,12 @@
 			min-height: 1.25em; // Equal to h2-title's line-height
 			position: relative;
 			transform: translateY(2px); // Visually center
-			width: 480px;
+			// width: 480px;
 			min-width: 0;
-
+			&__icon {
+				align-items: center;
+				margin-left: 0.5rem;
+			}
 			&--open {
 				&:before {
 					background: #fff;

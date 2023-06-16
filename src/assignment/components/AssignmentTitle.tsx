@@ -1,6 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -20,6 +20,11 @@ type AssignmentTitleProps = {
 
 const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) => {
 	const { tText } = useTranslation();
+	const [isActive, setIsActive] = useState<boolean>(false);
+
+	useEffect(() => {
+		console.log(isActive);
+	}, [isActive]);
 
 	return useMemo(
 		() => (
@@ -31,7 +36,7 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 						name="title"
 						control={control}
 						render={({ field, fieldState: { error } }) => (
-							<>
+							<Flex align="start">
 								<ContentInput
 									{...field}
 									value={field.value ?? undefined}
@@ -50,10 +55,12 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 												};
 											});
 									}}
+									onOpen={() => setIsActive(true)}
+									iconEnd={() => <Icon name={IconName.edit4} size="small" />}
 								/>
 
 								{error && <span className="c-floating-error">{error.message}</span>}
-							</>
+							</Flex>
 						)}
 					/>
 				</BlockHeading>
