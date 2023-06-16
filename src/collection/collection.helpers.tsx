@@ -347,6 +347,8 @@ export const cleanCollectionBeforeSave = (
 		'management_approved_at',
 		'management_actualised_at',
 		'marcom_note',
+		'loms',
+		'contributors',
 	];
 	const cleanCollection = omit(collection, propertiesToDelete);
 
