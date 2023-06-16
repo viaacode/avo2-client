@@ -37,7 +37,14 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 	setValue,
 }) => {
 	const { tText } = useTranslation();
-	const { data: qualityLabels, isLoading } = useGetQualityLabels();
+	const { data: allQualityLabels, isLoading } = useGetQualityLabels();
+	const owner: PickerItem | undefined = assignment.profile
+		? {
+				label: `${assignment.profile.user.first_name} ${assignment.profile.user.last_name} (${assignment.profile.user.mail})`,
+				type: 'PROFILE',
+				value: assignment.profile.id,
+		  }
+		: undefined;
 
 	const transformQualityLabelsToTagInfo = (labels: QualityLabel[]): TagInfo[] => {
 		return labels.map((label: QualityLabel) => ({
@@ -46,14 +53,14 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 		}));
 	};
 
-	const getAssignmentLabels = (): TagInfo[] => {
-		if (!qualityLabels) {
+	const getSelectedQualityLabels = (): TagInfo[] => {
+		if (!allQualityLabels) {
 			return [];
 		}
 		const labelIds = ((assignment.quality_labels || []) as Avo.Assignment.QualityLabel[]).map(
 			(item: any) => item.label
 		);
-		const filteredQualityLabels = qualityLabels.filter((qualityLabel) =>
+		const filteredQualityLabels = allQualityLabels.filter((qualityLabel) =>
 			labelIds.includes(qualityLabel.value)
 		);
 
@@ -79,14 +86,6 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 			blocks: (prev as Avo.Assignment.Assignment)?.blocks || [],
 		}));
 	};
-
-	const owner: PickerItem | undefined = assignment.profile
-		? {
-				label: `${assignment.profile.user.first_name} ${assignment.profile.user.last_name} (${assignment.profile.user.mail})`,
-				type: 'PROFILE',
-				value: assignment.profile.id,
-		  }
-		: undefined;
 
 	const handleOwnerChange = (newOwner: PickerItem | null) => {
 		if (isNil(newOwner)) {
@@ -122,11 +121,7 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 								<FormGroup label={tText('Aangepast op')}>
 									<TextInput
 										disabled
-										value={
-											assignment.updated_at
-												? formatTimestamp(assignment.updated_at)
-												: '-'
-										}
+										value={formatTimestamp(assignment.updated_at) || '-'}
 									/>
 								</FormGroup>
 
@@ -157,15 +152,15 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 									PermissionName.EDIT_ASSIGNMENT_QUALITY_LABELS
 								) && (
 									<FormGroup label={tText('Kwaliteitslabels')}>
-										{!!qualityLabels && (
+										{!!allQualityLabels && (
 											<TagsInput
 												isLoading={isLoading}
 												options={
 													transformQualityLabelsToTagInfo(
-														qualityLabels
+														allQualityLabels
 													) || []
 												}
-												value={getAssignmentLabels()}
+												value={getSelectedQualityLabels()}
 												onChange={handleQualityLabelChange}
 											/>
 										)}

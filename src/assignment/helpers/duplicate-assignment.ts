@@ -6,8 +6,8 @@ import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
 
 export async function duplicateAssignment(
-	user: Avo.User.User,
-	assignment?: Avo.Assignment.Assignment
+	assignment: Avo.Assignment.Assignment | null | undefined,
+	user: Avo.User.User
 ): Promise<Avo.Assignment.Assignment | undefined> {
 	try {
 		if (!assignment) {

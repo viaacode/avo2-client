@@ -35,7 +35,7 @@ const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps & UserProps> 
 			icon={IconName.copy}
 			{...props}
 			onClick={async (e) => {
-				const res = await duplicateAssignment(user as Avo.User.User, assignment);
+				const res = await duplicateAssignment(assignment, user as Avo.User.User);
 				props?.onClick && props?.onClick(e, res);
 			}}
 		/>
