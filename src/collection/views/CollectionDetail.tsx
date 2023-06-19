@@ -958,15 +958,6 @@ const CollectionDetail: FunctionComponent<
 					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction(COLLECTION_ACTIONS.toggleBookmark)}
 				/>
-				{isPublic && (
-					<Button
-						title={tText('collection/views/collection-detail___deel')}
-						type="secondary"
-						icon={IconName.share2}
-						ariaLabel={tText('collection/views/collection-detail___deel')}
-						onClick={() => executeAction(COLLECTION_ACTIONS.openShareThroughEmail)}
-					/>
-				)}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}

@@ -150,7 +150,8 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 						OWN_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 					),
 					ContentTypeNumber.collection,
-					filterString
+					filterString,
+					undefined
 				);
 			} else {
 				collections = await CollectionService.fetchBookmarkedCollectionsByOwner(
