@@ -214,7 +214,7 @@ export class AssignmentService {
 					tableColumnDataType,
 					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
-				owner_profile_id: getProfileId(user),
+				collaborator_profile_id: getProfileId(user),
 				filter: filterArray.length ? filterArray : {},
 			};
 

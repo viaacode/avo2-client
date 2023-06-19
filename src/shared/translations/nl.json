@@ -831,6 +831,8 @@
   "assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id": "De huidige opdracht werd nog nooit opgeslagen / heeft geen id.",
   "assignment/views/assignment-overview___de-opdracht-is-verwijdert": "De opdracht werd verwijderd.",
   "assignment/views/assignment-overview___deadline": "Deadline",
+  "assignment/views/assignment-overview___delete-contributor-assignment": "Ben je zeker dat je jezelf van deze opdracht wil wissen? Opgelet! Deze actie kan niet ongedaan gemaakt worden en je verliest dan toegang tot de opdracht.",
+  "assignment/views/assignment-overview___delete-shared-assignment": "Ben je zeker dat je jezelf van deze opdracht wil wissen? Deze opdracht is met {{count}} andere mensen gedeeld. Deze verliezen dan toegang. Opgelet! Deze actie kan niet ongedaan gemaakt worden.",
   "assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden": "Opgelet! Deze actie kan niet ongedaan gemaakt worden.",
   "assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden": "Deze opdracht bevat mogelijk collecties die eveneens verwijderd zullen worden",
   "assignment/views/assignment-overview___dupliceer": "Dupliceer",
