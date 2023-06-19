@@ -187,7 +187,7 @@ async function getOnlineTranslations() {
 
 function checkTranslationsForKeysAsValue(translationJson: string) {
 	// Identify  if any translations contain "___", then something went wrong with the translations
-	const faultyTranslations = [];
+	const faultyTranslations: string[] = [];
 	const faultyTranslationRegexp = /"(.*___.*)": ".*___/g;
 	let matches: RegExpExecArray | null;
 	do {

@@ -567,6 +567,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								},
 							}}
 							refetch={async () => await fetchAssignment()}
+							route={location.pathname}
 						/>
 					}
 					tabs={renderTabs}
