@@ -353,6 +353,8 @@ export class AssignmentService {
 		delete assignmentToSave.blocks;
 		delete assignmentToSave.loms;
 		delete assignmentToSave.contributors;
+		delete assignmentToSave.quality_labels;
+		delete assignmentToSave.updated_by;
 
 		return assignmentToSave as Avo.Assignment.Assignment;
 	}

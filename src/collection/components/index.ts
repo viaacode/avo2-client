@@ -12,3 +12,4 @@ export { default as FragmentEdit } from './fragment/FragmentEdit';
 export { default as FragmentList } from './fragment/FragmentList';
 export { default as PublishCollectionModal } from './modals/PublishCollectionModal';
 export { default as BlockList } from '../../shared/components/BlockList/BlockList';
+export { default as CollectionOrBundleTitle } from './CollectionOrBundleTitle';
