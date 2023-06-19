@@ -1,5 +1,5 @@
 query getAssignmentByUuid($id: uuid!) {
-	app_assignments_v2_overview(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
+	app_assignments_v2(where: { id: { _eq: $id }, is_deleted: { _eq: false } }) {
 		id
 		title
 		description
@@ -37,6 +37,19 @@ query getAssignmentByUuid($id: uuid!) {
 				or_id
 			}
 			id
+		}
+		briefing_id
+		updated_by {
+			id
+			user: usersByuserId {
+				id
+				first_name
+				last_name
+				role {
+					id
+					label
+				}
+			}
 		}
 		responses {
 			id
@@ -109,7 +122,6 @@ query getAssignmentByUuid($id: uuid!) {
 				scheme
 			}
 		}
-		share_type
 		lom_learning_resource_type
 	}
 }

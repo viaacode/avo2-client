@@ -52,7 +52,6 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 	const [contributors, setContributors] = useState<Contributor[]>();
-
 	const fetchContributors = useCallback(async () => {
 		if (!share?.assignment?.id) {
 			return;

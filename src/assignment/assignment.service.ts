@@ -29,6 +29,9 @@ import {
 	DeleteAssignmentLomLinksDocument,
 	DeleteAssignmentLomLinksMutation,
 	DeleteAssignmentLomLinksMutationVariables,
+	DeleteAssignmentQualityLabelsDocument,
+	DeleteAssignmentQualityLabelsMutation,
+	DeleteAssignmentQualityLabelsMutationVariables,
 	DeleteAssignmentResponseByIdDocument,
 	DeleteAssignmentResponseByIdMutation,
 	DeleteAssignmentResponseByIdMutationVariables,
@@ -86,6 +89,9 @@ import {
 	InsertAssignmentLomLinksMutationVariables,
 	InsertAssignmentMutation,
 	InsertAssignmentMutationVariables,
+	InsertAssignmentQualityLabelsDocument,
+	InsertAssignmentQualityLabelsMutation,
+	InsertAssignmentQualityLabelsMutationVariables,
 	InsertAssignmentResponseDocument,
 	InsertAssignmentResponseMutation,
 	InsertAssignmentResponseMutationVariables,
@@ -311,10 +317,10 @@ export class AssignmentService {
 	 * @param assignment
 	 */
 	private static transformAssignment(
-		assignment: Partial<Avo.Assignment.Assignment>
+		assignment: Partial<Avo.Assignment.Assignment>,
+		user: Avo.User.User
 	): App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input {
 		const assignmentToSave = cloneDeep(assignment);
-
 		if (
 			assignment.blocks?.some(
 				(block: Avo.Assignment.Block) => block.type === AssignmentBlockType.ZOEK
@@ -335,6 +341,7 @@ export class AssignmentService {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
 		}
 
+		assignmentToSave.updated_by_profile_id = user.profile?.id;
 		assignmentToSave.owner_profile_id = assignmentToSave.owner_profile_id || 'owner_profile_id';
 		assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
 		assignmentToSave.is_collaborative = assignmentToSave.is_collaborative || false;
@@ -393,7 +400,8 @@ export class AssignmentService {
 
 	static async updateAssignment(
 		original: Avo.Assignment.Assignment,
-		update: Partial<Avo.Assignment.Assignment>
+		update: Partial<Avo.Assignment.Assignment>,
+		user: Avo.User.User
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			if (isNil(original.id)) {
@@ -412,15 +420,24 @@ export class AssignmentService {
 				update.blocks || []
 			);
 
+			// Replace previous lom links
 			await AssignmentService.deleteAssignmentLomLinks(original.id);
 
 			const loms = (update.loms || []).map((lom) => lom.lom.id);
 
 			await AssignmentService.insertAssignmentLomLinks(original.id, loms);
 
-			const assignment = AssignmentService.transformAssignment({
-				...update,
-			});
+			// Replace previous quality labels
+			await AssignmentService.deleteAssignmentQualityLabels(original.id);
+
+			await AssignmentService.insertAssignmentQualityLabels(update.quality_labels || []);
+
+			const assignment = AssignmentService.transformAssignment(
+				{
+					...update,
+				},
+				user
+			);
 
 			const variables: UpdateAssignmentByIdMutationVariables = {
 				assignment,
@@ -651,12 +668,16 @@ export class AssignmentService {
 
 	static async insertAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>,
+		user: Avo.User.User,
 		addedLabels?: Avo.Assignment.Label[]
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
-			const assignmentToSave = AssignmentService.transformAssignment({
-				...assignment,
-			});
+			const assignmentToSave = AssignmentService.transformAssignment(
+				{
+					...assignment,
+				},
+				user
+			);
 
 			const variables: InsertAssignmentMutationVariables = {
 				assignment: assignmentToSave,
@@ -703,7 +724,8 @@ export class AssignmentService {
 
 	static async duplicateAssignment(
 		newTitle: string,
-		initialAssignment: Partial<Avo.Assignment.Assignment> | null
+		initialAssignment: Partial<Avo.Assignment.Assignment> | null,
+		user: Avo.User.User
 	): Promise<Avo.Assignment.Assignment> {
 		if (!initialAssignment || !initialAssignment.id) {
 			throw new CustomError(
@@ -726,7 +748,7 @@ export class AssignmentService {
 		delete newAssignment.owner;
 		newAssignment.updated_at = new Date().toISOString();
 
-		const duplicatedAssignment = await AssignmentService.insertAssignment(newAssignment);
+		const duplicatedAssignment = await AssignmentService.insertAssignment(newAssignment, user);
 
 		if (!duplicatedAssignment) {
 			throw new CustomError(
@@ -1820,9 +1842,49 @@ export class AssignmentService {
 				variables,
 			});
 		} catch (err) {
-			throw new CustomError('Failed to insert lom links in assignment database', err, {
+			throw new CustomError('Failed to delete lom links in assignment database', err, {
 				collectionId: assignmentId,
 				query: 'DELETE_ASSIGNMENT_LOM_LINKS',
+			});
+		}
+	}
+
+	static async insertAssignmentQualityLabels(
+		qualityLabels: Avo.Assignment.QualityLabel[]
+	): Promise<void> {
+		try {
+			const variables: InsertAssignmentQualityLabelsMutationVariables = { qualityLabels };
+
+			await dataService.query<
+				InsertAssignmentQualityLabelsMutation,
+				InsertAssignmentQualityLabelsMutationVariables
+			>({
+				query: InsertAssignmentQualityLabelsDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to insert quality labels in assignment database', err, {
+				qualityLabels,
+				query: 'INSERT_ASSIGNMENT_QUALITY_LABELS',
+			});
+		}
+	}
+
+	static async deleteAssignmentQualityLabels(assignmentId: string): Promise<void> {
+		try {
+			const variables: DeleteAssignmentQualityLabelsMutationVariables = { assignmentId };
+
+			await dataService.query<
+				DeleteAssignmentQualityLabelsMutation,
+				DeleteAssignmentQualityLabelsMutationVariables
+			>({
+				query: DeleteAssignmentQualityLabelsDocument,
+				variables,
+			});
+		} catch (err) {
+			throw new CustomError('Failed to delete quality labels from assignment database', err, {
+				collectionId: assignmentId,
+				query: 'DELETE_ASSIGNMENT_QUALITY_LABELS',
 			});
 		}
 	}

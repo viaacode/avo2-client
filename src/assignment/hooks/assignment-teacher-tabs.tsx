@@ -48,6 +48,11 @@ export function useAssignmentTeacherTabs(
 							},
 					  ]
 					: []),
+				{
+					id: ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN,
+					label: tText('Beheer'),
+					icon: IconName.settings as IconName,
+				},
 			].map((item) => ({
 				...item,
 				active: item.id === tab,
