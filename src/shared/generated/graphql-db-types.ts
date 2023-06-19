@@ -48733,20 +48733,6 @@ export type DeleteAssignmentByIdMutationVariables = Exact<{
 
 export type DeleteAssignmentByIdMutation = { __typename?: 'mutation_root', delete_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
 
-export type DeleteAssignmentLomLinksMutationVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type DeleteAssignmentLomLinksMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_lom_links?: { __typename?: 'app_assignments_v2_lom_links_mutation_response', affected_rows: number } | null };
-
-export type DeleteAssignmentQualityLabelsMutationVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type DeleteAssignmentQualityLabelsMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_quality_labels?: { __typename?: 'app_assignments_v2_quality_labels_mutation_response', affected_rows: number } | null };
-
 export type DeleteAssignmentResponseByIdMutationVariables = Exact<{
   assignmentResponseId: Scalars['uuid'];
 }>;
@@ -48893,20 +48879,6 @@ export type InsertAssignmentBlocksMutationVariables = Exact<{
 
 export type InsertAssignmentBlocksMutation = { __typename?: 'mutation_root', insert_app_assignment_blocks_v2?: { __typename?: 'app_assignment_blocks_v2_mutation_response', affected_rows: number } | null };
 
-export type InsertAssignmentLomLinksMutationVariables = Exact<{
-  lomObjects: Array<App_Assignments_V2_Lom_Links_Insert_Input> | App_Assignments_V2_Lom_Links_Insert_Input;
-}>;
-
-
-export type InsertAssignmentLomLinksMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_lom_links?: { __typename?: 'app_assignments_v2_lom_links_mutation_response', affected_rows: number } | null };
-
-export type InsertAssignmentQualityLabelsMutationVariables = Exact<{
-  qualityLabels: Array<App_Assignments_V2_Quality_Labels_Insert_Input> | App_Assignments_V2_Quality_Labels_Insert_Input;
-}>;
-
-
-export type InsertAssignmentQualityLabelsMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_quality_labels?: { __typename?: 'app_assignments_v2_quality_labels_mutation_response', affected_rows: number } | null };
-
 export type InsertAssignmentResponseMutationVariables = Exact<{
   assignmentResponses: Array<App_Assignment_Responses_V2_Insert_Input> | App_Assignment_Responses_V2_Insert_Input;
 }>;
@@ -48920,22 +48892,6 @@ export type InsertAssignmentMutationVariables = Exact<{
 
 
 export type InsertAssignmentMutation = { __typename?: 'mutation_root', insert_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignments_v2', id: any }> } | null };
-
-export type UpdateAssignmentBlockMutationVariables = Exact<{
-  blockId: Scalars['uuid'];
-  update: App_Assignment_Blocks_V2_Set_Input;
-}>;
-
-
-export type UpdateAssignmentBlockMutation = { __typename?: 'mutation_root', update_app_assignment_blocks_v2_by_pk?: { __typename?: 'app_assignment_blocks_v2', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, original_title?: string | null, original_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_id: any } | null };
-
-export type UpdateAssignmentByIdMutationVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-  assignment: App_Assignments_V2_Set_Input;
-}>;
-
-
-export type UpdateAssignmentByIdMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
 
 export type UpdateAssignmentResponseMutationVariables = Exact<{
   assignmentResponseId?: InputMaybe<Scalars['uuid']>;
@@ -49385,21 +49341,6 @@ export type InsertAssignmentLabelsMutationVariables = Exact<{
 
 
 export type InsertAssignmentLabelsMutation = { __typename?: 'mutation_root', insert_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', returning: Array<{ __typename?: 'app_assignment_labels_v2', id: any }> } | null };
-
-export type LinkAssignmentLabelsToAssignmentMutationVariables = Exact<{
-  objects: Array<App_Assignments_V2_Assignment_Labels_V2_Insert_Input> | App_Assignments_V2_Assignment_Labels_V2_Insert_Input;
-}>;
-
-
-export type LinkAssignmentLabelsToAssignmentMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_assignment_labels_v2?: { __typename?: 'app_assignments_v2_assignment_labels_v2_mutation_response', affected_rows: number } | null };
-
-export type UnlinkAssignmentLabelsFromAssignmentMutationVariables = Exact<{
-  assignmentUuid: Scalars['uuid'];
-  labelIds: Array<Scalars['uuid']> | Scalars['uuid'];
-}>;
-
-
-export type UnlinkAssignmentLabelsFromAssignmentMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_assignment_labels_v2?: { __typename?: 'app_assignments_v2_assignment_labels_v2_mutation_response', affected_rows: number } | null };
 
 export type UpdateAssignmentLabelsMutationVariables = Exact<{
   label: Scalars['String'];
@@ -51087,42 +51028,6 @@ export const useDeleteAssignmentByIdMutation = <
       (variables?: DeleteAssignmentByIdMutationVariables) => fetchData<DeleteAssignmentByIdMutation, DeleteAssignmentByIdMutationVariables>(DeleteAssignmentByIdDocument, variables)(),
       options
     );
-export const DeleteAssignmentLomLinksDocument = `
-    mutation deleteAssignmentLomLinks($assignmentId: uuid!) {
-  delete_app_assignments_v2_lom_links(
-    where: {assignment_id: {_eq: $assignmentId}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentLomLinksMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentLomLinksMutation, TError, DeleteAssignmentLomLinksMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentLomLinksMutation, TError, DeleteAssignmentLomLinksMutationVariables, TContext>(
-      ['deleteAssignmentLomLinks'],
-      (variables?: DeleteAssignmentLomLinksMutationVariables) => fetchData<DeleteAssignmentLomLinksMutation, DeleteAssignmentLomLinksMutationVariables>(DeleteAssignmentLomLinksDocument, variables)(),
-      options
-    );
-export const DeleteAssignmentQualityLabelsDocument = `
-    mutation deleteAssignmentQualityLabels($assignmentId: uuid!) {
-  delete_app_assignments_v2_quality_labels(
-    where: {assignment_id: {_eq: $assignmentId}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentQualityLabelsMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentQualityLabelsMutation, TError, DeleteAssignmentQualityLabelsMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentQualityLabelsMutation, TError, DeleteAssignmentQualityLabelsMutationVariables, TContext>(
-      ['deleteAssignmentQualityLabels'],
-      (variables?: DeleteAssignmentQualityLabelsMutationVariables) => fetchData<DeleteAssignmentQualityLabelsMutation, DeleteAssignmentQualityLabelsMutationVariables>(DeleteAssignmentQualityLabelsDocument, variables)(),
-      options
-    );
 export const DeleteAssignmentResponseByIdDocument = `
     mutation deleteAssignmentResponseById($assignmentResponseId: uuid!) {
   delete_app_assignment_responses_v2(where: {id: {_eq: $assignmentResponseId}}) {
@@ -52148,38 +52053,6 @@ export const useInsertAssignmentBlocksMutation = <
       (variables?: InsertAssignmentBlocksMutationVariables) => fetchData<InsertAssignmentBlocksMutation, InsertAssignmentBlocksMutationVariables>(InsertAssignmentBlocksDocument, variables)(),
       options
     );
-export const InsertAssignmentLomLinksDocument = `
-    mutation insertAssignmentLomLinks($lomObjects: [app_assignments_v2_lom_links_insert_input!]!) {
-  insert_app_assignments_v2_lom_links(objects: $lomObjects) {
-    affected_rows
-  }
-}
-    `;
-export const useInsertAssignmentLomLinksMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertAssignmentLomLinksMutation, TError, InsertAssignmentLomLinksMutationVariables, TContext>) =>
-    useMutation<InsertAssignmentLomLinksMutation, TError, InsertAssignmentLomLinksMutationVariables, TContext>(
-      ['insertAssignmentLomLinks'],
-      (variables?: InsertAssignmentLomLinksMutationVariables) => fetchData<InsertAssignmentLomLinksMutation, InsertAssignmentLomLinksMutationVariables>(InsertAssignmentLomLinksDocument, variables)(),
-      options
-    );
-export const InsertAssignmentQualityLabelsDocument = `
-    mutation insertAssignmentQualityLabels($qualityLabels: [app_assignments_v2_quality_labels_insert_input!]!) {
-  insert_app_assignments_v2_quality_labels(objects: $qualityLabels) {
-    affected_rows
-  }
-}
-    `;
-export const useInsertAssignmentQualityLabelsMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertAssignmentQualityLabelsMutation, TError, InsertAssignmentQualityLabelsMutationVariables, TContext>) =>
-    useMutation<InsertAssignmentQualityLabelsMutation, TError, InsertAssignmentQualityLabelsMutationVariables, TContext>(
-      ['insertAssignmentQualityLabels'],
-      (variables?: InsertAssignmentQualityLabelsMutationVariables) => fetchData<InsertAssignmentQualityLabelsMutation, InsertAssignmentQualityLabelsMutationVariables>(InsertAssignmentQualityLabelsDocument, variables)(),
-      options
-    );
 export const InsertAssignmentResponseDocument = `
     mutation insertAssignmentResponse($assignmentResponses: [app_assignment_responses_v2_insert_input!]!) {
   insert_app_assignment_responses_v2(objects: $assignmentResponses) {
@@ -52251,53 +52124,6 @@ export const useInsertAssignmentMutation = <
     useMutation<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>(
       ['insertAssignment'],
       (variables?: InsertAssignmentMutationVariables) => fetchData<InsertAssignmentMutation, InsertAssignmentMutationVariables>(InsertAssignmentDocument, variables)(),
-      options
-    );
-export const UpdateAssignmentBlockDocument = `
-    mutation updateAssignmentBlock($blockId: uuid!, $update: app_assignment_blocks_v2_set_input!) {
-  update_app_assignment_blocks_v2_by_pk(pk_columns: {id: $blockId}, _set: $update) {
-    id
-    position
-    type
-    custom_title
-    thumbnail_path
-    use_custom_fields
-    custom_description
-    original_title
-    original_description
-    created_at
-    updated_at
-    fragment_id
-    start_oc
-    end_oc
-    is_deleted
-    assignment_id
-  }
-}
-    `;
-export const useUpdateAssignmentBlockMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateAssignmentBlockMutation, TError, UpdateAssignmentBlockMutationVariables, TContext>) =>
-    useMutation<UpdateAssignmentBlockMutation, TError, UpdateAssignmentBlockMutationVariables, TContext>(
-      ['updateAssignmentBlock'],
-      (variables?: UpdateAssignmentBlockMutationVariables) => fetchData<UpdateAssignmentBlockMutation, UpdateAssignmentBlockMutationVariables>(UpdateAssignmentBlockDocument, variables)(),
-      options
-    );
-export const UpdateAssignmentByIdDocument = `
-    mutation updateAssignmentById($assignmentId: uuid!, $assignment: app_assignments_v2_set_input!) {
-  update_app_assignments_v2(where: {id: {_eq: $assignmentId}}, _set: $assignment) {
-    affected_rows
-  }
-}
-    `;
-export const useUpdateAssignmentByIdMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UpdateAssignmentByIdMutation, TError, UpdateAssignmentByIdMutationVariables, TContext>) =>
-    useMutation<UpdateAssignmentByIdMutation, TError, UpdateAssignmentByIdMutationVariables, TContext>(
-      ['updateAssignmentById'],
-      (variables?: UpdateAssignmentByIdMutationVariables) => fetchData<UpdateAssignmentByIdMutation, UpdateAssignmentByIdMutationVariables>(UpdateAssignmentByIdDocument, variables)(),
       options
     );
 export const UpdateAssignmentResponseDocument = `
@@ -53870,40 +53696,6 @@ export const useInsertAssignmentLabelsMutation = <
     useMutation<InsertAssignmentLabelsMutation, TError, InsertAssignmentLabelsMutationVariables, TContext>(
       ['insertAssignmentLabels'],
       (variables?: InsertAssignmentLabelsMutationVariables) => fetchData<InsertAssignmentLabelsMutation, InsertAssignmentLabelsMutationVariables>(InsertAssignmentLabelsDocument, variables)(),
-      options
-    );
-export const LinkAssignmentLabelsToAssignmentDocument = `
-    mutation linkAssignmentLabelsToAssignment($objects: [app_assignments_v2_assignment_labels_v2_insert_input!]!) {
-  insert_app_assignments_v2_assignment_labels_v2(objects: $objects) {
-    affected_rows
-  }
-}
-    `;
-export const useLinkAssignmentLabelsToAssignmentMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<LinkAssignmentLabelsToAssignmentMutation, TError, LinkAssignmentLabelsToAssignmentMutationVariables, TContext>) =>
-    useMutation<LinkAssignmentLabelsToAssignmentMutation, TError, LinkAssignmentLabelsToAssignmentMutationVariables, TContext>(
-      ['linkAssignmentLabelsToAssignment'],
-      (variables?: LinkAssignmentLabelsToAssignmentMutationVariables) => fetchData<LinkAssignmentLabelsToAssignmentMutation, LinkAssignmentLabelsToAssignmentMutationVariables>(LinkAssignmentLabelsToAssignmentDocument, variables)(),
-      options
-    );
-export const UnlinkAssignmentLabelsFromAssignmentDocument = `
-    mutation unlinkAssignmentLabelsFromAssignment($assignmentUuid: uuid!, $labelIds: [uuid!]!) {
-  delete_app_assignments_v2_assignment_labels_v2(
-    where: {assignment_id: {_eq: $assignmentUuid}, assignment_label_id: {_in: $labelIds}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useUnlinkAssignmentLabelsFromAssignmentMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<UnlinkAssignmentLabelsFromAssignmentMutation, TError, UnlinkAssignmentLabelsFromAssignmentMutationVariables, TContext>) =>
-    useMutation<UnlinkAssignmentLabelsFromAssignmentMutation, TError, UnlinkAssignmentLabelsFromAssignmentMutationVariables, TContext>(
-      ['unlinkAssignmentLabelsFromAssignment'],
-      (variables?: UnlinkAssignmentLabelsFromAssignmentMutationVariables) => fetchData<UnlinkAssignmentLabelsFromAssignmentMutation, UnlinkAssignmentLabelsFromAssignmentMutationVariables>(UnlinkAssignmentLabelsFromAssignmentDocument, variables)(),
       options
     );
 export const UpdateAssignmentLabelsDocument = `

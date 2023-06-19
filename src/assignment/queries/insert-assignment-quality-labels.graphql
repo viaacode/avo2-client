@@ -1,7 +1,0 @@
-mutation insertAssignmentQualityLabels(
-	$qualityLabels: [app_assignments_v2_quality_labels_insert_input!]!
-) {
-	insert_app_assignments_v2_quality_labels(objects: $qualityLabels) {
-		affected_rows
-	}
-}
