@@ -139,7 +139,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 
 			let collections: Collection[];
 			if (activeView === AddCollectionTab.myCollections) {
-				collections = await CollectionService.fetchCollectionsByOwner(
+				collections = await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
 					user,
 					0,
 					null,
