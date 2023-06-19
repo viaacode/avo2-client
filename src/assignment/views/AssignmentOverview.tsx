@@ -39,6 +39,7 @@ import React, {
 } from 'react';
 import { Link } from 'react-router-dom';
 import {
+	ArrayParam,
 	DelimitedArrayParam,
 	NumberParam,
 	StringParam,
@@ -132,6 +133,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 
+	const isContributor =
+		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
 		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
 
@@ -143,6 +147,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [query, setQuery] = useQueryParams({
 		selectedAssignmentLabelIds: DelimitedArrayParam,
 		selectedClassLabelIds: DelimitedArrayParam,
+		selectedShareTypeLabelIds: ArrayParam,
 		filter: StringParam,
 		view: withDefault(StringParam, AssignmentView.ACTIVE),
 		page: NumberParam,
@@ -168,10 +173,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const handleQueryChanged = (value: any, id: string) => {
 		let newQuery: any = cloneDeep(query);
+		let newValue = value;
+		// Show both shareTypes for 'mijn opdrachten' option
+		if (value.includes(ShareWithColleagueTypeEnum.NIET_GEDEELD)) {
+			newValue = [...value, ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE];
+		}
 
 		newQuery = {
 			...newQuery,
-			[id]: value,
+			[id]: newValue,
 			...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
 		};
 
@@ -265,7 +275,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				query.page || 0,
 				query.filter || '',
 				(query.selectedAssignmentLabelIds as string[]) || [],
-				(query.selectedClassLabelIds as string[]) || []
+				(query.selectedClassLabelIds as string[]) || [],
+				(query.selectedShareTypeLabelIds as string[]) || []
 			);
 
 			setAssignments(response.assignments);
@@ -379,6 +390,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const handleDeleteModalClose = () => {
 		setDeleteAssignmentModalOpen(false);
 		setMarkedAssignment(null);
+	};
+
+	const handleDeleteConfirm = async () => {
+		if (isContributor) {
+			await AssignmentService.deleteContributor(markedAssignment?.id, user.uid, user.uid);
+		} else {
+			await deleteAssignment(markedAssignment?.id, user);
+		}
+
+		handleDeleteModalClose();
+
+		await updateAndReset();
+		await fetchAssignments();
 	};
 
 	const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
@@ -510,27 +534,29 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
-		const sharedWithNames = (assignment.contributors || []).map((contributor) => {
+		const sharedWithNames = (assignment?.contributors || []).map((contributor) => {
+			const fullName = contributor.profile?.user?.full_name;
+			const orgName = contributor.profile?.organisation?.name;
 			if (contributor.profile?.organisation?.name) {
-				return (
-					contributor.profile?.user?.full_name +
-					' ' +
-					'(' +
-					contributor.profile?.organisation?.name +
-					')' +
-					' '
-				);
+				return `${fullName} (${orgName}) `;
 			} else {
-				return contributor.profile?.user?.full_name + ' ';
+				return `${fullName} `;
 			}
 		});
 
 		const shareTypeTitle =
-			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
-				: assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
-				? tText('assignment/views/assignment-overview___gedeeld-met-anderen')
-				: tText('assignment/views/assignment-overview___mijn-opdracht');
+			assignment.share_type &&
+			{
+				[ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ]: tText(
+					'assignment/views/assignment-overview___gedeeld-met-mij'
+				),
+				[ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE]: tText(
+					'assignment/views/assignment-overview___gedeeld-met-anderen'
+				),
+				[ShareWithColleagueTypeEnum.NIET_GEDEELD]: tText(
+					'assignment/views/assignment-overview___mijn-opdracht'
+				),
+			}[assignment.share_type];
 
 		const shareTypeText =
 			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
@@ -627,7 +653,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				return (
 					<Tooltip position="top">
 						<TooltipTrigger>
-							<div className="c-assignment-overview__shared" title={shareTypeTitle}>
+							<div
+								className="c-assignment-overview__shared"
+								title={shareTypeTitle || ''}
+							>
 								<Icon name={shareTypeIcon} />
 							</div>
 						</TooltipTrigger>
@@ -658,6 +687,25 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					};
 				})
 		);
+	};
+
+	const getShareTypeLabels = (): CheckboxOption[] => {
+		return compact([
+			{
+				label: tText('assignment/views/assignment-overview___gedeeld-met-mij'),
+				id: ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ,
+				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
+					ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
+				),
+			},
+			{
+				label: tText('assignment/views/assignment-overview___mijn-opdrachten'),
+				id: ShareWithColleagueTypeEnum.NIET_GEDEELD,
+				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
+					ShareWithColleagueTypeEnum.NIET_GEDEELD
+				),
+			},
+		]);
 	};
 
 	const renderHeader = () => {
@@ -727,6 +775,19 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							})}
 							{canEditAssignments && (
 								<>
+									<CheckboxDropdownModal
+										label={tText(
+											'assignment/views/assignment-overview___soort'
+										)}
+										id="Soort"
+										options={getShareTypeLabels()}
+										onChange={(selectedLabels) =>
+											handleQueryChanged(
+												selectedLabels,
+												'selectedShareTypeLabelIds'
+											)
+										}
+									/>
 									<CheckboxDropdownModal
 										label={tText('assignment/views/assignment-overview___klas')}
 										id="Klas"
@@ -935,14 +996,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					body={deleteAssignmentWarning(markedAssignment || undefined)}
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
-					confirmCallback={async () => {
-						await deleteAssignment(markedAssignment?.id, user);
-
-						handleDeleteModalClose();
-
-						await updateAndReset();
-						await fetchAssignments();
-					}}
+					confirmCallback={handleDeleteConfirm}
 				/>
 			</>
 		);

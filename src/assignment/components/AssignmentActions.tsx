@@ -178,9 +178,11 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 		/>
 	);
 
-	const renderPublishButton = (config?: Partial<ButtonProps>) => (
-		<Button type="secondary" {...config} />
-	);
+	const renderPublishButton = (config?: Partial<ButtonProps>) => {
+		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
+			return <Button type="secondary" {...config} />;
+		}
+	};
 
 	const renderShareButton = (config?: Partial<ShareDropdownProps>) => {
 		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {

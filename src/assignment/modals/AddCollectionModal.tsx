@@ -139,7 +139,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 
 			let collections: Collection[];
 			if (activeView === AddCollectionTab.myCollections) {
-				collections = await CollectionService.fetchCollectionsByOwner(
+				collections = await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
 					user,
 					0,
 					null,
@@ -150,7 +150,8 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 						OWN_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 					),
 					ContentTypeNumber.collection,
-					filterString
+					filterString,
+					undefined
 				);
 			} else {
 				collections = await CollectionService.fetchBookmarkedCollectionsByOwner(

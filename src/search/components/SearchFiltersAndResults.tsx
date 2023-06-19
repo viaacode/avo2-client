@@ -334,6 +334,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			const bookmarkStatusesTemp = cloneDeep(bookmarkStatuses) || {
 				item: {},
 				collection: {},
+				assignment: {},
 			};
 			set(bookmarkStatusesTemp, `[${type}][${uuid}]`, active);
 			setBookmarkStatuses(bookmarkStatusesTemp);

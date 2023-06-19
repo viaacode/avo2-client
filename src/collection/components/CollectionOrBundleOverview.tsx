@@ -12,6 +12,9 @@ import {
 	Table,
 	TableColumn,
 	Thumbnail,
+	Toolbar,
+	ToolbarItem,
+	ToolbarLeft,
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
@@ -19,9 +22,10 @@ import {
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
-import { fromPairs, get, isNil, noop } from 'lodash-es';
+import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
@@ -31,6 +35,8 @@ import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
+	CheckboxDropdownModal,
+	CheckboxOption,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
@@ -98,6 +104,13 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 
+	const [query, setQuery] = useQueryParams({
+		selectedShareTypeLabelIds: ArrayParam,
+		page: NumberParam,
+		sort_column: StringParam,
+		sort_order: StringParam,
+	});
+
 	// Mutations
 	const { mutateAsync: triggerCollectionOrBundleDelete } =
 		useDeleteCollectionOrBundleByUuidMutation();
@@ -113,14 +126,16 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const fetchCollections = useCallback(async () => {
 		try {
-			const collections = await CollectionService.fetchCollectionsByOwner(
-				user,
-				page * ITEMS_PER_PAGE,
-				ITEMS_PER_PAGE,
-				{ [sortColumn]: sortOrder },
-				isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
-				undefined
-			);
+			const collections =
+				await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
+					user,
+					page * ITEMS_PER_PAGE,
+					ITEMS_PER_PAGE,
+					{ [sortColumn]: sortOrder },
+					isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
+					undefined,
+					query.selectedShareTypeLabelIds as string[]
+				);
 
 			// Check edit and delete permissions for every row, so we can show the correct dropdown list of operations
 			let perms: boolean[][];
@@ -205,7 +220,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				actionButtons: ['home'],
 			});
 		}
-	}, [user, page, sortColumn, sortOrder, isCollection, tText]);
+	}, [user, page, sortColumn, sortOrder, isCollection, tText, query]);
 
 	useEffect(() => {
 		fetchCollections();
@@ -245,6 +260,32 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			setSelectedDetail(undefined);
 		}
 	}, [selectedCollectionUuid, isCollection]);
+
+	useEffect(() => {
+		if (query.sort_column) {
+			setSortColumn(query.sort_column as keyof Avo.Collection.Collection);
+		}
+		if (query.sort_order) {
+			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
+		}
+	}, []);
+
+	const handleQueryChanged = (value: any, id: string) => {
+		let newQuery: any = cloneDeep(query);
+		let newValue = value;
+		// Show both shareTypes for 'mijn collecties' option
+		if (value.includes(CollectionShareType.NIET_GEDEELD)) {
+			newValue = [...value, CollectionShareType.GEDEELD_MET_ANDERE];
+		}
+
+		newQuery = {
+			...newQuery,
+			[id]: newValue,
+			...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
+		};
+
+		setQuery(newQuery, 'pushIn');
+	};
 
 	const onDeleteCollection = async () => {
 		try {
@@ -519,11 +560,18 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		});
 
 		const shareTypeTitle =
-			collection.share_type === CollectionShareType.GEDEELD_MET_MIJ
-				? tText('collection/views/collection-overview___gedeeld-met-mij')
-				: collection.share_type === CollectionShareType.GEDEELD_MET_ANDERE
-				? tText('collection/views/collection-overview___gedeeld-met-anderen')
-				: tText('collection/views/collection-overview___mijn-collectie');
+			collection.share_type &&
+			{
+				[CollectionShareType.GEDEELD_MET_MIJ]: tText(
+					'collection/views/collection-overview___gedeeld-met-mij'
+				),
+				[CollectionShareType.GEDEELD_MET_ANDERE]: tText(
+					'collection/views/collection-overview___gedeeld-met-anderen'
+				),
+				[CollectionShareType.NIET_GEDEELD]: tText(
+					'collection/views/collection-overview___mijn-collectie'
+				),
+			}[collection.share_type];
 
 		const shareTypeText =
 			collection.share_type === CollectionShareType.GEDEELD_MET_MIJ
@@ -593,7 +641,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				return (
 					<Tooltip position="top">
 						<TooltipTrigger>
-							<div className="m-collection-overview-shared" title={shareTypeTitle}>
+							<div
+								className="m-collection-overview-shared"
+								title={shareTypeTitle || ''}
+							>
 								<Icon name={shareTypeIcon} />
 							</div>
 						</TooltipTrigger>
@@ -694,8 +745,52 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		/>
 	);
 
+	const getLabelOptions = (): CheckboxOption[] => {
+		return compact([
+			{
+				label: tText('collection/views/collection-overview___gedeeld-met-mij'),
+				id: CollectionShareType.GEDEELD_MET_MIJ,
+				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
+					CollectionShareType.GEDEELD_MET_MIJ
+				),
+			},
+			{
+				label: tText('collection/views/collection-overview___mijn-collecties'),
+				id: CollectionShareType.NIET_GEDEELD,
+				checked: [...(query.selectedShareTypeLabelIds || [])].includes(
+					CollectionShareType.NIET_GEDEELD
+				),
+			},
+		]);
+	};
+
+	const renderHeader = () => {
+		return (
+			<Toolbar>
+				<ToolbarLeft>
+					<ToolbarItem>
+						<ButtonToolbar>
+							<CheckboxDropdownModal
+								label={tText('collection/views/collection-overview___soort')}
+								id="share_type"
+								options={getLabelOptions()}
+								onChange={(selectedShareTypeLabels) =>
+									handleQueryChanged(
+										selectedShareTypeLabels,
+										'selectedShareTypeLabelIds'
+									)
+								}
+							/>
+						</ButtonToolbar>
+					</ToolbarItem>
+				</ToolbarLeft>
+			</Toolbar>
+		);
+	};
+
 	const renderTable = (collections: Collection[]) => (
 		<>
+			{renderHeader()}
 			<Table
 				columns={getColumns()}
 				data={collections}

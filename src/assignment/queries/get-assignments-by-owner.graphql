@@ -1,5 +1,5 @@
 query getAssignmentsByOwner(
-	$owner_profile_id: uuid
+	$collaborator_profile_id: uuid
 	$offset: Int = 0
 	$limit: Int
 	$order: [app_assignments_v2_overview_order_by!]! = [{ deadline_at: desc }]
@@ -7,7 +7,7 @@ query getAssignmentsByOwner(
 ) {
 	app_assignments_v2_overview(
 		where: {
-			owner_profile_id: { _eq: $owner_profile_id }
+			collaborator_profile_id: { _eq: $collaborator_profile_id }
 			is_deleted: { _eq: false }
 			_and: $filter
 		}
@@ -103,10 +103,11 @@ query getAssignmentsByOwner(
 		}
 		share_type
 		lom_learning_resource_type
+		collaborator_profile_id
 	}
 	count: app_assignments_v2_overview_aggregate(
 		where: {
-			owner_profile_id: { _eq: $owner_profile_id }
+			collaborator_profile_id: { _eq: $collaborator_profile_id }
 			is_deleted: { _eq: false }
 			_and: $filter
 		}

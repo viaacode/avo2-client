@@ -106,6 +106,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				filterString, // filter,
 				[],
 				[],
+				[],
 				null // limit: no limit
 			);
 			setAssignments(assignmentData.assignments);

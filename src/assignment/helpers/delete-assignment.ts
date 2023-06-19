@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { isNil } from 'lodash';
 import { ReactNode } from 'react';
 
@@ -48,6 +48,20 @@ export async function deleteAssignment(
 }
 
 export function deleteAssignmentWarning(assignment?: Avo.Assignment.Assignment): ReactNode {
+	const isSharedWithOthers =
+		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
+	const isContributor = assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+
+	if (isSharedWithOthers) {
+		return tHtml('assignment/views/assignment-overview___delete-shared-assignment', {
+			count: assignment?.contributors?.length || 0,
+		});
+	}
+
+	if (isContributor) {
+		return tHtml('assignment/views/assignment-overview___delete-contributor-assignment');
+	}
+
 	if (assignment?.assignment_type?.includes(AssignmentType.BOUW)) {
 		return tHtml(
 			'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'

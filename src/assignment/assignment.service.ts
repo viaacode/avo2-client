@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isEmpty, isNil, map, uniq, without } from 'lodash-es';
+import { cloneDeep, compact, isEmpty, isNil, uniq, without } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -145,6 +145,7 @@ export class AssignmentService {
 		filterString: string | undefined,
 		labelIds: string[] | undefined,
 		classIds: string[] | undefined,
+		shareTypeIds: string[] | undefined,
 		limit: number | null = ITEMS_PER_PAGE
 	): Promise<{
 		assignments: Avo.Assignment.Assignment[];
@@ -182,6 +183,11 @@ export class AssignmentService {
 					labels: { assignment_label_id: { _in: classIds } },
 				});
 			}
+			if (shareTypeIds?.length) {
+				filterArray.push({
+					share_type: { _in: shareTypeIds },
+				});
+			}
 			if (!isNil(pastDeadline)) {
 				if (pastDeadline) {
 					filterArray.push({ deadline_at: { _lt: new Date().toISOString() } });
@@ -214,7 +220,7 @@ export class AssignmentService {
 					tableColumnDataType,
 					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
-				owner_profile_id: getProfileId(user),
+				collaborator_profile_id: getProfileId(user),
 				filter: filterArray.length ? filterArray : {},
 			};
 
@@ -417,7 +423,7 @@ export class AssignmentService {
 			// Replace previous lom links
 			await AssignmentService.deleteAssignmentLomLinks(original.id);
 
-			const loms: string[] = compact(map(update.loms, 'lom_id'));
+			const loms = (update.loms || []).map((lom) => lom.lom.id);
 
 			await AssignmentService.insertAssignmentLomLinks(original.id, loms);
 

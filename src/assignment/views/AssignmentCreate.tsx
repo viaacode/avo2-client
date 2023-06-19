@@ -36,7 +36,6 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
-
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
 import { AssignmentFields } from '../hooks/assignment-form';
