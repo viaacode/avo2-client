@@ -46,7 +46,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
-
 	// Data
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm();
 
@@ -85,6 +84,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					owner_profile_id: user.profile?.id,
 					labels: [],
 				} as Partial<Avo.Assignment.Assignment>,
+				user,
 				(assignment?.labels || []).map((label) => label.assignment_label) || []
 			);
 
@@ -298,7 +298,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
 	// Render
-
 	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--create c-sticky-bar__wrapper">
 			<div>

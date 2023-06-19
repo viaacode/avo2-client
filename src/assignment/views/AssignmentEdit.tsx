@@ -10,7 +10,7 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -73,6 +73,8 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -98,6 +100,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const isPublic = assignment?.is_public || false;
+	const canEditAllAssignments = PermissionService.hasPerm(
+		user,
+		PermissionName.EDIT_ANY_ASSIGNMENTS
+	);
 
 	const {
 		control,
@@ -194,8 +200,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				const isOwner = tempAssignment.owner_profile_id === user.profile.id;
 
 				if (
-					(!contributorInfo && !isOwner) ||
-					contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer
+					(!contributorInfo && !isOwner && !canEditAllAssignments) ||
+					(contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer &&
+						!canEditAllAssignments)
 				) {
 					setAssignmentError({
 						message: tHtml(
@@ -277,7 +284,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					blocks: cleanupTitleAndDescriptions(
 						assignment?.blocks || []
 					) as Avo.Assignment.Block[],
-				}
+				},
+				user
 			);
 
 			if (updated && assignment?.id) {
@@ -484,6 +492,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					/>
 				);
 
+			case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
+				return (
+					<AssignmentAdminFormEditable
+						assignment={assignment as Avo.Assignment.Assignment}
+						setAssignment={
+							setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
+						}
+						setValue={setValue as any}
+					/>
+				);
+
 			default:
 				return tab;
 		}
@@ -626,9 +645,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 
 		if (
-			assignment &&
-			!isUserAssignmentOwner(user, assignment) &&
-			!isUserAssignmentContributor(user, assignment)
+			!canEditAllAssignments ||
+			(assignment &&
+				!isUserAssignmentOwner(user, assignment) &&
+				!isUserAssignmentContributor(user, assignment) &&
+				!canEditAllAssignments)
 		) {
 			return (
 				<ErrorNoAccess
