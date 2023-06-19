@@ -73,6 +73,8 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import { checkUserRole } from '../../shared/helpers/check-user-role';
+import { Contributor } from '../../shared/types/contributor';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -286,6 +288,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						object: String(assignment.id),
 						object_type: 'assignment',
 						action: 'edit',
+						resource: {
+							is_public: assignment.is_public || false,
+							role: checkUserRole(
+								user,
+								assignment as Avo.Assignment.Assignment,
+								(original.contributors as Contributor[]) || []
+							).toLowerCase(),
+						},
 					},
 					user
 				);
