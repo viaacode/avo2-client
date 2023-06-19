@@ -37,7 +37,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import { InteractiveTour, LoadingInfo, ShareThroughEmailModal } from '../../shared/components';
+import { InteractiveTour, LoadingInfo } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
@@ -143,7 +143,6 @@ const CollectionDetail: FunctionComponent<
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
-	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] =
 		useState<boolean>(false);
@@ -583,10 +582,6 @@ const CollectionDetail: FunctionComponent<
 
 			case COLLECTION_ACTIONS.delete:
 				setIsDeleteModalOpen(true);
-				break;
-
-			case COLLECTION_ACTIONS.openShareThroughEmail:
-				setIsShareThroughEmailModalOpen(true);
 				break;
 
 			case COLLECTION_ACTIONS.openPublishCollectionModal:
@@ -1113,7 +1108,6 @@ const CollectionDetail: FunctionComponent<
 									!isAddToBundleModalOpen &&
 									!isDeleteModalOpen &&
 									!isPublishModalOpen &&
-									!isShareThroughEmailModalOpen &&
 									!isAutoplayCollectionModalOpen
 								}
 								history={history}
@@ -1244,14 +1238,6 @@ const CollectionDetail: FunctionComponent<
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
-				/>
-				<ShareThroughEmailModal
-					modalTitle={tText('collection/views/collection-detail___deel-deze-collectie')}
-					type="collection"
-					emailLinkHref={window.location.href}
-					emailLinkTitle={(collection as Avo.Collection.Collection).title}
-					isOpen={isShareThroughEmailModalOpen}
-					onClose={() => setIsShareThroughEmailModalOpen(false)}
 				/>
 				{!!collection_fragments && collection && isAutoplayCollectionModalOpen && (
 					<AutoplayCollectionModal
