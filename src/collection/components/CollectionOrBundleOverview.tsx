@@ -280,7 +280,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 		newQuery = {
 			...newQuery,
-			[id]: value,
 			[id]: newValue,
 			...(id !== 'page' ? { page: 0 } : {}), // Reset the page to 0, when any filter or sort order change is made
 		};
@@ -773,7 +772,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						<ButtonToolbar>
 							<CheckboxDropdownModal
 								label={tText('collection/views/collection-overview___soort')}
-								id="Soort"
+								id="share_type"
 								options={getLabelOptions()}
 								onChange={(selectedShareTypeLabels) =>
 									handleQueryChanged(
