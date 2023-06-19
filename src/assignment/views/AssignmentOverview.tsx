@@ -87,11 +87,7 @@ import {
 import { AssignmentService } from '../assignment.service';
 import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
-import {
-	deleteAssignment,
-	deleteAssignmentWarning,
-	removeContributorFromAssignment,
-} from '../helpers/delete-assignment';
+import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 import './AssignmentOverview.scss';
@@ -390,7 +386,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const handleDeleteConfirm = async () => {
 		if (isContributor) {
-			await removeContributorFromAssignment(markedAssignment?.id, user.uid, user.uid);
+			await AssignmentService.deleteContributor(markedAssignment?.id, user.uid, user.uid);
 		} else {
 			await deleteAssignment(markedAssignment?.id, user);
 		}

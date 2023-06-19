@@ -1,10 +1,7 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { isNil } from 'lodash';
-import { stringifyUrl } from 'query-string';
 import { ReactNode } from 'react';
 
-import { CustomError, getEnv } from '../../shared/helpers';
 import { tHtml } from '../../shared/helpers/translate';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -57,7 +54,7 @@ export function deleteAssignmentWarning(assignment?: Avo.Assignment.Assignment):
 
 	if (isSharedWithOthers) {
 		return tHtml('assignment/views/assignment-overview___delete-shared-assignment', {
-			count: assignment?.contributors?.length,
+			count: assignment?.contributors?.length || 0,
 		});
 	}
 
@@ -80,28 +77,4 @@ export function deleteAssignmentWarning(assignment?: Avo.Assignment.Assignment):
 	return tHtml(
 		'assignment/views/assignment-overview___deze-actie-kan-niet-ongedaan-gemaakt-worden'
 	);
-}
-
-export async function removeContributorFromAssignment(
-	assignmentId: string,
-	contributorId: string,
-	profileId: string
-): Promise<void> {
-	try {
-		await fetchWithLogoutJson(
-			stringifyUrl({
-				url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/delete-contributor`,
-				query: {
-					contributorId,
-					profileId,
-				},
-			}),
-			{ method: 'DELETE' }
-		);
-	} catch (err) {
-		throw new CustomError('Failed to remove contributor from assignment', err, {
-			assignmentId,
-			contributorId,
-		});
-	}
 }
