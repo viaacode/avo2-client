@@ -489,7 +489,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 							'delete',
 							currenctCollection?.share_type ===
 								ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-								? tText('Verwijder mij van deze collectie')
+								? tText(
+										'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
+								  )
 								: tText('collection/views/collection-overview___verwijderen')
 						),
 				  ]

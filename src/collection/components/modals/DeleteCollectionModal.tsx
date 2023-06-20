@@ -66,16 +66,20 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	const renderDeleteMessageParagraph = () => {
 		if (isSharedWithOthers) {
 			return tText(
-				'Ben je zeker dat je jezelf van deze collectie wil wissen? Deze opdracht is met {{count}} andere mensen gedeeld. Deze verliezen dan toegang.',
+				'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen-deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
 				{ count: contributorCount }
 			);
 		}
 
 		if (isContributor) {
-			return tText('Ben je zeker dat je jezelf van deze collectie wil wissen?');
+			return tText(
+				'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen'
+			);
 		}
 
-		return tText('Ben je zeker dat je deze collectie wil verwijderen');
+		return tText(
+			'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
+		);
 	};
 
 	const renderDeleteMessage = () => {
@@ -95,7 +99,9 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 			isOpen={isOpen}
 			title={
 				isContributor
-					? tHtml('Verwijder mij van deze collectie')
+					? tHtml(
+							'collection/components/modals/delete-collection-modal___verwijder-mij-van-deze-collectie'
+					  )
 					: tHtml(
 							'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
 					  )

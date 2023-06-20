@@ -443,7 +443,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								label:
 									assignmentRow.share_type ===
 									ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-										? tText('Verwijder mij van deze opdracht')
+										? tText(
+												'assignment/views/assignment-overview___verwijder-mij-van-deze-opdracht'
+										  )
 										: tText('assignment/views/assignment-overview___verwijder'),
 							},
 						]}
