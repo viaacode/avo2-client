@@ -56,9 +56,9 @@ import {
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
-import { checkUserRole } from '../../shared/helpers/check-user-role';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
+import { getUserRoleType } from '../../shared/helpers/user-role';
 import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -339,7 +339,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	useEffect(() => {
 		if (collectionState.currentCollection && contributors) {
-			const userContributorRole = checkUserRole(
+			const userContributorRole = getUserRoleType(
 				user,
 				collectionState.currentCollection as Avo.Collection.Collection,
 				contributors
@@ -476,7 +476,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			}
 
 			if (contributors) {
-				const userContributorRole = checkUserRole(
+				const userContributorRole = getUserRoleType(
 					user,
 					collectionObj as Avo.Collection.Collection,
 					contributors
@@ -757,7 +757,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							action: 'edit',
 							resource: {
 								is_public: newCollection.is_public,
-								role: checkUserRole(
+								role: getUserRoleType(
 									user,
 									newCollection,
 									contributors || []

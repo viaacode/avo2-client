@@ -75,7 +75,7 @@ import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
 import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { checkUserRole } from '../../shared/helpers/check-user-role';
+import { getUserRoleType } from '../../shared/helpers/user-role';
 import { Contributor } from '../../shared/types/contributor';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
@@ -298,7 +298,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						action: 'edit',
 						resource: {
 							is_public: assignment.is_public || false,
-							role: checkUserRole(
+							role: getUserRoleType(
 								user,
 								assignment as Avo.Assignment.Assignment,
 								(original.contributors as Contributor[]) || []
