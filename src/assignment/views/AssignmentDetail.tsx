@@ -184,7 +184,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				setPermissions(permissionObj);
 			} catch (err) {
 				setAssigmentError({
-					message: tHtml('Ophalen van permissies is mislukt'),
+					message: tHtml(
+						'assignment/views/assignment-detail___ophalen-van-permissies-is-mislukt'
+					),
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
