@@ -440,7 +440,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 							{
 								icon: IconName.delete,
 								id: 'delete',
-								label: tText('assignment/views/assignment-overview___verwijder'),
+								label:
+									assignmentRow.share_type ===
+									ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
+										? tText('Verwijder mij van deze opdracht')
+										: tText('assignment/views/assignment-overview___verwijder'),
 							},
 						]}
 						onOptionClicked={handleOptionClicked}

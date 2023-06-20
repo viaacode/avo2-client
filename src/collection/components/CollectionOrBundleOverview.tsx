@@ -20,7 +20,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
-import { PermissionName } from '@viaa/avo2-types';
+import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
@@ -100,6 +100,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const [selectedDetail, setSelectedDetail] = useState<Avo.Collection.Collection | undefined>(
 		undefined
 	);
+	const [selectedCollection, setSelectedCollection] = useState<Collection | undefined>(undefined);
 	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
@@ -110,6 +111,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		sort_column: StringParam,
 		sort_order: StringParam,
 	});
+
+	const isContributor =
+		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+	const isSharedWithOthers =
+		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
 
 	// Mutations
 	const { mutateAsync: triggerCollectionOrBundleDelete } =
@@ -256,7 +262,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				selectedCollectionUuid,
 				isCollection ? 'collection' : 'bundle'
 			).then((res) => setSelectedDetail(res || undefined));
+			setSelectedCollection(
+				collections?.find((collection) => collection.id === selectedCollectionUuid)
+			);
 		} else {
+			setSelectedCollection(undefined);
 			setSelectedDetail(undefined);
 		}
 	}, [selectedCollectionUuid, isCollection]);
@@ -302,6 +312,15 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				);
 				return;
 			}
+
+			if (isContributor) {
+				await CollectionService.deleteContributor(
+					selectedCollectionUuid,
+					undefined,
+					user.profile?.id
+				);
+			}
+
 			await triggerCollectionOrBundleDelete(
 				{
 					collectionOrBundleUuid: selectedCollectionUuid,
@@ -433,6 +452,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	);
 
 	const renderActions = (collectionUuid: string) => {
+		const currenctCollection = collections?.find(
+			(collection) => collection.id === collectionUuid
+		);
 		const ROW_DROPDOWN_ITEMS = [
 			...(permissions[collectionUuid] && permissions[collectionUuid].canEdit
 				? [
@@ -465,7 +487,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				? [
 						createDropdownMenuItem(
 							'delete',
-							tText('collection/views/collection-overview___verwijderen')
+							currenctCollection?.share_type ===
+								ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
+								? tText('Verwijder mij van deze collectie')
+								: tText('collection/views/collection-overview___verwijderen')
 						),
 				  ]
 				: []),
@@ -494,6 +519,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					break;
 
 				case 'delete':
+					setSelectedCollectionUuid(collectionUuid);
 					onClickDelete(collectionUuid);
 					break;
 
@@ -860,6 +886,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 						setIsDeleteModalOpen(false);
 					}}
 					deleteObjectCallback={onDeleteCollection}
+					isContributor={isContributor}
+					isSharedWithOthers={isSharedWithOthers}
+					contributorCount={selectedDetail?.contributors?.length || 0}
 				/>
 			);
 		}

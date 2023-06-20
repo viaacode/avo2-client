@@ -138,6 +138,8 @@ const CollectionDetail: FunctionComponent<
 	const showLoginPopup = collectionInfo?.showLoginPopup;
 	const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
 	const collection = collectionInfo?.collection;
+	const isContributor = collection?.owner_profile_id !== user?.profile?.id;
+	const isSharedWithOthers = !isContributor && !!(collection?.contributors?.length || 0 > 0);
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -1253,6 +1255,9 @@ const CollectionDetail: FunctionComponent<
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
+					isContributor={isContributor}
+					isSharedWithOthers={isSharedWithOthers}
+					contributorCount={collection?.contributors?.length || 0}
 				/>
 				<ShareThroughEmailModal
 					modalTitle={tText('collection/views/collection-detail___deel-deze-collectie')}

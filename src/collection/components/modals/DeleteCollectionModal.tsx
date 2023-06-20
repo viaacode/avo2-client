@@ -16,12 +16,18 @@ interface DeleteCollectionModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
 	deleteObjectCallback: () => void;
+	isContributor: boolean;
+	isSharedWithOthers: boolean;
+	contributorCount: number;
 }
 
 const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	isOpen,
 	onClose = noop,
 	deleteObjectCallback,
+	isContributor,
+	isSharedWithOthers,
+	contributorCount,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -57,12 +63,25 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 		);
 	};
 
+	const renderDeleteMessageParagraph = () => {
+		if (isSharedWithOthers) {
+			return tText(
+				'Ben je zeker dat je jezelf van deze collectie wil wissen? Deze opdracht is met {{count}} andere mensen gedeeld. Deze verliezen dan toegang.',
+				{ count: contributorCount }
+			);
+		}
+
+		if (isContributor) {
+			return tText('Ben je zeker dat je jezelf van deze collectie wil wissen?');
+		}
+
+		return tText('Ben je zeker dat je deze collectie wil verwijderen');
+	};
+
 	const renderDeleteMessage = () => {
 		return (
 			<p>
-				{tText(
-					'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
-				)}
+				{renderDeleteMessageParagraph()}
 				<br />
 				{tText(
 					'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden'
@@ -74,9 +93,13 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tHtml(
-				'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
-			)}
+			title={
+				isContributor
+					? tHtml('Verwijder mij van deze collectie')
+					: tHtml(
+							'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
+					  )
+			}
 			size="large"
 			onClose={onClose}
 			scrollable

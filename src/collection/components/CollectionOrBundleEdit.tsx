@@ -11,8 +11,7 @@ import {
 	TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
 import { cloneDeep, get, isEmpty, omit, set } from 'lodash-es';
 import React, {
@@ -324,6 +323,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 		currentCollection: null,
 		initialCollection: null,
 	});
+	const isContributor = collectionState.currentCollection?.owner_profile_id !== user?.profile?.id;
+	const isSharedWithOthers =
+		!isContributor && !!(collectionState.currentCollection?.contributors?.length || 0 > 0);
 
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		button: {
@@ -1409,6 +1411,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
+					isContributor={isContributor}
+					isSharedWithOthers={isSharedWithOthers}
+					contributorCount={collectionState.currentCollection?.contributors?.length || 0}
 				/>
 				<InputModal
 					title={
