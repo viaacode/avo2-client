@@ -73,10 +73,10 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		result.administrative_type === 'opdracht'
 	) {
 		date = result.updated_at;
-		dateTooltip = tText('Laatst bijwerking');
+		dateTooltip = tText('search/components/search-result-item___laatst-bijwerking');
 	} else {
 		date = result.dcterms_issued;
-		dateTooltip = tText('UitzendDatum');
+		dateTooltip = tText('search/components/search-result-item___uitzend-datum');
 	}
 	return (
 		<div id={`search-result-${id}`} key={`search-result-${id}`}>

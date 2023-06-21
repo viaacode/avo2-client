@@ -50,7 +50,7 @@ export function useAssignmentTeacherTabs(
 					: []),
 				{
 					id: ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN,
-					label: tText('Beheer'),
+					label: tText('assignment/hooks/assignment-teacher-tabs___beheer'),
 					icon: IconName.settings as IconName,
 				},
 			].map((item) => ({
