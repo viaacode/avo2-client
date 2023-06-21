@@ -10,7 +10,7 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -27,6 +27,7 @@ import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -46,6 +47,7 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assign
 import { isUserAssignmentContributor, isUserAssignmentOwner } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import AssignmentActions from '../components/AssignmentActions';
+import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
@@ -54,7 +56,6 @@ import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataForm
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
-import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
@@ -98,6 +99,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const isPublic = assignment?.is_public || false;
+	const canEditAllAssignments = PermissionService.hasPerm(
+		user,
+		PermissionName.EDIT_ANY_ASSIGNMENTS
+	);
 
 	const {
 		control,
@@ -194,8 +199,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				const isOwner = tempAssignment.owner_profile_id === user.profile.id;
 
 				if (
-					(!contributorInfo && !isOwner) ||
-					contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer
+					(!contributorInfo && !isOwner && !canEditAllAssignments) ||
+					(contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer &&
+						!canEditAllAssignments)
 				) {
 					setAssignmentError({
 						message: tHtml(
@@ -268,16 +274,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			const updated = await AssignmentService.updateAssignment(
 				{
 					...original,
-					owner_profile_id: user.profile?.id,
-				},
-				{
-					...original,
 					...assignment,
-					id: (original.id || assignment?.id) as string | undefined,
-					blocks: cleanupTitleAndDescriptions(
-						assignment?.blocks || []
-					) as Avo.Assignment.Block[],
-				}
+					id: original.id,
+				},
+				user.profile?.id
 			);
 
 			if (updated && assignment?.id) {
@@ -484,6 +484,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					/>
 				);
 
+			case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
+				return (
+					<AssignmentAdminFormEditable
+						assignment={assignment as Avo.Assignment.Assignment}
+						setAssignment={
+							setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
+						}
+						setValue={setValue as any}
+					/>
+				);
+
 			default:
 				return tab;
 		}
@@ -626,9 +637,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 
 		if (
-			assignment &&
-			!isUserAssignmentOwner(user, assignment) &&
-			!isUserAssignmentContributor(user, assignment)
+			!canEditAllAssignments ||
+			(assignment &&
+				!isUserAssignmentOwner(user, assignment) &&
+				!isUserAssignmentContributor(user, assignment) &&
+				!canEditAllAssignments)
 		) {
 			return (
 				<ErrorNoAccess

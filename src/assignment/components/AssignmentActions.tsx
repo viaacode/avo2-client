@@ -52,7 +52,6 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 	const [contributors, setContributors] = useState<Contributor[]>();
-
 	const fetchContributors = useCallback(async () => {
 		if (!share?.assignment?.id) {
 			return;
@@ -186,7 +185,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	};
 
 	const renderShareButton = (config?: Partial<ShareDropdownProps>) => {
-		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
+		if (route !== APP_PATH.ASSIGNMENT_CREATE.route && share?.assignment?.owner) {
 			return (
 				<div
 					className={classNames(

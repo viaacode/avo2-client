@@ -6,7 +6,8 @@ import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
 
 export async function duplicateAssignment(
-	assignment?: Avo.Assignment.Assignment
+	assignment: Avo.Assignment.Assignment | null | undefined,
+	profileId: string
 ): Promise<Avo.Assignment.Assignment | undefined> {
 	try {
 		if (!assignment) {
@@ -19,7 +20,11 @@ export async function duplicateAssignment(
 			assignment.title
 		}`;
 
-		const response = await AssignmentService.duplicateAssignment(newTitle, assignment);
+		const response = await AssignmentService.duplicateAssignment(
+			newTitle,
+			assignment,
+			profileId
+		);
 
 		ToastService.success(
 			tHtml('assignment/views/assignment-overview___het-dupliceren-van-de-opdracht-is-gelukt')
