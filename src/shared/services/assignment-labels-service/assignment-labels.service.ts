@@ -16,13 +16,7 @@ import {
 	InsertAssignmentLabelsDocument,
 	InsertAssignmentLabelsMutation,
 	InsertAssignmentLabelsMutationVariables,
-	LinkAssignmentLabelsToAssignmentDocument,
-	LinkAssignmentLabelsToAssignmentMutation,
-	LinkAssignmentLabelsToAssignmentMutationVariables,
 	Lookup_Enum_Colors_Enum,
-	UnlinkAssignmentLabelsFromAssignmentDocument,
-	UnlinkAssignmentLabelsFromAssignmentMutation,
-	UnlinkAssignmentLabelsFromAssignmentMutationVariables,
 	UpdateAssignmentLabelsDocument,
 	UpdateAssignmentLabelsMutation,
 	UpdateAssignmentLabelsMutationVariables,
@@ -130,64 +124,6 @@ export class AssignmentLabelsService {
 			throw new CustomError('Failed to delete assignment labels', err, {
 				variables,
 				query: 'DELETE_ASSIGNMENT_LABELS',
-			});
-		}
-	}
-
-	public static async linkLabelsFromAssignment(
-		assignmentId: string,
-		labelIds: string[]
-	): Promise<void> {
-		let variables;
-		try {
-			if (!labelIds || !labelIds.length) {
-				return;
-			}
-			variables = {
-				objects: labelIds.map((labelId) => ({
-					assignment_id: assignmentId,
-					assignment_label_id: labelId,
-				})),
-			};
-			await dataService.query<
-				LinkAssignmentLabelsToAssignmentMutation,
-				LinkAssignmentLabelsToAssignmentMutationVariables
-			>({
-				query: LinkAssignmentLabelsToAssignmentDocument,
-				variables,
-			});
-		} catch (err) {
-			throw new CustomError('Failed to link assignment labels to assignment', err, {
-				variables,
-				query: 'LINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT',
-			});
-		}
-	}
-
-	public static async unlinkLabelsFromAssignment(
-		assignmentUuid: string,
-		labelIds: string[]
-	): Promise<void> {
-		let variables;
-		try {
-			if (!labelIds || !labelIds.length) {
-				return;
-			}
-			variables = {
-				assignmentUuid,
-				labelIds,
-			};
-			await dataService.query<
-				UnlinkAssignmentLabelsFromAssignmentMutation,
-				UnlinkAssignmentLabelsFromAssignmentMutationVariables
-			>({
-				query: UnlinkAssignmentLabelsFromAssignmentDocument,
-				variables,
-			});
-		} catch (err) {
-			throw new CustomError('Failed to unlink assignment labels from assignment', err, {
-				variables,
-				query: 'UNLINK_ASSIGNMENT_LABELS_FROM_ASSIGNMENT',
 			});
 		}
 	}

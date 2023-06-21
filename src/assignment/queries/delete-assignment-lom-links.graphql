@@ -1,5 +1,0 @@
-mutation deleteAssignmentLomLinks($assignmentId: uuid!) {
-	delete_app_assignments_v2_lom_links(where: { assignment_id: { _eq: $assignmentId } }) {
-		affected_rows
-	}
-}

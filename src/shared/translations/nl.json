@@ -755,6 +755,7 @@
   "assignment/views/assignment-create___het-opslaan-van-de-opdracht-is-mislukt-contacteer-ons-via-de-feedback-knop-mocht-dit-probleem-zich-blijven-voordoen": "Het opslaan van de opdracht is mislukt. Contacteer ons via de Feedback-knop mocht dit probleem zich blijven voordoen.",
   "assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten-beschrijving": "Bekijk ons <a href=\"/hulp-lesgever/zoek-en-bouwoefening-maken\" target=\"_blank\">hulpfilmpje</a> en <a href=\"/faq-lesgever\" target=\"_blank\">veelgestelde vragen</a>.",
   "assignment/views/assignment-create___hulp-nodig-bij-het-maken-van-opdrachten-titel": "Hulp nodig bij het maken van opdrachten?",
+  "assignment/views/assignment-create___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-aanmaken": "Je moet ingelogd zijn om een opdracht te kunnen aanmaken",
   "assignment/views/assignment-create___maak-opdracht-pagina-beschrijving": "Op deze pagina maak je een opdracht van een fragment of collectie.",
   "assignment/views/assignment-create___maak-opdracht-pagina-titel": "Opdracht aanmaken",
   "assignment/views/assignment-create___placeholder": "placeholder",

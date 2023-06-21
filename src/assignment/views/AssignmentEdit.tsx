@@ -27,6 +27,7 @@ import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -46,6 +47,7 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assign
 import { isUserAssignmentContributor, isUserAssignmentOwner } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import AssignmentActions from '../components/AssignmentActions';
+import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
 import AssignmentConfirmSave from '../components/AssignmentConfirmSave';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormReadonly';
@@ -54,7 +56,6 @@ import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataForm
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
-import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
@@ -73,8 +74,6 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -275,17 +274,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			const updated = await AssignmentService.updateAssignment(
 				{
 					...original,
-					owner_profile_id: user.profile?.id,
-				},
-				{
-					...original,
 					...assignment,
-					id: (original.id || assignment?.id) as string | undefined,
-					blocks: cleanupTitleAndDescriptions(
-						assignment?.blocks || []
-					) as Avo.Assignment.Block[],
+					id: original.id,
 				},
-				user
+				user.profile?.id
 			);
 
 			if (updated && assignment?.id) {
