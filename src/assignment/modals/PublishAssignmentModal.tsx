@@ -53,6 +53,13 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 				return;
 			}
 
+			if (!user?.profile?.id) {
+				ToastService.danger(
+					'Je moet ingelogd zijn om een opdracht te kunnen publiceren/depubliceren'
+				);
+				return;
+			}
+
 			// Validate if user wants to publish
 			if (isPublished) {
 				const validationErrors: string[] = await getValidationErrorsForPublish(assignment);
@@ -68,7 +75,10 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 				is_public: isAssignmentPublic,
 				published_at: new Date().toISOString(),
 			};
-			await AssignmentService.updateAssignmentProperties(assignment.id, newAssignmentProps);
+			await AssignmentService.updateAssignment(
+				{ ...assignment, ...newAssignmentProps },
+				user?.profile?.id
+			);
 			setValidationError(undefined);
 			ToastService.success(
 				isAssignmentPublic

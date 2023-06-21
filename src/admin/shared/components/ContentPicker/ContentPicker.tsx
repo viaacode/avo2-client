@@ -150,10 +150,10 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 			return null;
 		}
 
-		const value = get(selectedItem, 'value', null);
+		const value = (selectedItem as PickerItem)?.value || null;
 
 		// if value of selected item is `null`, throw error
-		if (!get(value, 'value')) {
+		if (!value) {
 			propertyChanged('value', null);
 			setSelectedItem(null);
 			console.error(
@@ -196,13 +196,13 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 		if (prop === 'value') {
 			newValue = propValue as string | null;
 		} else if (prop === 'selectedItem') {
-			newValue = get(propValue, 'value.value', null);
-			newLabel = get(propValue, 'label');
+			newValue = (propValue as PickerItem)?.value || null;
+			newLabel = (propValue as PickerItem).label;
 		} else if (selectedType.picker === 'TEXT_INPUT') {
 			newValue = input;
 		} else if (selectedType.picker === 'SELECT' && selectedItem) {
-			newLabel = get(selectedItem, 'label');
-			newValue = get(selectedItem as any, 'value.value');
+			newLabel = (selectedItem as PickerItem).label;
+			newValue = (selectedItem as PickerItem).value;
 		} else {
 			newValue = null;
 		}

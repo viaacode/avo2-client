@@ -358,12 +358,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 			case 'duplicate':
 				try {
+					if (!user?.profile?.id) {
+						ToastService.danger(
+							'Je moet ingelogd zijn om een opdracht te kunnen dupliceren'
+						);
+						return;
+					}
 					const latest: Avo.Assignment.Assignment =
 						await AssignmentService.fetchAssignmentById(
 							assignmentRow.id as unknown as string
 						);
 
-					await duplicateAssignment(latest);
+					await duplicateAssignment(latest, user.profile.id);
 					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
