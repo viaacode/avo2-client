@@ -1,1 +1,1 @@
-export * from './assignment-labels-service';
+export * from './assignment-labels.service';
