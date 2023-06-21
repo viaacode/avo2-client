@@ -34,7 +34,6 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	const getIsBookmarked = (result: Avo.Search.ResultItem) => {
-		console.log(result);
 		if (!bookmarkStatuses) {
 			return null;
 		}
