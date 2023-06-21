@@ -148,9 +148,12 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 
 			if (!labelsExceedMaxLength(assignmentLabels)) {
 				ToastService.danger(
-					tHtml('Een of meerdere labels is langer dan {{maxLength}} karakters', {
-						maxLength: MAX_LABEL_LENGTH,
-					})
+					tHtml(
+						'assignment/components/modals/manage-assignment-labels___een-of-meerdere-labels-is-langer-dan-max-length-karakters',
+						{
+							maxLength: MAX_LABEL_LENGTH,
+						}
+					)
 				);
 				setIsProcessing(false);
 				return;

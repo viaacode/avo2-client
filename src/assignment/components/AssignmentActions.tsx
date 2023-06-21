@@ -185,7 +185,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	};
 
 	const renderShareButton = (config?: Partial<ShareDropdownProps>) => {
-		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
+		if (route !== APP_PATH.ASSIGNMENT_CREATE.route && share?.assignment?.owner) {
 			return (
 				<div
 					className={classNames(
