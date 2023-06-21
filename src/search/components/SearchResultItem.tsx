@@ -12,6 +12,7 @@ import React, { FunctionComponent } from 'react';
 
 import { toEnglishContentType } from '../../collection/collection.types';
 import { formatDate } from '../../shared/helpers';
+import { tText } from '../../shared/helpers/translate';
 import { SearchResultItemProps } from '../search.types';
 
 import './SearchResultItem.scss';
@@ -65,16 +66,24 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	};
 
 	let date: string;
-	if (result.administrative_type === 'collectie' || result.administrative_type === 'bundel') {
-		date = result.created_at;
+	let dateTooltip: string;
+	if (
+		result.administrative_type === 'collectie' ||
+		result.administrative_type === 'bundel' ||
+		result.administrative_type === 'opdracht'
+	) {
+		date = result.updated_at;
+		dateTooltip = tText('Laatst bijwerking');
 	} else {
 		date = result.dcterms_issued;
+		dateTooltip = tText('UitzendDatum');
 	}
 	return (
 		<div id={`search-result-${id}`} key={`search-result-${id}`}>
 			<SearchResult
 				type={toEnglishContentType(result.administrative_type)}
 				date={formatDate(date)}
+				dateTooltip={dateTooltip}
 				tags={getTags(result)}
 				viewCount={result.views_count || 0}
 				bookmarkCount={bookmarkButton ? result.bookmarks_count || 0 : null}
