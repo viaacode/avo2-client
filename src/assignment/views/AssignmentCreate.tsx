@@ -75,6 +75,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const submit = async () => {
 		try {
+			if (!user.profile?.id) {
+				ToastService.danger(
+					tText(
+						'assignment/views/assignment-create___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-aanmaken'
+					)
+				);
+				return;
+			}
 			const created = await AssignmentService.insertAssignment(
 				{
 					...assignment,
@@ -82,10 +90,8 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						assignment?.blocks || []
 					) as Avo.Assignment.Block[],
 					owner_profile_id: user.profile?.id,
-					labels: [],
 				} as Partial<Avo.Assignment.Assignment>,
-				user,
-				(assignment?.labels || []).map((label) => label.assignment_label) || []
+				user.profile?.id
 			);
 
 			if (created) {

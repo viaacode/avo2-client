@@ -1,7 +1,0 @@
-mutation linkAssignmentLabelsToAssignment(
-	$objects: [app_assignments_v2_assignment_labels_v2_insert_input!]!
-) {
-	insert_app_assignments_v2_assignment_labels_v2(objects: $objects) {
-		affected_rows
-	}
-}
