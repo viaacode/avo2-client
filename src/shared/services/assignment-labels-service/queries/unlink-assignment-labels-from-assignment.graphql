@@ -1,7 +1,0 @@
-mutation unlinkAssignmentLabelsFromAssignment($assignmentUuid: uuid!, $labelIds: [uuid!]!) {
-	delete_app_assignments_v2_assignment_labels_v2(
-		where: { assignment_id: { _eq: $assignmentUuid }, assignment_label_id: { _in: $labelIds } }
-	) {
-		affected_rows
-	}
-}

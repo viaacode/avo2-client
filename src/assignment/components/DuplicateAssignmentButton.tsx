@@ -4,6 +4,7 @@ import React, { FC, MouseEvent } from 'react';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { ToastService } from '../../shared/services/toast-service';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 export type DuplicateAssignmentButtonProps = DefaultProps &
@@ -35,7 +36,13 @@ const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps & UserProps> 
 			icon={IconName.copy}
 			{...props}
 			onClick={async (e) => {
-				const res = await duplicateAssignment(assignment, user as Avo.User.User);
+				if (!user?.profile?.id) {
+					ToastService.danger(
+						'Je moet ingelogd zijn om een opdracht te kunnen dupliceren'
+					);
+					return;
+				}
+				const res = await duplicateAssignment(assignment, user.profile.id);
 				props?.onClick && props?.onClick(e, res);
 			}}
 		/>

@@ -109,7 +109,11 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 					<Spacer margin="bottom">
 						<Grid>
 							<Column size="3-7">
-								<FormGroup label={tText('Laatst bewerkt door')}>
+								<FormGroup
+									label={tText(
+										'assignment/components/assignment-admin-form-editable___laatst-bewerkt-door'
+									)}
+								>
 									<TextInput
 										disabled
 										value={
@@ -118,14 +122,22 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 									/>
 								</FormGroup>
 
-								<FormGroup label={tText('Aangepast op')}>
+								<FormGroup
+									label={tText(
+										'assignment/components/assignment-admin-form-editable___aangepast-op'
+									)}
+								>
 									<TextInput
 										disabled
 										value={formatTimestamp(assignment.updated_at) || '-'}
 									/>
 								</FormGroup>
 
-								<FormGroup label={tText("Briefing's")}>
+								<FormGroup
+									label={tText(
+										'assignment/components/assignment-admin-form-editable___briefings'
+									)}
+								>
 									<TextArea
 										height="auto"
 										value={assignment.briefing_id || undefined}
@@ -151,7 +163,11 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 									user,
 									PermissionName.EDIT_ASSIGNMENT_QUALITY_LABELS
 								) && (
-									<FormGroup label={tText('Kwaliteitslabels')}>
+									<FormGroup
+										label={tText(
+											'assignment/components/assignment-admin-form-editable___kwaliteitslabels'
+										)}
+									>
 										{!!allQualityLabels && (
 											<TagsInput
 												isLoading={isLoading}

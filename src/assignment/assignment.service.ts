@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import type { Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isEmpty, isNil, uniq, without } from 'lodash-es';
+import { cloneDeep, compact, isEmpty, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -26,12 +26,6 @@ import {
 	DeleteAssignmentByIdDocument,
 	DeleteAssignmentByIdMutation,
 	DeleteAssignmentByIdMutationVariables,
-	DeleteAssignmentLomLinksDocument,
-	DeleteAssignmentLomLinksMutation,
-	DeleteAssignmentLomLinksMutationVariables,
-	DeleteAssignmentQualityLabelsDocument,
-	DeleteAssignmentQualityLabelsMutation,
-	DeleteAssignmentQualityLabelsMutationVariables,
 	DeleteAssignmentResponseByIdDocument,
 	DeleteAssignmentResponseByIdMutation,
 	DeleteAssignmentResponseByIdMutationVariables,
@@ -84,23 +78,11 @@ import {
 	InsertAssignmentBlocksMutation,
 	InsertAssignmentBlocksMutationVariables,
 	InsertAssignmentDocument,
-	InsertAssignmentLomLinksDocument,
-	InsertAssignmentLomLinksMutation,
-	InsertAssignmentLomLinksMutationVariables,
 	InsertAssignmentMutation,
 	InsertAssignmentMutationVariables,
-	InsertAssignmentQualityLabelsDocument,
-	InsertAssignmentQualityLabelsMutation,
-	InsertAssignmentQualityLabelsMutationVariables,
 	InsertAssignmentResponseDocument,
 	InsertAssignmentResponseMutation,
 	InsertAssignmentResponseMutationVariables,
-	UpdateAssignmentBlockDocument,
-	UpdateAssignmentBlockMutation,
-	UpdateAssignmentBlockMutationVariables,
-	UpdateAssignmentByIdDocument,
-	UpdateAssignmentByIdMutation,
-	UpdateAssignmentByIdMutationVariables,
 	UpdateAssignmentResponseDocument,
 	UpdateAssignmentResponseMutation,
 	UpdateAssignmentResponseMutationVariables,
@@ -111,7 +93,6 @@ import {
 import { CustomError, getEnv } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { tText } from '../shared/helpers/translate';
-import { AssignmentLabelsService } from '../shared/services/assignment-labels-service';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
@@ -120,7 +101,6 @@ import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-	isNewAssignmentBlock,
 	ITEMS_PER_PAGE,
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
@@ -131,6 +111,7 @@ import {
 	PupilCollectionFragment,
 } from './assignment.types';
 import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
+import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';
 import { isItemWithMeta } from './helpers/is-item-with-meta';
 
 export class AssignmentService {
@@ -315,33 +296,29 @@ export class AssignmentService {
 	 * Helper functions for inserting, updating, validating and deleting assignment
 	 * This will be used by the Assignments view and the AssignmentEdit view
 	 * @param assignment
+	 * @param profileId
 	 */
 	private static transformAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>,
-		user: Avo.User.User
+		profileId: string
 	): App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input {
 		const assignmentToSave = cloneDeep(assignment);
-		if (
-			assignment.blocks?.some(
-				(block: Avo.Assignment.Block) => block.type === AssignmentBlockType.ZOEK
-			)
-		) {
-			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.ZOEK);
-		} else if (
-			assignment.blocks?.some(
-				(block: Avo.Assignment.Block) => block.type === AssignmentBlockType.BOUW
-			)
-		) {
-			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.BOUW);
-		} else {
-			assignmentToSave.lom_learning_resource_type?.includes(AssignmentType.KIJK);
+		assignmentToSave.lom_learning_resource_type = [];
+		if (assignment.blocks?.find((block) => block.type === AssignmentBlockType.ZOEK)) {
+			assignmentToSave.lom_learning_resource_type.push(AssignmentType.ZOEK);
+		}
+		if (assignment.blocks?.find((block) => block.type === AssignmentBlockType.BOUW)) {
+			assignmentToSave.lom_learning_resource_type.push(AssignmentType.BOUW);
+		}
+		if (assignment.blocks?.find((block) => block.type === AssignmentBlockType.ITEM)) {
+			assignmentToSave.lom_learning_resource_type.push(AssignmentType.KIJK);
 		}
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
 		}
 
-		assignmentToSave.updated_by_profile_id = user.profile?.id;
+		assignmentToSave.updated_by_profile_id = profileId;
 		assignmentToSave.owner_profile_id = assignmentToSave.owner_profile_id || 'owner_profile_id';
 		assignmentToSave.is_deleted = assignmentToSave.is_deleted || false;
 		assignmentToSave.is_collaborative = assignmentToSave.is_collaborative || false;
@@ -351,14 +328,17 @@ export class AssignmentService {
 				? (assignmentToSave as any).descriptionRichEditorState.toHTML()
 				: assignmentToSave.description || '';
 
-		delete (assignmentToSave as any).owner;
-		delete (assignmentToSave as any).profile;
-		delete (assignmentToSave as any).responses;
-		delete (assignmentToSave as any).labels;
+		if (!isNil(assignment.blocks)) {
+			assignmentToSave.blocks = cleanupTitleAndDescriptions(
+				assignment.blocks
+			) as Avo.Assignment.Block[];
+		}
+
+		delete assignmentToSave.owner;
+		delete assignmentToSave.profile;
+		delete assignmentToSave.responses;
 		delete (assignmentToSave as any).__typename;
 		delete (assignmentToSave as any).descriptionRichEditorState;
-		delete assignmentToSave.blocks;
-		delete assignmentToSave.loms;
 		delete assignmentToSave.contributors;
 		delete assignmentToSave.quality_labels;
 		delete assignmentToSave.updated_by;
@@ -399,72 +379,21 @@ export class AssignmentService {
 	}
 
 	static async updateAssignment(
-		original: Avo.Assignment.Assignment,
-		update: Partial<Avo.Assignment.Assignment>,
-		user: Avo.User.User
+		assignment: Partial<Avo.Assignment.Assignment>,
+		profileId: string
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
-			if (isNil(original.id)) {
-				throw new CustomError(
-					'Failed to update assignment because its id is undefined',
-					null,
-					{ original, update }
-				);
-			}
-
-			update.updated_at = new Date().toISOString();
-
-			await AssignmentService.updateAssignmentBlocks(
-				original.id,
-				original.blocks || [],
-				update.blocks || []
-			);
-
-			// Replace previous lom links
-			await AssignmentService.deleteAssignmentLomLinks(original.id);
-
-			const loms = (update.loms || []).map((lom) => lom.lom.id);
-
-			await AssignmentService.insertAssignmentLomLinks(original.id, loms);
-
-			// Replace previous quality labels
-			await AssignmentService.deleteAssignmentQualityLabels(original.id);
-
-			await AssignmentService.insertAssignmentQualityLabels(update.quality_labels || []);
-
-			const assignment = AssignmentService.transformAssignment(
+			const updatedAssignment = this.transformAssignment(assignment, profileId);
+			return await fetchWithLogoutJson(
+				`${getEnv('PROXY_URL')}/assignments/${updatedAssignment.id}`,
 				{
-					...update,
-				},
-				user
+					method: 'PATCH',
+					body: JSON.stringify(updatedAssignment),
+				}
 			);
-
-			const variables: UpdateAssignmentByIdMutationVariables = {
-				assignment,
-				assignmentId: original.id,
-			};
-			await dataService.query<
-				UpdateAssignmentByIdMutation,
-				UpdateAssignmentByIdMutationVariables
-			>({
-				query: UpdateAssignmentByIdDocument,
-				variables,
-			});
-
-			await this.updateAssignmentLabels(
-				original.id,
-				(original.labels || []).map(({ assignment_label }) => assignment_label),
-				(update.labels || []).map(({ assignment_label }) => assignment_label)
-			);
-
-			return {
-				...original,
-				...update,
-			};
 		} catch (err) {
 			const error = new CustomError('Failed to update assignment', err, {
-				original,
-				update,
+				assignment,
 			});
 
 			console.error(error);
@@ -547,185 +476,31 @@ export class AssignmentService {
 		}
 	}
 
-	static async updateAssignmentLabels(
-		id: string,
-		original: Avo.Assignment.Label[],
-		update: Avo.Assignment.Label[]
-	): Promise<[void, void]> {
-		const initial = original.map((label) => label.id);
-		const updated = update.map((label) => label.id);
-
-		const newLabelIds = without(updated, ...initial);
-		const deletedLabelIds = without(initial, ...updated);
-
-		return await Promise.all([
-			AssignmentLabelsService.linkLabelsFromAssignment(id, newLabelIds),
-			AssignmentLabelsService.unlinkLabelsFromAssignment(id, deletedLabelIds),
-		]);
-	}
-
-	static async updateAssignmentBlocks(
-		id: string,
-		original: Avo.Assignment.Block[],
-		update: Avo.Assignment.Block[]
-	): Promise<any> {
-		const deleted = original.filter((block) =>
-			without(
-				original.map((block) => block.id),
-				...update.map((block) => block.id)
-			).includes(block.id)
-		);
-
-		const created = update.filter(isNewAssignmentBlock);
-		const existing = update.filter(
-			(block) =>
-				!deleted.map((d) => d.id).includes(block.id) &&
-				!created.map((d) => d.id).includes(block.id)
-		);
-
-		const cleanup = (block: Avo.Core.BlockItemBase) => {
-			delete block.item_meta;
-			delete (block as any).icon;
-
-			block.updated_at = new Date().toISOString();
-
-			return block;
-		};
-
-		const promises = [
-			...existing
-				.map(cleanup)
-				.filter((block) => block.id)
-				.map((block) =>
-					dataService.query<
-						UpdateAssignmentBlockMutation,
-						UpdateAssignmentBlockMutationVariables
-					>({
-						query: UpdateAssignmentBlockDocument,
-						variables: { blockId: block.id, update: block },
-					})
-				),
-			...deleted.map(cleanup).map((block) =>
-				dataService.query<
-					UpdateAssignmentBlockMutation,
-					UpdateAssignmentBlockMutationVariables
-				>({
-					query: UpdateAssignmentBlockDocument,
-					variables: { blockId: block.id, update: { ...block, is_deleted: true } },
-				})
-			),
-		];
-
-		if (created.length > 0) {
-			promises.push(
-				dataService.query<
-					InsertAssignmentBlocksMutation,
-					InsertAssignmentBlocksMutationVariables
-				>({
-					query: InsertAssignmentBlocksDocument,
-					variables: {
-						assignmentBlocks: created
-							.map(cleanup)
-							.map((block) => ({
-								...block,
-								assignment_id: id,
-							}))
-							.map((block) => {
-								delete (block as any).id;
-
-								return block;
-							}),
-					},
-				})
-			);
-		}
-
-		return await Promise.all(promises);
-	}
-
-	static updateAssignmentProperties = async (
-		assignmentId: string,
-		assignment: Partial<Avo.Assignment.Assignment>
-	): Promise<void> => {
-		try {
-			const variables: UpdateAssignmentByIdMutationVariables = { assignmentId, assignment };
-
-			await dataService.query<
-				UpdateAssignmentByIdMutation,
-				UpdateAssignmentByIdMutationVariables
-			>({
-				query: UpdateAssignmentByIdDocument,
-				variables,
-			});
-		} catch (err) {
-			throw new CustomError('Failed to update assignment properties', err, {
-				id: assignmentId,
-				assigment: assignment,
-				query: 'UPDATE_ASSIGNMENT ',
-			});
-		}
-	};
-
 	static async insertAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>,
-		user: Avo.User.User,
-		addedLabels?: Avo.Assignment.Label[]
+		profileId: string
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
 			const assignmentToSave = AssignmentService.transformAssignment(
 				{
 					...assignment,
 				},
-				user
+				profileId
 			);
 
-			const variables: InsertAssignmentMutationVariables = {
-				assignment: assignmentToSave,
-			};
-			const response = await dataService.query<
-				InsertAssignmentMutation,
-				InsertAssignmentMutationVariables
-			>({
-				query: InsertAssignmentDocument,
-				variables,
+			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments`, {
+				method: 'POST',
+				body: JSON.stringify(assignmentToSave),
 			});
-
-			const assignmentId = response.insert_app_assignments_v2?.returning?.[0]?.id;
-
-			if (isNil(assignmentId)) {
-				throw new CustomError(
-					'Saving the assignment failed, response id was undefined',
-					null,
-					{
-						response,
-					}
-				);
-			}
-
-			if (addedLabels) {
-				// Update labels
-				const addedLabelIds = addedLabels.map((item) => item.id);
-
-				await Promise.all([
-					AssignmentLabelsService.linkLabelsFromAssignment(assignmentId, addedLabelIds),
-				]);
-			}
-
-			await this.updateAssignmentBlocks(assignmentId, [], assignment.blocks || []);
-
-			return {
-				...(assignment as Avo.Assignment.Assignment), // Do not copy the auto modified fields from the validation back into the input controls
-				id: assignmentId,
-			};
 		} catch (err) {
-			throw new CustomError('Failed to insert assignment', err, { assignment, addedLabels });
+			throw new CustomError('Failed to insert assignment', err, { assignment });
 		}
 	}
 
 	static async duplicateAssignment(
 		newTitle: string,
 		initialAssignment: Partial<Avo.Assignment.Assignment> | null,
-		user: Avo.User.User
+		profileId: string
 	): Promise<Avo.Assignment.Assignment> {
 		if (!initialAssignment || !initialAssignment.id) {
 			throw new CustomError(
@@ -748,7 +523,16 @@ export class AssignmentService {
 		delete newAssignment.owner;
 		newAssignment.updated_at = new Date().toISOString();
 
-		const duplicatedAssignment = await AssignmentService.insertAssignment(newAssignment, user);
+		const blocks: Avo.Assignment.Block[] = await AssignmentService.fetchAssignmentBlocks(
+			initialAssignment.id
+		);
+		const duplicatedAssignment = await AssignmentService.insertAssignment(
+			{
+				...newAssignment,
+				blocks,
+			},
+			profileId
+		);
 
 		if (!duplicatedAssignment) {
 			throw new CustomError(
@@ -761,50 +545,7 @@ export class AssignmentService {
 			);
 		}
 
-		const blocks: Avo.Assignment.Block[] = await AssignmentService.fetchAssignmentBlocks(
-			initialAssignment.id
-		);
-		await AssignmentService.copyBlocksToAssignment(blocks, duplicatedAssignment.id);
-
 		return duplicatedAssignment;
-	}
-
-	static async copyBlocksToAssignment(
-		blocks: Avo.Assignment.Block[],
-		assignmentId: string
-	): Promise<void> {
-		if (!blocks || !blocks.length) {
-			return;
-		}
-		try {
-			const newBlocks = blocks.map((block) => {
-				// clone the block
-				const newBlock: Partial<Avo.Assignment.Block> = {
-					...cloneDeep(block),
-					assignment_id: assignmentId,
-				};
-
-				delete newBlock.id;
-				newBlock.updated_at = new Date().toISOString();
-
-				return newBlock;
-			});
-
-			await dataService.query<
-				InsertAssignmentBlocksMutation,
-				InsertAssignmentBlocksMutationVariables
-			>({
-				query: InsertAssignmentBlocksDocument,
-				variables: {
-					assignmentBlocks: newBlocks,
-				},
-			});
-		} catch (err) {
-			throw new CustomError('Failed to copy assignment blocks', err, {
-				blocks,
-				query: 'INSERT_ASSIGNMENT_BLOCKS',
-			});
-		}
 	}
 
 	static async fetchAssignmentAndContent(
@@ -1800,91 +1541,6 @@ export class AssignmentService {
 		} catch (err) {
 			throw new CustomError('Failed to transfer assignment ownership', err, {
 				contributorId,
-			});
-		}
-	}
-
-	static async insertAssignmentLomLinks(assignmentId: string, lomIds: string[]): Promise<void> {
-		try {
-			const uniqueLoms = uniq(lomIds);
-			const lomObjects = uniqueLoms.map((lomId) => ({
-				assignment_id: assignmentId,
-				lom_id: lomId,
-			}));
-
-			const variables: InsertAssignmentLomLinksMutationVariables = { lomObjects };
-
-			await dataService.query<
-				InsertAssignmentLomLinksMutation,
-				InsertAssignmentLomLinksMutationVariables
-			>({
-				query: InsertAssignmentLomLinksDocument,
-				variables,
-			});
-		} catch (err) {
-			throw new CustomError('Failed to insert lom links in assignment database', err, {
-				assignmentId,
-				lomIds,
-				query: 'INSERT_ASSIGNMENT_LOM_LINKS',
-			});
-		}
-	}
-
-	static async deleteAssignmentLomLinks(assignmentId: string): Promise<void> {
-		try {
-			const variables: DeleteAssignmentLomLinksMutationVariables = { assignmentId };
-
-			await dataService.query<
-				DeleteAssignmentLomLinksMutation,
-				DeleteAssignmentLomLinksMutationVariables
-			>({
-				query: DeleteAssignmentLomLinksDocument,
-				variables,
-			});
-		} catch (err) {
-			throw new CustomError('Failed to delete lom links in assignment database', err, {
-				collectionId: assignmentId,
-				query: 'DELETE_ASSIGNMENT_LOM_LINKS',
-			});
-		}
-	}
-
-	static async insertAssignmentQualityLabels(
-		qualityLabels: Avo.Assignment.QualityLabel[]
-	): Promise<void> {
-		try {
-			const variables: InsertAssignmentQualityLabelsMutationVariables = { qualityLabels };
-
-			await dataService.query<
-				InsertAssignmentQualityLabelsMutation,
-				InsertAssignmentQualityLabelsMutationVariables
-			>({
-				query: InsertAssignmentQualityLabelsDocument,
-				variables,
-			});
-		} catch (err) {
-			throw new CustomError('Failed to insert quality labels in assignment database', err, {
-				qualityLabels,
-				query: 'INSERT_ASSIGNMENT_QUALITY_LABELS',
-			});
-		}
-	}
-
-	static async deleteAssignmentQualityLabels(assignmentId: string): Promise<void> {
-		try {
-			const variables: DeleteAssignmentQualityLabelsMutationVariables = { assignmentId };
-
-			await dataService.query<
-				DeleteAssignmentQualityLabelsMutation,
-				DeleteAssignmentQualityLabelsMutationVariables
-			>({
-				query: DeleteAssignmentQualityLabelsDocument,
-				variables,
-			});
-		} catch (err) {
-			throw new CustomError('Failed to delete quality labels from assignment database', err, {
-				collectionId: assignmentId,
-				query: 'DELETE_ASSIGNMENT_QUALITY_LABELS',
 			});
 		}
 	}
