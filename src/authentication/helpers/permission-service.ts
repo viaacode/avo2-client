@@ -5,6 +5,7 @@ import { get, isString, some } from 'lodash-es';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import { CollectionService } from '../../collection/collection.service';
+import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 
 import { getProfileId } from './get-profile-id';
 
@@ -76,6 +77,25 @@ export class PermissionService {
 		return false;
 	}
 
+	private static isOwnerOrContributor(
+		contributors: { profile_id?: string | null; rights: Lookup_Enum_Right_Types_Enum }[],
+		ownerProfileId: string,
+		currentUserProfileId: string | null | undefined,
+		acceptableRights: Lookup_Enum_Right_Types_Enum[]
+	): boolean {
+		if (!currentUserProfileId) {
+			return false;
+		}
+		const contributorInfo = contributors.find(
+			(contributor) => contributor.profile_id === currentUserProfileId
+		);
+
+		return (
+			(contributorInfo?.rights && acceptableRights.includes(contributorInfo?.rights)) ||
+			ownerProfileId === currentUserProfileId
+		);
+	}
+
 	public static async hasPermission(
 		permissionName: PermissionName,
 		obj: any | null | undefined,
@@ -105,8 +125,18 @@ export class PermissionService {
 				const collection = isString(obj)
 					? await CollectionService.fetchCollectionOrBundleById(obj, 'collection')
 					: obj;
-				const collectionOwnerId = get(collection, 'owner_profile_id');
-				return !!profileId && !!collectionOwnerId && profileId === collectionOwnerId;
+
+				return PermissionService.isOwnerOrContributor(
+					collection.contributors,
+					collection.owner_profile_id,
+					profileId,
+					[
+						...(permissionName === PermissionName.VIEW_OWN_COLLECTIONS
+							? [Lookup_Enum_Right_Types_Enum.Contributor]
+							: []),
+						Lookup_Enum_Right_Types_Enum.Contributor,
+					]
+				);
 			}
 
 			case PermissionName.EDIT_OWN_BUNDLES:
@@ -116,16 +146,31 @@ export class PermissionService {
 				const bundle = isString(obj)
 					? await CollectionService.fetchCollectionOrBundleById(obj, 'bundle')
 					: obj;
-				const bundleOwnerId = get(bundle, 'owner_profile_id');
-				return !!profileId && !!bundleOwnerId && profileId === bundleOwnerId;
+
+				return PermissionService.isOwnerOrContributor(
+					bundle.contributors,
+					bundle.owner_profile_id,
+					profileId,
+					[
+						...(permissionName === PermissionName.VIEW_OWN_BUNDLES
+							? [Lookup_Enum_Right_Types_Enum.Contributor]
+							: []),
+						Lookup_Enum_Right_Types_Enum.Contributor,
+					]
+				);
 			}
 
 			case PermissionName.EDIT_OWN_ASSIGNMENTS: {
 				const assignment = isString(obj)
 					? await AssignmentService.fetchAssignmentById(obj)
 					: obj;
-				const assignmentOwnerId = get(assignment, 'owner_profile_id');
-				return !!profileId && !!assignmentOwnerId && profileId === assignmentOwnerId;
+
+				return PermissionService.isOwnerOrContributor(
+					assignment.contributors,
+					assignment.owner_profile_id,
+					profileId,
+					[Lookup_Enum_Right_Types_Enum.Contributor]
+				);
 			}
 
 			case PermissionName.EDIT_OWN_CONTENT_PAGES: {
