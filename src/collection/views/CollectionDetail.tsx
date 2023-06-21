@@ -142,7 +142,6 @@ const CollectionDetail: FunctionComponent<
 	const showLoginPopup = collectionInfo?.showLoginPopup;
 	const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
 	const collection = collectionInfo?.collection;
-	console.log(collection);
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -426,7 +425,7 @@ const CollectionDetail: FunctionComponent<
 			) {
 				showNoAccessPopup = true;
 			}
-			console.log(collectionObj);
+
 			setCollectionInfo({
 				showNoAccessPopup: showNoAccessPopup,
 				showLoginPopup: false,

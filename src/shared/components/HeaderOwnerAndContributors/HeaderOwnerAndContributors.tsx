@@ -29,7 +29,6 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 
 	const renderContributors = (): ReactNode => {
 		if (!isEmpty(contributors) && !isNil(contributors)) {
-			console.log(contributors);
 			if (contributors.length === 1) {
 				return <span>en {getFullName(contributors[0].profile, false, false)}</span>;
 			}
