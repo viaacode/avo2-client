@@ -241,14 +241,20 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchAssignmentById(assignmentId: string): Promise<Avo.Assignment.Assignment> {
+	static async fetchAssignmentById(
+		assignmentId: string,
+		inviteToken?: string
+	): Promise<Avo.Assignment.Assignment> {
 		try {
-			const assignment: Avo.Assignment.Assignment = await fetchWithLogoutJson(
-				stringifyUrl({
-					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
-				}),
-				{ method: 'GET' }
-			);
+			const url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}`,
+				query: {
+					inviteToken: inviteToken || undefined,
+				},
+			});
+			const assignment: Avo.Assignment.Assignment = await fetchWithLogoutJson(url, {
+				method: 'GET',
+			});
 
 			if (!assignment) {
 				throw new CustomError('Response does not contain an assignment', null, {
