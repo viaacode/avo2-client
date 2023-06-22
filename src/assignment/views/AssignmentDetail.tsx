@@ -388,7 +388,6 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	// Render
 
 	const renderHeaderButtons = () => {
-		console.log(permissions);
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...(permissions.canCreateAssignments
 				? [
