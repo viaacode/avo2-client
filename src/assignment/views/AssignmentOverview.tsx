@@ -76,7 +76,6 @@ import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -92,6 +91,7 @@ import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-ass
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 import './AssignmentOverview.scss';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
