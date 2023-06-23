@@ -7,7 +7,6 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { Avo } from '@viaa/avo2-types';
-import { isEmpty, isNil, join } from 'lodash-es';
 import React, { FC, ReactNode } from 'react';
 
 import { getFullName } from '../../helpers';
@@ -26,7 +25,6 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 }) => {
 	const { contributors, profile: owner } = subject;
 	const isOwner = owner?.id === user?.profile?.id;
-	const ownerInitials = `${owner?.user?.first_name?.[0] || ''} ${owner?.user?.last_name?.[0] || ''}`;
 
 	const renderContributors = (): ReactNode => {
 		if (contributors?.length) {
@@ -47,9 +45,12 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 
 					<TooltipContent>
 						<p>
-							{contributors.map((contributor) => {
-								return getFullName(contributor.profile, false, false);
-							}).join(', ')};
+							{contributors
+								.map((contributor) => {
+									return getFullName(contributor.profile, false, false);
+								})
+								.join(', ')}
+							;
 						</p>
 					</TooltipContent>
 				</Tooltip>
@@ -64,7 +65,9 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 					<Avatar
 						dark
 						image={owner.avatar || owner.organisation?.logo_url || undefined}
-						initials={ownerInitials}
+						initials={`${owner?.user?.first_name?.[0] || ''} ${
+							owner?.user?.last_name?.[0] || ''
+						}`}
 					/>
 				)}
 
