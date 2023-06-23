@@ -105,7 +105,7 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 						<ToolbarItem>
 							<ButtonToolbar>
 								<Button
-									label={tText('annuleren')}
+									label={tText('Annuleren')}
 									type="secondary"
 									block
 									onClick={() => {
@@ -113,7 +113,7 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 									}}
 								/>
 								<Button
-									label={tText('opslaan')}
+									label={tText('Opslaan')}
 									type="primary"
 									block
 									onClick={saveCoverImage}
