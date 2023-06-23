@@ -37,7 +37,6 @@ import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
-import { getUserRoleType } from '../../shared/helpers/user-role';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -76,6 +75,7 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import { getContributorType } from '../../shared/helpers/contributors';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -290,7 +290,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						action: 'edit',
 						resource: {
 							is_public: assignment.is_public || false,
-							role: getUserRoleType(
+							role: getContributorType(
 								user,
 								assignment as Avo.Assignment.Assignment,
 								(original.contributors as Contributor[]) || []
