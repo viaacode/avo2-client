@@ -4,7 +4,6 @@ export { default as CollectionFragmentRichText } from './CollectionFragmentRichT
 export { default as CollectionFragmentTitle } from './CollectionFragmentTitle';
 export { default as CollectionFragmentTypeText } from '../../shared/components/BlockList/blocks/CollectionFragmentTypeText';
 export { default as CollectionFragmentTypeItem } from '../../shared/components/BlockList/blocks/CollectionFragmentTypeItem';
-export { default as CollectionStillsModal } from './modals/CollectionStillsModal';
 export { default as CutFragmentModal } from './modals/CutFragmentModal';
 export { default as FragmentAdd } from './fragment/FragmentAdd';
 export { default as FragmentDetail } from './fragment/FragmentDetail';

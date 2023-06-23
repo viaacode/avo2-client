@@ -18,27 +18,27 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import useTranslation from '../../../shared/hooks/useTranslation';
-import { ToastService } from '../../../shared/services/toast-service';
-import { VideoStillService } from '../../../shared/services/video-stills-service';
-import { STILL_DIMENSIONS } from '../../collection.const';
+import { STILL_DIMENSIONS } from '../../constants';
+import useTranslation from '../../hooks/useTranslation';
+import { ToastService } from '../../services/toast-service';
+import { VideoStillService } from '../../services/video-stills-service';
 
-interface CollectionStillsModalProps {
+interface ThumbnailStillsModalProps {
 	isOpen: boolean;
-	onClose: (collection: Avo.Collection.Collection) => void;
-	collection: Avo.Collection.Collection;
+	onClose: (collection: Avo.Collection.Collection | Avo.Assignment.Assignment) => void;
+	subject: Avo.Collection.Collection | Avo.Assignment.Assignment;
 }
 
-const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
+const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 	onClose,
 	isOpen,
-	collection,
+	subject,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);
 	const [selectedCoverImages, setSelectedCoverImages] = useState<string[]>(
-		collection.thumbnail_path ? [collection.thumbnail_path] : []
+		subject.thumbnail_path ? [subject.thumbnail_path] : []
 	);
 
 	useEffect(() => {
@@ -48,38 +48,28 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 
 		const fetchThumbnailImages = async () => {
 			try {
-				setVideoStills(await VideoStillService.getThumbnailsForCollection(collection));
+				setVideoStills(await VideoStillService.getThumbnailsForSubject(subject));
 			} catch (err) {
 				console.error(err);
-				ToastService.danger(
-					tHtml(
-						'collection/components/modals/collection-stills-modal___het-ophalen-van-de-media-thumbnails-is-mislukt'
-					)
-				);
+				ToastService.danger(tHtml('Het ophalen van de media-afbeeldingen is mislukt.'));
 				setVideoStills([]);
 			}
 		};
 
 		fetchThumbnailImages();
-	}, [isOpen, collection, tText]);
+	}, [isOpen, subject, tText]);
 
 	const saveCoverImage = () => {
-		onClose({ ...collection, thumbnail_path: selectedCoverImages[0] });
-		ToastService.success(
-			tHtml(
-				'collection/components/modals/collection-stills-modal___de-cover-afbeelding-is-ingesteld'
-			)
-		);
+		onClose({ ...subject, thumbnail_path: selectedCoverImages[0] });
+		ToastService.success(tHtml('De hoofdafbeelding is ingesteld.'));
 	};
 
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tHtml(
-				'collection/components/modals/collection-stills-modal___stel-een-cover-afbeelding-in'
-			)}
+			title={tHtml('Stel een hoofdafbeelding in')}
 			size="large"
-			onClose={() => onClose(collection)}
+			onClose={() => onClose(subject)}
 			scrollable
 		>
 			<ModalBody>
@@ -94,7 +84,7 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 								body=""
 								icon={IconName.search}
 								title={tHtml(
-									'collection/components/modals/collection-stills-modal___er-zijn-geen-thumbnails-beschikbaar-voor-de-fragmenten-in-de-collectie'
+									'Er zijn geen video-afbeeldingen beschikbaar voor de blokken.'
 								)}
 							/>
 						) : (
@@ -115,19 +105,15 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 						<ToolbarItem>
 							<ButtonToolbar>
 								<Button
-									label={tText(
-										'collection/components/modals/collection-stills-modal___annuleren'
-									)}
+									label={tText('annuleren')}
 									type="secondary"
 									block
 									onClick={() => {
-										onClose(collection);
+										onClose(subject);
 									}}
 								/>
 								<Button
-									label={tText(
-										'collection/components/modals/collection-stills-modal___opslaan'
-									)}
+									label={tText('opslaan')}
 									type="primary"
 									block
 									onClick={saveCoverImage}
@@ -141,4 +127,4 @@ const CollectionStillsModal: FunctionComponent<CollectionStillsModalProps> = ({
 	);
 };
 
-export default CollectionStillsModal;
+export default ThumbnailStillsModal;

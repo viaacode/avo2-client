@@ -6,6 +6,11 @@ export { ROUTE_PARTS } from './routes';
 
 export const DEFAULT_AUDIO_STILL = defaultAudioStillPath;
 
+export const STILL_DIMENSIONS = {
+	width: 177,
+	height: 100,
+};
+
 export const NOT_NOW_LOCAL_STORAGE_KEY = 'AVO.nudging_not_now';
 export const NOT_NOW_VAL = 'Yes';
 

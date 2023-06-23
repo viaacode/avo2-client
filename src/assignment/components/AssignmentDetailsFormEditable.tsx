@@ -1,9 +1,12 @@
 import {
+	Column,
+	Container,
 	DatePicker,
 	DefaultProps,
 	Flex,
 	Form,
 	FormGroup,
+	Grid,
 	Spacer,
 	Spinner,
 	TextInput,
@@ -66,187 +69,216 @@ const AssignmentDetailsFormEditable: FC<
 	const availableAt = assignment.available_at ? new Date(assignment.available_at) : new Date();
 	return (
 		<div className={classnames('c-assignment-details-form', className)} style={style}>
-			<Form>
-				<FormGroup
-					label={tText('assignment/assignment___klas')}
-					labelFor={getId(AssignmentDetailsFormIds.classrooms)}
-					required
-				>
-					<AssignmentLabels
-						type="CLASS"
-						id={getId(AssignmentDetailsFormIds.classrooms)}
-						labels={(assignment.labels || []).filter(
-							(item) => item.assignment_label.type === 'CLASS'
-						)}
-						commonUser={commonUser}
-						dictionary={{
-							placeholder: tText(
-								'assignment/components/assignment-details-form-editable___voeg-een-klas-toe'
-							),
-							empty: tText(
-								'assignment/components/assignment-details-form-editable___geen-klassen-beschikbaar'
-							),
-						}}
-						onChange={(changed) => {
-							let target = changed;
+			<Container mode="vertical">
+				<Container mode="horizontal">
+					<Form>
+						<Spacer margin="bottom">
+							<Grid>
+								<Column size="3-7">
+									<FormGroup
+										label={tText('assignment/assignment___klas')}
+										labelFor={getId(AssignmentDetailsFormIds.classrooms)}
+										required
+									>
+										<AssignmentLabels
+											type="CLASS"
+											id={getId(AssignmentDetailsFormIds.classrooms)}
+											labels={(assignment.labels || []).filter(
+												(item) => item.assignment_label.type === 'CLASS'
+											)}
+											commonUser={commonUser}
+											dictionary={{
+												placeholder: tText(
+													'assignment/components/assignment-details-form-editable___voeg-een-klas-toe'
+												),
+												empty: tText(
+													'assignment/components/assignment-details-form-editable___geen-klassen-beschikbaar'
+												),
+											}}
+											onChange={(changed) => {
+												let target = changed;
 
-							if (changed.length > 1) {
-								ToastService.danger(
-									tHtml(
-										'assignment/components/assignment-details-form-editable___opgepast-je-kan-maar-1-klas-instellen-per-opdracht'
-									)
-								);
-								target = [changed[0]];
-							}
+												if (changed.length > 1) {
+													ToastService.danger(
+														tHtml(
+															'assignment/components/assignment-details-form-editable___opgepast-je-kan-maar-1-klas-instellen-per-opdracht'
+														)
+													);
+													target = [changed[0]];
+												}
 
-							const newLabels = mergeWithOtherLabels(
-								assignment.labels || [],
-								target,
-								'CLASS'
-							);
+												const newLabels = mergeWithOtherLabels(
+													assignment.labels || [],
+													target,
+													'CLASS'
+												);
 
-							(setValue as any)('labels', newLabels, {
-								shouldDirty: true,
-								shouldTouch: true,
-							});
+												(setValue as any)('labels', newLabels, {
+													shouldDirty: true,
+													shouldTouch: true,
+												});
 
-							setAssignment((prev) => ({
-								...prev,
-								labels: newLabels,
-								blocks: (prev as AssignmentFields)?.blocks || [],
-							}));
-						}}
-					/>
-				</FormGroup>
+												setAssignment((prev) => ({
+													...prev,
+													labels: newLabels,
+													blocks:
+														(prev as AssignmentFields)?.blocks || [],
+												}));
+											}}
+										/>
+									</FormGroup>
 
-				<FormGroup
-					label={`${tText('assignment/assignment___label')} (${tText(
-						'assignment/assignment___optioneel'
-					)})`}
-					labelFor={getId(AssignmentDetailsFormIds.labels)}
-				>
-					<AssignmentLabels
-						type="LABEL"
-						id={getId(AssignmentDetailsFormIds.labels)}
-						labels={(assignment.labels || []).filter(
-							(item) => item.assignment_label.type === 'LABEL'
-						)}
-						commonUser={commonUser}
-						dictionary={{
-							placeholder: tText(
-								'assignment/components/assignment-details-form-editable___voeg-een-label-toe'
-							),
-							empty: tText(
-								'assignment/components/assignment-details-form-editable___geen-labels-beschikbaar'
-							),
-						}}
-						onChange={(changed) => {
-							(setValue as any)('labels', changed, {
-								shouldDirty: true,
-								shouldTouch: true,
-							});
-							setAssignment((prev) => ({
-								...prev,
-								labels: mergeWithOtherLabels(prev.labels || [], changed, 'LABEL'),
-								blocks: (prev as AssignmentFields)?.blocks || [],
-							}));
-						}}
-					/>
-				</FormGroup>
+									<FormGroup
+										label={`${tText('assignment/assignment___label')} (${tText(
+											'assignment/assignment___optioneel'
+										)})`}
+										labelFor={getId(AssignmentDetailsFormIds.labels)}
+									>
+										<AssignmentLabels
+											type="LABEL"
+											id={getId(AssignmentDetailsFormIds.labels)}
+											labels={(assignment.labels || []).filter(
+												(item) => item.assignment_label.type === 'LABEL'
+											)}
+											commonUser={commonUser}
+											dictionary={{
+												placeholder: tText(
+													'assignment/components/assignment-details-form-editable___voeg-een-label-toe'
+												),
+												empty: tText(
+													'assignment/components/assignment-details-form-editable___geen-labels-beschikbaar'
+												),
+											}}
+											onChange={(changed) => {
+												(setValue as any)('labels', changed, {
+													shouldDirty: true,
+													shouldTouch: true,
+												});
+												setAssignment((prev) => ({
+													...prev,
+													labels: mergeWithOtherLabels(
+														prev.labels || [],
+														changed,
+														'LABEL'
+													),
+													blocks:
+														(prev as AssignmentFields)?.blocks || [],
+												}));
+											}}
+										/>
+									</FormGroup>
 
-				<FormGroup
-					label={tText('assignment/assignment___beschikbaar-vanaf')}
-					labelFor={getId(AssignmentDetailsFormIds.available_at)}
-					required
-				>
-					<DatePicker
-						value={availableAt}
-						showTimeInput
-						minDate={new Date()}
-						maxDate={endOfAcademicYear()}
-						onChange={(value: Date | null) => {
-							(setValue as any)('available_at', value?.toISOString(), {
-								shouldDirty: true,
-								shouldTouch: true,
-							});
-							setAssignment((prev) => ({
-								...prev,
-								available_at: value ? value.toISOString() : null,
-							}));
-						}}
-					/>
-				</FormGroup>
+									<FormGroup
+										label={tText('assignment/assignment___beschikbaar-vanaf')}
+										labelFor={getId(AssignmentDetailsFormIds.available_at)}
+										required
+									>
+										<DatePicker
+											value={availableAt}
+											showTimeInput
+											minDate={new Date()}
+											maxDate={endOfAcademicYear()}
+											onChange={(value: Date | null) => {
+												(setValue as any)(
+													'available_at',
+													value?.toISOString(),
+													{
+														shouldDirty: true,
+														shouldTouch: true,
+													}
+												);
+												setAssignment((prev) => ({
+													...prev,
+													available_at: value
+														? value.toISOString()
+														: null,
+												}));
+											}}
+										/>
+									</FormGroup>
 
-				<FormGroup
-					label={tText('assignment/assignment___deadline')}
-					labelFor={getId(AssignmentDetailsFormIds.deadline_at)}
-					required
-				>
-					<DatePicker
-						value={deadline}
-						showTimeInput
-						minDate={new Date()}
-						maxDate={endOfAcademicYear()}
-						onChange={(value) => {
-							(setValue as any)('deadline_at', value?.toISOString(), {
-								shouldDirty: true,
-								shouldTouch: true,
-							});
-							setAssignment((prev) => ({
-								...prev,
-								deadline_at: value ? value.toISOString() : null,
-							}));
-						}}
-						defaultTime="23:59"
-					/>
-					<p className="c-form-help-text">
-						{tText(
-							'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
-						)}
-					</p>
-					{deadline && isPast(deadline) && (
-						<p className="c-form-help-text--error">
-							{tText(
-								'assignment/components/assignment-details-form-editable___de-deadline-mag-niet-in-het-verleden-liggen'
-							)}
-						</p>
-					)}
-					{isDeadlineBeforeAvailableAt(availableAt, deadline) && (
-						<p className="c-form-help-text--error">
-							{tText(
-								'assignment/components/assignment-details-form-editable___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
-							)}
-						</p>
-					)}
-				</FormGroup>
+									<FormGroup
+										label={tText('assignment/assignment___deadline')}
+										labelFor={getId(AssignmentDetailsFormIds.deadline_at)}
+										required
+									>
+										<DatePicker
+											value={deadline}
+											showTimeInput
+											minDate={new Date()}
+											maxDate={endOfAcademicYear()}
+											onChange={(value) => {
+												(setValue as any)(
+													'deadline_at',
+													value?.toISOString(),
+													{
+														shouldDirty: true,
+														shouldTouch: true,
+													}
+												);
+												setAssignment((prev) => ({
+													...prev,
+													deadline_at: value ? value.toISOString() : null,
+												}));
+											}}
+											defaultTime="23:59"
+										/>
+										<p className="c-form-help-text">
+											{tText(
+												'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
+											)}
+										</p>
+										{deadline && isPast(deadline) && (
+											<p className="c-form-help-text--error">
+												{tText(
+													'assignment/components/assignment-details-form-editable___de-deadline-mag-niet-in-het-verleden-liggen'
+												)}
+											</p>
+										)}
+										{isDeadlineBeforeAvailableAt(availableAt, deadline) && (
+											<p className="c-form-help-text--error">
+												{tText(
+													'assignment/components/assignment-details-form-editable___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
+												)}
+											</p>
+										)}
+									</FormGroup>
 
-				<FormGroup
-					label={`${tText('assignment/assignment___link')} (${tText(
-						'assignment/assignment___optioneel'
-					)})`}
-					labelFor={getId(AssignmentDetailsFormIds.answer_url)}
-				>
-					<TextInput
-						id={getId(AssignmentDetailsFormIds.answer_url)}
-						onChange={(answerUrl) => {
-							(setValue as any)('answer_url', answerUrl, {
-								shouldDirty: true,
-								shouldTouch: true,
-							});
-							setAssignment({
-								...assignment,
-								answer_url: answerUrl,
-							} as AssignmentFields);
-						}}
-						value={assignment.answer_url || undefined}
-					/>
-					<p className="c-form-help-text">
-						{tText(
-							'assignment/assignment___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
-						)}
-					</p>
-				</FormGroup>
-			</Form>
+									<FormGroup
+										label={`${tText('assignment/assignment___link')} (${tText(
+											'assignment/assignment___optioneel'
+										)})`}
+										labelFor={getId(AssignmentDetailsFormIds.answer_url)}
+									>
+										<TextInput
+											id={getId(AssignmentDetailsFormIds.answer_url)}
+											onChange={(answerUrl) => {
+												(setValue as any)('answer_url', answerUrl, {
+													shouldDirty: true,
+													shouldTouch: true,
+												});
+												setAssignment({
+													...assignment,
+													answer_url: answerUrl,
+												} as AssignmentFields);
+											}}
+											value={assignment.answer_url || undefined}
+										/>
+										<p className="c-form-help-text">
+											{tText(
+												'assignment/assignment___wil-je-je-leerling-een-taak-laten-maken-voeg-dan-hier-een-hyperlink-toe-naar-een-eigen-antwoordformulier-of-invuloefening'
+											)}
+										</p>
+									</FormGroup>
+								</Column>
+								<Column size="3-5">
+									<></>
+								</Column>
+							</Grid>
+						</Spacer>
+					</Form>
+				</Container>
+			</Container>
 		</div>
 	);
 };

@@ -198,7 +198,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 				type_id: ContentTypeNumber.collection,
 			};
 			try {
-				newCollection.thumbnail_path = await VideoStillService.getThumbnailForCollection({
+				newCollection.thumbnail_path = await VideoStillService.getThumbnailForSubject({
 					thumbnail_path: undefined,
 					collection_fragments: [
 						(await getFragment(newCollection)) as Avo.Collection.Fragment,
