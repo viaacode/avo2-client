@@ -78,6 +78,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		date = result.dcterms_issued;
 		dateTooltip = tText('search/components/search-result-item___uitzend-datum');
 	}
+
 	return (
 		<div id={`search-result-${id}`} key={`search-result-${id}`}>
 			<SearchResult
@@ -93,7 +94,11 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				onTagClicked={handleTagClicked}
 			>
 				<SearchResultTitle>
-					{renderDetailLink(result.dc_title, result.id, result.administrative_type)}
+					{renderDetailLink(
+						result.dc_title,
+						result.uid || result.id,
+						result.administrative_type
+					)}
 				</SearchResultTitle>
 				{!!result.original_cp && (
 					<SearchResultSubtitle>
@@ -107,7 +112,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				<SearchResultThumbnail>
 					{renderDetailLink(
 						renderThumbnail(result),
-						result.id,
+						result.uid || result.id,
 						result.administrative_type
 					)}
 				</SearchResultThumbnail>
