@@ -330,7 +330,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				setAssignment(duplicate as Avo.Assignment.Assignment);
 			}
 
-			ToastService.success(tHtml('De opdracht is gekopieerd u kijkt nu naar de kopie'));
+			ToastService.success(tHtml('De opdracht is gekopieerd je kijkt nu naar de kopie'));
 		} catch (err) {
 			console.error('Failed to copy assignment', err, {
 				originalAssignment: assignment,

@@ -1,15 +1,7 @@
-import {
-	Button,
-	ButtonToolbar,
-	Modal,
-	ModalBody,
-	Toolbar,
-	ToolbarItem,
-	ToolbarRight,
-} from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
+import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
 interface DeleteCollectionModalProps {
@@ -34,33 +26,6 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	const handleDelete = async () => {
 		deleteObjectCallback();
 		onClose();
-	};
-
-	const renderConfirmButtons = () => {
-		return (
-			<Toolbar spaced>
-				<ToolbarRight>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button
-								type="secondary"
-								label={tText(
-									'collection/components/modals/delete-collection-modal___annuleer'
-								)}
-								onClick={onClose}
-							/>
-							<Button
-								type="danger"
-								label={tText(
-									'collection/components/modals/delete-collection-modal___verwijder'
-								)}
-								onClick={handleDelete}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarRight>
-			</Toolbar>
-		);
 	};
 
 	const renderDeleteMessageParagraph = () => {
@@ -95,7 +60,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	};
 
 	return (
-		<Modal
+		<ConfirmModal
 			isOpen={isOpen}
 			title={
 				isContributor
@@ -106,16 +71,14 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 							'collection/components/modals/delete-collection-modal___verwijder-deze-collectie'
 					  )
 			}
+			body={renderDeleteMessage()}
+			cancelLabel={tText('collection/components/modals/delete-collection-modal___annuleer')}
+			confirmLabel={tText('collection/components/modals/delete-collection-modal___verwijder')}
 			size="large"
 			onClose={onClose}
-			scrollable
 			className="c-content"
-		>
-			<ModalBody>
-				{renderDeleteMessage()}
-				{renderConfirmButtons()}
-			</ModalBody>
-		</Modal>
+			confirmCallback={handleDelete}
+		/>
 	);
 };
 

@@ -1,15 +1,7 @@
-import {
-	Button,
-	ButtonToolbar,
-	Modal,
-	ModalBody,
-	Toolbar,
-	ToolbarItem,
-	ToolbarRight,
-} from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
+import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 interface DeleteAssignmentModalProps {
@@ -34,25 +26,6 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 	const handleDelete = async () => {
 		deleteObjectCallback();
 		onClose();
-	};
-
-	const renderConfirmButtons = () => {
-		return (
-			<Toolbar spaced>
-				<ToolbarRight>
-					<ToolbarItem>
-						<ButtonToolbar>
-							<Button type="secondary" label={tText('Annuleer')} onClick={onClose} />
-							<Button
-								type="danger"
-								label={tText('verwijder')}
-								onClick={handleDelete}
-							/>
-						</ButtonToolbar>
-					</ToolbarItem>
-				</ToolbarRight>
-			</Toolbar>
-		);
 	};
 
 	const renderDeleteMessageParagraph = () => {
@@ -81,23 +54,21 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 	};
 
 	return (
-		<Modal
+		<ConfirmModal
 			isOpen={isOpen}
 			title={
 				isContributor
 					? tHtml('Verwijder mij van deze opdracht')
 					: tHtml('Verwijder deze opdracht')
 			}
+			body={renderDeleteMessage()}
+			cancelLabel={tText('Annuleer')}
+			confirmLabel={tText('verwijder')}
 			size="large"
 			onClose={onClose}
-			scrollable
 			className="c-content"
-		>
-			<ModalBody>
-				{renderDeleteMessage()}
-				{renderConfirmButtons()}
-			</ModalBody>
-		</Modal>
+			confirmCallback={handleDelete}
+		/>
 	);
 };
 
