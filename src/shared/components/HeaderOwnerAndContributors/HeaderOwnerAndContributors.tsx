@@ -26,7 +26,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 }) => {
 	const { contributors, profile: owner } = subject;
 	const isOwner = owner?.id === user?.profile?.id;
-	const ownerInitials = `${owner?.user?.first_name?.[0]} ${owner?.user?.last_name?.[0]}`;
+	const ownerInitials = `${owner?.user?.first_name?.[0] || ''} ${owner?.user?.last_name?.[0] || ''}`;
 
 	const renderContributors = (): ReactNode => {
 		if (!isEmpty(contributors) && !isNil(contributors)) {
