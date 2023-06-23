@@ -47,12 +47,9 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 
 					<TooltipContent>
 						<p>
-							{join(
-								contributors.map((contributor) => {
-									return getFullName(contributor.profile, false, false);
-								}),
-								', '
-							)}
+							{contributors.map((contributor) => {
+								return getFullName(contributor.profile, false, false);
+							}).join(', ')};
 						</p>
 					</TooltipContent>
 				</Tooltip>
