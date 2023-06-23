@@ -29,7 +29,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 	const ownerInitials = `${owner?.user?.first_name?.[0] || ''} ${owner?.user?.last_name?.[0] || ''}`;
 
 	const renderContributors = (): ReactNode => {
-		if (!isEmpty(contributors) && !isNil(contributors)) {
+		if (contributors?.length) {
 			if (contributors.length === 1) {
 				return <span>en {getFullName(contributors[0].profile, false, false)}</span>;
 			}
