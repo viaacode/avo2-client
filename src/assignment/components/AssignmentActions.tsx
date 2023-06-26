@@ -17,7 +17,7 @@ import {
 	ContributorInfo,
 	ShareRightsType,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
-import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { Contributor } from '../../shared/types/contributor';

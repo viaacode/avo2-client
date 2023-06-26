@@ -37,12 +37,14 @@ import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
+import { getContributorType } from '../../shared/helpers/contributors';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { Contributor } from '../../shared/types/contributor';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { isUserAssignmentContributor, isUserAssignmentOwner } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
@@ -286,6 +288,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						object: String(assignment.id),
 						object_type: 'assignment',
 						action: 'edit',
+						resource: {
+							is_public: assignment.is_public || false,
+							role: getContributorType(
+								user,
+								assignment as Avo.Assignment.Assignment,
+								(original.contributors as Contributor[]) || []
+							).toLowerCase(),
+						},
 					},
 					user
 				);
