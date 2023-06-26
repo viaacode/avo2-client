@@ -115,6 +115,20 @@ const getSharedColumn = () => {
 	];
 };
 
+const getIsPublicColumn = (showPublicState: boolean | null) => {
+	return showPublicState
+		? [
+				{
+					id: 'is_public' as AssignmentOverviewTableColumns,
+					label: tText('Is publiek'),
+					col: '2',
+					sortable: true,
+					dataType: TableColumnDataType.boolean,
+				},
+		  ]
+		: [];
+};
+
 export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 	canEditAssignments: boolean | null
 ): AssignmentColumn[] => [
@@ -136,11 +150,13 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 ];
 
 export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
-	canEditAssignments: boolean | null
+	canEditAssignments: boolean | null,
+	showPublicState: boolean | null
 ): AssignmentColumn[] => [
 	...GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(canEditAssignments),
 	...getLastEditColumn(canEditAssignments),
 	...getSharedColumn(),
+	...getIsPublicColumn(showPublicState),
 	...getResponseColumn(canEditAssignments),
 	...getActionsColumn(canEditAssignments),
 ];

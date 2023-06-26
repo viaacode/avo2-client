@@ -36,6 +36,7 @@ const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.ContentType.E
 	bundel: 'bundle',
 	zoek: 'search',
 	zoekopdracht: 'searchquery',
+	opdracht: 'assignment',
 };
 
 export function blockTypeToContentType(

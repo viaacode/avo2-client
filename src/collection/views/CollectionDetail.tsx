@@ -37,7 +37,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import { InteractiveTour, LoadingInfo, ShareThroughEmailModal } from '../../shared/components';
+import { HeaderOwnerAndContributors, InteractiveTour, LoadingInfo } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
@@ -50,7 +50,6 @@ import {
 	getFullName,
 	isMobileWidth,
 	navigate,
-	renderAvatar,
 } from '../../shared/helpers';
 import {
 	defaultGoToDetailLink,
@@ -143,7 +142,6 @@ const CollectionDetail: FunctionComponent<
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
-	const [isShareThroughEmailModalOpen, setIsShareThroughEmailModalOpen] = useState(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
 	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] =
 		useState<boolean>(false);
@@ -585,10 +583,6 @@ const CollectionDetail: FunctionComponent<
 				setIsDeleteModalOpen(true);
 				break;
 
-			case COLLECTION_ACTIONS.openShareThroughEmail:
-				setIsShareThroughEmailModalOpen(true);
-				break;
-
 			case COLLECTION_ACTIONS.openPublishCollectionModal:
 				setIsPublishModalOpen(!isPublishModalOpen);
 				break;
@@ -958,15 +952,6 @@ const CollectionDetail: FunctionComponent<
 					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
 					onClick={() => executeAction(COLLECTION_ACTIONS.toggleBookmark)}
 				/>
-				{isPublic && (
-					<Button
-						title={tText('collection/views/collection-detail___deel')}
-						type="secondary"
-						icon={IconName.share2}
-						ariaLabel={tText('collection/views/collection-detail___deel')}
-						onClick={() => executeAction(COLLECTION_ACTIONS.openShareThroughEmail)}
-					/>
-				)}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -1122,7 +1107,6 @@ const CollectionDetail: FunctionComponent<
 									!isAddToBundleModalOpen &&
 									!isDeleteModalOpen &&
 									!isPublishModalOpen &&
-									!isShareThroughEmailModalOpen &&
 									!isAutoplayCollectionModalOpen
 								}
 								history={history}
@@ -1253,14 +1237,6 @@ const CollectionDetail: FunctionComponent<
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
-				/>
-				<ShareThroughEmailModal
-					modalTitle={tText('collection/views/collection-detail___deel-deze-collectie')}
-					type="collection"
-					emailLinkHref={window.location.href}
-					emailLinkTitle={(collection as Avo.Collection.Collection).title}
-					isOpen={isShareThroughEmailModalOpen}
-					onClose={() => setIsShareThroughEmailModalOpen(false)}
 				/>
 				{!!collection_fragments && collection && isAutoplayCollectionModalOpen && (
 					<AutoplayCollectionModal
@@ -1433,10 +1409,10 @@ const CollectionDetail: FunctionComponent<
 						)}
 
 						<HeaderRow>
-							<Spacer margin={'top-small'}>
-								{collection.profile &&
-									renderAvatar(collection.profile, { dark: true })}
-							</Spacer>
+							<HeaderOwnerAndContributors
+								subject={collection}
+								user={user as Avo.User.User}
+							/>
 						</HeaderRow>
 					</Header>
 				)}
