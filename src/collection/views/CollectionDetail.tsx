@@ -137,6 +137,10 @@ const CollectionDetail: FunctionComponent<
 	const showLoginPopup = collectionInfo?.showLoginPopup;
 	const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
 	const collection = collectionInfo?.collection;
+	const isContributor = !!(collection?.contributors || []).find(
+		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
+	);
+	const isSharedWithOthers = !isContributor && !!(collection?.contributors?.length || 0 > 0);
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -1237,6 +1241,9 @@ const CollectionDetail: FunctionComponent<
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
+					isContributor={isContributor}
+					isSharedWithOthers={isSharedWithOthers}
+					contributorCount={collection?.contributors?.length || 0}
 				/>
 				{!!collection_fragments && collection && isAutoplayCollectionModalOpen && (
 					<AutoplayCollectionModal

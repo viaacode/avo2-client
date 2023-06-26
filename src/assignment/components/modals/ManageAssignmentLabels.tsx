@@ -24,7 +24,7 @@ import { Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-ty
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
+import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { MAX_LABEL_LENGTH } from '../../assignment.const';
 import { AssignmentLabelColor } from '../../assignment.types';
