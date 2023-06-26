@@ -12,6 +12,7 @@ import React, { FunctionComponent } from 'react';
 
 import { toEnglishContentType } from '../../collection/collection.types';
 import { formatDate } from '../../shared/helpers';
+import { tText } from '../../shared/helpers/translate';
 import { SearchResultItemProps } from '../search.types';
 
 import './SearchResultItem.scss';
@@ -65,16 +66,25 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	};
 
 	let date: string;
-	if (result.administrative_type === 'collectie' || result.administrative_type === 'bundel') {
-		date = result.created_at;
+	let dateTooltip: string;
+	if (
+		result.administrative_type === 'collectie' ||
+		result.administrative_type === 'bundel' ||
+		result.administrative_type === 'opdracht'
+	) {
+		date = result.updated_at;
+		dateTooltip = tText('search/components/search-result-item___laatst-bijwerking');
 	} else {
 		date = result.dcterms_issued;
+		dateTooltip = tText('search/components/search-result-item___uitzend-datum');
 	}
+
 	return (
 		<div id={`search-result-${id}`} key={`search-result-${id}`}>
 			<SearchResult
 				type={toEnglishContentType(result.administrative_type)}
 				date={formatDate(date)}
+				dateTooltip={dateTooltip}
 				tags={getTags(result)}
 				viewCount={result.views_count || 0}
 				bookmarkCount={bookmarkButton ? result.bookmarks_count || 0 : null}
@@ -84,7 +94,11 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				onTagClicked={handleTagClicked}
 			>
 				<SearchResultTitle>
-					{renderDetailLink(result.dc_title, result.id, result.administrative_type)}
+					{renderDetailLink(
+						result.dc_title,
+						result.uid || result.id,
+						result.administrative_type
+					)}
 				</SearchResultTitle>
 				{!!result.original_cp && (
 					<SearchResultSubtitle>
@@ -98,7 +112,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				<SearchResultThumbnail>
 					{renderDetailLink(
 						renderThumbnail(result),
-						result.id,
+						result.uid || result.id,
 						result.administrative_type
 					)}
 				</SearchResultThumbnail>

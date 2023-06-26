@@ -3145,6 +3145,9 @@ export type App_Assignments_V2 = {
   /** An aggregate relationship */
   labels_aggregate: App_Assignments_V2_Assignment_Labels_V2_Aggregate;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
+  /** An object relationship */
+  last_user_edit_profile?: Maybe<Users_Profiles>;
+  last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
   lom_learning_resource_type?: Maybe<Scalars['jsonb']>;
   /** An array relationship */
   loms: Array<App_Assignments_V2_Lom_Links>;
@@ -3974,6 +3977,8 @@ export type App_Assignments_V2_Bool_Exp = {
   labels?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Bool_Exp>;
   labels_aggregate?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Aggregate_Bool_Exp>;
   last_user_edit_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  last_user_edit_profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  last_user_edit_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   lom_learning_resource_type?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Bool_Exp>;
@@ -4410,6 +4415,8 @@ export type App_Assignments_V2_Insert_Input = {
   is_public?: InputMaybe<Scalars['Boolean']>;
   labels?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Arr_Rel_Insert_Input>;
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
+  last_user_edit_profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Arr_Rel_Insert_Input>;
   owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
@@ -4636,6 +4643,7 @@ export type App_Assignments_V2_Max_Fields = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
+  last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
   thumbnail_path?: Maybe<Scalars['String']>;
@@ -4656,6 +4664,7 @@ export type App_Assignments_V2_Max_Order_By = {
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
+  last_user_edit_profile_id?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   published_at?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
@@ -4677,6 +4686,7 @@ export type App_Assignments_V2_Min_Fields = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
+  last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
   thumbnail_path?: Maybe<Scalars['String']>;
@@ -4697,6 +4707,7 @@ export type App_Assignments_V2_Min_Order_By = {
   description?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
+  last_user_edit_profile_id?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   published_at?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
@@ -4747,6 +4758,8 @@ export type App_Assignments_V2_Order_By = {
   is_public?: InputMaybe<Order_By>;
   labels_aggregate?: InputMaybe<App_Assignments_V2_Assignment_Labels_V2_Aggregate_Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
+  last_user_edit_profile?: InputMaybe<Users_Profiles_Order_By>;
+  last_user_edit_profile_id?: InputMaybe<Order_By>;
   lom_learning_resource_type?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Order_By>;
   owner?: InputMaybe<Users_Summary_View_Order_By>;
@@ -5425,6 +5438,8 @@ export enum App_Assignments_V2_Select_Column {
   /** column name */
   LastUserEditAt = 'last_user_edit_at',
   /** column name */
+  LastUserEditProfileId = 'last_user_edit_profile_id',
+  /** column name */
   LomLearningResourceType = 'lom_learning_resource_type',
   /** column name */
   OwnerProfileId = 'owner_profile_id',
@@ -5476,6 +5491,7 @@ export type App_Assignments_V2_Set_Input = {
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_public?: InputMaybe<Scalars['Boolean']>;
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
+  last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
@@ -5541,6 +5557,7 @@ export type App_Assignments_V2_Stream_Cursor_Value_Input = {
   is_deleted?: InputMaybe<Scalars['Boolean']>;
   is_public?: InputMaybe<Scalars['Boolean']>;
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
+  last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
@@ -5588,6 +5605,8 @@ export enum App_Assignments_V2_Update_Column {
   IsPublic = 'is_public',
   /** column name */
   LastUserEditAt = 'last_user_edit_at',
+  /** column name */
+  LastUserEditProfileId = 'last_user_edit_profile_id',
   /** column name */
   LomLearningResourceType = 'lom_learning_resource_type',
   /** column name */
@@ -10872,6 +10891,9 @@ export type App_Collections = {
   /** An object relationship */
   last_editor?: Maybe<Users_Summary_View>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
+  /** An object relationship */
+  last_user_edit_profile?: Maybe<Users_Profiles>;
+  last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
   lom_classification?: Maybe<Scalars['jsonb']>;
   lom_context?: Maybe<Scalars['jsonb']>;
   lom_intendedenduserrole?: Maybe<Scalars['jsonb']>;
@@ -11352,6 +11374,8 @@ export type App_Collections_Bool_Exp = {
   is_public?: InputMaybe<Boolean_Comparison_Exp>;
   last_editor?: InputMaybe<Users_Summary_View_Bool_Exp>;
   last_user_edit_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  last_user_edit_profile?: InputMaybe<Users_Profiles_Bool_Exp>;
+  last_user_edit_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   lom_classification?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_intendedenduserrole?: InputMaybe<Jsonb_Comparison_Exp>;
@@ -11837,6 +11861,8 @@ export type App_Collections_Insert_Input = {
   is_public?: InputMaybe<Scalars['Boolean']>;
   last_editor?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
+  last_user_edit_profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
+  last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_classification?: InputMaybe<Scalars['jsonb']>;
   lom_context?: InputMaybe<Scalars['jsonb']>;
   lom_intendedenduserrole?: InputMaybe<Scalars['jsonb']>;
@@ -12081,6 +12107,7 @@ export type App_Collections_Max_Fields = {
   external_id?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
+  last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
   note?: Maybe<Scalars['String']>;
   organisation_id?: Maybe<Scalars['String']>;
   /** Het profiel van de eigenaar van de collectie. */
@@ -12108,6 +12135,7 @@ export type App_Collections_Max_Order_By = {
   external_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
+  last_user_edit_profile_id?: InputMaybe<Order_By>;
   note?: InputMaybe<Order_By>;
   organisation_id?: InputMaybe<Order_By>;
   /** Het profiel van de eigenaar van de collectie. */
@@ -12136,6 +12164,7 @@ export type App_Collections_Min_Fields = {
   external_id?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
+  last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
   note?: Maybe<Scalars['String']>;
   organisation_id?: Maybe<Scalars['String']>;
   /** Het profiel van de eigenaar van de collectie. */
@@ -12163,6 +12192,7 @@ export type App_Collections_Min_Order_By = {
   external_id?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
+  last_user_edit_profile_id?: InputMaybe<Order_By>;
   note?: InputMaybe<Order_By>;
   organisation_id?: InputMaybe<Order_By>;
   /** Het profiel van de eigenaar van de collectie. */
@@ -12225,6 +12255,8 @@ export type App_Collections_Order_By = {
   is_public?: InputMaybe<Order_By>;
   last_editor?: InputMaybe<Users_Summary_View_Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
+  last_user_edit_profile?: InputMaybe<Users_Profiles_Order_By>;
+  last_user_edit_profile_id?: InputMaybe<Order_By>;
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
   lom_intendedenduserrole?: InputMaybe<Order_By>;
@@ -13053,6 +13085,8 @@ export enum App_Collections_Select_Column {
   /** column name */
   LastUserEditAt = 'last_user_edit_at',
   /** column name */
+  LastUserEditProfileId = 'last_user_edit_profile_id',
+  /** column name */
   LomClassification = 'lom_classification',
   /** column name */
   LomContext = 'lom_context',
@@ -13125,6 +13159,7 @@ export type App_Collections_Set_Input = {
   is_managed?: InputMaybe<Scalars['Boolean']>;
   is_public?: InputMaybe<Scalars['Boolean']>;
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
+  last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_classification?: InputMaybe<Scalars['jsonb']>;
   lom_context?: InputMaybe<Scalars['jsonb']>;
   lom_intendedenduserrole?: InputMaybe<Scalars['jsonb']>;
@@ -13209,6 +13244,7 @@ export type App_Collections_Stream_Cursor_Value_Input = {
   is_managed?: InputMaybe<Scalars['Boolean']>;
   is_public?: InputMaybe<Scalars['Boolean']>;
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
+  last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_classification?: InputMaybe<Scalars['jsonb']>;
   lom_context?: InputMaybe<Scalars['jsonb']>;
   lom_intendedenduserrole?: InputMaybe<Scalars['jsonb']>;
@@ -13274,6 +13310,8 @@ export enum App_Collections_Update_Column {
   IsPublic = 'is_public',
   /** column name */
   LastUserEditAt = 'last_user_edit_at',
+  /** column name */
+  LastUserEditProfileId = 'last_user_edit_profile_id',
   /** column name */
   LomClassification = 'lom_classification',
   /** column name */

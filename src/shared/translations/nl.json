@@ -1540,6 +1540,8 @@
   "search/components/search-filter-controls___type": "Type",
   "search/components/search-filter-controls___uitzenddatum": "Uitzenddatum",
   "search/components/search-filter-controls___vak": "Vak",
+  "search/components/search-result-item___laatst-bijwerking": "Laatst bijwerking",
+  "search/components/search-result-item___uitzend-datum": "Uitzend datum",
   "search/components/search-results___er-zijn-geen-zoekresultaten-die-voldoen-aan-uw-filters": "<p>We vonden jammer genoeg geen resultaten voor jouw zoekopdracht. </p><p></p><p>Probeer een andere schrijfwijze of een synoniem, of beperk het aantal filters. Staat wat je zocht nog niet op ons platform? Vraag dan zelf een video- of audiofragment aan.</p>",
   "search/components/search-results___vraag-een-item-aan": "Vraag een fragment aan",
   "search/views/search___de-bladwijzer-is-aangemaakt": "De bladwijzer is aangemaakt.",
