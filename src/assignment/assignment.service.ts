@@ -346,6 +346,7 @@ export class AssignmentService {
 		delete (assignmentToSave as any).__typename;
 		delete (assignmentToSave as any).descriptionRichEditorState;
 		delete assignmentToSave.contributors;
+		delete assignmentToSave.updated_by;
 
 		return assignmentToSave as Avo.Assignment.Assignment;
 	}
@@ -521,12 +522,14 @@ export class AssignmentService {
 			available_at: new Date().toISOString(),
 			deadline_at: null,
 			answer_url: null,
+			is_public: false,
+			published_at: undefined,
+			contributors: [],
 		};
 
 		delete newAssignment.id;
 		delete newAssignment.owner;
 		newAssignment.updated_at = new Date().toISOString();
-
 		const blocks: Avo.Assignment.Block[] = await AssignmentService.fetchAssignmentBlocks(
 			initialAssignment.id
 		);
