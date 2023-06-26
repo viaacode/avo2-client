@@ -37,6 +37,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 		if (!bookmarkStatuses) {
 			return null;
 		}
+
 		return (
 			bookmarkStatuses[
 				CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type]
@@ -48,7 +49,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 		<SearchResultItem
 			{...resultProps}
 			id={result.external_id}
-			key={`search-result-item-${result.external_id}`}
+			key={`search-result-item-${result.uid}`}
 			result={result}
 			collectionLabelLookup={Object.fromEntries(
 				collectionLabels.map((item) => [item.value, item.description])
