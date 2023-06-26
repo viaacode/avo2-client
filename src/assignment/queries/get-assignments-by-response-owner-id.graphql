@@ -25,6 +25,7 @@ query getAssignmentsByResponseOwnerId(
 		deadline_at
 		is_collaborative
 		is_deleted
+		thumbnail_path
 		owner_profile_id
 		owner {
 			full_name
