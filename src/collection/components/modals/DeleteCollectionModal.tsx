@@ -30,19 +30,19 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 
 	const renderDeleteMessageParagraph = () => {
 		if (isSharedWithOthers) {
-			return tText(
+			return tHtml(
 				'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen-deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
 				{ count: contributorCount }
 			);
 		}
 
 		if (isContributor) {
-			return tText(
+			return tHtml(
 				'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen'
 			);
 		}
 
-		return tText(
+		return tHtml(
 			'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
 		);
 	};
@@ -52,7 +52,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 			<p>
 				{renderDeleteMessageParagraph()}
 				<br />
-				{tText(
+				{tHtml(
 					'collection/components/modals/delete-collection-modal___deze-operatie-kan-niet-meer-ongedaan-gemaakt-worden'
 				)}
 			</p>

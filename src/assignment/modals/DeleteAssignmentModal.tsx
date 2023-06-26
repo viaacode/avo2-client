@@ -30,17 +30,17 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 
 	const renderDeleteMessageParagraph = () => {
 		if (isSharedWithOthers) {
-			return tText(
+			return tHtml(
 				'Ben je zeker dat je jezelf van deze opdracht wil wissen? Deze opdracht is met {{count}} andere mensen gedeeld. Deze verliezen dan toegang.',
 				{ count: contributorCount }
 			);
 		}
 
 		if (isContributor) {
-			return tText('Ben je zeker dat je jezelf van deze opdracht wil wissen?');
+			return tHtml('Ben je zeker dat je jezelf van deze opdracht wil wissen?');
 		}
 
-		return tText('Ben je zeker dat je deze opdracht wil verwijderen?');
+		return tHtml('Ben je zeker dat je deze opdracht wil verwijderen?');
 	};
 
 	const renderDeleteMessage = () => {
@@ -48,7 +48,7 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 			<p>
 				{renderDeleteMessageParagraph()}
 				<br />
-				{tText('Opgelet! Deze actie kan niet ongedaan gemaakt worden.')}
+				{tHtml('Opgelet! Deze actie kan niet ongedaan gemaakt worden.')}
 			</p>
 		);
 	};
