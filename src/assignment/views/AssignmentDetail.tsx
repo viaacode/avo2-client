@@ -27,10 +27,10 @@ import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { InteractiveTour } from '../../shared/components';
+import { HeaderOwnerAndContributors, InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { CustomError, navigate, renderAvatar } from '../../shared/helpers';
+import { CustomError, navigate } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -336,11 +336,8 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			return (
 				<Header title={assignment.title || ''} category="assignment" showMetaData>
 					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
-
 					<HeaderRow>
-						<Spacer margin={'top-small'}>
-							{assignment.profile && renderAvatar(assignment.profile, { dark: true })}
-						</Spacer>
+						<HeaderOwnerAndContributors subject={assignment} user={user} />
 					</HeaderRow>
 				</Header>
 			);

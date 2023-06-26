@@ -351,6 +351,7 @@ export class AssignmentService {
 		delete (assignmentToSave as any).__typename;
 		delete (assignmentToSave as any).descriptionRichEditorState;
 		delete assignmentToSave.contributors;
+		delete assignmentToSave.updated_by;
 
 		return assignmentToSave as Avo.Assignment.Assignment;
 	}
