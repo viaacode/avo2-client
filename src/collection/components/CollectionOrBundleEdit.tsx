@@ -324,7 +324,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		initialCollection: null,
 	});
 	const isContributor = !!(collectionState.currentCollection?.contributors || []).find(
-		(contributor) => contributor.profile_id === user?.profile?.id
+		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
 	const isSharedWithOthers =
 		!isContributor && !!(collectionState.currentCollection?.contributors?.length || 0 > 0);
