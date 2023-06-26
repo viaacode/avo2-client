@@ -37,7 +37,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import { InteractiveTour, LoadingInfo } from '../../shared/components';
+import { HeaderOwnerAndContributors, InteractiveTour, LoadingInfo } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
@@ -50,7 +50,6 @@ import {
 	getFullName,
 	isMobileWidth,
 	navigate,
-	renderAvatar,
 } from '../../shared/helpers';
 import {
 	defaultGoToDetailLink,
@@ -1410,10 +1409,10 @@ const CollectionDetail: FunctionComponent<
 						)}
 
 						<HeaderRow>
-							<Spacer margin={'top-small'}>
-								{collection.profile &&
-									renderAvatar(collection.profile, { dark: true })}
-							</Spacer>
+							<HeaderOwnerAndContributors
+								subject={collection}
+								user={user as Avo.User.User}
+							/>
 						</HeaderRow>
 					</Header>
 				)}
