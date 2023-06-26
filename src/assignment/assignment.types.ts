@@ -30,7 +30,8 @@ export type AssignmentOverviewTableColumns =
 	| 'responses'
 	| 'views'
 	| 'actions'
-	| 'share_type';
+	| 'share_type'
+	| 'is_public';
 
 export type AssignmentResponseTableColumns =
 	| 'pupil'
