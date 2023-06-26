@@ -327,7 +327,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
 	const isSharedWithOthers =
-		!isContributor && !!(collectionState.currentCollection?.contributors?.length || 0 > 0);
+		!isContributor && (collectionState.currentCollection?.contributors?.length || 0 > 0);
 
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		button: {
