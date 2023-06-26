@@ -56,8 +56,11 @@ import {
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
+import {
+	getContributorType,
+	transformContributorsToSimpleContributors,
+} from '../../shared/helpers/contributors';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
-import { transformContributorsToSimpleContributors } from '../../shared/helpers/transform-contributors';
 import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -179,6 +182,17 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	// Computed values
 	const isCollection = type === 'collection';
+	const noRightsError = {
+		state: 'error',
+		message: isCollection
+			? tText(
+					'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-collectie-te-bewerken'
+			  )
+			: tText(
+					'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken'
+			  ),
+		icon: IconName.alertTriangle,
+	} as LoadingInfo;
 
 	const updateHasUnsavedChanges = (
 		initialCollection: Avo.Collection.Collection | null,
@@ -323,6 +337,20 @@ const CollectionOrBundleEdit: FunctionComponent<
 		initialCollection: null,
 	});
 
+	useEffect(() => {
+		if (collectionState.currentCollection && contributors) {
+			const userContributorRole = getContributorType(
+				user,
+				collectionState.currentCollection as Avo.Collection.Collection,
+				contributors
+			);
+
+			if (userContributorRole === 'VIEWER') {
+				setLoadingInfo(noRightsError);
+			}
+		}
+	}, [user, collectionState.currentCollection, contributors]);
+
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		button: {
 			icon: undefined,
@@ -425,17 +453,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			};
 
 			if (!permissionObj.canEdit) {
-				setLoadingInfo({
-					state: 'error',
-					message: isCollection
-						? tText(
-								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-collectie-te-bewerken'
-						  )
-						: tText(
-								'collection/components/collection-or-bundle-edit___je-hebt-geen-rechten-om-deze-bundel-te-bewerken'
-						  ),
-					icon: IconName.alertTriangle,
-				});
+				setLoadingInfo(noRightsError);
 				return;
 			}
 
@@ -454,6 +472,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 						: tText('bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'),
 					icon: IconName.search,
 				});
+				return;
+			}
+
+			if (contributors) {
+				const userContributorRole = getContributorType(
+					user,
+					collectionObj as Avo.Collection.Collection,
+					contributors
+				);
+
+				if (userContributorRole === 'VIEWER') {
+					setLoadingInfo(noRightsError);
+				}
 				return;
 			}
 
@@ -517,7 +548,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				icon: IconName.alertTriangle,
 			});
 		}
-	}, [user, collectionId, setLoadingInfo, tText, isCollection, type]);
+	}, [user, collectionId, setLoadingInfo, tText, isCollection, type, contributors]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
@@ -724,6 +755,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 							object: String(newCollection.id),
 							object_type: type,
 							action: 'edit',
+							resource: {
+								is_public: newCollection.is_public,
+								role: getContributorType(
+									user,
+									newCollection,
+									contributors || []
+								).toLowerCase(),
+							},
 						},
 						user
 					);

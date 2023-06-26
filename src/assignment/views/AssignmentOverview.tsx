@@ -132,6 +132,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		null
 	);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
+	const [showPublicState, setShowPublicState] = useState<boolean | null>(null);
 
 	const isContributor =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
@@ -140,8 +141,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
 
 	const tableColumns = useMemo(
-		() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments),
-		[canEditAssignments]
+		() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments, showPublicState),
+		[canEditAssignments, showPublicState]
 	);
 
 	const [query, setQuery] = useQueryParams({
@@ -229,6 +230,16 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				setCanEditAssignments(
 					await PermissionService.hasPermissions(
 						[PermissionName.EDIT_ANY_ASSIGNMENTS, PermissionName.EDIT_OWN_ASSIGNMENTS],
+						user
+					)
+				);
+
+				setShowPublicState(
+					await PermissionService.hasPermissions(
+						[
+							PermissionName.PUBLISH_ANY_ASSIGNMENTS,
+							PermissionName.PUBLISH_OWN_ASSIGNMENTS,
+						],
 						user
 					)
 				);
@@ -654,6 +665,23 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					),
 					desktop: renderActions(assignment),
 				});
+
+			case 'is_public':
+				return (
+					<div
+						title={
+							assignment.is_public
+								? tText(
+										'collection/components/collection-or-bundle-overview___publiek'
+								  )
+								: tText(
+										'collection/components/collection-or-bundle-overview___niet-publiek'
+								  )
+						}
+					>
+						<Icon name={assignment.is_public ? IconName.unlock3 : IconName.lock} />
+					</div>
+				);
 
 			case 'share_type':
 				return (

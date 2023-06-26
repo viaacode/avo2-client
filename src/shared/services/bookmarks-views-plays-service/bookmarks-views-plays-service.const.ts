@@ -205,6 +205,8 @@ export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: {
 	bundle: 'collection',
 	bundel: 'collection',
 	map: 'collection',
+	assignment: 'assignment',
+	opdracht: 'assignment',
 };
 
 export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE: { [type: string]: EventContentType } = {
