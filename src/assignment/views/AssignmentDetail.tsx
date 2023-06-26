@@ -30,7 +30,6 @@ import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { HeaderOwnerAndContributors, InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { CustomError, navigate } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
