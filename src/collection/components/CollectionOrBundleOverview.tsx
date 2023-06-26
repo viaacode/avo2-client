@@ -313,11 +313,24 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				return;
 			}
 
+			if (!user.profile?.id) {
+				ToastService.danger(
+					isCollection
+						? tHtml(
+								'Kan collectie niet verwijderen omdat de gebruiker geen profiel id heeft. Probeer opnieuw in te loggen.'
+						  )
+						: tHtml(
+								'Kan bundel niet verwijderen omdat de gebruiker geen profiel heeft. Probeer opnieuw in te loggen.'
+						  )
+				);
+				return;
+			}
+
 			if (isContributor) {
 				await CollectionService.deleteContributor(
 					selectedCollectionUuid,
 					undefined,
-					user.profile?.id
+					user.profile.id
 				);
 			}
 

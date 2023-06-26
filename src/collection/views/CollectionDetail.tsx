@@ -138,7 +138,7 @@ const CollectionDetail: FunctionComponent<
 	const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
 	const collection = collectionInfo?.collection;
 	const isContributor = !!(collection?.contributors || []).find(
-		(contributor) => contributor.profile_id === user?.profile?.id
+		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
 	const isSharedWithOthers = !isContributor && !!(collection?.contributors?.length || 0 > 0);
 
