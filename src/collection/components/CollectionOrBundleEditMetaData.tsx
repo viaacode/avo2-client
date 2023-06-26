@@ -16,7 +16,7 @@ import { StringMap } from 'i18next';
 import { map } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
-import { FileUpload, ShortDescriptionField } from '../../shared/components';
+import { FileUpload, ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import {
 	RICH_TEXT_EDITOR_OPTIONS_BUNDLE_DESCRIPTION,
@@ -27,7 +27,6 @@ import { stripHtml } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
-import { CollectionStillsModal } from '../components';
 
 import { CollectionAction } from './CollectionOrBundleEdit';
 
@@ -248,7 +247,8 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 					</Form>
 				</Container>
 			</Container>
-			<CollectionStillsModal
+
+			<ThumbnailStillsModal
 				isOpen={isCollectionsStillsModalOpen}
 				onClose={(updated) => {
 					setCollectionsStillsModalOpen(false);
@@ -261,7 +261,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 						});
 					}
 				}}
-				collection={collection}
+				subject={collection}
 			/>
 		</>
 	);

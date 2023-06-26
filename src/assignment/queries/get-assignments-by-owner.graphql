@@ -26,6 +26,7 @@ query getAssignmentsByOwner(
 		is_collaborative
 		is_deleted
 		is_public
+		thumbnail_path
 		owner_profile_id
 		owner {
 			full_name

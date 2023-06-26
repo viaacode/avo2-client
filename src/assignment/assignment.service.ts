@@ -92,9 +92,10 @@ import {
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
-import { tText } from '../shared/helpers/translate';
+import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
+import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { Contributor } from '../shared/types/contributor';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
@@ -304,10 +305,10 @@ export class AssignmentService {
 	 * @param assignment
 	 * @param profileId
 	 */
-	private static transformAssignment(
+	private static async transformAssignment(
 		assignment: Partial<Avo.Assignment.Assignment>,
 		profileId: string
-	): App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input {
+	): Promise<App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input> {
 		const assignmentToSave = cloneDeep(assignment);
 		assignmentToSave.lom_learning_resource_type = [];
 		if (assignment.blocks?.find((block) => block.type === AssignmentBlockType.ZOEK)) {
@@ -338,6 +339,10 @@ export class AssignmentService {
 			assignmentToSave.blocks = cleanupTitleAndDescriptions(
 				assignment.blocks
 			) as Avo.Assignment.Block[];
+		}
+
+		if (isNil(assignment.thumbnail_path)) {
+			assignmentToSave.thumbnail_path = await this.getThumbnailPathForAssignment(assignment);
 		}
 
 		delete assignmentToSave.owner;
@@ -388,7 +393,8 @@ export class AssignmentService {
 		profileId: string
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
-			const updatedAssignment = this.transformAssignment(assignment, profileId);
+			const updatedAssignment = await this.transformAssignment(assignment, profileId);
+
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${updatedAssignment.id}`,
 				{
@@ -486,7 +492,7 @@ export class AssignmentService {
 		profileId: string
 	): Promise<Avo.Assignment.Assignment | null> {
 		try {
-			const assignmentToSave = AssignmentService.transformAssignment(
+			const assignmentToSave = await AssignmentService.transformAssignment(
 				{
 					...assignment,
 				},
@@ -1376,6 +1382,34 @@ export class AssignmentService {
 				assignmentId,
 				query: 'INCREMENT_ASSIGNMENT_VIEW_COUNT',
 			});
+		}
+	}
+
+	private static async getThumbnailPathForAssignment(
+		assignment: Partial<Avo.Assignment.Assignment>
+	): Promise<string | null> {
+		try {
+			if (!assignment.thumbnail_path) {
+				return await VideoStillService.getThumbnailForSubject(assignment);
+			}
+
+			return assignment.thumbnail_path;
+		} catch (err) {
+			const customError = new CustomError(
+				'Failed to get the thumbnail path for assignment',
+				err,
+				{
+					collection: assignment,
+				}
+			);
+			console.error(customError);
+
+			ToastService.danger([
+				tHtml('Het ophalen van de eerste video-afbeelding is mislukt.'),
+				tHtml('De opdracht zal opgeslagen worden zonder video-afbeelding.'),
+			]);
+
+			return null;
 		}
 	}
 

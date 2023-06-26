@@ -1096,7 +1096,7 @@ export class CollectionService {
 			// This will need a new field in the database: thumbnail_type = 'auto' | 'chosen' | 'uploaded'
 			// TODO:  || collection.thumbnail_type === 'auto'
 			if (!collection.thumbnail_path) {
-				return await VideoStillService.getThumbnailForCollection(collection);
+				return await VideoStillService.getThumbnailForSubject(collection);
 			}
 
 			return collection.thumbnail_path;

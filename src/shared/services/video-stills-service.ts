@@ -38,35 +38,37 @@ export class VideoStillService {
 		return stills[0].previewImagePath;
 	}
 
-	public static async getThumbnailsForCollection(
-		collection: Partial<Avo.Collection.Collection>
+	public static async getThumbnailsForSubject(
+		subject: Partial<Avo.Collection.Collection> | Partial<Avo.Assignment.Assignment>
 	): Promise<string[]> {
 		// Only request the thumbnail of one audio fragment since those thumbnails are all identical
-		const mediaFragments = (collection.collection_fragments || []).filter(
-			(fragment) => fragment.type === 'ITEM'
+		const mediaFragments = (
+			(subject as Avo.Collection.Collection).collection_fragments ||
+			(subject as Avo.Assignment.Assignment).blocks ||
+			[]
+		).filter((block) => block.type === 'ITEM');
+		const videoBlocks = mediaFragments.filter(
+			(block) =>
+				block.item_meta &&
+				(block.item_meta as Avo.Item.Item).type.label === ContentTypeString.video
 		);
-		const videoFragments = mediaFragments.filter(
-			(fragment) =>
-				fragment.item_meta &&
-				(fragment.item_meta as Avo.Item.Item).type.label === ContentTypeString.video
+		const audioBlocks = mediaFragments.filter(
+			(block) =>
+				block.item_meta &&
+				(block.item_meta as Avo.Item.Item).type.label === ContentTypeString.audio
 		);
-		const audioFragments = mediaFragments.filter(
-			(fragment) =>
-				fragment.item_meta &&
-				(fragment.item_meta as Avo.Item.Item).type.label === ContentTypeString.audio
+		const cutVideoBlocks = videoBlocks.filter(
+			(block) =>
+				(block.start_oc !== 0 && !isNil(block.start_oc)) ||
+				(block.item_meta &&
+					!isNil(block.end_oc) &&
+					block.end_oc !== toSeconds((block.item_meta as Avo.Item.Item).duration))
 		);
-		const cutVideoFragments = videoFragments.filter(
-			(fragment) =>
-				(fragment.start_oc !== 0 && !isNil(fragment.start_oc)) ||
-				(fragment.item_meta &&
-					!isNil(fragment.end_oc) &&
-					fragment.end_oc !== toSeconds((fragment.item_meta as Avo.Item.Item).duration))
-		);
-		const uncutVideoFragments = without(videoFragments, ...cutVideoFragments);
+		const uncutVideoFragments = without(videoBlocks, ...cutVideoBlocks);
 		const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
-			cutVideoFragments.map((fragment) => ({
-				externalId: fragment.external_id,
-				startTime: (fragment.start_oc || 0) * 1000,
+			cutVideoBlocks.map((block) => ({
+				externalId: block.external_id,
+				startTime: (block.start_oc || 0) * 1000,
 			}))
 		);
 		const cutVideoStills = await VideoStillService.getVideoStills(cutVideoStillRequests);
@@ -74,22 +76,22 @@ export class VideoStillService {
 		return uniq(
 			compact([
 				// current thumbnail image
-				...(collection.thumbnail_path ? [collection.thumbnail_path] : []),
+				...(subject.thumbnail_path ? [subject.thumbnail_path] : []),
 				// Cut video thumbnails
 				...cutVideoStills.map((videoStill) => videoStill.previewImagePath),
 				// Uncut video thumbnails
 				...uncutVideoFragments.map(
-					(fragment) => fragment.item_meta && fragment.item_meta.thumbnail_path
+					(block) => block.item_meta && block.item_meta.thumbnail_path
 				),
 				// One audio thumbnail
-				...(audioFragments[0] && audioFragments[0].item_meta ? [DEFAULT_AUDIO_STILL] : []),
+				...(audioBlocks[0] && audioBlocks[0].item_meta ? [DEFAULT_AUDIO_STILL] : []),
 			])
 		);
 	}
 
-	public static async getThumbnailForCollection(
-		collection: Partial<Avo.Collection.Collection>
+	public static async getThumbnailForSubject(
+		collection: Partial<Avo.Collection.Collection> | Partial<Avo.Assignment.Assignment>
 	): Promise<string | null> {
-		return (await VideoStillService.getThumbnailsForCollection(collection))[0] || null;
+		return (await VideoStillService.getThumbnailsForSubject(collection))[0] || null;
 	}
 }

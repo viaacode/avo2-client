@@ -171,7 +171,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 				type_id: ContentTypeNumber.bundle,
 			};
 			try {
-				newBundle.thumbnail_path = await VideoStillService.getThumbnailForCollection({
+				newBundle.thumbnail_path = await VideoStillService.getThumbnailForSubject({
 					thumbnail_path: undefined,
 					collection_fragments: [getFragment(newBundle) as Avo.Collection.Fragment],
 				});

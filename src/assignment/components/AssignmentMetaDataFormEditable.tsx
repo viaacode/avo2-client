@@ -1,10 +1,19 @@
-import { Column, Container, Form, Grid, Spacer } from '@viaa/avo2-components';
+import {
+	Button,
+	Column,
+	Container,
+	Form,
+	FormGroup,
+	Grid,
+	Image,
+	Spacer,
+} from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { map } from 'lodash-es';
-import React, { Dispatch, FC, SetStateAction } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 
-import { ShortDescriptionField } from '../../shared/components';
+import { ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import useTranslation from '../../shared/hooks/useTranslation';
 
@@ -20,6 +29,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 	setValue,
 }) => {
 	const { tText } = useTranslation();
+	const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] = useState<boolean>(false);
 
 	const onLomsChange = (loms: Avo.Lom.LomField[]) => {
 		const mappedLoms = loms.map((lom) => ({
@@ -42,46 +52,92 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 	};
 
 	return (
-		<Container mode="vertical">
-			<Container mode="horizontal">
-				<Form>
-					<Spacer margin="bottom">
-						<Grid>
-							<Column size="4-7">
-								<LomFieldsInput
-									loms={
-										(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) || []
-									}
-									onChange={onLomsChange}
-								/>
-
-								<ShortDescriptionField
-									value={assignment?.description || ''}
-									placeholder={tText(
-										'assignment/components/assignment-meta-data-form-editable___beschrijf-je-opdracht-in-maximum-300-tekens-dit-is-de-tekst-die-ander-gebruikers-bij-jouw-opdracht-zien-in-de-zoekresultaten-hiermee-kunnen-ze-dan-bepalen-of-deze-beantwoord-aan-wat-ze-zoeken'
-									)}
-									onChange={(value: string) => {
-										{
-											(setValue as any)('description', value, {
-												shouldDirty: true,
-												shouldTouch: true,
-											});
-											setAssignment((prev) => ({
-												...prev,
-												description: value,
-												blocks:
-													(prev as Avo.Assignment.Assignment)?.blocks ||
-													[],
-											}));
+		<>
+			<Container mode="vertical">
+				<Container mode="horizontal">
+					<Form>
+						<Spacer margin="bottom">
+							<Grid>
+								<Column size="3-7">
+									<LomFieldsInput
+										loms={
+											(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) ||
+											[]
 										}
-									}}
-								/>
-							</Column>
-						</Grid>
-					</Spacer>
-				</Form>
+										onChange={onLomsChange}
+									/>
+
+									<ShortDescriptionField
+										value={assignment?.description || ''}
+										placeholder={tText(
+											'assignment/components/assignment-meta-data-form-editable___beschrijf-je-opdracht-in-maximum-300-tekens-dit-is-de-tekst-die-ander-gebruikers-bij-jouw-opdracht-zien-in-de-zoekresultaten-hiermee-kunnen-ze-dan-bepalen-of-deze-beantwoord-aan-wat-ze-zoeken'
+										)}
+										onChange={(value: string) => {
+											{
+												(setValue as any)('description', value, {
+													shouldDirty: true,
+													shouldTouch: true,
+												});
+												setAssignment((prev) => ({
+													...prev,
+													description: value,
+													blocks:
+														(prev as Avo.Assignment.Assignment)
+															?.blocks || [],
+												}));
+											}
+										}}
+									/>
+								</Column>
+
+								<Column size="3-5">
+									<FormGroup
+										label={tText('Cover afbeelding')}
+										labelFor="coverImageId"
+									>
+										<Button
+											type="secondary"
+											label={tText('Stel een hoofdafbeelding in')}
+											title={tText(
+												'Kies een afbeelding om te gebruiken als hoofdafbeelding van deze opdracht.'
+											)}
+											onClick={() => setIsAssignmentStillsModalOpen(true)}
+										/>
+
+										{assignment.thumbnail_path && (
+											<Image
+												className="u-spacer-top"
+												src={assignment.thumbnail_path}
+											/>
+										)}
+									</FormGroup>
+								</Column>
+							</Grid>
+						</Spacer>
+					</Form>
+				</Container>
 			</Container>
-		</Container>
+
+			<ThumbnailStillsModal
+				isOpen={isAssignmentStillsModalOpen}
+				onClose={(updated) => {
+					setIsAssignmentStillsModalOpen(false);
+
+					if (assignment.thumbnail_path !== updated.thumbnail_path) {
+						(setValue as any)('thumnail_path', updated.thumbnail_path, {
+							shouldDirty: true,
+							shouldTouch: true,
+						});
+						setAssignment((prev) => ({
+							...prev,
+							thumbnail_path: updated.thumbnail_path,
+							blocks: (prev as Avo.Assignment.Assignment)?.blocks || [],
+						}));
+					}
+				}}
+				subject={assignment}
+			/>
+		</>
 	);
 };
 

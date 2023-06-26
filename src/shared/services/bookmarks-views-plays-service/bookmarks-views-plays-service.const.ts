@@ -202,11 +202,11 @@ export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED: {
 	audio: 'item',
 	collection: 'collection',
 	collectie: 'collection',
+	assignment: 'assignment',
+	opdracht: 'assignment',
 	bundle: 'collection',
 	bundel: 'collection',
 	map: 'collection',
-	assignment: 'assignment',
-	opdracht: 'assignment',
 };
 
 export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE: { [type: string]: EventContentType } = {
@@ -215,6 +215,8 @@ export const CONTENT_TYPE_TO_EVENT_CONTENT_TYPE: { [type: string]: EventContentT
 	audio: 'item',
 	collection: 'collection',
 	collectie: 'collection',
+	assignment: 'assignment',
+	opdracht: 'assignment',
 	bundle: 'bundle',
 	bundel: 'bundle',
 	map: 'bundle',
