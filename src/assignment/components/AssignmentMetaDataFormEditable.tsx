@@ -29,8 +29,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 	setValue,
 }) => {
 	const { tText } = useTranslation();
-	const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] =
-		useState<boolean>(false);
+	const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] = useState<boolean>(false);
 
 	const onLomsChange = (loms: Avo.Lom.LomField[]) => {
 		const mappedLoms = loms.map((lom) => ({
@@ -102,7 +101,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 											title={tText(
 												'Kies een afbeelding om te gebruiken als hoofdafbeelding van deze opdracht.'
 											)}
-											onClick={() => setIsAssignmentsStillsModalOpen(true)}
+											onClick={() => setIsAssignmentStillsModalOpen(true)}
 										/>
 
 										{assignment.thumbnail_path && (
@@ -120,9 +119,9 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 			</Container>
 
 			<ThumbnailStillsModal
-				isOpen={isAssignmentsStillsModalOpen}
+				isOpen={isAssignmentStillsModalOpen}
 				onClose={(updated) => {
-					setIsAssignmentsStillsModalOpen(false);
+					setIsAssignmentStillsModalOpen(false);
 
 					if (assignment.thumbnail_path !== updated.thumbnail_path) {
 						(setValue as any)('thumnail_path', updated.thumbnail_path, {
