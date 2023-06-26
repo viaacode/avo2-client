@@ -107,15 +107,11 @@ export const renderLoms = (lomValues: Avo.Lom.LomField[], title: string) => {
 				{lomValues.length > 0 ? (
 					lomValues.map((lomValue, index) => {
 						return (
-							<>
-								<Link
-									key={lomValue?.id + `--${index}`}
-									to={{ pathname: lomValue?.id as string }}
-									target="_blank"
-								>
+							<span key={lomValue?.id + `--${index}`}>
+								<Link to={{ pathname: lomValue?.id as string }} target="_blank">
 									{lomValue?.label}
 								</Link>{' '}
-							</>
+							</span>
 						);
 					})
 				) : (

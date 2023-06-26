@@ -88,35 +88,21 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 	const getPermissions = useCallback(
 		async (
-			assignmentId: string,
 			user: Avo.User.User | undefined,
 			assignment: Avo.Assignment.Assignment
 		): Promise<AssignmentDetailPermissions> => {
 			if (!user || !assignment) {
 				return {};
 			}
-			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions(
+
+			return {
+				canEditAssignments: await PermissionService.hasPermissions(
 					[
-						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: assignmentId },
+						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: assignment },
 						{ name: PermissionName.EDIT_ANY_ASSIGNMENTS },
 					],
 					user
 				),
-			]);
-
-			if (assignment.contributors && user.profile && user.profile.id) {
-				const contributorInfo = assignment.contributors.find(
-					(contributor) => contributor.profile_id === user?.profile?.id
-				);
-
-				if (contributorInfo?.rights == Lookup_Enum_Right_Types_Enum.Contributor) {
-					return { canEditAssignments: true };
-				}
-			}
-
-			return {
-				canEditAssignments: rawPermissions[0],
 			};
 		},
 		[user, assignment, match.params.id]
@@ -148,7 +134,10 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			let tempAssignment: Avo.Assignment.Assignment | null = null;
 
 			try {
-				tempAssignment = await AssignmentService.fetchAssignmentById(id);
+				tempAssignment = await AssignmentService.fetchAssignmentById(
+					id,
+					inviteToken || undefined
+				);
 			} catch (err: any) {
 				if (err.innerException.additionalInfo.statusCode === 403) {
 					setIsforbidden(true);
@@ -192,11 +181,13 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			);
 
 			try {
-				const permissionObj = await getPermissions(id, user, tempAssignment);
+				const permissionObj = await getPermissions(user, tempAssignment);
 				setPermissions(permissionObj);
 			} catch (err) {
 				setAssigmentError({
-					message: 'Ophalen van permissies is mislukt',
+					message: tHtml(
+						'assignment/views/assignment-detail___ophalen-van-permissies-is-mislukt'
+					),
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
@@ -472,9 +463,13 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		}
 
 		return (
-			<Spacer margin={['top-extra-large', 'bottom-extra-large']}>
-				{renderAssignmentBlocks()}
-			</Spacer>
+			<>
+				{renderHeader()}
+				<Spacer margin={['top-extra-large', 'bottom-extra-large']}>
+					{renderAssignmentBlocks()}
+				</Spacer>
+				{renderMetadata()}
+			</>
 		);
 	};
 
@@ -507,11 +502,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 							/>
 						</MetaTags>
 
-						{renderHeader()}
-
 						{renderPageContent()}
-
-						{renderMetadata()}
 					</div>
 
 					<StickyBar
