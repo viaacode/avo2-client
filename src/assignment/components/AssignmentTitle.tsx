@@ -1,6 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { Control, Controller } from 'react-hook-form';
 
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -20,18 +20,19 @@ type AssignmentTitleProps = {
 
 const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) => {
 	const { tText } = useTranslation();
+	const [isActive, setIsActive] = useState<boolean>(false);
 
 	return useMemo(
 		() => (
-			<Flex center className="u-spacer-top-l">
-				<Icon name={IconName.clipboard} size="large" />
+			<Flex center className="u-spacer-top-l c-inline-title-edit">
+				<Icon name={IconName.clipboard} size="large" subtle />
 
-				<BlockHeading className="u-spacer-left" type="h2">
+				<BlockHeading type="h2">
 					<Controller
 						name="title"
 						control={control}
 						render={({ field, fieldState: { error } }) => (
-							<>
+							<Flex align="start">
 								<ContentInput
 									{...field}
 									value={field.value ?? undefined}
@@ -50,16 +51,23 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 												};
 											});
 									}}
+									onOpen={() => setIsActive(true)}
+									onClose={() => setIsActive(false)}
+									iconEnd={() =>
+										!isActive && (
+											<Icon name={IconName.edit4} size="small" subtle />
+										)
+									}
 								/>
 
 								{error && <span className="c-floating-error">{error.message}</span>}
-							</>
+							</Flex>
 						)}
 					/>
 				</BlockHeading>
 			</Flex>
 		),
-		[tText, control, setAssignment]
+		[tText, control, setAssignment, isActive]
 	);
 };
 

@@ -29,7 +29,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 	setValue,
 }) => {
 	const { tText } = useTranslation();
-	const [isAssignmentsStillsModalOpen, setIsAssignmentsStillsModalOpen] =
+	const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] =
 		useState<boolean>(false);
 
 	const onLomsChange = (loms: Avo.Lom.LomField[]) => {

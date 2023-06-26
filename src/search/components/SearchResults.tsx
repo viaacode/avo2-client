@@ -12,7 +12,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import placholderImage from '../../assets/images/assignment-placeholder.png';
+import placeholderImage from '../../assets/images/assignment-placeholder.png';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
 import { SearchResultsProps } from '../search.types';
@@ -39,6 +39,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 		if (!bookmarkStatuses) {
 			return null;
 		}
+
 		return (
 			bookmarkStatuses[
 				CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED[result.administrative_type]
@@ -47,9 +48,12 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	};
 
 	const renderSearchResultItem = (result: Avo.Search.ResultItem) => {
-		if (result.administrative_type === 'opdracht' && isNil(result.thumbnail_path)) {
-			result.thumbnail_path = placholderImage;
+		const searchResult = { ...result };
+
+		if (result.administrative_type === 'opdracht' && isNil(searchResult.thumbnail_path)) {
+			searchResult.thumbnail_path = placeholderImage;
 		}
+
 		return (
 			<SearchResultItem
 				{...resultProps}
