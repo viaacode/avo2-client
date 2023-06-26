@@ -59,7 +59,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 				{...resultProps}
 				id={result.uid}
 				key={`search-result-item-${result.uid}`}
-				result={result}
+				result={searchResult}
 				collectionLabelLookup={Object.fromEntries(
 					collectionLabels.map((item) => [item.value, item.description])
 				)}
