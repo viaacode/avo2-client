@@ -75,11 +75,10 @@ import { ToastService } from '../../shared/services/toast-service';
 import { ValueOf } from '../../shared/types';
 import { Contributor } from '../../shared/types/contributor';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
-import { MAX_TITLE_LENGTH } from '../collection.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { CollectionCreateUpdateTab } from '../collection.types';
-import { PublishCollectionModal } from '../components';
+import { CollectionOrBundleTitle, PublishCollectionModal } from '../components';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
@@ -160,7 +159,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isRenameModalOpen, setIsRenameModalOpen] = useState<boolean>(false);
 	const [isEnterItemIdModalOpen, setEnterItemIdModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [permissions, setPermissions] = useState<
@@ -785,72 +783,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 		setIsSavingCollection(false);
 	};
 
-	const onClickRename = () => {
-		setIsOptionsMenuOpen(false);
-		setIsRenameModalOpen(true);
-	};
-
-	const onRenameCollection = async (newTitle: string) => {
-		try {
-			if (!collectionState.initialCollection) {
-				ToastService.info(
-					isCollection
-						? tHtml(
-								'collection/components/collection-or-bundle-edit___de-collectie-naam-kon-niet-geupdate-worden-collectie-is-niet-gedefinieerd'
-						  )
-						: tHtml(
-								'collection/components/collection-or-bundle-edit___de-bundel-naam-kon-niet-geupdate-worden-bundel-is-niet-gedefinieerd'
-						  )
-				);
-				return;
-			}
-
-			// Save the name immediately to the database
-			const collectionWithNewName = {
-				...collectionState.initialCollection,
-				title: newTitle,
-			};
-
-			// Immediately store the new name, without the user having to click the save button twice
-			const newCollection = await CollectionService.updateCollection(
-				collectionState.initialCollection,
-				collectionWithNewName,
-				user
-			);
-
-			if (newCollection) {
-				// Update the name in the current and the initial collection
-				changeCollectionState({
-					type: 'UPDATE_COLLECTION_PROP',
-					collectionProp: 'title',
-					collectionPropValue: newTitle,
-					updateInitialCollection: true,
-				});
-
-				ToastService.success(
-					isCollection
-						? tHtml(
-								'collection/components/collection-or-bundle-edit___de-collectie-naam-is-aangepast'
-						  )
-						: tHtml(
-								'collection/components/collection-or-bundle-edit___de-bundel-naam-is-aangepast'
-						  )
-				);
-			} // else collection wasn't saved because of validation errors
-		} catch (err) {
-			console.error(err);
-			ToastService.info(
-				isCollection
-					? tHtml(
-							'collection/components/collection-or-bundle-edit___het-hernoemen-van-de-collectie-is-mislukt'
-					  )
-					: tHtml(
-							'collection/components/collection-or-bundle-edit___het-hernoemen-van-de-bundel-is-mislukt'
-					  )
-			);
-		}
-	};
-
 	const onClickDelete = () => {
 		setIsOptionsMenuOpen(false);
 		setIsDeleteModalOpen(true);
@@ -906,10 +838,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
 		switch (item) {
-			case 'rename':
-				onClickRename();
-				break;
-
 			case 'delete':
 				onClickDelete();
 				break;
@@ -1227,13 +1155,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			createDropdownMenuItem(
-				'rename',
-				isCollection
-					? 'Collectie hernoemen'
-					: tText('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
-				'folder'
-			),
 			createDropdownMenuItem('delete', 'Verwijderen', 'delete'),
 		];
 		if (
@@ -1383,7 +1304,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	};
 
 	const renderCollectionOrBundleEdit = () => {
-		const { profile, title } = collectionState.currentCollection as Avo.Collection.Collection;
+		const { profile } = collectionState.currentCollection as Avo.Collection.Collection;
 
 		if (loadingInfo.state === 'forbidden') {
 			return (
@@ -1401,8 +1322,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return (
 			<>
 				<Header
-					title={title}
-					onClickTitle={() => setIsRenameModalOpen(true)}
+					title={
+						<CollectionOrBundleTitle
+							title={collectionState.currentCollection?.title}
+							onChange={(title) =>
+								changeCollectionState({
+									type: 'UPDATE_COLLECTION_PROP',
+									updateInitialCollection: false,
+									collectionProp: 'title',
+									collectionPropValue: title,
+								})
+							}
+						/>
+					}
 					category={type}
 					showMetaData
 					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
@@ -1449,36 +1381,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
 				/>
-				<InputModal
-					title={
-						isCollection
-							? tHtml('collection/views/collection-edit___hernoem-deze-collectie')
-							: tHtml(
-									'collection/components/collection-or-bundle-edit___hernoem-deze-bundel'
-							  )
-					}
-					inputLabel={
-						isCollection
-							? tText(
-									'collection/components/collection-or-bundle-edit___naam-collectie'
-							  )
-							: tText('collection/components/collection-or-bundle-edit___naam-bundel')
-					}
-					inputValue={title}
-					maxLength={MAX_TITLE_LENGTH}
-					isOpen={isRenameModalOpen}
-					onClose={() => setIsRenameModalOpen(false)}
-					inputCallback={onRenameCollection}
-					emptyMessage={
-						isCollection
-							? tText(
-									'collection/components/collection-or-bundle-edit___gelieve-een-collectie-titel-in-te-vullen'
-							  )
-							: tText(
-									'collection/components/collection-or-bundle-edit___gelieve-een-bundel-titel-in-te-vullen'
-							  )
-					}
-				/>
+
 				<InputModal
 					title={
 						isCollection
