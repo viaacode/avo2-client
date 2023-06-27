@@ -20,3 +20,5 @@ export const ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS =
 export function getMoreOptionsLabel(): string {
 	return tText('shared/constants/index___meer-opties');
 }
+
+export const EDIT_STATUS_REFETCH_INTERVAL = 15000;

@@ -13,9 +13,12 @@ import {
 	Spacer,
 	Spinner,
 	ToggleButton,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import React, { FC, ReactText, useCallback, useEffect, useState } from 'react';
+import React, { FC, ReactNode, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 import { StringParam, useQueryParams } from 'use-query-params';
@@ -29,7 +32,7 @@ import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { HeaderOwnerAndContributors, InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { getMoreOptionsLabel } from '../../shared/constants';
+import { EDIT_STATUS_REFETCH_INTERVAL, getMoreOptionsLabel } from '../../shared/constants';
 import { createDropdownMenuItem, CustomError, navigate } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -48,6 +51,7 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatus';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
@@ -74,10 +78,6 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [assignmentLoading, setAssigmentLoading] = useState(false);
-	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
-		null
-	);
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
 		canEditAssignments: false,
@@ -86,21 +86,40 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
-	const [isForbidden, setIsforbidden] = useState<boolean>(false);
-	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 
+	// Errors
+	const [isForbidden, setIsforbidden] = useState<boolean>(false);
+	const [assignmentLoading, setAssigmentLoading] = useState(false);
+	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
+		null
+	);
+
+	// Modals
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
+
+	// Computed
 	const id = match.params.id;
 	const isPublic = assignment?.is_public || false;
 	const isContributor = assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
 	const isSharedWithOthers =
 		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
+
+	// Queries
+	const { data: EditStatuses } = useGetAssignmentsEditStatuses(
+		[id],
+		EDIT_STATUS_REFETCH_INTERVAL
+	);
+
+	const isBeingEdited = !!EditStatuses?.[0];
+
 	const getPermissions = useCallback(
 		async (
 			user: Avo.User.User | undefined,
@@ -449,20 +468,43 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				/>
 
 				<Spacer margin="left-small">
-					{permissions?.canEditAssignments && (
-						<Button
-							type="primary"
-							icon={IconName.edit}
-							label={tText('assignment/views/assignment-response-edit___bewerken')}
-							title={tText(
-								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
-							)}
-							onClick={() => executeAction(ASSIGNMENT_ACTIONS.editAssignment)}
-						/>
-					)}
+					{permissions?.canEditAssignments &&
+						renderEditButtonTooltip(
+							<Button
+								type="primary"
+								icon={IconName.edit}
+								label={tText(
+									'assignment/views/assignment-response-edit___bewerken'
+								)}
+								title={tText(
+									'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
+								)}
+								onClick={() => executeAction(ASSIGNMENT_ACTIONS.editAssignment)}
+								disabled={isBeingEdited}
+							/>
+						)}
 				</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
+		);
+	};
+
+	const renderEditButtonTooltip = (button: ReactNode) => {
+		if (!isBeingEdited) {
+			return button;
+		}
+
+		return (
+			<Tooltip position="bottom">
+				<TooltipTrigger>{button}</TooltipTrigger>
+				<TooltipContent>
+					<p>
+						{tHtml(
+							'Deze opdracht wordt momenteel bewerkt door een andere gebruiker. Het is niet mogelijk met met meer dan 1 gebruiker simultaan te bewerken.'
+						)}
+					</p>
+				</TooltipContent>
+			</Tooltip>
 		);
 	};
 

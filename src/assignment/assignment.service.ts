@@ -1585,4 +1585,21 @@ export class AssignmentService {
 			});
 		}
 	}
+
+	static async getAssignmentsEditStatuses(
+		ids: string[]
+	): Promise<Avo.Share.EditStatusResponse[]> {
+		try {
+			return await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/share/edit-status`,
+					query: { ids },
+				})
+			);
+		} catch (err) {
+			throw new CustomError('Failed to get assignment(s) edit status', err, {
+				assignmentIds: ids,
+			});
+		}
+	}
 }
