@@ -4,12 +4,17 @@ import { AssignmentService } from '../assignment.service';
 
 export const useGetAssignmentsEditStatuses = (
 	assignmentsIds: string[],
+	enabled: boolean,
 	interval: number,
 	options: {
 		enabled: boolean;
 		refetchInterval: number;
 		refetchIntervalInBackground: boolean;
-	} = { enabled: true, refetchInterval: interval || 0, refetchIntervalInBackground: true }
+	} = {
+		enabled: enabled || false,
+		refetchInterval: interval || 0,
+		refetchIntervalInBackground: true,
+	}
 ) => {
 	return useQuery(
 		['GET_ASSIGNMENTS_EDIT_STATUSES', assignmentsIds],

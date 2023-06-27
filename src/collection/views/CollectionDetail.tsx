@@ -188,6 +188,7 @@ const CollectionDetail: FunctionComponent<
 
 	const { data: editStatuses } = useGetCollectionsEditStatuses(
 		[collectionId],
+		permissions?.canEditCollections || false,
 		EDIT_STATUS_REFETCH_INTERVAL
 	);
 

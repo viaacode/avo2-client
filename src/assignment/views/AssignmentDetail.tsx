@@ -90,6 +90,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	);
 	const { data: editStatuses } = useGetAssignmentsEditStatuses(
 		[id],
+		permissions.canEditAssignments || false,
 		EDIT_STATUS_REFETCH_INTERVAL
 	);
 
