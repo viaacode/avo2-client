@@ -37,10 +37,19 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import { HeaderOwnerAndContributors, InteractiveTour, LoadingInfo } from '../../shared/components';
+import {
+	EditButton,
+	HeaderOwnerAndContributors,
+	InteractiveTour,
+	LoadingInfo,
+} from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
+import {
+	EDIT_STATUS_REFETCH_INTERVAL,
+	getMoreOptionsLabel,
+	ROUTE_PARTS,
+} from '../../shared/constants';
 import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
@@ -81,6 +90,8 @@ import './CollectionDetail.scss';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 
 import { StringParam, useQueryParams } from 'use-query-params';
+
+import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -174,6 +185,13 @@ const CollectionDetail: FunctionComponent<
 
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
+
+	const { data: editStatuses } = useGetCollectionsEditStatuses(
+		[collectionId],
+		EDIT_STATUS_REFETCH_INTERVAL
+	);
+
+	const isBeingEdited = editStatuses && !!editStatuses[collectionId];
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
@@ -966,14 +984,17 @@ const CollectionDetail: FunctionComponent<
 				/>
 				{permissions?.canEditCollections && (
 					<Spacer margin="left-small">
-						<Button
+						<EditButton
 							type="primary"
-							icon={IconName.edit}
 							label={tText('collection/views/collection-detail___bewerken')}
 							title={tText(
 								'collection/views/collection-detail___pas-deze-collectie-aan'
 							)}
 							onClick={() => executeAction(COLLECTION_ACTIONS.editCollection)}
+							disabled={isBeingEdited}
+							toolTipContent={tHtml(
+								'Deze collectie wordt momenteel bewerkt door een andere gebruiker. Het is niet mogelijk met met meer dan 1 gebruiker simultaan te bewerken.'
+							)}
 						/>
 					</Spacer>
 				)}

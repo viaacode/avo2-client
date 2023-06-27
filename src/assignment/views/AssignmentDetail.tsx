@@ -13,12 +13,9 @@ import {
 	Spacer,
 	Spinner,
 	ToggleButton,
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import React, { FC, ReactNode, ReactText, useCallback, useEffect, useState } from 'react';
+import React, { FC, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 import { StringParam, useQueryParams } from 'use-query-params';
@@ -29,7 +26,7 @@ import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { HeaderOwnerAndContributors, InteractiveTour } from '../../shared/components';
+import { EditButton, HeaderOwnerAndContributors, InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_INTERVAL, getMoreOptionsLabel } from '../../shared/constants';
@@ -51,7 +48,7 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
-import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatus';
+import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
@@ -77,7 +74,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const id = match.params.id;
 
+	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
 		canEditAssignments: false,
@@ -88,6 +87,10 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	);
 	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
+	const { data: editStatuses } = useGetAssignmentsEditStatuses(
+		[id],
+		EDIT_STATUS_REFETCH_INTERVAL
 	);
 
 	// Errors
@@ -106,19 +109,11 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const { inviteToken } = query;
 
 	// Computed
-	const id = match.params.id;
 	const isPublic = assignment?.is_public || false;
 	const isContributor = assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
 	const isSharedWithOthers =
 		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
-
-	// Queries
-	const { data: EditStatuses } = useGetAssignmentsEditStatuses(
-		[id],
-		EDIT_STATUS_REFETCH_INTERVAL
-	);
-
-	const isBeingEdited = !!EditStatuses?.[0];
+	const isBeingEdited = editStatuses && !!editStatuses[id];
 
 	const getPermissions = useCallback(
 		async (
@@ -468,43 +463,23 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				/>
 
 				<Spacer margin="left-small">
-					{permissions?.canEditAssignments &&
-						renderEditButtonTooltip(
-							<Button
-								type="primary"
-								icon={IconName.edit}
-								label={tText(
-									'assignment/views/assignment-response-edit___bewerken'
-								)}
-								title={tText(
-									'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
-								)}
-								onClick={() => executeAction(ASSIGNMENT_ACTIONS.editAssignment)}
-								disabled={isBeingEdited}
-							/>
-						)}
+					{permissions?.canEditAssignments && (
+						<EditButton
+							type="primary"
+							label={tText('assignment/views/assignment-response-edit___bewerken')}
+							title={tText(
+								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
+							)}
+							onClick={() => executeAction(ASSIGNMENT_ACTIONS.editAssignment)}
+							disabled={isBeingEdited}
+							toolTipContent={tHtml(
+								'Deze opdracht wordt momenteel bewerkt door een andere gebruiker. Het is niet mogelijk met met meer dan 1 gebruiker simultaan te bewerken.'
+							)}
+						/>
+					)}
 				</Spacer>
 				<InteractiveTour showButton />
 			</ButtonToolbar>
-		);
-	};
-
-	const renderEditButtonTooltip = (button: ReactNode) => {
-		if (!isBeingEdited) {
-			return button;
-		}
-
-		return (
-			<Tooltip position="bottom">
-				<TooltipTrigger>{button}</TooltipTrigger>
-				<TooltipContent>
-					<p>
-						{tHtml(
-							'Deze opdracht wordt momenteel bewerkt door een andere gebruiker. Het is niet mogelijk met met meer dan 1 gebruiker simultaan te bewerken.'
-						)}
-					</p>
-				</TooltipContent>
-			</Tooltip>
 		);
 	};
 

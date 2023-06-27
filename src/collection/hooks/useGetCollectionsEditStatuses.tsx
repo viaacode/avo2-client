@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { AssignmentService } from '../assignment.service';
+import { CollectionService } from '../collection.service';
 
-export const useGetAssignmentsEditStatuses = (
-	assignmentIds: string[],
+export const useGetCollectionsEditStatuses = (
+	collectionsIds: string[],
 	interval: number,
 	options: {
 		enabled: boolean;
@@ -12,9 +12,9 @@ export const useGetAssignmentsEditStatuses = (
 	} = { enabled: true, refetchInterval: interval || 0, refetchIntervalInBackground: true }
 ) => {
 	return useQuery(
-		['GET_ASSIGNMENT_EDIT_STATUS', assignmentIds],
+		['GET_COLLECTIONS_EDIT_STATUSES', collectionsIds],
 		() => {
-			return AssignmentService.getAssignmentsEditStatuses(assignmentIds);
+			return CollectionService.getCollectionsEditStatuses(collectionsIds);
 		},
 		options
 	);
