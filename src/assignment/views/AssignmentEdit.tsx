@@ -30,7 +30,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -76,6 +76,8 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import { buildLink } from '../../shared/helpers';
+import { EditActivityModal } from '../../shared/components';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -97,9 +99,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		null
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
+
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+
+	// Computed
+	const assignmentId = match.params.id;
 	const isPublic = assignment?.is_public || false;
 	const canEditAllAssignments = PermissionService.hasPerm(
 		user,
@@ -122,6 +128,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as Avo.Assignment.Block[] }));
 		(setValue as any)('blocks', newBlocks as Avo.Assignment.Block[], { shouldDirty: true });
 	};
+
 	const setBlock = useAssignmentBlockChangeHandler(
 		assignment?.blocks || [],
 		updateBlocksInAssignmentState
@@ -234,6 +241,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setAssigmentLoading(false);
 	}, [user, match.params.id, tText, history, setOriginal, setAssignment]);
 
+	// const updateAssignemntEditor = async () => {
+	// 	const assignmentId = match.params.id;
+	// 	await AssignmentService.updateAssignmentEditor(assignmentId);
+	// };
+
 	// Events
 
 	const handleOnSave = async () => {
@@ -319,6 +331,21 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		original && setAssignment(original as any);
 		resetForm();
 	}, [resetForm, setAssignment, original]);
+
+	const onActivity = async () => {
+		try {
+			await AssignmentService.updateAssignmentEditor(assignmentId);
+		} catch (err) {
+			redirectToClientPage(
+				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
+				history
+			);
+
+			ToastService.danger(
+				tText('Er liep iets fout met het updaten van de opdracht bewerker')
+			);
+		}
+	};
 
 	// Render
 
@@ -624,6 +651,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							},
 						}}
 					/>
+
+					<EditActivityModal onActivity={onActivity} />
 				</Container>
 			</div>
 

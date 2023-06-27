@@ -88,11 +88,10 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
-	const { data: editStatuses } = useGetAssignmentsEditStatuses(
-		[id],
-		permissions.canEditAssignments || false,
-		EDIT_STATUS_REFETCH_INTERVAL
-	);
+	const { data: editStatuses } = useGetAssignmentsEditStatuses([id], {
+		enabled: permissions.canEditAssignments || false,
+		refetchInterval: EDIT_STATUS_REFETCH_INTERVAL,
+	});
 
 	// Errors
 	const [isForbidden, setIsforbidden] = useState<boolean>(false);

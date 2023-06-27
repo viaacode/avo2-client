@@ -1763,6 +1763,23 @@ export class CollectionService {
 		}
 	}
 
+	static async updateCollectionEditor(collectionId: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/share/request-edit-status`,
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to update collection current editor', err, {
+				collectionId,
+			});
+		}
+	}
+
 	static async getCollectionsEditStatuses(ids: string[]): Promise<Avo.Share.EditStatusResponse> {
 		try {
 			return await fetchWithLogoutJson(

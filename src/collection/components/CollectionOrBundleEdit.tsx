@@ -34,6 +34,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import {
+	EditActivityModal,
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -1096,6 +1097,21 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
+	const onActivity = async () => {
+		try {
+			await CollectionService.updateCollectionEditor(collectionId);
+		} catch (err) {
+			redirectToClientPage(
+				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: collectionId }),
+				history
+			);
+
+			ToastService.danger(
+				tText('Er liep iets fout met het updaten van de collectie bewerker')
+			);
+		}
+	};
+
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
@@ -1413,6 +1429,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 					onClose={() => setEnterItemIdModalOpen(false)}
 					inputCallback={handleAddItemById}
 				/>
+
+				<EditActivityModal onActivity={onActivity} />
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />
 			</>

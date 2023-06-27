@@ -186,11 +186,10 @@ const CollectionDetail: FunctionComponent<
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
 
-	const { data: editStatuses } = useGetCollectionsEditStatuses(
-		[collectionId],
-		permissions?.canEditCollections || false,
-		EDIT_STATUS_REFETCH_INTERVAL
-	);
+	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId], {
+		enabled: permissions?.canEditCollections || false,
+		refetchInterval: EDIT_STATUS_REFETCH_INTERVAL,
+	});
 
 	const isBeingEdited = editStatuses && !!editStatuses[collectionId];
 
