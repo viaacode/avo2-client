@@ -1430,7 +1430,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 					inputCallback={handleAddItemById}
 				/>
 
-				<InActivityWarningModal onActivity={onActivity} />
+				<InActivityWarningModal
+					onActivity={onActivity}
+					warningMessage={tHtml('Door inactiviteit zal de collectie zichzelf sluiten.')}
+				/>
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />
 			</>

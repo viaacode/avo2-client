@@ -652,7 +652,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						}}
 					/>
 
-					<InActivityWarningModal onActivity={onActivity} />
+					<InActivityWarningModal
+						onActivity={onActivity}
+						warningMessage={tHtml(
+							'Door inactiviteit zal de opdracht zichzelf sluiten.'
+						)}
+					/>
 				</Container>
 			</div>
 

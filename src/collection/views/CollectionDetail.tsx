@@ -45,11 +45,7 @@ import {
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import {
-	EDIT_STATUS_REFETCH_INTERVAL,
-	getMoreOptionsLabel,
-	ROUTE_PARTS,
-} from '../../shared/constants';
+import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
 import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
@@ -188,7 +184,7 @@ const CollectionDetail: FunctionComponent<
 
 	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId], {
 		enabled: permissions?.canEditCollections || false,
-		refetchInterval: EDIT_STATUS_REFETCH_INTERVAL,
+		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 	});
 
 	const isBeingEdited = editStatuses && !!editStatuses[collectionId];
