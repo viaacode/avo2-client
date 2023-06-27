@@ -1,11 +1,11 @@
 import React, { FC, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 
-type EditActivityModalProps = {
+type InActivityWarningModalProps = {
 	onActivity: () => void;
 };
 
-const EditActivityModal: FC<EditActivityModalProps> = ({ onActivity }) => {
+const InActivityWarningModal: FC<InActivityWarningModalProps> = ({ onActivity }) => {
 	const [remainingTime, setRemainingTime] = useState<number>(0);
 	const { getRemainingTime } = useIdleTimer({
 		onAction: onActivity,
@@ -27,4 +27,4 @@ const EditActivityModal: FC<EditActivityModalProps> = ({ onActivity }) => {
 	return <div>{remainingTime}</div>;
 };
 
-export default EditActivityModal;
+export default InActivityWarningModal;

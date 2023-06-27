@@ -34,7 +34,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import {
-	EditActivityModal,
+	InActivityWarningModal,
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -1430,7 +1430,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					inputCallback={handleAddItemById}
 				/>
 
-				<EditActivityModal onActivity={onActivity} />
+				<InActivityWarningModal onActivity={onActivity} />
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />
 			</>

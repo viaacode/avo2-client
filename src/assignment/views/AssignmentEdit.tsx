@@ -77,7 +77,7 @@ import AssignmentResponses from './AssignmentResponses';
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
 import { buildLink } from '../../shared/helpers';
-import { EditActivityModal } from '../../shared/components';
+import { InActivityWarningModal } from '../../shared/components';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -652,7 +652,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						}}
 					/>
 
-					<EditActivityModal onActivity={onActivity} />
+					<InActivityWarningModal onActivity={onActivity} />
 				</Container>
 			</div>
 

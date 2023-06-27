@@ -27,4 +27,4 @@ export * from './ShareWithPupils/ShareWithPupils';
 export * from './HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 export { default as ThumbnailStillsModal } from './ThumbnailStillsModal/ThumbnailStillsModal';
 export { default as EditButton } from './EditButton/EditButton';
-export { default as EditActivityModal } from './EditActivityModal/EditActivityModal';
+export { default as InActivityWarningModal } from './InActivityWarningModal/InActivityWarningModal';
