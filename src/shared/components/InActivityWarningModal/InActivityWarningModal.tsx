@@ -3,7 +3,11 @@ import { format, subMilliseconds } from 'date-fns';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 
-import { EDIT_STATUS_REFETCH_TIME, MAX_EDIT_IDLE_TIME } from '../../constants';
+import {
+	EDIT_STATUS_REFETCH_TIME,
+	IDLE_TIME_UNTIL_WARNING,
+	MAX_EDIT_IDLE_TIME,
+} from '../../constants';
 import { tHtml } from '../../helpers/translate';
 
 type InActivityWarningModalProps = {
@@ -30,7 +34,7 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 		onAction,
 		onIdle: () => setIsWarningModalOpen(true),
 		throttle: EDIT_STATUS_REFETCH_TIME,
-		timeout: MAX_EDIT_IDLE_TIME,
+		timeout: IDLE_TIME_UNTIL_WARNING,
 	});
 
 	useEffect(() => {
@@ -47,12 +51,11 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	});
 
 	return (
-		<Modal isOpen={isWarningModalOpen} title={tHtml('Opgelet, je bent inactief')}>
+		<Modal isOpen={isWarningModalOpen} title={tHtml('Opgelet!')} size="medium">
 			<ModalBody>
+				<p>{format(new Date(idleTime), 'mm:ss')}</p>
+
 				{warningMessage}
-				{tHtml('Je hebt nog {{timer}}', {
-					timer: format(new Date(idleTime), 'mm:ss'),
-				})}
 			</ModalBody>
 		</Modal>
 	);
