@@ -485,7 +485,15 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					}}
 					confirmCallback={async () => {
 						setAssignmentsBeingEdited([]);
-						await handleBulkAction(selectedBulkAction as AssignmentsBulkAction);
+						if (selectedAssignmentIds.length > 0) {
+							await handleBulkAction(selectedBulkAction as AssignmentsBulkAction);
+						} else {
+							ToastService.info(
+								tHtml(
+									'Alle geselecteerde opdrachten worden bewerkt, dus de actie kan niet worden uitgevoerd.'
+								)
+							);
+						}
 					}}
 					confirmButtonType="primary"
 					confirmLabel={tText('Doorgaan')}
