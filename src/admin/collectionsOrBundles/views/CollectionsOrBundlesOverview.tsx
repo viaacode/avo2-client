@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -510,9 +511,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		}
 
 		const detailRoute = isCollection
-			? APP_PATH.COLLECTION_EDIT.route
-			: APP_PATH.BUNDLE_EDIT.route;
-		const link = buildLink(detailRoute, { id });
+			? APP_PATH.COLLECTION_EDIT_TAB.route
+			: APP_PATH.BUNDLE_EDIT_TAB.route;
+		const link = buildLink(detailRoute, { id, tabId: CollectionCreateUpdateTab.CONTENT });
 
 		redirectToClientPage(link, history);
 	};
@@ -527,9 +528,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					<Link
 						to={buildLink(
 							isCollection
-								? APP_PATH.COLLECTION_EDIT.route
-								: APP_PATH.BUNDLE_EDIT.route,
-							{ id: rowData.id }
+								? APP_PATH.COLLECTION_EDIT_TAB.route
+								: APP_PATH.BUNDLE_EDIT_TAB.route,
+							{ id: rowData.id, tabId: CollectionCreateUpdateTab.CONTENT }
 						)}
 					>
 						<span>{truncate((rowData as any)[columnId] || '-', { length: 50 })}</span>

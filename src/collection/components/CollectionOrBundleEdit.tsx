@@ -746,6 +746,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 					}
 
 					checkPermissionsAndGetCollection();
+
+					setUnsavedChanges(false);
+
 					ToastService.success(
 						isCollection
 							? tHtml(
@@ -755,6 +758,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 									'collection/components/collection-or-bundle-edit___bundle-opgeslagen'
 							  )
 					);
+
 					trackEvents(
 						{
 							object: String(newCollection.id),
@@ -1112,6 +1116,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
+	const onExitPage = async () => {
+		await CollectionService.releaseCollectionEditStatus(collectionId);
+	};
+
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
@@ -1432,7 +1440,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 				<InActivityWarningModal
 					onActivity={onActivity}
+					onExit={onExitPage}
 					warningMessage={tHtml('Door inactiviteit zal de collectie zichzelf sluiten.')}
+					currentPath={history.location.pathname}
+					editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
 				/>
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />

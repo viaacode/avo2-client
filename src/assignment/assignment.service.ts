@@ -1618,4 +1618,23 @@ export class AssignmentService {
 			});
 		}
 	}
+
+	static async releaseAssignmentEditStatus(
+		assignmentId: string
+	): Promise<Avo.Share.EditStatusResponse> {
+		try {
+			return await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/assignments/${assignmentId}/share/release-edit-status`,
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to release assignment edit status', err, {
+				assignmentId,
+			});
+		}
+	}
 }

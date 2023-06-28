@@ -347,6 +347,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
+	const onExitPage = async () => {
+		await AssignmentService.releaseAssignmentEditStatus(assignmentId);
+	};
+
 	// Render
 
 	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
@@ -654,9 +658,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 					<InActivityWarningModal
 						onActivity={onActivity}
+						onExit={onExitPage}
 						warningMessage={tHtml(
 							'Door inactiviteit zal de opdracht zichzelf sluiten.'
 						)}
+						currentPath={history.location.pathname}
+						editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
 					/>
 				</Container>
 			</div>

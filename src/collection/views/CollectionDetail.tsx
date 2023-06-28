@@ -78,7 +78,7 @@ import {
 import { ToastService } from '../../shared/services/toast-service';
 import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { ContentTypeString, Relation } from '../collection.types';
+import { CollectionCreateUpdateTab, ContentTypeString, Relation } from '../collection.types';
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
@@ -532,7 +532,7 @@ const CollectionDetail: FunctionComponent<
 		history.push(
 			`${generateContentLinkString(ContentTypeString.collection, `${collectionId}`)}/${
 				ROUTE_PARTS.edit
-			}`
+			}/${CollectionCreateUpdateTab.CONTENT}`
 		);
 	};
 

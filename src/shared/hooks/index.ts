@@ -8,3 +8,4 @@ export * from './useSubjects';
 export * from './useTableSort';
 export * from './useTabs';
 export * from './useGetQualityLabels';
+export * from './useBeforeUnload';

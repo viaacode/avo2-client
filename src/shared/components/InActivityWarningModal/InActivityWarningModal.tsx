@@ -2,6 +2,7 @@ import { Modal, ModalBody } from '@viaa/avo2-components';
 import { format, subMilliseconds } from 'date-fns';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
+import { matchPath } from 'react-router';
 
 import {
 	EDIT_STATUS_REFETCH_TIME,
@@ -9,19 +10,42 @@ import {
 	MAX_EDIT_IDLE_TIME,
 } from '../../constants';
 import { tHtml } from '../../helpers/translate';
+import { useBeforeUnload } from '../../hooks';
 
 type InActivityWarningModalProps = {
 	onActivity: () => void;
+	onExit: () => void;
 	warningMessage: string | ReactNode;
+	editPath: string;
+	currentPath: string;
 };
 
 const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	onActivity,
+	onExit,
 	warningMessage,
+	editPath,
+	currentPath,
 }) => {
 	const initialCount = new Date(MAX_EDIT_IDLE_TIME);
 	const [idleTime, setIdleTime] = useState<Date>(initialCount);
 	const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
+
+	useBeforeUnload(() => {
+		onExit();
+	});
+
+	useEffect(() => {
+		const changingRoute = !matchPath(currentPath, editPath);
+		if (changingRoute) {
+			console.log('changingroute');
+			onExit();
+		}
+	}, [currentPath]);
+
+	useEffect(() => {
+		return () => onExit();
+	}, []);
 
 	const onAction = () => {
 		onActivity();
