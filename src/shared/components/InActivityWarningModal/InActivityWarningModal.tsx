@@ -38,13 +38,14 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	useEffect(() => {
 		const changingRoute = !matchPath(currentPath, editPath);
 		if (changingRoute) {
-			console.log('changingroute');
 			onExit();
 		}
 	}, [currentPath]);
 
 	useEffect(() => {
-		return () => onExit();
+		return () => {
+			onExit();
+		};
 	}, []);
 
 	const onAction = () => {
