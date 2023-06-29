@@ -35,6 +35,7 @@ import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shar
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { QualityLabelsService } from '../../shared/services/quality-labels.service';
 import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { ToastService } from '../../shared/services/toast-service';
 import { QuickLaneUrlObject } from '../../shared/types';
@@ -109,7 +110,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 
 	const fetchQualityLabels = useCallback(async () => {
 		try {
-			const dbLabels = await CollectionService.fetchQualityLabels();
+			const dbLabels = await QualityLabelsService.fetchQualityLabels();
 			setQualityLabels(
 				dbLabels.map((dbLabel: QualityLabel) => ({
 					label: dbLabel.description,

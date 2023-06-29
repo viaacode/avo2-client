@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { CollectionService } from '../../collection/collection.service';
 import { QualityLabel } from '../../collection/collection.types';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers';
+import { QualityLabelsService } from '../services/quality-labels.service';
 import { ToastService } from '../services/toast-service';
 
 type UseCollectionQualityLabelsTuple = [QualityLabel[], boolean];
@@ -20,7 +20,7 @@ export const useCollectionQualityLabels = (enabled: boolean): UseCollectionQuali
 		}
 		setIsLoading(true);
 
-		CollectionService.fetchQualityLabels()
+		QualityLabelsService.fetchQualityLabels()
 			.then((collectionQualityLabels: QualityLabel[]) => {
 				setCollectionQualityLabels(collectionQualityLabels);
 			})
