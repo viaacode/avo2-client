@@ -1120,6 +1120,17 @@ const CollectionOrBundleEdit: FunctionComponent<
 		await CollectionService.releaseCollectionEditStatus(collectionId);
 	};
 
+	const onForcedExitPage = async () => {
+		onExitPage();
+
+		redirectToClientPage(
+			buildLink(APP_PATH.COLLECTION_DETAIL.route, {
+				id: collectionId,
+			}),
+			history
+		);
+	};
+
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
@@ -1444,6 +1455,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					warningMessage={tHtml('Door inactiviteit zal de collectie zichzelf sluiten.')}
 					currentPath={history.location.pathname}
 					editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
+					onForcedExit={onForcedExitPage}
 				/>
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />

@@ -1,6 +1,6 @@
 import { Button, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { get, isNil } from 'lodash-es';
+import { get, isNil, partition } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactText,
@@ -45,6 +45,8 @@ import {
 } from '../assignments.const';
 import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
 
+import './AssignmentsOverviewAdmin.scss';
+
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -59,6 +61,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const [selectedAssignmentIds, setSelectedAssignmentIds] = useState<string[]>([]);
 	const [assignmentsDeleteModalOpen, setAssignmentsDeleteModalOpen] = useState<boolean>(false);
 	const [isChangeAuthorModalOpen, setIsChangeAuthorModalOpen] = useState<boolean>(false);
+	const [assignmentsBeingEdited, setAssignmentsBeingEdited] = useState<Avo.Share.EditStatus[]>(
+		[]
+	);
+	const [selectedBulkAction, setSelectedBulkAction] = useState<AssignmentsBulkAction | null>(
+		null
+	);
 
 	const columns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(), []);
 
@@ -212,19 +220,44 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		if (!selectedAssignmentIds || !selectedAssignmentIds.length) {
 			return;
 		}
-		switch (action) {
-			case 'delete':
-				setAssignmentsDeleteModalOpen(true);
-				return;
 
-			case 'change_author':
-				setIsChangeAuthorModalOpen(true);
-				return;
+		const selectedAssignmentEditStatuses = await AssignmentService.getAssignmentsEditStatuses(
+			selectedAssignmentIds
+		);
+		const partitionedAssignmentIds = partition(
+			Object.entries(selectedAssignmentEditStatuses),
+			(entry) => !!entry[1]
+		);
+		const selectedAssignmentsThatAreBeingEdited: Avo.Share.EditStatus[] =
+			partitionedAssignmentIds[0].map((entry) => entry[1]);
+		const selectedAssignmentIdsThatAreNotBeingEdited = partitionedAssignmentIds[1].map(
+			(entry) => entry[0]
+		);
+
+		if (selectedAssignmentsThatAreBeingEdited.length > 0) {
+			// open warning modal first
+			setSelectedAssignmentIds(selectedAssignmentIdsThatAreNotBeingEdited);
+			setSelectedBulkAction(action);
+			setAssignmentsBeingEdited(selectedAssignmentsThatAreBeingEdited);
+		} else {
+			// execute action straight away
+			setSelectedBulkAction(null);
+			switch (action) {
+				case 'delete':
+					setAssignmentsDeleteModalOpen(true);
+					return;
+
+				case 'change_author':
+					setIsChangeAuthorModalOpen(true);
+					return;
+			}
 		}
 	};
 
 	const deleteSelectedAssignments = async () => {
 		setIsLoading(true);
+		setAssignmentsBeingEdited([]);
+		setSelectedBulkAction(null);
 		setAssignmentsDeleteModalOpen(false);
 		try {
 			await AssignmentService.deleteAssignments(selectedAssignmentIds);
@@ -253,6 +286,8 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 	const changeAuthorForSelectedAssignments = async (profileId: string) => {
 		setIsLoading(true);
+		setAssignmentsBeingEdited([]);
+		setSelectedBulkAction(null);
 		try {
 			await AssignmentService.changeAssignmentsAuthor(profileId, selectedAssignmentIds);
 			await fetchAssignments();
@@ -377,6 +412,38 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		);
 	};
 
+	const renderAssignmentBeingEditedMessage = () => {
+		return (
+			<>
+				<p>
+					{tHtml(
+						'admin/assignments/views/assignments-overview-admin___deze-opdrachten-worden-momenteel-bewerkt'
+					)}
+				</p>
+				<ul className="c-assignment-bulk-warning-being-edited">
+					{assignmentsBeingEdited.map((assignmentBeingEdited) => (
+						<li key={`assignment-being-edited-${assignmentBeingEdited.subjectId}`}>
+							<a
+								target="_blank"
+								href={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+									id: assignmentBeingEdited.subjectId,
+								})}
+								rel="noreferrer"
+							>
+								{assignmentBeingEdited.subjectTitle}
+							</a>
+						</li>
+					))}
+				</ul>
+				<p>
+					{tHtml(
+						'admin/assignments/views/assignments-overview-admin___je-kan-doorgaan-met-je-actie-maar-deze-opdrachten-zullen-niet-behandeld-worden'
+					)}
+				</p>
+			</>
+		);
+	};
+
 	const renderAssignmentOverview = () => {
 		if (!assignments) {
 			return null;
@@ -413,17 +480,50 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					defaultOrderDirection={'desc'}
 				/>
 				<ConfirmModal
+					body={renderAssignmentBeingEditedMessage()}
+					isOpen={assignmentsBeingEdited?.length > 0}
+					onClose={() => {
+						setAssignmentsDeleteModalOpen(false);
+						setAssignmentsBeingEdited([]);
+						setSelectedBulkAction(null);
+					}}
+					confirmCallback={async () => {
+						setAssignmentsBeingEdited([]);
+						if (selectedAssignmentIds.length > 0) {
+							await handleBulkAction(selectedBulkAction as AssignmentsBulkAction);
+						} else {
+							ToastService.info(
+								tHtml(
+									'admin/assignments/views/assignments-overview-admin___alle-geselecteerde-opdrachten-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd'
+								)
+							);
+						}
+					}}
+					confirmButtonType="primary"
+					confirmLabel={tText(
+						'admin/assignments/views/assignments-overview-admin___doorgaan'
+					)}
+				/>
+				<ConfirmModal
 					body={tHtml(
 						'admin/assignments/views/assignments-overview-admin___dit-zal-num-of-selected-assignment-opdrachten-verwijderen-deze-actie-kan-niet-ongedaan-gemaakt-worden',
 						{ numOfSelectedAssignment: selectedAssignmentIds.length }
 					)}
 					isOpen={assignmentsDeleteModalOpen}
-					onClose={() => setAssignmentsDeleteModalOpen(false)}
+					onClose={() => {
+						setAssignmentsDeleteModalOpen(false);
+						setAssignmentsBeingEdited([]);
+						setSelectedBulkAction(null);
+					}}
 					confirmCallback={deleteSelectedAssignments}
 				/>
 				<ChangeAuthorModal
 					isOpen={isChangeAuthorModalOpen}
-					onClose={() => setIsChangeAuthorModalOpen(false)}
+					onClose={() => {
+						setIsChangeAuthorModalOpen(false);
+						setAssignmentsBeingEdited([]);
+						setSelectedBulkAction(null);
+					}}
 					callback={(newAuthor: PickerItem) =>
 						changeAuthorForSelectedAssignments(newAuthor.value)
 					}

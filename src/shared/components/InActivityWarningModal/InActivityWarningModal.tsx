@@ -1,20 +1,22 @@
 import { Modal, ModalBody } from '@viaa/avo2-components';
-import { format, subMilliseconds } from 'date-fns';
+import { differenceInSeconds, format } from 'date-fns';
+import { once } from 'lodash';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import { matchPath } from 'react-router';
 
 import {
 	EDIT_STATUS_REFETCH_TIME,
-	IDLE_TIME_UNTIL_WARNING,
-	MAX_EDIT_IDLE_TIME,
+	// IDLE_TIME_UNTIL_WARNING,
+	// MAX_EDIT_IDLE_TIME,
 } from '../../constants';
 import { tHtml } from '../../helpers/translate';
 import { useBeforeUnload } from '../../hooks';
 
 type InActivityWarningModalProps = {
 	onActivity: () => void;
-	onExit: () => void;
+	onExit: (location: string) => void;
+	onForcedExit: () => void;
 	warningMessage: string | ReactNode;
 	editPath: string;
 	currentPath: string;
@@ -23,62 +25,87 @@ type InActivityWarningModalProps = {
 const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	onActivity,
 	onExit,
+	onForcedExit,
 	warningMessage,
 	editPath,
 	currentPath,
 }) => {
-	const initialCount = new Date(MAX_EDIT_IDLE_TIME);
-	const [idleTime, setIdleTime] = useState<Date>(initialCount);
+	const maxIdleTime = 5;
+	const initialTime = 5;
+	const [remainingTime, setRemainingTime] = useState<number>(initialTime);
 	const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
+	const [isTimedOut, setIsTimedOut] = useState<boolean>(false);
+	const [idleStart, setIdleStart] = useState<Date | null>(null);
+	const forceExitOnce = once(onForcedExit);
+	useEffect(() => {
+		if (!isTimedOut) {
+			return () => {
+				console.log(isTimedOut);
+				onExit('derendered component');
+			};
+		}
+	}, [isTimedOut]);
 
 	useBeforeUnload(() => {
-		onExit();
+		onExit('beforeunload');
 	});
 
 	useEffect(() => {
 		const changingRoute = !matchPath(currentPath, editPath);
 		if (changingRoute) {
-			onExit();
+			onExit('changingroute');
 		}
 	}, [currentPath]);
-
-	useEffect(() => {
-		return () => {
-			onExit();
-		};
-	}, []);
 
 	const onAction = () => {
 		onActivity();
 		setIsWarningModalOpen(false);
-		setIdleTime(initialCount);
-		reset();
+		setIdleStart(null);
+		setRemainingTime(initialTime);
 	};
 
-	const { getIdleTime, isIdle, reset } = useIdleTimer({
+	const onIdle = () => {
+		setIsWarningModalOpen(true);
+		setIdleStart(new Date());
+	};
+
+	useIdleTimer({
 		onAction,
-		onIdle: () => setIsWarningModalOpen(true),
+		onIdle,
 		throttle: EDIT_STATUS_REFETCH_TIME,
-		timeout: IDLE_TIME_UNTIL_WARNING,
+		// timeout: IDLE_TIME_UNTIL_WARNING,
+		timeout: 5000,
 	});
 
 	useEffect(() => {
-		if (isIdle()) {
-			const interval = setInterval(() => {
-				const millisLeft = subMilliseconds(MAX_EDIT_IDLE_TIME, getIdleTime());
-				setIdleTime(millisLeft);
-			}, 1000);
+		let timerId: number | null = null;
+		if (idleStart) {
+			timerId = window.setInterval(() => {
+				const idledTime = differenceInSeconds(new Date(), idleStart);
 
-			return () => {
-				clearInterval(interval);
-			};
+				setRemainingTime(Math.max(maxIdleTime - idledTime, 0));
+			}, 500);
 		}
-	});
+
+		return () => {
+			if (timerId) {
+				clearInterval(timerId);
+			}
+		};
+	}, [idleStart]);
+
+	useEffect(() => {
+		if (remainingTime === 0) {
+			setIsTimedOut(true);
+			console.log('timeout');
+			forceExitOnce();
+		}
+	}, [remainingTime]);
 
 	return (
 		<Modal isOpen={isWarningModalOpen} title={tHtml('Opgelet!')} size="medium">
 			<ModalBody>
-				<p>{format(new Date(idleTime), 'mm:ss')}</p>
+				<p>{format(new Date(remainingTime * 1000), 'mm:ss')}</p>
 
 				{warningMessage}
 			</ModalBody>

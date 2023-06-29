@@ -103,6 +103,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 
 	// Computed
 	const assignmentId = match.params.id;
@@ -141,7 +142,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	// UI
 	useWarningBeforeUnload({
-		when: isDirty,
+		when: isDirty && !isForcedExit,
 	});
 
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs(
@@ -333,6 +334,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	}, [resetForm, setAssignment, original]);
 
 	const onActivity = async () => {
+		console.log('on activity triggered');
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
@@ -347,8 +349,57 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const onExitPage = async () => {
-		await AssignmentService.releaseAssignmentEditStatus(assignmentId);
+	const onExitPage = async (location: string) => {
+		console.log(`triggerd in ${location}`);
+		try {
+			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
+		} catch (err) {
+			ToastService.danger(
+				tText('Er liep iets fout met het updaten van de opdracht bewerk status')
+			);
+		}
+	};
+
+	const onForcedExitPage = async () => {
+		setIsForcedExit(true);
+		try {
+			if (!user.profile?.id || !original) {
+				return;
+			}
+
+			await AssignmentService.updateAssignment(
+				{
+					...original,
+					...assignment,
+					id: original.id,
+				},
+				user.profile?.id
+			);
+
+			ToastService.success(
+				tText('Je was meer dan 15 minuten inactief. Je aanpassingen zijn opgeslagen.'),
+				{
+					autoClose: false,
+				}
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'JJe was meer dan 15 minuten inactief. Het opslaan van je aanpassingen is mislukt.'
+				),
+				{
+					autoClose: false,
+				}
+			);
+		}
+		onExitPage('force exit fn');
+
+		redirectToClientPage(
+			buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+				id: assignmentId,
+			}),
+			history
+		);
 	};
 
 	// Render
@@ -664,6 +715,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						)}
 						currentPath={history.location.pathname}
 						editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
+						onForcedExit={onForcedExitPage}
 					/>
 				</Container>
 			</div>

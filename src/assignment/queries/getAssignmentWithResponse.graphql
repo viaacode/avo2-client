@@ -1,5 +1,5 @@
 query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
-	app_assignments_v2_overview(
+	app_assignments_v2(
 		where: { id: { _eq: $assignmentId }, is_deleted: { _eq: false } }
 		order_by: [{ deadline_at: desc }]
 	) {
@@ -116,7 +116,6 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 				broader
 			}
 		}
-		share_type
 		lom_learning_resource_type
 	}
 }

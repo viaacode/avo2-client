@@ -322,10 +322,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				ToastService.danger(
 					isCollection
 						? tHtml(
-								'Kan collectie niet verwijderen omdat de gebruiker geen profiel id heeft. Probeer opnieuw in te loggen.'
+								'collection/components/collection-or-bundle-overview___kan-collectie-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
 						  )
 						: tHtml(
-								'Kan bundel niet verwijderen omdat de gebruiker geen profiel heeft. Probeer opnieuw in te loggen.'
+								'collection/components/collection-or-bundle-overview___kan-bundel-niet-verwijderen-omdat-de-gebruiker-geen-profiel-heeft-probeer-opnieuw-in-te-loggen'
 						  )
 				);
 				return;

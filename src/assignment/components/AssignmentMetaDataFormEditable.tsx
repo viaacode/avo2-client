@@ -92,14 +92,18 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 
 								<Column size="3-5">
 									<FormGroup
-										label={tText('Cover afbeelding')}
+										label={tText(
+											'assignment/components/assignment-meta-data-form-editable___cover-afbeelding'
+										)}
 										labelFor="coverImageId"
 									>
 										<Button
 											type="secondary"
-											label={tText('Stel een hoofdafbeelding in')}
+											label={tText(
+												'assignment/components/assignment-meta-data-form-editable___stel-een-hoofdafbeelding-in'
+											)}
 											title={tText(
-												'Kies een afbeelding om te gebruiken als hoofdafbeelding van deze opdracht.'
+												'assignment/components/assignment-meta-data-form-editable___kies-een-afbeelding-om-te-gebruiken-als-hoofdafbeelding-van-deze-opdracht'
 											)}
 											onClick={() => setIsAssignmentStillsModalOpen(true)}
 										/>
