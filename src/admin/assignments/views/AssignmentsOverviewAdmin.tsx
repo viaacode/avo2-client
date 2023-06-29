@@ -415,7 +415,11 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const renderAssignmentBeingEditedMessage = () => {
 		return (
 			<>
-				<p>{tHtml('Deze opdrachten worden momenteel bewerkt:')}</p>
+				<p>
+					{tHtml(
+						'admin/assignments/views/assignments-overview-admin___deze-opdrachten-worden-momenteel-bewerkt'
+					)}
+				</p>
 				<ul className="c-assignment-bulk-warning-being-edited">
 					{assignmentsBeingEdited.map((assignmentBeingEdited) => (
 						<li key={`assignment-being-edited-${assignmentBeingEdited.subjectId}`}>
@@ -433,7 +437,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				</ul>
 				<p>
 					{tHtml(
-						'Je kan doorgaan met je actie, maar deze opdrachten zullen niet behandeld worden'
+						'admin/assignments/views/assignments-overview-admin___je-kan-doorgaan-met-je-actie-maar-deze-opdrachten-zullen-niet-behandeld-worden'
 					)}
 				</p>
 			</>
@@ -490,13 +494,15 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 						} else {
 							ToastService.info(
 								tHtml(
-									'Alle geselecteerde opdrachten worden bewerkt, dus de actie kan niet worden uitgevoerd.'
+									'admin/assignments/views/assignments-overview-admin___alle-geselecteerde-opdrachten-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd'
 								)
 							);
 						}
 					}}
 					confirmButtonType="primary"
-					confirmLabel={tText('Doorgaan')}
+					confirmLabel={tText(
+						'admin/assignments/views/assignments-overview-admin___doorgaan'
+					)}
 				/>
 				<ConfirmModal
 					body={tHtml(
