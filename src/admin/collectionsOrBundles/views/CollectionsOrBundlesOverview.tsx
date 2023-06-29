@@ -509,10 +509,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			return;
 		}
 
-		const detailRoute = isCollection
-			? APP_PATH.COLLECTION_EDIT.route
-			: APP_PATH.BUNDLE_EDIT.route;
-		const link = buildLink(detailRoute, { id });
+		const link = buildLink(
+			isCollection ? APP_PATH.COLLECTION_EDIT.route : APP_PATH.BUNDLE_EDIT.route,
+			{ id }
+		);
 
 		redirectToClientPage(link, history);
 	};
@@ -527,8 +527,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					<Link
 						to={buildLink(
 							isCollection
-								? APP_PATH.COLLECTION_EDIT.route
-								: APP_PATH.BUNDLE_EDIT.route,
+								? APP_PATH.COLLECTION_DETAIL.route
+								: APP_PATH.BUNDLE_DETAIL.route,
 							{ id: rowData.id }
 						)}
 					>
