@@ -9,9 +9,9 @@ export const useGetAssignmentsEditStatuses = (
 		refetchInterval: number | false;
 		refetchIntervalInBackground?: boolean;
 	} = {
-		enabled: false,
+		enabled: true,
 		refetchInterval: false,
-		refetchIntervalInBackground: true,
+		refetchIntervalInBackground: false,
 	}
 ) => {
 	return useQuery(
