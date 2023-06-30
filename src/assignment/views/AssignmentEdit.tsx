@@ -30,7 +30,7 @@ import { DefaultSecureRouteProps } from '../../authentication/components/Secured
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
-import { GENERATE_SITE_TITLE } from '../../constants';
+import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -76,6 +76,8 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
+import { buildLink } from '../../shared/helpers';
+import { InActivityWarningModal } from '../../shared/components';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -97,9 +99,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		null
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
+
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
+
+	// Computed
+	const assignmentId = match.params.id;
 	const isPublic = assignment?.is_public || false;
 	const canEditAllAssignments = PermissionService.hasPerm(
 		user,
@@ -122,6 +129,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as Avo.Assignment.Block[] }));
 		(setValue as any)('blocks', newBlocks as Avo.Assignment.Block[], { shouldDirty: true });
 	};
+
 	const setBlock = useAssignmentBlockChangeHandler(
 		assignment?.blocks || [],
 		updateBlocksInAssignmentState
@@ -134,7 +142,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	// UI
 	useWarningBeforeUnload({
-		when: isDirty,
+		when: isDirty && !isForcedExit,
 	});
 
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs(
@@ -319,6 +327,74 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		original && setAssignment(original as any);
 		resetForm();
 	}, [resetForm, setAssignment, original]);
+
+	const onActivity = async () => {
+		try {
+			await AssignmentService.updateAssignmentEditor(assignmentId);
+		} catch (err) {
+			redirectToClientPage(
+				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
+				history
+			);
+
+			ToastService.danger(
+				tHtml('Er liep iets fout met het updaten van de opdracht bewerker')
+			);
+		}
+	};
+
+	const onExitPage = async () => {
+		try {
+			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
+		} catch (err) {
+			ToastService.danger(
+				tText('Er liep iets fout met het updaten van de opdracht bewerk status')
+			);
+		}
+	};
+
+	const onForcedExitPage = async () => {
+		setIsForcedExit(true);
+		try {
+			if (!user.profile?.id || !original) {
+				return;
+			}
+
+			await AssignmentService.updateAssignment(
+				{
+					...original,
+					...assignment,
+					id: original.id,
+				},
+				user.profile?.id
+			);
+
+			ToastService.success(
+				tText('Je was meer dan 15 minuten inactief. Je aanpassingen zijn opgeslagen.'),
+				{
+					autoClose: false,
+				}
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'Je was meer dan 15 minuten inactief. Het opslaan van je aanpassingen is mislukt.'
+				),
+				{
+					autoClose: false,
+				}
+			);
+		}
+
+		onExitPage();
+
+		redirectToClientPage(
+			buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+				id: assignmentId,
+			}),
+			history
+		);
+	};
 
 	// Render
 
@@ -624,6 +700,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							},
 						}}
 					/>
+
+					<InActivityWarningModal
+						onActivity={onActivity}
+						onExit={onExitPage}
+						warningMessage={tHtml(
+							'Door inactiviteit zal de opdracht zichzelf sluiten.'
+						)}
+						currentPath={history.location.pathname}
+						editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
+						onForcedExit={onForcedExitPage}
+					/>
 				</Container>
 			</div>
 
@@ -694,7 +781,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			{renderPageContent()}
 
-			<BeforeUnloadPrompt when={isDirty} />
+			<BeforeUnloadPrompt when={isDirty && !isForcedExit} />
 
 			{!!assignment && !!user && (
 				<PublishAssignmentModal

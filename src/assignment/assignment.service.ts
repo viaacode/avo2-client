@@ -1590,6 +1590,23 @@ export class AssignmentService {
 		}
 	}
 
+	static async updateAssignmentEditor(assignmentId: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/assignments/${assignmentId}/share/request-edit-status`,
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to update assignment current editor', err, {
+				assignmentId,
+			});
+		}
+	}
+
 	static async getAssignmentsEditStatuses(ids: string[]): Promise<Avo.Share.EditStatusResponse> {
 		try {
 			return await fetchWithLogoutJson(
@@ -1602,6 +1619,25 @@ export class AssignmentService {
 		} catch (err) {
 			throw new CustomError('Failed to get assignment(s) edit status(es)', err, {
 				assignmentIds: ids,
+			});
+		}
+	}
+
+	static async releaseAssignmentEditStatus(
+		assignmentId: string
+	): Promise<Avo.Share.EditStatusResponse> {
+		try {
+			return await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/assignments/${assignmentId}/share/release-edit-status`,
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to release assignment edit status', err, {
+				assignmentId,
 			});
 		}
 	}

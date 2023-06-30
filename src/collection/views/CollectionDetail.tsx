@@ -45,11 +45,7 @@ import {
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import {
-	EDIT_STATUS_REFETCH_INTERVAL,
-	getMoreOptionsLabel,
-	ROUTE_PARTS,
-} from '../../shared/constants';
+import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
 import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
@@ -82,7 +78,7 @@ import {
 import { ToastService } from '../../shared/services/toast-service';
 import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { ContentTypeString, Relation } from '../collection.types';
+import { CollectionCreateUpdateTab, ContentTypeString, Relation } from '../collection.types';
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
@@ -186,11 +182,11 @@ const CollectionDetail: FunctionComponent<
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
 
-	const { data: editStatuses } = useGetCollectionsEditStatuses(
-		[collectionId],
-		permissions?.canEditCollections || false,
-		EDIT_STATUS_REFETCH_INTERVAL
-	);
+	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId], {
+		enabled: permissions?.canEditCollections || false,
+		refetchInterval: EDIT_STATUS_REFETCH_TIME,
+		refetchIntervalInBackground: true,
+	});
 
 	const isBeingEdited = editStatuses && !!editStatuses[collectionId];
 
@@ -537,7 +533,7 @@ const CollectionDetail: FunctionComponent<
 		history.push(
 			`${generateContentLinkString(ContentTypeString.collection, `${collectionId}`)}/${
 				ROUTE_PARTS.edit
-			}`
+			}/${CollectionCreateUpdateTab.CONTENT}`
 		);
 	};
 

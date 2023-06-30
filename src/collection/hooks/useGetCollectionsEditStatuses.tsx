@@ -4,16 +4,14 @@ import { CollectionService } from '../collection.service';
 
 export const useGetCollectionsEditStatuses = (
 	collectionsIds: string[],
-	enabled: boolean,
-	interval: number,
 	options: {
 		enabled: boolean;
-		refetchInterval: number;
-		refetchIntervalInBackground: boolean;
+		refetchInterval: number | false;
+		refetchIntervalInBackground?: boolean;
 	} = {
-		enabled: enabled || false,
-		refetchInterval: interval || 0,
-		refetchIntervalInBackground: true,
+		enabled: true,
+		refetchInterval: false,
+		refetchIntervalInBackground: false,
 	}
 ) => {
 	return useQuery(
