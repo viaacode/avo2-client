@@ -1,4 +1,5 @@
 import {
+	Avatar,
 	SearchResult,
 	SearchResultSubtitle,
 	SearchResultThumbnail,
@@ -64,14 +65,42 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			/>
 		);
 	};
+	const checkIfResultIsNotAnItem = (result: Avo.Search.ResultItem): boolean => {
+		return (
+			result.administrative_type === 'collectie' ||
+			result.administrative_type === 'bundel' ||
+			result.administrative_type === 'opdracht'
+		);
+	};
+
+	const renderAuthorOrOrganisation = (result: Avo.Search.ResultItem) => {
+		if (checkIfResultIsNotAnItem(result)) {
+			const name = `${result.owner?.firstname} ${result.owner?.lastname}`;
+			const initials = `${result.owner?.firstname?.[0]}${result.owner?.lastname?.[0]}`;
+
+			return (
+				<Avatar
+					image={result.owner?.avatar_path || undefined}
+					name={name}
+					initials={initials.toLocaleUpperCase()}
+					size="small"
+					dark
+				/>
+			);
+		}
+
+		if (result.original_cp) {
+			return renderSearchLink(
+				result.original_cp,
+				{ filters: { provider: [result.original_cp] } },
+				'c-body-2'
+			);
+		}
+	};
 
 	let date: string;
 	let dateTooltip: string;
-	if (
-		result.administrative_type === 'collectie' ||
-		result.administrative_type === 'bundel' ||
-		result.administrative_type === 'opdracht'
-	) {
+	if (checkIfResultIsNotAnItem(result)) {
 		date = result.updated_at;
 		dateTooltip = tText('search/components/search-result-item___laatst-bijwerking');
 	} else {
@@ -100,15 +129,15 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 						result.administrative_type
 					)}
 				</SearchResultTitle>
-				{!!result.original_cp && (
-					<SearchResultSubtitle>
-						{renderSearchLink(
-							result.original_cp,
-							{ filters: { provider: [result.original_cp] } },
-							'c-body-2'
-						)}
-					</SearchResultSubtitle>
-				)}
+				<SearchResultSubtitle>
+					{result.original_cp
+						? renderSearchLink(
+								result.original_cp,
+								{ filters: { provider: [result.original_cp] } },
+								'c-body-2'
+						  )
+						: renderAuthorOrOrganisation(result)}
+				</SearchResultSubtitle>
 				<SearchResultThumbnail>
 					{renderDetailLink(
 						renderThumbnail(result),
