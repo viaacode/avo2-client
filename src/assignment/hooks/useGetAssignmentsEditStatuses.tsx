@@ -11,7 +11,7 @@ export const useGetAssignmentsEditStatuses = (
 		refetchInterval: number;
 		refetchIntervalInBackground: boolean;
 	} = {
-		enabled: enabled || false,
+		enabled: enabled || true,
 		refetchInterval: interval || 0,
 		refetchIntervalInBackground: true,
 	}
