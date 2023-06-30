@@ -1147,7 +1147,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		} catch (err) {
 			ToastService.danger(
 				tText(
-					'JJe was meer dan 15 minuten inactief. Het opslaan van je aanpassingen is mislukt.'
+					'Je was meer dan 15 minuten inactief. Het opslaan van je aanpassingen is mislukt.'
 				),
 				{
 					autoClose: false,
