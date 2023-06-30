@@ -1,10 +1,10 @@
 query getAssignmentsAdminOverview(
 	$offset: Int!
 	$limit: Int!
-	$orderBy: [app_assignments_v2_overview_order_by!]!
-	$where: app_assignments_v2_overview_bool_exp!
+	$orderBy: [app_assignments_v2_order_by!]!
+	$where: app_assignments_v2_bool_exp!
 ) {
-	app_assignments_v2_overview(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
+	app_assignments_v2(offset: $offset, limit: $limit, order_by: $orderBy, where: $where) {
 		id
 		title
 		description
@@ -48,7 +48,6 @@ query getAssignmentsAdminOverview(
 				count
 			}
 		}
-		share_type
 		lom_learning_resource_type
 		contributors {
 			profile {
@@ -76,7 +75,7 @@ query getAssignmentsAdminOverview(
 			}
 		}
 	}
-	app_assignments_v2_overview_aggregate(where: $where) {
+	app_assignments_v2_aggregate(where: $where) {
 		aggregate {
 			count
 		}
