@@ -16,6 +16,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
+import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -541,10 +542,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			return;
 		}
 
-		const detailRoute = isCollection
-			? APP_PATH.COLLECTION_EDIT.route
-			: APP_PATH.BUNDLE_EDIT.route;
-		const link = buildLink(detailRoute, { id });
+		const link = buildLink(
+			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+			{ id, tabId: CollectionCreateUpdateTab.CONTENT }
+		);
 
 		redirectToClientPage(link, history);
 	};
@@ -559,8 +560,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					<Link
 						to={buildLink(
 							isCollection
-								? APP_PATH.COLLECTION_EDIT.route
-								: APP_PATH.BUNDLE_EDIT.route,
+								? APP_PATH.COLLECTION_DETAIL.route
+								: APP_PATH.BUNDLE_DETAIL.route,
 							{ id: rowData.id }
 						)}
 					>
