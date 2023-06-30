@@ -29,7 +29,7 @@ import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { EditButton, HeaderOwnerAndContributors, InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { EDIT_STATUS_REFETCH_INTERVAL, getMoreOptionsLabel } from '../../shared/constants';
+import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/constants';
 import { createDropdownMenuItem, CustomError, navigate } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -90,7 +90,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	);
 	const { data: editStatuses } = useGetAssignmentsEditStatuses([id], {
 		enabled: permissions.canEditAssignments || false,
-		refetchInterval: EDIT_STATUS_REFETCH_INTERVAL,
+		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
 
