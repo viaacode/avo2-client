@@ -51,7 +51,11 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 				setVideoStills(await VideoStillService.getThumbnailsForSubject(subject));
 			} catch (err) {
 				console.error(err);
-				ToastService.danger(tHtml('Het ophalen van de media-afbeeldingen is mislukt.'));
+				ToastService.danger(
+					tHtml(
+						'shared/components/thumbnail-stills-modal/thumbnail-stills-modal___het-ophalen-van-de-media-afbeeldingen-is-mislukt'
+					)
+				);
 				setVideoStills([]);
 			}
 		};
@@ -61,13 +65,19 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 
 	const saveCoverImage = () => {
 		onClose({ ...subject, thumbnail_path: selectedCoverImages[0] });
-		ToastService.success(tHtml('De hoofdafbeelding is ingesteld.'));
+		ToastService.success(
+			tHtml(
+				'shared/components/thumbnail-stills-modal/thumbnail-stills-modal___de-hoofdafbeelding-is-ingesteld'
+			)
+		);
 	};
 
 	return (
 		<Modal
 			isOpen={isOpen}
-			title={tHtml('Stel een hoofdafbeelding in')}
+			title={tHtml(
+				'shared/components/thumbnail-stills-modal/thumbnail-stills-modal___stel-een-hoofdafbeelding-in'
+			)}
 			size="large"
 			onClose={() => onClose(subject)}
 			scrollable
@@ -84,7 +94,7 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 								body=""
 								icon={IconName.search}
 								title={tHtml(
-									'Er zijn geen video-afbeeldingen beschikbaar voor de blokken.'
+									'shared/components/thumbnail-stills-modal/thumbnail-stills-modal___er-zijn-geen-video-afbeeldingen-beschikbaar-voor-de-blokken'
 								)}
 							/>
 						) : (
@@ -105,7 +115,9 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 						<ToolbarItem>
 							<ButtonToolbar>
 								<Button
-									label={tText('Annuleren')}
+									label={tText(
+										'shared/components/thumbnail-stills-modal/thumbnail-stills-modal___annuleren'
+									)}
 									type="secondary"
 									block
 									onClick={() => {
@@ -113,7 +125,9 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 									}}
 								/>
 								<Button
-									label={tText('Opslaan')}
+									label={tText(
+										'shared/components/thumbnail-stills-modal/thumbnail-stills-modal___opslaan'
+									)}
 									type="primary"
 									block
 									onClick={saveCoverImage}

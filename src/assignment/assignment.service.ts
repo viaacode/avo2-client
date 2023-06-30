@@ -56,9 +56,9 @@ import {
 	GetAssignmentsAdminOverviewDocument,
 	GetAssignmentsAdminOverviewQuery,
 	GetAssignmentsAdminOverviewQueryVariables,
-	GetAssignmentsByOwnerDocument,
-	GetAssignmentsByOwnerQuery,
-	GetAssignmentsByOwnerQueryVariables,
+	GetAssignmentsByOwnerOrContributorDocument,
+	GetAssignmentsByOwnerOrContributorQuery,
+	GetAssignmentsByOwnerOrContributorQueryVariables,
 	GetAssignmentsByResponseOwnerIdDocument,
 	GetAssignmentsByResponseOwnerIdQuery,
 	GetAssignmentsByResponseOwnerIdQueryVariables,
@@ -134,7 +134,7 @@ export class AssignmentService {
 		count: number;
 	}> {
 		let variables:
-			| GetAssignmentsByOwnerQueryVariables
+			| GetAssignmentsByOwnerOrContributorQueryVariables
 			| GetAssignmentsByResponseOwnerIdQueryVariables
 			| null = null;
 		try {
@@ -208,27 +208,28 @@ export class AssignmentService {
 
 			// Get the assignment from graphql
 			const assignmentResponse = await dataService.query<
-				GetAssignmentsByOwnerQuery | GetAssignmentsByResponseOwnerIdQuery,
-				GetAssignmentsByOwnerQueryVariables | GetAssignmentsByResponseOwnerIdQueryVariables
+				GetAssignmentsByOwnerOrContributorQuery | GetAssignmentsByResponseOwnerIdQuery,
+				| GetAssignmentsByOwnerOrContributorQueryVariables
+				| GetAssignmentsByResponseOwnerIdQueryVariables
 			>({
 				variables,
 				query: canEditAssignments
-					? GetAssignmentsByOwnerDocument
+					? GetAssignmentsByOwnerOrContributorDocument
 					: GetAssignmentsByResponseOwnerIdDocument,
 			});
 
-			if (
-				!assignmentResponse?.app_assignments_v2_overview ||
-				isNil(assignmentResponse.count)
-			) {
+			const assignments =
+				(assignmentResponse as GetAssignmentsByOwnerOrContributorQuery)
+					?.app_assignments_v2_overview ||
+				(assignmentResponse as GetAssignmentsByResponseOwnerIdQuery)?.app_assignments_v2;
+			if (!assignments || isNil(assignmentResponse.count)) {
 				throw new CustomError('Response does not have the expected format', null, {
 					assignmentResponse,
 				});
 			}
 
 			return {
-				assignments: (assignmentResponse.app_assignments_v2_overview ||
-					[]) as unknown as Avo.Assignment.Assignment[],
+				assignments: (assignments || []) as unknown as Avo.Assignment.Assignment[],
 				count: assignmentResponse.count.aggregate?.count || 0,
 			};
 		} catch (err) {
@@ -579,7 +580,7 @@ export class AssignmentService {
 				variables,
 			});
 
-			const tempAssignment = response.app_assignments_v2_overview[0];
+			const tempAssignment = response.app_assignments_v2[0];
 
 			if (!tempAssignment) {
 				throw new CustomError('Failed to find assignment by id');
@@ -1244,10 +1245,9 @@ export class AssignmentService {
 				variables,
 			});
 
-			const assignments = response?.app_assignments_v2_overview;
+			const assignments = response?.app_assignments_v2;
 
-			const assignmentCount =
-				response?.app_assignments_v2_overview_aggregate?.aggregate?.count || 0;
+			const assignmentCount = response?.app_assignments_v2_aggregate?.aggregate?.count || 0;
 
 			if (!assignments) {
 				throw new CustomError('Response does not contain any assignments', null, {
@@ -1407,8 +1407,12 @@ export class AssignmentService {
 			console.error(customError);
 
 			ToastService.danger([
-				tHtml('Het ophalen van de eerste video-afbeelding is mislukt.'),
-				tHtml('De opdracht zal opgeslagen worden zonder video-afbeelding.'),
+				tHtml(
+					'assignment/assignment___het-ophalen-van-de-eerste-video-afbeelding-is-mislukt'
+				),
+				tHtml(
+					'assignment/assignment___de-opdracht-zal-opgeslagen-worden-zonder-video-afbeelding'
+				),
 			]);
 
 			return null;

@@ -320,7 +320,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			if (!assignment) {
 				ToastService.danger(
 					tHtml(
-						'De opdracht kan niet gekopieerd worden omdat deze nog niet is opgehaald van de database'
+						'assignment/views/assignment-detail___de-opdracht-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 					)
 				);
 				return;
@@ -329,7 +329,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			if (!user.profile) {
 				ToastService.danger(
 					tHtml(
-						'Er was een probleem met het controleren van de ingelogde gebruiker, log opnieuw in en probeer opnieuw'
+						'assignment/views/assignment-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
 					)
 				);
 				return;
@@ -345,13 +345,21 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				setAssignment(duplicate as Avo.Assignment.Assignment);
 			}
 
-			ToastService.success(tHtml('De opdracht is gekopieerd je kijkt nu naar de kopie'));
+			ToastService.success(
+				tHtml(
+					'assignment/views/assignment-detail___de-opdracht-is-gekopieerd-je-kijkt-nu-naar-de-kopie'
+				)
+			);
 		} catch (err) {
 			console.error('Failed to copy assignment', err, {
 				originalAssignment: assignment,
 			});
 
-			ToastService.danger(tHtml('Het kopiëren van de opdracht is mislukt'));
+			ToastService.danger(
+				tHtml(
+					'assignment/views/assignment-detail___het-kopieren-van-de-opdracht-is-mislukt'
+				)
+			);
 		}
 	};
 
@@ -360,7 +368,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			if (!assignment) {
 				ToastService.danger(
 					tHtml(
-						'De opdracht kan niet verwijderd worden omdat deze nog niet is opgehaald van de database'
+						'assignment/views/assignment-detail___de-opdracht-kan-niet-verwijderd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
 					)
 				);
 				return;
@@ -370,9 +378,15 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 
-			ToastService.success(tHtml('De opdracht werd verwijderd'));
+			ToastService.success(
+				tHtml('assignment/views/assignment-detail___de-opdracht-werd-verwijderd')
+			);
 		} catch (err) {
-			ToastService.danger(tHtml('Het verwijderen van de opdracht is mislukt'));
+			ToastService.danger(
+				tHtml(
+					'assignment/views/assignment-detail___het-verwijderen-van-de-opdracht-is-mislukt'
+				)
+			);
 		}
 	};
 

@@ -38,7 +38,10 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 						<p>
 							en
 							<span className="c-contributors">
-								{tHtml(' {{count}} anderen', { count: contributors.length })}
+								{tHtml(
+									'shared/components/header-owner-and-contributors/header-owner-and-contributors___count-anderen',
+									{ count: contributors.length }
+								)}
 							</span>
 						</p>
 					</TooltipTrigger>
@@ -75,7 +78,10 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 					<p>
 						{isOwner ? (
 							<>
-								{tHtml('Ik')} {renderContributors()}
+								{tHtml(
+									'shared/components/header-owner-and-contributors/header-owner-and-contributors___ik'
+								)}{' '}
+								{renderContributors()}
 							</>
 						) : (
 							<>

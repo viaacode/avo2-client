@@ -81,9 +81,6 @@ import {
 	GetPublishedBundlesContainingCollectionDocument,
 	GetPublishedBundlesContainingCollectionQuery,
 	GetPublishedBundlesContainingCollectionQueryVariables,
-	GetQualityLabelsDocument,
-	GetQualityLabelsQuery,
-	GetQualityLabelsQueryVariables,
 	InsertCollectionDocument,
 	InsertCollectionFragmentsDocument,
 	InsertCollectionFragmentsMutation,
@@ -128,6 +125,7 @@ import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
 import { tHtml } from '../shared/helpers/translate';
 import { isUuid } from '../shared/helpers/uuid';
 import { dataService } from '../shared/services/data-service';
+import { QualityLabelsService } from '../shared/services/quality-labels.service';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
@@ -932,23 +930,6 @@ export class CollectionService {
 		return CollectionService.fetchCollectionsOrBundlesByTitleOrId(false, titleOrId, limit);
 	}
 
-	static async fetchQualityLabels(): Promise<QualityLabel[]> {
-		try {
-			const response = await dataService.query<
-				GetQualityLabelsQuery,
-				GetQualityLabelsQueryVariables
-			>({
-				query: GetQualityLabelsDocument,
-			});
-
-			return response.lookup_enum_collection_labels as QualityLabel[];
-		} catch (err) {
-			throw new CustomError('Failed to get quality labels', err, {
-				query: 'GET_QUALITY_LABELS',
-			});
-		}
-	}
-
 	/**
 	 * Retrieve collections or bundles by user.
 	 *
@@ -1214,7 +1195,8 @@ export class CollectionService {
 			if (!CollectionService.collectionLabels) {
 				// Fetch collection labels and cache them in memory
 
-				const labels: QualityLabel[] = (await CollectionService.fetchQualityLabels()) || [];
+				const labels: QualityLabel[] =
+					(await QualityLabelsService.fetchQualityLabels()) || [];
 
 				// Map result array to dictionary
 				CollectionService.collectionLabels = fromPairs(
