@@ -35,6 +35,7 @@ import FilterTable, {
 	FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
+import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -44,8 +45,6 @@ import {
 	ITEMS_PER_PAGE,
 } from '../assignments.const';
 import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
-
-import './AssignmentsOverviewAdmin.scss';
 
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
@@ -241,6 +240,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			setAssignmentsBeingEdited(selectedAssignmentsThatAreBeingEdited);
 		} else {
 			// execute action straight away
+			setAssignmentsBeingEdited([]);
 			setSelectedBulkAction(null);
 			switch (action) {
 				case 'delete':
@@ -412,38 +412,6 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		);
 	};
 
-	const renderAssignmentBeingEditedMessage = () => {
-		return (
-			<>
-				<p>
-					{tHtml(
-						'admin/assignments/views/assignments-overview-admin___deze-opdrachten-worden-momenteel-bewerkt'
-					)}
-				</p>
-				<ul className="c-assignment-bulk-warning-being-edited">
-					{assignmentsBeingEdited.map((assignmentBeingEdited) => (
-						<li key={`assignment-being-edited-${assignmentBeingEdited.subjectId}`}>
-							<a
-								target="_blank"
-								href={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
-									id: assignmentBeingEdited.subjectId,
-								})}
-								rel="noreferrer"
-							>
-								{assignmentBeingEdited.subjectTitle}
-							</a>
-						</li>
-					))}
-				</ul>
-				<p>
-					{tHtml(
-						'admin/assignments/views/assignments-overview-admin___je-kan-doorgaan-met-je-actie-maar-deze-opdrachten-zullen-niet-behandeld-worden'
-					)}
-				</p>
-			</>
-		);
-	};
-
 	const renderAssignmentOverview = () => {
 		if (!assignments) {
 			return null;
@@ -479,8 +447,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					defaultOrderProp={'created_at'}
 					defaultOrderDirection={'desc'}
 				/>
-				<ConfirmModal
-					body={renderAssignmentBeingEditedMessage()}
+				<SubjectsBeingEditedWarningModal
 					isOpen={assignmentsBeingEdited?.length > 0}
 					onClose={() => {
 						setAssignmentsDeleteModalOpen(false);
@@ -499,10 +466,13 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 							);
 						}
 					}}
-					confirmButtonType="primary"
-					confirmLabel={tText(
-						'admin/assignments/views/assignments-overview-admin___doorgaan'
+					title={tHtml('Enkele opdrachten worden bewerkt')}
+					editWarningSection1={tHtml('Deze opdrachten worden momenteel bewerkt:')}
+					editWarningSection2={tHtml(
+						'Je kan doorgaan met je actie, maar deze opdrachten zullen niet behandeld worden'
 					)}
+					subjects={assignmentsBeingEdited}
+					route={APP_PATH.ASSIGNMENT_DETAIL.route}
 				/>
 				<ConfirmModal
 					body={tHtml(
