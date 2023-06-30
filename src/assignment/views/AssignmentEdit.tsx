@@ -76,7 +76,7 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { buildLink } from '../../shared/helpers';
+import { buildLink, CustomError } from '../../shared/helpers';
 import { InActivityWarningModal } from '../../shared/components';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
@@ -338,12 +338,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
+			if ((err as CustomError).innerException === 409) {
+				ToastService.danger(tText('Iemand is deze opdracht reeds aan het bewerken.'));
+			} else {
+				await AssignmentService.releaseAssignmentEditStatus(assignmentId);
+				ToastService.danger(tText('Verbinding met bewerk server verloren'));
+			}
+
 			redirectToClientPage(
 				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
 				history
 			);
-
-			ToastService.danger(tHtml('Iemand is deze opdracht reeds aan het bewerken.'));
 		}
 	};
 
