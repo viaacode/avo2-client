@@ -195,6 +195,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 		icon: IconName.alertTriangle,
 	} as LoadingInfo;
 
+	useEffect(() => {
+		setLoadingInfo({ state: 'loading' });
+		updateCollectionEditor();
+		setLoadingInfo({ state: 'loaded' });
+	}, []);
+
 	const updateHasUnsavedChanges = (
 		initialCollection: Avo.Collection.Collection | null,
 		currentCollection: Avo.Collection.Collection | null
@@ -1110,7 +1116,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
-	const onActivity = async () => {
+	const updateCollectionEditor = async () => {
 		try {
 			await CollectionService.updateCollectionEditor(collectionId);
 		} catch (err) {
@@ -1119,9 +1125,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				history
 			);
 
-			ToastService.danger(
-				tText('Er liep iets fout met het updaten van de collectie bewerker')
-			);
+			ToastService.danger(tText('Iemand is deze collectie reeds aan het bewerken.'));
 		}
 	};
 
@@ -1484,7 +1488,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				/>
 
 				<InActivityWarningModal
-					onActivity={onActivity}
+					onActivity={updateCollectionEditor}
 					onExit={onExitPage}
 					warningMessage={tHtml('Door inactiviteit zal de collectie zichzelf sluiten.')}
 					currentPath={history.location.pathname}

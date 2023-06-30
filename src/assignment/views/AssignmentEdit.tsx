@@ -136,6 +136,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	);
 
 	useEffect(() => {
+		setAssigmentLoading(true);
+		updateAssignmentEditor();
+		setAssigmentLoading(false);
+	}, []);
+
+	useEffect(() => {
 		const param = match.params.tabId;
 		param && setTab(param as ASSIGNMENT_CREATE_UPDATE_TABS);
 	}, [match.params.tabId]);
@@ -328,7 +334,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		resetForm();
 	}, [resetForm, setAssignment, original]);
 
-	const onActivity = async () => {
+	const updateAssignmentEditor = async () => {
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
@@ -337,9 +343,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				history
 			);
 
-			ToastService.danger(
-				tHtml('Er liep iets fout met het updaten van de opdracht bewerker')
-			);
+			ToastService.danger(tHtml('Iemand is deze opdracht reeds aan het bewerken.'));
 		}
 	};
 
@@ -702,7 +706,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					/>
 
 					<InActivityWarningModal
-						onActivity={onActivity}
+						onActivity={updateAssignmentEditor}
 						onExit={onExitPage}
 						warningMessage={tHtml(
 							'Door inactiviteit zal de opdracht zichzelf sluiten.'
@@ -734,11 +738,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 
 		if (
-			!canEditAllAssignments ||
-			(assignment &&
-				!isUserAssignmentOwner(user, assignment) &&
-				!isUserAssignmentContributor(user, assignment) &&
-				!canEditAllAssignments)
+			// !canEditAllAssignments ||
+			assignment &&
+			!isUserAssignmentOwner(user, assignment) &&
+			!isUserAssignmentContributor(user, assignment) &&
+			!canEditAllAssignments
 		) {
 			return (
 				<ErrorNoAccess
