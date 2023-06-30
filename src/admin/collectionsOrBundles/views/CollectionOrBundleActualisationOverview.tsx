@@ -13,6 +13,7 @@ import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -269,7 +270,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 	) => {
 		const editLink = buildLink(
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-			{ id: rowData.id, tabId: 'actualisation' }
+			{ id: rowData.id, tabId: CollectionCreateUpdateTab.ACTUALISATION }
 		);
 
 		switch (columnId) {

@@ -1777,4 +1777,23 @@ export class CollectionService {
 			});
 		}
 	}
+
+	static async releaseCollectionEditStatus(
+		collectionId: string
+	): Promise<Avo.Share.EditStatusResponse> {
+		try {
+			return await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/share/release-edit-status`,
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to release collection edit status', err, {
+				assignmentId: collectionId,
+			});
+		}
+	}
 }
