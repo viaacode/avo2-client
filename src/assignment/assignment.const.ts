@@ -120,7 +120,7 @@ const getIsPublicColumn = (showPublicState: boolean | null) => {
 		? [
 				{
 					id: 'is_public' as AssignmentOverviewTableColumns,
-					label: tText('Is publiek'),
+					label: tText('assignment/assignment___is-publiek'),
 					col: '2',
 					sortable: true,
 					dataType: TableColumnDataType.boolean,

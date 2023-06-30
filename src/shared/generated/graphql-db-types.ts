@@ -49107,11 +49107,6 @@ export type GetPublishedBundlesContainingCollectionQueryVariables = Exact<{
 
 export type GetPublishedBundlesContainingCollectionQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
 
-export type GetQualityLabelsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetQualityLabelsQuery = { __typename?: 'query_root', lookup_enum_collection_labels: Array<{ __typename?: 'lookup_enum_collection_labels', description?: string | null, value: string }> };
-
 export type InsertCollectionFragmentsMutationVariables = Exact<{
   fragments: Array<App_Collection_Fragments_Insert_Input> | App_Collection_Fragments_Insert_Input;
 }>;
@@ -49328,6 +49323,11 @@ export type GetEducationLevelsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetEducationLevelsQuery = { __typename?: 'query_root', lookup_enum_lom_context: Array<{ __typename?: 'lookup_enum_lom_context', description?: string | null }> };
+
+export type GetQualityLabelsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetQualityLabelsQuery = { __typename?: 'query_root', lookup_enum_collection_labels: Array<{ __typename?: 'lookup_enum_collection_labels', description?: string | null, value: string }> };
 
 export type GetQuickLanesByContentIdQueryVariables = Exact<{
   contentId?: InputMaybe<Scalars['uuid']>;
@@ -52876,26 +52876,6 @@ export const useGetPublishedBundlesContainingCollectionQuery = <
       fetchData<GetPublishedBundlesContainingCollectionQuery, GetPublishedBundlesContainingCollectionQueryVariables>(GetPublishedBundlesContainingCollectionDocument, variables),
       options
     );
-export const GetQualityLabelsDocument = `
-    query getQualityLabels {
-  lookup_enum_collection_labels {
-    description
-    value
-  }
-}
-    `;
-export const useGetQualityLabelsQuery = <
-      TData = GetQualityLabelsQuery,
-      TError = unknown
-    >(
-      variables?: GetQualityLabelsQueryVariables,
-      options?: UseQueryOptions<GetQualityLabelsQuery, TError, TData>
-    ) =>
-    useQuery<GetQualityLabelsQuery, TError, TData>(
-      variables === undefined ? ['getQualityLabels'] : ['getQualityLabels', variables],
-      fetchData<GetQualityLabelsQuery, GetQualityLabelsQueryVariables>(GetQualityLabelsDocument, variables),
-      options
-    );
 export const InsertCollectionFragmentsDocument = `
     mutation insertCollectionFragments($fragments: [app_collection_fragments_insert_input!]!) {
   insert_app_collection_fragments(objects: $fragments) {
@@ -53541,6 +53521,26 @@ export const useGetEducationLevelsQuery = <
     useQuery<GetEducationLevelsQuery, TError, TData>(
       variables === undefined ? ['getEducationLevels'] : ['getEducationLevels', variables],
       fetchData<GetEducationLevelsQuery, GetEducationLevelsQueryVariables>(GetEducationLevelsDocument, variables),
+      options
+    );
+export const GetQualityLabelsDocument = `
+    query getQualityLabels {
+  lookup_enum_collection_labels {
+    description
+    value
+  }
+}
+    `;
+export const useGetQualityLabelsQuery = <
+      TData = GetQualityLabelsQuery,
+      TError = unknown
+    >(
+      variables?: GetQualityLabelsQueryVariables,
+      options?: UseQueryOptions<GetQualityLabelsQuery, TError, TData>
+    ) =>
+    useQuery<GetQualityLabelsQuery, TError, TData>(
+      variables === undefined ? ['getQualityLabels'] : ['getQualityLabels', variables],
+      fetchData<GetQualityLabelsQuery, GetQualityLabelsQueryVariables>(GetQualityLabelsDocument, variables),
       options
     );
 export const GetQuickLanesByContentIdDocument = `

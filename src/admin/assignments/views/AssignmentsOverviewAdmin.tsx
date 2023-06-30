@@ -461,7 +461,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 						} else {
 							ToastService.info(
 								tHtml(
-									'Alle geselecteerde opdrachten worden bewerkt, dus de actie kan niet worden uitgevoerd.'
+									'admin/assignments/views/assignments-overview-admin___alle-geselecteerde-opdrachten-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd'
 								)
 							);
 						}
