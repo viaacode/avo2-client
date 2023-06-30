@@ -334,7 +334,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	}, [resetForm, setAssignment, original]);
 
 	const onActivity = async () => {
-		console.log('on activity triggered');
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
@@ -349,8 +348,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const onExitPage = async (location: string) => {
-		console.log(`triggerd in ${location}`);
+	const onExitPage = async () => {
 		try {
 			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
 		} catch (err) {
@@ -392,7 +390,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				}
 			);
 		}
-		onExitPage('force exit fn');
+
+		onExitPage();
 
 		redirectToClientPage(
 			buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
@@ -787,7 +786,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			{renderPageContent()}
 
-			<BeforeUnloadPrompt when={isDirty} />
+			<BeforeUnloadPrompt when={isDirty && !isForcedExit} />
 
 			{!!assignment && !!user && (
 				<PublishAssignmentModal
