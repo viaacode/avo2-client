@@ -185,6 +185,7 @@ const CollectionDetail: FunctionComponent<
 	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId], {
 		enabled: permissions?.canEditCollections || false,
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
+		refetchIntervalInBackground: true,
 	});
 
 	const isBeingEdited = editStatuses && !!editStatuses[collectionId];
