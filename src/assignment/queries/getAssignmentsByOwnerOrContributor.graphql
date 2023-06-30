@@ -1,4 +1,4 @@
-query getAssignmentsByOwner(
+query getAssignmentsByOwnerOrContributor(
 	$collaborator_profile_id: uuid
 	$offset: Int = 0
 	$limit: Int

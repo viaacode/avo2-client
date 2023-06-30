@@ -105,7 +105,7 @@ export type CollectionTableStates =
 	| CollectionOrBundleQualityCheckTableState
 	| CollectionOrBundleMarcomTableState;
 
-export type CollectionBulkAction =
+export type CollectionsBulkAction =
 	| 'publish'
 	| 'depublish'
 	| 'delete'

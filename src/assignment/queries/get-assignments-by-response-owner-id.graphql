@@ -2,10 +2,10 @@ query getAssignmentsByResponseOwnerId(
 	$owner_profile_id: uuid!
 	$offset: Int = 0
 	$limit: Int
-	$filter: [app_assignments_v2_overview_bool_exp!]
-	$order: [app_assignments_v2_overview_order_by!]!
+	$filter: [app_assignments_v2_bool_exp!]
+	$order: [app_assignments_v2_order_by!]!
 ) {
-	app_assignments_v2_overview(
+	app_assignments_v2(
 		where: {
 			responses: { owner_profile_id: { _eq: $owner_profile_id } }
 			is_deleted: { _eq: false }
@@ -68,7 +68,6 @@ query getAssignmentsByResponseOwnerId(
 				owner_profile_id
 			}
 		}
-		share_type
 		lom_learning_resource_type
 		contributors {
 			profile {
@@ -100,7 +99,7 @@ query getAssignmentsByResponseOwnerId(
 			}
 		}
 	}
-	count: app_assignments_v2_overview_aggregate(
+	count: app_assignments_v2_aggregate(
 		where: {
 			responses: { owner_profile_id: { _eq: $owner_profile_id } }
 			is_deleted: { _eq: false }

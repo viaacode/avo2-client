@@ -241,11 +241,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		setAssigmentLoading(false);
 	}, [user, match.params.id, tText, history, setOriginal, setAssignment]);
 
-	// const updateAssignemntEditor = async () => {
-	// 	const assignmentId = match.params.id;
-	// 	await AssignmentService.updateAssignmentEditor(assignmentId);
-	// };
-
 	// Events
 
 	const handleOnSave = async () => {
@@ -342,7 +337,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			);
 
 			ToastService.danger(
-				tText('Er liep iets fout met het updaten van de opdracht bewerker')
+				tHtml('Er liep iets fout met het updaten van de opdracht bewerker')
 			);
 		}
 	};
