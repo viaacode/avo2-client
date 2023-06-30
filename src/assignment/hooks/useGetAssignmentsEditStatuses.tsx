@@ -6,11 +6,11 @@ export const useGetAssignmentsEditStatuses = (
 	assignmentsIds: string[],
 	options: {
 		enabled: boolean;
-		refetchInterval: number;
+		refetchInterval: number | false;
 		refetchIntervalInBackground?: boolean;
 	} = {
 		enabled: false,
-		refetchInterval: 0,
+		refetchInterval: false,
 		refetchIntervalInBackground: true,
 	}
 ) => {
