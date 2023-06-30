@@ -1,6 +1,6 @@
 import { Button, ButtonToolbar, IconName, TagInfo, TagList } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { compact, get, truncate } from 'lodash-es';
+import { compact, get, partition, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactText,
@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { CollectionService } from '../../../collection/collection.service';
 import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -37,6 +38,7 @@ import FilterTable, {
 	FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
+import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -49,7 +51,7 @@ import {
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
-	CollectionBulkAction,
+	CollectionsBulkAction,
 	CollectionsOrBundlesOverviewTableCols,
 	CollectionsOrBundlesTableState,
 } from '../collections-or-bundles.types';
@@ -82,6 +84,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [educationLevels] = useEducationLevels();
 	const [collectionLabels] = useCollectionQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
+	const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<Avo.Share.EditStatus[]>(
+		[]
+	);
+	const [selectedBulkAction, setSelectedBulkAction] = useState<CollectionsBulkAction | null>(
+		null
+	);
 
 	// computed
 	const userGroupOptions = useMemo(
@@ -308,31 +316,55 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		redirectToClientPage(buildLink(detailRoute, { id }), history);
 	};
 
-	const handleBulkActionSelect = async (action: CollectionBulkAction): Promise<void> => {
+	const handleBulkAction = async (action: CollectionsBulkAction): Promise<void> => {
 		if (!selectedCollectionIds || !selectedCollectionIds.length) {
 			return;
 		}
 
-		switch (action) {
-			case 'publish':
-				await bulkChangePublishStateForSelectedCollections(true);
-				return;
+		const selectedCollectionEditStatuses = await CollectionService.getCollectionsEditStatuses(
+			selectedCollectionIds
+		);
+		const partitionedCollectionIds = partition(
+			Object.entries(selectedCollectionEditStatuses),
+			(entry) => !!entry[1]
+		);
+		const selectedCollectionsThatAreBeingEdited: Avo.Share.EditStatus[] =
+			partitionedCollectionIds[0].map((entry) => entry[1]);
+		const selectedCollectionIdsThatAreNotBeingEdited = partitionedCollectionIds[1].map(
+			(entry) => entry[0]
+		);
 
-			case 'depublish':
-				await bulkChangePublishStateForSelectedCollections(false);
-				return;
+		if (selectedCollectionsThatAreBeingEdited.length > 0) {
+			// open warning modal first
+			setSelectedCollectionIds(selectedCollectionIdsThatAreNotBeingEdited);
+			setSelectedBulkAction(action);
+			setCollectionsBeingEdited(selectedCollectionsThatAreBeingEdited);
+		} else {
+			// execute action straight away
+			setCollectionsBeingEdited([]);
+			setSelectedBulkAction(null);
 
-			case 'delete':
-				await bulkDeleteSelectedCollections();
-				return;
+			switch (action) {
+				case 'publish':
+					await bulkChangePublishStateForSelectedCollections(true);
+					return;
 
-			case 'change_author':
-				setChangeAuthorModalOpen(true);
-				return;
+				case 'depublish':
+					await bulkChangePublishStateForSelectedCollections(false);
+					return;
 
-			case 'change_labels':
-				setAddLabelModalOpen(true);
-				return;
+				case 'delete':
+					await bulkDeleteSelectedCollections();
+					return;
+
+				case 'change_author':
+					setChangeAuthorModalOpen(true);
+					return;
+
+				case 'change_labels':
+					setAddLabelModalOpen(true);
+					return;
+			}
 		}
 	};
 
@@ -358,7 +390,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					  )
 			);
 
-			fetchCollectionsOrBundles();
+			await fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle publish state for collections', err, {
@@ -396,7 +428,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				)
 			);
 
-			fetchCollectionsOrBundles();
+			await fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to bulk delete collections', err, {
@@ -430,7 +462,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				)
 			);
 
-			fetchCollectionsOrBundles();
+			await fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to bulk update author for collections', err, {
@@ -478,7 +510,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				);
 			}
 
-			fetchCollectionsOrBundles();
+			await fetchCollectionsOrBundles();
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to bulk update labels of collections', err, {
@@ -510,10 +542,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			return;
 		}
 
-		const detailRoute = isCollection
-			? APP_PATH.COLLECTION_EDIT_TAB.route
-			: APP_PATH.BUNDLE_EDIT_TAB.route;
-		const link = buildLink(detailRoute, { id, tabId: CollectionCreateUpdateTab.CONTENT });
+		const link = buildLink(
+			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+			{ id, tabId: CollectionCreateUpdateTab.CONTENT }
+		);
 
 		redirectToClientPage(link, history);
 	};
@@ -652,11 +684,37 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					renderNoResults={renderNoResults}
 					rowKey="id"
 					bulkActions={GET_COLLECTION_BULK_ACTIONS()}
-					onSelectBulkAction={handleBulkActionSelect as any}
+					onSelectBulkAction={handleBulkAction as any}
 					selectedItemIds={selectedCollectionIds}
 					onSelectionChanged={setSelectedCollectionIds as (ids: ReactText[]) => void}
 					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
+				/>
+				<SubjectsBeingEditedWarningModal
+					isOpen={collectionsBeingEdited?.length > 0}
+					onClose={() => {
+						setCollectionsBeingEdited([]);
+						setSelectedBulkAction(null);
+					}}
+					confirmCallback={async () => {
+						setCollectionsBeingEdited([]);
+						if (selectedCollectionIds.length > 0) {
+							await handleBulkAction(selectedBulkAction as CollectionsBulkAction);
+						} else {
+							ToastService.info(
+								tHtml(
+									'Alle geselecteerde collecties worden bewerkt, dus de actie kan niet worden uitgevoerd.'
+								)
+							);
+						}
+					}}
+					title={tHtml('Enkele collecties worden bewerkt')}
+					editWarningSection1={tHtml('Deze collecties worden momenteel bewerkt:')}
+					editWarningSection2={tHtml(
+						'Je kan doorgaan met je actie, maar deze collecties zullen niet behandeld worden'
+					)}
+					subjects={collectionsBeingEdited}
+					route={APP_PATH.COLLECTION_DETAIL.route}
 				/>
 				<ChangeAuthorModal
 					isOpen={changeAuthorModalOpen}

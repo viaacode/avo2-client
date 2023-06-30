@@ -35,6 +35,7 @@ import FilterTable, {
 	FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
+import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
@@ -241,6 +242,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			setAssignmentsBeingEdited(selectedAssignmentsThatAreBeingEdited);
 		} else {
 			// execute action straight away
+			setAssignmentsBeingEdited([]);
 			setSelectedBulkAction(null);
 			switch (action) {
 				case 'delete':
@@ -252,6 +254,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					return;
 			}
 		}
+
 	};
 
 	const deleteSelectedAssignments = async () => {
@@ -478,6 +481,33 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					rowKey="id"
 					defaultOrderProp={'created_at'}
 					defaultOrderDirection={'desc'}
+				/>
+				<SubjectsBeingEditedWarningModal
+					isOpen={assignmentsBeingEdited?.length > 0}
+					onClose={() => {
+						setAssignmentsDeleteModalOpen(false);
+						setAssignmentsBeingEdited([]);
+						setSelectedBulkAction(null);
+					}}
+					confirmCallback={async () => {
+						setAssignmentsBeingEdited([]);
+						if (selectedAssignmentIds.length > 0) {
+							await handleBulkAction(selectedBulkAction as AssignmentsBulkAction);
+						} else {
+							ToastService.info(
+								tHtml(
+									'admin/assignments/views/assignments-overview-admin___alle-geselecteerde-opdrachten-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd'
+								)
+							);
+						}
+					}}
+					title={tHtml('Enkele opdrachten worden bewerkt')}
+					editWarningSection1={tHtml('Deze opdrachten worden momenteel bewerkt:')}
+					editWarningSection2={tHtml(
+						'Je kan doorgaan met je actie, maar deze opdrachten zullen niet behandeld worden'
+					)}
+					subjects={assignmentsBeingEdited}
+					route={APP_PATH.ASSIGNMENT_DETAIL.route}
 				/>
 				<ConfirmModal
 					body={renderAssignmentBeingEditedMessage()}
