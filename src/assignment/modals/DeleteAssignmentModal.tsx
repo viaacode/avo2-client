@@ -31,16 +31,20 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 	const renderDeleteMessageParagraph = () => {
 		if (isSharedWithOthers) {
 			return tHtml(
-				'Ben je zeker dat je jezelf van deze opdracht wil wissen? Deze opdracht is met {{count}} andere mensen gedeeld. Deze verliezen dan toegang.',
+				'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen-deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
 				{ count: contributorCount }
 			);
 		}
 
 		if (isContributor) {
-			return tHtml('Ben je zeker dat je jezelf van deze opdracht wil wissen?');
+			return tHtml(
+				'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen'
+			);
 		}
 
-		return tHtml('Ben je zeker dat je deze opdracht wil verwijderen?');
+		return tHtml(
+			'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
+		);
 	};
 
 	const renderDeleteMessage = () => {
@@ -48,7 +52,9 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 			<p>
 				{renderDeleteMessageParagraph()}
 				<br />
-				{tHtml('Opgelet! Deze actie kan niet ongedaan gemaakt worden.')}
+				{tHtml(
+					'assignment/modals/delete-assignment-modal___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
+				)}
 			</p>
 		);
 	};
@@ -58,12 +64,14 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 			isOpen={isOpen}
 			title={
 				isContributor
-					? tHtml('Verwijder mij van deze opdracht')
-					: tHtml('Verwijder deze opdracht')
+					? tHtml(
+							'assignment/modals/delete-assignment-modal___verwijder-mij-van-deze-opdracht'
+					  )
+					: tHtml('assignment/modals/delete-assignment-modal___verwijder-deze-opdracht')
 			}
 			body={renderDeleteMessage()}
-			cancelLabel={tText('Annuleer')}
-			confirmLabel={tText('verwijder')}
+			cancelLabel={tText('assignment/modals/delete-assignment-modal___annuleer')}
+			confirmLabel={tText('assignment/modals/delete-assignment-modal___verwijder')}
 			size="large"
 			onClose={onClose}
 			className="c-content"

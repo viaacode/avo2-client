@@ -1407,8 +1407,12 @@ export class AssignmentService {
 			console.error(customError);
 
 			ToastService.danger([
-				tHtml('Het ophalen van de eerste video-afbeelding is mislukt.'),
-				tHtml('De opdracht zal opgeslagen worden zonder video-afbeelding.'),
+				tHtml(
+					'assignment/assignment___het-ophalen-van-de-eerste-video-afbeelding-is-mislukt'
+				),
+				tHtml(
+					'assignment/assignment___de-opdracht-zal-opgeslagen-worden-zonder-video-afbeelding'
+				),
 			]);
 
 			return null;
