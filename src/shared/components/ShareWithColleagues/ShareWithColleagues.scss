@@ -19,30 +19,36 @@ $borderLight: 1px solid $color-gray-100;
 		color: $color-error;
 	}
 
-	&__select.c-button.c-button--primary {
-		width: 100%;
-		border: $borderLight;
-		border-right: none;
-		background-color: $g-base-background;
-		text-transform: capitalize;
+	&__select.c-button {
+		.c-button__content {
+			justify-content: space-between;
+		}
 
-		&:hover,
-		:active,
-		:active:focus {
+		&.c-button--primary {
+			width: 100%;
+			border: $borderLight;
+			border-right: none;
 			background-color: $g-base-background;
-			border-color: $color-gray-100;
+			text-transform: capitalize;
+
+			&:hover,
+			:active,
+			:active:focus {
+				background-color: $g-base-background;
+				border-color: $color-gray-100;
+			}
 		}
 	}
 
 	.c-input {
-		flex-grow: 1;
+		width: 50%;
 		border: $borderLight;
 		border-right: none;
 		border-radius: $c-input-border-radius 0 0 $c-input-border-radius;
 	}
 
 	.c-dropdown__trigger {
-		min-width: max-content;
+		flex-grow: 1;
 		margin-left: 0 !important;
 	}
 
