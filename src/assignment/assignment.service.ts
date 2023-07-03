@@ -91,6 +91,7 @@ import {
 	UpdateAssignmentUpdatedAtDateMutationVariables,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
+import { getLomLearningResourceTypesFromBlocks } from '../shared/helpers/block-types-to-lom-learning-resource-type';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
@@ -311,16 +312,9 @@ export class AssignmentService {
 		profileId: string
 	): Promise<App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input> {
 		const assignmentToSave = cloneDeep(assignment);
-		assignmentToSave.lom_learning_resource_type = [];
-		if (assignment.blocks?.find((block) => block.type === AssignmentBlockType.ZOEK)) {
-			assignmentToSave.lom_learning_resource_type.push(AssignmentType.ZOEK);
-		}
-		if (assignment.blocks?.find((block) => block.type === AssignmentBlockType.BOUW)) {
-			assignmentToSave.lom_learning_resource_type.push(AssignmentType.BOUW);
-		}
-		if (assignment.blocks?.find((block) => block.type === AssignmentBlockType.ITEM)) {
-			assignmentToSave.lom_learning_resource_type.push(AssignmentType.KIJK);
-		}
+		assignmentToSave.lom_learning_resource_type = getLomLearningResourceTypesFromBlocks(
+			assignment.blocks || []
+		);
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
@@ -1055,7 +1049,9 @@ export class AssignmentService {
 				title: collection.title,
 				description: collection.description,
 				owner_profile_id: getProfileId(user),
-				assignment_type: AssignmentType.KIJK,
+				lom_learning_resource_type: getLomLearningResourceTypesFromBlocks(
+					collection.collection_fragments || []
+				),
 			},
 		};
 
@@ -1111,7 +1107,7 @@ export class AssignmentService {
 			assignment: {
 				title: item.title,
 				owner_profile_id: getProfileId(user),
-				assignment_type: AssignmentType.KIJK,
+				lom_learning_resource_type: [AssignmentType.KIJK],
 			},
 		};
 
