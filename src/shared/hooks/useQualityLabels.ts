@@ -6,9 +6,9 @@ import { CustomError } from '../helpers';
 import { QualityLabelsService } from '../services/quality-labels.service';
 import { ToastService } from '../services/toast-service';
 
-type UseCollectionQualityLabelsTuple = [QualityLabel[], boolean];
+type UseQualityLabelsTuple = [QualityLabel[], boolean];
 
-export const useCollectionQualityLabels = (enabled: boolean): UseCollectionQualityLabelsTuple => {
+export const useQualityLabels = (enabled: boolean): UseQualityLabelsTuple => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collectionQualityLabels, setCollectionQualityLabels] = useState<QualityLabel[]>([]);
@@ -26,13 +26,9 @@ export const useCollectionQualityLabels = (enabled: boolean): UseCollectionQuali
 			})
 			.catch((err) => {
 				console.error(
-					new CustomError('Failed to get collectionQualityLabels from the database', err)
+					new CustomError('Failed to get qualityLabels from the database', err)
 				);
-				ToastService.danger(
-					tHtml(
-						'shared/hooks/use-collection-quality-labels___het-ophalen-van-de-collectie-kwaliteitslabels-is-mislukt'
-					)
-				);
+				ToastService.danger(tHtml('Het ophalen van de kwaliteitslabels is mislukt'));
 			})
 			.finally(() => {
 				setIsLoading(false);
