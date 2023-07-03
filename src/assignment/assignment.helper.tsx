@@ -176,7 +176,7 @@ export const getValidationErrorsForPublish = async (
 	});
 
 	const duplicateErrors = await getDuplicateTitleOrDescriptionErrors(assignment);
-	return compact([...validationErrors, ...duplicateErrors]);
+	return compact([...validationErrors, ...(duplicateErrors || [])]);
 };
 
 type ValidationRule<T> = {
@@ -220,11 +220,6 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			validateLoms(assignment?.loms, LomType.subject),
-	},
-	{
-		error: tText('assignment/assignment___de-opdracht-heeft-geen-themas'),
-		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			validateLoms(assignment?.loms, LomType.theme),
 	},
 	{
 		error: tText(
@@ -311,8 +306,12 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
 
 export const getDuplicateTitleOrDescriptionErrors = async (
 	assignment: Partial<Avo.Assignment.Assignment>
-): Promise<string[]> => {
+): Promise<string[] | undefined> => {
 	const errors = [];
+
+	if (!assignment.title || !assignment.description) {
+		return;
+	}
 
 	const duplicates = await AssignmentService.getAssignmentsByTitleOrDescription(
 		assignment.title || '',

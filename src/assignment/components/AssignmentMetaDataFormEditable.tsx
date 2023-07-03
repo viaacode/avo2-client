@@ -7,6 +7,7 @@ import {
 	Grid,
 	Image,
 	Spacer,
+	TextArea,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { map } from 'lodash-es';
@@ -65,6 +66,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 											[]
 										}
 										onChange={onLomsChange}
+										isAssignment
 									/>
 
 									<ShortDescriptionField
@@ -88,6 +90,36 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 											}
 										}}
 									/>
+
+									<FormGroup
+										label={tText('Persoonlijke notities')}
+										labelFor="personalRemarkId"
+									>
+										<TextArea
+											name="personalRemarkId"
+											value={assignment.note || ''}
+											id="personalRemarkId"
+											height="medium"
+											placeholder={tText(
+												'Geef hier je eigen opmerkingen of notities in. Deze zijn niet zichtbaar voor anderen...'
+											)}
+											onChange={(value: string) => {
+												{
+													(setValue as any)('note', value, {
+														shouldDirty: true,
+														shouldTouch: true,
+													});
+													setAssignment((prev) => ({
+														...prev,
+														note: value,
+														blocks:
+															(prev as Avo.Assignment.Assignment)
+																?.blocks || [],
+													}));
+												}
+											}}
+										/>
+									</FormGroup>
 								</Column>
 
 								<Column size="3-5">

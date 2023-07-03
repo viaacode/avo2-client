@@ -20,9 +20,10 @@ import {
 type LomFieldsInputProps = {
 	loms: Avo.Lom.LomField[];
 	onChange: (newLoms: Avo.Lom.LomField[]) => void;
+	isAssignment?: boolean;
 };
 
-const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
+const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, isAssignment }) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => {
 		return groupLoms(loms);
@@ -89,17 +90,19 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange }) => {
 				/>
 			</FormGroup>
 
-			<FormGroup
-				label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
-				labelFor="themeId"
-			>
-				<TagsInput
-					isLoading={isThemesLoading}
-					options={mapLomFieldsToOptions(allThemes || [])}
-					value={mapLomFieldsToOptions(lomFields.theme) || []}
-					onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
-				/>
-			</FormGroup>
+			{!isAssignment && (
+				<FormGroup
+					label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
+					labelFor="themeId"
+				>
+					<TagsInput
+						isLoading={isThemesLoading}
+						options={mapLomFieldsToOptions(allThemes || [])}
+						value={mapLomFieldsToOptions(lomFields.theme) || []}
+						onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
+					/>
+				</FormGroup>
+			)}
 		</Spacer>
 	);
 };
