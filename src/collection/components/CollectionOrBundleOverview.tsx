@@ -735,12 +735,16 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				sortable: true,
 				dataType: TableColumnDataType.dateTime,
 			},
-			{
-				id: 'share_type',
-				label: tText('collection/collection___gedeeld'),
-				sortable: true,
-				dataType: TableColumnDataType.string,
-			},
+			...(isCollection
+				? [
+						{
+							id: 'share_type',
+							label: tText('collection/collection___gedeeld'),
+							sortable: true,
+							dataType: TableColumnDataType.string,
+						},
+				  ]
+				: []),
 			...(showPublicState
 				? [
 						{
@@ -967,7 +971,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderCollections = () => (
 		<>
-			{renderHeader()}
+			{isCollection && renderHeader()}
 			{collections && collections.length ? renderTable(collections) : renderEmptyFallback()}
 			{!isNil(selectedCollectionUuid) && renderDeleteModal()}
 			{renderQuickLaneModal()}
