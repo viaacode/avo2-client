@@ -831,7 +831,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderTable = (collections: Collection[]) => (
 		<>
-			{renderHeader()}
 			<Table
 				columns={getColumns()}
 				data={collections}
@@ -968,6 +967,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const renderCollections = () => (
 		<>
+			{renderHeader()}
 			{collections && collections.length ? renderTable(collections) : renderEmptyFallback()}
 			{!isNil(selectedCollectionUuid) && renderDeleteModal()}
 			{renderQuickLaneModal()}
