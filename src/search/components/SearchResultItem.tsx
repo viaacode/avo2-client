@@ -66,11 +66,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		);
 	};
 	const checkIfResultIsNotAnItem = (result: Avo.Search.ResultItem): boolean => {
-		return (
-			result.administrative_type === 'collectie' ||
-			result.administrative_type === 'bundel' ||
-			result.administrative_type === 'opdracht'
-		);
+		return result.administrative_type === ('collectie' || 'bundel' || 'opdracht');
 	};
 
 	const renderAuthorOrOrganisation = (result: Avo.Search.ResultItem) => {
