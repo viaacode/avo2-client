@@ -1302,7 +1302,7 @@ export class CollectionService {
 				limit,
 				order,
 				type_id: contentTypeId,
-				owner_profile_id: getProfileId(user),
+				collaborator_profile_id: getProfileId(user),
 				where: filterArray.length ? filterArray : {},
 			};
 			const response = await dataService.query<

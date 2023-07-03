@@ -1,5 +1,5 @@
 query getCollectionsByOwner(
-	$owner_profile_id: uuid
+	$collaborator_profile_id: uuid
 	$type_id: Int
 	$offset: Int = 0
 	$limit: Int
@@ -9,7 +9,7 @@ query getCollectionsByOwner(
 	app_collections_overview(
 		where: {
 			type_id: { _eq: $type_id }
-			owner_profile_id: { _eq: $owner_profile_id }
+			collaborator_profile_id: { _eq: $collaborator_profile_id }
 			is_deleted: { _eq: false }
 			_and: $where
 		}
@@ -27,6 +27,7 @@ query getCollectionsByOwner(
 		title
 		published_at
 		owner_profile_id
+		collaborator_profile_id
 		profile {
 			id
 			alias

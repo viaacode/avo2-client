@@ -3153,6 +3153,7 @@ export type App_Assignments_V2 = {
   loms: Array<App_Assignments_V2_Lom_Links>;
   /** An aggregate relationship */
   loms_aggregate: App_Assignments_V2_Lom_Links_Aggregate;
+  note?: Maybe<Scalars['String']>;
   /** An object relationship */
   owner?: Maybe<Users_Summary_View>;
   owner_profile_id: Scalars['uuid'];
@@ -3982,6 +3983,7 @@ export type App_Assignments_V2_Bool_Exp = {
   lom_learning_resource_type?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Bool_Exp>;
+  note?: InputMaybe<String_Comparison_Exp>;
   owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
@@ -4419,6 +4421,7 @@ export type App_Assignments_V2_Insert_Input = {
   last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Arr_Rel_Insert_Input>;
+  note?: InputMaybe<Scalars['String']>;
   owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
@@ -4644,6 +4647,7 @@ export type App_Assignments_V2_Max_Fields = {
   id?: Maybe<Scalars['uuid']>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
   last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
+  note?: Maybe<Scalars['String']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
   thumbnail_path?: Maybe<Scalars['String']>;
@@ -4665,6 +4669,7 @@ export type App_Assignments_V2_Max_Order_By = {
   id?: InputMaybe<Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
   last_user_edit_profile_id?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   published_at?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
@@ -4687,6 +4692,7 @@ export type App_Assignments_V2_Min_Fields = {
   id?: Maybe<Scalars['uuid']>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
   last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
+  note?: Maybe<Scalars['String']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
   thumbnail_path?: Maybe<Scalars['String']>;
@@ -4708,6 +4714,7 @@ export type App_Assignments_V2_Min_Order_By = {
   id?: InputMaybe<Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
   last_user_edit_profile_id?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   published_at?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
@@ -4762,6 +4769,7 @@ export type App_Assignments_V2_Order_By = {
   last_user_edit_profile_id?: InputMaybe<Order_By>;
   lom_learning_resource_type?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Order_By>;
+  note?: InputMaybe<Order_By>;
   owner?: InputMaybe<Users_Summary_View_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
@@ -5442,6 +5450,8 @@ export enum App_Assignments_V2_Select_Column {
   /** column name */
   LomLearningResourceType = 'lom_learning_resource_type',
   /** column name */
+  Note = 'note',
+  /** column name */
   OwnerProfileId = 'owner_profile_id',
   /** column name */
   PublishedAt = 'published_at',
@@ -5493,6 +5503,7 @@ export type App_Assignments_V2_Set_Input = {
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
   last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
+  note?: InputMaybe<Scalars['String']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
@@ -5559,6 +5570,7 @@ export type App_Assignments_V2_Stream_Cursor_Value_Input = {
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
   last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
+  note?: InputMaybe<Scalars['String']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
@@ -5609,6 +5621,8 @@ export enum App_Assignments_V2_Update_Column {
   LastUserEditProfileId = 'last_user_edit_profile_id',
   /** column name */
   LomLearningResourceType = 'lom_learning_resource_type',
+  /** column name */
+  Note = 'note',
   /** column name */
   OwnerProfileId = 'owner_profile_id',
   /** column name */
@@ -49046,7 +49060,7 @@ export type GetCollectionsByItemUuidQueryVariables = Exact<{
 export type GetCollectionsByItemUuidQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string, is_public: boolean, profile?: { __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null }> };
 
 export type GetCollectionsByOwnerQueryVariables = Exact<{
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
   type_id?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -49055,7 +49069,7 @@ export type GetCollectionsByOwnerQueryVariables = Exact<{
 }>;
 
 
-export type GetCollectionsByOwnerQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null }, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
+export type GetCollectionsByOwnerQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, collaborator_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null }, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
 
 export type GetContributorsByCollectionUuidQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -52560,9 +52574,9 @@ export const useGetCollectionsByItemUuidQuery = <
       options
     );
 export const GetCollectionsByOwnerDocument = `
-    query getCollectionsByOwner($owner_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_overview_order_by!] = {updated_at: desc}, $where: [app_collections_overview_bool_exp!] = []) {
+    query getCollectionsByOwner($collaborator_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_overview_order_by!] = {updated_at: desc}, $where: [app_collections_overview_bool_exp!] = []) {
   app_collections_overview(
-    where: {type_id: {_eq: $type_id}, owner_profile_id: {_eq: $owner_profile_id}, is_deleted: {_eq: false}, _and: $where}
+    where: {type_id: {_eq: $type_id}, collaborator_profile_id: {_eq: $collaborator_profile_id}, is_deleted: {_eq: false}, _and: $where}
     offset: $offset
     limit: $limit
     order_by: $order
@@ -52577,6 +52591,7 @@ export const GetCollectionsByOwnerDocument = `
     title
     published_at
     owner_profile_id
+    collaborator_profile_id
     profile {
       id
       alias
