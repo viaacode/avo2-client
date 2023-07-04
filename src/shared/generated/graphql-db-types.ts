@@ -48778,12 +48778,13 @@ export type BulkUpdateAuthorForAssignmentsMutationVariables = Exact<{
 
 export type BulkUpdateAuthorForAssignmentsMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
 
-export type DeleteAssignmentByIdMutationVariables = Exact<{
+export type SoftDeleteAssignmentByIdMutationVariables = Exact<{
   assignmentId: Scalars['uuid'];
+  now: Scalars['timestamptz'];
 }>;
 
 
-export type DeleteAssignmentByIdMutation = { __typename?: 'mutation_root', delete_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
+export type SoftDeleteAssignmentByIdMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null, delete_app_assignments_v2_contributors?: { __typename?: 'app_assignments_v2_contributors_mutation_response', affected_rows: number } | null };
 
 export type DeleteAssignmentResponseByIdMutationVariables = Exact<{
   assignmentResponseId: Scalars['uuid'];
@@ -51064,20 +51065,28 @@ export const useBulkUpdateAuthorForAssignmentsMutation = <
       (variables?: BulkUpdateAuthorForAssignmentsMutationVariables) => fetchData<BulkUpdateAuthorForAssignmentsMutation, BulkUpdateAuthorForAssignmentsMutationVariables>(BulkUpdateAuthorForAssignmentsDocument, variables)(),
       options
     );
-export const DeleteAssignmentByIdDocument = `
-    mutation deleteAssignmentById($assignmentId: uuid!) {
-  delete_app_assignments_v2(where: {id: {_eq: $assignmentId}}) {
+export const SoftDeleteAssignmentByIdDocument = `
+    mutation softDeleteAssignmentById($assignmentId: uuid!, $now: timestamptz!) {
+  update_app_assignments_v2(
+    where: {id: {_eq: $assignmentId}}
+    _set: {is_deleted: true, updated_at: $now}
+  ) {
+    affected_rows
+  }
+  delete_app_assignments_v2_contributors(
+    where: {assignment_id: {_eq: $assignmentId}}
+  ) {
     affected_rows
   }
 }
     `;
-export const useDeleteAssignmentByIdMutation = <
+export const useSoftDeleteAssignmentByIdMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentByIdMutation, TError, DeleteAssignmentByIdMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentByIdMutation, TError, DeleteAssignmentByIdMutationVariables, TContext>(
-      ['deleteAssignmentById'],
-      (variables?: DeleteAssignmentByIdMutationVariables) => fetchData<DeleteAssignmentByIdMutation, DeleteAssignmentByIdMutationVariables>(DeleteAssignmentByIdDocument, variables)(),
+    >(options?: UseMutationOptions<SoftDeleteAssignmentByIdMutation, TError, SoftDeleteAssignmentByIdMutationVariables, TContext>) =>
+    useMutation<SoftDeleteAssignmentByIdMutation, TError, SoftDeleteAssignmentByIdMutationVariables, TContext>(
+      ['softDeleteAssignmentById'],
+      (variables?: SoftDeleteAssignmentByIdMutationVariables) => fetchData<SoftDeleteAssignmentByIdMutation, SoftDeleteAssignmentByIdMutationVariables>(SoftDeleteAssignmentByIdDocument, variables)(),
       options
     );
 export const DeleteAssignmentResponseByIdDocument = `

@@ -11,6 +11,8 @@ interface DeleteAssignmentModalProps {
 	isContributor: boolean;
 	isSharedWithOthers: boolean;
 	contributorCount: number;
+	responses?: boolean;
+	buildType?: boolean;
 }
 
 const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
@@ -20,6 +22,8 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 	isContributor,
 	isSharedWithOthers,
 	contributorCount,
+	responses = false,
+	buildType = false,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -30,6 +34,11 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 
 	const renderDeleteMessageParagraph = () => {
 		if (isSharedWithOthers) {
+			if (contributorCount === 1) {
+				return tHtml(
+					'Ben je zeker dat je jezelf van deze opdracht wil wissen? Deze opdracht is met 1 andere persoon gedeeld. Deze verliezen dan toegang.'
+				);
+			}
 			return tHtml(
 				'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen-deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
 				{ count: contributorCount }
@@ -39,6 +48,18 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 		if (isContributor) {
 			return tHtml(
 				'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen'
+			);
+		}
+
+		if (buildType) {
+			return tHtml(
+				'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
+			);
+		}
+
+		if (responses) {
+			return tHtml(
+				'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
 			);
 		}
 

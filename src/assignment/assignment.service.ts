@@ -23,9 +23,6 @@ import {
 	BulkUpdateAuthorForAssignmentsDocument,
 	BulkUpdateAuthorForAssignmentsMutation,
 	BulkUpdateAuthorForAssignmentsMutationVariables,
-	DeleteAssignmentByIdDocument,
-	DeleteAssignmentByIdMutation,
-	DeleteAssignmentByIdMutationVariables,
 	DeleteAssignmentResponseByIdDocument,
 	DeleteAssignmentResponseByIdMutation,
 	DeleteAssignmentResponseByIdMutationVariables,
@@ -83,6 +80,9 @@ import {
 	InsertAssignmentResponseDocument,
 	InsertAssignmentResponseMutation,
 	InsertAssignmentResponseMutationVariables,
+	SoftDeleteAssignmentByIdDocument,
+	SoftDeleteAssignmentByIdMutation,
+	SoftDeleteAssignmentByIdMutationVariables,
 	UpdateAssignmentResponseDocument,
 	UpdateAssignmentResponseMutation,
 	UpdateAssignmentResponseMutationVariables,
@@ -360,11 +360,11 @@ export class AssignmentService {
 	static async deleteAssignment(assignmentId: string): Promise<void> {
 		try {
 			await dataService.query<
-				DeleteAssignmentByIdMutation,
-				DeleteAssignmentByIdMutationVariables
+				SoftDeleteAssignmentByIdMutation,
+				SoftDeleteAssignmentByIdMutationVariables
 			>({
-				query: DeleteAssignmentByIdDocument,
-				variables: { assignmentId },
+				query: SoftDeleteAssignmentByIdDocument,
+				variables: { assignmentId, now: new Date().toISOString() },
 			});
 		} catch (err) {
 			const error = new CustomError('Failed to delete assignment', err, { assignmentId });
@@ -534,7 +534,7 @@ export class AssignmentService {
 			contributors: [],
 		};
 
-		delete newAssignment.id;
+		// delete newAssignment.id;
 		delete newAssignment.owner;
 		newAssignment.updated_at = new Date().toISOString();
 		const blocks: Avo.Assignment.Block[] = await AssignmentService.fetchAssignmentBlocks(
