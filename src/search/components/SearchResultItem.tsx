@@ -23,8 +23,8 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	renderSearchLink,
 }) => {
 	const getTags = (result: Avo.Search.ResultItem): TagOption[] => {
-		const qualityLabels = (result?.collection_labels || []) as string[];
-		const assignmentTypeLabels = result?.lom_learning_resource_type || [];
+		const qualityLabels = compact(result?.collection_labels || []) as string[];
+		const assignmentTypeLabels = compact(result?.lom_learning_resource_type || []);
 
 		const TAG_TRANSLATIONS: Record<string, string> = {
 			PARTNER: tText('Partner'),
@@ -119,7 +119,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				onTagClicked={handleTagClicked}
 				title={renderDetailLink(
 					result.dc_title,
-					result.uid || result.id,
+					result.external_id || result.uid || result.id,
 					result.administrative_type
 				)}
 				subTitle={
