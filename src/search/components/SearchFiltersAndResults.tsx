@@ -42,7 +42,7 @@ import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
-import { useCollectionQualityLabels } from '../../shared/hooks/useCollectionQualityLabels';
+import { useQualityLabels } from '../../shared/hooks/useQualityLabels';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
@@ -102,7 +102,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const [searchTerms, setSearchTerms] = useState('');
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
 
-	const [collectionLabels] = useCollectionQualityLabels(
+	const [qualityLabels] = useQualityLabels(
 		!enabledFilters || enabledFilters?.includes('collectionLabel')
 	);
 
@@ -300,17 +300,19 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	};
 
 	const handleTagClicked = (tagId: string) => {
-		setFilterState(
-			{
-				...filterState,
-				filters: {
-					...DEFAULT_FILTER_STATE,
-					collectionLabel: [tagId],
+		if (qualityLabels.find((label) => label.value.toLowerCase() === tagId.toLowerCase())) {
+			setFilterState(
+				{
+					...filterState,
+					filters: {
+						...DEFAULT_FILTER_STATE,
+						collectionLabel: [tagId],
+					},
+					page: 0,
 				},
-				page: 0,
-			},
-			urlUpdateType
-		);
+				urlUpdateType
+			);
+		}
 	};
 
 	const deleteAllFilters = () => {
@@ -416,7 +418,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 					})
 				}
 				bookmarkStatuses={bookmarkStatuses}
-				collectionLabels={collectionLabels}
+				qualityLabels={qualityLabels}
 				navigateUserRequestForm={navigateToUserRequestForm}
 				bookmarkButtons={bookmarks}
 				renderDetailLink={renderDetailLink}
@@ -480,7 +482,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 							handleFilterFieldChange={handleFilterFieldChange}
 							multiOptions={multiOptions}
 							enabledFilters={enabledFilters}
-							collectionLabels={collectionLabels}
+							collectionLabels={qualityLabels}
 						/>
 					</Spacer>
 				</Container>

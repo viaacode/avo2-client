@@ -82,7 +82,7 @@ interface SearchResultItemHandlers extends RenderLinks {
 export interface SearchResultItemProps extends SearchResultItemHandlers, RenderLinks {
 	id: string;
 	result: Avo.Search.ResultItem;
-	collectionLabelLookup: CollectionLabelLookup;
+	qualityLabelLookup: CollectionLabelLookup;
 	isBookmarked: boolean | null;
 	bookmarkButton: boolean;
 }
@@ -96,5 +96,5 @@ export interface SearchResultsProps extends SearchResultItemHandlers {
 	bookmarkStatuses: BookmarkStatusLookup | null;
 	navigateUserRequestForm: () => void;
 	bookmarkButtons: boolean;
-	collectionLabels: QualityLabel[];
+	qualityLabels: QualityLabel[];
 }

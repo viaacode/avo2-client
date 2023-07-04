@@ -86,7 +86,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
-	const [isForbidden, setIsforbidden] = useState<boolean>(false);
+	const [isForbidden, setIsForbidden] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -141,7 +141,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				limit: 4,
 			});
 
-			ToastService.danger('Het ophalen van de gerelateerde opdrachten is mislukt');
+			ToastService.danger(tHtml('Het ophalen van de gerelateerde opdrachten is mislukt'));
 		}
 	}, [setRelatedAssignments, id]);
 
@@ -159,7 +159,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				);
 			} catch (err: any) {
 				if (err.innerException.additionalInfo.statusCode === 403) {
-					setIsforbidden(true);
+					setIsForbidden(true);
 				} else {
 					setAssigmentError({
 						message:
@@ -181,9 +181,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 			if (!tempAssignment) {
 				setAssigmentError({
-					message: tHtml(
-						'assignment/views/assignment-edit___het-ophalen-van-de-opdracht-is-mislukt'
-					),
+					message: tHtml('Het ophalen van de opdracht is mislukt'),
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
@@ -216,9 +214,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			}
 		} catch (err) {
 			setAssigmentError({
-				message: tHtml(
-					'assignment/views/assignment-edit___het-ophalen-aanmaken-van-de-opdracht-is-mislukt'
-				),
+				message: tHtml('Het ophalen van de opdracht is mislukt'),
 				icon: IconName.alertTriangle,
 			});
 		}
@@ -625,28 +621,20 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		<>
 			{assignment && isForbidden ? (
 				<ErrorNoAccess
-					title={tHtml('assignment/views/assignment-edit___je-hebt-geen-toegang')}
-					message={tHtml(
-						'assignment/views/assignment-edit___je-hebt-geen-toegang-beschrijving'
-					)}
+					title={tHtml('Je hebt geen toegang')}
+					message={tHtml('Je hebt geen toegang om deze opdracht te bekijken')}
 				/>
 			) : (
 				<div className="c-sticky-bar__wrapper">
 					<div>
 						<MetaTags>
 							<title>
-								{GENERATE_SITE_TITLE(
-									tText(
-										'assignment/views/assignment-edit___bewerk-opdracht-pagina-titel'
-									)
-								)}
+								{GENERATE_SITE_TITLE(tText('Opdracht detail pagina titel'))}
 							</title>
 
 							<meta
 								name="description"
-								content={tText(
-									'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
-								)}
+								content={tText('Opdracht detail pagina beschrijving')}
 							/>
 						</MetaTags>
 
