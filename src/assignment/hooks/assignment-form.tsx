@@ -8,10 +8,6 @@ export interface AssignmentFields {
 	id: string;
 	title: string;
 	description: string;
-	/**
-	 * @deprecated use lom_learning_resource_type instead
-	 */
-	assignment_type?: Avo.Assignment.Type;
 	lom_learning_resource_type: Avo.Assignment.Type[] | null;
 	answer_url?: string | null;
 	available_at?: string | null; // ISO date string
