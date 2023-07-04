@@ -92,7 +92,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment | null>(null);
-	const [assignmentLoading, setAssigmentLoading] = useState(false);
+	const [assignmentLoading, setAssigmentLoading] = useState(true);
 	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
@@ -647,11 +647,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 
 		if (
-			!canEditAllAssignments ||
-			(assignment &&
-				!isUserAssignmentOwner(user, assignment) &&
-				!isUserAssignmentContributor(user, assignment) &&
-				!canEditAllAssignments)
+			!canEditAllAssignments &&
+			assignment?.id &&
+			!isUserAssignmentOwner(user, assignment) &&
+			!isUserAssignmentContributor(user, assignment)
 		) {
 			return (
 				<ErrorNoAccess

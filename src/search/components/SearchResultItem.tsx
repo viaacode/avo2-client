@@ -132,7 +132,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				}
 				thumbnail={renderDetailLink(
 					renderThumbnail(result),
-					result.uid || result.id,
+					result.external_id || result.uid || result.id,
 					result.administrative_type
 				)}
 			/>
