@@ -84,7 +84,11 @@ import {
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.types';
+import {
+	AssignmentOverviewTableColumns,
+	AssignmentType,
+	AssignmentView,
+} from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
@@ -1046,6 +1050,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
 					}
 					contributorCount={markedAssignment?.contributors?.length || 0}
+					hasResponses={!!markedAssignment?.responses?.length}
+					containsBuildBlocks={markedAssignment?.lom_learning_resource_type?.includes(
+						AssignmentType.BOUW
+					)}
 				/>
 			</>
 		);

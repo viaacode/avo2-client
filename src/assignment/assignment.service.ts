@@ -528,7 +528,6 @@ export class AssignmentService {
 			contributors: [],
 		};
 
-		// delete newAssignment.id;
 		delete newAssignment.owner;
 		newAssignment.updated_at = new Date().toISOString();
 		const blocks: Avo.Assignment.Block[] = await AssignmentService.fetchAssignmentBlocks(
