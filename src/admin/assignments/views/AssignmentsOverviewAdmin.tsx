@@ -254,7 +254,6 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					return;
 			}
 		}
-
 	};
 
 	const deleteSelectedAssignments = async () => {
@@ -501,10 +500,14 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 							);
 						}
 					}}
-					title={tHtml('Enkele opdrachten worden bewerkt')}
-					editWarningSection1={tHtml('Deze opdrachten worden momenteel bewerkt:')}
+					title={tHtml(
+						'admin/assignments/views/assignments-overview-admin___enkele-opdrachten-worden-bewerkt'
+					)}
+					editWarningSection1={tHtml(
+						'admin/assignments/views/assignments-overview-admin___deze-opdrachten-worden-momenteel-bewerkt'
+					)}
 					editWarningSection2={tHtml(
-						'Je kan doorgaan met je actie, maar deze opdrachten zullen niet behandeld worden'
+						'admin/assignments/views/assignments-overview-admin___je-kan-doorgaan-met-je-actie-maar-deze-opdrachten-zullen-niet-behandeld-worden'
 					)}
 					subjects={assignmentsBeingEdited}
 					route={APP_PATH.ASSIGNMENT_DETAIL.route}

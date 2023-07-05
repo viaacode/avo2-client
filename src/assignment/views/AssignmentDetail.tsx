@@ -156,7 +156,11 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				limit: 4,
 			});
 
-			ToastService.danger(tHtml('Het ophalen van de gerelateerde opdrachten is mislukt'));
+			ToastService.danger(
+				tHtml(
+					'assignment/views/assignment-detail___het-ophalen-van-de-gerelateerde-opdrachten-is-mislukt'
+				)
+			);
 		}
 	}, [setRelatedAssignments, id]);
 
@@ -196,7 +200,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 			if (!tempAssignment) {
 				setAssigmentError({
-					message: tHtml('Het ophalen van de opdracht is mislukt'),
+					message: tHtml(
+						'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
+					),
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
@@ -229,7 +235,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			}
 		} catch (err) {
 			setAssigmentError({
-				message: tHtml('Het ophalen van de opdracht is mislukt'),
+				message: tHtml(
+					'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
+				),
 				icon: IconName.alertTriangle,
 			});
 		}
@@ -484,7 +492,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 							onClick={() => executeAction(ASSIGNMENT_ACTIONS.editAssignment)}
 							disabled={isBeingEdited}
 							toolTipContent={tHtml(
-								'Deze opdracht wordt momenteel bewerkt door een andere gebruiker. Het is niet mogelijk met met meer dan 1 gebruiker simultaan te bewerken.'
+								'assignment/views/assignment-detail___deze-opdracht-wordt-momenteel-bewerkt-door-een-andere-gebruiker-het-is-niet-mogelijk-met-met-meer-dan-1-gebruiker-simultaan-te-bewerken'
 							)}
 						/>
 					)}
@@ -639,20 +647,28 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		<>
 			{assignment && isForbidden ? (
 				<ErrorNoAccess
-					title={tHtml('Je hebt geen toegang')}
-					message={tHtml('Je hebt geen toegang om deze opdracht te bekijken')}
+					title={tHtml('assignment/views/assignment-detail___je-hebt-geen-toegang')}
+					message={tHtml(
+						'assignment/views/assignment-detail___je-hebt-geen-toegang-om-deze-opdracht-te-bekijken'
+					)}
 				/>
 			) : (
 				<div className="c-sticky-bar__wrapper">
 					<div>
 						<MetaTags>
 							<title>
-								{GENERATE_SITE_TITLE(tText('Opdracht detail pagina titel'))}
+								{GENERATE_SITE_TITLE(
+									tText(
+										'assignment/views/assignment-detail___opdracht-detail-pagina-titel'
+									)
+								)}
 							</title>
 
 							<meta
 								name="description"
-								content={tText('Opdracht detail pagina beschrijving')}
+								content={tText(
+									'assignment/views/assignment-detail___opdracht-detail-pagina-beschrijving'
+								)}
 							/>
 						</MetaTags>
 

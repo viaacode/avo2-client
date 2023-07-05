@@ -1131,9 +1131,17 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			if ((err as CustomError).innerException?.additionalInfo.statusCode === 409) {
 				await releaseCollectionEditStatus();
-				ToastService.danger(tText('Iemand is deze collectie reeds aan het bewerken.'));
+				ToastService.danger(
+					tText(
+						'collection/components/collection-or-bundle-edit___iemand-is-deze-collectie-reeds-aan-het-bewerken'
+					)
+				);
 			} else {
-				ToastService.danger(tText('Verbinding met bewerk server verloren'));
+				ToastService.danger(
+					tText(
+						'collection/components/collection-or-bundle-edit___verbinding-met-bewerk-server-verloren'
+					)
+				);
 			}
 		}
 	};
@@ -1144,7 +1152,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 		} catch (err) {
 			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
 				ToastService.danger(
-					tText('Er liep iets fout met het updaten van de collectie bewerk status')
+					tText(
+						'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-updaten-van-de-collectie-bewerk-status'
+					)
 				);
 			}
 		}
@@ -1160,7 +1170,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 			await updateCollection();
 
 			ToastService.success(
-				tText('Je was meer dan 15 minuten inactief. Je aanpassingen zijn opgeslagen.'),
+				tText(
+					'collection/components/collection-or-bundle-edit___je-was-meer-dan-15-minuten-inactief-je-aanpassingen-zijn-opgeslagen'
+				),
 				{
 					autoClose: false,
 				}
@@ -1168,7 +1180,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		} catch (err) {
 			ToastService.danger(
 				tText(
-					'Je was meer dan 15 minuten inactief. Het opslaan van je aanpassingen is mislukt.'
+					'collection/components/collection-or-bundle-edit___je-was-meer-dan-15-minuten-inactief-het-opslaan-van-je-aanpassingen-is-mislukt'
 				),
 				{
 					autoClose: false,
@@ -1507,7 +1519,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<InActivityWarningModal
 					onActivity={updateCollectionEditor}
 					onExit={releaseCollectionEditStatus}
-					warningMessage={tHtml('Door inactiviteit zal de collectie zichzelf sluiten.')}
+					warningMessage={tHtml(
+						'collection/components/collection-or-bundle-edit___door-inactiviteit-zal-de-collectie-zichzelf-sluiten'
+					)}
 					currentPath={history.location.pathname}
 					editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
 					onForcedExit={onForcedExitPage}

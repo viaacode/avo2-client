@@ -28,7 +28,11 @@ export const useQualityLabels = (enabled: boolean): UseQualityLabelsTuple => {
 				console.error(
 					new CustomError('Failed to get qualityLabels from the database', err)
 				);
-				ToastService.danger(tHtml('Het ophalen van de kwaliteitslabels is mislukt'));
+				ToastService.danger(
+					tHtml(
+						'shared/hooks/use-quality-labels___het-ophalen-van-de-kwaliteitslabels-is-mislukt'
+					)
+				);
 			})
 			.finally(() => {
 				setIsLoading(false);

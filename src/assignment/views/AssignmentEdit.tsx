@@ -343,10 +343,18 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
 			if ((err as CustomError)?.innerException?.additionalInfo.statusCode === 409) {
-				ToastService.danger(tText('Iemand is deze opdracht reeds aan het bewerken.'));
+				ToastService.danger(
+					tText(
+						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
+					)
+				);
 			} else {
 				await releaseAssignmentEditStatus();
-				ToastService.danger(tText('Verbinding met bewerk server verloren'));
+				ToastService.danger(
+					tText(
+						'assignment/views/assignment-edit___verbinding-met-bewerk-server-verloren'
+					)
+				);
 			}
 
 			redirectToClientPage(
@@ -362,7 +370,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		} catch (err) {
 			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
 				ToastService.danger(
-					tText('Er liep iets fout met het updaten van de opdracht bewerk status')
+					tText(
+						'assignment/views/assignment-edit___er-liep-iets-fout-met-het-updaten-van-de-opdracht-bewerk-status'
+					)
 				);
 			}
 		}
@@ -385,7 +395,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			);
 
 			ToastService.success(
-				tText('Je was meer dan 15 minuten inactief. Je aanpassingen zijn opgeslagen.'),
+				tText(
+					'assignment/views/assignment-edit___je-was-meer-dan-15-minuten-inactief-je-aanpassingen-zijn-opgeslagen'
+				),
 				{
 					autoClose: false,
 				}
@@ -393,7 +405,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		} catch (err) {
 			ToastService.danger(
 				tText(
-					'Je was meer dan 15 minuten inactief. Het opslaan van je aanpassingen is mislukt.'
+					'assignment/views/assignment-edit___je-was-meer-dan-15-minuten-inactief-het-opslaan-van-je-aanpassingen-is-mislukt'
 				),
 				{
 					autoClose: false,
@@ -720,7 +732,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						onActivity={updateAssignmentEditor}
 						onExit={releaseAssignmentEditStatus}
 						warningMessage={tHtml(
-							'Door inactiviteit zal de opdracht zichzelf sluiten.'
+							'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
 						)}
 						currentPath={history.location.pathname}
 						editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}

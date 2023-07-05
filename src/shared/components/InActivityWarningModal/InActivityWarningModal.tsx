@@ -100,7 +100,13 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	}, [remainingTime]);
 
 	return (
-		<Modal isOpen={isWarningModalOpen} title={tHtml('Opgelet!')} size="medium">
+		<Modal
+			isOpen={isWarningModalOpen}
+			title={tHtml(
+				'shared/components/in-activity-warning-modal/in-activity-warning-modal___opgelet'
+			)}
+			size="medium"
+		>
 			<ModalBody>
 				<p>{format(new Date(remainingTime * 1000), 'mm:ss')}</p>
 

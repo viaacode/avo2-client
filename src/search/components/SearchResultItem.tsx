@@ -27,12 +27,12 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		const assignmentTypeLabels = compact(result?.lom_learning_resource_type || []);
 
 		const TAG_TRANSLATIONS: Record<string, string> = {
-			PARTNER: tText('Partner'),
-			REDACTIE: tText('Keuze van de redactie'),
-			UITGEVERIJ: tText('Uitgeverij'),
-			KIJK: tText('Kijken en luisteren'),
-			ZOEK: tText('Zoeken'),
-			BOUW: tText('Zoek en bouw'),
+			PARTNER: tText('search/components/search-result-item___partner'),
+			REDACTIE: tText('search/components/search-result-item___keuze-van-de-redactie'),
+			UITGEVERIJ: tText('search/components/search-result-item___uitgeverij'),
+			KIJK: tText('search/components/search-result-item___kijken-en-luisteren'),
+			ZOEK: tText('search/components/search-result-item___zoeken'),
+			BOUW: tText('search/components/search-result-item___zoek-en-bouw'),
 		};
 
 		const TAG_LOGO: Record<string, IconName | undefined> = {

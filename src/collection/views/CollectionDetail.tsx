@@ -990,7 +990,7 @@ const CollectionDetail: FunctionComponent<
 							onClick={() => executeAction(COLLECTION_ACTIONS.editCollection)}
 							disabled={isBeingEdited}
 							toolTipContent={tHtml(
-								'Deze collectie wordt momenteel bewerkt door een andere gebruiker. Het is niet mogelijk met met meer dan 1 gebruiker simultaan te bewerken.'
+								'collection/views/collection-detail___deze-collectie-wordt-momenteel-bewerkt-door-een-andere-gebruiker-het-is-niet-mogelijk-met-met-meer-dan-1-gebruiker-simultaan-te-bewerken'
 							)}
 						/>
 					</Spacer>

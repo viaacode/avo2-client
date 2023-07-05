@@ -703,15 +703,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						} else {
 							ToastService.info(
 								tHtml(
-									'Alle geselecteerde collecties worden bewerkt, dus de actie kan niet worden uitgevoerd.'
+									'admin/collections-or-bundles/views/collections-or-bundles-overview___alle-geselecteerde-collecties-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd'
 								)
 							);
 						}
 					}}
-					title={tHtml('Enkele collecties worden bewerkt')}
-					editWarningSection1={tHtml('Deze collecties worden momenteel bewerkt:')}
+					title={tHtml(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___enkele-collecties-worden-bewerkt'
+					)}
+					editWarningSection1={tHtml(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-collecties-worden-momenteel-bewerkt'
+					)}
 					editWarningSection2={tHtml(
-						'Je kan doorgaan met je actie, maar deze collecties zullen niet behandeld worden'
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___je-kan-doorgaan-met-je-actie-maar-deze-collecties-zullen-niet-behandeld-worden'
 					)}
 					subjects={collectionsBeingEdited}
 					route={APP_PATH.COLLECTION_DETAIL.route}
