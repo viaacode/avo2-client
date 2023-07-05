@@ -1129,7 +1129,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 				history
 			);
 
-			ToastService.danger(tText('Iemand is deze collectie reeds aan het bewerken.'));
+			if ((err as CustomError).innerException === 409) {
+				await CollectionService.releaseCollectionEditStatus(collectionId);
+				ToastService.danger(tText('Iemand is deze collectie reeds aan het bewerken.'));
+			} else {
+				ToastService.danger(tText('Verbinding met bewerk server verloren'));
+			}
 		}
 	};
 

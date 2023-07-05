@@ -342,12 +342,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
+			if ((err as CustomError)?.innerException?.statusCode === 409) {
+				ToastService.danger(tText('Iemand is deze opdracht reeds aan het bewerken.'));
+			} else {
+				await AssignmentService.releaseAssignmentEditStatus(assignmentId);
+				ToastService.danger(tText('Verbinding met bewerk server verloren'));
+			}
+
 			redirectToClientPage(
 				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
 				history
 			);
-
-			ToastService.danger(tHtml('Iemand is deze opdracht reeds aan het bewerken.'));
 		}
 	};
 
@@ -744,8 +749,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 
 		if (
-			// !canEditAllAssignments ||
-			assignment &&
+			assignment?.id &&
 			!isUserAssignmentOwner(user, assignment) &&
 			!isUserAssignmentContributor(user, assignment) &&
 			!canEditAllAssignments
