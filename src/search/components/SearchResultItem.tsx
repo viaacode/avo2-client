@@ -65,14 +65,16 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			/>
 		);
 	};
-	const checkIfResultIsNotAnItem = (result: Avo.Search.ResultItem): boolean => {
-		return result.administrative_type === ('collectie' || 'bundel' || 'opdracht');
+	const isItem = (result: Avo.Search.ResultItem): boolean => {
+		return ['collectie' || 'bundel' || 'opdracht'].includes(result.administrative_type);
 	};
 
-	const renderAuthorOrOrganisation = (result: Avo.Search.ResultItem) => {
-		if (checkIfResultIsNotAnItem(result)) {
-			const name = `${result.owner?.firstname} ${result.owner?.lastname}`;
-			const initials = `${result.owner?.firstname?.[0]}${result.owner?.lastname?.[0]}`;
+	const renderAuthorOrOrganization = (result: Avo.Search.ResultItem) => {
+		if (!isItem(result)) {
+			const name = `${result.owner?.firstname || ''} ${result.owner?.lastname || ''}`;
+			const initials = `${result.owner?.firstname?.[0] || ''}${
+				result.owner?.lastname?.[0] || ''
+			}`;
 
 			return (
 				<Avatar
@@ -92,11 +94,13 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				'c-body-2'
 			);
 		}
+
+		return null;
 	};
 
 	let date: string;
 	let dateTooltip: string;
-	if (checkIfResultIsNotAnItem(result)) {
+	if (!isItem(result)) {
 		date = result.updated_at;
 		dateTooltip = tText('search/components/search-result-item___laatst-bijwerking');
 	} else {
@@ -125,15 +129,9 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 						result.administrative_type
 					)}
 				</SearchResultTitle>
-				<SearchResultSubtitle>
-					{result.original_cp
-						? renderSearchLink(
-								result.original_cp,
-								{ filters: { provider: [result.original_cp] } },
-								'c-body-2'
-						  )
-						: renderAuthorOrOrganisation(result)}
-				</SearchResultSubtitle>
+
+				<SearchResultSubtitle>{renderAuthorOrOrganization(result)}</SearchResultSubtitle>
+
 				<SearchResultThumbnail>
 					{renderDetailLink(
 						renderThumbnail(result),
