@@ -34,6 +34,7 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
 	const [isTimedOut, setIsTimedOut] = useState<boolean>(false);
 	const [idleStart, setIdleStart] = useState<Date | null>(null);
+
 	useEffect(() => {
 		if (!isTimedOut) {
 			return () => {

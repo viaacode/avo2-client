@@ -76,7 +76,7 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { buildLink } from '../../shared/helpers';
+import { buildLink, CustomError } from '../../shared/helpers';
 import { InActivityWarningModal } from '../../shared/components';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
@@ -134,6 +134,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		assignment?.blocks || [],
 		updateBlocksInAssignmentState
 	);
+
+	const updateAssignmentEditorWithLoading = useCallback(async () => {
+		setAssigmentLoading(true);
+		await updateAssignmentEditor();
+		setAssigmentLoading(false);
+	}, [setAssigmentLoading]);
+
+	useEffect(() => {
+		updateAssignmentEditorWithLoading();
+	}, [updateAssignmentEditorWithLoading]);
 
 	useEffect(() => {
 		const param = match.params.tabId;
@@ -328,28 +338,33 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		resetForm();
 	}, [resetForm, setAssignment, original]);
 
-	const onActivity = async () => {
+	const updateAssignmentEditor = async () => {
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
+			if ((err as CustomError)?.innerException?.additionalInfo.statusCode === 409) {
+				ToastService.danger(tText('Iemand is deze opdracht reeds aan het bewerken.'));
+			} else {
+				await releaseAssignmentEditStatus();
+				ToastService.danger(tText('Verbinding met bewerk server verloren'));
+			}
+
 			redirectToClientPage(
 				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
 				history
 			);
-
-			ToastService.danger(
-				tHtml('Er liep iets fout met het updaten van de opdracht bewerker')
-			);
 		}
 	};
 
-	const onExitPage = async () => {
+	const releaseAssignmentEditStatus = async () => {
 		try {
 			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
 		} catch (err) {
-			ToastService.danger(
-				tText('Er liep iets fout met het updaten van de opdracht bewerk status')
-			);
+			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
+				ToastService.danger(
+					tText('Er liep iets fout met het updaten van de opdracht bewerk status')
+				);
+			}
 		}
 	};
 
@@ -386,7 +401,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			);
 		}
 
-		onExitPage();
+		releaseAssignmentEditStatus();
 
 		redirectToClientPage(
 			buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
@@ -702,8 +717,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					/>
 
 					<InActivityWarningModal
-						onActivity={onActivity}
-						onExit={onExitPage}
+						onActivity={updateAssignmentEditor}
+						onExit={releaseAssignmentEditStatus}
 						warningMessage={tHtml(
 							'Door inactiviteit zal de opdracht zichzelf sluiten.'
 						)}
@@ -734,11 +749,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 
 		if (
-			!canEditAllAssignments ||
-			(assignment &&
-				!isUserAssignmentOwner(user, assignment) &&
-				!isUserAssignmentContributor(user, assignment) &&
-				!canEditAllAssignments)
+			assignment?.id &&
+			!isUserAssignmentOwner(user, assignment) &&
+			!isUserAssignmentContributor(user, assignment) &&
+			!canEditAllAssignments
 		) {
 			return (
 				<ErrorNoAccess

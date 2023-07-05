@@ -195,6 +195,16 @@ const CollectionOrBundleEdit: FunctionComponent<
 		icon: IconName.alertTriangle,
 	} as LoadingInfo;
 
+	const updateCollectionEditorWithLoading = useCallback(async () => {
+		setLoadingInfo({ state: 'loading' });
+		await updateCollectionEditor();
+		setLoadingInfo({ state: 'loaded' });
+	}, [setLoadingInfo]);
+
+	useEffect(() => {
+		updateCollectionEditorWithLoading();
+	}, [updateCollectionEditorWithLoading]);
+
 	const updateHasUnsavedChanges = (
 		initialCollection: Avo.Collection.Collection | null,
 		currentCollection: Avo.Collection.Collection | null
@@ -1110,23 +1120,34 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
-	const onActivity = async () => {
+	const updateCollectionEditor = async () => {
 		try {
 			await CollectionService.updateCollectionEditor(collectionId);
 		} catch (err) {
 			redirectToClientPage(
-				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: collectionId }),
+				buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collectionId }),
 				history
 			);
 
-			ToastService.danger(
-				tText('Er liep iets fout met het updaten van de collectie bewerker')
-			);
+			if ((err as CustomError).innerException?.additionalInfo.statusCode === 409) {
+				await releaseCollectionEditStatus();
+				ToastService.danger(tText('Iemand is deze collectie reeds aan het bewerken.'));
+			} else {
+				ToastService.danger(tText('Verbinding met bewerk server verloren'));
+			}
 		}
 	};
 
-	const onExitPage = async () => {
-		await CollectionService.releaseCollectionEditStatus(collectionId);
+	const releaseCollectionEditStatus = async () => {
+		try {
+			await CollectionService.releaseCollectionEditStatus(collectionId);
+		} catch (err) {
+			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
+				ToastService.danger(
+					tText('Er liep iets fout met het updaten van de collectie bewerk status')
+				);
+			}
+		}
 	};
 
 	const onForcedExitPage = async () => {
@@ -1155,7 +1176,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			);
 		}
 
-		onExitPage();
+		releaseCollectionEditStatus();
 
 		redirectToClientPage(
 			buildLink(APP_PATH.COLLECTION_DETAIL.route, {
@@ -1484,8 +1505,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 				/>
 
 				<InActivityWarningModal
-					onActivity={onActivity}
-					onExit={onExitPage}
+					onActivity={updateCollectionEditor}
+					onExit={releaseCollectionEditStatus}
 					warningMessage={tHtml('Door inactiviteit zal de collectie zichzelf sluiten.')}
 					currentPath={history.location.pathname}
 					editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
