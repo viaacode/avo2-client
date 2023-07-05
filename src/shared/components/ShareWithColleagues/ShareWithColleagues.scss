@@ -52,7 +52,7 @@ $borderLight: 1px solid $color-gray-100;
 		margin-left: 0 !important;
 	}
 
-	&__button.c-button.c-button--primary {
+	&__button.c-button {
 		min-width: max-content;
 		border: $borderLight;
 		border-radius: 0 $c-input-border-radius $c-input-border-radius 0;
