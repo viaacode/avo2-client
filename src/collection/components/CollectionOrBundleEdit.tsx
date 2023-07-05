@@ -195,11 +195,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 		icon: IconName.alertTriangle,
 	} as LoadingInfo;
 
-	useEffect(() => {
+	const updateCollectionEditorWithLoading = useCallback(async () => {
 		setLoadingInfo({ state: 'loading' });
-		updateCollectionEditor();
+		await updateCollectionEditor();
 		setLoadingInfo({ state: 'loaded' });
-	}, []);
+	}, [setLoadingInfo]);
+
+	useEffect(() => {
+		updateCollectionEditorWithLoading();
+	}, [updateCollectionEditorWithLoading]);
 
 	const updateHasUnsavedChanges = (
 		initialCollection: Avo.Collection.Collection | null,
@@ -1121,7 +1125,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			await CollectionService.updateCollectionEditor(collectionId);
 		} catch (err) {
 			redirectToClientPage(
-				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: collectionId }),
+				buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collectionId }),
 				history
 			);
 
@@ -1130,7 +1134,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 	};
 
 	const onExitPage = async () => {
-		await CollectionService.releaseCollectionEditStatus(collectionId);
+		try {
+			await CollectionService.releaseCollectionEditStatus(collectionId);
+		} catch (err) {
+			if ((err as CustomError)?.innerException?.statusCode !== 409) {
+				ToastService.danger(
+					tText('Er liep iets fout met het updaten van de collectie bewerk status')
+				);
+			}
+		}
 	};
 
 	const onForcedExitPage = async () => {

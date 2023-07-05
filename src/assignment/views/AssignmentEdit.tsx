@@ -76,7 +76,7 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { buildLink } from '../../shared/helpers';
+import { buildLink, CustomError } from '../../shared/helpers';
 import { InActivityWarningModal } from '../../shared/components';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
@@ -135,11 +135,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		updateBlocksInAssignmentState
 	);
 
-	useEffect(() => {
+	const updateAssignmentEditorWithLoading = useCallback(async () => {
 		setAssigmentLoading(true);
-		updateAssignmentEditor();
+		await updateAssignmentEditor();
 		setAssigmentLoading(false);
-	}, []);
+	}, [setAssigmentLoading]);
+
+	useEffect(() => {
+		updateAssignmentEditorWithLoading();
+	}, [updateAssignmentEditorWithLoading]);
 
 	useEffect(() => {
 		const param = match.params.tabId;
@@ -351,9 +355,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
 		} catch (err) {
-			ToastService.danger(
-				tText('Er liep iets fout met het updaten van de opdracht bewerk status')
-			);
+			if ((err as CustomError)?.innerException?.statusCode !== 409) {
+				ToastService.danger(
+					tText('Er liep iets fout met het updaten van de opdracht bewerk status')
+				);
+			}
 		}
 	};
 
