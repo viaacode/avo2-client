@@ -34,6 +34,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import {
+	InActivityWarningModal,
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -178,6 +179,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		when: unsavedChanges,
 	});
 	const [contributors, setContributors] = useState<Contributor[]>();
+	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 
 	// Computed values
 	const isCollection = type === 'collection';
@@ -192,6 +194,16 @@ const CollectionOrBundleEdit: FunctionComponent<
 			  ),
 		icon: IconName.alertTriangle,
 	} as LoadingInfo;
+
+	const updateCollectionEditorWithLoading = useCallback(async () => {
+		setLoadingInfo({ state: 'loading' });
+		await updateCollectionEditor();
+		setLoadingInfo({ state: 'loaded' });
+	}, [setLoadingInfo]);
+
+	useEffect(() => {
+		updateCollectionEditorWithLoading();
+	}, [updateCollectionEditorWithLoading]);
 
 	const updateHasUnsavedChanges = (
 		initialCollection: Avo.Collection.Collection | null,
@@ -379,8 +391,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 			? APP_PATH.COLLECTION_EDIT_TAB.route
 			: APP_PATH.BUNDLE_EDIT_TAB.route;
 		const changingRoute = !matchPath(history.location.pathname, editPath);
-		return unsavedChanges && changingRoute;
-	}, [history, unsavedChanges, isCollection]);
+		return unsavedChanges && changingRoute && !isForcedExit;
+	}, [history, unsavedChanges, isCollection, isForcedExit]);
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
@@ -705,6 +717,38 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return omit(collection, ['loms', 'contributors']);
 	};
 
+	const updateCollection = async () => {
+		const newCollection = await CollectionService.updateCollection(
+			stripCollectionFieldsBeforeInsertOrUpdate(collectionState.initialCollection),
+			stripCollectionFieldsBeforeInsertOrUpdate(collectionState.currentCollection),
+			user
+		);
+
+		if (newCollection) {
+			try {
+				await CollectionService.deleteCollectionLomLinks(newCollection.id);
+
+				await CollectionService.insertCollectionLomLinks(
+					newCollection.id,
+					(collectionState.currentCollection?.loms || []).map((lom) => lom.lom.id)
+				);
+			} catch (err) {
+				console.error('Failed to update collection/bundle loms', err);
+				ToastService.danger(
+					isCollection
+						? tHtml(
+								'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-collectie-is-mislukt'
+						  )
+						: tHtml(
+								'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-bundel-is-mislukt'
+						  )
+				);
+			}
+		}
+
+		return newCollection;
+	};
+
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
@@ -717,34 +761,13 @@ const CollectionOrBundleEdit: FunctionComponent<
 			}
 
 			if (collectionState.currentCollection) {
-				const newCollection = await CollectionService.updateCollection(
-					stripCollectionFieldsBeforeInsertOrUpdate(collectionState.initialCollection),
-					stripCollectionFieldsBeforeInsertOrUpdate(collectionState.currentCollection),
-					user
-				);
+				const newCollection = await updateCollection();
 
 				if (newCollection) {
-					try {
-						await CollectionService.deleteCollectionLomLinks(newCollection.id);
-
-						await CollectionService.insertCollectionLomLinks(
-							newCollection.id,
-							(collectionState.currentCollection.loms || []).map((lom) => lom.lom.id)
-						);
-					} catch (err) {
-						console.error('Failed to update collection/bundle loms', err);
-						ToastService.danger(
-							isCollection
-								? tHtml(
-										'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-collectie-is-mislukt'
-								  )
-								: tHtml(
-										'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-bundel-is-mislukt'
-								  )
-						);
-					}
-
 					checkPermissionsAndGetCollection();
+
+					setUnsavedChanges(false);
+
 					ToastService.success(
 						isCollection
 							? tHtml(
@@ -754,6 +777,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 									'collection/components/collection-or-bundle-edit___bundle-opgeslagen'
 							  )
 					);
+
 					trackEvents(
 						{
 							object: String(newCollection.id),
@@ -1096,6 +1120,72 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
+	const updateCollectionEditor = async () => {
+		try {
+			await CollectionService.updateCollectionEditor(collectionId);
+		} catch (err) {
+			redirectToClientPage(
+				buildLink(APP_PATH.COLLECTION_DETAIL.route, { id: collectionId }),
+				history
+			);
+
+			if ((err as CustomError).innerException?.additionalInfo.statusCode === 409) {
+				await releaseCollectionEditStatus();
+				ToastService.danger(tText('Iemand is deze collectie reeds aan het bewerken.'));
+			} else {
+				ToastService.danger(tText('Verbinding met bewerk server verloren'));
+			}
+		}
+	};
+
+	const releaseCollectionEditStatus = async () => {
+		try {
+			await CollectionService.releaseCollectionEditStatus(collectionId);
+		} catch (err) {
+			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
+				ToastService.danger(
+					tText('Er liep iets fout met het updaten van de collectie bewerk status')
+				);
+			}
+		}
+	};
+
+	const onForcedExitPage = async () => {
+		setIsForcedExit(true);
+		try {
+			if (!user.profile?.id) {
+				return;
+			}
+
+			await updateCollection();
+
+			ToastService.success(
+				tText('Je was meer dan 15 minuten inactief. Je aanpassingen zijn opgeslagen.'),
+				{
+					autoClose: false,
+				}
+			);
+		} catch (err) {
+			ToastService.danger(
+				tText(
+					'Je was meer dan 15 minuten inactief. Het opslaan van je aanpassingen is mislukt.'
+				),
+				{
+					autoClose: false,
+				}
+			);
+		}
+
+		releaseCollectionEditStatus();
+
+		redirectToClientPage(
+			buildLink(APP_PATH.COLLECTION_DETAIL.route, {
+				id: collectionId,
+			}),
+			history
+		);
+	};
+
 	const renderTab = () => {
 		if (collectionState.currentCollection) {
 			switch (currentTab) {
@@ -1412,6 +1502,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 					isOpen={isEnterItemIdModalOpen}
 					onClose={() => setEnterItemIdModalOpen(false)}
 					inputCallback={handleAddItemById}
+				/>
+
+				<InActivityWarningModal
+					onActivity={updateCollectionEditor}
+					onExit={releaseCollectionEditStatus}
+					warningMessage={tHtml('Door inactiviteit zal de collectie zichzelf sluiten.')}
+					currentPath={history.location.pathname}
+					editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
+					onForcedExit={onForcedExitPage}
 				/>
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />

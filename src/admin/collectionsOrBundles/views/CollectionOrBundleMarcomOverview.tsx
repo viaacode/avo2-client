@@ -17,6 +17,7 @@ import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
 } from '../../../collection/collection.const';
+import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -307,7 +308,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	) => {
 		const editLink = buildLink(
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-			{ id: rowData.id, tabId: 'marcom' }
+			{ id: rowData.id, tabId: CollectionCreateUpdateTab.MARCOM }
 		);
 		switch (columnId) {
 			case 'title': {

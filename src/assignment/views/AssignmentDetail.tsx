@@ -26,10 +26,10 @@ import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { HeaderOwnerAndContributors, InteractiveTour } from '../../shared/components';
+import { EditButton, HeaderOwnerAndContributors, InteractiveTour } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-import { getMoreOptionsLabel } from '../../shared/constants';
+import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/constants';
 import { createDropdownMenuItem, CustomError, navigate } from '../../shared/helpers';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -48,6 +48,7 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
@@ -73,11 +74,9 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const id = match.params.id;
 
-	const [assignmentLoading, setAssigmentLoading] = useState(false);
-	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
-		null
-	);
+	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
 		canEditAssignments: false,
@@ -86,21 +85,37 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
-	const [isForbidden, setIsForbidden] = useState<boolean>(false);
-	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
+	const { data: editStatuses } = useGetAssignmentsEditStatuses([id], {
+		enabled: permissions.canEditAssignments || false,
+		refetchInterval: EDIT_STATUS_REFETCH_TIME,
+		refetchIntervalInBackground: true,
+	});
+
+	// Errors
+	const [isForbidden, setIsForbidden] = useState<boolean>(false);
+	const [assignmentLoading, setAssigmentLoading] = useState(false);
+	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
+		null
+	);
+
+	// Modals
+	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
-	const id = match.params.id;
+
+	// Computed
 	const isPublic = assignment?.is_public || false;
 	const isContributor = assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
 	const isSharedWithOthers =
 		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
+	const isBeingEdited = editStatuses && !!editStatuses[id];
+
 	const getPermissions = useCallback(
 		async (
 			user: Avo.User.User | undefined,
@@ -460,14 +475,17 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 				<Spacer margin="left-small">
 					{permissions?.canEditAssignments && (
-						<Button
+						<EditButton
 							type="primary"
-							icon={IconName.edit}
 							label={tText('assignment/views/assignment-response-edit___bewerken')}
 							title={tText(
 								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
 							)}
 							onClick={() => executeAction(ASSIGNMENT_ACTIONS.editAssignment)}
+							disabled={isBeingEdited}
+							toolTipContent={tHtml(
+								'Deze opdracht wordt momenteel bewerkt door een andere gebruiker. Het is niet mogelijk met met meer dan 1 gebruiker simultaan te bewerken.'
+							)}
 						/>
 					)}
 				</Spacer>
