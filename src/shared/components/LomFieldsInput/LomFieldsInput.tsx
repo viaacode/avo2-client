@@ -20,10 +20,10 @@ import {
 type LomFieldsInputProps = {
 	loms: Avo.Lom.LomField[];
 	onChange: (newLoms: Avo.Lom.LomField[]) => void;
-	isAssignment?: boolean;
+	showThemes?: boolean;
 };
 
-const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, isAssignment }) => {
+const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes }) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => {
 		return groupLoms(loms);
@@ -90,7 +90,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, isAssignment 
 				/>
 			</FormGroup>
 
-			{!isAssignment && (
+			{!showThemes && (
 				<FormGroup
 					label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
 					labelFor="themeId"

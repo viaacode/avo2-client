@@ -176,7 +176,7 @@ export const getValidationErrorsForPublish = async (
 	});
 
 	const duplicateErrors = await getDuplicateTitleOrDescriptionErrors(assignment);
-	return compact([...validationErrors, ...(duplicateErrors || [])]);
+	return compact([...validationErrors, ...duplicateErrors]);
 };
 
 type ValidationRule<T> = {
@@ -306,11 +306,11 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
 
 export const getDuplicateTitleOrDescriptionErrors = async (
 	assignment: Partial<Avo.Assignment.Assignment>
-): Promise<string[] | undefined> => {
+): Promise<string[]> => {
 	const errors = [];
 
 	if (!assignment.title || !assignment.description) {
-		return;
+		return [];
 	}
 
 	const duplicates = await AssignmentService.getAssignmentsByTitleOrDescription(

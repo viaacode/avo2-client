@@ -66,7 +66,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 											[]
 										}
 										onChange={onLomsChange}
-										isAssignment
+										showThemes
 									/>
 
 									<ShortDescriptionField
