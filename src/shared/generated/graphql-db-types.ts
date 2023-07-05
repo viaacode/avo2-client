@@ -3153,6 +3153,7 @@ export type App_Assignments_V2 = {
   loms: Array<App_Assignments_V2_Lom_Links>;
   /** An aggregate relationship */
   loms_aggregate: App_Assignments_V2_Lom_Links_Aggregate;
+  note?: Maybe<Scalars['String']>;
   /** An object relationship */
   owner?: Maybe<Users_Summary_View>;
   owner_profile_id: Scalars['uuid'];
@@ -3982,6 +3983,7 @@ export type App_Assignments_V2_Bool_Exp = {
   lom_learning_resource_type?: InputMaybe<Jsonb_Comparison_Exp>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Bool_Exp>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Bool_Exp>;
+  note?: InputMaybe<String_Comparison_Exp>;
   owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
@@ -4419,6 +4421,7 @@ export type App_Assignments_V2_Insert_Input = {
   last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
   loms?: InputMaybe<App_Assignments_V2_Lom_Links_Arr_Rel_Insert_Input>;
+  note?: InputMaybe<Scalars['String']>;
   owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
@@ -4644,6 +4647,7 @@ export type App_Assignments_V2_Max_Fields = {
   id?: Maybe<Scalars['uuid']>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
   last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
+  note?: Maybe<Scalars['String']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
   thumbnail_path?: Maybe<Scalars['String']>;
@@ -4665,6 +4669,7 @@ export type App_Assignments_V2_Max_Order_By = {
   id?: InputMaybe<Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
   last_user_edit_profile_id?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   published_at?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
@@ -4687,6 +4692,7 @@ export type App_Assignments_V2_Min_Fields = {
   id?: Maybe<Scalars['uuid']>;
   last_user_edit_at?: Maybe<Scalars['timestamptz']>;
   last_user_edit_profile_id?: Maybe<Scalars['uuid']>;
+  note?: Maybe<Scalars['String']>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
   thumbnail_path?: Maybe<Scalars['String']>;
@@ -4708,6 +4714,7 @@ export type App_Assignments_V2_Min_Order_By = {
   id?: InputMaybe<Order_By>;
   last_user_edit_at?: InputMaybe<Order_By>;
   last_user_edit_profile_id?: InputMaybe<Order_By>;
+  note?: InputMaybe<Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   published_at?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
@@ -4762,6 +4769,7 @@ export type App_Assignments_V2_Order_By = {
   last_user_edit_profile_id?: InputMaybe<Order_By>;
   lom_learning_resource_type?: InputMaybe<Order_By>;
   loms_aggregate?: InputMaybe<App_Assignments_V2_Lom_Links_Aggregate_Order_By>;
+  note?: InputMaybe<Order_By>;
   owner?: InputMaybe<Users_Summary_View_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
@@ -5442,6 +5450,8 @@ export enum App_Assignments_V2_Select_Column {
   /** column name */
   LomLearningResourceType = 'lom_learning_resource_type',
   /** column name */
+  Note = 'note',
+  /** column name */
   OwnerProfileId = 'owner_profile_id',
   /** column name */
   PublishedAt = 'published_at',
@@ -5493,6 +5503,7 @@ export type App_Assignments_V2_Set_Input = {
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
   last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
+  note?: InputMaybe<Scalars['String']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
@@ -5559,6 +5570,7 @@ export type App_Assignments_V2_Stream_Cursor_Value_Input = {
   last_user_edit_at?: InputMaybe<Scalars['timestamptz']>;
   last_user_edit_profile_id?: InputMaybe<Scalars['uuid']>;
   lom_learning_resource_type?: InputMaybe<Scalars['jsonb']>;
+  note?: InputMaybe<Scalars['String']>;
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
@@ -5609,6 +5621,8 @@ export enum App_Assignments_V2_Update_Column {
   LastUserEditProfileId = 'last_user_edit_profile_id',
   /** column name */
   LomLearningResourceType = 'lom_learning_resource_type',
+  /** column name */
+  Note = 'note',
   /** column name */
   OwnerProfileId = 'owner_profile_id',
   /** column name */

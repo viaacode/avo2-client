@@ -32,13 +32,13 @@
   "dependencies": {
     "@flowplayer/player": "3.2.8",
     "@hookform/resolvers": "^2.9.9",
-    "@meemoo/admin-core-ui": "2.2.18",
-    "@meemoo/react-components": "2.25.14",
+    "@meemoo/admin-core-ui": "2.2.19",
+    "@meemoo/react-components": "2.25.16",
     "@react-hook/resize-observer": "^1.2.6",
     "@storybook/addon-actions": "^6.5.12",
     "@tanstack/react-query": "^4.14.1",
-    "@viaa/avo2-components": "^3.6.10",
-    "@viaa/avo2-types": "2.48.22",
+    "@viaa/avo2-components": "^3.6.12",
+    "@viaa/avo2-types": "2.48.24",
     "braft-editor": "^2.3.9",
     "capture-stack-trace": "^1.0.1",
     "classnames": "^2.3.2",
@@ -63,6 +63,7 @@
     "react-dom": "17.0.2",
     "react-hook-form": "7.32.0",
     "react-i18next": "^11.2.7",
+    "react-idle-timer": "^5.7.2",
     "react-joyride": "^2.2.1",
     "react-meta-tags": "^0.7.4",
     "react-perfect-scrollbar": "^1.5.8",
@@ -89,6 +90,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.0-placeholder-for-preset-env.2",
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
     "@graphql-codegen/add": "^3.2.1",
