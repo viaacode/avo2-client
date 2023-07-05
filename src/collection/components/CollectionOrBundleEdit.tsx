@@ -1129,8 +1129,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 				history
 			);
 
-			if ((err as CustomError).innerException === 409) {
-				await CollectionService.releaseCollectionEditStatus(collectionId);
+			if ((err as CustomError).innerException?.additionalInfo.statusCode === 409) {
+				await releaseCollectionEditStatus();
 				ToastService.danger(tText('Iemand is deze collectie reeds aan het bewerken.'));
 			} else {
 				ToastService.danger(tText('Verbinding met bewerk server verloren'));
@@ -1138,11 +1138,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
-	const onExitPage = async () => {
+	const releaseCollectionEditStatus = async () => {
 		try {
 			await CollectionService.releaseCollectionEditStatus(collectionId);
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.statusCode !== 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
 				ToastService.danger(
 					tText('Er liep iets fout met het updaten van de collectie bewerk status')
 				);
@@ -1176,7 +1176,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			);
 		}
 
-		onExitPage();
+		releaseCollectionEditStatus();
 
 		redirectToClientPage(
 			buildLink(APP_PATH.COLLECTION_DETAIL.route, {
@@ -1506,7 +1506,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 				<InActivityWarningModal
 					onActivity={updateCollectionEditor}
-					onExit={onExitPage}
+					onExit={releaseCollectionEditStatus}
 					warningMessage={tHtml('Door inactiviteit zal de collectie zichzelf sluiten.')}
 					currentPath={history.location.pathname}
 					editPath={APP_PATH.COLLECTION_EDIT_TAB.route}

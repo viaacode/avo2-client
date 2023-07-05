@@ -342,10 +342,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.statusCode === 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo.statusCode === 409) {
 				ToastService.danger(tText('Iemand is deze opdracht reeds aan het bewerken.'));
 			} else {
-				await AssignmentService.releaseAssignmentEditStatus(assignmentId);
+				await releaseAssignmentEditStatus();
 				ToastService.danger(tText('Verbinding met bewerk server verloren'));
 			}
 
@@ -356,11 +356,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 	};
 
-	const onExitPage = async () => {
+	const releaseAssignmentEditStatus = async () => {
 		try {
 			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.statusCode !== 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
 				ToastService.danger(
 					tText('Er liep iets fout met het updaten van de opdracht bewerk status')
 				);
@@ -401,7 +401,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			);
 		}
 
-		onExitPage();
+		releaseAssignmentEditStatus();
 
 		redirectToClientPage(
 			buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
@@ -718,7 +718,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 					<InActivityWarningModal
 						onActivity={updateAssignmentEditor}
-						onExit={onExitPage}
+						onExit={releaseAssignmentEditStatus}
 						warningMessage={tHtml(
 							'Door inactiviteit zal de opdracht zichzelf sluiten.'
 						)}
