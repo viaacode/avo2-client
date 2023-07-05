@@ -418,19 +418,23 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const handleDeleteConfirm = async () => {
-		if (isContributor) {
-			await AssignmentService.deleteContributor(
-				markedAssignment?.id,
-				contributorObj?.id,
-				user.profile?.id
-			);
-		} else {
-			await deleteAssignment(markedAssignment?.id, user);
+		try {
+			if (isContributor) {
+				await AssignmentService.deleteContributor(
+					markedAssignment?.id,
+					contributorObj?.id,
+					user.profile?.id
+				);
+			} else {
+				await deleteAssignment(markedAssignment?.id, user);
+			}
+
+			await updateAndReset();
+		} catch (err) {
+			ToastService.danger(tHtml('Er liep iets fout met het verwijderen van de opdracht.'));
 		}
 
 		handleDeleteModalClose();
-
-		await updateAndReset();
 	};
 
 	const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {

@@ -49060,7 +49060,7 @@ export type GetCollectionsByItemUuidQueryVariables = Exact<{
 
 export type GetCollectionsByItemUuidQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string, is_public: boolean, profile?: { __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null }> };
 
-export type GetCollectionsByOwnerQueryVariables = Exact<{
+export type GetCollectionsByOwnerOrContributorQueryVariables = Exact<{
   collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
   type_id?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -49070,7 +49070,7 @@ export type GetCollectionsByOwnerQueryVariables = Exact<{
 }>;
 
 
-export type GetCollectionsByOwnerQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, collaborator_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null }, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
+export type GetCollectionsByOwnerOrContributorQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, collaborator_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null }, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
 
 export type GetContributorsByCollectionUuidQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -52582,8 +52582,8 @@ export const useGetCollectionsByItemUuidQuery = <
       fetchData<GetCollectionsByItemUuidQuery, GetCollectionsByItemUuidQueryVariables>(GetCollectionsByItemUuidDocument, variables),
       options
     );
-export const GetCollectionsByOwnerDocument = `
-    query getCollectionsByOwner($collaborator_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_overview_order_by!] = {updated_at: desc}, $where: [app_collections_overview_bool_exp!] = []) {
+export const GetCollectionsByOwnerOrContributorDocument = `
+    query getCollectionsByOwnerOrContributor($collaborator_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_overview_order_by!] = {updated_at: desc}, $where: [app_collections_overview_bool_exp!] = []) {
   app_collections_overview(
     where: {type_id: {_eq: $type_id}, collaborator_profile_id: {_eq: $collaborator_profile_id}, is_deleted: {_eq: false}, _and: $where}
     offset: $offset
@@ -52665,16 +52665,16 @@ export const GetCollectionsByOwnerDocument = `
   }
 }
     `;
-export const useGetCollectionsByOwnerQuery = <
-      TData = GetCollectionsByOwnerQuery,
+export const useGetCollectionsByOwnerOrContributorQuery = <
+      TData = GetCollectionsByOwnerOrContributorQuery,
       TError = unknown
     >(
-      variables?: GetCollectionsByOwnerQueryVariables,
-      options?: UseQueryOptions<GetCollectionsByOwnerQuery, TError, TData>
+      variables?: GetCollectionsByOwnerOrContributorQueryVariables,
+      options?: UseQueryOptions<GetCollectionsByOwnerOrContributorQuery, TError, TData>
     ) =>
-    useQuery<GetCollectionsByOwnerQuery, TError, TData>(
-      variables === undefined ? ['getCollectionsByOwner'] : ['getCollectionsByOwner', variables],
-      fetchData<GetCollectionsByOwnerQuery, GetCollectionsByOwnerQueryVariables>(GetCollectionsByOwnerDocument, variables),
+    useQuery<GetCollectionsByOwnerOrContributorQuery, TError, TData>(
+      variables === undefined ? ['getCollectionsByOwnerOrContributor'] : ['getCollectionsByOwnerOrContributor', variables],
+      fetchData<GetCollectionsByOwnerOrContributorQuery, GetCollectionsByOwnerOrContributorQueryVariables>(GetCollectionsByOwnerOrContributorDocument, variables),
       options
     );
 export const GetContributorsByCollectionUuidDocument = `
