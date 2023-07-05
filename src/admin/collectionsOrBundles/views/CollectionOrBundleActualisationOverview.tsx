@@ -23,7 +23,7 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
-import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -67,7 +67,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
-	const [collectionLabels] = useCollectionQualityLabels(true);
+	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
 	// computed

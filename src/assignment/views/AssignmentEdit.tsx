@@ -94,7 +94,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment | null>(null);
-	const [assignmentLoading, setAssigmentLoading] = useState(false);
+	const [assignmentLoading, setAssigmentLoading] = useState(true);
 	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);

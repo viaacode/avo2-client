@@ -30,7 +30,7 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 	bookmarkButtons,
 	renderDetailLink,
 	renderSearchLink,
-	collectionLabels,
+	qualityLabels,
 	...resultProps
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -60,8 +60,8 @@ const SearchResults: FunctionComponent<SearchResultsProps> = ({
 				id={result.uid}
 				key={`search-result-item-${result.uid}`}
 				result={searchResult}
-				collectionLabelLookup={Object.fromEntries(
-					collectionLabels.map((item) => [item.value, item.description])
+				qualityLabelLookup={Object.fromEntries(
+					qualityLabels.map((item) => [item.value, item.description])
 				)}
 				isBookmarked={getIsBookmarked(result)}
 				bookmarkButton={bookmarkButtons}

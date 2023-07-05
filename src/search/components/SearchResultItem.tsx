@@ -1,16 +1,10 @@
-import {
-	SearchResult,
-	SearchResultSubtitle,
-	SearchResultThumbnail,
-	SearchResultTitle,
-	TagOption,
-	Thumbnail,
-} from '@viaa/avo2-components';
+import { IconName, TagOption, Thumbnail } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { capitalize, compact, get, startCase, trimStart } from 'lodash-es';
+import { compact, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { toEnglishContentType } from '../../collection/collection.types';
+import { SearchResult } from '../../shared/components/SearchResult/SearchResult';
 import { formatDate } from '../../shared/helpers';
 import { tText } from '../../shared/helpers/translate';
 import { SearchResultItemProps } from '../search.types';
@@ -23,20 +17,51 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	handleTagClicked,
 	result,
 	isBookmarked,
-	collectionLabelLookup,
+	qualityLabelLookup,
 	bookmarkButton,
 	renderDetailLink,
 	renderSearchLink,
 }) => {
 	const getTags = (result: Avo.Search.ResultItem): TagOption[] => {
-		return compact(
-			(get(result, 'collection_labels', []) as string[]).map((id: string) => {
+		const qualityLabels = compact(result?.collection_labels || []) as string[];
+		const assignmentTypeLabels = compact(result?.lom_learning_resource_type || []);
+
+		const TAG_TRANSLATIONS: Record<string, string> = {
+			PARTNER: tText('Partner'),
+			REDACTIE: tText('Keuze van de redactie'),
+			UITGEVERIJ: tText('Uitgeverij'),
+			KIJK: tText('Kijken en luisteren'),
+			ZOEK: tText('Zoeken'),
+			BOUW: tText('Zoek en bouw'),
+		};
+
+		const TAG_LOGO: Record<string, IconName | undefined> = {
+			PARTNER: undefined,
+			REDACTIE: undefined,
+			UITGEVERIJ: undefined,
+			KIJK: IconName.viewAndListen,
+			ZOEK: IconName.search2,
+			BOUW: IconName.collection2,
+		};
+
+		return compact([
+			...assignmentTypeLabels.map((id: string) => {
 				return {
 					id,
-					label: collectionLabelLookup[id] || capitalize(startCase(id)),
+					label: TAG_TRANSLATIONS[id.toUpperCase()],
+					icon: TAG_LOGO[id],
+					className: 'c-search-result-item__assignment-label-tag',
 				};
-			})
-		);
+			}),
+			...qualityLabels.map((id: string) => {
+				return {
+					id,
+					label: qualityLabelLookup[id] || TAG_TRANSLATIONS[id.toUpperCase()],
+					icon: TAG_LOGO[id],
+					className: 'c-search-result-item__quality-label-tag',
+				};
+			}),
+		]);
 	};
 
 	const getMetaData = () => {
@@ -92,31 +117,25 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				isBookmarked={bookmarkButton ? isBookmarked : null}
 				onToggleBookmark={(active: boolean) => handleBookmarkToggle(result.uid, active)}
 				onTagClicked={handleTagClicked}
-			>
-				<SearchResultTitle>
-					{renderDetailLink(
-						result.dc_title,
-						result.uid || result.id,
-						result.administrative_type
-					)}
-				</SearchResultTitle>
-				{!!result.original_cp && (
-					<SearchResultSubtitle>
-						{renderSearchLink(
-							result.original_cp,
-							{ filters: { provider: [result.original_cp] } },
-							'c-body-2'
-						)}
-					</SearchResultSubtitle>
+				title={renderDetailLink(
+					result.dc_title,
+					result.external_id || result.uid || result.id,
+					result.administrative_type
 				)}
-				<SearchResultThumbnail>
-					{renderDetailLink(
-						renderThumbnail(result),
-						result.uid || result.id,
-						result.administrative_type
-					)}
-				</SearchResultThumbnail>
-			</SearchResult>
+				subTitle={
+					!!result.original_cp &&
+					renderSearchLink(
+						result.original_cp,
+						{ filters: { provider: [result.original_cp] } },
+						'c-body-2'
+					)
+				}
+				thumbnail={renderDetailLink(
+					renderThumbnail(result),
+					result.external_id || result.uid || result.id,
+					result.administrative_type
+				)}
+			/>
 		</div>
 	);
 };
