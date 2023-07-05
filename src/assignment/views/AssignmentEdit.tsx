@@ -743,8 +743,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		}
 
 		if (
-			// !canEditAllAssignments ||
-			assignment &&
+			assignment?.id &&
 			!isUserAssignmentOwner(user, assignment) &&
 			!isUserAssignmentContributor(user, assignment) &&
 			!canEditAllAssignments
