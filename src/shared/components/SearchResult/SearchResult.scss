@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import "../../../styles/settings/colors";
 @import "../../../styles/settings/variables";
 
@@ -85,7 +87,7 @@
 		.o-svg-icon {
 			width: 1.5rem;
 			height: 1.5rem;
-			margin-right: $g-spacer-unit / 2;
+			margin-right: math.div($g-spacer-unit, 2);
 		}
 
 		&.c-search-result-item__assignment-label-tag {
