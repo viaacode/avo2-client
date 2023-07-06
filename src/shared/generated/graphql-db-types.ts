@@ -3118,7 +3118,6 @@ export type App_Assignments_Updates = {
 export type App_Assignments_V2 = {
   __typename?: 'app_assignments_v2';
   answer_url?: Maybe<Scalars['String']>;
-  assignment_type: Scalars['String'];
   available_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
   blocks: Array<App_Assignment_Blocks_V2>;
@@ -3959,7 +3958,6 @@ export type App_Assignments_V2_Bool_Exp = {
   _not?: InputMaybe<App_Assignments_V2_Bool_Exp>;
   _or?: InputMaybe<Array<App_Assignments_V2_Bool_Exp>>;
   answer_url?: InputMaybe<String_Comparison_Exp>;
-  assignment_type?: InputMaybe<String_Comparison_Exp>;
   available_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   blocks?: InputMaybe<App_Assignment_Blocks_V2_Bool_Exp>;
   blocks_aggregate?: InputMaybe<App_Assignment_Blocks_V2_Aggregate_Bool_Exp>;
@@ -4295,114 +4293,9 @@ export type App_Assignments_V2_Inc_Input = {
   type_id?: InputMaybe<Scalars['Int']>;
 };
 
-/** columns and relationships of "app.assignments_v2_index" */
-export type App_Assignments_V2_Index = {
-  __typename?: 'app_assignments_v2_index';
-  document?: Maybe<Scalars['json']>;
-  document_id?: Maybe<Scalars['uuid']>;
-  index_id?: Maybe<Scalars['String']>;
-  is_deleted?: Maybe<Scalars['Boolean']>;
-  is_public?: Maybe<Scalars['Boolean']>;
-};
-
-
-/** columns and relationships of "app.assignments_v2_index" */
-export type App_Assignments_V2_IndexDocumentArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregated selection of "app.assignments_v2_index" */
-export type App_Assignments_V2_Index_Aggregate = {
-  __typename?: 'app_assignments_v2_index_aggregate';
-  aggregate?: Maybe<App_Assignments_V2_Index_Aggregate_Fields>;
-  nodes: Array<App_Assignments_V2_Index>;
-};
-
-/** aggregate fields of "app.assignments_v2_index" */
-export type App_Assignments_V2_Index_Aggregate_Fields = {
-  __typename?: 'app_assignments_v2_index_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignments_V2_Index_Max_Fields>;
-  min?: Maybe<App_Assignments_V2_Index_Min_Fields>;
-};
-
-
-/** aggregate fields of "app.assignments_v2_index" */
-export type App_Assignments_V2_Index_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignments_V2_Index_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignments_v2_index". All fields are combined with a logical 'AND'. */
-export type App_Assignments_V2_Index_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignments_V2_Index_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignments_V2_Index_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignments_V2_Index_Bool_Exp>>;
-  document?: InputMaybe<Json_Comparison_Exp>;
-  document_id?: InputMaybe<Uuid_Comparison_Exp>;
-  index_id?: InputMaybe<String_Comparison_Exp>;
-  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
-  is_public?: InputMaybe<Boolean_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type App_Assignments_V2_Index_Max_Fields = {
-  __typename?: 'app_assignments_v2_index_max_fields';
-  document_id?: Maybe<Scalars['uuid']>;
-  index_id?: Maybe<Scalars['String']>;
-};
-
-/** aggregate min on columns */
-export type App_Assignments_V2_Index_Min_Fields = {
-  __typename?: 'app_assignments_v2_index_min_fields';
-  document_id?: Maybe<Scalars['uuid']>;
-  index_id?: Maybe<Scalars['String']>;
-};
-
-/** Ordering options when selecting data from "app.assignments_v2_index". */
-export type App_Assignments_V2_Index_Order_By = {
-  document?: InputMaybe<Order_By>;
-  document_id?: InputMaybe<Order_By>;
-  index_id?: InputMaybe<Order_By>;
-  is_deleted?: InputMaybe<Order_By>;
-  is_public?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "app.assignments_v2_index" */
-export enum App_Assignments_V2_Index_Select_Column {
-  /** column name */
-  Document = 'document',
-  /** column name */
-  DocumentId = 'document_id',
-  /** column name */
-  IndexId = 'index_id',
-  /** column name */
-  IsDeleted = 'is_deleted',
-  /** column name */
-  IsPublic = 'is_public'
-}
-
-/** Streaming cursor of the table "app_assignments_v2_index" */
-export type App_Assignments_V2_Index_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignments_V2_Index_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignments_V2_Index_Stream_Cursor_Value_Input = {
-  document?: InputMaybe<Scalars['json']>;
-  document_id?: InputMaybe<Scalars['uuid']>;
-  index_id?: InputMaybe<Scalars['String']>;
-  is_deleted?: InputMaybe<Scalars['Boolean']>;
-  is_public?: InputMaybe<Scalars['Boolean']>;
-};
-
 /** input type for inserting data into table "app.assignments_v2" */
 export type App_Assignments_V2_Insert_Input = {
   answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
   available_at?: InputMaybe<Scalars['timestamptz']>;
   blocks?: InputMaybe<App_Assignment_Blocks_V2_Arr_Rel_Insert_Input>;
   bookmarks?: InputMaybe<App_Assignments_V2_Bookmarks_Arr_Rel_Insert_Input>;
@@ -4638,7 +4531,6 @@ export type App_Assignments_V2_Lom_Links_Updates = {
 export type App_Assignments_V2_Max_Fields = {
   __typename?: 'app_assignments_v2_max_fields';
   answer_url?: Maybe<Scalars['String']>;
-  assignment_type?: Maybe<Scalars['String']>;
   available_at?: Maybe<Scalars['timestamptz']>;
   briefing_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
@@ -4660,7 +4552,6 @@ export type App_Assignments_V2_Max_Fields = {
 /** order by max() on columns of table "app.assignments_v2" */
 export type App_Assignments_V2_Max_Order_By = {
   answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
   available_at?: InputMaybe<Order_By>;
   briefing_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
@@ -4683,7 +4574,6 @@ export type App_Assignments_V2_Max_Order_By = {
 export type App_Assignments_V2_Min_Fields = {
   __typename?: 'app_assignments_v2_min_fields';
   answer_url?: Maybe<Scalars['String']>;
-  assignment_type?: Maybe<Scalars['String']>;
   available_at?: Maybe<Scalars['timestamptz']>;
   briefing_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
@@ -4705,7 +4595,6 @@ export type App_Assignments_V2_Min_Fields = {
 /** order by min() on columns of table "app.assignments_v2" */
 export type App_Assignments_V2_Min_Order_By = {
   answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
   available_at?: InputMaybe<Order_By>;
   briefing_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
@@ -4750,7 +4639,6 @@ export type App_Assignments_V2_On_Conflict = {
 /** Ordering options when selecting data from "app.assignments_v2". */
 export type App_Assignments_V2_Order_By = {
   answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
   available_at?: InputMaybe<Order_By>;
   blocks_aggregate?: InputMaybe<App_Assignment_Blocks_V2_Aggregate_Order_By>;
   bookmarks_aggregate?: InputMaybe<App_Assignments_V2_Bookmarks_Aggregate_Order_By>;
@@ -5424,8 +5312,6 @@ export enum App_Assignments_V2_Select_Column {
   /** column name */
   AnswerUrl = 'answer_url',
   /** column name */
-  AssignmentType = 'assignment_type',
-  /** column name */
   AvailableAt = 'available_at',
   /** column name */
   BriefingId = 'briefing_id',
@@ -5490,7 +5376,6 @@ export enum App_Assignments_V2_Select_Column_App_Assignments_V2_Aggregate_Bool_E
 /** input type for updating data in table "app.assignments_v2" */
 export type App_Assignments_V2_Set_Input = {
   answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
   available_at?: InputMaybe<Scalars['timestamptz']>;
   briefing_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
@@ -5557,7 +5442,6 @@ export type App_Assignments_V2_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type App_Assignments_V2_Stream_Cursor_Value_Input = {
   answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
   available_at?: InputMaybe<Scalars['timestamptz']>;
   briefing_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
@@ -5595,8 +5479,6 @@ export type App_Assignments_V2_Sum_Order_By = {
 export enum App_Assignments_V2_Update_Column {
   /** column name */
   AnswerUrl = 'answer_url',
-  /** column name */
-  AssignmentType = 'assignment_type',
   /** column name */
   AvailableAt = 'available_at',
   /** column name */
@@ -30510,10 +30392,6 @@ export type Query_Root = {
   app_assignments_v2_contributors_aggregate: App_Assignments_V2_Contributors_Aggregate;
   /** fetch data from the table: "app.assignments_v2_contributors" using primary key columns */
   app_assignments_v2_contributors_by_pk?: Maybe<App_Assignments_V2_Contributors>;
-  /** fetch data from the table: "app.assignments_v2_index" */
-  app_assignments_v2_index: Array<App_Assignments_V2_Index>;
-  /** fetch aggregated fields from the table: "app.assignments_v2_index" */
-  app_assignments_v2_index_aggregate: App_Assignments_V2_Index_Aggregate;
   /** fetch data from the table: "app.assignments_v2_lom_links" */
   app_assignments_v2_lom_links: Array<App_Assignments_V2_Lom_Links>;
   /** fetch aggregated fields from the table: "app.assignments_v2_lom_links" */
@@ -31368,24 +31246,6 @@ export type Query_RootApp_Assignments_V2_Contributors_AggregateArgs = {
 
 export type Query_RootApp_Assignments_V2_Contributors_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootApp_Assignments_V2_IndexArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Index_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Index_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Index_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignments_V2_Index_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Index_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Index_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Index_Bool_Exp>;
 };
 
 
@@ -36770,12 +36630,6 @@ export type Subscription_Root = {
   app_assignments_v2_contributors_by_pk?: Maybe<App_Assignments_V2_Contributors>;
   /** fetch data from the table in a streaming manner: "app.assignments_v2_contributors" */
   app_assignments_v2_contributors_stream: Array<App_Assignments_V2_Contributors>;
-  /** fetch data from the table: "app.assignments_v2_index" */
-  app_assignments_v2_index: Array<App_Assignments_V2_Index>;
-  /** fetch aggregated fields from the table: "app.assignments_v2_index" */
-  app_assignments_v2_index_aggregate: App_Assignments_V2_Index_Aggregate;
-  /** fetch data from the table in a streaming manner: "app.assignments_v2_index" */
-  app_assignments_v2_index_stream: Array<App_Assignments_V2_Index>;
   /** fetch data from the table: "app.assignments_v2_lom_links" */
   app_assignments_v2_lom_links: Array<App_Assignments_V2_Lom_Links>;
   /** fetch aggregated fields from the table: "app.assignments_v2_lom_links" */
@@ -37917,31 +37771,6 @@ export type Subscription_RootApp_Assignments_V2_Contributors_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Assignments_V2_Contributors_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Assignments_V2_Contributors_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_V2_IndexArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Index_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Index_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Index_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_V2_Index_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_V2_Index_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_V2_Index_Order_By>>;
-  where?: InputMaybe<App_Assignments_V2_Index_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_V2_Index_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignments_V2_Index_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignments_V2_Index_Bool_Exp>;
 };
 
 

@@ -67,6 +67,19 @@ export interface AppCollectionBookmark {
 	collection_uuid: string;
 	created_at: string;
 }
+export interface AppAssignmentBookmark {
+	assignment?: {
+		title: string;
+		thumbnail_path?: string;
+		created_at: string;
+		type_id: number;
+		view_counts: {
+			count: number;
+		}[];
+	};
+	assignment_id: string;
+	created_at: string;
+}
 
 export type EventAction = 'bookmark' | 'unbookmark' | 'view' | 'play';
 export type QueryType = 'query' | 'get' | 'increment';

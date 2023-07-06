@@ -4,6 +4,7 @@ import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
 import {
+	DeleteAssignmentBookmarksForUserMutationVariables,
 	DeleteCollectionBookmarksForUserMutation,
 	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkMutation,
@@ -51,6 +52,7 @@ import { trackEvents } from '../event-logging-service';
 
 import { GET_EVENT_QUERIES } from './bookmarks-views-plays-service.const';
 import {
+	AppAssignmentBookmark,
 	AppCollectionBookmark,
 	AppItemBookmark,
 	BookmarkInfo,
@@ -93,6 +95,7 @@ export class BookmarksViewsPlaysService {
 					| InsertCollectionBookmarkMutationVariables
 					| DeleteItemBookmarkMutationVariables
 					| DeleteCollectionBookmarksForUserMutationVariables
+					| DeleteAssignmentBookmarksForUserMutationVariables
 				>({
 					query,
 					variables,
@@ -300,6 +303,9 @@ export class BookmarksViewsPlaysService {
 			[]) as AppCollectionBookmark[];
 		const itemBookmarkInfos: (BookmarkInfo | null)[] =
 			BookmarksViewsPlaysService.getItemBookmarkInfos(itemBookmarks);
+		const assignmentBookmarks: AppAssignmentBookmark[] =
+			(response.app_assignments_v2_bookmarks || []) as AppAssignmentBookmark[];
+
 		const collectionBookmarkInfos: (BookmarkInfo | null)[] = collectionBookmarks.map(
 			(collectionBookmark): BookmarkInfo | null => {
 				if (!collectionBookmark.bookmarkedCollection) {
@@ -326,7 +332,31 @@ export class BookmarksViewsPlaysService {
 				};
 			}
 		);
-		return [...compact(itemBookmarkInfos), ...compact(collectionBookmarkInfos)];
+		const assignmentBookmarkInfos: (BookmarkInfo | null)[] = assignmentBookmarks.map(
+			(assignmentBookmark): BookmarkInfo | null => {
+				if (!assignmentBookmark.assignment) {
+					return null;
+				}
+				return {
+					contentId: assignmentBookmark.assignment_id,
+					contentLinkId: assignmentBookmark.assignment_id,
+					contentType: 'assignment',
+					createdAt: normalizeTimestamp(assignmentBookmark.created_at).toDate().getTime(),
+					contentTitle: assignmentBookmark.assignment.title,
+					contentThumbnailPath: assignmentBookmark.assignment.thumbnail_path,
+					contentCreatedAt: normalizeTimestamp(assignmentBookmark.assignment.created_at)
+						.toDate()
+						.getTime(),
+					contentViews:
+						get(assignmentBookmark, 'bookmarkedCollection.view_counts[0].count') || 0,
+				};
+			}
+		);
+		return [
+			...compact(itemBookmarkInfos),
+			...compact(collectionBookmarkInfos),
+			...compact(assignmentBookmarkInfos),
+		];
 	}
 
 	private static getQueryAndVariables(
