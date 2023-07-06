@@ -1,4 +1,4 @@
-import { IconName, TagOption, Thumbnail } from '@viaa/avo2-components';
+import { Avatar, IconName, TagOption, Thumbnail } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { compact, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
@@ -89,14 +89,42 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			/>
 		);
 	};
+	const isItem = (result: Avo.Search.ResultItem): boolean => {
+		return !['collectie' || 'bundel' || 'opdracht'].includes(result.administrative_type);
+	};
+
+	const renderAuthorOrOrganization = (result: Avo.Search.ResultItem) => {
+		if (!isItem(result)) {
+			const name = `${result.owner?.firstname || ''} ${result.owner?.lastname || ''}`;
+			const initials = `${result.owner?.firstname?.[0] || ''}${
+				result.owner?.lastname?.[0] || ''
+			}`;
+
+			return (
+				<Avatar
+					image={result.owner?.avatar_path || undefined}
+					name={name}
+					initials={initials.toLocaleUpperCase()}
+					size="small"
+					dark
+				/>
+			);
+		}
+
+		if (result.original_cp) {
+			return renderSearchLink(
+				result.original_cp,
+				{ filters: { provider: [result.original_cp] } },
+				'c-body-2'
+			);
+		}
+
+		return null;
+	};
 
 	let date: string;
 	let dateTooltip: string;
-	if (
-		result.administrative_type === 'collectie' ||
-		result.administrative_type === 'bundel' ||
-		result.administrative_type === 'opdracht'
-	) {
+	if (!isItem(result)) {
 		date = result.updated_at;
 		dateTooltip = tText('search/components/search-result-item___laatst-bijwerking');
 	} else {
@@ -122,14 +150,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 					result.external_id || result.uid || result.id,
 					result.administrative_type
 				)}
-				subTitle={
-					!!result.original_cp &&
-					renderSearchLink(
-						result.original_cp,
-						{ filters: { provider: [result.original_cp] } },
-						'c-body-2'
-					)
-				}
+				subTitle={renderAuthorOrOrganization(result)}
 				thumbnail={renderDetailLink(
 					renderThumbnail(result),
 					result.external_id || result.uid || result.id,
