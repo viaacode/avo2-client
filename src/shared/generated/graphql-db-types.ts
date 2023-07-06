@@ -48778,12 +48778,13 @@ export type BulkUpdateAuthorForAssignmentsMutationVariables = Exact<{
 
 export type BulkUpdateAuthorForAssignmentsMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
 
-export type DeleteAssignmentByIdMutationVariables = Exact<{
+export type SoftDeleteAssignmentByIdMutationVariables = Exact<{
   assignmentId: Scalars['uuid'];
+  now: Scalars['timestamptz'];
 }>;
 
 
-export type DeleteAssignmentByIdMutation = { __typename?: 'mutation_root', delete_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
+export type SoftDeleteAssignmentByIdMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null, delete_app_assignments_v2_contributors?: { __typename?: 'app_assignments_v2_contributors_mutation_response', affected_rows: number } | null };
 
 export type DeleteAssignmentResponseByIdMutationVariables = Exact<{
   assignmentResponseId: Scalars['uuid'];
@@ -49059,8 +49060,8 @@ export type GetCollectionsByItemUuidQueryVariables = Exact<{
 
 export type GetCollectionsByItemUuidQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string, is_public: boolean, profile?: { __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null }> };
 
-export type GetCollectionsByOwnerQueryVariables = Exact<{
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+export type GetCollectionsByOwnerOrContributorQueryVariables = Exact<{
+  collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
   type_id?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -49069,7 +49070,7 @@ export type GetCollectionsByOwnerQueryVariables = Exact<{
 }>;
 
 
-export type GetCollectionsByOwnerQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null }, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
+export type GetCollectionsByOwnerOrContributorQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, collaborator_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null }, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
 
 export type GetContributorsByCollectionUuidQueryVariables = Exact<{
   id: Scalars['uuid'];
@@ -51064,20 +51065,28 @@ export const useBulkUpdateAuthorForAssignmentsMutation = <
       (variables?: BulkUpdateAuthorForAssignmentsMutationVariables) => fetchData<BulkUpdateAuthorForAssignmentsMutation, BulkUpdateAuthorForAssignmentsMutationVariables>(BulkUpdateAuthorForAssignmentsDocument, variables)(),
       options
     );
-export const DeleteAssignmentByIdDocument = `
-    mutation deleteAssignmentById($assignmentId: uuid!) {
-  delete_app_assignments_v2(where: {id: {_eq: $assignmentId}}) {
+export const SoftDeleteAssignmentByIdDocument = `
+    mutation softDeleteAssignmentById($assignmentId: uuid!, $now: timestamptz!) {
+  update_app_assignments_v2(
+    where: {id: {_eq: $assignmentId}}
+    _set: {is_deleted: true, updated_at: $now}
+  ) {
+    affected_rows
+  }
+  delete_app_assignments_v2_contributors(
+    where: {assignment_id: {_eq: $assignmentId}}
+  ) {
     affected_rows
   }
 }
     `;
-export const useDeleteAssignmentByIdMutation = <
+export const useSoftDeleteAssignmentByIdMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentByIdMutation, TError, DeleteAssignmentByIdMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentByIdMutation, TError, DeleteAssignmentByIdMutationVariables, TContext>(
-      ['deleteAssignmentById'],
-      (variables?: DeleteAssignmentByIdMutationVariables) => fetchData<DeleteAssignmentByIdMutation, DeleteAssignmentByIdMutationVariables>(DeleteAssignmentByIdDocument, variables)(),
+    >(options?: UseMutationOptions<SoftDeleteAssignmentByIdMutation, TError, SoftDeleteAssignmentByIdMutationVariables, TContext>) =>
+    useMutation<SoftDeleteAssignmentByIdMutation, TError, SoftDeleteAssignmentByIdMutationVariables, TContext>(
+      ['softDeleteAssignmentById'],
+      (variables?: SoftDeleteAssignmentByIdMutationVariables) => fetchData<SoftDeleteAssignmentByIdMutation, SoftDeleteAssignmentByIdMutationVariables>(SoftDeleteAssignmentByIdDocument, variables)(),
       options
     );
 export const DeleteAssignmentResponseByIdDocument = `
@@ -52573,10 +52582,10 @@ export const useGetCollectionsByItemUuidQuery = <
       fetchData<GetCollectionsByItemUuidQuery, GetCollectionsByItemUuidQueryVariables>(GetCollectionsByItemUuidDocument, variables),
       options
     );
-export const GetCollectionsByOwnerDocument = `
-    query getCollectionsByOwner($owner_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_overview_order_by!] = {updated_at: desc}, $where: [app_collections_overview_bool_exp!] = []) {
+export const GetCollectionsByOwnerOrContributorDocument = `
+    query getCollectionsByOwnerOrContributor($collaborator_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_overview_order_by!] = {updated_at: desc}, $where: [app_collections_overview_bool_exp!] = []) {
   app_collections_overview(
-    where: {type_id: {_eq: $type_id}, owner_profile_id: {_eq: $owner_profile_id}, is_deleted: {_eq: false}, _and: $where}
+    where: {type_id: {_eq: $type_id}, collaborator_profile_id: {_eq: $collaborator_profile_id}, is_deleted: {_eq: false}, _and: $where}
     offset: $offset
     limit: $limit
     order_by: $order
@@ -52591,6 +52600,7 @@ export const GetCollectionsByOwnerDocument = `
     title
     published_at
     owner_profile_id
+    collaborator_profile_id
     profile {
       id
       alias
@@ -52655,16 +52665,16 @@ export const GetCollectionsByOwnerDocument = `
   }
 }
     `;
-export const useGetCollectionsByOwnerQuery = <
-      TData = GetCollectionsByOwnerQuery,
+export const useGetCollectionsByOwnerOrContributorQuery = <
+      TData = GetCollectionsByOwnerOrContributorQuery,
       TError = unknown
     >(
-      variables?: GetCollectionsByOwnerQueryVariables,
-      options?: UseQueryOptions<GetCollectionsByOwnerQuery, TError, TData>
+      variables?: GetCollectionsByOwnerOrContributorQueryVariables,
+      options?: UseQueryOptions<GetCollectionsByOwnerOrContributorQuery, TError, TData>
     ) =>
-    useQuery<GetCollectionsByOwnerQuery, TError, TData>(
-      variables === undefined ? ['getCollectionsByOwner'] : ['getCollectionsByOwner', variables],
-      fetchData<GetCollectionsByOwnerQuery, GetCollectionsByOwnerQueryVariables>(GetCollectionsByOwnerDocument, variables),
+    useQuery<GetCollectionsByOwnerOrContributorQuery, TError, TData>(
+      variables === undefined ? ['getCollectionsByOwnerOrContributor'] : ['getCollectionsByOwnerOrContributor', variables],
+      fetchData<GetCollectionsByOwnerOrContributorQuery, GetCollectionsByOwnerOrContributorQueryVariables>(GetCollectionsByOwnerOrContributorDocument, variables),
       options
     );
 export const GetContributorsByCollectionUuidDocument = `

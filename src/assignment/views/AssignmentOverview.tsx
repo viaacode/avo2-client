@@ -56,7 +56,6 @@ import { ErrorView } from '../../error/views';
 import {
 	CheckboxDropdownModal,
 	CheckboxOption,
-	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
@@ -85,13 +84,18 @@ import {
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentOverviewTableColumns, AssignmentView } from '../assignment.types';
+import {
+	AssignmentOverviewTableColumns,
+	AssignmentType,
+	AssignmentView,
+} from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
-import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
+import { deleteAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 
 import './AssignmentOverview.scss';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
+import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -136,6 +140,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const isContributor =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+	const contributorObj = (markedAssignment?.contributors || []).find(
+		(contributor) => contributor?.profile?.id === user?.profile?.id
+	);
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
 		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
@@ -221,6 +228,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const updateAndReset = async () => {
 		onUpdate();
+		await fetchAssignments();
 		resetFiltersAndSort();
 	};
 
@@ -410,16 +418,24 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const handleDeleteConfirm = async () => {
-		if (isContributor) {
-			await AssignmentService.deleteContributor(markedAssignment?.id, user.uid, user.uid);
-		} else {
-			await deleteAssignment(markedAssignment?.id, user);
+		try {
+			if (isContributor) {
+				await AssignmentService.deleteContributor(
+					markedAssignment?.id,
+					contributorObj?.id,
+					user.profile?.id
+				);
+			} else {
+				await deleteAssignment(markedAssignment?.id, user);
+			}
+
+			await updateAndReset();
+		} catch (err) {
+			console.error(err);
+			ToastService.danger(tHtml('Er liep iets fout met het verwijderen van de opdracht.'));
 		}
 
 		handleDeleteModalClose();
-
-		await updateAndReset();
-		await fetchAssignments();
 	};
 
 	const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
@@ -1029,14 +1045,20 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					/>
 				</Spacer>
 
-				<DeleteObjectModal
-					title={tText(
-						'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
-					)}
-					body={deleteAssignmentWarning(markedAssignment || undefined)}
+				<DeleteAssignmentModal
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
-					confirmCallback={handleDeleteConfirm}
+					deleteObjectCallback={handleDeleteConfirm}
+					isContributor={isContributor}
+					isSharedWithOthers={
+						markedAssignment?.share_type ===
+						ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
+					}
+					contributorCount={markedAssignment?.contributors?.length || 0}
+					hasResponses={!!markedAssignment?.responses?.length}
+					containsBuildBlocks={markedAssignment?.lom_learning_resource_type?.includes(
+						AssignmentType.BOUW
+					)}
 				/>
 			</>
 		);

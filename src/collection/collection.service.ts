@@ -57,9 +57,9 @@ import {
 	GetCollectionsByItemUuidDocument,
 	GetCollectionsByItemUuidQuery,
 	GetCollectionsByItemUuidQueryVariables,
-	GetCollectionsByOwnerDocument,
-	GetCollectionsByOwnerQuery,
-	GetCollectionsByOwnerQueryVariables,
+	GetCollectionsByOwnerOrContributorDocument,
+	GetCollectionsByOwnerOrContributorQuery,
+	GetCollectionsByOwnerOrContributorQueryVariables,
 	GetCollectionTitlesByOwnerDocument,
 	GetCollectionTitlesByOwnerQuery,
 	GetCollectionTitlesByOwnerQueryVariables,
@@ -1286,7 +1286,7 @@ export class CollectionService {
 		filterString: string | undefined,
 		shareTypeIds: string[] | undefined
 	): Promise<Collection[]> {
-		let variables: GetCollectionsByOwnerQueryVariables | null = null;
+		let variables: GetCollectionsByOwnerOrContributorQueryVariables | null = null;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
 			const filterArray: any[] = [];
@@ -1305,14 +1305,14 @@ export class CollectionService {
 				limit,
 				order,
 				type_id: contentTypeId,
-				owner_profile_id: getProfileId(user),
+				collaborator_profile_id: getProfileId(user),
 				where: filterArray.length ? filterArray : {},
 			};
 			const response = await dataService.query<
-				GetCollectionsByOwnerQuery,
-				GetCollectionsByOwnerQueryVariables
+				GetCollectionsByOwnerOrContributorQuery,
+				GetCollectionsByOwnerOrContributorQueryVariables
 			>({
-				query: GetCollectionsByOwnerDocument,
+				query: GetCollectionsByOwnerOrContributorDocument,
 				variables,
 			});
 

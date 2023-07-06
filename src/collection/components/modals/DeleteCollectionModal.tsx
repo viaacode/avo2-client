@@ -30,6 +30,12 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 
 	const renderDeleteMessageParagraph = () => {
 		if (isSharedWithOthers) {
+			if (contributorCount === 1) {
+				return tHtml(
+					'Ben je zeker dat je jezelf van deze collectie wil wissen? Deze opdracht is met 1 andere persoon gedeeld. Deze verliest dan toegang.'
+				);
+			}
+
 			return tHtml(
 				'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen-deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
 				{ count: contributorCount }
