@@ -155,7 +155,8 @@ export class QuickLaneService {
 				case 'COLLECTIE':
 					url.content = (await CollectionService.fetchCollectionOrBundleById(
 						url.content_id || '',
-						'collection'
+						'collection',
+						undefined
 					)) as Avo.Collection.Collection;
 					break;
 

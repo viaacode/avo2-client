@@ -265,7 +265,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		if (selectedCollectionUuid) {
 			CollectionService.fetchCollectionOrBundleById(
 				selectedCollectionUuid,
-				isCollection ? 'collection' : 'bundle'
+				isCollection ? 'collection' : 'bundle',
+				undefined
 			).then((res) => setSelectedDetail(res || undefined));
 			setSelectedCollection(
 				collections?.find((collection) => collection.id === selectedCollectionUuid)
@@ -414,7 +415,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const onCreateAssignmentFromCollection = async (withDescription: boolean): Promise<void> => {
 		const collection = await CollectionService.fetchCollectionOrBundleById(
 			selectedCollectionUuid as string,
-			'collection'
+			'collection',
+			undefined
 		);
 		if (collection) {
 			const assignmentId = await AssignmentService.createAssignmentFromCollection(

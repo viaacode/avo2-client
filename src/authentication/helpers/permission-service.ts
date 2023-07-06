@@ -122,63 +122,87 @@ export class PermissionService {
 			case PermissionName.PUBLISH_OWN_COLLECTIONS:
 			case PermissionName.DELETE_OWN_COLLECTIONS:
 			case PermissionName.VIEW_OWN_COLLECTIONS: {
-				const collection = isString(obj)
-					? await CollectionService.fetchCollectionOrBundleById(obj, 'collection')
-					: obj;
+				try {
+					const collection = isString(obj)
+						? await CollectionService.fetchCollectionOrBundleById(
+								obj,
+								'collection',
+								undefined
+						  )
+						: obj;
 
-				return PermissionService.isOwnerOrContributor(
-					collection.contributors,
-					collection.owner_profile_id,
-					profileId,
-					[
-						...(permissionName === PermissionName.VIEW_OWN_COLLECTIONS
-							? [Lookup_Enum_Right_Types_Enum.Contributor]
-							: []),
-						Lookup_Enum_Right_Types_Enum.Contributor,
-					]
-				);
+					return PermissionService.isOwnerOrContributor(
+						collection.contributors,
+						collection.owner_profile_id,
+						profileId,
+						[
+							...(permissionName === PermissionName.VIEW_OWN_COLLECTIONS
+								? [Lookup_Enum_Right_Types_Enum.Contributor]
+								: []),
+							Lookup_Enum_Right_Types_Enum.Contributor,
+						]
+					);
+				} catch (err) {
+					return false;
+				}
 			}
 
 			case PermissionName.EDIT_OWN_BUNDLES:
 			case PermissionName.PUBLISH_OWN_BUNDLES:
 			case PermissionName.DELETE_OWN_BUNDLES:
 			case PermissionName.VIEW_OWN_BUNDLES: {
-				const bundle = isString(obj)
-					? await CollectionService.fetchCollectionOrBundleById(obj, 'bundle')
-					: obj;
+				try {
+					const bundle = isString(obj)
+						? await CollectionService.fetchCollectionOrBundleById(
+								obj,
+								'bundle',
+								undefined
+						  )
+						: obj;
 
-				return PermissionService.isOwnerOrContributor(
-					bundle.contributors,
-					bundle.owner_profile_id,
-					profileId,
-					[
-						...(permissionName === PermissionName.VIEW_OWN_BUNDLES
-							? [Lookup_Enum_Right_Types_Enum.Contributor]
-							: []),
-						Lookup_Enum_Right_Types_Enum.Contributor,
-					]
-				);
+					return PermissionService.isOwnerOrContributor(
+						bundle.contributors,
+						bundle.owner_profile_id,
+						profileId,
+						[
+							...(permissionName === PermissionName.VIEW_OWN_BUNDLES
+								? [Lookup_Enum_Right_Types_Enum.Contributor]
+								: []),
+							Lookup_Enum_Right_Types_Enum.Contributor,
+						]
+					);
+				} catch (err) {
+					return false;
+				}
 			}
 
 			case PermissionName.EDIT_OWN_ASSIGNMENTS: {
-				const assignment = isString(obj)
-					? await AssignmentService.fetchAssignmentById(obj)
-					: obj;
+				try {
+					const assignment = isString(obj)
+						? await AssignmentService.fetchAssignmentById(obj)
+						: obj;
 
-				return PermissionService.isOwnerOrContributor(
-					assignment.contributors,
-					assignment.owner_profile_id,
-					profileId,
-					[Lookup_Enum_Right_Types_Enum.Contributor]
-				);
+					return PermissionService.isOwnerOrContributor(
+						assignment.contributors,
+						assignment.owner_profile_id,
+						profileId,
+						[Lookup_Enum_Right_Types_Enum.Contributor]
+					);
+				} catch (err) {
+					return false;
+				}
 			}
 
 			case PermissionName.EDIT_OWN_CONTENT_PAGES: {
-				const contentPage: ContentPageInfo = isString(obj)
-					? await ContentPageService.getContentPageByPath(obj)
-					: obj;
-				const contentPageOwnerId = get(contentPage, 'user_profile_id');
-				return !!profileId && !!contentPageOwnerId && profileId === contentPageOwnerId;
+				try {
+					const contentPage: ContentPageInfo = isString(obj)
+						? await ContentPageService.getContentPageByPath(obj)
+						: obj;
+					const contentPageOwnerId = get(contentPage, 'user_profile_id');
+					return !!profileId && !!contentPageOwnerId && profileId === contentPageOwnerId;
+				} catch (err) {
+					return false;
+				}
 			}
 
 			default:

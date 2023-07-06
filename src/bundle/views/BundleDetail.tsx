@@ -213,7 +213,8 @@ const BundleDetail: FunctionComponent<
 
 			const bundleObj = await CollectionService.fetchCollectionOrBundleById(
 				bundleId,
-				'bundle'
+				'bundle',
+				undefined
 			);
 
 			if (!bundleObj) {
