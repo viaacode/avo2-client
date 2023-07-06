@@ -7,7 +7,6 @@ import {
 	Spacer,
 	TagInfo,
 	TagsInput,
-	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
@@ -130,32 +129,6 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 									<TextInput
 										disabled
 										value={formatTimestamp(assignment.updated_at) || '-'}
-									/>
-								</FormGroup>
-
-								<FormGroup
-									label={tText(
-										'assignment/components/assignment-admin-form-editable___briefings'
-									)}
-								>
-									<TextArea
-										height="auto"
-										value={assignment.briefing_id || undefined}
-										onChange={(value: string) => {
-											{
-												(setValue as any)('briefing_id', value, {
-													shouldDirty: true,
-													shouldTouch: true,
-												});
-												setAssignment((prev) => ({
-													...prev,
-													briefing_id: value,
-													blocks:
-														(prev as Avo.Assignment.Assignment)
-															?.blocks || [],
-												}));
-											}
-										}}
 									/>
 								</FormGroup>
 
