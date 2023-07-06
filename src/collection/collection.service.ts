@@ -977,17 +977,20 @@ export class CollectionService {
 	 *
 	 * @param collectionId Unique id of the collection that must be fetched.
 	 * @param type Type of which items should be fetched.
+	 * @param inviteToken
 	 * @returns Collection or bundle.
 	 */
-	public static async fetchCollectionOrBundleById(
+	public static async fetchCollectionOrBundleByIdOrInviteToken(
 		collectionId: string,
-		type: 'collection' | 'bundle'
+		type: 'collection' | 'bundle',
+		inviteToken: string | undefined
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/collections/fetch-with-items-by-id?${queryString.stringify({
 					type,
 					id: collectionId,
+					inviteToken,
 				})}`
 			);
 		} catch (err) {

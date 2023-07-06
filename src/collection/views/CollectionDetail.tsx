@@ -25,6 +25,7 @@ import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
@@ -45,6 +46,7 @@ import {
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
 import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 import {
@@ -82,12 +84,8 @@ import { CollectionCreateUpdateTab, ContentTypeString, Relation } from '../colle
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
-import './CollectionDetail.scss';
-import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
-
-import { StringParam, useQueryParams } from 'use-query-params';
-
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
+import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -107,9 +105,6 @@ export const COLLECTION_ACTIONS = {
 };
 
 type CollectionDetailPermissions = Partial<{
-	canViewOwnCollection: boolean;
-	canViewPublishedCollections: boolean;
-	canViewUnpublishedCollections: boolean;
 	canEditCollections: boolean;
 	canPublishCollections: boolean;
 	canDeleteCollections: boolean;
@@ -179,7 +174,7 @@ const CollectionDetail: FunctionComponent<
 	const [assignmentId, setAssignmentId] = useState<string>();
 	const [importWithDescription, setImportWithDescription] = useState<boolean>(false);
 
-	const [query] = useQueryParams({ inviteToken: StringParam });
+	const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
 
 	const { data: editStatuses } = useGetCollectionsEditStatuses([collectionId], {
@@ -291,26 +286,6 @@ const CollectionDetail: FunctionComponent<
 		}
 		const rawPermissions = await Promise.all([
 			PermissionService.hasPermissions(
-				{ name: PermissionName.VIEW_OWN_COLLECTIONS, obj: collectionId },
-				user
-			),
-			PermissionService.hasPermissions(
-				[
-					{
-						name: PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS,
-					},
-				],
-				user
-			),
-			PermissionService.hasPermissions(
-				[
-					{
-						name: PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS,
-					},
-				],
-				user
-			),
-			PermissionService.hasPermissions(
 				[
 					{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
 					{ name: PermissionName.EDIT_ANY_COLLECTIONS },
@@ -343,18 +318,15 @@ const CollectionDetail: FunctionComponent<
 		]);
 
 		return {
-			canViewOwnCollection: rawPermissions[0],
-			canViewPublishedCollections: rawPermissions[1],
-			canViewUnpublishedCollections: rawPermissions[2],
-			canEditCollections: rawPermissions[3],
-			canPublishCollections: rawPermissions[4],
-			canDeleteCollections: rawPermissions[5],
-			canCreateCollections: rawPermissions[6],
-			canViewAnyPublishedItems: rawPermissions[7],
-			canCreateQuickLane: rawPermissions[8],
-			canAutoplayCollection: rawPermissions[9],
-			canCreateAssignments: rawPermissions[10],
-			canCreateBundles: rawPermissions[11],
+			canEditCollections: rawPermissions[0],
+			canPublishCollections: rawPermissions[1],
+			canDeleteCollections: rawPermissions[2],
+			canCreateCollections: rawPermissions[3],
+			canViewAnyPublishedItems: rawPermissions[4],
+			canCreateQuickLane: rawPermissions[5],
+			canAutoplayCollection: rawPermissions[6],
+			canCreateAssignments: rawPermissions[7],
+			canCreateBundles: rawPermissions[8],
 		};
 	};
 
@@ -389,15 +361,7 @@ const CollectionDetail: FunctionComponent<
 
 			const permissionObj = await getPermissions(collectionId, user);
 
-			let showNoAccessPopup = false;
-
-			if (
-				!permissionObj.canViewOwnCollection &&
-				!permissionObj.canViewPublishedCollections &&
-				!permissionObj.canViewUnpublishedCollections
-			) {
-				showNoAccessPopup = true;
-			}
+			const showNoAccessPopup = false;
 
 			if (!user) {
 				setCollectionInfo({
@@ -412,9 +376,10 @@ const CollectionDetail: FunctionComponent<
 				return;
 			}
 
-			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				uuid,
-				'collection'
+				'collection',
+				inviteToken || undefined
 			);
 
 			if (!collectionObj) {
@@ -426,17 +391,6 @@ const CollectionDetail: FunctionComponent<
 					icon: IconName.search,
 				});
 				return;
-			}
-
-			if (
-				(!permissionObj.canViewOwnCollection &&
-					collectionObj.is_public &&
-					!permissionObj.canViewPublishedCollections) ||
-				(!permissionObj.canViewOwnCollection &&
-					!collectionObj.is_public &&
-					!permissionObj.canViewUnpublishedCollections)
-			) {
-				showNoAccessPopup = true;
 			}
 
 			setCollectionInfo({
@@ -499,26 +453,12 @@ const CollectionDetail: FunctionComponent<
 	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
-		if (collectionInfo?.permissions?.canViewPublishedCollections) {
+		if (collectionInfo?.collection) {
 			getRelatedCollections();
-		}
-	}, [collectionInfo, getRelatedCollections]);
-
-	useEffect(() => {
-		if (collectionInfo?.permissions?.canViewOwnCollection) {
 			getPublishedBundles();
-		}
-	}, [collectionInfo, getPublishedBundles]);
-
-	useEffect(() => {
-		if (
-			collectionInfo?.permissions?.canViewOwnCollection ||
-			collectionInfo?.permissions?.canViewPublishedCollections ||
-			collectionInfo?.permissions?.canViewUnpublishedCollections
-		) {
 			triggerEvents();
 		}
-	}, [collectionInfo, triggerEvents]);
+	}, [collectionInfo, getRelatedCollections]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && collection && !isNil(showLoginPopup)) {
@@ -788,7 +728,7 @@ const CollectionDetail: FunctionComponent<
 
 	const onAcceptShareCollection = async () => {
 		if (!collection?.id || !inviteToken) {
-			throw new CustomError('There was no collection id or invitetoken present');
+			throw new CustomError('There was no collection id or inviteToken present');
 		}
 
 		try {
@@ -797,7 +737,11 @@ const CollectionDetail: FunctionComponent<
 				inviteToken
 			);
 
-			navigate(history, match.url);
+			setQuery({
+				...query,
+				inviteToken: undefined,
+			});
+			await checkPermissionsAndGetCollection();
 
 			ToastService.success(
 				res.rights === 'CONTRIBUTOR'
@@ -819,7 +763,7 @@ const CollectionDetail: FunctionComponent<
 
 	const onDeclineShareCollection = async () => {
 		if (!collection?.id || !inviteToken) {
-			throw new CustomError('There was no collection id or invitetoken present');
+			throw new CustomError('There was no collection id or inviteToken present');
 		}
 
 		try {
@@ -842,6 +786,9 @@ const CollectionDetail: FunctionComponent<
 	// Render functions
 
 	const renderHeaderButtons = () => {
+		if (inviteToken) {
+			return null;
+		}
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...(permissions?.canCreateBundles
 				? [
@@ -1494,7 +1441,7 @@ const CollectionDetail: FunctionComponent<
 							title: collection?.title,
 						}
 					)}
-					isVisible={!!inviteToken}
+					isVisible={!!inviteToken && !!collection}
 					actionButtonProps={{
 						label: tText('collection/views/collection-detail___toevoegen'),
 						onClick: onAcceptShareCollection,

@@ -473,9 +473,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				return;
 			}
 
-			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				collectionId,
-				type
+				type,
+				undefined
 			);
 
 			if (!collectionObj) {
@@ -972,7 +973,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 			} else {
 				// We're adding a collection to the bundle
 				const collection: Avo.Collection.Collection | null =
-					await CollectionService.fetchCollectionOrBundleById(id, 'collection');
+					await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
+						id,
+						'collection',
+						undefined
+					);
 				if (!collection) {
 					ToastService.danger(
 						tHtml(

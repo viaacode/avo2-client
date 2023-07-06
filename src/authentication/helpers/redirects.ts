@@ -233,7 +233,8 @@ export function getRedirectAfterLogin(
 	if (from === '/' || from.startsWith('/error')) {
 		return `${base}${defaultPath}`;
 	}
-	return `${base}${from}${location.hash || ''}${queryString.stringify(
-		omit(queryStrings, ['returnToUrl'])
-	)}`;
+	return queryString.stringifyUrl({
+		url: `${base}${from}`,
+		query: omit(queryStrings, ['returnToUrl']),
+	});
 }

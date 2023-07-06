@@ -89,7 +89,11 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 		try {
 			setSelectedBundle(null);
 			setSelectedBundleId(id);
-			const collection = await CollectionService.fetchCollectionOrBundleById(id, 'bundle');
+			const collection = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
+				id,
+				'bundle',
+				undefined
+			);
 			setSelectedBundle(collection);
 		} catch (err) {
 			ToastService.danger(

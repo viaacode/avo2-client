@@ -263,9 +263,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	useEffect(() => {
 		if (selectedCollectionUuid) {
-			CollectionService.fetchCollectionOrBundleById(
+			CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				selectedCollectionUuid,
-				isCollection ? 'collection' : 'bundle'
+				isCollection ? 'collection' : 'bundle',
+				undefined
 			).then((res) => setSelectedDetail(res || undefined));
 			setSelectedCollection(
 				collections?.find((collection) => collection.id === selectedCollectionUuid)
@@ -412,9 +413,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	};
 
 	const onCreateAssignmentFromCollection = async (withDescription: boolean): Promise<void> => {
-		const collection = await CollectionService.fetchCollectionOrBundleById(
+		const collection = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 			selectedCollectionUuid as string,
-			'collection'
+			'collection',
+			undefined
 		);
 		if (collection) {
 			const assignmentId = await AssignmentService.createAssignmentFromCollection(

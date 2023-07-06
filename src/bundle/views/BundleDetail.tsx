@@ -211,9 +211,10 @@ const BundleDetail: FunctionComponent<
 				return;
 			}
 
-			const bundleObj = await CollectionService.fetchCollectionOrBundleById(
+			const bundleObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				bundleId,
-				'bundle'
+				'bundle',
+				undefined
 			);
 
 			if (!bundleObj) {
