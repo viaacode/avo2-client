@@ -17,6 +17,7 @@ import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
 } from '../../../collection/collection.const';
+import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -26,7 +27,7 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
-import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -68,7 +69,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
-	const [collectionLabels] = useCollectionQualityLabels(true);
+	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
 	// computed
@@ -307,7 +308,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	) => {
 		const editLink = buildLink(
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-			{ id: rowData.id, tabId: 'marcom' }
+			{ id: rowData.id, tabId: CollectionCreateUpdateTab.MARCOM }
 		);
 		switch (columnId) {
 			case 'title': {

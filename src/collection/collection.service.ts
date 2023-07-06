@@ -1745,6 +1745,23 @@ export class CollectionService {
 		}
 	}
 
+	static async updateCollectionEditor(collectionId: string): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/share/request-edit-status`,
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to update collection current editor', err, {
+				collectionId,
+			});
+		}
+	}
+
 	static async getCollectionsEditStatuses(ids: string[]): Promise<Avo.Share.EditStatusResponse> {
 		try {
 			return await fetchWithLogoutJson(
@@ -1757,6 +1774,25 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to get collection(s) edit status(es)', err, {
 				assignmentIds: ids,
+			});
+		}
+	}
+
+	static async releaseCollectionEditStatus(
+		collectionId: string
+	): Promise<Avo.Share.EditStatusResponse> {
+		try {
+			return await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/share/release-edit-status`,
+				}),
+				{ method: 'PATCH' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to release collection edit status', err, {
+				assignmentId: collectionId,
 			});
 		}
 	}

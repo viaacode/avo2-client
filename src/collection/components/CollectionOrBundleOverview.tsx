@@ -63,7 +63,12 @@ import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
-import { Collection, CollectionShareType, ContentTypeNumber } from '../collection.types';
+import {
+	Collection,
+	CollectionCreateUpdateTab,
+	CollectionShareType,
+	ContentTypeNumber,
+} from '../collection.types';
 
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
@@ -518,8 +523,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				case 'edit':
 					navigate(
 						history,
-						isCollection ? APP_PATH.COLLECTION_EDIT.route : BUNDLE_PATH.BUNDLE_EDIT,
-						{ id: collectionUuid }
+						isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : BUNDLE_PATH.BUNDLE_EDIT,
+						{ id: collectionUuid, tabId: CollectionCreateUpdateTab.CONTENT }
 					);
 					break;
 

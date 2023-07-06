@@ -62,7 +62,7 @@ export function deleteAssignmentWarning(assignment?: Avo.Assignment.Assignment):
 		return tHtml('assignment/views/assignment-overview___delete-contributor-assignment');
 	}
 
-	if (assignment?.assignment_type?.includes(AssignmentType.BOUW)) {
+	if (assignment?.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
 		return tHtml(
 			'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
 		);

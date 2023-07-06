@@ -250,7 +250,7 @@ export enum ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS {
 }
 
 export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
-	assignmentType: AssignmentType
+	assignmentTypes: AssignmentType[]
 ): AssignmentResponseColumn[] => [
 	{
 		id: 'pupil',
@@ -258,7 +258,7 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		sortable: true,
 		dataType: TableColumnDataType.string,
 	},
-	...(assignmentType === AssignmentType.BOUW
+	...(assignmentTypes.includes(AssignmentType.BOUW)
 		? [
 				{
 					id: 'collection_title' as AssignmentResponseTableColumns,

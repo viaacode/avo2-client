@@ -26,7 +26,7 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
-import { useCollectionQualityLabels } from '../../../shared/hooks/useCollectionQualityLabels';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -82,7 +82,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useSubjects();
 	const [educationLevels] = useEducationLevels();
-	const [collectionLabels] = useCollectionQualityLabels(true);
+	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 	const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<Avo.Share.EditStatus[]>(
 		[]
@@ -560,9 +560,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					<Link
 						to={buildLink(
 							isCollection
-								? APP_PATH.COLLECTION_DETAIL.route
-								: APP_PATH.BUNDLE_DETAIL.route,
-							{ id: rowData.id }
+								? APP_PATH.COLLECTION_EDIT_TAB.route
+								: APP_PATH.BUNDLE_EDIT_TAB.route,
+							{ id: rowData.id, tabId: CollectionCreateUpdateTab.CONTENT }
 						)}
 					>
 						<span>{truncate((rowData as any)[columnId] || '-', { length: 50 })}</span>
@@ -703,15 +703,19 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 						} else {
 							ToastService.info(
 								tHtml(
-									'Alle geselecteerde collecties worden bewerkt, dus de actie kan niet worden uitgevoerd.'
+									'admin/collections-or-bundles/views/collections-or-bundles-overview___alle-geselecteerde-collecties-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd'
 								)
 							);
 						}
 					}}
-					title={tHtml('Enkele collecties worden bewerkt')}
-					editWarningSection1={tHtml('Deze collecties worden momenteel bewerkt:')}
+					title={tHtml(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___enkele-collecties-worden-bewerkt'
+					)}
+					editWarningSection1={tHtml(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-collecties-worden-momenteel-bewerkt'
+					)}
 					editWarningSection2={tHtml(
-						'Je kan doorgaan met je actie, maar deze collecties zullen niet behandeld worden'
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___je-kan-doorgaan-met-je-actie-maar-deze-collecties-zullen-niet-behandeld-worden'
 					)}
 					subjects={collectionsBeingEdited}
 					route={APP_PATH.COLLECTION_DETAIL.route}
