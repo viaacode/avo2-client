@@ -53707,7 +53707,7 @@ export const GetBookmarkStatusesDocument = `
     item_id
   }
   app_assignments_v2_bookmarks(
-    where: {profile_id: {_eq: $profileId, _in: $assignmentUuids}}
+    where: {profile_id: {_eq: $profileId}, assignment_id: {_in: $assignmentUuids}}
   ) {
     assignment_id
   }
