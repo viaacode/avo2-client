@@ -980,7 +980,7 @@ export class CollectionService {
 	 * @param inviteToken
 	 * @returns Collection or bundle.
 	 */
-	public static async fetchCollectionOrBundleById(
+	public static async fetchCollectionOrBundleByIdOrInviteToken(
 		collectionId: string,
 		type: 'collection' | 'bundle',
 		inviteToken: string | undefined

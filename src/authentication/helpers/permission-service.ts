@@ -124,7 +124,7 @@ export class PermissionService {
 			case PermissionName.VIEW_OWN_COLLECTIONS: {
 				try {
 					const collection = isString(obj)
-						? await CollectionService.fetchCollectionOrBundleById(
+						? await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 								obj,
 								'collection',
 								undefined
@@ -153,7 +153,7 @@ export class PermissionService {
 			case PermissionName.VIEW_OWN_BUNDLES: {
 				try {
 					const bundle = isString(obj)
-						? await CollectionService.fetchCollectionOrBundleById(
+						? await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 								obj,
 								'bundle',
 								undefined

@@ -153,7 +153,7 @@ export class QuickLaneService {
 					break;
 
 				case 'COLLECTIE':
-					url.content = (await CollectionService.fetchCollectionOrBundleById(
+					url.content = (await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 						url.content_id || '',
 						'collection',
 						undefined

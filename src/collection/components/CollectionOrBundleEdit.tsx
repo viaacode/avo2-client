@@ -473,7 +473,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				return;
 			}
 
-			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				collectionId,
 				type,
 				undefined
@@ -973,7 +973,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			} else {
 				// We're adding a collection to the bundle
 				const collection: Avo.Collection.Collection | null =
-					await CollectionService.fetchCollectionOrBundleById(
+					await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 						id,
 						'collection',
 						undefined

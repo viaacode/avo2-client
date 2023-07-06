@@ -376,7 +376,7 @@ const CollectionDetail: FunctionComponent<
 				return;
 			}
 
-			const collectionObj = await CollectionService.fetchCollectionOrBundleById(
+			const collectionObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				uuid,
 				'collection',
 				inviteToken || undefined
