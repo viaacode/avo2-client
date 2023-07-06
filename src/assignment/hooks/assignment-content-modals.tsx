@@ -176,11 +176,12 @@ export function useBlockListModals(
 							}
 
 							// fetch collection details
-							const collection = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
-								id,
-								'collection',
-								undefined
-							);
+							const collection =
+								await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
+									id,
+									'collection',
+									undefined
+								);
 
 							if (!collection) {
 								ToastService.danger(
