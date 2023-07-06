@@ -485,7 +485,6 @@ export class BookmarksViewsPlaysService {
 				groupedObjectInfos['collection'] || [];
 			const assignmentObjectInfos: BookmarkRequestInfo[] =
 				groupedObjectInfos['assignment'] || [];
-
 			// Get list of item ids and collection ids from the object infos
 			const itemUuids: string[] = itemObjectInfos.map((objectInfo) => objectInfo.uuid);
 			const collectionUuids: string[] = collectionObjectInfos.map(
@@ -494,6 +493,7 @@ export class BookmarksViewsPlaysService {
 			const assignmentUuids: string[] = assignmentObjectInfos.map(
 				(objectInfo) => objectInfo.uuid
 			);
+
 			const response = await dataService.query<
 				GetBookmarkStatusesQuery,
 				GetBookmarkStatusesQueryVariables
@@ -506,6 +506,7 @@ export class BookmarksViewsPlaysService {
 					assignmentUuids,
 				},
 			});
+
 			// Extract the ids of the bookmark items that were found
 			const itemBookmarkIds = (response.app_item_bookmarks ?? []).map(
 				(itemBookmark: { item_id: string }) => itemBookmark.item_id
@@ -513,7 +514,7 @@ export class BookmarksViewsPlaysService {
 			const collectionBookmarkIds = (response.app_collection_bookmarks ?? []).map(
 				(itemBookmark: { collection_uuid: string }) => itemBookmark.collection_uuid
 			);
-			const assigmnentBookmarkIds = (response.app_assignments_v2_bookmarks ?? []).map(
+			const assignmentBookmarkIds = (response.app_assignments_v2_bookmarks ?? []).map(
 				(itemBookmark: { assignment_id: string }) => itemBookmark.assignment_id
 			);
 			// Map the ids that were found to the original id
@@ -532,9 +533,10 @@ export class BookmarksViewsPlaysService {
 
 			const assignmentBookmarkStatuses: { [uuid: string]: boolean } = fromPairs(
 				assignmentObjectInfos.map((objectInfo) => {
-					return [objectInfo.uuid, assigmnentBookmarkIds.includes(objectInfo.uuid)];
+					return [objectInfo.uuid, assignmentBookmarkIds.includes(objectInfo.uuid)];
 				})
 			);
+
 			return {
 				item: itemBookmarkStatuses,
 				collection: collectionBookmarkStatuses,
