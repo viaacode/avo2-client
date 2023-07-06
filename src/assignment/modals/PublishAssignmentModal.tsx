@@ -122,7 +122,7 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 			isOpen={isOpen}
 			title={tHtml('assignment/modals/publish-assignment-modal___deel-deze-opdracht')}
 			size="large"
-			onClose={onClose}
+			onClose={closeModal}
 			scrollable
 		>
 			<ModalBody>
