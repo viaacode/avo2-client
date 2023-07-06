@@ -46,6 +46,8 @@ import {
 } from '../assignments.const';
 import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
 
+import './AssignmentsOverviewAdmin.scss';
+
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -412,6 +414,38 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		);
 	};
 
+	const renderAssignmentBeingEditedMessage = () => {
+		return (
+			<>
+				<p>
+					{tHtml(
+						'admin/assignments/views/assignments-overview-admin___deze-opdrachten-worden-momenteel-bewerkt'
+					)}
+				</p>
+				<ul className="c-assignment-bulk-warning-being-edited">
+					{assignmentsBeingEdited.map((assignmentBeingEdited) => (
+						<li key={`assignment-being-edited-${assignmentBeingEdited.subjectId}`}>
+							<a
+								target="_blank"
+								href={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+									id: assignmentBeingEdited.subjectId,
+								})}
+								rel="noreferrer"
+							>
+								{assignmentBeingEdited.subjectTitle}
+							</a>
+						</li>
+					))}
+				</ul>
+				<p>
+					{tHtml(
+						'admin/assignments/views/assignments-overview-admin___je-kan-doorgaan-met-je-actie-maar-deze-opdrachten-zullen-niet-behandeld-worden'
+					)}
+				</p>
+			</>
+		);
+	};
+
 	const renderAssignmentOverview = () => {
 		if (!assignments) {
 			return null;
@@ -466,13 +500,42 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 							);
 						}
 					}}
-					title={tHtml('Enkele opdrachten worden bewerkt')}
-					editWarningSection1={tHtml('Deze opdrachten worden momenteel bewerkt:')}
+					title={tHtml(
+						'admin/assignments/views/assignments-overview-admin___enkele-opdrachten-worden-bewerkt'
+					)}
+					editWarningSection1={tHtml(
+						'admin/assignments/views/assignments-overview-admin___deze-opdrachten-worden-momenteel-bewerkt'
+					)}
 					editWarningSection2={tHtml(
-						'Je kan doorgaan met je actie, maar deze opdrachten zullen niet behandeld worden'
+						'admin/assignments/views/assignments-overview-admin___je-kan-doorgaan-met-je-actie-maar-deze-opdrachten-zullen-niet-behandeld-worden'
 					)}
 					subjects={assignmentsBeingEdited}
 					route={APP_PATH.ASSIGNMENT_DETAIL.route}
+				/>
+				<ConfirmModal
+					body={renderAssignmentBeingEditedMessage()}
+					isOpen={assignmentsBeingEdited?.length > 0}
+					onClose={() => {
+						setAssignmentsDeleteModalOpen(false);
+						setAssignmentsBeingEdited([]);
+						setSelectedBulkAction(null);
+					}}
+					confirmCallback={async () => {
+						setAssignmentsBeingEdited([]);
+						if (selectedAssignmentIds.length > 0) {
+							await handleBulkAction(selectedBulkAction as AssignmentsBulkAction);
+						} else {
+							ToastService.info(
+								tHtml(
+									'admin/assignments/views/assignments-overview-admin___alle-geselecteerde-opdrachten-worden-bewerkt-dus-de-actie-kan-niet-worden-uitgevoerd'
+								)
+							);
+						}
+					}}
+					confirmButtonType="primary"
+					confirmLabel={tText(
+						'admin/assignments/views/assignments-overview-admin___doorgaan'
+					)}
 				/>
 				<ConfirmModal
 					body={tHtml(

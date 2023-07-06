@@ -64,7 +64,9 @@ const SubjectsBeingEditedWarningModal: FunctionComponent<SubjectsBeingEditedWarn
 			onClose={onClose}
 			confirmCallback={confirmCallback}
 			confirmButtonType="primary"
-			confirmLabel={tText('Doorgaan')}
+			confirmLabel={tText(
+				'admin/shared/components/subjects-being-edited-warning-modal/subjects-being-edited-warning-modal___doorgaan'
+			)}
 		/>
 	);
 };

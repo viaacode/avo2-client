@@ -112,7 +112,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const tableColumns = useMemo(
 		() =>
 			GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS(
-				(assignment?.assignment_type?.[0] || AssignmentType.KIJK) as AssignmentType
+				(assignment?.lom_learning_resource_type || []) as AssignmentType[]
 			),
 		[assignment]
 	);
