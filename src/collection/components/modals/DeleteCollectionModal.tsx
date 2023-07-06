@@ -32,7 +32,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 		if (isSharedWithOthers) {
 			if (contributorCount === 1) {
 				return tHtml(
-					'Ben je zeker dat je jezelf van deze collectie wil wissen? Deze opdracht is met 1 andere persoon gedeeld. Deze verliezen dan toegang.'
+					'Ben je zeker dat je jezelf van deze collectie wil wissen? Deze opdracht is met 1 andere persoon gedeeld. Deze verliest dan toegang.'
 				);
 			}
 
