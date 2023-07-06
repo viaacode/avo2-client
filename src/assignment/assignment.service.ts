@@ -1570,18 +1570,18 @@ export class AssignmentService {
 
 	static async transferAssignmentOwnerShip(
 		assignmentId: string,
-		contributorId: string
+		contributorProfileId: string
 	): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
-				)}/assignments/${assignmentId}/share/transfer-owner?newOwnerId=${contributorId}`,
+				)}/assignments/${assignmentId}/share/transfer-owner?newOwnerProfileId=${contributorProfileId}`,
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
 			throw new CustomError('Failed to transfer assignment ownership', err, {
-				contributorId,
+				contributorProfileId,
 			});
 		}
 	}

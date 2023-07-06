@@ -73,7 +73,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				if (newRights === 'OWNER') {
 					await AssignmentService.transferAssignmentOwnerShip(
 						share.assignment?.id as string,
-						contributor.contributorId as string
+						contributor.profileId as string
 					);
 
 					await refetch();
