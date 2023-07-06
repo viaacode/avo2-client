@@ -132,7 +132,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 					  )
 			}
 			size="large"
-			onClose={onClose}
+			onClose={closeModal}
 			scrollable
 		>
 			<ModalBody>

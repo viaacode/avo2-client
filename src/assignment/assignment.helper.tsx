@@ -222,11 +222,6 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 			validateLoms(assignment?.loms, LomType.subject),
 	},
 	{
-		error: tText('assignment/assignment___de-opdracht-heeft-geen-themas'),
-		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			validateLoms(assignment?.loms, LomType.theme),
-	},
-	{
 		error: tText(
 			'assignment/assignment___de-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
 		),
@@ -313,6 +308,10 @@ export const getDuplicateTitleOrDescriptionErrors = async (
 	assignment: Partial<Avo.Assignment.Assignment>
 ): Promise<string[]> => {
 	const errors = [];
+
+	if (!assignment.title || !assignment.description) {
+		return [];
+	}
 
 	const duplicates = await AssignmentService.getAssignmentsByTitleOrDescription(
 		assignment.title || '',
