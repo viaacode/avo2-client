@@ -291,6 +291,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							className="c-add-colleague__button"
 							onClick={handleAddNewContributor}
 							disabled={isEmpty(contributor.email) || !contributor.rights}
+							type="secondary"
 						/>
 					</div>
 
