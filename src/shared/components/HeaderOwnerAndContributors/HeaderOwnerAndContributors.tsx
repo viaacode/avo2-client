@@ -36,7 +36,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 				<Tooltip position="right">
 					<TooltipTrigger>
 						<p>
-							en
+							{' en '}
 							<span className="c-contributors">
 								{tHtml(
 									'shared/components/header-owner-and-contributors/header-owner-and-contributors___count-anderen',
@@ -80,12 +80,13 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 							<>
 								{tHtml(
 									'shared/components/header-owner-and-contributors/header-owner-and-contributors___ik'
-								)}{' '}
+								)}
 								{renderContributors()}
 							</>
 						) : (
 							<>
-								{getFullName(owner, false, false)} {renderContributors()}
+								{getFullName(owner, false, false)}
+								{renderContributors()}
 							</>
 						)}
 					</p>
