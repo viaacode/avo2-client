@@ -98,7 +98,6 @@ import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import { Contributor } from '../shared/types/contributor';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
@@ -1414,7 +1413,9 @@ export class AssignmentService {
 		}
 	}
 
-	static async fetchContributorsByAssignmentId(assignmentId: string): Promise<Contributor[]> {
+	static async fetchContributorsByAssignmentId(
+		assignmentId: string
+	): Promise<Avo.Assignment.Contributor[]> {
 		try {
 			const variables: GetContributorsByAssignmentUuidQueryVariables = { id: assignmentId };
 			const response = await dataService.query<
@@ -1433,7 +1434,7 @@ export class AssignmentService {
 				});
 			}
 
-			return contributors as Contributor[];
+			return contributors as Avo.Assignment.Contributor[];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get contributors by assignment id from database',

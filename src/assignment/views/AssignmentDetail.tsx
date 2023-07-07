@@ -422,23 +422,18 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			...(permissions.canCreateAssignments
-				? [
-						createDropdownMenuItem(
-							ASSIGNMENT_ACTIONS.duplicate,
-							tText('collection/views/collection-detail___dupliceer'),
-							'copy'
-						),
-				  ]
-				: []),
-			...(permissions.canCreateAssignments
-				? [
-						createDropdownMenuItem(
-							ASSIGNMENT_ACTIONS.delete,
-							tText('collection/views/collection-detail___verwijder')
-						),
-				  ]
-				: []),
+			...createDropdownMenuItem(
+				ASSIGNMENT_ACTIONS.duplicate,
+				tText('collection/views/collection-detail___dupliceer'),
+				'copy',
+				permissions.canCreateAssignments || false
+			),
+			...createDropdownMenuItem(
+				ASSIGNMENT_ACTIONS.delete,
+				tText('collection/views/collection-detail___verwijder'),
+				undefined,
+				permissions.canCreateAssignments || false
+			),
 		];
 
 		return (

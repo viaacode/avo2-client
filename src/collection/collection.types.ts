@@ -95,3 +95,17 @@ export type MarcomEntry = GetCollectionMarcomEntriesQuery['app_collection_marcom
 export interface BlockItemComponent {
 	block?: Avo.Core.BlockItemBase;
 }
+
+export enum CollectionAction {
+	duplicate = 'duplicate',
+	addToBundle = 'addToBundle',
+	delete = 'delete',
+	openShareThroughEmail = 'openShareThroughEmail',
+	openPublishCollectionModal = 'openPublishCollectionModal',
+	toggleBookmark = 'toggleBookmark',
+	createAssignment = 'createAssignment',
+	importToAssignment = 'importToAssignment',
+	editCollection = 'editCollection',
+	openQuickLane = 'openQuickLane',
+	openAutoplayCollectionModal = 'openAutoplayCollectionModal',
+}

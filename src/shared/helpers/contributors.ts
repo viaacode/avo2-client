@@ -5,11 +5,10 @@ import {
 	ContributorInfoRights,
 	ShareRightsType,
 } from '../components/ShareWithColleagues/ShareWithColleagues.types';
-import { Contributor } from '../types/contributor';
 
 export const transformContributorsToSimpleContributors = (
 	owner: Avo.User.User,
-	contributors: Contributor[]
+	contributors: (Avo.Collection.Contributor | Avo.Assignment.Contributor)[]
 ): ContributorInfo[] => {
 	const defaultContributors: ContributorInfo[] = [
 		{
@@ -46,7 +45,7 @@ export const transformContributorsToSimpleContributors = (
 export const getContributorType = (
 	user: Avo.User.User,
 	subject: Avo.Assignment.Assignment | Avo.Collection.Collection,
-	contributors: Contributor[]
+	contributors: (Avo.Assignment.Contributor | Avo.Collection.Contributor)[]
 ): ShareRightsType => {
 	if (user.profile?.id === subject.owner_profile_id) {
 		return 'OWNER';

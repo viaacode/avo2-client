@@ -129,7 +129,6 @@ import { QualityLabelsService } from '../shared/services/quality-labels.service'
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import { Contributor } from '../shared/types/contributor';
 
 import {
 	cleanCollectionBeforeSave,
@@ -1534,7 +1533,9 @@ export class CollectionService {
 		}
 	}
 
-	static async fetchContributorsByCollectionId(assignmentId: string): Promise<Contributor[]> {
+	static async fetchContributorsByCollectionId(
+		assignmentId: string
+	): Promise<Avo.Collection.Contributor[]> {
 		try {
 			const variables: GetContributorsByCollectionUuidQueryVariables = { id: assignmentId };
 			const response = await dataService.query<
@@ -1553,7 +1554,7 @@ export class CollectionService {
 				});
 			}
 
-			return contributors as Contributor[];
+			return contributors as Avo.Collection.Contributor[];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get contributors by collection id from database',

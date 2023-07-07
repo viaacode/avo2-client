@@ -93,14 +93,14 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	}, [fragment.use_custom_fields, fragment.custom_title, fragment.item_meta]);
 
 	// Cache title until the text field blurs, then pass title to collection edit reducer
-	// Otherwise rerendering cannot keep up with type speed / delete speed
+	// Otherwise re-rendering cannot keep up with type speed / delete speed
 	const [tempTitle, setTempTitle] = useState<string>(getTitle());
 
 	const FRAGMENT_DROPDOWN_ITEMS = [
 		// TODO: DISABLED FEATURE
 		// createDropdownMenuItem('duplicate', 'Dupliceren', 'copy'),
 		// createDropdownMenuItem('move', 'Verplaatsen', 'arrow-right'),
-		createDropdownMenuItem('delete', 'Verwijderen'),
+		...createDropdownMenuItem('delete', 'Verwijderen', undefined, true),
 		// TODO: DISABLED FEATURE
 		// createDropdownMenuItem('copyToCollection', 'Kopiëren naar andere collectie', 'copy'),
 		// createDropdownMenuItem('moveToCollection', 'Verplaatsen naar andere collectie', 'arrow-right'),

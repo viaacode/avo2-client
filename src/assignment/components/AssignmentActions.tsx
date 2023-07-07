@@ -20,7 +20,6 @@ import {
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
-import { Contributor } from '../../shared/types/contributor';
 import { AssignmentService } from '../assignment.service';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
@@ -51,7 +50,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
-	const [contributors, setContributors] = useState<Contributor[]>();
+	const [contributors, setContributors] = useState<Avo.Assignment.Contributor[]>();
 	const fetchContributors = useCallback(async () => {
 		if (!share?.assignment?.id) {
 			return;
@@ -60,7 +59,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			share?.assignment?.id
 		);
 
-		setContributors(response as Contributor[]);
+		setContributors((response || []) as Avo.Assignment.Contributor[]);
 	}, [share]);
 
 	useEffect(() => {
@@ -190,13 +189,13 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				<div
 					className={classNames(
 						'c-assignment-heading__dropdown-wrapper',
-						config?.button?.className
+						config?.buttonProps?.className
 					)}
 				>
 					<ShareDropdown
 						contributors={transformContributorsToSimpleContributors(
 							share?.assignment?.owner as Avo.User.User,
-							contributors as Contributor[]
+							contributors as Avo.Assignment.Contributor[]
 						)}
 						onDeleteContributor={onDeleteContributor}
 						onEditContributorRights={onEditContributor}
@@ -265,10 +264,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 							{renderDuplicateButton({ block: true, type: 'borderless' })}
 							{renderDeleteButton({ button: { block: true, type: 'borderless' } })}
 							{renderShareButton({
-								dropdown: {
+								dropdownProps: {
 									placement: 'bottom-end',
 								},
-								button: {
+								buttonProps: {
 									block: true,
 									className: 'c-assignment-heading__show-on-mobile',
 									icon: IconName.share2,
@@ -280,10 +279,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				</div>
 
 				{renderShareButton({
-					dropdown: {
+					dropdownProps: {
 						placement: 'bottom-end',
 					},
-					button: {
+					buttonProps: {
 						className: 'c-assignment-heading__hide-on-mobile',
 					},
 				})}
