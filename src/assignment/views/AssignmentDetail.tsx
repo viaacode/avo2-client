@@ -116,11 +116,8 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
 	const isBeingEdited =
 		editStatuses &&
-		(!!editStatuses[id] ||
-			!(
-				!!editStatuses[id].editingUserId &&
-				editStatuses[id].editingUserId === user?.profile?.id
-			));
+		!!editStatuses[id] &&
+		!(!!editStatuses[id].editingUserId && editStatuses[id].editingUserId === user?.profile?.id);
 
 	const getPermissions = useCallback(
 		async (
