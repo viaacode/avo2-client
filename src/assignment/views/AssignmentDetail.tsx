@@ -117,7 +117,10 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const isBeingEdited =
 		editStatuses &&
 		(!!editStatuses[id] ||
-			!(!!editStatuses[id].subjectId && editStatuses[id].subjectId === user?.profile?.id));
+			!(
+				!!editStatuses[id].editingUserId &&
+				editStatuses[id].editingUserId === user?.profile?.id
+			));
 
 	const getPermissions = useCallback(
 		async (
