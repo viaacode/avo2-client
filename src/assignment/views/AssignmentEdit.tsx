@@ -138,7 +138,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const updateAssignmentEditorWithLoading = useCallback(async () => {
 		setAssigmentLoading(true);
 		await updateAssignmentEditor();
-		setAssigmentLoading(false);
 	}, [setAssigmentLoading]);
 
 	useEffect(() => {
