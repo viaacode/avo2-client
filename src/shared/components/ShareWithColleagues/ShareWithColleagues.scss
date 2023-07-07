@@ -4,6 +4,7 @@ $borderLight: 1px solid $color-gray-100;
 
 .c-dropdown__content-open .c-add-colleague {
 	display: flex;
+	margin-bottom: 2rem;
 
 	.c-button.c-button--primary {
 		border-radius: 0;
@@ -52,7 +53,7 @@ $borderLight: 1px solid $color-gray-100;
 		margin-left: 0 !important;
 	}
 
-	&__button.c-button {
+	&__button.c-button.c-button--secondary {
 		min-width: max-content;
 		border: $borderLight;
 		border-radius: 0 $c-input-border-radius $c-input-border-radius 0;
@@ -72,7 +73,6 @@ $borderLight: 1px solid $color-gray-100;
 }
 
 .c-colleagues-info-list {
-	margin-top: 2rem;
 	display: grid;
 	row-gap: 1rem;
 }

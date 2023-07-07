@@ -10,7 +10,7 @@ import { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 
 import { getFullName } from '../../helpers';
-import { tHtml } from '../../helpers/translate';
+import { tHtml, tText } from '../../helpers/translate';
 
 import './HeaderOwnerAndContributors.scss';
 
@@ -28,15 +28,21 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 
 	const renderContributors = (): ReactNode => {
 		if (contributors?.length) {
+			const couplingWord = tText('en');
 			if (contributors.length === 1) {
-				return <span>en {getFullName(contributors[0].profile, false, false)}</span>;
+				return (
+					<span>
+						{couplingWord}
+						{getFullName(contributors[0].profile, false, false)}
+					</span>
+				);
 			}
 
 			return (
 				<Tooltip position="right">
 					<TooltipTrigger>
 						<p>
-							{' en '}
+							{` ${couplingWord} `}
 							<span className="c-contributors">
 								{tHtml(
 									'shared/components/header-owner-and-contributors/header-owner-and-contributors___count-anderen',

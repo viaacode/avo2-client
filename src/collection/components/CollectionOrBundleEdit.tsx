@@ -198,7 +198,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const updateCollectionEditorWithLoading = useCallback(async () => {
 		setLoadingInfo({ state: 'loading' });
 		await updateCollectionEditor();
-		setLoadingInfo({ state: 'loaded' });
 	}, [setLoadingInfo]);
 
 	useEffect(() => {
