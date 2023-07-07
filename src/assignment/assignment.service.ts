@@ -520,6 +520,7 @@ export class AssignmentService {
 		const newAssignment: Partial<Avo.Assignment.Assignment> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
+			owner_profile_id: profileId,
 			available_at: new Date().toISOString(),
 			deadline_at: null,
 			answer_url: null,
