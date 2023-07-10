@@ -28,7 +28,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 
 	const renderContributors = (): ReactNode => {
 		if (contributors?.length) {
-			const couplingWord = tText('en');
+			const couplingWord = ` ${tText('en')} `;
 			if (contributors.length === 1) {
 				return (
 					<span>
@@ -42,7 +42,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 				<Tooltip position="right">
 					<TooltipTrigger>
 						<p>
-							{` ${couplingWord} `}
+							{couplingWord}
 							<span className="c-contributors">
 								{tHtml(
 									'shared/components/header-owner-and-contributors/header-owner-and-contributors___count-anderen',
