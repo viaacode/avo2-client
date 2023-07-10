@@ -845,7 +845,7 @@ const CollectionDetail: FunctionComponent<
 
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				tText('Verwijder mij van deze collectie'),
+				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				IconName.trash,
 				!permissions?.canDeleteCollections && isContributor
 			),
@@ -1061,7 +1061,7 @@ const CollectionDetail: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				tText('Verwijder mij van deze collectie'),
+				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				undefined,
 				!permissions?.canDeleteCollections && isContributor
 			),
