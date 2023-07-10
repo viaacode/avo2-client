@@ -42,6 +42,7 @@ export const mockUser: Avo.User.User = {
 		business_category: null,
 		organisation: null,
 		is_exception: false,
+		loms: [],
 	},
 	temp_access: null,
 };

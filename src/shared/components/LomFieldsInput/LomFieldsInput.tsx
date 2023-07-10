@@ -21,9 +21,19 @@ type LomFieldsInputProps = {
 	loms: Avo.Lom.LomField[];
 	onChange: (newLoms: Avo.Lom.LomField[]) => void;
 	showThemes?: boolean;
+	educationLevelsPlaceholder?: string;
+	subjectsPlaceholder?: string;
+	themesPlaceholder?: string;
 };
 
-const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes }) => {
+const LomFieldsInput: FC<LomFieldsInputProps> = ({
+	loms,
+	onChange,
+	showThemes = false,
+	educationLevelsPlaceholder,
+	subjectsPlaceholder,
+	themesPlaceholder,
+}) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => {
 		return groupLoms(loms);
@@ -75,6 +85,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 					onChange={(values) =>
 						handleChange(values, LomType.educationLevel, allEducationLevels || [])
 					}
+					placeholder={educationLevelsPlaceholder}
 				/>
 			</FormGroup>
 
@@ -87,10 +98,11 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 					options={mapLomFieldsToOptions(allSubjects || [])}
 					value={mapLomFieldsToOptions(lomFields.subject) || []}
 					onChange={(values) => handleChange(values, LomType.subject, allSubjects || [])}
+					placeholder={subjectsPlaceholder}
 				/>
 			</FormGroup>
 
-			{!showThemes && (
+			{showThemes && (
 				<FormGroup
 					label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
 					labelFor="themeId"
@@ -100,6 +112,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 						options={mapLomFieldsToOptions(allThemes || [])}
 						value={mapLomFieldsToOptions(lomFields.theme) || []}
 						onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
+						placeholder={themesPlaceholder}
 					/>
 				</FormGroup>
 			)}

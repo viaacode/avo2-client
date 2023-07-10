@@ -23,6 +23,7 @@ import {
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
+import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import { compact, get, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
@@ -60,6 +61,8 @@ import { SettingsService } from '../settings.service';
 import { UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
+import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { groupLoms } from '../../shared/helpers/lom';
 
 type FieldPermissionKey =
 	| 'SUBJECTS'
@@ -101,6 +104,7 @@ const Profile: FunctionComponent<
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
 	>(get(user, 'profile.organizations', []));
+	const [selectedLoms, setSelectedLoms] = useState<LomFieldSchema[]>(user?.profile?.loms);
 	const firstName = user?.first_name || '';
 	const lastName = user?.last_name || '';
 	const email = user?.mail || '';
@@ -131,6 +135,8 @@ const Profile: FunctionComponent<
 	const isExceptionAccount = get(user, 'profile.is_exception', false);
 
 	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+
+	console.log(user);
 
 	useEffect(() => {
 		setPermissions({
@@ -288,16 +294,17 @@ const Profile: FunctionComponent<
 		}
 		const errors = [];
 		let filledIn = true;
+		const groupedLoms = groupLoms(selectedLoms);
 		if (
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
-			(!profileInfo.subjects || !profileInfo.subjects.length)
+			(!groupedLoms.subject || !groupedLoms.subject.length)
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
-			(!profileInfo.educationLevels || !profileInfo.educationLevels.length)
+			(!groupedLoms.educationLevel || !groupedLoms.educationLevel.length)
 		) {
 			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
@@ -335,13 +342,9 @@ const Profile: FunctionComponent<
 				bio,
 				userId: user.uid,
 				avatar: avatar || null,
-				educationLevels: (selectedEducationLevels || []).map((option) => ({
+				loms: (selectedLoms || []).map((lom) => ({
 					profile_id: profileId,
-					key: option.value.toString(),
-				})),
-				subjects: (selectedSubjects || []).map((option) => ({
-					profile_id: profileId,
-					key: option.value.toString(),
+					lom_id: lom.id,
 				})),
 				organizations: (selectedOrganisations || []).map((option) => ({
 					profile_id: profileId,
@@ -807,14 +810,25 @@ const Profile: FunctionComponent<
 													onChange={setBio}
 												/>
 											</FormGroup>
+
+											<LomFieldsInput
+												loms={selectedLoms || []}
+												onChange={(newLoms) => setSelectedLoms(newLoms)}
+												educationLevelsPlaceholder={tText(
+													'Selecteer een of meerdere onderwijsniveaus ...'
+												)}
+												subjectsPlaceholder={tText(
+													'Selecteer de vakken die je geeft ...'
+												)}
+											/>
 										</>
 									)}
 								</>
-								{renderFieldVisibleOrRequired('SUBJECTS', renderSubjectsField)}
+								{/* {renderFieldVisibleOrRequired('SUBJECTS', renderSubjectsField)}
 								{renderFieldVisibleOrRequired(
 									'EDUCATION_LEVEL',
 									renderEducationLevelsField
-								)}
+								)} */}
 								{renderFieldVisibleOrRequired(
 									'EDUCATIONAL_ORGANISATION',
 									renderEducationOrganisationsField
