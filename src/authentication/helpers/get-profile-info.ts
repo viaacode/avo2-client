@@ -53,19 +53,18 @@ export const getUserGroupLabel = (
 export const getUserGroupId = (
 	userOrProfile: Avo.User.Profile | null | undefined
 ): SpecialUserGroup | '0' => {
-	const groups: (string | number)[] = (userOrProfile as Avo.User.Profile).userGroupIds;
-
-	if (groups && groups.length) {
-		return String(groups[0]) as SpecialUserGroup;
-	}
-
 	if (!userOrProfile) {
 		console.error(
 			new CustomError(
 				'Failed to get profile user group id because the provided profile is undefined'
 			)
 		);
-		return '0';
+		return '0'; // unknown
+	}
+	const groups: (string | number)[] = (userOrProfile as Avo.User.Profile).userGroupIds;
+
+	if (groups && groups.length) {
+		return String(groups[0]) as SpecialUserGroup;
 	}
 
 	const profile = getProfile(userOrProfile);

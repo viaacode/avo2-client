@@ -1,7 +1,7 @@
 export enum ContributorInfoRights {
-	CONTRIBUTOR = 'BIJDRAGER',
-	VIEWER = 'KIJKER',
-	OWNER = 'EIGENAAR',
+	CONTRIBUTOR = 'CONTRIBUTOR',
+	VIEWER = 'VIEWER',
+	OWNER = 'OWNER',
 }
 
 export type ShareRightsType = keyof typeof ContributorInfoRights;

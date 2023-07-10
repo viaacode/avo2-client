@@ -51,7 +51,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 				title={tText(
 					'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 				)}
-				body={deleteAssignmentWarning(assignment)}
+				body={deleteAssignmentWarning(assignment, user?.profile?.id)}
 				{...modal}
 				isOpen={isOpen}
 				onClose={() => {
