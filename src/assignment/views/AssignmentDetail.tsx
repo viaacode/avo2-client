@@ -34,6 +34,7 @@ import {
 	ShareDropdown,
 } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
+import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/constants';
 import { createDropdownMenuItem, CustomError, navigate } from '../../shared/helpers';
@@ -54,6 +55,7 @@ import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
+import { AssignmentAction } from '../assignment.types';
 import {
 	onAddNewContributor,
 	onDeleteContributor,
@@ -67,17 +69,11 @@ import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 import './AssignmentDetail.scss';
 
 type AssignmentDetailPermissions = Partial<{
-	canEditAssignments: boolean;
 	canCreateAssignments: boolean;
+	canEditAssignments: boolean;
+	canPublishAssignments: boolean;
+	canDeleteAnyAssignments: boolean;
 }>;
-
-export const ASSIGNMENT_ACTIONS = {
-	duplicate: 'duplicate',
-	delete: 'delete',
-	openPublishCollectionModal: 'openPublishAssignmentModal',
-	toggleBookmark: 'toggleBookmark',
-	editAssignment: 'editAssignment',
-};
 
 const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
@@ -91,8 +87,10 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
-		canEditAssignments: false,
 		canCreateAssignments: false,
+		canEditAssignments: false,
+		canPublishAssignments: false,
+		canDeleteAnyAssignments: false,
 	});
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -123,7 +121,15 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 	// Computed
 	const isPublic = assignment?.is_public || false;
-	const isContributor = assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+	const isContributor = !!assignment?.contributors?.find(
+		(contributor) => contributor.profile_id && contributor.profile_id === user?.profile?.id
+	);
+	const isEditContributor = !!assignment?.contributors?.find(
+		(contributor) =>
+			contributor.profile_id &&
+			contributor.profile_id === user?.profile?.id &&
+			contributor.rights === (ContributorInfoRights.CONTRIBUTOR as Avo.Share.Rights)
+	);
 	const isOwner =
 		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
 	const isSharedWithOthers =
@@ -145,18 +151,37 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 				return {};
 			}
 
-			return {
-				canEditAssignments: await PermissionService.hasPermissions(
+			// Fetch all permissions in parallel
+			const rawPermissions = await Promise.all([
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.CREATE_ASSIGNMENTS }],
+					user
+				),
+				PermissionService.hasPermissions(
 					[
 						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: assignment },
 						{ name: PermissionName.EDIT_ANY_ASSIGNMENTS },
 					],
 					user
 				),
-				canCreateAssignments: await PermissionService.hasPermissions(
-					[{ name: PermissionName.CREATE_ASSIGNMENTS }],
+				PermissionService.hasPermissions(
+					[
+						{ name: PermissionName.PUBLISH_OWN_ASSIGNMENTS, obj: assignment },
+						{ name: PermissionName.PUBLISH_ANY_ASSIGNMENTS },
+					],
 					user
 				),
+				PermissionService.hasPermissions(
+					[{ name: PermissionName.DELETE_ANY_ASSIGNMENTS }],
+					user
+				),
+			]);
+
+			return {
+				canCreateAssignments: rawPermissions[0],
+				canEditAssignments: rawPermissions[1],
+				canPublishAssignments: rawPermissions[2],
+				canDeleteAnyAssignments: rawPermissions[3],
 			};
 		},
 		[user, assignment, match.params.id]
@@ -434,19 +459,19 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const executeAction = async (item: ReactText) => {
 		setIsOptionsMenuOpen(false);
 		switch (item) {
-			case ASSIGNMENT_ACTIONS.duplicate:
-				onDuplicateAssignment();
+			case AssignmentAction.duplicate:
+				await onDuplicateAssignment();
 				break;
-			case ASSIGNMENT_ACTIONS.delete:
+			case AssignmentAction.delete:
 				setIsDeleteModalOpen(true);
 				break;
-			case ASSIGNMENT_ACTIONS.openPublishCollectionModal:
+			case AssignmentAction.openPublishCollectionModal:
 				setIsPublishModalOpen(true);
 				break;
-			case ASSIGNMENT_ACTIONS.toggleBookmark:
-				toggleBookmark();
+			case AssignmentAction.toggleBookmark:
+				await toggleBookmark();
 				break;
-			case ASSIGNMENT_ACTIONS.editAssignment:
+			case AssignmentAction.editAssignment:
 				onEditAssignment();
 				break;
 			default:
@@ -460,16 +485,16 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
-				ASSIGNMENT_ACTIONS.duplicate,
+				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
 				'copy',
 				permissions.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
-				ASSIGNMENT_ACTIONS.delete,
+				AssignmentAction.delete,
 				tText('collection/views/collection-detail___verwijder'),
 				undefined,
-				permissions.canCreateAssignments || false
+				permissions.canDeleteAnyAssignments || isOwner || false
 			),
 		];
 
@@ -481,58 +506,66 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 
 		return (
 			<ButtonToolbar>
-				<ShareDropdown
-					contributors={transformContributorsToSimpleContributors(
-						shareWithPupilsProps?.assignment?.owner as Avo.User.User,
-						(assignment?.contributors || []) as Avo.Assignment.Contributor[]
-					)}
-					onDeleteContributor={(contributorInfo) =>
-						onDeleteContributor(
-							contributorInfo,
-							shareWithPupilsProps,
-							fetchContributors
-						)
-					}
-					onEditContributorRights={(contributorInfo, newRights) =>
-						onEditContributor(
-							contributorInfo,
-							newRights,
-							shareWithPupilsProps,
-							fetchContributors,
-							fetchAssignment
-						)
-					}
-					onAddContributor={(info) =>
-						onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
-					}
-					dropdownProps={{
-						placement: 'bottom-end',
-					}}
-					buttonProps={{
-						className: 'c-assignment-heading__hide-on-mobile',
-						type: 'secondary',
-					}}
-					shareWithPupilsProps={shareWithPupilsProps}
-				/>
-				<Button
-					type="secondary"
-					title={
-						isPublic
-							? tText('assignment/views/assignment-detail___maak-deze-opdracht-prive')
-							: tText(
-									'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
-							  )
-					}
-					ariaLabel={
-						isPublic
-							? tText('assignment/views/assignment-detail___maak-deze-opdracht-prive')
-							: tText(
-									'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
-							  )
-					}
-					icon={isPublic ? IconName.unlock3 : IconName.lock}
-					onClick={() => executeAction(ASSIGNMENT_ACTIONS.openPublishCollectionModal)}
-				/>
+				{(isOwner || isEditContributor || permissions.canEditAssignments) && (
+					<ShareDropdown
+						contributors={transformContributorsToSimpleContributors(
+							shareWithPupilsProps?.assignment?.owner as Avo.User.User,
+							(assignment?.contributors || []) as Avo.Assignment.Contributor[]
+						)}
+						onDeleteContributor={(contributorInfo) =>
+							onDeleteContributor(
+								contributorInfo,
+								shareWithPupilsProps,
+								fetchContributors
+							)
+						}
+						onEditContributorRights={(contributorInfo, newRights) =>
+							onEditContributor(
+								contributorInfo,
+								newRights,
+								shareWithPupilsProps,
+								fetchContributors,
+								fetchAssignment
+							)
+						}
+						onAddContributor={(info) =>
+							onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+						}
+						dropdownProps={{
+							placement: 'bottom-end',
+						}}
+						buttonProps={{
+							className: 'c-assignment-heading__hide-on-mobile',
+							type: 'secondary',
+						}}
+						shareWithPupilsProps={shareWithPupilsProps}
+					/>
+				)}
+				{permissions.canPublishAssignments && (
+					<Button
+						type="secondary"
+						title={
+							isPublic
+								? tText(
+										'assignment/views/assignment-detail___maak-deze-opdracht-prive'
+								  )
+								: tText(
+										'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
+								  )
+						}
+						ariaLabel={
+							isPublic
+								? tText(
+										'assignment/views/assignment-detail___maak-deze-opdracht-prive'
+								  )
+								: tText(
+										'assignment/views/assignment-detail___maak-deze-opdracht-openbaar'
+								  )
+						}
+						icon={isPublic ? IconName.unlock3 : IconName.lock}
+						onClick={() => executeAction(AssignmentAction.openPublishCollectionModal)}
+					/>
+				)}
 
 				{!isOwner && !isContributor && (
 					<ToggleButton
@@ -541,7 +574,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 						icon={IconName.bookmark}
 						active={bookmarkViewCounts.isBookmarked}
 						ariaLabel={tText('assignment/views/assignment-detail___bladwijzer')}
-						onClick={() => executeAction(ASSIGNMENT_ACTIONS.toggleBookmark)}
+						onClick={() => executeAction(AssignmentAction.toggleBookmark)}
 					/>
 				)}
 
@@ -562,7 +595,7 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 							title={tText(
 								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
 							)}
-							onClick={() => executeAction(ASSIGNMENT_ACTIONS.editAssignment)}
+							onClick={() => executeAction(AssignmentAction.editAssignment)}
 							disabled={isBeingEdited}
 							toolTipContent={tHtml(
 								'assignment/views/assignment-detail___deze-opdracht-wordt-momenteel-bewerkt-door-een-andere-gebruiker-het-is-niet-mogelijk-met-met-meer-dan-1-gebruiker-simultaan-te-bewerken'

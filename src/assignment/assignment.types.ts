@@ -108,3 +108,11 @@ export interface EditBlockProps {
 export type EditableAssignmentBlock = Avo.Assignment.Block &
 	Pick<Avo.Core.BlockItemBase, 'item_meta'> &
 	EditableBlockFields;
+
+export enum AssignmentAction {
+	duplicate = 'duplicate',
+	delete = 'delete',
+	openPublishCollectionModal = 'openPublishAssignmentModal',
+	toggleBookmark = 'toggleBookmark',
+	editAssignment = 'editAssignment',
+}

@@ -53,7 +53,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			(contributor) => contributor.profileId === user?.profile?.id
 		) as ContributorInfo) ||
 		({
-			rights: 'OWNER',
+			rights: ContributorInfoRights.OWNER,
 			email: user?.mail,
 			firstName: user?.first_name,
 			lastName: user?.last_name,

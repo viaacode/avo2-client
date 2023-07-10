@@ -1,7 +1,7 @@
 export enum ContributorInfoRights {
-	CONTRIBUTOR = 'BIJDRAGER',
-	VIEWER = 'KIJKER',
-	OWNER = 'EIGENAAR',
+	CONTRIBUTOR = 'CONTRIBUTOR',
+	VIEWER = 'VIEWER',
+	OWNER = 'OWNER',
 }
 
 export type ShareRightsType = keyof typeof ContributorInfoRights;
@@ -15,10 +15,4 @@ export interface ContributorInfo {
 	profileImage?: string;
 	profileId?: string;
 	contributorId?: string;
-}
-
-export interface DeleteContributorModalContent {
-	title: string;
-	body: string;
-	confirm: string;
 }

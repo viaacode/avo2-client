@@ -1,5 +1,6 @@
 import {
 	ContributorInfo,
+	ContributorInfoRights,
 	ShareRightsType,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';
@@ -39,7 +40,7 @@ export async function onEditContributor(
 ) {
 	try {
 		if (collectionId) {
-			if (newRights === 'OWNER') {
+			if (newRights === ContributorInfoRights.OWNER) {
 				await CollectionService.transferCollectionOwnerShip(
 					collectionId,
 					user.contributorId as string
