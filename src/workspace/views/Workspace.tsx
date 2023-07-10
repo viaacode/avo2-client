@@ -144,6 +144,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			]),
 		])
 			.then((response) => {
+				console.log(response);
 				setTabCounts({
 					[COLLECTIONS_ID]: response[0].collection_counts.aggregate?.count ?? 0,
 					[BUNDLES_ID]: response[0].bundle_counts.aggregate?.count ?? 0,
