@@ -8,19 +8,20 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
+import { noop } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { APP_PATH } from '../../constants';
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
-import {
-	ContributorInfo,
-	ShareRightsType,
-} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { ToastService } from '../../shared/services/toast-service';
 import { AssignmentService } from '../assignment.service';
+import {
+	onAddNewContributor,
+	onDeleteContributor,
+	onEditContributor,
+} from '../helpers/assignment-share-with-collegue-handlers';
 
 import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
@@ -30,10 +31,10 @@ import DuplicateAssignmentButton, {
 interface AssignmentActionsProps {
 	preview?: Partial<ButtonProps>;
 	overflow?: Partial<ButtonProps>;
-	share?: ShareWithPupilsProps;
+	shareWithPupilsProps?: ShareWithPupilsProps;
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
-	refetch?: () => void;
+	refetchAssignment?: () => void;
 	publish?: Partial<ButtonProps>;
 	route: string;
 }
@@ -43,8 +44,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	overflow,
 	duplicate,
 	remove,
-	share,
-	refetch,
+	shareWithPupilsProps,
+	refetchAssignment = noop,
 	publish,
 	route,
 }) => {
@@ -52,106 +53,21 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 	const [contributors, setContributors] = useState<Avo.Assignment.Contributor[]>();
 	const fetchContributors = useCallback(async () => {
-		if (!share?.assignment?.id) {
+		if (!shareWithPupilsProps?.assignment?.id) {
 			return;
 		}
 		const response = await AssignmentService.fetchContributorsByAssignmentId(
-			share?.assignment?.id
+			shareWithPupilsProps?.assignment?.id
 		);
 
 		setContributors((response || []) as Avo.Assignment.Contributor[]);
-	}, [share]);
+	}, [shareWithPupilsProps]);
 
 	useEffect(() => {
 		fetchContributors();
 	}, [fetchContributors]);
 
-	const onEditContributor = async (contributor: ContributorInfo, newRights: ShareRightsType) => {
-		try {
-			if (share && refetch) {
-				if (newRights === 'OWNER') {
-					await AssignmentService.transferAssignmentOwnerShip(
-						share.assignment?.id as string,
-						contributor.profileId as string
-					);
-
-					await refetch();
-
-					ToastService.success(
-						tText(
-							'assignment/components/assignment-actions___eigenaarschap-is-succesvol-overgedragen'
-						)
-					);
-				} else {
-					await AssignmentService.editContributorRights(
-						share.assignment?.id as string,
-						contributor.contributorId as string,
-						newRights
-					);
-
-					await fetchContributors();
-
-					ToastService.success(
-						tText(
-							'assignment/components/assignment-actions___rol-van-de-gebruiker-is-aangepast'
-						)
-					);
-				}
-			}
-		} catch (err) {
-			ToastService.danger(
-				tText(
-					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-aanpassen-van-de-collega-rol'
-				)
-			);
-		}
-	};
-
-	const onAddNewContributor = async (info: Partial<ContributorInfo>) => {
-		try {
-			await AssignmentService.addContributor(share?.assignment?.id as string, info);
-
-			await fetchContributors();
-
-			ToastService.success(
-				tText(
-					'assignment/components/assignment-actions___uitnodiging-tot-samenwerken-is-verstuurd'
-				)
-			);
-		} catch (err) {
-			ToastService.danger(
-				tText(
-					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-uitnodigen-van-een-collega'
-				)
-			);
-		}
-	};
-
-	const onDeleteContributor = async (info: ContributorInfo) => {
-		try {
-			await AssignmentService.deleteContributor(
-				share?.assignment?.id as string,
-				info.contributorId,
-				info.profileId
-			);
-
-			await fetchContributors();
-
-			ToastService.success(
-				tText(
-					'assignment/components/assignment-actions___gebruiker-is-verwijderd-van-de-opdracht'
-				)
-			);
-		} catch (err) {
-			ToastService.danger(
-				tText(
-					'assignment/components/assignment-actions___er-liep-iets-fout-met-het-verwijderen-van-een-collega'
-				)
-			);
-		}
-	};
-
-	const renderPreviewButton = (config?: Partial<ButtonProps>) => (
+	const renderPreviewButton = (buttonProps?: Partial<ButtonProps>) => (
 		<Button
 			label={tText('assignment/views/assignment-edit___bekijk-als-leerling')}
 			title={tText(
@@ -162,73 +78,89 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			)}
 			type="secondary"
 			{...preview}
-			{...config}
+			{...buttonProps}
 		/>
 	);
 
-	const renderOverflowButton = (config?: Partial<ButtonProps>) => (
+	const renderOverflowButton = (buttonProps?: Partial<ButtonProps>) => (
 		<Button
 			icon={IconName.moreHorizontal}
 			type="secondary"
 			ariaLabel={tText('assignment/views/assignment-detail___meer-opties')}
 			title={tText('assignment/views/assignment-detail___meer-opties')}
 			{...overflow}
-			{...config}
+			{...buttonProps}
 		/>
 	);
 
-	const renderPublishButton = (config?: Partial<ButtonProps>) => {
+	const renderPublishButton = (buttonProps?: Partial<ButtonProps>) => {
 		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
-			return <Button type="secondary" {...config} />;
+			return <Button type="secondary" {...buttonProps} />;
 		}
 	};
 
-	const renderShareButton = (config?: Partial<ShareDropdownProps>) => {
-		if (route !== APP_PATH.ASSIGNMENT_CREATE.route && share?.assignment?.owner) {
+	const renderShareButton = (shareDropdownProps?: Partial<ShareDropdownProps>) => {
+		if (route !== APP_PATH.ASSIGNMENT_CREATE.route && shareWithPupilsProps?.assignment?.owner) {
 			return (
 				<div
 					className={classNames(
 						'c-assignment-heading__dropdown-wrapper',
-						config?.buttonProps?.className
+						shareDropdownProps?.buttonProps?.className
 					)}
 				>
 					<ShareDropdown
 						contributors={transformContributorsToSimpleContributors(
-							share?.assignment?.owner as Avo.User.User,
+							shareWithPupilsProps?.assignment?.owner as Avo.User.User,
 							contributors as Avo.Assignment.Contributor[]
 						)}
-						onDeleteContributor={onDeleteContributor}
-						onEditContributorRights={onEditContributor}
-						onAddContributor={onAddNewContributor}
-						{...config}
-						share={share}
+						onDeleteContributor={(info) =>
+							onDeleteContributor(info, shareWithPupilsProps, fetchContributors)
+						}
+						onEditContributorRights={(contributorInfo, newRights) =>
+							onEditContributor(
+								contributorInfo,
+								newRights,
+								shareWithPupilsProps,
+								fetchContributors,
+								refetchAssignment
+							)
+						}
+						onAddContributor={(info) =>
+							onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+						}
+						{...shareDropdownProps}
+						shareWithPupilsProps={shareWithPupilsProps}
 					/>
 				</div>
 			);
 		}
 	};
 
-	const renderDuplicateButton = (config?: Partial<DuplicateAssignmentButtonProps>) => (
+	const renderDuplicateButton = (
+		duplicateAssignmentButtonProps?: Partial<DuplicateAssignmentButtonProps>
+	) => (
 		<DuplicateAssignmentButton
 			{...duplicate}
-			{...config}
+			{...duplicateAssignmentButtonProps}
 			onClick={(e) => {
 				duplicate?.onClick?.(e);
-				config?.onClick?.(e);
+				duplicateAssignmentButtonProps?.onClick?.(e);
 
 				setOverflowDropdownOpen(false);
 			}}
 		/>
 	);
 
-	const renderDeleteButton = (config?: Partial<DeleteAssignmentButtonProps>) => (
+	const renderDeleteButton = (
+		deleteAssignmentButtonProps?: Partial<DeleteAssignmentButtonProps>
+	) => (
 		<DeleteAssignmentButton
 			{...remove}
-			{...config}
+			{...deleteAssignmentButtonProps}
 			// Allow merging of configs
 			button={{
 				...remove?.button,
-				...config?.button,
+				...deleteAssignmentButtonProps?.button,
 			}}
 		/>
 	);

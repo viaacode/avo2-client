@@ -672,7 +672,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								},
 							}}
 							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
-							share={{
+							shareWithPupilsProps={{
 								assignment: original || undefined, // Needs to be saved before you can share
 								onContentLinkClicked: () =>
 									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT),
@@ -688,7 +688,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									},
 								},
 							}}
-							refetch={async () => await fetchAssignment()}
+							refetchAssignment={async () => await fetchAssignment()}
 							route={location.pathname}
 						/>
 					}

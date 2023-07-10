@@ -95,7 +95,7 @@ import {
 	onAddContributor,
 	onDeleteContributor,
 	onEditContributor,
-} from '../helpers/collection-share-handlers';
+} from '../helpers/collection-share-with-collegue-handlers';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
 import './CollectionDetail.scss';
 
@@ -142,9 +142,16 @@ const CollectionDetail: FunctionComponent<
 	const isContributor = !!(collection?.contributors || []).find(
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
+	const isEditContributor = !!(collection?.contributors || []).find(
+		(contributor) =>
+			!!contributor.profile_id &&
+			contributor.profile_id === user?.profile?.id &&
+			contributor.rights === 'CONTRIBUTOR'
+	);
 	const isPublic = !!collection && collection.is_public;
 	const isOwner =
-		!!collection?.owner_profile_id && collection?.owner_profile_id !== user?.profile?.id;
+		!!collection?.owner_profile_id && collection?.owner_profile_id === user?.profile?.id;
+	const isCollectionAdmin = PermissionService.hasPerm(user, PermissionName.EDIT_ANY_COLLECTIONS);
 	const isSharedWithOthers = !isContributor && !!(collection?.contributors?.length || 0 > 0);
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
@@ -811,27 +818,36 @@ const CollectionDetail: FunctionComponent<
 			...createDropdownMenuItem(
 				CollectionAction.addToBundle,
 				tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
-				'plus',
-				permissions?.canCreateBundles || false
+				IconName.plus,
+				!!permissions?.canCreateBundles &&
+					(isOwner || isEditContributor || isCollectionAdmin || isPublic)
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openQuickLane,
 				tText('collection/views/collection-detail___delen-met-leerlingen'),
-				'link-2',
-				permissions?.canCreateQuickLane || false
+				IconName.link2,
+				!!permissions?.canCreateQuickLane &&
+					(isOwner || isEditContributor || isCollectionAdmin || isPublic)
 			),
 			...createDropdownMenuItem(
 				CollectionAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
-				'copy',
-				permissions?.canCreateCollections || false
+				IconName.copy,
+				!!permissions?.canCreateCollections
 			),
 
 			...createDropdownMenuItem(
 				CollectionAction.delete,
 				tText('collection/views/collection-detail___verwijder'),
-				undefined,
-				permissions?.canDeleteCollections || false
+				IconName.trash,
+				!!permissions?.canDeleteCollections
+			),
+
+			...createDropdownMenuItem(
+				CollectionAction.delete,
+				tText('Verwijder mij van deze collectie'),
+				IconName.trash,
+				!permissions?.canDeleteCollections && isContributor
 			),
 		];
 
@@ -877,7 +893,7 @@ const CollectionDetail: FunctionComponent<
 						/>
 					</Dropdown>
 				)}
-				{(isOwner || isContributor || permissions?.canEditCollections) && (
+				{(isOwner || isEditContributor || permissions?.canEditCollections) && (
 					<ShareDropdown
 						contributors={transformContributorsToSimpleContributors(
 							{
@@ -1015,13 +1031,15 @@ const CollectionDetail: FunctionComponent<
 				CollectionAction.addToBundle,
 				tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
 				'plus',
-				permissions?.canCreateBundles || false
+				!!permissions?.canCreateBundles &&
+					(isOwner || isEditContributor || isCollectionAdmin)
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openQuickLane,
 				tText('collection/views/collection-detail___delen-met-leerlingen'),
 				'link-2',
-				permissions?.canCreateQuickLane || false
+				!!permissions?.canCreateQuickLane &&
+					(isOwner || isEditContributor || isCollectionAdmin)
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openAutoplayCollectionModal,
@@ -1037,11 +1055,15 @@ const CollectionDetail: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				permissions?.canDeleteCollections
-					? tText('collection/views/collection-detail___verwijder')
-					: tText('Verwijder mij van deze collectie'),
+				tText('collection/views/collection-detail___verwijder'),
 				undefined,
 				permissions?.canDeleteCollections || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.delete,
+				tText('Verwijder mij van deze collectie'),
+				undefined,
+				!permissions?.canDeleteCollections && isContributor
 			),
 		];
 		return (

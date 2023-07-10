@@ -48,7 +48,6 @@ import {
 	buildLink,
 	createDropdownMenuItem,
 	CustomError,
-	isMobileWidth,
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
@@ -78,7 +77,7 @@ import {
 	onAddContributor,
 	onDeleteContributor,
 	onEditContributor,
-} from '../helpers/collection-share-handlers';
+} from '../helpers/collection-share-with-collegue-handlers';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
@@ -87,6 +86,8 @@ import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
 import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
+
+import './CollectionOrBundleEdit.scss';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -1353,7 +1354,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 
 		return (
-			<>
+			<div className="c-collection-or-bundle-edit">
 				<Header
 					title={
 						<CollectionOrBundleTitle
@@ -1374,7 +1375,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
 					<HeaderButtons>
-						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+						<div className="c-collection-or-bundle-edit__header-buttons--mobile">
+							{renderHeaderButtonsMobile()}
+						</div>
+						<div className="c-collection-or-bundle-edit__header-buttons--desktop">
+							{renderHeaderButtons()}
+						</div>
 					</HeaderButtons>
 
 					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
@@ -1455,7 +1461,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				/>
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />
-			</>
+			</div>
 		);
 	};
 
