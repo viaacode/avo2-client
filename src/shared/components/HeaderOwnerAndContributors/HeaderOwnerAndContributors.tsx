@@ -32,7 +32,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 			if (contributors.length === 1) {
 				return (
 					<span>
-						{couplingWord}
+						{` ${couplingWord} `}
 						{getFullName(contributors[0].profile, false, false)}
 					</span>
 				);
