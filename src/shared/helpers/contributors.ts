@@ -48,7 +48,7 @@ export const getContributorType = (
 	contributors: (Avo.Assignment.Contributor | Avo.Collection.Contributor)[]
 ): ShareRightsType => {
 	if (user.profile?.id === subject.owner_profile_id) {
-		return 'OWNER';
+		return ContributorInfoRights.OWNER;
 	}
 
 	return contributors.find((contributor) => contributor.profile_id === user.profile?.id)

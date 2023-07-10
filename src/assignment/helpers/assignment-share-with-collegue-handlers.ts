@@ -1,6 +1,7 @@
 import { ShareWithPupilsProps } from '../../shared/components';
 import {
 	ContributorInfo,
+	ContributorInfoRights,
 	ShareRightsType,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';
@@ -16,7 +17,7 @@ export async function onEditContributor(
 ) {
 	try {
 		if (shareWithPupilsProps && refetchAssignment) {
-			if (newRights === 'OWNER') {
+			if (newRights === ContributorInfoRights.OWNER) {
 				await AssignmentService.transferAssignmentOwnerShip(
 					shareWithPupilsProps.assignment?.id as string,
 					contributor.profileId as string

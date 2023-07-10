@@ -1,8 +1,7 @@
 @import "../../styles/settings/variables";
 
 .c-collection-or-bundle-edit {
-	&__header-buttons--desktop,
-	&__header-buttons--mobile {
+	&__header-buttons--desktop {
 		display: none;
 	}
 

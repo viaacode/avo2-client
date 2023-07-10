@@ -16,9 +16,3 @@ export interface ContributorInfo {
 	profileId?: string;
 	contributorId?: string;
 }
-
-export interface DeleteContributorModalContent {
-	title: string;
-	body: string;
-	confirm: string;
-}
