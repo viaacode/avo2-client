@@ -16,9 +16,9 @@ export type ShareDropdownProps = {
 	onAddContributor: (info: Partial<ContributorInfo>) => void;
 	onEditContributorRights: (info: ContributorInfo, newRights: ShareRightsType) => void;
 	onDeleteContributor: (info: ContributorInfo) => void;
-	button?: Partial<ButtonProps>;
-	dropdown?: Partial<DropdownProps>;
-	share?: ShareWithPupilsProps;
+	buttonProps?: Partial<ButtonProps>;
+	dropdownProps?: Partial<DropdownProps>;
+	shareWithPupilsProps?: ShareWithPupilsProps;
 	withPupils?: boolean;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
@@ -26,9 +26,9 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	onAddContributor,
 	onEditContributorRights,
 	onDeleteContributor,
-	dropdown,
-	button,
-	share,
+	dropdownProps,
+	buttonProps,
+	shareWithPupilsProps,
 	withPupils = true,
 }) => {
 	const { tText } = useTranslation();
@@ -80,7 +80,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 			onClose={handleOnClose}
 			className="c-share-dropdown"
 			placement="bottom-end"
-			{...dropdown}
+			{...dropdownProps}
 		>
 			<DropdownButton>
 				<Button
@@ -92,7 +92,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					onClick={handleShareButtonClicked}
 					disabled={false}
 					icon={IconName.userGroup}
-					{...button}
+					{...buttonProps}
 				/>
 			</DropdownButton>
 
@@ -118,7 +118,9 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 										)}
 									</>
 								) : (
-									<ShareWithPupil {...(share as ShareWithPupilsProps)} />
+									<ShareWithPupil
+										{...(shareWithPupilsProps as ShareWithPupilsProps)}
+									/>
 								)}
 							</div>
 						</>

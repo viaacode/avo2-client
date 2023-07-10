@@ -118,10 +118,10 @@ export class PermissionService {
 		}
 		// Special checks on top of name being in the permission list
 		switch (permissionName) {
+			case PermissionName.VIEW_OWN_COLLECTIONS:
 			case PermissionName.EDIT_OWN_COLLECTIONS:
 			case PermissionName.PUBLISH_OWN_COLLECTIONS:
-			case PermissionName.DELETE_OWN_COLLECTIONS:
-			case PermissionName.VIEW_OWN_COLLECTIONS: {
+			case PermissionName.DELETE_OWN_COLLECTIONS: {
 				try {
 					const collection = isString(obj)
 						? await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
@@ -135,22 +135,29 @@ export class PermissionService {
 						collection.contributors,
 						collection.owner_profile_id,
 						profileId,
-						[
-							...(permissionName === PermissionName.VIEW_OWN_COLLECTIONS
-								? [Lookup_Enum_Right_Types_Enum.Contributor]
-								: []),
-							Lookup_Enum_Right_Types_Enum.Contributor,
-						]
+						{
+							[PermissionName.VIEW_OWN_COLLECTIONS]: [
+								Lookup_Enum_Right_Types_Enum.Viewer,
+								Lookup_Enum_Right_Types_Enum.Contributor,
+							],
+							[PermissionName.EDIT_OWN_COLLECTIONS]: [
+								Lookup_Enum_Right_Types_Enum.Contributor,
+							],
+							[PermissionName.PUBLISH_OWN_COLLECTIONS]: [
+								Lookup_Enum_Right_Types_Enum.Contributor,
+							],
+							[PermissionName.DELETE_OWN_COLLECTIONS]: [], // Only owner has rights to delete
+						}[permissionName]
 					);
 				} catch (err) {
 					return false;
 				}
 			}
 
+			case PermissionName.VIEW_OWN_BUNDLES:
 			case PermissionName.EDIT_OWN_BUNDLES:
 			case PermissionName.PUBLISH_OWN_BUNDLES:
-			case PermissionName.DELETE_OWN_BUNDLES:
-			case PermissionName.VIEW_OWN_BUNDLES: {
+			case PermissionName.DELETE_OWN_BUNDLES: {
 				try {
 					const bundle = isString(obj)
 						? await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
@@ -164,19 +171,15 @@ export class PermissionService {
 						bundle.contributors,
 						bundle.owner_profile_id,
 						profileId,
-						[
-							...(permissionName === PermissionName.VIEW_OWN_BUNDLES
-								? [Lookup_Enum_Right_Types_Enum.Contributor]
-								: []),
-							Lookup_Enum_Right_Types_Enum.Contributor,
-						]
+						[] // Sharing bundles with colleagues is not yet supported
 					);
 				} catch (err) {
 					return false;
 				}
 			}
 
-			case PermissionName.EDIT_OWN_ASSIGNMENTS: {
+			case PermissionName.EDIT_OWN_ASSIGNMENTS:
+			case PermissionName.PUBLISH_OWN_ASSIGNMENTS: {
 				try {
 					const assignment = isString(obj)
 						? await AssignmentService.fetchAssignmentById(obj)

@@ -43,6 +43,7 @@ import {
 	HeaderOwnerAndContributors,
 	InteractiveTour,
 	LoadingInfo,
+	ShareDropdown,
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
@@ -58,6 +59,7 @@ import {
 	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
+import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import {
 	defaultGoToDetailLink,
 	defaultRenderDetailLink,
@@ -80,29 +82,25 @@ import {
 import { ToastService } from '../../shared/services/toast-service';
 import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { CollectionCreateUpdateTab, ContentTypeString, Relation } from '../collection.types';
+import {
+	CollectionAction,
+	CollectionCreateUpdateTab,
+	ContentTypeString,
+	Relation,
+} from '../collection.types';
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';
 import DeleteCollectionModal from '../components/modals/DeleteCollectionModal';
+import {
+	onAddContributor,
+	onDeleteContributor,
+	onEditContributor,
+} from '../helpers/collection-share-with-collegue-handlers';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
 import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
-
-export const COLLECTION_ACTIONS = {
-	duplicate: 'duplicate',
-	addToBundle: 'addToBundle',
-	delete: 'delete',
-	openShareThroughEmail: 'openShareThroughEmail',
-	openPublishCollectionModal: 'openPublishCollectionModal',
-	toggleBookmark: 'toggleBookmark',
-	createAssignment: 'createAssignment',
-	importToAssignment: 'importToAssignment',
-	editCollection: 'editCollection',
-	openQuickLane: 'openQuickLane',
-	openAutoplayCollectionModal: 'openAutoplayCollectionModal',
-};
 
 type CollectionDetailPermissions = Partial<{
 	canEditCollections: boolean;
@@ -115,6 +113,13 @@ type CollectionDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
 	canCreateBundles: boolean;
 }>;
+
+type CollectionInfo = {
+	collection: Avo.Collection.Collection | null;
+	permissions: CollectionDetailPermissions;
+	showLoginPopup: boolean;
+	showNoAccessPopup: boolean;
+};
 
 type CollectionDetailProps = {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
@@ -129,12 +134,7 @@ const CollectionDetail: FunctionComponent<
 	// State
 	const [collectionId, setCollectionId] = useState(id || match.params.id);
 
-	const [collectionInfo, setCollectionInfo] = useState<{
-		collection: Avo.Collection.Collection | null;
-		permissions: CollectionDetailPermissions;
-		showLoginPopup: boolean;
-		showNoAccessPopup: boolean;
-	} | null>(null);
+	const [collectionInfo, setCollectionInfo] = useState<CollectionInfo | null>(null);
 	const permissions = collectionInfo?.permissions;
 	const showLoginPopup = collectionInfo?.showLoginPopup;
 	const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
@@ -142,6 +142,16 @@ const CollectionDetail: FunctionComponent<
 	const isContributor = !!(collection?.contributors || []).find(
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
+	const isEditContributor = !!(collection?.contributors || []).find(
+		(contributor) =>
+			!!contributor.profile_id &&
+			contributor.profile_id === user?.profile?.id &&
+			contributor.rights === 'CONTRIBUTOR'
+	);
+	const isPublic = !!collection && collection.is_public;
+	const isOwner =
+		!!collection?.owner_profile_id && collection?.owner_profile_id === user?.profile?.id;
+	const isCollectionAdmin = PermissionService.hasPerm(user, PermissionName.EDIT_ANY_COLLECTIONS);
 	const isSharedWithOthers = !isContributor && !!(collection?.contributors?.length || 0 > 0);
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
@@ -234,6 +244,21 @@ const CollectionDetail: FunctionComponent<
 			);
 		}
 	}, [setPublishedBundles, tText, collectionId]);
+
+	const fetchContributors = useCallback(async () => {
+		if (!collectionId || !collectionInfo) {
+			return;
+		}
+		const response = await CollectionService.fetchContributorsByCollectionId(collectionId);
+
+		setCollectionInfo({
+			...collectionInfo,
+			collection: {
+				...collectionInfo.collection,
+				contributors: response as Avo.Collection.Contributor[],
+			},
+		} as CollectionInfo);
+	}, [collectionId, collectionInfo]);
 
 	const triggerEvents = useCallback(async () => {
 		// Do not trigger events when a search engine loads this page
@@ -481,7 +506,7 @@ const CollectionDetail: FunctionComponent<
 		setIsOptionsMenuOpen(false);
 		setIsCreateAssignmentDropdownOpen(false);
 		switch (item) {
-			case COLLECTION_ACTIONS.duplicate:
+			case CollectionAction.duplicate:
 				try {
 					if (!collection) {
 						ToastService.danger(
@@ -534,38 +559,38 @@ const CollectionDetail: FunctionComponent<
 				}
 				break;
 
-			case COLLECTION_ACTIONS.addToBundle:
+			case CollectionAction.addToBundle:
 				setIsAddToBundleModalOpen(true);
 				break;
 
-			case COLLECTION_ACTIONS.delete:
+			case CollectionAction.delete:
 				setIsDeleteModalOpen(true);
 				break;
 
-			case COLLECTION_ACTIONS.openPublishCollectionModal:
+			case CollectionAction.openPublishCollectionModal:
 				setIsPublishModalOpen(!isPublishModalOpen);
 				break;
 
-			case COLLECTION_ACTIONS.toggleBookmark:
+			case CollectionAction.toggleBookmark:
 				await toggleBookmark();
 				break;
 
-			case COLLECTION_ACTIONS.createAssignment:
+			case CollectionAction.createAssignment:
 				setIsCreateAssignmentModalOpen(true);
 				break;
 
-			case COLLECTION_ACTIONS.importToAssignment:
+			case CollectionAction.importToAssignment:
 				setIsImportToAssignmentModalOpen(true);
 				break;
 
-			case COLLECTION_ACTIONS.editCollection:
+			case CollectionAction.editCollection:
 				onEditCollection();
 				break;
-			case COLLECTION_ACTIONS.openAutoplayCollectionModal:
+			case CollectionAction.openAutoplayCollectionModal:
 				setIsAutoplayCollectionModalOpen(!isAutoplayCollectionModalOpen);
 				break;
 
-			case COLLECTION_ACTIONS.openQuickLane:
+			case CollectionAction.openQuickLane:
 				setIsQuickLaneModalOpen(true);
 				break;
 
@@ -790,44 +815,41 @@ const CollectionDetail: FunctionComponent<
 			return null;
 		}
 		const COLLECTION_DROPDOWN_ITEMS = [
-			...(permissions?.canCreateBundles
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.addToBundle,
-							tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
-							'plus'
-						),
-				  ]
-				: []),
-			...(permissions?.canCreateQuickLane && permissions?.canCreateAssignments
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openQuickLane,
-							tText('collection/views/collection-detail___delen-met-leerlingen'),
-							'link-2'
-						),
-				  ]
-				: []),
-			...(permissions?.canCreateCollections
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.duplicate,
-							tText('collection/views/collection-detail___dupliceer'),
-							'copy'
-						),
-				  ]
-				: []),
-			...(permissions?.canDeleteCollections
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.delete,
-							tText('collection/views/collection-detail___verwijder')
-						),
-				  ]
-				: []),
-		];
+			...createDropdownMenuItem(
+				CollectionAction.addToBundle,
+				tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
+				IconName.plus,
+				!!permissions?.canCreateBundles &&
+					(isOwner || isEditContributor || isCollectionAdmin || isPublic)
+			),
+			...createDropdownMenuItem(
+				CollectionAction.openQuickLane,
+				tText('collection/views/collection-detail___delen-met-leerlingen'),
+				IconName.link2,
+				!!permissions?.canCreateQuickLane &&
+					(isOwner || isEditContributor || isCollectionAdmin || isPublic)
+			),
+			...createDropdownMenuItem(
+				CollectionAction.duplicate,
+				tText('collection/views/collection-detail___dupliceer'),
+				IconName.copy,
+				!!permissions?.canCreateCollections
+			),
 
-		const isPublic = !!collection && collection.is_public;
+			...createDropdownMenuItem(
+				CollectionAction.delete,
+				tText('collection/views/collection-detail___verwijder'),
+				IconName.trash,
+				!!permissions?.canDeleteCollections
+			),
+
+			...createDropdownMenuItem(
+				CollectionAction.delete,
+				tText('Verwijder mij van deze collectie'),
+				IconName.trash,
+				!permissions?.canDeleteCollections && isContributor
+			),
+		];
 
 		return (
 			<ButtonToolbar>
@@ -840,9 +862,7 @@ const CollectionDetail: FunctionComponent<
 							'collection/views/collection-detail___speelt-de-collectie-af'
 						)}
 						icon={IconName.play}
-						onClick={() =>
-							executeAction(COLLECTION_ACTIONS.openAutoplayCollectionModal)
-						}
+						onClick={() => executeAction(CollectionAction.openAutoplayCollectionModal)}
 					/>
 				)}
 				{permissions?.canCreateAssignments && (
@@ -860,29 +880,47 @@ const CollectionDetail: FunctionComponent<
 									label: tText(
 										'collection/views/collection-detail___nieuwe-opdracht'
 									),
-									id: COLLECTION_ACTIONS.createAssignment,
+									id: CollectionAction.createAssignment,
 								},
 								{
 									label: tText(
 										'collection/views/collection-detail___bestaande-opdracht'
 									),
-									id: COLLECTION_ACTIONS.importToAssignment,
+									id: CollectionAction.importToAssignment,
 								},
 							]}
 							onClick={executeAction}
 						/>
 					</Dropdown>
 				)}
-				{permissions?.canCreateQuickLane && !permissions?.canCreateAssignments && (
-					<Button
-						type="secondary"
-						icon={IconName.link2}
-						label={tText('item/views/item___delen-met-leerlingen')}
-						ariaLabel={tText(
-							'collection/views/collection-detail___delen-met-leerlingen'
+				{(isOwner || isEditContributor || permissions?.canEditCollections) && (
+					<ShareDropdown
+						contributors={transformContributorsToSimpleContributors(
+							{
+								...collection?.profile?.user,
+								profile: collection?.profile,
+							} as Avo.User.User,
+							(collection?.contributors || []) as Avo.Collection.Contributor[]
 						)}
-						title={tText('collection/views/collection-detail___delen-met-leerlingen')}
-						onClick={() => executeAction(COLLECTION_ACTIONS.openQuickLane)}
+						onDeleteContributor={(info) =>
+							onDeleteContributor(info, collectionId, fetchContributors)
+						}
+						onEditContributorRights={(user, newRights) =>
+							onEditContributor(
+								user,
+								newRights,
+								collectionId,
+								fetchContributors,
+								checkPermissionsAndGetCollection
+							)
+						}
+						onAddContributor={(info) =>
+							onAddContributor(info, collectionId, fetchContributors)
+						}
+						withPupils={false}
+						buttonProps={{
+							type: 'secondary',
+						}}
 					/>
 				)}
 				{permissions?.canPublishCollections && (
@@ -907,17 +945,19 @@ const CollectionDetail: FunctionComponent<
 								  )
 						}
 						icon={isPublic ? IconName.unlock3 : IconName.lock}
-						onClick={() => executeAction(COLLECTION_ACTIONS.openPublishCollectionModal)}
+						onClick={() => executeAction(CollectionAction.openPublishCollectionModal)}
 					/>
 				)}
-				<ToggleButton
-					title={tText('collection/views/collection-detail___bladwijzer')}
-					type="secondary"
-					icon={IconName.bookmark}
-					active={bookmarkViewPlayCounts.isBookmarked}
-					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
-					onClick={() => executeAction(COLLECTION_ACTIONS.toggleBookmark)}
-				/>
+				{!isOwner && !isContributor && (
+					<ToggleButton
+						title={tText('collection/views/collection-detail___bladwijzer')}
+						type="secondary"
+						icon={IconName.bookmark}
+						active={bookmarkViewPlayCounts.isBookmarked}
+						ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
+						onClick={() => executeAction(CollectionAction.toggleBookmark)}
+					/>
+				)}
 				<MoreOptionsDropdown
 					isOpen={isOptionsMenuOpen}
 					onOpen={() => setIsOptionsMenuOpen(true)}
@@ -934,7 +974,7 @@ const CollectionDetail: FunctionComponent<
 							title={tText(
 								'collection/views/collection-detail___pas-deze-collectie-aan'
 							)}
-							onClick={() => executeAction(COLLECTION_ACTIONS.editCollection)}
+							onClick={() => executeAction(CollectionAction.editCollection)}
 							disabled={isBeingEdited}
 							toolTipContent={tHtml(
 								'collection/views/collection-detail___deze-collectie-wordt-momenteel-bewerkt-door-een-andere-gebruiker-het-is-niet-mogelijk-met-met-meer-dan-1-gebruiker-simultaan-te-bewerken'
@@ -949,100 +989,82 @@ const CollectionDetail: FunctionComponent<
 
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
-			...(permissions?.canEditCollections
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.editCollection,
-							tText('collection/views/collection-detail___bewerken'),
-							'edit'
-						),
-				  ]
-				: []),
-			...(permissions?.canCreateAssignments
-				? [
-						{
-							label: tText(
-								'collection/views/collection-detail___importeer-naar-nieuwe-opdracht'
-							),
-							id: COLLECTION_ACTIONS.createAssignment,
-						},
-						{
-							label: tText(
-								'collection/views/collection-detail___importeer-naar-bestaande-opdracht'
-							),
-							id: COLLECTION_ACTIONS.importToAssignment,
-						},
-				  ].map((option) => createDropdownMenuItem(option.id, option.label, 'clipboard'))
-				: []),
-			...(permissions?.canPublishCollections
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openPublishCollectionModal,
-							tText('collection/views/collection-detail___delen'),
-							'plus'
-						),
-				  ]
-				: []),
-			createDropdownMenuItem(
-				COLLECTION_ACTIONS.toggleBookmark,
+			...createDropdownMenuItem(
+				CollectionAction.editCollection,
+				tText('collection/views/collection-detail___bewerken'),
+				'edit',
+				permissions?.canEditCollections || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.createAssignment,
+				tText('collection/views/collection-detail___importeer-naar-nieuwe-opdracht'),
+				'clipboard',
+				permissions?.canCreateAssignments || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.importToAssignment,
+				tText('collection/views/collection-detail___importeer-naar-bestaande-opdracht'),
+				'clipboard',
+				permissions?.canCreateAssignments || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.openPublishCollectionModal,
+				tText('collection/views/collection-detail___delen'),
+				'plus',
+				permissions?.canPublishCollections || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.toggleBookmark,
 				bookmarkViewPlayCounts.isBookmarked
 					? tText('collection/views/collection-detail___verwijder-bladwijzer')
 					: tText('collection/views/collection-detail___maak-bladwijzer'),
-				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
+				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark',
+				!isOwner && !isContributor
 			),
-			...(!!collection && collection.is_public
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openShareThroughEmail,
-							tText('collection/views/collection-detail___deel'),
-							'share-2'
-						),
-				  ]
-				: []),
-			...(permissions?.canCreateBundles
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.addToBundle,
-							tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
-							'plus'
-						),
-				  ]
-				: []),
-			...(permissions?.canCreateQuickLane
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openQuickLane,
-							tText('collection/views/collection-detail___delen-met-leerlingen'),
-							'link-2'
-						),
-				  ]
-				: []),
-			...(permissions?.canAutoplayCollection
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.openAutoplayCollectionModal,
-							tText('collection/views/collection-detail___speel-de-collectie-af'),
-							'play'
-						),
-				  ]
-				: []),
-			...(permissions?.canCreateCollections
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.duplicate,
-							tText('collection/views/collection-detail___dupliceer'),
-							'copy'
-						),
-				  ]
-				: []),
-			...(permissions?.canDeleteCollections
-				? [
-						createDropdownMenuItem(
-							COLLECTION_ACTIONS.delete,
-							tText('collection/views/collection-detail___verwijder')
-						),
-				  ]
-				: []),
+			...createDropdownMenuItem(
+				CollectionAction.openShareThroughEmail,
+				tText('collection/views/collection-detail___deel'),
+				'share-2',
+				!!collection && collection.is_public
+			),
+			...createDropdownMenuItem(
+				CollectionAction.addToBundle,
+				tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
+				'plus',
+				!!permissions?.canCreateBundles &&
+					(isOwner || isEditContributor || isCollectionAdmin)
+			),
+			...createDropdownMenuItem(
+				CollectionAction.openQuickLane,
+				tText('collection/views/collection-detail___delen-met-leerlingen'),
+				'link-2',
+				!!permissions?.canCreateQuickLane &&
+					(isOwner || isEditContributor || isCollectionAdmin)
+			),
+			...createDropdownMenuItem(
+				CollectionAction.openAutoplayCollectionModal,
+				tText('collection/views/collection-detail___speel-de-collectie-af'),
+				'play',
+				permissions?.canAutoplayCollection || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.duplicate,
+				tText('collection/views/collection-detail___dupliceer'),
+				'copy',
+				permissions?.canCreateCollections || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.delete,
+				tText('collection/views/collection-detail___verwijder'),
+				undefined,
+				permissions?.canDeleteCollections || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.delete,
+				tText('Verwijder mij van deze collectie'),
+				undefined,
+				!permissions?.canDeleteCollections && isContributor
+			),
 		];
 		return (
 			<ButtonToolbar>

@@ -10,4 +10,3 @@ export * from './newsletter-preferences';
 export * from './parsers/duration';
 export * from './redux/create-reducer';
 export * from './validation/email';
-export * from './user-role';
