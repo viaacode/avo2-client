@@ -17,6 +17,7 @@ import React, { ReactNode } from 'react';
 import { SearchFilter } from '../search/search.const';
 import { FilterState } from '../search/search.types';
 import { formatDate, renderSearchLinks, stripHtml } from '../shared/helpers';
+import { getGroupedLomsKeyValue } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 
 import {
@@ -403,16 +404,12 @@ export const getFragmentIdsFromCollection = (
 export const renderSubjects = (
 	id: string,
 	lom_classification: string[] | null,
-	enabledMetaData: SearchFilter[],
 	renderSearchLink: (
 		linkText: string | ReactNode,
 		newFilters: FilterState,
 		className?: string
 	) => ReactNode
 ): ReactNode | null => {
-	if (!enabledMetaData.includes(SearchFilter.subject)) {
-		return null;
-	}
 	return (
 		<Spacer margin="top-large">
 			<p className="u-text-bold">{tText('collection/views/collection-detail___vakken')}</p>
@@ -434,29 +431,25 @@ export const renderSubjects = (
 
 export const renderEducationLevels = (
 	id: string,
-	lom_context: string[] | null,
-	enabledMetaData: SearchFilter[],
+	educationLevels: string[] | null,
 	renderSearchLink: (
 		linkText: string | ReactNode,
 		newFilters: FilterState,
 		className?: string
 	) => ReactNode
 ): ReactNode | null => {
-	if (!enabledMetaData.includes(SearchFilter.educationLevel)) {
-		return null;
-	}
 	return (
 		<Spacer margin="top-large">
 			<p className="u-text-bold">
 				{tText('collection/views/collection-detail___onderwijsniveau')}
 			</p>
 			<p className="c-body-1">
-				{lom_context && lom_context.length ? (
+				{educationLevels && educationLevels.length ? (
 					renderSearchLinks(
 						renderSearchLink,
 						id,
 						SearchFilter.educationLevel,
-						lom_context
+						educationLevels
 					)
 				) : (
 					<span className="u-d-block">-</span>
@@ -475,14 +468,23 @@ export const renderCommonMetadata = (
 		className?: string
 	) => ReactNode
 ): ReactNode => {
-	const { id, lom_context, lom_classification, created_at, updated_at } = collectionOrBundle;
+	const { id, created_at, updated_at, loms } = collectionOrBundle;
+	const groupedLomsLabels = getGroupedLomsKeyValue(loms || [], 'label');
+	const isEducationLevelEnabled = enabledMetaData.includes(SearchFilter.educationLevel);
+	const isSubjectEnabled = enabledMetaData.includes(SearchFilter.subject);
+
 	return (
 		<>
-			{(!!renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink) ||
-				!!renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)) && (
+			{(isEducationLevelEnabled || isSubjectEnabled) && (
 				<Column size="3-3">
-					{renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink)}
-					{renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)}
+					{isEducationLevelEnabled &&
+						renderEducationLevels(
+							id,
+							groupedLomsLabels.educationLevel,
+							renderSearchLink
+						)}
+					{isSubjectEnabled &&
+						renderSubjects(id, groupedLomsLabels.subject, renderSearchLink)}
 				</Column>
 			)}
 			<Column size="3-3">
