@@ -11,6 +11,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import { LomSchemeType } from '@viaa/avo2-types';
 import { compact, isNil, omit, sortBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
@@ -96,7 +97,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				? tText('collection/collection___de-collectie-heeft-geen-onderwijsniveaus')
 				: tText('collection/collection___de-bundel-heeft-geen-onderwijsniveaus'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!!(collection.lom_context && collection.lom_context.length),
+			!!collection.loms?.find((lom) => lom.lom.scheme === LomSchemeType.structure),
 	},
 	{
 		error: (collection) =>
@@ -104,7 +105,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				? tText('collection/collection___de-collectie-heeft-geen-vakken')
 				: tText('collection/collection___de-bundel-heeft-geen-vakken'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!!(collection.lom_classification && collection.lom_classification.length),
+			!!collection.loms?.find((lom) => lom.lom.scheme === LomSchemeType.subject),
 	},
 	{
 		error: (collection) =>
@@ -475,16 +476,21 @@ export const renderCommonMetadata = (
 		className?: string
 	) => ReactNode
 ): ReactNode => {
-	const { id, lom_context, lom_classification, created_at, updated_at } = collectionOrBundle;
+	const { id, loms, created_at, updated_at } = collectionOrBundle;
 	return (
 		<>
-			{(!!renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink) ||
-				!!renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)) && (
-				<Column size="3-3">
-					{renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink)}
-					{renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)}
-				</Column>
-			)}
+			{/*TODO replace with the generic lom component*/}
+			{enabledMetaData}
+			{renderSearchLink}
+			{id}
+			{loms}
+			{/*{(!!renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink) ||*/}
+			{/*	!!renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)) && (*/}
+			{/*	<Column size="3-3">*/}
+			{/*		{renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink)}*/}
+			{/*		{renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)}*/}
+			{/*	</Column>*/}
+			{/*)}*/}
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
