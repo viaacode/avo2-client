@@ -13,7 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
-import { map } from 'lodash-es';
+import { compact, map } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
 
 import { FileUpload, ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
@@ -69,7 +69,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 								<Column size="3-7">
 									{collection.loms && (
 										<LomFieldsInput
-											loms={map(collection.loms, 'lom')}
+											loms={compact(map(collection.loms, 'lom'))}
 											onChange={updateCollectionLoms}
 										/>
 									)}
