@@ -20,7 +20,6 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import {
 	compareUsersEmail,
-	contributorRightToString,
 	findRightByValue,
 	sortContributors,
 } from './ShareWithColleagues.helpers';
@@ -28,6 +27,7 @@ import './ShareWithColleagues.scss';
 import {
 	ContributorInfo,
 	ContributorInfoRights,
+	ContributorInfoRightsInDutch,
 	ShareRightsType,
 } from './ShareWithColleagues.types';
 
@@ -145,13 +145,20 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 				<ul className="c-colleagues-info-list">
 					{sortContributors(contributors).map((contributor, index) => {
 						const isOwner = currentUser.rights === ContributorInfoRights.OWNER;
+						const currentUserIsContributor =
+							currentUser.rights === ContributorInfoRights.CONTRIBUTOR;
+						const contributorIsOwner =
+							contributor.rights === ContributorInfoRights.OWNER;
 						const isCurrentUser = currentUser.email === contributor.email;
 						const canEdit = isOwner && !isCurrentUser && contributor.profileId;
 
-						// Only the owner can delete any user except for himself
-						// And contributor and viewers can only delete themselves
+						// The owner can delete himself and everyone else
+						// Contributors can delete themselves and every other contributor and viewer
+						// Viewers can only delete themselves
 						const canDelete =
-							(isOwner && !isCurrentUser) || (!isOwner && isCurrentUser);
+							isOwner ||
+							(!isOwner && isCurrentUser) ||
+							(currentUserIsContributor && !isCurrentUser && !contributorIsOwner);
 
 						return (
 							<li key={index} className="c-colleague-info-row">
@@ -188,11 +195,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 								</div>
 
 								<div className="c-colleague-info-row__rights">
-									<span>
-										{contributorRightToString(
-											contributor.rights as ContributorInfoRights
-										)}
-									</span>
+									<span>{ContributorInfoRightsInDutch[contributor.rights]}</span>
 
 									{canEdit && (
 										<button
@@ -248,9 +251,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									onClick={handleRightsButtonClicked}
 									label={
 										contributor.rights
-											? contributorRightToString(
-													contributor.rights as ContributorInfoRights
-											  )
+											? ContributorInfoRightsInDutch[contributor.rights]
 											: tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___rol'
 											  )

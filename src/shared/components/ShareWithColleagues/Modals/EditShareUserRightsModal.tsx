@@ -11,12 +11,15 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { capitalize } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
 import { findRightByValue } from '../ShareWithColleagues.helpers';
-import { ShareRightsType, ContributorInfoRights } from '../ShareWithColleagues.types';
+import {
+	ContributorInfoRights,
+	ContributorInfoRightsInDutch,
+	ShareRightsType,
+} from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;
@@ -38,7 +41,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 				? tText(
 						'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen'
 				  )
-				: capitalize(right),
+				: ContributorInfoRightsInDutch[right],
 		value: right,
 	}));
 

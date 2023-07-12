@@ -19,10 +19,6 @@ export const sortContributors = (users: ContributorInfo[]): ContributorInfo[] =>
 	];
 };
 
-export const contributorRightToString = (right: ContributorInfoRights) => {
-	return right.toLowerCase();
-};
-
 export const compareUsersEmail = (user: ContributorInfo, toCompareUser: ContributorInfo) => {
 	return user.email === toCompareUser.email;
 };
