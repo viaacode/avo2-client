@@ -21,7 +21,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
+import { LomSchemeType, PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { compact, get, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
@@ -290,14 +290,14 @@ const Profile: FunctionComponent<
 		let filledIn = true;
 		if (
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
-			(!profileInfo.subjects || !profileInfo.subjects.length)
+			!profileInfo.loms?.find((lom) => lom.lom_id.includes(LomSchemeType.subject))
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
-			(!profileInfo.educationLevels || !profileInfo.educationLevels.length)
+			!profileInfo.loms?.find((lom) => lom.lom_id.includes(LomSchemeType.structure))
 		) {
 			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
@@ -335,14 +335,7 @@ const Profile: FunctionComponent<
 				bio,
 				userId: user.uid,
 				avatar: avatar || null,
-				educationLevels: (selectedEducationLevels || []).map((option) => ({
-					profile_id: profileId,
-					key: option.value.toString(),
-				})),
-				subjects: (selectedSubjects || []).map((option) => ({
-					profile_id: profileId,
-					key: option.value.toString(),
-				})),
+				loms: [], // todo link this to the new lom input component
 				organizations: (selectedOrganisations || []).map((option) => ({
 					profile_id: profileId,
 					organization_id: option.organizationId,

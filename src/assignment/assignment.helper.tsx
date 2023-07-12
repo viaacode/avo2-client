@@ -247,7 +247,7 @@ const validateLoms = (loms: Avo.Lom.Lom[] | undefined, scheme: LomType) => {
 		return false;
 	}
 
-	const lomFields = map(loms, 'lom');
+	const lomFields = compact(map(loms, 'lom'));
 	const groupedLoms = groupLoms(lomFields);
 
 	return !!groupedLoms[scheme]?.length;

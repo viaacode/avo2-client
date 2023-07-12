@@ -11,6 +11,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import { LomSchemeType } from '@viaa/avo2-types';
 import { compact, isNil, omit, sortBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
@@ -97,7 +98,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				? tText('collection/collection___de-collectie-heeft-geen-onderwijsniveaus')
 				: tText('collection/collection___de-bundel-heeft-geen-onderwijsniveaus'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!!(collection.lom_context && collection.lom_context.length),
+			!!collection.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure),
 	},
 	{
 		error: (collection) =>
@@ -105,7 +106,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				? tText('collection/collection___de-collectie-heeft-geen-vakken')
 				: tText('collection/collection___de-bundel-heeft-geen-vakken'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!!(collection.lom_classification && collection.lom_classification.length),
+			!!collection.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject),
 	},
 	{
 		error: (collection) =>
@@ -453,8 +454,8 @@ export const renderCommonMetadata = (
 						renderLomInfo(
 							id,
 							tText('Onderwijsgraad'),
-							groupedLomsLabels.context,
-							SearchFilter.educationDegree,
+							groupedLomsLabels.educationLevel,
+							SearchFilter.educationLevel,
 							renderSearchLink
 						)}
 
@@ -462,8 +463,8 @@ export const renderCommonMetadata = (
 						renderLomInfo(
 							id,
 							tText('collection/views/collection-detail___onderwijsniveau'),
-							groupedLomsLabels.educationLevel,
-							SearchFilter.educationLevel,
+							groupedLomsLabels.educationDegree,
+							SearchFilter.educationDegree,
 							renderSearchLink
 						)}
 
