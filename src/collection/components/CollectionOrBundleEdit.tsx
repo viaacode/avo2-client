@@ -13,7 +13,7 @@ import {
 } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
 import { CollectionSchema } from '@viaa/avo2-types/types/collection';
-import { cloneDeep, get, isEmpty, omit, set } from 'lodash-es';
+import { cloneDeep, compact, get, isEmpty, omit, set } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -731,7 +731,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 				await CollectionService.insertCollectionLomLinks(
 					newCollection.id,
-					(collectionState.currentCollection?.loms || []).map((lom) => lom.lom.id)
+					compact(
+						(collectionState.currentCollection?.loms || []).map((lom) => lom.lom?.id)
+					)
 				);
 			} catch (err) {
 				console.error('Failed to update collection/bundle loms', err);

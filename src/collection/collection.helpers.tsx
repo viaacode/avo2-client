@@ -97,7 +97,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				? tText('collection/collection___de-collectie-heeft-geen-onderwijsniveaus')
 				: tText('collection/collection___de-bundel-heeft-geen-onderwijsniveaus'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!!collection.loms?.find((lom) => lom.lom.scheme === LomSchemeType.structure),
+			!!collection.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure),
 	},
 	{
 		error: (collection) =>
@@ -105,7 +105,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				? tText('collection/collection___de-collectie-heeft-geen-vakken')
 				: tText('collection/collection___de-bundel-heeft-geen-vakken'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!!collection.loms?.find((lom) => lom.lom.scheme === LomSchemeType.subject),
+			!!collection.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject),
 	},
 	{
 		error: (collection) =>

@@ -136,7 +136,7 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 		!!profile &&
 		!!profile.organizations &&
 		!!profile.organizations.length &&
-		!!profile.loms?.find((lom) => lom.lom.scheme === LomSchemeType.structure) &&
-		!!profile.loms?.find((lom) => lom.lom.scheme === LomSchemeType.subject)
+		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure) &&
+		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject)
 	);
 }
