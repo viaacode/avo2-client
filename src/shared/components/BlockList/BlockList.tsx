@@ -16,13 +16,15 @@ import { BLOCK_ITEM_ICONS } from './BlockList.consts';
 import { BlockListProps } from './BlockList.types';
 import AssignmentBlockTypeSearch from './blocks/AssignmentBlockTypeSearch';
 
+import './BlockList.scss';
+
 const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
 		const layout = (children?: ReactNode, background?: ContainerPropsSchema['background']) => (
 			<Container
 				mode="horizontal"
 				size="full-width"
-				className="u-p-0"
+				className="u-p-0 c-block-list__item"
 				background={background}
 				key={'block-list__item--' + block.id}
 			>

@@ -42,17 +42,12 @@ import {
 	ShareDropdown,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import {
-	ContributorInfo,
-	ShareRightsType,
-} from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
 	CustomError,
-	isMobileWidth,
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
@@ -73,12 +68,16 @@ import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-pl
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ValueOf } from '../../shared/types';
-import { Contributor } from '../../shared/types/contributor';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { CollectionCreateUpdateTab } from '../collection.types';
 import { CollectionOrBundleTitle, PublishCollectionModal } from '../components';
+import {
+	onAddContributor,
+	onDeleteContributor,
+	onEditContributor,
+} from '../helpers/collection-share-with-collegue-handlers';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
@@ -87,6 +86,8 @@ import CollectionOrBundleEditMarcom from './CollectionOrBundleEditMarcom';
 import CollectionOrBundleEditMetaData from './CollectionOrBundleEditMetaData';
 import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityCheck';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
+
+import './CollectionOrBundleEdit.scss';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -178,7 +179,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	useWarningBeforeUnload({
 		when: unsavedChanges,
 	});
-	const [contributors, setContributors] = useState<Contributor[]>();
+	const [contributors, setContributors] = useState<Avo.Collection.Contributor[]>();
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 
 	// Computed values
@@ -220,7 +221,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 		const response = await CollectionService.fetchContributorsByCollectionId(collectionId);
 
-		setContributors(response as Contributor[]);
+		setContributors(response as Avo.Collection.Contributor[]);
 	}, [collectionId]);
 
 	useEffect(() => {
@@ -1037,93 +1038,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
-	const onEditContributor = async (user: ContributorInfo, newRights: ShareRightsType) => {
-		try {
-			if (collectionId) {
-				if (newRights === 'OWNER') {
-					await CollectionService.transferCollectionOwnerShip(
-						collectionId,
-						user.contributorId as string
-					);
-
-					await checkPermissionsAndGetCollection();
-
-					await fetchContributors();
-
-					ToastService.success(
-						tText(
-							'collection/components/collection-or-bundle-edit___eigenaarschap-succesvol-overgedragen'
-						)
-					);
-				} else {
-					await CollectionService.editContributorRights(
-						collectionId,
-						user.contributorId as string,
-						newRights
-					);
-
-					await fetchContributors();
-
-					ToastService.success(
-						tText(
-							'collection/components/collection-or-bundle-edit___rol-van-de-gebruiker-is-aangepast'
-						)
-					);
-				}
-			}
-		} catch (err) {
-			ToastService.danger(
-				tText(
-					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-aanpassen-van-de-collega-rol'
-				)
-			);
-		}
-	};
-
-	const onAddContributor = async (info: Partial<ContributorInfo>) => {
-		try {
-			await CollectionService.addContributor(collectionId, info);
-
-			await fetchContributors();
-
-			ToastService.success(
-				tText(
-					'collection/components/collection-or-bundle-edit___uitnodiging-tot-samenwerken-is-verstuurd'
-				)
-			);
-		} catch (err) {
-			ToastService.danger(
-				tText(
-					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-uitnodigen-van-een-collega'
-				)
-			);
-		}
-	};
-
-	const onDeleteContributor = async (info: ContributorInfo) => {
-		try {
-			await CollectionService.deleteContributor(
-				collectionId,
-				info.contributorId,
-				info.profileId
-			);
-
-			await fetchContributors();
-
-			ToastService.success(
-				tText(
-					'collection/components/collection-or-bundle-edit___gebruiker-is-verwijderd-van-de-collectie'
-				)
-			);
-		} catch (err) {
-			ToastService.danger(
-				tText(
-					'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-verwijderen-van-een-collega'
-				)
-			);
-		}
-	};
-
 	const updateCollectionEditor = async () => {
 		try {
 			await CollectionService.updateCollectionEditor(collectionId);
@@ -1263,30 +1177,24 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 	};
 
+	const canAddItemToCollectionOrBundle = PermissionService.hasPerm(
+		user,
+		isCollection
+			? PermissionName.ADD_ITEM_TO_COLLECTION_BY_PID
+			: PermissionName.ADD_COLLECTION_TO_BUNDLE_BY_ID
+	);
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			createDropdownMenuItem('delete', 'Verwijderen', 'delete'),
-		];
-		if (
-			PermissionService.hasPerm(
-				user,
+			...createDropdownMenuItem('delete', 'Verwijderen', 'delete', true),
+			...createDropdownMenuItem(
+				'addItemById',
 				isCollection
-					? PermissionName.ADD_ITEM_TO_COLLECTION_BY_PID
-					: PermissionName.ADD_COLLECTION_TO_BUNDLE_BY_ID
-			)
-		) {
-			COLLECTION_DROPDOWN_ITEMS.push(
-				createDropdownMenuItem(
-					'addItemById',
-					isCollection
-						? tText('collection/components/collection-or-bundle-edit___voeg-item-toe')
-						: tText(
-								'collection/components/collection-or-bundle-edit___voeg-collectie-toe'
-						  ),
-					'plus'
-				)
-			);
-		}
+					? tText('collection/components/collection-or-bundle-edit___voeg-item-toe')
+					: tText('collection/components/collection-or-bundle-edit___voeg-collectie-toe'),
+				'plus',
+				canAddItemToCollectionOrBundle
+			),
+		];
 
 		const isPublic =
 			collectionState.currentCollection && collectionState.currentCollection.is_public;
@@ -1361,11 +1269,23 @@ const CollectionOrBundleEdit: FunctionComponent<
 								...collectionState.currentCollection?.profile?.user,
 								profile: collectionState.currentCollection?.profile,
 							} as Avo.User.User,
-							contributors as Contributor[]
+							contributors as Avo.Collection.Contributor[]
 						)}
-						onDeleteContributor={onDeleteContributor}
-						onEditContributorRights={onEditContributor}
-						onAddContributor={onAddContributor}
+						onDeleteContributor={(info) =>
+							onDeleteContributor(info, collectionId, fetchContributors)
+						}
+						onEditContributorRights={(user, newRights) =>
+							onEditContributor(
+								user,
+								newRights,
+								collectionId,
+								fetchContributors,
+								checkPermissionsAndGetCollection
+							)
+						}
+						onAddContributor={(info) =>
+							onAddContributor(info, collectionId, fetchContributors)
+						}
 						withPupils={false}
 					/>
 				)}
@@ -1375,29 +1295,33 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			createDropdownMenuItem(
+			...createDropdownMenuItem(
 				'save',
 				tText('collection/views/collection-edit___opslaan'),
-				'download'
+				'download',
+				true
 			),
-			createDropdownMenuItem(
+			...createDropdownMenuItem(
 				'openPublishModal',
 				tText('collection/components/collection-or-bundle-edit___delen'),
-				'share-2'
+				'share-2',
+				true
 			),
-			createDropdownMenuItem(
+			...createDropdownMenuItem(
 				'redirectToDetail',
 				tText('collection/components/collection-or-bundle-edit___bekijk'),
-				'eye'
+				'eye',
+				true
 			),
-			createDropdownMenuItem(
+			...createDropdownMenuItem(
 				'rename',
 				isCollection
 					? 'Collectie hernoemen'
 					: tText('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
-				'folder'
+				'folder',
+				true
 			),
-			createDropdownMenuItem('delete', 'Verwijderen', 'delete'),
+			...createDropdownMenuItem('delete', 'Verwijderen', 'delete', true),
 		];
 		return (
 			<ButtonToolbar>
@@ -1430,7 +1354,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		}
 
 		return (
-			<>
+			<div className="c-collection-or-bundle-edit">
 				<Header
 					title={
 						<CollectionOrBundleTitle
@@ -1451,7 +1375,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
 					<HeaderButtons>
-						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+						<div className="c-collection-or-bundle-edit__header-buttons--mobile">
+							{renderHeaderButtonsMobile()}
+						</div>
+						<div className="c-collection-or-bundle-edit__header-buttons--desktop">
+							{renderHeaderButtons()}
+						</div>
 					</HeaderButtons>
 
 					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
@@ -1532,7 +1461,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				/>
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />
-			</>
+			</div>
 		);
 	};
 

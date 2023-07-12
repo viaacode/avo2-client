@@ -1,4 +1,4 @@
-import { type Avo, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash';
 import { ReactNode } from 'react';
 
@@ -47,10 +47,16 @@ export async function deleteAssignment(
 	}
 }
 
-export function deleteAssignmentWarning(assignment?: Avo.Assignment.Assignment): ReactNode {
-	const isSharedWithOthers =
-		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
-	const isContributor = assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+export function deleteAssignmentWarning(
+	assignment: Avo.Assignment.Assignment | undefined,
+	profileId: string | undefined
+): ReactNode {
+	const isSharedWithOthers = !!assignment?.contributors?.find(
+		(contributor) => contributor.profile_id && contributor.profile_id !== profileId
+	);
+	const isContributor = !!assignment?.contributors?.find(
+		(contributor) => contributor.profile_id && contributor.profile_id === profileId
+	);
 
 	if (isSharedWithOthers) {
 		return tHtml('assignment/views/assignment-overview___delete-shared-assignment', {

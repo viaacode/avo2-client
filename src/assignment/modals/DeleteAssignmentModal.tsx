@@ -38,7 +38,7 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 			if (contributorCount === 1) {
 				messages.push(
 					tHtml(
-						'Ben je zeker dat je jezelf van deze opdracht wil wissen? Deze opdracht is met 1 andere persoon gedeeld. Deze verliezen dan toegang.'
+						'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen-deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliezen-dan-toegang'
 					)
 				);
 			} else {

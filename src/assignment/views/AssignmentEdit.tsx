@@ -44,7 +44,6 @@ import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnloa
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { Contributor } from '../../shared/types/contributor';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { isUserAssignmentContributor, isUserAssignmentOwner } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
@@ -310,7 +309,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							role: getContributorType(
 								user,
 								assignment as Avo.Assignment.Assignment,
-								(original.contributors as Contributor[]) || []
+								(original.contributors || []) as Avo.Assignment.Contributor[]
 							).toLowerCase(),
 						},
 					},
@@ -673,7 +672,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								},
 							}}
 							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
-							share={{
+							shareWithPupilsProps={{
 								assignment: original || undefined, // Needs to be saved before you can share
 								onContentLinkClicked: () =>
 									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT),
@@ -689,7 +688,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									},
 								},
 							}}
-							refetch={async () => await fetchAssignment()}
+							refetchAssignment={async () => await fetchAssignment()}
 							route={location.pathname}
 						/>
 					}

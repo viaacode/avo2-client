@@ -2,7 +2,7 @@ import { Button, Spacer } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
+import { ShortDescriptionField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
 import { isCollection } from '../../../quick-lane/quick-lane.helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -57,32 +57,31 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 
 	return model && content && content_label && isCollection({ content_label }) ? (
 		<>
-			<Spacer margin={'bottom'}>
-				<EducationLevelsField
-					value={model.lom_context}
-					onChange={(levels) => {
-						setModel({
-							...model,
-							lom_context: (levels || []).map((item) => item.value.toString()),
-						});
-					}}
-				/>
-			</Spacer>
-
-			<Spacer margin={'bottom'}>
-				<SubjectsField
-					value={model.lom_classification}
-					onChange={(subjects) => {
-						setModel({
-							...model,
-							lom_classification: (subjects || []).map((item) =>
-								item.value.toString()
-							),
-						});
-					}}
-				/>
-			</Spacer>
-
+			{/*TODO replace with the generic lom component*/}
+			{/*<Spacer margin={'bottom'}>*/}
+			{/*	<EducationLevelsField*/}
+			{/*		value={model.lom_context}*/}
+			{/*		onChange={(levels) => {*/}
+			{/*			setModel({*/}
+			{/*				...model,*/}
+			{/*				lom_context: (levels || []).map((item) => item.value.toString()),*/}
+			{/*			});*/}
+			{/*		}}*/}
+			{/*	/>*/}
+			{/*</Spacer>*/}
+			{/*<Spacer margin={'bottom'}>*/}
+			{/*	<SubjectsField*/}
+			{/*		value={model.lom_classification}*/}
+			{/*		onChange={(subjects) => {*/}
+			{/*			setModel({*/}
+			{/*				...model,*/}
+			{/*				lom_classification: (subjects || []).map((item) =>*/}
+			{/*					item.value.toString()*/}
+			{/*				),*/}
+			{/*			});*/}
+			{/*		}}*/}
+			{/*	/>*/}
+			{/*</Spacer>*/}
 			<Spacer margin={'bottom'}>
 				<ShortDescriptionField
 					value={model.description}
@@ -97,7 +96,6 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 					)}
 				/>
 			</Spacer>
-
 			<Button
 				label={
 					!isShareable(content)

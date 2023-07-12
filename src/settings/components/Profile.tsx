@@ -21,7 +21,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
+import { LomSchemeType, PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import { compact, get, isNil } from 'lodash-es';

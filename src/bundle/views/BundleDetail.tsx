@@ -122,6 +122,7 @@ const BundleDetail: FunctionComponent<
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 	const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
+	const isOwner = !!bundle?.owner_profile_id && bundle?.owner_profile_id === user?.profile?.id;
 
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
@@ -559,23 +560,18 @@ const BundleDetail: FunctionComponent<
 
 	const renderActionDropdown = () => {
 		const BUNDLE_DROPDOWN_ITEMS = [
-			...(permissions.canCreateBundles
-				? [
-						createDropdownMenuItem(
-							'duplicate',
-							tText('bundle/views/bundle-detail___dupliceer'),
-							'copy'
-						),
-				  ]
-				: []),
-			...(permissions.canDeleteBundle
-				? [
-						createDropdownMenuItem(
-							'delete',
-							tText('bundle/views/bundle-detail___verwijder')
-						),
-				  ]
-				: []),
+			...createDropdownMenuItem(
+				'duplicate',
+				tText('bundle/views/bundle-detail___dupliceer'),
+				'copy',
+				permissions.canCreateBundles || false
+			),
+			...createDropdownMenuItem(
+				'delete',
+				tText('bundle/views/bundle-detail___verwijder'),
+				undefined,
+				permissions.canDeleteBundle || false
+			),
 		];
 
 		return (
@@ -593,57 +589,44 @@ const BundleDetail: FunctionComponent<
 	const renderActions = () => {
 		if (isMobileWidth()) {
 			const BUNDLE_DROPDOWN_ITEMS = [
-				...(permissions.canEditBundle
-					? [
-							createDropdownMenuItem(
-								'edit',
-								tText('bundle/views/bundle-detail___bewerken'),
-								'edit'
-							),
-					  ]
-					: []),
-				...(permissions.canPublishBundle
-					? [
-							createDropdownMenuItem(
-								'openPublishModal',
-								tText('bundle/views/bundle-detail___delen'),
-								'lock'
-							),
-					  ]
-					: []),
-				createDropdownMenuItem(
+				...createDropdownMenuItem(
+					'edit',
+					tText('bundle/views/bundle-detail___bewerken'),
+					'edit',
+					permissions.canEditBundle || false
+				),
+				...createDropdownMenuItem(
+					'openPublishModal',
+					tText('bundle/views/bundle-detail___delen'),
+					'lock',
+					permissions.canPublishBundle || false
+				),
+				...createDropdownMenuItem(
 					'toggleBookmark',
 					bookmarkViewPlayCounts.isBookmarked
 						? tText('bundle/views/bundle-detail___verwijder-bladwijzer')
 						: tText('bundle/views/bundle-detail___maak-bladwijzer'),
-					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark'
+					bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark',
+					!isOwner
 				),
-				...(!!bundle && bundle.is_public
-					? [
-							createDropdownMenuItem(
-								'openShareThroughEmailModal',
-								tText('bundle/views/bundle-detail___share-bundel'),
-								'share-2'
-							),
-					  ]
-					: []),
-				...(permissions.canCreateBundles
-					? [
-							createDropdownMenuItem(
-								'duplicate',
-								tText('bundle/views/bundle-detail___dupliceer'),
-								'copy'
-							),
-					  ]
-					: []),
-				...(permissions.canDeleteBundle
-					? [
-							createDropdownMenuItem(
-								'delete',
-								tText('bundle/views/bundle-detail___verwijder')
-							),
-					  ]
-					: []),
+				...createDropdownMenuItem(
+					'openShareThroughEmailModal',
+					tText('bundle/views/bundle-detail___share-bundel'),
+					'share-2',
+					!!bundle && bundle.is_public
+				),
+				...createDropdownMenuItem(
+					'duplicate',
+					tText('bundle/views/bundle-detail___dupliceer'),
+					'copy',
+					permissions.canCreateBundles || false
+				),
+				...createDropdownMenuItem(
+					'delete',
+					tText('bundle/views/bundle-detail___verwijder'),
+					undefined,
+					permissions.canDeleteBundle || false
+				),
 			];
 			return (
 				<MoreOptionsDropdown

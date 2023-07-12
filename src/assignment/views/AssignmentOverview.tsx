@@ -432,7 +432,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			await updateAndReset();
 		} catch (err) {
 			console.error(err);
-			ToastService.danger(tHtml('Er liep iets fout met het verwijderen van de opdracht.'));
+			ToastService.danger(
+				tHtml(
+					'assignment/views/assignment-overview___er-liep-iets-fout-met-het-verwijderen-van-de-opdracht'
+				)
+			);
 		}
 
 		handleDeleteModalClose();

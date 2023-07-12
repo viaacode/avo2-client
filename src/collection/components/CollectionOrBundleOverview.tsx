@@ -65,6 +65,7 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
 import {
 	Collection,
+	CollectionAction,
 	CollectionCreateUpdateTab,
 	CollectionShareType,
 	ContentTypeNumber,
@@ -472,57 +473,47 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	);
 
 	const renderActions = (collectionUuid: string) => {
-		const currenctCollection = collections?.find(
+		const currentCollection = collections?.find(
 			(collection) => collection.id === collectionUuid
 		);
 		const ROW_DROPDOWN_ITEMS = [
-			...(permissions[collectionUuid] && permissions[collectionUuid].canEdit
-				? [
-						createDropdownMenuItem(
-							'edit',
-							tText('collection/views/collection-overview___bewerk'),
-							'edit2'
-						),
-				  ]
-				: []),
-			...(isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
-				? [
-						createDropdownMenuItem(
-							'createAssignment',
-							tText('collection/views/collection-overview___maak-opdracht'),
-							'clipboard'
-						),
-				  ]
-				: []),
-			...(isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE)
-				? [
-						createDropdownMenuItem(
-							'createQuickLane',
-							tText('collection/views/collection-overview___delen-met-leerlingen'),
-							'link-2'
-						),
-				  ]
-				: []),
-			...(permissions[collectionUuid] && permissions[collectionUuid].canDelete
-				? [
-						createDropdownMenuItem(
-							'delete',
-							currenctCollection?.share_type ===
-								ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-								? tText(
-										'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
-								  )
-								: tText('collection/views/collection-overview___verwijderen')
-						),
-				  ]
-				: []),
+			...createDropdownMenuItem(
+				CollectionAction.editCollection,
+				tText('collection/views/collection-overview___bewerk'),
+				'edit2',
+				(permissions[collectionUuid] && permissions[collectionUuid].canEdit) || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.createAssignment,
+				tText('collection/views/collection-overview___maak-opdracht'),
+				'clipboard',
+				(isCollection &&
+					PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)) ||
+					false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.openQuickLane,
+				tText('collection/views/collection-overview___delen-met-leerlingen'),
+				'link-2',
+				isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE)
+			),
+			...createDropdownMenuItem(
+				CollectionAction.delete,
+				currentCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
+					? tText(
+							'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
+					  )
+					: tText('collection/views/collection-overview___verwijderen'),
+				undefined,
+				(permissions[collectionUuid] && permissions[collectionUuid].canDelete) || false
+			),
 		];
 
 		// Listeners
 		const onClickDropdownItem = (item: ReactText) => {
 			setDropdownOpen({ [collectionUuid]: false });
 			switch (item) {
-				case 'edit':
+				case CollectionAction.editCollection:
 					navigate(
 						history,
 						isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : BUNDLE_PATH.BUNDLE_EDIT,
@@ -530,17 +521,17 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					);
 					break;
 
-				case 'createAssignment':
+				case CollectionAction.createAssignment:
 					setSelectedCollectionUuid(collectionUuid);
 					setIsCreateAssignmentModalOpen(true);
 					break;
 
-				case 'createQuickLane':
+				case CollectionAction.openQuickLane:
 					setSelectedCollectionUuid(collectionUuid);
 					setIsQuickLaneModalOpen(true);
 					break;
 
-				case 'delete':
+				case CollectionAction.delete:
 					setSelectedCollectionUuid(collectionUuid);
 					onClickDelete(collectionUuid);
 					break;

@@ -92,7 +92,9 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 									/>
 
 									<FormGroup
-										label={tText('Persoonlijke notities')}
+										label={tText(
+											'assignment/components/assignment-meta-data-form-editable___persoonlijke-notities'
+										)}
 										labelFor="personalRemarkId"
 									>
 										<TextArea
@@ -101,7 +103,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 											id="personalRemarkId"
 											height="medium"
 											placeholder={tText(
-												'Geef hier je eigen opmerkingen of notities in. Deze zijn niet zichtbaar voor anderen...'
+												'assignment/components/assignment-meta-data-form-editable___geef-hier-je-eigen-opmerkingen-of-notities-in-deze-zijn-niet-zichtbaar-voor-anderen'
 											)}
 											onChange={(value: string) => {
 												{

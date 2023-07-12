@@ -2,7 +2,7 @@
 
 $borderLight: 1px solid $color-gray-100;
 
-.c-add-colleague {
+.c-dropdown__content-open .c-add-colleague {
 	display: flex;
 	margin-bottom: 2rem;
 
@@ -65,6 +65,10 @@ $borderLight: 1px solid $color-gray-100;
 		border: $borderLight;
 		margin-top: 0;
 		width: fit-content;
+	}
+
+	.c-add-colleague__button {
+		margin-left: 0;
 	}
 }
 

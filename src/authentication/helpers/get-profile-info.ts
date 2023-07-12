@@ -1,4 +1,5 @@
 import type { Avo } from '@viaa/avo2-types';
+import { LomSchemeType } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -53,19 +54,18 @@ export const getUserGroupLabel = (
 export const getUserGroupId = (
 	userOrProfile: Avo.User.Profile | null | undefined
 ): SpecialUserGroup | '0' => {
-	const groups: (string | number)[] = (userOrProfile as Avo.User.Profile).userGroupIds;
-
-	if (groups && groups.length) {
-		return String(groups[0]) as SpecialUserGroup;
-	}
-
 	if (!userOrProfile) {
 		console.error(
 			new CustomError(
 				'Failed to get profile user group id because the provided profile is undefined'
 			)
 		);
-		return '0';
+		return '0'; // unknown
+	}
+	const groups: (string | number)[] = (userOrProfile as Avo.User.Profile).userGroupIds;
+
+	if (groups && groups.length) {
+		return String(groups[0]) as SpecialUserGroup;
 	}
 
 	const profile = getProfile(userOrProfile);
@@ -136,9 +136,7 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 		!!profile &&
 		!!profile.organizations &&
 		!!profile.organizations.length &&
-		!!profile.educationLevels &&
-		!!profile.educationLevels.length &&
-		!!profile.subjects &&
-		!!profile.subjects.length
+		!!profile.loms?.find((lom) => lom.lom.scheme === LomSchemeType.structure) &&
+		!!profile.loms?.find((lom) => lom.lom.scheme === LomSchemeType.subject)
 	);
 }

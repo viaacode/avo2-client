@@ -1,0 +1,20 @@
+@import "../../styles/settings/variables";
+
+.c-collection-or-bundle-edit {
+	&__header-buttons--desktop {
+		display: none;
+	}
+
+	&__header-buttons--mobile {
+		display: block;
+	}
+
+	@media screen and (min-width: $g-bp2) {
+		&__header-buttons--mobile {
+			display: none;
+		}
+		&__header-buttons--desktop {
+			display: block;
+		}
+	}
+}
