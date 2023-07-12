@@ -709,7 +709,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							<th scope="row">{tText('item/views/item___taal')}</th>
 							<td>
 								{item.lom_languages
-									.map((languageCode) => LANGUAGES.nl[languageCode])
+									.map((languageCode: string) => LANGUAGES.nl[languageCode])
 									.join(', ')}
 							</td>
 						</Column>

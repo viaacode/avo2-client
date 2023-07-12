@@ -38,13 +38,9 @@ const UserEditPage: FC<UserEditPageProps> = ({ history, match }) => {
 			<UserEdit
 				id={match.params.id}
 				onSave={async (newProfileInfo: Partial<Avo.User.Profile>) => {
-					await SettingsService.updateProfileInfo({
-						...newProfileInfo,
-						subjects: (newProfileInfo.subjects || []).map((option) => ({
-							profile_id: match.params.id,
-							key: option,
-						})),
-					} as any);
+					await SettingsService.updateProfileInfo(
+						newProfileInfo as unknown as Avo.User.UpdateProfileValues
+					);
 
 					redirectToClientPage(
 						buildLink(USER_PATH.USER_DETAIL, { id: match.params.id }),
