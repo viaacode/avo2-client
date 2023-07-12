@@ -1,6 +1,6 @@
 import type { Avo } from '@viaa/avo2-types';
-import { LomSchemeType } from '@viaa/avo2-types';
-import { filter, groupBy, isNil } from 'lodash-es';
+import { LomSchemeType, LomType } from '@viaa/avo2-types';
+import { compact, filter, groupBy, isNil, map } from 'lodash-es';
 
 import { LomFieldsByScheme } from '../types/lom';
 
@@ -13,4 +13,16 @@ export const groupLoms = (loms: Avo.Lom.LomField[]): LomFieldsByScheme => {
 		theme: (groupedLoms[LomSchemeType.theme] as Avo.Lom.LomField[]) || [],
 		context: filter(groupedLoms[LomSchemeType.structure], { broader: null }),
 	} as LomFieldsByScheme;
+};
+
+export const getGroupedLomsKeyValue = (
+	loms: Avo.Lom.Lom[],
+	lomKey: string
+): Record<LomType, string[]> => {
+	return Object.fromEntries(
+		Object.entries(groupLoms(compact(map(loms, 'lom')))).map(([key, value]) => [
+			key,
+			map(value, lomKey),
+		])
+	) as Record<LomType, string[]>;
 };
