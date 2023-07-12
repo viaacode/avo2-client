@@ -18,6 +18,7 @@ import React, { ReactNode } from 'react';
 import { SearchFilter } from '../search/search.const';
 import { FilterState } from '../search/search.types';
 import { formatDate, renderSearchLinks, stripHtml } from '../shared/helpers';
+import { getGroupedLomsKeyValue } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 
 import {
@@ -401,64 +402,23 @@ export const getFragmentIdsFromCollection = (
 	);
 };
 
-export const renderSubjects = (
+export const renderLomInfo = (
 	id: string,
-	lom_classification: string[] | null,
-	enabledMetaData: SearchFilter[],
+	label: string,
+	lomLabels: string[] | null,
+	searchFilterType: SearchFilter,
 	renderSearchLink: (
 		linkText: string | ReactNode,
 		newFilters: FilterState,
 		className?: string
 	) => ReactNode
-): ReactNode | null => {
-	if (!enabledMetaData.includes(SearchFilter.subject)) {
-		return null;
-	}
+): ReactNode => {
 	return (
 		<Spacer margin="top-large">
-			<p className="u-text-bold">{tText('collection/views/collection-detail___vakken')}</p>
+			<p className="u-text-bold">{label}</p>
 			<p className="c-body-1">
-				{lom_classification?.length ? (
-					renderSearchLinks(
-						renderSearchLink,
-						id,
-						SearchFilter.subject,
-						lom_classification
-					)
-				) : (
-					<span className="u-d-block">-</span>
-				)}
-			</p>
-		</Spacer>
-	);
-};
-
-export const renderEducationLevels = (
-	id: string,
-	lom_context: string[] | null,
-	enabledMetaData: SearchFilter[],
-	renderSearchLink: (
-		linkText: string | ReactNode,
-		newFilters: FilterState,
-		className?: string
-	) => ReactNode
-): ReactNode | null => {
-	if (!enabledMetaData.includes(SearchFilter.educationLevel)) {
-		return null;
-	}
-	return (
-		<Spacer margin="top-large">
-			<p className="u-text-bold">
-				{tText('collection/views/collection-detail___onderwijsniveau')}
-			</p>
-			<p className="c-body-1">
-				{lom_context && lom_context.length ? (
-					renderSearchLinks(
-						renderSearchLink,
-						id,
-						SearchFilter.educationLevel,
-						lom_context
-					)
+				{lomLabels && lomLabels.length ? (
+					renderSearchLinks(renderSearchLink, id, searchFilterType, lomLabels)
 				) : (
 					<span className="u-d-block">-</span>
 				)}
@@ -476,21 +436,57 @@ export const renderCommonMetadata = (
 		className?: string
 	) => ReactNode
 ): ReactNode => {
-	const { id, loms, created_at, updated_at } = collectionOrBundle;
+	const { id, created_at, updated_at, loms } = collectionOrBundle;
+	const groupedLomsLabels = getGroupedLomsKeyValue(loms || [], 'label');
+	const isEducationLevelEnabled = enabledMetaData.includes(SearchFilter.educationLevel);
+	const isEducationDegreeEnabled = enabledMetaData.includes(SearchFilter.educationDegree);
+	const isSubjectEnabled = enabledMetaData.includes(SearchFilter.subject);
+	const isThemeEnabled = enabledMetaData.includes(SearchFilter.thema);
+
 	return (
 		<>
-			{/*TODO replace with the generic lom component*/}
-			{enabledMetaData}
-			{renderSearchLink}
-			{id}
-			{loms}
-			{/*{(!!renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink) ||*/}
-			{/*	!!renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)) && (*/}
-			{/*	<Column size="3-3">*/}
-			{/*		{renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink)}*/}
-			{/*		{renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)}*/}
-			{/*	</Column>*/}
-			{/*)}*/}
+			{(isEducationLevelEnabled ||
+				isSubjectEnabled ||
+				isEducationDegreeEnabled ||
+				isThemeEnabled) && (
+				<Column size="3-3">
+					{isEducationDegreeEnabled &&
+						renderLomInfo(
+							id,
+							tText('Onderwijsgraad'),
+							groupedLomsLabels.educationLevel,
+							SearchFilter.educationLevel,
+							renderSearchLink
+						)}
+
+					{isEducationLevelEnabled &&
+						renderLomInfo(
+							id,
+							tText('collection/views/collection-detail___onderwijsniveau'),
+							groupedLomsLabels.educationDegree,
+							SearchFilter.educationDegree,
+							renderSearchLink
+						)}
+
+					{isSubjectEnabled &&
+						renderLomInfo(
+							id,
+							tText('collection/views/collection-detail___vakken'),
+							groupedLomsLabels.subject,
+							SearchFilter.subject,
+							renderSearchLink
+						)}
+
+					{isThemeEnabled &&
+						renderLomInfo(
+							id,
+							tText("Thema's"),
+							groupedLomsLabels.theme,
+							SearchFilter.thema,
+							renderSearchLink
+						)}
+				</Column>
+			)}
 			<Column size="3-3">
 				<Spacer margin="top-large">
 					<p className="u-text-bold">
