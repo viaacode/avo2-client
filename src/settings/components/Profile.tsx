@@ -14,17 +14,13 @@ import {
 	Spacer,
 	Spinner,
 	Table,
-	TagInfo,
-	TagList,
-	TagOption,
-	TagsInput,
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { LomSchemeType, PermissionName } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
-import { compact, get, isNil } from 'lodash-es';
+import { compact, get, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -49,7 +45,6 @@ import { FileUpload } from '../../shared/components';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate, getEnv } from '../../shared/helpers';
-import { stringToTagInfo } from '../../shared/helpers/string-to-select-options';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
@@ -94,17 +89,12 @@ const Profile: FunctionComponent<
 > = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, location, user, getLoginState }) => {
 	const { tText, tHtml } = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
-
-	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>(
-		get(user, 'profile.educationLevels', []).map(stringToTagInfo)
-	);
-	const [selectedSubjects, setSelectedSubjects] = useState<TagInfo[]>(
-		get(user, 'profile.subjects', []).map(stringToTagInfo)
-	);
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
 	>(get(user, 'profile.organizations', []));
-	const [selectedLoms, setSelectedLoms] = useState<LomFieldSchema[]>(user?.profile?.loms);
+	const [selectedLoms, setSelectedLoms] = useState<LomFieldSchema[]>(
+		compact(map(user?.profile?.loms, 'lom'))
+	);
 	const firstName = user?.first_name || '';
 	const lastName = user?.last_name || '';
 	const email = user?.mail || '';
@@ -118,8 +108,6 @@ const Profile: FunctionComponent<
 	const [bio, setBio] = useState<string | null>(get(getProfileFromUser(user, true), 'bio', null));
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
-	const [allEducationLevels, setAllEducationLevels] = useState<string[] | null>(null);
-	const [allSubjects, setAllSubjects] = useState<string[] | null>(null);
 	const [allOrganisations, setAllOrganisations] = useState<
 		Partial<Avo.Organization.Organization>[] | null
 	>(null);
@@ -135,8 +123,6 @@ const Profile: FunctionComponent<
 	const isExceptionAccount = get(user, 'profile.is_exception', false);
 
 	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
-
-	console.log(user);
 
 	useEffect(() => {
 		setPermissions({
@@ -207,36 +193,6 @@ const Profile: FunctionComponent<
 			return;
 		}
 
-		if (permissions.SUBJECTS.EDIT || isCompleteProfileStep) {
-			SettingsService.fetchSubjects()
-				.then((subjects: string[]) => {
-					setAllSubjects(subjects);
-				})
-				.catch((err) => {
-					console.error(new CustomError('Failed to get subjects from the database', err));
-					ToastService.danger(
-						tHtml('settings/components/profile___het-ophalen-van-de-vakken-is-mislukt')
-					);
-				});
-		}
-
-		if (permissions.EDUCATION_LEVEL.EDIT || isCompleteProfileStep) {
-			SettingsService.fetchEducationLevels()
-				.then((educationLevels: string[]) => {
-					setAllEducationLevels(educationLevels);
-				})
-				.catch((err) => {
-					console.error(
-						new CustomError('Failed to get education levels from database', err)
-					);
-					ToastService.danger(
-						tHtml(
-							'settings/components/profile___het-ophalen-van-de-opleidingsniveaus-is-mislukt'
-						)
-					);
-				});
-		}
-
 		// TODO for view we should use the company name from the profile object instead of the company_id and lookup in the list
 		// Waiting for: https://meemoo.atlassian.net/browse/DEV-985
 		if (permissions.ORGANISATION.VIEW || permissions.ORGANISATION.EDIT) {
@@ -278,15 +234,7 @@ const Profile: FunctionComponent<
 					);
 				});
 		}
-	}, [
-		permissions,
-		isCompleteProfileStep,
-		tText,
-		user,
-		setAllSubjects,
-		setAllEducationLevels,
-		setAllOrganisations,
-	]);
+	}, [permissions, isCompleteProfileStep, tText, user, setAllOrganisations]);
 
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<Avo.User.UpdateProfileValues>) => {
 		if (!permissions) {
@@ -295,6 +243,7 @@ const Profile: FunctionComponent<
 		const errors = [];
 		let filledIn = true;
 		const groupedLoms = groupLoms(selectedLoms);
+
 		if (
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
 			(!groupedLoms.subject || !groupedLoms.subject.length)
@@ -429,93 +378,6 @@ const Profile: FunctionComponent<
 		}
 	};
 
-	const renderSubjectsField = (editable: boolean, required: boolean) => {
-		return (
-			<FormGroup
-				label={tText('settings/components/profile___vakken')}
-				labelFor="subjects"
-				required={required}
-			>
-				{editable ? (
-					<TagsInput
-						id="subjects"
-						placeholder={tText(
-							'settings/components/profile___selecteer-de-vakken-die-u-geeft'
-						)}
-						options={(allSubjects || []).map((subject) => ({
-							label: subject,
-							value: subject,
-						}))}
-						value={selectedSubjects}
-						onChange={(selectedValues) => setSelectedSubjects(selectedValues || [])}
-					/>
-				) : selectedSubjects.length ? (
-					<TagList
-						tags={selectedSubjects.map(
-							(subject): TagOption => ({ id: subject.value, label: subject.label })
-						)}
-						swatches={false}
-						closable={false}
-					/>
-				) : (
-					'-'
-				)}
-			</FormGroup>
-		);
-	};
-
-	const renderEducationLevelsField = (editable: boolean, required: boolean) => {
-		if (!selectedEducationLevels.length && !editable) {
-			return null;
-		}
-
-		return (
-			<FormGroup
-				label={tText('settings/components/profile___onderwijsniveau')}
-				labelFor="educationLevel"
-				required={required}
-			>
-				{editable ? (
-					<TagsInput
-						id="educationLevel"
-						placeholder={tText(
-							'settings/components/profile___selecteer-een-opleidingsniveau'
-						)}
-						options={(allEducationLevels || []).map((edLevel) => ({
-							label: edLevel,
-							value: edLevel,
-						}))}
-						value={selectedEducationLevels}
-						onChange={(selectedValues) =>
-							setSelectedEducationLevels(selectedValues || [])
-						}
-					/>
-				) : (
-					<>
-						<TagList
-							tags={selectedEducationLevels.map(
-								(subject): TagOption => ({
-									id: subject.value,
-									label: subject.label,
-								})
-							)}
-							swatches={false}
-							closable={false}
-						/>
-						<Spacer margin="top-small">
-							<Alert
-								type="info"
-								message={tText(
-									'settings/components/profile___wil-je-jouw-onderwijsniveau-aanpassen-neem-dan-contact-op-via-de-feedbackknop'
-								)}
-							/>
-						</Spacer>
-					</>
-				)}
-			</FormGroup>
-		);
-	};
-
 	const renderOrganisationField = (editable: boolean, required: boolean) => {
 		return (
 			<FormGroup
@@ -599,8 +461,14 @@ const Profile: FunctionComponent<
 					</Spacer>
 					<Form type="standard">
 						<Spacer margin={['top-large', 'bottom-large']}>
-							{renderSubjectsField(true, true)}
-							{renderEducationLevelsField(true, true)}
+							<LomFieldsInput
+								loms={selectedLoms || []}
+								onChange={(newLoms) => setSelectedLoms(newLoms)}
+								educationLevelsPlaceholder={tText(
+									'Selecteer een of meerdere onderwijsniveaus ...'
+								)}
+								subjectsPlaceholder={tText('Selecteer de vakken die je geeft ...')}
+							/>
 							{renderEducationOrganisationsField(true, true)}
 						</Spacer>
 						{get(user, 'role.name') === 'lesgever' && (

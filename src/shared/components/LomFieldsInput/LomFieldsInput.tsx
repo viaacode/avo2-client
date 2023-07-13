@@ -41,7 +41,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	const { data: allEducationLevels, isLoading: isEducationLevelsLoading } =
 		useGetLomEducationLevels();
 	const { data: allSubjects, isLoading: isSubjectsLoading } = useGetLomSubjects(
-		map(lomFields.educationLevel, 'id')
+		map(lomFields.educationDegree, 'id')
 	);
 	const { data: allThemes, isLoading: isThemesLoading } = useGetLomThemes(
 		map([...lomFields.educationLevel, ...lomFields.subject], 'id')
@@ -57,7 +57,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 		let flatLomList: Avo.Lom.LomField[];
 		flatLomList = Object.values(newLoms).flat();
 
-		if (scheme === LomType.educationLevel) {
+		if (scheme === LomType.educationDegree) {
 			const parentContexts = getParentContext(mappedLoms, allEducationLevels || []);
 
 			flatLomList = [...flatLomList, ...parentContexts];
@@ -81,9 +81,9 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 				<TagsInput
 					isLoading={isEducationLevelsLoading}
 					options={mapLomFieldsToOptions(filterAllEduLevels(allEducationLevels || []))}
-					value={mapLomFieldsToOptions(lomFields.educationLevel) || []}
+					value={mapLomFieldsToOptions(lomFields.educationDegree) || []}
 					onChange={(values) =>
-						handleChange(values, LomType.educationLevel, allEducationLevels || [])
+						handleChange(values, LomType.educationDegree, allEducationLevels || [])
 					}
 					placeholder={educationLevelsPlaceholder}
 				/>
