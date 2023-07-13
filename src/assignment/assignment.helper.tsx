@@ -242,7 +242,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 	},
 ];
 
-const validateLoms = (loms: Avo.Lom.Lom[] | undefined, scheme: LomType) => {
+const validateLoms = (loms: Avo.Lom.Lom[] | undefined, scheme: Exclude<LomType, 'context'>) => {
 	if (!loms) {
 		return false;
 	}
