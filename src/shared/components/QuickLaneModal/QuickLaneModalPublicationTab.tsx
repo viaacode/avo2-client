@@ -1,12 +1,14 @@
 import { Button, Spacer } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import { compact, map } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { ShortDescriptionField } from '..';
+import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
 import { isCollection } from '../../../quick-lane/quick-lane.helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { UserProps } from '../../hocs/withUser';
+import LomFieldsInput from '../LomFieldsInput/LomFieldsInput';
 
 import { isShareable } from './QuickLaneModal.helpers';
 import { QuickLaneModalProps } from './QuickLaneModal.types';
@@ -55,33 +57,53 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 		}
 	};
 
+	const handleLomsChange = (newLomFields: Avo.Lom.LomField[]) => {
+		const newLoms: Avo.Lom.Lom[] = newLomFields.map((lomField) => ({
+			lom_id: lomField.id,
+			lom: lomField,
+		}));
+
+		setModel({ ...model, loms: newLoms } as Avo.Collection.Collection);
+	};
+
 	return model && content && content_label && isCollection({ content_label }) ? (
 		<>
-			{/*TODO replace with the generic lom component*/}
-			{/*<Spacer margin={'bottom'}>*/}
-			{/*	<EducationLevelsField*/}
-			{/*		value={model.lom_context}*/}
-			{/*		onChange={(levels) => {*/}
-			{/*			setModel({*/}
-			{/*				...model,*/}
-			{/*				lom_context: (levels || []).map((item) => item.value.toString()),*/}
-			{/*			});*/}
-			{/*		}}*/}
-			{/*	/>*/}
-			{/*</Spacer>*/}
-			{/*<Spacer margin={'bottom'}>*/}
-			{/*	<SubjectsField*/}
-			{/*		value={model.lom_classification}*/}
-			{/*		onChange={(subjects) => {*/}
-			{/*			setModel({*/}
-			{/*				...model,*/}
-			{/*				lom_classification: (subjects || []).map((item) =>*/}
-			{/*					item.value.toString()*/}
-			{/*				),*/}
-			{/*			});*/}
-			{/*		}}*/}
-			{/*	/>*/}
-			{/*</Spacer>*/}
+			{(model as Avo.Collection.Collection)?.loms ? (
+				<LomFieldsInput
+					loms={compact(map((model as Avo.Collection.Collection).loms, 'lom'))}
+					onChange={handleLomsChange}
+				/>
+			) : (
+				<>
+					<Spacer margin={'bottom'}>
+						<EducationLevelsField
+							value={(model as Avo.Item.Item).lom_context}
+							onChange={(levels) => {
+								setModel({
+									...model,
+									lom_context: (levels || []).map((item) =>
+										item.value.toString()
+									),
+								} as Avo.Item.Item);
+							}}
+						/>
+					</Spacer>
+					<Spacer margin={'bottom'}>
+						<SubjectsField
+							value={(model as Avo.Item.Item).lom_classification}
+							onChange={(subjects) => {
+								setModel({
+									...model,
+									lom_classification: (subjects || []).map((item) =>
+										item.value.toString()
+									),
+								} as Avo.Item.Item);
+							}}
+						/>
+					</Spacer>
+				</>
+			)}
+
 			<Spacer margin={'bottom'}>
 				<ShortDescriptionField
 					value={model.description}

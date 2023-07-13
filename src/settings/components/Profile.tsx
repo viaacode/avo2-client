@@ -692,11 +692,7 @@ const Profile: FunctionComponent<
 										</>
 									)}
 								</>
-								{/* {renderFieldVisibleOrRequired('SUBJECTS', renderSubjectsField)}
-								{renderFieldVisibleOrRequired(
-									'EDUCATION_LEVEL',
-									renderEducationLevelsField
-								)} */}
+
 								{renderFieldVisibleOrRequired(
 									'EDUCATIONAL_ORGANISATION',
 									renderEducationOrganisationsField
