@@ -43,8 +43,10 @@ import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
+import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate, getEnv } from '../../shared/helpers';
+import { groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
@@ -56,8 +58,6 @@ import { SettingsService } from '../settings.service';
 import { UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
-import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
-import { groupLoms } from '../../shared/helpers/lom';
 
 type FieldPermissionKey =
 	| 'SUBJECTS'
