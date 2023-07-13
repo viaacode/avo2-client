@@ -1,5 +1,7 @@
 import { groupBy } from 'lodash-es';
 
+import { tText } from '../../helpers/translate';
+
 import {
 	ContributorInfo,
 	ContributorInfoRights,
@@ -28,3 +30,11 @@ export const findRightByValue = (right: ContributorInfoRights): ShareRightsType 
 		Object.values(ContributorInfoRights).indexOf(right)
 	] as ShareRightsType;
 };
+
+export function GetContributorRightLabels() {
+	return {
+		CONTRIBUTOR: tText('Bijdrager'),
+		VIEWER: tText('Bekijker'),
+		OWNER: tText('Eigenaar'),
+	};
+}

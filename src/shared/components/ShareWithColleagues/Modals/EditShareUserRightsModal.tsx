@@ -14,12 +14,8 @@ import {
 import React, { FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
-import { findRightByValue } from '../ShareWithColleagues.helpers';
-import {
-	ContributorInfoRights,
-	ContributorInfoRightsInDutch,
-	ShareRightsType,
-} from '../ShareWithColleagues.types';
+import { findRightByValue, GetContributorRightLabels } from '../ShareWithColleagues.helpers';
+import { ContributorInfoRights, ShareRightsType } from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;
@@ -41,7 +37,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 				? tText(
 						'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen'
 				  )
-				: ContributorInfoRightsInDutch[right],
+				: GetContributorRightLabels()[right],
 		value: right,
 	}));
 
