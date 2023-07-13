@@ -27,7 +27,9 @@ import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import {
+	CommonMetaData,
 	EditButton,
 	HeaderOwnerAndContributors,
 	InteractiveTour,
@@ -40,6 +42,7 @@ import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/cons
 import { createDropdownMenuItem, CustomError, navigate } from '../../shared/helpers';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
+import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
@@ -53,7 +56,6 @@ import {
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
-import { renderCommonMetadata } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentAction } from '../assignment.types';
 import {
@@ -75,11 +77,17 @@ type AssignmentDetailPermissions = Partial<{
 	canDeleteAnyAssignments: boolean;
 }>;
 
-const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
+type AssignmentDetailProps = {
+	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
+	enabledMetaData: SearchFilter[];
+};
+
+const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
 	user,
 	history,
 	location,
+	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const assignmentId = match.params.id;
@@ -663,8 +671,13 @@ const AssignmentDetail: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 							{tText('assignment/views/assignment-edit___over-deze-opdracht')}
 						</h3>
 						<Grid>
-							{!!assignment &&
-								renderCommonMetadata(assignment as Avo.Assignment.Assignment)}
+							{!!assignment && (
+								<CommonMetaData
+									subject={assignment}
+									enabledMetaData={enabledMetaData}
+									renderSearchLink={defaultRenderSearchLink}
+								/>
+							)}
 						</Grid>
 						{!!relatedAssignments &&
 							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}

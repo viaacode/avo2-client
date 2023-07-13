@@ -1,14 +1,13 @@
-import { Column, IconName, Spacer } from '@viaa/avo2-components';
+import { IconName } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import type { Avo } from '@viaa/avo2-types';
 import { LomType } from '@viaa/avo2-types';
 import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { compact, map } from 'lodash-es';
-import React, { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { ReactNode } from 'react';
 
-import { formatDate, stripHtml } from '../shared/helpers';
+import { stripHtml } from '../shared/helpers';
 import { groupLoms } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
@@ -98,72 +97,6 @@ export function isUserAssignmentContributor(
 	}
 	return false;
 }
-
-export const renderLoms = (lomValues: Avo.Lom.LomField[], title: string) => {
-	return (
-		<Spacer margin="top-large">
-			<p className="u-text-bold">{title}</p>
-			<p className="c-body-1">
-				{lomValues.length > 0 ? (
-					lomValues.map((lomValue, index) => {
-						return (
-							<span key={lomValue?.id + `--${index}`}>
-								<Link to={{ pathname: lomValue?.id as string }} target="_blank">
-									{lomValue?.label}
-								</Link>{' '}
-							</span>
-						);
-					})
-				) : (
-					<span className="u-d-block">-</span>
-				)}
-			</p>
-		</Spacer>
-	);
-};
-
-export const renderLomFieldsByGroup = (loms: Avo.Lom.LomField[]) => {
-	const groupedLoms = groupLoms(loms);
-
-	const educationLevel: Avo.Lom.LomField[] = groupedLoms[LomType.educationLevel] || [];
-	const subject: Avo.Lom.LomField[] = groupedLoms[LomType.subject] || [];
-	const theme: Avo.Lom.LomField[] = groupedLoms[LomType.theme] || [];
-
-	return (
-		<Column size="3-3">
-			{educationLevel &&
-				renderLoms(educationLevel, tText('assignment/views/assignment-detail___niveaus'))}
-			{subject && renderLoms(subject, tText('assignment/views/assignment-detail___vakken'))}
-			{theme && renderLoms(theme, tText('assignment/views/assignment-detail___themas'))}
-		</Column>
-	);
-};
-
-export const renderCommonMetadata = (assignment: Avo.Assignment.Assignment): ReactNode => {
-	const { created_at, updated_at, loms } = assignment;
-
-	return (
-		<>
-			{loms && renderLomFieldsByGroup(map(loms, 'lom') as Avo.Lom.LomField[])}
-			<Column size="3-3">
-				<Spacer margin="top-large">
-					<p className="u-text-bold">
-						{tText('assignment/views/assignment-detail___aangemaakt-op')}
-					</p>
-					<p className="c-body-1">{formatDate(created_at)}</p>
-				</Spacer>
-			</Column>
-			<Column size="3-3">
-				<Spacer margin="top-large">
-					<p className="u-text-bold">
-						{tText('assignment/views/assignment-detail___laatst-aangepast')}
-					</p>
-					<p className="c-body-1">{formatDate(updated_at)}</p>
-				</Spacer>
-			</Column>
-		</>
-	);
-};
 
 export const getValidationErrorsForPublish = async (
 	assignment: Partial<Avo.Assignment.Assignment>

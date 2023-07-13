@@ -39,6 +39,7 @@ import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import {
+	CommonMetaData,
 	EditButton,
 	HeaderOwnerAndContributors,
 	InteractiveTour,
@@ -80,7 +81,7 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { renderCommonMetadata, renderRelatedItems } from '../collection.helpers';
+import { renderRelatedItems } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import {
 	CollectionAction,
@@ -1115,12 +1116,13 @@ const CollectionDetail: FunctionComponent<
 							{tText('collection/views/collection-detail___info-over-deze-collectie')}
 						</h3>
 						<Grid>
-							{!!collection &&
-								renderCommonMetadata(
-									collection,
-									enabledMetaData,
-									defaultRenderSearchLink
-								)}
+							{!!collection && (
+								<CommonMetaData
+									subject={collection}
+									enabledMetaData={enabledMetaData}
+									renderSearchLink={defaultRenderSearchLink}
+								/>
+							)}
 							{(hasCopies || hasParentBundles) && (
 								<Column size="3-6">
 									<Spacer margin="top-large">
