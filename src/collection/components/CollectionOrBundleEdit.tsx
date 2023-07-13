@@ -197,6 +197,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 	} as LoadingInfo;
 
 	const updateCollectionEditorWithLoading = useCallback(async () => {
+		if (!isCollection) {
+			return;
+		}
+
 		setLoadingInfo({ state: 'loading' });
 		await updateCollectionEditor();
 	}, [setLoadingInfo]);
@@ -354,7 +358,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		!isContributor && !!(collectionState.currentCollection?.contributors?.length || 0 > 0);
 
 	useEffect(() => {
-		if (collectionState.currentCollection && contributors) {
+		if (collectionState.currentCollection && contributors && isCollection) {
 			const userContributorRole = getContributorType(
 				user,
 				collectionState.currentCollection as Avo.Collection.Collection,
@@ -1451,16 +1455,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 					inputCallback={handleAddItemById}
 				/>
 
-				<InActivityWarningModal
-					onActivity={updateCollectionEditor}
-					onExit={releaseCollectionEditStatus}
-					warningMessage={tHtml(
-						'collection/components/collection-or-bundle-edit___door-inactiviteit-zal-de-collectie-zichzelf-sluiten'
-					)}
-					currentPath={history.location.pathname}
-					editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
-					onForcedExit={onForcedExitPage}
-				/>
+				{isCollection && (
+					<InActivityWarningModal
+						onActivity={updateCollectionEditor}
+						onExit={releaseCollectionEditStatus}
+						warningMessage={tHtml(
+							'collection/components/collection-or-bundle-edit___door-inactiviteit-zal-de-collectie-zichzelf-sluiten'
+						)}
+						currentPath={history.location.pathname}
+						editPath={APP_PATH.COLLECTION_EDIT_TAB.route}
+						onForcedExit={onForcedExitPage}
+					/>
+				)}
+
 				{draggableListModal}
 				<BeforeUnloadPrompt when={shouldBlockNavigation()} />
 			</div>
