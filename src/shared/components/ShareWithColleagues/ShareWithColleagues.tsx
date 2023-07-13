@@ -21,13 +21,13 @@ import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import {
 	compareUsersEmail,
 	findRightByValue,
+	GetContributorRightLabels,
 	sortContributors,
 } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
 import {
 	ContributorInfo,
 	ContributorInfoRights,
-	ContributorInfoRightsInDutch,
 	ShareRightsType,
 } from './ShareWithColleagues.types';
 
@@ -154,11 +154,11 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 
 						// The owner can delete himself and everyone else
 						// Contributors can delete themselves and every other contributor and viewer
-						// Viewers can only delete themselves
+						// Viewers can only delete themselves but they do not have access to this dialog
 						const canDelete =
 							isOwner ||
 							(!isOwner && isCurrentUser) ||
-							(currentUserIsContributor && !isCurrentUser && !contributorIsOwner);
+							(currentUserIsContributor && !contributorIsOwner);
 
 						return (
 							<li key={index} className="c-colleague-info-row">
@@ -195,7 +195,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 								</div>
 
 								<div className="c-colleague-info-row__rights">
-									<span>{ContributorInfoRightsInDutch[contributor.rights]}</span>
+									<span>{GetContributorRightLabels()[contributor.rights]}</span>
 
 									{canEdit && (
 										<button
@@ -251,7 +251,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									onClick={handleRightsButtonClicked}
 									label={
 										contributor.rights
-											? ContributorInfoRightsInDutch[contributor.rights]
+											? GetContributorRightLabels[contributor.rights]
 											: tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___rol'
 											  )

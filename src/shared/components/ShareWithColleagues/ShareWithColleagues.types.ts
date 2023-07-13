@@ -4,12 +4,6 @@ export enum ContributorInfoRights {
 	OWNER = 'OWNER',
 }
 
-export enum ContributorInfoRightsInDutch {
-	CONTRIBUTOR = 'Bijdrager',
-	VIEWER = 'Bekijker',
-	OWNER = 'Eigenaar',
-}
-
 export type ShareRightsType = keyof typeof ContributorInfoRights;
 
 export interface ContributorInfo {
