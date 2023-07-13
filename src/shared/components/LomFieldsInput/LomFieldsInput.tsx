@@ -2,13 +2,11 @@ import { FormGroup, Spacer, TagsInput } from '@viaa/avo2-components';
 import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
 import type { Avo } from '@viaa/avo2-types';
 import { LomType } from '@viaa/avo2-types';
-import { filter, isNil, map, uniq } from 'lodash-es';
+import { filter, isNil, uniq } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 
 import { groupLoms } from '../../helpers/lom';
-import { useGetLomEducationLevels } from '../../hooks/useGetLomEducationLevels';
-import { useGetLomSubjects } from '../../hooks/useGetLomSubjects';
-import { useGetLomThemes } from '../../hooks/useGetLomThemes';
+import { useGetLomFields } from '../../hooks/useGetLomFields';
 import useTranslation from '../../hooks/useTranslation';
 
 import {
@@ -29,13 +27,9 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 		return groupLoms(loms);
 	}, [loms]);
 	const { data: allEducationLevels, isLoading: isEducationLevelsLoading } =
-		useGetLomEducationLevels();
-	const { data: allSubjects, isLoading: isSubjectsLoading } = useGetLomSubjects(
-		map(lomFields.educationLevel, 'id')
-	);
-	const { data: allThemes, isLoading: isThemesLoading } = useGetLomThemes(
-		map([...lomFields.educationLevel, ...lomFields.subject], 'id')
-	);
+		useGetLomFields('structure');
+	const { data: allSubjects, isLoading: isSubjectsLoading } = useGetLomFields('subject');
+	const { data: allThemes, isLoading: isThemesLoading } = useGetLomFields('theme');
 
 	const handleChange = (
 		values: TagInfoSchema[],
