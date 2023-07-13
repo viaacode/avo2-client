@@ -1,4 +1,5 @@
 import type { Avo } from '@viaa/avo2-types';
+import { LomSchemeType } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -135,9 +136,7 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 		!!profile &&
 		!!profile.organizations &&
 		!!profile.organizations.length &&
-		!!profile.educationLevels &&
-		!!profile.educationLevels.length &&
-		!!profile.subjects &&
-		!!profile.subjects.length
+		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure) &&
+		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject)
 	);
 }

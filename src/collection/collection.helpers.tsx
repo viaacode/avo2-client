@@ -11,12 +11,14 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import { LomSchemeType } from '@viaa/avo2-types';
 import { compact, isNil, omit, sortBy } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
 import { SearchFilter } from '../search/search.const';
 import { FilterState } from '../search/search.types';
 import { formatDate, renderSearchLinks, stripHtml } from '../shared/helpers';
+import { getGroupedLomsKeyValue } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 
 import {
@@ -96,7 +98,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				? tText('collection/collection___de-collectie-heeft-geen-onderwijsniveaus')
 				: tText('collection/collection___de-bundel-heeft-geen-onderwijsniveaus'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!!(collection.lom_context && collection.lom_context.length),
+			!!collection.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure),
 	},
 	{
 		error: (collection) =>
@@ -104,7 +106,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 				? tText('collection/collection___de-collectie-heeft-geen-vakken')
 				: tText('collection/collection___de-bundel-heeft-geen-vakken'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
-			!!(collection.lom_classification && collection.lom_classification.length),
+			!!collection.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject),
 	},
 	{
 		error: (collection) =>
@@ -400,64 +402,23 @@ export const getFragmentIdsFromCollection = (
 	);
 };
 
-export const renderSubjects = (
+export const renderLomInfo = (
 	id: string,
-	lom_classification: string[] | null,
-	enabledMetaData: SearchFilter[],
+	label: string,
+	lomLabels: string[] | null,
+	searchFilterType: SearchFilter,
 	renderSearchLink: (
 		linkText: string | ReactNode,
 		newFilters: FilterState,
 		className?: string
 	) => ReactNode
-): ReactNode | null => {
-	if (!enabledMetaData.includes(SearchFilter.subject)) {
-		return null;
-	}
+): ReactNode => {
 	return (
 		<Spacer margin="top-large">
-			<p className="u-text-bold">{tText('collection/views/collection-detail___vakken')}</p>
+			<p className="u-text-bold">{label}</p>
 			<p className="c-body-1">
-				{lom_classification?.length ? (
-					renderSearchLinks(
-						renderSearchLink,
-						id,
-						SearchFilter.subject,
-						lom_classification
-					)
-				) : (
-					<span className="u-d-block">-</span>
-				)}
-			</p>
-		</Spacer>
-	);
-};
-
-export const renderEducationLevels = (
-	id: string,
-	lom_context: string[] | null,
-	enabledMetaData: SearchFilter[],
-	renderSearchLink: (
-		linkText: string | ReactNode,
-		newFilters: FilterState,
-		className?: string
-	) => ReactNode
-): ReactNode | null => {
-	if (!enabledMetaData.includes(SearchFilter.educationLevel)) {
-		return null;
-	}
-	return (
-		<Spacer margin="top-large">
-			<p className="u-text-bold">
-				{tText('collection/views/collection-detail___onderwijsniveau')}
-			</p>
-			<p className="c-body-1">
-				{lom_context && lom_context.length ? (
-					renderSearchLinks(
-						renderSearchLink,
-						id,
-						SearchFilter.educationLevel,
-						lom_context
-					)
+				{lomLabels && lomLabels.length ? (
+					renderSearchLinks(renderSearchLink, id, searchFilterType, lomLabels)
 				) : (
 					<span className="u-d-block">-</span>
 				)}
@@ -475,14 +436,55 @@ export const renderCommonMetadata = (
 		className?: string
 	) => ReactNode
 ): ReactNode => {
-	const { id, lom_context, lom_classification, created_at, updated_at } = collectionOrBundle;
+	const { id, created_at, updated_at, loms } = collectionOrBundle;
+	const groupedLomsLabels = getGroupedLomsKeyValue(loms || [], 'label');
+	const isEducationLevelEnabled = enabledMetaData.includes(SearchFilter.educationLevel);
+	const isEducationDegreeEnabled = enabledMetaData.includes(SearchFilter.educationDegree);
+	const isSubjectEnabled = enabledMetaData.includes(SearchFilter.subject);
+	const isThemeEnabled = enabledMetaData.includes(SearchFilter.thema);
+
 	return (
 		<>
-			{(!!renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink) ||
-				!!renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)) && (
+			{(isEducationLevelEnabled ||
+				isSubjectEnabled ||
+				isEducationDegreeEnabled ||
+				isThemeEnabled) && (
 				<Column size="3-3">
-					{renderEducationLevels(id, lom_context, enabledMetaData, renderSearchLink)}
-					{renderSubjects(id, lom_classification, enabledMetaData, renderSearchLink)}
+					{isEducationDegreeEnabled &&
+						renderLomInfo(
+							id,
+							tText('Onderwijsgraad'),
+							groupedLomsLabels.educationLevel,
+							SearchFilter.educationLevel,
+							renderSearchLink
+						)}
+
+					{isEducationLevelEnabled &&
+						renderLomInfo(
+							id,
+							tText('collection/views/collection-detail___onderwijsniveau'),
+							groupedLomsLabels.educationDegree,
+							SearchFilter.educationDegree,
+							renderSearchLink
+						)}
+
+					{isSubjectEnabled &&
+						renderLomInfo(
+							id,
+							tText('collection/views/collection-detail___vakken'),
+							groupedLomsLabels.subject,
+							SearchFilter.subject,
+							renderSearchLink
+						)}
+
+					{isThemeEnabled &&
+						renderLomInfo(
+							id,
+							tText("Thema's"),
+							groupedLomsLabels.theme,
+							SearchFilter.thema,
+							renderSearchLink
+						)}
 				</Column>
 			)}
 			<Column size="3-3">
