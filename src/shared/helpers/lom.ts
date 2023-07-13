@@ -17,10 +17,10 @@ export const groupLoms = (loms: Avo.Lom.LomField[]): LomFieldsByScheme => {
 	const groupedLoms = groupBy(loms, (lom) => lom?.scheme);
 
 	return {
-		educationLevel: groupedLoms[LomSchemeType.structure].filter((lom) =>
+		educationLevel: (groupedLoms[LomSchemeType.structure] || []).filter((lom) =>
 			EDUCATION_LEVEL_IDS.includes(lom.id)
 		),
-		educationDegree: groupedLoms[LomSchemeType.structure].filter(
+		educationDegree: (groupedLoms[LomSchemeType.structure] || []).filter(
 			(lom) => !EDUCATION_LEVEL_IDS.includes(lom.id)
 		),
 		subject: (groupedLoms[LomSchemeType.subject] as Avo.Lom.LomField[]) || [],
@@ -32,10 +32,10 @@ export const groupLomLinks = (lomLinks: Avo.Lom.Lom[]): LomsByScheme => {
 	const groupedLoms = groupBy(lomLinks, (lom) => lom?.lom?.scheme);
 
 	return {
-		educationLevel: groupedLoms[LomSchemeType.structure].filter(
+		educationLevel: (groupedLoms[LomSchemeType.structure] || []).filter(
 			(lom) => lom.lom?.id && EDUCATION_LEVEL_IDS.includes(lom.lom?.id)
 		),
-		educationDegree: groupedLoms[LomSchemeType.structure].filter(
+		educationDegree: (groupedLoms[LomSchemeType.structure] || []).filter(
 			(lom) => lom.lom?.id && !EDUCATION_LEVEL_IDS.includes(lom.lom?.id)
 		),
 		subject: groupedLoms[LomSchemeType.subject] || [],
