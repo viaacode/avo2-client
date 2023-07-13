@@ -75,6 +75,7 @@ type AssignmentDetailPermissions = Partial<{
 	canEditAssignments: boolean;
 	canPublishAssignments: boolean;
 	canDeleteAnyAssignments: boolean;
+	canFetchBookmarkAndViewCounts: boolean;
 }>;
 
 type AssignmentDetailProps = {
@@ -99,6 +100,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 		canEditAssignments: false,
 		canPublishAssignments: false,
 		canDeleteAnyAssignments: false,
+		canFetchBookmarkAndViewCounts: false,
 	});
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
@@ -183,6 +185,15 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					[{ name: PermissionName.DELETE_ANY_ASSIGNMENTS }],
 					user
 				),
+				PermissionService.hasPermissions(
+					[
+						PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS,
+						PermissionName.VIEW_ANY_UNPUBLISHED_ASSIGNMENTS,
+						PermissionName.EDIT_OWN_ASSIGNMENTS,
+						PermissionName.EDIT_ANY_ASSIGNMENTS,
+					],
+					user
+				),
 			]);
 
 			return {
@@ -190,6 +201,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 				canEditAssignments: rawPermissions[1],
 				canPublishAssignments: rawPermissions[2],
 				canDeleteAnyAssignments: rawPermissions[3],
+				canFetchBookmarkAndViewCounts: rawPermissions[4],
 			};
 		},
 		[user, assignment, match.params.id]
@@ -269,12 +281,15 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			}
 
 			setAssignment(tempAssignment as any);
-			setBookmarkViewCounts(
-				await BookmarksViewsPlaysService.getAssignmentCounts(
-					tempAssignment.id as string,
-					user
-				)
-			);
+
+			if (permissions.canFetchBookmarkAndViewCounts) {
+				setBookmarkViewCounts(
+					await BookmarksViewsPlaysService.getAssignmentCounts(
+						tempAssignment.id as string,
+						user
+					)
+				);
+			}
 
 			try {
 				const permissionObj = await getPermissions(user, tempAssignment);
