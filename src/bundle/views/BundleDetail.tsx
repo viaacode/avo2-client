@@ -36,7 +36,7 @@ import { compose } from 'redux';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
-import { renderCommonMetadata, renderRelatedItems } from '../../collection/collection.helpers';
+import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
 import { blockTypeToContentType } from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
@@ -45,6 +45,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import {
+	CommonMetaData,
 	DeleteObjectModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
@@ -701,7 +702,11 @@ const BundleDetail: FunctionComponent<
 						{tText('bundle/views/bundle-detail___over-deze-bundel')}
 					</BlockHeading>
 					<Grid>
-						{renderCommonMetadata(bundle, enabledMetaData, defaultRenderSearchLink)}
+						<CommonMetaData
+							subject={bundle}
+							enabledMetaData={enabledMetaData}
+							renderSearchLink={defaultRenderSearchLink}
+						/>
 					</Grid>
 					<hr className="c-hr" />
 					{renderRelatedItems(relatedItems, defaultRenderDetailLink)}

@@ -21,9 +21,19 @@ type LomFieldsInputProps = {
 	loms: Avo.Lom.LomField[];
 	onChange: (newLoms: Avo.Lom.LomField[]) => void;
 	showThemes?: boolean;
+	educationLevelsPlaceholder?: string;
+	subjectsPlaceholder?: string;
+	themesPlaceholder?: string;
 };
 
-const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes }) => {
+const LomFieldsInput: FC<LomFieldsInputProps> = ({
+	loms,
+	onChange,
+	showThemes = false,
+	educationLevelsPlaceholder,
+	subjectsPlaceholder,
+	themesPlaceholder,
+}) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => {
 		return groupLoms(loms);
@@ -31,7 +41,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 	const { data: allEducationLevels, isLoading: isEducationLevelsLoading } =
 		useGetLomEducationLevels();
 	const { data: allSubjects, isLoading: isSubjectsLoading } = useGetLomSubjects(
-		map(lomFields.educationLevel, 'id')
+		map(lomFields.educationDegree, 'id')
 	);
 	const { data: allThemes, isLoading: isThemesLoading } = useGetLomThemes(
 		map([...lomFields.educationLevel, ...lomFields.subject], 'id')
@@ -47,7 +57,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 		let flatLomList: Avo.Lom.LomField[];
 		flatLomList = Object.values(newLoms).flat();
 
-		if (scheme === LomType.educationLevel) {
+		if (scheme === LomType.educationDegree) {
 			const parentContexts = getParentContext(mappedLoms, allEducationLevels || []);
 
 			flatLomList = [...flatLomList, ...parentContexts];
@@ -71,10 +81,11 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 				<TagsInput
 					isLoading={isEducationLevelsLoading}
 					options={mapLomFieldsToOptions(filterAllEduLevels(allEducationLevels || []))}
-					value={mapLomFieldsToOptions(lomFields.educationLevel) || []}
+					value={mapLomFieldsToOptions(lomFields.educationDegree) || []}
 					onChange={(values) =>
-						handleChange(values, LomType.educationLevel, allEducationLevels || [])
+						handleChange(values, LomType.educationDegree, allEducationLevels || [])
 					}
+					placeholder={educationLevelsPlaceholder}
 				/>
 			</FormGroup>
 
@@ -87,10 +98,11 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 					options={mapLomFieldsToOptions(allSubjects || [])}
 					value={mapLomFieldsToOptions(lomFields.subject) || []}
 					onChange={(values) => handleChange(values, LomType.subject, allSubjects || [])}
+					placeholder={subjectsPlaceholder}
 				/>
 			</FormGroup>
 
-			{!showThemes && (
+			{showThemes && (
 				<FormGroup
 					label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
 					labelFor="themeId"
@@ -100,6 +112,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({ loms, onChange, showThemes })
 						options={mapLomFieldsToOptions(allThemes || [])}
 						value={mapLomFieldsToOptions(lomFields.theme) || []}
 						onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
+						placeholder={themesPlaceholder}
 					/>
 				</FormGroup>
 			)}
