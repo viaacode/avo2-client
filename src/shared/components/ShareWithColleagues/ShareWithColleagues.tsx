@@ -251,7 +251,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									onClick={handleRightsButtonClicked}
 									label={
 										contributor.rights
-											? getContributorRightLabels[contributor.rights]
+											? getContributorRightLabels()[contributor.rights]
 											: tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___rol'
 											  )
