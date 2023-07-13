@@ -21,7 +21,7 @@ import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import {
 	compareUsersEmail,
 	findRightByValue,
-	GetContributorRightLabels,
+	getContributorRightLabels,
 	sortContributors,
 } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
@@ -195,7 +195,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 								</div>
 
 								<div className="c-colleague-info-row__rights">
-									<span>{GetContributorRightLabels()[contributor.rights]}</span>
+									<span>{getContributorRightLabels()[contributor.rights]}</span>
 
 									{canEdit && (
 										<button
@@ -251,7 +251,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									onClick={handleRightsButtonClicked}
 									label={
 										contributor.rights
-											? GetContributorRightLabels[contributor.rights]
+											? getContributorRightLabels[contributor.rights]
 											: tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___rol'
 											  )

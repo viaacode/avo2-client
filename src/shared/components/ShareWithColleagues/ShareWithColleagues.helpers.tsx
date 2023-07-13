@@ -31,7 +31,7 @@ export const findRightByValue = (right: ContributorInfoRights): ShareRightsType 
 	] as ShareRightsType;
 };
 
-export function GetContributorRightLabels() {
+export function getContributorRightLabels() {
 	return {
 		CONTRIBUTOR: tText('Bijdrager'),
 		VIEWER: tText('Bekijker'),
