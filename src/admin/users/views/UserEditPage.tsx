@@ -23,7 +23,7 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
-import { FileUpload, LoadingInfo } from '../../../shared/components';
+import { FileUpload } from '../../../shared/components';
 import LomFieldsInput from '../../../shared/components/LomFieldsInput/LomFieldsInput';
 import { buildLink, CustomError, getAvatarProps, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
@@ -37,11 +37,13 @@ import { USER_PATH } from '../user.const';
 type UserEditPageProps = DefaultSecureRouteProps<{ id: string }>;
 
 const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user }) => {
+	// by using user you can only edit the current logged in user 's details
+	// TODO: use hook that gets user that is selected
+
 	const { tText } = useTranslation();
 
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.CommonUser | null>(null);
-	const [, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [profileErrors, setProfileErrors] = useState<
 		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
@@ -65,49 +67,33 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 		redirectToClientPage(buildLink(USER_PATH.USER_DETAIL, { id: match.params.id }), history);
 	};
 
-	const initializeForm = async () => {
-		try {
-			setFirstName(user.first_name || '');
-			setLastName(user.last_name || '');
-			setAvatar(getAvatarProps(user.profile).image);
-			setTitle(user.profile?.title || '');
-			setBio(user.profile?.bio || '');
-			setAlias(user.profile?.alias || '');
-			setCompanyId(user.profile?.company_id || '');
-			setLoms(compact(map(user.profile?.loms, 'lom')) || []);
+	const initializeForm = () => {
+		setFirstName(user.first_name || '');
+		setLastName(user.last_name || '');
+		setAvatar(getAvatarProps(user.profile).image);
+		setTitle(user.profile?.title || '');
+		setBio(user.profile?.bio || '');
+		setAlias(user.profile?.alias || '');
+		setCompanyId(user.profile?.company_id || '');
+		setLoms(compact(map(user.profile?.loms, 'lom')) || []);
 
-			setStoredProfile({
-				...user.profile,
-				profileId: user.profile?.id || '',
-				avatar: user.profile?.avatar || undefined,
-				stamboek: user.profile?.stamboek || undefined,
-				organisation: user.profile?.organisation || undefined,
-				loms: user.profile?.loms || [],
-				alias: user.profile?.alias || undefined,
-				title: user.profile?.title || undefined,
-				bio: user.profile?.bio || undefined,
-			});
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to get user by id', err, {
-					query: 'GET_USER_BY_ID',
-					variables: {
-						id: match.params.id,
-					},
-				})
-			);
-			setLoadingInfo({
-				state: 'error',
-				message: tText(
-					'admin/users/views/user-detail___het-ophalen-van-de-gebruiker-info-is-mislukt'
-				),
-			});
-		}
+		setStoredProfile({
+			...user.profile,
+			profileId: user.profile?.id || '',
+			avatar: user.profile?.avatar || undefined,
+			stamboek: user.profile?.stamboek || undefined,
+			organisation: user.profile?.organisation || undefined,
+			loms: user.profile?.loms || [],
+			alias: user.profile?.alias || undefined,
+			title: user.profile?.title || undefined,
+			bio: user.profile?.bio || undefined,
+		});
 	};
 
 	useEffect(() => {
+		// TODO: await useGetUserById
 		initializeForm();
-	}, [initializeForm]);
+	}, []);
 
 	const navigateBack = () => {
 		navigate(history, USER_PATH.USER_DETAIL, {
@@ -174,15 +160,6 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 	};
 
 	const renderUserDetail = () => {
-		if (!storedProfile) {
-			console.error(
-				new CustomError(
-					'Failed to load user because render function is called before user was fetched'
-				)
-			);
-			return;
-		}
-
 		const companyLogo = get(
 			(companies || []).find((company) => company.or_id === companyId),
 			'logo_url',
@@ -283,7 +260,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 			<AdminLayout
 				size="large"
 				pageTitle={tText('admin/users/views/user-edit___bewerk-gebruiker')}
-				onClickBackButton={() => navigate(history, USER_PATH.USER_OVERVIEW)}
+				onClickBackButton={navigateBack}
 			>
 				<AdminLayoutTopBarRight>
 					<ButtonToolbar>
