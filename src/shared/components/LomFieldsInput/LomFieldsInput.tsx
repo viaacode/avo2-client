@@ -2,7 +2,7 @@ import { FormGroup, Spacer, TagsInput } from '@viaa/avo2-components';
 import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
 import type { Avo } from '@viaa/avo2-types';
 import { LomType } from '@viaa/avo2-types';
-import { filter, isNil, map, sortBy, uniq } from 'lodash-es';
+import { filter, map, sortBy, uniq } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 
 import { groupLoms } from '../../helpers/lom';
@@ -11,7 +11,7 @@ import useTranslation from '../../hooks/useTranslation';
 import { LomFieldsByScheme } from '../../types/lom';
 
 import {
-	getParentContext,
+	getParentEducationLevel,
 	mapLomFieldsToOptions,
 	mapOptionsToLomFields,
 } from './LomFieldsInput.helpers';
@@ -46,14 +46,20 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	const { data: allSubjects, isLoading: isSubjectsLoading } = useGetLomFields('subject');
 	const { data: allThemes, isLoading: isThemesLoading } = useGetLomFields('theme');
 
-	const getEducationLevelsOptions = (allEducationLevels: Avo.Lom.LomField[]) => {
-		const degrees = filterAllEduLevels(allEducationLevels);
-		const parentIdsOfDegrees = map(degrees, 'broader');
-		const levels = filter(allEducationLevels, (level) => isNil(level.broader));
-		const childlessParents = filter(levels, (level) => !parentIdsOfDegrees.includes(level.id));
+	const getEducationLevelOptions = (loms: Avo.Lom.LomField[]) => {
+		// Group loms to split the incoming loms in levels and degrees
+		const groupedLoms = groupLoms(loms);
+		const parentIdsOfDegrees = map(groupedLoms.educationDegree, 'broader');
+		// Filter out the education levels which have a child education degree
+		const childlessLevels = filter(
+			groupedLoms.educationLevel,
+			(level) => !parentIdsOfDegrees.includes(level.id)
+		);
 
 		return mapLomFieldsToOptions(
-			sortBy([...degrees, ...childlessParents], (lom) => lom.label.toLocaleLowerCase())
+			sortBy([...groupedLoms.educationDegree, ...childlessLevels], (lom) =>
+				lom.label.toLocaleLowerCase()
+			)
 		);
 	};
 
@@ -74,9 +80,12 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 				educationLevel: groupedLoms.educationLevel,
 			};
 
-			const parentContexts = getParentContext(mappedLoms, allEducationLevels || []);
+			const parentEducationLevels = getParentEducationLevel(
+				mappedLoms,
+				allEducationLevels || []
+			);
 
-			flatLomList = [...Object.values(newLoms).flat(), ...parentContexts];
+			flatLomList = [...Object.values(newLoms).flat(), ...parentEducationLevels];
 		} else {
 			newLoms = { ...lomFields, [scheme]: mappedLoms };
 			flatLomList = Object.values(newLoms).flat();
@@ -85,19 +94,15 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 		onChange(uniq(flatLomList));
 	};
 
-	const filterAllEduLevels = (loms: Avo.Lom.LomField[]): Avo.Lom.LomField[] => {
-		return filter(loms, (lom) => !isNil(lom?.broader));
-	};
-
 	return (
 		<Spacer margin="bottom">
 			{showEducation && (
-				<FormGroup label={tText('Onderwijs')} labelFor="classificationId">
+				<FormGroup label={tText('Onderwijs')} labelFor="educationId">
 					<TagsInput
 						isLoading={isEducationLevelsLoading}
-						options={getEducationLevelsOptions(allEducationLevels || [])}
+						options={getEducationLevelOptions(allEducationLevels || [])}
 						value={
-							getEducationLevelsOptions([
+							getEducationLevelOptions([
 								...lomFields.educationDegree,
 								...lomFields.educationLevel,
 							]) || []
