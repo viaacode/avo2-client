@@ -71,6 +71,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										<LomFieldsInput
 											loms={compact(map(collection.loms, 'lom'))}
 											onChange={updateCollectionLoms}
+											showThemes
 										/>
 									)}
 
