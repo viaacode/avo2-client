@@ -19,7 +19,9 @@ import {
 type LomFieldsInputProps = {
 	loms: Avo.Lom.LomField[];
 	onChange: (newLoms: Avo.Lom.LomField[]) => void;
+	showEducation?: boolean;
 	showThemes?: boolean;
+	showSubjects?: boolean;
 	educationLevelsPlaceholder?: string;
 	subjectsPlaceholder?: string;
 	themesPlaceholder?: string;
@@ -28,7 +30,9 @@ type LomFieldsInputProps = {
 const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	loms,
 	onChange,
-	showThemes = false,
+	showEducation = true,
+	showThemes = true,
+	showSubjects = true,
 	educationLevelsPlaceholder,
 	subjectsPlaceholder,
 	themesPlaceholder,
@@ -92,35 +96,24 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 
 	return (
 		<Spacer margin="bottom">
-			<FormGroup label={tText('Onderwijs')} labelFor="classificationId">
-				<TagsInput
-					isLoading={isEducationLevelsLoading}
-					options={getEducationLevelOptions(allEducationLevels || [])}
-					value={
-						getEducationLevelOptions([
-							...lomFields.educationDegree,
-							...lomFields.educationLevel,
-						]) || []
-					}
-					onChange={(values) =>
-						handleChange(values, LomType.educationDegree, allEducationLevels || [])
-					}
-					placeholder={educationLevelsPlaceholder}
-				/>
-			</FormGroup>
-
-			<FormGroup
-				label={tText('shared/components/lom-fields-input/lom-fields-input___vakken')}
-				labelFor="subjectId"
-			>
-				<TagsInput
-					isLoading={isSubjectsLoading}
-					options={mapLomFieldsToOptions(allSubjects || [])}
-					value={mapLomFieldsToOptions(lomFields.subject) || []}
-					onChange={(values) => handleChange(values, LomType.subject, allSubjects || [])}
-					placeholder={subjectsPlaceholder}
-				/>
-			</FormGroup>
+			{showEducation && (
+				<FormGroup label={tText('Onderwijs')} labelFor="educationId">
+					<TagsInput
+						isLoading={isEducationLevelsLoading}
+						options={getEducationLevelOptions(allEducationLevels || [])}
+						value={
+							getEducationLevelOptions([
+								...lomFields.educationDegree,
+								...lomFields.educationLevel,
+							]) || []
+						}
+						onChange={(values) =>
+							handleChange(values, LomType.educationDegree, allEducationLevels || [])
+						}
+						placeholder={educationLevelsPlaceholder}
+					/>
+				</FormGroup>
+			)}
 
 			{showThemes && (
 				<FormGroup
@@ -133,6 +126,23 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 						value={mapLomFieldsToOptions(lomFields.theme) || []}
 						onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
 						placeholder={themesPlaceholder}
+					/>
+				</FormGroup>
+			)}
+
+			{showSubjects && (
+				<FormGroup
+					label={tText('shared/components/lom-fields-input/lom-fields-input___vakken')}
+					labelFor="subjectId"
+				>
+					<TagsInput
+						isLoading={isSubjectsLoading}
+						options={mapLomFieldsToOptions(allSubjects || [])}
+						value={mapLomFieldsToOptions(lomFields.subject) || []}
+						onChange={(values) =>
+							handleChange(values, LomType.subject, allSubjects || [])
+						}
+						placeholder={subjectsPlaceholder}
 					/>
 				</FormGroup>
 			)}
