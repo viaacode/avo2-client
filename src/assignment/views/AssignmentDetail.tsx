@@ -144,13 +144,11 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
 	const isSharedWithOthers =
 		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
+
 	const isBeingEdited =
 		editStatuses &&
 		!!editStatuses[assignmentId] &&
-		!(
-			!!editStatuses[assignmentId].editingUserId &&
-			editStatuses[assignmentId].editingUserId === user?.profile?.id
-		);
+		editStatuses[assignmentId]?.editingUserId !== user?.profile?.id;
 
 	const getPermissions = useCallback(
 		async (
