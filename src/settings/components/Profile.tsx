@@ -17,8 +17,8 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import { compact, get, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
@@ -41,7 +41,9 @@ import {
 } from '../../authentication/store/actions';
 import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
 import { FileUpload } from '../../shared/components';
+import CommonMetadata from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { ROUTE_PARTS } from '../../shared/constants';
@@ -468,10 +470,13 @@ const Profile: FunctionComponent<
 									'Selecteer een of meerdere onderwijsniveaus ...'
 								)}
 								subjectsPlaceholder={tText('Selecteer de vakken die je geeft ...')}
+								themesPlaceholder={tText(
+									"Selecteer de thema's waarin je geïnteresseerd bent ..."
+								)}
 							/>
 							{renderEducationOrganisationsField(true, true)}
 						</Spacer>
-						{get(user, 'role.name') === 'lesgever' && (
+						{user?.role?.name === 'lesgever' && (
 							<Spacer margin="bottom">
 								<FormGroup>
 									<Checkbox
@@ -679,15 +684,33 @@ const Profile: FunctionComponent<
 												/>
 											</FormGroup>
 
+											{/* Show readonly education on profile page */}
+											<CommonMetadata
+												enabledMetaData={[
+													SearchFilter.educationLevel,
+													SearchFilter.educationDegree,
+												]}
+												subject={{
+													loms: selectedLoms.map(
+														(lomField) =>
+															({
+																lom: lomField,
+															} as Avo.Lom.Lom)
+													),
+													id: user.profile?.id as string,
+												}}
+												renderSearchLink={(content) => content}
+											/>
 											<LomFieldsInput
 												loms={selectedLoms || []}
 												onChange={(newLoms) => setSelectedLoms(newLoms)}
-												educationLevelsPlaceholder={tText(
-													'Selecteer een of meerdere onderwijsniveaus ...'
-												)}
 												subjectsPlaceholder={tText(
 													'Selecteer de vakken die je geeft ...'
 												)}
+												themesPlaceholder={tText(
+													"Selecteer de thema's waarin je geïnteresseerd bent ..."
+												)}
+												showEducation={false}
 											/>
 										</>
 									)}
