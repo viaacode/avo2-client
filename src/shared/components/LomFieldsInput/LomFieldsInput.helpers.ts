@@ -20,15 +20,16 @@ export const mapOptionsToLomFields = (
 	});
 };
 
-export const getParentContext = (
+export const getParentEducationLevel = (
 	loms: Avo.Lom.LomField[],
 	allLoms: Avo.Lom.LomField[]
 ): LomFieldSchema[] => {
 	return compact(
 		loms.map((lom) => {
 			if (isNil(lom.broader)) {
-				return;
+				return null;
 			}
+
 			let foundParent: Avo.Lom.LomField | undefined = (allLoms || []).find(
 				(edu) => edu.id === lom.broader
 			);
