@@ -103,6 +103,8 @@
 	&__bottom {
 		overflow-x: auto;
 		overflow-y: hidden;
+		z-index: 0;
+		position: relative;
 
 		// Don't overwrite .o-container on wide screens
 		@media screen and (max-width: ($g-bp2 - 1px)) {
