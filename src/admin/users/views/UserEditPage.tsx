@@ -37,8 +37,8 @@ import { USER_PATH } from '../user.const';
 type UserEditPageProps = DefaultSecureRouteProps<{ id: string }>;
 
 const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user }) => {
-	// by using user you can only edit the current logged in user 's details
-	// TODO: use hook that gets user that is selected
+	// by using user you are redirected to the logged in user 's edit page
+	// TODO: use hook that gets user that is selected on overview page
 
 	const { tText } = useTranslation();
 
@@ -75,6 +75,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 		setBio(user.profile?.bio || '');
 		setAlias(user.profile?.alias || '');
 		setCompanyId(user.profile?.company_id || '');
+		// not every lom is shown on edit page?
 		setLoms(compact(map(user.profile?.loms, 'lom')) || []);
 
 		setStoredProfile({
