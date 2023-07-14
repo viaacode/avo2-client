@@ -256,28 +256,25 @@ const Profile: FunctionComponent<
 
 		if (
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
-			(!groupedLoms.subject || !groupedLoms.subject.length)
+			!groupedLoms.subject?.length
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
-		if (
-			(permissions.THEME.REQUIRED || isCompleteProfileStep) &&
-			(!groupedLoms.theme || !groupedLoms.theme.length)
-		) {
+		if ((permissions.THEME.REQUIRED || isCompleteProfileStep) && !groupedLoms.theme?.length) {
 			errors.push(tText("Thema's zijn verplicht."));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
-			(!groupedLoms.educationLevel || !groupedLoms.educationLevel.length)
+			!groupedLoms.educationLevel?.length
 		) {
 			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
-			(!profileInfo.organizations || !profileInfo.organizations.length)
+			!profileInfo.organizations?.length
 		) {
 			errors.push(tText('settings/components/profile___educatieve-organisatie-is-verplicht'));
 			filledIn = false;
