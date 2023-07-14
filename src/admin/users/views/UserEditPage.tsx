@@ -1,4 +1,5 @@
 import {
+	Box,
 	Button,
 	ButtonToolbar,
 	Container,
@@ -6,7 +7,6 @@ import {
 	FlexItem,
 	Form,
 	FormGroup,
-	Icon,
 	IconName,
 	Select,
 	Spacer,
@@ -16,9 +16,8 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import { compact, get, map } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
-import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -32,13 +31,13 @@ import { UserProps } from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
+import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { USER_PATH } from '../user.const';
 
 type UserEditPageProps = DefaultSecureRouteProps<{ id: string }>;
 
 const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user }) => {
 	const { tText } = useTranslation();
-	const [, setUser] = useState<{ fullName?: string } | undefined>();
 
 	// Hooks
 	const [storedProfile, setStoredProfile] = useState<Avo.User.CommonUser | null>(null);
@@ -66,7 +65,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 		redirectToClientPage(buildLink(USER_PATH.USER_DETAIL, { id: match.params.id }), history);
 	};
 
-	const fetchProfileById = useCallback(async () => {
+	const initializeForm = async () => {
 		try {
 			setFirstName(user.first_name || '');
 			setLastName(user.last_name || '');
@@ -76,9 +75,6 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 			setAlias(user.profile?.alias || '');
 			setCompanyId(user.profile?.company_id || '');
 			setLoms(compact(map(user.profile?.loms, 'lom')) || []);
-
-			//TODO replace with the generic lom component
-			// setSelectedSubjects((profile.subjects || []).map(stringToTagInfo));
 
 			setStoredProfile({
 				...user.profile,
@@ -107,11 +103,11 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 				),
 			});
 		}
-	}, [setStoredProfile, setLoadingInfo, tText, match.params.id, setUser]);
+	};
 
 	useEffect(() => {
-		fetchProfileById();
-	}, [fetchProfileById]);
+		initializeForm();
+	}, [initializeForm]);
 
 	const navigateBack = () => {
 		navigate(history, USER_PATH.USER_DETAIL, {
@@ -192,117 +188,120 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 			'logo_url',
 			null
 		);
-		return (
-			<Container mode="vertical" size="small">
+
+		if (storedProfile) {
+			return (
 				<Container mode="horizontal">
-					<Form>
-						<FormGroup label={tText('admin/users/views/user-detail___avatar')}>
-							{!companyId && (
-								<FileUpload
-									urls={avatar ? [avatar] : []}
-									onChange={(urls) => setAvatar(urls[0])}
-									assetType="PROFILE_AVATAR"
-									allowMulti={false}
-									allowedTypes={PHOTO_TYPES}
-									ownerId={match.params.id}
-								/>
-							)}
-							{!!companyId && !!companyLogo && (
-								<div
-									className="c-logo-preview"
-									style={{
-										backgroundImage: `url(${companyLogo})`,
-									}}
-								/>
-							)}
-							{!!companyId && !companyLogo && 'geen avatar'}
-						</FormGroup>
-
-						<FormGroup label={tText('admin/users/views/user-detail___voornaam')}>
-							<TextInput value={firstName} onChange={setFirstName} />
-						</FormGroup>
-						<FormGroup label={tText('admin/users/views/user-detail___achternaam')}>
-							<TextInput value={lastName} onChange={setLastName} />
-						</FormGroup>
-						<FormGroup label={tText('admin/users/views/user-detail___functie')}>
-							<TextInput value={title} onChange={setTitle} />
-						</FormGroup>
-						<FormGroup label={tText('admin/users/views/user-detail___bio')}>
-							<TextArea value={bio} onChange={setBio} />
-						</FormGroup>
-						<FormGroup
-							label={tText('admin/users/views/user-detail___gebruikersnaam')}
-							error={profileErrors.alias}
-						>
-							<TextInput value={alias} onChange={setAlias} />
-						</FormGroup>
-						<LomFieldsInput loms={loms} onChange={setLoms} />
-						<FormGroup label={tText('admin/users/views/user-detail___bedrijf')}>
-							<Flex>
-								<FlexItem>
-									<Select
-										options={compact(
-											(companies || []).map((org) => {
-												if (!org.name || !org.or_id) {
-													return null;
-												}
-
-												return {
-													label: org.name,
-													value: org.or_id,
-												};
-											})
-										)}
-										value={companyId}
-										onChange={setCompanyId}
-										clearable
+					<Box backgroundColor="gray">
+						<Form>
+							<FormGroup label={tText('admin/users/views/user-detail___avatar')}>
+								{!companyId && (
+									<FileUpload
+										urls={avatar ? [avatar] : []}
+										onChange={(urls) => setAvatar(urls[0])}
+										assetType="PROFILE_AVATAR"
+										allowMulti={false}
+										allowedTypes={PHOTO_TYPES}
+										ownerId={match.params.id}
 									/>
-								</FlexItem>
-								<FlexItem shrink>
-									<Spacer margin="left">
-										<Button
-											type="danger"
-											size="large"
-											ariaLabel={tText(
-												'admin/users/views/user-edit___verbreek-de-link-tussen-deze-gebruiker-en-dit-bedrijf'
+								)}
+								{!!companyId && !!companyLogo && (
+									<div
+										className="c-logo-preview"
+										style={{
+											backgroundImage: `url(${companyLogo})`,
+										}}
+									/>
+								)}
+								{!!companyId && !companyLogo && 'geen avatar'}
+							</FormGroup>
+
+							<FormGroup label={tText('admin/users/views/user-detail___voornaam')}>
+								<TextInput value={firstName} onChange={setFirstName} />
+							</FormGroup>
+							<FormGroup label={tText('admin/users/views/user-detail___achternaam')}>
+								<TextInput value={lastName} onChange={setLastName} />
+							</FormGroup>
+							<FormGroup label={tText('admin/users/views/user-detail___functie')}>
+								<TextInput value={title} onChange={setTitle} />
+							</FormGroup>
+							<FormGroup label={tText('admin/users/views/user-detail___bio')}>
+								<TextArea value={bio} onChange={setBio} />
+							</FormGroup>
+							<FormGroup
+								label={tText('admin/users/views/user-detail___gebruikersnaam')}
+								error={profileErrors.alias}
+							>
+								<TextInput value={alias} onChange={setAlias} />
+							</FormGroup>
+							<LomFieldsInput loms={loms} onChange={setLoms} />
+							<FormGroup label={tText('admin/users/views/user-detail___bedrijf')}>
+								<Flex>
+									<FlexItem>
+										<Select
+											options={compact(
+												(companies || []).map((org) => {
+													if (!org.name || !org.or_id) {
+														return null;
+													}
+
+													return {
+														label: org.name,
+														value: org.or_id,
+													};
+												})
 											)}
-											icon={'delete' as IconName}
-											onClick={() => setCompanyId(undefined)}
+											value={companyId}
+											onChange={setCompanyId}
+											clearable
 										/>
-									</Spacer>
-								</FlexItem>
-							</Flex>
-						</FormGroup>
-					</Form>
+									</FlexItem>
+									<FlexItem shrink>
+										<Spacer margin="left">
+											<Button
+												type="danger"
+												size="large"
+												ariaLabel={tText(
+													'admin/users/views/user-edit___verbreek-de-link-tussen-deze-gebruiker-en-dit-bedrijf'
+												)}
+												icon={'delete' as IconName}
+												onClick={() => setCompanyId(undefined)}
+											/>
+										</Spacer>
+									</FlexItem>
+								</Flex>
+							</FormGroup>
+						</Form>
+					</Box>
 				</Container>
-			</Container>
-		);
+			);
+		}
 	};
 
 	const renderUserDetailPage = () => {
 		return (
-			<>
-				<Link to={USER_PATH.USER_OVERVIEW}>
-					<Button type="borderless">
-						<Icon name={IconName.chevronLeft} />
-					</Button>
-				</Link>
+			<AdminLayout
+				size="large"
+				pageTitle={tText('admin/users/views/user-edit___bewerk-gebruiker')}
+				onClickBackButton={() => navigate(history, USER_PATH.USER_OVERVIEW)}
+			>
+				<AdminLayoutTopBarRight>
+					<ButtonToolbar>
+						<Button
+							label={tText('admin/user-groups/views/user-group-edit___annuleer')}
+							onClick={navigateBack}
+							type="tertiary"
+						/>
+						<Button
+							disabled={isSaving}
+							label={tText('admin/user-groups/views/user-group-edit___opslaan')}
+							onClick={handleSave}
+						/>
+					</ButtonToolbar>
+				</AdminLayoutTopBarRight>
 
-				<ButtonToolbar>
-					<Button
-						label={tText('admin/user-groups/views/user-group-edit___annuleer')}
-						onClick={navigateBack}
-						type="tertiary"
-					/>
-					<Button
-						disabled={isSaving}
-						label={tText('admin/user-groups/views/user-group-edit___opslaan')}
-						onClick={handleSave}
-					/>
-				</ButtonToolbar>
-
-				{renderUserDetail()}
-			</>
+				<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
+			</AdminLayout>
 		);
 	};
 
