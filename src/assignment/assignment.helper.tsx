@@ -146,8 +146,12 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 	{
 		error: tText('assignment/assignment___de-opdracht-bevat-geen-onderwijsniveaus'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			// !assignment.loms ||
-			validateLoms(assignment?.loms, LomType.educationLevel),
+			validateLoms(assignment?.loms, LomType.educationDegree),
+	},
+	{
+		error: tText("De opdracht heeft geen thema's"),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
+			validateLoms(assignment?.loms, LomType.theme),
 	},
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),

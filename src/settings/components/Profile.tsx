@@ -74,6 +74,7 @@ interface FieldPermission {
 }
 
 interface FieldPermissions {
+	THEME: FieldPermission;
 	SUBJECTS: FieldPermission;
 	EDUCATION_LEVEL: FieldPermission;
 	EDUCATIONAL_ORGANISATION: FieldPermission;
@@ -128,6 +129,15 @@ const Profile: FunctionComponent<
 
 	useEffect(() => {
 		setPermissions({
+			THEME: {
+				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_THEME_ON_PROFILE_PAGE),
+				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_THEME_ON_PROFILE_PAGE),
+				REQUIRED:
+					PermissionService.hasPerm(
+						user,
+						PermissionName.REQUIRED_THEME_ON_PROFILE_PAGE
+					) && !isExceptionAccount,
+			},
 			SUBJECTS: {
 				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_SUBJECTS_ON_PROFILE_PAGE),
 				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE),
@@ -248,21 +258,25 @@ const Profile: FunctionComponent<
 
 		if (
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
-			(!groupedLoms.subject || !groupedLoms.subject.length)
+			!groupedLoms.subject?.length
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
+		if ((permissions.THEME.REQUIRED || isCompleteProfileStep) && !groupedLoms.theme?.length) {
+			errors.push(tText("Thema's zijn verplicht."));
+			filledIn = false;
+		}
 		if (
 			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
-			(!groupedLoms.educationLevel || !groupedLoms.educationLevel.length)
+			!groupedLoms.educationLevel?.length
 		) {
 			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
-			(!profileInfo.organizations || !profileInfo.organizations.length)
+			!profileInfo.organizations?.length
 		) {
 			errors.push(tText('settings/components/profile___educatieve-organisatie-is-verplicht'));
 			filledIn = false;
@@ -470,9 +484,7 @@ const Profile: FunctionComponent<
 									'Selecteer een of meerdere onderwijsniveaus ...'
 								)}
 								subjectsPlaceholder={tText('Selecteer de vakken die je geeft ...')}
-								themesPlaceholder={tText(
-									"Selecteer de thema's waarin je geïnteresseerd bent ..."
-								)}
+								themesPlaceholder={tText("Selecteer je thema's...")}
 							/>
 							{renderEducationOrganisationsField(true, true)}
 						</Spacer>
@@ -707,9 +719,7 @@ const Profile: FunctionComponent<
 												subjectsPlaceholder={tText(
 													'Selecteer de vakken die je geeft ...'
 												)}
-												themesPlaceholder={tText(
-													"Selecteer de thema's waarin je geïnteresseerd bent ..."
-												)}
+												themesPlaceholder={tText("Selecteer je thema's...")}
 												showEducation={false}
 											/>
 										</>
