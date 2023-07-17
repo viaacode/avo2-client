@@ -17,8 +17,8 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import { compact, get, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
@@ -41,7 +41,9 @@ import {
 } from '../../authentication/store/actions';
 import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { SearchFilter } from '../../search/search.const';
 import { FileUpload } from '../../shared/components';
+import CommonMetadata from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { ROUTE_PARTS } from '../../shared/constants';
@@ -72,6 +74,7 @@ interface FieldPermission {
 }
 
 interface FieldPermissions {
+	THEME: FieldPermission;
 	SUBJECTS: FieldPermission;
 	EDUCATION_LEVEL: FieldPermission;
 	EDUCATIONAL_ORGANISATION: FieldPermission;
@@ -126,6 +129,15 @@ const Profile: FunctionComponent<
 
 	useEffect(() => {
 		setPermissions({
+			THEME: {
+				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_THEME_ON_PROFILE_PAGE),
+				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_THEME_ON_PROFILE_PAGE),
+				REQUIRED:
+					PermissionService.hasPerm(
+						user,
+						PermissionName.REQUIRED_THEME_ON_PROFILE_PAGE
+					) && !isExceptionAccount,
+			},
 			SUBJECTS: {
 				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_SUBJECTS_ON_PROFILE_PAGE),
 				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE),
@@ -246,21 +258,25 @@ const Profile: FunctionComponent<
 
 		if (
 			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
-			(!groupedLoms.subject || !groupedLoms.subject.length)
+			!groupedLoms.subject?.length
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
+		if ((permissions.THEME.REQUIRED || isCompleteProfileStep) && !groupedLoms.theme?.length) {
+			errors.push(tText("Thema's zijn verplicht."));
+			filledIn = false;
+		}
 		if (
 			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
-			(!groupedLoms.educationLevel || !groupedLoms.educationLevel.length)
+			!groupedLoms.educationLevel?.length
 		) {
 			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
 			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
-			(!profileInfo.organizations || !profileInfo.organizations.length)
+			!profileInfo.organizations?.length
 		) {
 			errors.push(tText('settings/components/profile___educatieve-organisatie-is-verplicht'));
 			filledIn = false;
@@ -468,10 +484,11 @@ const Profile: FunctionComponent<
 									'Selecteer een of meerdere onderwijsniveaus ...'
 								)}
 								subjectsPlaceholder={tText('Selecteer de vakken die je geeft ...')}
+								themesPlaceholder={tText("Selecteer je thema's...")}
 							/>
 							{renderEducationOrganisationsField(true, true)}
 						</Spacer>
-						{get(user, 'role.name') === 'lesgever' && (
+						{user?.role?.name === 'lesgever' && (
 							<Spacer margin="bottom">
 								<FormGroup>
 									<Checkbox
@@ -679,15 +696,31 @@ const Profile: FunctionComponent<
 												/>
 											</FormGroup>
 
+											{/* Show readonly education on profile page */}
+											<CommonMetadata
+												enabledMetaData={[
+													SearchFilter.educationLevel,
+													SearchFilter.educationDegree,
+												]}
+												subject={{
+													loms: selectedLoms.map(
+														(lomField) =>
+															({
+																lom: lomField,
+															} as Avo.Lom.Lom)
+													),
+													id: user.profile?.id as string,
+												}}
+												renderSearchLink={(content) => content}
+											/>
 											<LomFieldsInput
 												loms={selectedLoms || []}
 												onChange={(newLoms) => setSelectedLoms(newLoms)}
-												educationLevelsPlaceholder={tText(
-													'Selecteer een of meerdere onderwijsniveaus ...'
-												)}
 												subjectsPlaceholder={tText(
 													'Selecteer de vakken die je geeft ...'
 												)}
+												themesPlaceholder={tText("Selecteer je thema's...")}
+												showEducation={false}
 											/>
 										</>
 									)}

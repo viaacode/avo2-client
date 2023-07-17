@@ -10,7 +10,7 @@ import { tText } from '../../helpers/translate';
 import LomInfoField from '../LomInfoField/LomInfoField';
 
 type CommonMetadataProps = {
-	subject: Avo.Collection.Collection | Avo.Assignment.Assignment;
+	subject: { loms?: Avo.Lom.Lom[] | null; created_at?: string; updated_at?: string; id: string };
 	enabledMetaData: SearchFilter[];
 	renderSearchLink: (
 		linkText: string | ReactNode,
@@ -30,6 +30,7 @@ const CommonMetadata: FC<CommonMetadataProps> = ({
 	const isEducationDegreeEnabled = enabledMetaData.includes(SearchFilter.educationDegree);
 	const isSubjectEnabled = enabledMetaData.includes(SearchFilter.subject);
 	const isThemeEnabled = enabledMetaData.includes(SearchFilter.thema);
+	const isDatesEnabled = enabledMetaData.includes(SearchFilter.broadcastDate);
 
 	return (
 		<>
@@ -79,18 +80,22 @@ const CommonMetadata: FC<CommonMetadataProps> = ({
 					)}
 				</Column>
 			)}
-			<Column size="3-3">
-				<Spacer margin="top-large">
-					<p className="u-text-bold">{tText('Aangemaakt op')}</p>
-					<p className="c-body-1">{formatDate(created_at)}</p>
-				</Spacer>
-			</Column>
-			<Column size="3-3">
-				<Spacer margin="top-large">
-					<p className="u-text-bold">{tText('Laatst aangepast op')}</p>
-					<p className="c-body-1">{formatDate(updated_at)}</p>
-				</Spacer>
-			</Column>
+			{isDatesEnabled && (
+				<>
+					<Column size="3-3">
+						<Spacer margin="top-large">
+							<p className="u-text-bold">{tText('Aangemaakt op')}</p>
+							<p className="c-body-1">{formatDate(created_at)}</p>
+						</Spacer>
+					</Column>
+					<Column size="3-3">
+						<Spacer margin="top-large">
+							<p className="u-text-bold">{tText('Laatst aangepast op')}</p>
+							<p className="c-body-1">{formatDate(updated_at)}</p>
+						</Spacer>
+					</Column>
+				</>
+			)}
 		</>
 	);
 };

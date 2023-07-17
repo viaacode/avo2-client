@@ -693,36 +693,42 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				});
 
 			case 'is_public':
-				return (
-					<div
-						title={
-							assignment.is_public
-								? tText(
-										'collection/components/collection-or-bundle-overview___publiek'
-								  )
-								: tText(
-										'collection/components/collection-or-bundle-overview___niet-publiek'
-								  )
-						}
-					>
-						<Icon name={assignment.is_public ? IconName.unlock3 : IconName.lock} />
-					</div>
-				);
+				return renderMobileDesktop({
+					mobile: null,
+					desktop: (
+						<div
+							title={
+								assignment.is_public
+									? tText(
+											'collection/components/collection-or-bundle-overview___publiek'
+									  )
+									: tText(
+											'collection/components/collection-or-bundle-overview___niet-publiek'
+									  )
+							}
+						>
+							<Icon name={assignment.is_public ? IconName.unlock3 : IconName.lock} />
+						</div>
+					),
+				});
 
 			case 'share_type':
-				return (
-					<Tooltip position="top">
-						<TooltipTrigger>
-							<div
-								className="c-assignment-overview__shared"
-								title={shareTypeTitle || ''}
-							>
-								<Icon name={shareTypeIcon} />
-							</div>
-						</TooltipTrigger>
-						<TooltipContent>{shareTypeText}</TooltipContent>
-					</Tooltip>
-				);
+				return renderMobileDesktop({
+					mobile: null,
+					desktop: (
+						<Tooltip position="top">
+							<TooltipTrigger>
+								<div
+									className="c-assignment-overview__shared"
+									title={shareTypeTitle || ''}
+								>
+									<Icon name={shareTypeIcon} />
+								</div>
+							</TooltipTrigger>
+							<TooltipContent>{shareTypeText}</TooltipContent>
+						</Tooltip>
+					),
+				});
 
 			default:
 				return JSON.stringify(cellData);

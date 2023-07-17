@@ -41,7 +41,8 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 					...(model as Avo.Collection.Collection),
 					is_public: true,
 				},
-				user
+				user,
+				false
 			)
 				.then((result) => {
 					if (result) {

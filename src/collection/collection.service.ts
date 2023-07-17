@@ -226,11 +226,13 @@ export class CollectionService {
 	 * @param initialColl
 	 * @param updatedColl
 	 * @param user
+	 * @param checkValidation
 	 */
 	static async updateCollection(
 		initialColl: Omit<Avo.Collection.Collection, 'loms' | 'contributors'> | null,
 		updatedColl: Partial<Omit<Avo.Collection.Collection, 'loms' | 'contributors'>>,
-		user: Avo.User.User
+		user: Avo.User.User,
+		checkValidation = true
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			// Convert fragment description editor states to html strings
@@ -245,19 +247,21 @@ export class CollectionService {
 				return null;
 			}
 
-			// validate collection before update
-			let validationErrors: string[];
+			if (checkValidation) {
+				// validate collection before update
+				let validationErrors: string[];
 
-			if (updatedCollection.is_public) {
-				validationErrors = await getValidationErrorsForPublish(updatedCollection);
-			} else {
-				validationErrors = await getValidationErrorForSave(updatedCollection);
-			}
+				if (updatedCollection.is_public) {
+					validationErrors = await getValidationErrorsForPublish(updatedCollection);
+				} else {
+					validationErrors = await getValidationErrorForSave(updatedCollection);
+				}
 
-			// display validation errors
-			if (validationErrors.length) {
-				ToastService.danger(validationErrors);
-				return null;
+				// display validation errors
+				if (validationErrors.length) {
+					ToastService.danger(validationErrors);
+					return null;
+				}
 			}
 
 			const newCollection: Partial<Avo.Collection.Collection> = cloneDeep(updatedCollection);
