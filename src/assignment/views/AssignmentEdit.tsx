@@ -237,17 +237,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
 
-			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions(
-					[
+			const checkedPermissions = await PermissionService.checkPermissions(
+				{
+					canEditAllAssignments: [
 						{
 							name: PermissionName.EDIT_ANY_ASSIGNMENTS,
 						},
 					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
+					canPublish: [
 						{
 							name: PermissionName.PUBLISH_OWN_ASSIGNMENTS,
 							obj: assignmentId,
@@ -256,14 +253,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 							name: PermissionName.PUBLISH_ANY_ASSIGNMENTS,
 						},
 					],
-					user
-				),
-			]);
+				},
+				user
+			);
 
-			setPermissions({
-				canEditAllAssignments: rawPermissions[0],
-				canPublish: rawPermissions[1],
-			});
+			setPermissions(checkedPermissions);
 			setOriginal(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);

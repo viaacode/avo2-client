@@ -313,50 +313,33 @@ const CollectionDetail: FunctionComponent<
 		if (!user) {
 			return {};
 		}
-		const rawPermissions = await Promise.all([
-			PermissionService.hasPermissions(
-				[
+
+		return await PermissionService.checkPermissions(
+			{
+				canEditCollections: [
 					{ name: PermissionName.EDIT_OWN_COLLECTIONS, obj: collectionId },
 					{ name: PermissionName.EDIT_ANY_COLLECTIONS },
 				],
-				user
-			),
-			PermissionService.hasPermissions(
-				[
+				canPublishCollections: [
 					{ name: PermissionName.PUBLISH_OWN_COLLECTIONS, obj: collectionId },
 					{ name: PermissionName.PUBLISH_ANY_COLLECTIONS },
 				],
-				user
-			),
-			PermissionService.hasPermissions(
-				[
+				canDeleteCollections: [
 					{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
 					{ name: PermissionName.DELETE_ANY_COLLECTIONS },
 				],
-				user
-			),
-			PermissionService.hasPermissions([{ name: PermissionName.CREATE_COLLECTIONS }], user),
-			PermissionService.hasPermissions(
-				[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
-				user
-			),
-			PermissionService.hasPermissions([{ name: PermissionName.CREATE_QUICK_LANE }], user),
-			PermissionService.hasPerm(user, PermissionName.AUTOPLAY_COLLECTION),
-			PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS),
-			PermissionService.hasPerm(user, PermissionName.CREATE_BUNDLES),
-		]);
-
-		return {
-			canEditCollections: rawPermissions[0],
-			canPublishCollections: rawPermissions[1],
-			canDeleteCollections: rawPermissions[2],
-			canCreateCollections: rawPermissions[3],
-			canViewAnyPublishedItems: rawPermissions[4],
-			canCreateQuickLane: rawPermissions[5],
-			canAutoplayCollection: rawPermissions[6],
-			canCreateAssignments: rawPermissions[7],
-			canCreateBundles: rawPermissions[8],
-		};
+				canCreateCollections: [
+					{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
+					{ name: PermissionName.DELETE_ANY_COLLECTIONS },
+				],
+				canViewAnyPublishedItems: [{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+				canCreateQuickLane: [{ name: PermissionName.CREATE_QUICK_LANE }],
+				canAutoplayCollection: [{ name: PermissionName.AUTOPLAY_COLLECTION }],
+				canCreateAssignments: [{ name: PermissionName.CREATE_ASSIGNMENTS }],
+				canCreateBundles: [{ name: PermissionName.CREATE_BUNDLES }],
+			},
+			user
+		);
 	};
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
