@@ -722,11 +722,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return omit(collection, ['loms', 'contributors']);
 	};
 
-	const updateCollection = async () => {
+	const updateCollection = async (checkValidation = true) => {
 		const newCollection = await CollectionService.updateCollection(
 			stripCollectionFieldsBeforeInsertOrUpdate(collectionState.initialCollection),
 			stripCollectionFieldsBeforeInsertOrUpdate(collectionState.currentCollection),
-			user
+			user,
+			checkValidation
 		);
 
 		if (newCollection) {
@@ -1091,7 +1092,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				return;
 			}
 
-			await updateCollection();
+			await updateCollection(true);
 
 			ToastService.success(
 				tText(
