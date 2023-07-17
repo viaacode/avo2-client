@@ -86,12 +86,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const renderPublishButton = (buttonProps?: Partial<ButtonProps>) => {
 		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
-			return (
-				<Button
-					type="secondary"
-					{...(isMobileWidth() ? buttonProps : omit(buttonProps, ['label']))}
-				/>
-			);
+			return <Button type="secondary" {...buttonProps} />;
 		}
 	};
 

@@ -124,11 +124,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const fetchContributors = useCallback(async () => {
 		if (!assignmentId) {
-			console.log('no id');
 			return;
 		}
 		const response = await AssignmentService.fetchContributorsByAssignmentId(assignmentId);
-		console.log(response);
 		setContributors((response || []) as Avo.Assignment.Contributor[]);
 	}, [assignmentId]);
 
