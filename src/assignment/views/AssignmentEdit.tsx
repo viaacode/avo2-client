@@ -113,14 +113,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
+	const [permissions, setPermissions] = useState<
+		Partial<{
+			canEditAllAssignments: boolean;
+			canPublish: boolean;
+		}>
+	>({});
 
 	// Computed
 	const assignmentId = match.params.id;
 	const isPublic = assignment?.is_public || false;
-	const canEditAllAssignments = PermissionService.hasPerm(
-		user,
-		PermissionName.EDIT_ANY_ASSIGNMENTS
-	);
 
 	const fetchContributors = useCallback(async () => {
 		if (!assignmentId) {
@@ -239,9 +241,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				const isOwner = tempAssignment.owner_profile_id === user.profile.id;
 
 				if (
-					(!contributorInfo && !isOwner && !canEditAllAssignments) ||
+					(!contributorInfo && !isOwner && !permissions.canEditAllAssignments) ||
 					(contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer &&
-						!canEditAllAssignments)
+						!permissions.canEditAllAssignments)
 				) {
 					setAssignmentError({
 						message: tHtml(
@@ -257,6 +259,27 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
 
+			const checkedPermissions = await PermissionService.checkPermissions(
+				{
+					canEditAllAssignments: [
+						{
+							name: PermissionName.EDIT_ANY_ASSIGNMENTS,
+						},
+					],
+					canPublish: [
+						{
+							name: PermissionName.PUBLISH_OWN_ASSIGNMENTS,
+							obj: assignmentId,
+						},
+						{
+							name: PermissionName.PUBLISH_ANY_ASSIGNMENTS,
+						},
+					],
+				},
+				user
+			);
+
+			setPermissions(checkedPermissions);
 			setOriginal(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
@@ -675,27 +698,35 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					title={renderTitle}
 					actions={
 						<AssignmentActions
-							publish={{
-								title: isPublic
-									? tText(
-											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
-									  )
-									: tText(
-											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
-									  ),
-								...(isMobileWidth()
-									? { label: isPublic ? tText('Maak privé') : tText('Publiceer') }
-									: {}),
-								ariaLabel: isPublic
-									? tText(
-											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
-									  )
-									: tText(
-											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
-									  ),
-								icon: isPublic ? IconName.unlock3 : IconName.lock,
-								onClick: () => setIsPublishModalOpen(true),
-							}}
+							publish={
+								permissions.canPublish
+									? {
+											title: isPublic
+												? tText(
+														'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+												  )
+												: tText(
+														'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+												  ),
+											...(isMobileWidth()
+												? {
+														label: isPublic
+															? tText('Maak privé')
+															: tText('Publiceer'),
+												  }
+												: {}),
+											ariaLabel: isPublic
+												? tText(
+														'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+												  )
+												: tText(
+														'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+												  ),
+											icon: isPublic ? IconName.unlock3 : IconName.lock,
+											onClick: () => setIsPublishModalOpen(true),
+									  }
+									: undefined
+							}
 							duplicate={{
 								assignment: original || undefined,
 								onClick: (_e, duplicated) => {
@@ -791,7 +822,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			assignment?.id &&
 			!isUserAssignmentOwner(user, assignment) &&
 			!isUserAssignmentContributor(user, assignment) &&
-			!canEditAllAssignments
+			!permissions.canEditAllAssignments
 		) {
 			return (
 				<ErrorNoAccess

@@ -133,68 +133,36 @@ const BundleDetail: FunctionComponent<
 			if (!user) {
 				showPopup = true;
 			} else {
-				const rawPermissions = await Promise.all([
-					PermissionService.hasPermissions(
-						[{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
-							{
-								name: PermissionName.VIEW_ANY_PUBLISHED_BUNDLES,
-							},
-						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
+				permissionObj = await PermissionService.checkPermissions(
+					{
+						canViewBundle: [{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
+						canViewPublishedBundles: [
 							{
 								name: PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
 							},
 						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
+						canViewUnpublishedBundles: [
+							{
+								name: PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
+							},
+						],
+						canEditBundle: [
 							{ name: PermissionName.EDIT_OWN_BUNDLES, obj: bundleId },
 							{ name: PermissionName.EDIT_ANY_BUNDLES },
 						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
+						canPublishBundle: [
 							{ name: PermissionName.PUBLISH_OWN_BUNDLES, obj: bundleId },
 							{ name: PermissionName.PUBLISH_ANY_BUNDLES },
 						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[
+						canDeleteBundle: [
 							{ name: PermissionName.DELETE_OWN_BUNDLES, obj: bundleId },
 							{ name: PermissionName.DELETE_ANY_BUNDLES },
 						],
-						user
-					),
-					PermissionService.hasPermissions(
-						[{ name: PermissionName.CREATE_BUNDLES }],
-						user
-					),
-					PermissionService.hasPermissions(
-						[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
-						user
-					),
-				]);
-
-				permissionObj = {
-					canViewBundle: rawPermissions[0],
-					canViewPublishedBundles: rawPermissions[1],
-					canViewUnpublishedBundles: rawPermissions[2],
-					canEditBundle: rawPermissions[3],
-					canPublishBundle: rawPermissions[4],
-					canDeleteBundle: rawPermissions[5],
-					canCreateBundles: rawPermissions[6],
-					canViewItems: rawPermissions[7],
-				};
+						canCreateBundles: [{ name: PermissionName.CREATE_BUNDLES }],
+						canViewItems: [{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+					},
+					user
+				);
 
 				if (
 					!permissionObj.canViewBundle &&

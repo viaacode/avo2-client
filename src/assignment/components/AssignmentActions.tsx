@@ -186,10 +186,11 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
 
-				{renderPublishButton({
-					...publish,
-					className: 'c-assignment-heading__hide-on-mobile',
-				})}
+				{publish &&
+					renderPublishButton({
+						...publish,
+						className: 'c-assignment-heading__hide-on-mobile',
+					})}
 
 				<div className="c-assignment-heading__dropdown-wrapper">
 					<Dropdown

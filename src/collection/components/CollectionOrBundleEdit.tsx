@@ -405,9 +405,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const checkPermissionsAndGetCollection = useCallback(async () => {
 		try {
-			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions(
-					[
+			const permissionObj = await PermissionService.checkPermissions(
+				{
+					canEdit: [
 						{
 							name: isCollection
 								? PermissionName.EDIT_OWN_COLLECTIONS
@@ -420,10 +420,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 								: PermissionName.EDIT_ANY_BUNDLES,
 						},
 					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
+					canDelete: [
 						{
 							name: isCollection
 								? PermissionName.DELETE_OWN_COLLECTIONS
@@ -436,24 +433,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 								: PermissionName.DELETE_ANY_BUNDLES,
 						},
 					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
+					canCreate: [
 						{
 							name: isCollection
 								? PermissionName.CREATE_COLLECTIONS
 								: PermissionName.CREATE_BUNDLES,
 						},
 					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
+					canViewItems: [{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+					canPublish: [
 						{
 							name: isCollection
 								? PermissionName.PUBLISH_OWN_COLLECTIONS
@@ -466,16 +454,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 								: PermissionName.PUBLISH_ANY_BUNDLES,
 						},
 					],
-					user
-				),
-			]);
-			const permissionObj = {
-				canEdit: rawPermissions[0],
-				canDelete: rawPermissions[1],
-				canCreate: rawPermissions[2],
-				canViewItems: rawPermissions[3],
-				canPublish: rawPermissions[4],
-			};
+				},
+				user
+			);
 
 			if (!permissionObj.canEdit) {
 				setLoadingInfo(noRightsError);

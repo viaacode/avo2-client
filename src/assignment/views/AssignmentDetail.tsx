@@ -168,47 +168,29 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			}
 
 			// Fetch all permissions in parallel
-			const rawPermissions = await Promise.all([
-				PermissionService.hasPermissions(
-					[{ name: PermissionName.CREATE_ASSIGNMENTS }],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
+			return await PermissionService.checkPermissions(
+				{
+					canCreateAssignments: [{ name: PermissionName.CREATE_ASSIGNMENTS }],
+
+					canEditAssignments: [
 						{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: assignment },
 						{ name: PermissionName.EDIT_ANY_ASSIGNMENTS },
 					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
+					canPublishAssignments: [
 						{ name: PermissionName.PUBLISH_OWN_ASSIGNMENTS, obj: assignment },
 						{ name: PermissionName.PUBLISH_ANY_ASSIGNMENTS },
 					],
-					user
-				),
-				PermissionService.hasPermissions(
-					[{ name: PermissionName.DELETE_ANY_ASSIGNMENTS }],
-					user
-				),
-				PermissionService.hasPermissions(
-					[
+
+					canDeleteAssignments: [{ name: PermissionName.DELETE_ANY_ASSIGNMENTS }],
+					canFetchBookmarkAndViewCounts: [
 						PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS,
 						PermissionName.VIEW_ANY_UNPUBLISHED_ASSIGNMENTS,
 						PermissionName.EDIT_OWN_ASSIGNMENTS,
 						PermissionName.EDIT_ANY_ASSIGNMENTS,
 					],
-					user
-				),
-			]);
-
-			return {
-				canCreateAssignments: rawPermissions[0],
-				canEditAssignments: rawPermissions[1],
-				canPublishAssignments: rawPermissions[2],
-				canDeleteAnyAssignments: rawPermissions[3],
-				canFetchBookmarkAndViewCounts: rawPermissions[4],
-			};
+				},
+				user
+			);
 		},
 		[user, assignment, match.params.id]
 	);

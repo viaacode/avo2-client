@@ -213,4 +213,17 @@ export class PermissionService {
 				return true;
 		}
 	}
+
+	public static async checkPermissions(
+		permissions: Record<string, Permissions>,
+		user: Avo.User.User
+	): Promise<Record<string, boolean>> {
+		const hasPermissions = await Promise.all(
+			Object.entries(permissions).map(async ([key, permission]) => {
+				const hasPermission = await this.hasPermissions(permission, user);
+				return [key, hasPermission];
+			})
+		);
+		return Object.fromEntries(hasPermissions);
+	}
 }

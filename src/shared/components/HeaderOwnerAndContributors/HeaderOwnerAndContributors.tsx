@@ -25,17 +25,22 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 }) => {
 	const { contributors, profile: owner } = subject;
 	const isOwner = owner?.id === user?.profile?.id;
+	const nonPendingContributors = (
+		(contributors || []) as
+			| Omit<Avo.Assignment.Contributor, 'assignment_id'>[]
+			| Omit<Avo.Collection.Contributor, 'collection_id'>[]
+	).filter((contrib) => !!contrib?.profile_id);
 
 	const renderContributors = (): ReactNode => {
-		if (contributors?.length) {
+		if (nonPendingContributors?.length) {
 			const couplingWord = ` ${tText(
 				'shared/components/header-owner-and-contributors/header-owner-and-contributors___en'
 			)} `;
-			if (contributors.length === 1) {
+			if (nonPendingContributors.length === 1) {
 				return (
 					<span>
 						{couplingWord}
-						{getFullName(contributors[0].profile, false, false)}
+						{getFullName(nonPendingContributors[0].profile, false, false)}
 					</span>
 				);
 			}
@@ -48,7 +53,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 							<span className="c-contributors">
 								{tHtml(
 									'shared/components/header-owner-and-contributors/header-owner-and-contributors___count-anderen',
-									{ count: contributors.length }
+									{ count: nonPendingContributors.length }
 								)}
 							</span>
 						</p>
@@ -56,7 +61,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 
 					<TooltipContent>
 						<p>
-							{contributors
+							{nonPendingContributors
 								.map((contributor) => {
 									return getFullName(contributor.profile, false, false);
 								})
