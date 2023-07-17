@@ -588,6 +588,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		const { id } = collection;
 
 		const sharedWithNames = collection.contributors.map((contributor) => {
+			if (!contributor.profile) {
+				return;
+			}
 			const fullName = contributor.profile?.user?.full_name;
 			const orgName = contributor.profile?.organisation?.name;
 
