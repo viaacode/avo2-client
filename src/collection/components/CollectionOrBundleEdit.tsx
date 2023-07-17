@@ -40,6 +40,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 	ShareDropdown,
+	ShareModal,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
@@ -48,6 +49,7 @@ import {
 	buildLink,
 	createDropdownMenuItem,
 	CustomError,
+	isMobileWidth,
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
@@ -160,6 +162,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const [isSavingCollection, setIsSavingCollection] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isEnterItemIdModalOpen, setEnterItemIdModalOpen] = useState<boolean>(false);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [permissions, setPermissions] = useState<
@@ -351,6 +354,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 		currentCollection: null,
 		initialCollection: null,
 	});
+	const isPublic = collectionState.currentCollection?.is_public || false;
+
 	const isContributor = !!(collectionState.currentCollection?.contributors || []).find(
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
@@ -895,6 +900,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				setEnterItemIdModalOpen(true);
 				break;
 
+			case 'share':
+				setIsShareModalOpen(true);
+				break;
+
 			default:
 				return null;
 		}
@@ -1181,7 +1190,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				isCollection
 					? tText('collection/components/collection-or-bundle-edit___voeg-item-toe')
 					: tText('collection/components/collection-or-bundle-edit___voeg-collectie-toe'),
-				'plus',
+				IconName.plus,
 				canAddItemToCollectionOrBundle
 			),
 		];
@@ -1288,19 +1297,20 @@ const CollectionOrBundleEdit: FunctionComponent<
 			...createDropdownMenuItem(
 				'save',
 				tText('collection/views/collection-edit___opslaan'),
-				'download',
+				IconName.download,
 				true
 			),
 			...createDropdownMenuItem(
 				'openPublishModal',
-				tText('collection/components/collection-or-bundle-edit___delen'),
-				'share-2',
+				isPublic ? tText('Maak privé') : tText('Publiceer'),
+				isPublic ? IconName.unlock3 : IconName.lock,
 				true
 			),
+			...createDropdownMenuItem('share', tText('Delen'), IconName.userGroup, isCollection),
 			...createDropdownMenuItem(
 				'redirectToDetail',
 				tText('collection/components/collection-or-bundle-edit___bekijk'),
-				'eye',
+				IconName.eye,
 				true
 			),
 			...createDropdownMenuItem(
@@ -1308,10 +1318,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				isCollection
 					? 'Collectie hernoemen'
 					: tText('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
-				'folder',
+				IconName.folder,
 				true
 			),
-			...createDropdownMenuItem('delete', 'Verwijderen', 'delete', true),
+			...createDropdownMenuItem('delete', tText('Verwijderen'), IconName.delete, true),
 		];
 		return (
 			<ButtonToolbar>
@@ -1402,6 +1412,37 @@ const CollectionOrBundleEdit: FunctionComponent<
 						location={location}
 						match={match}
 						user={user}
+					/>
+				)}
+
+				{collectionState.currentCollection && isMobileWidth() && (
+					<ShareModal
+						title={tText("Deel deze collectie met collega's")}
+						isOpen={isShareModalOpen}
+						onClose={() => setIsShareModalOpen(false)}
+						contributors={transformContributorsToSimpleContributors(
+							{
+								...collectionState.currentCollection?.profile?.user,
+								profile: collectionState.currentCollection?.profile,
+							} as Avo.User.User,
+							contributors as Avo.Collection.Contributor[]
+						)}
+						onDeleteContributor={(info) =>
+							onDeleteContributor(info, collectionId, fetchContributors)
+						}
+						onEditContributorRights={(user, newRights) =>
+							onEditContributor(
+								user,
+								newRights,
+								collectionId,
+								fetchContributors,
+								checkPermissionsAndGetCollection
+							)
+						}
+						onAddContributor={(info) =>
+							onAddContributor(info, collectionId, fetchContributors)
+						}
+						withPupils={false}
 					/>
 				)}
 

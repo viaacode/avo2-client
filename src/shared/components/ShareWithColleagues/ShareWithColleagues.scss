@@ -2,7 +2,7 @@
 
 $borderLight: 1px solid $color-gray-100;
 
-.c-dropdown__content-open .c-add-colleague {
+.c-add-colleague {
 	display: flex;
 	margin-bottom: 2rem;
 
@@ -100,10 +100,12 @@ $borderLight: 1px solid $color-gray-100;
 	}
 
 	&__info {
+		display: grid;
 		&__email {
 			font-size: 1.2rem;
 			color: $color-gray-200;
 			text-overflow: ellipsis;
+			overflow: hidden;
 		}
 	}
 

@@ -34,12 +34,15 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { InActivityWarningModal } from '../../shared/components';
+import { InActivityWarningModal, ShareModal } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
-import { buildLink, CustomError } from '../../shared/helpers';
-import { getContributorType } from '../../shared/helpers/contributors';
+import { buildLink, CustomError, isMobileWidth } from '../../shared/helpers';
+import {
+	getContributorType,
+	transformContributorsToSimpleContributors,
+} from '../../shared/helpers/contributors';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -58,6 +61,11 @@ import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataFormEditable';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
+import {
+	onAddNewContributor,
+	onDeleteContributor,
+	onEditContributor,
+} from '../helpers/assignment-share-with-collegue-handlers';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
@@ -98,10 +106,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		null
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
+	const [contributors, setContributors] = useState<Avo.Assignment.Contributor[]>();
 
 	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -113,6 +123,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	// Computed
 	const assignmentId = match.params.id;
 	const isPublic = assignment?.is_public || false;
+
+	const fetchContributors = useCallback(async () => {
+		if (!assignmentId) {
+			return;
+		}
+		const response = await AssignmentService.fetchContributorsByAssignmentId(assignmentId);
+		setContributors((response || []) as Avo.Assignment.Contributor[]);
+	}, [assignmentId]);
 
 	const {
 		control,
@@ -144,6 +162,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	useEffect(() => {
 		updateAssignmentEditorWithLoading();
 	}, [updateAssignmentEditorWithLoading]);
+
+	useEffect(() => {
+		fetchContributors();
+	}, [fetchContributors]);
 
 	useEffect(() => {
 		const param = match.params.tabId;
@@ -660,6 +682,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	// Render
 
+	const shareProps = {
+		assignment: original || undefined, // Needs to be saved before you can share
+		onContentLinkClicked: () => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT),
+		onDetailLinkClicked: () => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS),
+		onClickMobile: () => setIsShareModalOpen(true),
+		fetchContributors: fetchContributors,
+		contributors: contributors || [],
+	};
 	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
 			<div>
@@ -678,6 +708,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 												: tText(
 														'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
 												  ),
+											...(isMobileWidth()
+												? {
+														label: isPublic
+															? tText('Maak privé')
+															: tText('Publiceer'),
+												  }
+												: {}),
 											ariaLabel: isPublic
 												? tText(
 														'assignment/views/assignment-edit___maak-deze-opdracht-prive'
@@ -701,13 +738,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								},
 							}}
 							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
-							shareWithPupilsProps={{
-								assignment: original || undefined, // Needs to be saved before you can share
-								onContentLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT),
-								onDetailLinkClicked: () =>
-									setTab(ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS),
-							}}
+							shareWithColleaguesOrPupilsProps={shareProps}
 							remove={{
 								assignment: original || undefined,
 								modal: {
@@ -850,6 +881,34 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					location={location}
 					match={match}
 					user={user}
+				/>
+			)}
+
+			{!!original && isMobileWidth() && contributors && (
+				<ShareModal
+					title={tText("Deel deze opdracht met collega's")}
+					isOpen={isShareModalOpen}
+					onClose={() => setIsShareModalOpen(false)}
+					contributors={transformContributorsToSimpleContributors(
+						original?.owner as Avo.User.User,
+						(contributors || []) as Avo.Assignment.Contributor[]
+					)}
+					onDeleteContributor={(contributorInfo) =>
+						onDeleteContributor(contributorInfo, shareProps, fetchContributors)
+					}
+					onEditContributorRights={(contributorInfo, newRights) =>
+						onEditContributor(
+							contributorInfo,
+							newRights,
+							shareProps,
+							fetchContributors,
+							fetchAssignment
+						)
+					}
+					onAddContributor={(info) =>
+						onAddNewContributor(info, shareProps, fetchContributors)
+					}
+					shareWithPupilsProps={shareProps}
 				/>
 			)}
 		</>

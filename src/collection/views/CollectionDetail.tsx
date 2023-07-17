@@ -45,6 +45,7 @@ import {
 	InteractiveTour,
 	LoadingInfo,
 	ShareDropdown,
+	ShareModal,
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
@@ -160,6 +161,7 @@ const CollectionDetail: FunctionComponent<
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] =
 		useState<boolean>(false);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
@@ -552,6 +554,10 @@ const CollectionDetail: FunctionComponent<
 
 			case CollectionAction.delete:
 				setIsDeleteModalOpen(true);
+				break;
+
+			case CollectionAction.share:
+				setIsShareModalOpen(true);
 				break;
 
 			case CollectionAction.openPublishCollectionModal:
@@ -982,65 +988,71 @@ const CollectionDetail: FunctionComponent<
 			...createDropdownMenuItem(
 				CollectionAction.editCollection,
 				tText('collection/views/collection-detail___bewerken'),
-				'edit',
+				IconName.edit,
 				permissions?.canEditCollections || false
 			),
 			...createDropdownMenuItem(
 				CollectionAction.createAssignment,
 				tText('collection/views/collection-detail___importeer-naar-nieuwe-opdracht'),
-				'clipboard',
+				IconName.clipboard,
 				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
 				CollectionAction.importToAssignment,
 				tText('collection/views/collection-detail___importeer-naar-bestaande-opdracht'),
-				'clipboard',
+				IconName.clipboard,
 				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openPublishCollectionModal,
-				tText('collection/views/collection-detail___delen'),
-				'plus',
+				isPublic ? tText('Maak privé') : tText('Publiceer'),
+				isPublic ? IconName.unlock3 : IconName.lock,
 				permissions?.canPublishCollections || false
+			),
+			...createDropdownMenuItem(
+				CollectionAction.share,
+				tText('Deel deze collectie'),
+				IconName.userGroup,
+				true
 			),
 			...createDropdownMenuItem(
 				CollectionAction.toggleBookmark,
 				bookmarkViewPlayCounts.isBookmarked
 					? tText('collection/views/collection-detail___verwijder-bladwijzer')
 					: tText('collection/views/collection-detail___maak-bladwijzer'),
-				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark',
+				bookmarkViewPlayCounts.isBookmarked ? IconName.bookmarkFilled : IconName.bookmark,
 				!isOwner && !isContributor
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openShareThroughEmail,
 				tText('collection/views/collection-detail___deel'),
-				'share-2',
+				IconName.share2,
 				!!collection && collection.is_public
 			),
 			...createDropdownMenuItem(
 				CollectionAction.addToBundle,
 				tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
-				'plus',
+				IconName.plus,
 				!!permissions?.canCreateBundles &&
 					(isOwner || isEditContributor || isCollectionAdmin)
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openQuickLane,
 				tText('collection/views/collection-detail___delen-met-leerlingen'),
-				'link-2',
+				IconName.link2,
 				!!permissions?.canCreateQuickLane &&
 					(isOwner || isEditContributor || isCollectionAdmin)
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openAutoplayCollectionModal,
 				tText('collection/views/collection-detail___speel-de-collectie-af'),
-				'play',
+				IconName.play,
 				permissions?.canAutoplayCollection || false
 			),
 			...createDropdownMenuItem(
 				CollectionAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
-				'copy',
+				IconName.copy,
 				permissions?.canCreateCollections || false
 			),
 			...createDropdownMenuItem(
@@ -1319,6 +1331,36 @@ const CollectionDetail: FunctionComponent<
 							}}
 						/>
 					</>
+				)}
+
+				{collection && isMobileWidth() && (
+					<ShareModal
+						title={tText("Deel deze collectie met collega's")}
+						isOpen={isShareModalOpen}
+						onClose={() => setIsShareModalOpen(false)}
+						contributors={transformContributorsToSimpleContributors(
+							{
+								...collection?.profile?.user,
+								profile: collection?.profile,
+							} as Avo.User.User,
+							(collection?.contributors || []) as Avo.Collection.Contributor[]
+						)}
+						onDeleteContributor={(info) =>
+							onDeleteContributor(info, collectionId, fetchContributors)
+						}
+						onEditContributorRights={(user, newRights) =>
+							onEditContributor(
+								user,
+								newRights,
+								collectionId,
+								fetchContributors,
+								checkPermissionsAndGetCollection
+							)
+						}
+						onAddContributor={(info) =>
+							onAddContributor(info, collectionId, fetchContributors)
+						}
+					/>
 				)}
 			</>
 		);

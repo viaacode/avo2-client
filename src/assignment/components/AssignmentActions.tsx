@@ -9,14 +9,14 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FunctionComponent, useMemo, useState } from 'react';
 
 import { APP_PATH } from '../../constants';
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { isMobileWidth } from '../../shared/helpers';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AssignmentService } from '../assignment.service';
 import {
 	onAddNewContributor,
 	onDeleteContributor,
@@ -28,10 +28,16 @@ import DuplicateAssignmentButton, {
 	DuplicateAssignmentButtonProps,
 } from './DuplicateAssignmentButton';
 
+interface ShareProps extends ShareWithPupilsProps {
+	contributors: Avo.Assignment.Contributor[];
+	onClickMobile: () => void;
+	fetchContributors: () => void;
+}
+
 interface AssignmentActionsProps {
 	preview?: Partial<ButtonProps>;
 	overflow?: Partial<ButtonProps>;
-	shareWithPupilsProps?: ShareWithPupilsProps;
+	shareWithColleaguesOrPupilsProps?: ShareProps;
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
 	refetchAssignment?: () => void;
@@ -44,28 +50,13 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	overflow,
 	duplicate,
 	remove,
-	shareWithPupilsProps,
+	shareWithColleaguesOrPupilsProps,
 	refetchAssignment = noop,
 	publish,
 	route,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
-	const [contributors, setContributors] = useState<Avo.Assignment.Contributor[]>();
-	const fetchContributors = useCallback(async () => {
-		if (!shareWithPupilsProps?.assignment?.id) {
-			return;
-		}
-		const response = await AssignmentService.fetchContributorsByAssignmentId(
-			shareWithPupilsProps?.assignment?.id
-		);
-
-		setContributors((response || []) as Avo.Assignment.Contributor[]);
-	}, [shareWithPupilsProps]);
-
-	useEffect(() => {
-		fetchContributors();
-	}, [fetchContributors]);
 
 	const renderPreviewButton = (buttonProps?: Partial<ButtonProps>) => (
 		<Button
@@ -100,7 +91,22 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	};
 
 	const renderShareButton = (shareDropdownProps?: Partial<ShareDropdownProps>) => {
-		if (route !== APP_PATH.ASSIGNMENT_CREATE.route && shareWithPupilsProps?.assignment?.owner) {
+		if (
+			route !== APP_PATH.ASSIGNMENT_CREATE.route &&
+			shareWithColleaguesOrPupilsProps?.assignment?.owner
+		) {
+			if (isMobileWidth()) {
+				return (
+					<Button
+						label={tText('Delen')}
+						title={tText("Deel de opdracht met leerlingen of collega's")}
+						ariaLabel={tText("Deel de opdracht met leerlingen of collega's")}
+						type="secondary"
+						{...shareDropdownProps?.buttonProps}
+						onClick={() => shareWithColleaguesOrPupilsProps.onClickMobile()}
+					/>
+				);
+			}
 			return (
 				<div
 					className={classNames(
@@ -110,26 +116,34 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				>
 					<ShareDropdown
 						contributors={transformContributorsToSimpleContributors(
-							shareWithPupilsProps?.assignment?.owner as Avo.User.User,
-							contributors as Avo.Assignment.Contributor[]
+							shareWithColleaguesOrPupilsProps?.assignment?.owner as Avo.User.User,
+							shareWithColleaguesOrPupilsProps.contributors as Avo.Assignment.Contributor[]
 						)}
 						onDeleteContributor={(info) =>
-							onDeleteContributor(info, shareWithPupilsProps, fetchContributors)
+							onDeleteContributor(
+								info,
+								shareWithColleaguesOrPupilsProps,
+								shareWithColleaguesOrPupilsProps.fetchContributors
+							)
 						}
 						onEditContributorRights={(contributorInfo, newRights) =>
 							onEditContributor(
 								contributorInfo,
 								newRights,
-								shareWithPupilsProps,
-								fetchContributors,
+								shareWithColleaguesOrPupilsProps,
+								shareWithColleaguesOrPupilsProps.fetchContributors,
 								refetchAssignment
 							)
 						}
 						onAddContributor={(info) =>
-							onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+							onAddNewContributor(
+								info,
+								shareWithColleaguesOrPupilsProps,
+								shareWithColleaguesOrPupilsProps.fetchContributors
+							)
 						}
 						{...shareDropdownProps}
-						shareWithPupilsProps={shareWithPupilsProps}
+						shareWithPupilsProps={shareWithColleaguesOrPupilsProps}
 					/>
 				</div>
 			);
@@ -172,7 +186,11 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
 
-				{publish && renderPublishButton(publish)}
+				{publish &&
+					renderPublishButton({
+						...publish,
+						className: 'c-assignment-heading__hide-on-mobile',
+					})}
 
 				<div className="c-assignment-heading__dropdown-wrapper">
 					<Dropdown
@@ -195,6 +213,12 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 							})}
 							{renderDuplicateButton({ block: true, type: 'borderless' })}
 							{renderDeleteButton({ button: { block: true, type: 'borderless' } })}
+							{renderPublishButton({
+								...publish,
+								block: true,
+								className: 'c-assignment-heading__show-on-mobile',
+								type: 'borderless',
+							})}
 							{renderShareButton({
 								dropdownProps: {
 									placement: 'bottom-end',
@@ -202,7 +226,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 								buttonProps: {
 									block: true,
 									className: 'c-assignment-heading__show-on-mobile',
-									icon: IconName.share2,
+									icon: IconName.userGroup,
 									type: 'borderless',
 								},
 							})}
@@ -220,7 +244,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				})}
 			</>
 		),
-		[tText, isOverflowDropdownOpen, contributors]
+		[tText, isOverflowDropdownOpen]
 	);
 };
 
