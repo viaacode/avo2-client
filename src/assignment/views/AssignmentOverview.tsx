@@ -579,7 +579,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 		const sharedWithNames = (assignment?.contributors || []).map((contributor) => {
 			if (!contributor.profile) {
-				return;
+				return null;
 			}
 			const fullName = contributor.profile?.user?.full_name;
 			const orgName = contributor.profile?.organisation?.name;
