@@ -711,8 +711,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 											...(isMobileWidth()
 												? {
 														label: isPublic
-															? tText('Maak privé')
-															: tText('Publiceer'),
+															? tText(
+																	'assignment/views/assignment-edit___maak-prive'
+															  )
+															: tText(
+																	'assignment/views/assignment-edit___publiceer'
+															  ),
 												  }
 												: {}),
 											ariaLabel: isPublic
@@ -886,7 +890,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			{!!original && isMobileWidth() && contributors && (
 				<ShareModal
-					title={tText("Deel deze opdracht met collega's")}
+					title={tText(
+						'assignment/views/assignment-edit___deel-deze-opdracht-met-collegas'
+					)}
 					isOpen={isShareModalOpen}
 					onClose={() => setIsShareModalOpen(false)}
 					contributors={transformContributorsToSimpleContributors(

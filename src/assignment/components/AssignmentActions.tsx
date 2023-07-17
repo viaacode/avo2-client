@@ -98,9 +98,13 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			if (isMobileWidth()) {
 				return (
 					<Button
-						label={tText('Delen')}
-						title={tText("Deel de opdracht met leerlingen of collega's")}
-						ariaLabel={tText("Deel de opdracht met leerlingen of collega's")}
+						label={tText('assignment/components/assignment-actions___delen')}
+						title={tText(
+							'assignment/components/assignment-actions___deel-de-opdracht-met-leerlingen-of-collegas'
+						)}
+						ariaLabel={tText(
+							'assignment/components/assignment-actions___deel-de-opdracht-met-leerlingen-of-collegas'
+						)}
 						type="secondary"
 						{...shareDropdownProps?.buttonProps}
 						onClick={() => shareWithColleaguesOrPupilsProps.onClickMobile()}

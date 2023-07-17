@@ -42,7 +42,9 @@ const CommonMetadata: FC<CommonMetadataProps> = ({
 					{isEducationLevelEnabled && (
 						<LomInfoField
 							id={id}
-							label={tText('Onderwijs niveaus')}
+							label={tText(
+								'shared/components/common-meta-data/common-meta-data___onderwijs-niveaus'
+							)}
 							lomLabels={groupedLomsLabels.educationLevel}
 							searchFilterType={SearchFilter.educationLevel}
 							renderSearchLink={renderSearchLink}
@@ -52,7 +54,9 @@ const CommonMetadata: FC<CommonMetadataProps> = ({
 					{isEducationDegreeEnabled && (
 						<LomInfoField
 							id={id}
-							label={tText('Onderwijsgraad')}
+							label={tText(
+								'shared/components/common-meta-data/common-meta-data___onderwijsgraad'
+							)}
 							lomLabels={groupedLomsLabels.educationDegree}
 							searchFilterType={SearchFilter.educationDegree}
 							renderSearchLink={renderSearchLink}
@@ -62,7 +66,9 @@ const CommonMetadata: FC<CommonMetadataProps> = ({
 					{isSubjectEnabled && (
 						<LomInfoField
 							id={id}
-							label={tText('Vakken')}
+							label={tText(
+								'shared/components/common-meta-data/common-meta-data___vakken'
+							)}
 							lomLabels={groupedLomsLabels.subject}
 							searchFilterType={SearchFilter.subject}
 							renderSearchLink={renderSearchLink}
@@ -72,7 +78,9 @@ const CommonMetadata: FC<CommonMetadataProps> = ({
 					{isThemeEnabled && (
 						<LomInfoField
 							id={id}
-							label={tText("Thema's")}
+							label={tText(
+								'shared/components/common-meta-data/common-meta-data___themas'
+							)}
 							lomLabels={groupedLomsLabels.theme}
 							searchFilterType={SearchFilter.thema}
 							renderSearchLink={renderSearchLink}
@@ -84,13 +92,21 @@ const CommonMetadata: FC<CommonMetadataProps> = ({
 				<>
 					<Column size="3-3">
 						<Spacer margin="top-large">
-							<p className="u-text-bold">{tText('Aangemaakt op')}</p>
+							<p className="u-text-bold">
+								{tText(
+									'shared/components/common-meta-data/common-meta-data___aangemaakt-op'
+								)}
+							</p>
 							<p className="c-body-1">{formatDate(created_at)}</p>
 						</Spacer>
 					</Column>
 					<Column size="3-3">
 						<Spacer margin="top-large">
-							<p className="u-text-bold">{tText('Laatst aangepast op')}</p>
+							<p className="u-text-bold">
+								{tText(
+									'shared/components/common-meta-data/common-meta-data___laatst-aangepast-op'
+								)}
+							</p>
 							<p className="c-body-1">{formatDate(updated_at)}</p>
 						</Spacer>
 					</Column>

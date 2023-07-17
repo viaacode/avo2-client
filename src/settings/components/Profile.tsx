@@ -264,7 +264,7 @@ const Profile: FunctionComponent<
 			filledIn = false;
 		}
 		if ((permissions.THEME.REQUIRED || isCompleteProfileStep) && !groupedLoms.theme?.length) {
-			errors.push(tText("Thema's zijn verplicht."));
+			errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
@@ -481,10 +481,14 @@ const Profile: FunctionComponent<
 								loms={selectedLoms || []}
 								onChange={(newLoms) => setSelectedLoms(newLoms)}
 								educationLevelsPlaceholder={tText(
-									'Selecteer een of meerdere onderwijsniveaus ...'
+									'settings/components/profile___selecteer-een-of-meerdere-onderwijsniveaus'
 								)}
-								subjectsPlaceholder={tText('Selecteer de vakken die je geeft ...')}
-								themesPlaceholder={tText("Selecteer je thema's...")}
+								subjectsPlaceholder={tText(
+									'settings/components/profile___selecteer-de-vakken-die-je-geeft'
+								)}
+								themesPlaceholder={tText(
+									'settings/components/profile___selecteer-je-themas'
+								)}
 							/>
 							{renderEducationOrganisationsField(true, true)}
 						</Spacer>
@@ -717,9 +721,11 @@ const Profile: FunctionComponent<
 												loms={selectedLoms || []}
 												onChange={(newLoms) => setSelectedLoms(newLoms)}
 												subjectsPlaceholder={tText(
-													'Selecteer de vakken die je geeft ...'
+													'settings/components/profile___selecteer-de-vakken-die-je-geeft'
 												)}
-												themesPlaceholder={tText("Selecteer je thema's...")}
+												themesPlaceholder={tText(
+													'settings/components/profile___selecteer-je-themas'
+												)}
 												showEducation={false}
 											/>
 										</>

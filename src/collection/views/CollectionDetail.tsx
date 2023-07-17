@@ -1005,13 +1005,15 @@ const CollectionDetail: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openPublishCollectionModal,
-				isPublic ? tText('Maak privé') : tText('Publiceer'),
+				isPublic
+					? tText('collection/views/collection-detail___maak-prive')
+					: tText('collection/views/collection-detail___publiceer'),
 				isPublic ? IconName.unlock3 : IconName.lock,
 				permissions?.canPublishCollections || false
 			),
 			...createDropdownMenuItem(
 				CollectionAction.share,
-				tText('Deel deze collectie'),
+				tText('collection/views/collection-detail___deel-deze-collectie'),
 				IconName.userGroup,
 				true
 			),
@@ -1335,7 +1337,9 @@ const CollectionDetail: FunctionComponent<
 
 				{collection && isMobileWidth() && (
 					<ShareModal
-						title={tText("Deel deze collectie met collega's")}
+						title={tText(
+							'collection/views/collection-detail___deel-deze-collectie-met-collegas'
+						)}
 						isOpen={isShareModalOpen}
 						onClose={() => setIsShareModalOpen(false)}
 						contributors={transformContributorsToSimpleContributors(

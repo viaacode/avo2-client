@@ -624,7 +624,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
 				AssignmentAction.editAssignment,
-				tText('Bewerken'),
+				tText('assignment/views/assignment-detail___bewerken'),
 				IconName.edit2,
 				permissions.canEditAssignments || isOwner || false
 			),
@@ -642,13 +642,15 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.publish,
-				isPublic ? tText('Maak privé') : tText('Publiceer'),
+				isPublic
+					? tText('assignment/views/assignment-detail___maak-prive')
+					: tText('assignment/views/assignment-detail___publiceer'),
 				isPublic ? IconName.unlock3 : IconName.lock,
 				permissions.canPublishAssignments || false
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.share,
-				tText('Deel opdracht'),
+				tText('assignment/views/assignment-detail___deel-opdracht'),
 				IconName.userGroup,
 				isOwner || isEditContributor || permissions.canEditAssignments || false
 			),
@@ -894,7 +896,9 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 
 			{assignment && isMobileWidth() && (
 				<ShareModal
-					title={tText("Deel deze opdracht met collega's")}
+					title={tText(
+						'assignment/views/assignment-detail___deel-deze-opdracht-met-collegas'
+					)}
 					isOpen={isShareModalOpen}
 					onClose={() => setIsShareModalOpen(false)}
 					contributors={transformContributorsToSimpleContributors(

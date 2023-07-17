@@ -33,8 +33,10 @@ export const findRightByValue = (right: ContributorInfoRights): ShareRightsType 
 
 export function getContributorRightLabels() {
 	return {
-		CONTRIBUTOR: tText('Bijdrager'),
-		VIEWER: tText('Bekijker'),
-		OWNER: tText('Eigenaar'),
+		CONTRIBUTOR: tText(
+			'shared/components/share-with-colleagues/share-with-colleagues___bijdrager'
+		),
+		VIEWER: tText('shared/components/share-with-colleagues/share-with-colleagues___bekijker'),
+		OWNER: tText('shared/components/share-with-colleagues/share-with-colleagues___eigenaar'),
 	};
 }

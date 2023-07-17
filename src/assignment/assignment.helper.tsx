@@ -149,7 +149,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 			validateLoms(assignment?.loms, LomType.educationDegree),
 	},
 	{
-		error: tText("De opdracht heeft geen thema's"),
+		error: tText('assignment/assignment___de-opdracht-heeft-geen-themas'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			validateLoms(assignment?.loms, LomType.theme),
 	},

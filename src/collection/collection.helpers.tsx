@@ -99,8 +99,8 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collec
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
-				? tText("De collectie heeft geen thema's.")
-				: tText("De bundel heeft geen thema's."),
+				? tText('collection/collection___de-collectie-heeft-geen-themas')
+				: tText('collection/collection___de-bundel-heeft-geen-themas'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) =>
 			!!collection.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.theme),
 	},

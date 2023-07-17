@@ -97,7 +97,10 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	return (
 		<Spacer margin="bottom">
 			{showEducation && (
-				<FormGroup label={tText('Onderwijs')} labelFor="educationId">
+				<FormGroup
+					label={tText('shared/components/lom-fields-input/lom-fields-input___onderwijs')}
+					labelFor="educationId"
+				>
 					<TagsInput
 						isLoading={isEducationLevelsLoading}
 						options={getEducationLevelOptions(allEducationLevels || [])}

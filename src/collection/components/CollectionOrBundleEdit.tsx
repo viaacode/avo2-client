@@ -1302,11 +1302,18 @@ const CollectionOrBundleEdit: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				'openPublishModal',
-				isPublic ? tText('Maak privé') : tText('Publiceer'),
+				isPublic
+					? tText('collection/components/collection-or-bundle-edit___maak-prive')
+					: tText('collection/components/collection-or-bundle-edit___publiceer'),
 				isPublic ? IconName.unlock3 : IconName.lock,
 				true
 			),
-			...createDropdownMenuItem('share', tText('Delen'), IconName.userGroup, isCollection),
+			...createDropdownMenuItem(
+				'share',
+				tText('collection/components/collection-or-bundle-edit___delen'),
+				IconName.userGroup,
+				isCollection
+			),
 			...createDropdownMenuItem(
 				'redirectToDetail',
 				tText('collection/components/collection-or-bundle-edit___bekijk'),
@@ -1321,7 +1328,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 				IconName.folder,
 				true
 			),
-			...createDropdownMenuItem('delete', tText('Verwijderen'), IconName.delete, true),
+			...createDropdownMenuItem(
+				'delete',
+				tText('collection/components/collection-or-bundle-edit___verwijderen'),
+				IconName.delete,
+				true
+			),
 		];
 		return (
 			<ButtonToolbar>
@@ -1417,7 +1429,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 				{collectionState.currentCollection && isMobileWidth() && (
 					<ShareModal
-						title={tText("Deel deze collectie met collega's")}
+						title={tText(
+							'collection/components/collection-or-bundle-edit___deel-deze-collectie-met-collegas'
+						)}
 						isOpen={isShareModalOpen}
 						onClose={() => setIsShareModalOpen(false)}
 						contributors={transformContributorsToSimpleContributors(
