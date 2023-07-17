@@ -10,12 +10,12 @@ import {
 	IconName,
 	Select,
 	Spacer,
+	Spinner,
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
-import { compact, get, map } from 'lodash-es';
+import { compact } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 
@@ -25,25 +25,23 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import { SettingsService } from '../../../settings/settings.service';
 import { FileUpload } from '../../../shared/components';
 import LomFieldsInput from '../../../shared/components/LomFieldsInput/LomFieldsInput';
-import { buildLink, CustomError, getAvatarProps, navigate } from '../../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { UserProps } from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { useGetUserById } from '../hooks/get-user-by-id';
 import { USER_PATH } from '../user.const';
 
 type UserEditPageProps = DefaultSecureRouteProps<{ id: string }>;
 
-const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user }) => {
-	// by using user you are redirected to the logged in user 's edit page
-	// TODO: use hook that gets user that is selected on overview page
-
+const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => {
 	const { tText } = useTranslation();
 
 	// Hooks
-	const [storedProfile, setStoredProfile] = useState<Avo.User.CommonUser | null>(null);
+	const { data: profile, isLoading } = useGetUserById(match.params.id);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [profileErrors, setProfileErrors] = useState<
 		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
@@ -57,44 +55,23 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 	const [bio, setBio] = useState<string | undefined>();
 	const [alias, setAlias] = useState<string | undefined>();
 	const [companyId, setCompanyId] = useState<string | undefined>();
-	const [loms, setLoms] = useState<LomFieldSchema[]>([]);
-
-	const onSave = async (newProfileInfo: Partial<Avo.User.Profile>) => {
-		await SettingsService.updateProfileInfo(
-			newProfileInfo as unknown as Avo.User.UpdateProfileValues
-		);
-
-		redirectToClientPage(buildLink(USER_PATH.USER_DETAIL, { id: match.params.id }), history);
-	};
-
-	const initializeForm = () => {
-		setFirstName(user.first_name || '');
-		setLastName(user.last_name || '');
-		setAvatar(getAvatarProps(user.profile).image);
-		setTitle(user.profile?.title || '');
-		setBio(user.profile?.bio || '');
-		setAlias(user.profile?.alias || '');
-		setCompanyId(user.profile?.company_id || '');
-		// not every lom is shown on edit page?
-		setLoms(compact(map(user.profile?.loms, 'lom')) || []);
-
-		setStoredProfile({
-			...user.profile,
-			profileId: user.profile?.id || '',
-			avatar: user.profile?.avatar || undefined,
-			stamboek: user.profile?.stamboek || undefined,
-			organisation: user.profile?.organisation || undefined,
-			loms: user.profile?.loms || [],
-			alias: user.profile?.alias || undefined,
-			title: user.profile?.title || undefined,
-			bio: user.profile?.bio || undefined,
-		});
-	};
+	const [loms, setLoms] = useState<Avo.Lom.LomField[]>([]);
 
 	useEffect(() => {
-		// TODO: await useGetUserById
-		initializeForm();
-	}, []);
+		if (profile) {
+			setFirstName(profile.firstName || '');
+			setLastName(profile.lastName || '');
+			setAvatar(profile.avatar);
+			setTitle(profile.title || '');
+			setBio(profile.bio || '');
+			setAlias(profile.alias || '');
+			setCompanyId(profile.organisation?.or_id || '');
+
+			// Only educationDegrees are shown and education levels that don't have any degrees
+			// To force users to choose the most specific option available
+			setLoms(compact(profile?.loms?.map((lom) => lom.lom)) || []);
+		}
+	}, [profile]);
 
 	const navigateBack = () => {
 		navigate(history, USER_PATH.USER_DETAIL, {
@@ -103,7 +80,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 	};
 
 	const handleSave = async () => {
-		if (!storedProfile) {
+		if (!profile) {
 			return;
 		}
 
@@ -116,17 +93,19 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 				alias,
 				title,
 				bio,
-				userId: user.uid,
+				userId: profile.userId,
 				avatar: avatar || null,
 				loms: loms.map((lom) => ({
 					lom_id: lom.id,
-					profile_id: user.profile?.id,
+					profile_id: profile?.profileId,
 				})),
 				company_id: companyId || null,
 			};
 
 			try {
-				onSave(newProfileInfo);
+				await SettingsService.updateProfileInfo(
+					newProfileInfo as unknown as Avo.User.UpdateProfileValues
+				);
 			} catch (err) {
 				setIsSaving(false);
 
@@ -145,11 +124,16 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 				throw err;
 			}
 
+			redirectToClientPage(
+				buildLink(USER_PATH.USER_DETAIL, { id: match.params.id }),
+				history
+			);
+
 			ToastService.success(tText('admin/users/views/user-edit___de-gebruiker-is-aangepast'));
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to save user', err, {
-					storedProfile,
+					profile,
 				})
 			);
 
@@ -160,14 +144,14 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 		setIsSaving(false);
 	};
 
-	const renderUserDetail = () => {
-		const companyLogo = get(
-			(companies || []).find((company) => company.or_id === companyId),
-			'logo_url',
-			null
-		);
+	const renderUserEdit = () => {
+		if (isLoading) {
+			return <Spinner size="large" />;
+		}
 
-		if (storedProfile) {
+		const companyLogo = profile?.organisation?.logo_url || null;
+
+		if (profile) {
 			return (
 				<Container mode="horizontal">
 					<Box backgroundColor="gray">
@@ -256,7 +240,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 		}
 	};
 
-	const renderUserDetailPage = () => {
+	const renderUserEditPage = () => {
 		return (
 			<AdminLayout
 				size="large"
@@ -278,7 +262,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 					</ButtonToolbar>
 				</AdminLayoutTopBarRight>
 
-				<AdminLayoutBody>{renderUserDetail()}</AdminLayoutBody>
+				<AdminLayoutBody>{renderUserEdit()}</AdminLayoutBody>
 			</AdminLayout>
 		);
 	};
@@ -288,7 +272,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						user?.full_name,
+						profile?.fullName,
 						tText('admin/users/views/user-detail___item-detail-pagina-titel')
 					)}
 				</title>
@@ -300,7 +284,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match, user 
 				/>
 			</MetaTags>
 
-			{renderUserDetailPage()}
+			{renderUserEditPage()}
 		</>
 	);
 };

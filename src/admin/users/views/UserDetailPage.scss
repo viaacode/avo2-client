@@ -1,11 +1,27 @@
 @import "../../../styles/settings/colors";
 
-.c-admin .c-admin__content .c-table_detail-page th {
-	width: 25rem;
-	text-align: right;
-	padding-right: 1rem;
+.c-admin .c-admin__content .c-table_detail-page {
+	th {
+		width: 27rem;
+		text-align: right;
+		padding-right: 1rem;
+	}
+
+	tr:nth-child(even) {
+		background-color: $color-gray-25;
+	}
 }
 
-.c-admin .c-admin__content .c-table_detail-page tr:nth-child(even) {
-	background-color: $color-gray-25;
+.c-user_detail-page {
+	.c-avatar {
+		width: 10rem;
+		height: 10rem;
+
+		> img {
+			object-fit: contain;
+			width: auto;
+			height: auto;
+			border-radius: 0;
+		}
+	}
 }
