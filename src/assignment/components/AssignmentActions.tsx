@@ -8,12 +8,13 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
-import { noop } from 'lodash-es';
+import { noop, omit } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { APP_PATH } from '../../constants';
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { isMobileWidth } from '../../shared/helpers';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentService } from '../assignment.service';
@@ -95,7 +96,12 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 
 	const renderPublishButton = (buttonProps?: Partial<ButtonProps>) => {
 		if (route !== APP_PATH.ASSIGNMENT_CREATE.route) {
-			return <Button type="secondary" {...buttonProps} />;
+			return (
+				<Button
+					type="secondary"
+					{...(isMobileWidth() ? buttonProps : omit(buttonProps, ['label']))}
+				/>
+			);
 		}
 	};
 
@@ -172,7 +178,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
 
-				{renderPublishButton(publish)}
+				{renderPublishButton({
+					...publish,
+					className: 'c-assignment-heading__hide-on-mobile',
+				})}
 
 				<div className="c-assignment-heading__dropdown-wrapper">
 					<Dropdown
@@ -195,6 +204,13 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 							})}
 							{renderDuplicateButton({ block: true, type: 'borderless' })}
 							{renderDeleteButton({ button: { block: true, type: 'borderless' } })}
+							{renderPublishButton({
+								...publish,
+								block: true,
+								className: 'c-assignment-heading__show-on-mobile',
+								icon: IconName.userGroup,
+								type: 'borderless',
+							})}
 							{renderShareButton({
 								dropdownProps: {
 									placement: 'bottom-end',

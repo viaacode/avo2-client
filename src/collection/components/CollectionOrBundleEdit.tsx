@@ -351,6 +351,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 		currentCollection: null,
 		initialCollection: null,
 	});
+	const isPublic = collectionState.currentCollection?.is_public || false;
+
 	const isContributor = !!(collectionState.currentCollection?.contributors || []).find(
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
@@ -1307,13 +1309,13 @@ const CollectionOrBundleEdit: FunctionComponent<
 			...createDropdownMenuItem(
 				'save',
 				tText('collection/views/collection-edit___opslaan'),
-				'download',
+				IconName.download,
 				true
 			),
 			...createDropdownMenuItem(
 				'openPublishModal',
-				tText('collection/components/collection-or-bundle-edit___delen'),
-				'share-2',
+				isPublic ? tText('Maak privé') : tText('Publiceer'),
+				isPublic ? IconName.unlock3 : IconName.lock,
 				true
 			),
 			...createDropdownMenuItem(

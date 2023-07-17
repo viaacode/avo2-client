@@ -653,6 +653,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 									: tText(
 											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
 									  ),
+								label: isPublic ? tText('Maak privé') : tText('Publiceer'),
 								ariaLabel: isPublic
 									? tText(
 											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
