@@ -34,9 +34,11 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { InActivityWarningModal } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
+import { buildLink, CustomError } from '../../shared/helpers';
 import { getContributorType } from '../../shared/helpers/contributors';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -75,8 +77,6 @@ import AssignmentResponses from './AssignmentResponses';
 
 import './AssignmentEdit.scss';
 import './AssignmentPage.scss';
-import { buildLink, CustomError } from '../../shared/helpers';
-import { InActivityWarningModal } from '../../shared/components';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -103,14 +103,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
+	const [permissions, setPermissions] = useState<
+		Partial<{
+			canEditAllAssignments: boolean;
+			canPublish: boolean;
+		}>
+	>({});
 
 	// Computed
 	const assignmentId = match.params.id;
 	const isPublic = assignment?.is_public || false;
-	const canEditAllAssignments = PermissionService.hasPerm(
-		user,
-		PermissionName.EDIT_ANY_ASSIGNMENTS
-	);
 
 	const {
 		control,
@@ -217,9 +219,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				const isOwner = tempAssignment.owner_profile_id === user.profile.id;
 
 				if (
-					(!contributorInfo && !isOwner && !canEditAllAssignments) ||
+					(!contributorInfo && !isOwner && !permissions.canEditAllAssignments) ||
 					(contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer &&
-						!canEditAllAssignments)
+						!permissions.canEditAllAssignments)
 				) {
 					setAssignmentError({
 						message: tHtml(
@@ -235,6 +237,33 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
 
+			const rawPermissions = await Promise.all([
+				PermissionService.hasPermissions(
+					[
+						{
+							name: PermissionName.EDIT_ANY_ASSIGNMENTS,
+						},
+					],
+					user
+				),
+				PermissionService.hasPermissions(
+					[
+						{
+							name: PermissionName.PUBLISH_OWN_ASSIGNMENTS,
+							obj: assignmentId,
+						},
+						{
+							name: PermissionName.PUBLISH_ANY_ASSIGNMENTS,
+						},
+					],
+					user
+				),
+			]);
+
+			setPermissions({
+				canEditAllAssignments: rawPermissions[0],
+				canPublish: rawPermissions[1],
+			});
 			setOriginal(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
@@ -645,24 +674,28 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					title={renderTitle}
 					actions={
 						<AssignmentActions
-							publish={{
-								title: isPublic
-									? tText(
-											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
-									  )
-									: tText(
-											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
-									  ),
-								ariaLabel: isPublic
-									? tText(
-											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
-									  )
-									: tText(
-											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
-									  ),
-								icon: isPublic ? IconName.unlock3 : IconName.lock,
-								onClick: () => setIsPublishModalOpen(true),
-							}}
+							publish={
+								permissions.canPublish
+									? {
+											title: isPublic
+												? tText(
+														'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+												  )
+												: tText(
+														'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+												  ),
+											ariaLabel: isPublic
+												? tText(
+														'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+												  )
+												: tText(
+														'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+												  ),
+											icon: isPublic ? IconName.unlock3 : IconName.lock,
+											onClick: () => setIsPublishModalOpen(true),
+									  }
+									: undefined
+							}
 							duplicate={{
 								assignment: original || undefined,
 								onClick: (_e, duplicated) => {
@@ -764,7 +797,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			assignment?.id &&
 			!isUserAssignmentOwner(user, assignment) &&
 			!isUserAssignmentContributor(user, assignment) &&
-			!canEditAllAssignments
+			!permissions.canEditAllAssignments
 		) {
 			return (
 				<ErrorNoAccess

@@ -172,7 +172,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 					className: 'c-assignment-heading__hide-on-mobile',
 				})}
 
-				{renderPublishButton(publish)}
+				{publish && renderPublishButton(publish)}
 
 				<div className="c-assignment-heading__dropdown-wrapper">
 					<Dropdown
