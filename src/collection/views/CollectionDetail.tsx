@@ -1027,6 +1027,12 @@ const CollectionDetail: FunctionComponent<
 				permissions?.canPublishCollections || false
 			),
 			...createDropdownMenuItem(
+				CollectionAction.share,
+				tText('Deel deze collectie'),
+				IconName.userGroup,
+				true
+			),
+			...createDropdownMenuItem(
 				CollectionAction.toggleBookmark,
 				bookmarkViewPlayCounts.isBookmarked
 					? tText('collection/views/collection-detail___verwijder-bladwijzer')
@@ -1077,12 +1083,6 @@ const CollectionDetail: FunctionComponent<
 				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				undefined,
 				!permissions?.canDeleteCollections && isContributor
-			),
-			...createDropdownMenuItem(
-				CollectionAction.share,
-				tText('Deel deze collectie'),
-				IconName.userGroup,
-				true
 			),
 		];
 		return (

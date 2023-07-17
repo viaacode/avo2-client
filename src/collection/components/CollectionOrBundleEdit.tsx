@@ -1325,6 +1325,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				isPublic ? IconName.unlock3 : IconName.lock,
 				true
 			),
+			...createDropdownMenuItem('share', tText('Delen'), IconName.userGroup, isCollection),
 			...createDropdownMenuItem(
 				'redirectToDetail',
 				tText('collection/components/collection-or-bundle-edit___bekijk'),
@@ -1340,8 +1341,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 				true
 			),
 			...createDropdownMenuItem('delete', tText('Verwijderen'), IconName.delete, true),
-
-			...createDropdownMenuItem('share', tText('Delen'), IconName.userGroup, isCollection),
 		];
 		return (
 			<ButtonToolbar>

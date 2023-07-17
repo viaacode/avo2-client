@@ -707,7 +707,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								},
 							}}
 							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
-							share={shareProps}
+							shareWithColleaguesOrPupilsProps={shareProps}
 							remove={{
 								assignment: original || undefined,
 								modal: {

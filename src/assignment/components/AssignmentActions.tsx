@@ -37,7 +37,7 @@ interface ShareProps extends ShareWithPupilsProps {
 interface AssignmentActionsProps {
 	preview?: Partial<ButtonProps>;
 	overflow?: Partial<ButtonProps>;
-	share?: ShareProps;
+	shareWithColleaguesOrPupilsProps?: ShareProps;
 	duplicate?: Partial<DuplicateAssignmentButtonProps>;
 	remove?: Partial<DeleteAssignmentButtonProps>;
 	refetchAssignment?: () => void;
@@ -50,7 +50,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	overflow,
 	duplicate,
 	remove,
-	share,
+	shareWithColleaguesOrPupilsProps,
 	refetchAssignment = noop,
 	publish,
 	route,
@@ -91,7 +91,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	};
 
 	const renderShareButton = (shareDropdownProps?: Partial<ShareDropdownProps>) => {
-		if (route !== APP_PATH.ASSIGNMENT_CREATE.route && share?.assignment?.owner) {
+		if (
+			route !== APP_PATH.ASSIGNMENT_CREATE.route &&
+			shareWithColleaguesOrPupilsProps?.assignment?.owner
+		) {
 			if (isMobileWidth()) {
 				return (
 					<Button
@@ -100,7 +103,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 						ariaLabel={tText("Deel de opdracht met leerlingen of collega's")}
 						type="secondary"
 						{...shareDropdownProps?.buttonProps}
-						onClick={() => share.onClickMobile()}
+						onClick={() => shareWithColleaguesOrPupilsProps.onClickMobile()}
 					/>
 				);
 			}
@@ -113,26 +116,34 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				>
 					<ShareDropdown
 						contributors={transformContributorsToSimpleContributors(
-							share?.assignment?.owner as Avo.User.User,
-							share.contributors as Avo.Assignment.Contributor[]
+							shareWithColleaguesOrPupilsProps?.assignment?.owner as Avo.User.User,
+							shareWithColleaguesOrPupilsProps.contributors as Avo.Assignment.Contributor[]
 						)}
 						onDeleteContributor={(info) =>
-							onDeleteContributor(info, share, share.fetchContributors)
+							onDeleteContributor(
+								info,
+								shareWithColleaguesOrPupilsProps,
+								shareWithColleaguesOrPupilsProps.fetchContributors
+							)
 						}
 						onEditContributorRights={(contributorInfo, newRights) =>
 							onEditContributor(
 								contributorInfo,
 								newRights,
-								share,
-								share.fetchContributors,
+								shareWithColleaguesOrPupilsProps,
+								shareWithColleaguesOrPupilsProps.fetchContributors,
 								refetchAssignment
 							)
 						}
 						onAddContributor={(info) =>
-							onAddNewContributor(info, share, share.fetchContributors)
+							onAddNewContributor(
+								info,
+								shareWithColleaguesOrPupilsProps,
+								shareWithColleaguesOrPupilsProps.fetchContributors
+							)
 						}
 						{...shareDropdownProps}
-						shareWithPupilsProps={share}
+						shareWithPupilsProps={shareWithColleaguesOrPupilsProps}
 					/>
 				</div>
 			);
