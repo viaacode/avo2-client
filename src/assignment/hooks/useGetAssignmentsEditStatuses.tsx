@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { AssignmentService } from '../assignment.service';
 
 export const useGetAssignmentsEditStatuses = (
@@ -15,7 +16,7 @@ export const useGetAssignmentsEditStatuses = (
 	}
 ) => {
 	return useQuery(
-		['GET_ASSIGNMENTS_EDIT_STATUSES', assignmentsIds],
+		[QUERY_KEYS.GET_ASSIGNMENTS_EDIT_STATUSES, assignmentsIds],
 		() => {
 			return AssignmentService.getAssignmentsEditStatuses(assignmentsIds);
 		},

@@ -1,3 +1,4 @@
+import { useGetProfileById } from '@meemoo/admin-core-ui';
 import {
 	Box,
 	Button,
@@ -32,7 +33,6 @@ import { useCompaniesWithUsers } from '../../../shared/hooks';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { useGetUserById } from '../hooks/get-user-by-id';
 import { USER_PATH } from '../user.const';
 
 type UserEditPageProps = DefaultSecureRouteProps<{ id: string }>;
@@ -41,7 +41,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 	const { tText } = useTranslation();
 
 	// Hooks
-	const { data: profile, isLoading } = useGetUserById(match.params.id);
+	const { data: profile, isLoading } = useGetProfileById(match.params.id);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [profileErrors, setProfileErrors] = useState<
 		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
@@ -69,7 +69,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 
 			// Only educationDegrees are shown and education levels that don't have any degrees
 			// To force users to choose the most specific option available
-			setLoms(compact(profile?.loms?.map((lom) => lom.lom)) || []);
+			setLoms(compact(profile?.loms?.map((lom: Avo.Lom.Lom) => lom.lom)) || []);
 		}
 	}, [profile]);
 
