@@ -1057,13 +1057,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 			if ((err as CustomError).innerException?.additionalInfo.statusCode === 409) {
 				await releaseCollectionEditStatus();
 				ToastService.danger(
-					tText(
+					tHtml(
 						'collection/components/collection-or-bundle-edit___iemand-is-deze-collectie-reeds-aan-het-bewerken'
 					)
 				);
+			} else if ((err as CustomError).innerException?.additionalInfo.statusCode === 401) {
+				return; // User has no rights to edit the collection
 			} else {
 				ToastService.danger(
-					tText(
+					tHtml(
 						'collection/components/collection-or-bundle-edit___verbinding-met-bewerk-server-verloren'
 					)
 				);
@@ -1077,7 +1079,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		} catch (err) {
 			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
 				ToastService.danger(
-					tText(
+					tHtml(
 						'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-updaten-van-de-collectie-bewerk-status'
 					)
 				);
@@ -1095,7 +1097,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			await updateCollection(true);
 
 			ToastService.success(
-				tText(
+				tHtml(
 					'collection/components/collection-or-bundle-edit___je-was-meer-dan-15-minuten-inactief-je-aanpassingen-zijn-opgeslagen'
 				),
 				{
@@ -1104,7 +1106,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 			);
 		} catch (err) {
 			ToastService.danger(
-				tText(
+				tHtml(
 					'collection/components/collection-or-bundle-edit___je-was-meer-dan-15-minuten-inactief-het-opslaan-van-je-aanpassingen-is-mislukt'
 				),
 				{

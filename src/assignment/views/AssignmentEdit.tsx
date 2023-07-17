@@ -340,25 +340,27 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.additionalInfo.statusCode === 409) {
-				ToastService.danger(
-					tText(
-						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
-					)
-				);
-			} else {
-				await releaseAssignmentEditStatus();
-				ToastService.danger(
-					tText(
-						'assignment/views/assignment-edit___verbinding-met-bewerk-server-verloren'
-					)
-				);
-			}
-
 			redirectToClientPage(
 				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
 				history
 			);
+
+			if ((err as CustomError)?.innerException?.additionalInfo.statusCode === 409) {
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
+					)
+				);
+			} else if ((err as CustomError).innerException?.additionalInfo.statusCode === 401) {
+				return; // User has no rights to edit the assignment
+			} else {
+				await releaseAssignmentEditStatus();
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-edit___verbinding-met-bewerk-server-verloren'
+					)
+				);
+			}
 		}
 	};
 
@@ -368,7 +370,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		} catch (err) {
 			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
 				ToastService.danger(
-					tText(
+					tHtml(
 						'assignment/views/assignment-edit___er-liep-iets-fout-met-het-updaten-van-de-opdracht-bewerk-status'
 					)
 				);
@@ -393,7 +395,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			);
 
 			ToastService.success(
-				tText(
+				tHtml(
 					'assignment/views/assignment-edit___je-was-meer-dan-15-minuten-inactief-je-aanpassingen-zijn-opgeslagen'
 				),
 				{
@@ -402,7 +404,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			);
 		} catch (err) {
 			ToastService.danger(
-				tText(
+				tHtml(
 					'assignment/views/assignment-edit___je-was-meer-dan-15-minuten-inactief-het-opslaan-van-je-aanpassingen-is-mislukt'
 				),
 				{
