@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { QUERY_KEYS } from '../constants/query-keys';
 import { LomService } from '../services/lom.service';
 
 export const useGetLomFields = (
@@ -9,7 +10,7 @@ export const useGetLomFields = (
 	} = { enabled: true }
 ) => {
 	return useQuery(
-		['GET_LOM_FIELDS', type, options],
+		[QUERY_KEYS.GET_LOM_FIELDS, type, options],
 		() => {
 			return LomService.fetchLomFields(type);
 		},
