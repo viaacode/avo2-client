@@ -196,7 +196,10 @@ const CollectionDetail: FunctionComponent<
 		refetchIntervalInBackground: true,
 	});
 
-	const isBeingEdited = editStatuses && !!editStatuses[collectionId];
+	const isBeingEdited =
+		editStatuses &&
+		!!editStatuses[collectionId] &&
+		editStatuses[collectionId]?.editingUserId !== user?.profile?.id;
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
@@ -983,9 +986,12 @@ const CollectionDetail: FunctionComponent<
 							)}
 							onClick={() => executeAction(CollectionAction.editCollection)}
 							disabled={isBeingEdited}
-							toolTipContent={tHtml(
-								'collection/views/collection-detail___deze-collectie-wordt-momenteel-bewerkt-door-een-andere-gebruiker-het-is-niet-mogelijk-met-met-meer-dan-1-gebruiker-simultaan-te-bewerken'
-							)}
+							toolTipContent={
+								isBeingEdited &&
+								tHtml(
+									'collection/views/collection-detail___deze-collectie-wordt-momenteel-bewerkt-door-een-andere-gebruiker-het-is-niet-mogelijk-met-met-meer-dan-1-gebruiker-simultaan-te-bewerken'
+								)
+							}
 						/>
 					</Spacer>
 				)}

@@ -1,3 +1,4 @@
+import type { Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 
@@ -17,7 +18,7 @@ interface SubjectsBeingEditedWarningModalProps {
 	editWarningSection2: ReactNode;
 	route: ValueOf<typeof APP_PATH>['route'];
 	confirmCallback: () => void;
-	subjects: { subjectId: string; subjectTitle: string }[];
+	subjects: Avo.Share.EditStatus[];
 }
 
 const SubjectsBeingEditedWarningModal: FunctionComponent<SubjectsBeingEditedWarningModalProps> = ({
