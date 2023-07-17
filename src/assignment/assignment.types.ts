@@ -115,4 +115,6 @@ export enum AssignmentAction {
 	openPublishCollectionModal = 'openPublishAssignmentModal',
 	toggleBookmark = 'toggleBookmark',
 	editAssignment = 'editAssignment',
+	share = 'share',
+	publish = 'publish',
 }

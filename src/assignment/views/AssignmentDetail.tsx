@@ -34,12 +34,13 @@ import {
 	HeaderOwnerAndContributors,
 	InteractiveTour,
 	ShareDropdown,
+	ShareModal,
 } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/constants';
-import { createDropdownMenuItem, CustomError, navigate } from '../../shared/helpers';
+import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
@@ -125,6 +126,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
 	const [query] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
@@ -149,6 +151,12 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 		editStatuses &&
 		!!editStatuses[assignmentId] &&
 		editStatuses[assignmentId]?.editingUserId !== user?.profile?.id;
+
+	const shareWithPupilsProps = {
+		assignment: assignment || undefined, // Needs to be saved before you can share
+		onContentLinkClicked: noop,
+		onDetailLinkClicked: noop,
+	};
 
 	const getPermissions = useCallback(
 		async (
@@ -495,6 +503,13 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			case AssignmentAction.editAssignment:
 				onEditAssignment();
 				break;
+			case AssignmentAction.share:
+				setIsShareModalOpen(true);
+				break;
+			case AssignmentAction.publish:
+				setIsPublishModalOpen(true);
+				break;
+
 			default:
 				console.warn(`An unhandled action "${item}" was executed without a binding.`);
 				return null;
@@ -508,7 +523,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			...createDropdownMenuItem(
 				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
-				'copy',
+				IconName.copy,
 				permissions.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
@@ -518,12 +533,6 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 				permissions.canDeleteAnyAssignments || isOwner || false
 			),
 		];
-
-		const shareWithPupilsProps = {
-			assignment: assignment || undefined, // Needs to be saved before you can share
-			onContentLinkClicked: noop,
-			onDetailLinkClicked: noop,
-		};
 
 		return (
 			<ButtonToolbar>
@@ -629,11 +638,67 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 		);
 	};
 
+	const renderHeaderButtonsMobile = () => {
+		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
+			...createDropdownMenuItem(
+				AssignmentAction.editAssignment,
+				tText('Bewerken'),
+				IconName.edit2,
+				permissions.canEditAssignments || isOwner || false
+			),
+			...createDropdownMenuItem(
+				AssignmentAction.duplicate,
+				tText('collection/views/collection-detail___dupliceer'),
+				IconName.copy,
+				permissions.canCreateAssignments || false
+			),
+			...createDropdownMenuItem(
+				AssignmentAction.toggleBookmark,
+				tText('assignment/views/assignment-detail___bladwijzer'),
+				IconName.bookmark,
+				!isOwner && !isContributor
+			),
+			...createDropdownMenuItem(
+				AssignmentAction.publish,
+				isPublic ? tText('Maak privé') : tText('Publiceer'),
+				isPublic ? IconName.unlock3 : IconName.lock,
+				permissions.canPublishAssignments || false
+			),
+			...createDropdownMenuItem(
+				AssignmentAction.share,
+				tText('Deel opdracht'),
+				IconName.userGroup,
+				isOwner || isEditContributor || permissions.canEditAssignments || false
+			),
+			...createDropdownMenuItem(
+				AssignmentAction.delete,
+				tText('collection/views/collection-detail___verwijder'),
+				undefined,
+				permissions.canDeleteAnyAssignments || isOwner || false
+			),
+		];
+
+		return (
+			<ButtonToolbar>
+				<MoreOptionsDropdown
+					isOpen={isOptionsMenuOpen}
+					onOpen={() => setIsOptionsMenuOpen(true)}
+					onClose={() => setIsOptionsMenuOpen(false)}
+					label={getMoreOptionsLabel()}
+					menuItems={COLLECTION_DROPDOWN_ITEMS_MOBILE}
+					onOptionClicked={executeAction}
+				/>
+			</ButtonToolbar>
+		);
+	};
+
 	const renderHeader = () => {
 		if (assignment) {
 			return (
 				<Header title={assignment.title || ''} category="assignment" showMetaData>
-					<HeaderButtons>{renderHeaderButtons()}</HeaderButtons>
+					<HeaderButtons>
+						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
+					</HeaderButtons>
 					<HeaderRow>
 						<HeaderOwnerAndContributors subject={assignment} user={user} />
 					</HeaderRow>
@@ -842,6 +907,38 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					location={location}
 					match={match}
 					user={user}
+				/>
+			)}
+
+			{assignment && isMobileWidth() && (
+				<ShareModal
+					title={tText("Deel deze opdracht met collega's")}
+					isOpen={isShareModalOpen}
+					onClose={() => setIsShareModalOpen(false)}
+					contributors={transformContributorsToSimpleContributors(
+						shareWithPupilsProps?.assignment?.owner as Avo.User.User,
+						(assignment?.contributors || []) as Avo.Assignment.Contributor[]
+					)}
+					onDeleteContributor={(contributorInfo) =>
+						onDeleteContributor(
+							contributorInfo,
+							shareWithPupilsProps,
+							fetchContributors
+						)
+					}
+					onEditContributorRights={(contributorInfo, newRights) =>
+						onEditContributor(
+							contributorInfo,
+							newRights,
+							shareWithPupilsProps,
+							fetchContributors,
+							fetchAssignment
+						)
+					}
+					onAddContributor={(info) =>
+						onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+					}
+					shareWithPupilsProps={shareWithPupilsProps}
 				/>
 			)}
 			<DeleteAssignmentModal

@@ -108,4 +108,5 @@ export enum CollectionAction {
 	editCollection = 'editCollection',
 	openQuickLane = 'openQuickLane',
 	openAutoplayCollectionModal = 'openAutoplayCollectionModal',
+	share = 'share',
 }
