@@ -1005,19 +1005,19 @@ const CollectionDetail: FunctionComponent<
 			...createDropdownMenuItem(
 				CollectionAction.editCollection,
 				tText('collection/views/collection-detail___bewerken'),
-				'edit',
+				IconName.edit,
 				permissions?.canEditCollections || false
 			),
 			...createDropdownMenuItem(
 				CollectionAction.createAssignment,
 				tText('collection/views/collection-detail___importeer-naar-nieuwe-opdracht'),
-				'clipboard',
+				IconName.clipboard,
 				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
 				CollectionAction.importToAssignment,
 				tText('collection/views/collection-detail___importeer-naar-bestaande-opdracht'),
-				'clipboard',
+				IconName.clipboard,
 				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
@@ -1031,39 +1031,39 @@ const CollectionDetail: FunctionComponent<
 				bookmarkViewPlayCounts.isBookmarked
 					? tText('collection/views/collection-detail___verwijder-bladwijzer')
 					: tText('collection/views/collection-detail___maak-bladwijzer'),
-				bookmarkViewPlayCounts.isBookmarked ? 'bookmark-filled' : 'bookmark',
+				bookmarkViewPlayCounts.isBookmarked ? IconName.bookmarkFilled : IconName.bookmark,
 				!isOwner && !isContributor
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openShareThroughEmail,
 				tText('collection/views/collection-detail___deel'),
-				'share-2',
+				IconName.share2,
 				!!collection && collection.is_public
 			),
 			...createDropdownMenuItem(
 				CollectionAction.addToBundle,
 				tText('collection/views/collection-detail___voeg-toe-aan-bundel'),
-				'plus',
+				IconName.plus,
 				!!permissions?.canCreateBundles &&
 					(isOwner || isEditContributor || isCollectionAdmin)
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openQuickLane,
 				tText('collection/views/collection-detail___delen-met-leerlingen'),
-				'link-2',
+				IconName.link2,
 				!!permissions?.canCreateQuickLane &&
 					(isOwner || isEditContributor || isCollectionAdmin)
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openAutoplayCollectionModal,
 				tText('collection/views/collection-detail___speel-de-collectie-af'),
-				'play',
+				IconName.play,
 				permissions?.canAutoplayCollection || false
 			),
 			...createDropdownMenuItem(
 				CollectionAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
-				'copy',
+				IconName.copy,
 				permissions?.canCreateCollections || false
 			),
 			...createDropdownMenuItem(

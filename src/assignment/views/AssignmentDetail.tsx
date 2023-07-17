@@ -523,7 +523,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			...createDropdownMenuItem(
 				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
-				'copy',
+				IconName.copy,
 				permissions.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
@@ -641,6 +641,12 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
+				AssignmentAction.editAssignment,
+				tText('Bewerken'),
+				IconName.edit2,
+				permissions.canEditAssignments || isOwner || false
+			),
+			...createDropdownMenuItem(
 				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
 				IconName.copy,
@@ -669,12 +675,6 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 				tText('collection/views/collection-detail___verwijder'),
 				undefined,
 				permissions.canDeleteAnyAssignments || isOwner || false
-			),
-			...createDropdownMenuItem(
-				AssignmentAction.editAssignment,
-				tText('Bewerken'),
-				IconName.edit2,
-				permissions.canEditAssignments || isOwner || false
 			),
 		];
 
