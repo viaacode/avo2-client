@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { CollectionService } from '../collection.service';
 
 export const useGetCollectionsEditStatuses = (
@@ -15,7 +16,7 @@ export const useGetCollectionsEditStatuses = (
 	}
 ) => {
 	return useQuery(
-		['GET_COLLECTIONS_EDIT_STATUSES', collectionsIds],
+		[QUERY_KEYS.GET_COLLECTIONS_EDIT_STATUSES, collectionsIds],
 		() => {
 			return CollectionService.getCollectionsEditStatuses(collectionsIds);
 		},
