@@ -30,3 +30,4 @@ export { default as EditButton } from './EditButton/EditButton';
 export { default as InActivityWarningModal } from './InActivityWarningModal/InActivityWarningModal';
 export { default as LomInfoField } from './LomInfoField/LomInfoField';
 export { default as CommonMetaData } from './CommonMetaData/CommonMetaData';
+export { default as ShareModal } from './ShareModal/ShareModal';

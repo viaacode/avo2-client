@@ -59,8 +59,8 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 
 	return (
 		<div
-			className={classnames('c-share-assignment-with-pupil-popup', {
-				['c-share-assignment-with-pupil-popup--disabled']:
+			className={classnames('c-share-with-pupil', {
+				['c-share-with-pupil--disabled']:
 					!hasAssignmentContent || !isAssignmentDetailsComplete,
 			})}
 		>

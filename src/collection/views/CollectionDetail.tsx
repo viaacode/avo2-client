@@ -45,6 +45,7 @@ import {
 	InteractiveTour,
 	LoadingInfo,
 	ShareDropdown,
+	ShareModal,
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
@@ -160,6 +161,7 @@ const CollectionDetail: FunctionComponent<
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isAddToBundleModalOpen, setIsAddToBundleModalOpen] = useState<boolean>(false);
+	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isAutoplayCollectionModalOpen, setIsAutoplayCollectionModalOpen] =
 		useState<boolean>(false);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
@@ -566,6 +568,10 @@ const CollectionDetail: FunctionComponent<
 
 			case CollectionAction.delete:
 				setIsDeleteModalOpen(true);
+				break;
+
+			case CollectionAction.share:
+				setIsShareModalOpen(true);
 				break;
 
 			case CollectionAction.openPublishCollectionModal:
@@ -1010,8 +1016,8 @@ const CollectionDetail: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				CollectionAction.openPublishCollectionModal,
-				tText('collection/views/collection-detail___delen'),
-				'plus',
+				isPublic ? tText('Maak privé') : tText('Publiceer'),
+				isPublic ? IconName.unlock3 : IconName.lock,
 				permissions?.canPublishCollections || false
 			),
 			...createDropdownMenuItem(
@@ -1065,6 +1071,12 @@ const CollectionDetail: FunctionComponent<
 				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				undefined,
 				!permissions?.canDeleteCollections && isContributor
+			),
+			...createDropdownMenuItem(
+				CollectionAction.share,
+				tText('Deel deze collectie'),
+				IconName.userGroup,
+				true
 			),
 		];
 		return (
@@ -1330,6 +1342,36 @@ const CollectionDetail: FunctionComponent<
 							}}
 						/>
 					</>
+				)}
+
+				{collection && isMobileWidth() && (
+					<ShareModal
+						title={tText("Deel deze collectie met collega's")}
+						isOpen={isShareModalOpen}
+						onClose={() => setIsShareModalOpen(false)}
+						contributors={transformContributorsToSimpleContributors(
+							{
+								...collection?.profile?.user,
+								profile: collection?.profile,
+							} as Avo.User.User,
+							(collection?.contributors || []) as Avo.Collection.Contributor[]
+						)}
+						onDeleteContributor={(info) =>
+							onDeleteContributor(info, collectionId, fetchContributors)
+						}
+						onEditContributorRights={(user, newRights) =>
+							onEditContributor(
+								user,
+								newRights,
+								collectionId,
+								fetchContributors,
+								checkPermissionsAndGetCollection
+							)
+						}
+						onAddContributor={(info) =>
+							onAddContributor(info, collectionId, fetchContributors)
+						}
+					/>
 				)}
 			</>
 		);
