@@ -1,0 +1,20 @@
+.collapsed {
+	display: none;
+}
+
+.c-multi-theme-select {
+	&__group-heading {
+		display: flex;
+		align-items: center;
+
+		p {
+			margin-left: 0.5rem;
+		}
+	}
+
+	.c-tags-input {
+		&__option {
+			padding-left: 3.75rem;
+		}
+	}
+}

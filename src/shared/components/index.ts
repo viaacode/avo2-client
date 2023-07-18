@@ -31,3 +31,4 @@ export { default as InActivityWarningModal } from './InActivityWarningModal/InAc
 export { default as LomInfoField } from './LomInfoField/LomInfoField';
 export { default as CommonMetaData } from './CommonMetaData/CommonMetaData';
 export { default as ShareModal } from './ShareModal/ShareModal';
+export { default as MultiThemeSelectDropdown } from './MultiThemeSelectDropdown/MultiThemeSelectDropdown';
