@@ -339,9 +339,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			}
 
 			if (assignment?.is_public) {
-				console.log(assignment);
 				const validationErrors = await getValidationErrorsForPublish(assignment);
-				console.log(validationErrors);
 				if (validationErrors && validationErrors.length) {
 					ToastService.danger(validationErrors);
 					return;

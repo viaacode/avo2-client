@@ -706,6 +706,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const updateCollection = async (checkValidation = true) => {
 		if (isNil(collectionState.currentCollection)) {
 			console.error('Current collection state is nil');
+			ToastService.danger(
+				isCollection
+					? tHtml(
+							'collection/components/collection-or-bundle-edit___het-opslaan-van-de-collectie-is-mislukt'
+					  )
+					: tHtml(
+							'collection/components/collection-or-bundle-edit___het-opslaan-van-de-bundel-is-mislukt'
+					  )
+			);
 			return null;
 		}
 
@@ -720,11 +729,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	// Listeners
 	const onSaveCollection = async () => {
-		console.log(collectionState);
 		setIsSavingCollection(true);
 		try {
 			const validationError: ReactNode | null = isCollectionValid();
-			console.log(validationError);
 			if (validationError) {
 				ToastService.danger(validationError);
 				setIsSavingCollection(false);

@@ -142,7 +142,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => !!assignment.description,
 	},
 	{
-		error: tText('assignment/assignment___de-opdracht-bevat-geen-onderwijsniveaus'),
+		error: tText('De opdracht bevat geen onderwijs waarden'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!!assignment.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure),
 	},
