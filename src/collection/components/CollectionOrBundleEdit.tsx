@@ -12,8 +12,7 @@ import {
 	Tabs,
 } from '@viaa/avo2-components';
 import { Avo, PermissionName } from '@viaa/avo2-types';
-import { CollectionSchema } from '@viaa/avo2-types/types/collection';
-import { cloneDeep, compact, get, isEmpty, omit, set } from 'lodash-es';
+import { cloneDeep, get, isEmpty, isNil, set } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactNode,
@@ -704,50 +703,28 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return null;
 	};
 
-	const stripCollectionFieldsBeforeInsertOrUpdate = (collection: CollectionSchema | null) => {
-		return omit(collection, ['loms', 'contributors']);
-	};
-
 	const updateCollection = async (checkValidation = true) => {
-		const newCollection = await CollectionService.updateCollection(
-			stripCollectionFieldsBeforeInsertOrUpdate(collectionState.initialCollection),
-			stripCollectionFieldsBeforeInsertOrUpdate(collectionState.currentCollection),
-			user,
-			checkValidation
-		);
-
-		if (newCollection) {
-			try {
-				await CollectionService.deleteCollectionLomLinks(newCollection.id);
-
-				await CollectionService.insertCollectionLomLinks(
-					newCollection.id,
-					compact(
-						(collectionState.currentCollection?.loms || []).map((lom) => lom.lom?.id)
-					)
-				);
-			} catch (err) {
-				console.error('Failed to update collection/bundle loms', err);
-				ToastService.danger(
-					isCollection
-						? tHtml(
-								'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-collectie-is-mislukt'
-						  )
-						: tHtml(
-								'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-bundel-is-mislukt'
-						  )
-				);
-			}
+		if (isNil(collectionState.currentCollection)) {
+			console.error('Current collection state is nil');
+			return null;
 		}
 
-		return newCollection;
+		return await CollectionService.updateCollection(
+			collectionState.initialCollection,
+			collectionState.currentCollection,
+			user,
+			checkValidation,
+			isCollection
+		);
 	};
 
 	// Listeners
 	const onSaveCollection = async () => {
+		console.log(collectionState);
 		setIsSavingCollection(true);
 		try {
 			const validationError: ReactNode | null = isCollectionValid();
+			console.log(validationError);
 			if (validationError) {
 				ToastService.danger(validationError);
 				setIsSavingCollection(false);

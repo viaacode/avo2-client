@@ -230,9 +230,10 @@ export class CollectionService {
 	 */
 	static async updateCollection(
 		initialColl: Omit<Avo.Collection.Collection, 'loms' | 'contributors'> | null,
-		updatedColl: Partial<Omit<Avo.Collection.Collection, 'loms' | 'contributors'>>,
+		updatedColl: Partial<Avo.Collection.Collection>,
 		user: Avo.User.User,
-		checkValidation = true
+		checkValidation = true,
+		isCollection: boolean
 	): Promise<Avo.Collection.Collection | null> {
 		try {
 			// Convert fragment description editor states to html strings
@@ -251,6 +252,7 @@ export class CollectionService {
 				// validate collection before update
 				let validationErrors: string[];
 
+				console.log(updatedCollection);
 				if (updatedCollection.is_public) {
 					validationErrors = await getValidationErrorsForPublish(updatedCollection);
 				} else {
@@ -422,6 +424,27 @@ export class CollectionService {
 					newCollection.id as string,
 					initialCollection,
 					updatedCollection
+				);
+			}
+
+			// Update loms
+			try {
+				await this.deleteCollectionLomLinks(newCollection.id as string);
+
+				await this.insertCollectionLomLinks(
+					newCollection.id as string,
+					compact((updatedCollection.loms || []).map((lom) => lom.lom?.id))
+				);
+			} catch (err) {
+				console.error('Failed to update collection/bundle loms', err);
+				ToastService.danger(
+					isCollection
+						? tHtml(
+								'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-collectie-is-mislukt'
+						  )
+						: tHtml(
+								'collection/components/collection-or-bundle-edit___het-updaten-van-de-publicatie-details-van-de-bundel-is-mislukt'
+						  )
 				);
 			}
 

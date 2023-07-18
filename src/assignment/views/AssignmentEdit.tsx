@@ -50,7 +50,11 @@ import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
-import { isUserAssignmentContributor, isUserAssignmentOwner } from '../assignment.helper';
+import {
+	getValidationErrorsForPublish,
+	isUserAssignmentContributor,
+	isUserAssignmentOwner,
+} from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
@@ -332,6 +336,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			if (!user.profile?.id || !original) {
 				return;
+			}
+
+			if (assignment?.is_public) {
+				console.log(assignment);
+				const validationErrors = await getValidationErrorsForPublish(assignment);
+				console.log(validationErrors);
+				if (validationErrors && validationErrors.length) {
+					ToastService.danger(validationErrors);
+					return;
+				}
 			}
 
 			const updated = await AssignmentService.updateAssignment(

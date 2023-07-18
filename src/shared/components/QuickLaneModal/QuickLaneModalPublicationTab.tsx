@@ -5,6 +5,7 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
+import { ContentTypeString } from '../../../collection/collection.types';
 import { isCollection } from '../../../quick-lane/quick-lane.helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -35,6 +36,9 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 
 	const onSubmit = () => {
 		if (user && content && model && isCollection({ content_label })) {
+			const isCollection =
+				(model as Avo.Collection.Collection).type?.label === ContentTypeString.bundle ||
+				false;
 			CollectionService.updateCollection(
 				content as Avo.Collection.Collection,
 				{
@@ -42,7 +46,8 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 					is_public: true,
 				},
 				user,
-				false
+				false,
+				isCollection
 			)
 				.then((result) => {
 					if (result) {

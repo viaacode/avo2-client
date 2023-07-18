@@ -1,14 +1,12 @@
 import { IconName } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import type { Avo } from '@viaa/avo2-types';
-import { LomType } from '@viaa/avo2-types';
+import { Avo, LomSchemeType } from '@viaa/avo2-types';
 import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { compact, map } from 'lodash-es';
+import { compact } from 'lodash-es';
 import { ReactNode } from 'react';
 
 import { stripHtml } from '../shared/helpers';
-import { groupLoms } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { Positioned } from '../shared/types';
 
@@ -146,17 +144,17 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 	{
 		error: tText('assignment/assignment___de-opdracht-bevat-geen-onderwijsniveaus'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			validateLoms(assignment?.loms, LomType.educationDegree),
+			!!assignment.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure),
 	},
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-themas'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			validateLoms(assignment?.loms, LomType.theme),
+			!!assignment.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.theme),
 	},
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			validateLoms(assignment?.loms, LomType.subject),
+			!!assignment.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject),
 	},
 	{
 		error: tText(
@@ -178,17 +176,6 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 			!assignment.blocks || validateBlocks(assignment.blocks, 'ITEM'),
 	},
 ];
-
-const validateLoms = (loms: Avo.Lom.Lom[] | undefined, scheme: Exclude<LomType, 'context'>) => {
-	if (!loms) {
-		return false;
-	}
-
-	const lomFields = compact(map(loms, 'lom'));
-	const groupedLoms = groupLoms(lomFields);
-
-	return !!groupedLoms[scheme]?.length;
-};
 
 const validateBlocks = (blocks: Avo.Assignment.Block[], type: BlockItemTypeSchema): boolean => {
 	if (!blocks || !blocks.length) {
