@@ -720,11 +720,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	// Listeners
 	const onSaveCollection = async () => {
-		console.log(collectionState);
 		setIsSavingCollection(true);
 		try {
 			const validationError: ReactNode | null = isCollectionValid();
-			console.log(validationError);
 			if (validationError) {
 				ToastService.danger(validationError);
 				setIsSavingCollection(false);

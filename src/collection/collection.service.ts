@@ -252,7 +252,6 @@ export class CollectionService {
 				// validate collection before update
 				let validationErrors: string[];
 
-				console.log(updatedCollection);
 				if (updatedCollection.is_public) {
 					validationErrors = await getValidationErrorsForPublish(updatedCollection);
 				} else {
@@ -387,6 +386,7 @@ export class CollectionService {
 			) {
 				cleanedCollection.updated_at = new Date().toISOString();
 				cleanedCollection.updated_by_profile_id = getProfileId(user);
+				cleanedCollection.loms = [];
 			}
 
 			await this.updateCollectionProperties(newCollection.id as string, cleanedCollection);
