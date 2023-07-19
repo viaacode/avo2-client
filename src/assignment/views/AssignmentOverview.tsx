@@ -75,12 +75,14 @@ import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
+	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS,
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
@@ -92,10 +94,8 @@ import {
 import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
-
-import './AssignmentOverview.scss';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
+import './AssignmentOverview.scss';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
@@ -569,9 +569,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		colKey: AssignmentOverviewTableColumns
 	) => {
 		const cellData: any = (assignment as any)[colKey];
-		const detailLink = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
-			id: assignment.id,
-		});
+		const detailLink = canEditAssignments
+			? buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignment.id })
+			: buildLink(
+					APP_PATH.ASSIGNMENT_RESPONSE_DETAIL.route,
+					{
+						id: assignment.id,
+					},
+					{ tab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.ASSIGNMENT }
+			  );
 
 		const labels = (assignment.labels || []).filter(
 			({ assignment_label: item }) => item.type === 'LABEL'
