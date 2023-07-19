@@ -127,7 +127,6 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	if (!isItem(result)) {
 		date = result.updated_at;
 		dateTooltip = tText('search/components/search-result-item___laatst-bijwerking');
-		console.log(date);
 	} else {
 		date = result.dcterms_issued;
 		dateTooltip = tText('search/components/search-result-item___uitzend-datum');
