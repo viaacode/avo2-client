@@ -90,7 +90,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		);
 	};
 	const isItem = (result: Avo.Search.ResultItem): boolean => {
-		return !['collectie' || 'bundel' || 'opdracht'].includes(result.administrative_type);
+		return !['collectie', 'bundel', 'opdracht'].includes(result.administrative_type);
 	};
 
 	const renderAuthorOrOrganization = (result: Avo.Search.ResultItem) => {
