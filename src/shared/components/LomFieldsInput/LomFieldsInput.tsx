@@ -9,6 +9,7 @@ import { groupLoms } from '../../helpers/lom';
 import { useGetLomFields } from '../../hooks/useGetLomFields';
 import useTranslation from '../../hooks/useTranslation';
 import { LomFieldsByScheme } from '../../types/lom';
+import MultiThemeSelectDropdown from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown';
 
 import {
 	getParentEducationLevel,
@@ -123,12 +124,12 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
 					labelFor="themeId"
 				>
-					<TagsInput
-						isLoading={isThemesLoading}
-						options={mapLomFieldsToOptions(allThemes || [])}
+					<MultiThemeSelectDropdown
+						allThemes={allThemes || []}
 						value={mapLomFieldsToOptions(lomFields.theme) || []}
 						onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
 						placeholder={themesPlaceholder}
+						isLoading={isThemesLoading}
 					/>
 				</FormGroup>
 			)}

@@ -1,0 +1,22 @@
+.c-multi-theme-select {
+	&__group-heading-wrapper {
+		.c-multi-theme-select__group-heading {
+			display: flex;
+			align-items: center;
+
+			p {
+				margin-left: 0.5rem;
+			}
+		}
+	}
+
+	.c-multi-theme-select__group-heading--collapsed {
+		display: none;
+	}
+
+	.c-tags-input {
+		&__option {
+			padding-left: 3.75rem;
+		}
+	}
+}
