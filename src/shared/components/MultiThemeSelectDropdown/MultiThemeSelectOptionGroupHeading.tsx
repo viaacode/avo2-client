@@ -8,9 +8,9 @@ const MultiThemeSelectOptionGroupHeading: FC<GroupHeadingProps> = (props) => {
 	const [element, setElement] = useState<Element | null>();
 	const handleHeaderClick = () => {
 		if (!isOpen) {
-			element?.classList?.remove('collapsed');
+			element?.classList?.remove('c-multi-theme-select__group-heading--collapsed');
 		} else {
-			element?.classList?.add('collapsed');
+			element?.classList?.add('c-multi-theme-select__group-heading--collapsed');
 		}
 
 		setIsOpen(!isOpen);
@@ -19,7 +19,7 @@ const MultiThemeSelectOptionGroupHeading: FC<GroupHeadingProps> = (props) => {
 	useEffect(() => {
 		const element = document.querySelector(`#${props.id}`)?.parentElement?.nextElementSibling;
 		setElement(element);
-		element?.classList.add('collapsed');
+		element?.classList.add('c-multi-theme-select__group-heading--collapsed');
 	}, []);
 
 	return (

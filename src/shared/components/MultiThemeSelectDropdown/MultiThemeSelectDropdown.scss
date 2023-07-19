@@ -1,7 +1,3 @@
-.collapsed {
-	display: none;
-}
-
 .c-multi-theme-select {
 	&__group-heading-wrapper {
 		.c-multi-theme-select__group-heading {
@@ -12,6 +8,10 @@
 				margin-left: 0.5rem;
 			}
 		}
+	}
+
+	.c-multi-theme-select__group-heading--collapsed {
+		display: none;
 	}
 
 	.c-tags-input {
