@@ -528,6 +528,7 @@ export class AssignmentService {
 			is_public: false,
 			published_at: undefined,
 			contributors: [],
+			labels: [],
 		};
 
 		delete newAssignment.owner;
