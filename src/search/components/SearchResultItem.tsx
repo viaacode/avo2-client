@@ -90,7 +90,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		);
 	};
 	const isItem = (result: Avo.Search.ResultItem): boolean => {
-		return !['collectie' || 'bundel' || 'opdracht'].includes(result.administrative_type);
+		return !['collectie', 'bundel', 'opdracht'].includes(result.administrative_type);
 	};
 
 	const renderAuthorOrOrganization = (result: Avo.Search.ResultItem) => {
@@ -127,6 +127,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	if (!isItem(result)) {
 		date = result.updated_at;
 		dateTooltip = tText('search/components/search-result-item___laatst-bijwerking');
+		console.log(date);
 	} else {
 		date = result.dcterms_issued;
 		dateTooltip = tText('search/components/search-result-item___uitzend-datum');
