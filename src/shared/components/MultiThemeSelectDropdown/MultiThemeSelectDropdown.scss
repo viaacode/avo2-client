@@ -3,12 +3,14 @@
 }
 
 .c-multi-theme-select {
-	&__group-heading {
-		display: flex;
-		align-items: center;
+	&__group-heading-wrapper {
+		.c-multi-theme-select__group-heading {
+			display: flex;
+			align-items: center;
 
-		p {
-			margin-left: 0.5rem;
+			p {
+				margin-left: 0.5rem;
+			}
 		}
 	}
 

@@ -23,7 +23,10 @@ const MultiThemeSelectOptionGroupHeading: FC<GroupHeadingProps> = (props) => {
 	}, []);
 
 	return (
-		<div onClick={() => handleHeaderClick()}>
+		<div
+			className="c-multi-theme-select__group-heading-wrapper"
+			onClick={() => handleHeaderClick()}
+		>
 			<GroupHeading {...props} className="c-multi-theme-select__group-heading">
 				<Icon name={isOpen ? IconName.chevronUp : IconName.chevronDown} />
 				<p>{props.data.label}</p>
