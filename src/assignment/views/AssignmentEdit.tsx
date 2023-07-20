@@ -37,7 +37,6 @@ import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InActivityWarningModal, ShareModal } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, isMobileWidth } from '../../shared/helpers';
 import {
 	getContributorType,
@@ -119,7 +118,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
-			canEditAllAssignments: boolean;
+			canEdit: boolean;
 			canPublish: boolean;
 		}>
 	>({});
@@ -238,34 +237,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 
-			if (tempAssignment.contributors && user && user?.profile?.id) {
-				const contributorInfo = tempAssignment.contributors.find(
-					(contributor) => contributor.profile_id === user?.profile?.id
-				);
-				const isOwner = tempAssignment.owner_profile_id === user.profile.id;
-
-				if (
-					(!contributorInfo && !isOwner && !permissions.canEditAllAssignments) ||
-					(contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer &&
-						!permissions.canEditAllAssignments)
-				) {
-					setAssignmentError({
-						message: tHtml(
-							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
-						),
-						icon: IconName.lock,
-						actionButtons: ['home'],
-					});
-					setAssigmentLoading(false);
-					return;
-				}
-			}
-
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
 
 			const checkedPermissions = await PermissionService.checkPermissions(
 				{
-					canEditAllAssignments: [
+					canEdit: [
+						{
+							name: PermissionName.EDIT_OWN_ASSIGNMENTS,
+							obj: assignmentId,
+						},
 						{
 							name: PermissionName.EDIT_ANY_ASSIGNMENTS,
 						},
@@ -282,6 +262,18 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				},
 				user
 			);
+
+			if (!checkedPermissions.canEdit) {
+				setAssignmentError({
+					message: tHtml(
+						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
+					),
+					icon: IconName.lock,
+					actionButtons: ['home'],
+				});
+				setAssigmentLoading(false);
+				return;
+			}
 
 			setPermissions(checkedPermissions);
 			setOriginal(tempAssignment);
@@ -838,7 +830,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			assignment?.id &&
 			!isUserAssignmentOwner(user, assignment) &&
 			!isUserAssignmentContributor(user, assignment) &&
-			!permissions.canEditAllAssignments
+			!permissions.canEdit
 		) {
 			return (
 				<ErrorNoAccess
