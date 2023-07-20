@@ -1,5 +1,5 @@
 import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { Avo } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
 import { compose } from 'redux';
 
@@ -26,6 +26,9 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 
 	const [isOpen, setOpen] = useState<boolean>(false);
 
+	const isOwner =
+		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
+
 	return (
 		<>
 			<Button
@@ -36,7 +39,11 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 					'assignment/components/delete-assignment-button___verwijder-de-opdracht'
 				)}
 				icon={IconName.delete}
-				label={tText('assignment/components/delete-assignment-button___verwijder')}
+				label={
+					isOwner
+						? tText('collection/views/collection-detail___verwijder')
+						: tText('Verwijder mij van deze opdracht')
+				}
 				title={tText(
 					'assignment/components/delete-assignment-button___verwijder-de-opdracht'
 				)}

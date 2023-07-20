@@ -510,7 +510,9 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.delete,
-				tText('collection/views/collection-detail___verwijder'),
+				isOwner
+					? tText('collection/views/collection-detail___verwijder')
+					: tText('Verwijder mij van deze opdracht'),
 				undefined,
 				permissions.canDeleteAnyAssignments || isOwner || false
 			),

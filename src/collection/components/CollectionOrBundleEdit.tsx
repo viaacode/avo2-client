@@ -185,6 +185,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 
 	// Computed values
+
 	const isCollection = type === 'collection';
 	const noRightsError = {
 		state: 'error',
@@ -354,6 +355,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 		initialCollection: null,
 	});
 	const isPublic = collectionState.currentCollection?.is_public || false;
+	const isOwner =
+		!!collectionState.currentCollection?.owner_profile_id &&
+		collectionState.currentCollection?.owner_profile_id === user?.profile?.id;
 
 	const isContributor = !!(collectionState.currentCollection?.contributors || []).find(
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
@@ -1168,7 +1172,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 	);
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			...createDropdownMenuItem('delete', 'Verwijderen', 'delete', true),
+			...createDropdownMenuItem(
+				'delete',
+				isOwner ? tText('Verwijderen') : tText('Verwijder mij van deze collectie'),
+				'delete',
+				true
+			),
 			...createDropdownMenuItem(
 				'addItemById',
 				isCollection
