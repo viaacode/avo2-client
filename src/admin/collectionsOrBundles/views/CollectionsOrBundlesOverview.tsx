@@ -560,9 +560,9 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					<Link
 						to={buildLink(
 							isCollection
-								? APP_PATH.COLLECTION_EDIT_TAB.route
-								: APP_PATH.BUNDLE_EDIT_TAB.route,
-							{ id: rowData.id, tabId: CollectionCreateUpdateTab.CONTENT }
+								? APP_PATH.COLLECTION_DETAIL.route
+								: APP_PATH.BUNDLE_DETAIL.route,
+							{ id: rowData.id }
 						)}
 					>
 						<span>{truncate((rowData as any)[columnId] || '-', { length: 50 })}</span>
