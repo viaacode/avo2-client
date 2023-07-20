@@ -402,13 +402,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				history
 			);
 
-			if ((err as CustomError)?.innerException?.additionalInfo.statusCode === 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode === 409) {
 				ToastService.danger(
 					tHtml(
 						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
 					)
 				);
-			} else if ((err as CustomError).innerException?.additionalInfo.statusCode === 401) {
+			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
 				return; // User has no rights to edit the assignment
 			} else {
 				await releaseAssignmentEditStatus();
@@ -425,7 +425,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
 				ToastService.danger(
 					tHtml(
 						'assignment/views/assignment-edit___er-liep-iets-fout-met-het-updaten-van-de-opdracht-bewerk-status'

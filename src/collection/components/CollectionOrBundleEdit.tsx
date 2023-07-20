@@ -1028,14 +1028,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 				history
 			);
 
-			if ((err as CustomError).innerException?.additionalInfo.statusCode === 409) {
+			if ((err as CustomError).innerException?.additionalInfo?.statusCode === 409) {
 				await releaseCollectionEditStatus();
 				ToastService.danger(
 					tHtml(
 						'collection/components/collection-or-bundle-edit___iemand-is-deze-collectie-reeds-aan-het-bewerken'
 					)
 				);
-			} else if ((err as CustomError).innerException?.additionalInfo.statusCode === 401) {
+			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
 				return; // User has no rights to edit the collection
 			} else {
 				ToastService.danger(
@@ -1051,7 +1051,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		try {
 			await CollectionService.releaseCollectionEditStatus(collectionId);
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
 				ToastService.danger(
 					tHtml(
 						'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-updaten-van-de-collectie-bewerk-status'

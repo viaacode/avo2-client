@@ -235,12 +235,12 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					inviteToken || undefined
 				);
 			} catch (err: any) {
-				if (err.innerException.additionalInfo.statusCode === 403) {
+				if (err.innerException.additionalInfo?.statusCode === 403) {
 					setIsForbidden(true);
 				} else {
 					setAssigmentError({
 						message:
-							err.innerException.additionalInfo.statusCode === 403
+							err.innerException.additionalInfo?.statusCode === 403
 								? tHtml(
 										'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-pagina-te'
 								  )
