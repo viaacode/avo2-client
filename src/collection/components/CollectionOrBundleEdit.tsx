@@ -1174,7 +1174,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				'delete',
-				isOwner ? tText('Verwijderen') : tText('Verwijder mij van deze collectie'),
+				isOwner
+					? tText('collection/components/collection-or-bundle-edit___verwijderen')
+					: tText(
+							'collection/components/collection-or-bundle-edit___verwijder-mij-van-deze-collectie'
+					  ),
 				'delete',
 				true
 			),

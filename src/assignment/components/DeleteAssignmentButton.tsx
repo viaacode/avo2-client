@@ -42,7 +42,9 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 				label={
 					isOwner
 						? tText('collection/views/collection-detail___verwijder')
-						: tText('Verwijder mij van deze opdracht')
+						: tText(
+								'assignment/components/delete-assignment-button___verwijder-mij-van-deze-opdracht'
+						  )
 				}
 				title={tText(
 					'assignment/components/delete-assignment-button___verwijder-de-opdracht'

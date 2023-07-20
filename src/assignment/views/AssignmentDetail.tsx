@@ -512,7 +512,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 				AssignmentAction.delete,
 				isOwner
 					? tText('collection/views/collection-detail___verwijder')
-					: tText('Verwijder mij van deze opdracht'),
+					: tText('assignment/views/assignment-detail___verwijder-mij-van-deze-opdracht'),
 				undefined,
 				permissions.canDeleteAnyAssignments || isOwner || false
 			),
