@@ -43,7 +43,7 @@ export async function onEditContributor(
 			if (newRights === ContributorInfoRights.OWNER) {
 				await CollectionService.transferCollectionOwnerShip(
 					collectionId,
-					user.contributorId as string
+					user.profileId as string
 				);
 
 				await fetchCollection();
