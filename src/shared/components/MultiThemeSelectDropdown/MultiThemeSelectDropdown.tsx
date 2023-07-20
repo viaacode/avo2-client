@@ -42,7 +42,7 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 			onChange={(newValue) => onChange(newValue as TagInfoSchema[])}
 			isMulti
 			isLoading={isLoading}
-			placeholder={placeholder}
+			placeholder={placeholder || null}
 		/>
 	);
 };
