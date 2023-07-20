@@ -152,11 +152,11 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 						const isCurrentUser = currentUser.email === contributor.email;
 						const canEdit = isOwner && !isCurrentUser && contributor.profileId;
 
-						// The owner can delete himself and everyone else
+						// The owner cannot delete himself but can delete everyone else
 						// Contributors can delete themselves and every other contributor and viewer
 						// Viewers can only delete themselves but they do not have access to this dialog
 						const canDelete =
-							isOwner ||
+							(!isCurrentUser && !contributorIsOwner) ||
 							(!isOwner && isCurrentUser) ||
 							(currentUserIsContributor && !contributorIsOwner);
 
