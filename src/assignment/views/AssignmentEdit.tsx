@@ -241,11 +241,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 			const checkedPermissions = await PermissionService.checkPermissions(
 				{
-					canEdit: [
-						{
-							name: PermissionName.EDIT_OWN_ASSIGNMENTS,
-							obj: assignmentId,
-						},
+					canEditAllAssignments: [
 						{
 							name: PermissionName.EDIT_ANY_ASSIGNMENTS,
 						},
@@ -263,7 +259,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				user
 			);
 
-			if (!checkedPermissions.canEdit) {
+			const allPermissions = {
+				canPublish: checkedPermissions.canPublish,
+				canEdit:
+					isUserAssignmentOwner(user, tempAssignment) ||
+					isUserAssignmentContributor(user, tempAssignment) ||
+					checkedPermissions.canEditAllAssignments,
+			};
+
+			setPermissions(allPermissions);
+
+			if (!allPermissions.canEdit) {
 				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
@@ -275,7 +281,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 
-			setPermissions(checkedPermissions);
 			setOriginal(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
