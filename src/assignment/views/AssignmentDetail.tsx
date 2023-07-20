@@ -270,18 +270,18 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 
 			setAssignment(tempAssignment as any);
 
-			if (permissions.canFetchBookmarkAndViewCounts) {
-				setBookmarkViewCounts(
-					await BookmarksViewsPlaysService.getAssignmentCounts(
-						tempAssignment.id as string,
-						user
-					)
-				);
-			}
-
 			try {
 				const permissionObj = await getPermissions(user, tempAssignment);
 				setPermissions(permissionObj);
+
+				if (permissionObj.canFetchBookmarkAndViewCounts) {
+					setBookmarkViewCounts(
+						await BookmarksViewsPlaysService.getAssignmentCounts(
+							tempAssignment.id as string,
+							user
+						)
+					);
+				}
 			} catch (err) {
 				setAssigmentError({
 					message: tHtml(
