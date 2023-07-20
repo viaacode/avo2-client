@@ -33,7 +33,7 @@ const getSearchResults = (
 				filterOptionSearch
 			);
 
-			if ((data as any).statusCode) {
+			if ((data as any)?.statusCode) {
 				console.error(
 					JSON.stringify(
 						new CustomError('Failed to get search results from elasticsearch', data, {

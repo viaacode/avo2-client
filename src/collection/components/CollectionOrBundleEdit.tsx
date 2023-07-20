@@ -185,6 +185,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 
 	// Computed values
+
 	const isCollection = type === 'collection';
 	const noRightsError = {
 		state: 'error',
@@ -354,6 +355,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 		initialCollection: null,
 	});
 	const isPublic = collectionState.currentCollection?.is_public || false;
+	const isOwner =
+		!!collectionState.currentCollection?.owner_profile_id &&
+		collectionState.currentCollection?.owner_profile_id === user?.profile?.id;
 
 	const isContributor = !!(collectionState.currentCollection?.contributors || []).find(
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
@@ -1028,14 +1032,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 				history
 			);
 
-			if ((err as CustomError).innerException?.additionalInfo.statusCode === 409) {
+			if ((err as CustomError).innerException?.additionalInfo?.statusCode === 409) {
 				await releaseCollectionEditStatus();
 				ToastService.danger(
 					tHtml(
 						'collection/components/collection-or-bundle-edit___iemand-is-deze-collectie-reeds-aan-het-bewerken'
 					)
 				);
-			} else if ((err as CustomError).innerException?.additionalInfo.statusCode === 401) {
+			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
 				return; // User has no rights to edit the collection
 			} else {
 				ToastService.danger(
@@ -1051,7 +1055,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		try {
 			await CollectionService.releaseCollectionEditStatus(collectionId);
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
 				ToastService.danger(
 					tHtml(
 						'collection/components/collection-or-bundle-edit___er-liep-iets-fout-met-het-updaten-van-de-collectie-bewerk-status'
@@ -1168,7 +1172,16 @@ const CollectionOrBundleEdit: FunctionComponent<
 	);
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
-			...createDropdownMenuItem('delete', 'Verwijderen', 'delete', true),
+			...createDropdownMenuItem(
+				'delete',
+				isOwner
+					? tText('collection/components/collection-or-bundle-edit___verwijderen')
+					: tText(
+							'collection/components/collection-or-bundle-edit___verwijder-mij-van-deze-collectie'
+					  ),
+				'delete',
+				true
+			),
 			...createDropdownMenuItem(
 				'addItemById',
 				isCollection

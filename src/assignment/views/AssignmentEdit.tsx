@@ -37,7 +37,6 @@ import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InActivityWarningModal, ShareModal } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, isMobileWidth } from '../../shared/helpers';
 import {
 	getContributorType,
@@ -119,7 +118,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
-			canEditAllAssignments: boolean;
+			canEdit: boolean;
 			canPublish: boolean;
 		}>
 	>({});
@@ -238,29 +237,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				return;
 			}
 
-			if (tempAssignment.contributors && user && user?.profile?.id) {
-				const contributorInfo = tempAssignment.contributors.find(
-					(contributor) => contributor.profile_id === user?.profile?.id
-				);
-				const isOwner = tempAssignment.owner_profile_id === user.profile.id;
-
-				if (
-					(!contributorInfo && !isOwner && !permissions.canEditAllAssignments) ||
-					(contributorInfo?.rights === Lookup_Enum_Right_Types_Enum.Viewer &&
-						!permissions.canEditAllAssignments)
-				) {
-					setAssignmentError({
-						message: tHtml(
-							'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
-						),
-						icon: IconName.lock,
-						actionButtons: ['home'],
-					});
-					setAssigmentLoading(false);
-					return;
-				}
-			}
-
 			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
 
 			const checkedPermissions = await PermissionService.checkPermissions(
@@ -283,7 +259,28 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				user
 			);
 
-			setPermissions(checkedPermissions);
+			const allPermissions = {
+				canPublish: checkedPermissions.canPublish,
+				canEdit:
+					isUserAssignmentOwner(user, tempAssignment) ||
+					isUserAssignmentContributor(user, tempAssignment) ||
+					checkedPermissions.canEditAllAssignments,
+			};
+
+			setPermissions(allPermissions);
+
+			if (!allPermissions.canEdit) {
+				setAssignmentError({
+					message: tHtml(
+						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken'
+					),
+					icon: IconName.lock,
+					actionButtons: ['home'],
+				});
+				setAssigmentLoading(false);
+				return;
+			}
+
 			setOriginal(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
@@ -402,13 +399,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				history
 			);
 
-			if ((err as CustomError)?.innerException?.additionalInfo.statusCode === 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode === 409) {
 				ToastService.danger(
 					tHtml(
 						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
 					)
 				);
-			} else if ((err as CustomError).innerException?.additionalInfo.statusCode === 401) {
+			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
 				return; // User has no rights to edit the assignment
 			} else {
 				await releaseAssignmentEditStatus();
@@ -425,7 +422,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		try {
 			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.additionalInfo.statusCode !== 409) {
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
 				ToastService.danger(
 					tHtml(
 						'assignment/views/assignment-edit___er-liep-iets-fout-met-het-updaten-van-de-opdracht-bewerk-status'
@@ -838,7 +835,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			assignment?.id &&
 			!isUserAssignmentOwner(user, assignment) &&
 			!isUserAssignmentContributor(user, assignment) &&
-			!permissions.canEditAllAssignments
+			!permissions.canEdit
 		) {
 			return (
 				<ErrorNoAccess

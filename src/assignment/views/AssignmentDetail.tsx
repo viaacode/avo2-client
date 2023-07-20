@@ -235,12 +235,12 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					inviteToken || undefined
 				);
 			} catch (err: any) {
-				if (err.innerException.additionalInfo.statusCode === 403) {
+				if (err.innerException.additionalInfo?.statusCode === 403) {
 					setIsForbidden(true);
 				} else {
 					setAssigmentError({
 						message:
-							err.innerException.additionalInfo.statusCode === 403
+							err.innerException.additionalInfo?.statusCode === 403
 								? tHtml(
 										'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-pagina-te'
 								  )
@@ -270,18 +270,18 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 
 			setAssignment(tempAssignment as any);
 
-			if (permissions.canFetchBookmarkAndViewCounts) {
-				setBookmarkViewCounts(
-					await BookmarksViewsPlaysService.getAssignmentCounts(
-						tempAssignment.id as string,
-						user
-					)
-				);
-			}
-
 			try {
 				const permissionObj = await getPermissions(user, tempAssignment);
 				setPermissions(permissionObj);
+
+				if (permissionObj.canFetchBookmarkAndViewCounts) {
+					setBookmarkViewCounts(
+						await BookmarksViewsPlaysService.getAssignmentCounts(
+							tempAssignment.id as string,
+							user
+						)
+					);
+				}
 			} catch (err) {
 				setAssigmentError({
 					message: tHtml(
@@ -510,7 +510,9 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.delete,
-				tText('collection/views/collection-detail___verwijder'),
+				isOwner
+					? tText('collection/views/collection-detail___verwijder')
+					: tText('assignment/views/assignment-detail___verwijder-mij-van-deze-opdracht'),
 				undefined,
 				permissions.canDeleteAnyAssignments || isOwner || false
 			),
