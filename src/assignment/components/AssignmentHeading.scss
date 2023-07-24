@@ -6,7 +6,7 @@
 		display: grid;
 		grid-template-columns: auto auto auto auto;
 		padding-left: $g-spacer-unit * 2;
-		z-index: $g-c-global-navbar-z; // Ensure rich text does not overlap
+		z-index: $g-c-local-toolbar-z; // Ensure rich text does not overlap
 
 		@media screen and (min-width: $g-bp2) {
 			gap: $g-spacer-unit;
