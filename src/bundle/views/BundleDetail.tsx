@@ -138,7 +138,7 @@ const BundleDetail: FunctionComponent<
 						canViewBundle: [{ name: PermissionName.VIEW_OWN_BUNDLES, obj: bundleId }],
 						canViewPublishedBundles: [
 							{
-								name: PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES,
+								name: PermissionName.VIEW_ANY_PUBLISHED_BUNDLES,
 							},
 						],
 						canViewUnpublishedBundles: [
