@@ -216,7 +216,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				if (String(user.profile?.userGroupIds[0]) === SpecialUserGroup.Pupil) {
 					setLoadingInfo({
 						state: 'error',
-						message: tText(
+						message: tHtml(
 							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken-leerling'
 						),
 						icon: IconName.lock,
@@ -224,7 +224,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				} else {
 					setLoadingInfo({
 						state: 'error',
-						message: tText(
+						message: tHtml(
 							'item/views/item___je-hebt-geen-rechten-om-dit-item-te-bekijken'
 						),
 						icon: IconName.lock,
@@ -237,7 +237,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			if (!itemObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: tText('item/views/item___dit-item-werd-niet-gevonden'),
+					message: tHtml('item/views/item___dit-item-werd-niet-gevonden'),
 					icon: IconName.search,
 				});
 				return;
@@ -303,7 +303,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
+				message: tHtml('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
 			});
 		}
 	}, [itemId, setItem, tText, history, user]);
