@@ -505,7 +505,10 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					  )
 					: tText('collection/views/collection-overview___verwijderen'),
 				undefined,
-				(permissions[collectionUuid] && permissions[collectionUuid].canDelete) || false
+				currentCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
+					? true
+					: (permissions[collectionUuid] && permissions[collectionUuid].canDelete) ||
+							false
 			),
 		];
 
