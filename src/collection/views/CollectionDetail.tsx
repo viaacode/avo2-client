@@ -358,7 +358,7 @@ const CollectionDetail: FunctionComponent<
 				if (!uuid) {
 					setLoadingInfo({
 						state: 'error',
-						message: tText(
+						message: tHtml(
 							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 						),
 						icon: IconName.alertTriangle,
@@ -399,7 +399,7 @@ const CollectionDetail: FunctionComponent<
 			if (!collectionObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 					),
 					icon: IconName.search,
@@ -453,7 +453,7 @@ const CollectionDetail: FunctionComponent<
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'collection/views/collection-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-collectie'
 				),
 				icon: IconName.alertTriangle,

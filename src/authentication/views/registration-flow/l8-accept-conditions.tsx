@@ -52,7 +52,7 @@ const AcceptConditions: FunctionComponent<
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'authentication/views/registration-flow/l-8-accept-conditions___het-ophalen-van-de-gebruikers-en-privacy-voorwaarden-is-mislukt'
 				),
 			});
@@ -70,7 +70,7 @@ const AcceptConditions: FunctionComponent<
 			} else {
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'authentication/views/registration-flow/l-8-accept-conditions___het-ophalen-van-de-gebruikers-en-privacy-voorwaarden-is-mislukt'
 					),
 				});

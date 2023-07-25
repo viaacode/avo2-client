@@ -202,7 +202,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		try {
 			if (!canViewAnAssignment(user)) {
 				setLoadingInfo({
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
 					icon: IconName.lock,
@@ -217,7 +217,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		} catch (err) {
 			if (JSON.stringify(err).includes(NO_RIGHTS_ERROR_MESSAGE)) {
 				setLoadingInfo({
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 					),
 					icon: IconName.lock,
@@ -227,7 +227,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			}
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'assignment/views/assignment-responses___het-ophalen-van-de-opdracht-is-mislukt'
 				),
 			});
@@ -273,7 +273,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'assignment/views/assignment-responses___het-ophalen-van-responses-is-mislukt'
 				),
 			});
@@ -327,7 +327,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		} else if (!isNil(canViewAssignmentResponses)) {
 			// canViewAssignmentResponses: false
 			setLoadingInfo({
-				message: tText(
+				message: tHtml(
 					'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
 				),
 				icon: IconName.lock,

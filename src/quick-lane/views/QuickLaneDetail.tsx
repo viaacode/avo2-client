@@ -67,7 +67,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				if (!content || !content.is_public) {
 					setLoadingInfo({
 						state: 'error',
-						message: tText(
+						message: tHtml(
 							'collection/views/collection-detail___de-collectie-kon-niet-worden-gevonden'
 						),
 						icon: IconName.search,
@@ -98,7 +98,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				if (!content.is_published) {
 					setLoadingInfo({
 						state: 'error',
-						message: tText('item/views/item___dit-item-werd-niet-gevonden'),
+						message: tHtml('item/views/item___dit-item-werd-niet-gevonden'),
 						icon: IconName.search,
 					});
 
@@ -145,7 +145,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'quick-lane/views/quick-lane-detail___het-laden-van-de-gedeelde-link-is-mislukt'
 				),
 			});
@@ -158,7 +158,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 		} else {
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'quick-lane/views/quick-lane-detail___je-hebt-geen-rechten-om-deze-gedeelde-link-te-bekijken'
 				),
 				icon: IconName.lock,

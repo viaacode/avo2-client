@@ -80,7 +80,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'admin/interactive-tour/views/interactive-tour-overview___het-ophalen-van-de-interactive-tours-is-mislukt'
 				),
 			});

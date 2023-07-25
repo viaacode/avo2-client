@@ -73,7 +73,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'workspace/views/organisation-content-overview___het-ophalen-van-de-organisatieinhoud-is-mislukt'
 				),
 				actionButtons: ['home'],

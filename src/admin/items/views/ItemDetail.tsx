@@ -107,7 +107,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			console.error(new CustomError('Failed to get item by uuid', err));
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'admin/items/views/item-detail___het-ophalen-van-de-item-info-is-mislukt'
 				),
 			});

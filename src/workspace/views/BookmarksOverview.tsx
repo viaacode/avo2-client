@@ -101,7 +101,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			console.error(new CustomError('Failed to get all bookmarks for user', err, { user }));
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'workspace/views/bookmarks___het-ophalen-van-je-bladwijzers-is-mislukt'
 				),
 			});

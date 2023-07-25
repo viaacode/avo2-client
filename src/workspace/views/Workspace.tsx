@@ -173,7 +173,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'workspace/views/workspace___het-laden-van-de-werkruimte-is-mislukt'
 					),
 				});
@@ -311,7 +311,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 			} else {
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'workspace/views/workspace___je-hebt-geen-rechten-om-je-werkruimte-te-bekijken'
 					),
 					icon: IconName.lock,

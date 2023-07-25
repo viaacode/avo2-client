@@ -306,7 +306,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			console.error(new CustomError('Failed to fetch assignments from the database', err));
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'assignment/views/assignment-overview___het-ophalen-van-je-opdrachten-is-mislukt'
 				),
 			});

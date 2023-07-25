@@ -168,7 +168,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt'
 				),
 			});

@@ -154,7 +154,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'admin/pupil-collection/views/pupil-collections-overview___het-ophalen-van-de-leerlingencollecties-is-mislukt'
 				),
 			});

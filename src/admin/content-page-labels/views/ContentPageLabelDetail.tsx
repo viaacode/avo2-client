@@ -23,7 +23,7 @@ import { ContentPageLabel } from '../content-page-label.types';
 type ContentPageLabelEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ history, match }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// Hooks
 	const [contentPageLabelInfo, setContentPageLabelInfo] = useState<ContentPageLabel | null>(null);
@@ -39,7 +39,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 				setLoadingInfo({
 					state: 'error',
 					icon: IconName.search,
-					message: tText(
+					message: tHtml(
 						'admin/content-page-labels/views/content-page-label-detail___deze-content-pagina-label-werd-niet-gevonden'
 					),
 				});
@@ -64,7 +64,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'admin/content-page-labels/views/content-page-label-detail___het-ophalen-van-de-content-pagina-label-is-mislukt'
 				),
 			});

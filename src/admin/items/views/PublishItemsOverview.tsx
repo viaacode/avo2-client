@@ -86,7 +86,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'admin/items/views/items-overview___het-ophalen-van-de-items-is-mislukt'
 				),
 			});

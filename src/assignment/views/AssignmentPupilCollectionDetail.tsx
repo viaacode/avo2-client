@@ -29,7 +29,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 	match,
 	user,
 }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response | null>();
@@ -50,7 +50,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 			if (!canViewAssignmentResponses) {
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'assignment/views/assignment-pupil-collection-detail___je-hebt-geen-toegang-om-deze-leerlingencollectie-te-bekijken'
 					),
 				});
@@ -79,7 +79,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'assignment/views/assignment-pupil-collection-detail___het-ophalen-van-de-leerlingencollectie-is-mislukt'
 				),
 			});

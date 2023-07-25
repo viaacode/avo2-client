@@ -190,7 +190,7 @@ const BundleDetail: FunctionComponent<
 			if (!bundleObj) {
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'bundle/views/bundle-detail___de-bundel-kon-niet-worden-gevonden'
 					),
 					icon: IconName.search,
@@ -298,7 +298,7 @@ const BundleDetail: FunctionComponent<
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'bundle/views/bundle-detail___er-ging-iets-mis-tijdens-het-ophalen-van-de-bundel'
 				),
 				icon: IconName.alertTriangle,

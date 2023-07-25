@@ -136,7 +136,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 			if (!user.profile || debouncedFilters === undefined) {
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'workspace/views/quick-lane-overview___er-is-onvoldoende-informatie-beschikbaar-om-gedeelde-links-op-te-halen'
 					),
 				});
@@ -161,7 +161,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				if (!user.profile.company_id) {
 					setLoadingInfo({
 						state: 'error',
-						message: tText(
+						message: tHtml(
 							'workspace/views/quick-lane-overview___de-huidige-gebruiker-is-niet-geassocieerd-met-een-organisatie'
 						),
 					});
@@ -178,7 +178,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				if (!user.profile.id) {
 					setLoadingInfo({
 						state: 'error',
-						message: tText(
+						message: tHtml(
 							'workspace/views/quick-lane-overview___de-huidige-gebruiker-heeft-een-corrupt-profiel'
 						),
 					});
@@ -203,7 +203,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'workspace/views/quick-lane-overview___het-ophalen-van-je-gedeelde-links-is-mislukt'
 				),
 			});

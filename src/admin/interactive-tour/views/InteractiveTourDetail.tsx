@@ -59,7 +59,7 @@ const InteractiveTourDetail: FunctionComponent<InteractiveTourDetailProps> = ({
 			);
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'admin/interactive-tour/views/interactive-tour-detail___het-ophalen-van-de-interactive-tour-is-mislukt'
 				),
 			});

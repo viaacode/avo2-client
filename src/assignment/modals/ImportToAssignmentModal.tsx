@@ -114,7 +114,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 			console.error(new CustomError('Failed to get assignments', err));
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'assignment/modals/import-to-assignment-modal___het-ophalen-van-bestaande-opdrachten-is-mislukt'
 				),
 			});

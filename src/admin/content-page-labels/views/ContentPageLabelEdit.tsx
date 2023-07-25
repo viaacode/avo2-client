@@ -79,7 +79,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'admin/content-page-labels/views/content-page-label-edit___het-ophalen-van-de-content-pagina-label-is-mislukt'
 					),
 				});

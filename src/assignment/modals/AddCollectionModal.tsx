@@ -172,7 +172,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			console.error(new CustomError('Failed to get collections', err));
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'assignment/modals/add-collection-modal___het-ophalen-van-bestaande-collecties-is-mislukt'
 				),
 			});

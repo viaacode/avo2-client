@@ -67,7 +67,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	loginStateError,
 	loginStateLoading,
 }) => {
-	const { tText } = useTranslation();
+	const { tText, tHtml } = useTranslation();
 
 	// State
 	const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
@@ -78,7 +78,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			if (!loginState) {
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'dynamic-route-resolver/views/dynamic-route-resolver___het-controleren-van-je-login-status-is-mislukt'
 					),
 					actionButtons: ['home', 'helpdesk'],
@@ -219,7 +219,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			);
 			redirectToErrorPage(
 				{
-					message: tText(
+					message: tHtml(
 						'dynamic-route-resolver/views/dynamic-route-resolver___er-ging-iets-mis-bij-het-inloggen'
 					),
 					actionButtons: ['home', 'helpdesk'],

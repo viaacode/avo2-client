@@ -143,7 +143,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 					setLoadingInfo({
 						state: 'error',
 						icon: IconName.search,
-						message: tText(
+						message: tHtml(
 							'admin/interactive-tour/views/interactive-tour-edit___deze-interactieve-tour-werd-niet-gevonden'
 						),
 					});
@@ -165,7 +165,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				);
 				setLoadingInfo({
 					state: 'error',
-					message: tText(
+					message: tHtml(
 						'admin/interactive-tour/views/interactive-tour-edit___het-ophalen-van-de-interactive-tour-is-mislukt'
 					),
 				});

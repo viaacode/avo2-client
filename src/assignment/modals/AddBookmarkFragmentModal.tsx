@@ -136,7 +136,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 			console.error(new CustomError('Failed to get bookmarks', err));
 			setLoadingInfo({
 				state: 'error',
-				message: tText(
+				message: tHtml(
 					'assignment/modals/add-bookmark-fragment-modal___het-ophalen-van-bladwijzers-is-mislukt'
 				),
 			});

@@ -42,7 +42,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 			setLoadingInfo({
 				state: 'error',
 				icon: IconName.lock,
-				message: tText(
+				message: tHtml(
 					'admin/admin___je-hebt-geen-rechten-om-het-beheer-dashboard-te-bekijken-view-admin-dashboard'
 				),
 				actionButtons: ['home', 'helpdesk'],
