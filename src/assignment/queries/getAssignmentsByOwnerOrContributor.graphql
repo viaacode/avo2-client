@@ -94,7 +94,7 @@ query getAssignmentsByOwnerOrContributor(
 			}
 		}
 		loms {
-			id
+			lom_id
 			lom {
 				broader
 				label
