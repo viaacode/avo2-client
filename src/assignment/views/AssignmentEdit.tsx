@@ -182,7 +182,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs(
 		history,
-		match.params.id as string
+		match.params.id as string,
+		user
 	);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
 	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
