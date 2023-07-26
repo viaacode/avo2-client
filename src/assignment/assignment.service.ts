@@ -529,6 +529,7 @@ export class AssignmentService {
 			published_at: undefined,
 			contributors: [],
 			labels: [],
+			note: null,
 		};
 
 		delete newAssignment.owner;
