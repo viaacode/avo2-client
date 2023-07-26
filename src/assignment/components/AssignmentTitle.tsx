@@ -41,18 +41,27 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 									)}
 									nodeCancel={<Icon name={IconName.x} size="small" />}
 									nodeSubmit={<Icon name={IconName.check} size="small" />}
-									onChange={(title) => {
-										field.onChange(title);
+									onConfirm={(title) => {
 										setAssignment &&
 											setAssignment((previous) => {
 												return {
 													...previous,
-													title,
+													title: title as string,
 												};
 											});
 									}}
+									onCancel={() => {
+										setIsActive(false);
+										setAssignment &&
+											setAssignment((previous) => {
+												return { ...previous };
+											});
+									}}
 									onOpen={() => setIsActive(true)}
-									onClose={() => setIsActive(false)}
+									onClose={() => {
+										setIsActive(false);
+										// setAssignment && setAssignment((previous) => previous);
+									}}
 									iconEnd={() =>
 										!isActive && (
 											<Icon name={IconName.edit4} size="small" subtle />

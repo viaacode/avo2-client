@@ -5,11 +5,16 @@ import React, { FC, useMemo, useState } from 'react';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 type CollectionOrBundleTitleProps = {
-	title?: string;
-	onChange?: (title: string) => void;
+	initialTitle: string | undefined;
+	title: string | undefined;
+	onChange: (title: string) => void;
 };
 
-const CollectionLOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({ title, onChange }) => {
+const CollectionLOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
+	initialTitle,
+	title,
+	onChange,
+}) => {
 	const { tText } = useTranslation();
 	const [isActive, setIsActive] = useState<boolean>(false);
 
@@ -24,6 +29,7 @@ const CollectionLOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({ title, onC
 							nodeCancel={<Icon name={IconName.x} size="small" />}
 							nodeSubmit={<Icon name={IconName.check} size="small" />}
 							onChange={onChange}
+							onCancel={() => onChange(initialTitle as string)}
 							onOpen={() => setIsActive(true)}
 							onClose={() => setIsActive(false)}
 							iconEnd={() =>
