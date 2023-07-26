@@ -33,9 +33,9 @@ export function useAssignmentPupilTabs(
 					label: tText('assignment/hooks/assignment-pupil-tabs___opdracht'),
 					icon: IconName.clipboard as IconName,
 				},
-				...(assignment?.lom_learning_resource_type?.includes(
-					AssignmentType.ZOEK || AssignmentType.BOUW
-				) && !pastDeadline
+				...(assignment?.lom_learning_resource_type?.includes(AssignmentType.ZOEK) ||
+				(assignment?.lom_learning_resource_type?.includes(AssignmentType.BOUW) &&
+					!pastDeadline)
 					? [
 							{
 								id: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS.SEARCH,
