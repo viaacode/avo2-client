@@ -11,8 +11,8 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
 export function useAssignmentTeacherTabs(
 	history: H.History<unknown>,
-	assignmentId: string,
-	user: Avo.User.User | undefined
+	user: Avo.User.User | undefined,
+	assignmentId?: string
 ): [
 	TabProps[],
 	ASSIGNMENT_CREATE_UPDATE_TABS | undefined,
