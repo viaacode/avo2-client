@@ -32,6 +32,13 @@ query getWorkspaceTabCounts($owner_profile_id: uuid, $company_id: String, $now: 
 			count
 		}
 	}
+	assignment_bookmark_counts: app_assignments_v2_bookmarks_aggregate(
+		where: { profile_id: { _eq: $owner_profile_id } }
+	) {
+		aggregate {
+			count
+		}
+	}
 	collection_bookmark_counts: app_collection_bookmarks_aggregate(
 		where: { profile_id: { _eq: $owner_profile_id } }
 	) {
