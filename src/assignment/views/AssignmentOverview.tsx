@@ -26,7 +26,7 @@ import {
 import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { cloneDeep, compact, isNil, noop } from 'lodash-es';
+import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	KeyboardEvent,
@@ -125,7 +125,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
-	const [assignmentCount, setAssigmentCount] = useState<number>(0);
+	const [assignmentCount, setAssignmentCount] = useState<number>(0);
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
@@ -179,11 +179,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		}
 	}, []);
 
-	const handleQueryChanged = (value: any, id: string) => {
+	const handleQueryChanged = (value: string | string[] | number | undefined, id: string) => {
 		let newQuery: any = cloneDeep(query);
 		let newValue = value;
+
 		// Show both shareTypes for 'mijn opdrachten' option
-		if (value.includes(ShareWithColleagueTypeEnum.NIET_GEDEELD)) {
+		if (isArray(value) && value.includes(ShareWithColleagueTypeEnum.NIET_GEDEELD)) {
 			newValue = [...value, ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE];
 		}
 
@@ -276,7 +277,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 			setLoadingInfo({ state: 'loading' });
 			setAssignments(null);
-			setAssigmentCount(0);
+			setAssignmentCount(0);
 
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
@@ -297,9 +298,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				(query.selectedClassLabelIds as string[]) || [],
 				(query.selectedShareTypeLabelIds as string[]) || []
 			);
-
 			setAssignments(response.assignments);
-			setAssigmentCount(response.count);
+			setAssignmentCount(response.count);
 
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
