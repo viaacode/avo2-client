@@ -1,7 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	Dispatch,
+	FunctionComponent,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
@@ -21,8 +29,10 @@ import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import AssignmentActions from '../components/AssignmentActions';
+import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
 import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEditable';
 import AssignmentHeading from '../components/AssignmentHeading';
+import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataFormEditable';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
@@ -36,9 +46,10 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
+import { AssignmentFields } from '../hooks/assignment-form';
+
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
-import { AssignmentFields } from '../hooks/assignment-form';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	user,
@@ -137,7 +148,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		when: isDirty,
 	});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs(history, assignment?.id as string);
+	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs(history, user);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	// Render
@@ -277,6 +288,30 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 							setValue={setValue as any}
 						/>
 					</div>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.PUBLISH:
+				return (
+					<div className="c-assignment-details-tab">
+						<AssignmentMetaDataFormEditable
+							assignment={assignment as Avo.Assignment.Assignment}
+							setAssignment={
+								setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
+							}
+							setValue={setValue as any}
+						/>
+					</div>
+				);
+
+			case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
+				return (
+					<AssignmentAdminFormEditable
+						assignment={assignment as Avo.Assignment.Assignment}
+						setAssignment={
+							setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
+						}
+						setValue={setValue as any}
+					/>
 				);
 
 			default:
