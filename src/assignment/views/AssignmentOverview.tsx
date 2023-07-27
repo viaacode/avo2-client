@@ -71,6 +71,7 @@ import {
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
+import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
@@ -95,6 +96,7 @@ import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
+
 import './AssignmentOverview.scss';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
@@ -532,14 +534,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		});
 
 	const renderResponsesCell = (cellData: any, assignment: Avo.Assignment.Assignment) => {
-		if ((cellData || []).length === 0) {
+		const responsesCount = (cellData || []).length;
+
+		const userRole = getContributorType(user, assignment, assignment.contributors || []);
+
+		if (responsesCount === 0 || userRole === 'VIEWER') {
 			return renderDataCell(
 				<span
 					title={tText(
 						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'
 					)}
 				>
-					0
+					{responsesCount}
 				</span>,
 				tText('assignment/views/assignment-overview___responses')
 			);
@@ -557,7 +563,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'
 					)}
 				>
-					{(cellData || []).length}
+					{responsesCount}
 				</span>
 			</Link>,
 			tText('assignment/views/assignment-overview___responses')
