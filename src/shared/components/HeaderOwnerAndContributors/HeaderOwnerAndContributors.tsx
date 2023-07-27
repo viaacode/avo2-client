@@ -34,6 +34,12 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 		(contrib) => !!contrib.profile_id && !(contrib.rights === ContributorInfoRights.VIEWER)
 	);
 
+	const renderOwner = () => {
+		const organisation = owner?.organisation?.name ? ` (${owner?.organisation?.name})` : '';
+
+		return getFullName(owner, false, false) + organisation;
+	};
+
 	const renderContributors = (): ReactNode => {
 		if (nonPendingContributors?.length) {
 			const couplingWord = ` ${tText(
@@ -100,7 +106,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 							</>
 						) : (
 							<>
-								{getFullName(owner, false, false)}
+								{renderOwner()}
 								{renderContributors()}
 							</>
 						)}
