@@ -110,6 +110,9 @@ type CollectionDetailPermissions = Partial<{
 	canDeleteCollections: boolean;
 	canCreateCollections: boolean;
 	canViewAnyPublishedItems: boolean;
+	canViewAnyPublishedCollections: boolean;
+	canViewAnyUnpublishedCollections: boolean;
+	canViewQuickLanes: boolean;
 	canCreateQuickLane: boolean;
 	canAutoplayCollection: boolean;
 	canCreateAssignments: boolean;
@@ -335,7 +338,14 @@ const CollectionDetail: FunctionComponent<
 					{ name: PermissionName.DELETE_ANY_COLLECTIONS },
 				],
 				canViewAnyPublishedItems: [{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
+				canViewAnyPublishedCollections: [
+					{ name: PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS },
+				],
+				canViewAnyUnpublishedCollections: [
+					{ name: PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS },
+				],
 				canCreateQuickLane: [{ name: PermissionName.CREATE_QUICK_LANE }],
+				canViewQuickLanes: [{ name: PermissionName.VIEW_QUICK_LANE_DETAIL }],
 				canAutoplayCollection: [{ name: PermissionName.AUTOPLAY_COLLECTION }],
 				canCreateAssignments: [{ name: PermissionName.CREATE_ASSIGNMENTS }],
 				canCreateBundles: [{ name: PermissionName.CREATE_BUNDLES }],
@@ -381,6 +391,25 @@ const CollectionDetail: FunctionComponent<
 				setCollectionInfo({
 					showNoAccessPopup: false,
 					showLoginPopup: true,
+					permissions: permissionObj,
+					collection: null,
+				});
+				setLoadingInfo({
+					state: 'loaded',
+				});
+				return;
+			}
+
+			if (
+				!permissionObj.canViewAnyUnpublishedCollections &&
+				!permissionObj.canViewAnyPublishedCollections &&
+				(!permissionObj.canViewQuickLanes ||
+					(permissionObj.canViewQuickLanes &&
+						!window.location.href.includes(ROUTE_PARTS.quickLane)))
+			) {
+				setCollectionInfo({
+					showNoAccessPopup: true,
+					showLoginPopup: false,
 					permissions: permissionObj,
 					collection: null,
 				});
