@@ -248,7 +248,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 				})}
 			</>
 		),
-		[tText, isOverflowDropdownOpen]
+		[tText, isOverflowDropdownOpen, publish]
 	);
 };
 
