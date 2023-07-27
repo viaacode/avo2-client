@@ -1367,6 +1367,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<Header
 					title={
 						<CollectionOrBundleTitle
+							initialTitle={collectionState.initialCollection?.title}
 							title={collectionState.currentCollection?.title}
 							onChange={(title) =>
 								changeCollectionState({
