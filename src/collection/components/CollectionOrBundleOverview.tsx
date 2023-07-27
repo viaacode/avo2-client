@@ -587,19 +587,21 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const renderCell = (collection: Collection, colKey: string) => {
 		const { id } = collection;
 
-		const sharedWithNames = collection.contributors.map((contributor) => {
-			if (!contributor.profile) {
-				return null;
-			}
-			const fullName = contributor.profile?.user?.full_name;
-			const orgName = contributor.profile?.organisation?.name;
+		const sharedWithNames = compact(
+			collection.contributors.map((contributor) => {
+				if (!contributor.profile) {
+					return null;
+				}
+				const fullName = contributor.profile?.user?.full_name;
+				const orgName = contributor.profile?.organisation?.name;
 
-			if (contributor.profile?.organisation?.name) {
-				return `${fullName} (${orgName}) `;
-			} else {
-				return `${fullName} `;
-			}
-		});
+				if (contributor.profile?.organisation?.name) {
+					return `${fullName} (${orgName}) `;
+				} else {
+					return `${fullName} `;
+				}
+			})
+		);
 
 		const shareTypeTitle =
 			collection.share_type &&
