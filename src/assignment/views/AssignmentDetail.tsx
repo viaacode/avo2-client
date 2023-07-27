@@ -15,7 +15,6 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import { Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { noop } from 'lodash-es';
 import React, { FC, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
@@ -35,6 +34,7 @@ import {
 	InteractiveTour,
 	ShareDropdown,
 	ShareModal,
+	ShareWithPupilsProps,
 } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -152,10 +152,18 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 		!!editStatuses[assignmentId] &&
 		editStatuses[assignmentId]?.editingUserId !== user?.profile?.id;
 
-	const shareWithPupilsProps = {
+	const shareWithPupilsProps: ShareWithPupilsProps = {
 		assignment: assignment || undefined, // Needs to be saved before you can share
-		onContentLinkClicked: noop,
-		onDetailLinkClicked: noop,
+		onContentLinkClicked: () =>
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+				id: assignmentId,
+				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+			}),
+		onDetailLinkClicked: () =>
+			navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+				id: assignmentId,
+				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS,
+			}),
 	};
 
 	const getPermissions = useCallback(
