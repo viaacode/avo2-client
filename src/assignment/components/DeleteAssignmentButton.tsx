@@ -1,12 +1,14 @@
 import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { Avo, PermissionName } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
 import { compose } from 'redux';
 
+import { PermissionService } from '../../authentication/helpers/permission-service';
 import { DeleteObjectModal } from '../../shared/components';
 import { ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { ToastService } from '../../shared/services/toast-service';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';
 
 export type DeleteAssignmentButtonProps = DefaultProps &
@@ -25,9 +27,23 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 	const { tText } = useTranslation();
 
 	const [isOpen, setOpen] = useState<boolean>(false);
-
+	const canDeleteAnyAssignments = PermissionService.hasPerm(
+		user,
+		PermissionName.DELETE_ANY_ASSIGNMENTS
+	);
 	const isOwner =
 		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
+
+	const onConfirm = async () => {
+		if (!user?.profile?.id) {
+			ToastService.danger(tText('Je moet ingelogd zijn om een opdracht te verwijderen'));
+			return;
+		}
+		await deleteAssignment(assignment?.id, user, isOwner);
+
+		setOpen(false);
+		modal?.confirmCallback && modal.confirmCallback();
+	};
 
 	return (
 		<>
@@ -40,8 +56,8 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 				)}
 				icon={IconName.delete}
 				label={
-					isOwner
-						? tText('collection/views/collection-detail___verwijder')
+					canDeleteAnyAssignments || isOwner
+						? tText('Verwijderen')
 						: tText(
 								'assignment/components/delete-assignment-button___verwijder-mij-van-deze-opdracht'
 						  )
@@ -67,12 +83,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 					setOpen(false);
 					modal?.onClose && modal.onClose();
 				}}
-				confirmCallback={async () => {
-					await deleteAssignment(assignment?.id, user);
-
-					setOpen(false);
-					modal?.confirmCallback && modal.confirmCallback();
-				}}
+				confirmCallback={async () => await onConfirm()}
 			/>
 		</>
 	);

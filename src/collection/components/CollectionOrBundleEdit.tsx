@@ -89,6 +89,7 @@ import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityC
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
+import { deleteCollection } from '../helpers/delete-collection';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -799,47 +800,28 @@ const CollectionOrBundleEdit: FunctionComponent<
 	};
 
 	const onDeleteCollection = async () => {
-		try {
-			if (!collectionState.currentCollection) {
-				console.error(`Failed to delete ${type} since currentCollection is undefined`);
-				ToastService.info(
-					isCollection
-						? tHtml(
-								'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt-collectie-niet-ingesteld'
-						  )
-						: tHtml(
-								'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-bundel-is-mislukt-bundel-niet-ingesteld'
-						  )
-				);
-				return;
-			}
-			await CollectionService.deleteCollectionOrBundle(collectionState.currentCollection.id);
-
-			trackEvents(
-				{
-					object: String(collectionState.currentCollection.id),
-					object_type: type,
-					action: 'delete',
-				},
-				user
-			);
-
-			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID });
-			ToastService.success(
-				tHtml('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
-			);
-		} catch (err) {
-			console.error(err);
+		if (!collectionState.currentCollection) {
+			console.error(`Failed to delete ${type} since currentCollection is undefined`);
 			ToastService.info(
 				isCollection
 					? tHtml(
-							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt'
+							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt-collectie-niet-ingesteld'
 					  )
 					: tHtml(
-							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-bundel-is-mislukt'
+							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-bundel-is-mislukt-bundel-niet-ingesteld'
 					  )
 			);
+			return;
 		}
+
+		await deleteCollection(
+			collectionId,
+			user,
+			isOwner,
+			isCollection,
+			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
+			() => navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
+		);
 	};
 
 	// TODO: DISABLED FEATURE
@@ -1174,7 +1156,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				'delete',
-				isOwner
+				permissions.canDelete || isOwner
 					? tText('collection/components/collection-or-bundle-edit___verwijderen')
 					: tText(
 							'collection/components/collection-or-bundle-edit___verwijder-mij-van-deze-collectie'
@@ -1327,7 +1309,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				'delete',
-				tText('collection/components/collection-or-bundle-edit___verwijderen'),
+				permissions.canDelete || isOwner
+					? tText('collection/components/collection-or-bundle-edit___verwijderen')
+					: tText(
+							'collection/components/collection-or-bundle-edit___verwijder-mij-van-deze-collectie'
+					  ),
 				IconName.delete,
 				true
 			),
