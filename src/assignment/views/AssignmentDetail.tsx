@@ -128,7 +128,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 
-	const [query] = useQueryParams({ inviteToken: StringParam });
+	const [query, setQuery] = useQueryParams({ inviteToken: StringParam });
 	const { inviteToken } = query;
 
 	// Computed
@@ -762,7 +762,12 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 				inviteToken
 			);
 
-			navigate(history, match.url);
+			setQuery({
+				...query,
+				inviteToken: undefined,
+			});
+
+			await fetchAssignment();
 
 			ToastService.success(
 				res.rights === 'CONTRIBUTOR'
