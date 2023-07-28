@@ -700,6 +700,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		fetchContributors: fetchContributors,
 		contributors: contributors || [],
 	};
+
 	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
 			<div>
