@@ -86,6 +86,7 @@ query getAssignmentsByResponseOwnerId(
 				}
 			}
 			id
+			rights
 			enum_right_type {
 				description
 				value

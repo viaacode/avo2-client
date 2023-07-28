@@ -51,6 +51,7 @@ export const getContributorType = (
 		return ContributorInfoRights.OWNER;
 	}
 
-	return contributors.find((contributor) => contributor.profile_id === user.profile?.id)
-		?.rights as ShareRightsType;
+	return contributors.find(
+		(contributor) => (contributor.profile_id || contributor?.profile?.id) === user.profile?.id
+	)?.rights as ShareRightsType;
 };
