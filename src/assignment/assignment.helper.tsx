@@ -170,7 +170,7 @@ const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assign
 	},
 	{
 		error: tText(
-			'assignment/assignment___de-video-items-moeten-een-titel-en-beschrijving-bevatten'
+			'assignment/assignment___de-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
 		),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!assignment.blocks || validateBlocks(assignment.blocks, 'ITEM'),
@@ -196,7 +196,7 @@ const validateBlocks = (blocks: Avo.Assignment.Block[], type: BlockItemTypeSchem
 			break;
 		case 'ITEM':
 			blocksByType.forEach((block) => {
-				if (block.use_custom_fields && (!block.custom_title || !block.custom_description)) {
+				if (block.use_custom_fields && !block.custom_title && !block.custom_description) {
 					isValid = false;
 				}
 			});
