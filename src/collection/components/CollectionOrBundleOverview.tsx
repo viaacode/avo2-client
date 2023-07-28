@@ -123,8 +123,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
 		selectedCollection?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
 
-	console.log(isOwner);
-	console.log(selectedCollection);
 	// Mutations
 	const { mutateAsync: triggerCollectionOrBundleDelete } =
 		useDeleteCollectionOrBundleByUuidMutation();
@@ -423,8 +421,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			</div>
 		</div>
 	);
-
-	console.log(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_COLLECTIONS), isOwner);
 
 	const renderActions = (collectionUuid: string) => {
 		const currentCollection = collections?.find(

@@ -637,7 +637,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			</ButtonToolbar>
 		);
 	};
-	console.log(permissions);
+
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(

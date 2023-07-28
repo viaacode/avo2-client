@@ -139,14 +139,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	);
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 	const [showPublicState, setShowPublicState] = useState<boolean | null>(null);
-	console.log(markedAssignment);
+
 	const isOwner =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
 	const isContributor =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
-
-	console.log(isOwner);
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
 		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
