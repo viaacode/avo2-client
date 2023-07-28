@@ -35,6 +35,7 @@ interface ShareProps extends ShareWithPupilsProps {
 }
 
 interface AssignmentActionsProps {
+	view?: Partial<ButtonProps>;
 	preview?: Partial<ButtonProps>;
 	overflow?: Partial<ButtonProps>;
 	shareWithColleaguesOrPupilsProps?: ShareProps;
@@ -46,6 +47,7 @@ interface AssignmentActionsProps {
 }
 
 const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
+	view,
 	preview,
 	overflow,
 	duplicate,
@@ -57,6 +59,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
+
+	const renderViewButton = (buttonProps?: Partial<ButtonProps>) => (
+		<Button type="secondary" {...buttonProps} {...view} />
+	);
 
 	const renderPreviewButton = (buttonProps?: Partial<ButtonProps>) => (
 		<Button
@@ -195,6 +201,9 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 						...publish,
 						className: 'c-assignment-heading__hide-on-mobile',
 					})}
+				{renderViewButton({
+					className: 'c-assignment-heading__hide-on-mobile',
+				})}
 
 				<div className="c-assignment-heading__dropdown-wrapper">
 					<Dropdown
@@ -221,6 +230,12 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 								...publish,
 								block: true,
 								className: 'c-assignment-heading__show-on-mobile',
+								type: 'borderless',
+							})}
+							{renderViewButton({
+								block: true,
+								className: 'c-assignment-heading__show-on-mobile',
+								icon: IconName.eye,
 								type: 'borderless',
 							})}
 							{renderShareButton({

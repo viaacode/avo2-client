@@ -4,7 +4,7 @@
 .c-assignment-heading {
 	&__actions {
 		display: grid;
-		grid-template-columns: auto auto auto auto;
+		grid-template-columns: auto auto auto auto auto;
 		padding-left: $g-spacer-unit * 2;
 		z-index: $g-c-local-toolbar-z; // Ensure rich text does not overlap
 
