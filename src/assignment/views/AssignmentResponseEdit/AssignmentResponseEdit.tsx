@@ -282,7 +282,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	const renderedTitle = useMemo(
 		() => (
-			<Flex center className={classnames({ 'u-spacer-top-l': showBackButton })}>
+			<Flex className={classnames({ 'u-spacer-top-l': showBackButton })}>
 				<Icon name={IconName.clipboard} size="large" />
 
 				<BlockHeading className="u-spacer-left" type="h2">
