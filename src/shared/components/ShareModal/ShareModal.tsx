@@ -14,9 +14,9 @@ type ShareModalProps = {
 	isOpen: boolean;
 	contributors?: ContributorInfo[];
 	onClose: () => void;
-	onAddContributor: (info: Partial<ContributorInfo>) => void;
-	onEditContributorRights: (info: ContributorInfo, newRights: ShareRightsType) => void;
-	onDeleteContributor: (info: ContributorInfo) => void;
+	onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>;
+	onEditContributorRights: (info: ContributorInfo, newRights: ShareRightsType) => Promise<void>;
+	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	shareWithPupilsProps?: ShareWithPupilsProps;
 	withPupils?: boolean;
 };
