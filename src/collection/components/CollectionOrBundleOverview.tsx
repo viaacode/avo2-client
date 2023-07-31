@@ -416,7 +416,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	);
 
 	const renderActions = (collectionUuid: string) => {
-		console.log(permissions[collectionUuid]);
 		const currentCollection = collections?.find(
 			(collection) => collection.id === collectionUuid
 		);
