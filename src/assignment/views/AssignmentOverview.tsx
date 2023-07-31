@@ -488,17 +488,15 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderLabels = (labels: { assignment_label: Avo.Assignment.Label }[], label: string) => {
-		if (!labels.length) {
-			return '-';
-		}
-
 		return renderMobileDesktop({
 			mobile: renderDataCell(
-				labels.map((label) => label.assignment_label.label).join(', '),
+				labels.length
+					? labels.map((label) => label.assignment_label.label).join(', ')
+					: '-',
 				label,
 				'm-assignment-overview__table__data-cell--labels'
 			),
-			desktop: (
+			desktop: labels.length ? (
 				<TagList
 					tags={labels.map(({ assignment_label: item }: any) => ({
 						id: item.id,
@@ -508,6 +506,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					swatches
 					closable={false}
 				/>
+			) : (
+				'-'
 			),
 		});
 	};
