@@ -50042,7 +50042,7 @@ export type GetWorkspaceTabCountsQueryVariables = Exact<{
 }>;
 
 
-export type GetWorkspaceTabCountsQuery = { __typename?: 'query_root', collection_counts: { __typename?: 'app_collections_overview_aggregate', aggregate?: { __typename?: 'app_collections_overview_aggregate_fields', count: number } | null }, bundle_counts: { __typename?: 'app_collections_overview_aggregate', aggregate?: { __typename?: 'app_collections_overview_aggregate_fields', count: number } | null }, assignment_counts: { __typename?: 'app_assignments_v2_overview_aggregate', aggregate?: { __typename?: 'app_assignments_v2_overview_aggregate_fields', count: number } | null }, collection_bookmark_counts: { __typename?: 'app_collection_bookmarks_aggregate', aggregate?: { __typename?: 'app_collection_bookmarks_aggregate_fields', count: number } | null }, item_bookmark_counts: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null }, organisation_content_counts: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null }, app_quick_lane_counts: { __typename?: 'app_quick_lanes_overview_aggregate', aggregate?: { __typename?: 'app_quick_lanes_overview_aggregate_fields', count: number } | null }, app_quick_lane_organisation_counts: { __typename?: 'app_quick_lanes_overview_aggregate', aggregate?: { __typename?: 'app_quick_lanes_overview_aggregate_fields', count: number } | null } };
+export type GetWorkspaceTabCountsQuery = { __typename?: 'query_root', collection_counts: { __typename?: 'app_collections_overview_aggregate', aggregate?: { __typename?: 'app_collections_overview_aggregate_fields', count: number } | null }, bundle_counts: { __typename?: 'app_collections_overview_aggregate', aggregate?: { __typename?: 'app_collections_overview_aggregate_fields', count: number } | null }, assignment_counts: { __typename?: 'app_assignments_v2_overview_aggregate', aggregate?: { __typename?: 'app_assignments_v2_overview_aggregate_fields', count: number } | null }, assignment_bookmark_counts: { __typename?: 'app_assignments_v2_bookmarks_aggregate', aggregate?: { __typename?: 'app_assignments_v2_bookmarks_aggregate_fields', count: number } | null }, collection_bookmark_counts: { __typename?: 'app_collection_bookmarks_aggregate', aggregate?: { __typename?: 'app_collection_bookmarks_aggregate_fields', count: number } | null }, item_bookmark_counts: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null }, organisation_content_counts: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null }, app_quick_lane_counts: { __typename?: 'app_quick_lanes_overview_aggregate', aggregate?: { __typename?: 'app_quick_lanes_overview_aggregate_fields', count: number } | null }, app_quick_lane_organisation_counts: { __typename?: 'app_quick_lanes_overview_aggregate', aggregate?: { __typename?: 'app_quick_lanes_overview_aggregate_fields', count: number } | null } };
 
 
 export const BulkAddLabelsToCollectionsDocument = `
@@ -55058,6 +55058,13 @@ export const GetWorkspaceTabCountsDocument = `
   }
   assignment_counts: app_assignments_v2_overview_aggregate(
     where: {collaborator_profile_id: {_eq: $owner_profile_id}, is_deleted: {_eq: false}, _or: [{deadline_at: {_gt: $now}}, {deadline_at: {_is_null: true}}]}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  assignment_bookmark_counts: app_assignments_v2_bookmarks_aggregate(
+    where: {profile_id: {_eq: $owner_profile_id}}
   ) {
     aggregate {
       count

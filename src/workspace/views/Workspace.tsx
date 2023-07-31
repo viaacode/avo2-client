@@ -150,7 +150,8 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 					[ASSIGNMENTS_ID]: response[0].assignment_counts.aggregate?.count ?? 0,
 					[BOOKMARKS_ID]:
 						(response[0].item_bookmark_counts.aggregate?.count ?? 0) +
-						(response[0].collection_bookmark_counts.aggregate?.count ?? 0),
+						(response[0].collection_bookmark_counts.aggregate?.count ?? 0) +
+						(response[0].assignment_bookmark_counts.aggregate?.count ?? 0),
 					[ORGANISATION_CONTENT_ID]:
 						response[0].organisation_content_counts.aggregate?.count ?? 0,
 					[QUICK_LANE_ID]: getQuickLaneCount(user, response[0]),
