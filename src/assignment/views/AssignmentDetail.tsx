@@ -189,7 +189,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 						{ name: PermissionName.PUBLISH_ANY_ASSIGNMENTS },
 					],
 
-					canDeleteAssignments: [{ name: PermissionName.DELETE_ANY_ASSIGNMENTS }],
+					canDeleteAnyAssignments: [{ name: PermissionName.DELETE_ANY_ASSIGNMENTS }],
 					canFetchBookmarkAndViewCounts: [
 						PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS,
 						PermissionName.VIEW_ANY_UNPUBLISHED_ASSIGNMENTS,
@@ -459,7 +459,15 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 				return;
 			}
 
-			await AssignmentService.deleteAssignment(assignment.id);
+			if (isOwner) {
+				await AssignmentService.deleteAssignment(assignmentId);
+			} else {
+				await AssignmentService.deleteContributor(
+					assignmentId,
+					undefined,
+					user.profile?.id
+				);
+			}
 
 			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 
@@ -518,11 +526,11 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.delete,
-				isOwner
-					? tText('collection/views/collection-detail___verwijder')
+				permissions.canDeleteAnyAssignments || isOwner
+					? tText('Verwijderen')
 					: tText('assignment/views/assignment-detail___verwijder-mij-van-deze-opdracht'),
 				undefined,
-				permissions.canDeleteAnyAssignments || isOwner || false
+				permissions.canDeleteAnyAssignments || isOwner || isContributor || false
 			),
 		];
 
@@ -666,9 +674,11 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.delete,
-				tText('collection/views/collection-detail___verwijder'),
+				permissions.canDeleteAnyAssignments || isOwner
+					? tText('Verwijderen')
+					: tText('assignment/views/assignment-detail___verwijder-mij-van-deze-opdracht'),
 				undefined,
-				permissions.canDeleteAnyAssignments || isOwner || false
+				permissions.canDeleteAnyAssignments || isOwner || isContributor || false
 			),
 		];
 

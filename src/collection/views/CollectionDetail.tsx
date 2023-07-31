@@ -100,6 +100,7 @@ import {
 } from '../helpers/collection-share-with-collegue-handlers';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
 import './CollectionDetail.scss';
+import { deleteCollection } from '../helpers/delete-collection';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -669,29 +670,23 @@ const CollectionDetail: FunctionComponent<
 	};
 
 	const onDeleteCollection = async (): Promise<void> => {
-		try {
-			await CollectionService.deleteCollectionOrBundle(collectionId);
-
-			trackEvents(
-				{
-					object: collectionId,
-					object_type: 'collection',
-					action: 'delete',
-				},
-				user
-			);
-
-			history.push(APP_PATH.WORKSPACE.route);
-			ToastService.success(
-				tHtml('collection/views/collection-detail___de-collectie-werd-succesvol-verwijderd')
-			);
-		} catch (err) {
+		if (!user) {
 			ToastService.danger(
 				tHtml(
-					'collection/views/collection-detail___het-verwijderen-van-de-collectie-is-mislukt'
+					'Kan collectie niet verwijderen omdat er geen gebruiker gevonden is. Probeer opnieuw in te loggen.'
 				)
 			);
+			return;
 		}
+
+		await deleteCollection(
+			collectionId,
+			user,
+			isOwner,
+			true,
+			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
+			() => history.push(APP_PATH.WORKSPACE.route)
+		);
 	};
 
 	const onCreateAssignment = async (withDescription: boolean): Promise<void> => {
@@ -860,7 +855,7 @@ const CollectionDetail: FunctionComponent<
 
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				tText('collection/views/collection-detail___verwijder'),
+				tText('Verwijderen'),
 				IconName.trash,
 				!!permissions?.canDeleteCollections
 			),
@@ -1088,7 +1083,7 @@ const CollectionDetail: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				tText('collection/views/collection-detail___verwijder'),
+				tText('verwijderen'),
 				undefined,
 				permissions?.canDeleteCollections || false
 			),

@@ -9,11 +9,13 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentType } from '../assignment.types';
 
 export async function deleteAssignment(
-	id?: string | null,
-	user?: Avo.User.User | null
+	assignmentId: string | null | undefined,
+	user: Avo.User.User,
+	isOwner: boolean,
+	afterDeleteCallback?: () => void
 ): Promise<void> {
 	try {
-		if (isNil(id)) {
+		if (isNil(assignmentId)) {
 			ToastService.danger(
 				tHtml(
 					'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
@@ -22,16 +24,31 @@ export async function deleteAssignment(
 			return;
 		}
 
-		await AssignmentService.deleteAssignment(id);
+		if (!user.profile?.id) {
+			ToastService.danger(
+				tHtml(
+					'Kan opdracht niet verwijderen omdat de gebruiker geen profiel id heeft. Probeer opnieuw in te loggen.'
+				)
+			);
+			return;
+		}
+
+		if (isOwner) {
+			await AssignmentService.deleteAssignment(assignmentId);
+		} else {
+			await AssignmentService.deleteContributor(assignmentId, undefined, user.profile.id);
+		}
 
 		trackEvents(
 			{
-				object: id,
+				object: assignmentId,
 				object_type: 'assignment',
 				action: 'delete',
 			},
 			user
 		);
+
+		afterDeleteCallback?.();
 
 		ToastService.success(
 			tHtml('assignment/views/assignment-overview___de-opdracht-is-verwijdert')

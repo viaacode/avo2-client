@@ -140,11 +140,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
 	const [showPublicState, setShowPublicState] = useState<boolean | null>(null);
 
+	const isOwner =
+		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
+		markedAssignment?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
 	const isContributor =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
-	const contributorObj = (markedAssignment?.contributors || []).find(
-		(contributor) => contributor?.profile?.id === user?.profile?.id
-	);
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
 		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
@@ -370,6 +370,8 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 			);
 			return;
 		}
+
+		setMarkedAssignment(assignmentRow);
 		switch (actionId) {
 			case 'edit':
 				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
@@ -381,7 +383,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				try {
 					if (!user?.profile?.id) {
 						ToastService.danger(
-							'Je moet ingelogd zijn om een opdracht te kunnen dupliceren'
+							tHtml('Je moet ingelogd zijn om een opdracht te kunnen dupliceren')
 						);
 						return;
 					}
@@ -420,26 +422,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const handleDeleteConfirm = async () => {
-		try {
-			if (isContributor) {
-				await AssignmentService.deleteContributor(
-					markedAssignment?.id,
-					contributorObj?.id,
-					user.profile?.id
-				);
-			} else {
-				await deleteAssignment(markedAssignment?.id, user);
-			}
-
-			await updateAndReset();
-		} catch (err) {
-			console.error(err);
-			ToastService.danger(
-				tHtml(
-					'assignment/views/assignment-overview___er-liep-iets-fout-met-het-verwijderen-van-de-opdracht'
-				)
-			);
-		}
+		await deleteAssignment(markedAssignment?.id, user, isOwner, updateAndReset);
 
 		handleDeleteModalClose();
 	};
@@ -451,13 +434,20 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				assignmentRow
 			);
 		};
+
 		return (
 			<ButtonToolbar className="c-assignment-overview__actions">
 				{canEditAssignments && (
 					<MoreOptionsDropdown
 						isOpen={dropdownOpenForAssignmentId === assignmentRow.id}
-						onOpen={() => setDropdownOpenForAssignmentId(assignmentRow.id)}
-						onClose={() => setDropdownOpenForAssignmentId(null)}
+						onOpen={() => {
+							setDropdownOpenForAssignmentId(assignmentRow.id);
+							setMarkedAssignment(assignmentRow);
+						}}
+						onClose={() => {
+							setDropdownOpenForAssignmentId(null);
+							setMarkedAssignment(null);
+						}}
 						label={getMoreOptionsLabel()}
 						menuItems={[
 							...(query.view === AssignmentView.FINISHED
@@ -480,12 +470,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 								icon: IconName.delete,
 								id: 'delete',
 								label:
-									assignmentRow.share_type ===
-									ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-										? tText(
+									PermissionService.hasPerm(
+										user,
+										PermissionName.DELETE_ANY_ASSIGNMENTS
+									) || isOwner
+										? tText('verwijderen')
+										: tText(
 												'assignment/views/assignment-overview___verwijder-mij-van-deze-opdracht'
-										  )
-										: tText('assignment/views/assignment-overview___verwijder'),
+										  ),
 							},
 						]}
 						onOptionClicked={handleOptionClicked}

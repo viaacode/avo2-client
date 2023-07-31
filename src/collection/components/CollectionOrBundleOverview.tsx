@@ -58,7 +58,6 @@ import {
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
@@ -70,11 +69,11 @@ import {
 	CollectionShareType,
 	ContentTypeNumber,
 } from '../collection.types';
+import { deleteCollection } from '../helpers/delete-collection';
 
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
-
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
 	type: 'collection' | 'bundle';
@@ -120,8 +119,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const isContributor =
 		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
-	const isSharedWithOthers =
-		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
+	const isOwner =
+		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
+		selectedCollection?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
 
 	// Mutations
 	const { mutateAsync: triggerCollectionOrBundleDelete } =
@@ -305,87 +305,37 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	};
 
 	const onDeleteCollection = async () => {
-		try {
-			setIsDeleteModalOpen(false);
-			if (!selectedCollectionUuid) {
-				ToastService.danger(
-					isCollection
-						? tHtml(
-								'collection/components/collection-or-bundle-overview___er-was-geen-collectie-geselecteerd-gelieve-opnieuw-te-proberen-na-het-herladen-van-de-pagina'
-						  )
-						: tHtml(
-								'collection/components/collection-or-bundle-overview___er-was-geen-bundel-geselecteerd-gelieve-opnieuw-te-proberen-na-het-herladen-van-de-pagina'
-						  )
-				);
-				return;
-			}
-
-			if (!user.profile?.id) {
-				ToastService.danger(
-					isCollection
-						? tHtml(
-								'collection/components/collection-or-bundle-overview___kan-collectie-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
-						  )
-						: tHtml(
-								'collection/components/collection-or-bundle-overview___kan-bundel-niet-verwijderen-omdat-de-gebruiker-geen-profiel-heeft-probeer-opnieuw-in-te-loggen'
-						  )
-				);
-				return;
-			}
-
-			if (isContributor) {
-				await CollectionService.deleteContributor(
-					selectedCollectionUuid,
-					undefined,
-					user.profile.id
-				);
-			}
-
-			await triggerCollectionOrBundleDelete(
-				{
-					collectionOrBundleUuid: selectedCollectionUuid,
-					collectionOrBundleUuidAsText: selectedCollectionUuid,
-				},
-				{
-					onSuccess: async () => {
-						const queryClient = new QueryClient();
-						await queryClient.invalidateQueries(COLLECTION_QUERY_KEYS);
-					},
-				}
-			);
-
-			trackEvents(
-				{
-					object: String(selectedCollectionUuid),
-					object_type: type,
-					action: 'delete',
-				},
-				user
-			);
-
-			ToastService.success(
-				isCollection
-					? tHtml(
-							'collection/components/collection-or-bundle-overview___collectie-is-verwijderd'
-					  )
-					: tHtml(
-							'collection/components/collection-or-bundle-overview___bundel-is-verwijderd'
-					  )
-			);
-			onUpdate();
-			fetchCollections();
-		} catch (err) {
-			console.error(err);
+		if (isNil(selectedCollectionUuid)) {
 			ToastService.danger(
-				isCollection
-					? tHtml(
-							'collection/components/collection-or-bundle-overview___collectie-kon-niet-verwijderd-worden'
-					  )
-					: tHtml(
-							'collection/components/collection-or-bundle-overview___bundel-kon-niet-verwijderd-worden'
-					  )
+				tHtml('De huidige collectie werd nog nooit opgeslagen / heeft geen id')
 			);
+			return;
 		}
+
+		await deleteCollection(
+			selectedCollectionUuid,
+			user,
+			isOwner,
+			isCollection,
+			async () => {
+				await triggerCollectionOrBundleDelete(
+					{
+						collectionOrBundleUuid: selectedCollectionUuid,
+						collectionOrBundleUuidAsText: selectedCollectionUuid,
+					},
+					{
+						onSuccess: async () => {
+							const queryClient = new QueryClient();
+							await queryClient.invalidateQueries(COLLECTION_QUERY_KEYS);
+						},
+					}
+				);
+			},
+			() => {
+				onUpdate();
+				fetchCollections();
+			}
+		);
 
 		setSelectedCollectionUuid(null);
 	};
@@ -488,7 +438,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				tText('collection/views/collection-overview___maak-opdracht'),
 				'clipboard',
 				(isCollection &&
-					PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)) ||
+					PermissionService.hasPerm(user, PermissionName.CREATE_COLLECTIONS)) ||
 					false
 			),
 			...createDropdownMenuItem(
@@ -499,11 +449,11 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			),
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				currentCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-					? tText(
+				PermissionService.hasPerm(user, PermissionName.DELETE_ANY_COLLECTIONS) || isOwner
+					? tText('collection/views/collection-overview___verwijderen')
+					: tText(
 							'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
-					  )
-					: tText('collection/views/collection-overview___verwijderen'),
+					  ),
 				undefined,
 				currentCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
 					? true
@@ -552,8 +502,14 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 			<ButtonToolbar>
 				<MoreOptionsDropdown
 					isOpen={dropdownOpen[collectionUuid] || false}
-					onOpen={() => setDropdownOpen({ [collectionUuid]: true })}
-					onClose={() => setDropdownOpen({ [collectionUuid]: false })}
+					onOpen={() => {
+						setDropdownOpen({ [collectionUuid]: true });
+						setSelectedCollectionUuid(collectionUuid);
+					}}
+					onClose={() => {
+						setDropdownOpen({ [collectionUuid]: false });
+						setSelectedCollectionUuid(null);
+					}}
 					label={getMoreOptionsLabel()}
 					menuItems={ROW_DROPDOWN_ITEMS}
 					onOptionClicked={onClickDropdownItem}
@@ -911,7 +867,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					}}
 					deleteObjectCallback={onDeleteCollection}
 					isContributor={isContributor}
-					isSharedWithOthers={isSharedWithOthers}
+					isSharedWithOthers={isOwner}
 					contributorCount={selectedDetail?.contributors?.length || 0}
 				/>
 			);
