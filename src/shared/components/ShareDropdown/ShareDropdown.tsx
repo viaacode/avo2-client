@@ -13,9 +13,9 @@ import { ShareDropdownTabs } from './ShareDropdown.types';
 
 export type ShareDropdownProps = {
 	contributors?: ContributorInfo[];
-	onAddContributor: (info: Partial<ContributorInfo>) => void;
-	onEditContributorRights: (info: ContributorInfo, newRights: ShareRightsType) => void;
-	onDeleteContributor: (info: ContributorInfo) => void;
+	onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>;
+	onEditContributorRights: (info: ContributorInfo, newRights: ShareRightsType) => Promise<void>;
+	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	buttonProps?: Partial<ButtonProps>;
 	dropdownProps?: Partial<DropdownProps>;
 	shareWithPupilsProps?: ShareWithPupilsProps;
