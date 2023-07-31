@@ -22,7 +22,9 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	renderDetailLink,
 	renderSearchLink,
 }) => {
-	const getTags = (result: Avo.Search.ResultItem): TagOption[] => {
+	const getTags = (
+		result: Avo.Search.ResultItem
+	): { typeTags: TagOption[]; qualityTags: TagOption[] } => {
 		const qualityLabels = compact(result?.collection_labels || []) as string[];
 		const assignmentTypeLabels = compact(result?.lom_learning_resource_type || []);
 
@@ -44,24 +46,24 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			BOUW: IconName.collection2,
 		};
 
-		return compact([
-			...assignmentTypeLabels.map((id: string) => {
-				return {
+		return {
+			typeTags: compact(
+				assignmentTypeLabels.map((id: string) => ({
 					id,
 					label: TAG_TRANSLATIONS[id.toUpperCase()],
 					icon: TAG_LOGO[id],
 					className: 'c-search-result-item__assignment-label-tag',
-				};
-			}),
-			...qualityLabels.map((id: string) => {
-				return {
+				}))
+			),
+			qualityTags: compact(
+				qualityLabels.map((id: string) => ({
 					id,
 					label: qualityLabelLookup[id] || TAG_TRANSLATIONS[id.toUpperCase()],
 					icon: TAG_LOGO[id],
 					className: 'c-search-result-item__quality-label-tag',
-				};
-			}),
-		]);
+				}))
+			),
+		};
 	};
 
 	const getMetaData = () => {
@@ -138,7 +140,8 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 				type={toEnglishContentType(result.administrative_type)}
 				date={formatDate(date)}
 				dateTooltip={dateTooltip}
-				tags={getTags(result)}
+				typeTags={getTags(result).typeTags}
+				qualityTags={getTags(result).qualityTags}
 				viewCount={result.views_count || 0}
 				bookmarkCount={bookmarkButton ? result.bookmarks_count || 0 : null}
 				description={stripMarkdownLinks(result.dcterms_abstract || '')}
