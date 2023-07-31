@@ -1,6 +1,6 @@
 import { Avatar, IconName, TagOption, Thumbnail } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { compact, trimStart } from 'lodash-es';
+import { compact, isNil, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
 import { toEnglishContentType } from '../../collection/collection.types';
@@ -105,7 +105,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 					image={result.owner?.avatar_path || undefined}
 					name={name}
 					initials={initials.toLocaleUpperCase()}
-					size="small"
+					size={isNil(result.owner?.avatar_path) ? 'small' : undefined}
 					dark
 				/>
 			);
