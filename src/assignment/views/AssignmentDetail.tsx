@@ -719,12 +719,10 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			<BlockList
 				blocks={(blocks || []) as Avo.Core.BlockItemBase[]}
 				config={{
-					TEXT: {
-						title: {
-							canClickHeading: false,
-						},
-					},
 					ITEM: {
+						title: {
+							canClickHeading: true,
+						},
 						flowPlayer: {
 							canPlay: true,
 						},
