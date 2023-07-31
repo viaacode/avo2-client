@@ -752,6 +752,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 										);
 								},
 							}}
+							view={{
+								label: tText('Bekijk'),
+								title: tText('Bekijk hoe de opdracht er zal uit zien'),
+								onClick: () =>
+									redirectToClientPage(
+										buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+											id: assignmentId,
+										}),
+										history
+									),
+							}}
 							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
 							shareWithColleaguesOrPupilsProps={shareProps}
 							remove={{
