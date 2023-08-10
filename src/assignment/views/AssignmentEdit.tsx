@@ -36,12 +36,14 @@ import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InActivityWarningModal, ShareModal } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, CustomError, isMobileWidth } from '../../shared/helpers';
+import { buildLink, CustomError } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
 } from '../../shared/helpers/contributors';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -699,6 +701,80 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 		onClickMobile: () => setIsShareModalOpen(true),
 		fetchContributors: fetchContributors,
 		contributors: contributors || [],
+		availableRights: {
+			[ContributorInfoRights.CONTRIBUTOR]: PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
+			[ContributorInfoRights.VIEWER]: PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
+		},
+	};
+
+	const renderHeadingActions = (renderLabel: boolean) => {
+		return (
+			<AssignmentActions
+				publish={
+					permissions.canPublish
+						? {
+								title: isPublic
+									? tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+									  )
+									: tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+									  ),
+								...(renderLabel
+									? {
+											label: isPublic
+												? tText(
+														'assignment/views/assignment-edit___maak-prive'
+												  )
+												: tText(
+														'assignment/views/assignment-edit___publiceer'
+												  ),
+									  }
+									: {}),
+								ariaLabel: isPublic
+									? tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-prive'
+									  )
+									: tText(
+											'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
+									  ),
+								icon: isPublic ? IconName.unlock3 : IconName.lock,
+								onClick: () => setIsPublishModalOpen(true),
+						  }
+						: undefined
+				}
+				duplicate={{
+					assignment: original || undefined,
+					onClick: (_e, duplicated) => {
+						duplicated && redirectToClientPage(toAssignmentDetail(duplicated), history);
+					},
+				}}
+				view={{
+					label: tText('Bekijk'),
+					title: tText('Bekijk hoe de opdracht er zal uit zien'),
+					onClick: () =>
+						redirectToClientPage(
+							buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+								id: assignmentId,
+							}),
+							history
+						),
+				}}
+				preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
+				shareWithColleaguesOrPupilsProps={shareProps}
+				remove={{
+					assignment: original || undefined,
+					modal: {
+						confirmCallback: () => {
+							reset();
+							redirectToClientPage(backToOverview(), history);
+						},
+					},
+				}}
+				refetchAssignment={async () => await fetchAssignment()}
+				route={location.pathname}
+			/>
+		);
 	};
 
 	const renderEditAssignmentPage = () => (
@@ -707,77 +783,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				<AssignmentHeading
 					back={renderBackButton}
 					title={renderTitle}
-					actions={
-						<AssignmentActions
-							publish={
-								permissions.canPublish
-									? {
-											title: isPublic
-												? tText(
-														'assignment/views/assignment-edit___maak-deze-opdracht-prive'
-												  )
-												: tText(
-														'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
-												  ),
-											...(isMobileWidth()
-												? {
-														label: isPublic
-															? tText(
-																	'assignment/views/assignment-edit___maak-prive'
-															  )
-															: tText(
-																	'assignment/views/assignment-edit___publiceer'
-															  ),
-												  }
-												: {}),
-											ariaLabel: isPublic
-												? tText(
-														'assignment/views/assignment-edit___maak-deze-opdracht-prive'
-												  )
-												: tText(
-														'assignment/views/assignment-edit___maak-deze-opdracht-openbaar'
-												  ),
-											icon: isPublic ? IconName.unlock3 : IconName.lock,
-											onClick: () => setIsPublishModalOpen(true),
-									  }
-									: undefined
-							}
-							duplicate={{
-								assignment: original || undefined,
-								onClick: (_e, duplicated) => {
-									duplicated &&
-										redirectToClientPage(
-											toAssignmentDetail(duplicated),
-											history
-										);
-								},
-							}}
-							view={{
-								label: tText('Bekijk'),
-								title: tText('Bekijk hoe de opdracht er zal uit zien'),
-								onClick: () =>
-									redirectToClientPage(
-										buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
-											id: assignmentId,
-										}),
-										history
-									),
-							}}
-							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
-							shareWithColleaguesOrPupilsProps={shareProps}
-							remove={{
-								assignment: original || undefined,
-								modal: {
-									confirmCallback: () => {
-										reset();
-										redirectToClientPage(backToOverview(), history);
-									},
-								},
-							}}
-							refetchAssignment={async () => await fetchAssignment()}
-							route={location.pathname}
-						/>
-					}
+					actions={renderMobileDesktop({
+						mobile: renderHeadingActions(true),
+						desktop: renderHeadingActions(false),
+					})}
 					tabs={renderTabs}
 				/>
 
@@ -910,35 +919,46 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				/>
 			)}
 
-			{!!original && isMobileWidth() && contributors && (
-				<ShareModal
-					title={tText(
-						'assignment/views/assignment-edit___deel-deze-opdracht-met-collegas'
-					)}
-					isOpen={isShareModalOpen}
-					onClose={() => setIsShareModalOpen(false)}
-					contributors={transformContributorsToSimpleContributors(
-						original?.owner as Avo.User.User,
-						(contributors || []) as Avo.Assignment.Contributor[]
-					)}
-					onDeleteContributor={(contributorInfo) =>
-						onDeleteContributor(contributorInfo, shareProps, fetchContributors)
-					}
-					onEditContributorRights={(contributorInfo, newRights) =>
-						onEditContributor(
-							contributorInfo,
-							newRights,
-							shareProps,
-							fetchContributors,
-							fetchAssignment
-						)
-					}
-					onAddContributor={(info) =>
-						onAddNewContributor(info, shareProps, fetchContributors)
-					}
-					shareWithPupilsProps={shareProps}
-				/>
-			)}
+			{!!original &&
+				contributors &&
+				renderMobileDesktop({
+					mobile: (
+						<ShareModal
+							title={tText(
+								'assignment/views/assignment-edit___deel-deze-opdracht-met-collegas'
+							)}
+							isOpen={isShareModalOpen}
+							onClose={() => setIsShareModalOpen(false)}
+							contributors={transformContributorsToSimpleContributors(
+								original?.owner as Avo.User.User,
+								(contributors || []) as Avo.Assignment.Contributor[]
+							)}
+							onDeleteContributor={(contributorInfo) =>
+								onDeleteContributor(contributorInfo, shareProps, fetchContributors)
+							}
+							onEditContributorRights={(contributorInfo, newRights) =>
+								onEditContributor(
+									contributorInfo,
+									newRights,
+									shareProps,
+									fetchContributors,
+									fetchAssignment
+								)
+							}
+							onAddContributor={(info) =>
+								onAddNewContributor(info, shareProps, fetchContributors)
+							}
+							shareWithPupilsProps={shareProps}
+							availableRights={{
+								[ContributorInfoRights.CONTRIBUTOR]:
+									PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
+								[ContributorInfoRights.VIEWER]:
+									PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
+							}}
+						/>
+					),
+					desktop: null,
+				})}
 		</>
 	);
 };

@@ -570,6 +570,12 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 								type: 'secondary',
 							}}
 							shareWithPupilsProps={shareWithPupilsProps}
+							availableRights={{
+								[ContributorInfoRights.CONTRIBUTOR]:
+									PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
+								[ContributorInfoRights.VIEWER]:
+									PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
+							}}
 						/>
 					)}
 				{permissions.canPublishAssignments && !inviteToken && (
@@ -951,6 +957,11 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 						onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
 					}
 					shareWithPupilsProps={shareWithPupilsProps}
+					availableRights={{
+						[ContributorInfoRights.CONTRIBUTOR]:
+							PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
+						[ContributorInfoRights.VIEWER]: PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
+					}}
 				/>
 			)}
 			<DeleteAssignmentModal

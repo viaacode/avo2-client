@@ -1,11 +1,16 @@
 import { IconName, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useEffect, useState } from 'react';
 
 import { tText } from '../../helpers/translate';
 import { useTabs } from '../../hooks';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
-import { ContributorInfo, ShareRightsType } from '../ShareWithColleagues/ShareWithColleagues.types';
+import {
+	ContributorInfo,
+	ContributorInfoRights,
+	ShareRightsType,
+} from '../ShareWithColleagues/ShareWithColleagues.types';
 import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 import './ShareModal.scss';
 
@@ -19,6 +24,10 @@ type ShareModalProps = {
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	shareWithPupilsProps?: ShareWithPupilsProps;
 	withPupils?: boolean;
+	availableRights: {
+		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
+		[ContributorInfoRights.VIEWER]: PermissionName;
+	};
 };
 
 const ShareModal: FC<ShareModalProps> = ({
@@ -31,6 +40,7 @@ const ShareModal: FC<ShareModalProps> = ({
 	onDeleteContributor,
 	shareWithPupilsProps,
 	withPupils = true,
+	availableRights,
 }) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [hasModalOpen, setHasModalOpen] = useState<boolean>(false);
@@ -71,6 +81,7 @@ const ShareModal: FC<ShareModalProps> = ({
 				<Spacer margin={'top-large'}>
 					<ShareWithColleagues
 						contributors={contributors}
+						availableRights={availableRights}
 						onAddNewContributor={onAddContributor}
 						onDeleteContributor={onDeleteContributor}
 						onEditRights={onEditContributorRights}

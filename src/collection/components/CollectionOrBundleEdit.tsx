@@ -11,7 +11,8 @@ import {
 	TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { cloneDeep, get, isEmpty, isNil, set } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -90,6 +91,7 @@ import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
 import { deleteCollection } from '../helpers/delete-collection';
+import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -1265,6 +1267,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 							onAddContributor(info, collectionId, fetchContributors)
 						}
 						withPupils={false}
+						availableRights={{
+							[ContributorInfoRights.CONTRIBUTOR]:
+								PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
+							[ContributorInfoRights.VIEWER]:
+								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
+						}}
 					/>
 				)}
 			</ButtonToolbar>
@@ -1441,6 +1449,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 							onAddContributor(info, collectionId, fetchContributors)
 						}
 						withPupils={false}
+						availableRights={{
+							[ContributorInfoRights.CONTRIBUTOR]:
+								PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
+							[ContributorInfoRights.VIEWER]:
+								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
+						}}
 					/>
 				)}
 

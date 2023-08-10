@@ -7,6 +7,7 @@ import {
 	IconName,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { noop } from 'lodash-es';
 import React, { FunctionComponent, useMemo, useState } from 'react';
@@ -14,8 +15,10 @@ import React, { FunctionComponent, useMemo, useState } from 'react';
 import { APP_PATH } from '../../constants';
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
-import { isMobileWidth } from '../../shared/helpers';
+import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	onAddNewContributor,
@@ -32,6 +35,10 @@ interface ShareProps extends ShareWithPupilsProps {
 	contributors: Avo.Assignment.Contributor[];
 	onClickMobile: () => void;
 	fetchContributors: () => void;
+	availableRights: {
+		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
+		[ContributorInfoRights.VIEWER]: PermissionName;
+	};
 }
 
 interface AssignmentActionsProps {
@@ -46,7 +53,7 @@ interface AssignmentActionsProps {
 	route: string;
 }
 
-const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
+const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> = ({
 	view,
 	preview,
 	overflow,
@@ -101,8 +108,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 			route !== APP_PATH.ASSIGNMENT_CREATE.route &&
 			shareWithColleaguesOrPupilsProps?.assignment?.owner
 		) {
-			if (isMobileWidth()) {
-				return (
+			return renderMobileDesktop({
+				mobile: (
 					<Button
 						label={tText('assignment/components/assignment-actions___delen')}
 						title={tText(
@@ -115,48 +122,50 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 						{...shareDropdownProps?.buttonProps}
 						onClick={() => shareWithColleaguesOrPupilsProps.onClickMobile()}
 					/>
-				);
-			}
-			return (
-				<div
-					className={classNames(
-						'c-assignment-heading__dropdown-wrapper',
-						shareDropdownProps?.buttonProps?.className
-					)}
-				>
-					<ShareDropdown
-						contributors={transformContributorsToSimpleContributors(
-							shareWithColleaguesOrPupilsProps?.assignment?.owner as Avo.User.User,
-							shareWithColleaguesOrPupilsProps.contributors as Avo.Assignment.Contributor[]
+				),
+				desktop: (
+					<div
+						className={classNames(
+							'c-assignment-heading__dropdown-wrapper',
+							shareDropdownProps?.buttonProps?.className
 						)}
-						onDeleteContributor={(info) =>
-							onDeleteContributor(
-								info,
-								shareWithColleaguesOrPupilsProps,
-								shareWithColleaguesOrPupilsProps.fetchContributors
-							)
-						}
-						onEditContributorRights={(contributorInfo, newRights) =>
-							onEditContributor(
-								contributorInfo,
-								newRights,
-								shareWithColleaguesOrPupilsProps,
-								shareWithColleaguesOrPupilsProps.fetchContributors,
-								refetchAssignment
-							)
-						}
-						onAddContributor={(info) =>
-							onAddNewContributor(
-								info,
-								shareWithColleaguesOrPupilsProps,
-								shareWithColleaguesOrPupilsProps.fetchContributors
-							)
-						}
-						{...shareDropdownProps}
-						shareWithPupilsProps={shareWithColleaguesOrPupilsProps}
-					/>
-				</div>
-			);
+					>
+						<ShareDropdown
+							contributors={transformContributorsToSimpleContributors(
+								shareWithColleaguesOrPupilsProps?.assignment
+									?.owner as Avo.User.User,
+								shareWithColleaguesOrPupilsProps.contributors as Avo.Assignment.Contributor[]
+							)}
+							onDeleteContributor={(info) =>
+								onDeleteContributor(
+									info,
+									shareWithColleaguesOrPupilsProps,
+									shareWithColleaguesOrPupilsProps.fetchContributors
+								)
+							}
+							onEditContributorRights={(contributorInfo, newRights) =>
+								onEditContributor(
+									contributorInfo,
+									newRights,
+									shareWithColleaguesOrPupilsProps,
+									shareWithColleaguesOrPupilsProps.fetchContributors,
+									refetchAssignment
+								)
+							}
+							onAddContributor={(info) =>
+								onAddNewContributor(
+									info,
+									shareWithColleaguesOrPupilsProps,
+									shareWithColleaguesOrPupilsProps.fetchContributors
+								)
+							}
+							{...shareDropdownProps}
+							shareWithPupilsProps={shareWithColleaguesOrPupilsProps}
+							availableRights={shareWithColleaguesOrPupilsProps.availableRights}
+						/>
+					</div>
+				),
+			});
 		}
 	};
 
@@ -267,4 +276,4 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps> = ({
 	);
 };
 
-export default AssignmentActions;
+export default withUser(AssignmentActions) as FunctionComponent<AssignmentActionsProps>;

@@ -1,15 +1,21 @@
 import { Dropdown, DropdownButton, DropdownContent } from '@meemoo/react-components';
 import { Button, ButtonProps, DropdownProps, IconName, Tabs } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
 
 import { useTabs } from '../../hooks';
 import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
-import { ContributorInfo, ShareRightsType } from '../ShareWithColleagues/ShareWithColleagues.types';
+import {
+	ContributorInfo,
+	ContributorInfoRights,
+	ShareRightsType,
+} from '../ShareWithColleagues/ShareWithColleagues.types';
 import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
-import './ShareDropdown.scss';
 import { ShareDropdownTabs } from './ShareDropdown.types';
+
+import './ShareDropdown.scss';
 
 export type ShareDropdownProps = {
 	contributors?: ContributorInfo[];
@@ -20,6 +26,10 @@ export type ShareDropdownProps = {
 	dropdownProps?: Partial<DropdownProps>;
 	shareWithPupilsProps?: ShareWithPupilsProps;
 	withPupils?: boolean;
+	availableRights: {
+		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
+		[ContributorInfoRights.VIEWER]: PermissionName;
+	};
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
 	contributors,
@@ -30,6 +40,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	buttonProps,
 	shareWithPupilsProps,
 	withPupils = true,
+	availableRights,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -65,6 +76,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 			return (
 				<ShareWithColleagues
 					contributors={contributors}
+					availableRights={availableRights}
 					onAddNewContributor={onAddContributor}
 					onDeleteContributor={onDeleteContributor}
 					onEditRights={onEditContributorRights}
@@ -108,6 +120,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 										{contributors && (
 											<ShareWithColleagues
 												contributors={contributors}
+												availableRights={availableRights}
 												onAddNewContributor={onAddContributor}
 												onDeleteContributor={onDeleteContributor}
 												onEditRights={onEditContributorRights}

@@ -12,6 +12,7 @@ import {
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
+import { PermissionName } from '@viaa/avo2-types';
 import { isEmpty, isNil, truncate } from 'lodash-es';
 import React, { FC, useState } from 'react';
 
@@ -36,6 +37,10 @@ import {
 
 type ShareWithColleaguesProps = {
 	contributors: ContributorInfo[];
+	availableRights: {
+		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
+		[ContributorInfoRights.VIEWER]: PermissionName;
+	};
 	onAddNewContributor: (info: Partial<ContributorInfo>) => Promise<void>;
 	onEditRights: (info: ContributorInfo, newRights: ShareRightsType) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
@@ -45,6 +50,8 @@ type ShareWithColleaguesProps = {
 const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	contributors,
 	user,
+	commonUser,
+	availableRights,
 	onAddNewContributor,
 	onDeleteContributor,
 	onEditRights,
@@ -231,6 +238,28 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		}
 	};
 
+	const rightsDropdownOptions = [
+		...(commonUser?.permissions?.includes(availableRights.CONTRIBUTOR)
+			? [
+					{
+						label: tText(
+							'shared/components/share-with-colleagues/share-with-colleagues___bijdrager'
+						),
+						id: ContributorInfoRights.CONTRIBUTOR,
+					},
+			  ]
+			: []),
+		...(commonUser?.permissions?.includes(availableRights.VIEWER)
+			? [
+					{
+						label: tText(
+							'shared/components/share-with-colleagues/share-with-colleagues___kijker'
+						),
+						id: ContributorInfoRights.VIEWER,
+					},
+			  ]
+			: []),
+	];
 	return (
 		<>
 			{(currentUser.rights === ContributorInfoRights.OWNER ||
@@ -268,23 +297,10 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 
 							<DropdownContent>
 								<MenuContent
-									menuItems={[
-										{
-											label: tText(
-												'shared/components/share-with-colleagues/share-with-colleagues___bijdrager'
-											),
-											id: ContributorInfoRights.CONTRIBUTOR,
-										},
-										{
-											label: tText(
-												'shared/components/share-with-colleagues/share-with-colleagues___kijker'
-											),
-											id: ContributorInfoRights.VIEWER,
-										},
-									]}
+									menuItems={rightsDropdownOptions}
 									onClick={(id) => {
-										updateNewContributor({ rights: id as string }),
-											handleRightsButtonClicked();
+										updateNewContributor({ rights: id as string });
+										handleRightsButtonClicked();
 									}}
 								/>
 							</DropdownContent>

@@ -101,6 +101,7 @@ import {
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
 import './CollectionDetail.scss';
 import { deleteCollection } from '../helpers/delete-collection';
+import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -936,6 +937,12 @@ const CollectionDetail: FunctionComponent<
 							buttonProps={{
 								type: 'secondary',
 							}}
+							availableRights={{
+								[ContributorInfoRights.CONTRIBUTOR]:
+									PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
+								[ContributorInfoRights.VIEWER]:
+									PermissionName.SHARE_COLLECTION_WITH_VIEWER,
+							}}
 						/>
 					)}
 				{permissions?.canPublishCollections && !inviteToken && (
@@ -1388,6 +1395,12 @@ const CollectionDetail: FunctionComponent<
 						onAddContributor={(info) =>
 							onAddContributor(info, collectionId, fetchContributors)
 						}
+						availableRights={{
+							[ContributorInfoRights.CONTRIBUTOR]:
+								PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
+							[ContributorInfoRights.VIEWER]:
+								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
+						}}
 					/>
 				)}
 			</>
