@@ -85,6 +85,7 @@ query getAssignmentsByOwnerOrContributor(
 				}
 			}
 			id
+			profile_id
 			rights
 			enum_right_type {
 				value

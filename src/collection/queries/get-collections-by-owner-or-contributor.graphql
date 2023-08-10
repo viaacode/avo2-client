@@ -71,6 +71,8 @@ query getCollectionsByOwnerOrContributor(
 		}
 		share_type
 		contributors {
+			profile_id
+			rights
 			enum_right_type {
 				value
 			}
