@@ -150,70 +150,63 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 				);
 
 			// Check edit and delete permissions for every row, so we can show the correct dropdown list of operations
-			let perms: boolean[][];
+			let perms: Record<string, boolean>[];
 
 			if (isCollection) {
 				perms = await Promise.all(
-					(collections || []).map((collection: Collection) => {
-						const editPermission = PermissionService.hasPermissions(
-							[
-								{
-									name: PermissionName.EDIT_OWN_COLLECTIONS,
-									obj: collection,
-								},
-								PermissionName.EDIT_ANY_COLLECTIONS,
-							],
+					(collections || []).map(async (collection: Collection) => {
+						return await PermissionService.checkPermissions(
+							{
+								canEdit: [
+									{
+										name: PermissionName.EDIT_OWN_COLLECTIONS,
+										obj: collection,
+									},
+									{ name: PermissionName.EDIT_ANY_COLLECTIONS },
+								],
+								canDelete: [
+									{
+										name: PermissionName.DELETE_OWN_COLLECTIONS,
+										obj: collection,
+									},
+									{ name: PermissionName.DELETE_ANY_COLLECTIONS },
+								],
+							},
 							user
 						);
-						const deletePermission = PermissionService.hasPermissions(
-							[
-								{
-									name: PermissionName.DELETE_OWN_COLLECTIONS,
-									obj: collection,
-								},
-								PermissionName.DELETE_ANY_COLLECTIONS,
-							],
-							user
-						);
-						return Promise.all([editPermission, deletePermission]);
 					})
 				);
 			} else {
 				// bundles
 				perms = await Promise.all(
-					collections.map((bundle: Collection) => {
-						const editPermission = PermissionService.hasPermissions(
-							[
-								{
-									name: PermissionName.EDIT_OWN_BUNDLES,
-									obj: bundle,
-								},
-								PermissionName.EDIT_ANY_BUNDLES,
-							],
+					collections.map(async (bundle: Collection) => {
+						return await PermissionService.checkPermissions(
+							{
+								canEdit: [
+									{
+										name: PermissionName.EDIT_OWN_BUNDLES,
+										obj: bundle,
+									},
+									{ name: PermissionName.EDIT_ANY_BUNDLES },
+								],
+								canDelete: [
+									{
+										name: PermissionName.DELETE_OWN_BUNDLES,
+										obj: bundle,
+									},
+									{ name: PermissionName.DELETE_ANY_BUNDLES },
+								],
+							},
 							user
 						);
-						const deletePermission = PermissionService.hasPermissions(
-							[
-								{
-									name: PermissionName.DELETE_OWN_BUNDLES,
-									obj: bundle,
-								},
-								PermissionName.DELETE_ANY_BUNDLES,
-							],
-							user
-						);
-						return Promise.all([editPermission, deletePermission]);
 					})
 				);
 			}
 			setPermissions(
 				fromPairs(
-					perms.map((permsForCollection: boolean[], index: number) => [
+					perms.map((permsForCollection: Record<string, boolean>, index: number) => [
 						collections[index].id,
-						{
-							canEdit: permsForCollection[0],
-							canDelete: permsForCollection[1],
-						},
+						permsForCollection,
 					])
 				)
 			);

@@ -4,9 +4,12 @@ import {
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
+	Flex,
 	Icon,
 	IconName,
 	MenuContent,
+	Spacer,
+	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
 import { isEmpty, isNil, truncate } from 'lodash-es';
@@ -33,9 +36,9 @@ import {
 
 type ShareWithColleaguesProps = {
 	contributors: ContributorInfo[];
-	onAddNewContributor: (info: Partial<ContributorInfo>) => void;
-	onEditRights: (info: ContributorInfo, newRights: ShareRightsType) => void;
-	onDeleteContributor: (info: ContributorInfo) => void;
+	onAddNewContributor: (info: Partial<ContributorInfo>) => Promise<void>;
+	onEditRights: (info: ContributorInfo, newRights: ShareRightsType) => Promise<void>;
+	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	hasModalOpen: (open: boolean) => void;
 };
 
@@ -70,6 +73,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	const [toEditContributor, setToEditContributor] = useState<ContributorInfo | null>(null);
 	const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState<boolean>(false);
 	const [toDeleteContributor, setToDeleteContributor] = useState<ContributorInfo | null>(null);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const handleRightsButtonClicked = () => {
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
@@ -89,12 +93,14 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 				)
 			);
 		} else {
+			setIsLoading(true);
 			await onAddNewContributor({
 				...contributor,
 				rights: findRightByValue(contributor.rights as ContributorInfoRights),
 			});
 			setNewContributor({ email: undefined, rights: undefined });
 			setError(null);
+			setIsLoading(false);
 		}
 	};
 
@@ -104,8 +110,8 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		hasModalOpen(true);
 	};
 
-	const handleConfirmEditContributorRights = (right: ShareRightsType) => {
-		onEditRights(toEditContributor as ContributorInfo, right);
+	const handleConfirmEditContributorRights = async (right: ShareRightsType) => {
+		await onEditRights(toEditContributor as ContributorInfo, right);
 		handleOnCloseEditUserRights();
 	};
 
@@ -121,8 +127,8 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		hasModalOpen(true);
 	};
 
-	const handleConfirmDeleteContributor = () => {
-		onDeleteContributor(toDeleteContributor as ContributorInfo);
+	const handleConfirmDeleteContributor = async () => {
+		await onDeleteContributor(toDeleteContributor as ContributorInfo);
 		handleOnCloseDeleteContributor();
 	};
 
@@ -352,6 +358,14 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			)}
 
 			{renderColleaguesInfoList()}
+
+			{isLoading && (
+				<Spacer margin={'small'}>
+					<Flex>
+						<Spinner />
+					</Flex>
+				</Spacer>
+			)}
 		</>
 	);
 };
