@@ -44,7 +44,7 @@ import {
 	GetWorkspaceTabCountsQuery,
 	GetWorkspaceTabCountsQueryVariables,
 } from '../../shared/generated/graphql-db-types';
-import { buildLink, isMobileWidth, navigate } from '../../shared/helpers';
+import { buildLink, navigate } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { dataService } from '../../shared/services/data-service';
 import {
@@ -63,6 +63,7 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
@@ -403,7 +404,10 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 	};
 
 	const renderNavTabs = (tabs: NavTab[]) => {
-		return isMobileWidth() ? renderMobileTabs(tabs) : <Tabs tabs={tabs} onClick={goToTab} />;
+		return renderMobileDesktop({
+			mobile: renderMobileTabs(tabs),
+			desktop: <Tabs tabs={tabs} onClick={goToTab} />,
+		});
 	};
 
 	const renderToolbar = (tabs: NavTab[], activeTab: TabView) => {

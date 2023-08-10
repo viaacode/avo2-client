@@ -63,20 +63,13 @@ import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
 	getMoreOptionsLabel,
 } from '../../shared/constants';
-import {
-	buildLink,
-	CustomError,
-	formatDate,
-	isMobileWidth,
-	navigate,
-	renderAvatar,
-} from '../../shared/helpers';
+import { buildLink, CustomError, formatDate, navigate, renderAvatar } from '../../shared/helpers';
 import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import { useTableSort } from '../../shared/hooks';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -488,10 +481,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	};
 
 	const renderLabels = (labels: { assignment_label: Avo.Assignment.Label }[], label: string) => {
-		if (!labels.length) {
+		if (labels.length === 0) {
 			return '-';
 		}
-
 		return renderMobileDesktop({
 			mobile: renderDataCell(
 				labels.map((label) => label.assignment_label.label).join(', '),
@@ -666,7 +658,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				const avatarOptions = {
 					dark: true,
 					abbreviatedName: true,
-					small: isMobileWidth(),
+					small: false,
 				};
 
 				return renderMobileDesktop({
@@ -897,7 +889,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						<Form type="inline">
 							<FormGroup inlineMode="grow">
 								<TextInput
-									className="c-assignment-overview__search-input"
+									className="m-assignment-overview__search-input"
 									icon={IconName.filter}
 									value={filterString}
 									onChange={setFilterString}
@@ -1019,6 +1011,38 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		</>
 	);
 
+	const renderTable = (useCards: boolean) => {
+		return (
+			<Table
+				className="m-assignment-overview__table"
+				columns={tableColumns}
+				data={assignments as Avo.Assignment.Assignment[]}
+				emptyStateMessage={
+					query.filter
+						? tText(
+								'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
+						  )
+						: query.view === AssignmentView.FINISHED
+						? tText(
+								'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
+						  )
+						: tText(
+								'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
+						  )
+				}
+				renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
+					renderCell(rowData, colKey as AssignmentOverviewTableColumns)
+				}
+				rowKey="id"
+				variant="styled"
+				onColumnClick={handleSortOrderChange}
+				sortColumn={sortColumn}
+				sortOrder={sortOrder}
+				useCards={useCards}
+			/>
+		);
+	};
+
 	const renderAssignmentsView = () => {
 		if (!assignments) {
 			return null;
@@ -1029,33 +1053,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		return (
 			<>
 				{renderHeader()}
-				<Table
-					className="m-assignment-overview__table"
-					columns={tableColumns}
-					data={assignments}
-					emptyStateMessage={
-						query.filter
-							? tText(
-									'assignment/views/assignment-overview___er-zijn-geen-opdrachten-die-voldoen-aan-de-zoekopdracht'
-							  )
-							: query.view === AssignmentView.FINISHED
-							? tText(
-									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-gearchiveerd'
-							  )
-							: tText(
-									'assignment/views/assignment-overview___er-zijn-nog-geen-opdrachten-aangemaakt'
-							  )
-					}
-					renderCell={(rowData: Avo.Assignment.Assignment, colKey: string) =>
-						renderCell(rowData, colKey as AssignmentOverviewTableColumns)
-					}
-					rowKey="id"
-					variant="styled"
-					onColumnClick={handleSortOrderChange}
-					sortColumn={sortColumn}
-					sortOrder={sortOrder}
-					useCards={isMobileWidth()}
-				/>
+				{renderMobileDesktop({
+					mobile: renderTable(true),
+					desktop: renderTable(false),
+				})}
 				<Spacer margin="top-large">
 					<Pagination
 						pageCount={Math.ceil(assignmentCount / ITEMS_PER_PAGE)}

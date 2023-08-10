@@ -326,7 +326,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 								<Form type="inline">
 									<FormGroup inlineMode="grow">
 										<TextInput
-											className="c-assignment-overview__search-input"
+											className="c-add-collection-modal__search-input"
 											icon={IconName.filter}
 											value={filterString}
 											onChange={setFilterString}
