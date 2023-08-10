@@ -828,9 +828,6 @@ const CollectionDetail: FunctionComponent<
 	// Render functions
 
 	const renderHeaderButtons = () => {
-		if (inviteToken) {
-			return null;
-		}
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				CollectionAction.addToBundle,
@@ -870,7 +867,7 @@ const CollectionDetail: FunctionComponent<
 
 		return (
 			<ButtonToolbar>
-				{permissions?.canAutoplayCollection && (
+				{(permissions?.canAutoplayCollection || inviteToken) && (
 					<Button
 						type="secondary"
 						label={tText('collection/views/collection-detail___speel-de-collectie-af')}
@@ -882,7 +879,7 @@ const CollectionDetail: FunctionComponent<
 						onClick={() => executeAction(CollectionAction.openAutoplayCollectionModal)}
 					/>
 				)}
-				{permissions?.canCreateAssignments && (
+				{permissions?.canCreateAssignments && !inviteToken && (
 					<Dropdown
 						label={tText(
 							'collection/views/collection-detail___importeer-naar-opdracht'
@@ -910,37 +907,38 @@ const CollectionDetail: FunctionComponent<
 						/>
 					</Dropdown>
 				)}
-				{(isOwner || isEditContributor || permissions?.canEditCollections) && (
-					<ShareDropdown
-						contributors={transformContributorsToSimpleContributors(
-							{
-								...collection?.profile?.user,
-								profile: collection?.profile,
-							} as Avo.User.User,
-							(collection?.contributors || []) as Avo.Collection.Contributor[]
-						)}
-						onDeleteContributor={(info) =>
-							onDeleteContributor(info, collectionId, fetchContributors)
-						}
-						onEditContributorRights={(user, newRights) =>
-							onEditContributor(
-								user,
-								newRights,
-								collectionId,
-								fetchContributors,
-								checkPermissionsAndGetCollection
-							)
-						}
-						onAddContributor={(info) =>
-							onAddContributor(info, collectionId, fetchContributors)
-						}
-						withPupils={false}
-						buttonProps={{
-							type: 'secondary',
-						}}
-					/>
-				)}
-				{permissions?.canPublishCollections && (
+				{(isOwner || isEditContributor || permissions?.canEditCollections) &&
+					!inviteToken && (
+						<ShareDropdown
+							contributors={transformContributorsToSimpleContributors(
+								{
+									...collection?.profile?.user,
+									profile: collection?.profile,
+								} as Avo.User.User,
+								(collection?.contributors || []) as Avo.Collection.Contributor[]
+							)}
+							onDeleteContributor={(info) =>
+								onDeleteContributor(info, collectionId, fetchContributors)
+							}
+							onEditContributorRights={(user, newRights) =>
+								onEditContributor(
+									user,
+									newRights,
+									collectionId,
+									fetchContributors,
+									checkPermissionsAndGetCollection
+								)
+							}
+							onAddContributor={(info) =>
+								onAddContributor(info, collectionId, fetchContributors)
+							}
+							withPupils={false}
+							buttonProps={{
+								type: 'secondary',
+							}}
+						/>
+					)}
+				{permissions?.canPublishCollections && !inviteToken && (
 					<Button
 						type="secondary"
 						title={
@@ -965,7 +963,7 @@ const CollectionDetail: FunctionComponent<
 						onClick={() => executeAction(CollectionAction.openPublishCollectionModal)}
 					/>
 				)}
-				{!isOwner && !isContributor && (
+				{!isOwner && !isContributor && !inviteToken && (
 					<ToggleButton
 						title={tText('collection/views/collection-detail___bladwijzer')}
 						type="secondary"
@@ -975,15 +973,17 @@ const CollectionDetail: FunctionComponent<
 						onClick={() => executeAction(CollectionAction.toggleBookmark)}
 					/>
 				)}
-				<MoreOptionsDropdown
-					isOpen={isOptionsMenuOpen}
-					onOpen={() => setIsOptionsMenuOpen(true)}
-					onClose={() => setIsOptionsMenuOpen(false)}
-					label={getMoreOptionsLabel()}
-					menuItems={COLLECTION_DROPDOWN_ITEMS}
-					onOptionClicked={executeAction}
-				/>
-				{permissions?.canEditCollections && (
+				{!inviteToken && (
+					<MoreOptionsDropdown
+						isOpen={isOptionsMenuOpen}
+						onOpen={() => setIsOptionsMenuOpen(true)}
+						onClose={() => setIsOptionsMenuOpen(false)}
+						label={getMoreOptionsLabel()}
+						menuItems={COLLECTION_DROPDOWN_ITEMS}
+						onOptionClicked={executeAction}
+					/>
+				)}
+				{permissions?.canEditCollections && !inviteToken && (
 					<Spacer margin="left-small">
 						<EditButton
 							type="primary"

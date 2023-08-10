@@ -536,42 +536,43 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 
 		return (
 			<ButtonToolbar>
-				{(isOwner || isEditContributor || permissions.canEditAssignments) && (
-					<ShareDropdown
-						contributors={transformContributorsToSimpleContributors(
-							shareWithPupilsProps?.assignment?.owner as Avo.User.User,
-							(assignment?.contributors || []) as Avo.Assignment.Contributor[]
-						)}
-						onDeleteContributor={(contributorInfo) =>
-							onDeleteContributor(
-								contributorInfo,
-								shareWithPupilsProps,
-								fetchContributors
-							)
-						}
-						onEditContributorRights={(contributorInfo, newRights) =>
-							onEditContributor(
-								contributorInfo,
-								newRights,
-								shareWithPupilsProps,
-								fetchContributors,
-								fetchAssignment
-							)
-						}
-						onAddContributor={(info) =>
-							onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
-						}
-						dropdownProps={{
-							placement: 'bottom-end',
-						}}
-						buttonProps={{
-							className: 'c-assignment-heading__hide-on-mobile',
-							type: 'secondary',
-						}}
-						shareWithPupilsProps={shareWithPupilsProps}
-					/>
-				)}
-				{permissions.canPublishAssignments && (
+				{(isOwner || isEditContributor || permissions.canEditAssignments) &&
+					!inviteToken && (
+						<ShareDropdown
+							contributors={transformContributorsToSimpleContributors(
+								shareWithPupilsProps?.assignment?.owner as Avo.User.User,
+								(assignment?.contributors || []) as Avo.Assignment.Contributor[]
+							)}
+							onDeleteContributor={(contributorInfo) =>
+								onDeleteContributor(
+									contributorInfo,
+									shareWithPupilsProps,
+									fetchContributors
+								)
+							}
+							onEditContributorRights={(contributorInfo, newRights) =>
+								onEditContributor(
+									contributorInfo,
+									newRights,
+									shareWithPupilsProps,
+									fetchContributors,
+									fetchAssignment
+								)
+							}
+							onAddContributor={(info) =>
+								onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+							}
+							dropdownProps={{
+								placement: 'bottom-end',
+							}}
+							buttonProps={{
+								className: 'c-assignment-heading__hide-on-mobile',
+								type: 'secondary',
+							}}
+							shareWithPupilsProps={shareWithPupilsProps}
+						/>
+					)}
+				{permissions.canPublishAssignments && !inviteToken && (
 					<Button
 						type="secondary"
 						title={
@@ -597,7 +598,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					/>
 				)}
 
-				{!isOwner && !isContributor && (
+				{!isOwner && !isContributor && !inviteToken && (
 					<ToggleButton
 						title={tText('assignment/views/assignment-detail___bladwijzer')}
 						type="secondary"
@@ -608,17 +609,19 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					/>
 				)}
 
-				<MoreOptionsDropdown
-					isOpen={isOptionsMenuOpen}
-					onOpen={() => setIsOptionsMenuOpen(true)}
-					onClose={() => setIsOptionsMenuOpen(false)}
-					label={getMoreOptionsLabel()}
-					menuItems={COLLECTION_DROPDOWN_ITEMS}
-					onOptionClicked={executeAction}
-				/>
+				{!inviteToken && (
+					<MoreOptionsDropdown
+						isOpen={isOptionsMenuOpen}
+						onOpen={() => setIsOptionsMenuOpen(true)}
+						onClose={() => setIsOptionsMenuOpen(false)}
+						label={getMoreOptionsLabel()}
+						menuItems={COLLECTION_DROPDOWN_ITEMS}
+						onOptionClicked={executeAction}
+					/>
+				)}
 
 				<Spacer margin="left-small">
-					{permissions?.canEditAssignments && (
+					{permissions?.canEditAssignments && !inviteToken && (
 						<EditButton
 							type="primary"
 							label={tText('assignment/views/assignment-response-edit___bewerken')}
