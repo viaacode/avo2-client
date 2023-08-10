@@ -33,7 +33,8 @@ export interface SearchResultPropsSchema extends DefaultProps {
 	dateTooltip: string;
 	bookmarkCount: number | null; // null hides the counter
 	viewCount: number;
-	tags?: (TagOption & { dark?: boolean })[];
+	typeTags?: (TagOption & { dark?: boolean })[];
+	qualityTags?: TagOption[];
 	onToggleBookmark?: (active: boolean) => void;
 	onTagClicked?: (tagId: string) => void;
 }
@@ -51,7 +52,8 @@ export const SearchResult: FunctionComponent<SearchResultPropsSchema> = ({
 	dateTooltip,
 	bookmarkCount,
 	viewCount,
-	tags = [],
+	typeTags = [],
+	qualityTags = [],
 	onToggleBookmark = noop,
 	onTagClicked = noop,
 }) => {
@@ -87,11 +89,14 @@ export const SearchResult: FunctionComponent<SearchResultPropsSchema> = ({
 								<TooltipTrigger>
 									<MetaDataItem label={date} />
 								</TooltipTrigger>
+
 								<TooltipContent>
 									<span>{dateTooltip}</span>
 								</TooltipContent>
 							</Tooltip>
+
 							<MetaDataItem label={String(viewCount)} icon={IconName.eye} />
+
 							{!isNil(bookmarkCount) && (
 								<MetaDataItem
 									label={String(bookmarkCount)}
@@ -99,11 +104,18 @@ export const SearchResult: FunctionComponent<SearchResultPropsSchema> = ({
 								/>
 							)}
 						</MetaData>
+
+						<TagList
+							tags={qualityTags}
+							swatches={false}
+							onTagClicked={(tagId: ReactText) => onTagClicked(tagId.toString())}
+						/>
 					</Flex>
 				</Spacer>
+
 				<TagList
 					className="c-search_result__tags"
-					tags={tags}
+					tags={typeTags}
 					swatches={false}
 					onTagClicked={(tagId: ReactText) => onTagClicked(tagId.toString())}
 				/>
