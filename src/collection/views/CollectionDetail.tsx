@@ -828,9 +828,6 @@ const CollectionDetail: FunctionComponent<
 	// Render functions
 
 	const renderHeaderButtons = () => {
-		// if (inviteToken) {
-		// 	return null;
-		// }
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				CollectionAction.addToBundle,
