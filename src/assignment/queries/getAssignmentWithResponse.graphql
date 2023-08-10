@@ -107,6 +107,8 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 				}
 			}
 			id
+			profile_id
+			rights
 		}
 		loms {
 			lom {
