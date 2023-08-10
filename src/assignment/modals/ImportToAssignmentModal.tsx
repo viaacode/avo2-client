@@ -233,7 +233,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 					<Form type="inline">
 						<FormGroup inlineMode="grow">
 							<TextInput
-								className="c-assignment-overview__search-input"
+								className="c-import-to-assignment-modal__search-input"
 								icon={IconName.filter}
 								value={filterString}
 								onChange={setFilterString}

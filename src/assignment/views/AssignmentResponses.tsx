@@ -473,7 +473,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const renderHeader = () => {
 		return (
-			<Toolbar className="m-assignment-overview__header-toolbar">
+			<Toolbar className="m-assignment-response-overview__header-toolbar">
 				<ToolbarLeft>
 					<BlockHeading type="h2" className="u-m-0">
 						{assignmentResponsesCount}{' '}
@@ -485,7 +485,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 						<Form type="inline">
 							<FormGroup inlineMode="grow">
 								<TextInput
-									className="c-assignment-overview__search-input"
+									className="m-assignment-response-overview__search-input"
 									icon={IconName.filter}
 									value={filterString}
 									onChange={setFilterString}
@@ -496,7 +496,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 								<Button
 									label={tText('search/views/search___zoeken')}
 									type="primary"
-									className="c-assignment-overview__search-input"
+									className="m-assignment-response-overview__search-input"
 									onClick={copySearchTermsToQueryState}
 								/>
 							</FormGroup>

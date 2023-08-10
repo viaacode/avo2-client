@@ -39,6 +39,10 @@
 				}
 			}
 		}
+
+		.c-checkbox-dropdown-modal__trigger {
+			width: 100%;
+		}
 	}
 
 	&__table {
@@ -111,5 +115,9 @@
 			white-space: nowrap;
 			overflow: hidden;
 		}
+	}
+
+	&__search-input {
+		margin-left: $g-spacer-unit;
 	}
 }
