@@ -48851,13 +48851,6 @@ export type GetCollectionQualityCheckQueryVariables = Exact<{
 
 export type GetCollectionQualityCheckQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_qc_overview', is_public?: boolean | null, created_at?: any | null, updated_at?: any | null, title?: string | null, updated_by_profile_id?: any | null, mgmt_quality_check?: boolean | null, mgmt_language_check?: boolean | null, mgmt_eind_check_date?: any | null, id?: any | null, subjects?: any | null, education_levels?: any | null, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, last_editor?: { __typename?: 'shared_user_names', full_name?: string | null } | null }>, app_collections_aggregate: { __typename?: 'app_collection_qc_overview_aggregate', aggregate?: { __typename?: 'app_collection_qc_overview_aggregate_fields', count: number } | null } };
 
-export type GetCollectionsByIdsQueryVariables = Exact<{
-  where: App_Collections_Bool_Exp;
-}>;
-
-
-export type GetCollectionsByIdsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any }> };
-
 export type GetCollectionsQueryVariables = Exact<{
   where: App_Collections_Bool_Exp;
   orderBy: Array<App_Collections_Order_By> | App_Collections_Order_By;
@@ -48867,6 +48860,13 @@ export type GetCollectionsQueryVariables = Exact<{
 
 
 export type GetCollectionsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, type_id: number, updated_at: any, title: string, description?: string | null, is_public: boolean, created_at: any, is_managed?: boolean | null, subjects?: any | null, education_levels?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, group_id?: number | null, group_name?: string | null, profile_id?: any | null, user_id?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null } | null } | null, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null, user_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, counts?: { __typename?: 'app_collection_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, views?: number | null, copies?: any | null, quick_lane_links?: any | null } | null }>, app_collections_aggregate: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null } };
+
+export type GetCollectionsByIdsQueryVariables = Exact<{
+  where: App_Collections_Bool_Exp;
+}>;
+
+
+export type GetCollectionsByIdsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any }> };
 
 export type DeleteInteractiveTourMutationVariables = Exact<{
   interactiveTourId: Scalars['Int'];
@@ -48951,6 +48951,13 @@ export type GetItemsWithFiltersQueryVariables = Exact<{
 
 export type GetItemsWithFiltersQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', created_at?: any | null, depublish_at?: any | null, depublish_reason?: string | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, uid: any, is_deleted?: boolean | null, is_published?: boolean | null, issued?: any | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, title: string, updated_at?: any | null, note?: string | null, lom_typical_age_range?: any | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, relations: Array<{ __typename?: 'app_item_relations_view', object?: any | null, subject?: any | null, predicate?: string | null, created_at?: any | null, updated_at?: any | null }>, item_counts?: { __typename?: 'app_item_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, plays?: number | null, views?: number | null, quick_lane_links?: any | null } | null }>, app_item_meta_aggregate: { __typename?: 'app_item_meta_aggregate', aggregate?: { __typename?: 'app_item_meta_aggregate_fields', count: number } | null } };
 
+export type GetPublicItemsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetPublicItemsQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', external_id: any, title: string, is_published?: boolean | null, is_deleted?: boolean | null }> };
+
 export type GetPublicItemsByTitleOrExternalIdQueryVariables = Exact<{
   title: Scalars['String'];
   externalId: Scalars['bpchar'];
@@ -48959,13 +48966,6 @@ export type GetPublicItemsByTitleOrExternalIdQueryVariables = Exact<{
 
 
 export type GetPublicItemsByTitleOrExternalIdQuery = { __typename?: 'query_root', itemsByTitle: Array<{ __typename?: 'app_item_meta', external_id: any, title: string, is_published?: boolean | null, is_deleted?: boolean | null }>, itemsByExternalId: Array<{ __typename?: 'app_item_meta', external_id: any, title: string, is_published?: boolean | null, is_deleted?: boolean | null }> };
-
-export type GetPublicItemsQueryVariables = Exact<{
-  limit: Scalars['Int'];
-}>;
-
-
-export type GetPublicItemsQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', external_id: any, title: string, is_published?: boolean | null, is_deleted?: boolean | null }> };
 
 export type GetUnpublishedItemPidsQueryVariables = Exact<{
   where: Shared_Items_Bool_Exp;
@@ -49065,6 +49065,16 @@ export type GetProfileIdsQueryVariables = Exact<{
 
 export type GetProfileIdsQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', profile_id?: any | null }> };
 
+export type GetUsersQueryVariables = Exact<{
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+  orderBy: Array<Users_Summary_View_Order_By> | Users_Summary_View_Order_By;
+  where: Users_Summary_View_Bool_Exp;
+}>;
+
+
+export type GetUsersQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, last_blocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, last_unblocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count: number } | null } };
+
 export type GetUsersInSameCompanyQueryVariables = Exact<{
   offset: Scalars['Int'];
   limit: Scalars['Int'];
@@ -49075,16 +49085,6 @@ export type GetUsersInSameCompanyQueryVariables = Exact<{
 
 
 export type GetUsersInSameCompanyQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, last_blocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, last_unblocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count: number } | null } };
-
-export type GetUsersQueryVariables = Exact<{
-  offset: Scalars['Int'];
-  limit: Scalars['Int'];
-  orderBy: Array<Users_Summary_View_Order_By> | Users_Summary_View_Order_By;
-  where: Users_Summary_View_Bool_Exp;
-}>;
-
-
-export type GetUsersQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, last_blocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, last_unblocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count: number } | null } };
 
 export type UpdateUserTempAccessByIdMutationVariables = Exact<{
   user_id: Scalars['uuid'];
@@ -49163,13 +49163,6 @@ export type GetAssignmentIdsQueryVariables = Exact<{
 
 export type GetAssignmentIdsQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any }> };
 
-export type GetAssignmentResponseByIdQueryVariables = Exact<{
-  assignmentResponseId: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentResponseByIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }> };
-
 export type GetAssignmentResponseQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   assignmentId: Scalars['uuid'];
@@ -49177,6 +49170,21 @@ export type GetAssignmentResponseQueryVariables = Exact<{
 
 
 export type GetAssignmentResponseQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, updated_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
+
+export type GetAssignmentResponseByIdQueryVariables = Exact<{
+  assignmentResponseId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentResponseByIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }> };
+
+export type GetAssignmentResponsesQueryVariables = Exact<{
+  profileId: Scalars['uuid'];
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentResponsesQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
 
 export type GetAssignmentResponsesByAssignmentIdQueryVariables = Exact<{
   assignmentId: Scalars['uuid'];
@@ -49188,39 +49196,6 @@ export type GetAssignmentResponsesByAssignmentIdQueryVariables = Exact<{
 
 
 export type GetAssignmentResponsesByAssignmentIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }>, count: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null } };
-
-export type GetAssignmentResponsesQueryVariables = Exact<{
-  profileId: Scalars['uuid'];
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type GetAssignmentResponsesQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
-
-export type GetAssignmentsByResponseOwnerIdQueryVariables = Exact<{
-  owner_profile_id: Scalars['uuid'];
-  offset?: InputMaybe<Scalars['Int']>;
-  limit?: InputMaybe<Scalars['Int']>;
-  filter?: InputMaybe<Array<App_Assignments_V2_Bool_Exp> | App_Assignments_V2_Bool_Exp>;
-  order: Array<App_Assignments_V2_Order_By> | App_Assignments_V2_Order_By;
-}>;
-
-
-export type GetAssignmentsByResponseOwnerIdQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, thumbnail_path?: string | null, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, enum_right_type: { __typename?: 'lookup_enum_right_types', description: string, value: string } }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
-
-export type GetContributorsByAssignmentUuidQueryVariables = Exact<{
-  id: Scalars['uuid'];
-}>;
-
-
-export type GetContributorsByAssignmentUuidQuery = { __typename?: 'query_root', app_assignments_v2_contributors: Array<{ __typename?: 'app_assignments_v2_contributors', assignment_id: any, invite_email?: string | null, invite_token?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile_id?: any | null, id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null, mail?: string | null } | null } | null }> };
-
-export type GetMaxPositionAssignmentBlocksQueryVariables = Exact<{
-  assignmentId: Scalars['uuid'];
-}>;
-
-
-export type GetMaxPositionAssignmentBlocksQuery = { __typename?: 'query_root', app_assignments_v2_by_pk?: { __typename?: 'app_assignments_v2', blocks_aggregate: { __typename?: 'app_assignment_blocks_v2_aggregate', aggregate?: { __typename?: 'app_assignment_blocks_v2_aggregate_fields', max?: { __typename?: 'app_assignment_blocks_v2_max_fields', position?: number | null } | null } | null } } | null };
 
 export type GetAssignmentWithResponseQueryVariables = Exact<{
   assignmentId: Scalars['uuid'];
@@ -49251,12 +49226,44 @@ export type GetAssignmentsByOwnerOrContributorQueryVariables = Exact<{
 
 export type GetAssignmentsByOwnerOrContributorQuery = { __typename?: 'query_root', app_assignments_v2_overview: Array<{ __typename?: 'app_assignments_v2_overview', id?: any | null, title?: string | null, description?: string | null, answer_url?: string | null, created_at?: any | null, updated_at?: any | null, available_at?: any | null, deadline_at?: any | null, is_collaborative?: boolean | null, is_deleted?: boolean | null, is_public?: boolean | null, thumbnail_path?: string | null, owner_profile_id?: any | null, share_type?: string | null, lom_learning_resource_type?: any | null, collaborator_profile_id?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile?: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, enum_right_type: { __typename?: 'lookup_enum_right_types', value: string, description: string }, assignment: { __typename?: 'app_assignments_v2', id: any } }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom_id: string, assignment_id: any, lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, label?: string | null, scheme?: string | null, id?: string | null } | null }> }>, count: { __typename?: 'app_assignments_v2_overview_aggregate', aggregate?: { __typename?: 'app_assignments_v2_overview_aggregate_fields', count: number } | null } };
 
+export type GetAssignmentsByResponseOwnerIdQueryVariables = Exact<{
+  owner_profile_id: Scalars['uuid'];
+  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  filter?: InputMaybe<Array<App_Assignments_V2_Bool_Exp> | App_Assignments_V2_Bool_Exp>;
+  order: Array<App_Assignments_V2_Order_By> | App_Assignments_V2_Order_By;
+}>;
+
+
+export type GetAssignmentsByResponseOwnerIdQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, thumbnail_path?: string | null, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null, enum_right_type: { __typename?: 'lookup_enum_right_types', description: string, value: string } }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
+
+export type GetContributorsByAssignmentUuidQueryVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type GetContributorsByAssignmentUuidQuery = { __typename?: 'query_root', app_assignments_v2_contributors: Array<{ __typename?: 'app_assignments_v2_contributors', assignment_id: any, invite_email?: string | null, invite_token?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile_id?: any | null, id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null, mail?: string | null } | null } | null }> };
+
+export type GetMaxPositionAssignmentBlocksQueryVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type GetMaxPositionAssignmentBlocksQuery = { __typename?: 'query_root', app_assignments_v2_by_pk?: { __typename?: 'app_assignments_v2', blocks_aggregate: { __typename?: 'app_assignment_blocks_v2_aggregate', aggregate?: { __typename?: 'app_assignment_blocks_v2_aggregate_fields', max?: { __typename?: 'app_assignment_blocks_v2_max_fields', position?: number | null } | null } | null } } | null };
+
 export type IncrementAssignmentViewCountMutationVariables = Exact<{
   assignmentId: Scalars['uuid'];
 }>;
 
 
 export type IncrementAssignmentViewCountMutation = { __typename?: 'mutation_root', update_app_assignment_v2_views?: { __typename?: 'app_assignment_v2_views_mutation_response', affected_rows: number } | null };
+
+export type InsertAssignmentMutationVariables = Exact<{
+  assignment: App_Assignments_V2_Insert_Input;
+}>;
+
+
+export type InsertAssignmentMutation = { __typename?: 'mutation_root', insert_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignments_v2', id: any }> } | null };
 
 export type InsertAssignmentBlocksMutationVariables = Exact<{
   assignmentBlocks: Array<App_Assignment_Blocks_V2_Insert_Input> | App_Assignment_Blocks_V2_Insert_Input;
@@ -49271,13 +49278,6 @@ export type InsertAssignmentResponseMutationVariables = Exact<{
 
 
 export type InsertAssignmentResponseMutation = { __typename?: 'mutation_root', insert_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, updated_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }> }> } | null };
-
-export type InsertAssignmentMutationVariables = Exact<{
-  assignment: App_Assignments_V2_Insert_Input;
-}>;
-
-
-export type InsertAssignmentMutation = { __typename?: 'mutation_root', insert_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignments_v2', id: any }> } | null };
 
 export type UpdateAssignmentResponseMutationVariables = Exact<{
   assignmentResponseId?: InputMaybe<Scalars['uuid']>;
@@ -49422,6 +49422,14 @@ export type GetOrganisationContentQueryVariables = Exact<{
 
 export type GetOrganisationContentQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, created_at: any, title: string, updated_at: any, type: { __typename?: 'shared_types', label: string }, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null } | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
 
+export type GetPublicCollectionsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  typeId: Scalars['Int'];
+}>;
+
+
+export type GetPublicCollectionsQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string } | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null } | null }> }> };
+
 export type GetPublicCollectionsByIdQueryVariables = Exact<{
   id: Scalars['uuid'];
   typeId: Scalars['Int'];
@@ -49440,20 +49448,19 @@ export type GetPublicCollectionsByTitleQueryVariables = Exact<{
 
 export type GetPublicCollectionsByTitleQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string } | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null } | null }> }> };
 
-export type GetPublicCollectionsQueryVariables = Exact<{
-  limit: Scalars['Int'];
-  typeId: Scalars['Int'];
-}>;
-
-
-export type GetPublicCollectionsQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string } | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null } | null }> }> };
-
 export type GetPublishedBundlesContainingCollectionQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
 export type GetPublishedBundlesContainingCollectionQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
+
+export type InsertCollectionMutationVariables = Exact<{
+  collection: App_Collections_Insert_Input;
+}>;
+
+
+export type InsertCollectionMutation = { __typename?: 'mutation_root', insert_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collections', id: any, title: string, collection_fragments: Array<{ __typename?: 'app_collection_fragments', id: number }> }> } | null };
 
 export type InsertCollectionFragmentsMutationVariables = Exact<{
   fragments: Array<App_Collection_Fragments_Insert_Input> | App_Collection_Fragments_Insert_Input;
@@ -49498,13 +49505,6 @@ export type InsertCollectionManagementQualityCheckEntryMutationVariables = Exact
 
 
 export type InsertCollectionManagementQualityCheckEntryMutation = { __typename?: 'mutation_root', insert_app_collection_management_QC_one?: { __typename?: 'app_collection_management_QC', id: number } | null };
-
-export type InsertCollectionMutationVariables = Exact<{
-  collection: App_Collections_Insert_Input;
-}>;
-
-
-export type InsertCollectionMutation = { __typename?: 'mutation_root', insert_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collections', id: any, title: string, collection_fragments: Array<{ __typename?: 'app_collection_fragments', id: number }> }> } | null };
 
 export type InsertMarcomEntryMutationVariables = Exact<{
   objects: Array<App_Collection_Marcom_Log_Insert_Input> | App_Collection_Marcom_Log_Insert_Input;
@@ -50358,25 +50358,6 @@ export const useGetCollectionQualityCheckQuery = <
       fetchData<GetCollectionQualityCheckQuery, GetCollectionQualityCheckQueryVariables>(GetCollectionQualityCheckDocument, variables),
       options
     );
-export const GetCollectionsByIdsDocument = `
-    query getCollectionsByIds($where: app_collections_bool_exp!) {
-  app_collections(where: $where) {
-    id
-  }
-}
-    `;
-export const useGetCollectionsByIdsQuery = <
-      TData = GetCollectionsByIdsQuery,
-      TError = unknown
-    >(
-      variables: GetCollectionsByIdsQueryVariables,
-      options?: UseQueryOptions<GetCollectionsByIdsQuery, TError, TData>
-    ) =>
-    useQuery<GetCollectionsByIdsQuery, TError, TData>(
-      ['getCollectionsByIds', variables],
-      fetchData<GetCollectionsByIdsQuery, GetCollectionsByIdsQueryVariables>(GetCollectionsByIdsDocument, variables),
-      options
-    );
 export const GetCollectionsDocument = `
     query getCollections($where: app_collections_bool_exp!, $orderBy: [app_collections_order_by!]!, $offset: Int!, $limit: Int!) {
   app_collections(
@@ -50443,6 +50424,25 @@ export const useGetCollectionsQuery = <
     useQuery<GetCollectionsQuery, TError, TData>(
       ['getCollections', variables],
       fetchData<GetCollectionsQuery, GetCollectionsQueryVariables>(GetCollectionsDocument, variables),
+      options
+    );
+export const GetCollectionsByIdsDocument = `
+    query getCollectionsByIds($where: app_collections_bool_exp!) {
+  app_collections(where: $where) {
+    id
+  }
+}
+    `;
+export const useGetCollectionsByIdsQuery = <
+      TData = GetCollectionsByIdsQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionsByIdsQueryVariables,
+      options?: UseQueryOptions<GetCollectionsByIdsQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionsByIdsQuery, TError, TData>(
+      ['getCollectionsByIds', variables],
+      fetchData<GetCollectionsByIdsQuery, GetCollectionsByIdsQueryVariables>(GetCollectionsByIdsDocument, variables),
       options
     );
 export const DeleteInteractiveTourDocument = `
@@ -50830,6 +50830,32 @@ export const useGetItemsWithFiltersQuery = <
       fetchData<GetItemsWithFiltersQuery, GetItemsWithFiltersQueryVariables>(GetItemsWithFiltersDocument, variables),
       options
     );
+export const GetPublicItemsDocument = `
+    query getPublicItems($limit: Int!) {
+  app_item_meta(
+    order_by: {title: asc}
+    limit: $limit
+    where: {is_published: {_eq: true}}
+  ) {
+    external_id
+    title
+    is_published
+    is_deleted
+  }
+}
+    `;
+export const useGetPublicItemsQuery = <
+      TData = GetPublicItemsQuery,
+      TError = unknown
+    >(
+      variables: GetPublicItemsQueryVariables,
+      options?: UseQueryOptions<GetPublicItemsQuery, TError, TData>
+    ) =>
+    useQuery<GetPublicItemsQuery, TError, TData>(
+      ['getPublicItems', variables],
+      fetchData<GetPublicItemsQuery, GetPublicItemsQueryVariables>(GetPublicItemsDocument, variables),
+      options
+    );
 export const GetPublicItemsByTitleOrExternalIdDocument = `
     query getPublicItemsByTitleOrExternalId($title: String!, $externalId: bpchar!, $limit: Int!) {
   itemsByTitle: app_item_meta(
@@ -50864,32 +50890,6 @@ export const useGetPublicItemsByTitleOrExternalIdQuery = <
     useQuery<GetPublicItemsByTitleOrExternalIdQuery, TError, TData>(
       ['getPublicItemsByTitleOrExternalId', variables],
       fetchData<GetPublicItemsByTitleOrExternalIdQuery, GetPublicItemsByTitleOrExternalIdQueryVariables>(GetPublicItemsByTitleOrExternalIdDocument, variables),
-      options
-    );
-export const GetPublicItemsDocument = `
-    query getPublicItems($limit: Int!) {
-  app_item_meta(
-    order_by: {title: asc}
-    limit: $limit
-    where: {is_published: {_eq: true}}
-  ) {
-    external_id
-    title
-    is_published
-    is_deleted
-  }
-}
-    `;
-export const useGetPublicItemsQuery = <
-      TData = GetPublicItemsQuery,
-      TError = unknown
-    >(
-      variables: GetPublicItemsQueryVariables,
-      options?: UseQueryOptions<GetPublicItemsQuery, TError, TData>
-    ) =>
-    useQuery<GetPublicItemsQuery, TError, TData>(
-      ['getPublicItems', variables],
-      fetchData<GetPublicItemsQuery, GetPublicItemsQueryVariables>(GetPublicItemsDocument, variables),
       options
     );
 export const GetUnpublishedItemPidsDocument = `
@@ -51167,6 +51167,88 @@ export const useGetProfileIdsQuery = <
       fetchData<GetProfileIdsQuery, GetProfileIdsQueryVariables>(GetProfileIdsDocument, variables),
       options
     );
+export const GetUsersDocument = `
+    query getUsers($offset: Int!, $limit: Int!, $orderBy: [users_summary_view_order_by!]!, $where: users_summary_view_bool_exp!) {
+  users_summary_view(
+    offset: $offset
+    limit: $limit
+    order_by: $orderBy
+    where: $where
+  ) {
+    user_id
+    full_name
+    first_name
+    last_name
+    mail
+    last_access_at
+    is_blocked
+    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
+    }
+    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
+    }
+    profile_id
+    stamboek
+    acc_created_at
+    group_id
+    group_name
+    company_name
+    is_exception
+    business_category
+    idps {
+      idp
+    }
+    classifications {
+      key
+    }
+    contexts {
+      key
+    }
+    organisations {
+      organization_id
+      unit_id
+      organization {
+        ldap_description
+      }
+    }
+    user {
+      temp_access {
+        until
+        from
+        current {
+          status
+        }
+      }
+    }
+  }
+  users_summary_view_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetUsersQuery = <
+      TData = GetUsersQuery,
+      TError = unknown
+    >(
+      variables: GetUsersQueryVariables,
+      options?: UseQueryOptions<GetUsersQuery, TError, TData>
+    ) =>
+    useQuery<GetUsersQuery, TError, TData>(
+      ['getUsers', variables],
+      fetchData<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, variables),
+      options
+    );
 export const GetUsersInSameCompanyDocument = `
     query getUsersInSameCompany($offset: Int!, $limit: Int!, $orderBy: [users_summary_view_order_by!]!, $where: users_summary_view_bool_exp!, $companyId: String!) {
   users_summary_view(
@@ -51249,88 +51331,6 @@ export const useGetUsersInSameCompanyQuery = <
     useQuery<GetUsersInSameCompanyQuery, TError, TData>(
       ['getUsersInSameCompany', variables],
       fetchData<GetUsersInSameCompanyQuery, GetUsersInSameCompanyQueryVariables>(GetUsersInSameCompanyDocument, variables),
-      options
-    );
-export const GetUsersDocument = `
-    query getUsers($offset: Int!, $limit: Int!, $orderBy: [users_summary_view_order_by!]!, $where: users_summary_view_bool_exp!) {
-  users_summary_view(
-    offset: $offset
-    limit: $limit
-    order_by: $orderBy
-    where: $where
-  ) {
-    user_id
-    full_name
-    first_name
-    last_name
-    mail
-    last_access_at
-    is_blocked
-    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
-      aggregate {
-        max {
-          created_at
-        }
-      }
-    }
-    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
-      aggregate {
-        max {
-          created_at
-        }
-      }
-    }
-    profile_id
-    stamboek
-    acc_created_at
-    group_id
-    group_name
-    company_name
-    is_exception
-    business_category
-    idps {
-      idp
-    }
-    classifications {
-      key
-    }
-    contexts {
-      key
-    }
-    organisations {
-      organization_id
-      unit_id
-      organization {
-        ldap_description
-      }
-    }
-    user {
-      temp_access {
-        until
-        from
-        current {
-          status
-        }
-      }
-    }
-  }
-  users_summary_view_aggregate(where: $where) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetUsersQuery = <
-      TData = GetUsersQuery,
-      TError = unknown
-    >(
-      variables: GetUsersQueryVariables,
-      options?: UseQueryOptions<GetUsersQuery, TError, TData>
-    ) =>
-    useQuery<GetUsersQuery, TError, TData>(
-      ['getUsers', variables],
-      fetchData<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, variables),
       options
     );
 export const UpdateUserTempAccessByIdDocument = `
@@ -51679,6 +51679,53 @@ export const useGetAssignmentIdsQuery = <
       fetchData<GetAssignmentIdsQuery, GetAssignmentIdsQueryVariables>(GetAssignmentIdsDocument, variables),
       options
     );
+export const GetAssignmentResponseDocument = `
+    query getAssignmentResponse($profileId: uuid!, $assignmentId: uuid!) {
+  app_assignment_responses_v2(
+    where: {owner_profile_id: {_eq: $profileId}, assignment_id: {_eq: $assignmentId}}
+  ) {
+    id
+    created_at
+    updated_at
+    owner_profile_id
+    assignment_id
+    collection_title
+    pupil_collection_blocks(
+      where: {is_deleted: {_eq: false}}
+      order_by: {position: asc}
+    ) {
+      id
+      fragment_id
+      use_custom_fields
+      custom_title
+      custom_description
+      start_oc
+      end_oc
+      position
+      created_at
+      updated_at
+      type
+      thumbnail_path
+      assignment_response_id
+    }
+    owner {
+      full_name
+    }
+  }
+}
+    `;
+export const useGetAssignmentResponseQuery = <
+      TData = GetAssignmentResponseQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentResponseQueryVariables,
+      options?: UseQueryOptions<GetAssignmentResponseQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentResponseQuery, TError, TData>(
+      ['getAssignmentResponse', variables],
+      fetchData<GetAssignmentResponseQuery, GetAssignmentResponseQueryVariables>(GetAssignmentResponseDocument, variables),
+      options
+    );
 export const GetAssignmentResponseByIdDocument = `
     query getAssignmentResponseById($assignmentResponseId: uuid!) {
   app_assignment_responses_v2(where: {id: {_eq: $assignmentResponseId}}) {
@@ -51733,14 +51780,13 @@ export const useGetAssignmentResponseByIdQuery = <
       fetchData<GetAssignmentResponseByIdQuery, GetAssignmentResponseByIdQueryVariables>(GetAssignmentResponseByIdDocument, variables),
       options
     );
-export const GetAssignmentResponseDocument = `
-    query getAssignmentResponse($profileId: uuid!, $assignmentId: uuid!) {
+export const GetAssignmentResponsesDocument = `
+    query getAssignmentResponses($profileId: uuid!, $assignmentId: uuid!) {
   app_assignment_responses_v2(
-    where: {owner_profile_id: {_eq: $profileId}, assignment_id: {_eq: $assignmentId}}
+    where: {assignment: {owner_profile_id: {_eq: $profileId}}, assignment_id: {_eq: $assignmentId}}
   ) {
     id
     created_at
-    updated_at
     owner_profile_id
     assignment_id
     collection_title
@@ -51768,16 +51814,16 @@ export const GetAssignmentResponseDocument = `
   }
 }
     `;
-export const useGetAssignmentResponseQuery = <
-      TData = GetAssignmentResponseQuery,
+export const useGetAssignmentResponsesQuery = <
+      TData = GetAssignmentResponsesQuery,
       TError = unknown
     >(
-      variables: GetAssignmentResponseQueryVariables,
-      options?: UseQueryOptions<GetAssignmentResponseQuery, TError, TData>
+      variables: GetAssignmentResponsesQueryVariables,
+      options?: UseQueryOptions<GetAssignmentResponsesQuery, TError, TData>
     ) =>
-    useQuery<GetAssignmentResponseQuery, TError, TData>(
-      ['getAssignmentResponse', variables],
-      fetchData<GetAssignmentResponseQuery, GetAssignmentResponseQueryVariables>(GetAssignmentResponseDocument, variables),
+    useQuery<GetAssignmentResponsesQuery, TError, TData>(
+      ['getAssignmentResponses', variables],
+      fetchData<GetAssignmentResponsesQuery, GetAssignmentResponsesQueryVariables>(GetAssignmentResponsesDocument, variables),
       options
     );
 export const GetAssignmentResponsesByAssignmentIdDocument = `
@@ -51841,226 +51887,6 @@ export const useGetAssignmentResponsesByAssignmentIdQuery = <
     useQuery<GetAssignmentResponsesByAssignmentIdQuery, TError, TData>(
       ['getAssignmentResponsesByAssignmentId', variables],
       fetchData<GetAssignmentResponsesByAssignmentIdQuery, GetAssignmentResponsesByAssignmentIdQueryVariables>(GetAssignmentResponsesByAssignmentIdDocument, variables),
-      options
-    );
-export const GetAssignmentResponsesDocument = `
-    query getAssignmentResponses($profileId: uuid!, $assignmentId: uuid!) {
-  app_assignment_responses_v2(
-    where: {assignment: {owner_profile_id: {_eq: $profileId}}, assignment_id: {_eq: $assignmentId}}
-  ) {
-    id
-    created_at
-    owner_profile_id
-    assignment_id
-    collection_title
-    pupil_collection_blocks(
-      where: {is_deleted: {_eq: false}}
-      order_by: {position: asc}
-    ) {
-      id
-      fragment_id
-      use_custom_fields
-      custom_title
-      custom_description
-      start_oc
-      end_oc
-      position
-      created_at
-      updated_at
-      type
-      thumbnail_path
-      assignment_response_id
-    }
-    owner {
-      full_name
-    }
-  }
-}
-    `;
-export const useGetAssignmentResponsesQuery = <
-      TData = GetAssignmentResponsesQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentResponsesQueryVariables,
-      options?: UseQueryOptions<GetAssignmentResponsesQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentResponsesQuery, TError, TData>(
-      ['getAssignmentResponses', variables],
-      fetchData<GetAssignmentResponsesQuery, GetAssignmentResponsesQueryVariables>(GetAssignmentResponsesDocument, variables),
-      options
-    );
-export const GetAssignmentsByResponseOwnerIdDocument = `
-    query getAssignmentsByResponseOwnerId($owner_profile_id: uuid!, $offset: Int = 0, $limit: Int, $filter: [app_assignments_v2_bool_exp!], $order: [app_assignments_v2_order_by!]!) {
-  app_assignments_v2(
-    where: {responses: {owner_profile_id: {_eq: $owner_profile_id}}, is_deleted: {_eq: false}, _and: $filter}
-    limit: $limit
-    offset: $offset
-    order_by: $order
-  ) {
-    id
-    title
-    description
-    answer_url
-    created_at
-    updated_at
-    available_at
-    deadline_at
-    is_collaborative
-    is_deleted
-    is_public
-    thumbnail_path
-    owner_profile_id
-    owner {
-      full_name
-    }
-    profile {
-      id
-      avatar
-      user: usersByuserId {
-        first_name
-        last_name
-        id
-      }
-      organisation {
-        logo_url
-        name
-        or_id
-      }
-      profile_user_group {
-        group {
-          label
-          id
-        }
-      }
-    }
-    responses {
-      id
-    }
-    labels(order_by: {assignment_label: {label: asc}}) {
-      id
-      assignment_label {
-        color_enum_value
-        color_override
-        enum_color {
-          label
-          value
-        }
-        id
-        label
-        type
-        owner_profile_id
-      }
-    }
-    lom_learning_resource_type
-    contributors {
-      profile {
-        avatar
-        user_id
-        user: usersByuserId {
-          last_name
-          first_name
-          mail
-          full_name
-        }
-        id
-        organisation {
-          name
-        }
-      }
-      id
-      profile_id
-      rights
-      enum_right_type {
-        description
-        value
-      }
-    }
-    loms {
-      lom {
-        id
-        label
-        scheme
-        broader
-      }
-    }
-  }
-  count: app_assignments_v2_aggregate(
-    where: {responses: {owner_profile_id: {_eq: $owner_profile_id}}, is_deleted: {_eq: false}, _and: $filter}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetAssignmentsByResponseOwnerIdQuery = <
-      TData = GetAssignmentsByResponseOwnerIdQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentsByResponseOwnerIdQueryVariables,
-      options?: UseQueryOptions<GetAssignmentsByResponseOwnerIdQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentsByResponseOwnerIdQuery, TError, TData>(
-      ['getAssignmentsByResponseOwnerId', variables],
-      fetchData<GetAssignmentsByResponseOwnerIdQuery, GetAssignmentsByResponseOwnerIdQueryVariables>(GetAssignmentsByResponseOwnerIdDocument, variables),
-      options
-    );
-export const GetContributorsByAssignmentUuidDocument = `
-    query getContributorsByAssignmentUuid($id: uuid!) {
-  app_assignments_v2_contributors(where: {assignment_id: {_eq: $id}}) {
-    assignment_id
-    invite_email
-    invite_token
-    rights
-    profile_id
-    id
-    profile {
-      avatar
-      user: usersByuserId {
-        first_name
-        full_name
-        last_name
-        mail
-      }
-    }
-  }
-}
-    `;
-export const useGetContributorsByAssignmentUuidQuery = <
-      TData = GetContributorsByAssignmentUuidQuery,
-      TError = unknown
-    >(
-      variables: GetContributorsByAssignmentUuidQueryVariables,
-      options?: UseQueryOptions<GetContributorsByAssignmentUuidQuery, TError, TData>
-    ) =>
-    useQuery<GetContributorsByAssignmentUuidQuery, TError, TData>(
-      ['getContributorsByAssignmentUuid', variables],
-      fetchData<GetContributorsByAssignmentUuidQuery, GetContributorsByAssignmentUuidQueryVariables>(GetContributorsByAssignmentUuidDocument, variables),
-      options
-    );
-export const GetMaxPositionAssignmentBlocksDocument = `
-    query getMaxPositionAssignmentBlocks($assignmentId: uuid!) {
-  app_assignments_v2_by_pk(id: $assignmentId) {
-    blocks_aggregate {
-      aggregate {
-        max {
-          position
-        }
-      }
-    }
-  }
-}
-    `;
-export const useGetMaxPositionAssignmentBlocksQuery = <
-      TData = GetMaxPositionAssignmentBlocksQuery,
-      TError = unknown
-    >(
-      variables: GetMaxPositionAssignmentBlocksQueryVariables,
-      options?: UseQueryOptions<GetMaxPositionAssignmentBlocksQuery, TError, TData>
-    ) =>
-    useQuery<GetMaxPositionAssignmentBlocksQuery, TError, TData>(
-      ['getMaxPositionAssignmentBlocks', variables],
-      fetchData<GetMaxPositionAssignmentBlocksQuery, GetMaxPositionAssignmentBlocksQueryVariables>(GetMaxPositionAssignmentBlocksDocument, variables),
       options
     );
 export const GetAssignmentWithResponseDocument = `
@@ -52420,6 +52246,180 @@ export const useGetAssignmentsByOwnerOrContributorQuery = <
       fetchData<GetAssignmentsByOwnerOrContributorQuery, GetAssignmentsByOwnerOrContributorQueryVariables>(GetAssignmentsByOwnerOrContributorDocument, variables),
       options
     );
+export const GetAssignmentsByResponseOwnerIdDocument = `
+    query getAssignmentsByResponseOwnerId($owner_profile_id: uuid!, $offset: Int = 0, $limit: Int, $filter: [app_assignments_v2_bool_exp!], $order: [app_assignments_v2_order_by!]!) {
+  app_assignments_v2(
+    where: {responses: {owner_profile_id: {_eq: $owner_profile_id}}, is_deleted: {_eq: false}, _and: $filter}
+    limit: $limit
+    offset: $offset
+    order_by: $order
+  ) {
+    id
+    title
+    description
+    answer_url
+    created_at
+    updated_at
+    available_at
+    deadline_at
+    is_collaborative
+    is_deleted
+    is_public
+    thumbnail_path
+    owner_profile_id
+    owner {
+      full_name
+    }
+    profile {
+      id
+      avatar
+      user: usersByuserId {
+        first_name
+        last_name
+        id
+      }
+      organisation {
+        logo_url
+        name
+        or_id
+      }
+      profile_user_group {
+        group {
+          label
+          id
+        }
+      }
+    }
+    responses {
+      id
+    }
+    labels(order_by: {assignment_label: {label: asc}}) {
+      id
+      assignment_label {
+        color_enum_value
+        color_override
+        enum_color {
+          label
+          value
+        }
+        id
+        label
+        type
+        owner_profile_id
+      }
+    }
+    lom_learning_resource_type
+    contributors {
+      profile {
+        avatar
+        user_id
+        user: usersByuserId {
+          last_name
+          first_name
+          mail
+          full_name
+        }
+        id
+        organisation {
+          name
+        }
+      }
+      id
+      profile_id
+      rights
+      enum_right_type {
+        description
+        value
+      }
+    }
+    loms {
+      lom {
+        id
+        label
+        scheme
+        broader
+      }
+    }
+  }
+  count: app_assignments_v2_aggregate(
+    where: {responses: {owner_profile_id: {_eq: $owner_profile_id}}, is_deleted: {_eq: false}, _and: $filter}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetAssignmentsByResponseOwnerIdQuery = <
+      TData = GetAssignmentsByResponseOwnerIdQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentsByResponseOwnerIdQueryVariables,
+      options?: UseQueryOptions<GetAssignmentsByResponseOwnerIdQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentsByResponseOwnerIdQuery, TError, TData>(
+      ['getAssignmentsByResponseOwnerId', variables],
+      fetchData<GetAssignmentsByResponseOwnerIdQuery, GetAssignmentsByResponseOwnerIdQueryVariables>(GetAssignmentsByResponseOwnerIdDocument, variables),
+      options
+    );
+export const GetContributorsByAssignmentUuidDocument = `
+    query getContributorsByAssignmentUuid($id: uuid!) {
+  app_assignments_v2_contributors(where: {assignment_id: {_eq: $id}}) {
+    assignment_id
+    invite_email
+    invite_token
+    rights
+    profile_id
+    id
+    profile {
+      avatar
+      user: usersByuserId {
+        first_name
+        full_name
+        last_name
+        mail
+      }
+    }
+  }
+}
+    `;
+export const useGetContributorsByAssignmentUuidQuery = <
+      TData = GetContributorsByAssignmentUuidQuery,
+      TError = unknown
+    >(
+      variables: GetContributorsByAssignmentUuidQueryVariables,
+      options?: UseQueryOptions<GetContributorsByAssignmentUuidQuery, TError, TData>
+    ) =>
+    useQuery<GetContributorsByAssignmentUuidQuery, TError, TData>(
+      ['getContributorsByAssignmentUuid', variables],
+      fetchData<GetContributorsByAssignmentUuidQuery, GetContributorsByAssignmentUuidQueryVariables>(GetContributorsByAssignmentUuidDocument, variables),
+      options
+    );
+export const GetMaxPositionAssignmentBlocksDocument = `
+    query getMaxPositionAssignmentBlocks($assignmentId: uuid!) {
+  app_assignments_v2_by_pk(id: $assignmentId) {
+    blocks_aggregate {
+      aggregate {
+        max {
+          position
+        }
+      }
+    }
+  }
+}
+    `;
+export const useGetMaxPositionAssignmentBlocksQuery = <
+      TData = GetMaxPositionAssignmentBlocksQuery,
+      TError = unknown
+    >(
+      variables: GetMaxPositionAssignmentBlocksQueryVariables,
+      options?: UseQueryOptions<GetMaxPositionAssignmentBlocksQuery, TError, TData>
+    ) =>
+    useQuery<GetMaxPositionAssignmentBlocksQuery, TError, TData>(
+      ['getMaxPositionAssignmentBlocks', variables],
+      fetchData<GetMaxPositionAssignmentBlocksQuery, GetMaxPositionAssignmentBlocksQueryVariables>(GetMaxPositionAssignmentBlocksDocument, variables),
+      options
+    );
 export const IncrementAssignmentViewCountDocument = `
     mutation incrementAssignmentViewCount($assignmentId: uuid!) {
   update_app_assignment_v2_views(
@@ -52437,6 +52437,25 @@ export const useIncrementAssignmentViewCountMutation = <
     useMutation<IncrementAssignmentViewCountMutation, TError, IncrementAssignmentViewCountMutationVariables, TContext>(
       ['incrementAssignmentViewCount'],
       (variables?: IncrementAssignmentViewCountMutationVariables) => fetchData<IncrementAssignmentViewCountMutation, IncrementAssignmentViewCountMutationVariables>(IncrementAssignmentViewCountDocument, variables)(),
+      options
+    );
+export const InsertAssignmentDocument = `
+    mutation insertAssignment($assignment: app_assignments_v2_insert_input!) {
+  insert_app_assignments_v2(objects: [$assignment]) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertAssignmentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>(
+      ['insertAssignment'],
+      (variables?: InsertAssignmentMutationVariables) => fetchData<InsertAssignmentMutation, InsertAssignmentMutationVariables>(InsertAssignmentDocument, variables)(),
       options
     );
 export const InsertAssignmentBlocksDocument = `
@@ -52507,25 +52526,6 @@ export const useInsertAssignmentResponseMutation = <
     useMutation<InsertAssignmentResponseMutation, TError, InsertAssignmentResponseMutationVariables, TContext>(
       ['insertAssignmentResponse'],
       (variables?: InsertAssignmentResponseMutationVariables) => fetchData<InsertAssignmentResponseMutation, InsertAssignmentResponseMutationVariables>(InsertAssignmentResponseDocument, variables)(),
-      options
-    );
-export const InsertAssignmentDocument = `
-    mutation insertAssignment($assignment: app_assignments_v2_insert_input!) {
-  insert_app_assignments_v2(objects: [$assignment]) {
-    affected_rows
-    returning {
-      id
-    }
-  }
-}
-    `;
-export const useInsertAssignmentMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>) =>
-    useMutation<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>(
-      ['insertAssignment'],
-      (variables?: InsertAssignmentMutationVariables) => fetchData<InsertAssignmentMutation, InsertAssignmentMutationVariables>(InsertAssignmentDocument, variables)(),
       options
     );
 export const UpdateAssignmentResponseDocument = `
@@ -53088,6 +53088,50 @@ export const useGetOrganisationContentQuery = <
       fetchData<GetOrganisationContentQuery, GetOrganisationContentQueryVariables>(GetOrganisationContentDocument, variables),
       options
     );
+export const GetPublicCollectionsDocument = `
+    query getPublicCollections($limit: Int!, $typeId: Int!) {
+  app_collections_overview(
+    order_by: {title: asc}
+    where: {type_id: {_eq: $typeId}, is_public: {_eq: true}, is_deleted: {_eq: false}}
+    limit: $limit
+  ) {
+    id
+    title
+    share_type
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        organisation {
+          name
+        }
+        user: usersByuserId {
+          first_name
+          full_name
+          last_name
+        }
+      }
+    }
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+  }
+}
+    `;
+export const useGetPublicCollectionsQuery = <
+      TData = GetPublicCollectionsQuery,
+      TError = unknown
+    >(
+      variables: GetPublicCollectionsQueryVariables,
+      options?: UseQueryOptions<GetPublicCollectionsQuery, TError, TData>
+    ) =>
+    useQuery<GetPublicCollectionsQuery, TError, TData>(
+      ['getPublicCollections', variables],
+      fetchData<GetPublicCollectionsQuery, GetPublicCollectionsQueryVariables>(GetPublicCollectionsDocument, variables),
+      options
+    );
 export const GetPublicCollectionsByIdDocument = `
     query getPublicCollectionsById($id: uuid!, $typeId: Int!, $limit: Int!) {
   app_collections_overview(
@@ -53176,50 +53220,6 @@ export const useGetPublicCollectionsByTitleQuery = <
       fetchData<GetPublicCollectionsByTitleQuery, GetPublicCollectionsByTitleQueryVariables>(GetPublicCollectionsByTitleDocument, variables),
       options
     );
-export const GetPublicCollectionsDocument = `
-    query getPublicCollections($limit: Int!, $typeId: Int!) {
-  app_collections_overview(
-    order_by: {title: asc}
-    where: {type_id: {_eq: $typeId}, is_public: {_eq: true}, is_deleted: {_eq: false}}
-    limit: $limit
-  ) {
-    id
-    title
-    share_type
-    contributors {
-      enum_right_type {
-        value
-      }
-      profile {
-        organisation {
-          name
-        }
-        user: usersByuserId {
-          first_name
-          full_name
-          last_name
-        }
-      }
-    }
-    updated_at
-    is_public
-    thumbnail_path
-    created_at
-  }
-}
-    `;
-export const useGetPublicCollectionsQuery = <
-      TData = GetPublicCollectionsQuery,
-      TError = unknown
-    >(
-      variables: GetPublicCollectionsQueryVariables,
-      options?: UseQueryOptions<GetPublicCollectionsQuery, TError, TData>
-    ) =>
-    useQuery<GetPublicCollectionsQuery, TError, TData>(
-      ['getPublicCollections', variables],
-      fetchData<GetPublicCollectionsQuery, GetPublicCollectionsQueryVariables>(GetPublicCollectionsDocument, variables),
-      options
-    );
 export const GetPublishedBundlesContainingCollectionDocument = `
     query getPublishedBundlesContainingCollection($id: String!) {
   app_collections(
@@ -53240,6 +53240,29 @@ export const useGetPublishedBundlesContainingCollectionQuery = <
     useQuery<GetPublishedBundlesContainingCollectionQuery, TError, TData>(
       ['getPublishedBundlesContainingCollection', variables],
       fetchData<GetPublishedBundlesContainingCollectionQuery, GetPublishedBundlesContainingCollectionQueryVariables>(GetPublishedBundlesContainingCollectionDocument, variables),
+      options
+    );
+export const InsertCollectionDocument = `
+    mutation insertCollection($collection: app_collections_insert_input!) {
+  insert_app_collections(objects: [$collection]) {
+    affected_rows
+    returning {
+      id
+      title
+      collection_fragments(order_by: {position: asc}) {
+        id
+      }
+    }
+  }
+}
+    `;
+export const useInsertCollectionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionMutation, TError, InsertCollectionMutationVariables, TContext>) =>
+    useMutation<InsertCollectionMutation, TError, InsertCollectionMutationVariables, TContext>(
+      ['insertCollection'],
+      (variables?: InsertCollectionMutationVariables) => fetchData<InsertCollectionMutation, InsertCollectionMutationVariables>(InsertCollectionDocument, variables)(),
       options
     );
 export const InsertCollectionFragmentsDocument = `
@@ -53327,29 +53350,6 @@ export const useInsertCollectionManagementQualityCheckEntryMutation = <
     useMutation<InsertCollectionManagementQualityCheckEntryMutation, TError, InsertCollectionManagementQualityCheckEntryMutationVariables, TContext>(
       ['insertCollectionManagementQualityCheckEntry'],
       (variables?: InsertCollectionManagementQualityCheckEntryMutationVariables) => fetchData<InsertCollectionManagementQualityCheckEntryMutation, InsertCollectionManagementQualityCheckEntryMutationVariables>(InsertCollectionManagementQualityCheckEntryDocument, variables)(),
-      options
-    );
-export const InsertCollectionDocument = `
-    mutation insertCollection($collection: app_collections_insert_input!) {
-  insert_app_collections(objects: [$collection]) {
-    affected_rows
-    returning {
-      id
-      title
-      collection_fragments(order_by: {position: asc}) {
-        id
-      }
-    }
-  }
-}
-    `;
-export const useInsertCollectionMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertCollectionMutation, TError, InsertCollectionMutationVariables, TContext>) =>
-    useMutation<InsertCollectionMutation, TError, InsertCollectionMutationVariables, TContext>(
-      ['insertCollection'],
-      (variables?: InsertCollectionMutationVariables) => fetchData<InsertCollectionMutation, InsertCollectionMutationVariables>(InsertCollectionDocument, variables)(),
       options
     );
 export const InsertMarcomEntryDocument = `
