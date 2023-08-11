@@ -27,6 +27,7 @@ import React, { FunctionComponent, ReactText, useCallback, useEffect, useState }
 import { Link } from 'react-router-dom';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
+import { CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
 import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -52,9 +53,10 @@ import {
 	createDropdownMenuItem,
 	formatDate,
 	formatTimestamp,
-	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
+import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
@@ -71,9 +73,11 @@ import {
 } from '../collection.types';
 import { deleteCollection } from '../helpers/delete-collection';
 
+import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
+
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
 	type: 'collection' | 'bundle';
@@ -106,7 +110,8 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		undefined
 	);
 	const [selectedCollection, setSelectedCollection] = useState<Collection | undefined>(undefined);
-	const [sortColumn, setSortColumn] = useState<keyof Avo.Collection.Collection>('updated_at');
+	const [sortColumn, setSortColumn] =
+		useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
 
@@ -138,12 +143,22 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	const fetchCollections = useCallback(async () => {
 		try {
+			const column = getColumnsDesktop().find(
+				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
+			);
+			const columnDataType = (column?.dataType ||
+				TableColumnDataType.string) as TableColumnDataType;
 			const collections =
 				await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
 					user,
 					page * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
-					{ [sortColumn]: sortOrder },
+					getOrderObject(
+						sortColumn,
+						sortOrder,
+						columnDataType,
+						COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
+					),
 					isCollection ? ContentTypeNumber.collection : ContentTypeNumber.bundle,
 					undefined,
 					query.selectedShareTypeLabelIds as string[]
@@ -273,7 +288,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 
 	useEffect(() => {
 		if (query.sort_column) {
-			setSortColumn(query.sort_column as keyof Avo.Collection.Collection);
+			setSortColumn(query.sort_column as CollectionsOrBundlesOverviewTableCols);
 		}
 		if (query.sort_order) {
 			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
@@ -345,7 +360,7 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		);
 
 	// TODO: Make shared function because also used in assignments
-	const onClickColumn = (columnId: keyof Avo.Collection.Collection) => {
+	const onClickColumn = (columnId: CollectionsOrBundlesOverviewTableCols) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
 			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
@@ -508,30 +523,33 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 					onOptionClicked={onClickDropdownItem}
 				/>
 
-				{!isMobileWidth() && (
-					<Button
-						icon={IconName.chevronRight}
-						onClick={() =>
-							navigate(
-								history,
+				{renderMobileDesktop({
+					mobile: null,
+					desktop: (
+						<Button
+							icon={IconName.chevronRight}
+							onClick={() =>
+								navigate(
+									history,
+									isCollection
+										? APP_PATH.COLLECTION_DETAIL.route
+										: BUNDLE_PATH.BUNDLE_DETAIL,
+									{ id: collectionUuid }
+								)
+							}
+							title={
 								isCollection
-									? APP_PATH.COLLECTION_DETAIL.route
-									: BUNDLE_PATH.BUNDLE_DETAIL,
-								{ id: collectionUuid }
-							)
-						}
-						title={
-							isCollection
-								? tText(
-										'collection/components/collection-or-bundle-overview___bekijk-deze-collectie'
-								  )
-								: tText(
-										'collection/components/collection-or-bundle-overview___bekijk-deze-bundel'
-								  )
-						}
-						type="borderless"
-					/>
-				)}
+									? tText(
+											'collection/components/collection-or-bundle-overview___bekijk-deze-collectie'
+									  )
+									: tText(
+											'collection/components/collection-or-bundle-overview___bekijk-deze-bundel'
+									  )
+							}
+							type="borderless"
+						/>
+					),
+				})}
 			</ButtonToolbar>
 		);
 	};
@@ -652,24 +670,25 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		}
 	};
 
-	const getColumns = (): TableColumn[] => {
-		if (isMobileWidth()) {
-			return [
-				{ id: 'thumbnail', label: '', col: '2' },
-				{
-					id: 'title',
-					label: tText('collection/views/collection-overview___titel'),
-					col: '6',
-					sortable: true,
-					dataType: TableColumnDataType.string,
-				},
-				{
-					id: 'actions',
-					tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
-					col: '1',
-				},
-			];
-		}
+	const getColumnsMobile = (): TableColumn[] => {
+		return [
+			{ id: 'thumbnail', label: '', col: '2' },
+			{
+				id: 'title',
+				label: tText('collection/views/collection-overview___titel'),
+				col: '6',
+				sortable: true,
+				dataType: TableColumnDataType.string,
+			},
+			{
+				id: 'actions',
+				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
+				col: '1',
+			},
+		];
+	};
+
+	const getColumnsDesktop = (): TableColumn[] => {
 		return [
 			{
 				id: 'thumbnail',
@@ -788,24 +807,46 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 		);
 	};
 
-	const renderTable = (collections: Collection[]) => (
-		<>
-			<Table
-				columns={getColumns()}
-				data={collections}
-				emptyStateMessage={tText(
-					'collection/views/collection-overview___geen-resultaten-gevonden'
-				)}
-				renderCell={renderCell}
-				rowKey="id"
-				variant="styled"
-				onColumnClick={onClickColumn as any}
-				sortColumn={sortColumn}
-				sortOrder={sortOrder}
-			/>
-			<Spacer margin="top-large">{renderPagination()}</Spacer>
-		</>
-	);
+	const renderTable = (collections: Collection[]) => {
+		return renderMobileDesktop({
+			mobile: (
+				<>
+					<Table
+						columns={getColumnsMobile()}
+						data={collections}
+						emptyStateMessage={tText(
+							'collection/views/collection-overview___geen-resultaten-gevonden'
+						)}
+						renderCell={renderCell}
+						rowKey="id"
+						variant="styled"
+						onColumnClick={onClickColumn as any}
+						sortColumn={sortColumn}
+						sortOrder={sortOrder}
+					/>
+					<Spacer margin="top-large">{renderPagination()}</Spacer>
+				</>
+			),
+			desktop: (
+				<>
+					<Table
+						columns={getColumnsDesktop()}
+						data={collections}
+						emptyStateMessage={tText(
+							'collection/views/collection-overview___geen-resultaten-gevonden'
+						)}
+						renderCell={renderCell}
+						rowKey="id"
+						variant="styled"
+						onColumnClick={onClickColumn as any}
+						sortColumn={sortColumn}
+						sortOrder={sortOrder}
+					/>
+					<Spacer margin="top-large">{renderPagination()}</Spacer>
+				</>
+			),
+		});
+	};
 
 	const renderEmptyFallback = () => (
 		<ErrorView

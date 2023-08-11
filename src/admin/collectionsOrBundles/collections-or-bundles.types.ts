@@ -23,7 +23,9 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'in_assignment'
 	| 'quick_lane_links'
 	| 'is_copy'
-	| 'organisation';
+	| 'organisation'
+	| 'share_type'
+	| 'share_type_order';
 
 export type CollectionOrBundleActualisationOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase

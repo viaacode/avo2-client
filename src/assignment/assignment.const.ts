@@ -182,6 +182,9 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 			count: order,
 		},
 	}),
+	share_type: (order: Avo.Search.OrderDirection) => ({
+		share_type_order: order,
+	}),
 };
 
 /// Zoek & bouw
