@@ -598,25 +598,34 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							/>
 						</Link>
 
-						<Link
-							to={buildLink(
-								isCollection
-									? APP_PATH.COLLECTION_EDIT_TAB.route
-									: APP_PATH.BUNDLE_EDIT_TAB.route,
-								{
-									id: collection.id,
-									tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-								}
-							)}
-						>
+						{isCollectionBeingEdited ? (
 							<Button
 								type="secondary"
 								icon={IconName.edit}
 								ariaLabel={editButtonTitle}
 								title={editButtonTitle}
-								disabled={isCollectionBeingEdited}
+								disabled={true}
 							/>
-						</Link>
+						) : (
+							<Link
+								to={buildLink(
+									isCollection
+										? APP_PATH.COLLECTION_EDIT_TAB.route
+										: APP_PATH.BUNDLE_EDIT_TAB.route,
+									{
+										id: collection.id,
+										tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+									}
+								)}
+							>
+								<Button
+									type="secondary"
+									icon={IconName.edit}
+									ariaLabel={editButtonTitle}
+									title={editButtonTitle}
+								/>
+							</Link>
+						)}
 					</ButtonToolbar>
 				);
 			}

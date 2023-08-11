@@ -394,14 +394,14 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				if (!editStatuses) {
 					return null;
 				}
-				const isCollectionBeingEdited = isContentBeingEdited(
+				const isAssignmentBeingEdited = isContentBeingEdited(
 					editStatuses?.[assignment.id as string],
 					user?.profile?.id
 				);
 				const viewButtonTitle = tText(
 					'admin/assignments/views/assignments-overview-admin___bekijk-deze-opdracht'
 				);
-				const editButtonTitle = isCollectionBeingEdited
+				const editButtonTitle = isAssignmentBeingEdited
 					? tText(
 							'admin/assignments/views/assignments-overview-admin___deze-opdracht-wordt-reeds-bewerkt-door-iemand-anders'
 					  )
@@ -423,20 +423,29 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 							/>
 						</Link>
 
-						<Link
-							to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
-								id: assignment.id,
-								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-							})}
-						>
+						{isAssignmentBeingEdited ? (
 							<Button
 								type="secondary"
 								icon={IconName.edit}
 								ariaLabel={editButtonTitle}
 								title={editButtonTitle}
-								disabled={isCollectionBeingEdited}
+								disabled={true}
 							/>
-						</Link>
+						) : (
+							<Link
+								to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+									id: assignment.id,
+									tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+								})}
+							>
+								<Button
+									type="secondary"
+									icon={IconName.edit}
+									ariaLabel={editButtonTitle}
+									title={editButtonTitle}
+								/>
+							</Link>
+						)}
 					</ButtonToolbar>
 				);
 			}
