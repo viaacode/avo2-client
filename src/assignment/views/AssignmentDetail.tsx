@@ -14,7 +14,8 @@ import {
 	Spinner,
 	ToggleButton,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import React, { FC, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
@@ -527,7 +528,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			...createDropdownMenuItem(
 				AssignmentAction.delete,
 				permissions.canDeleteAnyAssignments || isOwner
-					? tText('Verwijderen')
+					? tText('assignment/views/assignment-detail___verwijderen')
 					: tText('assignment/views/assignment-detail___verwijder-mij-van-deze-opdracht'),
 				undefined,
 				permissions.canDeleteAnyAssignments || isOwner || isContributor || false
@@ -684,7 +685,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			...createDropdownMenuItem(
 				AssignmentAction.delete,
 				permissions.canDeleteAnyAssignments || isOwner
-					? tText('Verwijderen')
+					? tText('assignment/views/assignment-detail___verwijderen')
 					: tText('assignment/views/assignment-detail___verwijder-mij-van-deze-opdracht'),
 				undefined,
 				permissions.canDeleteAnyAssignments || isOwner || isContributor || false

@@ -1,4 +1,4 @@
-import { Button, IconName } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { get, isNil, partition } from 'lodash-es';
 import React, {
@@ -19,11 +19,14 @@ import {
 	AssignmentOverviewTableColumns,
 	AssignmentType,
 } from '../../../assignment/assignment.types';
+import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
+import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -67,6 +70,14 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	);
 	const [selectedBulkAction, setSelectedBulkAction] = useState<AssignmentsBulkAction | null>(
 		null
+	);
+	const { data: editStatuses } = useGetAssignmentsEditStatuses(
+		assignments?.map((assignment) => assignment.id) || [],
+		{
+			enabled: !!assignments?.length,
+			refetchInterval: EDIT_STATUS_REFETCH_TIME,
+			refetchIntervalInBackground: true,
+		}
 	);
 
 	const columns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(), []);
@@ -379,22 +390,59 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			case 'views':
 				return assignment?.view_count?.count || '0';
 
-			case 'actions':
-			default:
-				return (
-					<Link
-						to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
-							id: assignment.id,
-							tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-						})}
-					>
-						<Button
-							icon={IconName.edit2}
-							ariaLabel="Bewerk deze opdracht"
-							type="secondary"
-						/>
-					</Link>
+			case 'actions': {
+				if (!editStatuses) {
+					return null;
+				}
+				const isCollectionBeingEdited = isContentBeingEdited(
+					editStatuses?.[assignment.id as string]?.editingUserId,
+					user?.profile?.id
 				);
+				const viewButtonTitle = tText(
+					'admin/assignments/views/assignments-overview-admin___bekijk-deze-opdracht'
+				);
+				const editButtonTitle = isCollectionBeingEdited
+					? tText(
+							'admin/assignments/views/assignments-overview-admin___deze-opdracht-wordt-reeds-bewerkt-door-iemand-anders'
+					  )
+					: tText(
+							'admin/assignments/views/assignments-overview-admin___bewerk-deze-opdracht'
+					  );
+				return (
+					<ButtonToolbar>
+						<Link
+							to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+								id: assignment.id,
+							})}
+						>
+							<Button
+								type="secondary"
+								icon={IconName.eye}
+								ariaLabel={viewButtonTitle}
+								title={viewButtonTitle}
+							/>
+						</Link>
+
+						<Link
+							to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+								id: assignment.id,
+								tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+							})}
+						>
+							<Button
+								type="secondary"
+								icon={IconName.edit}
+								ariaLabel={editButtonTitle}
+								title={editButtonTitle}
+								disabled={isCollectionBeingEdited}
+							/>
+						</Link>
+					</ButtonToolbar>
+				);
+			}
+
+			default:
+				return truncateTableValue((assignment as any)[columnId]);
 		}
 	};
 

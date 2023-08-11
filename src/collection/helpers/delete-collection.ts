@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 
 import { tHtml } from '../../shared/helpers/translate';
@@ -17,7 +17,9 @@ export async function deleteCollection(
 	try {
 		if (isNil(collectionId)) {
 			ToastService.danger(
-				tHtml('De huidige collectie werd nog nooit opgeslagen / heeft geen id')
+				tHtml(
+					'collection/helpers/delete-collection___de-huidige-collectie-werd-nog-nooit-opgeslagen-heeft-geen-id'
+				)
 			);
 			return;
 		}
@@ -25,7 +27,7 @@ export async function deleteCollection(
 		if (!user.profile?.id) {
 			ToastService.danger(
 				tHtml(
-					'Kan collectie niet verwijderen omdat de gebruiker geen profiel id heeft. Probeer opnieuw in te loggen.'
+					'collection/helpers/delete-collection___kan-collectie-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
 				)
 			);
 			return;
@@ -50,15 +52,23 @@ export async function deleteCollection(
 
 		ToastService.success(
 			isCollection
-				? tHtml('De collectie werd succesvol verwijderd.')
-				: tHtml('De bundel werd succesvol verwijderd.')
+				? tHtml(
+						'collection/helpers/delete-collection___de-collectie-werd-succesvol-verwijderd'
+				  )
+				: tHtml(
+						'collection/helpers/delete-collection___de-bundel-werd-succesvol-verwijderd'
+				  )
 		);
 	} catch (err) {
 		console.error(err);
 		ToastService.danger(
 			isCollection
-				? tHtml('Het verwijderen van de collectie is mislukt.')
-				: tHtml('Het verwijderen van de bundel is mislukt.')
+				? tHtml(
+						'collection/helpers/delete-collection___het-verwijderen-van-de-collectie-is-mislukt'
+				  )
+				: tHtml(
+						'collection/helpers/delete-collection___het-verwijderen-van-de-bundel-is-mislukt'
+				  )
 		);
 	}
 }

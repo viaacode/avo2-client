@@ -7,13 +7,14 @@ query getCollections(
 	app_collections(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
 		id
 		type_id
-		updated_at
 		title
 		description
 		is_public
-		created_at
+		is_managed
 		subjects: lom_classification
 		education_levels: lom_context
+		created_at
+		updated_at
 		owner {
 			full_name
 			group_id
@@ -44,7 +45,6 @@ query getCollections(
 			copies
 			quick_lane_links
 		}
-		is_managed
 	}
 	app_collections_aggregate(where: $where) {
 		aggregate {

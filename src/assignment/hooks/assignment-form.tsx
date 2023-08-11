@@ -1,4 +1,5 @@
-import type { Avo, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 import { ASSIGNMENT_FORM_DEFAULT } from '../assignment.const';

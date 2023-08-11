@@ -27,7 +27,7 @@ export async function deleteAssignment(
 		if (!user.profile?.id) {
 			ToastService.danger(
 				tHtml(
-					'Kan opdracht niet verwijderen omdat de gebruiker geen profiel id heeft. Probeer opnieuw in te loggen.'
+					'assignment/helpers/delete-assignment___kan-opdracht-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
 				)
 			);
 			return;

@@ -1,6 +1,7 @@
 import { IconName } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import { Avo, LomSchemeType } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { LomSchemeType } from '@viaa/avo2-types';
 import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { compact } from 'lodash-es';

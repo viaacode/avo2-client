@@ -4842,6 +4842,7 @@ export type App_Assignments_V2_Overview = {
   /** An aggregate relationship */
   responses_aggregate: App_Assignment_Responses_V2_Aggregate;
   share_type?: Maybe<Scalars['String']>;
+  share_type_order?: Maybe<Scalars['Int']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
@@ -5005,9 +5006,17 @@ export type App_Assignments_V2_Overview_Aggregate = {
 /** aggregate fields of "app.assignments_v2_overview" */
 export type App_Assignments_V2_Overview_Aggregate_Fields = {
   __typename?: 'app_assignments_v2_overview_aggregate_fields';
+  avg?: Maybe<App_Assignments_V2_Overview_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<App_Assignments_V2_Overview_Max_Fields>;
   min?: Maybe<App_Assignments_V2_Overview_Min_Fields>;
+  stddev?: Maybe<App_Assignments_V2_Overview_Stddev_Fields>;
+  stddev_pop?: Maybe<App_Assignments_V2_Overview_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<App_Assignments_V2_Overview_Stddev_Samp_Fields>;
+  sum?: Maybe<App_Assignments_V2_Overview_Sum_Fields>;
+  var_pop?: Maybe<App_Assignments_V2_Overview_Var_Pop_Fields>;
+  var_samp?: Maybe<App_Assignments_V2_Overview_Var_Samp_Fields>;
+  variance?: Maybe<App_Assignments_V2_Overview_Variance_Fields>;
 };
 
 
@@ -5015,6 +5024,12 @@ export type App_Assignments_V2_Overview_Aggregate_Fields = {
 export type App_Assignments_V2_Overview_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<App_Assignments_V2_Overview_Select_Column>>;
   distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** aggregate avg on columns */
+export type App_Assignments_V2_Overview_Avg_Fields = {
+  __typename?: 'app_assignments_v2_overview_avg_fields';
+  share_type_order?: Maybe<Scalars['Float']>;
 };
 
 /** Boolean expression to filter rows from the table "app.assignments_v2_overview". All fields are combined with a logical 'AND'. */
@@ -5052,6 +5067,7 @@ export type App_Assignments_V2_Overview_Bool_Exp = {
   responses?: InputMaybe<App_Assignment_Responses_V2_Bool_Exp>;
   responses_aggregate?: InputMaybe<App_Assignment_Responses_V2_Aggregate_Bool_Exp>;
   share_type?: InputMaybe<String_Comparison_Exp>;
+  share_type_order?: InputMaybe<Int_Comparison_Exp>;
   thumbnail_path?: InputMaybe<String_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -5071,6 +5087,7 @@ export type App_Assignments_V2_Overview_Max_Fields = {
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
   share_type?: Maybe<Scalars['String']>;
+  share_type_order?: Maybe<Scalars['Int']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
@@ -5089,6 +5106,7 @@ export type App_Assignments_V2_Overview_Min_Fields = {
   owner_profile_id?: Maybe<Scalars['uuid']>;
   published_at?: Maybe<Scalars['timestamptz']>;
   share_type?: Maybe<Scalars['String']>;
+  share_type_order?: Maybe<Scalars['Int']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
@@ -5119,6 +5137,7 @@ export type App_Assignments_V2_Overview_Order_By = {
   quality_labels_aggregate?: InputMaybe<App_Assignments_V2_Quality_Labels_Aggregate_Order_By>;
   responses_aggregate?: InputMaybe<App_Assignment_Responses_V2_Aggregate_Order_By>;
   share_type?: InputMaybe<Order_By>;
+  share_type_order?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -5156,12 +5175,32 @@ export enum App_Assignments_V2_Overview_Select_Column {
   /** column name */
   ShareType = 'share_type',
   /** column name */
+  ShareTypeOrder = 'share_type_order',
+  /** column name */
   ThumbnailPath = 'thumbnail_path',
   /** column name */
   Title = 'title',
   /** column name */
   UpdatedAt = 'updated_at'
 }
+
+/** aggregate stddev on columns */
+export type App_Assignments_V2_Overview_Stddev_Fields = {
+  __typename?: 'app_assignments_v2_overview_stddev_fields';
+  share_type_order?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type App_Assignments_V2_Overview_Stddev_Pop_Fields = {
+  __typename?: 'app_assignments_v2_overview_stddev_pop_fields';
+  share_type_order?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type App_Assignments_V2_Overview_Stddev_Samp_Fields = {
+  __typename?: 'app_assignments_v2_overview_stddev_samp_fields';
+  share_type_order?: Maybe<Scalars['Float']>;
+};
 
 /** Streaming cursor of the table "app_assignments_v2_overview" */
 export type App_Assignments_V2_Overview_Stream_Cursor_Input = {
@@ -5187,9 +5226,34 @@ export type App_Assignments_V2_Overview_Stream_Cursor_Value_Input = {
   owner_profile_id?: InputMaybe<Scalars['uuid']>;
   published_at?: InputMaybe<Scalars['timestamptz']>;
   share_type?: InputMaybe<Scalars['String']>;
+  share_type_order?: InputMaybe<Scalars['Int']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate sum on columns */
+export type App_Assignments_V2_Overview_Sum_Fields = {
+  __typename?: 'app_assignments_v2_overview_sum_fields';
+  share_type_order?: Maybe<Scalars['Int']>;
+};
+
+/** aggregate var_pop on columns */
+export type App_Assignments_V2_Overview_Var_Pop_Fields = {
+  __typename?: 'app_assignments_v2_overview_var_pop_fields';
+  share_type_order?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type App_Assignments_V2_Overview_Var_Samp_Fields = {
+  __typename?: 'app_assignments_v2_overview_var_samp_fields';
+  share_type_order?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type App_Assignments_V2_Overview_Variance_Fields = {
+  __typename?: 'app_assignments_v2_overview_variance_fields';
+  share_type_order?: Maybe<Scalars['Float']>;
 };
 
 /** primary key columns input for table: app.assignments_v2 */
@@ -12408,6 +12472,7 @@ export type App_Collections_Overview = {
   relations_aggregate: App_Collection_Relations_View_Aggregate;
   seo_image_path?: Maybe<Scalars['String']>;
   share_type?: Maybe<Scalars['String']>;
+  share_type_order?: Maybe<Scalars['Int']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** An object relationship */
@@ -12731,6 +12796,7 @@ export type App_Collections_Overview_Aggregate_FieldsCountArgs = {
 export type App_Collections_Overview_Avg_Fields = {
   __typename?: 'app_collections_overview_avg_fields';
   author_external_uid?: Maybe<Scalars['Float']>;
+  share_type_order?: Maybe<Scalars['Float']>;
   type_id?: Maybe<Scalars['Float']>;
 };
 
@@ -12792,6 +12858,7 @@ export type App_Collections_Overview_Bool_Exp = {
   relations_aggregate?: InputMaybe<App_Collection_Relations_View_Aggregate_Bool_Exp>;
   seo_image_path?: InputMaybe<String_Comparison_Exp>;
   share_type?: InputMaybe<String_Comparison_Exp>;
+  share_type_order?: InputMaybe<Int_Comparison_Exp>;
   thumbnail_path?: InputMaybe<String_Comparison_Exp>;
   title?: InputMaybe<String_Comparison_Exp>;
   type?: InputMaybe<Shared_Types_Bool_Exp>;
@@ -12825,6 +12892,7 @@ export type App_Collections_Overview_Max_Fields = {
   published_at?: Maybe<Scalars['timestamptz']>;
   seo_image_path?: Maybe<Scalars['String']>;
   share_type?: Maybe<Scalars['String']>;
+  share_type_order?: Maybe<Scalars['Int']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type_id?: Maybe<Scalars['Int']>;
@@ -12852,6 +12920,7 @@ export type App_Collections_Overview_Min_Fields = {
   published_at?: Maybe<Scalars['timestamptz']>;
   seo_image_path?: Maybe<Scalars['String']>;
   share_type?: Maybe<Scalars['String']>;
+  share_type_order?: Maybe<Scalars['Int']>;
   thumbnail_path?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type_id?: Maybe<Scalars['Int']>;
@@ -12904,6 +12973,7 @@ export type App_Collections_Overview_Order_By = {
   relations_aggregate?: InputMaybe<App_Collection_Relations_View_Aggregate_Order_By>;
   seo_image_path?: InputMaybe<Order_By>;
   share_type?: InputMaybe<Order_By>;
+  share_type_order?: InputMaybe<Order_By>;
   thumbnail_path?: InputMaybe<Order_By>;
   title?: InputMaybe<Order_By>;
   type?: InputMaybe<Shared_Types_Order_By>;
@@ -12968,6 +13038,8 @@ export enum App_Collections_Overview_Select_Column {
   /** column name */
   ShareType = 'share_type',
   /** column name */
+  ShareTypeOrder = 'share_type_order',
+  /** column name */
   ThumbnailPath = 'thumbnail_path',
   /** column name */
   Title = 'title',
@@ -12983,6 +13055,7 @@ export enum App_Collections_Overview_Select_Column {
 export type App_Collections_Overview_Stddev_Fields = {
   __typename?: 'app_collections_overview_stddev_fields';
   author_external_uid?: Maybe<Scalars['Float']>;
+  share_type_order?: Maybe<Scalars['Float']>;
   type_id?: Maybe<Scalars['Float']>;
 };
 
@@ -12990,6 +13063,7 @@ export type App_Collections_Overview_Stddev_Fields = {
 export type App_Collections_Overview_Stddev_Pop_Fields = {
   __typename?: 'app_collections_overview_stddev_pop_fields';
   author_external_uid?: Maybe<Scalars['Float']>;
+  share_type_order?: Maybe<Scalars['Float']>;
   type_id?: Maybe<Scalars['Float']>;
 };
 
@@ -12997,6 +13071,7 @@ export type App_Collections_Overview_Stddev_Pop_Fields = {
 export type App_Collections_Overview_Stddev_Samp_Fields = {
   __typename?: 'app_collections_overview_stddev_samp_fields';
   author_external_uid?: Maybe<Scalars['Float']>;
+  share_type_order?: Maybe<Scalars['Float']>;
   type_id?: Maybe<Scalars['Float']>;
 };
 
@@ -13035,6 +13110,7 @@ export type App_Collections_Overview_Stream_Cursor_Value_Input = {
   published_at?: InputMaybe<Scalars['timestamptz']>;
   seo_image_path?: InputMaybe<Scalars['String']>;
   share_type?: InputMaybe<Scalars['String']>;
+  share_type_order?: InputMaybe<Scalars['Int']>;
   thumbnail_path?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   type_id?: InputMaybe<Scalars['Int']>;
@@ -13046,6 +13122,7 @@ export type App_Collections_Overview_Stream_Cursor_Value_Input = {
 export type App_Collections_Overview_Sum_Fields = {
   __typename?: 'app_collections_overview_sum_fields';
   author_external_uid?: Maybe<Scalars['Int']>;
+  share_type_order?: Maybe<Scalars['Int']>;
   type_id?: Maybe<Scalars['Int']>;
 };
 
@@ -13053,6 +13130,7 @@ export type App_Collections_Overview_Sum_Fields = {
 export type App_Collections_Overview_Var_Pop_Fields = {
   __typename?: 'app_collections_overview_var_pop_fields';
   author_external_uid?: Maybe<Scalars['Float']>;
+  share_type_order?: Maybe<Scalars['Float']>;
   type_id?: Maybe<Scalars['Float']>;
 };
 
@@ -13060,6 +13138,7 @@ export type App_Collections_Overview_Var_Pop_Fields = {
 export type App_Collections_Overview_Var_Samp_Fields = {
   __typename?: 'app_collections_overview_var_samp_fields';
   author_external_uid?: Maybe<Scalars['Float']>;
+  share_type_order?: Maybe<Scalars['Float']>;
   type_id?: Maybe<Scalars['Float']>;
 };
 
@@ -13067,6 +13146,7 @@ export type App_Collections_Overview_Var_Samp_Fields = {
 export type App_Collections_Overview_Variance_Fields = {
   __typename?: 'app_collections_overview_variance_fields';
   author_external_uid?: Maybe<Scalars['Float']>;
+  share_type_order?: Maybe<Scalars['Float']>;
   type_id?: Maybe<Scalars['Float']>;
 };
 
@@ -48859,7 +48939,7 @@ export type GetCollectionsQueryVariables = Exact<{
 }>;
 
 
-export type GetCollectionsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, type_id: number, updated_at: any, title: string, description?: string | null, is_public: boolean, created_at: any, is_managed?: boolean | null, subjects?: any | null, education_levels?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, group_id?: number | null, group_name?: string | null, profile_id?: any | null, user_id?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null } | null } | null, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null, user_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, counts?: { __typename?: 'app_collection_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, views?: number | null, copies?: any | null, quick_lane_links?: any | null } | null }>, app_collections_aggregate: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null } };
+export type GetCollectionsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, type_id: number, title: string, description?: string | null, is_public: boolean, is_managed?: boolean | null, last_user_edit_at?: any | null, last_user_edit_profile_id?: any | null, created_at: any, updated_at: any, subjects?: any | null, education_levels?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, group_id?: number | null, group_name?: string | null, profile_id?: any | null, user_id?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null } | null } | null, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null, user_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, counts?: { __typename?: 'app_collection_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, views?: number | null, copies?: any | null, quick_lane_links?: any | null } | null }>, app_collections_aggregate: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null } };
 
 export type GetCollectionsByIdsQueryVariables = Exact<{
   where: App_Collections_Bool_Exp;
@@ -50368,13 +50448,16 @@ export const GetCollectionsDocument = `
   ) {
     id
     type_id
-    updated_at
     title
     description
     is_public
-    created_at
+    is_managed
+    last_user_edit_at
+    last_user_edit_profile_id
     subjects: lom_classification
     education_levels: lom_context
+    created_at
+    updated_at
     owner {
       full_name
       group_id
@@ -50405,7 +50488,6 @@ export const GetCollectionsDocument = `
       copies
       quick_lane_links
     }
-    is_managed
   }
   app_collections_aggregate(where: $where) {
     aggregate {

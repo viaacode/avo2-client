@@ -1,5 +1,6 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
 import React, {
 	Dispatch,

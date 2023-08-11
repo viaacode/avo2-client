@@ -1,5 +1,5 @@
 import { Column, Spacer } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 
 import { SearchFilter } from '../../../search/search.const';

@@ -1,5 +1,6 @@
 import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
 import { compose } from 'redux';
 
@@ -36,7 +37,11 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 
 	const onConfirm = async () => {
 		if (!user?.profile?.id) {
-			ToastService.danger(tText('Je moet ingelogd zijn om een opdracht te verwijderen'));
+			ToastService.danger(
+				tText(
+					'assignment/components/delete-assignment-button___je-moet-ingelogd-zijn-om-een-opdracht-te-verwijderen'
+				)
+			);
 			return;
 		}
 		await deleteAssignment(assignment?.id, user, isOwner);
@@ -57,7 +62,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 				icon={IconName.delete}
 				label={
 					canDeleteAnyAssignments || isOwner
-						? tText('Verwijderen')
+						? tText('assignment/components/delete-assignment-button___verwijderen')
 						: tText(
 								'assignment/components/delete-assignment-button___verwijder-mij-van-deze-opdracht'
 						  )

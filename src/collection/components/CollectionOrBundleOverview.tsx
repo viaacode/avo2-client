@@ -315,7 +315,9 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	const onDeleteCollection = async () => {
 		if (isNil(selectedCollectionUuid)) {
 			ToastService.danger(
-				tHtml('De huidige collectie werd nog nooit opgeslagen / heeft geen id')
+				tHtml(
+					'collection/components/collection-or-bundle-overview___de-huidige-collectie-werd-nog-nooit-opgeslagen-heeft-geen-id'
+				)
 			);
 			return;
 		}

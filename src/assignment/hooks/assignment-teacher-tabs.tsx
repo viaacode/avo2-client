@@ -1,5 +1,6 @@
 import { IconName, TabProps } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import * as H from 'history';
 import React, { useCallback, useMemo, useState } from 'react';
 

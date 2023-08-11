@@ -10,7 +10,8 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import { Avo, PermissionName } from '@viaa/avo2-types';
+import type { Avo } from '@viaa/avo2-types';
+import { PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -750,8 +751,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					},
 				}}
 				view={{
-					label: tText('Bekijk'),
-					title: tText('Bekijk hoe de opdracht er zal uit zien'),
+					label: tText('assignment/views/assignment-edit___bekijk'),
+					title: tText(
+						'assignment/views/assignment-edit___bekijk-hoe-de-opdracht-er-zal-uit-zien'
+					),
 					onClick: () =>
 						redirectToClientPage(
 							buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {

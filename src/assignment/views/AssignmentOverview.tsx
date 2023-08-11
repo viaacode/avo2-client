@@ -376,7 +376,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				try {
 					if (!user?.profile?.id) {
 						ToastService.danger(
-							tHtml('Je moet ingelogd zijn om een opdracht te kunnen dupliceren')
+							tHtml(
+								'assignment/views/assignment-overview___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-dupliceren'
+							)
 						);
 						return;
 					}
@@ -467,7 +469,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 										user,
 										PermissionName.DELETE_ANY_ASSIGNMENTS
 									) || isOwner
-										? tText('verwijderen')
+										? tText(
+												'assignment/views/assignment-overview___verwijderen'
+										  )
 										: tText(
 												'assignment/views/assignment-overview___verwijder-mij-van-deze-opdracht'
 										  ),

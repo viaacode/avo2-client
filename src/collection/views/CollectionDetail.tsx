@@ -674,7 +674,7 @@ const CollectionDetail: FunctionComponent<
 		if (!user) {
 			ToastService.danger(
 				tHtml(
-					'Kan collectie niet verwijderen omdat er geen gebruiker gevonden is. Probeer opnieuw in te loggen.'
+					'collection/views/collection-detail___kan-collectie-niet-verwijderen-omdat-er-geen-gebruiker-gevonden-is-probeer-opnieuw-in-te-loggen'
 				)
 			);
 			return;
@@ -853,7 +853,7 @@ const CollectionDetail: FunctionComponent<
 
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				tText('Verwijderen'),
+				tText('collection/views/collection-detail___verwijderen'),
 				IconName.trash,
 				!!permissions?.canDeleteCollections
 			),
@@ -1090,7 +1090,7 @@ const CollectionDetail: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				tText('verwijderen'),
+				tText('collection/views/collection-detail___verwijderen'),
 				undefined,
 				permissions?.canDeleteCollections || false
 			),

@@ -12,11 +12,11 @@ import React, {
 import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
+import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
-import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { CollectionService } from '../../../collection/collection.service';
-import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
+import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
@@ -24,7 +24,9 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
+import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -61,7 +63,6 @@ import { renderCollectionOverviewColumns } from '../helpers/render-collection-co
 type CollectionsOrBundlesOverviewProps = DefaultSecureRouteProps;
 
 const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOverviewProps> = ({
-	history,
 	location,
 	user,
 }) => {
@@ -72,6 +73,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const { data: editStatuses } = useGetCollectionsEditStatuses(
+		collections?.map((coll) => coll.id) || [],
+		{
+			enabled: !!collections?.length,
+			refetchInterval: EDIT_STATUS_REFETCH_TIME,
+			refetchIntervalInBackground: true,
+		}
+	);
 
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
@@ -296,26 +305,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		setIsLoading(false);
 	};
 
-	const navigateToCollectionDetail = (id: string | undefined) => {
-		if (!id) {
-			ToastService.danger(
-				isCollection
-					? tHtml(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-collectie-heeft-geen-geldig-id'
-					  )
-					: tHtml(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
-					  )
-			);
-			return;
-		}
-
-		const detailRoute = isCollection
-			? APP_PATH.COLLECTION_DETAIL.route
-			: APP_PATH.BUNDLE_DETAIL.route;
-		redirectToClientPage(buildLink(detailRoute, { id }), history);
-	};
-
 	const handleBulkAction = async (action: CollectionsBulkAction): Promise<void> => {
 		if (!selectedCollectionIds || !selectedCollectionIds.length) {
 			return;
@@ -383,10 +372,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			ToastService.success(
 				isPublic
 					? tHtml(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gepubliceerd'
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-geselecteerde-collecties-zijn-gepubliceerd'
 					  )
 					: tHtml(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-gedepubliceerd'
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___de-geselecteerde-collecties-zijn-gedepubliceerd'
 					  )
 			);
 
@@ -424,7 +413,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			ToastService.success(
 				tHtml(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-gegeselecterde-collecties-zijn-verwijderd'
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-geselecteerde-collecties-zijn-verwijderd'
 				)
 			);
 
@@ -458,7 +447,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			ToastService.success(
 				tHtml(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecterde-collecties'
+					'admin/collections-or-bundles/views/collections-or-bundles-overview___de-auteurs-zijn-aangepast-voor-de-geselecteerde-collecties'
 				)
 			);
 
@@ -493,7 +482,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 				ToastService.success(
 					tHtml(
-						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geslecteerde-collecties'
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-toegevoegd-aan-de-geselecteerde-collecties'
 					)
 				);
 			} else {
@@ -505,7 +494,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				);
 				ToastService.success(
 					tHtml(
-						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-verwijderd-van-de-geslecteerde-collecties'
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___de-labels-zijn-verwijderd-van-de-geselecteerde-collecties'
 					)
 				);
 			}
@@ -527,31 +516,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		}
 	};
 
-	const navigateToCollectionEdit = (id: string | undefined) => {
-		if (!id) {
-			ToastService.danger(
-				isCollection
-					? tHtml(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-collectie-heeft-geen-geldig-id'
-					  )
-					: tHtml(
-							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-bundel-heeft-geen-geldig-id'
-					  )
-			);
-
-			return;
-		}
-
-		const link = buildLink(
-			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-			{ id, tabId: CollectionCreateUpdateTab.CONTENT }
-		);
-
-		redirectToClientPage(link, history);
-	};
-
 	const renderTableCell = (
-		rowData: Partial<Avo.Collection.Collection>,
+		collection: Partial<Avo.Collection.Collection>,
 		columnId: CollectionsOrBundlesOverviewTableCols
 	) => {
 		switch (columnId) {
@@ -562,18 +528,22 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							isCollection
 								? APP_PATH.COLLECTION_DETAIL.route
 								: APP_PATH.BUNDLE_DETAIL.route,
-							{ id: rowData.id }
+							{ id: collection.id }
 						)}
 					>
-						<span>{truncate((rowData as any)[columnId] || '-', { length: 50 })}</span>
-						{!!rowData.relations?.[0].object && (
+						<span>
+							{truncate((collection as any)[columnId] || '-', { length: 50 })}
+						</span>
+						{!!collection.relations?.[0].object && (
 							<a
 								href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
-									id: rowData.relations?.[0].object,
+									id: collection.relations?.[0].object,
 								})}
 							>
 								<TagList
-									tags={[{ id: rowData.relations?.[0].object, label: 'Kopie' }]}
+									tags={[
+										{ id: collection.relations?.[0].object, label: 'Kopie' },
+									]}
 									swatches={false}
 								/>
 							</a>
@@ -582,60 +552,77 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				);
 			}
 
-			case 'actions':
+			case 'actions': {
+				if (!editStatuses) {
+					return null;
+				}
+				const isCollectionBeingEdited = isContentBeingEdited(
+					editStatuses?.[collection.id as string],
+					user.profile?.id
+				);
+				const viewButtonTitle = isCollection
+					? tText(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-collectie'
+					  )
+					: tText(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-bundel'
+					  );
+				const editButtonTitle = isCollectionBeingEdited
+					? tText(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___deze-collectie-wordt-reeds-bewerkt-door-iemand-anders'
+					  )
+					: isCollection
+					? tText(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
+					  )
+					: tText(
+							'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
+					  );
 				return (
 					<ButtonToolbar>
-						<Button
-							type="secondary"
-							icon={IconName.eye}
-							onClick={() => navigateToCollectionDetail(rowData.id)}
-							ariaLabel={
+						<Link
+							to={buildLink(
 								isCollection
-									? tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-collectie'
-									  )
-									: tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-bundel'
-									  )
-							}
-							title={
+									? APP_PATH.COLLECTION_DETAIL.route
+									: APP_PATH.BUNDLE_DETAIL.route,
+								{
+									id: collection.id,
+								}
+							)}
+						>
+							<Button
+								type="secondary"
+								icon={IconName.eye}
+								ariaLabel={viewButtonTitle}
+								title={viewButtonTitle}
+							/>
+						</Link>
+
+						<Link
+							to={buildLink(
 								isCollection
-									? tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-collectie'
-									  )
-									: tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bekijk-de-bundel'
-									  )
-							}
-						/>
-						<Button
-							type="secondary"
-							icon={IconName.edit}
-							onClick={() => navigateToCollectionEdit(rowData.id)}
-							ariaLabel={
-								isCollection
-									? tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-									  )
-									: tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-									  )
-							}
-							title={
-								isCollection
-									? tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-									  )
-									: tText(
-											'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-									  )
-							}
-						/>
+									? APP_PATH.COLLECTION_EDIT_TAB.route
+									: APP_PATH.BUNDLE_EDIT_TAB.route,
+								{
+									id: collection.id,
+									tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+								}
+							)}
+						>
+							<Button
+								type="secondary"
+								icon={IconName.edit}
+								ariaLabel={editButtonTitle}
+								title={editButtonTitle}
+								disabled={isCollectionBeingEdited}
+							/>
+						</Link>
 					</ButtonToolbar>
 				);
+			}
 
 			default:
-				return renderCollectionOverviewColumns(rowData, columnId, collectionLabels);
+				return renderCollectionOverviewColumns(collection, columnId, collectionLabels);
 		}
 	};
 

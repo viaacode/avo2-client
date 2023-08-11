@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import type { Avo } from '@viaa/avo2-types';
 
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { CollectionService } from '../collection.service';
@@ -15,7 +16,7 @@ export const useGetCollectionsEditStatuses = (
 		refetchIntervalInBackground: false,
 	}
 ) => {
-	return useQuery(
+	return useQuery<Avo.Share.EditStatusResponse>(
 		[QUERY_KEYS.GET_COLLECTIONS_EDIT_STATUSES, collectionsIds],
 		() => {
 			return CollectionService.getCollectionsEditStatuses(collectionsIds);
