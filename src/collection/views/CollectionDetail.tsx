@@ -335,10 +335,7 @@ const CollectionDetail: FunctionComponent<
 					{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
 					{ name: PermissionName.DELETE_ANY_COLLECTIONS },
 				],
-				canCreateCollections: [
-					{ name: PermissionName.DELETE_OWN_COLLECTIONS, obj: collectionId },
-					{ name: PermissionName.DELETE_ANY_COLLECTIONS },
-				],
+				canCreateCollections: [{ name: PermissionName.CREATE_COLLECTIONS }],
 				canViewAnyPublishedItems: [{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
 				canViewAnyPublishedCollections: [
 					{ name: PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS },
