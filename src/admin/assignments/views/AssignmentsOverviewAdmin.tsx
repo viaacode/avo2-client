@@ -395,7 +395,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					return null;
 				}
 				const isCollectionBeingEdited = isContentBeingEdited(
-					editStatuses?.[assignment.id as string]?.editingUserId,
+					editStatuses?.[assignment.id as string],
 					user?.profile?.id
 				);
 				const viewButtonTitle = tText(
