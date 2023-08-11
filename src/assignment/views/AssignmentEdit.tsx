@@ -783,15 +783,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
 			<div>
-				<AssignmentHeading
-					back={renderBackButton}
-					title={renderTitle}
-					actions={renderMobileDesktop({
-						mobile: renderHeadingActions(true),
-						desktop: renderHeadingActions(false),
-					})}
-					tabs={renderTabs}
-				/>
+				{renderMobileDesktop({
+					mobile: (
+						<AssignmentHeading
+							back={renderBackButton}
+							title={renderTitle}
+							actions={renderHeadingActions(true)}
+							tabs={renderTabs}
+						/>
+					),
+					desktop: (
+						<AssignmentHeading
+							back={renderBackButton}
+							title={renderTitle}
+							actions={renderHeadingActions(false)}
+							tabs={renderTabs}
+						/>
+					),
+				})}
 
 				<Container mode="horizontal">
 					{pastDeadline && (

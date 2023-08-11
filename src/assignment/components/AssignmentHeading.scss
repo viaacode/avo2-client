@@ -72,10 +72,6 @@
 		align-items: flex-end;
 		min-height: 0;
 
-		@media (min-width: $g-bp2) {
-			align-items: flex-start;
-		}
-
 		.c-toolbar {
 			&__left,
 			&__right {
