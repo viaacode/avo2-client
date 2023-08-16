@@ -81,7 +81,7 @@ $borderLight: 1px solid $color-gray-100;
 	display: grid;
 	align-items: center;
 	column-gap: 1rem;
-	grid-template-columns: max-content 1fr 1fr 7%;
+	grid-template-columns: max-content 1fr 25% 7%;
 	font-size: 1.5rem;
 	color: $color-navy;
 
@@ -101,6 +101,7 @@ $borderLight: 1px solid $color-gray-100;
 
 	&__info {
 		display: grid;
+
 		&__email {
 			font-size: 1.2rem;
 			color: $color-gray-200;
