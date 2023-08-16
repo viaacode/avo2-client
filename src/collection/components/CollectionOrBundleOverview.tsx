@@ -98,7 +98,9 @@ const CollectionOrBundleOverview: FunctionComponent<
 	}>({});
 	const [showPublicState, setShowPublicState] = useState(false);
 
-	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
+	const [dropdownOpenForCollectionUuid, setDropdownOpenForCollectionUuid] = useState<
+		string | null
+	>(null);
 	const [selectedDetail, setSelectedDetail] = useState<Avo.Collection.Collection | undefined>(
 		undefined
 	);
@@ -506,12 +508,14 @@ const CollectionOrBundleOverview: FunctionComponent<
 		return (
 			<ButtonToolbar>
 				<MoreOptionsDropdown
-					isOpen={dropdownOpen[collectionUuid] || false}
+					isOpen={dropdownOpenForCollectionUuid === collectionUuid}
 					onOpen={() => {
-						setDropdownOpen({ [collectionUuid]: true });
+						setDropdownOpenForCollectionUuid(null);
+						// Allow rerender to close other menu, before opening new one. Otherwise, both close
+						setTimeout(() => setDropdownOpenForCollectionUuid(collectionUuid), 10);
 					}}
 					onClose={() => {
-						setDropdownOpen({ [collectionUuid]: false });
+						setDropdownOpenForCollectionUuid(null);
 					}}
 					label={getMoreOptionsLabel()}
 					menuItems={ROW_DROPDOWN_ITEMS}

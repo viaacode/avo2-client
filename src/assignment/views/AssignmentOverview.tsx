@@ -403,7 +403,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				break;
 
 			case 'delete':
-				setMarkedAssignment(assignmentRow);
 				setDeleteAssignmentModalOpen(true);
 				break;
 			default:
@@ -418,7 +417,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 
 	const handleDeleteConfirm = async () => {
 		await deleteAssignment(markedAssignment?.id, user, isOwner, updateAndReset);
-
 		handleDeleteModalClose();
 	};
 
@@ -437,11 +435,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 						isOpen={dropdownOpenForAssignmentId === assignmentRow.id}
 						onOpen={() => {
 							setDropdownOpenForAssignmentId(assignmentRow.id);
-							setMarkedAssignment(assignmentRow);
 						}}
 						onClose={() => {
 							setDropdownOpenForAssignmentId(null);
-							setMarkedAssignment(null);
 						}}
 						label={getMoreOptionsLabel()}
 						menuItems={[
