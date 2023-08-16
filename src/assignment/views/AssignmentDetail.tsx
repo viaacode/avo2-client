@@ -118,8 +118,8 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 
 	// Errors
 	const [isForbidden, setIsForbidden] = useState<boolean>(false);
-	const [assignmentLoading, setAssigmentLoading] = useState(false);
-	const [assignmentError, setAssigmentError] = useState<Partial<ErrorViewQueryParams> | null>(
+	const [assignmentLoading, setAssignmentLoading] = useState(false);
+	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
 
@@ -233,8 +233,22 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 
 	const fetchAssignment = useCallback(async () => {
 		try {
-			setAssigmentLoading(true);
-			setAssigmentError(null);
+			setAssignmentLoading(true);
+			setAssignmentError(null);
+
+			if (
+				!commonUser?.permissions?.includes(PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS) &&
+				!commonUser?.permissions?.includes(PermissionName.VIEW_ANY_UNPUBLISHED_ASSIGNMENTS)
+			) {
+				// User cannot edit assignments => redirect to error
+				setAssignmentError({
+					message: tText(
+						'Je hebt geen rechten om deze opdracht te bewerken. Ben je een leerling, dan heeft je lesgever de verkeerde link gedeeld.'
+					),
+					icon: IconName.lock,
+					actionButtons: ['home'],
+				});
+			}
 
 			let tempAssignment: Avo.Assignment.Assignment | null = null;
 
@@ -247,7 +261,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 				if (err.innerException.additionalInfo?.statusCode === 403) {
 					setIsForbidden(true);
 				} else {
-					setAssigmentError({
+					setAssignmentError({
 						message:
 							err.innerException.additionalInfo?.statusCode === 403
 								? tHtml(
@@ -261,19 +275,19 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					});
 				}
 
-				setAssigmentLoading(false);
+				setAssignmentLoading(false);
 				return;
 			}
 
 			if (!tempAssignment) {
-				setAssigmentError({
+				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
 					),
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
-				setAssigmentLoading(false);
+				setAssignmentLoading(false);
 				return;
 			}
 
@@ -292,19 +306,19 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					);
 				}
 			} catch (err) {
-				setAssigmentError({
+				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-detail___ophalen-van-permissies-is-mislukt'
 					),
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
-				setAssigmentLoading(false);
+				setAssignmentLoading(false);
 
 				return;
 			}
 		} catch (err) {
-			setAssigmentError({
+			setAssignmentError({
 				message: tHtml(
 					'assignment/views/assignment-detail___het-ophalen-van-de-opdracht-is-mislukt'
 				),
@@ -312,7 +326,7 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			});
 		}
 
-		setAssigmentLoading(false);
+		setAssignmentLoading(false);
 	}, [user, match.params.id, tText, history, setAssignment]);
 
 	const fetchContributors = useCallback(async () => {

@@ -84,7 +84,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	const [assignmentResponses, setAssignmentResponses] = useState<
 		Avo.Assignment.Response[] | null
 	>(null);
-	const [assignmentResponsesCount, setAssigmentResponsesCount] = useState<number>(0);
+	const [assignmentResponsesCount, setAssignmentResponsesCount] = useState<number>(0);
 	const [assignmentResponsesFragments, setAssignmentResponsesFragments] = useState<string[]>([]);
 
 	const assignmentResponsesFragmentsHash = useMemo(
@@ -268,7 +268,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 			);
 
 			setAssignmentResponses(response.assignmentResponses);
-			setAssigmentResponsesCount(response.count);
+			setAssignmentResponsesCount(response.count);
 			setAssignmentResponsesFragments(uniq(fragmentIds));
 		} catch (err) {
 			setLoadingInfo({

@@ -1085,7 +1085,7 @@ export class AssignmentService {
 		);
 
 		// Success
-		// Track import collection into assigment event
+		// Track import collection into assignment event
 		trackEvents(
 			{
 				object: assignmentId,

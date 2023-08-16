@@ -108,7 +108,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 
 	// Data
 	const [original, setOriginal] = useState<Avo.Assignment.Assignment | null>(null);
-	const [assignmentLoading, setAssigmentLoading] = useState(true);
+	const [assignmentLoading, setAssignmentLoading] = useState(true);
 	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
@@ -162,9 +162,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	);
 
 	const updateAssignmentEditorWithLoading = useCallback(async () => {
-		setAssigmentLoading(true);
+		setAssignmentLoading(true);
 		await updateAssignmentEditor();
-	}, [setAssigmentLoading]);
+	}, [setAssignmentLoading]);
 
 	useEffect(() => {
 		updateAssignmentEditorWithLoading();
@@ -200,10 +200,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	// Get query string variables and fetch the existing object
 	const fetchAssignment = useCallback(async () => {
 		try {
-			setAssigmentLoading(true);
+			setAssignmentLoading(true);
 			setAssignmentError(null);
 			const id = match.params.id;
 			let tempAssignment: Avo.Assignment.Assignment | null = null;
+
+			if (
+				!commonUser?.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) &&
+				!commonUser?.permissions?.includes(PermissionName.EDIT_OWN_ASSIGNMENTS)
+			) {
+				// User cannot edit assignments => redirect to error
+				setAssignmentError({
+					message: tText(
+						'Je hebt geen rechten om deze opdracht te bewerken. Ben je een leerling, dan heeft je lesgever de verkeerde link gedeeld.'
+					),
+					icon: IconName.lock,
+					actionButtons: ['home'],
+				});
+			}
 
 			try {
 				tempAssignment = await AssignmentService.fetchAssignmentById(id);
@@ -216,7 +230,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						icon: IconName.lock,
 						actionButtons: ['home'],
 					});
-					setAssigmentLoading(false);
+					setAssignmentLoading(false);
 					return;
 				}
 				setAssignmentError({
@@ -226,7 +240,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
-				setAssigmentLoading(false);
+				setAssignmentLoading(false);
 				return;
 			}
 
@@ -238,7 +252,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
-				setAssigmentLoading(false);
+				setAssignmentLoading(false);
 				return;
 			}
 
@@ -282,7 +296,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					icon: IconName.lock,
 					actionButtons: ['home'],
 				});
-				setAssigmentLoading(false);
+				setAssignmentLoading(false);
 				return;
 			}
 
@@ -298,7 +312,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 				icon: IconName.alertTriangle,
 			});
 		}
-		setAssigmentLoading(false);
+		setAssignmentLoading(false);
 	}, [user, match.params.id, tText, history, setOriginal, setAssignment]);
 
 	// Events

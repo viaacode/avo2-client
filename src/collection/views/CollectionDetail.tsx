@@ -740,7 +740,7 @@ const CollectionDetail: FunctionComponent<
 				withDescription
 			);
 
-			// Track import collection into assigment event
+			// Track import collection into assignment event
 			trackEvents(
 				{
 					object: importToAssignmentId,
