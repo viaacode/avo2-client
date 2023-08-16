@@ -48,28 +48,28 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 					)
 				);
 			}
-
-			if (containsBuildBlocks) {
-				messages.push(
-					tHtml(
-						'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
-					)
-				);
-			}
-
-			if (hasResponses) {
-				messages.push(
-					tHtml(
-						'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
-					)
-				);
-			}
 		} else if (isContributor) {
 			messages.push(
 				tHtml(
 					'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen'
 				)
 			);
+		}
+
+		if (hasResponses) {
+			if (containsBuildBlocks) {
+				messages.push(
+					tHtml(
+						'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
+					)
+				);
+			} else {
+				messages.push(
+					tHtml(
+						'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
+					)
+				);
+			}
 		}
 
 		return (
