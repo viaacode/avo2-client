@@ -63,6 +63,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 	refetchAssignment = noop,
 	publish,
 	route,
+	commonUser,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -162,6 +163,11 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 							{...shareDropdownProps}
 							shareWithPupilsProps={shareWithColleaguesOrPupilsProps}
 							availableRights={shareWithColleaguesOrPupilsProps.availableRights}
+							isAdmin={
+								commonUser?.permissions?.includes(
+									PermissionName.EDIT_ANY_ASSIGNMENTS
+								) || false
+							}
 						/>
 					</div>
 				),

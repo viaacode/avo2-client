@@ -45,6 +45,7 @@ import {
 	GetWorkspaceTabCountsQueryVariables,
 } from '../../shared/generated/graphql-db-types';
 import { buildLink, navigate } from '../../shared/helpers';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { dataService } from '../../shared/services/data-service';
 import {
@@ -63,7 +64,6 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
-import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
@@ -101,7 +101,13 @@ interface WorkspacePermissions {
 	canViewSomeQuickLanes?: boolean;
 }
 
-const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location, user }) => {
+const Workspace: FunctionComponent<WorkspaceProps> = ({
+	history,
+	match,
+	location,
+	user,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -198,6 +204,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								location={location}
 								match={match}
 								user={user}
+								commonUser={commonUser}
 							/>
 						),
 				  }
@@ -213,6 +220,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								location={location}
 								match={match}
 								user={user}
+								commonUser={commonUser}
 							/>
 						),
 				  }
@@ -227,6 +235,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 									location={location}
 									match={match}
 									user={user}
+									commonUser={commonUser}
 								/>
 							),
 					  }
@@ -240,6 +249,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								location={location}
 								match={match}
 								user={user}
+								commonUser={commonUser}
 								numberOfItems={tabCounts[BOOKMARKS_ID]}
 							/>
 						),
@@ -254,6 +264,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								location={location}
 								match={match}
 								user={user}
+								commonUser={commonUser}
 								numberOfItems={tabCounts[ORGANISATION_CONTENT_ID]}
 							/>
 						),
@@ -267,6 +278,7 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({ history, match, location
 								location={location}
 								match={match}
 								user={user}
+								commonUser={commonUser}
 								numberOfItems={tabCounts[QUICK_LANE_ID]}
 							/>
 						),

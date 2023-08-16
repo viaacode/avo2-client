@@ -30,6 +30,7 @@ export type ShareDropdownProps = {
 		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
 		[ContributorInfoRights.VIEWER]: PermissionName;
 	};
+	isAdmin: boolean;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
 	contributors,
@@ -41,6 +42,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	shareWithPupilsProps,
 	withPupils = true,
 	availableRights,
+	isAdmin,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -81,6 +83,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					onDeleteContributor={onDeleteContributor}
 					onEditRights={onEditContributorRights}
 					hasModalOpen={(open: boolean) => setHasModalOpen(open)}
+					isAdmin={isAdmin}
 				/>
 			);
 		}
@@ -127,6 +130,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 												hasModalOpen={(open: boolean) =>
 													setHasModalOpen(open)
 												}
+												isAdmin={isAdmin}
 											/>
 										)}
 									</>

@@ -192,10 +192,6 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						}
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
 						linkToItems={false}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
 						collection={quickLane.content as Avo.Collection.Collection}
 						{...rest}
 					/>

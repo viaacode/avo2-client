@@ -27,8 +27,8 @@ export class PermissionService {
 		);
 	}
 
-	public static getUserPermissions(user: Avo.User.User | undefined): PermissionName[] {
-		return get(user, 'profile.permissions', []);
+	public static getUserPermissions(user: Avo.User.User | null | undefined): PermissionName[] {
+		return (user?.profile?.permissions || []) as PermissionName[];
 	}
 
 	/**
@@ -99,7 +99,7 @@ export class PermissionService {
 	public static async hasPermission(
 		permissionName: PermissionName,
 		obj: any | null | undefined,
-		user: Avo.User.User
+		user: Avo.User.User | null | undefined
 	): Promise<boolean> {
 		const userPermissions = PermissionService.getUserPermissions(user);
 		if (!user || !userPermissions) {

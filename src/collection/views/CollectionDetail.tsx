@@ -49,6 +49,7 @@ import {
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
+import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
 import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
@@ -98,10 +99,10 @@ import {
 	onDeleteContributor,
 	onEditContributor,
 } from '../helpers/collection-share-with-collegue-handlers';
-import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
-import './CollectionDetail.scss';
 import { deleteCollection } from '../helpers/delete-collection';
-import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
+
+import './CollectionDetail.scss';
 
 export const COLLECTION_COPY = 'Kopie %index%: ';
 export const COLLECTION_COPY_REGEX = /^Kopie [0-9]+: /gi;
@@ -135,7 +136,7 @@ type CollectionDetailProps = {
 
 const CollectionDetail: FunctionComponent<
 	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({ history, location, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+> = ({ history, match, user, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -147,17 +148,18 @@ const CollectionDetail: FunctionComponent<
 	const showNoAccessPopup = collectionInfo?.showNoAccessPopup;
 	const collection = collectionInfo?.collection;
 	const isContributor = !!(collection?.contributors || []).find(
-		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
+		(contributor) =>
+			!!contributor.profile_id && contributor.profile_id === commonUser?.profileId
 	);
 	const isEditContributor = !!(collection?.contributors || []).find(
 		(contributor) =>
 			!!contributor.profile_id &&
-			contributor.profile_id === user?.profile?.id &&
+			contributor.profile_id === commonUser?.profileId &&
 			contributor.rights === 'CONTRIBUTOR'
 	);
 	const isPublic = !!collection && collection.is_public;
 	const isOwner =
-		!!collection?.owner_profile_id && collection?.owner_profile_id === user?.profile?.id;
+		!!collection?.owner_profile_id && collection?.owner_profile_id === commonUser?.profileId;
 	const isCollectionAdmin = PermissionService.hasPerm(user, PermissionName.EDIT_ANY_COLLECTIONS);
 	const isSharedWithOthers = !isContributor && !!(collection?.contributors?.length || 0 > 0);
 
@@ -204,7 +206,7 @@ const CollectionDetail: FunctionComponent<
 	const isBeingEdited =
 		editStatuses &&
 		!!editStatuses[collectionId] &&
-		editStatuses[collectionId]?.editingUserId !== user?.profile?.id;
+		editStatuses[collectionId]?.editingUserId !== commonUser?.profileId;
 
 	const getRelatedCollections = useCallback(async () => {
 		try {
@@ -940,6 +942,11 @@ const CollectionDetail: FunctionComponent<
 								[ContributorInfoRights.VIEWER]:
 									PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 							}}
+							isAdmin={
+								commonUser?.permissions?.includes(
+									PermissionName.EDIT_ANY_COLLECTIONS
+								) || false
+							}
 						/>
 					)}
 				{permissions?.canPublishCollections && !inviteToken && (
@@ -1132,10 +1139,6 @@ const CollectionDetail: FunctionComponent<
 									!isPublishModalOpen &&
 									!isAutoplayCollectionModalOpen
 								}
-								history={history}
-								location={location}
-								match={match}
-								user={user}
 								collection={collection}
 							/>
 						)}
@@ -1239,18 +1242,10 @@ const CollectionDetail: FunctionComponent<
 								}));
 							}
 						}}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
 					/>
 				)}
 				{collectionId !== undefined && !!user && (
 					<AddToBundleModal
-						history={history}
-						location={location}
-						match={match}
-						user={user}
 						collection={collection as Avo.Collection.Collection}
 						collectionId={collectionId as string}
 						isOpen={isAddToBundleModalOpen}
@@ -1398,6 +1393,11 @@ const CollectionDetail: FunctionComponent<
 							[ContributorInfoRights.VIEWER]:
 								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 						}}
+						isAdmin={
+							commonUser?.permissions?.includes(
+								PermissionName.EDIT_ANY_COLLECTIONS
+							) || false
+						}
 					/>
 				)}
 			</>

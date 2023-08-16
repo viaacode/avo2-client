@@ -967,10 +967,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					isAddToCollectionModalOpen &&
 					PermissionService.hasPerm(user, PermissionName.CREATE_COLLECTIONS) && (
 						<AddToCollectionModal
-							history={history}
-							location={location}
-							match={match}
-							user={user}
 							itemMetaData={item}
 							externalId={match.params.id as string}
 							isOpen={isAddToCollectionModalOpen}

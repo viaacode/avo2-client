@@ -69,6 +69,7 @@ import {
 	defaultRenderDetailLink,
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -93,7 +94,7 @@ type BundleDetailProps = {
 
 const BundleDetail: FunctionComponent<
 	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({ history, location, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+> = ({ history, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -733,12 +734,24 @@ const BundleDetail: FunctionComponent<
 						<Container mode="horizontal">
 							<Grid>
 								<Column size="3-2">
-									<Spacer margin={isMobileWidth() ? [] : ['right-large']}>
-										<Thumbnail
-											category="bundle"
-											src={thumbnail_path || undefined}
-										/>
-									</Spacer>
+									{renderMobileDesktop({
+										mobile: (
+											<Spacer>
+												<Thumbnail
+													category="bundle"
+													src={thumbnail_path || undefined}
+												/>
+											</Spacer>
+										),
+										desktop: (
+											<Spacer margin="right-large">
+												<Thumbnail
+													category="bundle"
+													src={thumbnail_path || undefined}
+												/>
+											</Spacer>
+										),
+									})}
 								</Column>
 								<Column size="3-10">
 									<Toolbar
@@ -821,10 +834,6 @@ const BundleDetail: FunctionComponent<
 										setBundle(newBundle);
 									}
 								}}
-								history={history}
-								location={location}
-								match={match}
-								user={user}
 							/>
 						)}
 					</Container>

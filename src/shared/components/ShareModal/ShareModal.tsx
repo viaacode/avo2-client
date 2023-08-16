@@ -28,6 +28,7 @@ type ShareModalProps = {
 		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
 		[ContributorInfoRights.VIEWER]: PermissionName;
 	};
+	isAdmin: boolean;
 };
 
 const ShareModal: FC<ShareModalProps> = ({
@@ -41,6 +42,7 @@ const ShareModal: FC<ShareModalProps> = ({
 	shareWithPupilsProps,
 	withPupils = true,
 	availableRights,
+	isAdmin,
 }) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [hasModalOpen, setHasModalOpen] = useState<boolean>(false);
@@ -86,6 +88,7 @@ const ShareModal: FC<ShareModalProps> = ({
 						onDeleteContributor={onDeleteContributor}
 						onEditRights={onEditContributorRights}
 						hasModalOpen={(open: boolean) => setHasModalOpen(open)}
+						isAdmin={isAdmin}
 					/>
 				</Spacer>
 			);

@@ -18,9 +18,9 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { CustomError } from '../../../shared/helpers';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -31,14 +31,14 @@ import { canManageEditorial } from '../../helpers/can-manage-editorial';
 
 import './AddToBundleModal.scss';
 
-interface AddToBundleModalProps extends DefaultSecureRouteProps {
+interface AddToBundleModalProps {
 	collectionId: string;
 	collection: Avo.Collection.Collection;
 	isOpen: boolean;
 	onClose: () => void;
 }
 
-const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
+const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = ({
 	collectionId,
 	collection,
 	isOpen,
@@ -187,7 +187,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 
 			// Enable is_managed by default when one of these user groups creates a collection/bundle
 			// https://meemoo.atlassian.net/browse/AVO-1453
-			if (canManageEditorial(user)) {
+			if (user && canManageEditorial(user)) {
 				newBundle.is_managed = true;
 			}
 
@@ -359,4 +359,4 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps> = ({
 	);
 };
 
-export default AddToBundleModal;
+export default withUser(AddToBundleModal) as FunctionComponent<AddToBundleModalProps>;

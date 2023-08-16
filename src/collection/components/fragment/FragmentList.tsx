@@ -3,18 +3,17 @@ import type { Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { showReplacementWarning } from '../../helpers/fragment';
 
 import FragmentDetail from './FragmentDetail';
 
-interface FragmentListDetailProps extends DefaultSecureRouteProps {
+interface FragmentListProps {
 	collectionFragments: Avo.Collection.Fragment[];
 	showDescription: boolean;
 	linkToItems: boolean;
 	collection: Avo.Collection.Collection;
-	user: Avo.User.User;
 	canPlay?: boolean;
 }
 
@@ -25,12 +24,12 @@ interface FragmentListDetailProps extends DefaultSecureRouteProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
+const FragmentList: FunctionComponent<FragmentListProps & UserProps> = ({
 	collectionFragments,
 	showDescription,
 	linkToItems,
 	collection,
-	user,
+	commonUser,
 	...rest
 }) => {
 	const { tHtml } = useTranslation();
@@ -42,7 +41,11 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 						className="c-collection-list__item"
 						key={`collection-fragment-${collectionFragment.id}`}
 					>
-						{showReplacementWarning(collection, collectionFragment, user) && (
+						{showReplacementWarning(
+							collection,
+							collectionFragment,
+							commonUser?.profileId
+						) && (
 							<Spacer margin="bottom-large">
 								<Alert type="danger">
 									{tHtml(
@@ -55,7 +58,6 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 							collectionFragment={collectionFragment}
 							showDescription={showDescription}
 							linkToItems={linkToItems}
-							user={user}
 							{...rest}
 						/>
 					</li>
@@ -66,4 +68,4 @@ const FragmentList: FunctionComponent<FragmentListDetailProps> = ({
 	return <ul className="c-collection-list">{renderCollectionFragments()}</ul>;
 };
 
-export default FragmentList;
+export default withUser(FragmentList) as FunctionComponent<FragmentListProps>;

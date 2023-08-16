@@ -41,6 +41,7 @@ type ShareWithColleaguesProps = {
 		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
 		[ContributorInfoRights.VIEWER]: PermissionName;
 	};
+	isAdmin: boolean;
 	onAddNewContributor: (info: Partial<ContributorInfo>) => Promise<void>;
 	onEditRights: (info: ContributorInfo, newRights: ShareRightsType) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
@@ -56,6 +57,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	onDeleteContributor,
 	onEditRights,
 	hasModalOpen,
+	isAdmin,
 }) => {
 	const { tText } = useTranslation();
 	const currentUser =
@@ -167,11 +169,12 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 
 						// The owner cannot delete himself but can delete everyone else
 						// Contributors can delete themselves and every other contributor and viewer
-						// Viewers can only delete themselves but they do not have access to this dialog
+						// Viewers can only delete themselves, but they do not have access to this dialog
 						const canDelete =
 							(!isCurrentUser && !contributorIsOwner) ||
 							(!isOwner && isCurrentUser) ||
-							(currentUserIsContributor && !contributorIsOwner);
+							(currentUserIsContributor && !contributorIsOwner) ||
+							(isAdmin && !contributorIsOwner);
 
 						return (
 							<li key={index} className="c-colleague-info-row">

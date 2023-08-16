@@ -20,20 +20,20 @@ export const getFragmentProperty = (
  * - And the fragment that was replaced was added to the collection before it was replaced
  * @param collection
  * @param collectionFragment
- * @param user
+ * @param profileId
  */
 export const showReplacementWarning = (
 	collection: Avo.Collection.Collection,
 	collectionFragment: Avo.Collection.Fragment,
-	user?: Avo.User.User
+	profileId?: string
 ): boolean => {
 	const item = collectionFragment.item_meta as Avo.Item.Item;
 	const replacedRelation: Avo.Collection.RelationEntry<Avo.Item.Item> | undefined =
 		item?.relations?.[0];
-	const ownsCollection: boolean = collection.owner_profile_id === user?.profile?.id;
+	const ownsCollection: boolean = collection.owner_profile_id === profileId;
 
 	return (
-		!!user &&
+		!!profileId &&
 		ownsCollection &&
 		!!replacedRelation &&
 		moment(replacedRelation.created_at) > moment(collection.updated_at) &&

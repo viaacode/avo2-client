@@ -3,7 +3,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { getUserGroupId } from '../../authentication/helpers/get-profile-info';
 
-export const canManageEditorial = (user: Avo.User.User): boolean => {
+export const canManageEditorial = (user: Avo.User.User | undefined): boolean => {
 	return (
 		[
 			SpecialUserGroup.Admin,
@@ -14,5 +14,5 @@ export const canManageEditorial = (user: Avo.User.User): boolean => {
 			SpecialUserGroup.EducativePartner,
 			SpecialUserGroup.EducativePublisher,
 		] as (SpecialUserGroup | '0')[]
-	).includes(getUserGroupId(user.profile));
+	).includes(getUserGroupId(user?.profile));
 };

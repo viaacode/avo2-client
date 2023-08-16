@@ -14,24 +14,24 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { getValidationErrorsForPublish } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 
-interface PublishAssignmentModalProps extends DefaultSecureRouteProps {
+interface PublishAssignmentModalProps {
 	isOpen: boolean;
 	onClose: (assignment?: Avo.Assignment.Assignment) => void;
 	assignment: Avo.Assignment.Assignment;
 }
 
-const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = ({
+const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & UserProps> = ({
 	onClose,
 	isOpen,
 	assignment,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -53,7 +53,7 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 				return;
 			}
 
-			if (!user?.profile?.id) {
+			if (!commonUser?.profileId) {
 				ToastService.danger(
 					'Je moet ingelogd zijn om een opdracht te kunnen publiceren/depubliceren'
 				);
@@ -77,7 +77,7 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 			};
 			await AssignmentService.updateAssignment(
 				{ ...assignment, ...newAssignmentProps },
-				user?.profile?.id
+				commonUser?.profileId
 			);
 			setValidationError(undefined);
 			ToastService.success(
@@ -101,7 +101,7 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 					object_type: 'assignment',
 					action: isPublished ? 'publish' : 'unpublish',
 				},
-				user
+				commonUser
 			);
 		} catch (err) {
 			ToastService.danger(
@@ -185,4 +185,4 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps> = (
 	);
 };
 
-export default PublishAssignmentModal;
+export default withUser(PublishAssignmentModal) as FunctionComponent<PublishAssignmentModalProps>;

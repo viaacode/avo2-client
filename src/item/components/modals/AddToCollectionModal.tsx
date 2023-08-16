@@ -21,7 +21,6 @@ import type { Avo } from '@viaa/avo2-types';
 import { once } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
@@ -30,6 +29,7 @@ import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCr
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -38,14 +38,14 @@ import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
 
-interface AddToCollectionModalProps extends DefaultSecureRouteProps {
+interface AddToCollectionModalProps {
 	externalId: string;
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
 }
 
-const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
+const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
@@ -462,4 +462,4 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps> = ({
 	return renderAddToCollectionModal();
 };
 
-export default AddToCollectionModal;
+export default withUser(AddToCollectionModal) as FunctionComponent<AddToCollectionModalProps>;

@@ -3,7 +3,6 @@ import type { Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
@@ -12,7 +11,7 @@ import { getFragmentProperty } from '../../helpers';
 
 import './FragmentDetail.scss';
 
-interface FragmentDetailProps extends DefaultSecureRouteProps {
+interface FragmentDetailProps {
 	collectionFragment: Avo.Collection.Fragment;
 	showDescription: boolean;
 	linkToItems: boolean;
@@ -21,7 +20,7 @@ interface FragmentDetailProps extends DefaultSecureRouteProps {
 
 /**
  * Renders the collection body with all of its fragments for the detail page
- * The bottom meta data is not included in the component
+ * The bottom metadata is not included in the component
  * @param collectionFragment
  * @param showDescriptionNextToVideo
  * @constructor

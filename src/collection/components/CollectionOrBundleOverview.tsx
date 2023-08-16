@@ -58,6 +58,7 @@ import {
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -84,13 +85,9 @@ interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewProps> = ({
-	numberOfItems,
-	type,
-	onUpdate = noop,
-	history,
-	user,
-}) => {
+const CollectionOrBundleOverview: FunctionComponent<
+	CollectionOrBundleOverviewProps & UserProps
+> = ({ numberOfItems, type, onUpdate = noop, history, user }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -986,4 +983,6 @@ const CollectionOrBundleOverview: FunctionComponent<CollectionOrBundleOverviewPr
 	);
 };
 
-export default CollectionOrBundleOverview;
+export default withUser(
+	CollectionOrBundleOverview
+) as FunctionComponent<CollectionOrBundleOverviewProps>;

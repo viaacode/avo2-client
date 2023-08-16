@@ -14,20 +14,20 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { getValidationErrorsForPublish } from '../../collection.helpers';
 import { CollectionService } from '../../collection.service';
 
-interface PublishCollectionModalProps extends DefaultSecureRouteProps {
+interface PublishCollectionModalProps {
 	isOpen: boolean;
 	onClose: (collection?: Avo.Collection.Collection) => void;
 	collection: Avo.Collection.Collection;
 }
 
-const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = ({
+const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps & UserProps> = ({
 	onClose,
 	isOpen,
 	collection,
@@ -201,4 +201,4 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps> = (
 	);
 };
 
-export default PublishCollectionModal;
+export default withUser(PublishCollectionModal) as FunctionComponent<PublishCollectionModalProps>;

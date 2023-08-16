@@ -43,6 +43,7 @@ import {
 	ShareModal,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
+import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import {
@@ -58,7 +59,7 @@ import {
 	transformContributorsToSimpleContributors,
 } from '../../shared/helpers/contributors';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
-import withUser from '../../shared/hocs/withUser';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -80,6 +81,7 @@ import {
 	onDeleteContributor,
 	onEditContributor,
 } from '../helpers/collection-share-with-collegue-handlers';
+import { deleteCollection } from '../helpers/delete-collection';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
@@ -90,8 +92,6 @@ import CollectionOrBundleEditQualityCheck from './CollectionOrBundleEditQualityC
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
-import { deleteCollection } from '../helpers/delete-collection';
-import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
@@ -153,8 +153,9 @@ interface CollectionOrBundleEditProps {
 
 const CollectionOrBundleEdit: FunctionComponent<
 	CollectionOrBundleEditProps &
-		DefaultSecureRouteProps<{ id: string; tabId: CollectionCreateUpdateTab | undefined }>
-> = ({ type, history, location, match, user }) => {
+		DefaultSecureRouteProps<{ id: string; tabId: CollectionCreateUpdateTab | undefined }> &
+		UserProps
+> = ({ type, history, match, user, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -1096,10 +1097,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 							type={type}
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
-							history={history}
-							location={location}
-							match={match}
-							user={user}
 						/>
 					);
 				case CollectionCreateUpdateTab.PUBLISH:
@@ -1273,6 +1270,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 							[ContributorInfoRights.VIEWER]:
 								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 						}}
+						isAdmin={
+							commonUser?.permissions?.includes(
+								PermissionName.EDIT_ANY_COLLECTIONS
+							) || false
+						}
 					/>
 				)}
 			</ButtonToolbar>
@@ -1412,10 +1414,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 						collection={collectionState.currentCollection}
 						isOpen={isPublishModalOpen}
 						onClose={onCloseShareCollectionModal}
-						history={history}
-						location={location}
-						match={match}
-						user={user}
 					/>
 				)}
 
@@ -1455,6 +1453,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 							[ContributorInfoRights.VIEWER]:
 								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 						}}
+						isAdmin={
+							commonUser?.permissions?.includes(
+								PermissionName.EDIT_ANY_COLLECTIONS
+							) || false
+						}
 					/>
 				)}
 

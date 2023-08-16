@@ -4,8 +4,8 @@ import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { FragmentAdd, FragmentEdit } from '../components';
@@ -14,18 +14,15 @@ import { showReplacementWarning } from '../helpers/fragment';
 import { CollectionAction } from './CollectionOrBundleEdit';
 import './CollectionOrBundleEditContent.scss';
 
-interface CollectionOrBundleEditContentProps extends DefaultSecureRouteProps {
+interface CollectionOrBundleEditContentProps {
 	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 }
 
-const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditContentProps> = ({
-	type,
-	collection,
-	changeCollectionState,
-	user,
-}) => {
+const CollectionOrBundleEditContent: FunctionComponent<
+	CollectionOrBundleEditContentProps & UserProps
+> = ({ type, collection, changeCollectionState, user, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -314,7 +311,9 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 						fragment={fragment}
 						allowedToAddLinks={allowedToAddLinks as boolean}
 						renderWarning={() => {
-							if (showReplacementWarning(collection, fragment, user)) {
+							if (
+								showReplacementWarning(collection, fragment, commonUser?.profileId)
+							) {
 								return (
 									<Spacer margin="bottom">
 										<Alert type="danger">
@@ -334,4 +333,6 @@ const CollectionOrBundleEditContent: FunctionComponent<CollectionOrBundleEditCon
 	);
 };
 
-export default React.memo(CollectionOrBundleEditContent);
+export default withUser(
+	React.memo(CollectionOrBundleEditContent)
+) as FunctionComponent<CollectionOrBundleEditContentProps>;

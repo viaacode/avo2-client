@@ -88,8 +88,8 @@ type AssignmentDetailProps = {
 const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
 	match,
 	user,
+	commonUser,
 	history,
-	location,
 	enabledMetaData = ALL_SEARCH_FILTERS,
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -577,6 +577,11 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 								[ContributorInfoRights.VIEWER]:
 									PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
 							}}
+							isAdmin={
+								commonUser?.permissions?.includes(
+									PermissionName.EDIT_ANY_ASSIGNMENTS
+								) || false
+							}
 						/>
 					)}
 				{permissions.canPublishAssignments && !inviteToken && (
@@ -920,10 +925,6 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 					}}
 					isOpen={isPublishModalOpen}
 					assignment={assignment as Avo.Assignment.Assignment}
-					history={history}
-					location={location}
-					match={match}
-					user={user}
 				/>
 			)}
 
@@ -963,6 +964,10 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 							PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
 						[ContributorInfoRights.VIEWER]: PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
 					}}
+					isAdmin={
+						commonUser?.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) ||
+						false
+					}
 				/>
 			)}
 			<DeleteAssignmentModal

@@ -15,14 +15,24 @@ import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
 import { redirectToClientPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
-import { selectLogin, selectLoginError, selectLoginLoading, selectUser } from '../store/selectors';
+import {
+	selectCommonUser,
+	selectLogin,
+	selectLoginError,
+	selectLoginLoading,
+	selectUser,
+} from '../store/selectors';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface DefaultSecureRouteProps<T extends { [K in keyof T]?: string } = {}>
 	extends RouteComponentProps<T> {
 	// technically this type is incorrect, it should be Avo.User.User | undefined
 	// But practically it's always Avo.User.User where we need a user and this avoids a shit ton of IF checks
+	/**
+	 * @deprecated Prefer to use commonUser instead
+	 */
 	user: Avo.User.User;
+	commonUser: Avo.User.CommonUser;
 }
 
 export interface SecuredRouteProps extends DefaultSecureRouteProps<any> {
@@ -33,7 +43,11 @@ export interface SecuredRouteProps extends DefaultSecureRouteProps<any> {
 	loginStateError: boolean;
 	loginStateLoading: boolean;
 	path?: string;
+	/**
+	 * @deprecated Prefer to use commonUser instead
+	 */
 	user: Avo.User.User;
+	commonUser: Avo.User.CommonUser;
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
@@ -142,6 +156,7 @@ const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
 
 const mapStateToProps = (state: AppState) => ({
 	user: selectUser(state),
+	commonUser: selectCommonUser(state),
 	loginState: selectLogin(state),
 	loginStateLoading: selectLoginLoading(state),
 	loginStateError: selectLoginError(state),

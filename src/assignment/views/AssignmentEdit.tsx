@@ -100,6 +100,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	onUpdate = noop,
 	match,
 	user,
+	commonUser,
 	history,
 	location,
 }) => {
@@ -651,6 +652,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 						history={history}
 						match={match}
 						user={user}
+						commonUser={commonUser}
 						onUpdate={onUpdate}
 					/>
 				);
@@ -924,10 +926,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 					}}
 					isOpen={isPublishModalOpen}
 					assignment={assignment as Avo.Assignment.Assignment}
-					history={history}
-					location={location}
-					match={match}
-					user={user}
 				/>
 			)}
 
@@ -967,6 +965,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 								[ContributorInfoRights.VIEWER]:
 									PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
 							}}
+							isAdmin={
+								commonUser?.permissions?.includes(
+									PermissionName.EDIT_ANY_ASSIGNMENTS
+								) || false
+							}
 						/>
 					),
 					desktop: null,
