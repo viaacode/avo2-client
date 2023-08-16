@@ -99,10 +99,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const [showPublicState, setShowPublicState] = useState(false);
 
 	const [dropdownOpen, setDropdownOpen] = useState<{ [key: string]: boolean }>({});
-	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-	const [isCreateAssignmentModalOpen, setIsCreateAssignmentModalOpen] = useState<boolean>(false);
-	const [selectedCollectionUuid, setSelectedCollectionUuid] = useState<string | null>(null);
 	const [selectedDetail, setSelectedDetail] = useState<Avo.Collection.Collection | undefined>(
 		undefined
 	);
@@ -111,6 +107,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 		useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
 	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 	const [page, setPage] = useState<number>(0);
+	const [activeModalInfo, setActiveModalInfo] = useState<{
+		collectionUuid: string;
+		activeModal: 'DELETE' | 'QUICK_LANE' | 'CREATE_ASSIGNMENT';
+	} | null>(null);
 
 	const [query, setQuery] = useQueryParams({
 		selectedShareTypeLabelIds: ArrayParam,
@@ -128,13 +128,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 	// Mutations
 	const { mutateAsync: triggerCollectionOrBundleDelete } =
 		useDeleteCollectionOrBundleByUuidMutation();
-
-	// Listeners
-	const onClickDelete = (collectionUuid: string) => {
-		setDropdownOpen({ [collectionUuid]: false });
-		setSelectedCollectionUuid(collectionUuid);
-		setIsDeleteModalOpen(true);
-	};
 
 	const isCollection = type === 'collection';
 
@@ -268,20 +261,20 @@ const CollectionOrBundleOverview: FunctionComponent<
 	}, [setLoadingInfo, collections]);
 
 	useEffect(() => {
-		if (selectedCollectionUuid) {
+		if (activeModalInfo?.collectionUuid) {
 			CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
-				selectedCollectionUuid,
+				activeModalInfo?.collectionUuid,
 				isCollection ? 'collection' : 'bundle',
 				undefined
 			).then((res) => setSelectedDetail(res || undefined));
 			setSelectedCollection(
-				collections?.find((collection) => collection.id === selectedCollectionUuid)
+				collections?.find((collection) => collection.id === activeModalInfo?.collectionUuid)
 			);
 		} else {
 			setSelectedCollection(undefined);
 			setSelectedDetail(undefined);
 		}
-	}, [selectedCollectionUuid, isCollection]);
+	}, [activeModalInfo?.collectionUuid, isCollection]);
 
 	useEffect(() => {
 		if (query.sort_column) {
@@ -310,7 +303,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	const onDeleteCollection = async () => {
-		if (isNil(selectedCollectionUuid)) {
+		if (isNil(activeModalInfo?.collectionUuid)) {
 			ToastService.danger(
 				tHtml(
 					'collection/components/collection-or-bundle-overview___de-huidige-collectie-werd-nog-nooit-opgeslagen-heeft-geen-id'
@@ -320,15 +313,15 @@ const CollectionOrBundleOverview: FunctionComponent<
 		}
 
 		await deleteCollection(
-			selectedCollectionUuid,
+			activeModalInfo?.collectionUuid,
 			user,
 			isOwner,
 			isCollection,
 			async () => {
 				await triggerCollectionOrBundleDelete(
 					{
-						collectionOrBundleUuid: selectedCollectionUuid,
-						collectionOrBundleUuidAsText: selectedCollectionUuid,
+						collectionOrBundleUuid: activeModalInfo?.collectionUuid,
+						collectionOrBundleUuidAsText: activeModalInfo?.collectionUuid as string,
 					},
 					{
 						onSuccess: async () => {
@@ -344,7 +337,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 			}
 		);
 
-		setSelectedCollectionUuid(null);
+		setActiveModalInfo(null);
 	};
 
 	const onClickCreate = () =>
@@ -372,7 +365,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 
 	const onCreateAssignmentFromCollection = async (withDescription: boolean): Promise<void> => {
 		const collection = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
-			selectedCollectionUuid as string,
+			activeModalInfo?.collectionUuid as string,
 			'collection',
 			undefined
 		);
@@ -471,7 +464,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 
 		// Listeners
 		const onClickDropdownItem = (item: ReactText) => {
-			setDropdownOpen({ [collectionUuid]: false });
 			switch (item) {
 				case CollectionAction.editCollection:
 					navigate(
@@ -482,18 +474,24 @@ const CollectionOrBundleOverview: FunctionComponent<
 					break;
 
 				case CollectionAction.createAssignment:
-					setSelectedCollectionUuid(collectionUuid);
-					setIsCreateAssignmentModalOpen(true);
+					setActiveModalInfo({
+						collectionUuid,
+						activeModal: 'CREATE_ASSIGNMENT',
+					});
 					break;
 
 				case CollectionAction.openQuickLane:
-					setSelectedCollectionUuid(collectionUuid);
-					setIsQuickLaneModalOpen(true);
+					setActiveModalInfo({
+						collectionUuid,
+						activeModal: 'QUICK_LANE',
+					});
 					break;
 
 				case CollectionAction.delete:
-					setSelectedCollectionUuid(collectionUuid);
-					onClickDelete(collectionUuid);
+					setActiveModalInfo({
+						collectionUuid,
+						activeModal: 'DELETE',
+					});
 					break;
 
 				default:
@@ -511,11 +509,9 @@ const CollectionOrBundleOverview: FunctionComponent<
 					isOpen={dropdownOpen[collectionUuid] || false}
 					onOpen={() => {
 						setDropdownOpen({ [collectionUuid]: true });
-						setSelectedCollectionUuid(collectionUuid);
 					}}
 					onClose={() => {
 						setDropdownOpen({ [collectionUuid]: false });
-						setSelectedCollectionUuid(null);
 					}}
 					label={getMoreOptionsLabel()}
 					menuItems={ROW_DROPDOWN_ITEMS}
@@ -893,11 +889,8 @@ const CollectionOrBundleOverview: FunctionComponent<
 		if (isCollection) {
 			return (
 				<DeleteCollectionModal
-					isOpen={isDeleteModalOpen}
-					onClose={() => {
-						setSelectedCollectionUuid(null);
-						setIsDeleteModalOpen(false);
-					}}
+					isOpen={activeModalInfo?.activeModal === 'DELETE'}
+					onClose={() => setActiveModalInfo(null)}
 					deleteObjectCallback={onDeleteCollection}
 					isContributor={isContributor}
 					isSharedWithOthers={isOwner}
@@ -913,11 +906,8 @@ const CollectionOrBundleOverview: FunctionComponent<
 				body={tText(
 					'collection/views/collection-overview___bent-u-zeker-deze-actie-kan-niet-worden-ongedaan-gemaakt'
 				)}
-				isOpen={isDeleteModalOpen}
-				onClose={() => {
-					setSelectedCollectionUuid(null);
-					setIsDeleteModalOpen(false);
-				}}
+				isOpen={activeModalInfo?.activeModal === 'DELETE'}
+				onClose={() => setActiveModalInfo(null)}
 				confirmCallback={onDeleteCollection}
 			/>
 		);
@@ -930,13 +920,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 					modalTitle={tHtml(
 						'collection/views/collection-overview___delen-met-leerlingen'
 					)}
-					isOpen={isQuickLaneModalOpen}
+					isOpen={activeModalInfo?.activeModal === 'QUICK_LANE'}
 					content={selectedDetail}
 					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
-					onClose={() => {
-						setSelectedCollectionUuid(null);
-						setIsQuickLaneModalOpen(false);
-					}}
+					onClose={() => setActiveModalInfo(null)}
 					onUpdate={() => fetchCollections()}
 				/>
 			)
@@ -946,8 +933,8 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const renderCreateAssignmentModal = () => {
 		return (
 			<CreateAssignmentModal
-				isOpen={isCreateAssignmentModalOpen}
-				onClose={() => setIsCreateAssignmentModalOpen(false)}
+				isOpen={activeModalInfo?.activeModal === 'CREATE_ASSIGNMENT'}
+				onClose={() => setActiveModalInfo(null)}
 				createAssignmentCallback={onCreateAssignmentFromCollection}
 				translations={{
 					title: tHtml(
@@ -964,15 +951,19 @@ const CollectionOrBundleOverview: FunctionComponent<
 		);
 	};
 
-	const renderCollections = () => (
-		<>
-			{isCollection && renderHeader()}
-			{collections && collections.length ? renderTable(collections) : renderEmptyFallback()}
-			{!isNil(selectedCollectionUuid) && renderDeleteModal()}
-			{renderQuickLaneModal()}
-			{renderCreateAssignmentModal()}
-		</>
-	);
+	const renderCollections = () => {
+		return (
+			<>
+				{isCollection && renderHeader()}
+				{collections && collections.length
+					? renderTable(collections)
+					: renderEmptyFallback()}
+				{!isNil(activeModalInfo?.collectionUuid) && renderDeleteModal()}
+				{renderQuickLaneModal()}
+				{renderCreateAssignmentModal()}
+			</>
+		);
+	};
 
 	return (
 		<LoadingErrorLoadedComponent
