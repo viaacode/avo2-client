@@ -14,8 +14,9 @@ import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState 
 
 import { ColorSelect } from '../../admin/content-page/components/ColorSelect/ColorSelect';
 import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service/assignment-labels.service';
+import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
 
 import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
@@ -26,7 +27,6 @@ export type AssignmentLabelsProps = {
 	labels: { assignment_label: Avo.Assignment.Label }[];
 	id?: string;
 	onChange: (changed: { assignment_label: Avo.Assignment.Label }[]) => void;
-	commonUser: Avo.User.CommonUser;
 	dictionary?: {
 		placeholder: string;
 		empty: string;
@@ -34,7 +34,7 @@ export type AssignmentLabelsProps = {
 	type?: Avo.Assignment.LabelType;
 };
 
-const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
+const AssignmentLabels: FunctionComponent<AssignmentLabelsProps & UserProps> = ({
 	id,
 	labels,
 	commonUser,
@@ -169,11 +169,10 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps> = ({
 			<ManageAssignmentLabels
 				onClose={handleManageAssignmentLabelsModalClosed}
 				isOpen={isManageLabelsModalOpen}
-				commonUser={commonUser}
 				type={type}
 			/>
 		</>
 	);
 };
 
-export default AssignmentLabels;
+export default withUser(AssignmentLabels) as FunctionComponent<AssignmentLabelsProps>;

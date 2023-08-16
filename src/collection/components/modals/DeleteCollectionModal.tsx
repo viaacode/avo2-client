@@ -9,7 +9,6 @@ interface DeleteCollectionModalProps {
 	onClose?: () => void;
 	deleteObjectCallback: () => void;
 	isContributor: boolean;
-	isSharedWithOthers: boolean;
 	contributorCount: number;
 }
 
@@ -18,7 +17,6 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	onClose = noop,
 	deleteObjectCallback,
 	isContributor,
-	isSharedWithOthers,
 	contributorCount,
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -29,7 +27,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	};
 
 	const renderDeleteMessageParagraph = () => {
-		if (isSharedWithOthers) {
+		if (contributorCount > 0) {
 			if (contributorCount === 1) {
 				return tHtml(
 					'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen-deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliest-dan-toegang'

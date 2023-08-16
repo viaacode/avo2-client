@@ -86,7 +86,6 @@ const AssignmentDetailsFormEditable: FC<
 											labels={(assignment.labels || []).filter(
 												(item) => item.assignment_label.type === 'CLASS'
 											)}
-											commonUser={commonUser}
 											dictionary={{
 												placeholder: tText(
 													'assignment/components/assignment-details-form-editable___voeg-een-klas-toe'
@@ -140,7 +139,6 @@ const AssignmentDetailsFormEditable: FC<
 											labels={(assignment.labels || []).filter(
 												(item) => item.assignment_label.type === 'LABEL'
 											)}
-											commonUser={commonUser}
 											dictionary={{
 												placeholder: tText(
 													'assignment/components/assignment-details-form-editable___voeg-een-label-toe'

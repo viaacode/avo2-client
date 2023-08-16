@@ -45,6 +45,7 @@ import {
 	transformContributorsToSimpleContributors,
 } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -96,7 +97,7 @@ interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabI
 	onUpdate: () => void | Promise<void>;
 }
 
-const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
+const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	onUpdate = noop,
 	match,
 	user,
@@ -992,4 +993,4 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 	);
 };
 
-export default AssignmentEdit;
+export default withUser(AssignmentEdit) as FunctionComponent<AssignmentEditProps>;

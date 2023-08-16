@@ -366,8 +366,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const isContributor = !!(collectionState.currentCollection?.contributors || []).find(
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
-	const isSharedWithOthers =
-		!isContributor && !!(collectionState.currentCollection?.contributors?.length || 0 > 0);
 
 	useEffect(() => {
 		if (collectionState.currentCollection && contributors && isCollection) {
@@ -1466,7 +1464,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
 					isContributor={isContributor}
-					isSharedWithOthers={isSharedWithOthers}
 					contributorCount={collectionState.currentCollection?.contributors?.length || 0}
 				/>
 

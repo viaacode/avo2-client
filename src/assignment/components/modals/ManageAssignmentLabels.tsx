@@ -23,24 +23,24 @@ import { ColorSelect } from '../../../admin/content-page/components/ColorSelect/
 import { Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service/assignment-labels.service';
+import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { MAX_LABEL_LENGTH } from '../../assignment.const';
 import { AssignmentLabelColor } from '../../assignment.types';
 
-import './ManageAssignmentLabels.scss';
-
 import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
+
+import './ManageAssignmentLabels.scss';
 
 export interface ManageAssignmentLabelsProps {
 	isOpen: boolean;
 	onClose: () => void;
 	type?: Avo.Assignment.LabelType;
-	commonUser?: Avo.User.CommonUser;
 }
 
-const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = ({
+const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & UserProps> = ({
 	isOpen,
 	onClose,
 	type,
@@ -349,4 +349,4 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps> = (
 	);
 };
 
-export default ManageAssignmentLabels;
+export default withUser(ManageAssignmentLabels) as FunctionComponent<ManageAssignmentLabelsProps>;

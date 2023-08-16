@@ -24,6 +24,7 @@ import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink, CustomError, formatDate, isMobileWidth } from '../../../shared/helpers';
 import { defaultRenderBookmarkButton } from '../../../shared/helpers/default-render-bookmark-button';
 import { parseIntOrDefault } from '../../../shared/helpers/parsers/number';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../shared/services/bookmarks-views-plays-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -38,10 +39,9 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	renderLink: RenderLinkFunction;
 	buttonAltTitle?: string;
 	ctaButtonAltTitle?: string;
-	commonUser: Avo.User.CommonUser;
 }
 
-const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
+const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = ({
 	title,
 	buttonLabel,
 	buttonAltTitle,
@@ -64,8 +64,8 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	searchQueryLimit,
 	elements,
 	results,
-	commonUser,
 	renderLink,
+	commonUser,
 }: any) => {
 	// TODO remove any when typings for admin-core-ui is fixed
 	const { tText, tHtml } = useTranslation();
@@ -409,4 +409,4 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps> = ({
 	);
 };
 
-export default MediaGridWrapper;
+export default withUser(MediaGridWrapper) as FunctionComponent<MediaGridWrapperProps>;

@@ -19,7 +19,7 @@ interface FragmentListProps {
 
 /**
  * Renders the collection body with all of its fragments for the detail page
- * The bottom meta data is not included in the component
+ * The bottom metadata is not included in the component
  * @param collectionFragments
  * @param showDescriptionNextToVideo
  * @constructor

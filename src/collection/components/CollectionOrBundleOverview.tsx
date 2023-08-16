@@ -897,7 +897,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 					onClose={() => setActiveModalInfo(null)}
 					deleteObjectCallback={onDeleteCollection}
 					isContributor={isContributor}
-					isSharedWithOthers={isOwner}
 					contributorCount={selectedDetail?.contributors?.length || 0}
 				/>
 			);

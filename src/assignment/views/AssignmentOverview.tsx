@@ -1070,10 +1070,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					onClose={handleDeleteModalClose}
 					deleteObjectCallback={handleDeleteConfirm}
 					isContributor={isContributor}
-					isSharedWithOthers={
-						markedAssignment?.share_type ===
-						ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
-					}
 					contributorCount={markedAssignment?.contributors?.length || 0}
 					hasResponses={!!markedAssignment?.responses?.length}
 					containsBuildBlocks={markedAssignment?.lom_learning_resource_type?.includes(

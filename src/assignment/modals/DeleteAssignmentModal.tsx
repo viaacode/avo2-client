@@ -10,7 +10,6 @@ interface DeleteAssignmentModalProps {
 	deleteObjectCallback: () => void;
 
 	isContributor: boolean;
-	isSharedWithOthers: boolean;
 	contributorCount: number;
 	hasResponses?: boolean;
 	containsBuildBlocks?: boolean;
@@ -21,7 +20,6 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 	onClose = noop,
 	deleteObjectCallback,
 	isContributor,
-	isSharedWithOthers,
 	contributorCount,
 	hasResponses = false,
 	containsBuildBlocks = false,
@@ -35,7 +33,7 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 
 	const renderDeleteMessages = () => {
 		const messages: ReactNode[] = [];
-		if (isSharedWithOthers) {
+		if (contributorCount > 0) {
 			if (contributorCount === 1) {
 				messages.push(
 					tHtml(
@@ -78,7 +76,7 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 			<>
 				{messages.length ? (
 					messages.map((message, index) => (
-						<p key={`assignemt-delete-warning-${index}`}>{message}</p>
+						<p key={`assignment-delete-warning-${index}`}>{message}</p>
 					))
 				) : (
 					<p>

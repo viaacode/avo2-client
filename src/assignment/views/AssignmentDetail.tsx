@@ -15,8 +15,8 @@ import {
 	ToggleButton,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import React, { FC, ReactText, useCallback, useEffect, useState } from 'react';
+import { PermissionName } from '@viaa/avo2-types';
+import React, { FC, FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { generatePath } from 'react-router';
 import { StringParam, useQueryParams } from 'use-query-params';
@@ -45,6 +45,7 @@ import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '..
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
@@ -85,13 +86,9 @@ type AssignmentDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
-	match,
-	user,
-	commonUser,
-	history,
-	enabledMetaData = ALL_SEARCH_FILTERS,
-}) => {
+const AssignmentDetail: FC<
+	AssignmentDetailProps & DefaultSecureRouteProps<{ id: string }> & UserProps
+> = ({ match, user, commonUser, history, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const { tText, tHtml } = useTranslation();
 	const assignmentId = match.params.id;
 
@@ -145,8 +142,6 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 	);
 	const isOwner =
 		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
-	const isSharedWithOthers =
-		assignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE;
 
 	const isBeingEdited =
 		editStatuses &&
@@ -989,11 +984,10 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 				onClose={() => setIsDeleteModalOpen(false)}
 				deleteObjectCallback={onDeleteAssignment}
 				isContributor={isContributor}
-				isSharedWithOthers={isSharedWithOthers}
 				contributorCount={assignment?.contributors?.length || 0}
 			/>
 		</>
 	);
 };
 
-export default AssignmentDetail;
+export default withUser(AssignmentDetail) as FunctionComponent<AssignmentDetailProps>;

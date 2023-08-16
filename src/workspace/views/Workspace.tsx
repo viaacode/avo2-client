@@ -64,6 +64,7 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
@@ -101,7 +102,7 @@ interface WorkspacePermissions {
 	canViewSomeQuickLanes?: boolean;
 }
 
-const Workspace: FunctionComponent<WorkspaceProps> = ({
+const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 	history,
 	match,
 	location,
@@ -522,4 +523,4 @@ const Workspace: FunctionComponent<WorkspaceProps> = ({
 	);
 };
 
-export default Workspace;
+export default withUser(Workspace) as FunctionComponent<WorkspaceProps>;

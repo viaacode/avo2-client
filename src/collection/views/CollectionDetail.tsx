@@ -161,7 +161,6 @@ const CollectionDetail: FunctionComponent<
 	const isOwner =
 		!!collection?.owner_profile_id && collection?.owner_profile_id === commonUser?.profileId;
 	const isCollectionAdmin = PermissionService.hasPerm(user, PermissionName.EDIT_ANY_COLLECTIONS);
-	const isSharedWithOthers = !isContributor && !!(collection?.contributors?.length || 0 > 0);
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -1257,7 +1256,6 @@ const CollectionDetail: FunctionComponent<
 					onClose={() => setIsDeleteModalOpen(false)}
 					deleteObjectCallback={onDeleteCollection}
 					isContributor={isContributor}
-					isSharedWithOthers={isSharedWithOthers}
 					contributorCount={collection?.contributors?.length || 0}
 				/>
 				{!!collection_fragments && collection && isAutoplayCollectionModalOpen && (
