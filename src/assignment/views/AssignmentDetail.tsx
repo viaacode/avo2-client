@@ -242,8 +242,8 @@ const AssignmentDetail: FC<AssignmentDetailProps & DefaultSecureRouteProps<{ id:
 			) {
 				// User cannot edit assignments => redirect to error
 				setAssignmentError({
-					message: tText(
-						'Je hebt geen rechten om deze opdracht te bewerken. Ben je een leerling, dan heeft je lesgever de verkeerde link gedeeld.'
+					message: tHtml(
+						'assignment/views/assignment-detail___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken-ben-je-een-leerling-dan-heeft-je-lesgever-de-verkeerde-link-gedeeld'
 					),
 					icon: IconName.lock,
 					actionButtons: ['home'],

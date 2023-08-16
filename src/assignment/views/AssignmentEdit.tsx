@@ -211,8 +211,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps> = ({
 			) {
 				// User cannot edit assignments => redirect to error
 				setAssignmentError({
-					message: tText(
-						'Je hebt geen rechten om deze opdracht te bewerken. Ben je een leerling, dan heeft je lesgever de verkeerde link gedeeld.'
+					message: tHtml(
+						'assignment/views/assignment-edit___je-hebt-geen-rechten-om-deze-opdracht-te-bewerken-ben-je-een-leerling-dan-heeft-je-lesgever-de-verkeerde-link-gedeeld'
 					),
 					icon: IconName.lock,
 					actionButtons: ['home'],
