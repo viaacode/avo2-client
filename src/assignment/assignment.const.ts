@@ -104,15 +104,17 @@ const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 		: [];
 };
 
-const getSharedColumn = () => {
-	return [
-		{
-			id: 'share_type' as AssignmentOverviewTableColumns,
-			label: tText('assignment/assignment___gedeeld'),
-			sortable: true,
-			dataType: TableColumnDataType.string,
-		},
-	];
+const getSharedColumn = (canEditAssignments: boolean | null) => {
+	return canEditAssignments
+		? [
+				{
+					id: 'share_type' as AssignmentOverviewTableColumns,
+					label: tText('assignment/assignment___gedeeld'),
+					sortable: true,
+					dataType: TableColumnDataType.string,
+				},
+		  ]
+		: [];
 };
 
 const getIsPublicColumn = (showPublicState: boolean | null) => {
@@ -155,7 +157,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 ): AssignmentColumn[] => [
 	...GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL(canEditAssignments),
 	...getLastEditColumn(canEditAssignments),
-	...getSharedColumn(),
+	...getSharedColumn(canEditAssignments),
 	...getIsPublicColumn(showPublicState),
 	...getResponseColumn(canEditAssignments),
 	...getActionsColumn(canEditAssignments),
