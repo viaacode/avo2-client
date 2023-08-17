@@ -7,90 +7,97 @@ import useTranslation from '../../shared/hooks/useTranslation';
 interface DeleteAssignmentModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
-	deleteObjectCallback: () => void;
-
-	isContributor: boolean;
+	deleteAssignmentCallback: () => void;
+	deleteSelfFromAssignmentCallback: () => void;
 	contributorCount: number;
 	hasResponses?: boolean;
 	containsBuildBlocks?: boolean;
+	/**
+	 * true: should delete the current user from the contributors of the assignment
+	 * false: should delete the assignment itself
+	 */
+	shouldDeleteSelfFromAssignment: boolean;
 }
 
 const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 	isOpen,
 	onClose = noop,
-	deleteObjectCallback,
-	isContributor,
+	deleteAssignmentCallback,
+	deleteSelfFromAssignmentCallback,
 	contributorCount,
 	hasResponses = false,
 	containsBuildBlocks = false,
+	shouldDeleteSelfFromAssignment,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const handleDelete = async () => {
-		deleteObjectCallback();
+		if (shouldDeleteSelfFromAssignment) {
+			deleteSelfFromAssignmentCallback();
+		} else {
+			deleteAssignmentCallback();
+		}
 		onClose();
 	};
 
 	const renderDeleteMessages = () => {
 		const messages: ReactNode[] = [];
-		if (contributorCount > 0) {
+		if (shouldDeleteSelfFromAssignment) {
+			messages.push(
+				tHtml(
+					'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen'
+				)
+			);
+		} else {
 			if (contributorCount === 1) {
 				messages.push(
 					tHtml(
-						'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen-deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliezen-dan-toegang'
+						'assignment/modals/delete-assignment-modal___deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliezen-dan-toegang'
 					)
 				);
 			} else {
 				messages.push(
 					tHtml(
-						'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen-deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
+						'assignment/modals/delete-assignment-modal___deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
 						{ count: contributorCount }
 					)
 				);
 			}
-		} else if (isContributor) {
+
+			if (hasResponses) {
+				if (containsBuildBlocks) {
+					messages.push(
+						tHtml(
+							'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
+						)
+					);
+				} else {
+					messages.push(
+						tHtml(
+							'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
+						)
+					);
+				}
+			}
+
 			messages.push(
 				tHtml(
-					'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-jezelf-van-deze-opdracht-wil-wissen'
+					'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 				)
 			);
 		}
 
-		if (hasResponses) {
-			if (containsBuildBlocks) {
-				messages.push(
-					tHtml(
-						'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'
-					)
-				);
-			} else {
-				messages.push(
-					tHtml(
-						'assignment/views/assignment-overview___leerlingen-bekeken-deze-opdracht-reeds'
-					)
-				);
-			}
-		}
+		messages.push(
+			tHtml(
+				'assignment/modals/delete-assignment-modal___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
+			)
+		);
 
 		return (
 			<>
-				{messages.length ? (
-					messages.map((message, index) => (
-						<p key={`assignment-delete-warning-${index}`}>{message}</p>
-					))
-				) : (
-					<p>
-						{tHtml(
-							'assignment/modals/delete-assignment-modal___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
-						)}
-					</p>
-				)}
-
-				<p>
-					{tHtml(
-						'assignment/modals/delete-assignment-modal___opgelet-deze-actie-kan-niet-ongedaan-gemaakt-worden'
-					)}
-				</p>
+				{messages.map((message, index) => (
+					<p key={`assignment-delete-warning-${index}`}>{message}</p>
+				))}
 			</>
 		);
 	};
@@ -99,7 +106,7 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 		<ConfirmModal
 			isOpen={isOpen}
 			title={
-				isContributor
+				shouldDeleteSelfFromAssignment
 					? tHtml(
 							'assignment/modals/delete-assignment-modal___verwijder-mij-van-deze-opdracht'
 					  )

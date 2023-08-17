@@ -67,6 +67,7 @@ import { buildLink, CustomError, formatDate, navigate, renderAvatar } from '../.
 import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
@@ -86,7 +87,7 @@ import {
 	AssignmentView,
 } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
-import { deleteAssignment } from '../helpers/delete-assignment';
+import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 
@@ -111,10 +112,11 @@ const defaultFiltersAndSort = {
 	sort_order: DEFAULT_SORT_ORDER,
 };
 
-const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
+const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps> = ({
 	onUpdate = noop,
 	history,
 	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -138,6 +140,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
 	const isContributor =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+	const hasDeleteRightsForAllAssignments =
+		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) || false;
+	const shouldDeleteSelfFromAssignment = isContributor && !hasDeleteRightsForAllAssignments;
 
 	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
 		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
@@ -415,8 +420,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 		setMarkedAssignment(null);
 	};
 
-	const handleDeleteConfirm = async () => {
-		await deleteAssignment(markedAssignment?.id, user, isOwner, updateAndReset);
+	const handleDeleteAssignmentConfirm = async () => {
+		await deleteAssignment(markedAssignment?.id, user, updateAndReset);
+		handleDeleteModalClose();
+	};
+
+	const handleDeleteSelfFromAssignmentConfirm = async () => {
+		await deleteSelfFromAssignment(markedAssignment?.id, user, updateAndReset);
 		handleDeleteModalClose();
 	};
 
@@ -434,6 +444,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					<MoreOptionsDropdown
 						isOpen={dropdownOpenForAssignmentId === assignmentRow.id}
 						onOpen={() => {
+							setMarkedAssignment(assignmentRow);
 							setDropdownOpenForAssignmentId(null);
 							// Let close menu render first and then open the other menu, otherwise both close
 							setTimeout(() => setDropdownOpenForAssignmentId(assignmentRow.id), 10);
@@ -1070,13 +1081,14 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 				<DeleteAssignmentModal
 					isOpen={isDeleteAssignmentModalOpen}
 					onClose={handleDeleteModalClose}
-					deleteObjectCallback={handleDeleteConfirm}
-					isContributor={isContributor}
+					deleteAssignmentCallback={handleDeleteAssignmentConfirm}
+					deleteSelfFromAssignmentCallback={handleDeleteSelfFromAssignmentConfirm}
 					contributorCount={markedAssignment?.contributors?.length || 0}
 					hasResponses={!!markedAssignment?.responses?.length}
 					containsBuildBlocks={markedAssignment?.lom_learning_resource_type?.includes(
 						AssignmentType.BOUW
 					)}
+					shouldDeleteSelfFromAssignment={shouldDeleteSelfFromAssignment}
 				/>
 			</>
 		);
@@ -1093,4 +1105,4 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 	) : null;
 };
 
-export default AssignmentOverview;
+export default withUser(AssignmentOverview) as FunctionComponent<AssignmentOverviewProps>;

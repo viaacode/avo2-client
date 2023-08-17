@@ -8,8 +8,7 @@ import { CollectionService } from '../collection.service';
 
 export async function deleteCollection(
 	collectionId: string | null | undefined,
-	user: Avo.User.User,
-	isOwner: boolean,
+	user: Avo.User.User | null | undefined,
 	isCollection: boolean,
 	deleteCallback: () => Promise<void>,
 	afterDeleteCallback?: () => void
@@ -24,7 +23,7 @@ export async function deleteCollection(
 			return;
 		}
 
-		if (!user.profile?.id) {
+		if (!user?.profile?.id) {
 			ToastService.danger(
 				tHtml(
 					'collection/helpers/delete-collection___kan-collectie-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
@@ -33,11 +32,7 @@ export async function deleteCollection(
 			return;
 		}
 
-		if (isOwner) {
-			await deleteCallback();
-		} else {
-			await CollectionService.deleteContributor(collectionId, undefined, user.profile.id);
-		}
+		await deleteCallback();
 
 		trackEvents(
 			{
@@ -70,5 +65,40 @@ export async function deleteCollection(
 						'collection/helpers/delete-collection___het-verwijderen-van-de-bundel-is-mislukt'
 				  )
 		);
+	}
+}
+
+export async function deleteSelfFromCollection(
+	collectionId: string | null | undefined,
+	user: Avo.User.User | null | undefined,
+	afterDeleteCallback?: () => void
+): Promise<void> {
+	try {
+		if (isNil(collectionId)) {
+			ToastService.danger(
+				tHtml(
+					'collection/helpers/delete-collection___de-huidige-collectie-werd-nog-nooit-opgeslagen-heeft-geen-id'
+				)
+			);
+			return;
+		}
+
+		if (!user?.profile?.id) {
+			ToastService.danger(
+				tHtml(
+					'Het loskoppelen van je profiel van de collectie is mislukt omdat we je profiel id niet konden vinden. Probeer opnieuw in te loggen'
+				)
+			);
+			return;
+		}
+
+		await CollectionService.deleteContributor(collectionId, undefined, user.profile.id);
+
+		afterDeleteCallback?.();
+
+		ToastService.success(tHtml('Je bent geen bijdrager meer voor de collectie'));
+	} catch (err) {
+		console.error(err);
+		ToastService.danger(tHtml('Het loskoppelen van je profiel van de collectie is mislukt'));
 	}
 }

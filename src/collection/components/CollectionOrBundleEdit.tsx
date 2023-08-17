@@ -81,7 +81,7 @@ import {
 	onDeleteContributor,
 	onEditContributor,
 } from '../helpers/collection-share-with-collegue-handlers';
-import { deleteCollection } from '../helpers/delete-collection';
+import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 
 import CollectionOrBundleEditActualisation from './CollectionOrBundleEditActualisation';
 import CollectionOrBundleEditAdmin from './CollectionOrBundleEditAdmin';
@@ -362,10 +362,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const isOwner =
 		!!collectionState.currentCollection?.owner_profile_id &&
 		collectionState.currentCollection?.owner_profile_id === user?.profile?.id;
-
 	const isContributor = !!(collectionState.currentCollection?.contributors || []).find(
 		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
 	);
+	const shouldDeleteSelfFromCollection = isContributor && !permissions.canDelete;
 
 	useEffect(() => {
 		if (collectionState.currentCollection && contributors && isCollection) {
@@ -800,28 +800,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 		setIsDeleteModalOpen(true);
 	};
 
-	const onDeleteCollection = async () => {
-		if (!collectionState.currentCollection) {
-			console.error(`Failed to delete ${type} since currentCollection is undefined`);
-			ToastService.info(
-				isCollection
-					? tHtml(
-							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-collectie-is-mislukt-collectie-niet-ingesteld'
-					  )
-					: tHtml(
-							'collection/components/collection-or-bundle-edit___het-verwijderen-van-de-bundel-is-mislukt-bundel-niet-ingesteld'
-					  )
-			);
-			return;
-		}
-
+	const handleDeleteCollection = async () => {
 		await deleteCollection(
 			collectionId,
 			user,
-			isOwner,
 			isCollection,
 			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
 			() => navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
+		);
+	};
+
+	const handleDeleteSelfFromCollection = async () => {
+		await deleteSelfFromCollection(collectionId, user, () =>
+			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
 		);
 	};
 
@@ -1153,11 +1144,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				'delete',
-				permissions.canDelete || isOwner
-					? tText('collection/components/collection-or-bundle-edit___verwijderen')
-					: tText(
+				shouldDeleteSelfFromCollection
+					? tText(
 							'collection/components/collection-or-bundle-edit___verwijder-mij-van-deze-collectie'
-					  ),
+					  )
+					: tText('collection/components/collection-or-bundle-edit___verwijderen'),
 				'delete',
 				true
 			),
@@ -1462,9 +1453,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={onDeleteCollection}
-					isContributor={isContributor}
+					deleteCollectionCallback={handleDeleteCollection}
+					deleteSelfFromCollectionCallback={handleDeleteSelfFromCollection}
 					contributorCount={collectionState.currentCollection?.contributors?.length || 0}
+					shouldDeleteSelfFromCollection={shouldDeleteSelfFromCollection}
 				/>
 
 				<InputModal

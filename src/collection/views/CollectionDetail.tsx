@@ -99,7 +99,7 @@ import {
 	onDeleteContributor,
 	onEditContributor,
 } from '../helpers/collection-share-with-collegue-handlers';
-import { deleteCollection } from '../helpers/delete-collection';
+import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 import { useGetCollectionsEditStatuses } from '../hooks/useGetCollectionsEditStatuses';
 
 import './CollectionDetail.scss';
@@ -161,6 +161,7 @@ const CollectionDetail: FunctionComponent<
 	const isOwner =
 		!!collection?.owner_profile_id && collection?.owner_profile_id === commonUser?.profileId;
 	const isCollectionAdmin = PermissionService.hasPerm(user, PermissionName.EDIT_ANY_COLLECTIONS);
+	const shouldDeleteSelfFromCollection = isContributor && !permissions?.canDeleteCollections;
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState<boolean>(false);
@@ -668,23 +669,19 @@ const CollectionDetail: FunctionComponent<
 		}
 	};
 
-	const onDeleteCollection = async (): Promise<void> => {
-		if (!user) {
-			ToastService.danger(
-				tHtml(
-					'collection/views/collection-detail___kan-collectie-niet-verwijderen-omdat-er-geen-gebruiker-gevonden-is-probeer-opnieuw-in-te-loggen'
-				)
-			);
-			return;
-		}
-
+	const handleDeleteCollection = async (): Promise<void> => {
 		await deleteCollection(
 			collectionId,
 			user,
-			isOwner,
 			true,
 			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
 			() => history.push(APP_PATH.WORKSPACE.route)
+		);
+	};
+
+	const handleDeleteSelfFromCollection = async (): Promise<void> => {
+		await deleteSelfFromCollection(collectionId, user, () =>
+			history.push(APP_PATH.WORKSPACE.route)
 		);
 	};
 
@@ -853,14 +850,14 @@ const CollectionDetail: FunctionComponent<
 				CollectionAction.delete,
 				tText('collection/views/collection-detail___verwijderen'),
 				IconName.trash,
-				!!permissions?.canDeleteCollections
+				!shouldDeleteSelfFromCollection
 			),
 
 			...createDropdownMenuItem(
 				CollectionAction.delete,
 				tText('collection/views/collection-detail___verwijder-mij-van-deze-collectie'),
 				IconName.trash,
-				!permissions?.canDeleteCollections && isContributor
+				shouldDeleteSelfFromCollection
 			),
 		];
 
@@ -1254,9 +1251,10 @@ const CollectionDetail: FunctionComponent<
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}
 					onClose={() => setIsDeleteModalOpen(false)}
-					deleteObjectCallback={onDeleteCollection}
-					isContributor={isContributor}
+					deleteCollectionCallback={handleDeleteCollection}
+					deleteSelfFromCollectionCallback={handleDeleteSelfFromCollection}
 					contributorCount={collection?.contributors?.length || 0}
+					shouldDeleteSelfFromCollection={shouldDeleteSelfFromCollection}
 				/>
 				{!!collection_fragments && collection && isAutoplayCollectionModalOpen && (
 					<AutoplayCollectionModal

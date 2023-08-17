@@ -7,48 +7,63 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 interface DeleteCollectionModalProps {
 	isOpen: boolean;
 	onClose?: () => void;
-	deleteObjectCallback: () => void;
-	isContributor: boolean;
+	deleteCollectionCallback: () => void;
+	deleteSelfFromCollectionCallback: () => void;
 	contributorCount: number;
+	/**
+	 * true: should delete the current user from the contributors of the collection
+	 * false: should delete the collection/bundle itself
+	 */
+	shouldDeleteSelfFromCollection: boolean;
 }
 
 const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 	isOpen,
 	onClose = noop,
-	deleteObjectCallback,
-	isContributor,
+	deleteCollectionCallback,
+	deleteSelfFromCollectionCallback,
 	contributorCount,
+	shouldDeleteSelfFromCollection,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const handleDelete = async () => {
-		deleteObjectCallback();
+		if (shouldDeleteSelfFromCollection) {
+			deleteSelfFromCollectionCallback();
+		} else {
+			deleteCollectionCallback();
+		}
 		onClose();
 	};
 
 	const renderDeleteMessageParagraph = () => {
-		if (contributorCount > 0) {
-			if (contributorCount === 1) {
-				return tHtml(
-					'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen-deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliest-dan-toegang'
-				);
-			}
-
-			return tHtml(
-				'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen-deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
-				{ count: contributorCount }
-			);
-		}
-
-		if (isContributor) {
+		if (shouldDeleteSelfFromCollection) {
 			return tHtml(
 				'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-jezelf-van-deze-collectie-wil-wissen'
 			);
-		}
+		} else {
+			let warning = null;
+			if (contributorCount === 1) {
+				warning = tHtml(
+					'collection/components/modals/delete-collection-modal___deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliest-dan-toegang'
+				);
+			} else if (contributorCount > 1) {
+				warning = tHtml(
+					'collection/components/modals/delete-collection-modal___deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
+					{ count: contributorCount }
+				);
+			}
 
-		return tHtml(
-			'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
-		);
+			return (
+				<>
+					{warning}
+					{warning && <br />}
+					{tHtml(
+						'collection/components/modals/delete-collection-modal___ben-je-zeker-dat-je-deze-collectie-wil-verwijderen'
+					)}
+				</>
+			);
+		}
 	};
 
 	const renderDeleteMessage = () => {
@@ -67,7 +82,7 @@ const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
 		<ConfirmModal
 			isOpen={isOpen}
 			title={
-				isContributor
+				shouldDeleteSelfFromCollection
 					? tHtml(
 							'collection/components/modals/delete-collection-modal___verwijder-mij-van-deze-collectie'
 					  )

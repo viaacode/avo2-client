@@ -44,7 +44,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 			);
 			return;
 		}
-		await deleteAssignment(assignment?.id, user, isOwner);
+		await deleteAssignment(assignment?.id, user);
 
 		setOpen(false);
 		modal?.confirmCallback && modal.confirmCallback();

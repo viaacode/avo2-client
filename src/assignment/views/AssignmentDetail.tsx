@@ -66,6 +66,7 @@ import {
 	onDeleteContributor,
 	onEditContributor,
 } from '../helpers/assignment-share-with-collegue-handlers';
+import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
@@ -142,6 +143,9 @@ const AssignmentDetail: FC<
 	);
 	const isOwner =
 		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
+	const hasDeleteRightsForAllAssignments =
+		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) || false;
+	const shouldDeleteSelfFromAssignment = isContributor && !hasDeleteRightsForAllAssignments;
 
 	const isBeingEdited =
 		editStatuses &&
@@ -459,38 +463,15 @@ const AssignmentDetail: FC<
 	};
 
 	const onDeleteAssignment = async (): Promise<void> => {
-		try {
-			if (!assignment) {
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-detail___de-opdracht-kan-niet-verwijderd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
-					)
-				);
-				return;
-			}
+		await deleteAssignment(assignmentId, user, () =>
+			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
+		);
+	};
 
-			if (isOwner) {
-				await AssignmentService.deleteAssignment(assignmentId);
-			} else {
-				await AssignmentService.deleteContributor(
-					assignmentId,
-					undefined,
-					user.profile?.id
-				);
-			}
-
-			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
-
-			ToastService.success(
-				tHtml('assignment/views/assignment-detail___de-opdracht-werd-verwijderd')
-			);
-		} catch (err) {
-			ToastService.danger(
-				tHtml(
-					'assignment/views/assignment-detail___het-verwijderen-van-de-opdracht-is-mislukt'
-				)
-			);
-		}
+	const onDeleteSelfFromAssignment = async (): Promise<void> => {
+		await deleteSelfFromAssignment(assignmentId, user, () =>
+			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
+		);
 	};
 
 	const executeAction = async (item: ReactText) => {
@@ -982,9 +963,10 @@ const AssignmentDetail: FC<
 			<DeleteAssignmentModal
 				isOpen={isDeleteModalOpen}
 				onClose={() => setIsDeleteModalOpen(false)}
-				deleteObjectCallback={onDeleteAssignment}
-				isContributor={isContributor}
+				deleteAssignmentCallback={onDeleteAssignment}
+				deleteSelfFromAssignmentCallback={onDeleteSelfFromAssignment}
 				contributorCount={assignment?.contributors?.length || 0}
+				shouldDeleteSelfFromAssignment={shouldDeleteSelfFromAssignment}
 			/>
 		</>
 	);

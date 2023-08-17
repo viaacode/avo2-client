@@ -61,7 +61,6 @@ import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
-import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
@@ -72,7 +71,7 @@ import {
 	CollectionShareType,
 	ContentTypeNumber,
 } from '../collection.types';
-import { deleteCollection } from '../helpers/delete-collection';
+import { deleteCollection, deleteSelfFromCollection } from '../helpers/delete-collection';
 
 import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './CollectionOrBundleOverview.consts';
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
@@ -87,7 +86,7 @@ interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 
 const CollectionOrBundleOverview: FunctionComponent<
 	CollectionOrBundleOverviewProps & UserProps
-> = ({ numberOfItems, type, onUpdate = noop, history, user }) => {
+> = ({ numberOfItems, type, onUpdate = noop, history, user, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -126,6 +125,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const isOwner =
 		selectedCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
 		selectedCollection?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
+	const hasDeleteRightsForAllCollections =
+		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_COLLECTIONS) || false;
+	const shouldDeleteSelfFromCollection =
+		isContributor && !hasDeleteRightsForAllCollections && !isOwner;
 
 	// Mutations
 	const { mutateAsync: triggerCollectionOrBundleDelete } =
@@ -304,20 +307,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 		setQuery(newQuery, 'pushIn');
 	};
 
-	const onDeleteCollection = async () => {
-		if (isNil(activeModalInfo?.collectionUuid)) {
-			ToastService.danger(
-				tHtml(
-					'collection/components/collection-or-bundle-overview___de-huidige-collectie-werd-nog-nooit-opgeslagen-heeft-geen-id'
-				)
-			);
-			return;
-		}
-
+	const handleDeleteCollection = async () => {
 		await deleteCollection(
 			activeModalInfo?.collectionUuid,
 			user,
-			isOwner,
 			isCollection,
 			async () => {
 				await triggerCollectionOrBundleDelete(
@@ -338,6 +331,15 @@ const CollectionOrBundleOverview: FunctionComponent<
 				fetchCollections();
 			}
 		);
+
+		setActiveModalInfo(null);
+	};
+
+	const handleDeleteSelfFromCollection = async () => {
+		await deleteSelfFromCollection(activeModalInfo?.collectionUuid, user, () => {
+			onUpdate();
+			fetchCollections();
+		});
 
 		setActiveModalInfo(null);
 	};
@@ -425,9 +427,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 	);
 
 	const renderActions = (collectionUuid: string) => {
-		const currentCollection = collections?.find(
-			(collection) => collection.id === collectionUuid
-		);
 		const ROW_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
 				CollectionAction.editCollection,
@@ -451,16 +450,17 @@ const CollectionOrBundleOverview: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				CollectionAction.delete,
-				PermissionService.hasPerm(user, PermissionName.DELETE_ANY_COLLECTIONS) || isOwner
-					? tText('collection/views/collection-overview___verwijderen')
-					: tText(
-							'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
-					  ),
+				tText('collection/views/collection-overview___verwijderen'),
 				undefined,
-				currentCollection?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-					? true
-					: (permissions[collectionUuid] && permissions[collectionUuid].canDelete) ||
-							false
+				!shouldDeleteSelfFromCollection
+			),
+			...createDropdownMenuItem(
+				CollectionAction.delete,
+				tText(
+					'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
+				),
+				undefined,
+				shouldDeleteSelfFromCollection
 			),
 		];
 
@@ -510,6 +510,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 				<MoreOptionsDropdown
 					isOpen={dropdownOpenForCollectionUuid === collectionUuid}
 					onOpen={() => {
+						setSelectedCollection(collections?.find((c) => c.id === collectionUuid));
 						setDropdownOpenForCollectionUuid(null);
 						// Allow rerender to close other menu, before opening new one. Otherwise, both close
 						setTimeout(() => setDropdownOpenForCollectionUuid(collectionUuid), 10);
@@ -895,9 +896,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 				<DeleteCollectionModal
 					isOpen={activeModalInfo?.activeModal === 'DELETE'}
 					onClose={() => setActiveModalInfo(null)}
-					deleteObjectCallback={onDeleteCollection}
-					isContributor={isContributor}
+					deleteCollectionCallback={handleDeleteCollection}
+					deleteSelfFromCollectionCallback={handleDeleteSelfFromCollection}
 					contributorCount={selectedDetail?.contributors?.length || 0}
+					shouldDeleteSelfFromCollection={shouldDeleteSelfFromCollection}
 				/>
 			);
 		}
@@ -911,7 +913,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 				)}
 				isOpen={activeModalInfo?.activeModal === 'DELETE'}
 				onClose={() => setActiveModalInfo(null)}
-				confirmCallback={onDeleteCollection}
+				confirmCallback={handleDeleteCollection}
 			/>
 		);
 	};

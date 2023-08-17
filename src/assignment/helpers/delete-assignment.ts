@@ -11,7 +11,6 @@ import { AssignmentType } from '../assignment.types';
 export async function deleteAssignment(
 	assignmentId: string | null | undefined,
 	user: Avo.User.User,
-	isOwner: boolean,
 	afterDeleteCallback?: () => void
 ): Promise<void> {
 	try {
@@ -33,11 +32,7 @@ export async function deleteAssignment(
 			return;
 		}
 
-		if (isOwner) {
-			await AssignmentService.deleteAssignment(assignmentId);
-		} else {
-			await AssignmentService.deleteContributor(assignmentId, undefined, user.profile.id);
-		}
+		await AssignmentService.deleteAssignment(assignmentId);
 
 		trackEvents(
 			{
@@ -61,6 +56,42 @@ export async function deleteAssignment(
 				'assignment/views/assignment-overview___het-verwijderen-van-de-opdracht-is-mislukt'
 			)
 		);
+	}
+}
+
+export async function deleteSelfFromAssignment(
+	assignmentId: string | null | undefined,
+	user: Avo.User.User,
+	afterDeleteCallback?: () => void
+): Promise<void> {
+	try {
+		if (isNil(assignmentId)) {
+			ToastService.danger(
+				tHtml(
+					'assignment/views/assignment-overview___de-huidige-opdracht-is-nog-nooit-opgeslagen-geen-id'
+				)
+			);
+			return;
+		}
+
+		if (!user.profile?.id) {
+			ToastService.danger(
+				tHtml(
+					'assignment/helpers/delete-assignment___kan-opdracht-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
+				)
+			);
+			return;
+		}
+
+		await AssignmentService.deleteContributor(assignmentId, undefined, user.profile.id);
+
+		afterDeleteCallback?.();
+
+		ToastService.success(tHtml('Je bent geen bijdrager meer aan de opdracht'));
+	} catch (err) {
+		console.error(err);
+
+		ToastService.danger(tHtml('Het loskoppelen van je account van de opdracht is mislukt'));
 	}
 }
 
