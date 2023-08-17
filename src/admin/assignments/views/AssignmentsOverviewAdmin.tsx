@@ -15,10 +15,7 @@ import { compose } from 'redux';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { AssignmentService } from '../../../assignment/assignment.service';
-import {
-	AssignmentOverviewTableColumns,
-	AssignmentType,
-} from '../../../assignment/assignment.types';
+import { AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
 import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -379,11 +376,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 						</Link>
 					);
 				}
-				if (assignment.lom_learning_resource_type?.includes(AssignmentType.BOUW)) {
-					return tText(
-						'admin/assignments/views/assignments-overview-admin___aantal-leerlingen-collecties'
-					);
-				}
+
 				return tText('admin/assignments/views/assignments-overview-admin___nvt');
 			}
 
