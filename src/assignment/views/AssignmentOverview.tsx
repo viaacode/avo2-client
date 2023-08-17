@@ -434,7 +434,9 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps> = ({
 					<MoreOptionsDropdown
 						isOpen={dropdownOpenForAssignmentId === assignmentRow.id}
 						onOpen={() => {
-							setDropdownOpenForAssignmentId(assignmentRow.id);
+							setDropdownOpenForAssignmentId(null);
+							// Let close menu render first and then open the other menu, otherwise both close
+							setTimeout(() => setDropdownOpenForAssignmentId(assignmentRow.id), 10);
 						}}
 						onClose={() => {
 							setDropdownOpenForAssignmentId(null);

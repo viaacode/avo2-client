@@ -440,7 +440,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 				tText('collection/views/collection-overview___maak-opdracht'),
 				'clipboard',
 				(isCollection &&
-					PermissionService.hasPerm(user, PermissionName.CREATE_COLLECTIONS)) ||
+					PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)) ||
 					false
 			),
 			...createDropdownMenuItem(
