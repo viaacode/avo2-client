@@ -216,7 +216,9 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 
 								<div className="c-colleague-info-row__rights">
 									<span>{getContributorRightLabels()[contributor.rights]}</span>
+								</div>
 
+								<div className="c-colleague-info-row__action">
 									{canEdit && (
 										<button
 											className="c-icon-button"
@@ -225,9 +227,6 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 											<Icon name={IconName.edit4} />
 										</button>
 									)}
-								</div>
-
-								<div className="c-colleague-info-row__action">
 									{canDelete && (
 										<button
 											className="c-icon-button"
