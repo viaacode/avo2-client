@@ -55,7 +55,7 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 						'assignment/modals/delete-assignment-modal___deze-opdracht-is-met-1-andere-persoon-gedeeld-deze-verliezen-dan-toegang'
 					)
 				);
-			} else {
+			} else if (contributorCount > 1) {
 				messages.push(
 					tHtml(
 						'assignment/modals/delete-assignment-modal___deze-opdracht-is-met-count-andere-mensen-gedeeld-deze-verliezen-dan-toegang',
