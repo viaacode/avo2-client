@@ -18,9 +18,6 @@ import {
 	ToolbarItem,
 	ToolbarLeft,
 	ToolbarRight,
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
@@ -66,6 +63,7 @@ import {
 import { buildLink, CustomError, formatDate, navigate, renderAvatar } from '../../shared/helpers';
 import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks';
@@ -586,52 +584,6 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
-		const sharedWithNames = compact(
-			(assignment?.contributors || []).map((contributor) => {
-				if (!contributor.profile) {
-					return null;
-				}
-				const fullName = contributor.profile?.user?.full_name;
-				const orgName = contributor.profile?.organisation?.name;
-				if (contributor.profile?.organisation?.name) {
-					return `${fullName} (${orgName}) `;
-				} else {
-					return `${fullName} `;
-				}
-			})
-		);
-
-		const shareTypeTitle =
-			assignment.share_type &&
-			{
-				[ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ]: tText(
-					'assignment/views/assignment-overview___gedeeld-met-mij'
-				),
-				[ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE]: tText(
-					'assignment/views/assignment-overview___gedeeld-met-anderen'
-				),
-				[ShareWithColleagueTypeEnum.NIET_GEDEELD]: tText(
-					'assignment/views/assignment-overview___mijn-opdracht'
-				),
-			}[assignment.share_type];
-
-		const shareTypeText =
-			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-				? tText('assignment/views/assignment-overview___gedeeld-met-mij')
-				: assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
-				? tHtml('assignment/views/assignment-overview___gedeeld-met-count-anderen-names', {
-						count: sharedWithNames.length,
-						names: sharedWithNames,
-				  })
-				: tText('assignment/views/assignment-overview___mijn-opdracht');
-
-		const shareTypeIcon =
-			assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ
-				? IconName.userGroup
-				: assignment.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE
-				? IconName.userGroup2
-				: IconName.user2;
-
 		switch (
 			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
 		) {
@@ -727,22 +679,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 				});
 
 			case 'share_type':
-				return renderMobileDesktop({
-					mobile: null,
-					desktop: (
-						<Tooltip position="top">
-							<TooltipTrigger>
-								<div
-									className="c-assignment-overview__shared"
-									title={shareTypeTitle || ''}
-								>
-									<Icon name={shareTypeIcon} />
-								</div>
-							</TooltipTrigger>
-							<TooltipContent>{shareTypeText}</TooltipContent>
-						</Tooltip>
-					),
-				});
+				return createShareIconTableOverview(
+					assignment.share_type,
+					assignment.contributors,
+					'assignment',
+					'c-assignment-overview__shared'
+				);
 
 			default:
 				return JSON.stringify(cellData);

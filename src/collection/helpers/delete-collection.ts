@@ -86,7 +86,7 @@ export async function deleteSelfFromCollection(
 		if (!user?.profile?.id) {
 			ToastService.danger(
 				tHtml(
-					'Het loskoppelen van je profiel van de collectie is mislukt omdat we je profiel id niet konden vinden. Probeer opnieuw in te loggen'
+					'collection/helpers/delete-collection___het-loskoppelen-van-je-profiel-van-de-collectie-is-mislukt-omdat-we-je-profiel-id-niet-konden-vinden-probeer-opnieuw-in-te-loggen'
 				)
 			);
 			return;
@@ -96,9 +96,17 @@ export async function deleteSelfFromCollection(
 
 		afterDeleteCallback?.();
 
-		ToastService.success(tHtml('Je bent geen bijdrager meer voor de collectie'));
+		ToastService.success(
+			tHtml(
+				'collection/helpers/delete-collection___je-bent-geen-bijdrager-meer-voor-de-collectie'
+			)
+		);
 	} catch (err) {
 		console.error(err);
-		ToastService.danger(tHtml('Het loskoppelen van je profiel van de collectie is mislukt'));
+		ToastService.danger(
+			tHtml(
+				'collection/helpers/delete-collection___het-loskoppelen-van-je-profiel-van-de-collectie-is-mislukt'
+			)
+		);
 	}
 }

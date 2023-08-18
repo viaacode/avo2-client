@@ -87,11 +87,19 @@ export async function deleteSelfFromAssignment(
 
 		afterDeleteCallback?.();
 
-		ToastService.success(tHtml('Je bent geen bijdrager meer aan de opdracht'));
+		ToastService.success(
+			tHtml(
+				'assignment/helpers/delete-assignment___je-bent-geen-bijdrager-meer-aan-de-opdracht'
+			)
+		);
 	} catch (err) {
 		console.error(err);
 
-		ToastService.danger(tHtml('Het loskoppelen van je account van de opdracht is mislukt'));
+		ToastService.danger(
+			tHtml(
+				'assignment/helpers/delete-assignment___het-loskoppelen-van-je-account-van-de-opdracht-is-mislukt'
+			)
+		);
 	}
 }
 

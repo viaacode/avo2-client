@@ -15,13 +15,11 @@ import {
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
 import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
+import { ShareWithColleagueType } from '@viaa/avo2-types/types/shared/shared-with-colluegue-type';
 import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -57,6 +55,7 @@ import {
 } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -557,53 +556,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const renderCell = (collection: Collection, colKey: string) => {
 		const { id } = collection;
 
-		const sharedWithNames = compact(
-			collection.contributors.map((contributor) => {
-				if (!contributor.profile) {
-					return null;
-				}
-				const fullName = contributor.profile?.user?.full_name;
-				const orgName = contributor.profile?.organisation?.name;
-
-				if (contributor.profile?.organisation?.name) {
-					return `${fullName} (${orgName}) `;
-				} else {
-					return `${fullName} `;
-				}
-			})
-		);
-
-		const shareTypeTitle =
-			collection.share_type &&
-			{
-				[CollectionShareType.GEDEELD_MET_MIJ]: tText(
-					'collection/views/collection-overview___gedeeld-met-mij'
-				),
-				[CollectionShareType.GEDEELD_MET_ANDERE]: tText(
-					'collection/views/collection-overview___gedeeld-met-anderen'
-				),
-				[CollectionShareType.NIET_GEDEELD]: tText(
-					'collection/views/collection-overview___mijn-collectie'
-				),
-			}[collection.share_type];
-
-		const shareTypeText =
-			collection.share_type === CollectionShareType.GEDEELD_MET_MIJ
-				? tText('collection/views/collection-overview___gedeeld-met-mij')
-				: collection.share_type === CollectionShareType.GEDEELD_MET_ANDERE
-				? tHtml('collection/views/collection-overview___gedeeld-met-count-anderen-names', {
-						count: sharedWithNames.length,
-						names: sharedWithNames,
-				  })
-				: tText('collection/views/collection-overview___mijn-collectie');
-
-		const shareTypeIcon =
-			collection.share_type === CollectionShareType.GEDEELD_MET_MIJ
-				? IconName.userGroup
-				: collection.share_type === CollectionShareType.GEDEELD_MET_ANDERE
-				? IconName.userGroup2
-				: IconName.user2;
-
 		switch (colKey) {
 			case 'thumbnail':
 				return renderThumbnail(collection);
@@ -615,6 +567,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 				const isInFolder = true; // TODO: Check if collection is in bundle
 				return isInFolder && <Button icon={IconName.folder} type="borderless" />;
 			}
+
 			case 'is_public':
 				return (
 					<div
@@ -651,20 +604,18 @@ const CollectionOrBundleOverview: FunctionComponent<
 				const cellData = collection[colKey as 'created_at' | 'updated_at'];
 				return <span title={formatTimestamp(cellData)}>{formatDate(cellData)}</span>;
 			}
+
 			case 'share_type':
-				return (
-					<Tooltip position="top">
-						<TooltipTrigger>
-							<div
-								className="m-collection-overview-shared"
-								title={shareTypeTitle || ''}
-							>
-								<Icon name={shareTypeIcon} />
-							</div>
-						</TooltipTrigger>
-						<TooltipContent>{shareTypeText}</TooltipContent>
-					</Tooltip>
+				return createShareIconTableOverview(
+					collection.share_type as ShareWithColleagueType | undefined,
+					collection.contributors as unknown as
+						| Avo.Collection.Contributor[]
+						| null
+						| undefined,
+					'collection',
+					'm-collection-overview-shared'
 				);
+
 			default:
 				return null;
 		}
