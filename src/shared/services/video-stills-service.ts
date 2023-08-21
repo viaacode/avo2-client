@@ -9,7 +9,7 @@ import { CustomError, getEnv, toSeconds } from '../helpers';
 export class VideoStillService {
 	/**
 	 * Get the first video still after the provided start times for all provided videos
-	 * @param stillRequests: list of info objects containing the video id and their desired start time in seconds
+	 * @param stillRequests list of info objects containing the video id and their desired start time in seconds
 	 */
 	public static async getVideoStills(
 		stillRequests: Avo.Stills.StillRequest[]
@@ -67,7 +67,7 @@ export class VideoStillService {
 		const uncutVideoFragments = without(videoBlocks, ...cutVideoBlocks);
 		const cutVideoStillRequests: Avo.Stills.StillRequest[] = compact(
 			cutVideoBlocks.map((block) => ({
-				externalId: block.external_id,
+				externalId: block.fragment_id || block.external_id,
 				startTime: (block.start_oc || 0) * 1000,
 			}))
 		);

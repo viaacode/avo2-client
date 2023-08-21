@@ -113,7 +113,7 @@ export const AssignmentBlockEditItem: FC<
 								start_oc: block.start_oc ?? null,
 								end_oc: block.end_oc ?? null,
 								thumbnail_path: block.thumbnail_path ?? null,
-								external_id: `${editableBlock.id}`,
+								external_id: editableBlock.fragment_id,
 							},
 							onConfirm: (update) => setBlock({ ...editableBlock, ...update }),
 						})}

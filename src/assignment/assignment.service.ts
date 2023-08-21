@@ -1168,7 +1168,7 @@ export class AssignmentService {
 			fragmentStartTime: 0,
 			fragmentEndTime: 0,
 		};
-		const thumbnailPath = trimInfo.fragmentStartTime
+		const thumbnailPath = trimInfo.hasCut
 			? await VideoStillService.getVideoStill(
 					item.external_id,
 					trimInfo.fragmentStartTime * 1000

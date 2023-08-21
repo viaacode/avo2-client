@@ -1075,11 +1075,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			<MetaTags>
 				<title>
 					{GENERATE_SITE_TITLE(
-						get(
-							item,
-							'title',
+						item?.title ||
 							tText('item/views/item-detail___item-detail-pagina-titel-fallback')
-						)
 					)}
 				</title>
 				<meta name="description" content={get(item, 'description', '')} />

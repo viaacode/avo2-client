@@ -18,8 +18,9 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
-import { isMobileWidth, toSeconds } from '../../../shared/helpers';
+import { toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { renderMobileDesktop } from '../../../shared/helpers/renderMobileDesktop';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -91,14 +92,28 @@ const CutFragmentModal: FunctionComponent<
 					<div className="c-modal__body-add-fragment">
 						<Spacer>
 							<Form>
-								<ItemVideoDescription
-									itemMetaData={itemMetaData}
-									showTitle
-									showDescription
-									canPlay={isOpen}
-									cuePointsLabel={{ start, end }}
-									verticalLayout={isMobileWidth()}
-								/>
+								{renderMobileDesktop({
+									mobile: (
+										<ItemVideoDescription
+											itemMetaData={itemMetaData}
+											showTitle
+											showDescription
+											canPlay={isOpen}
+											cuePointsLabel={{ start, end }}
+											verticalLayout={true}
+										/>
+									),
+									desktop: (
+										<ItemVideoDescription
+											itemMetaData={itemMetaData}
+											showTitle
+											showDescription
+											canPlay={isOpen}
+											cuePointsLabel={{ start, end }}
+											verticalLayout={false}
+										/>
+									),
+								})}
 								<Grid>
 									<Column size="2-7" className="u-spacer-top-l u-spacer-bottom-l">
 										<TimeCropControls
