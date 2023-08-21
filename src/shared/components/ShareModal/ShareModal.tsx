@@ -54,13 +54,19 @@ const ShareModal: FC<ShareModalProps> = ({
 				label: tText('shared/components/share-dropdown/share-dropdown___collegas'),
 				icon: IconName.userTeacher,
 			},
-			{
-				id: ShareDropdownTabs.PUPILS,
-				label: tText('shared/components/share-dropdown/share-dropdown___leerlingen'),
-				icon: IconName.userStudent,
-			},
+			...(withPupils
+				? [
+						{
+							id: ShareDropdownTabs.PUPILS,
+							label: tText(
+								'shared/components/share-dropdown/share-dropdown___leerlingen'
+							),
+							icon: IconName.userStudent,
+						},
+				  ]
+				: []),
 		],
-		ShareDropdownTabs.PUPILS
+		withPupils ? ShareDropdownTabs.PUPILS : ShareDropdownTabs.COLLEAGUES
 	);
 
 	useEffect(() => {
@@ -77,28 +83,10 @@ const ShareModal: FC<ShareModalProps> = ({
 		}
 	};
 
-	const renderShareWithColleagues = () => {
-		if (contributors) {
-			return (
-				<Spacer margin={'top-large'}>
-					<ShareWithColleagues
-						contributors={contributors}
-						availableRights={availableRights}
-						onAddNewContributor={onAddContributor}
-						onDeleteContributor={onDeleteContributor}
-						onEditRights={onEditContributorRights}
-						hasModalOpen={(open: boolean) => setHasModalOpen(open)}
-						isAdmin={isAdmin}
-					/>
-				</Spacer>
-			);
-		}
-	};
-
 	return (
 		<Modal isOpen={isModalOpen} onClose={handleOnClose} title={title}>
 			<ModalBody>
-				{withPupils ? (
+				{
 					<>
 						<Tabs
 							tabs={tabs}
@@ -107,7 +95,17 @@ const ShareModal: FC<ShareModalProps> = ({
 						/>
 
 						{tab === ShareDropdownTabs.COLLEAGUES ? (
-							<>{contributors && renderShareWithColleagues()}</>
+							<Spacer margin={'top-large'}>
+								<ShareWithColleagues
+									contributors={contributors || []}
+									availableRights={availableRights}
+									onAddNewContributor={onAddContributor}
+									onDeleteContributor={onDeleteContributor}
+									onEditRights={onEditContributorRights}
+									hasModalOpen={(open: boolean) => setHasModalOpen(open)}
+									isAdmin={isAdmin}
+								/>
+							</Spacer>
 						) : (
 							<Spacer margin={'top-large'}>
 								<ShareWithPupil
@@ -116,9 +114,7 @@ const ShareModal: FC<ShareModalProps> = ({
 							</Spacer>
 						)}
 					</>
-				) : (
-					renderShareWithColleagues()
-				)}
+				}
 			</ModalBody>
 		</Modal>
 	);

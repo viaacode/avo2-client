@@ -17,26 +17,23 @@ $border: 0.1rem solid $color-gray-200;
 	.c-tabs {
 		width: 100%;
 		display: flex;
+		background-color: $color-grey-blue;
 
 		.c-tab-item {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			width: 50%;
-			background-color: #d7dee2;
+			background-color: $color-grey-blue;
 			border-bottom: $border;
 			padding: 1.5rem 0;
 			margin-bottom: 0;
 			cursor: pointer;
 			box-shadow: none;
+			border-radius: 0.5rem 0.5rem 0 0;
 
 			&:first-child {
 				border-right: $border;
-				border-radius: 0.5rem 0 0 0;
-			}
-
-			&:last-child {
-				border-radius: 0 0.5rem 0 0;
 			}
 
 			&__active {

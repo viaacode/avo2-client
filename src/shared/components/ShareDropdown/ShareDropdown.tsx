@@ -53,13 +53,19 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 				label: tText('shared/components/share-dropdown/share-dropdown___collegas'),
 				icon: IconName.userTeacher,
 			},
-			{
-				id: ShareDropdownTabs.PUPILS,
-				label: tText('shared/components/share-dropdown/share-dropdown___leerlingen'),
-				icon: IconName.userStudent,
-			},
+			...(withPupils
+				? [
+						{
+							id: ShareDropdownTabs.PUPILS,
+							label: tText(
+								'shared/components/share-dropdown/share-dropdown___leerlingen'
+							),
+							icon: IconName.userStudent,
+						},
+				  ]
+				: []),
 		],
-		ShareDropdownTabs.PUPILS
+		withPupils ? ShareDropdownTabs.PUPILS : ShareDropdownTabs.COLLEAGUES
 	);
 	const [hasModalOpen, setHasModalOpen] = useState<boolean>(false);
 
@@ -70,22 +76,6 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	const handleOnClose = () => {
 		if (!hasModalOpen) {
 			setIsShareDropdownOpen(false);
-		}
-	};
-
-	const renderShareWithColleagues = () => {
-		if (contributors) {
-			return (
-				<ShareWithColleagues
-					contributors={contributors}
-					availableRights={availableRights}
-					onAddNewContributor={onAddContributor}
-					onDeleteContributor={onDeleteContributor}
-					onEditRights={onEditContributorRights}
-					hasModalOpen={(open: boolean) => setHasModalOpen(open)}
-					isAdmin={isAdmin}
-				/>
-			);
 		}
 	};
 
@@ -110,39 +100,23 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 
 			<DropdownContent>
 				<div className="c-share-dropdown__container">
-					{withPupils ? (
-						<>
-							<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
+					<Tabs tabs={tabs} onClick={(id) => setActiveTab(id)} />
 
-							<div className="c-share-dropdown__content">
-								{tab === ShareDropdownTabs.COLLEAGUES ? (
-									<>
-										{contributors && (
-											<ShareWithColleagues
-												contributors={contributors}
-												availableRights={availableRights}
-												onAddNewContributor={onAddContributor}
-												onDeleteContributor={onDeleteContributor}
-												onEditRights={onEditContributorRights}
-												hasModalOpen={(open: boolean) =>
-													setHasModalOpen(open)
-												}
-												isAdmin={isAdmin}
-											/>
-										)}
-									</>
-								) : (
-									<ShareWithPupil
-										{...(shareWithPupilsProps as ShareWithPupilsProps)}
-									/>
-								)}
-							</div>
-						</>
-					) : (
-						<div className="c-share-dropdown__content">
-							{renderShareWithColleagues()}
-						</div>
-					)}
+					<div className="c-share-dropdown__content">
+						{tab === ShareDropdownTabs.COLLEAGUES ? (
+							<ShareWithColleagues
+								contributors={contributors || []}
+								availableRights={availableRights}
+								onAddNewContributor={onAddContributor}
+								onDeleteContributor={onDeleteContributor}
+								onEditRights={onEditContributorRights}
+								hasModalOpen={(open: boolean) => setHasModalOpen(open)}
+								isAdmin={isAdmin}
+							/>
+						) : (
+							<ShareWithPupil {...(shareWithPupilsProps as ShareWithPupilsProps)} />
+						)}
+					</div>
 				</div>
 			</DropdownContent>
 		</Dropdown>
