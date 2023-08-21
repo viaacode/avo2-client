@@ -114,10 +114,10 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 					<Button
 						label={tText('assignment/components/assignment-actions___delen')}
 						title={tText(
-							'assignment/components/assignment-actions___deel-de-opdracht-met-leerlingen-of-collegas'
+							'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
 						)}
 						ariaLabel={tText(
-							'assignment/components/assignment-actions___deel-de-opdracht-met-leerlingen-of-collegas'
+							'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
 						)}
 						type="secondary"
 						{...shareDropdownProps?.buttonProps}
@@ -274,6 +274,12 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 					},
 					buttonProps: {
 						className: 'c-assignment-heading__hide-on-mobile',
+						title: tText(
+							'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
+						),
+						ariaLabel: tText(
+							'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
+						),
 					},
 				})}
 			</>

@@ -47,7 +47,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & Us
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
-	const translations = getManageAssignmentLabelsTranslations(tText, type);
+	const translations = getManageAssignmentLabelsTranslations(type);
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Avo.Assignment.Label[]>(
@@ -197,9 +197,13 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & Us
 			]);
 			onClose();
 			ToastService.success(
-				tHtml(
-					'assignment/components/modals/manage-assignment-labels___de-labels-zijn-opgeslagen'
-				)
+				type === 'LABEL'
+					? tHtml(
+							'assignment/components/modals/manage-assignment-labels___de-nieuwe-labels-zijn-opgeslagen'
+					  )
+					: tHtml(
+							'assignment/components/modals/manage-assignment-labels___de-nieuwe-klassen-zijn-opgeslagen'
+					  )
 			);
 		} catch (err) {
 			console.error(

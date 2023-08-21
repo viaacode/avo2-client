@@ -132,6 +132,10 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps & UserProps> = (
 		allAssignmentLabels.filter((item) => !assignmentLabelIds.includes(item.id))
 	);
 
+	const tooltip =
+		type === 'LABEL'
+			? tText('assignment/components/assignment-labels___beheer-je-labels')
+			: tText('assignment/components/assignment-labels___beheer-je-klassen');
 	return (
 		<>
 			<TagList
@@ -156,8 +160,8 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps & UserProps> = (
 				<FlexItem shrink>
 					<Button
 						icon={IconName.settings}
-						title="Beheer je vakken en projecten"
-						ariaLabel="Beheer je vakken en projecten"
+						title={tooltip}
+						ariaLabel={tooltip}
 						type="borderless"
 						size="large"
 						className="c-button__labels"

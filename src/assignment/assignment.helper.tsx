@@ -102,7 +102,7 @@ export const getValidationErrorsForPublish = async (
 ): Promise<string[]> => {
 	const validationErrors = [
 		...GET_VALIDATION_RULES_FOR_SAVE(),
-		...VALIDATION_RULES_FOR_PUBLISH,
+		...GET_VALIDATION_RULES_FOR_PUBLISH(),
 	].map((rule) => {
 		return rule.isValid(assignment) ? null : getError(rule, assignment);
 	});
@@ -133,7 +133,9 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	},
 ];
 
-const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Assignment.Assignment>>[] = [
+const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
+	Partial<Avo.Assignment.Assignment>
+>[] => [
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-titel'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => !!assignment.title,

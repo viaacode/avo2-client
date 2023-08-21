@@ -559,6 +559,12 @@ const AssignmentDetail: FC<
 							buttonProps={{
 								className: 'c-assignment-heading__hide-on-mobile',
 								type: 'secondary',
+								title: tText(
+									'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
+								),
+								ariaLabel: tText(
+									'assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas'
+								),
 							}}
 							shareWithPupilsProps={shareWithPupilsProps}
 							availableRights={{

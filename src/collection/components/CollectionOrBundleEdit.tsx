@@ -1259,6 +1259,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 							[ContributorInfoRights.VIEWER]:
 								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 						}}
+						buttonProps={{
+							type: 'secondary',
+							title: tText(
+								'assignment/components/share-dropdown___deel-de-collectie-met-collegas'
+							),
+							ariaLabel: tText(
+								'assignment/components/share-dropdown___deel-de-collectie-met-collegas'
+							),
+						}}
 						isAdmin={
 							commonUser?.permissions?.includes(
 								PermissionName.EDIT_ANY_COLLECTIONS

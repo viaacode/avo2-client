@@ -2,8 +2,9 @@ import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import { get, isBoolean, isNil, isString } from 'lodash-es';
 import React, { ReactElement, ReactNode } from 'react';
 
-import { formatDate } from '../../../shared/helpers/formatters';
+import { formatDate } from '../../../shared/helpers';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
+import { tText } from '../../../shared/helpers/translate';
 
 export function renderDetailRow(value: ReactNode, label: string): ReactElement {
 	return (
@@ -26,7 +27,9 @@ export function renderSimpleDetailRows(
 	return propAndTranslations.map((propAndTranslation) => {
 		let value = get(obj, propAndTranslation[0]);
 		if (isBoolean(value)) {
-			value = value ? 'Ja' : 'Nee';
+			value = value
+				? tText('admin/shared/helpers/render-detail-fields___ja')
+				: tText('admin/shared/helpers/render-detail-fields___nee');
 		}
 		return renderDetailRow(isNil(value) ? '-' : value, propAndTranslation[1]);
 	});

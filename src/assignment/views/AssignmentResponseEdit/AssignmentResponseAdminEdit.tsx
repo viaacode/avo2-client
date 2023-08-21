@@ -1,10 +1,10 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
-import { isString } from 'lodash-es';
 import React, {
 	Dispatch,
 	FunctionComponent,
+	ReactNode,
 	SetStateAction,
 	useCallback,
 	useEffect,
@@ -21,9 +21,7 @@ import { ErrorView } from '../../../error/views';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
-import { getAssignmentErrorObj } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
-import { AssignmentRetrieveError } from '../../assignment.types';
 import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { PupilCollectionForTeacherPreview } from '../../components/PupilCollectionForTeacherPreview';
 
@@ -42,7 +40,10 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 	const assignmentResponseId = match.params.responseId;
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
-	const [assignmentError, setAssignmentError] = useState<any | null>(null);
+	const [assignmentError, setAssignmentError] = useState<{
+		message: string | ReactNode;
+		icon?: IconName;
+	} | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Avo.Assignment.Response | null>(
 		null
 	);
@@ -79,20 +80,10 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 				return;
 			}
 
-			const assignmentOrError = await AssignmentService.fetchAssignmentAndContent(
+			const assignment = await AssignmentService.fetchAssignmentAndContent(
 				user.profile.id,
 				assignmentId
 			);
-
-			if (isString(assignmentOrError)) {
-				// error
-				setAssignmentError({
-					state: 'error',
-					...getAssignmentErrorObj(assignmentOrError as AssignmentRetrieveError),
-				});
-				setAssignmentLoading(false);
-				return;
-			}
 
 			// Create an assignment response if needed
 			const response = await AssignmentService.getAssignmentResponseById(
@@ -111,9 +102,15 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 
 			setAssignmentResponse(response);
 
-			setAssignment(assignmentOrError);
+			setAssignment(assignment);
 		} catch (err) {
-			setAssignmentError(err);
+			console.error(err);
+			setAssignmentError({
+				message: tHtml(
+					'assignment/views/assignment-response-edit/assignment-response-admin-edit___het-ophalen-van-de-opdracht-antwoord-is-mislukt'
+				),
+				icon: IconName.alertTriangle,
+			});
 		}
 		setAssignmentLoading(false);
 	}, [assignmentId]);
@@ -147,7 +144,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 							'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt'
 						)
 					}
-					icon={assignmentError.icon || 'alert-triangle'}
+					icon={assignmentError.icon || IconName.alertTriangle}
 				/>
 			);
 		}

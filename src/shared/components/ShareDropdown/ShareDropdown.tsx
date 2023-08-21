@@ -101,9 +101,6 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 				<Button
 					ariaLabel={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					label={tText('shared/components/share-dropdown/share-dropdown___delen')}
-					title={tText(
-						'shared/components/share-dropdown/share-dropdown___bezorg-deze-opdrachtlink-aan-je-leerlingen-of-werk-samen-met-je-collegas'
-					)}
 					onClick={handleShareButtonClicked}
 					disabled={false}
 					icon={IconName.userGroup}

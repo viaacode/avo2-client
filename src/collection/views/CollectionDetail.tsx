@@ -931,6 +931,12 @@ const CollectionDetail: FunctionComponent<
 							withPupils={false}
 							buttonProps={{
 								type: 'secondary',
+								title: tText(
+									'assignment/components/share-dropdown___deel-de-collectie-met-collegas'
+								),
+								ariaLabel: tText(
+									'assignment/components/share-dropdown___deel-de-collectie-met-collegas'
+								),
 							}}
 							availableRights={{
 								[ContributorInfoRights.CONTRIBUTOR]:

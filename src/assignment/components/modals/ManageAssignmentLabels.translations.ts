@@ -1,4 +1,4 @@
-import { TFunction } from 'i18next';
+import { tText } from '../../../shared/helpers/translate';
 
 import { ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
 
@@ -17,13 +17,14 @@ export interface ManageAssignmentLabelsTranslations {
 }
 
 export const getManageAssignmentLabelsTranslations = (
-	tText: TFunction,
 	type: ManageAssignmentLabelsProps['type']
 ): ManageAssignmentLabelsTranslations => {
 	return type === 'LABEL'
 		? {
 				modal: {
-					title: 'assignment/components/modals/manage-assignment-labels___beheer-labels',
+					title: tText(
+						'assignment/components/modals/manage-assignment-labels___beheer-labels'
+					),
 				},
 				buttons: {
 					addLabel: tText(
@@ -42,7 +43,9 @@ export const getManageAssignmentLabelsTranslations = (
 		  }
 		: {
 				modal: {
-					title: 'assignment/components/modals/manage-assignment-labels___beheer-klassen',
+					title: tText(
+						'assignment/components/modals/manage-assignment-labels___beheer-klassen'
+					),
 				},
 				buttons: {
 					addLabel: tText(
