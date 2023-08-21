@@ -16,7 +16,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { compact } from 'lodash-es';
+import { compact, uniq } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { STILL_DIMENSIONS } from '../../constants';
@@ -50,15 +50,17 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 		const fetchThumbnailImages = async () => {
 			try {
 				setVideoStills(
-					compact([
-						...((subject as Avo.Collection.Collection).collection_fragments?.map(
-							(fragment) => fragment.thumbnail_path
-						) || []),
-						...((subject as Avo.Assignment.Assignment).blocks?.map(
-							(block) => block.item_meta?.thumbnail_path || block.thumbnail_path
-						) || []),
-						...(await VideoStillService.getThumbnailsForSubject(subject)),
-					])
+					uniq(
+						compact([
+							...((subject as Avo.Collection.Collection).collection_fragments?.map(
+								(fragment) => fragment.thumbnail_path
+							) || []),
+							...((subject as Avo.Assignment.Assignment).blocks?.map(
+								(block) => block.item_meta?.thumbnail_path || block.thumbnail_path
+							) || []),
+							...(await VideoStillService.getThumbnailsForSubject(subject)),
+						])
+					)
 				);
 			} catch (err) {
 				console.error(err);
