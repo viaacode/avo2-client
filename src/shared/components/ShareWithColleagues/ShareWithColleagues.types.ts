@@ -4,12 +4,10 @@ export enum ContributorInfoRights {
 	OWNER = 'OWNER',
 }
 
-export type ShareRightsType = keyof typeof ContributorInfoRights;
-
 export interface ContributorInfo {
 	email?: string;
 	inviteEmail?: string;
-	rights: ContributorInfoRights | ShareRightsType;
+	rights: ContributorInfoRights;
 	firstName?: string;
 	lastName?: string;
 	profileImage?: string;

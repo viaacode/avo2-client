@@ -3,7 +3,6 @@ import type { Avo } from '@viaa/avo2-types';
 import {
 	ContributorInfo,
 	ContributorInfoRights,
-	ShareRightsType,
 } from '../components/ShareWithColleagues/ShareWithColleagues.types';
 
 export const transformContributorsToSimpleContributors = (
@@ -46,12 +45,12 @@ export const getContributorType = (
 	user: Avo.User.User,
 	subject: Avo.Assignment.Assignment | Avo.Collection.Collection,
 	contributors: (Avo.Assignment.Contributor | Avo.Collection.Contributor)[]
-): ShareRightsType => {
+): ContributorInfoRights => {
 	if (user.profile?.id === subject.owner_profile_id) {
 		return ContributorInfoRights.OWNER;
 	}
 
 	return contributors.find(
 		(contributor) => (contributor.profile_id || contributor?.profile?.id) === user.profile?.id
-	)?.rights as ShareRightsType;
+	)?.rights as ContributorInfoRights;
 };

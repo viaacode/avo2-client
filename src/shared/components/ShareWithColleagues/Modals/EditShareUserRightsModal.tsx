@@ -16,27 +16,29 @@ import React, { FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
 import { findRightByValue, getContributorRightLabels } from '../ShareWithColleagues.helpers';
-import { ContributorInfoRights, ShareRightsType } from '../ShareWithColleagues.types';
+import { ContributorInfoRights } from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;
 	handleClose: () => void;
-	handleConfirm: (right: ShareRightsType) => void;
-	currentRight: ContributorInfoRights;
+	handleConfirm: (right: ContributorInfoRights) => void;
+	toEditContributorRight: ContributorInfoRights;
+	currentUserRights: ContributorInfoRights;
 };
 
 const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	isOpen,
 	handleClose,
 	handleConfirm,
-	currentRight,
+	toEditContributorRight,
+	currentUserRights,
 }) => {
-	const [right, setRight] = useState<ContributorInfoRights>(currentRight);
+	const [right, setRight] = useState<ContributorInfoRights>(toEditContributorRight);
 	const options = compact(
 		Object.values(ContributorInfoRights).map((right) => {
 			if (
 				right === ContributorInfoRights.OWNER &&
-				currentRight !== ContributorInfoRights.OWNER
+				currentUserRights !== ContributorInfoRights.OWNER
 			) {
 				return null;
 			}
@@ -54,9 +56,9 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 
 	useEffect(() => {
 		if (isOpen) {
-			setRight(currentRight);
+			setRight(toEditContributorRight);
 		}
-	}, [currentRight, isOpen]);
+	}, [toEditContributorRight, isOpen]);
 
 	const handleOnConfirm = () => {
 		if (right) {

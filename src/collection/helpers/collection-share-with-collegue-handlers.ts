@@ -1,7 +1,6 @@
 import {
 	ContributorInfo,
 	ContributorInfoRights,
-	ShareRightsType,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';
 import { ToastService } from '../../shared/services/toast-service';
@@ -33,7 +32,7 @@ export async function onDeleteContributor(
 
 export async function onEditContributor(
 	user: ContributorInfo,
-	newRights: ShareRightsType,
+	newRights: ContributorInfoRights,
 	collectionId: string,
 	fetchContributors: () => Promise<void>,
 	fetchCollection: () => Promise<void>

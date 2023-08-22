@@ -20,7 +20,7 @@ import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
 	ContributorInfo,
-	ShareRightsType,
+	ContributorInfoRights,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	App_Collection_Marcom_Log_Insert_Input,
@@ -1625,7 +1625,7 @@ export class CollectionService {
 	static async editContributorRights(
 		collectionId: string,
 		contributorId: string,
-		rights: ShareRightsType
+		rights: ContributorInfoRights
 	): Promise<void> {
 		try {
 			return await fetchWithLogoutJson(

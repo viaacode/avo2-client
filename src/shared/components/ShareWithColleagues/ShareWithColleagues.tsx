@@ -29,11 +29,7 @@ import {
 	sortContributors,
 } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
-import {
-	ContributorInfo,
-	ContributorInfoRights,
-	ShareRightsType,
-} from './ShareWithColleagues.types';
+import { ContributorInfo, ContributorInfoRights } from './ShareWithColleagues.types';
 
 type ShareWithColleaguesProps = {
 	contributors: ContributorInfo[];
@@ -43,7 +39,7 @@ type ShareWithColleaguesProps = {
 	};
 	isAdmin: boolean;
 	onAddNewContributor: (info: Partial<ContributorInfo>) => Promise<void>;
-	onEditRights: (info: ContributorInfo, newRights: ShareRightsType) => Promise<void>;
+	onEditRights: (info: ContributorInfo, newRights: ContributorInfoRights) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	hasModalOpen: (open: boolean) => void;
 };
@@ -119,7 +115,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		hasModalOpen(true);
 	};
 
-	const handleConfirmEditContributorRights = async (right: ShareRightsType) => {
+	const handleConfirmEditContributorRights = async (right: ContributorInfoRights) => {
 		await onEditRights(toEditContributor as ContributorInfo, right);
 		handleOnCloseEditUserRights();
 	};
@@ -269,7 +265,8 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	return (
 		<>
 			{(currentUser.rights === ContributorInfoRights.OWNER ||
-				currentUser.rights === ContributorInfoRights.CONTRIBUTOR) && (
+				currentUser.rights === ContributorInfoRights.CONTRIBUTOR ||
+				isAdmin) && (
 				<>
 					<div className="c-add-colleague">
 						<TextInput
@@ -327,7 +324,11 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					{error && <p className="c-add-colleague__error">{error}</p>}
 
 					<EditShareUserRightsModal
-						currentRight={toEditContributor?.rights as ContributorInfoRights}
+						toEditContributorRight={toEditContributor?.rights as ContributorInfoRights}
+						currentUserRights={
+							contributors.find((c) => c.profileId === currentUser.profileId)
+								?.rights || ContributorInfoRights.VIEWER
+						}
 						isOpen={isEditRightsModalOpen}
 						handleClose={() => handleOnCloseEditUserRights()}
 						handleConfirm={(right) => handleConfirmEditContributorRights(right)}

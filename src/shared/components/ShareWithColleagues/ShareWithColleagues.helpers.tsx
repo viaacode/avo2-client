@@ -2,11 +2,7 @@ import { groupBy } from 'lodash-es';
 
 import { tText } from '../../helpers/translate';
 
-import {
-	ContributorInfo,
-	ContributorInfoRights,
-	ShareRightsType,
-} from './ShareWithColleagues.types';
+import { ContributorInfo, ContributorInfoRights } from './ShareWithColleagues.types';
 
 export const sortContributors = (users: ContributorInfo[]): ContributorInfo[] => {
 	const groupedUsers: Partial<Record<ContributorInfoRights, ContributorInfo[]>> = groupBy(
@@ -25,10 +21,10 @@ export const compareUsersEmail = (user: ContributorInfo, toCompareUser: Contribu
 	return user.email === toCompareUser.email;
 };
 
-export const findRightByValue = (right: ContributorInfoRights): ShareRightsType => {
+export const findRightByValue = (right: ContributorInfoRights): ContributorInfoRights => {
 	return Object.keys(ContributorInfoRights)[
 		Object.values(ContributorInfoRights).indexOf(right)
-	] as ShareRightsType;
+	] as ContributorInfoRights;
 };
 
 export function getContributorRightLabels() {

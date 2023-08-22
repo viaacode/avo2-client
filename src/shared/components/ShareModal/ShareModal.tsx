@@ -9,7 +9,6 @@ import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
 import {
 	ContributorInfo,
 	ContributorInfoRights,
-	ShareRightsType,
 } from '../ShareWithColleagues/ShareWithColleagues.types';
 import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 import './ShareModal.scss';
@@ -20,7 +19,10 @@ type ShareModalProps = {
 	contributors?: ContributorInfo[];
 	onClose: () => void;
 	onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>;
-	onEditContributorRights: (info: ContributorInfo, newRights: ShareRightsType) => Promise<void>;
+	onEditContributorRights: (
+		info: ContributorInfo,
+		newRights: ContributorInfoRights
+	) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	shareWithPupilsProps?: ShareWithPupilsProps;
 	withPupils?: boolean;

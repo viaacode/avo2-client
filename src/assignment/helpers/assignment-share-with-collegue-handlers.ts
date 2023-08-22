@@ -2,7 +2,6 @@ import { ShareWithPupilsProps } from '../../shared/components';
 import {
 	ContributorInfo,
 	ContributorInfoRights,
-	ShareRightsType,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';
 import { ToastService } from '../../shared/services/toast-service';
@@ -10,7 +9,7 @@ import { AssignmentService } from '../assignment.service';
 
 export async function onEditContributor(
 	contributor: ContributorInfo,
-	newRights: ShareRightsType,
+	newRights: ContributorInfoRights,
 	shareWithPupilsProps: ShareWithPupilsProps,
 	fetchContributors: () => void,
 	refetchAssignment: () => void
