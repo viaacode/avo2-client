@@ -226,7 +226,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		setUnsavedChanges(hasChanges);
 	};
 
-	const fetchContributors = useCallback(async () => {
+	const fetchContributors = useCallback(async (): Promise<void> => {
 		if (!collectionId) {
 			return;
 		}
@@ -408,7 +408,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return unsavedChanges && changingRoute && !isForcedExit;
 	}, [history, unsavedChanges, isCollection, isForcedExit]);
 
-	const checkPermissionsAndGetCollection = useCallback(async () => {
+	const checkPermissionsAndGetCollection = useCallback(async (): Promise<void> => {
 		try {
 			const permissionObj = await PermissionService.checkPermissions(
 				{

@@ -35,9 +35,9 @@ export async function onEditContributor(
 	user: ContributorInfo,
 	newRights: ShareRightsType,
 	collectionId: string,
-	fetchContributors: () => void,
-	fetchCollection: () => void
-) {
+	fetchContributors: () => Promise<void>,
+	fetchCollection: () => Promise<void>
+): Promise<void> {
 	try {
 		if (collectionId) {
 			if (newRights === ContributorInfoRights.OWNER) {
@@ -47,8 +47,6 @@ export async function onEditContributor(
 				);
 
 				await fetchCollection();
-
-				await fetchContributors();
 
 				ToastService.success(
 					tText(
