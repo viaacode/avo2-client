@@ -292,6 +292,8 @@ const AssignmentDetail: FC<
 
 			setAssignment(tempAssignment as any);
 
+			await getRelatedAssignments();
+
 			try {
 				const permissionObj = await getPermissions(user, tempAssignment);
 				setPermissions(permissionObj);
@@ -344,10 +346,6 @@ const AssignmentDetail: FC<
 	useEffect(() => {
 		fetchAssignment();
 	}, [fetchAssignment]);
-
-	useEffect(() => {
-		getRelatedAssignments();
-	}, [getRelatedAssignments]);
 
 	const toggleBookmark = async () => {
 		try {
