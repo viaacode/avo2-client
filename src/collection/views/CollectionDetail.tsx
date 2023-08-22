@@ -850,7 +850,7 @@ const CollectionDetail: FunctionComponent<
 				CollectionAction.delete,
 				tText('collection/views/collection-detail___verwijderen'),
 				IconName.trash,
-				!shouldDeleteSelfFromCollection
+				!!permissions?.canDeleteCollections && !shouldDeleteSelfFromCollection
 			),
 
 			...createDropdownMenuItem(
