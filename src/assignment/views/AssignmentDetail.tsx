@@ -889,25 +889,27 @@ const AssignmentDetail: FC<
 						{renderPageContent()}
 					</div>
 
-					<StickyBar
-						title={tHtml(
-							'assignment/views/assignment-detail___wil-je-de-opdracht-title-toevoegen-aan-je-werkruimte',
-							{
-								title: assignment?.title,
-							}
-						)}
-						isVisible={!!inviteToken}
-						actionButtonProps={{
-							label: tText('assignment/views/assignment-detail___toevoegen'),
-							onClick: onAcceptShareAssignment,
-							type: 'tertiary',
-						}}
-						cancelButtonProps={{
-							label: tText('assignment/views/assignment-detail___weigeren'),
-							onClick: onDeclineShareAssignment,
-							type: 'tertiary',
-						}}
-					/>
+					{!assignmentError && (
+						<StickyBar
+							title={tHtml(
+								'assignment/views/assignment-detail___wil-je-de-opdracht-title-toevoegen-aan-je-werkruimte',
+								{
+									title: assignment?.title,
+								}
+							)}
+							isVisible={!!inviteToken}
+							actionButtonProps={{
+								label: tText('assignment/views/assignment-detail___toevoegen'),
+								onClick: onAcceptShareAssignment,
+								type: 'tertiary',
+							}}
+							cancelButtonProps={{
+								label: tText('assignment/views/assignment-detail___weigeren'),
+								onClick: onDeclineShareAssignment,
+								type: 'tertiary',
+							}}
+						/>
+					)}
 				</div>
 			)}
 
