@@ -1,10 +1,13 @@
 import type { Avo } from '@viaa/avo2-types';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
-import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../generated/graphql-db-types';
 import { QuickLaneUrlObject } from '../../types';
 
-export const isShareable = (content: Avo.Assignment.Content): boolean => {
+import { QuickLaneType } from './QuickLaneModal.types';
+
+export const isShareable = (
+	content: Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item
+): boolean => {
 	return (
 		(content as Avo.Item.Item).is_published || (content as Avo.Collection.Collection).is_public
 	);
@@ -17,8 +20,8 @@ export const defaultQuickLaneState: QuickLaneUrlObject = {
 };
 
 export const getContentUuid = (
-	content: Avo.Assignment.Content,
-	contentLabel: Lookup_Enum_Assignment_Content_Labels_Enum
+	content: Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item,
+	contentLabel: QuickLaneType
 ): string => {
 	switch (contentLabel) {
 		case 'ITEM':

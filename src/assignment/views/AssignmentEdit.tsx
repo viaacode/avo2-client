@@ -54,7 +54,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
 import {
-	getValidationErrorsForPublish,
+	getValidationErrorsForPublishAssignment,
 	isUserAssignmentContributor,
 	isUserAssignmentOwner,
 } from '../assignment.helper';
@@ -356,7 +356,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			}
 
 			if (assignment?.is_public) {
-				const validationErrors = await getValidationErrorsForPublish(assignment);
+				const validationErrors = await getValidationErrorsForPublishAssignment(assignment);
 				if (validationErrors && validationErrors.length) {
 					ToastService.danger(validationErrors);
 					return;

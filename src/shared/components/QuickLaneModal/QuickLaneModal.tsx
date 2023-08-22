@@ -4,7 +4,6 @@ import type { Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
-import { isCollection } from '../../../quick-lane/quick-lane.helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { UserProps } from '../../hocs/withUser';
 import { useTabs } from '../../hooks';
@@ -50,7 +49,9 @@ const isAllowedToPublish = async (user: Avo.User.User, collection?: Avo.Collecti
 const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (props) => {
 	const { modalTitle, isOpen, content_label, onClose, user } = props;
 
-	const [content, setContent] = useState<Avo.Assignment.Content | undefined>(props.content);
+	const [content, setContent] = useState<
+		Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item | undefined
+	>(props.content);
 
 	const { tText, tHtml } = useTranslation();
 
@@ -81,7 +82,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 	// Check permissions
 	useEffect(() => {
 		async function checkPermissions() {
-			if (isCollection({ content_label }) && user) {
+			if (content_label === 'COLLECTIE' && user) {
 				setIsPublishRequired(await needsToPublish(user));
 				setCanPublish(await isAllowedToPublish(user, content as Avo.Collection.Collection));
 			}
@@ -94,7 +95,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		if (!isOpen) return;
 
 		const shouldBePublishedFirst =
-			isCollection({ content_label }) &&
+			content_label === 'COLLECTIE' &&
 			isPublishRequired &&
 			content &&
 			!(content as Avo.Collection.Collection).is_public; // AVO-1880
@@ -115,7 +116,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 		return tabs.filter((tab) => {
 			switch (tab.id) {
 				case QuickLaneModalTabs.publication:
-					return isCollection({ content_label }) && canPublish;
+					return content_label === 'COLLECTIE' && canPublish;
 
 				default:
 					return true;
@@ -206,9 +207,9 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 						</Spacer>
 					)}
 
-					{!isShareable(content) && isCollection({ content_label }) && (
+					{!isShareable(content) && content_label === 'COLLECTIE' && (
 						<Spacer margin={['bottom']}>
-							<Alert type={isCollection({ content_label }) ? 'info' : 'danger'}>
+							<Alert type={content_label === 'COLLECTIE' ? 'info' : 'danger'}>
 								<p>{renderContentNotShareableWarning()}</p>
 							</Alert>
 						</Spacer>

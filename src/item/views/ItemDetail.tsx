@@ -63,7 +63,6 @@ import {
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
-import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
 	CustomError,
@@ -1014,7 +1013,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						modalTitle={tHtml('item/views/item___snel-delen-met-leerlingen')}
 						isOpen={isQuickLaneModalOpen}
 						content={item}
-						content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Item}
+						content_label="ITEM"
 						onClose={() => {
 							setIsQuickLaneModalOpen(false);
 						}}

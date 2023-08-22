@@ -42,10 +42,7 @@ import {
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
-import {
-	Lookup_Enum_Assignment_Content_Labels_Enum,
-	useDeleteCollectionOrBundleByUuidMutation,
-} from '../../shared/generated/graphql-db-types';
+import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -99,9 +96,9 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const [dropdownOpenForCollectionUuid, setDropdownOpenForCollectionUuid] = useState<
 		string | null
 	>(null);
-	const [selectedDetail, setSelectedDetail] = useState<Avo.Collection.Collection | undefined>(
-		undefined
-	);
+	const [selectedCollectionDetail, setSelectedCollectionDetail] = useState<
+		Avo.Collection.Collection | undefined
+	>(undefined);
 	const [selectedCollection, setSelectedCollection] = useState<Collection | undefined>(undefined);
 	const [sortColumn, setSortColumn] =
 		useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
@@ -270,13 +267,13 @@ const CollectionOrBundleOverview: FunctionComponent<
 				activeModalInfo?.collectionUuid,
 				isCollection ? 'collection' : 'bundle',
 				undefined
-			).then((res) => setSelectedDetail(res || undefined));
+			).then((res) => setSelectedCollectionDetail(res || undefined));
 			setSelectedCollection(
 				collections?.find((collection) => collection.id === activeModalInfo?.collectionUuid)
 			);
 		} else {
 			setSelectedCollection(undefined);
-			setSelectedDetail(undefined);
+			setSelectedCollectionDetail(undefined);
 		}
 	}, [activeModalInfo?.collectionUuid, isCollection]);
 
@@ -849,7 +846,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 					onClose={() => setActiveModalInfo(null)}
 					deleteCollectionCallback={handleDeleteCollection}
 					deleteSelfFromCollectionCallback={handleDeleteSelfFromCollection}
-					contributorCount={selectedDetail?.contributors?.length || 0}
+					contributorCount={selectedCollectionDetail?.contributors?.length || 0}
 					shouldDeleteSelfFromCollection={shouldDeleteSelfFromCollection}
 				/>
 			);
@@ -871,14 +868,14 @@ const CollectionOrBundleOverview: FunctionComponent<
 
 	const renderQuickLaneModal = () => {
 		return (
-			selectedDetail && (
+			selectedCollectionDetail && (
 				<QuickLaneModal
 					modalTitle={tHtml(
 						'collection/views/collection-overview___delen-met-leerlingen'
 					)}
 					isOpen={activeModalInfo?.activeModal === 'QUICK_LANE'}
-					content={selectedDetail}
-					content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
+					content={selectedCollectionDetail}
+					content_label="COLLECTIE"
 					onClose={() => setActiveModalInfo(null)}
 					onUpdate={() => fetchCollections()}
 				/>

@@ -5,8 +5,6 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
-import { ContentTypeString } from '../../../collection/collection.types';
-import { isCollection } from '../../../quick-lane/quick-lane.helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { UserProps } from '../../hocs/withUser';
 import LomFieldsInput from '../LomFieldsInput/LomFieldsInput';
@@ -18,14 +16,9 @@ interface QuickLaneModalPublicationTabProps {
 	onComplete?: () => void;
 }
 
-type Props = QuickLaneModalProps & QuickLaneModalPublicationTabProps & UserProps;
-const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
-	content,
-	content_label,
-	user,
-	onComplete,
-	onUpdate,
-}) => {
+const QuickLaneModalPublicationTab: FunctionComponent<
+	QuickLaneModalProps & QuickLaneModalPublicationTabProps & UserProps
+> = ({ content, content_label, user, onComplete, onUpdate }) => {
 	const { tText } = useTranslation();
 
 	const [model, setModel] = useState(content);
@@ -34,32 +27,29 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 		setModel(content);
 	}, [content]);
 
-	const onSubmit = () => {
-		if (user && content && model && isCollection({ content_label })) {
-			const isCollection =
-				(model as Avo.Collection.Collection).type?.label === ContentTypeString.bundle ||
-				false;
-			CollectionService.updateCollection(
-				content as Avo.Collection.Collection,
-				{
-					...(model as Avo.Collection.Collection),
-					is_public: true,
-				},
-				user,
-				false,
-				isCollection
-			)
-				.then((result) => {
-					if (result) {
-						onUpdate && onUpdate(result);
-						onComplete && onComplete();
-					} else {
-						console.warn('Could not publish collection, validation errors occured');
-					}
-				})
-				.catch((err) => {
-					console.error('Could not update publication details of collection', err);
-				});
+	const onSubmit = async () => {
+		if (user && content && model && content_label === 'COLLECTIE') {
+			try {
+				const result = await CollectionService.updateCollection(
+					content as Avo.Collection.Collection,
+					{
+						...(model as Avo.Collection.Collection),
+						is_public: true,
+					},
+					user,
+					true,
+					true
+				);
+
+				if (result) {
+					onUpdate?.(result);
+				} else {
+					console.warn('Could not publish collection, validation errors occurred');
+				}
+				onComplete?.();
+			} catch (err) {
+				console.error('Could not update publication details of collection', err);
+			}
 		}
 	};
 
@@ -72,7 +62,7 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 		setModel({ ...model, loms: newLoms } as Avo.Collection.Collection);
 	};
 
-	return model && content && content_label && isCollection({ content_label }) ? (
+	return model && content && content_label && content_label === 'COLLECTIE' ? (
 		<>
 			{(model as Avo.Collection.Collection)?.loms ? (
 				<LomFieldsInput
@@ -140,4 +130,6 @@ const QuickLaneModalPublicationTab: FunctionComponent<Props> = ({
 	) : null;
 };
 
-export default withUser(QuickLaneModalPublicationTab) as FunctionComponent<Props>;
+export default withUser(QuickLaneModalPublicationTab) as FunctionComponent<
+	QuickLaneModalProps & QuickLaneModalPublicationTabProps
+>;

@@ -31,7 +31,6 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/component
 import { CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { QuickLaneUrlObject } from '../../shared/types';
-import { isCollection, isItem } from '../quick-lane.helpers';
 import { QuickLaneService } from '../quick-lane.service';
 
 import './QuickLaneDetail.scss';
@@ -40,7 +39,6 @@ type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
 const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	history,
-	location,
 	match,
 	user,
 	...rest
@@ -61,7 +59,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 			// Handle edge cases
 
-			if (isCollection(response)) {
+			if (response.content_label === 'COLLECTIE') {
 				const content = response.content as Avo.Collection.Collection | undefined;
 
 				if (!content || !content.is_public) {
@@ -110,9 +108,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 			let permissionName: PermissionName | undefined = undefined;
 
-			if (isItem(response)) {
+			if (response.content_label === 'ITEM') {
 				permissionName = PermissionName.VIEW_ANY_PUBLISHED_ITEMS;
-			} else if (isCollection(response)) {
+			} else if (response.content_label === 'COLLECTIE') {
 				permissionName = PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS;
 			}
 
@@ -277,7 +275,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 															let path: string | undefined;
 
-															if (isItem(quickLane)) {
+															if (
+																quickLane?.content_label === 'ITEM'
+															) {
 																path = generatePath(
 																	APP_PATH.ITEM_DETAIL.route,
 																	{
@@ -286,7 +286,10 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 																		).external_id.toString(),
 																	}
 																);
-															} else if (isCollection(quickLane)) {
+															} else if (
+																quickLane.content_label ===
+																'COLLECTIE'
+															) {
 																path = generatePath(
 																	APP_PATH.COLLECTION_DETAIL
 																		.route,

@@ -3,7 +3,7 @@ import type { Avo } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { CheckboxOption } from '../components';
-import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../generated/graphql-db-types';
+import { QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
 
 import { tText } from './translate';
 
@@ -20,22 +20,12 @@ export const isPersonal = (user: Avo.User.User): boolean => {
 };
 
 export const getTypeOptions = (): CheckboxOption[] => {
-	const translations: {
-		// eslint-disable-next-line
-		[x in Lookup_Enum_Assignment_Content_Labels_Enum]?: string;
-	} = {
-		[Lookup_Enum_Assignment_Content_Labels_Enum.Item]: tText(
-			'workspace/views/quick-lane-overview___item'
-		),
-		[Lookup_Enum_Assignment_Content_Labels_Enum.Collectie]: tText(
-			'workspace/views/quick-lane-overview___collectie'
-		),
+	const translations: Record<QuickLaneType, string> = {
+		['ITEM']: tText('workspace/views/quick-lane-overview___item'),
+		['COLLECTIE']: tText('workspace/views/quick-lane-overview___collectie'),
 	};
 
-	const options: Lookup_Enum_Assignment_Content_Labels_Enum[] = [
-		Lookup_Enum_Assignment_Content_Labels_Enum.Item,
-		Lookup_Enum_Assignment_Content_Labels_Enum.Collectie,
-	];
+	const options: QuickLaneType[] = ['ITEM', 'COLLECTIE'];
 
 	return options.map((label) => {
 		return {

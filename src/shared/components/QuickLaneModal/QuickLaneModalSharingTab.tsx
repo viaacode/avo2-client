@@ -59,10 +59,8 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 						items = await QuickLaneService.insertQuickLanes([
 							{
 								// Initialise with content title
-								...{
-									...quickLane,
-									title: content.title,
-								},
+								...quickLane,
+								title: content.title as string,
 								content_label,
 								content_id: getContentUuid(content, content_label),
 								owner_profile_id: (user.profile as Avo.User.Profile).id,
@@ -174,7 +172,9 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 							parent={{
 								content_label,
 								content_id: `${
-									content_label === 'ITEM' ? content.external_id : content.id
+									content_label === 'ITEM'
+										? (content as Avo.Item.Item).external_id
+										: content.id
 								}`,
 							}}
 							content={content}

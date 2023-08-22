@@ -52,7 +52,6 @@ import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModa
 import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
-import { Lookup_Enum_Assignment_Content_Labels_Enum } from '../../shared/generated/graphql-db-types';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -1276,7 +1275,7 @@ const CollectionDetail: FunctionComponent<
 						)}
 						isOpen={isQuickLaneModalOpen}
 						content={collection}
-						content_label={Lookup_Enum_Assignment_Content_Labels_Enum.Collectie}
+						content_label="COLLECTIE"
 						onClose={() => {
 							setIsQuickLaneModalOpen(false);
 						}}

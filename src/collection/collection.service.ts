@@ -227,6 +227,7 @@ export class CollectionService {
 	 * @param updatedColl
 	 * @param user
 	 * @param checkValidation
+	 * @param isCollection
 	 */
 	static async updateCollection(
 		initialColl: Omit<Avo.Collection.Collection, 'loms' | 'contributors'> | null,

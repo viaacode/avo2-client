@@ -1,6 +1,5 @@
 import { Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -12,21 +11,17 @@ type ParentType = {
 	content_label: string | null;
 	content_id: string;
 };
-type ContentType = Avo.Assignment.Content | null;
 
 export interface ContentLinkProps {
 	parent: ParentType;
-	content: ContentType;
+	content: Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item;
 }
 
 export const ContentLink: FunctionComponent<ContentLinkProps> = ({ parent, content }) => {
 	const { tHtml } = useTranslation();
 
-	const dutchLabel = get(
-		content,
-		'type.label',
-		(parent.content_label || '').toLowerCase()
-	) as Avo.ContentType.Dutch;
+	const dutchLabel = ((content as any)?.type?.label ||
+		(parent.content_label || '').toLowerCase()) as Avo.ContentType.Dutch;
 
 	const linkContent = (
 		<div className="c-box c-box--padding-small">
@@ -35,15 +30,15 @@ export const ContentLink: FunctionComponent<ContentLinkProps> = ({ parent, conte
 					<Thumbnail
 						className="m-content-thumbnail"
 						category={toEnglishContentType(dutchLabel)}
-						src={get(content, 'thumbnail_path') || undefined}
+						src={content?.thumbnail_path || undefined}
 					/>
 				</Spacer>
 				<FlexItem>
 					<div className="c-overline-plus-p">
 						{!!content && <p className="c-overline">{dutchLabel}</p>}
 						<p>
-							{get(content, 'title') ||
-								get(content, 'description') ||
+							{content?.title ||
+								content?.description ||
 								tHtml('assignment/assignment___de-opdracht-inhoud-is-verwijderd')}
 						</p>
 					</div>

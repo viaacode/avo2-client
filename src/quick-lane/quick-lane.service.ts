@@ -3,6 +3,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
 import { CollectionService } from '../collection/collection.service';
+import { QuickLaneType } from '../shared/components/QuickLaneModal/QuickLaneModal.types';
 import {
 	GetQuickLaneByContentAndOwnerDocument,
 	GetQuickLaneByContentAndOwnerQuery,
@@ -13,7 +14,6 @@ import {
 	InsertQuickLanesDocument,
 	InsertQuickLanesMutation,
 	InsertQuickLanesMutationVariables,
-	Lookup_Enum_Assignment_Content_Labels_Enum,
 	RemoveQuickLanesDocument,
 	RemoveQuickLanesMutation,
 	RemoveQuickLanesMutationVariables,
@@ -175,7 +175,7 @@ export class QuickLaneService {
 
 	static async fetchQuickLanesByContentAndOwnerId(
 		contentId: string,
-		contentLabel: Lookup_Enum_Assignment_Content_Labels_Enum,
+		contentLabel: QuickLaneType,
 		profileId: string
 	): Promise<QuickLaneUrlObject[]> {
 		try {

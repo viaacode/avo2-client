@@ -1,12 +1,12 @@
 import type { Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
+import { QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
 import {
 	App_Quick_Lanes_Bool_Exp,
 	GetQuickLanesWithFiltersDocument,
 	GetQuickLanesWithFiltersQuery,
 	GetQuickLanesWithFiltersQueryVariables,
-	Lookup_Enum_Assignment_Content_Labels_Enum,
 } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 import { getOrderObject } from '../helpers/generate-order-gql-query';
@@ -20,7 +20,7 @@ export interface QuickLaneFilters {
 	filterString?: string;
 	companyIds?: string[];
 	profileIds?: string[];
-	contentLabels?: Lookup_Enum_Assignment_Content_Labels_Enum[];
+	contentLabels?: QuickLaneType[];
 	createdAt?: DateRange;
 	updatedAt?: DateRange;
 	sortColumn?: string;

@@ -97,7 +97,7 @@ export function isUserAssignmentContributor(
 	return false;
 }
 
-export const getValidationErrorsForPublish = async (
+export const getValidationErrorsForPublishAssignment = async (
 	assignment: Partial<Avo.Assignment.Assignment>
 ): Promise<string[]> => {
 	const validationErrors = [

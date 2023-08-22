@@ -18,7 +18,7 @@ import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { getValidationErrorsForPublish } from '../assignment.helper';
+import { getValidationErrorsForPublishAssignment } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 
 interface PublishAssignmentModalProps {
@@ -62,7 +62,9 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & Us
 
 			// Validate if user wants to publish
 			if (isPublished) {
-				const validationErrors: string[] = await getValidationErrorsForPublish(assignment);
+				const validationErrors: string[] = await getValidationErrorsForPublishAssignment(
+					assignment
+				);
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors);
