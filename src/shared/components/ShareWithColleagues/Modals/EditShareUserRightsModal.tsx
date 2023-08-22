@@ -11,6 +11,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { compact } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
@@ -31,15 +32,25 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	currentRight,
 }) => {
 	const [right, setRight] = useState<ContributorInfoRights>(currentRight);
-	const options = Object.values(ContributorInfoRights).map((right) => ({
-		label:
-			right === ContributorInfoRights.OWNER
-				? tText(
-						'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen'
-				  )
-				: getContributorRightLabels()[right],
-		value: right,
-	}));
+	const options = compact(
+		Object.values(ContributorInfoRights).map((right) => {
+			if (
+				right === ContributorInfoRights.OWNER &&
+				currentRight !== ContributorInfoRights.OWNER
+			) {
+				return null;
+			}
+			return {
+				label:
+					right === ContributorInfoRights.OWNER
+						? tText(
+								'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen'
+						  )
+						: getContributorRightLabels()[right],
+				value: right,
+			};
+		})
+	);
 
 	useEffect(() => {
 		if (isOpen) {
