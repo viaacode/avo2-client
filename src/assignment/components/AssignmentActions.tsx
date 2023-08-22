@@ -68,9 +68,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
 
-	const renderViewButton = (buttonProps?: Partial<ButtonProps>) => (
-		<Button type="secondary" {...buttonProps} {...view} />
-	);
+	const renderViewButton = (buttonProps?: Partial<ButtonProps>) =>
+		view ? <Button type="secondary" {...buttonProps} {...view} /> : null;
 
 	const renderPreviewButton = (buttonProps?: Partial<ButtonProps>) => (
 		<Button
