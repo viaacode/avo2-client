@@ -9,6 +9,7 @@ import './MultiThemeSelectDropdown.scss';
 import MultiThemeSelectOptionGroupHeading from './MultiThemeSelectOptionGroupHeading';
 
 interface MultiThemeSelectDropdownProps {
+	id?: string;
 	value: TagInfoSchema[];
 	allThemes: LomFieldSchema[];
 	isLoading: boolean;
@@ -17,6 +18,7 @@ interface MultiThemeSelectDropdownProps {
 }
 
 const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
+	id,
 	value,
 	allThemes,
 	isLoading,
@@ -32,6 +34,7 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 
 	return (
 		<Select
+			id={id}
 			value={value}
 			options={themeOptions || []}
 			blurInputOnSelect={false}

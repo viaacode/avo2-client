@@ -73,7 +73,9 @@ const GET_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	},
 ];
 
-const VALIDATION_RULES_FOR_PUBLISH: ValidationRule<Partial<Avo.Collection.Collection>>[] = [
+const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
+	Partial<Avo.Collection.Collection>
+>[] => [
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
@@ -286,7 +288,7 @@ export const getValidationErrorsForPublish = async (
 ): Promise<string[]> => {
 	const validationErrors = [
 		...GET_VALIDATION_RULES_FOR_SAVE(),
-		...VALIDATION_RULES_FOR_PUBLISH,
+		...GET_VALIDATION_RULES_FOR_PUBLISH(),
 	].map((rule) => {
 		return rule.isValid(collection) ? null : getError(rule, collection);
 	});

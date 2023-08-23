@@ -103,6 +103,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					labelFor="educationId"
 				>
 					<TagsInput
+						id="educationId"
 						isLoading={isEducationLevelsLoading}
 						options={getEducationLevelOptions(allEducationLevels || [])}
 						value={
@@ -125,6 +126,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					labelFor="themeId"
 				>
 					<MultiThemeSelectDropdown
+						id="themeId"
 						allThemes={allThemes || []}
 						value={mapLomFieldsToOptions(lomFields.theme) || []}
 						onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
@@ -140,6 +142,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					labelFor="subjectId"
 				>
 					<TagsInput
+						id="subjectId"
 						isLoading={isSubjectsLoading}
 						options={mapLomFieldsToOptions(allSubjects || [])}
 						value={mapLomFieldsToOptions(lomFields.subject) || []}
