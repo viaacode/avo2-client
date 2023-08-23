@@ -59,7 +59,7 @@ function checkIfSessionExpires(expiresAt: string) {
 	}
 }
 
-export const getLoginStateAction = () => {
+export const getLoginStateAction = (forceRefetch = false) => {
 	return async (dispatch: Dispatch, getState: any): Promise<Action | null> => {
 		const state = getState();
 		const loginState: LoginState = state.loginState;
@@ -67,7 +67,7 @@ export const getLoginStateAction = () => {
 		let response: Action | null = null;
 
 		// Don't fetch login state if we already logged in
-		if (loginState.data?.message && loginState.data?.message === LoginMessage.LOGGED_IN) {
+		if (loginState?.data?.message === LoginMessage.LOGGED_IN && !forceRefetch) {
 			return null;
 		}
 
@@ -79,7 +79,7 @@ export const getLoginStateAction = () => {
 		dispatch(setLoginLoading());
 
 		try {
-			const loginStateResponse = await getLoginResponse();
+			const loginStateResponse = await getLoginResponse(forceRefetch);
 
 			// Check if session is about to expire and show warning toast
 			// Redirect to login page when session actually expires
@@ -126,9 +126,9 @@ export const setAcceptConditions = (): SetAcceptConditionsAction => ({
 	type: LoginActionTypes.SET_ACCEPT_CONDITIONS,
 });
 
-export const getLoginResponse = async (): Promise<Avo.Auth.LoginResponse> => {
+export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginResponse> => {
 	try {
-		const url = `${getEnv('PROXY_URL')}/auth/check-login`;
+		const url = `${getEnv('PROXY_URL')}/auth/check-login?force=${force}`;
 		return fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
 			forceLogout: false,
 		});

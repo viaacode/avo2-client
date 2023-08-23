@@ -87,7 +87,7 @@ export interface ProfileProps extends DefaultSecureRouteProps {
 
 const Profile: FunctionComponent<
 	ProfileProps & {
-		getLoginState: () => Dispatch;
+		getLoginState: (forceRefetch: boolean) => Dispatch;
 	}
 > = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, location, user, getLoginState }) => {
 	const { tText, tHtml } = useTranslation();
@@ -342,7 +342,7 @@ const Profile: FunctionComponent<
 
 			if (isCompleteProfileStep) {
 				// Refetch user permissions since education level can change user group
-				getLoginState();
+				getLoginState(true);
 			}
 
 			const preferences: Partial<Avo.Newsletter.Preferences> = {
@@ -379,7 +379,7 @@ const Profile: FunctionComponent<
 					setIsSaving(false);
 				}, 0);
 			} else {
-				getLoginState();
+				getLoginState(true);
 				ToastService.success(tHtml('settings/components/profile___opgeslagen'));
 				setIsSaving(false);
 			}
@@ -834,7 +834,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getLoginState: () => dispatch(getLoginStateAction() as any),
+		getLoginState: (forceRefetch: boolean) =>
+			dispatch(getLoginStateAction(forceRefetch) as any),
 	};
 };
 
