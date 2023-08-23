@@ -15,6 +15,7 @@ const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (pro
 	return (
 		<FlowPlayerWrapper
 			item={meta}
+			poster={block?.thumbnail_path || meta?.thumbnail_path}
 			external_id={meta?.external_id}
 			duration={meta?.duration}
 			title={meta?.title}

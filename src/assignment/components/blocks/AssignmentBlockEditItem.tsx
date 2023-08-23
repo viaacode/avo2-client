@@ -1,5 +1,6 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
+import { isNil } from 'lodash-es';
 import React, { FC, ReactNode } from 'react';
 
 import { FilterState } from '../../../search/search.types';
@@ -9,6 +10,7 @@ import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/Rich
 import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { EditableAssignmentBlock, EditBlockProps } from '../../assignment.types';
 import {
 	AssignmentBlockDescriptionButtons,
@@ -54,6 +56,17 @@ export const AssignmentBlockEditItem: FC<
 			(block.custom_title || block.original_title || block.item_meta?.title || undefined),
 	};
 
+	const handleVideoCut = async (update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>) => {
+		let thumbnail = editableBlock.thumbnail_path;
+		if (!isNil(update.start_oc) && update.start_oc !== 0) {
+			thumbnail = await VideoStillService.getVideoStill(
+				editableBlock.fragment_id,
+				(update?.start_oc || 0) * 1000
+			);
+		}
+		setBlock({ ...editableBlock, ...update, thumbnail_path: thumbnail });
+	};
+
 	if (!editableBlock.item_meta) {
 		return null;
 	}
@@ -89,7 +102,7 @@ export const AssignmentBlockEditItem: FC<
 					<>
 						<FlowPlayerWrapper
 							item={item}
-							poster={item.thumbnail_path}
+							poster={block.thumbnail_path || item.thumbnail_path}
 							external_id={item.external_id}
 							duration={item.duration}
 							title={item.title}
@@ -115,7 +128,7 @@ export const AssignmentBlockEditItem: FC<
 								thumbnail_path: block.thumbnail_path ?? null,
 								external_id: editableBlock.fragment_id,
 							},
-							onConfirm: (update) => setBlock({ ...editableBlock, ...update }),
+							onConfirm: handleVideoCut,
 						})}
 					</>
 				);
