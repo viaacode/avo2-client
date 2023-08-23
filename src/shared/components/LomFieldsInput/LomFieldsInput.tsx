@@ -21,6 +21,7 @@ type LomFieldsInputProps = {
 	loms: Avo.Lom.LomField[];
 	onChange: (newLoms: Avo.Lom.LomField[]) => void;
 	showEducation?: boolean;
+	showEducationDegrees?: boolean;
 	showThemes?: boolean;
 	showSubjects?: boolean;
 	educationLevelsPlaceholder?: string;
@@ -32,6 +33,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	loms,
 	onChange,
 	showEducation = true,
+	showEducationDegrees = false,
 	showThemes = true,
 	showSubjects = true,
 	educationLevelsPlaceholder,
@@ -61,6 +63,14 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 			sortBy([...groupedLoms.educationDegree, ...childlessLevels], (lom) =>
 				lom.label.toLocaleLowerCase()
 			)
+		);
+	};
+	const getEducationDegreeOptions = (loms: Avo.Lom.LomField[]) => {
+		// Group loms to split the incoming loms in levels and degrees
+		const groupedLoms = groupLoms(loms);
+
+		return mapLomFieldsToOptions(
+			sortBy([...groupedLoms.educationDegree], (lom) => lom.label.toLocaleLowerCase())
 		);
 	};
 
@@ -114,6 +124,24 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 						}
 						onChange={(values) =>
 							handleChange(values, LomType.educationDegree, allEducationLevels || [])
+						}
+						placeholder={educationLevelsPlaceholder}
+					/>
+				</FormGroup>
+			)}
+			{showEducationDegrees && (
+				<FormGroup label={tText('Onderwijsgraad')} labelFor="educationDegreeId">
+					<TagsInput
+						id="educationDegreeId"
+						isLoading={isEducationLevelsLoading}
+						options={getEducationDegreeOptions(allEducationLevels || [])}
+						value={getEducationDegreeOptions([...lomFields.educationDegree]) || []}
+						onChange={(values) =>
+							handleDegreesChange(
+								values,
+								LomType.educationDegree,
+								allEducationLevels || []
+							)
 						}
 						placeholder={educationLevelsPlaceholder}
 					/>
