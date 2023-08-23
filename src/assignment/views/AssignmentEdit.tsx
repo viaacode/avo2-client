@@ -373,6 +373,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			);
 
 			if (updated && assignment?.id) {
+				const isAdmin = commonUser.permissions?.includes(
+					PermissionName.EDIT_ANY_ASSIGNMENTS
+				);
+				const contributorType = isAdmin
+					? 'ADMIN'
+					: getContributorType(
+							user,
+							assignment as Avo.Assignment.Assignment,
+							(original.contributors || []) as Avo.Assignment.Contributor[]
+					  ).toLowerCase();
 				trackEvents(
 					{
 						object: String(assignment.id),
@@ -380,11 +390,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						action: 'edit',
 						resource: {
 							is_public: assignment.is_public || false,
-							role: getContributorType(
-								user,
-								assignment as Avo.Assignment.Assignment,
-								(original.contributors || []) as Avo.Assignment.Contributor[]
-							).toLowerCase(),
+							role: contributorType,
 						},
 					},
 					user

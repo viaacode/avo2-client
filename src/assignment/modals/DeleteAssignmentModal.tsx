@@ -10,8 +10,8 @@ interface DeleteAssignmentModalProps {
 	deleteAssignmentCallback: () => void;
 	deleteSelfFromAssignmentCallback: () => void;
 	contributorCount: number;
-	hasResponses?: boolean;
-	containsBuildBlocks?: boolean;
+	hasPupilResponses: boolean;
+	hasPupilResponseCollections: boolean;
 	/**
 	 * true: should delete the current user from the contributors of the assignment
 	 * false: should delete the assignment itself
@@ -25,8 +25,8 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 	deleteAssignmentCallback,
 	deleteSelfFromAssignmentCallback,
 	contributorCount,
-	hasResponses = false,
-	containsBuildBlocks = false,
+	hasPupilResponses,
+	hasPupilResponseCollections,
 	shouldDeleteSelfFromAssignment,
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -64,8 +64,8 @@ const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
 				);
 			}
 
-			if (hasResponses) {
-				if (containsBuildBlocks) {
+			if (hasPupilResponses) {
+				if (hasPupilResponseCollections) {
 					messages.push(
 						tHtml(
 							'assignment/views/assignment-overview___deze-opdracht-bevat-mogelijk-collecties-die-eveneens-verwijderd-zullen-worden'

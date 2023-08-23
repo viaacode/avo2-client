@@ -60,7 +60,7 @@ import {
 import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentAction } from '../assignment.types';
+import { AssignmentAction, AssignmentType } from '../assignment.types';
 import {
 	onAddNewContributor,
 	onDeleteContributor,
@@ -973,6 +973,10 @@ const AssignmentDetail: FC<
 				deleteSelfFromAssignmentCallback={onDeleteSelfFromAssignment}
 				contributorCount={assignment?.contributors?.length || 0}
 				shouldDeleteSelfFromAssignment={shouldDeleteSelfFromAssignment}
+				hasPupilResponses={!!assignment?.responses?.length}
+				hasPupilResponseCollections={
+					!!assignment?.blocks?.find((block) => block.type === AssignmentType.BOUW)
+				}
 			/>
 		</>
 	);

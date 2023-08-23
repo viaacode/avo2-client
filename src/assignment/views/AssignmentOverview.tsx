@@ -1026,10 +1026,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 					deleteAssignmentCallback={handleDeleteAssignmentConfirm}
 					deleteSelfFromAssignmentCallback={handleDeleteSelfFromAssignmentConfirm}
 					contributorCount={markedAssignment?.contributors?.length || 0}
-					hasResponses={!!markedAssignment?.responses?.length}
-					containsBuildBlocks={markedAssignment?.lom_learning_resource_type?.includes(
-						AssignmentType.BOUW
-					)}
+					hasPupilResponses={!!markedAssignment?.responses?.length}
+					hasPupilResponseCollections={
+						markedAssignment?.lom_learning_resource_type?.includes(
+							AssignmentType.BOUW
+						) || false
+					}
 					shouldDeleteSelfFromAssignment={shouldDeleteSelfFromAssignment}
 				/>
 			</>

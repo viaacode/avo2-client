@@ -196,6 +196,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 	// Computed values
 
 	const isCollection = type === 'collection';
+	const isAdmin = isCollection
+		? commonUser.permissions?.includes(PermissionName.EDIT_ANY_COLLECTIONS)
+		: commonUser.permissions?.includes(PermissionName.EDIT_ANY_BUNDLES);
 	const noRightsError = {
 		state: 'error',
 		message: isCollection
@@ -767,6 +770,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 							  )
 					);
 
+					const contributorType = (
+						isAdmin
+							? 'ADMIN'
+							: getContributorType(user, newCollection, contributors || [])
+					).toLowerCase();
 					trackEvents(
 						{
 							object: String(newCollection.id),
@@ -774,11 +782,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							action: 'edit',
 							resource: {
 								is_public: newCollection.is_public,
-								role: getContributorType(
-									user,
-									newCollection,
-									contributors || []
-								).toLowerCase(),
+								role: contributorType,
 							},
 						},
 						user
