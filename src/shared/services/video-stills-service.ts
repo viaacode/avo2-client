@@ -71,7 +71,9 @@ export class VideoStillService {
 				startTime: (block.start_oc || 0) * 1000,
 			}))
 		);
-		const cutVideoStills = await VideoStillService.getVideoStills(cutVideoStillRequests);
+		const cutVideoStills = compact(
+			await VideoStillService.getVideoStills(cutVideoStillRequests)
+		);
 
 		return uniq(
 			compact([
