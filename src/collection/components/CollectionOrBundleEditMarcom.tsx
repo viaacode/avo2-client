@@ -28,7 +28,6 @@ import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
-import { ValueOf } from '../../shared/types';
 import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
@@ -37,10 +36,10 @@ import {
 import { CollectionService } from '../collection.service';
 import { ContentTypeNumber, MarcomEntry } from '../collection.types';
 
-import { CollectionAction } from './CollectionOrBundleEdit';
+import { CollectionAction, MarcomNoteInfo } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditMarcomProps {
-	collection: Avo.Collection.Collection;
+	collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo };
 	changeCollectionState: (action: CollectionAction) => void;
 	history: RouteComponentProps['history'];
 }
@@ -101,21 +100,16 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 
 			case 'channel_type':
 				return truncateTableValue(
-					get(
-						GET_MARCOM_CHANNEL_TYPE_OPTIONS().find((option) => option.value === value),
-						'label',
-						'-'
-					)
+					GET_MARCOM_CHANNEL_TYPE_OPTIONS().find((option) => option.value === value)
+						?.label || '-'
 				);
 
 			case 'channel_name':
 				return truncateTableValue(
-					get(
-						GET_MARCOM_CHANNEL_NAME_OPTIONS().find((option) => option.value === value),
-						'label',
-						'-'
-					)
+					GET_MARCOM_CHANNEL_NAME_OPTIONS().find((option) => option.value === value)
+						?.label || '-'
 				);
+
 			case 'parent_collection':
 				return value ? (
 					<Link
@@ -363,15 +357,15 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 							)}
 						>
 							<TextArea
-								value={get(collection, 'marcom_note.note', '')}
+								value={collection?.marcom_note?.note || ''}
 								onChange={(newNote: string) => {
 									changeCollectionState({
 										type: 'UPDATE_COLLECTION_PROP',
 										collectionProp: 'marcom_note',
 										collectionPropValue: {
-											...get(collection, 'marcom_note', {}),
+											id: collection?.marcom_note?.id || undefined,
 											note: newNote,
-										} as ValueOf<Avo.Collection.Collection>,
+										},
 									});
 								}}
 							/>

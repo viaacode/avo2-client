@@ -139,6 +139,7 @@ import {
 	keepCoreCollectionProperties,
 } from './collection.helpers';
 import { Collection, ContentTypeNumber, MarcomEntry, QualityLabel } from './collection.types';
+import { MarcomNoteInfo } from './components/CollectionOrBundleEdit';
 import { canManageEditorial } from './helpers/can-manage-editorial';
 
 export interface OrganisationContentItem {
@@ -461,79 +462,54 @@ export class CollectionService {
 	private static saveCollectionManagementData = async (
 		collectionId: string,
 		initialCollection: Partial<Avo.Collection.Collection> | null,
-		updatedCollection: Partial<Avo.Collection.Collection>
+		updatedCollection: Partial<Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo }>
 	) => {
 		try {
-			if (!get(initialCollection, 'management') && !!get(updatedCollection, 'management')) {
+			if (!initialCollection?.management && !!updatedCollection?.management) {
 				// Create management entry
 				await CollectionService.insertManagementEntry(collectionId, {
-					current_status: get(updatedCollection, 'management.current_status', null),
-					manager_profile_id: get(
-						updatedCollection,
-						'management.manager_profile_id',
-						null
-					),
-					status_valid_until: get(
-						updatedCollection,
-						'management.status_valid_until',
-						null
-					),
-					note: get(updatedCollection, 'management.note', null),
-					updated_at: get(updatedCollection, 'management.updated_at', undefined),
+					current_status: updatedCollection?.management?.current_status || null,
+					manager_profile_id: updatedCollection?.management?.manager_profile_id || null,
+					status_valid_until: updatedCollection?.management?.status_valid_until || null,
+					note: updatedCollection?.management?.note || null,
+					updated_at:
+						updatedCollection?.management?.updated_at || new Date().toISOString(),
 				});
-			} else if (
-				!!get(initialCollection, 'management') &&
-				!!get(updatedCollection, 'management')
-			) {
+			} else if (!!initialCollection?.management && !!updatedCollection?.management) {
 				// Update management entry
 				await CollectionService.updateManagementEntry(collectionId, {
-					current_status: get(updatedCollection, 'management.current_status', null),
-					manager_profile_id: get(
-						updatedCollection,
-						'management.manager_profile_id',
-						null
-					),
-					status_valid_until: get(
-						updatedCollection,
-						'management.status_valid_until',
-						null
-					),
-					note: get(updatedCollection, 'management.note', null),
-					updated_at: get(updatedCollection, 'management.updated_at', undefined),
+					current_status: updatedCollection?.management.current_status || null,
+					manager_profile_id: updatedCollection?.management?.manager_profile_id || null,
+					status_valid_until: updatedCollection?.management?.status_valid_until || null,
+					note: updatedCollection?.management?.note || null,
+					updated_at:
+						updatedCollection?.management?.updated_at || new Date().toISOString(),
 				});
 			}
 
 			if (
-				!!get(updatedCollection, 'management_language_check') &&
-				!!get(updatedCollection, 'management_quality_check')
+				!!updatedCollection?.management_language_check &&
+				!!updatedCollection?.management_quality_check
 			) {
 				// Insert QC entries
-				const initialLanguageCheckStatus = get(
-					initialCollection,
-					'management_language_check[0].qc_status'
-				);
-				const updatedLanguageCheckStatus = get(
-					updatedCollection,
-					'management_language_check[0].qc_status'
-				);
-				const initialQualityCheckStatus = get(
-					initialCollection,
-					'management_quality_check[0].qc_status'
-				);
-				const updatedQualityCheckStatus = get(
-					updatedCollection,
-					'management_quality_check[0].qc_status'
-				);
+				const initialLanguageCheckStatus =
+					initialCollection?.management_language_check?.[0]?.qc_status;
+				const updatedLanguageCheckStatus =
+					updatedCollection?.management_language_check?.[0]?.qc_status;
+				const initialQualityCheckStatus =
+					initialCollection?.management_quality_check?.[0]?.qc_status;
+				const updatedQualityCheckStatus =
+					updatedCollection?.management_quality_check?.[0]?.qc_status;
 				const equalLanguageCheckStatus =
 					initialLanguageCheckStatus !== updatedLanguageCheckStatus;
 				const equalQualityCheckStatus =
 					initialQualityCheckStatus !== updatedQualityCheckStatus;
 				const equalLanguageCheckAssignee =
-					get(initialCollection, 'management_language_check[0].assignee_profile_id') !==
-					get(updatedCollection, 'management_language_check[0].assignee_profile_id');
+					initialCollection?.management_language_check?.[0]?.assignee_profile_id !==
+					updatedCollection?.management_language_check?.[0]?.assignee_profile_id;
 				const equalLanguageCheckComment =
-					get(initialCollection, 'management_language_check[0].comment') !==
-					get(updatedCollection, 'management_language_check[0].comment');
+					initialCollection?.management_language_check?.[0]?.comment !==
+					updatedCollection?.management_language_check?.[0]?.comment;
 
 				const initialApprovedStatus =
 					initialLanguageCheckStatus && initialQualityCheckStatus;
@@ -548,18 +524,11 @@ export class CollectionService {
 					await CollectionService.createManagementQCEntry(collectionId, {
 						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Taalcheck,
 						qc_status:
-							get(updatedCollection, 'management_language_check[0].qc_status') ??
+							updatedCollection?.management_language_check[0].qc_status ?? null,
+						assignee_profile_id:
+							updatedCollection?.management_language_check[0].assignee_profile_id ||
 							null,
-						assignee_profile_id: get(
-							updatedCollection,
-							'management_language_check[0].assignee_profile_id',
-							null
-						),
-						comment: get(
-							updatedCollection,
-							'management_language_check[0].comment',
-							null
-						),
+						comment: updatedCollection?.management_language_check[0].comment || null,
 					});
 				}
 				// We use language check for assignee because the UI only requests this info once from the user
@@ -571,13 +540,10 @@ export class CollectionService {
 				) {
 					await CollectionService.createManagementQCEntry(collectionId, {
 						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Kwaliteitscheck,
-						qc_status:
-							get(updatedCollection, 'management_quality_check[0].qc_status') ?? null,
-						assignee_profile_id: get(
-							updatedCollection,
-							'management_language_check[0].assignee_profile_id',
-							null
-						),
+						qc_status: updatedCollection?.management_quality_check[0].qc_status ?? null,
+						assignee_profile_id:
+							updatedCollection?.management_language_check[0].assignee_profile_id ||
+							null,
 						comment: null,
 					});
 				}
@@ -587,18 +553,16 @@ export class CollectionService {
 					await CollectionService.createManagementQCEntry(collectionId, {
 						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Eindcheck,
 						qc_status: null,
-						assignee_profile_id: get(
-							updatedCollection,
-							'management_language_check[0].assignee_profile_id',
-							null
-						),
+						assignee_profile_id:
+							updatedCollection?.management_language_check[0].assignee_profile_id ||
+							null,
 						comment: null,
 					});
 				}
 			}
 
-			const marcomNoteId = get(updatedCollection, 'marcom_note.id');
-			const marcomNoteText = get(updatedCollection, 'marcom_note.note');
+			const marcomNoteId = updatedCollection?.marcom_note?.id;
+			const marcomNoteText = updatedCollection?.marcom_note?.note;
 
 			if (!isNil(marcomNoteText)) {
 				if (!isNil(marcomNoteId)) {

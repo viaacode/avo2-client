@@ -11,7 +11,6 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -68,9 +67,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 												});
 											}}
 											clearable
-											value={
-												get(collection, 'management.current_status') || null
-											}
+											value={collection?.management?.current_status || null}
 										/>
 									</FormGroup>
 									<FormGroup
@@ -79,9 +76,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 										)}
 									>
 										<DatePicker
-											value={toDateObject(
-												get(collection, 'management.updated_at')
-											)}
+											value={toDateObject(collection?.management?.updated_at)}
 											onChange={(selectedDate) =>
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',
@@ -100,7 +95,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 									>
 										<DatePicker
 											value={toDateObject(
-												get(collection, 'management.status_valid_until')
+												collection?.management?.status_valid_until
 											)}
 											onChange={(selectedDate) =>
 												changeCollectionState({
@@ -158,7 +153,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 									>
 										<TextArea
 											height="auto"
-											value={get(collection, 'management.note') || ''}
+											value={collection?.management?.note || ''}
 											onChange={(newNotes: string) =>
 												changeCollectionState({
 													type: 'UPDATE_COLLECTION_PROP',

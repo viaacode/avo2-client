@@ -93,6 +93,11 @@ import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleEdit.scss';
 
+export interface MarcomNoteInfo {
+	id?: string;
+	note: string;
+}
+
 type FragmentPropUpdateAction = {
 	type: 'UPDATE_FRAGMENT_PROP';
 	index: number;
@@ -125,7 +130,7 @@ type CollectionUpdateAction = {
 type CollectionPropUpdateAction = {
 	type: 'UPDATE_COLLECTION_PROP';
 	collectionProp: keyof Avo.Collection.Collection | string; // nested values are also allowed
-	collectionPropValue: ValueOf<Avo.Collection.Collection>;
+	collectionPropValue: ValueOf<Avo.Collection.Collection> | MarcomNoteInfo; // marcom note only exists on collection object in the client
 	updateInitialCollection?: boolean;
 };
 
