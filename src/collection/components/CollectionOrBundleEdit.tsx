@@ -45,7 +45,7 @@ import {
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { getMoreOptionsLabel } from '../../shared/constants';
+import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
 import {
 	buildLink,
 	createDropdownMenuItem,
@@ -492,7 +492,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				return;
 			}
 
-			if (contributors) {
+			if (contributors?.length) {
 				const userContributorRole = getContributorType(
 					user,
 					collectionObj as Avo.Collection.Collection,
@@ -501,8 +501,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 				if (userContributorRole === 'VIEWER') {
 					setLoadingInfo(noRightsError);
+					return;
 				}
-				return;
 			}
 
 			try {
@@ -699,7 +699,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						: APP_PATH.BUNDLE_EDIT_TAB.route,
 					{
 						id: collectionId,
-						tabId: 'quality_check',
+						tabId: ROUTE_PARTS.qualitycheck,
 					}
 				)
 			);

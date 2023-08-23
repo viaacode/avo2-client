@@ -6,7 +6,6 @@ import {
 	cloneDeep,
 	compact,
 	fromPairs,
-	get,
 	isEmpty,
 	isEqual,
 	isNil,
@@ -218,7 +217,7 @@ export class CollectionService {
 	private static getLabels(
 		collection: Partial<Avo.Collection.Collection> | null
 	): Avo.Collection.Label[] {
-		return get(collection, 'collection_labels', []) as Avo.Collection.Label[];
+		return (collection?.collection_labels || []) as Avo.Collection.Label[];
 	}
 
 	/**
@@ -254,7 +253,7 @@ export class CollectionService {
 				// validate collection before update
 				let validationErrors: string[];
 
-				if (updatedCollection.is_public) {
+				if (updatedCollection?.is_public) {
 					validationErrors = await getValidationErrorsForPublish(updatedCollection);
 				} else {
 					validationErrors = await getValidationErrorForSave(updatedCollection);
@@ -421,7 +420,7 @@ export class CollectionService {
 			}
 
 			// Update collection management
-			if (get(updatedCollection, 'is_managed', false)) {
+			if (updatedCollection?.is_managed) {
 				await CollectionService.saveCollectionManagementData(
 					newCollection.id as string,
 					initialCollection,
@@ -435,7 +434,7 @@ export class CollectionService {
 
 				await this.insertCollectionLomLinks(
 					newCollection.id as string,
-					compact((updatedCollection.loms || []).map((lom) => lom.lom?.id))
+					compact((updatedCollection?.loms || []).map((lom) => lom.lom?.id))
 				);
 			} catch (err) {
 				console.error('Failed to update collection/bundle loms', err);
@@ -478,7 +477,7 @@ export class CollectionService {
 			} else if (!!initialCollection?.management && !!updatedCollection?.management) {
 				// Update management entry
 				await CollectionService.updateManagementEntry(collectionId, {
-					current_status: updatedCollection?.management.current_status || null,
+					current_status: updatedCollection?.management?.current_status || null,
 					manager_profile_id: updatedCollection?.management?.manager_profile_id || null,
 					status_valid_until: updatedCollection?.management?.status_valid_until || null,
 					note: updatedCollection?.management?.note || null,
@@ -524,11 +523,11 @@ export class CollectionService {
 					await CollectionService.createManagementQCEntry(collectionId, {
 						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Taalcheck,
 						qc_status:
-							updatedCollection?.management_language_check[0].qc_status ?? null,
+							updatedCollection?.management_language_check?.[0]?.qc_status ?? null,
 						assignee_profile_id:
-							updatedCollection?.management_language_check[0].assignee_profile_id ||
-							null,
-						comment: updatedCollection?.management_language_check[0].comment || null,
+							updatedCollection?.management_language_check?.[0]
+								?.assignee_profile_id || null,
+						comment: updatedCollection?.management_language_check?.[0]?.comment || null,
 					});
 				}
 				// We use language check for assignee because the UI only requests this info once from the user
@@ -540,10 +539,11 @@ export class CollectionService {
 				) {
 					await CollectionService.createManagementQCEntry(collectionId, {
 						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Kwaliteitscheck,
-						qc_status: updatedCollection?.management_quality_check[0].qc_status ?? null,
+						qc_status:
+							updatedCollection?.management_quality_check?.[0]?.qc_status ?? null,
 						assignee_profile_id:
-							updatedCollection?.management_language_check[0].assignee_profile_id ||
-							null,
+							updatedCollection?.management_language_check?.[0]
+								?.assignee_profile_id || null,
 						comment: null,
 					});
 				}
@@ -554,8 +554,8 @@ export class CollectionService {
 						qc_label: Lookup_Enum_Collection_Management_Qc_Label_Enum.Eindcheck,
 						qc_status: null,
 						assignee_profile_id:
-							updatedCollection?.management_language_check[0].assignee_profile_id ||
-							null,
+							updatedCollection?.management_language_check?.[0]
+								?.assignee_profile_id || null,
 						comment: null,
 					});
 				}
@@ -680,7 +680,7 @@ export class CollectionService {
 			throw new CustomError('Failed to update collection properties', err, {
 				id,
 				collection,
-				query: 'UPDATE_COLLECTION',
+				query: 'UpdateCollectionById',
 			});
 		}
 	};
