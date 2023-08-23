@@ -383,7 +383,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				contributors
 			);
 
-			if (userContributorRole === 'VIEWER') {
+			if (userContributorRole === 'VIEWER' && !isAdmin) {
 				setLoadingInfo(noRightsError);
 			}
 		}
@@ -471,7 +471,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				user
 			);
 
-			if (!permissionObj.canEdit) {
+			if (!permissionObj.canEdit && !isAdmin) {
 				setLoadingInfo(noRightsError);
 				return;
 			}
@@ -502,7 +502,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					contributors
 				);
 
-				if (userContributorRole === 'VIEWER') {
+				if (userContributorRole === 'VIEWER' && !isAdmin) {
 					setLoadingInfo(noRightsError);
 					return;
 				}
