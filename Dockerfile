@@ -1,6 +1,6 @@
 FROM nginxinc/nginx-unprivileged
 USER nginx
-FROM node:16-alpine AS compile
+FROM node:20.4-alpine AS compile
 # set our node environment, defaults to production
 ARG NODE_ENV=ci
 ARG PRODUCTION=$PRODUCTION
@@ -17,7 +17,7 @@ RUN apk add --no-cache --virtual python2 make g++ tzdata && ln -snf /usr/share/z
 USER node
 RUN npm ci --include=dev --legacy-peer-deps
 ## Builder image
-FROM node:16-alpine AS build
+FROM node:20.4-alpine AS build
 USER node
 COPY --from=compile /app /app
 # set our node environment, defaults to production
