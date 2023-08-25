@@ -56,11 +56,19 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
 	getMoreOptionsLabel,
 } from '../../shared/constants';
-import { buildLink, CustomError, formatDate, navigate, renderAvatar } from '../../shared/helpers';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	formatDate,
+	navigate,
+	renderAvatar,
+} from '../../shared/helpers';
 import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
@@ -80,6 +88,7 @@ import {
 } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
+	AssignmentAction,
 	AssignmentOverviewTableColumns,
 	AssignmentType,
 	AssignmentView,
@@ -138,6 +147,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.NIET_GEDEELD;
 	const isContributor =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
+	const isContributorWithContributeRights = !!markedAssignment?.contributors?.find(
+		(c) =>
+			c.profile_id === commonUser.profileId && c.rights === ContributorInfoRight.CONTRIBUTOR
+	);
+	const hasEditRightsForAllAssignments =
+		commonUser.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) || false;
 	const hasDeleteRightsForAllAssignments =
 		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) || false;
 	const shouldDeleteSelfFromAssignment = isContributor && !hasDeleteRightsForAllAssignments;
@@ -452,37 +467,35 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 						}}
 						label={getMoreOptionsLabel()}
 						menuItems={[
-							...(query.view === AssignmentView.FINISHED
-								? []
-								: [
-										{
-											icon: IconName.edit2,
-											id: 'edit',
-											label: tText(
-												'assignment/views/assignment-overview___bewerk'
-											),
-										},
-								  ]),
-							{
-								icon: IconName.copy,
-								id: 'duplicate',
-								label: tText('assignment/views/assignment-overview___dupliceer'),
-							},
-							{
-								icon: IconName.delete,
-								id: 'delete',
-								label:
-									PermissionService.hasPerm(
-										user,
-										PermissionName.DELETE_ANY_ASSIGNMENTS
-									) || isOwner
-										? tText(
-												'assignment/views/assignment-overview___verwijderen'
-										  )
-										: tText(
-												'assignment/views/assignment-overview___verwijder-mij-van-deze-opdracht'
-										  ),
-							},
+							...createDropdownMenuItem(
+								AssignmentAction.editAssignment,
+								tText('assignment/views/assignment-overview___bewerk'),
+								IconName.edit2,
+								query.view !== AssignmentView.FINISHED &&
+									(isOwner ||
+										isContributorWithContributeRights ||
+										hasEditRightsForAllAssignments)
+							),
+							...createDropdownMenuItem(
+								AssignmentAction.duplicate,
+								tText('assignment/views/assignment-overview___dupliceer'),
+								IconName.copy,
+								true
+							),
+							...createDropdownMenuItem(
+								AssignmentAction.delete,
+								tText('assignment/views/assignment-overview___verwijderen'),
+								IconName.delete,
+								hasDeleteRightsForAllAssignments || isOwner
+							),
+							...createDropdownMenuItem(
+								AssignmentAction.delete,
+								tText(
+									'assignment/views/assignment-overview___verwijder-mij-van-deze-opdracht'
+								),
+								IconName.delete,
+								!hasDeleteRightsForAllAssignments && !isOwner
+							),
 						]}
 						onOptionClicked={handleOptionClicked}
 					/>
@@ -584,9 +597,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 			({ assignment_label: item }) => item.type === 'LABEL'
 		);
 
-		switch (
-			colKey as any // TODO remove cast once assignment_v2 types are fixed (labels, class_room, author)
-		) {
+		switch (colKey) {
 			case 'title': {
 				const renderTitle = () => (
 					<Flex>
@@ -645,18 +656,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 					</span>
 				);
 
-			case 'responses':
-				return renderResponsesCell(cellData, assignment);
-
-			case 'actions':
-				return renderMobileDesktop({
-					mobile: (
-						<Spacer className="c-assignment-overview__actions" margin="top">
-							{renderActions(assignment)}
-						</Spacer>
-					),
-					desktop: renderActions(assignment),
-				});
+			case 'share_type':
+				return createShareIconTableOverview(
+					assignment.share_type,
+					assignment.contributors,
+					'assignment',
+					'c-assignment-overview__shared'
+				);
 
 			case 'is_public':
 				return renderMobileDesktop({
@@ -678,13 +684,18 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 					),
 				});
 
-			case 'share_type':
-				return createShareIconTableOverview(
-					assignment.share_type,
-					assignment.contributors,
-					'assignment',
-					'c-assignment-overview__shared'
-				);
+			case 'responses':
+				return renderResponsesCell(cellData, assignment);
+
+			case 'actions':
+				return renderMobileDesktop({
+					mobile: (
+						<Spacer className="c-assignment-overview__actions" margin="top">
+							{renderActions(assignment)}
+						</Spacer>
+					),
+					desktop: renderActions(assignment),
+				});
 
 			default:
 				return JSON.stringify(cellData);

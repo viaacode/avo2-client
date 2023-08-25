@@ -28,6 +28,8 @@ export type AssignmentOverviewTableColumns =
 	| 'deadline_at'
 	| 'status'
 	| 'responses'
+	| 'labels'
+	| 'class_room'
 	| 'views'
 	| 'actions'
 	| 'share_type'
