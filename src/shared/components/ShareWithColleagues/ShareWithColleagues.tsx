@@ -66,7 +66,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			firstName: user?.first_name,
 			lastName: user?.last_name,
 			profileId: user?.profile?.id,
-			profileImage: user?.profile?.avatar,
+			profileImage: user?.profile?.organisation?.logo_url || user?.profile?.avatar,
 		} as ContributorInfo);
 	const [isRightsDropdownOpen, setIsRightsDropdownOpen] = useState<boolean>(false);
 	const [contributor, setNewContributor] = useState<Partial<ContributorInfo>>({

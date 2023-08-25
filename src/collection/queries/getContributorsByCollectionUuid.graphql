@@ -8,6 +8,11 @@ query getContributorsByCollectionUuid($id: uuid!) {
 		id
 		profile {
 			avatar
+			organisation {
+				name
+				logo_url
+				or_id
+			}
 			user: usersByuserId {
 				first_name
 				full_name

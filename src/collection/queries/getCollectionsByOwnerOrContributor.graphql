@@ -85,6 +85,8 @@ query getCollectionsByOwnerOrContributor(
 				}
 				organisation {
 					name
+					logo_url
+					or_id
 				}
 			}
 			collection {

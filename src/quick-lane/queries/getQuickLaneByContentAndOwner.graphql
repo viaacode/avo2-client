@@ -28,6 +28,7 @@ query getQuickLaneByContentAndOwner(
 			organisation {
 				name
 				logo_url
+				or_id
 			}
 		}
 	}

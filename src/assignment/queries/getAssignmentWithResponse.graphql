@@ -104,6 +104,8 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 				id
 				organisation {
 					name
+					logo_url
+					or_id
 				}
 			}
 			id

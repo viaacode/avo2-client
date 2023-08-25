@@ -104,7 +104,9 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 
 			return (
 				<Avatar
-					image={result.owner?.avatar_path || undefined}
+					image={
+						result.owner?.avatar_path || result.owner?.company_avatar_path || undefined
+					}
 					name={name}
 					initials={initials.toLocaleUpperCase()}
 					size={isNil(result.owner?.avatar_path) ? 'small' : undefined}

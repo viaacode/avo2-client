@@ -19,6 +19,8 @@ query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) 
 			profile {
 				organisation {
 					name
+					logo_url
+					or_id
 				}
 				user: usersByuserId {
 					first_name

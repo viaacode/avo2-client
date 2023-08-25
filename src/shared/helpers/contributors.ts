@@ -15,7 +15,7 @@ export const transformContributorsToSimpleContributors = (
 			rights: ContributorInfoRights.OWNER,
 			firstName: owner.first_name,
 			lastName: owner.last_name,
-			profileImage: owner?.profile?.avatar,
+			profileImage: owner?.profile?.organisation?.logo_url || owner?.profile?.avatar,
 			profileId: owner.profile?.id,
 		} as ContributorInfo,
 	];
@@ -30,7 +30,8 @@ export const transformContributorsToSimpleContributors = (
 				],
 				firstName: contributor.profile?.user.first_name,
 				lastName: contributor.profile?.user.last_name,
-				profileImage: contributor.profile?.avatar,
+				profileImage:
+					contributor?.profile?.organisation?.logo_url || contributor.profile?.avatar,
 				profileId: contributor.profile_id,
 				contributorId: contributor.id,
 			} as ContributorInfo;

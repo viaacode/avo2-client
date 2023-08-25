@@ -20,6 +20,7 @@ mutation insertQuickLanes($objects: [app_quick_lanes_insert_input!]!) {
 				organisation {
 					name
 					logo_url
+					or_id
 				}
 			}
 		}

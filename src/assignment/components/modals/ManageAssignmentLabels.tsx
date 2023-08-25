@@ -47,7 +47,6 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & Us
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
-	const translations = getManageAssignmentLabelsTranslations(type);
 
 	const [assignmentLabels, setAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [initialAssignmentLabels, setInitialAssignmentLabels] = useState<Avo.Assignment.Label[]>(
@@ -286,7 +285,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & Us
 	return (
 		<Modal
 			className="m-manage-assignment-labels"
-			title={tHtml(translations.modal.title)}
+			title={tHtml(getManageAssignmentLabelsTranslations(type).modal.title)}
 			size="large"
 			isOpen={isOpen}
 			onClose={onClose}
@@ -295,7 +294,7 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & Us
 			<ModalBody>
 				<Spacer margin="bottom-large">
 					<Button
-						label={translations.buttons.addLabel}
+						label={getManageAssignmentLabelsTranslations(type).buttons.addLabel}
 						icon={IconName.plus}
 						onClick={handleAddLabelClick}
 						type="secondary"
@@ -304,17 +303,17 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & Us
 				<Table
 					columns={[
 						{
-							label: translations.columns.color,
+							label: getManageAssignmentLabelsTranslations(type).columns.color,
 							id: 'color',
 							col: '2',
 						},
 						{
-							label: translations.columns.type,
+							label: getManageAssignmentLabelsTranslations(type).columns.type,
 							id: 'label',
 						},
 						{ label: '', id: 'actions' },
 					]}
-					emptyStateMessage={translations.emptyState}
+					emptyStateMessage={getManageAssignmentLabelsTranslations(type).emptyState}
 					data={assignmentLabels}
 					renderCell={renderCell}
 					rowKey="id"

@@ -62,6 +62,8 @@ query getAssignmentsAdminOverview(
 				id
 				organisation {
 					name
+					logo_url
+					or_id
 				}
 			}
 			id

@@ -13,6 +13,13 @@ query getContributorsByAssignmentUuid($id: uuid!) {
 				full_name
 				last_name
 				mail
+				profile {
+					organisation {
+						name
+						logo_url
+						or_id
+					}
+				}
 			}
 		}
 	}

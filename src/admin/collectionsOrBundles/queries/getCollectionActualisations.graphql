@@ -38,8 +38,9 @@ query getCollectionActualisations(
 			profile {
 				id
 				organisation {
-					or_id
 					name
+					logo_url
+					or_id
 				}
 				profile_user_group {
 					group {

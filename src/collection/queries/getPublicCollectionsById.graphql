@@ -23,6 +23,8 @@ query getPublicCollectionsById($id: uuid!, $typeId: Int!, $limit: Int!) {
 				}
 				organisation {
 					name
+					logo_url
+					or_id
 				}
 			}
 		}

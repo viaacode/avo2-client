@@ -22,8 +22,9 @@ query getCollections(
 			profile_id
 			profile {
 				organisation {
-					or_id
 					name
+					logo_url
+					or_id
 				}
 			}
 			user_id

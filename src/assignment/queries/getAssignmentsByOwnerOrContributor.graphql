@@ -82,6 +82,8 @@ query getAssignmentsByOwnerOrContributor(
 				id
 				organisation {
 					name
+					logo_url
+					or_id
 				}
 			}
 			id
