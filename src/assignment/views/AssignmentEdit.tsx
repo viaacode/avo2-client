@@ -37,7 +37,7 @@ import { ErrorView } from '../../error/views';
 import { ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InActivityWarningModal, ShareModal } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { buildLink, CustomError } from '../../shared/helpers';
 import {
@@ -726,8 +726,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		fetchContributors: fetchContributors,
 		contributors: contributors || [],
 		availableRights: {
-			[ContributorInfoRights.CONTRIBUTOR]: PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
-			[ContributorInfoRights.VIEWER]: PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
+			[ContributorInfoRight.CONTRIBUTOR]: PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
+			[ContributorInfoRight.VIEWER]: PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
 		},
 	};
 
@@ -981,9 +981,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							}
 							shareWithPupilsProps={shareProps}
 							availableRights={{
-								[ContributorInfoRights.CONTRIBUTOR]:
+								[ContributorInfoRight.CONTRIBUTOR]:
 									PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
-								[ContributorInfoRights.VIEWER]:
+								[ContributorInfoRight.VIEWER]:
 									PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
 							}}
 							isAdmin={

@@ -2,18 +2,18 @@ import { groupBy } from 'lodash-es';
 
 import { tText } from '../../helpers/translate';
 
-import { ContributorInfo, ContributorInfoRights } from './ShareWithColleagues.types';
+import { ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
 
 export const sortContributors = (users: ContributorInfo[]): ContributorInfo[] => {
-	const groupedUsers: Partial<Record<ContributorInfoRights, ContributorInfo[]>> = groupBy(
+	const groupedUsers: Partial<Record<ContributorInfoRight, ContributorInfo[]>> = groupBy(
 		users,
 		'rights'
 	);
 
 	return [
-		...(groupedUsers[ContributorInfoRights.OWNER] || []),
-		...(groupedUsers[ContributorInfoRights.CONTRIBUTOR] || []),
-		...(groupedUsers[ContributorInfoRights.VIEWER] || []),
+		...(groupedUsers[ContributorInfoRight.OWNER] || []),
+		...(groupedUsers[ContributorInfoRight.CONTRIBUTOR] || []),
+		...(groupedUsers[ContributorInfoRight.VIEWER] || []),
 	];
 };
 
@@ -21,18 +21,18 @@ export const compareUsersEmail = (user: ContributorInfo, toCompareUser: Contribu
 	return user.email === toCompareUser.email;
 };
 
-export const findRightByValue = (right: ContributorInfoRights): ContributorInfoRights => {
-	return Object.keys(ContributorInfoRights)[
-		Object.values(ContributorInfoRights).indexOf(right)
-	] as ContributorInfoRights;
+export const findRightByValue = (right: ContributorInfoRight): ContributorInfoRight => {
+	return Object.keys(ContributorInfoRight)[
+		Object.values(ContributorInfoRight).indexOf(right)
+	] as ContributorInfoRight;
 };
 
-export function getContributorRightLabels() {
+export function getContributorRightLabel(right: ContributorInfoRight): string {
 	return {
 		CONTRIBUTOR: tText(
 			'shared/components/share-with-colleagues/share-with-colleagues___bijdrager'
 		),
 		VIEWER: tText('shared/components/share-with-colleagues/share-with-colleagues___bekijker'),
 		OWNER: tText('shared/components/share-with-colleagues/share-with-colleagues___eigenaar'),
-	};
+	}[right];
 }

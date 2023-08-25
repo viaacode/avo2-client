@@ -8,13 +8,14 @@ import {
 	Icon,
 	IconName,
 	MenuContent,
+	SelectOption,
 	Spacer,
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { isEmpty, isNil, truncate } from 'lodash-es';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import { validateEmailAddress } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -25,21 +26,21 @@ import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import {
 	compareUsersEmail,
 	findRightByValue,
-	getContributorRightLabels,
+	getContributorRightLabel,
 	sortContributors,
 } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
-import { ContributorInfo, ContributorInfoRights } from './ShareWithColleagues.types';
+import { ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
 
 type ShareWithColleaguesProps = {
 	contributors: ContributorInfo[];
 	availableRights: {
-		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
-		[ContributorInfoRights.VIEWER]: PermissionName;
+		[ContributorInfoRight.CONTRIBUTOR]: PermissionName;
+		[ContributorInfoRight.VIEWER]: PermissionName;
 	};
 	isAdmin: boolean;
 	onAddNewContributor: (info: Partial<ContributorInfo>) => Promise<void>;
-	onEditRights: (info: ContributorInfo, newRights: ContributorInfoRights) => Promise<void>;
+	onEditRights: (info: ContributorInfo, newRights: ContributorInfoRight) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	hasModalOpen: (open: boolean) => void;
 };
@@ -61,7 +62,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			(contributor) => contributor.profileId === user?.profile?.id
 		) as ContributorInfo) ||
 		({
-			rights: ContributorInfoRights.OWNER,
+			rights: ContributorInfoRight.OWNER,
 			email: user?.mail,
 			firstName: user?.first_name,
 			lastName: user?.last_name,
@@ -101,7 +102,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			setIsLoading(true);
 			await onAddNewContributor({
 				...contributor,
-				rights: findRightByValue(contributor.rights as ContributorInfoRights),
+				rights: findRightByValue(contributor.rights as ContributorInfoRight),
 			});
 			setNewContributor({ email: undefined, rights: undefined });
 			setError(null);
@@ -115,7 +116,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		hasModalOpen(true);
 	};
 
-	const handleConfirmEditContributorRights = async (right: ContributorInfoRights) => {
+	const handleConfirmEditContributorRights = async (right: ContributorInfoRight) => {
 		await onEditRights(toEditContributor as ContributorInfo, right);
 		handleOnCloseEditUserRights();
 	};
@@ -155,11 +156,11 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			return (
 				<ul className="c-colleagues-info-list">
 					{sortContributors(contributors).map((contributor, index) => {
-						const isOwner = currentUser.rights === ContributorInfoRights.OWNER;
+						const isOwner = currentUser.rights === ContributorInfoRight.OWNER;
 						const currentUserIsContributor =
-							currentUser.rights === ContributorInfoRights.CONTRIBUTOR;
+							currentUser.rights === ContributorInfoRight.CONTRIBUTOR;
 						const contributorIsOwner =
-							contributor.rights === ContributorInfoRights.OWNER;
+							contributor.rights === ContributorInfoRight.OWNER;
 						const isCurrentUser = currentUser.email === contributor.email;
 						const canEdit =
 							(!isCurrentUser && !contributorIsOwner) ||
@@ -211,7 +212,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 								</div>
 
 								<div className="c-colleague-info-row__rights">
-									<span>{getContributorRightLabels()[contributor.rights]}</span>
+									<span>{getContributorRightLabel(contributor.rights)}</span>
 								</div>
 
 								<div className="c-colleague-info-row__action">
@@ -240,6 +241,31 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		}
 	};
 
+	const changeRightsOptions = useMemo((): SelectOption<ContributorInfoRight>[] => {
+		const options: SelectOption<ContributorInfoRight>[] = [];
+		if (commonUser?.permissions?.includes(availableRights[ContributorInfoRight.CONTRIBUTOR])) {
+			options.push({
+				label: getContributorRightLabel(ContributorInfoRight.CONTRIBUTOR),
+				value: ContributorInfoRight.OWNER,
+			});
+		}
+		if (commonUser?.permissions?.includes(availableRights[ContributorInfoRight.VIEWER])) {
+			options.push({
+				label: getContributorRightLabel(ContributorInfoRight.VIEWER),
+				value: ContributorInfoRight.OWNER,
+			});
+		}
+		if (currentUser.rights === ContributorInfoRight.OWNER) {
+			options.push({
+				label: tText(
+					'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen'
+				),
+				value: ContributorInfoRight.OWNER,
+			});
+		}
+		return options;
+	}, [commonUser?.permissions, currentUser.rights, getContributorRightLabel]);
+
 	const rightsDropdownOptions = [
 		...(commonUser?.permissions?.includes(availableRights.CONTRIBUTOR)
 			? [
@@ -247,7 +273,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 						label: tText(
 							'shared/components/share-with-colleagues/share-with-colleagues___bijdrager'
 						),
-						id: ContributorInfoRights.CONTRIBUTOR,
+						id: ContributorInfoRight.CONTRIBUTOR,
 					},
 			  ]
 			: []),
@@ -257,15 +283,15 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 						label: tText(
 							'shared/components/share-with-colleagues/share-with-colleagues___kijker'
 						),
-						id: ContributorInfoRights.VIEWER,
+						id: ContributorInfoRight.VIEWER,
 					},
 			  ]
 			: []),
 	];
 	return (
 		<>
-			{(currentUser.rights === ContributorInfoRights.OWNER ||
-				currentUser.rights === ContributorInfoRights.CONTRIBUTOR ||
+			{(currentUser.rights === ContributorInfoRight.OWNER ||
+				currentUser.rights === ContributorInfoRight.CONTRIBUTOR ||
 				isAdmin) && (
 				<>
 					<div className="c-add-colleague">
@@ -289,7 +315,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									onClick={handleRightsButtonClicked}
 									label={
 										contributor.rights
-											? getContributorRightLabels()[contributor.rights]
+											? getContributorRightLabel(contributor.rights)
 											: tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___rol'
 											  )
@@ -324,14 +350,11 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					{error && <p className="c-add-colleague__error">{error}</p>}
 
 					<EditShareUserRightsModal
-						toEditContributorRight={toEditContributor?.rights as ContributorInfoRights}
-						currentUserRights={
-							contributors.find((c) => c.profileId === currentUser.profileId)
-								?.rights || ContributorInfoRights.VIEWER
-						}
+						toEditContributorRight={toEditContributor?.rights as ContributorInfoRight}
 						isOpen={isEditRightsModalOpen}
 						handleClose={() => handleOnCloseEditUserRights()}
 						handleConfirm={(right) => handleConfirmEditContributorRights(right)}
+						options={changeRightsOptions}
 					/>
 
 					{toDeleteContributor && (

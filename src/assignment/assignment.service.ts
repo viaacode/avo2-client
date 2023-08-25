@@ -11,7 +11,7 @@ import { ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
 	ContributorInfo,
-	ContributorInfoRights,
+	ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	App_Assignments_V2_Insert_Input,
@@ -1482,7 +1482,7 @@ export class AssignmentService {
 	static async editContributorRights(
 		assignmentId: string,
 		contributorId: string,
-		rights: ContributorInfoRights
+		rights: ContributorInfoRight
 	): Promise<void> {
 		try {
 			await fetchWithLogoutJson(

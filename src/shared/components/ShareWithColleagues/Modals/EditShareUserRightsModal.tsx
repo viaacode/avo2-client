@@ -7,23 +7,23 @@ import {
 	ModalBody,
 	ModalFooterRight,
 	Select,
+	SelectOption,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { compact } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
-import { findRightByValue, getContributorRightLabels } from '../ShareWithColleagues.helpers';
-import { ContributorInfoRights } from '../ShareWithColleagues.types';
+import { findRightByValue } from '../ShareWithColleagues.helpers';
+import { ContributorInfoRight } from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;
 	handleClose: () => void;
-	handleConfirm: (right: ContributorInfoRights) => void;
-	toEditContributorRight: ContributorInfoRights;
-	currentUserRights: ContributorInfoRights;
+	handleConfirm: (right: ContributorInfoRight) => void;
+	toEditContributorRight: ContributorInfoRight;
+	options: SelectOption<ContributorInfoRight>[];
 };
 
 const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
@@ -31,28 +31,9 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	handleClose,
 	handleConfirm,
 	toEditContributorRight,
-	currentUserRights,
+	options,
 }) => {
-	const [right, setRight] = useState<ContributorInfoRights>(toEditContributorRight);
-	const options = compact(
-		Object.values(ContributorInfoRights).map((right) => {
-			if (
-				right === ContributorInfoRights.OWNER &&
-				currentUserRights !== ContributorInfoRights.OWNER
-			) {
-				return null;
-			}
-			return {
-				label:
-					right === ContributorInfoRights.OWNER
-						? tText(
-								'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___eigenaarschap-overdragen'
-						  )
-						: getContributorRightLabels()[right],
-				value: right,
-			};
-		})
-	);
+	const [right, setRight] = useState<ContributorInfoRight>(toEditContributorRight);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -86,7 +67,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 							className="c-rights-select"
 							options={options}
 							value={right}
-							onChange={(value) => setRight(value as ContributorInfoRights)}
+							onChange={(value) => setRight(value as ContributorInfoRight)}
 						/>
 					</FormGroup>
 				</Form>

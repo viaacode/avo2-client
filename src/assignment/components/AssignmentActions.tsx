@@ -15,7 +15,7 @@ import React, { FunctionComponent, useMemo, useState } from 'react';
 import { APP_PATH } from '../../constants';
 import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
 import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
-import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -36,8 +36,8 @@ interface ShareProps extends ShareWithPupilsProps {
 	onClickMobile: () => void;
 	fetchContributors: () => void;
 	availableRights: {
-		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
-		[ContributorInfoRights.VIEWER]: PermissionName;
+		[ContributorInfoRight.CONTRIBUTOR]: PermissionName;
+		[ContributorInfoRight.VIEWER]: PermissionName;
 	};
 }
 

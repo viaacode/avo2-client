@@ -1,7 +1,7 @@
 import { ShareWithPupilsProps } from '../../shared/components';
 import {
 	ContributorInfo,
-	ContributorInfoRights,
+	ContributorInfoRight,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';
 import { ToastService } from '../../shared/services/toast-service';
@@ -9,14 +9,14 @@ import { AssignmentService } from '../assignment.service';
 
 export async function onEditContributor(
 	contributor: ContributorInfo,
-	newRights: ContributorInfoRights,
+	newRights: ContributorInfoRight,
 	shareWithPupilsProps: ShareWithPupilsProps,
 	fetchContributors: () => void,
 	refetchAssignment: () => void
 ) {
 	try {
 		if (shareWithPupilsProps && refetchAssignment) {
-			if (newRights === ContributorInfoRights.OWNER) {
+			if (newRights === ContributorInfoRight.OWNER) {
 				await AssignmentService.transferAssignmentOwnerShip(
 					shareWithPupilsProps.assignment?.id as string,
 					contributor.profileId as string

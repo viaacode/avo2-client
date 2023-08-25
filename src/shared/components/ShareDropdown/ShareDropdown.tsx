@@ -8,7 +8,7 @@ import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
 import {
 	ContributorInfo,
-	ContributorInfoRights,
+	ContributorInfoRight,
 } from '../ShareWithColleagues/ShareWithColleagues.types';
 import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
@@ -21,7 +21,7 @@ export type ShareDropdownProps = {
 	onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>;
 	onEditContributorRights: (
 		info: ContributorInfo,
-		newRights: ContributorInfoRights
+		newRights: ContributorInfoRight
 	) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	buttonProps?: Partial<ButtonProps>;
@@ -29,8 +29,8 @@ export type ShareDropdownProps = {
 	shareWithPupilsProps?: ShareWithPupilsProps;
 	withPupils?: boolean;
 	availableRights: {
-		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
-		[ContributorInfoRights.VIEWER]: PermissionName;
+		[ContributorInfoRight.CONTRIBUTOR]: PermissionName;
+		[ContributorInfoRight.VIEWER]: PermissionName;
 	};
 	isAdmin: boolean;
 };

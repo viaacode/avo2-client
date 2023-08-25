@@ -49,7 +49,7 @@ import {
 } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -938,9 +938,9 @@ const CollectionDetail: FunctionComponent<
 								),
 							}}
 							availableRights={{
-								[ContributorInfoRights.CONTRIBUTOR]:
+								[ContributorInfoRight.CONTRIBUTOR]:
 									PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
-								[ContributorInfoRights.VIEWER]:
+								[ContributorInfoRight.VIEWER]:
 									PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 							}}
 							isAdmin={
@@ -1389,9 +1389,9 @@ const CollectionDetail: FunctionComponent<
 							onAddContributor(info, collectionId, fetchContributors)
 						}
 						availableRights={{
-							[ContributorInfoRights.CONTRIBUTOR]:
+							[ContributorInfoRight.CONTRIBUTOR]:
 								PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
-							[ContributorInfoRights.VIEWER]:
+							[ContributorInfoRight.VIEWER]:
 								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 						}}
 						isAdmin={

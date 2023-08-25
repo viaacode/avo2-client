@@ -11,7 +11,7 @@ import React, { FC, ReactNode } from 'react';
 
 import { getFullName } from '../../helpers';
 import { tHtml, tText } from '../../helpers/translate';
-import { ContributorInfoRights } from '../ShareWithColleagues/ShareWithColleagues.types';
+import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
 
 import './HeaderOwnerAndContributors.scss';
 
@@ -31,7 +31,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 			| Omit<Avo.Assignment.Contributor, 'assignment_id'>[]
 			| Omit<Avo.Collection.Contributor, 'collection_id'>[]
 	).filter(
-		(contrib) => !!contrib.profile_id && !(contrib.rights === ContributorInfoRights.VIEWER)
+		(contrib) => !!contrib.profile_id && !(contrib.rights === ContributorInfoRight.VIEWER)
 	);
 
 	const renderOwner = () => {

@@ -44,7 +44,7 @@ import {
 	ShareModal,
 } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
-import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -1263,9 +1263,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 						}
 						withPupils={false}
 						availableRights={{
-							[ContributorInfoRights.CONTRIBUTOR]:
+							[ContributorInfoRight.CONTRIBUTOR]:
 								PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
-							[ContributorInfoRights.VIEWER]:
+							[ContributorInfoRight.VIEWER]:
 								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 						}}
 						buttonProps={{
@@ -1460,9 +1460,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 						}
 						withPupils={false}
 						availableRights={{
-							[ContributorInfoRights.CONTRIBUTOR]:
+							[ContributorInfoRight.CONTRIBUTOR]:
 								PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
-							[ContributorInfoRights.VIEWER]:
+							[ContributorInfoRight.VIEWER]:
 								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
 						}}
 						isAdmin={

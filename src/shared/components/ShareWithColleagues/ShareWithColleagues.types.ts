@@ -1,4 +1,4 @@
-export enum ContributorInfoRights {
+export enum ContributorInfoRight {
 	CONTRIBUTOR = 'CONTRIBUTOR',
 	VIEWER = 'VIEWER',
 	OWNER = 'OWNER',
@@ -7,7 +7,7 @@ export enum ContributorInfoRights {
 export interface ContributorInfo {
 	email?: string;
 	inviteEmail?: string;
-	rights: ContributorInfoRights;
+	rights: ContributorInfoRight;
 	firstName?: string;
 	lastName?: string;
 	profileImage?: string;

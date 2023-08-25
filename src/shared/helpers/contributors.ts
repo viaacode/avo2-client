@@ -2,7 +2,7 @@ import type { Avo } from '@viaa/avo2-types';
 
 import {
 	ContributorInfo,
-	ContributorInfoRights,
+	ContributorInfoRight,
 } from '../components/ShareWithColleagues/ShareWithColleagues.types';
 
 export const transformContributorsToSimpleContributors = (
@@ -12,7 +12,7 @@ export const transformContributorsToSimpleContributors = (
 	const defaultContributors: ContributorInfo[] = [
 		{
 			email: owner.mail as string,
-			rights: ContributorInfoRights.OWNER,
+			rights: ContributorInfoRight.OWNER,
 			firstName: owner.first_name,
 			lastName: owner.last_name,
 			profileImage: owner?.profile?.organisation?.logo_url || owner?.profile?.avatar,
@@ -25,8 +25,8 @@ export const transformContributorsToSimpleContributors = (
 			return {
 				email: contributor.profile?.user.mail,
 				inviteEmail: contributor.invite_email,
-				rights: ContributorInfoRights[
-					contributor.rights as keyof typeof ContributorInfoRights
+				rights: ContributorInfoRight[
+					contributor.rights as keyof typeof ContributorInfoRight
 				],
 				firstName: contributor.profile?.user.first_name,
 				lastName: contributor.profile?.user.last_name,
@@ -46,12 +46,12 @@ export const getContributorType = (
 	user: Avo.User.User,
 	subject: Avo.Assignment.Assignment | Avo.Collection.Collection,
 	contributors: (Avo.Assignment.Contributor | Avo.Collection.Contributor)[]
-): ContributorInfoRights => {
+): ContributorInfoRight => {
 	if (user.profile?.id === subject.owner_profile_id) {
-		return ContributorInfoRights.OWNER;
+		return ContributorInfoRight.OWNER;
 	}
 
 	return contributors.find(
 		(contributor) => (contributor.profile_id || contributor?.profile?.id) === user.profile?.id
-	)?.rights as ContributorInfoRights;
+	)?.rights as ContributorInfoRight;
 };

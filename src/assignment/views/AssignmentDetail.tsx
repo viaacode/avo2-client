@@ -38,7 +38,7 @@ import {
 	ShareWithPupilsProps,
 } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
-import { ContributorInfoRights } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/constants';
 import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
@@ -139,7 +139,7 @@ const AssignmentDetail: FC<
 		(contributor) =>
 			contributor.profile_id &&
 			contributor.profile_id === user?.profile?.id &&
-			contributor.rights === (ContributorInfoRights.CONTRIBUTOR as Avo.Share.Rights)
+			contributor.rights === (ContributorInfoRight.CONTRIBUTOR as Avo.Share.Rights)
 	);
 	const isOwner =
 		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
@@ -566,9 +566,9 @@ const AssignmentDetail: FC<
 							}}
 							shareWithPupilsProps={shareWithPupilsProps}
 							availableRights={{
-								[ContributorInfoRights.CONTRIBUTOR]:
+								[ContributorInfoRight.CONTRIBUTOR]:
 									PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
-								[ContributorInfoRights.VIEWER]:
+								[ContributorInfoRight.VIEWER]:
 									PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
 							}}
 							isAdmin={
@@ -956,9 +956,9 @@ const AssignmentDetail: FC<
 					}
 					shareWithPupilsProps={shareWithPupilsProps}
 					availableRights={{
-						[ContributorInfoRights.CONTRIBUTOR]:
+						[ContributorInfoRight.CONTRIBUTOR]:
 							PermissionName.SHARE_ASSIGNMENT_WITH_CONTRIBUTOR,
-						[ContributorInfoRights.VIEWER]: PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
+						[ContributorInfoRight.VIEWER]: PermissionName.SHARE_ASSIGNMENT_WITH_VIEWER,
 					}}
 					isAdmin={
 						commonUser?.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) ||

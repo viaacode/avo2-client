@@ -8,7 +8,7 @@ import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
 import {
 	ContributorInfo,
-	ContributorInfoRights,
+	ContributorInfoRight,
 } from '../ShareWithColleagues/ShareWithColleagues.types';
 import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 import './ShareModal.scss';
@@ -21,14 +21,14 @@ type ShareModalProps = {
 	onAddContributor: (info: Partial<ContributorInfo>) => Promise<void>;
 	onEditContributorRights: (
 		info: ContributorInfo,
-		newRights: ContributorInfoRights
+		newRights: ContributorInfoRight
 	) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	shareWithPupilsProps?: ShareWithPupilsProps;
 	withPupils?: boolean;
 	availableRights: {
-		[ContributorInfoRights.CONTRIBUTOR]: PermissionName;
-		[ContributorInfoRights.VIEWER]: PermissionName;
+		[ContributorInfoRight.CONTRIBUTOR]: PermissionName;
+		[ContributorInfoRight.VIEWER]: PermissionName;
 	};
 	isAdmin: boolean;
 };

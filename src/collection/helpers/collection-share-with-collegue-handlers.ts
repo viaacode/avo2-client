@@ -1,6 +1,6 @@
 import {
 	ContributorInfo,
-	ContributorInfoRights,
+	ContributorInfoRight,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';
 import { ToastService } from '../../shared/services/toast-service';
@@ -32,14 +32,14 @@ export async function onDeleteContributor(
 
 export async function onEditContributor(
 	user: ContributorInfo,
-	newRights: ContributorInfoRights,
+	newRights: ContributorInfoRight,
 	collectionId: string,
 	fetchContributors: () => Promise<void>,
 	fetchCollection: () => Promise<void>
 ): Promise<void> {
 	try {
 		if (collectionId) {
-			if (newRights === ContributorInfoRights.OWNER) {
+			if (newRights === ContributorInfoRight.OWNER) {
 				await CollectionService.transferCollectionOwnerShip(
 					collectionId,
 					user.profileId as string
