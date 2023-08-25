@@ -46,4 +46,8 @@ $item-description-height-2: 320px;
 			max-height: 9rem;
 		}
 	}
+
+	> a {
+		width: fit-content;
+	}
 }
