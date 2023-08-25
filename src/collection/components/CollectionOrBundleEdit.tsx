@@ -34,6 +34,7 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import {
+	HeaderOwnerAndContributors,
 	InActivityWarningModal,
 	InputModal,
 	InteractiveTour,
@@ -52,7 +53,6 @@ import {
 	CustomError,
 	isMobileWidth,
 	navigate,
-	renderAvatar,
 } from '../../shared/helpers';
 import {
 	getContributorType,
@@ -1350,8 +1350,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 	};
 
 	const renderCollectionOrBundleEdit = () => {
-		const { profile } = collectionState.currentCollection as Avo.Collection.Collection;
-
 		if (loadingInfo.state === 'forbidden') {
 			return (
 				<ErrorNoAccess
@@ -1396,7 +1394,14 @@ const CollectionOrBundleEdit: FunctionComponent<
 						</div>
 					</HeaderButtons>
 
-					<HeaderAvatar>{profile && renderAvatar(profile, { dark: true })}</HeaderAvatar>
+					{collectionState.currentCollection && (
+						<HeaderAvatar>
+							<HeaderOwnerAndContributors
+								subject={collectionState.currentCollection}
+								user={user as Avo.User.User}
+							/>
+						</HeaderAvatar>
+					)}
 				</Header>
 
 				<Navbar background="alt" placement="top" autoHeight>
