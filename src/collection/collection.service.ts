@@ -394,8 +394,8 @@ export class CollectionService {
 
 			// Update collection labels
 			if (
-				PermissionService.hasPerm(user, PermissionName.EDIT_COLLECTION_LABELS) ||
-				PermissionService.hasPerm(user, PermissionName.EDIT_BUNDLE_LABELS)
+				PermissionService.hasPerm(user, PermissionName.EDIT_COLLECTION_QUALITY_LABELS) ||
+				PermissionService.hasPerm(user, PermissionName.EDIT_BUNDLE_QUALITY_LABELS)
 			) {
 				// Update collection labels
 				const initialLabels: string[] = this.getLabels(initialCollection).map(

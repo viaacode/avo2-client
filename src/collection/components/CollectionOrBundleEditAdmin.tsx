@@ -426,8 +426,8 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 									{PermissionService.hasPerm(
 										user,
 										isCollection
-											? PermissionName.EDIT_COLLECTION_LABELS
-											: PermissionName.EDIT_BUNDLE_LABELS
+											? PermissionName.EDIT_COLLECTION_QUALITY_LABELS
+											: PermissionName.EDIT_BUNDLE_QUALITY_LABELS
 									) && (
 										<FormGroup
 											label={tText(

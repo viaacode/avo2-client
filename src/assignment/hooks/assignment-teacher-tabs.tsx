@@ -27,7 +27,7 @@ export function useAssignmentTeacherTabs(
 	);
 
 	const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(user, [
-		PermissionName.EDIT_ASSIGNMENT_LABELS,
+		PermissionName.EDIT_ASSIGNMENT_QUALITY_LABELS,
 		PermissionName.EDIT_ASSIGNMENT_AUTHOR,
 		PermissionName.EDIT_ASSIGNMENT_EDITORIAL_STATUS,
 	]);

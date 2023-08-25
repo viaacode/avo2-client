@@ -610,12 +610,12 @@ const CollectionOrBundleEdit: FunctionComponent<
 			user,
 			isCollection
 				? [
-						PermissionName.EDIT_COLLECTION_LABELS,
+						PermissionName.EDIT_COLLECTION_QUALITY_LABELS,
 						PermissionName.EDIT_COLLECTION_AUTHOR,
 						PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS,
 				  ]
 				: [
-						PermissionName.EDIT_BUNDLE_LABELS,
+						PermissionName.EDIT_BUNDLE_QUALITY_LABELS,
 						PermissionName.EDIT_BUNDLE_AUTHOR,
 						PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS,
 				  ]
