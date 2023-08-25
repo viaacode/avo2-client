@@ -2,7 +2,7 @@ import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -36,7 +36,10 @@ const AssignmentResponseEditPage: FunctionComponent<
 	const assignmentId = match.params.id;
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
 	const [assignmentLoading, setAssignmentLoading] = useState<boolean>(false);
-	const [assignmentError, setAssignmentError] = useState<any | null>(null);
+	const [assignmentError, setAssignmentError] = useState<{
+		message: string | ReactNode;
+		icon: IconName;
+	} | null>(null);
 	const [assignmentResponse, setAssignmentResponse] = useState<Omit<
 		Avo.Assignment.Response,
 		'assignment'
@@ -93,10 +96,9 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			if (isString(assignmentOrError)) {
 				// error
-				setAssignmentError({
-					state: 'error',
-					...getAssignmentErrorObj(assignmentOrError as AssignmentRetrieveError),
-				});
+				setAssignmentError(
+					getAssignmentErrorObj(assignmentOrError as AssignmentRetrieveError)
+				);
 				setAssignmentLoading(false);
 				return;
 			}
@@ -104,10 +106,9 @@ const AssignmentResponseEditPage: FunctionComponent<
 			// Assignment is loaded but if there is no deadline set, show 'Not yet available' error to the student
 			if (assignmentOrError.deadline_at === null) {
 				// error
-				setAssignmentError({
-					state: 'error',
-					...getAssignmentErrorObj(AssignmentRetrieveError.NOT_YET_AVAILABLE),
-				});
+				setAssignmentError(
+					getAssignmentErrorObj(AssignmentRetrieveError.NOT_YET_AVAILABLE)
+				);
 				setAssignmentLoading(false);
 				return;
 			}
@@ -133,7 +134,12 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			setAssignment(assignmentOrError);
 		} catch (err) {
-			setAssignmentError(err);
+			setAssignmentError({
+				message: tHtml(
+					'assignment/views/assignment-response-edit/assignment-response-edit-page___het-ophalen-van-de-opdracht-is-mislukt'
+				),
+				icon: IconName.userStudent,
+			});
 		}
 		setAssignmentLoading(false);
 	}, [assignmentId]);
