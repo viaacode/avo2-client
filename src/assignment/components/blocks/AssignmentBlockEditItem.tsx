@@ -1,6 +1,5 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { isNil } from 'lodash-es';
 import React, { FC, ReactNode } from 'react';
 
 import { FilterState } from '../../../search/search.types';
@@ -57,13 +56,12 @@ export const AssignmentBlockEditItem: FC<
 	};
 
 	const handleVideoCut = async (update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>) => {
-		let thumbnail = editableBlock.thumbnail_path;
-		if (!isNil(update.start_oc) && update.start_oc !== 0) {
-			thumbnail = await VideoStillService.getVideoStill(
-				editableBlock.fragment_id,
-				(update?.start_oc || 0) * 1000
-			);
-		}
+		const thumbnail = update.start_oc
+			? await VideoStillService.getVideoStill(
+					editableBlock.fragment_id,
+					(update?.start_oc || 0) * 1000
+			  )
+			: null;
 		setBlock({ ...editableBlock, ...update, thumbnail_path: thumbnail });
 	};
 

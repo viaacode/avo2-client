@@ -1142,6 +1142,9 @@ export class AssignmentService {
 			position: 0,
 			start_oc: item.start_oc,
 			end_oc: item.end_oc,
+			thumbnail_path: item.start_oc
+				? await VideoStillService.getVideoStill(item.external_id, item.start_oc * 1000)
+				: null,
 		};
 
 		await dataService.query<

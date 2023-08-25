@@ -10,7 +10,7 @@ import { UrlUpdateType } from 'use-query-params';
 
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
-import { CutFragmentModal } from '../../../../item/components';
+import { CutFragmentForAssignmentModal } from '../../../../item/components';
 import { ItemTrimInfo } from '../../../../item/item.types';
 import ItemDetail from '../../../../item/views/ItemDetail';
 import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';
@@ -302,7 +302,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 		<>
 			{renderSearchContent()}
 			{selectedItem && isAddToAssignmentModalOpen && (
-				<CutFragmentModal
+				<CutFragmentForAssignmentModal
 					key={'cut-fragment-modal-' + selectedItem.external_id}
 					itemMetaData={selectedItem}
 					isOpen={isAddToAssignmentModalOpen}

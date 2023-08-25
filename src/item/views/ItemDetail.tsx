@@ -104,7 +104,11 @@ import {
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { UnpublishableItem } from '../../shared/types';
-import { AddToCollectionModal, CutFragmentModal, ItemVideoDescription } from '../components';
+import {
+	AddToCollectionModal,
+	CutFragmentForAssignmentModal,
+	ItemVideoDescription,
+} from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
@@ -977,7 +981,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				{!isNil(match.params.id) &&
 					isAddToFragmentModalOpen &&
 					PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
-						<CutFragmentModal
+						<CutFragmentForAssignmentModal
 							itemMetaData={item}
 							isOpen={isAddToFragmentModalOpen}
 							onClose={() => {

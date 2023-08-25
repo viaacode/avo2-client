@@ -29,7 +29,7 @@ import ItemVideoDescription from '../ItemVideoDescription';
 
 import './CutFragmentModal.scss';
 
-interface CutFragmentModalProps {
+interface CutFragmentForAssignmentModalProps {
 	itemMetaData: Avo.Item.Item;
 	isOpen: boolean;
 	onClose: () => void;
@@ -46,8 +46,8 @@ interface CutFragmentModalProps {
  * @param afterCutCallback
  * @constructor
  */
-const CutFragmentModal: FunctionComponent<
-	CutFragmentModalProps & RouteComponentProps & UserProps
+const CutFragmentForAssignmentModal: FunctionComponent<
+	CutFragmentForAssignmentModalProps & RouteComponentProps & UserProps
 > = ({ itemMetaData, isOpen, onClose, afterCutCallback }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -184,4 +184,4 @@ const CutFragmentModal: FunctionComponent<
 export default compose(
 	withRouter,
 	withUser
-)(CutFragmentModal) as FunctionComponent<CutFragmentModalProps>;
+)(CutFragmentForAssignmentModal) as FunctionComponent<CutFragmentForAssignmentModalProps>;

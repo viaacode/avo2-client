@@ -3,11 +3,12 @@ import React, { useState } from 'react';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
-import { CutFragmentModal } from '../../item/components';
+import { CutFragmentForAssignmentModal } from '../../item/components';
 import { ItemTrimInfo } from '../../item/item.types';
 import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
+import { VideoStillService } from '../../shared/services/video-stills-service';
 import { Positioned } from '../../shared/types';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType } from '../assignment.types';
@@ -132,7 +133,7 @@ export function useBlockListModals(
 					/>
 
 					{item && (
-						<CutFragmentModal // re-use Trim modal
+						<CutFragmentForAssignmentModal // re-use Trim modal
 							itemMetaData={item}
 							isOpen={isTrimItemModalOpen}
 							onClose={() => {
@@ -151,6 +152,12 @@ export function useBlockListModals(
 										: null,
 									end_oc: itemTrimInfo.hasCut
 										? itemTrimInfo.fragmentEndTime
+										: null,
+									thumbnail_path: itemTrimInfo.hasCut
+										? await VideoStillService.getVideoStill(
+												item?.external_id,
+												itemTrimInfo.fragmentStartTime * 1000
+										  )
 										: null,
 								};
 								const newBlocks = insertMultipleAtPosition(blocks, assignmentBlock);
