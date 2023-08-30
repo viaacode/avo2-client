@@ -137,7 +137,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 					values={[start || minTime, end || maxTime]}
 					onChange={onUpdateMultiRangeValues}
 					min={minTime}
-					max={maxTime}
+					max={Math.max(maxTime, minTime + 1)} // Avoid issues with min === 0 and max === 0 with Range library
 					step={1}
 				/>
 			</div>
