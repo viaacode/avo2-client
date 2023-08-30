@@ -88,7 +88,7 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 				{owner && (
 					<Avatar
 						dark
-						image={owner.avatar || owner.organisation?.logo_url || undefined}
+						image={owner.organisation?.logo_url || owner.avatar || undefined}
 						initials={`${owner?.user?.first_name?.[0] || ''} ${
 							owner?.user?.last_name?.[0] || ''
 						}`}
