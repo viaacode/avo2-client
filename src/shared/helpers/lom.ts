@@ -10,7 +10,7 @@ const EDUCATION_LEVEL_IDS = [
 	'https://w3id.org/onderwijs-vlaanderen/id/structuur/deeltijds-kunstonderwijs',
 	'https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-onderwijs',
 	'https://w3id.org/onderwijs-vlaanderen/id/structuur/hoger-onderwijs',
-	'https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs ',
+	'https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs',
 ];
 
 export const groupLoms = (loms: Avo.Lom.LomField[]): LomFieldsByScheme => {
