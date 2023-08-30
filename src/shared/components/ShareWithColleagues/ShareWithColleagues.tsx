@@ -246,13 +246,13 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		if (commonUser?.permissions?.includes(availableRights[ContributorInfoRight.CONTRIBUTOR])) {
 			options.push({
 				label: getContributorRightLabel(ContributorInfoRight.CONTRIBUTOR),
-				value: ContributorInfoRight.OWNER,
+				value: ContributorInfoRight.CONTRIBUTOR,
 			});
 		}
 		if (commonUser?.permissions?.includes(availableRights[ContributorInfoRight.VIEWER])) {
 			options.push({
 				label: getContributorRightLabel(ContributorInfoRight.VIEWER),
-				value: ContributorInfoRight.OWNER,
+				value: ContributorInfoRight.VIEWER,
 			});
 		}
 		if (currentUser.rights === ContributorInfoRight.OWNER) {
