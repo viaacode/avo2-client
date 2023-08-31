@@ -13,7 +13,6 @@ import { ROUTE_PARTS } from '../../../shared/constants';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
-import { FileUploadService } from '../../../shared/services/file-upload-service';
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
 import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
@@ -212,7 +211,6 @@ export function getAdminCoreConfig(): AdminConfig {
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				clear: async (_key: string) => Promise.resolve(),
 			},
-			assetService: FileUploadService,
 		},
 		database: {
 			databaseApplicationType: DatabaseType.avo,
