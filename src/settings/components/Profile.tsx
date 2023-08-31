@@ -20,7 +20,7 @@ import {
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
-import { compact, get, isNil, map } from 'lodash-es';
+import { compact, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
@@ -31,15 +31,12 @@ import { Dispatch } from 'redux';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { getProfileFromUser } from '../../authentication/helpers/get-profile-info';
-import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	getLoginResponse,
 	getLoginStateAction,
 	setLoginSuccess,
 } from '../../authentication/store/actions';
-import { selectUser } from '../../authentication/store/selectors';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { FileUpload } from '../../shared/components';
@@ -48,13 +45,14 @@ import { EducationalOrganisationsSelect } from '../../shared/components/Educatio
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate, getEnv } from '../../shared/helpers';
-import { groupLoms } from '../../shared/helpers/lom';
+import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
 import { ToastService } from '../../shared/services/toast-service';
-import store, { AppState } from '../../store';
+import store from '../../store';
 import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
 import { SettingsService } from '../settings.service';
 import { UsersInSameCompanyColumn } from '../settings.types';
@@ -88,126 +86,129 @@ export interface ProfileProps extends DefaultSecureRouteProps {
 const Profile: FunctionComponent<
 	ProfileProps & {
 		getLoginState: (forceRefetch: boolean) => Dispatch;
-	}
-> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, location, user, getLoginState }) => {
+	} & UserProps
+> = ({
+	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
+	history,
+	location,
+	user,
+	commonUser,
+	getLoginState,
+}) => {
 	const { tText, tHtml } = useTranslation();
 	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
-	>(get(user, 'profile.organizations', []));
+	>(commonUser?.educationalOrganisations || []);
 	const [selectedLoms, setSelectedLoms] = useState<LomFieldSchema[]>(
-		compact(map(user?.profile?.loms, 'lom'))
+		compact(map(commonUser?.loms, 'lom'))
 	);
-	const firstName = user?.first_name || '';
-	const lastName = user?.last_name || '';
-	const email = user?.mail || '';
-	const [alias, setAlias] = useState<string>(user?.profile?.alias ?? '');
-	const [avatar, setAvatar] = useState<string | null>(
-		get(getProfileFromUser(user, true), 'avatar', null)
-	);
-	const [title, setTitle] = useState<string | null>(
-		get(getProfileFromUser(user, true), 'title', null)
-	);
-	const [bio, setBio] = useState<string | null>(get(getProfileFromUser(user, true), 'bio', null));
+	const firstName = commonUser?.firstName || '';
+	const lastName = commonUser?.lastName || '';
+	const email = commonUser?.email || '';
+	const [alias, setAlias] = useState<string>(commonUser?.alias ?? '');
+	const [avatar, setAvatar] = useState<string | null>(commonUser?.avatar || null);
+	const [title, setTitle] = useState<string | null>(commonUser?.title || null);
+	const [bio, setBio] = useState<string | null>(commonUser?.bio || null);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
 	const [allOrganisations, setAllOrganisations] = useState<
 		Partial<Avo.Organization.Organization>[] | null
 	>(null);
-	const [companyId, setCompanyId] = useState<string | null>(
-		get(getProfileFromUser(user, true), 'company_id', null)
-	);
-	const [permissions, setPermissions] = useState<FieldPermissions | null>(null);
+	const [companyId, setCompanyId] = useState<string | null>(commonUser?.companyId || null);
+	const [uiPermissions, setUiPermissions] = useState<FieldPermissions | null>(null);
 	const [profileErrors, setProfileErrors] = useState<
 		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
 	>({});
 	const [usersInSameCompany, setUsersInSameCompany] = useState<Partial<Avo.User.Profile>[]>([]);
 
-	const isExceptionAccount = get(user, 'profile.is_exception', false);
+	const isExceptionAccount = commonUser?.isException || false;
 
-	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+	const isPupil = commonUser.userGroup?.id === SpecialUserGroup.Pupil;
 
 	useEffect(() => {
-		setPermissions({
+		const tempUiPermissions = {
 			THEME: {
-				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_THEME_ON_PROFILE_PAGE),
-				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_THEME_ON_PROFILE_PAGE),
+				VIEW: !!commonUser?.permissions?.includes(
+					PermissionName.VIEW_THEME_ON_PROFILE_PAGE
+				),
+				EDIT: !!commonUser?.permissions?.includes(
+					PermissionName.EDIT_THEME_ON_PROFILE_PAGE
+				),
 				REQUIRED:
-					PermissionService.hasPerm(
-						user,
+					!!commonUser?.permissions?.includes(
 						PermissionName.REQUIRED_THEME_ON_PROFILE_PAGE
 					) && !isExceptionAccount,
 			},
 			SUBJECTS: {
-				VIEW: PermissionService.hasPerm(user, PermissionName.VIEW_SUBJECTS_ON_PROFILE_PAGE),
-				EDIT: PermissionService.hasPerm(user, PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE),
+				VIEW: !!commonUser?.permissions?.includes(
+					PermissionName.VIEW_SUBJECTS_ON_PROFILE_PAGE
+				),
+				EDIT: !!commonUser?.permissions?.includes(
+					PermissionName.EDIT_SUBJECTS_ON_PROFILE_PAGE
+				),
 				REQUIRED:
-					PermissionService.hasPerm(
-						user,
+					!!commonUser?.permissions?.includes(
 						PermissionName.REQUIRED_SUBJECTS_ON_PROFILE_PAGE
 					) && !isExceptionAccount,
 			},
 			EDUCATION_LEVEL: {
-				VIEW: PermissionService.hasPerm(
-					user,
-					PermissionName.VIEW_EDUCATION_LEVEL_ON_PROFILE_PAGE
-				),
+				VIEW:
+					!!commonUser?.permissions?.includes(
+						PermissionName.VIEW_EDUCATION_LEVEL_ON_PROFILE_PAGE
+					) &&
+					(!isExceptionAccount ||
+						groupLomLinks(commonUser?.loms)?.educationLevel?.length > 0 ||
+						commonUser?.userGroup?.id !== SpecialUserGroup.Teacher),
 				EDIT:
-					PermissionService.hasPerm(
-						user,
+					!!commonUser?.permissions?.includes(
 						PermissionName.EDIT_EDUCATION_LEVEL_ON_PROFILE_PAGE
 					) && !isExceptionAccount,
 				REQUIRED:
-					PermissionService.hasPerm(
-						user,
+					!!commonUser?.permissions?.includes(
 						PermissionName.REQUIRED_EDUCATION_LEVEL_ON_PROFILE_PAGE
 					) && !isExceptionAccount,
 			},
 			EDUCATIONAL_ORGANISATION: {
-				VIEW: PermissionService.hasPerm(
-					user,
+				VIEW: !!commonUser?.permissions?.includes(
 					PermissionName.VIEW_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
 				),
 				EDIT:
-					PermissionService.hasPerm(
-						user,
+					!!commonUser?.permissions?.includes(
 						PermissionName.EDIT_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
 					) && !isExceptionAccount,
 				REQUIRED:
-					PermissionService.hasPerm(
-						user,
+					!!commonUser?.permissions?.includes(
 						PermissionName.REQUIRED_EDUCATIONAL_ORGANISATION_ON_PROFILE_PAGE
 					) && !isExceptionAccount,
 			},
 			ORGANISATION: {
-				VIEW: PermissionService.hasPerm(
-					user,
+				VIEW: !!commonUser?.permissions?.includes(
 					PermissionName.VIEW_ORGANISATION_ON_PROFILE_PAGE
 				),
-				EDIT: PermissionService.hasPerm(
-					user,
+				EDIT: !!commonUser?.permissions?.includes(
 					PermissionName.EDIT_ORGANISATION_ON_PROFILE_PAGE
 				),
-				REQUIRED: PermissionService.hasPerm(
-					user,
+				REQUIRED: !!commonUser?.permissions?.includes(
 					PermissionName.REQUIRED_ORGANISATION_ON_PROFILE_PAGE
 				),
-				VIEW_USERS_IN_SAME_COMPANY: PermissionService.hasPerm(
-					user,
+				VIEW_USERS_IN_SAME_COMPANY: !!commonUser?.permissions?.includes(
 					PermissionName.VIEW_USERS_IN_SAME_COMPANY
 				),
 			},
-		});
+		};
+		console.log(tempUiPermissions);
+		setUiPermissions(tempUiPermissions);
 	}, [isExceptionAccount, user]);
 
 	useEffect(() => {
-		if (!permissions) {
+		if (!uiPermissions) {
 			return;
 		}
 
 		// TODO for view we should use the company name from the profile object instead of the company_id and lookup in the list
 		// Waiting for: https://meemoo.atlassian.net/browse/DEV-985
-		if (permissions.ORGANISATION.VIEW || permissions.ORGANISATION.EDIT) {
+		if (uiPermissions.ORGANISATION.VIEW || uiPermissions.ORGANISATION.EDIT) {
 			OrganisationService.fetchOrganisations(false)
 				.then(setAllOrganisations)
 				.catch((err) => {
@@ -222,14 +223,11 @@ const Profile: FunctionComponent<
 				});
 		}
 
-		const companyId = get(user, 'profile.company_id');
-		if (companyId && permissions.ORGANISATION.VIEW_USERS_IN_SAME_COMPANY) {
-			OrganisationService.fetchUsersByCompanyId(companyId)
+		if (commonUser?.companyId && uiPermissions.ORGANISATION.VIEW_USERS_IN_SAME_COMPANY) {
+			OrganisationService.fetchUsersByCompanyId(commonUser?.companyId)
 				.then((usersInSameCompany) => {
 					setUsersInSameCompany(
-						usersInSameCompany.filter(
-							(profile) => profile.id !== get(user, 'profile.id')
-						)
+						usersInSameCompany.filter((profile) => profile.id !== commonUser?.profileId)
 					);
 				})
 				.catch((err) => {
@@ -246,10 +244,10 @@ const Profile: FunctionComponent<
 					);
 				});
 		}
-	}, [permissions, isCompleteProfileStep, tText, user, setAllOrganisations]);
+	}, [uiPermissions, isCompleteProfileStep, tText, user, setAllOrganisations]);
 
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<Avo.User.UpdateProfileValues>) => {
-		if (!permissions) {
+		if (!uiPermissions) {
 			return false;
 		}
 		const errors = [];
@@ -257,32 +255,32 @@ const Profile: FunctionComponent<
 		const groupedLoms = groupLoms(selectedLoms);
 
 		if (
-			(permissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
+			(uiPermissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
 			!groupedLoms.subject?.length
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
-		if ((permissions.THEME.REQUIRED || isCompleteProfileStep) && !groupedLoms.theme?.length) {
+		if ((uiPermissions.THEME.REQUIRED || isCompleteProfileStep) && !groupedLoms.theme?.length) {
 			errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
-			(permissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
+			(uiPermissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
 			!groupedLoms.educationLevel?.length
 		) {
 			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
-			(permissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
+			(uiPermissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
 			!profileInfo.organizations?.length
 		) {
 			errors.push(tText('settings/components/profile___educatieve-organisatie-is-verplicht'));
 			filledIn = false;
 		}
 		if (
-			permissions.ORGANISATION.REQUIRED &&
+			uiPermissions.ORGANISATION.REQUIRED &&
 			!profileInfo.company_id &&
 			!isCompleteProfileStep
 		) {
@@ -395,6 +393,9 @@ const Profile: FunctionComponent<
 	};
 
 	const renderOrganisationField = (editable: boolean, required: boolean) => {
+		if (!uiPermissions?.ORGANISATION?.VIEW) {
+			return null;
+		}
 		return (
 			<FormGroup
 				label={tText('settings/components/profile___organisatie')}
@@ -420,17 +421,15 @@ const Profile: FunctionComponent<
 				) : !companyId ? (
 					'-'
 				) : (
-					get(
-						(allOrganisations || []).find((org) => org.or_id === companyId),
-						'name'
-					) || tText('settings/components/profile___onbekende-organisatie')
+					(allOrganisations || []).find((org) => org.or_id === companyId)?.name ||
+					tText('settings/components/profile___onbekende-organisatie')
 				)}
 			</FormGroup>
 		);
 	};
 
 	const renderEducationOrganisationsField = (editable: boolean, required: boolean) => {
-		if (!editable && !selectedOrganisations.length) {
+		if (!selectedOrganisations.length || !uiPermissions?.EDUCATIONAL_ORGANISATION?.VIEW) {
 			return null;
 		}
 		return (
@@ -521,13 +520,13 @@ const Profile: FunctionComponent<
 		permissionName: FieldPermissionKey,
 		renderFunc: (editable: boolean, required: boolean) => ReactNode
 	) => {
-		if (!permissions) {
+		if (!uiPermissions) {
 			return null;
 		}
-		if (permissions[permissionName].VIEW) {
+		if (uiPermissions[permissionName].VIEW) {
 			return renderFunc(
-				permissions[permissionName].EDIT,
-				permissions[permissionName].REQUIRED
+				uiPermissions[permissionName].EDIT,
+				uiPermissions[permissionName].REQUIRED
 			);
 		}
 		return null;
@@ -539,21 +538,21 @@ const Profile: FunctionComponent<
 	) => {
 		switch (columnId) {
 			case 'full_name':
-				return get(profile, 'user.full_name') || '-';
+				return commonUser?.fullName || '-';
 
 			case 'mail':
-				return get(profile, 'user.mail') || '-';
+				return commonUser?.email || '-';
 
 			case 'user_group':
-				return get(profile, 'profile_user_group.group.label') || '-';
+				return commonUser?.userGroup?.label || '-';
 
 			case 'is_blocked':
-				return get(profile, 'user.is_blocked')
+				return commonUser?.isBlocked
 					? tText('settings/components/profile___ja')
 					: tText('settings/components/profile___nee');
 
 			case 'last_access_at': {
-				const lastAccessDate = get(profile, 'user.last_access_at');
+				const lastAccessDate = commonUser?.lastAccessAt;
 				return !isNil(lastAccessDate) ? formatDate(lastAccessDate) : '-';
 			}
 
@@ -562,9 +561,9 @@ const Profile: FunctionComponent<
 
 				return tempAccess?.current?.status === 1
 					? `${tText('settings/components/profile___van')} ${formatDate(
-							get(tempAccess, 'from')
+							tempAccess?.from
 					  )} ${tText('settings/components/profile___tot')} ${formatDate(
-							get(tempAccess, 'until')
+							tempAccess?.until
 					  )}`
 					: '-';
 			}
@@ -628,7 +627,7 @@ const Profile: FunctionComponent<
 													'settings/components/profile___nickname'
 												)}
 												labelFor="alias"
-												error={get(profileErrors, 'alias')}
+												error={profileErrors?.alias}
 											>
 												<TextInput
 													id="alias"
@@ -654,7 +653,7 @@ const Profile: FunctionComponent<
 													onChange={setTitle}
 												/>
 											</FormGroup>
-											{!get(user, 'profile.organisation') && user.profile && (
+											{!commonUser?.organisation && commonUser?.profileId && (
 												<FormGroup
 													label={tText(
 														'settings/components/profile___profielfoto'
@@ -668,19 +667,16 @@ const Profile: FunctionComponent<
 														urls={compact([avatar])}
 														allowMulti={false}
 														assetType="PROFILE_AVATAR"
-														ownerId={user.profile.id}
+														ownerId={commonUser?.profileId}
 														onChange={(urls) => setAvatar(urls[0])}
 													/>
 												</FormGroup>
 											)}
-											{!!get(user, 'profile.organisation.logo_url') && (
+											{!!commonUser?.organisation?.logo_url && (
 												<div
 													className="c-logo-preview"
 													style={{
-														backgroundImage: `url(${get(
-															user,
-															'profile.organisation.logo_url'
-														)})`,
+														backgroundImage: `url(${commonUser?.organisation?.logo_url})`,
 													}}
 												/>
 											)}
@@ -702,10 +698,14 @@ const Profile: FunctionComponent<
 
 											{/* Show readonly education on profile page */}
 											<CommonMetadata
-												enabledMetaData={[
-													SearchFilter.educationLevel,
-													SearchFilter.educationDegree,
-												]}
+												enabledMetaData={
+													uiPermissions?.EDUCATION_LEVEL?.VIEW
+														? [
+																SearchFilter.educationLevel,
+																SearchFilter.educationDegree,
+														  ]
+														: []
+												}
 												subject={{
 													loms: selectedLoms.map(
 														(lomField) =>
@@ -763,7 +763,7 @@ const Profile: FunctionComponent<
 								</>
 							)}
 						</Column>
-						{get(permissions, 'ORGANISATION.VIEW_USERS_IN_SAME_COMPANY') && (
+						{uiPermissions?.ORGANISATION?.VIEW_USERS_IN_SAME_COMPANY && (
 							<Column size="3-12">
 								<Spacer margin="top-extra-large">
 									<BlockHeading type="h2">
@@ -828,10 +828,6 @@ const Profile: FunctionComponent<
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
-	user: selectUser(state),
-});
-
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
 		getLoginState: (forceRefetch: boolean) =>
@@ -839,4 +835,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));
+export default withUser(
+	withRouter(connect(mapDispatchToProps)(Profile))
+) as FunctionComponent<ProfileProps>;

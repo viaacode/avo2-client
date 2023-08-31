@@ -117,7 +117,11 @@ export function getProfileInitials(user: Avo.User.User | undefined): string {
 }
 
 export function isProfileComplete(user: Avo.User.User): boolean {
-	const profile = get(user, 'profile');
+	const profile = user?.profile;
+
+	if (!!profile && profile.is_exception) {
+		return true;
+	}
 
 	// Only teachers have to fill in their profile for now
 	const userGroupId = getUserGroupId(user?.profile);
@@ -125,10 +129,6 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 		userGroupId !== SpecialUserGroup.Teacher &&
 		userGroupId !== SpecialUserGroup.TeacherSecondary
 	) {
-		return true;
-	}
-
-	if (!!profile && profile.is_exception) {
 		return true;
 	}
 

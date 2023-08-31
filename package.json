@@ -32,7 +32,7 @@
   "dependencies": {
     "@flowplayer/player": "3.2.8",
     "@hookform/resolvers": "^2.9.9",
-    "@meemoo/admin-core-ui": "2.2.35",
+    "@meemoo/admin-core-ui": "2.3.7",
     "@meemoo/react-components": "2.25.19",
     "@react-hook/resize-observer": "^1.2.6",
     "@storybook/addon-actions": "^6.5.12",
