@@ -173,7 +173,7 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 	},
 	{
 		error: tText(
-			'assignment/assignment___de-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
+			'assignment/assignment___de-media-items-moeten-een-titel-of-een-beschrijving-bevatten'
 		),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!assignment.blocks || validateBlocks(assignment.blocks, 'ITEM'),
@@ -187,30 +187,30 @@ const validateBlocks = (blocks: Avo.Assignment.Block[], type: BlockItemTypeSchem
 
 	const blocksByType = blocks.filter((block) => block.type === type);
 
-	let isValid = true;
-
 	switch (type) {
 		case 'COLLECTION':
 			blocksByType.forEach((block) => {
 				if (block.use_custom_fields && !block.custom_title) {
-					isValid = false;
+					return false;
 				}
 			});
 			break;
+
 		case 'ITEM':
 			blocksByType.forEach((block) => {
 				if (block.use_custom_fields && !block.custom_title && !block.custom_description) {
-					isValid = false;
+					return false;
 				}
 			});
 			break;
+
 		case 'TEXT':
 			blocksByType.forEach((block) => {
 				if (
 					!stripHtml(block.custom_title || '').trim() &&
 					!stripHtml(block.custom_description || '').trim()
 				) {
-					isValid = false;
+					return false;
 				}
 			});
 			break;
@@ -221,7 +221,7 @@ const validateBlocks = (blocks: Avo.Assignment.Block[], type: BlockItemTypeSchem
 			break;
 	}
 
-	return isValid;
+	return true;
 };
 
 function getError<T>(rule: ValidationRule<T>, object: T) {
