@@ -24,6 +24,7 @@ export enum ContentTypeString {
 	video = 'video',
 	collection = 'collectie',
 	bundle = 'bundel',
+	assignment = 'opdracht',
 	searchquery = 'zoekopdracht',
 }
 

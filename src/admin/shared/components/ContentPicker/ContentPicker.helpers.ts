@@ -1,19 +1,19 @@
-import { ContentPickerType } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import { PropsValue } from 'react-select/dist/react-select.cjs';
 
 import { PickerItem, PickerItemControls, PickerTypeOption } from '../../types';
 
 export const filterTypes = (
-	types: PickerTypeOption<ContentPickerType>[],
-	allowedTypes: ContentPickerType[]
-): PickerTypeOption<ContentPickerType>[] => {
+	types: PickerTypeOption<Avo.Core.ContentPickerType>[],
+	allowedTypes: Avo.Core.ContentPickerType[]
+): PickerTypeOption<Avo.Core.ContentPickerType>[] => {
 	return types.filter((option: PickerTypeOption) => {
 		return allowedTypes.length ? allowedTypes.includes(option.value) : option.value;
 	});
 };
 
 export const setInitialInput = (
-	type?: PickerTypeOption<ContentPickerType>,
+	type?: PickerTypeOption<Avo.Core.ContentPickerType>,
 	initialValue?: PickerItem
 ): string => {
 	switch (type?.picker as PickerItemControls) {

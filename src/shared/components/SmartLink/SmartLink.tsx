@@ -1,4 +1,5 @@
-import { ButtonAction, ContentPickerType, LinkTarget } from '@viaa/avo2-components';
+import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { fromPairs, map } from 'lodash-es';
 import queryString from 'query-string';
@@ -98,7 +99,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 				return <>{children}</>;
 			}
 
-			switch (type as ContentPickerType) {
+			switch (type as Avo.Core.ContentPickerType) {
 				case 'INTERNAL_LINK':
 				case 'CONTENT_PAGE':
 				case 'PROJECTS':

@@ -1,6 +1,5 @@
 import {
 	Button,
-	ContentPickerType,
 	Flex,
 	FlexItem,
 	FormGroup,
@@ -8,7 +7,8 @@ import {
 	LinkTarget,
 	TextInput,
 } from '@viaa/avo2-components';
-import { get, isNull } from 'lodash-es';
+import type { Avo } from '@viaa/avo2-types';
+import { isNull } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import ReactSelect, { ActionMeta, PropsValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -30,7 +30,7 @@ import './ContentPicker.scss';
 import { parseSearchQuery } from './helpers/parse-picker';
 
 export interface ContentPickerProps {
-	allowedTypes?: ContentPickerType[];
+	allowedTypes?: Avo.Core.ContentPickerType[];
 	initialValue: PickerItem | undefined | null;
 	onSelect: (value: PickerItem | null) => void;
 	placeholder?: string;
@@ -52,11 +52,14 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	const { tText, tHtml } = useTranslation();
 
 	// filter available options for the type picker
-	const typeOptions = filterTypes(GET_CONTENT_TYPES(user), allowedTypes as ContentPickerType[]);
+	const typeOptions = filterTypes(
+		GET_CONTENT_TYPES(user),
+		allowedTypes as Avo.Core.ContentPickerType[]
+	);
 
 	// apply initial type from `initialValue`, default to first available type
-	const currentTypeObject = typeOptions.find((type) => type.value === get(initialValue, 'type'));
-	const [selectedType, setSelectedType] = useState<PickerTypeOption<ContentPickerType>>(
+	const currentTypeObject = typeOptions.find((type) => type.value === initialValue?.type);
+	const [selectedType, setSelectedType] = useState<PickerTypeOption<Avo.Core.ContentPickerType>>(
 		currentTypeObject || typeOptions[0]
 	);
 
@@ -73,7 +76,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	);
 
 	const [isTargetSelf, setIsTargetSelf] = useState<boolean>(
-		(get(initialValue, 'target') || LinkTarget.Self) === LinkTarget.Self
+		(initialValue?.target || LinkTarget.Self) === LinkTarget.Self
 	);
 
 	// inflate item picker
@@ -88,9 +91,9 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 				if (!hasAppliedInitialItem && initialValue) {
 					items = [
 						{
-							label: get(initialValue, 'label', ''),
-							type: get(initialValue, 'type') as ContentPickerType,
-							value: get(initialValue, 'value', ''),
+							label: initialValue?.label || '',
+							type: initialValue?.type as Avo.Core.ContentPickerType,
+							value: initialValue?.value || '',
 						},
 						...items.filter((item: PickerItem) => item.label !== initialValue?.label),
 					];
@@ -135,7 +138,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	// events
 	const onSelectType = async (selected: PropsValue<PickerTypeOption>) => {
 		if (selectedType !== selected) {
-			const selectedOption = selected as PickerTypeOption<ContentPickerType>;
+			const selectedOption = selected as PickerTypeOption<Avo.Core.ContentPickerType>;
 			setSelectedType(selectedOption);
 			setSelectedItem(null);
 			propertyChanged('selectedItem', null);
@@ -144,7 +147,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 
 	const onSelectItem = (selectedItem: PropsValue<PickerItem>, event?: ActionMeta<any>) => {
 		// reset `selectedItem` when clearing item picker
-		if (get(event, 'action') === 'clear') {
+		if (event?.action === 'clear') {
 			propertyChanged('selectedItem', null);
 			setSelectedItem(null);
 			return null;
@@ -182,11 +185,17 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 
 	const propertyChanged = (
 		prop: 'type' | 'selectedItem' | 'value' | 'target' | 'label',
-		propValue: ContentPickerType | PropsValue<PickerItem> | string | number | null | LinkTarget
+		propValue:
+			| Avo.Core.ContentPickerType
+			| PropsValue<PickerItem>
+			| string
+			| number
+			| null
+			| LinkTarget
 	) => {
-		let newType: ContentPickerType;
+		let newType: Avo.Core.ContentPickerType;
 		if (prop === 'type') {
-			newType = propValue as ContentPickerType;
+			newType = propValue as Avo.Core.ContentPickerType;
 		} else {
 			newType = selectedType.value;
 		}

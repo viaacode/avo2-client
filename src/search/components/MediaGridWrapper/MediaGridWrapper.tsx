@@ -29,13 +29,13 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../shared/services/bookmarks-views-plays-service';
 import { ToastService } from '../../../shared/services/toast-service';
 
-import { ResolvedItemOrCollection } from './MediaGridWrapper.types';
+import { ResolvedItemOrCollectionOrAssignment } from './MediaGridWrapper.types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
 	elements: { mediaItem: ButtonAction }[];
-	results: ResolvedItemOrCollection[];
+	results: ResolvedItemOrCollectionOrAssignment[];
 	renderLink: RenderLinkFunction;
 	buttonAltTitle?: string;
 	ctaButtonAltTitle?: string;
@@ -71,15 +71,17 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [resolvedResults, setResolvedResults] = useState<ResolvedItemOrCollection[] | null>(null);
+	const [resolvedResults, setResolvedResults] = useState<
+		ResolvedItemOrCollectionOrAssignment[] | null
+	>(null);
 
 	// cache search results
 	const [lastSearchQuery, setLastSearchQuery] = useState<string | null>(null);
 	const [lastSearchQueryLimit, setLastSearchQueryLimit] = useState<number | null>(null);
 
-	const [activeItem, setActiveItem] = useState<(Avo.Item.Item & ResolvedItemOrCollection) | null>(
-		null
-	);
+	const [activeItem, setActiveItem] = useState<
+		(Avo.Item.Item & ResolvedItemOrCollectionOrAssignment) | null
+	>(null);
 	const [activeItemBookmarkStatus, setActiveItemBookmarkStatus] = useState<boolean | null>(null);
 
 	const resolveMediaResults = useCallback(async () => {
@@ -239,26 +241,62 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 		}
 	};
 
-	const getThumbnailFromItem = (itemOrCollection: ResolvedItemOrCollection) => {
-		if (itemOrCollection.type?.label === 'audio') {
+	const getThumbnailFromItem = (
+		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment
+	) => {
+		if (
+			(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection).type
+				?.label === 'audio'
+		) {
 			return DEFAULT_AUDIO_STILL;
 		}
-		return itemOrCollection?.thumbnail_path || '';
+		return itemOrCollectionOrAssignment?.thumbnail_path || '';
+	};
+
+	const ITEM_LABEL_TO_TYPE: Partial<Record<ContentTypeString, Avo.Core.ContentPickerType>> = {
+		video: 'ITEM',
+		audio: 'ITEM',
+		collectie: 'COLLECTION',
+		bundel: 'BUNDLE',
+		opdracht: 'ASSIGNMENT',
+	};
+
+	const getThumbnailMetadata = (itemOrCollectionOrAssignment: any): string | null => {
+		const itemLabel =
+			(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)?.type
+				?.label || 'item';
+		const itemDuration = String((itemOrCollectionOrAssignment as Avo.Item.Item)?.duration || 0);
+		const collectionItems =
+			(itemOrCollectionOrAssignment as Avo.Collection.Collection)
+				?.collection_fragments_aggregate?.aggregate?.count || 0; // TODO add fragment count to elasticsearch index
+		return (
+			{
+				item: itemDuration,
+				video: itemDuration,
+				audio: itemDuration,
+				collectie: `${collectionItems} ${
+					collectionItems === 1 ? tText('item') : tText('items')
+				}`,
+				bundel: `${collectionItems} ${
+					collectionItems === 1 ? tText('collectie') : tText('collecties')
+				}`,
+				opdracht: null,
+			}[itemLabel] || null
+		);
 	};
 
 	const mapCollectionOrItemData = (
-		itemOrCollection: ResolvedItemOrCollection,
+		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment,
 		index: number
 	): MediaListItem => {
-		const itemLabel = itemOrCollection?.type?.label || 'item';
+		const itemLabel =
+			(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)?.type
+				?.label || 'item';
 		const isItem =
 			itemLabel === ContentTypeString.video || itemLabel === ContentTypeString.audio;
 		const isCollection = itemLabel === ContentTypeString.collection;
-		const itemDuration = (itemOrCollection as Avo.Item.Item)?.duration || 0;
-		const collectionItems =
-			(itemOrCollection as Avo.Collection.Collection)?.collection_fragments_aggregate
-				?.aggregate?.count || 0; // TODO add fragment count to elasticsearch index
-		const viewCount = itemOrCollection?.view_counts_aggregate?.aggregate?.sum?.count || 0;
+		const viewCount =
+			itemOrCollectionOrAssignment?.view_counts_aggregate?.aggregate?.sum?.count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
@@ -269,8 +307,10 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 				? toEnglishContentType(ContentTypeString.collection)
 				: toEnglishContentType(ContentTypeString.bundle),
 			metadata: [
-				{ icon: IconName.eye, label: String(viewCount || 0) },
-				{ label: formatDate(itemOrCollection?.created_at) },
+				...(itemLabel !== ContentTypeString.assignment
+					? [{ icon: IconName.eye, label: String(viewCount || 0) }]
+					: []),
+				{ label: formatDate(itemOrCollectionOrAssignment?.created_at) },
 			],
 			buttonLabel: element.buttonLabel,
 			buttonAltTitle: element.buttonAltTitle,
@@ -279,24 +319,27 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 			itemAction:
 				element.mediaItem ||
 				({
-					type: isItem ? 'ITEM' : isCollection ? 'COLLECTION' : 'BUNDLE',
-					value: itemOrCollection?.external_id || itemOrCollection?.id,
+					type: ITEM_LABEL_TO_TYPE[itemLabel],
+					value:
+						(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)
+							?.external_id || itemOrCollectionOrAssignment?.id,
 					target: searchQuery?.target || '_self',
 				} as ButtonAction),
 			buttonAction: element.buttonAction,
-			title: itemOrCollection?.title || '',
-			description: itemOrCollection?.description || '',
-			issued: (itemOrCollection as Avo.Item.Item)?.issued || '',
-			organisation: itemOrCollection?.organisation || '',
+			title: itemOrCollectionOrAssignment?.title || '',
+			description: itemOrCollectionOrAssignment?.description || '',
+			issued: (itemOrCollectionOrAssignment as Avo.Item.Item)?.issued || '',
+			organisation:
+				(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)
+					?.organisation || '',
 			thumbnail: {
 				label: itemLabel,
-				meta: isItem
-					? itemDuration
-					: `${collectionItems} ${isCollection ? 'items' : 'collecties'}`,
-				src: getThumbnailFromItem(itemOrCollection),
+				meta: getThumbnailMetadata(itemOrCollectionOrAssignment),
+				src: getThumbnailFromItem(itemOrCollectionOrAssignment),
 			},
-			src: itemOrCollection?.src,
-			item_collaterals: (itemOrCollection as Avo.Item.Item)?.item_collaterals || null,
+			src: itemOrCollectionOrAssignment?.src,
+			item_collaterals:
+				(itemOrCollectionOrAssignment as Avo.Item.Item)?.item_collaterals || null,
 		} as any;
 	};
 

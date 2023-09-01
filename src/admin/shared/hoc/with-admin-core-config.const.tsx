@@ -226,6 +226,7 @@ export function getAdminCoreConfig(): AdminConfig {
 		routes: {
 			BUNDLE_DETAIL: `/${ROUTE_PARTS.bundles}/:id`,
 			BUNDLE_EDIT: `/${ROUTE_PARTS.bundles}/:id/${ROUTE_PARTS.edit}`,
+			ASSIGNMENT_DETAIL: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id`,
 			COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}`,
 			COLLECTION_DETAIL: `/${ROUTE_PARTS.collections}/:id`,
 			CONTENT_PAGE_CREATE: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.content}/${ROUTE_PARTS.create}`,

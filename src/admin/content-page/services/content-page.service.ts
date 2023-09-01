@@ -1,7 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { ButtonAction } from '@viaa/avo2-components';
 
-import { ResolvedItemOrCollection } from '../../../search/components/MediaGridWrapper/MediaGridWrapper.types';
+import { ResolvedItemOrCollectionOrAssignment } from '../../../search/components/MediaGridWrapper/MediaGridWrapper.types';
 import { CustomError, getEnv } from '../../../shared/helpers';
 
 export class ContentPageService {
@@ -13,7 +13,7 @@ export class ContentPageService {
 					mediaItem: ButtonAction;
 			  }[]
 			| undefined
-	): Promise<ResolvedItemOrCollection[]> {
+	): Promise<ResolvedItemOrCollectionOrAssignment[]> {
 		let url: string | undefined = undefined;
 		let body: any | undefined = undefined;
 		try {

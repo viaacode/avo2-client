@@ -1,4 +1,3 @@
-import { ContentPickerType } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 
 import { tText } from '../../../../shared/helpers/translate';
@@ -109,7 +108,7 @@ export const GET_CONTENT_TYPES: (user?: Avo.User.User) => PickerTypeOption[] = (
 	];
 };
 
-export const DEFAULT_ALLOWED_TYPES: ContentPickerType[] = [
+export const DEFAULT_ALLOWED_TYPES: Avo.Core.ContentPickerType[] = [
 	'CONTENT_PAGE',
 	'ITEM',
 	'COLLECTION',

@@ -1,4 +1,5 @@
-import { ContentPickerType, LinkTarget } from '@viaa/avo2-components';
+import { LinkTarget } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 
 import { tHtml } from '../../../../../shared/helpers/translate';
@@ -38,7 +39,7 @@ export const parseSearchQuery = (input: string): string => {
 };
 
 export const parsePickerItem = (
-	type: ContentPickerType,
+	type: Avo.Core.ContentPickerType,
 	value: string,
 	target: LinkTarget = LinkTarget.Blank
 ): PickerItem => ({

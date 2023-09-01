@@ -1,4 +1,4 @@
-import { ContentPickerType } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../../../../collection/collection.service';
 import { Collection, ContentTypeNumber } from '../../../../../collection/collection.types';
@@ -32,7 +32,7 @@ export const retrieveBundles = async (
 };
 
 // parse raw data to react-select options
-const parseCollections = (type: ContentPickerType, raw: Collection[]): PickerItem[] => {
+const parseCollections = (type: Avo.Core.ContentPickerType, raw: Collection[]): PickerItem[] => {
 	return raw.map(
 		(item: Collection): PickerItem => ({
 			...parsePickerItem(type, item.id.toString()),
