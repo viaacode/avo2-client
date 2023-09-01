@@ -28,6 +28,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import Html from '../../shared/components/Html/Html';
 import { CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { QuickLaneUrlObject } from '../../shared/types';
@@ -81,10 +82,19 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				if (content.depublish_reason) {
 					setLoadingInfo({
 						state: 'error',
-						message:
-							tText(
-								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
-							) + (response.content as Avo.Item.Item).depublish_reason,
+						message: (
+							<>
+								{tText(
+									'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
+								)}
+								<Html
+									content={
+										(response.content as Avo.Item.Item).depublish_reason || ''
+									}
+									type="span"
+								/>
+							</>
+						),
 						icon: IconName.cameraOff,
 					});
 

@@ -61,6 +61,7 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
+import Html from '../../shared/components/Html/Html';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -249,10 +250,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			if (itemObj.depublish_reason) {
 				setLoadingInfo({
 					state: 'error',
-					message:
-						tText(
-							'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
-						) + itemObj.depublish_reason,
+					message: (
+						<>
+							{tText(
+								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
+							)}
+							<Html content={itemObj.depublish_reason} type="span" />
+						</>
+					),
 					icon: IconName.cameraOff,
 				});
 				return;
