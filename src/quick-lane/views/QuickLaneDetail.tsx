@@ -84,7 +84,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						state: 'error',
 						message: (
 							<>
-								{tText(
+								{tHtml(
 									'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
 								)}
 								<Html

@@ -252,7 +252,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					state: 'error',
 					message: (
 						<>
-							{tText(
+							{tHtml(
 								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
 							)}
 							<Html content={itemObj.depublish_reason} type="span" />
