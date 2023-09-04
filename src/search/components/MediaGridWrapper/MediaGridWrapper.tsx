@@ -16,7 +16,8 @@ import { isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
-import { ContentTypeString, toEnglishContentType } from '../../../collection/collection.types';
+import placeholderImage from '../../../assets/images/assignment-placeholder.png';
+import { CONTENT_TYPE_TRANSLATIONS, ContentTypeString } from '../../../collection/collection.types';
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
@@ -244,11 +245,11 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 	const getThumbnailFromItem = (
 		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment
 	) => {
-		if (
-			(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection).type
-				?.label === 'audio'
-		) {
+		if (itemOrCollectionOrAssignment.type?.label === 'audio') {
 			return DEFAULT_AUDIO_STILL;
+		}
+		if (itemOrCollectionOrAssignment.type?.label === 'opdracht') {
+			return itemOrCollectionOrAssignment?.thumbnail_path || placeholderImage;
 		}
 		return itemOrCollectionOrAssignment?.thumbnail_path || '';
 	};
@@ -285,27 +286,19 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 		);
 	};
 
-	const mapCollectionOrItemData = (
+	const mapItemOrCollectionOrAssignmentData = (
 		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment,
 		index: number
 	): MediaListItem => {
-		const itemLabel =
-			(itemOrCollectionOrAssignment as Avo.Item.Item | Avo.Collection.Collection)?.type
-				?.label || 'item';
-		const isItem =
-			itemLabel === ContentTypeString.video || itemLabel === ContentTypeString.audio;
-		const isCollection = itemLabel === ContentTypeString.collection;
+		const itemLabel = itemOrCollectionOrAssignment?.type?.label || 'video';
 		const viewCount =
 			itemOrCollectionOrAssignment?.view_counts_aggregate?.aggregate?.sum?.count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
 		return {
-			category: isItem
-				? itemLabel
-				: isCollection
-				? toEnglishContentType(ContentTypeString.collection)
-				: toEnglishContentType(ContentTypeString.bundle),
+			category:
+				CONTENT_TYPE_TRANSLATIONS[itemOrCollectionOrAssignment?.type?.label || 'video'],
 			metadata: [
 				...(itemLabel !== ContentTypeString.assignment
 					? [{ icon: IconName.eye, label: String(viewCount || 0) }]
@@ -383,7 +376,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 
 	// Render
 	const renderMediaGridBlock = () => {
-		const elements = (resolvedResults || []).map(mapCollectionOrItemData);
+		const elements = (resolvedResults || []).map(mapItemOrCollectionOrAssignmentData);
 		return (
 			<>
 				<BlockMediaGrid

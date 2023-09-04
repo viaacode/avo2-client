@@ -23,7 +23,7 @@ import {
 	MAX_SEARCH_DESCRIPTION_LENGTH,
 } from './collection.const';
 import { CollectionService } from './collection.service';
-import { ContentTypeNumber, ContentTypeString, toEnglishContentType } from './collection.types';
+import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from './collection.types';
 
 export const getValidationFeedbackForDescription = (
 	description: string | null,
@@ -410,7 +410,7 @@ export const getFragmentIdsFromCollection = (
 
 const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
 	const englishContentType =
-		toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
+		CONTENT_TYPE_TRANSLATIONS[relatedItem.administrative_type || 'video'];
 
 	return (
 		<MediaCard

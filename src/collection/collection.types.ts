@@ -28,7 +28,7 @@ export enum ContentTypeString {
 	searchquery = 'zoekopdracht',
 }
 
-const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.ContentType.English> = {
+export const CONTENT_TYPE_TRANSLATIONS: Record<Avo.ContentType.Dutch, Avo.ContentType.English> = {
 	item: 'item',
 	audio: 'audio',
 	video: 'video',
@@ -56,10 +56,6 @@ export function blockTypeToContentType(
 	}
 
 	return r as Avo.ContentType.English;
-}
-
-export function toEnglishContentType(label: Avo.ContentType.Dutch): Avo.ContentType.English {
-	return CONTENT_TYPE_TRANSLATIONS[label];
 }
 
 export type CollectionLabelLookup = { [id: string]: string };

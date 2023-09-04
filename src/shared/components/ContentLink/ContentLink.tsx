@@ -4,7 +4,7 @@ import React, { FunctionComponent } from 'react';
 import { Link } from 'react-router-dom';
 
 import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
-import { toEnglishContentType } from '../../../collection/collection.types';
+import { CONTENT_TYPE_TRANSLATIONS } from '../../../collection/collection.types';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
 type ParentType = {
@@ -29,7 +29,7 @@ export const ContentLink: FunctionComponent<ContentLinkProps> = ({ parent, conte
 				<Spacer margin="right">
 					<Thumbnail
 						className="m-content-thumbnail"
-						category={toEnglishContentType(dutchLabel)}
+						category={CONTENT_TYPE_TRANSLATIONS[dutchLabel]}
 						src={content?.thumbnail_path || undefined}
 					/>
 				</Spacer>

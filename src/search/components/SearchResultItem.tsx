@@ -3,7 +3,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { compact, isNil, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
-import { toEnglishContentType } from '../../collection/collection.types';
+import { CONTENT_TYPE_TRANSLATIONS } from '../../collection/collection.types';
 import { SearchResult } from '../../shared/components/SearchResult/SearchResult';
 import { formatDate } from '../../shared/helpers';
 import { tText } from '../../shared/helpers/translate';
@@ -84,7 +84,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	const renderThumbnail = (result: Avo.Search.ResultItem) => {
 		return (
 			<Thumbnail
-				category={toEnglishContentType(result.administrative_type)}
+				category={CONTENT_TYPE_TRANSLATIONS[result.administrative_type]}
 				src={result.thumbnail_path}
 				label={result.administrative_type}
 				meta={getMetaData()}
@@ -139,7 +139,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 	return (
 		<div id={`search-result-${id}`} key={`search-result-${id}`}>
 			<SearchResult
-				type={toEnglishContentType(result.administrative_type)}
+				type={CONTENT_TYPE_TRANSLATIONS[result.administrative_type]}
 				date={formatDate(date)}
 				dateTooltip={dateTooltip}
 				typeTags={getTags(result).typeTags}

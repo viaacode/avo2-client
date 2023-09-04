@@ -21,7 +21,7 @@ import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { toEnglishContentType } from '../../collection/collection.types';
+import { CONTENT_TYPE_TRANSLATIONS } from '../../collection/collection.types';
 import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
 import { useDebounce } from '../../shared/hooks';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -78,7 +78,7 @@ const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps>
 		(searchResult: Avo.Search.ResultItem): MenuSearchResultItemInfo => ({
 			label: searchResult.dc_title,
 			id: searchResult.external_id,
-			type: toEnglishContentType(searchResult.administrative_type),
+			type: CONTENT_TYPE_TRANSLATIONS[searchResult.administrative_type],
 		})
 	);
 

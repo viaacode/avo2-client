@@ -48,11 +48,7 @@ import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentM
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import {
-	ContentTypeNumber,
-	ContentTypeString,
-	toEnglishContentType,
-} from '../../collection/collection.types';
+import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
@@ -379,7 +375,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
 		const englishContentType: Avo.ContentType.English =
-			toEnglishContentType(relatedItem.administrative_type) || ContentTypeString.video;
+			CONTENT_TYPE_TRANSLATIONS[relatedItem.administrative_type || 'video'];
 
 		return (
 			<MediaCard
@@ -835,22 +831,19 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			return null;
 		}
 		const englishContentType: Avo.ContentType.English =
-			toEnglishContentType(get(item, 'type.label')) || ContentTypeString.video;
+			CONTENT_TYPE_TRANSLATIONS[item?.type?.label || 'video'];
 
 		return (
 			<>
 				<Header
 					title={item.title}
-					category={toEnglishContentType(item.type.label)}
+					category={englishContentType}
 					showMetaData={true}
 					className={classnames('c-item-detail__header', {
 						'c-item-detail__header-mobile': isMobileWidth(),
 					})}
 				>
-					<HeaderContentType
-						category={toEnglishContentType(item.type.label)}
-						label={item.type.label}
-					>
+					<HeaderContentType category={englishContentType} label={item.type.label}>
 						<Spacer margin="bottom">
 							<div className="c-content-type c-content-type--video">
 								<Icon
@@ -880,7 +873,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						</ButtonToolbar>
 					</HeaderButtons>
 					<HeaderAvatar>
-						<MetaData category={toEnglishContentType(item.type.label)}>
+						<MetaData category={englishContentType}>
 							{!!get(item, 'organisation.name') && (
 								<MetaDataItem>
 									<p className="c-body-2 u-text-muted">
