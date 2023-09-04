@@ -16,9 +16,13 @@ const TextWithTimestamps: FC<TextWithTimestampsProps> = ({ content }) => {
 	const textWrapperRef = useRef<HTMLDivElement>(null);
 
 	const format = (input: string) => {
-		return input
-			.replace(/\n\r?/, '<br/><br/>')
-			.replace(TIMESTAMP_REGEX, (match) => `<span class='c-timestamp'>${match}</span>`);
+		console.log({ input });
+		const formattedText = input
+			.replace(/<\/p>\n\r?<p>/g, '</p><p>')
+			.replace(/\n\r?/g, '<br/>')
+			.replace(TIMESTAMP_REGEX, (match) => `<span class="c-timestamp">${match}</span>`);
+		console.log({ formattedText });
+		return formattedText;
 	};
 
 	const handleTimestampClicked = useCallback((e: MouseEvent) => {
