@@ -57,10 +57,15 @@
 			flex-basis: 100%;
 			position: relative;
 			overflow: visible;
+			display: flex;
+			justify-content: center;
 
 			svg {
-				margin: 0 auto;
+				position: absolute;
+				bottom: -2.3rem;
 				width: 30rem;
+				margin: auto;
+				right: unset;
 			}
 		}
 	}
