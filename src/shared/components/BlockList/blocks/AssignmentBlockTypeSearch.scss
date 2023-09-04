@@ -25,14 +25,12 @@
 	}
 
 	> div:first-child {
-		flex-grow: 1;
-		grid-template-columns: 1fr 488px;
+		flex-basis: 60%;
 	}
 
 	> div:last-child {
-		flex-grow: 1;
+		flex-basis: 40%;
 		position: relative;
-		min-height: 30rem;
 		overflow: visible;
 
 		@media screen and (max-width: $g-bp3) {
@@ -45,6 +43,25 @@
 			position: absolute;
 			right: 0;
 			bottom: -2.3rem;
+		}
+	}
+
+	@media screen and (max-width: $g-bp2) {
+		flex-direction: column;
+
+		> div:first-child {
+			flex-basis: 100%;
+		}
+
+		> div:last-child {
+			flex-basis: 100%;
+			position: relative;
+			overflow: visible;
+
+			svg {
+				margin: 0 auto;
+				width: 30rem;
+			}
 		}
 	}
 }
