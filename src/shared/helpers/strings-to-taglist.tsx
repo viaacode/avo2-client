@@ -1,12 +1,12 @@
 import { TagList, TagOption } from '@viaa/avo2-components';
-import { noop } from 'lodash-es';
+import { isString, noop } from 'lodash-es';
 import React, { MouseEvent, ReactNode } from 'react';
 
 export function stringsToTagList(
 	labelsOrObjs: string[] | any[],
-	prop: string | null = null,
+	propOrLabelSelectFunc: string | ((obj: any) => string) | null = null,
 	onTagClicked?: (tagId: string | number, clickEvent: MouseEvent) => void,
-	onTagClosed?: (tagId: string | number, clickEvent: MouseEvent) => void
+	onTagClosed: (tagId: string | number, clickEvent: MouseEvent) => void = noop
 ): ReactNode {
 	if (!labelsOrObjs || !labelsOrObjs.length) {
 		return null;
@@ -14,7 +14,14 @@ export function stringsToTagList(
 	return (
 		<TagList
 			tags={(labelsOrObjs as any[]).map((labelOrObj: string | any): TagOption => {
-				const label = prop ? labelOrObj[prop] : labelOrObj;
+				let label: string;
+				if (isString(propOrLabelSelectFunc)) {
+					label = labelOrObj[propOrLabelSelectFunc];
+				} else if (propOrLabelSelectFunc) {
+					label = propOrLabelSelectFunc(labelOrObj);
+				} else {
+					label = labelOrObj;
+				}
 				return {
 					label,
 					id: label,
@@ -22,7 +29,7 @@ export function stringsToTagList(
 			})}
 			closable={!!onTagClosed}
 			onTagClicked={onTagClicked}
-			onTagClosed={onTagClosed || noop}
+			onTagClosed={(tagId, evt) => onTagClosed(tagId, evt)}
 			swatches={false}
 		/>
 	);

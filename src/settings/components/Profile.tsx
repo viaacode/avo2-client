@@ -197,7 +197,6 @@ const Profile: FunctionComponent<
 				),
 			},
 		};
-		console.log(tempUiPermissions);
 		setUiPermissions(tempUiPermissions);
 	}, [isExceptionAccount, user]);
 
@@ -255,25 +254,32 @@ const Profile: FunctionComponent<
 		const groupedLoms = groupLoms(selectedLoms);
 
 		if (
-			(uiPermissions.SUBJECTS.REQUIRED || isCompleteProfileStep) &&
+			((uiPermissions.SUBJECTS.REQUIRED && uiPermissions.SUBJECTS.EDIT) ||
+				isCompleteProfileStep) &&
 			!groupedLoms.subject?.length
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
-		if ((uiPermissions.THEME.REQUIRED || isCompleteProfileStep) && !groupedLoms.theme?.length) {
+		if (
+			((uiPermissions.THEME.REQUIRED && uiPermissions.THEME.EDIT) || isCompleteProfileStep) &&
+			!groupedLoms.theme?.length
+		) {
 			errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
-			(uiPermissions.EDUCATION_LEVEL.REQUIRED || isCompleteProfileStep) &&
+			((uiPermissions.EDUCATION_LEVEL.REQUIRED && uiPermissions.EDUCATION_LEVEL.EDIT) ||
+				isCompleteProfileStep) &&
 			!groupedLoms.educationLevel?.length
 		) {
 			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
-			(uiPermissions.EDUCATIONAL_ORGANISATION.REQUIRED || isCompleteProfileStep) &&
+			((uiPermissions.EDUCATIONAL_ORGANISATION.REQUIRED &&
+				uiPermissions.EDUCATIONAL_ORGANISATION.EDIT) ||
+				isCompleteProfileStep) &&
 			!profileInfo.organizations?.length
 		) {
 			errors.push(tText('settings/components/profile___educatieve-organisatie-is-verplicht'));
@@ -281,6 +287,7 @@ const Profile: FunctionComponent<
 		}
 		if (
 			uiPermissions.ORGANISATION.REQUIRED &&
+			uiPermissions.ORGANISATION.EDIT &&
 			!profileInfo.company_id &&
 			!isCompleteProfileStep
 		) {
@@ -311,7 +318,7 @@ const Profile: FunctionComponent<
 				})),
 				organizations: (selectedOrganisations || []).map((option) => ({
 					profile_id: profileId,
-					organization_id: option.organizationId,
+					organization_id: option.organisationId,
 					unit_id: option.unitId || null,
 				})),
 				company_id: companyId || null,
@@ -366,7 +373,7 @@ const Profile: FunctionComponent<
 				);
 			}
 
-			// Refresh the login state, so the profile info will be up to date
+			// Refresh the login state, so the profile info will be up-to-date
 			const loginResponse: Avo.Auth.LoginResponse = await getLoginResponse();
 			store.dispatch(setLoginSuccess(loginResponse));
 
@@ -429,7 +436,14 @@ const Profile: FunctionComponent<
 	};
 
 	const renderEducationOrganisationsField = (editable: boolean, required: boolean) => {
-		if (!selectedOrganisations.length || !uiPermissions?.EDUCATIONAL_ORGANISATION?.VIEW) {
+		if (
+			// Don't show schools on profile page if no schools exist
+			(!isCompleteProfileStep &&
+				(commonUser?.educationalOrganisations || []).length === 0 &&
+				isExceptionAccount) ||
+			// Only show schools if user has permissions to see them
+			!uiPermissions?.EDUCATIONAL_ORGANISATION?.VIEW
+		) {
 			return null;
 		}
 		return (
@@ -452,7 +466,7 @@ const Profile: FunctionComponent<
 						/>
 					</>
 				) : (
-					stringsToTagList(selectedOrganisations.map((org) => org.label))
+					stringsToTagList(selectedOrganisations.map((org) => org.organisationLabel))
 				)}
 			</FormGroup>
 		);
@@ -830,11 +844,12 @@ const Profile: FunctionComponent<
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
-		getLoginState: (forceRefetch: boolean) =>
-			dispatch(getLoginStateAction(forceRefetch) as any),
+		getLoginState: (forceRefetch: boolean) => {
+			return dispatch(getLoginStateAction(forceRefetch) as any);
+		},
 	};
 };
 
 export default withUser(
-	withRouter(connect(mapDispatchToProps)(Profile))
+	withRouter(connect(null, mapDispatchToProps)(Profile))
 ) as FunctionComponent<ProfileProps>;

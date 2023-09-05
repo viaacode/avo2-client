@@ -2,7 +2,7 @@ import { Alert, Select, Spacer } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { pullAllBy, remove, uniq } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
@@ -77,7 +77,7 @@ export const EducationalOrganisationsSelect: FunctionComponent<
 						...{ [selectedCity]: orgs },
 					});
 				}
-				pullAllBy(orgs, organisations, 'label');
+				pullAllBy(orgs, organisations, 'organisationLabel');
 				setOrganisationsInCity(orgs);
 				setOrganizationsLoadingState('loaded');
 			} catch (err) {
@@ -109,7 +109,7 @@ export const EducationalOrganisationsSelect: FunctionComponent<
 
 	const onSelectedOrganisationChanged = (orgLabel: string) => {
 		const selectedOrg = organisationsInCity.find(
-			(org: Avo.EducationOrganization.Organization) => org.label === orgLabel
+			(org: Avo.EducationOrganization.Organization) => org.organisationLabel === orgLabel
 		);
 		if (!selectedOrg) {
 			ToastService.danger(
@@ -126,9 +126,9 @@ export const EducationalOrganisationsSelect: FunctionComponent<
 		onChange(uniq(selectedOrgs));
 	};
 
-	const removeOrganisation = async (orgLabel: ReactText) => {
+	const removeOrganisation = async (orgLabel: string | number) => {
 		const newOrganizations = [...organisations];
-		remove(newOrganizations, (org) => org.label === orgLabel);
+		remove(newOrganizations, (org) => getOrganisationDisplayLabel(org) === orgLabel);
 		onChange(newOrganizations);
 	};
 
@@ -151,16 +151,25 @@ export const EducationalOrganisationsSelect: FunctionComponent<
 				disabled: true,
 			},
 			...organisationsInCity.map((org: Avo.EducationOrganization.Organization) => ({
-				label: org.label,
-				value: org.label,
+				label:
+					org.organisationLabel + (org.unitStreet ? ' - ' + (org.unitStreet || '') : ''),
+				value: org.organisationLabel,
 			})),
 		];
 	};
 
+	const getOrganisationDisplayLabel = (org: Avo.EducationOrganization.Organization) =>
+		org.organisationLabel + (org.unitStreet ? ' - ' + (org.unitStreet || '') : '');
+
 	const renderOrganisationTagsAndSelects = () => {
 		return (
 			<>
-				{stringsToTagList(organisations, 'label', undefined, removeOrganisation)}
+				{stringsToTagList(
+					organisations,
+					getOrganisationDisplayLabel,
+					undefined,
+					removeOrganisation
+				)}
 				<Spacer margin="top-small">
 					<Select
 						options={[

@@ -192,9 +192,10 @@ export class UserService {
 							: null,
 						educational_organisations: user.organisations.map(
 							(org): Avo.EducationOrganization.Organization => ({
-								organizationId: org.organization_id,
+								organisationId: org.organization_id,
+								organisationLabel: org.organization?.ldap_description || '',
 								unitId: org.unit_id || null,
-								label: org.organization?.ldap_description || '',
+								unitStreet: null,
 							})
 						),
 						subjects: user.classifications.map((classification) => classification.key),

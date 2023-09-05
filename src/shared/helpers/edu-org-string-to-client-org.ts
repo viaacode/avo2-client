@@ -4,9 +4,10 @@ export function eduOrgToClientOrg(orgs: string[]): Avo.EducationOrganization.Org
 	return (orgs || []).map((org) => {
 		const parts = org.split(':');
 		return {
-			organizationId: parts[0].trim(),
+			organisationId: parts[0].trim(),
+			organisationLabel: org, // TODO show org name and address
 			unitId: (parts[1] || '').trim() || null,
-			label: org, // TODO show org name and address
+			unitStreet: null,
 		};
 	});
 }

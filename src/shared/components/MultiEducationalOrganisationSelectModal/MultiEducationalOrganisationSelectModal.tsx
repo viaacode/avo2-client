@@ -44,8 +44,8 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 		useState<Avo.EducationOrganization.Organization[]>(values);
 
 	useEffect(() => {
-		setSelectedOrganisations(values.filter((org) => org.label !== NULL_FILTER));
-		setIncludeEmpty(!!values.find((org) => org.label === NULL_FILTER));
+		setSelectedOrganisations(values.filter((org) => org.organisationLabel !== NULL_FILTER));
+		setIncludeEmpty(!!values.find((org) => org.organisationLabel === NULL_FILTER));
 	}, [isOpen, values]);
 
 	const closeModal = () => {
@@ -55,7 +55,7 @@ export const MultiEducationalOrganisationSelectModal: FunctionComponent<
 	const applyFilter = () => {
 		onChange(
 			[
-				...selectedOrganisations.map((org) => `${org.organizationId}:${org.unitId || ''}`),
+				...selectedOrganisations.map((org) => `${org.organisationId}:${org.unitId || ''}`),
 				...(includeEmpty ? [NULL_FILTER] : []),
 			],
 			id
