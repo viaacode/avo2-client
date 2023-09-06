@@ -24,10 +24,12 @@
   },
   "contributors": [
     "Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
+    "Ward Vercruyssen <ward.vercruyssen@studiohyperdrive.be>",
+    "Bram Vandenbussche <bram.vandenbussche@studiohyperdrive.be>",
+    "Ian Emsens <ian.emsens@studiohypderive.be>",
     "Benjamin Naesen <benjamin.naesen@studiohyperdrive.be>",
     "Andry Charlier <andry.charlier@studiohyperdrive.be>",
-    "Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be>",
-    "Ian Emsens <ian.emsens@studiohypderive.be>"
+    "Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be>"
   ],
   "dependencies": {
     "@flowplayer/player": "3.2.8",
