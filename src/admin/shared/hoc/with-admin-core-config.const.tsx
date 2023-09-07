@@ -175,8 +175,8 @@ export function getAdminCoreConfig(): AdminConfig {
 		},
 		services: {
 			toastService: {
-				showToast: (toastInfo: ToastInfo) => {
-					ToastService.showToast(
+				showToast: (toastInfo: ToastInfo): string => {
+					return ToastService.showToast(
 						<div
 							role="dialog"
 							aria-labelledby="toastTitle"
@@ -189,7 +189,10 @@ export function getAdminCoreConfig(): AdminConfig {
 						</div>,
 						{},
 						ToastTypeToAvoToastType[toastInfo.type]
-					);
+					) as string;
+				},
+				hideToast: (toastId: string) => {
+					ToastService.hideToast(toastId);
 				},
 			},
 			// Use the avo2-proxy to fetch content pages, so their media tile blocks are resolved

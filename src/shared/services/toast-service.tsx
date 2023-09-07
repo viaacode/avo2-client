@@ -79,4 +79,8 @@ export class ToastService {
 
 		return toast(<Toast dark={dark} message={alertMessage} type={alertType} />, options);
 	}
+
+	public static hideToast(toastId: ToastId) {
+		toast.dismiss(toastId);
+	}
 }
