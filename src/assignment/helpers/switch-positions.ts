@@ -1,8 +1,7 @@
 import { sortBy } from 'lodash-es';
 
-import { setPositionToIndex } from '../assignment.helper';
-
-type Positioned = { id: string | number; position: number };
+import { Positioned } from '../../shared/types';
+import { reorderBlockPositions } from '../assignment.helper';
 
 export function switchAssignmentBlockPositions(
 	list: Positioned[],
@@ -29,5 +28,5 @@ export function switchAssignmentBlockPositions(
 
 	// Sort array by position
 	const newList = sortBy(list, (block) => block.position);
-	return setPositionToIndex(newList); // Recover from blocks with the same position set in the database
+	return reorderBlockPositions(newList); // Recover from blocks with the same position set in the database
 }

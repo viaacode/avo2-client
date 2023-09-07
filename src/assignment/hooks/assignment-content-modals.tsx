@@ -98,6 +98,7 @@ export function useBlockListModals(
 										id: `${NEW_ASSIGNMENT_BLOCK_ID_PREFIX}${new Date().valueOf()}`,
 										type,
 										position: blockPosition,
+										created_at: new Date().toISOString(),
 									};
 									const newBlocks = insertMultipleAtPosition(
 										blocks,
@@ -159,6 +160,7 @@ export function useBlockListModals(
 												itemTrimInfo.fragmentStartTime * 1000
 										  )
 										: null,
+									created_at: new Date().toISOString(),
 								};
 								const newBlocks = insertMultipleAtPosition(blocks, assignmentBlock);
 

@@ -4,7 +4,7 @@ import type { Avo } from '@viaa/avo2-types';
 import { LomSchemeType } from '@viaa/avo2-types';
 import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
 import { UserSchema } from '@viaa/avo2-types/types/user';
-import { compact } from 'lodash-es';
+import { compact, orderBy } from 'lodash-es';
 import { ReactNode } from 'react';
 
 import { stripHtml } from '../shared/helpers';
@@ -39,13 +39,27 @@ export class AssignmentHelper {
 
 // Zoek & bouw
 
-export function setPositionToIndex(items: Positioned[]): Positioned[] {
-	return items.map((item, i) => {
-		return {
-			...item,
-			position: i,
-		};
+/**
+ * Reset positions so blocks that were added with the same position, now correctly get their position set based on their position and created_at order and no duplicate positions exist
+ * @param items items to reset positions for
+ */
+export function reorderBlockPositions(items: Positioned[]): Positioned[] {
+	const orderedBlocks = orderBy(items || [], ['position', 'created_at'], ['asc', 'asc']);
+	orderedBlocks.forEach((block, blockIndex) => {
+		block.position = blockIndex;
 	});
+	return orderedBlocks;
+}
+
+/**
+ * Reset positions so they follow the current order in the array
+ * @param items items to reset positions for
+ */
+export function setBlockPositionToIndex(items: Positioned[]): Positioned[] {
+	items.forEach((block, blockIndex) => {
+		block.position = blockIndex;
+	});
+	return items;
 }
 
 export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
@@ -170,13 +184,6 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 		error: tText('assignment/assignment___de-collecties-moeten-een-titel-hebben'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
 			!assignment.blocks || validateBlocks(assignment.blocks, 'COLLECTION'),
-	},
-	{
-		error: tText(
-			'assignment/assignment___de-media-items-moeten-een-titel-of-een-beschrijving-bevatten'
-		),
-		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			!assignment.blocks || validateBlocks(assignment.blocks, 'ITEM'),
 	},
 ];
 

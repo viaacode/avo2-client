@@ -50,6 +50,7 @@ import { AssignmentFields } from '../hooks/assignment-form';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
+import { setBlockPositionToIndex } from '../assignment.helper';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	user,
@@ -185,12 +186,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		modal: {
 			items: assignment?.blocks || [],
-			onClose: (update?: Avo.Assignment.Block[]) => {
-				if (update) {
-					const blocks = update.map((item, i) => ({
-						...item,
-						position: assignment?.blocks?.[i]?.position || 0,
-					}));
+			onClose: (reorderedBlocks?: Avo.Assignment.Block[]) => {
+				if (reorderedBlocks) {
+					const blocks = setBlockPositionToIndex(
+						reorderedBlocks
+					) as Avo.Assignment.Block[];
 
 					setAssignment((prev) => ({
 						...prev,

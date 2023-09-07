@@ -15,6 +15,7 @@ import {
 } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
+import { reorderBlockPositions } from '../assignment/assignment.helper';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
@@ -128,6 +129,7 @@ import { QualityLabelsService } from '../shared/services/quality-labels.service'
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
+import { Positioned } from '../shared/types';
 
 import {
 	cleanCollectionBeforeSave,
@@ -1018,16 +1020,18 @@ export class CollectionService {
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
-				delete (fragment as any).__typename;
-				delete fragment.item_meta;
+			const cleanedFragments = reorderBlockPositions(
+				cloneDeep(fragments).map((fragment) => {
+					delete (fragment as any).__typename;
+					delete fragment.item_meta;
 
-				return {
-					...fragment,
-					collection_uuid: collectionId,
-					id: undefined,
-				};
-			});
+					return {
+						...fragment,
+						collection_uuid: collectionId,
+						id: undefined,
+					};
+				}) as Positioned[]
+			);
 
 			const variables: InsertCollectionFragmentsMutationVariables = {
 				fragments: cleanedFragments,
@@ -1052,7 +1056,7 @@ export class CollectionService {
 				}
 			);
 
-			return fragments as Avo.Collection.Fragment[];
+			return reorderBlockPositions(fragments as Positioned[]) as Avo.Collection.Fragment[];
 		} catch (err) {
 			throw new CustomError('Failed to insert fragments into collection', err, {
 				collectionId,

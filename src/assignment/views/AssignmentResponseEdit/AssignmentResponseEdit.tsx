@@ -45,7 +45,7 @@ import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	PUPIL_COLLECTION_FORM_SCHEMA,
 } from '../../assignment.const';
-import { setPositionToIndex } from '../../assignment.helper';
+import { reorderBlockPositions } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
 	AssignmentResponseFormState,
@@ -253,7 +253,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	};
 
 	const appendBlockToPupilCollection = (newBlock: Avo.Core.BlockItemBase) => {
-		const newBlocks = setPositionToIndex([
+		const newBlocks = reorderBlockPositions([
 			...(assignmentResponse?.pupil_collection_blocks || []),
 			newBlock,
 		]);

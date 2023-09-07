@@ -11,11 +11,13 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { LomSchemeType } from '@viaa/avo2-types';
-import { compact, isNil, omit, sortBy } from 'lodash-es';
+import { compact, isNil, omit } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
+import { reorderBlockPositions } from '../assignment/assignment.helper';
 import { stripHtml } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
+import { Positioned } from '../shared/types';
 
 import {
 	CollectionBlockType,
@@ -317,19 +319,12 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
 	return rule.error(object);
 }
 
-export const reorderFragments = (
-	fragments: Avo.Collection.Fragment[]
-): Avo.Collection.Fragment[] => {
-	return fragments.map((fragment: Avo.Collection.Fragment, index: number) => ({
-		...fragment,
-		position: index + 1,
-	}));
-};
-
 export const getFragmentsFromCollection = (
 	collection: Partial<Avo.Collection.Collection> | null | undefined
 ): Avo.Collection.Fragment[] => {
-	return sortBy(collection?.collection_fragments || [], ['position']);
+	return reorderBlockPositions(
+		(collection?.collection_fragments || []) as Positioned[]
+	) as Avo.Collection.Fragment[];
 };
 
 /**

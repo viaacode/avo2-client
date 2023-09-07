@@ -98,6 +98,7 @@ import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
+import { Positioned } from '../shared/types';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
@@ -105,6 +106,7 @@ import {
 	ITEMS_PER_PAGE,
 	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './assignment.const';
+import { reorderBlockPositions } from './assignment.helper';
 import {
 	AssignmentBlockType,
 	AssignmentOverviewTableColumns,
@@ -299,7 +301,8 @@ export class AssignmentService {
 			query: GetAssignmentBlocksDocument,
 			variables: { assignmentId },
 		});
-		return (blocks.app_assignment_blocks_v2 || []) as Avo.Assignment.Block[];
+
+		return reorderBlockPositions(blocks.app_assignment_blocks_v2) as Avo.Assignment.Block[];
 	}
 
 	/**
@@ -983,39 +986,41 @@ export class AssignmentService {
 				assignmentId
 			);
 			const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
-			const blocks = collection.collection_fragments.map((fragment: any, index: number) => {
-				const block: Partial<Avo.Assignment.Block> = {
-					assignment_id: assignmentId,
-					fragment_id: fragment.external_id,
-					custom_title: null,
-					custom_description: null,
-					original_title: null,
-					original_description: null,
-					use_custom_fields: false,
-					start_oc: fragment.start_oc,
-					end_oc: fragment.end_oc,
-					position: startPosition + index,
-					thumbnail_path: fragment.thumbnail_path,
-				};
-				if (fragment.type === AssignmentBlockType.TEXT) {
-					// text: original text null, custom text set
-					block.custom_title = fragment.custom_title;
-					block.custom_description = fragment.custom_description;
-					block.use_custom_fields = true;
-					block.type = AssignmentBlockType.TEXT;
-				} else {
-					// ITEM
-					// custom_title and custom_description remain null
-					// regardless of withDescription: ALWAYS copy the fragment custom title and description to the original fields
-					// Since importing from collection, the collection is the source of truth and the original == collection fields
-					block.original_title = fragment.custom_title;
-					block.original_description = fragment.custom_description;
-					block.use_custom_fields = !withDescription;
-					block.type = AssignmentBlockType.ITEM;
-				}
+			const blocks = reorderBlockPositions(
+				collection.collection_fragments.map((fragment: any, index: number) => {
+					const block: Partial<Avo.Assignment.Block> = {
+						assignment_id: assignmentId,
+						fragment_id: fragment.external_id,
+						custom_title: null,
+						custom_description: null,
+						original_title: null,
+						original_description: null,
+						use_custom_fields: false,
+						start_oc: fragment.start_oc,
+						end_oc: fragment.end_oc,
+						position: startPosition + index,
+						thumbnail_path: fragment.thumbnail_path,
+					};
+					if (fragment.type === AssignmentBlockType.TEXT) {
+						// text: original text null, custom text set
+						block.custom_title = fragment.custom_title;
+						block.custom_description = fragment.custom_description;
+						block.use_custom_fields = true;
+						block.type = AssignmentBlockType.TEXT;
+					} else {
+						// ITEM
+						// custom_title and custom_description remain null
+						// regardless of withDescription: ALWAYS copy the fragment custom title and description to the original fields
+						// Since importing from collection, the collection is the source of truth and the original == collection fields
+						block.original_title = fragment.custom_title;
+						block.original_description = fragment.custom_description;
+						block.use_custom_fields = !withDescription;
+						block.type = AssignmentBlockType.ITEM;
+					}
 
-				return block;
-			});
+					return block;
+				}) as Positioned[]
+			) as Avo.Assignment.Block[];
 			try {
 				// Insert fragments into assignment and update the updated_at date in parallel
 				await Promise.all([

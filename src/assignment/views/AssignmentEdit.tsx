@@ -57,6 +57,7 @@ import {
 	getValidationErrorsForPublishAssignment,
 	isUserAssignmentContributor,
 	isUserAssignmentOwner,
+	setBlockPositionToIndex,
 } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import AssignmentActions from '../components/AssignmentActions';
@@ -537,12 +538,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		modal: {
 			items: assignment?.blocks,
-			onClose: (update?: Avo.Assignment.Block[]) => {
-				if (update) {
-					const blocks = update.map((item, i) => ({
-						...item,
-						position: assignment?.blocks?.[i]?.position || 0,
-					}));
+			onClose: (reorderedBlocks?: Avo.Assignment.Block[]) => {
+				if (reorderedBlocks) {
+					const blocks = setBlockPositionToIndex(
+						reorderedBlocks
+					) as Avo.Assignment.Block[];
 
 					setAssignment((prev) => ({
 						...prev,

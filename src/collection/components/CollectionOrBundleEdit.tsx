@@ -28,6 +28,7 @@ import { matchPath, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
+import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment/assignment.helper';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -47,18 +48,13 @@ import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/B
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
-import {
-	buildLink,
-	createDropdownMenuItem,
-	CustomError,
-	isMobileWidth,
-	navigate,
-} from '../../shared/helpers';
+import { buildLink, createDropdownMenuItem, CustomError, navigate } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
 } from '../../shared/helpers/contributors';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
+import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -72,7 +68,7 @@ import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
-import { getFragmentsFromCollection, reorderFragments } from '../collection.helpers';
+import { getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
 import { CollectionCreateUpdateTab } from '../collection.types';
 import { CollectionOrBundleTitle, PublishCollectionModal } from '../components';
@@ -292,8 +288,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 			return collectionState;
 		}
 
-		// TODO: fix lexical declarations
-		/* eslint-disable */
 		switch (action.type) {
 			case 'UPDATE_FRAGMENT_PROP':
 				newCurrentCollection.collection_fragments[action.index] = {
@@ -302,7 +296,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				};
 				break;
 
-			case 'SWAP_FRAGMENTS':
+			case 'SWAP_FRAGMENTS': {
 				if (
 					!newCurrentCollection.collection_fragments ||
 					!newCurrentCollection.collection_fragments.length
@@ -319,29 +313,41 @@ const CollectionOrBundleEdit: FunctionComponent<
 					return collectionState;
 				}
 
-				const fragments1 = getFragmentsFromCollection(newCurrentCollection);
+				const fragments = reorderBlockPositions(
+					getFragmentsFromCollection(newCurrentCollection)
+				);
 
 				const delta = action.direction === 'up' ? -1 : 1;
 
 				// Make the swap
-				const tempFragment = fragments1[action.index];
-				fragments1[action.index] = fragments1[action.index + delta];
-				fragments1[action.index + delta] = tempFragment;
+				fragments[action.index].position = fragments[action.index].position + delta;
+				fragments[action.index + delta].position =
+					fragments[action.index + delta].position - delta;
 
-				newCurrentCollection.collection_fragments = reorderFragments(fragments1);
+				newCurrentCollection.collection_fragments = reorderBlockPositions(
+					fragments
+				) as Avo.Collection.Fragment[];
 				break;
+			}
 
-			case 'INSERT_FRAGMENT':
-				const fragments2 = getFragmentsFromCollection(newCurrentCollection);
-				fragments2.splice(action.index, 0, action.fragment);
-				newCurrentCollection.collection_fragments = reorderFragments(fragments2);
+			case 'INSERT_FRAGMENT': {
+				const fragments = getFragmentsFromCollection(newCurrentCollection);
+				action.fragment.position = action.index;
+				fragments.splice(action.index, 0, action.fragment);
+				newCurrentCollection.collection_fragments = setBlockPositionToIndex(
+					fragments
+				) as Avo.Collection.Fragment[];
 				break;
+			}
 
-			case 'DELETE_FRAGMENT':
-				const fragments3 = getFragmentsFromCollection(newCurrentCollection);
-				fragments3.splice(action.index, 1);
-				newCurrentCollection.collection_fragments = reorderFragments(fragments3);
+			case 'DELETE_FRAGMENT': {
+				const fragments = getFragmentsFromCollection(newCurrentCollection);
+				fragments.splice(action.index, 1);
+				newCurrentCollection.collection_fragments = reorderBlockPositions(
+					fragments
+				) as Avo.Collection.Fragment[];
 				break;
+			}
 
 			case 'UPDATE_COLLECTION_PROP':
 				set(newCurrentCollection, action.collectionProp, action.collectionPropValue);
@@ -350,7 +356,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 				}
 				break;
 		}
-		/* eslint-enable */
 
 		updateHasUnsavedChanges(newInitialCollection, newCurrentCollection);
 
@@ -395,13 +400,17 @@ const CollectionOrBundleEdit: FunctionComponent<
 		},
 		modal: {
 			items: getFragmentsFromCollection(collectionState.currentCollection),
-			onClose: (fragments?: Avo.Collection.Fragment[]) => {
-				if (fragments) {
+			onClose: (reorderedFragments?: Avo.Collection.Fragment[]) => {
+				if (reorderedFragments) {
+					const blocks = setBlockPositionToIndex(
+						reorderedFragments
+					) as Avo.Collection.Fragment[];
+
 					changeCollectionState({
 						type: 'UPDATE_COLLECTION_PROP',
 						updateInitialCollection: false,
 						collectionProp: 'collection_fragments',
-						collectionPropValue: reorderFragments(fragments),
+						collectionPropValue: blocks,
 					});
 				}
 			},
@@ -1429,49 +1438,53 @@ const CollectionOrBundleEdit: FunctionComponent<
 					/>
 				)}
 
-				{collectionState.currentCollection && isMobileWidth() && (
-					<ShareModal
-						title={tText(
-							'collection/components/collection-or-bundle-edit___deel-deze-collectie-met-collegas'
-						)}
-						isOpen={isShareModalOpen}
-						onClose={() => setIsShareModalOpen(false)}
-						contributors={transformContributorsToSimpleContributors(
-							{
-								...collectionState.currentCollection?.profile?.user,
-								profile: collectionState.currentCollection?.profile,
-							} as Avo.User.User,
-							contributors as Avo.Collection.Contributor[]
-						)}
-						onDeleteContributor={(info) =>
-							onDeleteContributor(info, collectionId, fetchContributors)
-						}
-						onEditContributorRights={(user, newRights) =>
-							onEditContributor(
-								user,
-								newRights,
-								collectionId,
-								fetchContributors,
-								checkPermissionsAndGetCollection
-							)
-						}
-						onAddContributor={(info) =>
-							onAddContributor(info, collectionId, fetchContributors)
-						}
-						withPupils={false}
-						availableRights={{
-							[ContributorInfoRight.CONTRIBUTOR]:
-								PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
-							[ContributorInfoRight.VIEWER]:
-								PermissionName.SHARE_COLLECTION_WITH_VIEWER,
-						}}
-						isAdmin={
-							commonUser?.permissions?.includes(
-								PermissionName.EDIT_ANY_COLLECTIONS
-							) || false
-						}
-					/>
-				)}
+				{collectionState.currentCollection &&
+					renderMobileDesktop({
+						mobile: (
+							<ShareModal
+								title={tText(
+									'collection/components/collection-or-bundle-edit___deel-deze-collectie-met-collegas'
+								)}
+								isOpen={isShareModalOpen}
+								onClose={() => setIsShareModalOpen(false)}
+								contributors={transformContributorsToSimpleContributors(
+									{
+										...collectionState.currentCollection?.profile?.user,
+										profile: collectionState.currentCollection?.profile,
+									} as Avo.User.User,
+									contributors as Avo.Collection.Contributor[]
+								)}
+								onDeleteContributor={(info) =>
+									onDeleteContributor(info, collectionId, fetchContributors)
+								}
+								onEditContributorRights={(user, newRights) =>
+									onEditContributor(
+										user,
+										newRights,
+										collectionId,
+										fetchContributors,
+										checkPermissionsAndGetCollection
+									)
+								}
+								onAddContributor={(info) =>
+									onAddContributor(info, collectionId, fetchContributors)
+								}
+								withPupils={false}
+								availableRights={{
+									[ContributorInfoRight.CONTRIBUTOR]:
+										PermissionName.SHARE_COLLECTION_WITH_CONTRIBUTOR,
+									[ContributorInfoRight.VIEWER]:
+										PermissionName.SHARE_COLLECTION_WITH_VIEWER,
+								}}
+								isAdmin={
+									commonUser?.permissions?.includes(
+										PermissionName.EDIT_ANY_COLLECTIONS
+									) || false
+								}
+							/>
+						),
+						desktop: null,
+					})}
 
 				<DeleteCollectionModal
 					isOpen={isDeleteModalOpen}

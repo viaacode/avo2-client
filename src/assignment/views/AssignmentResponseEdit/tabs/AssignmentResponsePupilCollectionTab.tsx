@@ -46,6 +46,8 @@ import {
 import './AssignmentResponsePupilCollectionTab.scss';
 import type { Avo } from '@viaa/avo2-types';
 
+import { setBlockPositionToIndex } from '../../../assignment.helper';
+
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
 	viewAsTeacher = 'viewAsTeacher',
@@ -97,15 +99,14 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 		modal: {
 			items: assignmentResponse.pupil_collection_blocks,
 			isOpen: isDraggableListModalOpen,
-			onClose: (updatedBlocks?: PupilCollectionFragment[]) => {
+			onClose: (reorderedBlocks?: PupilCollectionFragment[]) => {
 				setIsDraggableListModalOpen(false);
-				if (updatedBlocks) {
-					const newBlocks = updatedBlocks.map((item, i) => ({
-						...item,
-						position: assignmentResponse.pupil_collection_blocks?.[i]?.position || 0,
-					}));
+				if (reorderedBlocks) {
+					const blocks = setBlockPositionToIndex(
+						reorderedBlocks
+					) as Avo.Assignment.Block[];
 
-					updateBlocksInAssignmentResponseState(newBlocks);
+					updateBlocksInAssignmentResponseState(blocks);
 				}
 			},
 		},

@@ -40,6 +40,6 @@ export interface LabeledFormField {
 	help?: string;
 }
 
-export type Positioned = { id: string | number; position: number };
+export type Positioned = { position: number; created_at: string };
 
 export type UnpublishableItem = (Avo.Item.Item & { replacement_for?: string }) | null;

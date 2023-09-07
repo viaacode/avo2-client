@@ -21,7 +21,7 @@ export const NEW_FRAGMENT = {
 	text: {
 		id: null,
 		collection_uuid: null,
-		position: 1,
+		position: 0,
 		external_id: null,
 		custom_description: null,
 		custom_title: null,
