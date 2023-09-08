@@ -352,16 +352,24 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	const submit = async () => {
 		try {
-			if (!user.profile?.id || !original) {
+			if (!user.profile?.id || !original || !assignment) {
 				return;
 			}
 
-			if (assignment?.is_public) {
+			if (assignment.is_public) {
 				const validationErrors = await getValidationErrorsForPublishAssignment(assignment);
 				if (validationErrors && validationErrors.length) {
 					ToastService.danger(validationErrors);
 					return;
 				}
+			}
+
+			// Deal with the owner changing
+			if (original?.owner_profile_id !== assignment.owner_profile_id) {
+				await AssignmentService.transferAssignmentOwnerShip(
+					original.id,
+					assignment.owner_profile_id as string
+				);
 			}
 
 			const updated = await AssignmentService.updateAssignment(

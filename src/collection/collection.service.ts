@@ -1684,18 +1684,18 @@ export class CollectionService {
 
 	static async transferCollectionOwnerShip(
 		collectionId: string,
-		contributorProfileId: string
+		newOwnerProfileId: string
 	): Promise<void> {
 		try {
 			await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
-				)}/collections/${collectionId}/share/transfer-owner?newOwnerId=${contributorProfileId}`,
+				)}/collections/${collectionId}/share/transfer-owner?newOwnerId=${newOwnerProfileId}`,
 				{ method: 'PATCH' }
 			);
 		} catch (err) {
 			throw new CustomError('Failed to transfer assignment ownership', err, {
-				contributorProfileId,
+				newOwnerProfileId,
 			});
 		}
 	}

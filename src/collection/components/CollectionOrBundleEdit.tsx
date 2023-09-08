@@ -741,6 +741,18 @@ const CollectionOrBundleEdit: FunctionComponent<
 			return null;
 		}
 
+		// Deal with the owner changing
+		if (
+			collectionState.initialCollection?.owner_profile_id !==
+			collectionState.currentCollection.owner_profile_id
+		) {
+			await CollectionService.transferCollectionOwnerShip(
+				collectionId,
+				collectionState.currentCollection.owner_profile_id
+			);
+		}
+
+		// Save the other collection fields including the new owner id
 		return await CollectionService.updateCollection(
 			collectionState.initialCollection,
 			collectionState.currentCollection,
