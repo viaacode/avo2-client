@@ -7,8 +7,9 @@ import {
 	Flex,
 	Grid,
 	Header,
-	HeaderButtons,
-	HeaderRow,
+	HeaderBottomRowLeft,
+	HeaderBottomRowRight,
+	HeaderMiddleRowRight,
 	IconName,
 	MenuContent,
 	MoreOptionsDropdown,
@@ -19,7 +20,7 @@ import {
 import { PermissionName } from '@viaa/avo2-types';
 import type { Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get, isEmpty, isNil } from 'lodash-es';
+import { compact, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';
 import { withRouter } from 'react-router';
@@ -1014,7 +1015,6 @@ const CollectionDetail: FunctionComponent<
 						/>
 					</Spacer>
 				)}
-				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
 	};
@@ -1122,7 +1122,7 @@ const CollectionDetail: FunctionComponent<
 
 	const renderCollectionBody = () => {
 		const { collection_fragments } = collection as Avo.Collection.Collection;
-		const hasCopies = (get(collection, 'relations') || []).length > 0;
+		const hasCopies = (collection?.relations || []).length > 0;
 		const hasParentBundles = !!publishedBundles.length;
 
 		return (
@@ -1169,19 +1169,19 @@ const CollectionDetail: FunctionComponent<
 												{`${tText(
 													'collection/views/collection-detail___deze-collectie-is-een-kopie-van'
 												)} `}
-												{(
-													get(collection, 'relations', []) as Relation[]
-												).map((relation: Relation) => (
-													<Link
-														key={`copy-of-link-${relation.object_meta.id}`}
-														to={buildLink(
-															APP_PATH.COLLECTION_DETAIL.route,
-															{ id: relation.object_meta.id }
-														)}
-													>
-														{relation.object_meta.title}
-													</Link>
-												))}
+												{((collection?.relations ?? []) as Relation[]).map(
+													(relation: Relation) => (
+														<Link
+															key={`copy-of-link-${relation.object_meta.id}`}
+															to={buildLink(
+																APP_PATH.COLLECTION_DETAIL.route,
+																{ id: relation.object_meta.id }
+															)}
+														>
+															{relation.object_meta.title}
+														</Link>
+													)
+												)}
 											</p>
 										)}
 
@@ -1467,19 +1467,26 @@ const CollectionDetail: FunctionComponent<
 						views={String(bookmarkViewPlayCounts.viewCount || 0)}
 					>
 						{!showLoginPopup && (
-							<HeaderButtons>
+							<HeaderMiddleRowRight>
 								{isMobileWidth()
 									? renderHeaderButtonsMobile()
 									: renderHeaderButtons()}
-							</HeaderButtons>
+							</HeaderMiddleRowRight>
 						)}
 
-						<HeaderRow>
-							<HeaderOwnerAndContributors
-								subject={collection}
-								user={user as Avo.User.User}
-							/>
-						</HeaderRow>
+						<HeaderBottomRowLeft>
+							<div className="u-flex-space-between">
+								<HeaderOwnerAndContributors
+									subject={collection}
+									user={user as Avo.User.User}
+								/>
+							</div>
+						</HeaderBottomRowLeft>
+						<HeaderBottomRowRight>
+							<Spacer margin={'top-small'}>
+								<InteractiveTour showButton />
+							</Spacer>
+						</HeaderBottomRowRight>
 					</Header>
 				)}
 
@@ -1497,32 +1504,26 @@ const CollectionDetail: FunctionComponent<
 					<MetaTags>
 						<title>
 							{GENERATE_SITE_TITLE(
-								get(
-									collection,
-									'title',
+								collection?.title ??
 									tText(
 										'collection/views/collection-detail___collectie-detail-titel-fallback'
 									)
-								)
 							)}
 						</title>
 
-						<meta name="description" content={get(collection, 'description') || ''} />
+						<meta name="description" content={collection?.description || ''} />
 					</MetaTags>
 
 					<JsonLd
 						url={window.location.href}
-						title={get(collection, 'title', '')}
-						description={get(collection, 'description')}
-						image={get(collection, 'thumbnail_path')}
-						isOrganisation={!!get(collection, 'profile.organisation')}
-						author={getFullName(get(collection, 'profile'), true, false)}
-						publishedAt={get(collection, 'published_at')}
-						updatedAt={get(collection, 'updated_at')}
-						keywords={[
-							...(get(collection, 'lom_classification') || []),
-							...(get(collection, 'lom_context') || []),
-						]}
+						title={collection?.title ?? ''}
+						description={collection?.description}
+						image={collection?.thumbnail_path}
+						isOrganisation={!!collection?.profile?.organisation}
+						author={getFullName(collection?.profile, true, false)}
+						publishedAt={collection?.published_at}
+						updatedAt={collection?.updated_at}
+						keywords={compact((collection?.loms || []).map((lom) => lom.lom?.label))}
 					/>
 
 					{renderCollection()}

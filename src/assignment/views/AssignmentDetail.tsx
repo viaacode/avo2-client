@@ -5,8 +5,8 @@ import {
 	Flex,
 	Grid,
 	Header,
-	HeaderButtons,
-	HeaderRow,
+	HeaderBottomRowLeft,
+	HeaderMiddleRowRight,
 	IconName,
 	isUuid,
 	MoreOptionsDropdown,
@@ -709,12 +709,12 @@ const AssignmentDetail: FC<
 		if (assignment) {
 			return (
 				<Header title={assignment.title || ''} category="assignment" showMetaData>
-					<HeaderButtons>
+					<HeaderMiddleRowRight>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
-					</HeaderButtons>
-					<HeaderRow>
+					</HeaderMiddleRowRight>
+					<HeaderBottomRowLeft>
 						<HeaderOwnerAndContributors subject={assignment} user={user} />
-					</HeaderRow>
+					</HeaderBottomRowLeft>
 				</Header>
 			);
 		}

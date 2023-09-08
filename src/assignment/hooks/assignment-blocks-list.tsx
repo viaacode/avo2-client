@@ -40,7 +40,12 @@ export function useBlocksList(
 		() => (
 			<BlockListSorter
 				{...config?.listSorter}
-				heading={(item) => item && BLOCK_ITEM_LABELS()[item.type as Avo.Core.BlockItemType]}
+				heading={(item) =>
+					item &&
+					BLOCK_ITEM_LABELS(!!blocks[0].assignment_response_id)[
+						item.type as Avo.Core.BlockItemType
+					]
+				}
 				items={items}
 			/>
 		),

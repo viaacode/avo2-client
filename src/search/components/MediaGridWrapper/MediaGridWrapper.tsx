@@ -276,10 +276,18 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 				video: itemDuration,
 				audio: itemDuration,
 				collectie: `${collectionItems} ${
-					collectionItems === 1 ? tText('item') : tText('items')
+					collectionItems === 1
+						? tText('search/components/media-grid-wrapper/media-grid-wrapper___item')
+						: tText('search/components/media-grid-wrapper/media-grid-wrapper___items')
 				}`,
 				bundel: `${collectionItems} ${
-					collectionItems === 1 ? tText('collectie') : tText('collecties')
+					collectionItems === 1
+						? tText(
+								'search/components/media-grid-wrapper/media-grid-wrapper___collectie'
+						  )
+						: tText(
+								'search/components/media-grid-wrapper/media-grid-wrapper___collecties'
+						  )
 				}`,
 				opdracht: null,
 			}[itemLabel] || null

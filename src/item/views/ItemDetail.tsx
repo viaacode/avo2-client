@@ -9,9 +9,9 @@ import {
 	Flex,
 	Grid,
 	Header,
-	HeaderAvatar,
-	HeaderButtons,
+	HeaderBottomRowLeft,
 	HeaderContentType,
+	HeaderMiddleRowRight,
 	Icon,
 	IconName,
 	MediaCard,
@@ -857,7 +857,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							</div>
 						</Spacer>
 					</HeaderContentType>
-					<HeaderButtons>
+					<HeaderMiddleRowRight>
 						<ButtonToolbar>
 							<MetaData category={englishContentType}>
 								<MetaDataItem
@@ -871,8 +871,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							</MetaData>
 							{renderInteractiveTour?.()}
 						</ButtonToolbar>
-					</HeaderButtons>
-					<HeaderAvatar>
+					</HeaderMiddleRowRight>
+					<HeaderBottomRowLeft>
 						<MetaData category={englishContentType}>
 							{!!get(item, 'organisation.name') && (
 								<MetaDataItem>
@@ -903,7 +903,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 								</MetaDataItem>
 							)}
 						</MetaData>
-					</HeaderAvatar>
+					</HeaderBottomRowLeft>
 				</Header>
 				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">

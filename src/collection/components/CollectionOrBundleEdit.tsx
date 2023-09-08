@@ -3,8 +3,8 @@ import {
 	ButtonToolbar,
 	Container,
 	Header,
-	HeaderAvatar,
-	HeaderButtons,
+	HeaderBottomRowLeft,
+	HeaderMiddleRowRight,
 	IconName,
 	MoreOptionsDropdown,
 	Navbar,
@@ -1406,22 +1406,22 @@ const CollectionOrBundleEdit: FunctionComponent<
 					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
 					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
-					<HeaderButtons>
+					<HeaderMiddleRowRight>
 						<div className="c-collection-or-bundle-edit__header-buttons--mobile">
 							{renderHeaderButtonsMobile()}
 						</div>
 						<div className="c-collection-or-bundle-edit__header-buttons--desktop">
 							{renderHeaderButtons()}
 						</div>
-					</HeaderButtons>
+					</HeaderMiddleRowRight>
 
 					{collectionState.currentCollection && (
-						<HeaderAvatar>
+						<HeaderBottomRowLeft>
 							<HeaderOwnerAndContributors
 								subject={collectionState.currentCollection}
 								user={user as Avo.User.User}
 							/>
-						</HeaderAvatar>
+						</HeaderBottomRowLeft>
 					)}
 				</Header>
 

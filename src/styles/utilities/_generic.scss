@@ -75,11 +75,13 @@
 .u-limit-width {
 	max-width: 60rem;
 }
+
 @media (min-width: $g-bp3) {
 	.u-limit-width-bp3 {
 		max-width: 60rem;
 	}
 }
+
 @media (min-width: $g-bp2) {
 	.u-limit-width-bp2-s {
 		max-width: 32rem;
