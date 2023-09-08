@@ -15,6 +15,7 @@ query getAssignmentsAdminOverview(
 		deadline_at
 		is_collaborative
 		is_deleted
+		is_public
 		owner_profile_id
 		owner {
 			full_name

@@ -20,12 +20,12 @@ import {
 
 /**
  * Generates the filters for the collections and bundles screens and the actualisation, quality check and marcom screens
- * @param filters: the filter object containing the selected values. this is also stored in the url of the overview page
+ * @param filters the filter object containing the selected values. this is also stored in the url of the overview page
  * @param user
- * @param isCollection: switch between collection and bundles since they are loaded from the same table
- * @param includeDeleted: determines of a filter for omitting deleted collections should be added or not
- * @param checkPermissions: for the collection and bundle overview you need a specific permission
- * @param isCollectionTableOrView: small differences between the editorial views and the collection/bundle table are switched using this boolean
+ * @param isCollection switch between collection and bundles since they are loaded from the same table
+ * @param includeDeleted determines of a filter for omitting deleted collections should be added or not
+ * @param checkPermissions for the collection and bundle overview you need a specific permission
+ * @param isCollectionTableOrView small differences between the editorial views and the collection/bundle table are switched using this boolean
  */
 export function generateCollectionWhereObject(
 	filters: Partial<CollectionTableStates>,

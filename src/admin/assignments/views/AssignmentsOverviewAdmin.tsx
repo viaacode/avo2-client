@@ -36,7 +36,11 @@ import FilterTable, {
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
-import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
+import {
+	getBooleanFilters,
+	getDateRangeFilters,
+	getMultiOptionFilters,
+} from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
 import {
@@ -121,6 +125,8 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				});
 			}
 		}
+
+		andFilters.push(...getBooleanFilters(filters, ['is_public']));
 
 		// pupil collections filter: has collections, does not have collections
 		if (!isNil(filters.pupilCollections?.[0]) && filters.pupilCollections?.length === 1) {
@@ -356,6 +362,9 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					new Date(assignment.deadline_at).getTime() < new Date().getTime()
 					? tText('admin/assignments/views/assignments-overview-admin___afgelopen')
 					: tText('admin/assignments/views/assignments-overview-admin___actief');
+
+			case 'is_public':
+				return assignment.is_public ? tText('Ja') : tText('Nee');
 
 			case 'responses': {
 				const responsesLength =

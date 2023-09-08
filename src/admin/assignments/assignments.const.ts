@@ -95,6 +95,14 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn<Assignme
 			dataType: TableColumnDataType.boolean,
 		},
 		{
+			id: 'is_public',
+			label: tText('Publiek'),
+			sortable: true,
+			visibleByDefault: true,
+			filterType: 'BooleanCheckboxDropdown',
+			dataType: TableColumnDataType.boolean,
+		},
+		{
 			id: 'responses',
 			label: tText('admin/assignments/assignments___leerlingencollecties'),
 			sortable: true,

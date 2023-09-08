@@ -13678,7 +13678,7 @@ export type App_Content_Assets = {
   content_asset_type_id: Scalars['String'];
   created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
   label?: Maybe<Scalars['String']>;
   owner_id?: Maybe<Scalars['String']>;
   path: Scalars['String'];
@@ -13695,17 +13695,9 @@ export type App_Content_Assets_Aggregate = {
 /** aggregate fields of "app.content_assets" */
 export type App_Content_Assets_Aggregate_Fields = {
   __typename?: 'app_content_assets_aggregate_fields';
-  avg?: Maybe<App_Content_Assets_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<App_Content_Assets_Max_Fields>;
   min?: Maybe<App_Content_Assets_Min_Fields>;
-  stddev?: Maybe<App_Content_Assets_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Content_Assets_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Content_Assets_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Content_Assets_Sum_Fields>;
-  var_pop?: Maybe<App_Content_Assets_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Content_Assets_Var_Samp_Fields>;
-  variance?: Maybe<App_Content_Assets_Variance_Fields>;
 };
 
 
@@ -13713,12 +13705,6 @@ export type App_Content_Assets_Aggregate_Fields = {
 export type App_Content_Assets_Aggregate_FieldsCountArgs = {
   columns?: InputMaybe<Array<App_Content_Assets_Select_Column>>;
   distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** aggregate avg on columns */
-export type App_Content_Assets_Avg_Fields = {
-  __typename?: 'app_content_assets_avg_fields';
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** Boolean expression to filter rows from the table "app.content_assets". All fields are combined with a logical 'AND'. */
@@ -13729,7 +13715,7 @@ export type App_Content_Assets_Bool_Exp = {
   content_asset_type_id?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   description?: InputMaybe<String_Comparison_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<Uuid_Comparison_Exp>;
   label?: InputMaybe<String_Comparison_Exp>;
   owner_id?: InputMaybe<String_Comparison_Exp>;
   path?: InputMaybe<String_Comparison_Exp>;
@@ -13738,6 +13724,8 @@ export type App_Content_Assets_Bool_Exp = {
 
 /** unique or primary key constraints on table "app.content_assets" */
 export enum App_Content_Assets_Constraint {
+  /** unique or primary key constraint on columns "id" */
+  ContentAssetsIdKey = 'content_assets_id_key',
   /** unique or primary key constraint on columns "label" */
   ContentAssetsLabelKey = 'content_assets_label_key',
   /** unique or primary key constraint on columns "path" */
@@ -13746,17 +13734,12 @@ export enum App_Content_Assets_Constraint {
   ContentAssetsPkey = 'content_assets_pkey'
 }
 
-/** input type for incrementing numeric columns in table "app.content_assets" */
-export type App_Content_Assets_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
 /** input type for inserting data into table "app.content_assets" */
 export type App_Content_Assets_Insert_Input = {
   content_asset_type_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['uuid']>;
   label?: InputMaybe<Scalars['String']>;
   owner_id?: InputMaybe<Scalars['String']>;
   path?: InputMaybe<Scalars['String']>;
@@ -13769,7 +13752,7 @@ export type App_Content_Assets_Max_Fields = {
   content_asset_type_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
   label?: Maybe<Scalars['String']>;
   owner_id?: Maybe<Scalars['String']>;
   path?: Maybe<Scalars['String']>;
@@ -13782,7 +13765,7 @@ export type App_Content_Assets_Min_Fields = {
   content_asset_type_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['uuid']>;
   label?: Maybe<Scalars['String']>;
   owner_id?: Maybe<Scalars['String']>;
   path?: Maybe<Scalars['String']>;
@@ -13819,7 +13802,7 @@ export type App_Content_Assets_Order_By = {
 
 /** primary key columns input for table: app.content_assets */
 export type App_Content_Assets_Pk_Columns_Input = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 /** select columns of table "app.content_assets" */
@@ -13847,29 +13830,11 @@ export type App_Content_Assets_Set_Input = {
   content_asset_type_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['uuid']>;
   label?: InputMaybe<Scalars['String']>;
   owner_id?: InputMaybe<Scalars['String']>;
   path?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Content_Assets_Stddev_Fields = {
-  __typename?: 'app_content_assets_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Content_Assets_Stddev_Pop_Fields = {
-  __typename?: 'app_content_assets_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Content_Assets_Stddev_Samp_Fields = {
-  __typename?: 'app_content_assets_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** Streaming cursor of the table "app_content_assets" */
@@ -13885,17 +13850,11 @@ export type App_Content_Assets_Stream_Cursor_Value_Input = {
   content_asset_type_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['uuid']>;
   label?: InputMaybe<Scalars['String']>;
   owner_id?: InputMaybe<Scalars['String']>;
   path?: InputMaybe<Scalars['String']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate sum on columns */
-export type App_Content_Assets_Sum_Fields = {
-  __typename?: 'app_content_assets_sum_fields';
-  id?: Maybe<Scalars['Int']>;
 };
 
 /** update columns of table "app.content_assets" */
@@ -13919,29 +13878,9 @@ export enum App_Content_Assets_Update_Column {
 }
 
 export type App_Content_Assets_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Content_Assets_Inc_Input>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<App_Content_Assets_Set_Input>;
   where: App_Content_Assets_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type App_Content_Assets_Var_Pop_Fields = {
-  __typename?: 'app_content_assets_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Content_Assets_Var_Samp_Fields = {
-  __typename?: 'app_content_assets_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate variance on columns */
-export type App_Content_Assets_Variance_Fields = {
-  __typename?: 'app_content_assets_variance_fields';
-  id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate avg on columns */
@@ -25031,6 +24970,8 @@ export type Mutation_Root = {
   delete_shared_ldap_organizations?: Maybe<Shared_Ldap_Organizations_Mutation_Response>;
   /** delete single row from the table: "shared.ldap_organizations" */
   delete_shared_ldap_organizations_by_pk?: Maybe<Shared_Ldap_Organizations>;
+  /** delete data from the table: "shared.ldap_organizations_flattened" */
+  delete_shared_ldap_organizations_flattened?: Maybe<Shared_Ldap_Organizations_Flattened_Mutation_Response>;
   /** delete data from the table: "shared.organisations" */
   delete_shared_organisations?: Maybe<Shared_Organisations_Mutation_Response>;
   /** delete single row from the table: "shared.organisations" */
@@ -25409,6 +25350,10 @@ export type Mutation_Root = {
   insert_shared_items_one?: Maybe<Shared_Items>;
   /** insert data into the table: "shared.ldap_organizations" */
   insert_shared_ldap_organizations?: Maybe<Shared_Ldap_Organizations_Mutation_Response>;
+  /** insert data into the table: "shared.ldap_organizations_flattened" */
+  insert_shared_ldap_organizations_flattened?: Maybe<Shared_Ldap_Organizations_Flattened_Mutation_Response>;
+  /** insert a single row into the table: "shared.ldap_organizations_flattened" */
+  insert_shared_ldap_organizations_flattened_one?: Maybe<Shared_Ldap_Organizations_Flattened>;
   /** insert a single row into the table: "shared.ldap_organizations" */
   insert_shared_ldap_organizations_one?: Maybe<Shared_Ldap_Organizations>;
   /** insert data into the table: "shared.organisations" */
@@ -25927,6 +25872,10 @@ export type Mutation_Root = {
   update_shared_ldap_organizations?: Maybe<Shared_Ldap_Organizations_Mutation_Response>;
   /** update single row of the table: "shared.ldap_organizations" */
   update_shared_ldap_organizations_by_pk?: Maybe<Shared_Ldap_Organizations>;
+  /** update data of the table: "shared.ldap_organizations_flattened" */
+  update_shared_ldap_organizations_flattened?: Maybe<Shared_Ldap_Organizations_Flattened_Mutation_Response>;
+  /** update multiples rows of table: "shared.ldap_organizations_flattened" */
+  update_shared_ldap_organizations_flattened_many?: Maybe<Array<Maybe<Shared_Ldap_Organizations_Flattened_Mutation_Response>>>;
   /** update multiples rows of table: "shared.ldap_organizations" */
   update_shared_ldap_organizations_many?: Maybe<Array<Maybe<Shared_Ldap_Organizations_Mutation_Response>>>;
   /** update data of the table: "shared.organisations" */
@@ -26420,7 +26369,7 @@ export type Mutation_RootDelete_App_Content_AssetsArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_App_Content_Assets_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -26916,6 +26865,12 @@ export type Mutation_RootDelete_Shared_Ldap_OrganizationsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Shared_Ldap_Organizations_By_PkArgs = {
   id: Scalars['Int'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Shared_Ldap_Organizations_FlattenedArgs = {
+  where: Shared_Ldap_Organizations_Flattened_Bool_Exp;
 };
 
 
@@ -28191,6 +28146,18 @@ export type Mutation_RootInsert_Shared_Ldap_OrganizationsArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Shared_Ldap_Organizations_FlattenedArgs = {
+  objects: Array<Shared_Ldap_Organizations_Flattened_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Shared_Ldap_Organizations_Flattened_OneArgs = {
+  object: Shared_Ldap_Organizations_Flattened_Insert_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_Shared_Ldap_Organizations_OneArgs = {
   object: Shared_Ldap_Organizations_Insert_Input;
   on_conflict?: InputMaybe<Shared_Ldap_Organizations_On_Conflict>;
@@ -29170,7 +29137,6 @@ export type Mutation_RootUpdate_App_ContentArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_App_Content_AssetsArgs = {
-  _inc?: InputMaybe<App_Content_Assets_Inc_Input>;
   _set?: InputMaybe<App_Content_Assets_Set_Input>;
   where: App_Content_Assets_Bool_Exp;
 };
@@ -29178,7 +29144,6 @@ export type Mutation_RootUpdate_App_Content_AssetsArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_App_Content_Assets_By_PkArgs = {
-  _inc?: InputMaybe<App_Content_Assets_Inc_Input>;
   _set?: InputMaybe<App_Content_Assets_Set_Input>;
   pk_columns: App_Content_Assets_Pk_Columns_Input;
 };
@@ -30146,6 +30111,25 @@ export type Mutation_RootUpdate_Shared_Ldap_Organizations_By_PkArgs = {
   _prepend?: InputMaybe<Shared_Ldap_Organizations_Prepend_Input>;
   _set?: InputMaybe<Shared_Ldap_Organizations_Set_Input>;
   pk_columns: Shared_Ldap_Organizations_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Shared_Ldap_Organizations_FlattenedArgs = {
+  _append?: InputMaybe<Shared_Ldap_Organizations_Flattened_Append_Input>;
+  _delete_at_path?: InputMaybe<Shared_Ldap_Organizations_Flattened_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Shared_Ldap_Organizations_Flattened_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Shared_Ldap_Organizations_Flattened_Delete_Key_Input>;
+  _inc?: InputMaybe<Shared_Ldap_Organizations_Flattened_Inc_Input>;
+  _prepend?: InputMaybe<Shared_Ldap_Organizations_Flattened_Prepend_Input>;
+  _set?: InputMaybe<Shared_Ldap_Organizations_Flattened_Set_Input>;
+  where: Shared_Ldap_Organizations_Flattened_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Shared_Ldap_Organizations_Flattened_ManyArgs = {
+  updates: Array<Shared_Ldap_Organizations_Flattened_Updates>;
 };
 
 
@@ -31224,6 +31208,10 @@ export type Query_Root = {
   shared_ldap_organizations_aggregate: Shared_Ldap_Organizations_Aggregate;
   /** fetch data from the table: "shared.ldap_organizations" using primary key columns */
   shared_ldap_organizations_by_pk?: Maybe<Shared_Ldap_Organizations>;
+  /** fetch data from the table: "shared.ldap_organizations_flattened" */
+  shared_ldap_organizations_flattened: Array<Shared_Ldap_Organizations_Flattened>;
+  /** fetch aggregated fields from the table: "shared.ldap_organizations_flattened" */
+  shared_ldap_organizations_flattened_aggregate: Shared_Ldap_Organizations_Flattened_Aggregate;
   /** fetch data from the table: "shared.organisations" */
   shared_organisations: Array<Shared_Organisations>;
   /** fetch aggregated fields from the table: "shared.organisations" */
@@ -32261,7 +32249,7 @@ export type Query_RootApp_Content_Assets_AggregateArgs = {
 
 
 export type Query_RootApp_Content_Assets_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -33298,6 +33286,24 @@ export type Query_RootShared_Ldap_Organizations_AggregateArgs = {
 
 export type Query_RootShared_Ldap_Organizations_By_PkArgs = {
   id: Scalars['Int'];
+};
+
+
+export type Query_RootShared_Ldap_Organizations_FlattenedArgs = {
+  distinct_on?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Order_By>>;
+  where?: InputMaybe<Shared_Ldap_Organizations_Flattened_Bool_Exp>;
+};
+
+
+export type Query_RootShared_Ldap_Organizations_Flattened_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Order_By>>;
+  where?: InputMaybe<Shared_Ldap_Organizations_Flattened_Bool_Exp>;
 };
 
 
@@ -34733,6 +34739,464 @@ export type Shared_Ldap_Organizations_Delete_Elem_Input = {
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type Shared_Ldap_Organizations_Delete_Key_Input = {
   ldap_content?: InputMaybe<Scalars['String']>;
+};
+
+/** columns and relationships of "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened = {
+  __typename?: 'shared_ldap_organizations_flattened';
+  businessCategory?: Maybe<Scalars['String']>;
+  createTimestamp?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  creatorsName?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  entryCSN?: Maybe<Scalars['String']>;
+  entryUUID?: Maybe<Scalars['String']>;
+  hasSubordinates?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  l?: Maybe<Scalars['String']>;
+  ldap_content?: Maybe<Scalars['jsonb']>;
+  ldap_description?: Maybe<Scalars['String']>;
+  ldap_entryuuid?: Maybe<Scalars['uuid']>;
+  ldap_modifytimestamp?: Maybe<Scalars['timestamptz']>;
+  modifiersName?: Maybe<Scalars['String']>;
+  modifyTimestamp?: Maybe<Scalars['String']>;
+  o?: Maybe<Scalars['String']>;
+  objectClass?: Maybe<Scalars['jsonb']>;
+  organization_id?: Maybe<Scalars['String']>;
+  postalCode?: Maybe<Scalars['String']>;
+  street?: Maybe<Scalars['String']>;
+  structuralObjectClass?: Maybe<Scalars['String']>;
+  subschemaSubentry?: Maybe<Scalars['String']>;
+  telephoneNumber?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+
+/** columns and relationships of "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_FlattenedLdap_ContentArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_FlattenedObjectClassArgs = {
+  path?: InputMaybe<Scalars['String']>;
+};
+
+/** aggregated selection of "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened_Aggregate = {
+  __typename?: 'shared_ldap_organizations_flattened_aggregate';
+  aggregate?: Maybe<Shared_Ldap_Organizations_Flattened_Aggregate_Fields>;
+  nodes: Array<Shared_Ldap_Organizations_Flattened>;
+};
+
+/** aggregate fields of "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened_Aggregate_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_aggregate_fields';
+  avg?: Maybe<Shared_Ldap_Organizations_Flattened_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Shared_Ldap_Organizations_Flattened_Max_Fields>;
+  min?: Maybe<Shared_Ldap_Organizations_Flattened_Min_Fields>;
+  stddev?: Maybe<Shared_Ldap_Organizations_Flattened_Stddev_Fields>;
+  stddev_pop?: Maybe<Shared_Ldap_Organizations_Flattened_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Shared_Ldap_Organizations_Flattened_Stddev_Samp_Fields>;
+  sum?: Maybe<Shared_Ldap_Organizations_Flattened_Sum_Fields>;
+  var_pop?: Maybe<Shared_Ldap_Organizations_Flattened_Var_Pop_Fields>;
+  var_samp?: Maybe<Shared_Ldap_Organizations_Flattened_Var_Samp_Fields>;
+  variance?: Maybe<Shared_Ldap_Organizations_Flattened_Variance_Fields>;
+};
+
+
+/** aggregate fields of "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']>;
+};
+
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Shared_Ldap_Organizations_Flattened_Append_Input = {
+  ldap_content?: InputMaybe<Scalars['jsonb']>;
+  objectClass?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** aggregate avg on columns */
+export type Shared_Ldap_Organizations_Flattened_Avg_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_avg_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Boolean expression to filter rows from the table "shared.ldap_organizations_flattened". All fields are combined with a logical 'AND'. */
+export type Shared_Ldap_Organizations_Flattened_Bool_Exp = {
+  _and?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Bool_Exp>>;
+  _not?: InputMaybe<Shared_Ldap_Organizations_Flattened_Bool_Exp>;
+  _or?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Bool_Exp>>;
+  businessCategory?: InputMaybe<String_Comparison_Exp>;
+  createTimestamp?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+  creatorsName?: InputMaybe<String_Comparison_Exp>;
+  description?: InputMaybe<String_Comparison_Exp>;
+  entryCSN?: InputMaybe<String_Comparison_Exp>;
+  entryUUID?: InputMaybe<String_Comparison_Exp>;
+  hasSubordinates?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<Int_Comparison_Exp>;
+  l?: InputMaybe<String_Comparison_Exp>;
+  ldap_content?: InputMaybe<Jsonb_Comparison_Exp>;
+  ldap_description?: InputMaybe<String_Comparison_Exp>;
+  ldap_entryuuid?: InputMaybe<Uuid_Comparison_Exp>;
+  ldap_modifytimestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
+  modifiersName?: InputMaybe<String_Comparison_Exp>;
+  modifyTimestamp?: InputMaybe<String_Comparison_Exp>;
+  o?: InputMaybe<String_Comparison_Exp>;
+  objectClass?: InputMaybe<Jsonb_Comparison_Exp>;
+  organization_id?: InputMaybe<String_Comparison_Exp>;
+  postalCode?: InputMaybe<String_Comparison_Exp>;
+  street?: InputMaybe<String_Comparison_Exp>;
+  structuralObjectClass?: InputMaybe<String_Comparison_Exp>;
+  subschemaSubentry?: InputMaybe<String_Comparison_Exp>;
+  telephoneNumber?: InputMaybe<String_Comparison_Exp>;
+  type?: InputMaybe<String_Comparison_Exp>;
+  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
+};
+
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Shared_Ldap_Organizations_Flattened_Delete_At_Path_Input = {
+  ldap_content?: InputMaybe<Array<Scalars['String']>>;
+  objectClass?: InputMaybe<Array<Scalars['String']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Shared_Ldap_Organizations_Flattened_Delete_Elem_Input = {
+  ldap_content?: InputMaybe<Scalars['Int']>;
+  objectClass?: InputMaybe<Scalars['Int']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Shared_Ldap_Organizations_Flattened_Delete_Key_Input = {
+  ldap_content?: InputMaybe<Scalars['String']>;
+  objectClass?: InputMaybe<Scalars['String']>;
+};
+
+/** input type for incrementing numeric columns in table "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened_Inc_Input = {
+  id?: InputMaybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened_Insert_Input = {
+  businessCategory?: InputMaybe<Scalars['String']>;
+  createTimestamp?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  creatorsName?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  entryCSN?: InputMaybe<Scalars['String']>;
+  entryUUID?: InputMaybe<Scalars['String']>;
+  hasSubordinates?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['Int']>;
+  l?: InputMaybe<Scalars['String']>;
+  ldap_content?: InputMaybe<Scalars['jsonb']>;
+  ldap_description?: InputMaybe<Scalars['String']>;
+  ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
+  ldap_modifytimestamp?: InputMaybe<Scalars['timestamptz']>;
+  modifiersName?: InputMaybe<Scalars['String']>;
+  modifyTimestamp?: InputMaybe<Scalars['String']>;
+  o?: InputMaybe<Scalars['String']>;
+  objectClass?: InputMaybe<Scalars['jsonb']>;
+  organization_id?: InputMaybe<Scalars['String']>;
+  postalCode?: InputMaybe<Scalars['String']>;
+  street?: InputMaybe<Scalars['String']>;
+  structuralObjectClass?: InputMaybe<Scalars['String']>;
+  subschemaSubentry?: InputMaybe<Scalars['String']>;
+  telephoneNumber?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate max on columns */
+export type Shared_Ldap_Organizations_Flattened_Max_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_max_fields';
+  businessCategory?: Maybe<Scalars['String']>;
+  createTimestamp?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  creatorsName?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  entryCSN?: Maybe<Scalars['String']>;
+  entryUUID?: Maybe<Scalars['String']>;
+  hasSubordinates?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  l?: Maybe<Scalars['String']>;
+  ldap_description?: Maybe<Scalars['String']>;
+  ldap_entryuuid?: Maybe<Scalars['uuid']>;
+  ldap_modifytimestamp?: Maybe<Scalars['timestamptz']>;
+  modifiersName?: Maybe<Scalars['String']>;
+  modifyTimestamp?: Maybe<Scalars['String']>;
+  o?: Maybe<Scalars['String']>;
+  organization_id?: Maybe<Scalars['String']>;
+  postalCode?: Maybe<Scalars['String']>;
+  street?: Maybe<Scalars['String']>;
+  structuralObjectClass?: Maybe<Scalars['String']>;
+  subschemaSubentry?: Maybe<Scalars['String']>;
+  telephoneNumber?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate min on columns */
+export type Shared_Ldap_Organizations_Flattened_Min_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_min_fields';
+  businessCategory?: Maybe<Scalars['String']>;
+  createTimestamp?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['timestamptz']>;
+  creatorsName?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  entryCSN?: Maybe<Scalars['String']>;
+  entryUUID?: Maybe<Scalars['String']>;
+  hasSubordinates?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['Int']>;
+  l?: Maybe<Scalars['String']>;
+  ldap_description?: Maybe<Scalars['String']>;
+  ldap_entryuuid?: Maybe<Scalars['uuid']>;
+  ldap_modifytimestamp?: Maybe<Scalars['timestamptz']>;
+  modifiersName?: Maybe<Scalars['String']>;
+  modifyTimestamp?: Maybe<Scalars['String']>;
+  o?: Maybe<Scalars['String']>;
+  organization_id?: Maybe<Scalars['String']>;
+  postalCode?: Maybe<Scalars['String']>;
+  street?: Maybe<Scalars['String']>;
+  structuralObjectClass?: Maybe<Scalars['String']>;
+  subschemaSubentry?: Maybe<Scalars['String']>;
+  telephoneNumber?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** response of any mutation on the table "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened_Mutation_Response = {
+  __typename?: 'shared_ldap_organizations_flattened_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Shared_Ldap_Organizations_Flattened>;
+};
+
+/** Ordering options when selecting data from "shared.ldap_organizations_flattened". */
+export type Shared_Ldap_Organizations_Flattened_Order_By = {
+  businessCategory?: InputMaybe<Order_By>;
+  createTimestamp?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  creatorsName?: InputMaybe<Order_By>;
+  description?: InputMaybe<Order_By>;
+  entryCSN?: InputMaybe<Order_By>;
+  entryUUID?: InputMaybe<Order_By>;
+  hasSubordinates?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  l?: InputMaybe<Order_By>;
+  ldap_content?: InputMaybe<Order_By>;
+  ldap_description?: InputMaybe<Order_By>;
+  ldap_entryuuid?: InputMaybe<Order_By>;
+  ldap_modifytimestamp?: InputMaybe<Order_By>;
+  modifiersName?: InputMaybe<Order_By>;
+  modifyTimestamp?: InputMaybe<Order_By>;
+  o?: InputMaybe<Order_By>;
+  objectClass?: InputMaybe<Order_By>;
+  organization_id?: InputMaybe<Order_By>;
+  postalCode?: InputMaybe<Order_By>;
+  street?: InputMaybe<Order_By>;
+  structuralObjectClass?: InputMaybe<Order_By>;
+  subschemaSubentry?: InputMaybe<Order_By>;
+  telephoneNumber?: InputMaybe<Order_By>;
+  type?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Shared_Ldap_Organizations_Flattened_Prepend_Input = {
+  ldap_content?: InputMaybe<Scalars['jsonb']>;
+  objectClass?: InputMaybe<Scalars['jsonb']>;
+};
+
+/** select columns of table "shared.ldap_organizations_flattened" */
+export enum Shared_Ldap_Organizations_Flattened_Select_Column {
+  /** column name */
+  BusinessCategory = 'businessCategory',
+  /** column name */
+  CreateTimestamp = 'createTimestamp',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  CreatorsName = 'creatorsName',
+  /** column name */
+  Description = 'description',
+  /** column name */
+  EntryCsn = 'entryCSN',
+  /** column name */
+  EntryUuid = 'entryUUID',
+  /** column name */
+  HasSubordinates = 'hasSubordinates',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  L = 'l',
+  /** column name */
+  LdapContent = 'ldap_content',
+  /** column name */
+  LdapDescription = 'ldap_description',
+  /** column name */
+  LdapEntryuuid = 'ldap_entryuuid',
+  /** column name */
+  LdapModifytimestamp = 'ldap_modifytimestamp',
+  /** column name */
+  ModifiersName = 'modifiersName',
+  /** column name */
+  ModifyTimestamp = 'modifyTimestamp',
+  /** column name */
+  O = 'o',
+  /** column name */
+  ObjectClass = 'objectClass',
+  /** column name */
+  OrganizationId = 'organization_id',
+  /** column name */
+  PostalCode = 'postalCode',
+  /** column name */
+  Street = 'street',
+  /** column name */
+  StructuralObjectClass = 'structuralObjectClass',
+  /** column name */
+  SubschemaSubentry = 'subschemaSubentry',
+  /** column name */
+  TelephoneNumber = 'telephoneNumber',
+  /** column name */
+  Type = 'type',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** input type for updating data in table "shared.ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened_Set_Input = {
+  businessCategory?: InputMaybe<Scalars['String']>;
+  createTimestamp?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  creatorsName?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  entryCSN?: InputMaybe<Scalars['String']>;
+  entryUUID?: InputMaybe<Scalars['String']>;
+  hasSubordinates?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['Int']>;
+  l?: InputMaybe<Scalars['String']>;
+  ldap_content?: InputMaybe<Scalars['jsonb']>;
+  ldap_description?: InputMaybe<Scalars['String']>;
+  ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
+  ldap_modifytimestamp?: InputMaybe<Scalars['timestamptz']>;
+  modifiersName?: InputMaybe<Scalars['String']>;
+  modifyTimestamp?: InputMaybe<Scalars['String']>;
+  o?: InputMaybe<Scalars['String']>;
+  objectClass?: InputMaybe<Scalars['jsonb']>;
+  organization_id?: InputMaybe<Scalars['String']>;
+  postalCode?: InputMaybe<Scalars['String']>;
+  street?: InputMaybe<Scalars['String']>;
+  structuralObjectClass?: InputMaybe<Scalars['String']>;
+  subschemaSubentry?: InputMaybe<Scalars['String']>;
+  telephoneNumber?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate stddev on columns */
+export type Shared_Ldap_Organizations_Flattened_Stddev_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_stddev_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Shared_Ldap_Organizations_Flattened_Stddev_Pop_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_stddev_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Shared_Ldap_Organizations_Flattened_Stddev_Samp_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_stddev_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** Streaming cursor of the table "shared_ldap_organizations_flattened" */
+export type Shared_Ldap_Organizations_Flattened_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Shared_Ldap_Organizations_Flattened_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Shared_Ldap_Organizations_Flattened_Stream_Cursor_Value_Input = {
+  businessCategory?: InputMaybe<Scalars['String']>;
+  createTimestamp?: InputMaybe<Scalars['String']>;
+  created_at?: InputMaybe<Scalars['timestamptz']>;
+  creatorsName?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  entryCSN?: InputMaybe<Scalars['String']>;
+  entryUUID?: InputMaybe<Scalars['String']>;
+  hasSubordinates?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['Int']>;
+  l?: InputMaybe<Scalars['String']>;
+  ldap_content?: InputMaybe<Scalars['jsonb']>;
+  ldap_description?: InputMaybe<Scalars['String']>;
+  ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
+  ldap_modifytimestamp?: InputMaybe<Scalars['timestamptz']>;
+  modifiersName?: InputMaybe<Scalars['String']>;
+  modifyTimestamp?: InputMaybe<Scalars['String']>;
+  o?: InputMaybe<Scalars['String']>;
+  objectClass?: InputMaybe<Scalars['jsonb']>;
+  organization_id?: InputMaybe<Scalars['String']>;
+  postalCode?: InputMaybe<Scalars['String']>;
+  street?: InputMaybe<Scalars['String']>;
+  structuralObjectClass?: InputMaybe<Scalars['String']>;
+  subschemaSubentry?: InputMaybe<Scalars['String']>;
+  telephoneNumber?: InputMaybe<Scalars['String']>;
+  type?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+};
+
+/** aggregate sum on columns */
+export type Shared_Ldap_Organizations_Flattened_Sum_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_sum_fields';
+  id?: Maybe<Scalars['Int']>;
+};
+
+export type Shared_Ldap_Organizations_Flattened_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Shared_Ldap_Organizations_Flattened_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Shared_Ldap_Organizations_Flattened_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Shared_Ldap_Organizations_Flattened_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Shared_Ldap_Organizations_Flattened_Delete_Key_Input>;
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<Shared_Ldap_Organizations_Flattened_Inc_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Shared_Ldap_Organizations_Flattened_Prepend_Input>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<Shared_Ldap_Organizations_Flattened_Set_Input>;
+  where: Shared_Ldap_Organizations_Flattened_Bool_Exp;
+};
+
+/** aggregate var_pop on columns */
+export type Shared_Ldap_Organizations_Flattened_Var_Pop_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_var_pop_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate var_samp on columns */
+export type Shared_Ldap_Organizations_Flattened_Var_Samp_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_var_samp_fields';
+  id?: Maybe<Scalars['Float']>;
+};
+
+/** aggregate variance on columns */
+export type Shared_Ldap_Organizations_Flattened_Variance_Fields = {
+  __typename?: 'shared_ldap_organizations_flattened_variance_fields';
+  id?: Maybe<Scalars['Float']>;
 };
 
 /** input type for incrementing numeric columns in table "shared.ldap_organizations" */
@@ -37662,6 +38126,12 @@ export type Subscription_Root = {
   shared_ldap_organizations_aggregate: Shared_Ldap_Organizations_Aggregate;
   /** fetch data from the table: "shared.ldap_organizations" using primary key columns */
   shared_ldap_organizations_by_pk?: Maybe<Shared_Ldap_Organizations>;
+  /** fetch data from the table: "shared.ldap_organizations_flattened" */
+  shared_ldap_organizations_flattened: Array<Shared_Ldap_Organizations_Flattened>;
+  /** fetch aggregated fields from the table: "shared.ldap_organizations_flattened" */
+  shared_ldap_organizations_flattened_aggregate: Shared_Ldap_Organizations_Flattened_Aggregate;
+  /** fetch data from the table in a streaming manner: "shared.ldap_organizations_flattened" */
+  shared_ldap_organizations_flattened_stream: Array<Shared_Ldap_Organizations_Flattened>;
   /** fetch data from the table in a streaming manner: "shared.ldap_organizations" */
   shared_ldap_organizations_stream: Array<Shared_Ldap_Organizations>;
   /** fetch data from the table: "shared.organisations" */
@@ -39031,7 +39501,7 @@ export type Subscription_RootApp_Content_Assets_AggregateArgs = {
 
 
 export type Subscription_RootApp_Content_Assets_By_PkArgs = {
-  id: Scalars['Int'];
+  id: Scalars['uuid'];
 };
 
 
@@ -40397,6 +40867,31 @@ export type Subscription_RootShared_Ldap_Organizations_AggregateArgs = {
 
 export type Subscription_RootShared_Ldap_Organizations_By_PkArgs = {
   id: Scalars['Int'];
+};
+
+
+export type Subscription_RootShared_Ldap_Organizations_FlattenedArgs = {
+  distinct_on?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Order_By>>;
+  where?: InputMaybe<Shared_Ldap_Organizations_Flattened_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_Ldap_Organizations_Flattened_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<Shared_Ldap_Organizations_Flattened_Order_By>>;
+  where?: InputMaybe<Shared_Ldap_Organizations_Flattened_Bool_Exp>;
+};
+
+
+export type Subscription_RootShared_Ldap_Organizations_Flattened_StreamArgs = {
+  batch_size: Scalars['Int'];
+  cursor: Array<InputMaybe<Shared_Ldap_Organizations_Flattened_Stream_Cursor_Input>>;
+  where?: InputMaybe<Shared_Ldap_Organizations_Flattened_Bool_Exp>;
 };
 
 
@@ -49276,7 +49771,7 @@ export type GetAssignmentWithResponseQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentWithResponseQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, thumbnail_path?: string | null, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }> };
+export type GetAssignmentWithResponseQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, thumbnail_path?: string | null, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }> };
 
 export type GetAssignmentsAdminOverviewQueryVariables = Exact<{
   offset: Scalars['Int'];
@@ -49286,7 +49781,7 @@ export type GetAssignmentsAdminOverviewQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null }, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
+export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null }, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
 
 export type GetAssignmentsByOwnerOrContributorQueryVariables = Exact<{
   collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
@@ -51841,6 +52336,7 @@ export const GetAssignmentWithResponseDocument = `
     deadline_at
     is_collaborative
     is_deleted
+    is_public
     thumbnail_path
     owner_profile_id
     owner {
@@ -51982,6 +52478,7 @@ export const GetAssignmentsAdminOverviewDocument = `
     deadline_at
     is_collaborative
     is_deleted
+    is_public
     owner_profile_id
     owner {
       full_name
