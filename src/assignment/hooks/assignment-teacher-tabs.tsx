@@ -1,4 +1,4 @@
-import { IconName, TabProps } from '@viaa/avo2-components';
+import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import * as H from 'history';
@@ -13,7 +13,9 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 export function useAssignmentTeacherTabs(
 	history: H.History<unknown>,
 	user: Avo.User.User | undefined,
-	assignmentId?: string
+	assignmentId: string | null,
+	activeTab: ASSIGNMENT_CREATE_UPDATE_TABS | null,
+	clicksCount: number
 ): [
 	TabProps[],
 	ASSIGNMENT_CREATE_UPDATE_TABS | undefined,
@@ -54,7 +56,20 @@ export function useAssignmentTeacherTabs(
 					? [
 							{
 								id: ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS,
-								label: tText('assignment/hooks/assignment-teacher-tabs___kliks'),
+								label: (
+									<>
+										{tText('assignment/hooks/assignment-teacher-tabs___kliks')}
+										<Pill
+											variants={
+												activeTab === ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS
+													? [PillVariants.active]
+													: []
+											}
+										>
+											{clicksCount}
+										</Pill>
+									</>
+								),
 								icon: IconName.pointer as IconName,
 							},
 					  ]

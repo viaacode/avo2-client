@@ -109,7 +109,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	// Data
-	const [original, setOriginal] = useState<Avo.Assignment.Assignment | null>(null);
+	const [originalAssignment, setOriginalAssignment] = useState<Avo.Assignment.Assignment | null>(
+		null
+	);
 	const [assignmentLoading, setAssignmentLoading] = useState(true);
 	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
@@ -149,7 +151,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		setValue,
 		trigger,
 	} = useForm<AssignmentFields>({
-		defaultValues: useMemo(() => (original as AssignmentFields) || undefined, [original]),
+		defaultValues: useMemo(
+			() => (originalAssignment as AssignmentFields) || undefined,
+			[originalAssignment]
+		),
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
 	});
 
@@ -189,13 +194,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs(
 		history,
 		user,
-		match.params.id
+		assignmentId,
+		match.params.tabId as ASSIGNMENT_CREATE_UPDATE_TABS | null,
+		originalAssignment?.responses?.length || 0
 	);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
 	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
 		useState<boolean>(false);
 
-	const pastDeadline = useAssignmentPastDeadline(original);
+	const pastDeadline = useAssignmentPastDeadline(originalAssignment);
 
 	// HTTP
 
@@ -302,7 +309,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				return;
 			}
 
-			setOriginal(tempAssignment);
+			setOriginalAssignment(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
 			setAssignmentHasPupilBlocks(hasPupilBlocks);
@@ -315,12 +322,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			});
 		}
 		setAssignmentLoading(false);
-	}, [user, match.params.id, tText, history, setOriginal, setAssignment]);
+	}, [user, match.params.id, tText, history, setOriginalAssignment, setAssignment]);
 
 	// Events
 
 	const handleOnSave = async () => {
-		if (!user.profile?.id || !original) {
+		if (!user.profile?.id || !originalAssignment) {
 			return;
 		}
 
@@ -352,7 +359,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	const submit = async () => {
 		try {
-			if (!user.profile?.id || !original || !assignment) {
+			if (!user.profile?.id || !originalAssignment || !assignment) {
 				return;
 			}
 
@@ -365,18 +372,18 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			}
 
 			// Deal with the owner changing
-			if (original?.owner_profile_id !== assignment.owner_profile_id) {
+			if (originalAssignment?.owner_profile_id !== assignment.owner_profile_id) {
 				await AssignmentService.transferAssignmentOwnerShip(
-					original.id,
+					originalAssignment.id,
 					assignment.owner_profile_id as string
 				);
 			}
 
 			const updated = await AssignmentService.updateAssignment(
 				{
-					...original,
+					...originalAssignment,
 					...assignment,
-					id: original.id,
+					id: originalAssignment.id,
 				},
 				user.profile?.id
 			);
@@ -390,7 +397,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					: getContributorType(
 							user,
 							assignment as Avo.Assignment.Assignment,
-							(original.contributors || []) as Avo.Assignment.Contributor[]
+							(originalAssignment.contributors || []) as Avo.Assignment.Contributor[]
 					  ).toLowerCase();
 				trackEvents(
 					{
@@ -421,9 +428,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	};
 
 	const reset = useCallback(() => {
-		original && setAssignment(original as any);
+		originalAssignment && setAssignment(originalAssignment as any);
 		resetForm();
-	}, [resetForm, setAssignment, original]);
+	}, [resetForm, setAssignment, originalAssignment]);
 
 	const updateAssignmentEditor = async () => {
 		try {
@@ -470,15 +477,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const onForcedExitPage = async () => {
 		setIsForcedExit(true);
 		try {
-			if (!user.profile?.id || !original) {
+			if (!user.profile?.id || !originalAssignment) {
 				return;
 			}
 
 			await AssignmentService.updateAssignment(
 				{
-					...original,
+					...originalAssignment,
 					...assignment,
-					id: original.id,
+					id: originalAssignment.id,
 				},
 				user.profile?.id
 			);
@@ -522,7 +529,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		false,
 		{
 			confirmSliceConfig: {
-				responses: (original?.responses || []) as any, // TODO strong types
+				responses: (originalAssignment?.responses || []) as any, // TODO strong types
 			},
 			addCollectionConfig: {
 				addCollectionCallback: (id) => {
@@ -722,13 +729,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	// Reset the form when the original changes
 	useEffect(() => {
-		original && reset();
-	}, [original, reset]);
+		originalAssignment && reset();
+	}, [originalAssignment, reset]);
 
 	// Render
 
 	const shareProps = {
-		assignment: original || undefined, // Needs to be saved before you can share
+		assignment: originalAssignment || undefined, // Needs to be saved before you can share
 		onContentLinkClicked: () => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT),
 		onDetailLinkClicked: () => setTab(ASSIGNMENT_CREATE_UPDATE_TABS.DETAILS),
 		onClickMobile: () => setIsShareModalOpen(true),
@@ -777,7 +784,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						: undefined
 				}
 				duplicate={{
-					assignment: original || undefined,
+					assignment: originalAssignment || undefined,
 					onClick: (_e, duplicated) => {
 						duplicated && redirectToClientPage(toAssignmentDetail(duplicated), history);
 					},
@@ -798,7 +805,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
 				shareWithColleaguesOrPupilsProps={shareProps}
 				remove={{
-					assignment: original || undefined,
+					assignment: originalAssignment || undefined,
 					modal: {
 						confirmCallback: () => {
 							reset();
@@ -959,7 +966,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				/>
 			)}
 
-			{!!original &&
+			{!!originalAssignment &&
 				contributors &&
 				renderMobileDesktop({
 					mobile: (
@@ -970,7 +977,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							isOpen={isShareModalOpen}
 							onClose={() => setIsShareModalOpen(false)}
 							contributors={transformContributorsToSimpleContributors(
-								original?.owner as Avo.User.User,
+								originalAssignment?.owner as Avo.User.User,
 								(contributors || []) as Avo.Assignment.Contributor[]
 							)}
 							onDeleteContributor={(contributorInfo) =>

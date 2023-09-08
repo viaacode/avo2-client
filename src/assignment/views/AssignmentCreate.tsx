@@ -149,7 +149,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		when: isDirty,
 	});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs(history, user);
+	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs(history, user, null, null, 0);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	// Render
