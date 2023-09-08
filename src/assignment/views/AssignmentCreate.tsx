@@ -159,6 +159,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment?.blocks || [],
 		updateBlocksInAssignmentState,
+		false,
 		{
 			confirmSliceConfig: {
 				responses: [],

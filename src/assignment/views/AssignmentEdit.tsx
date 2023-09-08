@@ -519,6 +519,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment?.blocks || [],
 		updateBlocksInAssignmentState,
+		false,
 		{
 			confirmSliceConfig: {
 				responses: (original?.responses || []) as any, // TODO strong types

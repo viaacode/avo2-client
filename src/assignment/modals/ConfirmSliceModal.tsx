@@ -19,19 +19,25 @@ import { AssignmentBlockType } from '../assignment.types';
 export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onClose'> {
 	responses?: Avo.Assignment.Assignment[];
 	block?: Pick<Avo.Assignment.Block, 'type'>;
+	isPupilCollection: boolean;
 	onConfirm?: () => void;
 }
 
 const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 	responses = [],
 	block,
+	isPupilCollection,
 	isOpen,
 	onClose,
 	onConfirm,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const label = { type: block ? BLOCK_ITEM_LABELS()[block.type as Avo.Core.BlockItemType] : '' };
+	const label = {
+		type: block
+			? BLOCK_ITEM_LABELS(isPupilCollection)[block.type as Avo.Core.BlockItemType]
+			: '',
+	};
 
 	const renderConfirmButtons = () => {
 		return (
@@ -63,9 +69,13 @@ const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
 					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-fragment-wil-verwijderen'
 				);
 			case AssignmentBlockType.TEXT:
-				return tHtml(
-					'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-instructie-of-tekstblok-wil-verwijderen'
-				);
+				return isPupilCollection
+					? tHtml(
+							'assignment/modals/confirm-slice-modal___ben-je-zeker-dat-je-dit-tekstblok-wil-verwijderen'
+					  )
+					: tHtml(
+							'assignment/modals/confirm-slice___ben-je-zeker-dat-je-dit-instructie-of-tekstblok-wil-verwijderen'
+					  );
 			case AssignmentBlockType.ZOEK:
 			case AssignmentBlockType.BOUW:
 				return responses.length > 0 ? (

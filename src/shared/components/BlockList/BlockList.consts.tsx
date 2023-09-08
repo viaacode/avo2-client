@@ -24,9 +24,13 @@ export const BLOCK_ITEM_ICONS: () => Record<
 	COLLECTION: () => IconName.collection,
 });
 
-export const BLOCK_ITEM_LABELS = (): Record<Avo.Core.BlockItemType, string> => ({
+export const BLOCK_ITEM_LABELS = (
+	isPupilCollection: boolean
+): Record<Avo.Core.BlockItemType, string> => ({
 	ITEM: tText('shared/components/block-list/block-list___fragment'),
-	TEXT: tText('shared/components/block-list/block-list___instructies-of-tekstblok'),
+	TEXT: isPupilCollection
+		? tText('shared/components/block-list/block-list___tekstblok')
+		: tText('shared/components/block-list/block-list___instructies-of-tekstblok'),
 	ZOEK: tText('shared/components/block-list/block-list___zoekoefening'),
 	BOUW: tText('shared/components/block-list/block-list___zoekoefening'),
 	COLLECTION: tText('shared/components/block-list/block-list___collectie'),

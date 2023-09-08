@@ -14,17 +14,25 @@ export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock })
 			className="u-padding-l"
 			id={block.id}
 			title={{
-				label: tText('assignment/views/assignment-edit___titel'),
-				placeholder: tText(
-					'assignment/views/assignment-edit___instructies-of-omschrijving'
-				),
+				label: block.assignment_response_id
+					? tText('assignment/components/blocks/assignment-block-edit-text___titel')
+					: tText('assignment/views/assignment-edit___titel'),
+				placeholder: block.assignment_response_id
+					? tText(
+							'assignment/components/blocks/assignment-block-edit-text___omschrijving'
+					  )
+					: tText('assignment/views/assignment-edit___instructies-of-omschrijving'),
 				value: block.custom_title || '',
 				onChange: (value) => setBlock({ ...block, custom_title: value }),
 			}}
 			description={{
-				placeholder: tText(
-					'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee'
-				),
+				placeholder: block.assignment_response_id
+					? tText(
+							'assignment/components/blocks/assignment-block-edit-text___vul-een-omschrijving-in'
+					  )
+					: tText(
+							'assignment/views/assignment-edit___beschrijf-je-instructies-of-geef-een-omschrijving-mee'
+					  ),
 				initialHtml: convertToHtml(block.custom_description),
 				controls: RICH_TEXT_EDITOR_OPTIONS_AUTHOR,
 				enabledHeadings: ['h3', 'h4', 'normal'],

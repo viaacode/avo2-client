@@ -119,6 +119,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 	const [renderedModals, confirmSliceModal] = useBlockListModals(
 		assignmentResponse?.pupil_collection_blocks || [],
 		updateBlocksInAssignmentResponseState,
+		true,
 		{
 			confirmSliceConfig: {
 				responses: [],

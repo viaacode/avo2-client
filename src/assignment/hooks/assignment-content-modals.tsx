@@ -23,6 +23,7 @@ import ConfirmSliceModal, { ConfirmSliceModalProps } from '../modals/ConfirmSlic
 export function useBlockListModals(
 	blocks: Avo.Core.BlockItemBase[],
 	setBlocks: (newBlocks: Avo.Core.BlockItemBase[]) => void,
+	isPupilCollection: boolean,
 	config?: {
 		confirmSliceConfig?: Partial<ConfirmSliceModalProps>;
 		addBlockConfig?: Partial<AddBlockModalProps>;
@@ -57,6 +58,7 @@ export function useBlockListModals(
 				{...config?.confirmSliceConfig}
 				isOpen={!!isConfirmSliceModalOpen}
 				block={getConfirmSliceModalBlock as Avo.Assignment.Block}
+				isPupilCollection={isPupilCollection}
 				onClose={() => setConfirmSliceModalOpen(false)}
 				onConfirm={() => {
 					const newBlocks = blocks.filter(
