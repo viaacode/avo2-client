@@ -6,7 +6,6 @@ import queryString from 'query-string';
 import React, { FunctionComponent, ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
-import { BUNDLE_PATH } from '../../../bundle/bundle.const';
 import { APP_PATH } from '../../../constants';
 import { buildLink, getEnv } from '../../helpers';
 
@@ -120,7 +119,7 @@ const SmartLink: FunctionComponent<SmartLinkProps> = ({
 				}
 
 				case 'BUNDLE': {
-					const bundleUrl = buildLink(BUNDLE_PATH.BUNDLE_DETAIL, {
+					const bundleUrl = buildLink(APP_PATH.BUNDLE_DETAIL.route, {
 						id: value,
 					});
 					return renderLink(bundleUrl, target);

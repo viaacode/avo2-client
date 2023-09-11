@@ -26,6 +26,12 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
 		component={AssignmentEdit}
 		exact
+		path={APP_PATH.ASSIGNMENT_EDIT.route}
+		key={APP_PATH.ASSIGNMENT_EDIT.route}
+	/>,
+	<SecuredRoute
+		component={AssignmentEdit}
+		exact
 		path={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
 		key={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
 	/>,

@@ -38,6 +38,7 @@ export type RouteId =
 	| 'WORKSPACE_BOOKMARKS'
 	| 'ASSIGNMENT_CREATE'
 	| 'ASSIGNMENT_DETAIL'
+	| 'ASSIGNMENT_EDIT'
 	| 'ASSIGNMENT_EDIT_TAB'
 	| 'ASSIGNMENT_RESPONSE_CREATE'
 	| 'ASSIGNMENT_RESPONSE_DETAIL'
@@ -56,7 +57,8 @@ export type RouteId =
 	| 'ACCEPT_CONDITIONS'
 	| 'COOKIE_POLICY'
 	| 'ERROR'
-	| 'QUICK_LANE';
+	| 'QUICK_LANE'
+	| 'ALL_ROUTES';
 
 // Routes should be ordered from least specific, to most specific
 // So we can use this order to search for interactive tours in the correct order
@@ -204,6 +206,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
+	ASSIGNMENT_EDIT: {
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}`,
+		showInContentPicker: false,
+		showForInteractiveTour: true,
+	},
 	ASSIGNMENT_EDIT_TAB: {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}/:tabId`,
 		showInContentPicker: false,
@@ -291,6 +298,12 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	QUICK_LANE: {
 		route: `/${ROUTE_PARTS.quickLane}/:id`,
+		showInContentPicker: false,
+		showForInteractiveTour: false,
+	},
+	// Used to load content pages in the DynamicRouteResolver component
+	ALL_ROUTES: {
+		route: '*',
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},

@@ -3,10 +3,6 @@ import { ReactNode } from 'react';
 import { getEnv } from '../shared/helpers';
 import { tHtml } from '../shared/helpers/translate';
 
-export const DYNAMIC_ROUTE_RESOLVER_PATH = Object.freeze({
-	ALL_ROUTES: `*`,
-});
-
 export const GET_REDIRECTS: () => { [avo1Path: string]: string } = () => ({
 	'/frontpage': '/start',
 	'/themas.*': '/zoeken',

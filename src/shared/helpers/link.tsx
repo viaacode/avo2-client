@@ -5,7 +5,6 @@ import queryString from 'query-string';
 import React, { Fragment, ReactElement, ReactNode } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
@@ -163,7 +162,7 @@ export const navigateToContentType = (
 			}
 
 			case 'BUNDLE': {
-				const bundleUrl = buildLink(BUNDLE_PATH.BUNDLE_DETAIL, {
+				const bundleUrl = buildLink(APP_PATH.BUNDLE_DETAIL.route, {
 					id: value,
 				});
 				navigateToAbsoluteOrRelativeUrl(bundleUrl, history, target);

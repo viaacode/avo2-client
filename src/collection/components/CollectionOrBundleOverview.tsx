@@ -30,7 +30,6 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { BUNDLE_PATH } from '../../bundle/bundle.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
@@ -383,9 +382,12 @@ const CollectionOrBundleOverview: FunctionComponent<
 	// Render functions
 	const getLinkProps = (id: string, title: string): { to: string; title: string } => ({
 		title,
-		to: buildLink(isCollection ? APP_PATH.COLLECTION_DETAIL.route : BUNDLE_PATH.BUNDLE_DETAIL, {
-			id,
-		}),
+		to: buildLink(
+			isCollection ? APP_PATH.COLLECTION_DETAIL.route : APP_PATH.BUNDLE_DETAIL.route,
+			{
+				id,
+			}
+		),
 	});
 
 	const renderThumbnail = ({ id, title, thumbnail_path }: Collection) => (
@@ -466,7 +468,9 @@ const CollectionOrBundleOverview: FunctionComponent<
 				case CollectionAction.editCollection:
 					navigate(
 						history,
-						isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : BUNDLE_PATH.BUNDLE_EDIT,
+						isCollection
+							? APP_PATH.COLLECTION_EDIT_TAB.route
+							: APP_PATH.BUNDLE_EDIT_TAB.route,
 						{ id: collectionUuid, tabId: CollectionCreateUpdateTab.CONTENT }
 					);
 					break;
@@ -529,7 +533,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 									history,
 									isCollection
 										? APP_PATH.COLLECTION_DETAIL.route
-										: BUNDLE_PATH.BUNDLE_DETAIL,
+										: APP_PATH.BUNDLE_DETAIL.route,
 									{ id: collectionUuid }
 								)
 							}

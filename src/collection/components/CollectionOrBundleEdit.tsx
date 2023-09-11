@@ -24,7 +24,7 @@ import React, {
 	useState,
 } from 'react';
 import MetaTags from 'react-meta-tags';
-import { matchPath, withRouter } from 'react-router';
+import { matchPath, Redirect, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
@@ -416,14 +416,6 @@ const CollectionOrBundleEdit: FunctionComponent<
 			},
 		},
 	});
-
-	const shouldBlockNavigation = useCallback(() => {
-		const editPath = isCollection
-			? APP_PATH.COLLECTION_EDIT_TAB.route
-			: APP_PATH.BUNDLE_EDIT_TAB.route;
-		const changingRoute = !matchPath(history.location.pathname, editPath);
-		return unsavedChanges && changingRoute && !isForcedExit;
-	}, [history, unsavedChanges, isCollection, isForcedExit]);
 
 	const checkPermissionsAndGetCollection = useCallback(async (): Promise<void> => {
 		try {
@@ -1546,11 +1538,32 @@ const CollectionOrBundleEdit: FunctionComponent<
 				)}
 
 				{draggableListModal}
-				<BeforeUnloadPrompt when={shouldBlockNavigation()} />
+				<BeforeUnloadPrompt when={unsavedChanges && !isForcedExit} />
 			</div>
 		);
 	};
 
+	if (matchPath(location.pathname, { path: APP_PATH.BUNDLE_EDIT.route, exact: true })) {
+		return (
+			<Redirect
+				to={buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
+					id: collectionId,
+					tabId: CollectionCreateUpdateTab.CONTENT,
+				})}
+			/>
+		);
+	}
+
+	if (matchPath(location.pathname, { path: APP_PATH.COLLECTION_EDIT.route, exact: true })) {
+		return (
+			<Redirect
+				to={buildLink(APP_PATH.COLLECTION_EDIT_TAB.route, {
+					id: collectionId,
+					tabId: CollectionCreateUpdateTab.CONTENT,
+				})}
+			/>
+		);
+	}
 	return (
 		<>
 			<MetaTags>

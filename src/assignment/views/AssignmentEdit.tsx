@@ -25,6 +25,7 @@ import React, {
 } from 'react';
 import { useForm } from 'react-hook-form';
 import MetaTags from 'react-meta-tags';
+import { matchPath, Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -145,7 +146,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	const {
 		control,
-		formState: { isDirty },
+		formState: { isDirty: unsavedChanges },
 		handleSubmit,
 		reset: resetForm,
 		setValue,
@@ -188,7 +189,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	// UI
 	useWarningBeforeUnload({
-		when: isDirty && !isForcedExit,
+		when: unsavedChanges && !isForcedExit,
 	});
 
 	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs(
@@ -886,7 +887,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			</div>
 
 			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
-			<StickySaveBar isVisible={isDirty} onSave={handleOnSave} onCancel={() => reset()} />
+			<StickySaveBar
+				isVisible={unsavedChanges}
+				onSave={handleOnSave}
+				onCancel={() => reset()}
+			/>
 		</div>
 	);
 
@@ -932,6 +937,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		return renderEditAssignmentPage();
 	};
 
+	if (matchPath(location.pathname, { path: APP_PATH.ASSIGNMENT_EDIT.route, exact: true })) {
+		return (
+			<Redirect
+				to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+					id: assignmentId,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+				})}
+			/>
+		);
+	}
+
 	return (
 		<>
 			<MetaTags>
@@ -951,7 +967,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 			{renderPageContent()}
 
-			<BeforeUnloadPrompt when={isDirty && !isForcedExit} />
+			<BeforeUnloadPrompt when={unsavedChanges && !isForcedExit} />
 
 			{!!assignment && !!user && (
 				<PublishAssignmentModal

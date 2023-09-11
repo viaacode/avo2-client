@@ -38,7 +38,10 @@ import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { CollectionService } from '../../collection/collection.service';
-import { blockTypeToContentType } from '../../collection/collection.types';
+import {
+	blockTypeToContentType,
+	CollectionCreateUpdateTab,
+} from '../../collection/collection.types';
 import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -317,7 +320,13 @@ const BundleDetail: FunctionComponent<
 
 	// Listeners
 	const onEditBundle = () => {
-		redirectToClientPage(buildLink(APP_PATH.BUNDLE_EDIT.route, { id: bundleId }), history);
+		redirectToClientPage(
+			buildLink(APP_PATH.BUNDLE_EDIT_TAB.route, {
+				id: bundleId,
+				tabId: CollectionCreateUpdateTab.CONTENT,
+			}),
+			history
+		);
 	};
 
 	const onDeleteBundle = async () => {
