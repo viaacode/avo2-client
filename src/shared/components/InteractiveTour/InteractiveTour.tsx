@@ -1,15 +1,14 @@
 import { Color } from '@meemoo/admin-core-ui';
 import { Button, IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
-import { compact, debounce, get, reverse, toPairs } from 'lodash-es';
+import { compact, debounce } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import Joyride, { CallBackProps } from 'react-joyride';
 import { connect } from 'react-redux';
-import { matchPath, withRouter } from 'react-router';
+import { withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
-import { APP_PATH, RouteId, RouteInfo } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AppState } from '../../../store';
 import { selectShowNudgingModal } from '../../../uistate/store/selectors';
@@ -19,6 +18,7 @@ import { InteractiveTourService, TourInfo } from '../../services/interactive-tou
 import Html from '../Html/Html';
 
 import './InteractiveTour.scss';
+import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
 
 export const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
 
@@ -30,16 +30,25 @@ interface UiStateProps {
 	showNudgingModal: boolean;
 }
 
+const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
+
 const InteractiveTour: FunctionComponent<
 	InteractiveTourProps & SecuredRouteProps & UiStateProps
-> = ({ showButton, user, location, showNudgingModal }) => {
+> = ({ showButton, commonUser, location, showNudgingModal }) => {
 	const { tText } = useTranslation();
 
-	const [tour, setTour] = useState<TourInfo | null>(null);
-	const [routeId, setRouteId] = useState<RouteId | null>(null);
+	// Sometimes we render things with displayDesktopMobile so elements can be loaded but should not initialize since they are hidden for that media query (eg: mobile)
 	const [tourDisplayDates, setTourDisplayDates] = useState<{ [tourId: string]: string } | null>(
 		null
 	);
+	const { data: interactiveTourInfo } = useGetInteractiveTourForPage(
+		location.pathname,
+		tourDisplayDates,
+		commonUser.profileId
+	);
+	const tour = interactiveTourInfo?.tour;
+	const routeId = interactiveTourInfo?.routeId;
+	const [seen, setSeen] = useState<boolean | null>(tour?.seen ?? null);
 
 	const getTourDisplayDates = useCallback(() => {
 		try {
@@ -98,6 +107,7 @@ const InteractiveTour: FunctionComponent<
 				mappedStep.disableBeacon = true;
 				mappedStep.title = dbStep.title;
 				mappedStep.content = <Html content={dbStep.content as string} type="div" />;
+				mappedStep.placement = 'bottom';
 
 				// Remove steps for which the target isn't found
 				if (!document.querySelector(mappedStep.target)) {
@@ -109,89 +119,23 @@ const InteractiveTour: FunctionComponent<
 		);
 	};
 
-	const checkIfTourExistsForCurrentPage = useCallback(async () => {
-		try {
-			if (!tourDisplayDates) {
-				return;
-			}
-			// Resolve current page location to route id, so we know which interactive tour to show
-			// We reverse the order of the routes, since more specific routes are always declared later in the list
-			const interactiveRoutePairs = reverse(
-				toPairs(APP_PATH).filter((pair) => pair[1].showForInteractiveTour)
-			);
-
-			const matchingRoutePair: [string, RouteInfo] | undefined = interactiveRoutePairs.find(
-				(pair) => {
-					const route = pair[1].route;
-					const currentRoute = location.pathname;
-					const match = matchPath(currentRoute, route);
-					return !!match;
-				}
-			);
-
-			let routeId: RouteId | undefined;
-			if (matchingRoutePair) {
-				// static page
-				routeId = matchingRoutePair[0] as RouteId;
-			} else {
-				// check content pages
-				routeId = location.pathname as RouteId;
-			}
-
-			// Get all routes that have an interactive tour
-			const routeIdsWithTour: string[] =
-				await InteractiveTourService.fetchInteractiveTourRouteIds();
-
-			if (!routeIdsWithTour.includes(routeId)) {
-				// No tour available for this page
-				setTour(null);
-				return;
-			}
-
-			// Fetch interactive tours for current user and their seen status
-			const tourTemp = await InteractiveTourService.fetchStepsForPage(
-				routeId,
-				user?.profile?.id,
-				tourDisplayDates
-			);
-			setTour(tourTemp);
-			setRouteId(routeId);
-		} catch (err) {
-			console.error(
-				new CustomError(
-					'Failed to get the steps for the interactive tour from the database',
-					err,
-					{ user, pathName: location.pathname }
-				)
-			);
-		}
-	}, [setTour, location.pathname, tourDisplayDates, user]);
-
-	useEffect(() => {
-		checkIfTourExistsForCurrentPage();
-	}, [checkIfTourExistsForCurrentPage]);
-
 	const markTourAsSeen = debounce(
 		async () => {
 			try {
 				if (!tour || !routeId) {
 					return;
 				}
-				const profileId = get(user, 'profile.id');
 				await InteractiveTourService.setInteractiveTourSeen(
 					routeId,
-					profileId,
+					commonUser.profileId,
 					(tour as TourInfo).id
 				);
-				setTour({
-					...tour,
-					seen: true,
-				});
+				setSeen(true);
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to store interactive tour seen status', err, {
 						routeId,
-						user,
+						profileId: commonUser.profileId,
 						tourId: (tour as TourInfo).id,
 					})
 				);
@@ -205,11 +149,14 @@ const InteractiveTour: FunctionComponent<
 		if (!tour) {
 			return;
 		}
+		if (data.action === 'start') {
+			document.body.classList.add(INTERACTIVE_TOUR_IN_PROGRESS_CLASS);
+		}
+		if (data.action === 'stop' || data.action === 'close' || data.status === 'finished') {
+			document.body.classList.remove(INTERACTIVE_TOUR_IN_PROGRESS_CLASS);
+		}
 		if (data.action === 'close' || data.action === 'skip' || data.status === 'finished') {
-			setTour({
-				...tour,
-				seen: true,
-			});
+			setSeen(true);
 			if (data.action === 'close' || data.status === 'finished') {
 				markTourAsSeen();
 			} else {
@@ -226,10 +173,11 @@ const InteractiveTour: FunctionComponent<
 	};
 
 	// Render
-	if (tour) {
+	if (tour && tourDisplayDates) {
 		return (
 			<div className="c-interactive-tour">
 				<Joyride
+					debug
 					steps={mapSteps(tour.steps)}
 					callback={handleJoyrideCallback}
 					locale={{
@@ -246,7 +194,7 @@ const InteractiveTour: FunctionComponent<
 					spotlightPadding={8}
 					scrollOffset={220}
 					continuous
-					run={!tour.seen && !showNudgingModal}
+					run={!seen && !showNudgingModal}
 					showSkipButton
 					floaterProps={{ disableAnimation: true }}
 					styles={{
@@ -266,7 +214,7 @@ const InteractiveTour: FunctionComponent<
 						)}
 						icon={IconName.info}
 						onClick={() => {
-							setTour({ ...tour, seen: false });
+							setSeen(false);
 						}}
 						className="c-interactive-tour__button"
 					/>

@@ -830,6 +830,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							title={renderTitle}
 							actions={renderHeadingActions(true)}
 							tabs={renderTabs}
+							tour={null}
 						/>
 					),
 					desktop: (

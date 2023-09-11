@@ -19,7 +19,7 @@ interface AssignmentHeadingProps {
 	info?: ReactNode;
 	tabs?: ReactNode;
 	title: ReactNode;
-	tour?: ReactNode;
+	tour?: ReactNode | null;
 }
 
 const AssignmentHeading: FC<AssignmentHeadingProps> = ({

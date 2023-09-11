@@ -137,3 +137,16 @@
 		}
 	}
 }
+
+/**
+ * Disable horizontal scroll, to avoid issues with the interactive flow
+ * https://meemoo.atlassian.net/browse/AVO-2919
+ */
+.c-interactive-tour--in-progress {
+	.c-assignment-heading {
+		&__bottom {
+			overflow-x: hidden;
+			overflow-y: hidden;
+		}
+	}
+}
