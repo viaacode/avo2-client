@@ -177,7 +177,6 @@ const InteractiveTour: FunctionComponent<
 		return (
 			<div className="c-interactive-tour">
 				<Joyride
-					debug
 					steps={mapSteps(tour.steps)}
 					callback={handleJoyrideCallback}
 					locale={{
