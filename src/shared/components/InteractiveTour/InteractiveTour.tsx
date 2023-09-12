@@ -50,6 +50,12 @@ const InteractiveTour: FunctionComponent<
 	const routeId = interactiveTourInfo?.routeId;
 	const [seen, setSeen] = useState<boolean | null>(tour?.seen ?? null);
 
+	useEffect(() => {
+		if (tour) {
+			setSeen(tour.seen);
+		}
+	}, [tour]);
+
 	const getTourDisplayDates = useCallback(() => {
 		try {
 			setTourDisplayDates(
@@ -145,7 +151,7 @@ const InteractiveTour: FunctionComponent<
 		{ trailing: true }
 	);
 
-	const handleJoyrideCallback = (data: CallBackProps) => {
+	const handleJoyrideCallback = async (data: CallBackProps) => {
 		if (!tour) {
 			return;
 		}
@@ -158,12 +164,12 @@ const InteractiveTour: FunctionComponent<
 		if (data.action === 'close' || data.action === 'skip' || data.status === 'finished') {
 			setSeen(true);
 			if (data.action === 'close' || data.status === 'finished') {
-				markTourAsSeen();
+				await markTourAsSeen();
 			} else {
 				// skip
 				if ((tourDisplayDates || {})[tour.id]) {
 					// if date was set already => hide the tour forever
-					markTourAsSeen();
+					await markTourAsSeen();
 				} else {
 					// if date was not set => keep track of date in localstorage
 					updateTourDisplayDate(String(tour.id));

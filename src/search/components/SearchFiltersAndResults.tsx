@@ -21,7 +21,6 @@ import type { Avo } from '@viaa/avo2-types';
 import {
 	cloneDeep,
 	every,
-	get,
 	intersection,
 	isArray,
 	isEmpty,
@@ -95,11 +94,11 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
-	const resultsCount = get(searchResults, 'count', 0);
+	const resultsCount = searchResults?.count ?? 0;
 
 	const urlUpdateType: UrlUpdateType = 'push';
 
-	const [searchTerms, setSearchTerms] = useState('');
+	const [searchTerms, setSearchTerms] = useState(filterState?.filters?.query);
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
 
 	const [qualityLabels] = useQualityLabels(
@@ -180,7 +179,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	}, [filterState, search]);
 
 	const updateSearchTerms = useCallback(() => {
-		const query = get(filterState, 'filters.query', '');
+		const query = filterState?.filters?.query ?? '';
 		if (query) {
 			setSearchTerms(query);
 		}
@@ -193,8 +192,8 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const getBookmarkStatuses = useCallback(async () => {
 		try {
-			const results = get(searchResults, 'results');
-			const profileId = get(user, 'profile.id');
+			const results = searchResults?.results;
+			const profileId = user?.profile?.id;
 
 			if (!results || !profileId) {
 				// search results or user hasn't been loaded yet
@@ -322,7 +321,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
 		try {
-			const results = get(searchResults, 'results', []);
+			const results = searchResults?.results ?? [];
 			const resultItem: Avo.Search.ResultItem | undefined = results.find(
 				(result) => result.uid === uuid
 			);
