@@ -98,7 +98,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const urlUpdateType: UrlUpdateType = 'push';
 
-	const [searchTerms, setSearchTerms] = useState(filterState?.filters?.query);
+	const [searchTerms, setSearchTerms] = useState('');
 	const [bookmarkStatuses, setBookmarkStatuses] = useState<BookmarkStatusLookup | null>(null);
 
 	const [qualityLabels] = useQualityLabels(
@@ -118,6 +118,10 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	const resultEnd = Math.min(resultStart + ITEMS_PER_PAGE - 1, resultsCount);
 
 	const [multiOptions, setMultiOptions] = useState({} as SearchFilterMultiOptions);
+
+	useEffect(() => {
+		setSearchTerms(filterState?.filters?.query ?? '');
+	}, [filterState?.filters?.query]);
 
 	/**
 	 * Update the filter values and scroll to the top
