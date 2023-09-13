@@ -364,7 +364,9 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					: tText('admin/assignments/views/assignments-overview-admin___actief');
 
 			case 'is_public':
-				return assignment.is_public ? tText('Ja') : tText('Nee');
+				return assignment.is_public
+					? tText('admin/assignments/views/assignments-overview-admin___ja')
+					: tText('admin/assignments/views/assignments-overview-admin___nee');
 
 			case 'responses': {
 				const responsesLength =

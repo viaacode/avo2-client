@@ -96,7 +96,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: () => FilterableColumn<Assignme
 		},
 		{
 			id: 'is_public',
-			label: tText('Publiek'),
+			label: tText('admin/assignments/assignments___publiek'),
 			sortable: true,
 			visibleByDefault: true,
 			filterType: 'BooleanCheckboxDropdown',
