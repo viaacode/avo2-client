@@ -177,19 +177,25 @@ const BundleDetail: FunctionComponent<
 				}
 			}
 
+			let bundleObj: Avo.Collection.Collection | null = null;
+			try {
+				bundleObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
+					bundleId,
+					'bundle',
+					undefined
+				);
+			} catch (err) {
+				// Ignore errors during fetch
+			}
+
 			if (!user) {
+				setBundle(bundleObj);
 				setLoadingInfo({
 					state: 'loaded',
 				});
 				setShowLoginPopup(showPopup);
 				return;
 			}
-
-			const bundleObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
-				bundleId,
-				'bundle',
-				undefined
-			);
 
 			if (!bundleObj) {
 				setLoadingInfo({
@@ -664,7 +670,7 @@ const BundleDetail: FunctionComponent<
 					/>
 				)}
 				{renderActionDropdown()}
-				<InteractiveTour showButton />
+				{!!user && <InteractiveTour showButton />}
 			</ButtonToolbar>
 		);
 	};

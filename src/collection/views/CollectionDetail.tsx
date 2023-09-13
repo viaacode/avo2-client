@@ -240,6 +240,9 @@ const CollectionDetail: FunctionComponent<
 	 */
 	const getPublishedBundles = useCallback(async () => {
 		try {
+			if (showLoginPopup) {
+				return;
+			}
 			if (isUuid(collectionId)) {
 				setPublishedBundles(
 					await CollectionService.getPublishedBundlesContainingCollection(collectionId)
@@ -259,7 +262,7 @@ const CollectionDetail: FunctionComponent<
 	}, [setPublishedBundles, tText, collectionId]);
 
 	const fetchContributors = useCallback(async () => {
-		if (!collectionId || !collectionInfo) {
+		if (!collectionId || !collectionInfo || showLoginPopup) {
 			return;
 		}
 		const response = await CollectionService.fetchContributorsByCollectionId(collectionId);
@@ -389,11 +392,24 @@ const CollectionDetail: FunctionComponent<
 			const showNoAccessPopup = false;
 
 			if (!user) {
+				// Not logged in
+				// If thr collection is public, we should still load the metadata
+				let collectionObj: Avo.Collection.Collection | null = null;
+				try {
+					collectionObj =
+						await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
+							uuid,
+							'collection',
+							undefined
+						);
+				} catch (err) {
+					// Ignore errors when fetching collections when user is not logged in
+				}
 				setCollectionInfo({
 					showNoAccessPopup: false,
 					showLoginPopup: true,
 					permissions: permissionObj,
-					collection: null,
+					collection: collectionObj,
 				});
 				setLoadingInfo({
 					state: 'loaded',
@@ -497,7 +513,7 @@ const CollectionDetail: FunctionComponent<
 	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
-		if (collectionInfo?.collection) {
+		if (collectionInfo?.collection && !showLoginPopup) {
 			getRelatedCollections();
 			getPublishedBundles();
 			triggerEvents();
@@ -1482,11 +1498,13 @@ const CollectionDetail: FunctionComponent<
 								/>
 							</div>
 						</HeaderBottomRowLeft>
-						<HeaderBottomRowRight>
-							<Spacer margin={'top-small'}>
-								<InteractiveTour showButton />
-							</Spacer>
-						</HeaderBottomRowRight>
+						{!showLoginPopup && (
+							<HeaderBottomRowRight>
+								<Spacer margin={'top-small'}>
+									<InteractiveTour showButton />
+								</Spacer>
+							</HeaderBottomRowRight>
+						)}
 					</Header>
 				)}
 
