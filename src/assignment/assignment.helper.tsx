@@ -2,7 +2,6 @@ import { IconName } from '@viaa/avo2-components';
 import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
 import type { Avo } from '@viaa/avo2-types';
 import { LomSchemeType } from '@viaa/avo2-types';
-import { BlockItemTypeSchema } from '@viaa/avo2-types/types/core';
 import { UserSchema } from '@viaa/avo2-types/types/user';
 import { compact, orderBy } from 'lodash-es';
 import { ReactNode } from 'react';
@@ -177,58 +176,34 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 		error: tText(
 			'assignment/assignment___de-tekst-items-moeten-een-titel-of-beschrijving-bevatten'
 		),
-		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			!assignment.blocks || validateBlocks(assignment.blocks, 'TEXT'),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => {
+			if (!assignment.blocks) {
+				return false;
+			}
+			return areTextBlocksValid(assignment.blocks);
+		},
 	},
 	{
 		error: tText('assignment/assignment___de-collecties-moeten-een-titel-hebben'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			!assignment.blocks || validateBlocks(assignment.blocks, 'COLLECTION'),
+			areCollectionBlocksValid(assignment.blocks),
 	},
 ];
 
-const validateBlocks = (blocks: Avo.Assignment.Block[], type: BlockItemTypeSchema): boolean => {
-	if (!blocks || !blocks.length) {
-		return false;
-	}
+const areCollectionBlocksValid = (blocks: Avo.Assignment.Block[] | undefined): boolean => {
+	return (blocks || [])
+		.filter((block) => block.type === 'COLLECTION')
+		.every((block) => !block.use_custom_fields || !block.custom_title);
+};
 
-	const blocksByType = blocks.filter((block) => block.type === type);
-
-	switch (type) {
-		case 'COLLECTION':
-			blocksByType.forEach((block) => {
-				if (block.use_custom_fields && !block.custom_title) {
-					return false;
-				}
-			});
-			break;
-
-		case 'ITEM':
-			blocksByType.forEach((block) => {
-				if (block.use_custom_fields && !block.custom_title && !block.custom_description) {
-					return false;
-				}
-			});
-			break;
-
-		case 'TEXT':
-			blocksByType.forEach((block) => {
-				if (
-					!stripHtml(block.custom_title || '').trim() &&
-					!stripHtml(block.custom_description || '').trim()
-				) {
-					return false;
-				}
-			});
-			break;
-
-		case 'ZOEK':
-		case 'BOUW':
-		default:
-			break;
-	}
-
-	return true;
+const areTextBlocksValid = (blocks: Avo.Assignment.Block[] | undefined): boolean => {
+	return (blocks || [])
+		.filter((block) => block.type === 'TEXT')
+		.every(
+			(block) =>
+				stripHtml(block.custom_title || '').trim() ||
+				stripHtml(block.custom_description || '').trim()
+		);
 };
 
 function getError<T>(rule: ValidationRule<T>, object: T) {
