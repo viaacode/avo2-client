@@ -63,7 +63,9 @@ const ZendeskWrapper: FunctionComponent = () => {
 		getZendeskWidget();
 	};
 
-	return <Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} onLoaded={onLoaded} />;
+	return (
+		<Zendesk zendeskKey={getEnv('ZENDESK_KEY') as string} defer={true} onLoaded={onLoaded} />
+	);
 };
 
 export default ZendeskWrapper;
