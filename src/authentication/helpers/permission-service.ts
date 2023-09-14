@@ -14,12 +14,15 @@ type PermissionInfo = { name: PermissionName; obj?: any | null };
 export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
 
 export class PermissionService {
-	public static hasPerm(user: Avo.User.User | undefined, permName: PermissionName): boolean {
+	public static hasPerm(
+		user: Avo.User.User | Avo.User.CommonUser | undefined,
+		permName: PermissionName
+	): boolean {
 		return PermissionService.getUserPermissions(user).includes(permName);
 	}
 
 	public static hasAtLeastOnePerm(
-		user: Avo.User.User | undefined,
+		user: Avo.User.User | Avo.User.CommonUser | undefined,
 		permNames: PermissionName[]
 	): boolean {
 		return some(permNames, (permName) =>
@@ -27,8 +30,12 @@ export class PermissionService {
 		);
 	}
 
-	public static getUserPermissions(user: Avo.User.User | null | undefined): PermissionName[] {
-		return (user?.profile?.permissions || []) as PermissionName[];
+	public static getUserPermissions(
+		user: Avo.User.User | Avo.User.CommonUser | null | undefined
+	): PermissionName[] {
+		return ((user as Avo.User.User)?.profile?.permissions ||
+			(user as Avo.User.CommonUser)?.permissions ||
+			[]) as PermissionName[];
 	}
 
 	/**
@@ -38,7 +45,7 @@ export class PermissionService {
 	 */
 	public static async hasPermissions(
 		permissions: Permissions,
-		user: Avo.User.User | null
+		user: Avo.User.User | Avo.User.CommonUser | null
 	): Promise<boolean> {
 		// Reformat all permissions to format: PermissionInfo[]
 		let permissionList: PermissionInfo[];
@@ -99,14 +106,15 @@ export class PermissionService {
 	public static async hasPermission(
 		permissionName: PermissionName,
 		obj: any | null | undefined,
-		user: Avo.User.User | null | undefined
+		user: Avo.User.User | Avo.User.CommonUser | null | undefined
 	): Promise<boolean> {
 		const userPermissions = PermissionService.getUserPermissions(user);
 		if (!user || !userPermissions) {
 			return false;
 		}
 		// Check if user has the requested permission
-		const profileId = getProfileId(user);
+		const profileId =
+			(user as Avo.User.CommonUser)?.profileId ?? getProfileId(user as Avo.User.User);
 		if (!userPermissions.includes(permissionName)) {
 			// If the user doesn't have the permission, then we don't even need to check if the user is the owner of the object.
 			return false;
@@ -216,7 +224,7 @@ export class PermissionService {
 
 	public static async checkPermissions(
 		permissions: Record<string, Permissions>,
-		user: Avo.User.User
+		user: Avo.User.User | Avo.User.CommonUser
 	): Promise<Record<string, boolean>> {
 		const hasPermissions = await Promise.all(
 			Object.entries(permissions).map(async ([key, permission]) => {

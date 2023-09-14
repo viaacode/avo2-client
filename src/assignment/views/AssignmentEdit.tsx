@@ -8,7 +8,6 @@ import {
 	IconName,
 	Spacer,
 	Spinner,
-	Tabs,
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
@@ -40,7 +39,7 @@ import { InActivityWarningModal, ShareModal } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, CustomError } from '../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
@@ -69,6 +68,7 @@ import AssignmentDetailsFormReadonly from '../components/AssignmentDetailsFormRe
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataFormEditable';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
+import AssignmentTeacherTabs from '../components/AssignmentTeacherTabs';
 import AssignmentTitle from '../components/AssignmentTitle';
 import {
 	onAddNewContributor,
@@ -81,7 +81,6 @@ import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentForm,
-	useAssignmentTeacherTabs,
 	useBlockListModals,
 	useBlocksList,
 	useEditBlocks,
@@ -110,6 +109,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const { tText, tHtml } = useTranslation();
 
 	// Data
+	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
+		ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT
+	);
 	const [originalAssignment, setOriginalAssignment] = useState<Avo.Assignment.Assignment | null>(
 		null
 	);
@@ -182,23 +184,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		fetchContributors();
 	}, [fetchContributors]);
 
-	useEffect(() => {
-		const param = match.params.tabId;
-		param && setTab(param as ASSIGNMENT_CREATE_UPDATE_TABS);
-	}, [match.params.tabId]);
-
 	// UI
 	useWarningBeforeUnload({
 		when: unsavedChanges && !isForcedExit,
 	});
 
-	const [tabs, tab, setTab, onTabClick] = useAssignmentTeacherTabs(
-		history,
-		user,
-		assignmentId,
-		match.params.tabId as ASSIGNMENT_CREATE_UPDATE_TABS | null,
-		originalAssignment?.responses?.length || 0
-	);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>(false);
 	const [isConfirmSaveActionModalOpen, setIsConfirmSaveActionModalOpen] =
 		useState<boolean>(false);
@@ -618,8 +608,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		[tText, control, setAssignment]
 	);
 
-	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
-
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT:
@@ -733,6 +721,20 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		originalAssignment && reset();
 	}, [originalAssignment, reset]);
 
+	const handleTabChange = (tabId: ASSIGNMENT_CREATE_UPDATE_TABS) => {
+		setTab(tabId);
+
+		if (assignmentId) {
+			navigate(
+				history,
+				APP_PATH.ASSIGNMENT_EDIT_TAB.route,
+				{ id: assignmentId, tabId: tabId },
+				undefined,
+				'replace'
+			);
+		}
+	};
+
 	// Render
 
 	const shareProps = {
@@ -829,7 +831,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							back={renderBackButton}
 							title={renderTitle}
 							actions={renderHeadingActions(true)}
-							tabs={renderTabs}
+							tabs={
+								<AssignmentTeacherTabs
+									activeTab={tab}
+									onTabChange={handleTabChange}
+									clicksCount={originalAssignment?.responses?.length ?? 0}
+								/>
+							}
 							tour={null}
 						/>
 					),
@@ -838,7 +846,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							back={renderBackButton}
 							title={renderTitle}
 							actions={renderHeadingActions(false)}
-							tabs={renderTabs}
+							tabs={
+								<AssignmentTeacherTabs
+									activeTab={tab}
+									onTabChange={handleTabChange}
+									clicksCount={originalAssignment?.responses?.length ?? 0}
+								/>
+							}
 						/>
 					),
 				})}

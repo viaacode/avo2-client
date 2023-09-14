@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Container, Icon, IconName, Spacer, Tabs } from '@viaa/avo2-components';
+import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import React, {
 	Dispatch,
@@ -27,6 +27,7 @@ import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnloa
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import { setBlockPositionToIndex } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import AssignmentActions from '../components/AssignmentActions';
 import AssignmentAdminFormEditable from '../components/AssignmentAdminFormEditable';
@@ -34,6 +35,7 @@ import AssignmentDetailsFormEditable from '../components/AssignmentDetailsFormEd
 import AssignmentHeading from '../components/AssignmentHeading';
 import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataFormEditable';
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
+import AssignmentTeacherTabs from '../components/AssignmentTeacherTabs';
 import AssignmentTitle from '../components/AssignmentTitle';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../helpers/cleanup-title-and-descriptions';
@@ -41,7 +43,6 @@ import { backToOverview } from '../helpers/links';
 import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentForm,
-	useAssignmentTeacherTabs,
 	useBlockListModals,
 	useBlocksList,
 	useEditBlocks,
@@ -50,7 +51,6 @@ import { AssignmentFields } from '../hooks/assignment-form';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
-import { setBlockPositionToIndex } from '../assignment.helper';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	user,
@@ -59,6 +59,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 	// Data
+	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
+		ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT
+	);
 	const [assignment, setAssignment, defaultValues] = useAssignmentForm();
 
 	const form = useForm<Avo.Assignment.Assignment>({
@@ -149,7 +152,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		when: isDirty,
 	});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [tabs, tab, , onTabClick] = useAssignmentTeacherTabs(history, user, null, null, 0);
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 
 	// Render
@@ -244,8 +246,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		() => <AssignmentTitle control={control} setAssignment={setAssignment as any} />,
 		[tText, control, setAssignment]
 	);
-
-	const renderTabs = useMemo(() => <Tabs tabs={tabs} onClick={onTabClick} />, [tabs, onTabClick]);
 
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
@@ -354,7 +354,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 							route={location.pathname}
 						/>
 					}
-					tabs={renderTabs}
+					tabs={
+						<AssignmentTeacherTabs
+							activeTab={tab}
+							onTabChange={setTab}
+							clicksCount={0}
+						/>
+					}
 				/>
 
 				<Container mode="horizontal">

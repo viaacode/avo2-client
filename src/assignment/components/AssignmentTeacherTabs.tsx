@@ -1,34 +1,32 @@
-import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { IconName, Pill, PillVariants, TabProps, Tabs } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import * as H from 'history';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { FC, FunctionComponent, useMemo } from 'react';
+import { RouteComponentProps } from 'react-router';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import { navigate } from '../../shared/helpers';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 
-export function useAssignmentTeacherTabs(
-	history: H.History<unknown>,
-	user: Avo.User.User | undefined,
-	assignmentId: string | null,
-	activeTab: ASSIGNMENT_CREATE_UPDATE_TABS | null,
-	clicksCount: number
-): [
-	TabProps[],
-	ASSIGNMENT_CREATE_UPDATE_TABS | undefined,
-	React.Dispatch<React.SetStateAction<ASSIGNMENT_CREATE_UPDATE_TABS>>,
-	(id: string | number) => void
-] {
+interface AssignmentTeacherTabsProps {
+	activeTab: ASSIGNMENT_CREATE_UPDATE_TABS | null;
+	onTabChange: (newActiveTab: ASSIGNMENT_CREATE_UPDATE_TABS) => void;
+	clicksCount: number;
+}
+
+const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps & UserProps> = ({
+	history,
+	commonUser,
+	activeTab,
+	onTabChange,
+	clicksCount,
+}) => {
 	const { tText } = useTranslation();
 
-	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
-		ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT
-	);
-
-	const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(user, [
+	const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(commonUser, [
 		PermissionName.EDIT_ASSIGNMENT_QUALITY_LABELS,
 		PermissionName.EDIT_ASSIGNMENT_AUTHOR,
 		PermissionName.EDIT_ASSIGNMENT_EDITORIAL_STATUS,
@@ -85,27 +83,22 @@ export function useAssignmentTeacherTabs(
 					: []),
 			].map((item) => ({
 				...item,
-				active: item.id === tab,
+				active: item.id === activeTab,
 			})),
-		[tText, tab]
+		[tText, activeTab]
 	);
 
-	const onTabClick = useCallback(
-		(tabId: string | number) => {
-			setTab(tabId as ASSIGNMENT_CREATE_UPDATE_TABS);
-
-			if (assignmentId) {
-				navigate(
-					history,
-					APP_PATH.ASSIGNMENT_EDIT_TAB.route,
-					{ id: assignmentId, tabId: tabId },
-					undefined,
-					'replace'
-				);
+	return (
+		<Tabs
+			tabs={tabs}
+			onClick={(tabId: string | number) =>
+				onTabChange(tabId as ASSIGNMENT_CREATE_UPDATE_TABS)
 			}
-		},
-		[setTab]
+		/>
 	);
+};
 
-	return [tabs, tab, setTab, onTabClick];
-}
+export default compose(
+	withRouter,
+	withUser
+)(AssignmentTeacherTabs) as FunctionComponent<AssignmentTeacherTabsProps>;
