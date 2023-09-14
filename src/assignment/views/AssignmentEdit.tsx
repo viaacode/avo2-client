@@ -405,6 +405,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 				// Re-fetch
 				await fetchAssignment();
+				await fetchContributors();
 
 				ToastService.success(
 					tHtml('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')

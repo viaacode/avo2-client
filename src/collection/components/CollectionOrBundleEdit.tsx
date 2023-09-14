@@ -769,7 +769,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 				const newCollection = await updateCollection();
 
 				if (newCollection) {
-					checkPermissionsAndGetCollection();
+					await checkPermissionsAndGetCollection();
+					await fetchContributors();
 
 					setUnsavedChanges(false);
 
