@@ -6,6 +6,8 @@ import React, { FC, useCallback, useEffect, useRef } from 'react';
 import { parseDuration } from '../../helpers';
 import Html from '../Html/Html';
 
+import './TextWithTimestamps.scss';
+
 interface TextWithTimestampsProps {
 	content: string;
 }
