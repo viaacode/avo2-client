@@ -14,7 +14,7 @@ import {
 	Spinner,
 	ToggleButton,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';

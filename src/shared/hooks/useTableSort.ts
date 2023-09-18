@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 type UseTableSortTuple<T> = [

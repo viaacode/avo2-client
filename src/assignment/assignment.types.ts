@@ -1,5 +1,5 @@
 import { TableColumn } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { FilterState } from '../search/search.types';
 import { Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types';

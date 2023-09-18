@@ -1,5 +1,4 @@
-import { IconName, MoreOptionsDropdown } from '@viaa/avo2-components';
-import { MenuItemInfoSchema } from '@viaa/avo2-components/dist/esm/components/Menu/MenuContent/MenuContent';
+import { IconName, MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { isEqual } from 'lodash';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
@@ -286,7 +285,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						id: 'delete',
 						label: tText('workspace/views/quick-lane-overview___verwijder'),
 					},
-				] as (MenuItemInfoSchema & { id: actions })[];
+				] as (MenuItemInfo & { id: actions })[];
 
 				return (
 					data && (

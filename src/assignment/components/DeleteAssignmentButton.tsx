@@ -1,5 +1,5 @@
 import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
 import { compose } from 'redux';

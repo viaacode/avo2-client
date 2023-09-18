@@ -1,6 +1,6 @@
 import { ContentPageService } from '@meemoo/admin-core-ui';
 import { SelectOption } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { useEffect, useState } from 'react';
 
 type UseContentTypesTuple = [SelectOption<Avo.ContentPage.Type>[], boolean];

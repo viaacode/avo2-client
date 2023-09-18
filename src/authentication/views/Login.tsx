@@ -1,5 +1,5 @@
 import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';

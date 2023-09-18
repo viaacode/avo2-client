@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { useState } from 'react';
 
 import { ItemsService } from '../../admin/items/items.service';

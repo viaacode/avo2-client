@@ -13,7 +13,7 @@ import {
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { find, get, isNil } from 'lodash-es';
 import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';

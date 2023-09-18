@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 const addTypeToLabel = (
 	item: { assignment_label: Avo.Assignment.Label },

@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 export type ResolvedItemOrCollectionOrAssignment = Partial<
 	Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment

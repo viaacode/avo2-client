@@ -13,7 +13,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'clsx';
 import { isNil, noop, truncate } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText } from 'react';

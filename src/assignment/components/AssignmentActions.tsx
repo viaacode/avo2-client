@@ -6,7 +6,7 @@ import {
 	DropdownContent,
 	IconName,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { noop } from 'lodash-es';

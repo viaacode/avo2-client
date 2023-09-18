@@ -1,5 +1,4 @@
-import { Table, TableProps } from '@viaa/avo2-components';
-import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
+import { Table, type TableColumn, type TableProps } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
 
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
@@ -61,7 +60,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 										dataType: TableColumnDataType.dateTime,
 									},
 							  ]),
-					] as (Omit<TableColumnSchema, 'id'> & { id: string })[]
+					] as (Omit<TableColumn, 'id'> & { id: string })[]
 				}
 				data={data}
 				emptyStateMessage={emptyStateMessage}

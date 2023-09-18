@@ -9,7 +9,7 @@ import {
 	Spacer,
 	TextArea,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { map } from 'lodash-es';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { UseFormSetValue } from 'react-hook-form';

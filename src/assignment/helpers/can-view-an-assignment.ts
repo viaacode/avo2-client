@@ -1,5 +1,5 @@
 import { PermissionName } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 

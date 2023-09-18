@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { CollectionService } from '../collection.service';

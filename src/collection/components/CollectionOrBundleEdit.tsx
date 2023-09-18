@@ -11,7 +11,7 @@ import {
 	TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { cloneDeep, get, isEmpty, isNil, set } from 'lodash-es';
 import React, {

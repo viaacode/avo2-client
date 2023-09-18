@@ -1,5 +1,5 @@
 import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FC, MouseEvent } from 'react';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';

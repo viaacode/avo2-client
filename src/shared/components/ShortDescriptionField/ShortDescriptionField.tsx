@@ -1,5 +1,4 @@
-import { FormGroup, TextArea } from '@viaa/avo2-components';
-import { FormGroupPropsSchema } from '@viaa/avo2-components/dist/esm/components/Form/FormGroup/FormGroup';
+import { FormGroup, type FormGroupProps, TextArea } from '@viaa/avo2-components';
 import { StringMap } from 'i18next';
 import React, { FunctionComponent } from 'react';
 
@@ -7,7 +6,7 @@ import { MAX_SEARCH_DESCRIPTION_LENGTH } from '../../../collection/collection.co
 import { getValidationFeedbackForDescription } from '../../../collection/collection.helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
-interface ShortDescriptionFieldProps extends Pick<FormGroupPropsSchema, 'error'> {
+interface ShortDescriptionFieldProps extends Pick<FormGroupProps, 'error'> {
 	onChange: (value: string) => void;
 	value: string | null;
 	placeholder?: string;

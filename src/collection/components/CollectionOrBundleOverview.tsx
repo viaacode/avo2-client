@@ -10,16 +10,13 @@ import {
 	Pagination,
 	Spacer,
 	Table,
-	TableColumn,
+	type TableColumn,
 	Thumbnail,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
 } from '@viaa/avo2-components';
-import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
-import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
-import { ShareWithColleagueType } from '@viaa/avo2-types/types/shared/shared-with-colluegue-type';
+import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -608,7 +605,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 
 			case 'share_type':
 				return createShareIconTableOverview(
-					collection.share_type as ShareWithColleagueType | undefined,
+					collection.share_type as ShareWithColleagueTypeEnum | undefined,
 					collection.contributors as unknown as
 						| Avo.Collection.Contributor[]
 						| null
@@ -681,7 +678,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 							col: '2',
 							sortable: true,
 							dataType: TableColumnDataType.boolean,
-						} as TableColumnSchema,
+						} as TableColumn,
 				  ]
 				: []),
 			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591

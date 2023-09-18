@@ -8,10 +8,10 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { AssignmentLayout } from '@viaa/avo2-types/types/assignment';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
+import { AssignmentLayout } from '../../../assignment/assignment.types';
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';

@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { LomSchemeType, LomType } from '@viaa/avo2-types';
 import { compact, groupBy, map } from 'lodash-es';
 

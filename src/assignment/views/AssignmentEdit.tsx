@@ -9,7 +9,7 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { isPast } from 'date-fns';
 import { noop } from 'lodash-es';

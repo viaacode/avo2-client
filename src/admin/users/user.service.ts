@@ -1,5 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { endOfDay, isBefore } from 'date-fns';
 import { compact, get, isNil } from 'lodash-es';
 import moment from 'moment';

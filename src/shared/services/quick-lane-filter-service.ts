@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import { QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';

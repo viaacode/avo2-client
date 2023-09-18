@@ -1,6 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { Container, Icon, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import MetaTags from 'react-meta-tags';

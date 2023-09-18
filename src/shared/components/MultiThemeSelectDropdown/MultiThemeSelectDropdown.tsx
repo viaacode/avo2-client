@@ -1,5 +1,5 @@
-import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
-import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
+import { TagInfo } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { groupBy, map } from 'lodash-es';
 import React, { FC } from 'react';
@@ -10,10 +10,10 @@ import MultiThemeSelectOptionGroupHeading from './MultiThemeSelectOptionGroupHea
 
 interface MultiThemeSelectDropdownProps {
 	id?: string;
-	value: TagInfoSchema[];
-	allThemes: LomFieldSchema[];
+	value: TagInfo[];
+	allThemes: Avo.Lom.LomField[];
 	isLoading: boolean;
-	onChange: (newThemes: TagInfoSchema[]) => void;
+	onChange: (newThemes: TagInfo[]) => void;
 	placeholder?: string;
 }
 
@@ -42,7 +42,7 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 			components={{ GroupHeading: MultiThemeSelectOptionGroupHeading }}
 			className={classnames('c-multi-theme-select', 'c-tags-input')}
 			classNamePrefix="c-tags-input"
-			onChange={(newValue) => onChange(newValue as TagInfoSchema[])}
+			onChange={(newValue) => onChange(newValue as TagInfo[])}
 			isMulti
 			isLoading={isLoading}
 			placeholder={placeholder || null}

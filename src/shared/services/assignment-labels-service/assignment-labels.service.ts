@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { omit } from 'lodash-es';
 
 import { AssignmentLabelColor } from '../../../assignment/assignment.types';

@@ -4,7 +4,7 @@ import {
 	RichTextEditorProps,
 	RichTextEditorUploadInfo,
 } from '@meemoo/react-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { isEqual } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 

@@ -15,7 +15,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
 import MetaTags from 'react-meta-tags';

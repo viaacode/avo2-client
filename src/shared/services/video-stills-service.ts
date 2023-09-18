@@ -1,5 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, uniq, without } from 'lodash-es';
 
 import { ContentTypeString } from '../../collection/collection.types';

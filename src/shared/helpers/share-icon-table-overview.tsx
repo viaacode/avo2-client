@@ -1,7 +1,5 @@
 import { Icon, IconName, Tooltip, TooltipContent, TooltipTrigger } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { ShareWithColleagueType } from '@viaa/avo2-types/types/shared/shared-with-colluegue-type';
+import { type Avo, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
@@ -27,7 +25,7 @@ export function contributorsToString(
 }
 
 export function createShareIconTableOverview(
-	shareType: ShareWithColleagueType | undefined,
+	shareType: ShareWithColleagueTypeEnum | undefined,
 	contributors: Avo.Assignment.Contributor[] | Avo.Collection.Contributor[] | null | undefined,
 	contentType: 'assignment' | 'collection',
 	triggerClassName: string

@@ -1,5 +1,5 @@
 import { AssetsService, fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
 

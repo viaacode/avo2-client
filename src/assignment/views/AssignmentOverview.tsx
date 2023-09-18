@@ -21,7 +21,7 @@ import {
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
@@ -658,7 +658,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 
 			case 'share_type':
 				return createShareIconTableOverview(
-					assignment.share_type,
+					assignment.share_type as ShareWithColleagueTypeEnum,
 					assignment.contributors,
 					'assignment',
 					'c-assignment-overview__shared'

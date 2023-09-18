@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 
 import { FlowPlayerWrapper } from '../../shared/components';

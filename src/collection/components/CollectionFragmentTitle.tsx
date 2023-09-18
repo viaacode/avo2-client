@@ -1,5 +1,5 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 

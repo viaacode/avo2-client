@@ -1,18 +1,16 @@
-import { SelectOptionSchema } from '@viaa/avo2-components/dist/esm/components/Select/Select';
-import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
-import type { Avo } from '@viaa/avo2-types';
-import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
+import { type SelectOption, type TagInfo } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import { capitalize, compact, isNil } from 'lodash-es';
 
-export const mapLomFieldsToOptions = (lomFields: Avo.Lom.LomField[]): SelectOptionSchema[] => {
+export const mapLomFieldsToOptions = (lomFields: Avo.Lom.LomField[]): SelectOption<any>[] => {
 	return (lomFields || []).map(
 		(lomField) =>
-			({ value: lomField.id, label: capitalize(lomField.label) } as SelectOptionSchema)
+			({ value: lomField.id, label: capitalize(lomField.label) } as SelectOption<any>)
 	);
 };
 
 export const mapOptionsToLomFields = (
-	options: TagInfoSchema[],
+	options: TagInfo[],
 	originalLoms: Avo.Lom.LomField[]
 ): Avo.Lom.LomField[] => {
 	return (options || []).map((option) => {
@@ -23,7 +21,7 @@ export const mapOptionsToLomFields = (
 export const getParentEducationLevel = (
 	loms: Avo.Lom.LomField[],
 	allLoms: Avo.Lom.LomField[]
-): LomFieldSchema[] => {
+): Avo.Lom.LomField[] => {
 	return compact(
 		loms.map((lom) => {
 			if (isNil(lom.broader)) {

@@ -1,5 +1,5 @@
 import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';

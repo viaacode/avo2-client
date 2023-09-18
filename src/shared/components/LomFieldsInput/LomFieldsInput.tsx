@@ -1,6 +1,5 @@
-import { FormGroup, Spacer, TagsInput } from '@viaa/avo2-components';
-import { TagInfoSchema } from '@viaa/avo2-components/dist/esm/components/TagsInput/TagsInput';
-import type { Avo } from '@viaa/avo2-types';
+import { FormGroup, Spacer, type TagInfo, TagsInput } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import { LomType } from '@viaa/avo2-types';
 import { filter, map, sortBy, uniq } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
@@ -65,7 +64,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	};
 
 	const handleChange = (
-		values: TagInfoSchema[],
+		values: TagInfo[],
 		scheme: LomType,
 		allSchemeLoms: Avo.Lom.LomField[]
 	): void => {

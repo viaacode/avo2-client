@@ -1,5 +1,6 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
+import { AssignmentLayout } from '../../assignment/assignment.types';
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import { QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
 import { GetQuickLanesByContentIdQuery } from '../generated/graphql-db-types';
@@ -17,7 +18,7 @@ export interface QuickLaneUrl {
 }
 
 export interface QuickLaneUrlObject extends QuickLaneUrl {
-	view_mode: Avo.Assignment.Layout;
+	view_mode: AssignmentLayout;
 }
 
 export type QuickLaneUrlRecord = GetQuickLanesByContentIdQuery['app_quick_lanes'][0];

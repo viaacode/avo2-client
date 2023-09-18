@@ -1,5 +1,5 @@
 import { Avatar, IconName, TagOption, Thumbnail } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 

@@ -1,4 +1,4 @@
-import { UserTempAccess } from '@viaa/avo2-types/types/user';
+import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
 import { normalizeTimestamp } from '../../shared/helpers';
@@ -18,18 +18,18 @@ function getError<T>(rule: ValidationRule<T>, object: T) {
 }
 
 const GET_TEMP_ACCESS_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
-	Partial<UserTempAccess>
+	Partial<Avo.User.TempAccess>
 >[] = () => [
 	{
 		// until cannot be null and must be in the future
 		error: tText('admin/users/user___de-einddatum-is-verplicht-en-moet-in-de-toekomst-liggen'),
-		isValid: (tempAccess: Partial<UserTempAccess>) =>
+		isValid: (tempAccess: Partial<Avo.User.TempAccess>) =>
 			!!tempAccess.until && normalizeTimestamp(tempAccess.until).isAfter(),
 	},
 	{
-		// When both from and until date are set, the from date must be < the until date
+		// When both from and until date are set, the from-date must be < the until date
 		error: tText('admin/users/user___de-startdatum-moet-voor-de-einddatum-liggen'),
-		isValid: (tempAccess: Partial<UserTempAccess>) => {
+		isValid: (tempAccess: Partial<Avo.User.TempAccess>) => {
 			return tempAccess.from
 				? !!tempAccess.until &&
 						normalizeTimestamp(tempAccess.from).isBefore(
@@ -40,7 +40,7 @@ const GET_TEMP_ACCESS_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 	},
 ];
 
-export const getTempAccessValidationErrors = (tempAccess: UserTempAccess): string[] => {
+export const getTempAccessValidationErrors = (tempAccess: Avo.User.TempAccess): string[] => {
 	const validationErrors = [...GET_TEMP_ACCESS_VALIDATION_RULES_FOR_SAVE()].map((rule) => {
 		return rule.isValid(tempAccess) ? null : getError(rule, tempAccess);
 	});

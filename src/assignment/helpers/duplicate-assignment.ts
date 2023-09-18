@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { CustomError } from '../../shared/helpers';
 import { tHtml, tText } from '../../shared/helpers/translate';

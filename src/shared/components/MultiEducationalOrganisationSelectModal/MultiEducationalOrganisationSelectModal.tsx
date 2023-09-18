@@ -9,7 +9,7 @@ import {
 	Spacer,
 	TagList,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { FunctionComponent, MouseEvent, useEffect, useState } from 'react';
 

@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { AssignmentBlockTypeSearchProps } from './blocks/AssignmentBlockTypeSearch';
 import { CollectionFragmentTypeItemProps } from './blocks/CollectionFragmentTypeItem';

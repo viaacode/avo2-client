@@ -17,9 +17,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
-import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
@@ -100,7 +98,7 @@ const Profile: FunctionComponent<
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
 	>(commonUser?.educationalOrganisations || []);
-	const [selectedLoms, setSelectedLoms] = useState<LomFieldSchema[]>(
+	const [selectedLoms, setSelectedLoms] = useState<Avo.Lom.LomField[]>(
 		compact(map(commonUser?.loms, 'lom'))
 	);
 	const firstName = commonUser?.firstName || '';

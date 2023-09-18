@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { ReactNode } from 'react';
 import { Dispatch } from 'redux';
 import { UrlUpdateType } from 'use-query-params';

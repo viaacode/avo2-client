@@ -1,5 +1,5 @@
 import { LinkTarget } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 export type PickerItemControls = 'SELECT' | 'TEXT_INPUT' | 'FILE_UPLOAD';
 

@@ -1,5 +1,4 @@
-import { RadioButtonGroup } from '@viaa/avo2-components';
-import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
+import { RadioButtonGroup, type RadioOption } from '@viaa/avo2-components';
 import { isNil, noop } from 'lodash';
 import React, { FunctionComponent } from 'react';
 
