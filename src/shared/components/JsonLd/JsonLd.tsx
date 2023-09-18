@@ -58,7 +58,7 @@ const JsonLd: FunctionComponent<JsonLdProps> = ({
 				url: 'https://meemoo.be/img/logo-mobile.svg',
 			},
 		},
-		datePublished: toIsoDate(publishedAt || ''),
+		datePublished: toIsoDate(publishedAt || null),
 		dateModified: toIsoDate(updatedAt || ''),
 		keywords: (keywords || []).join(','),
 	};

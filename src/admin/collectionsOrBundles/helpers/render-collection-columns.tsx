@@ -1,7 +1,7 @@
 import { TagList, TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { isBefore } from 'date-fns';
 import { compact, get } from 'lodash-es';
-import moment from 'moment';
 import React from 'react';
 
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
@@ -13,7 +13,7 @@ import { QualityLabel } from '../../../collection/collection.types';
 import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser';
 import { APP_PATH } from '../../../constants';
 import { Lookup_Enum_Collection_Management_Qc_Label_Enum } from '../../../shared/generated/graphql-db-types';
-import { buildLink, formatDate, normalizeTimestamp } from '../../../shared/helpers';
+import { buildLink, formatDate } from '../../../shared/helpers';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { tText } from '../../../shared/helpers/translate';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
@@ -80,7 +80,7 @@ export const renderCollectionOverviewColumns = (
 
 		case 'created_at':
 		case 'updated_at':
-			return formatDate(rowData[columnId]) || '-';
+			return rowData[columnId] ? formatDate(new Date(rowData[columnId] as string)) : '-';
 
 		case 'collection_labels': {
 			const labelObjects: { id: number; label: string }[] =
@@ -134,8 +134,8 @@ export const renderCollectionOverviewColumns = (
 			return formatDate(get(rowData, 'mgmt_updated_at')) || '-';
 
 		case 'actualisation_status_valid_until': {
-			const validDate = get(rowData, 'mgmt_status_expires_at');
-			const isValid = !validDate || !normalizeTimestamp(validDate).isBefore(moment());
+			const validDate = (rowData as any)?.mgmt_status_expires_at;
+			const isValid = !validDate || !isBefore(validDate, new Date());
 			return (
 				<span className={isValid ? '' : 'a-table-cell__invalid'}>
 					{formatDate(validDate) || '-'}

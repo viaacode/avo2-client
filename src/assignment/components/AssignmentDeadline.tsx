@@ -42,7 +42,7 @@ const AssignmentDeadline: FC<AssignmentDeadlineProps> = ({ deadline }) => {
 			<DeadlineIndicator className="u-spacer-right-s" color={config[0]} shape={config[1]} />
 
 			<FlexItem shrink={false}>
-				{formatCustomTimestamp(deadline, 'DD-MM-YYYY HH:mm')}
+				{formatCustomTimestamp(deadline, 'dd-MM-yyyy HH:mm')}
 			</FlexItem>
 		</Flex>
 	);

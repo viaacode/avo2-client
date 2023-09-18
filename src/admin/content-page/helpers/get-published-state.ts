@@ -1,5 +1,5 @@
 import { ContentPageInfo } from '@meemoo/admin-core-ui';
-import moment from 'moment';
+import { isAfter, isBefore, isWithinInterval } from 'date-fns';
 
 export function getPublishedDate(
 	contentPage: Partial<ContentPageInfo> | undefined | null
@@ -15,21 +15,23 @@ export function getPublishedDate(
 	}
 
 	if (publishAt && depublishAt) {
-		if (moment().isBetween(moment(publishAt), moment(depublishAt))) {
+		if (
+			isWithinInterval(new Date(), { start: new Date(publishAt), end: new Date(depublishAt) })
+		) {
 			return publishAt;
 		}
 		return null;
 	}
 
 	if (publishAt) {
-		if (moment().isAfter(moment(publishAt))) {
+		if (isAfter(new Date(), new Date(publishAt))) {
 			return publishAt;
 		}
 		return null;
 	}
 
 	if (depublishAt) {
-		if (moment().isBefore(moment(depublishAt))) {
+		if (isBefore(new Date(), new Date(depublishAt))) {
 			return new Date().toISOString();
 		}
 		return null;

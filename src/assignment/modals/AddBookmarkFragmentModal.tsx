@@ -207,7 +207,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 			}
 
 			case AddBookmarkFragmentColumn.createdAt:
-				return formatDate(bookmark.createdAt);
+				return formatDate(new Date(bookmark.createdAt));
 
 			// duration does not require specific rendering
 

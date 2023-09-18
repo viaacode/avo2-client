@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
+import { isAfter, isBefore } from 'date-fns';
 import { compact } from 'lodash-es';
 
-import { normalizeTimestamp } from '../../shared/helpers';
 import { tText } from '../../shared/helpers/translate';
 
 // Validation
@@ -24,7 +24,7 @@ const GET_TEMP_ACCESS_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 		// until cannot be null and must be in the future
 		error: tText('admin/users/user___de-einddatum-is-verplicht-en-moet-in-de-toekomst-liggen'),
 		isValid: (tempAccess: Partial<Avo.User.TempAccess>) =>
-			!!tempAccess.until && normalizeTimestamp(tempAccess.until).isAfter(),
+			!!tempAccess.until && isAfter(new Date(tempAccess.until), new Date()),
 	},
 	{
 		// When both from and until date are set, the from-date must be < the until date
@@ -32,9 +32,7 @@ const GET_TEMP_ACCESS_VALIDATION_RULES_FOR_SAVE: () => ValidationRule<
 		isValid: (tempAccess: Partial<Avo.User.TempAccess>) => {
 			return tempAccess.from
 				? !!tempAccess.until &&
-						normalizeTimestamp(tempAccess.from).isBefore(
-							normalizeTimestamp(tempAccess.until)
-						)
+						isBefore(new Date(tempAccess.from), new Date(tempAccess.until))
 				: true;
 		},
 	},

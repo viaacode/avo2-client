@@ -12,7 +12,7 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import moment from 'moment';
+import { format, parse } from 'date-fns';
 import React, {
 	FunctionComponent,
 	MouseEvent,
@@ -115,15 +115,29 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 
 	const handleDateChange = async (date: Date | null, rangeId: 'gte' | 'lte') => {
 		if (date) {
-			let dateMoment: moment.Moment;
+			let changedDate: Date;
 			if (rangeId === 'gte') {
-				dateMoment = moment(date).set({ hour: 0, minute: 0, second: 0 });
+				changedDate = new Date(
+					date.getFullYear(),
+					date.getMonth(),
+					date.getDate(),
+					0,
+					0,
+					0
+				);
 			} else {
-				dateMoment = moment(date).set({ hour: 23, minute: 59, second: 59 });
+				changedDate = new Date(
+					date.getFullYear(),
+					date.getMonth(),
+					date.getDate(),
+					23,
+					59,
+					59
+				);
 			}
 			setRangeState({
 				...rangeState,
-				[rangeId]: dateMoment.format('YYYY-MM-DD HH:mm:ss'),
+				[rangeId]: format(changedDate, 'yyyy-MM-dd HH:mm:ss'),
 			});
 		} else {
 			setRangeState({
@@ -224,8 +238,8 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		tillYear = (till || yearInputLte || '').split('-')[0];
 	}
 
-	const fromDate: Date | null = from ? moment(from, 'YYYY-MM-DD HH:mm:ss').toDate() : null;
-	const tillDate: Date | null = till ? moment(till, 'YYYY-MM-DD HH:mm:ss').toDate() : null;
+	const fromDate: Date | null = from ? parse(from, 'yyyy-MM-dd HH:mm:ss', new Date()) : null;
+	const tillDate: Date | null = till ? parse(till, 'yyyy-MM-dd HH:mm:ss', new Date()) : null;
 
 	return (
 		<Dropdown

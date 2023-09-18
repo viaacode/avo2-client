@@ -4,7 +4,7 @@
 		<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="8fb68e92-94b2-4334-bc47-7bcda08bc9c7" data-blockingmode="auto" type="text/javascript"></script>
 
 		<!-- Init .env variables -->
-		<script src="%PUBLIC_URL%/env-config.js" data-cookieconsent="ignore"></script>
+		<script src="/env-config.js" data-cookieconsent="ignore"></script>
 
 		<!-- Google Tag Manager -->
 		<script>
@@ -39,8 +39,8 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="theme-color" content="#000000" />
-		<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-		<link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="manifest" href="/manifest.json" />
 		<link rel="preload" href="/src/fonts/montserrat-italic.woff2" as="font" crossorigin />
 		<link rel="preload" href="/src/fonts/montserrat-medium.woff2" as="font" crossorigin />
 		<link rel="preload" href="/src/fonts/avenir-lt-std-medium.woff2" as="font" crossorigin />
@@ -58,8 +58,11 @@
 		<!-- Main react app node -->
 		<div id="root"></div>
 
+		<!-- Load main script entry file -->
+		<script type="module" src="/src/index.tsx"></script>
+
 		<!-- Detect old browsers -->
-		<script src="%PUBLIC_URL%/old-browser-detector.min.js"></script>
+		<script src="/old-browser-detector.min.js"></script>
 		<script type="text/javascript">
 			let Detector = new oldBrowserDetector(null, function () {
 				// unsupported browser

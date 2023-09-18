@@ -1,5 +1,5 @@
-import moment from 'moment';
-import 'moment/locale/nl-be';
+import { setDefaultOptions } from 'date-fns';
+import { nlBE } from 'date-fns/locale';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -13,7 +13,9 @@ window.APP_INFO = {
 	version: pkg.version,
 };
 
-// Set moment language to dutch
-moment.locale('nl-be');
+// Set moment language to Dutch
+setDefaultOptions({
+	locale: nlBE,
+});
 
 ReactDOM.render(<App />, document.getElementById('root'));

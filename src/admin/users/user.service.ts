@@ -2,7 +2,6 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
 import { endOfDay, isBefore } from 'date-fns';
 import { compact, get, isNil } from 'lodash-es';
-import moment from 'moment';
 
 import {
 	GetProfileIdsDocument,
@@ -18,7 +17,7 @@ import {
 	UpdateUserTempAccessByIdMutation,
 	UpdateUserTempAccessByIdMutationVariables,
 } from '../../shared/generated/graphql-db-types';
-import { CustomError, getEnv } from '../../shared/helpers';
+import { CustomError, getEnv, toIsoDate } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -62,7 +61,7 @@ export class UserService {
 				await UserService.updateTempAccessBlockStatusByProfileIds(
 					[profileId],
 					isBlocked,
-					moment(tempAccess.until).format('DD-MM-YYYY'),
+					toIsoDate(new Date(tempAccess.until)),
 					true
 				);
 			}
