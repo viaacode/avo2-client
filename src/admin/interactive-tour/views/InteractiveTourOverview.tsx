@@ -1,7 +1,7 @@
 import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -305,7 +305,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 				/>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -319,7 +319,7 @@ const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewPro
 							'admin/interactive-tour/views/interactive-tour-overview___interactieve-rondleiding-beheer-overview-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={interactiveTours}

@@ -13,7 +13,7 @@ import { get } from 'lodash-es';
 import type { Requests } from 'node-zendesk';
 import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -97,8 +97,8 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 					body: JSON.stringify(body),
 					html_body: `<dl>
   <dt>${tText('user-item-request-form/views/user-item-request-form___bericht')}</dt><dd>${
-						body.description
-					}</dd>
+		body.description
+  }</dd>
   <dt>${tText(
 		'user-item-request-form/views/user-item-request-form___bijlage'
   )}</dt><dd>${renderAttachment()}</dd>
@@ -106,11 +106,11 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
   )}</dt><dd>${body.organization}</dd>
   <dt>${tText('user-item-request-form/views/user-item-request-form___vakken')}</dt><dd>${
-						body.subjects
-					}</dd>
+		body.subjects
+  }</dd>
   <dt>${tText('user-item-request-form/views/user-item-request-form___onderwijsniveaus')}</dt><dd>${
-						body.educationLevels
-					}</dd>
+		body.educationLevels
+  }</dd>
 </dl>`,
 					public: false,
 				},
@@ -224,7 +224,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -238,7 +238,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 							'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<div className="c-content">{renderForm()}</div>
 			</Container>
 		</Container>

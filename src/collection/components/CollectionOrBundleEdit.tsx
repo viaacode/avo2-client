@@ -23,7 +23,7 @@ import React, {
 	useReducer,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { matchPath, Redirect, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -1567,7 +1567,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	}
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(
@@ -1587,7 +1587,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					name="description"
 					content={get(collectionState.currentCollection, 'description') || ''}
 				/>
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={collectionState.currentCollection}

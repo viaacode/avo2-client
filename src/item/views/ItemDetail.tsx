@@ -35,7 +35,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { StringParam, useQueryParam } from 'use-query-params';
@@ -1073,7 +1073,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						item?.title ||
@@ -1081,7 +1081,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					)}
 				</title>
 				<meta name="description" content={get(item, 'description', '')} />
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={item}

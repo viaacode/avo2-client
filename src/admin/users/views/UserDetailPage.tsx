@@ -1,7 +1,7 @@
 import { UserDetail } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { compose } from 'redux';
 
@@ -20,7 +20,7 @@ const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						user?.fullName,
@@ -33,7 +33,7 @@ const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
 						'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 
 			<UserDetail
 				id={id}

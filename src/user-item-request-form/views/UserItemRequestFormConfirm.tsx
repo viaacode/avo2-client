@@ -1,6 +1,6 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -15,7 +15,7 @@ const UserItemRequestFormConfirm: FunctionComponent<UserItemRequestFormProps> = 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -29,7 +29,7 @@ const UserItemRequestFormConfirm: FunctionComponent<UserItemRequestFormProps> = 
 							'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<div className="c-content">
 					{tHtml(
 						'authentication/views/registration-flow/r-4-manual-registration___bevestiging'

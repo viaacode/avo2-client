@@ -9,7 +9,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
@@ -310,9 +310,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			return;
 		}
 
-		const selectedCollectionEditStatuses = await CollectionService.getCollectionsEditStatuses(
-			selectedCollectionIds
-		);
+		const selectedCollectionEditStatuses =
+			await CollectionService.getCollectionsEditStatuses(selectedCollectionIds);
 		const partitionedCollectionIds = partition(
 			Object.entries(selectedCollectionEditStatuses),
 			(entry) => !!entry[1]
@@ -771,7 +770,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
@@ -795,7 +794,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 								  )
 						}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={collections}

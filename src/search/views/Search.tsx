@@ -14,7 +14,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
@@ -59,7 +59,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 	};
 	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
 		FilterState,
-		(FilterState: FilterState, updateType?: UrlUpdateType) => void
+		(FilterState: FilterState, updateType?: UrlUpdateType) => void,
 	];
 
 	useEffect(() => {
@@ -115,7 +115,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(tText('search/views/search___zoeken-pagina-titel'))}
 				</title>
@@ -123,7 +123,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 					name="description"
 					content={tText('search/views/search___zoeken-pagina-beschrijving')}
 				/>
-			</MetaTags>
+			</Helmet>
 			<PermissionGuard permissions={PermissionName.SEARCH} user={user || null}>
 				<PermissionGuardPass>
 					<Navbar>

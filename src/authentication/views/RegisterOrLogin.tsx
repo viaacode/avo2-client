@@ -1,6 +1,6 @@
 import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -15,7 +15,7 @@ const RegisterOrLogin: FunctionComponent<RouteComponentProps> = ({ history, loca
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
 			<Container mode="vertical">
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -29,7 +29,7 @@ const RegisterOrLogin: FunctionComponent<RouteComponentProps> = ({ history, loca
 							'authentication/views/register-or-login___registratie-of-login-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 
 				<Modal className="c-register-login-view__modal" isOpen size="medium">
 					<ModalBody>

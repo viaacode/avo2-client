@@ -18,7 +18,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -269,7 +269,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						profile?.fullName,
@@ -282,7 +282,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 						'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 
 			{renderUserEditPage()}
 		</>

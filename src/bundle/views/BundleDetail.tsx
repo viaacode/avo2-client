@@ -28,7 +28,7 @@ import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
@@ -713,7 +713,7 @@ const BundleDetail: FunctionComponent<
 
 		return (
 			<>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							get(
@@ -724,7 +724,7 @@ const BundleDetail: FunctionComponent<
 						)}
 					</title>
 					<meta name="description" content={get(bundle, 'description') || ''} />
-				</MetaTags>
+				</Helmet>
 				<JsonLd
 					url={window.location.href}
 					title={get(bundle, 'title')}

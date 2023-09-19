@@ -1,7 +1,7 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -15,7 +15,7 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -29,7 +29,7 @@ const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => 
 							'authentication/views/registration-flow/r-10-student-teacher___student-lesgever-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<div className="c-content">
 					<Spacer margin="bottom-large">
 						<Button

@@ -9,7 +9,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -236,9 +236,8 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			return;
 		}
 
-		const selectedAssignmentEditStatuses = await AssignmentService.getAssignmentsEditStatuses(
-			selectedAssignmentIds
-		);
+		const selectedAssignmentEditStatuses =
+			await AssignmentService.getAssignmentsEditStatuses(selectedAssignmentIds);
 		const partitionedAssignmentIds = partition(
 			Object.entries(selectedAssignmentEditStatuses),
 			(entry) => !!entry[1]
@@ -632,7 +631,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -646,7 +645,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 							'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={assignments}

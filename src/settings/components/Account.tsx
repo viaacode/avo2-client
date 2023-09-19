@@ -13,9 +13,8 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -35,9 +34,11 @@ export interface AccountProps extends RouteComponentProps {
 const Account: FunctionComponent<AccountProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+	const isPupil =
+		(user?.profile?.userGroupIds?.[0] as unknown as SpecialUserGroup) ===
+		SpecialUserGroup.Pupil;
 
-	const hasTempAccess = get(user, 'temp_access.current.status') === 1;
+	const hasTempAccess = user?.temp_access?.current?.status === 1;
 
 	if (!user) {
 		return (
@@ -49,7 +50,7 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 
 	if (
 		isPupil &&
-		!get(user, 'idpmaps', []).find((idpMap: Avo.Auth.IdpType) => idpMap === 'HETARCHIEF')
+		!(user?.idpmaps ?? []).find((idpMap: Avo.Auth.IdpType) => idpMap === 'HETARCHIEF')
 	) {
 		return (
 			<ErrorView
@@ -62,7 +63,7 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 	}
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('settings/components/account___account-instellingen-pagina-titel')
@@ -72,7 +73,7 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 					name="description"
 					content={tText('settings/components/account___account-pagina-beschrijving')}
 				/>
-			</MetaTags>
+			</Helmet>
 			<Container mode="vertical">
 				<Spacer margin="bottom">
 					<Grid>
@@ -83,7 +84,7 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 										{tText('settings/components/account___account')}
 									</BlockHeading>
 									<FormGroup label={tText('settings/components/account___email')}>
-										<span>{get(user, 'mail')}</span>
+										<span>{user?.mail || '-'}</span>
 									</FormGroup>
 									{/* TODO re-enable when summ allows you to change your email address */}
 									{/*<Spacer margin="bottom">*/}
@@ -100,23 +101,22 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 									<BlockHeading type="h3">
 										{tText('settings/components/account___wachtwoord')}
 									</BlockHeading>
-									<Spacer margin="top">
-										<Button
-											type="secondary"
-											onClick={() =>
-												redirectToExternalPage(
-													`${ssumPasswordEditPage}&email=${get(
-														user,
-														'mail'
-													)}`,
-													null
-												)
-											}
-											label={tText(
-												'settings/components/account___wijzig-wachtwoord'
-											)}
-										/>
-									</Spacer>
+									{!!user?.mail && (
+										<Spacer margin="top">
+											<Button
+												type="secondary"
+												onClick={() =>
+													redirectToExternalPage(
+														`${ssumPasswordEditPage}&email=${user?.mail}`,
+														null
+													)
+												}
+												label={tText(
+													'settings/components/account___wijzig-wachtwoord'
+												)}
+											/>
+										</Spacer>
+									)}
 									{!isPupil && (
 										<Spacer margin="top-large">
 											<Alert type="info">
@@ -138,7 +138,7 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 											<span>
 												{`${tText(
 													'settings/components/account___dit-is-een-tijdelijk-account-de-toegang-van-je-account-verloopt-op'
-												)} ${formatDate(get(user, 'temp_access.until'))}`}
+												)} ${formatDate(user?.temp_access?.until)}`}
 												.
 											</span>
 										</Spacer>

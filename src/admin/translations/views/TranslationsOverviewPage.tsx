@@ -2,7 +2,7 @@ import { TranslationsOverview } from '@meemoo/admin-core-ui';
 import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { CustomError } from '../../../shared/helpers';
@@ -186,7 +186,7 @@ const TranslationsOverviewPage: FunctionComponent = () => {
 				<Button label="Opslaan" onClick={onSaveTranslations} />
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -200,7 +200,7 @@ const TranslationsOverviewPage: FunctionComponent = () => {
 							'admin/translations/views/translations-overview___vertalingen-beheer-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<TranslationsOverview
 					renderPopup={renderPopup}
 					className={styles['c-translations-overview']}

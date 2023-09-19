@@ -22,8 +22,8 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
+import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
-import MetaTags from 'react-meta-tags';
 import { matchPath, Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -966,7 +966,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('assignment/views/assignment-edit___bewerk-opdracht-pagina-titel')
@@ -979,7 +979,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						'assignment/views/assignment-edit___bewerk-opdracht-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 
 			{renderPageContent()}
 

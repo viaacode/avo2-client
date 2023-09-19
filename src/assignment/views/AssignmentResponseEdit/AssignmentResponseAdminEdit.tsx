@@ -10,7 +10,7 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -86,9 +86,8 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			);
 
 			// Create an assignment response if needed
-			const response = await AssignmentService.getAssignmentResponseById(
-				assignmentResponseId
-			);
+			const response =
+				await AssignmentService.getAssignmentResponseById(assignmentResponseId);
 			if (!response) {
 				setAssignmentError({
 					message: tText(
@@ -215,7 +214,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText(
@@ -230,7 +229,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 						'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 
 			{renderPageContent()}
 		</>

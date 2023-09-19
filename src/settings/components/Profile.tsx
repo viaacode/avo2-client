@@ -21,7 +21,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -723,7 +723,7 @@ const Profile: FunctionComponent<
 														(lomField) =>
 															({
 																lom: lomField,
-															} as Avo.Lom.Lom)
+															}) as Avo.Lom.Lom
 													),
 													id: user.profile?.id as string,
 												}}
@@ -822,7 +822,7 @@ const Profile: FunctionComponent<
 		</Spacer>
 	) : (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('settings/components/profile___profiel-instellingen-pagina-titel')
@@ -834,7 +834,7 @@ const Profile: FunctionComponent<
 						'settings/components/profile___profiel-instellingen-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			{renderPage()}
 		</>
 	);

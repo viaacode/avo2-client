@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -9,7 +9,7 @@ const Notifications: FunctionComponent = () => {
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText(
@@ -23,7 +23,7 @@ const Notifications: FunctionComponent = () => {
 						'settings/components/notifications___notificatie-voorkeuren-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<span>TODO notificaties</span>
 		</>
 	);

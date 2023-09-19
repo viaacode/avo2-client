@@ -19,7 +19,7 @@ import React, {
 	useReducer,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -150,7 +150,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 
 	return (
 		<Container mode="vertical">
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('settings/components/email___nieuwsbrief-voorkeuren-pagina-titel')
@@ -162,7 +162,7 @@ const Email: FunctionComponent<EmailProps> = ({ user }) => {
 						'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<Spacer margin="bottom-small">
 				<BlockHeading type="h3">
 					{tText('settings/components/email___e-mail-nieuwsbrief-voorkeuren')}

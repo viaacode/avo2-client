@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import type { Requests } from 'node-zendesk';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -360,7 +360,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -374,7 +374,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<div className="c-content">{hasBeenSent ? renderConfirmation() : renderForm()}</div>
 			</Container>
 		</Container>

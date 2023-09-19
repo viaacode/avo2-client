@@ -22,7 +22,7 @@ import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
@@ -1519,7 +1519,7 @@ const CollectionDetail: FunctionComponent<
 		return (
 			<div className="c-sticky-bar__wrapper">
 				<div>
-					<MetaTags>
+					<Helmet>
 						<title>
 							{GENERATE_SITE_TITLE(
 								collection?.title ??
@@ -1530,7 +1530,7 @@ const CollectionDetail: FunctionComponent<
 						</title>
 
 						<meta name="description" content={collection?.description || ''} />
-					</MetaTags>
+					</Helmet>
 
 					<JsonLd
 						url={window.location.href}

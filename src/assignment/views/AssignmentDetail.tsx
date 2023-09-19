@@ -17,7 +17,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 import { StringParam, useQueryParams } from 'use-query-params';
 
@@ -867,7 +867,7 @@ const AssignmentDetail: FC<
 			) : (
 				<div className="c-sticky-bar__wrapper">
 					<div>
-						<MetaTags>
+						<Helmet>
 							<title>
 								{GENERATE_SITE_TITLE(
 									tText(
@@ -882,7 +882,7 @@ const AssignmentDetail: FC<
 									'assignment/views/assignment-detail___opdracht-detail-pagina-beschrijving'
 								)}
 							/>
-						</MetaTags>
+						</Helmet>
 
 						{renderPageContent()}
 					</div>

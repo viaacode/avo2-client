@@ -9,7 +9,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -397,7 +397,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
@@ -421,7 +421,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 								  )
 						}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={collections}

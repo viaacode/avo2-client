@@ -1,6 +1,6 @@
 import { NavigationEdit } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -19,7 +19,7 @@ const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match 
 	// Render
 	return (
 		<div className="c-admin__navigation-edit">
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText(
@@ -40,7 +40,7 @@ const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match 
 						'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-description'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<NavigationEdit
 				navigationBarId={menuParentId as string}
 				navigationItemId={menuItemId}

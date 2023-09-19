@@ -10,8 +10,8 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
+import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
-import MetaTags from 'react-meta-tags';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -395,7 +395,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('assignment/views/assignment-create___maak-opdracht-pagina-titel')
@@ -408,7 +408,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						'assignment/views/assignment-create___maak-opdracht-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 
 			<LoadingErrorLoadedComponent
 				dataObject={assignment}

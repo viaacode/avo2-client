@@ -14,7 +14,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -97,9 +97,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 			const replacedByUuid: string | undefined = get(itemObj, 'relations[0].object');
 			if (replacedByUuid && itemObj.relations) {
-				itemObj.relations[0].object_meta = await ItemsService.fetchItemByUuid(
-					replacedByUuid
-				);
+				itemObj.relations[0].object_meta =
+					await ItemsService.fetchItemByUuid(replacedByUuid);
 			}
 
 			setItem(itemObj);
@@ -629,7 +628,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(item, 'title'),
@@ -637,7 +636,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					)}
 				</title>
 				<meta name="description" content={get(item, 'description') || ''} />
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={item}

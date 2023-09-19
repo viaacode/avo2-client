@@ -2,7 +2,7 @@ import { ContentPageLabelService } from '@meemoo/admin-core-ui';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -359,7 +359,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 				/>
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -373,7 +373,7 @@ const ContentPageLabelOverview: FunctionComponent<ContentPageLabelOverviewProps>
 							'admin/content-page-labels/views/content-page-label-overview___content-page-label-beheer-overzicht-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={contentPageLabel}

@@ -1,5 +1,5 @@
 import React from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -11,7 +11,7 @@ const Dashboard = () => {
 	return (
 		<AdminLayout pageTitle={tText('admin/dashboard/views/dashboard___dashboard')} size="large">
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText('admin/dashboard/views/dashboard___beheer-dashboard-pagina-titel')
@@ -23,7 +23,7 @@ const Dashboard = () => {
 							'admin/dashboard/views/dashboard___beheer-dashboard-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<p>{tHtml('admin/dashboard/views/dashboard___introductie-beheer-dashboard')}</p>
 			</AdminLayoutBody>
 		</AdminLayout>

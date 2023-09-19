@@ -23,7 +23,7 @@ import React, {
 	useReducer,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -516,7 +516,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(interactiveTourState.currentInteractiveTour, 'name'),
@@ -541,7 +541,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 							  )
 					}
 				/>
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={interactiveTourState.currentInteractiveTour}

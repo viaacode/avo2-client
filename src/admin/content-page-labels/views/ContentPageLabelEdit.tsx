@@ -13,7 +13,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -145,14 +145,12 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 			let contentPageLabel: ContentPageLabel;
 			if (isCreatePage) {
 				// insert the content page label
-				contentPageLabel = await ContentPageLabelService.insertContentPageLabel(
-					contentPageLabelInfo
-				);
+				contentPageLabel =
+					await ContentPageLabelService.insertContentPageLabel(contentPageLabelInfo);
 			} else {
 				// Update existing content page label
-				contentPageLabel = await ContentPageLabelService.updateContentPageLabel(
-					contentPageLabelInfo
-				);
+				contentPageLabel =
+					await ContentPageLabelService.updateContentPageLabel(contentPageLabelInfo);
 			}
 
 			ToastService.success(
@@ -317,7 +315,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						isCreatePage
@@ -341,7 +339,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({
 							  )
 					}
 				/>
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={contentPageLabelInfo}

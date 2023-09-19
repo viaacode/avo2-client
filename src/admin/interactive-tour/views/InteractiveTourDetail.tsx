@@ -8,7 +8,7 @@ import {
 } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -226,7 +226,7 @@ const InteractiveTourDetail: FunctionComponent<InteractiveTourDetailProps> = ({
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(interactiveTour, 'name'),
@@ -241,7 +241,7 @@ const InteractiveTourDetail: FunctionComponent<InteractiveTourDetailProps> = ({
 						'admin/interactive-tour/views/interactive-tour-detail___interactieve-rondleiding-beheer-detail-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={interactiveTour}

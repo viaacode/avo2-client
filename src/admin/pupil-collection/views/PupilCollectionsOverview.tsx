@@ -9,7 +9,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -441,7 +441,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -455,7 +455,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 							'admin/pupil-collection/views/pupil-collections-overview___leerlingencollecties-overzicht-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={pupilCollections}

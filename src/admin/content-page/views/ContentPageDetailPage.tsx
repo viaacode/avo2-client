@@ -1,7 +1,7 @@
 import { ContentPageDetail } from '@meemoo/admin-core-ui';
 import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui';
 import React, { FC, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -22,7 +22,7 @@ const ContentPageDetailPage: FC<DefaultSecureRouteProps<ContentPageDetailProps> 
 	return (
 		<>
 			{item && (
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							item.title,
@@ -32,7 +32,7 @@ const ContentPageDetailPage: FC<DefaultSecureRouteProps<ContentPageDetailProps> 
 						)}
 					</title>
 					<meta name="description" content={item.seoDescription || ''} />
-				</MetaTags>
+				</Helmet>
 			)}
 			<ContentPageDetail
 				className="c-admin-core"

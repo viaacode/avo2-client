@@ -1,7 +1,7 @@
 import { ContentPageLabelService } from '@meemoo/admin-core-ui';
 import { Button, ButtonToolbar, IconName, Table } from '@viaa/avo2-components';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -188,7 +188,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText(
@@ -202,7 +202,7 @@ const ContentPageLabelEdit: FunctionComponent<ContentPageLabelEditProps> = ({ hi
 						'admin/content-page-labels/views/content-page-label-detail___content-page-label-beheer-detail-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={contentPageLabelInfo}
