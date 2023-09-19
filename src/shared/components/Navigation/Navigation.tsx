@@ -1,3 +1,4 @@
+import AvoLogo from '@assets/images/avo-logo-i.svg';
 import {
 	Avatar,
 	Button,
@@ -19,7 +20,6 @@ import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
-import { ReactComponent as AvoLogo } from '../../../assets/images/avo-logo-i.svg';
 import {
 	getFirstName,
 	getProfileAvatar,
@@ -253,7 +253,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 												: APP_PATH.LOGGED_OUT_HOME.route
 										}
 									>
-										<AvoLogo />
+										<img alt="Archief voor Onderwijs logo" src={AvoLogo} />
 									</Link>
 								</h1>
 							</ToolbarItem>
