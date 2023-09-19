@@ -43,7 +43,7 @@ import {
 } from '../../shared/components';
 import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTableSort } from '../../shared/hooks';
+import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { ToastService } from '../../shared/services/toast-service';

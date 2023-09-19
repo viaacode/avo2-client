@@ -10,7 +10,7 @@ import {
 	MAX_EDIT_IDLE_TIME,
 } from '../../constants';
 import { tHtml } from '../../helpers/translate';
-import { useBeforeUnload } from '../../hooks';
+import { useBeforeUnload } from '../../hooks/useBeforeUnload';
 
 type InActivityWarningModalProps = {
 	onActivity: () => void;

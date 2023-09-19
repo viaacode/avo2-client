@@ -1,4 +1,3 @@
-import { action } from '@storybook/addon-actions';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
@@ -74,7 +73,7 @@ describe('<CheckboxDropdownModal />', () => {
 				label="Counting"
 				id="counting"
 				options={countOptions}
-				onChange={action('CheckboxDropdown changed')}
+				onChange={() => console.info('CheckboxDropdown changed')}
 			/>
 		);
 	});
@@ -85,7 +84,7 @@ describe('<CheckboxDropdownModal />', () => {
 				label="Counting"
 				id="counting"
 				options={countOptions.slice(0, 5)}
-				onChange={action('CheckboxDropdown changed')}
+				onChange={() => console.info('CheckboxDropdown changed')}
 			/>
 		);
 		expect(checkboxDropdownComponent.find('input')).toHaveLength(5);

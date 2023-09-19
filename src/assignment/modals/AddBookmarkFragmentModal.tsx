@@ -27,7 +27,7 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser from '../../shared/hocs/withUser';
-import { useTableSort } from '../../shared/hooks';
+import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';

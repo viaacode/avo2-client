@@ -3,7 +3,7 @@ import { Button, ButtonProps, DropdownProps, IconName, Tabs } from '@viaa/avo2-c
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
 
-import { useTabs } from '../../hooks';
+import { useTabs } from '../../hooks/useTabs';
 import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
 import {

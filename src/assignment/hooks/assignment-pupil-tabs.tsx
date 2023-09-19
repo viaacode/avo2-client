@@ -18,7 +18,7 @@ export function useAssignmentPupilTabs(
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined,
 	(newTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void,
 	(id: string | number) => void,
-	() => void // Start pill animation
+	() => void, // Start pill animation
 ] {
 	const { tText, tHtml } = useTranslation();
 

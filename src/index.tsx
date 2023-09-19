@@ -9,7 +9,7 @@ import App from './App';
 
 // Expose app info through the window object
 window.APP_INFO = {
-	mode: process.env.NODE_ENV,
+	mode: (process.env.NODE_ENV || 'development') as 'development' | 'production' | 'test',
 	version: pkg.version,
 };
 

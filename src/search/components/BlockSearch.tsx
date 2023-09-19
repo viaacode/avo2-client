@@ -23,7 +23,7 @@ import { Dispatch } from 'redux';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { CONTENT_TYPE_TRANSLATIONS } from '../../collection/collection.types';
 import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
-import { useDebounce } from '../../shared/hooks';
+import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { KeyCode } from '../../shared/types';

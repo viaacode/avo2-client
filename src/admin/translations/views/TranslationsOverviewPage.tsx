@@ -13,7 +13,7 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import { Translation, TranslationsState } from '../translations.types';
 
-import styles from './TranslationsOverviewPage.module.scss';
+import './TranslationsOverviewPage.scss';
 
 const TranslationsOverviewPage: FunctionComponent = () => {
 	const { tText, tHtml } = useTranslation();
@@ -203,7 +203,7 @@ const TranslationsOverviewPage: FunctionComponent = () => {
 				</Helmet>
 				<TranslationsOverview
 					renderPopup={renderPopup}
-					className={styles['c-translations-overview']}
+					className="c-translations-overview"
 				/>
 			</AdminLayoutBody>
 		</AdminLayout>

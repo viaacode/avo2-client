@@ -1,4 +1,10 @@
-import { AdminConfig, ContentBlockType, LinkInfo, ToastInfo } from '@meemoo/admin-core-ui';
+import {
+	AdminConfig,
+	ContentBlockType,
+	ContentWidth,
+	LinkInfo,
+	ToastInfo,
+} from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
@@ -75,7 +81,7 @@ export function getAdminCoreConfig(): AdminConfig {
 		),
 		contentPage: {
 			availableContentBlocks: Object.values(ContentBlockType),
-			defaultPageWidth: 'EXTRA_LARGE',
+			defaultPageWidth: ContentWidth.EXTRA_LARGE,
 			onSaveContentPage: () => new Promise(noop),
 		},
 		navigationBars: {
@@ -168,7 +174,7 @@ export function getAdminCoreConfig(): AdminConfig {
 					value: 'pupil-inline-link',
 				},
 			],
-			flowplayer: FlowPlayerWrapper,
+			flowplayer: FlowPlayerWrapper as any,
 		},
 		content_blocks: {
 			SEARCH: BlockSearch,

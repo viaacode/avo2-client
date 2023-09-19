@@ -26,8 +26,10 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
-import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
+import { useEducationLevels } from '../../../shared/hooks/useEducationLevels';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
+import { useSubjects } from '../../../shared/hooks/useSubjects';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -37,7 +39,7 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { useUserGroups } from '../../user-groups/hooks';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	GET_COLLECTION_MARCOM_COLUMNS,

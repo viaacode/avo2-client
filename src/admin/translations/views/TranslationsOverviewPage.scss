@@ -1,16 +1,6 @@
 @import "../../../styles/settings/colors";
 @import "../../../styles/settings/variables";
 
-.disable-background {
-	opacity: 0.5;
-}
-
-.c-modal-header {
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-}
-
 .c-translations-overview {
 	:global(.c-input) {
 		padding: 0;
@@ -62,7 +52,15 @@
 			cursor: pointer;
 			text-align: left;
 			font-weight: 600;
-			font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			font-family:
+				"Montserrat",
+				-apple-system,
+				BlinkMacSystemFont,
+				"Segoe UI",
+				Roboto,
+				Helvetica,
+				Arial,
+				sans-serif;
 			font-size: 1.5rem;
 			border-left: 0;
 		}

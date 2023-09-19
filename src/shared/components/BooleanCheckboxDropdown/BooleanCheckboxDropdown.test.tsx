@@ -1,4 +1,3 @@
-import { action } from '@storybook/addon-actions';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
@@ -11,7 +10,7 @@ describe('<BooleanCheckboxDropdown />', () => {
 				label="Deleted"
 				id="is_deleted"
 				value={[]}
-				onChange={action('CheckboxDropdown changed')}
+				onChange={() => console.info('CheckboxDropdown changed')}
 			/>
 		);
 	});

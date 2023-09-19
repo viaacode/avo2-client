@@ -27,8 +27,10 @@ import {
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
-import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
+import { useEducationLevels } from '../../../shared/hooks/useEducationLevels';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
+import { useSubjects } from '../../../shared/hooks/useSubjects';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -44,7 +46,7 @@ import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBei
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
-import { useUserGroups } from '../../user-groups/hooks';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	GET_COLLECTION_BULK_ACTIONS,

@@ -9,7 +9,7 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig(() => {
 	return {
 		build: {
-			outDir: 'build',
+			outDir: 'dist',
 		},
 		server: {
 			port: 8080,
@@ -24,9 +24,7 @@ export default defineConfig(() => {
 		resolve: {
 			alias: {
 				// eslint-disable-next-line no-undef
-				'@assets': path.resolve(__dirname, 'src/assets'),
-				// eslint-disable-next-line no-undef
-				'@': path.resolve(__dirname, 'public'),
+				'~': path.resolve(__dirname, 'public'),
 			},
 		},
 	};

@@ -30,5 +30,6 @@
 	"include": [
 		"src"
 	],
+	"types": ["vite/client"],
 	"memoryLimit": 2048
 }

@@ -5,7 +5,10 @@ import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
 import { CutFragmentForAssignmentModal } from '../../item/components';
 import { ItemTrimInfo } from '../../item/item.types';
-import { SingleEntityModal, useSingleEntityModal } from '../../shared/hooks';
+import {
+	type SingleEntityModal,
+	useSingleEntityModal,
+} from '../../shared/hooks/useSingleEntityModal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { VideoStillService } from '../../shared/services/video-stills-service';

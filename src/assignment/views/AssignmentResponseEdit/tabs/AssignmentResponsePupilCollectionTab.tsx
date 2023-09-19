@@ -11,6 +11,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { UrlUpdateType } from 'use-query-params';
@@ -28,6 +29,7 @@ import {
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS,
 	NEW_ASSIGNMENT_BLOCK_ID_PREFIX,
 } from '../../../assignment.const';
+import { setBlockPositionToIndex } from '../../../assignment.helper';
 import {
 	AssignmentResponseFormState,
 	PupilCollectionFragment,
@@ -44,9 +46,6 @@ import {
 } from '../../../hooks';
 
 import './AssignmentResponsePupilCollectionTab.scss';
-import { type Avo } from '@viaa/avo2-types';
-
-import { setBlockPositionToIndex } from '../../../assignment.helper';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',
@@ -85,7 +84,7 @@ const AssignmentResponsePupilCollectionTab: FunctionComponent<
 				({
 					...prev,
 					pupil_collection_blocks: newBlocks as PupilCollectionFragment[],
-				} as any)
+				}) as any
 		); // TODO remove cast once pupil_collection_blocks is in typings repo
 		setValue('pupil_collection_blocks', newBlocks as PupilCollectionFragment[], {
 			shouldDirty: true,

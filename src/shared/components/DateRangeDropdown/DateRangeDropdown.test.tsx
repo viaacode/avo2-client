@@ -1,4 +1,3 @@
-import { action } from '@storybook/addon-actions';
 import { mount, shallow } from 'enzyme';
 import React from 'react';
 
@@ -11,7 +10,7 @@ describe('<Checkbox />', () => {
 				label="Counting"
 				id="counting"
 				range={{ gte: '', lte: '' }}
-				onChange={action('CheckboxDropdown changed')}
+				onChange={() => console.info('CheckboxDropdown changed')}
 			/>
 		);
 	});

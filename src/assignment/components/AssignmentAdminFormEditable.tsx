@@ -21,7 +21,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { QualityLabel } from '../../collection/collection.types';
 import { formatTimestamp, getFullName } from '../../shared/helpers';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { useGetQualityLabels } from '../../shared/hooks';
+import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 interface AssignmentAdminFormEditableProps {
@@ -73,7 +73,7 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 				({
 					assignment_id: assignment.id,
 					label: label.value,
-				} as Avo.Assignment.QualityLabel)
+				}) as Avo.Assignment.QualityLabel
 		);
 
 		(setValue as any)('quality_labels', newQualityLabels, {

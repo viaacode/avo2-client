@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { NOT_NOW_LOCAL_STORAGE_KEY } from '../../shared/constants';
-import { useTabs } from '../../shared/hooks';
+import { useTabs } from '../../shared/hooks/useTabs';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	redirectToClientPage,

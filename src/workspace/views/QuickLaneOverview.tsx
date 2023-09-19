@@ -16,7 +16,7 @@ import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../shared/constants/qui
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
-import { useDebounce } from '../../shared/hooks';
+import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	QuickLaneFilters,

@@ -29,7 +29,7 @@ import LomFieldsInput from '../../../shared/components/LomFieldsInput/LomFieldsI
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { UserProps } from '../../../shared/hocs/withUser';
-import { useCompaniesWithUsers } from '../../../shared/hooks';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
