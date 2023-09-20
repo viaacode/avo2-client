@@ -1,5 +1,5 @@
 import { IconName, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
-import { get } from 'lodash';
+import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 

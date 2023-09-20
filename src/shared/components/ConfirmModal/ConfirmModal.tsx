@@ -9,7 +9,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 
 import useTranslation from '../../hooks/useTranslation';

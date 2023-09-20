@@ -1,4 +1,4 @@
-import { compact, fromPairs } from 'lodash';
+import { compact, fromPairs } from 'lodash-es';
 import { NumberParam, QueryParamConfig, StringParam } from 'use-query-params';
 
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';

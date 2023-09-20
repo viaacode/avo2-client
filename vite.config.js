@@ -10,6 +10,7 @@ export default defineConfig(() => {
 	return {
 		build: {
 			outDir: 'dist',
+			sourcemap: true,
 		},
 		server: {
 			port: 8080,
