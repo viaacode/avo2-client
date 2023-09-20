@@ -4,7 +4,7 @@ import {
 	GetCollectionMarcomEntriesQuery,
 	GetPublicCollectionsByIdQuery,
 	GetPublicCollectionsByTitleQuery,
-} from '../shared/generated/graphql-db-types';
+} from '../shared/generated/graphql-db-operations';
 
 export type Collection = (
 	| GetPublicCollectionsByIdQuery

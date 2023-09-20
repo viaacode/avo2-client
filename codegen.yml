@@ -3,17 +3,28 @@ schema:
   - ${GRAPHQL_URL}:
       headers:
         x-hasura-admin-secret: ${GRAPHQL_SECRET}
+
 documents:
   - "./src/**/*.graphql"
+
 generates:
   src/shared/generated/graphql-db-types.ts:
     plugins:
       - typescript
-      - typescript-operations
-      - typescript-react-query
       - add:
           content: '// @ts-nocheck'
 
+  src/shared/generated/graphql-db-operations.ts:
+    plugins:
+      - typescript-operations
+      - add:
+          content: '// @ts-nocheck'
+
+  src/shared/generated/graphql-db-react-query.ts:
+    plugins:
+      - typescript-react-query
+      - add:
+          content: '// @ts-nocheck'
     config:
       fetcher: '../services/data-service.ts#fetchData'
 

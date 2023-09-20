@@ -1,29 +1,31 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	DeleteAssignmentBookmarksForUserDocument,
 	DeleteAssignmentBookmarksForUserMutationVariables,
-	DeleteCollectionBookmarksForUserDocument,
 	DeleteCollectionBookmarksForUserMutationVariables,
-	DeleteItemBookmarkDocument,
 	DeleteItemBookmarkMutationVariables,
-	GetCollectionPlayCountDocument,
 	GetCollectionPlayCountQuery,
-	GetCollectionViewCountDocument,
 	GetCollectionViewCountQuery,
-	GetItemPlayCountDocument,
 	GetItemPlayCountQuery,
-	GetItemViewCountDocument,
 	GetItemViewCountQuery,
+	InsertAssignmentBookmarkMutationVariables,
+} from '../../generated/graphql-db-operations';
+import {
+	DeleteAssignmentBookmarksForUserDocument,
+	DeleteCollectionBookmarksForUserDocument,
+	DeleteItemBookmarkDocument,
+	GetCollectionPlayCountDocument,
+	GetCollectionViewCountDocument,
+	GetItemPlayCountDocument,
+	GetItemViewCountDocument,
 	IncrementCollectionPlaysDocument,
 	IncrementCollectionViewsDocument,
 	IncrementItemPlaysDocument,
 	IncrementItemViewsDocument,
 	InsertAssignmentBookmarkDocument,
-	InsertAssignmentBookmarkMutationVariables,
 	InsertCollectionBookmarkDocument,
 	InsertItemBookmarkDocument,
-} from '../../generated/graphql-db-types';
+} from '../../generated/graphql-db-react-query';
 
 import {
 	BookmarkViewPlayCounts,

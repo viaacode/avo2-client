@@ -1,14 +1,16 @@
 import {
-	GetNotificationDocument,
 	GetNotificationQuery,
 	GetNotificationQueryVariables,
-	InsertNotificationDocument,
 	InsertNotificationMutation,
 	InsertNotificationMutationVariables,
-	UpdateNotificationDocument,
 	UpdateNotificationMutation,
 	UpdateNotificationMutationVariables,
-} from '../generated/graphql-db-types';
+} from '../generated/graphql-db-operations';
+import {
+	GetNotificationDocument,
+	InsertNotificationDocument,
+	UpdateNotificationDocument,
+} from '../generated/graphql-db-react-query';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';

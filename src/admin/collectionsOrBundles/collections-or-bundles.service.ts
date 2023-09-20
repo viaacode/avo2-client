@@ -2,22 +2,16 @@ import { type Avo } from '@viaa/avo2-types';
 import { flatten } from 'lodash-es';
 
 import {
-	BulkAddLabelsToCollectionsDocument,
 	BulkAddLabelsToCollectionsMutation,
 	BulkAddLabelsToCollectionsMutationVariables,
-	BulkDeleteCollectionsDocument,
 	BulkDeleteCollectionsMutation,
 	BulkDeleteCollectionsMutationVariables,
-	BulkDeleteLabelsFromCollectionsDocument,
 	BulkDeleteLabelsFromCollectionsMutation,
 	BulkDeleteLabelsFromCollectionsMutationVariables,
-	BulkUpdateAuthorForCollectionsDocument,
 	BulkUpdateAuthorForCollectionsMutation,
 	BulkUpdateAuthorForCollectionsMutationVariables,
-	BulkUpdateDateAndLastAuthorCollectionsDocument,
 	BulkUpdateDateAndLastAuthorCollectionsMutation,
 	BulkUpdateDateAndLastAuthorCollectionsMutationVariables,
-	BulkUpdatePublishStateForCollectionsDocument,
 	BulkUpdatePublishStateForCollectionsMutation,
 	BulkUpdatePublishStateForCollectionsMutationVariables,
 	GetCollectionActualisationsQuery,
@@ -26,14 +20,22 @@ import {
 	GetCollectionMarcomQueryVariables,
 	GetCollectionQualityCheckQuery,
 	GetCollectionQualityCheckQueryVariables,
-	GetCollectionsByIdsDocument,
 	GetCollectionsByIdsQuery,
 	GetCollectionsByIdsQueryVariables,
-	GetCollectionsDocument,
 	GetCollectionsQuery,
 	GetCollectionsQueryVariables,
-	Lookup_Enum_Relation_Types_Enum,
-} from '../../shared/generated/graphql-db-types';
+} from '../../shared/generated/graphql-db-operations';
+import {
+	BulkAddLabelsToCollectionsDocument,
+	BulkDeleteCollectionsDocument,
+	BulkDeleteLabelsFromCollectionsDocument,
+	BulkUpdateAuthorForCollectionsDocument,
+	BulkUpdateDateAndLastAuthorCollectionsDocument,
+	BulkUpdatePublishStateForCollectionsDocument,
+	GetCollectionsByIdsDocument,
+	GetCollectionsDocument,
+} from '../../shared/generated/graphql-db-react-query';
+import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { CustomError } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';

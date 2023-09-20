@@ -1,38 +1,40 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	DeleteCollectionRelationsByObjectDocument,
 	DeleteCollectionRelationsByObjectMutation,
 	DeleteCollectionRelationsByObjectMutationVariables,
-	DeleteCollectionRelationsBySubjectDocument,
 	DeleteCollectionRelationsBySubjectMutation,
 	DeleteCollectionRelationsBySubjectMutationVariables,
-	DeleteItemRelationsByObjectDocument,
 	DeleteItemRelationsByObjectMutation,
 	DeleteItemRelationsByObjectMutationVariables,
-	DeleteItemRelationsBySubjectDocument,
 	DeleteItemRelationsBySubjectMutation,
 	DeleteItemRelationsBySubjectMutationVariables,
-	GetCollectionRelationsByObjectDocument,
 	GetCollectionRelationsByObjectQuery,
 	GetCollectionRelationsByObjectQueryVariables,
-	GetCollectionRelationsBySubjectDocument,
 	GetCollectionRelationsBySubjectQuery,
 	GetCollectionRelationsBySubjectQueryVariables,
-	GetItemRelationsByObjectDocument,
 	GetItemRelationsByObjectQuery,
 	GetItemRelationsByObjectQueryVariables,
-	GetItemRelationsBySubjectDocument,
 	GetItemRelationsBySubjectQuery,
 	GetItemRelationsBySubjectQueryVariables,
-	InsertCollectionRelationDocument,
 	InsertCollectionRelationMutation,
 	InsertCollectionRelationMutationVariables,
-	InsertItemRelationDocument,
 	InsertItemRelationMutation,
 	InsertItemRelationMutationVariables,
-	Lookup_Enum_Relation_Types_Enum,
-} from '../../generated/graphql-db-types';
+} from '../../generated/graphql-db-operations';
+import {
+	DeleteCollectionRelationsByObjectDocument,
+	DeleteCollectionRelationsBySubjectDocument,
+	DeleteItemRelationsByObjectDocument,
+	DeleteItemRelationsBySubjectDocument,
+	GetCollectionRelationsByObjectDocument,
+	GetCollectionRelationsBySubjectDocument,
+	GetItemRelationsByObjectDocument,
+	GetItemRelationsBySubjectDocument,
+	InsertCollectionRelationDocument,
+	InsertItemRelationDocument,
+} from '../../generated/graphql-db-react-query';
+import { Lookup_Enum_Relation_Types_Enum } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
 import { dataService } from '../data-service';
 

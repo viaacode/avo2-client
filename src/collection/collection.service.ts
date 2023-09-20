@@ -23,102 +23,106 @@ import {
 	ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
-	App_Collection_Marcom_Log_Insert_Input,
-	DeleteCollectionFragmentByIdDocument,
 	DeleteCollectionFragmentByIdMutation,
 	DeleteCollectionFragmentByIdMutationVariables,
-	DeleteCollectionLabelsDocument,
 	DeleteCollectionLabelsMutation,
 	DeleteCollectionLabelsMutationVariables,
-	DeleteCollectionLomLinksDocument,
 	DeleteCollectionLomLinksMutation,
 	DeleteCollectionLomLinksMutationVariables,
-	DeleteCollectionOrBundleByUuidDocument,
 	DeleteCollectionOrBundleByUuidMutation,
 	DeleteCollectionOrBundleByUuidMutationVariables,
-	DeleteMarcomEntriesByParentCollectionIdDocument,
 	DeleteMarcomEntriesByParentCollectionIdMutation,
 	DeleteMarcomEntriesByParentCollectionIdMutationVariables,
-	DeleteMarcomEntryDocument,
 	DeleteMarcomEntryMutation,
 	DeleteMarcomEntryMutationVariables,
-	GetBookmarkedCollectionsByOwnerDocument,
 	GetBookmarkedCollectionsByOwnerQuery,
 	GetBookmarkedCollectionsByOwnerQueryVariables,
-	GetBundleTitlesByOwnerDocument,
 	GetBundleTitlesByOwnerQuery,
 	GetBundleTitlesByOwnerQueryVariables,
-	GetCollectionByTitleOrDescriptionDocument,
 	GetCollectionByTitleOrDescriptionQuery,
 	GetCollectionByTitleOrDescriptionQueryVariables,
-	GetCollectionMarcomEntriesDocument,
 	GetCollectionMarcomEntriesQuery,
 	GetCollectionMarcomEntriesQueryVariables,
-	GetCollectionsByItemUuidDocument,
 	GetCollectionsByItemUuidQuery,
 	GetCollectionsByItemUuidQueryVariables,
-	GetCollectionsByOwnerOrContributorDocument,
 	GetCollectionsByOwnerOrContributorQuery,
 	GetCollectionsByOwnerOrContributorQueryVariables,
-	GetCollectionTitlesByOwnerDocument,
 	GetCollectionTitlesByOwnerQuery,
 	GetCollectionTitlesByOwnerQueryVariables,
-	GetContributorsByCollectionUuidDocument,
 	GetContributorsByCollectionUuidQuery,
 	GetContributorsByCollectionUuidQueryVariables,
-	GetOrganisationContentDocument,
 	GetOrganisationContentQuery,
 	GetOrganisationContentQueryVariables,
-	GetPublicCollectionsByIdDocument,
 	GetPublicCollectionsByIdQuery,
 	GetPublicCollectionsByIdQueryVariables,
-	GetPublicCollectionsByTitleDocument,
 	GetPublicCollectionsByTitleQuery,
 	GetPublicCollectionsByTitleQueryVariables,
-	GetPublicCollectionsDocument,
 	GetPublicCollectionsQuery,
 	GetPublicCollectionsQueryVariables,
-	GetPublishedBundlesContainingCollectionDocument,
 	GetPublishedBundlesContainingCollectionQuery,
 	GetPublishedBundlesContainingCollectionQueryVariables,
-	InsertCollectionDocument,
-	InsertCollectionFragmentsDocument,
 	InsertCollectionFragmentsMutation,
 	InsertCollectionFragmentsMutationVariables,
-	InsertCollectionLabelsDocument,
 	InsertCollectionLabelsMutation,
 	InsertCollectionLabelsMutationVariables,
-	InsertCollectionLomLinksDocument,
 	InsertCollectionLomLinksMutation,
 	InsertCollectionLomLinksMutationVariables,
-	InsertCollectionManagementEntryDocument,
 	InsertCollectionManagementEntryMutation,
 	InsertCollectionManagementEntryMutationVariables,
-	InsertCollectionManagementQualityCheckEntryDocument,
 	InsertCollectionManagementQualityCheckEntryMutation,
 	InsertCollectionManagementQualityCheckEntryMutationVariables,
 	InsertCollectionMutation,
 	InsertCollectionMutationVariables,
-	InsertMarcomEntryDocument,
 	InsertMarcomEntryMutation,
 	InsertMarcomEntryMutationVariables,
-	InsertMarcomNoteDocument,
 	InsertMarcomNoteMutation,
 	InsertMarcomNoteMutationVariables,
-	Lookup_Enum_Collection_Management_Qc_Label_Enum,
-	Lookup_Enum_Relation_Types_Enum,
-	UpdateCollectionByIdDocument,
 	UpdateCollectionByIdMutation,
 	UpdateCollectionByIdMutationVariables,
-	UpdateCollectionFragmentByIdDocument,
 	UpdateCollectionFragmentByIdMutation,
 	UpdateCollectionFragmentByIdMutationVariables,
-	UpdateCollectionManagementEntryDocument,
 	UpdateCollectionManagementEntryMutation,
 	UpdateCollectionManagementEntryMutationVariables,
-	UpdateMarcomNoteDocument,
 	UpdateMarcomNoteMutation,
 	UpdateMarcomNoteMutationVariables,
+} from '../shared/generated/graphql-db-operations';
+import {
+	DeleteCollectionFragmentByIdDocument,
+	DeleteCollectionLabelsDocument,
+	DeleteCollectionLomLinksDocument,
+	DeleteCollectionOrBundleByUuidDocument,
+	DeleteMarcomEntriesByParentCollectionIdDocument,
+	DeleteMarcomEntryDocument,
+	GetBookmarkedCollectionsByOwnerDocument,
+	GetBundleTitlesByOwnerDocument,
+	GetCollectionByTitleOrDescriptionDocument,
+	GetCollectionMarcomEntriesDocument,
+	GetCollectionsByItemUuidDocument,
+	GetCollectionsByOwnerOrContributorDocument,
+	GetCollectionTitlesByOwnerDocument,
+	GetContributorsByCollectionUuidDocument,
+	GetOrganisationContentDocument,
+	GetPublicCollectionsByIdDocument,
+	GetPublicCollectionsByTitleDocument,
+	GetPublicCollectionsDocument,
+	GetPublishedBundlesContainingCollectionDocument,
+	InsertCollectionDocument,
+	InsertCollectionFragmentsDocument,
+	InsertCollectionLabelsDocument,
+	InsertCollectionLomLinksDocument,
+	InsertCollectionManagementEntryDocument,
+	InsertCollectionManagementQualityCheckEntryDocument,
+	InsertMarcomEntryDocument,
+	InsertMarcomNoteDocument,
+	UpdateCollectionByIdDocument,
+	UpdateCollectionFragmentByIdDocument,
+	UpdateCollectionManagementEntryDocument,
+	UpdateMarcomNoteDocument,
+} from '../shared/generated/graphql-db-react-query';
+import {
+	App_Collection_Marcom_Log_Insert_Input,
+	Lookup_Enum_Collection_Management_Qc_Label_Enum,
+	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
@@ -371,9 +375,8 @@ export class CollectionService {
 
 			if (newCollection.type_id === ContentTypeNumber.collection) {
 				// determine new thumbnail path since videos could have changed order / been deleted
-				newCollection.thumbnail_path = await this.getThumbnailPathForCollection(
-					newCollection
-				);
+				newCollection.thumbnail_path =
+					await this.getThumbnailPathForCollection(newCollection);
 			}
 
 			// update collection
@@ -776,9 +779,8 @@ export class CollectionService {
 			}
 
 			// insert duplicated collection
-			const duplicatedCollection = await CollectionService.insertCollection(
-				collectionToInsert
-			);
+			const duplicatedCollection =
+				await CollectionService.insertCollection(collectionToInsert);
 
 			await RelationService.insertRelation(
 				'collection',

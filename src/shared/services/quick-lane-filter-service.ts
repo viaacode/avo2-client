@@ -3,11 +3,11 @@ import { type Avo } from '@viaa/avo2-types';
 import { DateRange } from '../components/DateRangeDropdown/DateRangeDropdown';
 import { QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
 import {
-	App_Quick_Lanes_Bool_Exp,
-	GetQuickLanesWithFiltersDocument,
 	GetQuickLanesWithFiltersQuery,
 	GetQuickLanesWithFiltersQueryVariables,
-} from '../generated/graphql-db-types';
+} from '../generated/graphql-db-operations';
+import { GetQuickLanesWithFiltersDocument } from '../generated/graphql-db-react-query';
+import { App_Quick_Lanes_Bool_Exp } from '../generated/graphql-db-types';
 import { CustomError } from '../helpers';
 import { getOrderObject } from '../helpers/generate-order-gql-query';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';

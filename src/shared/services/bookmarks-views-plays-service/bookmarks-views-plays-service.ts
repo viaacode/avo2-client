@@ -9,28 +9,20 @@ import {
 	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkMutation,
 	DeleteItemBookmarkMutationVariables,
-	GetAssignmentBookmarkViewCountsDocument,
 	GetAssignmentBookmarkViewCountsQuery,
 	GetAssignmentBookmarkViewCountsQueryVariables,
-	GetBookmarksForUserDocument,
 	GetBookmarksForUserQuery,
 	GetBookmarksForUserQueryVariables,
-	GetBookmarkStatusesDocument,
 	GetBookmarkStatusesQuery,
 	GetBookmarkStatusesQueryVariables,
-	GetCollectionBookmarkViewPlayCountsDocument,
 	GetCollectionBookmarkViewPlayCountsQuery,
 	GetCollectionBookmarkViewPlayCountsQueryVariables,
-	GetItemBookmarksForUserDocument,
 	GetItemBookmarksForUserQuery,
 	GetItemBookmarksForUserQueryVariables,
-	GetItemBookmarkViewPlayCountsDocument,
 	GetItemBookmarkViewPlayCountsQuery,
 	GetItemBookmarkViewPlayCountsQueryVariables,
-	GetMultipleCollectionViewCountsDocument,
 	GetMultipleCollectionViewCountsQuery,
 	GetMultipleCollectionViewCountsQueryVariables,
-	GetMultipleItemViewCountsDocument,
 	GetMultipleItemViewCountsQuery,
 	GetMultipleItemViewCountsQueryVariables,
 	IncrementCollectionPlaysMutation,
@@ -45,7 +37,17 @@ import {
 	InsertCollectionBookmarkMutationVariables,
 	InsertItemBookmarkMutation,
 	InsertItemBookmarkMutationVariables,
-} from '../../generated/graphql-db-types';
+} from '../../generated/graphql-db-operations';
+import {
+	GetAssignmentBookmarkViewCountsDocument,
+	GetBookmarksForUserDocument,
+	GetBookmarkStatusesDocument,
+	GetCollectionBookmarkViewPlayCountsDocument,
+	GetItemBookmarksForUserDocument,
+	GetItemBookmarkViewPlayCountsDocument,
+	GetMultipleCollectionViewCountsDocument,
+	GetMultipleItemViewCountsDocument,
+} from '../../generated/graphql-db-react-query';
 import { CustomError, normalizeTimestamp } from '../../helpers';
 import { dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';

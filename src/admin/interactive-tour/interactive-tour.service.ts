@@ -2,22 +2,24 @@ import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 
 import {
-	DeleteInteractiveTourDocument,
 	DeleteInteractiveTourMutation,
 	DeleteInteractiveTourMutationVariables,
-	GetInteractiveTourByIdDocument,
 	GetInteractiveTourByIdQuery,
 	GetInteractiveTourByIdQueryVariables,
-	GetInteractiveToursDocument,
 	GetInteractiveToursQuery,
 	GetInteractiveToursQueryVariables,
-	InsertInteractiveTourDocument,
 	InsertInteractiveTourMutation,
 	InsertInteractiveTourMutationVariables,
-	UpdateInteractiveTourDocument,
 	UpdateInteractiveTourMutation,
 	UpdateInteractiveTourMutationVariables,
-} from '../../shared/generated/graphql-db-types';
+} from '../../shared/generated/graphql-db-operations';
+import {
+	DeleteInteractiveTourDocument,
+	GetInteractiveTourByIdDocument,
+	GetInteractiveToursDocument,
+	InsertInteractiveTourDocument,
+	UpdateInteractiveTourDocument,
+} from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 

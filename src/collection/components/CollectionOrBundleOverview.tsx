@@ -38,7 +38,7 @@ import {
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
-import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-types';
+import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
 import {
 	buildLink,
 	createDropdownMenuItem,

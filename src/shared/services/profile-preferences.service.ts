@@ -1,11 +1,13 @@
 import {
-	GetProfilePreferenceDocument,
 	GetProfilePreferenceQuery,
 	GetProfilePreferenceQueryVariables,
-	SetProfilePreferenceDocument,
 	SetProfilePreferenceMutation,
 	SetProfilePreferenceMutationVariables,
-} from '../generated/graphql-db-types';
+} from '../generated/graphql-db-operations';
+import {
+	GetProfilePreferenceDocument,
+	SetProfilePreferenceDocument,
+} from '../generated/graphql-db-react-query';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';

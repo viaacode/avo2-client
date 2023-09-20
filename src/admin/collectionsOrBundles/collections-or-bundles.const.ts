@@ -9,7 +9,7 @@ import {
 	GetCollectionActualisationsDocument,
 	GetCollectionMarcomDocument,
 	GetCollectionQualityCheckDocument,
-} from '../../shared/generated/graphql-db-types';
+} from '../../shared/generated/graphql-db-react-query';
 import { stringToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';

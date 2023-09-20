@@ -1,5 +1,5 @@
-import { decode as decodeHtmlEntities } from 'html-entities';
 import { TOptions } from 'i18next';
+import { unescape } from 'lodash-es';
 import React, { ReactNode } from 'react';
 
 import Html from '../components/Html/Html';
@@ -33,5 +33,5 @@ export function tText(key: string, params?: TOptions | string | undefined): stri
 		return (key.split('___')[1] || key).replace('-', ' ') + ' ***';
 	}
 
-	return decodeHtmlEntities(translation);
+	return unescape(translation);
 }

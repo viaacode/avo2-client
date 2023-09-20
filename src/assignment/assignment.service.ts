@@ -14,81 +14,85 @@ import {
 	ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
+	AssignmentPupilBlocksQuery,
+	AssignmentPupilBlocksQueryVariables,
+	BulkUpdateAuthorForAssignmentsMutation,
+	BulkUpdateAuthorForAssignmentsMutationVariables,
+	DeleteAssignmentResponseByIdMutation,
+	DeleteAssignmentResponseByIdMutationVariables,
+	DeleteAssignmentsByIdMutation,
+	DeleteAssignmentsByIdMutationVariables,
+	GetAssignmentBlocksQuery,
+	GetAssignmentBlocksQueryVariables,
+	GetAssignmentByTitleOrDescriptionQuery,
+	GetAssignmentByTitleOrDescriptionQueryVariables,
+	GetAssignmentIdsQuery,
+	GetAssignmentIdsQueryVariables,
+	GetAssignmentResponseByIdQuery,
+	GetAssignmentResponseByIdQueryVariables,
+	GetAssignmentResponseQuery,
+	GetAssignmentResponseQueryVariables,
+	GetAssignmentResponsesByAssignmentIdQuery,
+	GetAssignmentResponsesByAssignmentIdQueryVariables,
+	GetAssignmentResponsesQuery,
+	GetAssignmentResponsesQueryVariables,
+	GetAssignmentsAdminOverviewQuery,
+	GetAssignmentsAdminOverviewQueryVariables,
+	GetAssignmentsByOwnerOrContributorQuery,
+	GetAssignmentsByOwnerOrContributorQueryVariables,
+	GetAssignmentsByResponseOwnerIdQuery,
+	GetAssignmentsByResponseOwnerIdQueryVariables,
+	GetAssignmentWithResponseQuery,
+	GetAssignmentWithResponseQueryVariables,
+	GetContributorsByAssignmentUuidQuery,
+	GetContributorsByAssignmentUuidQueryVariables,
+	GetMaxPositionAssignmentBlocksQuery,
+	GetMaxPositionAssignmentBlocksQueryVariables,
+	IncrementAssignmentViewCountMutation,
+	IncrementAssignmentViewCountMutationVariables,
+	InsertAssignmentBlocksMutation,
+	InsertAssignmentBlocksMutationVariables,
+	InsertAssignmentMutation,
+	InsertAssignmentMutationVariables,
+	InsertAssignmentResponseMutation,
+	InsertAssignmentResponseMutationVariables,
+	SoftDeleteAssignmentByIdMutation,
+	SoftDeleteAssignmentByIdMutationVariables,
+	UpdateAssignmentResponseMutation,
+	UpdateAssignmentResponseMutationVariables,
+	UpdateAssignmentUpdatedAtDateMutation,
+	UpdateAssignmentUpdatedAtDateMutationVariables,
+} from '../shared/generated/graphql-db-operations';
+import {
+	AssignmentPupilBlocksDocument,
+	BulkUpdateAuthorForAssignmentsDocument,
+	DeleteAssignmentResponseByIdDocument,
+	DeleteAssignmentsByIdDocument,
+	GetAssignmentBlocksDocument,
+	GetAssignmentByTitleOrDescriptionDocument,
+	GetAssignmentIdsDocument,
+	GetAssignmentResponseByIdDocument,
+	GetAssignmentResponseDocument,
+	GetAssignmentResponsesByAssignmentIdDocument,
+	GetAssignmentResponsesDocument,
+	GetAssignmentsAdminOverviewDocument,
+	GetAssignmentsByOwnerOrContributorDocument,
+	GetAssignmentsByResponseOwnerIdDocument,
+	GetAssignmentWithResponseDocument,
+	GetContributorsByAssignmentUuidDocument,
+	GetMaxPositionAssignmentBlocksDocument,
+	IncrementAssignmentViewCountDocument,
+	InsertAssignmentBlocksDocument,
+	InsertAssignmentDocument,
+	InsertAssignmentResponseDocument,
+	SoftDeleteAssignmentByIdDocument,
+	UpdateAssignmentResponseDocument,
+	UpdateAssignmentUpdatedAtDateDocument,
+} from '../shared/generated/graphql-db-react-query';
+import {
 	App_Assignments_V2_Insert_Input,
 	App_Assignments_V2_Set_Input,
 	App_Pupil_Collection_Blocks,
-	AssignmentPupilBlocksDocument,
-	AssignmentPupilBlocksQuery,
-	AssignmentPupilBlocksQueryVariables,
-	BulkUpdateAuthorForAssignmentsDocument,
-	BulkUpdateAuthorForAssignmentsMutation,
-	BulkUpdateAuthorForAssignmentsMutationVariables,
-	DeleteAssignmentResponseByIdDocument,
-	DeleteAssignmentResponseByIdMutation,
-	DeleteAssignmentResponseByIdMutationVariables,
-	DeleteAssignmentsByIdDocument,
-	DeleteAssignmentsByIdMutation,
-	DeleteAssignmentsByIdMutationVariables,
-	GetAssignmentBlocksDocument,
-	GetAssignmentBlocksQuery,
-	GetAssignmentBlocksQueryVariables,
-	GetAssignmentByTitleOrDescriptionDocument,
-	GetAssignmentByTitleOrDescriptionQuery,
-	GetAssignmentByTitleOrDescriptionQueryVariables,
-	GetAssignmentIdsDocument,
-	GetAssignmentIdsQuery,
-	GetAssignmentIdsQueryVariables,
-	GetAssignmentResponseByIdDocument,
-	GetAssignmentResponseByIdQuery,
-	GetAssignmentResponseByIdQueryVariables,
-	GetAssignmentResponseDocument,
-	GetAssignmentResponseQuery,
-	GetAssignmentResponseQueryVariables,
-	GetAssignmentResponsesByAssignmentIdDocument,
-	GetAssignmentResponsesByAssignmentIdQuery,
-	GetAssignmentResponsesByAssignmentIdQueryVariables,
-	GetAssignmentResponsesDocument,
-	GetAssignmentResponsesQuery,
-	GetAssignmentResponsesQueryVariables,
-	GetAssignmentsAdminOverviewDocument,
-	GetAssignmentsAdminOverviewQuery,
-	GetAssignmentsAdminOverviewQueryVariables,
-	GetAssignmentsByOwnerOrContributorDocument,
-	GetAssignmentsByOwnerOrContributorQuery,
-	GetAssignmentsByOwnerOrContributorQueryVariables,
-	GetAssignmentsByResponseOwnerIdDocument,
-	GetAssignmentsByResponseOwnerIdQuery,
-	GetAssignmentsByResponseOwnerIdQueryVariables,
-	GetAssignmentWithResponseDocument,
-	GetAssignmentWithResponseQuery,
-	GetAssignmentWithResponseQueryVariables,
-	GetContributorsByAssignmentUuidDocument,
-	GetContributorsByAssignmentUuidQuery,
-	GetContributorsByAssignmentUuidQueryVariables,
-	GetMaxPositionAssignmentBlocksDocument,
-	GetMaxPositionAssignmentBlocksQuery,
-	GetMaxPositionAssignmentBlocksQueryVariables,
-	IncrementAssignmentViewCountDocument,
-	IncrementAssignmentViewCountMutation,
-	IncrementAssignmentViewCountMutationVariables,
-	InsertAssignmentBlocksDocument,
-	InsertAssignmentBlocksMutation,
-	InsertAssignmentBlocksMutationVariables,
-	InsertAssignmentDocument,
-	InsertAssignmentMutation,
-	InsertAssignmentMutationVariables,
-	InsertAssignmentResponseDocument,
-	InsertAssignmentResponseMutation,
-	InsertAssignmentResponseMutationVariables,
-	SoftDeleteAssignmentByIdDocument,
-	SoftDeleteAssignmentByIdMutation,
-	SoftDeleteAssignmentByIdMutationVariables,
-	UpdateAssignmentResponseDocument,
-	UpdateAssignmentResponseMutation,
-	UpdateAssignmentResponseMutationVariables,
-	UpdateAssignmentUpdatedAtDateDocument,
-	UpdateAssignmentUpdatedAtDateMutation,
-	UpdateAssignmentUpdatedAtDateMutationVariables,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { getLomLearningResourceTypesFromBlocks } from '../shared/helpers/block-types-to-lom-learning-resource-type';
@@ -685,10 +689,11 @@ export class AssignmentService {
 
 			// Enrich assignmentResponses with item infos
 			const fragmentExternalIds = compact(
-				assignmentResponses.flatMap((response) =>
-					response.pupil_collection_blocks?.map(
-						(block) => (block as App_Pupil_Collection_Blocks).fragment_id
-					)
+				assignmentResponses.flatMap(
+					(response) =>
+						response.pupil_collection_blocks?.map(
+							(block) => (block as App_Pupil_Collection_Blocks).fragment_id
+						)
 				)
 			);
 			const itemMetas = await ItemsService.fetchItemsByExternalIds(fragmentExternalIds);
@@ -982,9 +987,8 @@ export class AssignmentService {
 		withDescription: boolean
 	): Promise<boolean> {
 		if (collection.collection_fragments.length > 0) {
-			const currentMaxPosition = await AssignmentService.getAssignmentBlockMaxPosition(
-				assignmentId
-			);
+			const currentMaxPosition =
+				await AssignmentService.getAssignmentBlockMaxPosition(assignmentId);
 			const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
 			const blocks = reorderBlockPositions(
 				collection.collection_fragments.map((fragment: any, index: number) => {
@@ -1184,9 +1188,8 @@ export class AssignmentService {
 			: null;
 
 		// Determine block position
-		const currentMaxPosition = await AssignmentService.getAssignmentBlockMaxPosition(
-			assignmentId
-		);
+		const currentMaxPosition =
+			await AssignmentService.getAssignmentBlockMaxPosition(assignmentId);
 		const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
 
 		// Add block with this fragment

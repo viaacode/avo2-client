@@ -40,10 +40,10 @@ import {
 	LoadingInfo,
 } from '../../shared/components';
 import {
-	GetWorkspaceTabCountsDocument,
 	GetWorkspaceTabCountsQuery,
 	GetWorkspaceTabCountsQueryVariables,
-} from '../../shared/generated/graphql-db-types';
+} from '../../shared/generated/graphql-db-operations';
+import { GetWorkspaceTabCountsDocument } from '../../shared/generated/graphql-db-react-query';
 import { buildLink, navigate } from '../../shared/helpers';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import useTranslation from '../../shared/hooks/useTranslation';

@@ -3,13 +3,15 @@ import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 
 import {
-	GetEducationLevelsDocument,
 	GetEducationLevelsQuery,
 	GetEducationLevelsQueryVariables,
-	GetSubjectsDocument,
 	GetSubjectsQuery,
 	GetSubjectsQueryVariables,
-} from '../shared/generated/graphql-db-types';
+} from '../shared/generated/graphql-db-operations';
+import {
+	GetEducationLevelsDocument,
+	GetSubjectsDocument,
+} from '../shared/generated/graphql-db-react-query';
 import { CustomError, getEnv } from '../shared/helpers';
 import { dataService } from '../shared/services/data-service';
 

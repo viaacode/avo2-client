@@ -31,10 +31,10 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import {
-	GetInteractiveTourByIdDocument,
 	GetInteractiveTourByIdQuery,
 	GetInteractiveTourByIdQueryVariables,
-} from '../../../shared/generated/graphql-db-types';
+} from '../../../shared/generated/graphql-db-operations';
+import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { dataService } from '../../../shared/services/data-service';

@@ -5,28 +5,30 @@ import { isNewAssignmentBlock } from '../assignment/assignment.const';
 import { PupilCollectionFragment } from '../assignment/assignment.types';
 import { ItemTrimInfo } from '../item/item.types';
 import {
-	BulkUpdateAuthorForPupilCollectionsDocument,
 	BulkUpdateAuthorForPupilCollectionsMutation,
 	BulkUpdateAuthorForPupilCollectionsMutationVariables,
-	DeleteAssignmentResponsesDocument,
 	DeleteAssignmentResponsesMutation,
 	DeleteAssignmentResponsesMutationVariables,
-	GetMaxPositionPupilCollectionBlocksDocument,
 	GetMaxPositionPupilCollectionBlocksQuery,
 	GetMaxPositionPupilCollectionBlocksQueryVariables,
-	GetPupilCollectionIdsDocument,
 	GetPupilCollectionIdsQuery,
 	GetPupilCollectionIdsQueryVariables,
-	GetPupilCollectionsAdminOverviewDocument,
 	GetPupilCollectionsAdminOverviewQuery,
 	GetPupilCollectionsAdminOverviewQueryVariables,
-	InsertPupilCollectionBlocksDocument,
 	InsertPupilCollectionBlocksMutation,
 	InsertPupilCollectionBlocksMutationVariables,
-	UpdatePupilCollectionBlockDocument,
 	UpdatePupilCollectionBlockMutation,
 	UpdatePupilCollectionBlockMutationVariables,
-} from '../shared/generated/graphql-db-types';
+} from '../shared/generated/graphql-db-operations';
+import {
+	BulkUpdateAuthorForPupilCollectionsDocument,
+	DeleteAssignmentResponsesDocument,
+	GetMaxPositionPupilCollectionBlocksDocument,
+	GetPupilCollectionIdsDocument,
+	GetPupilCollectionsAdminOverviewDocument,
+	InsertPupilCollectionBlocksDocument,
+	UpdatePupilCollectionBlockDocument,
+} from '../shared/generated/graphql-db-react-query';
 import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { dataService } from '../shared/services/data-service';
@@ -290,9 +292,8 @@ export class PupilCollectionService {
 			: null;
 
 		// Determine block position
-		const currentMaxPosition = await PupilCollectionService.getPupilCollectionBlockMaxPosition(
-			assignmentResponseId
-		);
+		const currentMaxPosition =
+			await PupilCollectionService.getPupilCollectionBlockMaxPosition(assignmentResponseId);
 		const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
 
 		// Add block with this fragment

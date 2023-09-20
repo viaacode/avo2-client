@@ -4,19 +4,21 @@ import { endOfDay, isBefore } from 'date-fns';
 import { compact, get, isNil } from 'lodash-es';
 
 import {
-	GetProfileIdsDocument,
 	GetProfileIdsQuery,
 	GetProfileIdsQueryVariables,
-	GetUsersDocument,
-	GetUsersInSameCompanyDocument,
 	GetUsersInSameCompanyQuery,
 	GetUsersInSameCompanyQueryVariables,
 	GetUsersQuery,
 	GetUsersQueryVariables,
-	UpdateUserTempAccessByIdDocument,
 	UpdateUserTempAccessByIdMutation,
 	UpdateUserTempAccessByIdMutationVariables,
-} from '../../shared/generated/graphql-db-types';
+} from '../../shared/generated/graphql-db-operations';
+import {
+	GetProfileIdsDocument,
+	GetUsersDocument,
+	GetUsersInSameCompanyDocument,
+	UpdateUserTempAccessByIdDocument,
+} from '../../shared/generated/graphql-db-react-query';
 import { CustomError, getEnv, toIsoDate } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
@@ -224,7 +226,7 @@ export class UserService {
 							temp_access: user.user?.temp_access,
 							idpmaps: user.idps.map((idp) => idp.idp),
 						},
-					} as any)
+					}) as any
 			);
 
 			const profileCount = response.users_summary_view_aggregate.aggregate?.count ?? 0;

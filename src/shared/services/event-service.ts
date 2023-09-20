@@ -4,7 +4,7 @@ import { get, noop } from 'lodash-es';
 import {
 	InsertCollectionBookmarkDocument,
 	InsertItemBookmarkDocument,
-} from '../generated/graphql-db-types';
+} from '../generated/graphql-db-react-query';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';

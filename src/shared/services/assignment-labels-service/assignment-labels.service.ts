@@ -3,23 +3,27 @@ import { omit } from 'lodash-es';
 
 import { AssignmentLabelColor } from '../../../assignment/assignment.types';
 import {
-	App_Assignment_Labels_V2_Insert_Input,
-	DeleteAssignmentLabelsDocument,
 	DeleteAssignmentLabelsMutation,
 	DeleteAssignmentLabelsMutationVariables,
-	GetAllAssignmentLabelColorsDocument,
 	GetAllAssignmentLabelColorsQuery,
 	GetAllAssignmentLabelColorsQueryVariables,
-	GetAssignmentLabelsByProfileIdDocument,
 	GetAssignmentLabelsByProfileIdQuery,
 	GetAssignmentLabelsByProfileIdQueryVariables,
-	InsertAssignmentLabelsDocument,
 	InsertAssignmentLabelsMutation,
 	InsertAssignmentLabelsMutationVariables,
-	Lookup_Enum_Colors_Enum,
-	UpdateAssignmentLabelsDocument,
 	UpdateAssignmentLabelsMutation,
 	UpdateAssignmentLabelsMutationVariables,
+} from '../../generated/graphql-db-operations';
+import {
+	DeleteAssignmentLabelsDocument,
+	GetAllAssignmentLabelColorsDocument,
+	GetAssignmentLabelsByProfileIdDocument,
+	InsertAssignmentLabelsDocument,
+	UpdateAssignmentLabelsDocument,
+} from '../../generated/graphql-db-react-query';
+import {
+	App_Assignment_Labels_V2_Insert_Input,
+	Lookup_Enum_Colors_Enum,
 } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
 import { dataService } from '../data-service';

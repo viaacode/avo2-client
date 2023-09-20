@@ -1,10 +1,10 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	GetUserGroupsWithFiltersDocument,
 	GetUserGroupsWithFiltersQuery,
 	GetUserGroupsWithFiltersQueryVariables,
-} from '../../shared/generated/graphql-db-types';
+} from '../../shared/generated/graphql-db-operations';
+import { GetUserGroupsWithFiltersDocument } from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 
