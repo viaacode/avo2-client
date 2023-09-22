@@ -1,7 +1,7 @@
 import { Icon, IconName } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { flatten } from 'lodash-es';
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement, ReactNode } from 'react';
 import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../../../constants';
@@ -13,6 +13,7 @@ import { NavigationItemInfo } from '../../../../shared/types';
 import './Sidebar.scss';
 
 interface SidebarProps {
+	children?: ReactNode;
 	className?: string;
 	headerLink?: string;
 	light?: boolean;

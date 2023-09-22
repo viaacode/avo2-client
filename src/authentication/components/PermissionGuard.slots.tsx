@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC, ReactNode } from 'react';
 
-export const PermissionGuardPass: FunctionComponent = ({ children }) => <>{children}</>;
-export const PermissionGuardFail: FunctionComponent = ({ children }) => <>{children}</>;
+export const PermissionGuardPass: FC<{ children?: ReactNode }> = ({ children }) => <>{children}</>;
+export const PermissionGuardFail: FC<{ children?: ReactNode }> = ({ children }) => <>{children}</>;

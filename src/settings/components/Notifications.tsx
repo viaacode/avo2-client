@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC, FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
@@ -29,4 +29,4 @@ const Notifications: FunctionComponent = () => {
 	);
 };
 
-export default Notifications;
+export default Notifications as FC;

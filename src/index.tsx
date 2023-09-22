@@ -1,7 +1,7 @@
 import { setDefaultOptions } from 'date-fns';
 import { nlBE } from 'date-fns/locale';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import pkg from '../package.json';
 
@@ -18,4 +18,5 @@ setDefaultOptions({
 	locale: nlBE,
 });
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const root = createRoot(document.getElementById('root') as HTMLElement);
+root.render(<App />);

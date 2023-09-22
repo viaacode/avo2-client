@@ -98,7 +98,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 			component: <Email {...props} />,
 		},
 		[NOTIFICATIONS_ID]: {
-			component: <Notifications {...props} />,
+			component: <Notifications />,
 		},
 		[LINKED_ACCOUNTS]: {
 			component: <LinkedAccounts {...props} />,
