@@ -27,9 +27,7 @@
     "Ward Vercruyssen <ward.vercruyssen@studiohyperdrive.be>",
     "Bram Vandenbussche <bram.vandenbussche@studiohyperdrive.be>",
     "Ian Emsens <ian.emsens@studiohypderive.be>",
-    "Benjamin Naesen <benjamin.naesen@studiohyperdrive.be>",
-    "Andry Charlier <andry.charlier@studiohyperdrive.be>",
-    "Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be>"
+    "Andry Charlier <andry.charlier@studiohyperdrive.be>"
   ],
   "dependencies": {
     "@flowplayer/player": "3.2.8",
