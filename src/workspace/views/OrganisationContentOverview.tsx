@@ -1,15 +1,14 @@
 import { IconName, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
-import { get } from 'lodash';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { FC, FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { CollectionService, OrganisationContentItem } from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
 import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
@@ -19,17 +18,16 @@ const ITEMS_PER_PAGE = 10;
 
 // Typing
 
-interface OrganisationContentOverviewProps extends DefaultSecureRouteProps {
+interface OrganisationContentOverviewProps {
 	numberOfItems: number;
 	onUpdate: () => void | Promise<void>;
 }
 
 // Component
 
-const OrganisationContentOverview: FunctionComponent<OrganisationContentOverviewProps> = ({
-	numberOfItems,
-	user,
-}) => {
+const OrganisationContentOverview: FunctionComponent<
+	OrganisationContentOverviewProps & UserProps
+> = ({ numberOfItems, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -55,7 +53,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 	const fetchOrganisationContent = useCallback(async () => {
 		try {
-			const organisationId = get(user, 'profile.organisation.or_id') || 'NONE';
+			const organisationId = commonUser?.organisation?.or_id || 'NONE';
 
 			const items: OrganisationContentItem[] =
 				await CollectionService.fetchOrganisationContent(
@@ -67,8 +65,8 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 
 			setOrganisationContent(items);
 		} catch (err) {
-			console.error('Failed to fetch organsiation content', err, {
-				organisation: user.profile?.organisation,
+			console.error('Failed to fetch organisation content', err, {
+				organisation: commonUser?.organisation,
 			});
 
 			setLoadingInfo({
@@ -79,7 +77,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 				actionButtons: ['home'],
 			});
 		}
-	}, [page, sortColumn, sortOrder, tText, user]);
+	}, [page, sortColumn, sortOrder, tText, commonUser]);
 
 	useEffect(() => {
 		fetchOrganisationContent();
@@ -89,7 +87,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 		if (organisationContent) {
 			setLoadingInfo({ state: 'loaded' });
 		}
-	}, [setLoadingInfo, organisationContent, user]);
+	}, [setLoadingInfo, organisationContent, commonUser]);
 
 	// Render functions
 	const getLinkProps = (item: OrganisationContentItem): { to: string; title: string } => {
@@ -278,7 +276,7 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 	const renderOrganisationContent = () => {
 		return (
 			<>
-				{user.profile?.organisation?.or_id // hasOrganisation
+				{commonUser?.organisation?.or_id // hasOrganisation
 					? organisationContent && organisationContent.length // hasOrganisationContent
 						? renderTable(organisationContent)
 						: renderEmptyFallback()
@@ -296,4 +294,4 @@ const OrganisationContentOverview: FunctionComponent<OrganisationContentOverview
 	);
 };
 
-export default OrganisationContentOverview;
+export default withUser(OrganisationContentOverview) as FC<OrganisationContentOverviewProps>;

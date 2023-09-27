@@ -287,10 +287,12 @@ export class BookmarksViewsPlaysService {
 	/**
 	 * Gets all bookmarks for user without pagination
 	 * since we cannot order items across both tables: item_bookmarks and collection_bookmarks
-	 * @param user
+	 * @param commonUser
 	 */
-	public static async getAllBookmarksForUser(user: Avo.User.User): Promise<BookmarkInfo[]> {
-		const variables: GetBookmarksForUserQueryVariables = { profileId: user?.profile?.id };
+	public static async getAllBookmarksForUser(
+		commonUser: Avo.User.CommonUser
+	): Promise<BookmarkInfo[]> {
+		const variables: GetBookmarksForUserQueryVariables = { profileId: commonUser.profileId };
 		const response = await dataService.query<
 			GetBookmarksForUserQuery,
 			GetBookmarksForUserQueryVariables

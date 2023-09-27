@@ -3,7 +3,7 @@ import { IconName } from '@viaa/avo2-components';
 import { ROUTE_PARTS } from '../shared/constants';
 import { tText } from '../shared/helpers/translate';
 
-import { WorkspaceTab } from './workspace.types';
+import { WorkspaceCounts, WorkspaceTab, WorkspaceTabNames } from './workspace.types';
 
 export const COLLECTIONS_ID = ROUTE_PARTS.collections;
 export const BUNDLES_ID = ROUTE_PARTS.bundles;
@@ -45,3 +45,12 @@ export const GET_TABS: () => WorkspaceTab[] = () => [
 ];
 
 export const ITEMS_PER_PAGE = 20;
+
+export const WORKSPACE_TAB_ID_TO_COUNT_ID: Record<WorkspaceTabNames, keyof WorkspaceCounts> = {
+	[COLLECTIONS_ID]: 'collections' as const,
+	[BUNDLES_ID]: 'bundles' as const,
+	[ASSIGNMENTS_ID]: 'assignments' as const,
+	[BOOKMARKS_ID]: 'bookmarks' as const,
+	[ORGANISATION_CONTENT_ID]: 'organisationContent' as const,
+	[QUICK_LANE_ID]: 'quickLanes' as const,
+};

@@ -55,3 +55,13 @@ export interface TabAggregates {
 	app_collections_aggregate: AggregateResponse;
 	app_assignments_aggregate: AggregateResponse;
 }
+
+export type WorkspaceCounts = {
+	collections: number;
+	bundles: number;
+	assignments: number;
+	bookmarks: number;
+	organisationContent: number;
+	quickLanes: number;
+	organisationQuickLanes: number;
+};
