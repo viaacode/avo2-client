@@ -55,7 +55,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 		changeCollectionState({
 			collectionProp: 'loms',
 			type: 'UPDATE_COLLECTION_PROP',
-			collectionPropValue: loms.map((lom) => ({ lom } as Avo.Lom.Lom)),
+			collectionPropValue: loms.map((lom) => ({ lom }) as Avo.Lom.Lom),
 		});
 	};
 

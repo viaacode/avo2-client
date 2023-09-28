@@ -6,7 +6,7 @@ type UseTableSortTuple<T> = [
 	Avo.Search.OrderDirection,
 	(columnId: T) => { sortColumn: T; sortOrder: Avo.Search.OrderDirection },
 	Dispatch<SetStateAction<T>>,
-	Dispatch<SetStateAction<Avo.Search.OrderDirection>>
+	Dispatch<SetStateAction<Avo.Search.OrderDirection>>,
 ];
 
 export const useTableSort = <T>(

@@ -5,7 +5,7 @@ import { capitalize, compact, isNil } from 'lodash-es';
 export const mapLomFieldsToOptions = (lomFields: Avo.Lom.LomField[]): SelectOption<any>[] => {
 	return (lomFields || []).map(
 		(lomField) =>
-			({ value: lomField.id, label: capitalize(lomField.label) } as SelectOption<any>)
+			({ value: lomField.id, label: capitalize(lomField.label) }) as SelectOption<any>
 	);
 };
 

@@ -62,9 +62,8 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & Us
 
 			// Validate if user wants to publish
 			if (isPublished) {
-				const validationErrors: string[] = await getValidationErrorsForPublishAssignment(
-					assignment
-				);
+				const validationErrors: string[] =
+					await getValidationErrorsForPublishAssignment(assignment);
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors);

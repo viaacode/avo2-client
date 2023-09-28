@@ -70,17 +70,15 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 					body: JSON.stringify(body),
 					html_body: `<dl>
   <dt>${tText('item/components/modals/report-item-modal___reden-van-rapporteren')}</dt><dd>${
-						GET_RADIO_BUTTON_LABELS()[reason]
-					}</dd>
+		GET_RADIO_BUTTON_LABELS()[reason]
+  }</dd>
   <dt>${tText('item/components/modals/report-item-modal___extra-toelichting')}</dt><dd>${
-						extraDetails ||
-						tText(
-							'item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven'
-						)
-					}</dd>
+		extraDetails ||
+		tText('item/components/modals/report-item-modal___geen-extra-toelichting-ingegeven')
+  }</dd>
   <dt>${tText('item/components/modals/report-item-modal___pagina-url')}</dt><dd>${
-						window.location.href
-					}</dd>
+		window.location.href
+  }</dd>
 </dl>`,
 					public: false,
 				},

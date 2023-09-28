@@ -8,7 +8,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 export function useCutModal(): [
 	(props?: Partial<ButtonProps>) => ReactNode,
-	(props?: Partial<CutFragmentModalProps>) => ReactNode
+	(props?: Partial<CutFragmentModalProps>) => ReactNode,
 ] {
 	const { tText } = useTranslation();
 
