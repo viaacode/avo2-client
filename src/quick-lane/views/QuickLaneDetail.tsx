@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading, stripRichTextParagraph } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Container,
@@ -28,7 +28,6 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
-import Html from '../../shared/components/Html/Html';
 import { CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { QuickLaneUrlObject } from '../../shared/types';
@@ -78,22 +77,16 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				// We assume the response isItem but don't check so we can handle the absence of VIEW_ANY_UNPUBLISHED_ITEMS
 				const content = response.content as Avo.Item.Item;
 
-				// Check for a depublishing reason first
+				// Check for a depublish reason first
 				if (content.depublish_reason) {
+					const depublishReason = stripRichTextParagraph(
+						(response.content as Avo.Item.Item).depublish_reason || ''
+					);
 					setLoadingInfo({
 						state: 'error',
-						message: (
-							<>
-								{tHtml(
-									'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
-								)}
-								<Html
-									content={
-										(response.content as Avo.Item.Item).depublish_reason || ''
-									}
-									type="span"
-								/>
-							</>
+						message: tHtml(
+							'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden',
+							{ depublishReason }
 						),
 						icon: IconName.cameraOff,
 					});

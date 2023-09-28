@@ -98,330 +98,6 @@ export type _Text_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['_text']>>;
 };
 
-/** Reference table for lniking assignments and user tags. */
-export type App_Assignment_Assignment_Tags = {
-  __typename?: 'app_assignment_assignment_tags';
-  /** An object relationship */
-  assignment?: Maybe<App_Assignments>;
-  /** An object relationship */
-  assignment_tag: App_Assignment_Labels;
-  assignment_tag_id: Scalars['Int'];
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  id: Scalars['Int'];
-};
-
-/** aggregated selection of "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Aggregate = {
-  __typename?: 'app_assignment_assignment_tags_aggregate';
-  aggregate?: Maybe<App_Assignment_Assignment_Tags_Aggregate_Fields>;
-  nodes: Array<App_Assignment_Assignment_Tags>;
-};
-
-export type App_Assignment_Assignment_Tags_Aggregate_Bool_Exp = {
-  count?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignment_Assignment_Tags_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Aggregate_Fields = {
-  __typename?: 'app_assignment_assignment_tags_aggregate_fields';
-  avg?: Maybe<App_Assignment_Assignment_Tags_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignment_Assignment_Tags_Max_Fields>;
-  min?: Maybe<App_Assignment_Assignment_Tags_Min_Fields>;
-  stddev?: Maybe<App_Assignment_Assignment_Tags_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Assignment_Assignment_Tags_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Assignment_Assignment_Tags_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Assignment_Assignment_Tags_Sum_Fields>;
-  var_pop?: Maybe<App_Assignment_Assignment_Tags_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Assignment_Assignment_Tags_Var_Samp_Fields>;
-  variance?: Maybe<App_Assignment_Assignment_Tags_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Assignment_Assignment_Tags_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignment_Assignment_Tags_Max_Order_By>;
-  min?: InputMaybe<App_Assignment_Assignment_Tags_Min_Order_By>;
-  stddev?: InputMaybe<App_Assignment_Assignment_Tags_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Assignment_Assignment_Tags_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Assignment_Assignment_Tags_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Assignment_Assignment_Tags_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Assignment_Assignment_Tags_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Assignment_Assignment_Tags_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Assignment_Assignment_Tags_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignment_Assignment_Tags_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignment_Assignment_Tags_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type App_Assignment_Assignment_Tags_Avg_Fields = {
-  __typename?: 'app_assignment_assignment_tags_avg_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Avg_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignment_assignment_tags". All fields are combined with a logical 'AND'. */
-export type App_Assignment_Assignment_Tags_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignment_Assignment_Tags_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignment_Assignment_Tags_Bool_Exp>>;
-  assignment?: InputMaybe<App_Assignments_Bool_Exp>;
-  assignment_tag?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-  assignment_tag_id?: InputMaybe<Int_Comparison_Exp>;
-  assignment_uuid?: InputMaybe<Uuid_Comparison_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignment_assignment_tags" */
-export enum App_Assignment_Assignment_Tags_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  AssignmentAsiignmentTagsPkey = 'assignment_asiignment_tags_pkey',
-  /** unique or primary key constraint on columns "assignment_uuid", "assignment_tag_id" */
-  AssignmentAssignmentTagsAssignmentUuidAssignmentTagIdKe = 'assignment_assignment_tags_assignment_uuid_assignment_tag_id_ke'
-}
-
-/** input type for incrementing numeric columns in table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Inc_Input = {
-  assignment_tag_id?: InputMaybe<Scalars['Int']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Insert_Input = {
-  assignment?: InputMaybe<App_Assignments_Obj_Rel_Insert_Input>;
-  assignment_tag?: InputMaybe<App_Assignment_Labels_Obj_Rel_Insert_Input>;
-  assignment_tag_id?: InputMaybe<Scalars['Int']>;
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate max on columns */
-export type App_Assignment_Assignment_Tags_Max_Fields = {
-  __typename?: 'app_assignment_assignment_tags_max_fields';
-  assignment_tag_id?: Maybe<Scalars['Int']>;
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Max_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  assignment_uuid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignment_Assignment_Tags_Min_Fields = {
-  __typename?: 'app_assignment_assignment_tags_min_fields';
-  assignment_tag_id?: Maybe<Scalars['Int']>;
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Min_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  assignment_uuid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Mutation_Response = {
-  __typename?: 'app_assignment_assignment_tags_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignment_Assignment_Tags>;
-};
-
-/** on_conflict condition type for table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_On_Conflict = {
-  constraint: App_Assignment_Assignment_Tags_Constraint;
-  update_columns?: Array<App_Assignment_Assignment_Tags_Update_Column>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignment_assignment_tags". */
-export type App_Assignment_Assignment_Tags_Order_By = {
-  assignment?: InputMaybe<App_Assignments_Order_By>;
-  assignment_tag?: InputMaybe<App_Assignment_Labels_Order_By>;
-  assignment_tag_id?: InputMaybe<Order_By>;
-  assignment_uuid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: app.assignment_assignment_tags */
-export type App_Assignment_Assignment_Tags_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "app.assignment_assignment_tags" */
-export enum App_Assignment_Assignment_Tags_Select_Column {
-  /** column name */
-  AssignmentTagId = 'assignment_tag_id',
-  /** column name */
-  AssignmentUuid = 'assignment_uuid',
-  /** column name */
-  Id = 'id'
-}
-
-/** input type for updating data in table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Set_Input = {
-  assignment_tag_id?: InputMaybe<Scalars['Int']>;
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Assignment_Assignment_Tags_Stddev_Fields = {
-  __typename?: 'app_assignment_assignment_tags_stddev_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Stddev_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Assignment_Assignment_Tags_Stddev_Pop_Fields = {
-  __typename?: 'app_assignment_assignment_tags_stddev_pop_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Stddev_Pop_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Assignment_Assignment_Tags_Stddev_Samp_Fields = {
-  __typename?: 'app_assignment_assignment_tags_stddev_samp_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Stddev_Samp_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignment_Assignment_Tags_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignment_Assignment_Tags_Stream_Cursor_Value_Input = {
-  assignment_tag_id?: InputMaybe<Scalars['Int']>;
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate sum on columns */
-export type App_Assignment_Assignment_Tags_Sum_Fields = {
-  __typename?: 'app_assignment_assignment_tags_sum_fields';
-  assignment_tag_id?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Sum_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "app.assignment_assignment_tags" */
-export enum App_Assignment_Assignment_Tags_Update_Column {
-  /** column name */
-  AssignmentTagId = 'assignment_tag_id',
-  /** column name */
-  AssignmentUuid = 'assignment_uuid',
-  /** column name */
-  Id = 'id'
-}
-
-export type App_Assignment_Assignment_Tags_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Assignment_Assignment_Tags_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignment_Assignment_Tags_Set_Input>;
-  where: App_Assignment_Assignment_Tags_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type App_Assignment_Assignment_Tags_Var_Pop_Fields = {
-  __typename?: 'app_assignment_assignment_tags_var_pop_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Var_Pop_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Assignment_Assignment_Tags_Var_Samp_Fields = {
-  __typename?: 'app_assignment_assignment_tags_var_samp_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Var_Samp_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Assignment_Assignment_Tags_Variance_Fields = {
-  __typename?: 'app_assignment_assignment_tags_variance_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Variance_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
 /** columns and relationships of "app.assignment_blocks_v2" */
 export type App_Assignment_Blocks_V2 = {
   __typename?: 'app_assignment_blocks_v2';
@@ -962,337 +638,6 @@ export type App_Assignment_Blocks_V2_Variance_Order_By = {
   start_oc?: InputMaybe<Order_By>;
 };
 
-/** Table for user tags of assignments with colors (enum) and labels. */
-export type App_Assignment_Labels = {
-  __typename?: 'app_assignment_labels';
-  color_enum_value: Lookup_Enum_Colors_Enum;
-  color_override?: Maybe<Scalars['String']>;
-  /** An object relationship */
-  enum_color: Lookup_Enum_Colors;
-  id: Scalars['Int'];
-  label?: Maybe<Scalars['String']>;
-  owner_profile_id: Scalars['uuid'];
-  /** An object relationship */
-  profile: Users_Profiles;
-  /** An array relationship */
-  tags: Array<App_Assignment_Assignment_Tags>;
-  /** An aggregate relationship */
-  tags_aggregate: App_Assignment_Assignment_Tags_Aggregate;
-};
-
-
-/** Table for user tags of assignments with colors (enum) and labels. */
-export type App_Assignment_LabelsTagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-/** Table for user tags of assignments with colors (enum) and labels. */
-export type App_Assignment_LabelsTags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-/** aggregated selection of "app.assignment_labels" */
-export type App_Assignment_Labels_Aggregate = {
-  __typename?: 'app_assignment_labels_aggregate';
-  aggregate?: Maybe<App_Assignment_Labels_Aggregate_Fields>;
-  nodes: Array<App_Assignment_Labels>;
-};
-
-export type App_Assignment_Labels_Aggregate_Bool_Exp = {
-  count?: InputMaybe<App_Assignment_Labels_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignment_Labels_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignment_labels" */
-export type App_Assignment_Labels_Aggregate_Fields = {
-  __typename?: 'app_assignment_labels_aggregate_fields';
-  avg?: Maybe<App_Assignment_Labels_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignment_Labels_Max_Fields>;
-  min?: Maybe<App_Assignment_Labels_Min_Fields>;
-  stddev?: Maybe<App_Assignment_Labels_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Assignment_Labels_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Assignment_Labels_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Assignment_Labels_Sum_Fields>;
-  var_pop?: Maybe<App_Assignment_Labels_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Assignment_Labels_Var_Samp_Fields>;
-  variance?: Maybe<App_Assignment_Labels_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.assignment_labels" */
-export type App_Assignment_Labels_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignment_labels" */
-export type App_Assignment_Labels_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Assignment_Labels_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignment_Labels_Max_Order_By>;
-  min?: InputMaybe<App_Assignment_Labels_Min_Order_By>;
-  stddev?: InputMaybe<App_Assignment_Labels_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Assignment_Labels_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Assignment_Labels_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Assignment_Labels_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Assignment_Labels_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Assignment_Labels_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Assignment_Labels_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.assignment_labels" */
-export type App_Assignment_Labels_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignment_Labels_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignment_Labels_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type App_Assignment_Labels_Avg_Fields = {
-  __typename?: 'app_assignment_labels_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignment_labels". All fields are combined with a logical 'AND'. */
-export type App_Assignment_Labels_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignment_Labels_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignment_Labels_Bool_Exp>>;
-  color_enum_value?: InputMaybe<Lookup_Enum_Colors_Enum_Comparison_Exp>;
-  color_override?: InputMaybe<String_Comparison_Exp>;
-  enum_color?: InputMaybe<Lookup_Enum_Colors_Bool_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  label?: InputMaybe<String_Comparison_Exp>;
-  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
-  tags?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-  tags_aggregate?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Bool_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignment_labels" */
-export enum App_Assignment_Labels_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  AssignmentTagsPkey = 'assignment_tags_pkey'
-}
-
-/** input type for incrementing numeric columns in table "app.assignment_labels" */
-export type App_Assignment_Labels_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.assignment_labels" */
-export type App_Assignment_Labels_Insert_Input = {
-  color_enum_value?: InputMaybe<Lookup_Enum_Colors_Enum>;
-  color_override?: InputMaybe<Scalars['String']>;
-  enum_color?: InputMaybe<Lookup_Enum_Colors_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
-  tags?: InputMaybe<App_Assignment_Assignment_Tags_Arr_Rel_Insert_Input>;
-};
-
-/** aggregate max on columns */
-export type App_Assignment_Labels_Max_Fields = {
-  __typename?: 'app_assignment_labels_max_fields';
-  color_override?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  label?: Maybe<Scalars['String']>;
-  owner_profile_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Max_Order_By = {
-  color_override?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignment_Labels_Min_Fields = {
-  __typename?: 'app_assignment_labels_min_fields';
-  color_override?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  label?: Maybe<Scalars['String']>;
-  owner_profile_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by min() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Min_Order_By = {
-  color_override?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignment_labels" */
-export type App_Assignment_Labels_Mutation_Response = {
-  __typename?: 'app_assignment_labels_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignment_Labels>;
-};
-
-/** input type for inserting object relation for remote table "app.assignment_labels" */
-export type App_Assignment_Labels_Obj_Rel_Insert_Input = {
-  data: App_Assignment_Labels_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignment_Labels_On_Conflict>;
-};
-
-/** on_conflict condition type for table "app.assignment_labels" */
-export type App_Assignment_Labels_On_Conflict = {
-  constraint: App_Assignment_Labels_Constraint;
-  update_columns?: Array<App_Assignment_Labels_Update_Column>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignment_labels". */
-export type App_Assignment_Labels_Order_By = {
-  color_enum_value?: InputMaybe<Order_By>;
-  color_override?: InputMaybe<Order_By>;
-  enum_color?: InputMaybe<Lookup_Enum_Colors_Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
-  tags_aggregate?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Order_By>;
-};
-
-/** primary key columns input for table: app.assignment_labels */
-export type App_Assignment_Labels_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "app.assignment_labels" */
-export enum App_Assignment_Labels_Select_Column {
-  /** column name */
-  ColorEnumValue = 'color_enum_value',
-  /** column name */
-  ColorOverride = 'color_override',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  OwnerProfileId = 'owner_profile_id'
-}
-
-/** input type for updating data in table "app.assignment_labels" */
-export type App_Assignment_Labels_Set_Input = {
-  color_enum_value?: InputMaybe<Lookup_Enum_Colors_Enum>;
-  color_override?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Assignment_Labels_Stddev_Fields = {
-  __typename?: 'app_assignment_labels_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Assignment_Labels_Stddev_Pop_Fields = {
-  __typename?: 'app_assignment_labels_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Assignment_Labels_Stddev_Samp_Fields = {
-  __typename?: 'app_assignment_labels_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_assignment_labels" */
-export type App_Assignment_Labels_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignment_Labels_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignment_Labels_Stream_Cursor_Value_Input = {
-  color_enum_value?: InputMaybe<Lookup_Enum_Colors_Enum>;
-  color_override?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate sum on columns */
-export type App_Assignment_Labels_Sum_Fields = {
-  __typename?: 'app_assignment_labels_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "app.assignment_labels" */
-export enum App_Assignment_Labels_Update_Column {
-  /** column name */
-  ColorEnumValue = 'color_enum_value',
-  /** column name */
-  ColorOverride = 'color_override',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  OwnerProfileId = 'owner_profile_id'
-}
-
-export type App_Assignment_Labels_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Assignment_Labels_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignment_Labels_Set_Input>;
-  where: App_Assignment_Labels_Bool_Exp;
-};
-
 /** columns and relationships of "app.assignment_labels_v2" */
 export type App_Assignment_Labels_V2 = {
   __typename?: 'app_assignment_labels_v2';
@@ -1530,451 +875,6 @@ export type App_Assignment_Labels_V2_Updates = {
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<App_Assignment_Labels_V2_Set_Input>;
   where: App_Assignment_Labels_V2_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type App_Assignment_Labels_Var_Pop_Fields = {
-  __typename?: 'app_assignment_labels_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Assignment_Labels_Var_Samp_Fields = {
-  __typename?: 'app_assignment_labels_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Assignment_Labels_Variance_Fields = {
-  __typename?: 'app_assignment_labels_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Pupil responses to teacher's assignments. */
-export type App_Assignment_Responses = {
-  __typename?: 'app_assignment_responses';
-  /** An object relationship */
-  assignment?: Maybe<App_Assignments>;
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  /** An object relationship */
-  collection?: Maybe<App_Collections>;
-  collection_uuid?: Maybe<Scalars['uuid']>;
-  created_at: Scalars['timestamptz'];
-  id: Scalars['Int'];
-  is_archived: Scalars['Boolean'];
-  /** array van gebruikersprofielen */
-  owner_profile_ids: Scalars['jsonb'];
-  submitted_at?: Maybe<Scalars['timestamptz']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-
-/** Pupil responses to teacher's assignments. */
-export type App_Assignment_ResponsesOwner_Profile_IdsArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregated selection of "app.assignment_responses" */
-export type App_Assignment_Responses_Aggregate = {
-  __typename?: 'app_assignment_responses_aggregate';
-  aggregate?: Maybe<App_Assignment_Responses_Aggregate_Fields>;
-  nodes: Array<App_Assignment_Responses>;
-};
-
-export type App_Assignment_Responses_Aggregate_Bool_Exp = {
-  bool_and?: InputMaybe<App_Assignment_Responses_Aggregate_Bool_Exp_Bool_And>;
-  bool_or?: InputMaybe<App_Assignment_Responses_Aggregate_Bool_Exp_Bool_Or>;
-  count?: InputMaybe<App_Assignment_Responses_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignment_Responses_Aggregate_Bool_Exp_Bool_And = {
-  arguments: App_Assignment_Responses_Select_Column_App_Assignment_Responses_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type App_Assignment_Responses_Aggregate_Bool_Exp_Bool_Or = {
-  arguments: App_Assignment_Responses_Select_Column_App_Assignment_Responses_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type App_Assignment_Responses_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignment_responses" */
-export type App_Assignment_Responses_Aggregate_Fields = {
-  __typename?: 'app_assignment_responses_aggregate_fields';
-  avg?: Maybe<App_Assignment_Responses_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignment_Responses_Max_Fields>;
-  min?: Maybe<App_Assignment_Responses_Min_Fields>;
-  stddev?: Maybe<App_Assignment_Responses_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Assignment_Responses_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Assignment_Responses_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Assignment_Responses_Sum_Fields>;
-  var_pop?: Maybe<App_Assignment_Responses_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Assignment_Responses_Var_Samp_Fields>;
-  variance?: Maybe<App_Assignment_Responses_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.assignment_responses" */
-export type App_Assignment_Responses_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignment_responses" */
-export type App_Assignment_Responses_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Assignment_Responses_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignment_Responses_Max_Order_By>;
-  min?: InputMaybe<App_Assignment_Responses_Min_Order_By>;
-  stddev?: InputMaybe<App_Assignment_Responses_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Assignment_Responses_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Assignment_Responses_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Assignment_Responses_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Assignment_Responses_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Assignment_Responses_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Assignment_Responses_Variance_Order_By>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type App_Assignment_Responses_Append_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** input type for inserting array relation for remote table "app.assignment_responses" */
-export type App_Assignment_Responses_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignment_Responses_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignment_Responses_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type App_Assignment_Responses_Avg_Fields = {
-  __typename?: 'app_assignment_responses_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignment_responses". All fields are combined with a logical 'AND'. */
-export type App_Assignment_Responses_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignment_Responses_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignment_Responses_Bool_Exp>>;
-  assignment?: InputMaybe<App_Assignments_Bool_Exp>;
-  assignment_uuid?: InputMaybe<Uuid_Comparison_Exp>;
-  collection?: InputMaybe<App_Collections_Bool_Exp>;
-  collection_uuid?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  is_archived?: InputMaybe<Boolean_Comparison_Exp>;
-  owner_profile_ids?: InputMaybe<Jsonb_Comparison_Exp>;
-  submitted_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignment_responses" */
-export enum App_Assignment_Responses_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  AssignmentResponsesPkey = 'assignment_responses_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type App_Assignment_Responses_Delete_At_Path_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type App_Assignment_Responses_Delete_Elem_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type App_Assignment_Responses_Delete_Key_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['String']>;
-};
-
-/** input type for incrementing numeric columns in table "app.assignment_responses" */
-export type App_Assignment_Responses_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.assignment_responses" */
-export type App_Assignment_Responses_Insert_Input = {
-  assignment?: InputMaybe<App_Assignments_Obj_Rel_Insert_Input>;
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  collection?: InputMaybe<App_Collections_Obj_Rel_Insert_Input>;
-  collection_uuid?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-  submitted_at?: InputMaybe<Scalars['timestamptz']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate max on columns */
-export type App_Assignment_Responses_Max_Fields = {
-  __typename?: 'app_assignment_responses_max_fields';
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  collection_uuid?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
-  submitted_at?: Maybe<Scalars['timestamptz']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** order by max() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Max_Order_By = {
-  assignment_uuid?: InputMaybe<Order_By>;
-  collection_uuid?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  submitted_at?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignment_Responses_Min_Fields = {
-  __typename?: 'app_assignment_responses_min_fields';
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  collection_uuid?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
-  submitted_at?: Maybe<Scalars['timestamptz']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** order by min() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Min_Order_By = {
-  assignment_uuid?: InputMaybe<Order_By>;
-  collection_uuid?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  submitted_at?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignment_responses" */
-export type App_Assignment_Responses_Mutation_Response = {
-  __typename?: 'app_assignment_responses_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignment_Responses>;
-};
-
-/** on_conflict condition type for table "app.assignment_responses" */
-export type App_Assignment_Responses_On_Conflict = {
-  constraint: App_Assignment_Responses_Constraint;
-  update_columns?: Array<App_Assignment_Responses_Update_Column>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignment_responses". */
-export type App_Assignment_Responses_Order_By = {
-  assignment?: InputMaybe<App_Assignments_Order_By>;
-  assignment_uuid?: InputMaybe<Order_By>;
-  collection?: InputMaybe<App_Collections_Order_By>;
-  collection_uuid?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  is_archived?: InputMaybe<Order_By>;
-  owner_profile_ids?: InputMaybe<Order_By>;
-  submitted_at?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: app.assignment_responses */
-export type App_Assignment_Responses_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type App_Assignment_Responses_Prepend_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "app.assignment_responses" */
-export enum App_Assignment_Responses_Select_Column {
-  /** column name */
-  AssignmentUuid = 'assignment_uuid',
-  /** column name */
-  CollectionUuid = 'collection_uuid',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  OwnerProfileIds = 'owner_profile_ids',
-  /** column name */
-  SubmittedAt = 'submitted_at',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** select "app_assignment_responses_aggregate_bool_exp_bool_and_arguments_columns" columns of table "app.assignment_responses" */
-export enum App_Assignment_Responses_Select_Column_App_Assignment_Responses_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
-  /** column name */
-  IsArchived = 'is_archived'
-}
-
-/** select "app_assignment_responses_aggregate_bool_exp_bool_or_arguments_columns" columns of table "app.assignment_responses" */
-export enum App_Assignment_Responses_Select_Column_App_Assignment_Responses_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
-  /** column name */
-  IsArchived = 'is_archived'
-}
-
-/** input type for updating data in table "app.assignment_responses" */
-export type App_Assignment_Responses_Set_Input = {
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  collection_uuid?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-  submitted_at?: InputMaybe<Scalars['timestamptz']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Assignment_Responses_Stddev_Fields = {
-  __typename?: 'app_assignment_responses_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Assignment_Responses_Stddev_Pop_Fields = {
-  __typename?: 'app_assignment_responses_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Assignment_Responses_Stddev_Samp_Fields = {
-  __typename?: 'app_assignment_responses_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_assignment_responses" */
-export type App_Assignment_Responses_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignment_Responses_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignment_Responses_Stream_Cursor_Value_Input = {
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  collection_uuid?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-  submitted_at?: InputMaybe<Scalars['timestamptz']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate sum on columns */
-export type App_Assignment_Responses_Sum_Fields = {
-  __typename?: 'app_assignment_responses_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "app.assignment_responses" */
-export enum App_Assignment_Responses_Update_Column {
-  /** column name */
-  AssignmentUuid = 'assignment_uuid',
-  /** column name */
-  CollectionUuid = 'collection_uuid',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  OwnerProfileIds = 'owner_profile_ids',
-  /** column name */
-  SubmittedAt = 'submitted_at',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-export type App_Assignment_Responses_Updates = {
-  /** append existing jsonb value of filtered columns with new jsonb value */
-  _append?: InputMaybe<App_Assignment_Responses_Append_Input>;
-  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-  _delete_at_path?: InputMaybe<App_Assignment_Responses_Delete_At_Path_Input>;
-  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-  _delete_elem?: InputMaybe<App_Assignment_Responses_Delete_Elem_Input>;
-  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
-  _delete_key?: InputMaybe<App_Assignment_Responses_Delete_Key_Input>;
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Assignment_Responses_Inc_Input>;
-  /** prepend existing jsonb value of filtered columns with new jsonb value */
-  _prepend?: InputMaybe<App_Assignment_Responses_Prepend_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignment_Responses_Set_Input>;
-  where: App_Assignment_Responses_Bool_Exp;
 };
 
 /** columns and relationships of "app.assignment_responses_v2" */
@@ -2253,39 +1153,6 @@ export type App_Assignment_Responses_V2_Updates = {
   where: App_Assignment_Responses_V2_Bool_Exp;
 };
 
-/** aggregate var_pop on columns */
-export type App_Assignment_Responses_Var_Pop_Fields = {
-  __typename?: 'app_assignment_responses_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Assignment_Responses_Var_Samp_Fields = {
-  __typename?: 'app_assignment_responses_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Assignment_Responses_Variance_Fields = {
-  __typename?: 'app_assignment_responses_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** columns and relationships of "app.assignment_v2_views" */
 export type App_Assignment_V2_Views = {
   __typename?: 'app_assignment_v2_views';
@@ -2525,593 +1392,6 @@ export type App_Assignment_V2_Views_Var_Samp_Fields = {
 export type App_Assignment_V2_Views_Variance_Fields = {
   __typename?: 'app_assignment_v2_views_variance_fields';
   count?: Maybe<Scalars['Float']>;
-};
-
-/** Table for assignments from teacher to student. */
-export type App_Assignments = {
-  __typename?: 'app_assignments';
-  answer_url?: Maybe<Scalars['String']>;
-  assignment_type?: Maybe<Scalars['String']>;
-  available_at?: Maybe<Scalars['timestamptz']>;
-  class_room?: Maybe<Scalars['String']>;
-  content_id: Scalars['String'];
-  /** Welke content wordt er gebruikt in de opdracht. */
-  content_label: Lookup_Enum_Assignment_Content_Labels_Enum;
-  content_layout: Scalars['Int'];
-  created_at: Scalars['timestamptz'];
-  deadline_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  /** An object relationship */
-  enum_assignment_content_label: Lookup_Enum_Assignment_Content_Labels;
-  id: Scalars['Int'];
-  is_archived: Scalars['Boolean'];
-  is_collaborative: Scalars['Boolean'];
-  is_deleted: Scalars['Boolean'];
-  /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
-  owner_profile_id: Scalars['uuid'];
-  /** An object relationship */
-  profile: Users_Profiles;
-  /** An array relationship */
-  responses: Array<App_Assignment_Responses>;
-  /** An aggregate relationship */
-  responses_aggregate: App_Assignment_Responses_Aggregate;
-  /** An array relationship */
-  tags: Array<App_Assignment_Assignment_Tags>;
-  /** An aggregate relationship */
-  tags_aggregate: App_Assignment_Assignment_Tags_Aggregate;
-  title?: Maybe<Scalars['String']>;
-  updated_at: Scalars['timestamptz'];
-  uuid: Scalars['uuid'];
-};
-
-
-/** Table for assignments from teacher to student. */
-export type App_AssignmentsResponsesArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-/** Table for assignments from teacher to student. */
-export type App_AssignmentsResponses_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-/** Table for assignments from teacher to student. */
-export type App_AssignmentsTagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-/** Table for assignments from teacher to student. */
-export type App_AssignmentsTags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-/** aggregated selection of "app.assignments" */
-export type App_Assignments_Aggregate = {
-  __typename?: 'app_assignments_aggregate';
-  aggregate?: Maybe<App_Assignments_Aggregate_Fields>;
-  nodes: Array<App_Assignments>;
-};
-
-export type App_Assignments_Aggregate_Bool_Exp = {
-  bool_and?: InputMaybe<App_Assignments_Aggregate_Bool_Exp_Bool_And>;
-  bool_or?: InputMaybe<App_Assignments_Aggregate_Bool_Exp_Bool_Or>;
-  count?: InputMaybe<App_Assignments_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignments_Aggregate_Bool_Exp_Bool_And = {
-  arguments: App_Assignments_Select_Column_App_Assignments_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignments_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type App_Assignments_Aggregate_Bool_Exp_Bool_Or = {
-  arguments: App_Assignments_Select_Column_App_Assignments_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignments_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type App_Assignments_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignments_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignments" */
-export type App_Assignments_Aggregate_Fields = {
-  __typename?: 'app_assignments_aggregate_fields';
-  avg?: Maybe<App_Assignments_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignments_Max_Fields>;
-  min?: Maybe<App_Assignments_Min_Fields>;
-  stddev?: Maybe<App_Assignments_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Assignments_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Assignments_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Assignments_Sum_Fields>;
-  var_pop?: Maybe<App_Assignments_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Assignments_Var_Samp_Fields>;
-  variance?: Maybe<App_Assignments_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.assignments" */
-export type App_Assignments_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignments" */
-export type App_Assignments_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Assignments_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignments_Max_Order_By>;
-  min?: InputMaybe<App_Assignments_Min_Order_By>;
-  stddev?: InputMaybe<App_Assignments_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Assignments_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Assignments_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Assignments_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Assignments_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Assignments_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Assignments_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.assignments" */
-export type App_Assignments_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignments_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignments_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type App_Assignments_Avg_Fields = {
-  __typename?: 'app_assignments_avg_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.assignments" */
-export type App_Assignments_Avg_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignments". All fields are combined with a logical 'AND'. */
-export type App_Assignments_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignments_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignments_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignments_Bool_Exp>>;
-  answer_url?: InputMaybe<String_Comparison_Exp>;
-  assignment_type?: InputMaybe<String_Comparison_Exp>;
-  available_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  class_room?: InputMaybe<String_Comparison_Exp>;
-  content_id?: InputMaybe<String_Comparison_Exp>;
-  content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum_Comparison_Exp>;
-  content_layout?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  deadline_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  description?: InputMaybe<String_Comparison_Exp>;
-  enum_assignment_content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Bool_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  is_archived?: InputMaybe<Boolean_Comparison_Exp>;
-  is_collaborative?: InputMaybe<Boolean_Comparison_Exp>;
-  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
-  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
-  responses?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  responses_aggregate?: InputMaybe<App_Assignment_Responses_Aggregate_Bool_Exp>;
-  tags?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-  tags_aggregate?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Bool_Exp>;
-  title?: InputMaybe<String_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignments" */
-export enum App_Assignments_Constraint {
-  /** unique or primary key constraint on columns "uuid" */
-  AssignmentsPkey = 'assignments_pkey',
-  /** unique or primary key constraint on columns "uuid" */
-  AssignmentsUuidKey = 'assignments_uuid_key'
-}
-
-/** input type for incrementing numeric columns in table "app.assignments" */
-export type App_Assignments_Inc_Input = {
-  content_layout?: InputMaybe<Scalars['Int']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.assignments" */
-export type App_Assignments_Insert_Input = {
-  answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
-  available_at?: InputMaybe<Scalars['timestamptz']>;
-  class_room?: InputMaybe<Scalars['String']>;
-  content_id?: InputMaybe<Scalars['String']>;
-  /** Welke content wordt er gebruikt in de opdracht. */
-  content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  content_layout?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  deadline_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  enum_assignment_content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  is_collaborative?: InputMaybe<Scalars['Boolean']>;
-  is_deleted?: InputMaybe<Scalars['Boolean']>;
-  owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
-  responses?: InputMaybe<App_Assignment_Responses_Arr_Rel_Insert_Input>;
-  tags?: InputMaybe<App_Assignment_Assignment_Tags_Arr_Rel_Insert_Input>;
-  title?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  uuid?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate max on columns */
-export type App_Assignments_Max_Fields = {
-  __typename?: 'app_assignments_max_fields';
-  answer_url?: Maybe<Scalars['String']>;
-  assignment_type?: Maybe<Scalars['String']>;
-  available_at?: Maybe<Scalars['timestamptz']>;
-  class_room?: Maybe<Scalars['String']>;
-  content_id?: Maybe<Scalars['String']>;
-  content_layout?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  deadline_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  owner_profile_id?: Maybe<Scalars['uuid']>;
-  title?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-  uuid?: Maybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "app.assignments" */
-export type App_Assignments_Max_Order_By = {
-  answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
-  available_at?: InputMaybe<Order_By>;
-  class_room?: InputMaybe<Order_By>;
-  content_id?: InputMaybe<Order_By>;
-  content_layout?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  deadline_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-  title?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignments_Min_Fields = {
-  __typename?: 'app_assignments_min_fields';
-  answer_url?: Maybe<Scalars['String']>;
-  assignment_type?: Maybe<Scalars['String']>;
-  available_at?: Maybe<Scalars['timestamptz']>;
-  class_room?: Maybe<Scalars['String']>;
-  content_id?: Maybe<Scalars['String']>;
-  content_layout?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  deadline_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  owner_profile_id?: Maybe<Scalars['uuid']>;
-  title?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-  uuid?: Maybe<Scalars['uuid']>;
-};
-
-/** order by min() on columns of table "app.assignments" */
-export type App_Assignments_Min_Order_By = {
-  answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
-  available_at?: InputMaybe<Order_By>;
-  class_room?: InputMaybe<Order_By>;
-  content_id?: InputMaybe<Order_By>;
-  content_layout?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  deadline_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-  title?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignments" */
-export type App_Assignments_Mutation_Response = {
-  __typename?: 'app_assignments_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignments>;
-};
-
-/** input type for inserting object relation for remote table "app.assignments" */
-export type App_Assignments_Obj_Rel_Insert_Input = {
-  data: App_Assignments_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignments_On_Conflict>;
-};
-
-/** on_conflict condition type for table "app.assignments" */
-export type App_Assignments_On_Conflict = {
-  constraint: App_Assignments_Constraint;
-  update_columns?: Array<App_Assignments_Update_Column>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignments". */
-export type App_Assignments_Order_By = {
-  answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
-  available_at?: InputMaybe<Order_By>;
-  class_room?: InputMaybe<Order_By>;
-  content_id?: InputMaybe<Order_By>;
-  content_label?: InputMaybe<Order_By>;
-  content_layout?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  deadline_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  enum_assignment_content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Order_By>;
-  id?: InputMaybe<Order_By>;
-  is_archived?: InputMaybe<Order_By>;
-  is_collaborative?: InputMaybe<Order_By>;
-  is_deleted?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
-  responses_aggregate?: InputMaybe<App_Assignment_Responses_Aggregate_Order_By>;
-  tags_aggregate?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Order_By>;
-  title?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: app.assignments */
-export type App_Assignments_Pk_Columns_Input = {
-  uuid: Scalars['uuid'];
-};
-
-/** select columns of table "app.assignments" */
-export enum App_Assignments_Select_Column {
-  /** column name */
-  AnswerUrl = 'answer_url',
-  /** column name */
-  AssignmentType = 'assignment_type',
-  /** column name */
-  AvailableAt = 'available_at',
-  /** column name */
-  ClassRoom = 'class_room',
-  /** column name */
-  ContentId = 'content_id',
-  /** column name */
-  ContentLabel = 'content_label',
-  /** column name */
-  ContentLayout = 'content_layout',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  DeadlineAt = 'deadline_at',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  IsCollaborative = 'is_collaborative',
-  /** column name */
-  IsDeleted = 'is_deleted',
-  /** column name */
-  OwnerProfileId = 'owner_profile_id',
-  /** column name */
-  Title = 'title',
-  /** column name */
-  UpdatedAt = 'updated_at',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** select "app_assignments_aggregate_bool_exp_bool_and_arguments_columns" columns of table "app.assignments" */
-export enum App_Assignments_Select_Column_App_Assignments_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  IsCollaborative = 'is_collaborative',
-  /** column name */
-  IsDeleted = 'is_deleted'
-}
-
-/** select "app_assignments_aggregate_bool_exp_bool_or_arguments_columns" columns of table "app.assignments" */
-export enum App_Assignments_Select_Column_App_Assignments_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  IsCollaborative = 'is_collaborative',
-  /** column name */
-  IsDeleted = 'is_deleted'
-}
-
-/** input type for updating data in table "app.assignments" */
-export type App_Assignments_Set_Input = {
-  answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
-  available_at?: InputMaybe<Scalars['timestamptz']>;
-  class_room?: InputMaybe<Scalars['String']>;
-  content_id?: InputMaybe<Scalars['String']>;
-  /** Welke content wordt er gebruikt in de opdracht. */
-  content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  content_layout?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  deadline_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  is_collaborative?: InputMaybe<Scalars['Boolean']>;
-  is_deleted?: InputMaybe<Scalars['Boolean']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  title?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  uuid?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Assignments_Stddev_Fields = {
-  __typename?: 'app_assignments_stddev_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.assignments" */
-export type App_Assignments_Stddev_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Assignments_Stddev_Pop_Fields = {
-  __typename?: 'app_assignments_stddev_pop_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.assignments" */
-export type App_Assignments_Stddev_Pop_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Assignments_Stddev_Samp_Fields = {
-  __typename?: 'app_assignments_stddev_samp_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.assignments" */
-export type App_Assignments_Stddev_Samp_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_assignments" */
-export type App_Assignments_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignments_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignments_Stream_Cursor_Value_Input = {
-  answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
-  available_at?: InputMaybe<Scalars['timestamptz']>;
-  class_room?: InputMaybe<Scalars['String']>;
-  content_id?: InputMaybe<Scalars['String']>;
-  /** Welke content wordt er gebruikt in de opdracht. */
-  content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  content_layout?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  deadline_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  is_collaborative?: InputMaybe<Scalars['Boolean']>;
-  is_deleted?: InputMaybe<Scalars['Boolean']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  title?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  uuid?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate sum on columns */
-export type App_Assignments_Sum_Fields = {
-  __typename?: 'app_assignments_sum_fields';
-  content_layout?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "app.assignments" */
-export type App_Assignments_Sum_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "app.assignments" */
-export enum App_Assignments_Update_Column {
-  /** column name */
-  AnswerUrl = 'answer_url',
-  /** column name */
-  AssignmentType = 'assignment_type',
-  /** column name */
-  AvailableAt = 'available_at',
-  /** column name */
-  ClassRoom = 'class_room',
-  /** column name */
-  ContentId = 'content_id',
-  /** column name */
-  ContentLabel = 'content_label',
-  /** column name */
-  ContentLayout = 'content_layout',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  DeadlineAt = 'deadline_at',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  IsCollaborative = 'is_collaborative',
-  /** column name */
-  IsDeleted = 'is_deleted',
-  /** column name */
-  OwnerProfileId = 'owner_profile_id',
-  /** column name */
-  Title = 'title',
-  /** column name */
-  UpdatedAt = 'updated_at',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-export type App_Assignments_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Assignments_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignments_Set_Input>;
-  where: App_Assignments_Bool_Exp;
 };
 
 /** columns and relationships of "app.assignments_v2" */
@@ -5756,45 +4036,6 @@ export type App_Assignments_V2_Variance_Fields = {
 /** order by variance() on columns of table "app.assignments_v2" */
 export type App_Assignments_V2_Variance_Order_By = {
   type_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type App_Assignments_Var_Pop_Fields = {
-  __typename?: 'app_assignments_var_pop_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.assignments" */
-export type App_Assignments_Var_Pop_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Assignments_Var_Samp_Fields = {
-  __typename?: 'app_assignments_var_samp_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.assignments" */
-export type App_Assignments_Var_Samp_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Assignments_Variance_Fields = {
-  __typename?: 'app_assignments_variance_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.assignments" */
-export type App_Assignments_Variance_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "app.bundels_index" */
@@ -11037,10 +9278,6 @@ export type App_Collections = {
   updated_by?: Maybe<Users_Profiles>;
   updated_by_profile_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
-  usage_counts: Array<App_Usage_Counts>;
-  /** An aggregate relationship */
-  usage_counts_aggregate: App_Usage_Counts_Aggregate;
-  /** An array relationship */
   view_counts: Array<App_Collection_Views>;
   /** An aggregate relationship */
   view_counts_aggregate: App_Collection_Views_Aggregate;
@@ -11290,26 +9527,6 @@ export type App_CollectionsRelations_AggregateArgs = {
 
 
 /** columns and relationships of "app.collections" */
-export type App_CollectionsUsage_CountsArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-/** columns and relationships of "app.collections" */
-export type App_CollectionsUsage_Counts_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-/** columns and relationships of "app.collections" */
 export type App_CollectionsView_CountsArgs = {
   distinct_on?: InputMaybe<Array<App_Collection_Views_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11500,8 +9717,6 @@ export type App_Collections_Bool_Exp = {
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   updated_by?: InputMaybe<Users_Profiles_Bool_Exp>;
   updated_by_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  usage_counts?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-  usage_counts_aggregate?: InputMaybe<App_Usage_Counts_Aggregate_Bool_Exp>;
   view_counts?: InputMaybe<App_Collection_Views_Bool_Exp>;
   view_counts_aggregate?: InputMaybe<App_Collection_Views_Aggregate_Bool_Exp>;
 };
@@ -11991,7 +10206,6 @@ export type App_Collections_Insert_Input = {
   updated_at?: InputMaybe<Scalars['timestamptz']>;
   updated_by?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   updated_by_profile_id?: InputMaybe<Scalars['uuid']>;
-  usage_counts?: InputMaybe<App_Usage_Counts_Arr_Rel_Insert_Input>;
   view_counts?: InputMaybe<App_Collection_Views_Arr_Rel_Insert_Input>;
 };
 
@@ -12384,7 +10598,6 @@ export type App_Collections_Order_By = {
   updated_at?: InputMaybe<Order_By>;
   updated_by?: InputMaybe<Users_Profiles_Order_By>;
   updated_by_profile_id?: InputMaybe<Order_By>;
-  usage_counts_aggregate?: InputMaybe<App_Usage_Counts_Aggregate_Order_By>;
   view_counts_aggregate?: InputMaybe<App_Collection_Views_Aggregate_Order_By>;
 };
 
@@ -12482,10 +10695,6 @@ export type App_Collections_Overview = {
   /** An object relationship */
   updated_by?: Maybe<Users_Profiles>;
   updated_by_profile_id?: Maybe<Scalars['uuid']>;
-  /** An array relationship */
-  usage_counts: Array<App_Usage_Counts>;
-  /** An aggregate relationship */
-  usage_counts_aggregate: App_Usage_Counts_Aggregate;
   /** An array relationship */
   view_counts: Array<App_Collection_Views>;
   /** An aggregate relationship */
@@ -12724,26 +10933,6 @@ export type App_Collections_OverviewRelations_AggregateArgs = {
 
 
 /** columns and relationships of "app.collections_overview" */
-export type App_Collections_OverviewUsage_CountsArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-/** columns and relationships of "app.collections_overview" */
-export type App_Collections_OverviewUsage_Counts_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-/** columns and relationships of "app.collections_overview" */
 export type App_Collections_OverviewView_CountsArgs = {
   distinct_on?: InputMaybe<Array<App_Collection_Views_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12866,8 +11055,6 @@ export type App_Collections_Overview_Bool_Exp = {
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   updated_by?: InputMaybe<Users_Profiles_Bool_Exp>;
   updated_by_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  usage_counts?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-  usage_counts_aggregate?: InputMaybe<App_Usage_Counts_Aggregate_Bool_Exp>;
   view_counts?: InputMaybe<App_Collection_Views_Bool_Exp>;
   view_counts_aggregate?: InputMaybe<App_Collection_Views_Aggregate_Bool_Exp>;
 };
@@ -12981,7 +11168,6 @@ export type App_Collections_Overview_Order_By = {
   updated_at?: InputMaybe<Order_By>;
   updated_by?: InputMaybe<Users_Profiles_Order_By>;
   updated_by_profile_id?: InputMaybe<Order_By>;
-  usage_counts_aggregate?: InputMaybe<App_Usage_Counts_Aggregate_Order_By>;
   view_counts_aggregate?: InputMaybe<App_Collection_Views_Aggregate_Order_By>;
 };
 
@@ -20863,253 +19049,6 @@ export type App_Site_Variables_Updates = {
   where: App_Site_Variables_Bool_Exp;
 };
 
-/** columns and relationships of "app.usage_counts" */
-export type App_Usage_Counts = {
-  __typename?: 'app_usage_counts';
-  count?: Maybe<Scalars['bigint']>;
-  id?: Maybe<Scalars['uuid']>;
-  type?: Maybe<Scalars['String']>;
-  usage?: Maybe<Scalars['String']>;
-};
-
-/** aggregated selection of "app.usage_counts" */
-export type App_Usage_Counts_Aggregate = {
-  __typename?: 'app_usage_counts_aggregate';
-  aggregate?: Maybe<App_Usage_Counts_Aggregate_Fields>;
-  nodes: Array<App_Usage_Counts>;
-};
-
-export type App_Usage_Counts_Aggregate_Bool_Exp = {
-  count?: InputMaybe<App_Usage_Counts_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Usage_Counts_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.usage_counts" */
-export type App_Usage_Counts_Aggregate_Fields = {
-  __typename?: 'app_usage_counts_aggregate_fields';
-  avg?: Maybe<App_Usage_Counts_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Usage_Counts_Max_Fields>;
-  min?: Maybe<App_Usage_Counts_Min_Fields>;
-  stddev?: Maybe<App_Usage_Counts_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Usage_Counts_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Usage_Counts_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Usage_Counts_Sum_Fields>;
-  var_pop?: Maybe<App_Usage_Counts_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Usage_Counts_Var_Samp_Fields>;
-  variance?: Maybe<App_Usage_Counts_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.usage_counts" */
-export type App_Usage_Counts_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.usage_counts" */
-export type App_Usage_Counts_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Usage_Counts_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Usage_Counts_Max_Order_By>;
-  min?: InputMaybe<App_Usage_Counts_Min_Order_By>;
-  stddev?: InputMaybe<App_Usage_Counts_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Usage_Counts_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Usage_Counts_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Usage_Counts_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Usage_Counts_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Usage_Counts_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Usage_Counts_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.usage_counts" */
-export type App_Usage_Counts_Arr_Rel_Insert_Input = {
-  data: Array<App_Usage_Counts_Insert_Input>;
-};
-
-/** aggregate avg on columns */
-export type App_Usage_Counts_Avg_Fields = {
-  __typename?: 'app_usage_counts_avg_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Avg_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.usage_counts". All fields are combined with a logical 'AND'. */
-export type App_Usage_Counts_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Usage_Counts_Bool_Exp>>;
-  _not?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Usage_Counts_Bool_Exp>>;
-  count?: InputMaybe<Bigint_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  type?: InputMaybe<String_Comparison_Exp>;
-  usage?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** input type for inserting data into table "app.usage_counts" */
-export type App_Usage_Counts_Insert_Input = {
-  count?: InputMaybe<Scalars['bigint']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  type?: InputMaybe<Scalars['String']>;
-  usage?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregate max on columns */
-export type App_Usage_Counts_Max_Fields = {
-  __typename?: 'app_usage_counts_max_fields';
-  count?: Maybe<Scalars['bigint']>;
-  id?: Maybe<Scalars['uuid']>;
-  type?: Maybe<Scalars['String']>;
-  usage?: Maybe<Scalars['String']>;
-};
-
-/** order by max() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Max_Order_By = {
-  count?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
-  usage?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Usage_Counts_Min_Fields = {
-  __typename?: 'app_usage_counts_min_fields';
-  count?: Maybe<Scalars['bigint']>;
-  id?: Maybe<Scalars['uuid']>;
-  type?: Maybe<Scalars['String']>;
-  usage?: Maybe<Scalars['String']>;
-};
-
-/** order by min() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Min_Order_By = {
-  count?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
-  usage?: InputMaybe<Order_By>;
-};
-
-/** Ordering options when selecting data from "app.usage_counts". */
-export type App_Usage_Counts_Order_By = {
-  count?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
-  usage?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "app.usage_counts" */
-export enum App_Usage_Counts_Select_Column {
-  /** column name */
-  Count = 'count',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Type = 'type',
-  /** column name */
-  Usage = 'usage'
-}
-
-/** aggregate stddev on columns */
-export type App_Usage_Counts_Stddev_Fields = {
-  __typename?: 'app_usage_counts_stddev_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Stddev_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Usage_Counts_Stddev_Pop_Fields = {
-  __typename?: 'app_usage_counts_stddev_pop_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Stddev_Pop_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Usage_Counts_Stddev_Samp_Fields = {
-  __typename?: 'app_usage_counts_stddev_samp_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Stddev_Samp_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_usage_counts" */
-export type App_Usage_Counts_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Usage_Counts_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Usage_Counts_Stream_Cursor_Value_Input = {
-  count?: InputMaybe<Scalars['bigint']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  type?: InputMaybe<Scalars['String']>;
-  usage?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregate sum on columns */
-export type App_Usage_Counts_Sum_Fields = {
-  __typename?: 'app_usage_counts_sum_fields';
-  count?: Maybe<Scalars['bigint']>;
-};
-
-/** order by sum() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Sum_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type App_Usage_Counts_Var_Pop_Fields = {
-  __typename?: 'app_usage_counts_var_pop_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Var_Pop_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Usage_Counts_Var_Samp_Fields = {
-  __typename?: 'app_usage_counts_var_samp_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Var_Samp_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Usage_Counts_Variance_Fields = {
-  __typename?: 'app_usage_counts_variance_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Variance_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 export type Bigint_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['bigint']>;
@@ -21275,24 +19214,6 @@ export enum Lookup_Enum_Assignment_Content_Labels_Constraint {
   EnumAssignmentContentLabelPkey = 'enum_assignment_content_label_pkey'
 }
 
-export enum Lookup_Enum_Assignment_Content_Labels_Enum {
-  /** Een gebruikerscollectie. */
-  Collectie = 'COLLECTIE',
-  /** Een video- of audiofragment */
-  Item = 'ITEM',
-  /** Een opgeslagen zoekopdracht. */
-  Zoekopdracht = 'ZOEKOPDRACHT'
-}
-
-/** Boolean expression to compare columns of type "lookup_enum_assignment_content_labels_enum". All fields are combined with logical 'AND'. */
-export type Lookup_Enum_Assignment_Content_Labels_Enum_Comparison_Exp = {
-  _eq?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  _in?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Enum>>;
-  _is_null?: InputMaybe<Scalars['Boolean']>;
-  _neq?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  _nin?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Enum>>;
-};
-
 /** input type for inserting data into table "lookup.enum_assignment_content_labels" */
 export type Lookup_Enum_Assignment_Content_Labels_Insert_Input = {
   label?: InputMaybe<Scalars['String']>;
@@ -21320,13 +19241,6 @@ export type Lookup_Enum_Assignment_Content_Labels_Mutation_Response = {
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
   returning: Array<Lookup_Enum_Assignment_Content_Labels>;
-};
-
-/** input type for inserting object relation for remote table "lookup.enum_assignment_content_labels" */
-export type Lookup_Enum_Assignment_Content_Labels_Obj_Rel_Insert_Input = {
-  data: Lookup_Enum_Assignment_Content_Labels_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_On_Conflict>;
 };
 
 /** on_conflict condition type for table "lookup.enum_assignment_content_labels" */
@@ -24303,151 +22217,6 @@ export enum Lookup_Thesaurus_Update_Column {
   Topconceptof = 'topconceptof'
 }
 
-/** Table met de oorspronkelijke datum van toevoeging op avo1. */
-export type Migrate_Original_Publishdate = {
-  __typename?: 'migrate_original_publishdate';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  external_id: Scalars['String'];
-  mediamosa_id: Scalars['String'];
-};
-
-/** aggregated selection of "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Aggregate = {
-  __typename?: 'migrate_original_publishdate_aggregate';
-  aggregate?: Maybe<Migrate_Original_Publishdate_Aggregate_Fields>;
-  nodes: Array<Migrate_Original_Publishdate>;
-};
-
-/** aggregate fields of "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Aggregate_Fields = {
-  __typename?: 'migrate_original_publishdate_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Migrate_Original_Publishdate_Max_Fields>;
-  min?: Maybe<Migrate_Original_Publishdate_Min_Fields>;
-};
-
-
-/** aggregate fields of "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** Boolean expression to filter rows from the table "migrate.original_publishdate". All fields are combined with a logical 'AND'. */
-export type Migrate_Original_Publishdate_Bool_Exp = {
-  _and?: InputMaybe<Array<Migrate_Original_Publishdate_Bool_Exp>>;
-  _not?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-  _or?: InputMaybe<Array<Migrate_Original_Publishdate_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  external_id?: InputMaybe<String_Comparison_Exp>;
-  mediamosa_id?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "migrate.original_publishdate" */
-export enum Migrate_Original_Publishdate_Constraint {
-  /** unique or primary key constraint on columns "mediamosa_id" */
-  OriginalPublishdatePkey = 'original_publishdate_pkey'
-}
-
-/** input type for inserting data into table "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  external_id?: InputMaybe<Scalars['String']>;
-  mediamosa_id?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregate max on columns */
-export type Migrate_Original_Publishdate_Max_Fields = {
-  __typename?: 'migrate_original_publishdate_max_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  external_id?: Maybe<Scalars['String']>;
-  mediamosa_id?: Maybe<Scalars['String']>;
-};
-
-/** aggregate min on columns */
-export type Migrate_Original_Publishdate_Min_Fields = {
-  __typename?: 'migrate_original_publishdate_min_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  external_id?: Maybe<Scalars['String']>;
-  mediamosa_id?: Maybe<Scalars['String']>;
-};
-
-/** response of any mutation on the table "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Mutation_Response = {
-  __typename?: 'migrate_original_publishdate_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Migrate_Original_Publishdate>;
-};
-
-/** on_conflict condition type for table "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_On_Conflict = {
-  constraint: Migrate_Original_Publishdate_Constraint;
-  update_columns?: Array<Migrate_Original_Publishdate_Update_Column>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "migrate.original_publishdate". */
-export type Migrate_Original_Publishdate_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  external_id?: InputMaybe<Order_By>;
-  mediamosa_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: migrate.original_publishdate */
-export type Migrate_Original_Publishdate_Pk_Columns_Input = {
-  mediamosa_id: Scalars['String'];
-};
-
-/** select columns of table "migrate.original_publishdate" */
-export enum Migrate_Original_Publishdate_Select_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  ExternalId = 'external_id',
-  /** column name */
-  MediamosaId = 'mediamosa_id'
-}
-
-/** input type for updating data in table "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  external_id?: InputMaybe<Scalars['String']>;
-  mediamosa_id?: InputMaybe<Scalars['String']>;
-};
-
-/** Streaming cursor of the table "migrate_original_publishdate" */
-export type Migrate_Original_Publishdate_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Migrate_Original_Publishdate_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Migrate_Original_Publishdate_Stream_Cursor_Value_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  external_id?: InputMaybe<Scalars['String']>;
-  mediamosa_id?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "migrate.original_publishdate" */
-export enum Migrate_Original_Publishdate_Update_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  ExternalId = 'external_id',
-  /** column name */
-  MediamosaId = 'mediamosa_id'
-}
-
-export type Migrate_Original_Publishdate_Updates = {
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Migrate_Original_Publishdate_Set_Input>;
-  where: Migrate_Original_Publishdate_Bool_Exp;
-};
-
 /** columns and relationships of "migrate.reference_ids" */
 export type Migrate_Reference_Ids = {
   __typename?: 'migrate_reference_ids';
@@ -24692,26 +22461,14 @@ export type Migrate_Reference_Ids_Variance_Fields = {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
-  /** delete data from the table: "app.assignment_assignment_tags" */
-  delete_app_assignment_assignment_tags?: Maybe<App_Assignment_Assignment_Tags_Mutation_Response>;
-  /** delete single row from the table: "app.assignment_assignment_tags" */
-  delete_app_assignment_assignment_tags_by_pk?: Maybe<App_Assignment_Assignment_Tags>;
   /** delete data from the table: "app.assignment_blocks_v2" */
   delete_app_assignment_blocks_v2?: Maybe<App_Assignment_Blocks_V2_Mutation_Response>;
   /** delete single row from the table: "app.assignment_blocks_v2" */
   delete_app_assignment_blocks_v2_by_pk?: Maybe<App_Assignment_Blocks_V2>;
-  /** delete data from the table: "app.assignment_labels" */
-  delete_app_assignment_labels?: Maybe<App_Assignment_Labels_Mutation_Response>;
-  /** delete single row from the table: "app.assignment_labels" */
-  delete_app_assignment_labels_by_pk?: Maybe<App_Assignment_Labels>;
   /** delete data from the table: "app.assignment_labels_v2" */
   delete_app_assignment_labels_v2?: Maybe<App_Assignment_Labels_V2_Mutation_Response>;
   /** delete single row from the table: "app.assignment_labels_v2" */
   delete_app_assignment_labels_v2_by_pk?: Maybe<App_Assignment_Labels_V2>;
-  /** delete data from the table: "app.assignment_responses" */
-  delete_app_assignment_responses?: Maybe<App_Assignment_Responses_Mutation_Response>;
-  /** delete single row from the table: "app.assignment_responses" */
-  delete_app_assignment_responses_by_pk?: Maybe<App_Assignment_Responses>;
   /** delete data from the table: "app.assignment_responses_v2" */
   delete_app_assignment_responses_v2?: Maybe<App_Assignment_Responses_V2_Mutation_Response>;
   /** delete single row from the table: "app.assignment_responses_v2" */
@@ -24720,10 +22477,6 @@ export type Mutation_Root = {
   delete_app_assignment_v2_views?: Maybe<App_Assignment_V2_Views_Mutation_Response>;
   /** delete single row from the table: "app.assignment_v2_views" */
   delete_app_assignment_v2_views_by_pk?: Maybe<App_Assignment_V2_Views>;
-  /** delete data from the table: "app.assignments" */
-  delete_app_assignments?: Maybe<App_Assignments_Mutation_Response>;
-  /** delete single row from the table: "app.assignments" */
-  delete_app_assignments_by_pk?: Maybe<App_Assignments>;
   /** delete data from the table: "app.assignments_v2" */
   delete_app_assignments_v2?: Maybe<App_Assignments_V2_Mutation_Response>;
   /** delete data from the table: "app.assignments_v2_assignment_labels_v2" */
@@ -24950,10 +22703,6 @@ export type Mutation_Root = {
   delete_lookup_thesaurus_old?: Maybe<Lookup_Thesaurus_Old_Mutation_Response>;
   /** delete single row from the table: "lookup.thesaurus_old" */
   delete_lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
-  /** delete data from the table: "migrate.original_publishdate" */
-  delete_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
-  /** delete single row from the table: "migrate.original_publishdate" */
-  delete_migrate_original_publishdate_by_pk?: Maybe<Migrate_Original_Publishdate>;
   /** delete data from the table: "migrate.reference_ids" */
   delete_migrate_reference_ids?: Maybe<Migrate_Reference_Ids_Mutation_Response>;
   /** delete single row from the table: "migrate.reference_ids" */
@@ -25004,10 +22753,6 @@ export type Mutation_Root = {
   delete_users_group_permissions?: Maybe<Users_Group_Permissions_Mutation_Response>;
   /** delete single row from the table: "users.group_permissions" */
   delete_users_group_permissions_by_pk?: Maybe<Users_Group_Permissions>;
-  /** delete data from the table: "users.group_user_permission_groups" */
-  delete_users_group_user_permission_groups?: Maybe<Users_Group_User_Permission_Groups_Mutation_Response>;
-  /** delete single row from the table: "users.group_user_permission_groups" */
-  delete_users_group_user_permission_groups_by_pk?: Maybe<Users_Group_User_Permission_Groups>;
   /** delete data from the table: "users.groups" */
   delete_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** delete single row from the table: "users.groups" */
@@ -25024,14 +22769,6 @@ export type Mutation_Root = {
   delete_users_notifications?: Maybe<Users_Notifications_Mutation_Response>;
   /** delete single row from the table: "users.notifications" */
   delete_users_notifications_by_pk?: Maybe<Users_Notifications>;
-  /** delete data from the table: "users.permission_group_user_permissions" */
-  delete_users_permission_group_user_permissions?: Maybe<Users_Permission_Group_User_Permissions_Mutation_Response>;
-  /** delete single row from the table: "users.permission_group_user_permissions" */
-  delete_users_permission_group_user_permissions_by_pk?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** delete data from the table: "users.permission_groups" */
-  delete_users_permission_groups?: Maybe<Users_Permission_Groups_Mutation_Response>;
-  /** delete single row from the table: "users.permission_groups" */
-  delete_users_permission_groups_by_pk?: Maybe<Users_Permission_Groups>;
   /** delete data from the table: "users.permissions" */
   delete_users_permissions?: Maybe<Users_Permissions_Mutation_Response>;
   /** delete single row from the table: "users.permissions" */
@@ -25072,26 +22809,14 @@ export type Mutation_Root = {
   delete_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** delete single row from the table: "users.users_sync_cm" */
   delete_users_users_sync_cm_by_pk?: Maybe<Users_Users_Sync_Cm>;
-  /** insert data into the table: "app.assignment_assignment_tags" */
-  insert_app_assignment_assignment_tags?: Maybe<App_Assignment_Assignment_Tags_Mutation_Response>;
-  /** insert a single row into the table: "app.assignment_assignment_tags" */
-  insert_app_assignment_assignment_tags_one?: Maybe<App_Assignment_Assignment_Tags>;
   /** insert data into the table: "app.assignment_blocks_v2" */
   insert_app_assignment_blocks_v2?: Maybe<App_Assignment_Blocks_V2_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_blocks_v2" */
   insert_app_assignment_blocks_v2_one?: Maybe<App_Assignment_Blocks_V2>;
-  /** insert data into the table: "app.assignment_labels" */
-  insert_app_assignment_labels?: Maybe<App_Assignment_Labels_Mutation_Response>;
-  /** insert a single row into the table: "app.assignment_labels" */
-  insert_app_assignment_labels_one?: Maybe<App_Assignment_Labels>;
   /** insert data into the table: "app.assignment_labels_v2" */
   insert_app_assignment_labels_v2?: Maybe<App_Assignment_Labels_V2_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_labels_v2" */
   insert_app_assignment_labels_v2_one?: Maybe<App_Assignment_Labels_V2>;
-  /** insert data into the table: "app.assignment_responses" */
-  insert_app_assignment_responses?: Maybe<App_Assignment_Responses_Mutation_Response>;
-  /** insert a single row into the table: "app.assignment_responses" */
-  insert_app_assignment_responses_one?: Maybe<App_Assignment_Responses>;
   /** insert data into the table: "app.assignment_responses_v2" */
   insert_app_assignment_responses_v2?: Maybe<App_Assignment_Responses_V2_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_responses_v2" */
@@ -25100,10 +22825,6 @@ export type Mutation_Root = {
   insert_app_assignment_v2_views?: Maybe<App_Assignment_V2_Views_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_v2_views" */
   insert_app_assignment_v2_views_one?: Maybe<App_Assignment_V2_Views>;
-  /** insert data into the table: "app.assignments" */
-  insert_app_assignments?: Maybe<App_Assignments_Mutation_Response>;
-  /** insert a single row into the table: "app.assignments" */
-  insert_app_assignments_one?: Maybe<App_Assignments>;
   /** insert data into the table: "app.assignments_v2" */
   insert_app_assignments_v2?: Maybe<App_Assignments_V2_Mutation_Response>;
   /** insert data into the table: "app.assignments_v2_assignment_labels_v2" */
@@ -25332,10 +23053,6 @@ export type Mutation_Root = {
   insert_lookup_thesaurus_old?: Maybe<Lookup_Thesaurus_Old_Mutation_Response>;
   /** insert a single row into the table: "lookup.thesaurus_old" */
   insert_lookup_thesaurus_old_one?: Maybe<Lookup_Thesaurus_Old>;
-  /** insert data into the table: "migrate.original_publishdate" */
-  insert_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
-  /** insert a single row into the table: "migrate.original_publishdate" */
-  insert_migrate_original_publishdate_one?: Maybe<Migrate_Original_Publishdate>;
   /** insert data into the table: "migrate.reference_ids" */
   insert_migrate_reference_ids?: Maybe<Migrate_Reference_Ids_Mutation_Response>;
   /** insert a single row into the table: "migrate.reference_ids" */
@@ -25388,10 +23105,6 @@ export type Mutation_Root = {
   insert_users_group_permissions?: Maybe<Users_Group_Permissions_Mutation_Response>;
   /** insert a single row into the table: "users.group_permissions" */
   insert_users_group_permissions_one?: Maybe<Users_Group_Permissions>;
-  /** insert data into the table: "users.group_user_permission_groups" */
-  insert_users_group_user_permission_groups?: Maybe<Users_Group_User_Permission_Groups_Mutation_Response>;
-  /** insert a single row into the table: "users.group_user_permission_groups" */
-  insert_users_group_user_permission_groups_one?: Maybe<Users_Group_User_Permission_Groups>;
   /** insert data into the table: "users.groups" */
   insert_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** insert a single row into the table: "users.groups" */
@@ -25408,14 +23121,6 @@ export type Mutation_Root = {
   insert_users_notifications?: Maybe<Users_Notifications_Mutation_Response>;
   /** insert a single row into the table: "users.notifications" */
   insert_users_notifications_one?: Maybe<Users_Notifications>;
-  /** insert data into the table: "users.permission_group_user_permissions" */
-  insert_users_permission_group_user_permissions?: Maybe<Users_Permission_Group_User_Permissions_Mutation_Response>;
-  /** insert a single row into the table: "users.permission_group_user_permissions" */
-  insert_users_permission_group_user_permissions_one?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** insert data into the table: "users.permission_groups" */
-  insert_users_permission_groups?: Maybe<Users_Permission_Groups_Mutation_Response>;
-  /** insert a single row into the table: "users.permission_groups" */
-  insert_users_permission_groups_one?: Maybe<Users_Permission_Groups>;
   /** insert data into the table: "users.permissions" */
   insert_users_permissions?: Maybe<Users_Permissions_Mutation_Response>;
   /** insert a single row into the table: "users.permissions" */
@@ -25456,36 +23161,18 @@ export type Mutation_Root = {
   insert_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** insert a single row into the table: "users.users_sync_cm" */
   insert_users_users_sync_cm_one?: Maybe<Users_Users_Sync_Cm>;
-  /** update data of the table: "app.assignment_assignment_tags" */
-  update_app_assignment_assignment_tags?: Maybe<App_Assignment_Assignment_Tags_Mutation_Response>;
-  /** update single row of the table: "app.assignment_assignment_tags" */
-  update_app_assignment_assignment_tags_by_pk?: Maybe<App_Assignment_Assignment_Tags>;
-  /** update multiples rows of table: "app.assignment_assignment_tags" */
-  update_app_assignment_assignment_tags_many?: Maybe<Array<Maybe<App_Assignment_Assignment_Tags_Mutation_Response>>>;
   /** update data of the table: "app.assignment_blocks_v2" */
   update_app_assignment_blocks_v2?: Maybe<App_Assignment_Blocks_V2_Mutation_Response>;
   /** update single row of the table: "app.assignment_blocks_v2" */
   update_app_assignment_blocks_v2_by_pk?: Maybe<App_Assignment_Blocks_V2>;
   /** update multiples rows of table: "app.assignment_blocks_v2" */
   update_app_assignment_blocks_v2_many?: Maybe<Array<Maybe<App_Assignment_Blocks_V2_Mutation_Response>>>;
-  /** update data of the table: "app.assignment_labels" */
-  update_app_assignment_labels?: Maybe<App_Assignment_Labels_Mutation_Response>;
-  /** update single row of the table: "app.assignment_labels" */
-  update_app_assignment_labels_by_pk?: Maybe<App_Assignment_Labels>;
-  /** update multiples rows of table: "app.assignment_labels" */
-  update_app_assignment_labels_many?: Maybe<Array<Maybe<App_Assignment_Labels_Mutation_Response>>>;
   /** update data of the table: "app.assignment_labels_v2" */
   update_app_assignment_labels_v2?: Maybe<App_Assignment_Labels_V2_Mutation_Response>;
   /** update single row of the table: "app.assignment_labels_v2" */
   update_app_assignment_labels_v2_by_pk?: Maybe<App_Assignment_Labels_V2>;
   /** update multiples rows of table: "app.assignment_labels_v2" */
   update_app_assignment_labels_v2_many?: Maybe<Array<Maybe<App_Assignment_Labels_V2_Mutation_Response>>>;
-  /** update data of the table: "app.assignment_responses" */
-  update_app_assignment_responses?: Maybe<App_Assignment_Responses_Mutation_Response>;
-  /** update single row of the table: "app.assignment_responses" */
-  update_app_assignment_responses_by_pk?: Maybe<App_Assignment_Responses>;
-  /** update multiples rows of table: "app.assignment_responses" */
-  update_app_assignment_responses_many?: Maybe<Array<Maybe<App_Assignment_Responses_Mutation_Response>>>;
   /** update data of the table: "app.assignment_responses_v2" */
   update_app_assignment_responses_v2?: Maybe<App_Assignment_Responses_V2_Mutation_Response>;
   /** update single row of the table: "app.assignment_responses_v2" */
@@ -25498,12 +23185,6 @@ export type Mutation_Root = {
   update_app_assignment_v2_views_by_pk?: Maybe<App_Assignment_V2_Views>;
   /** update multiples rows of table: "app.assignment_v2_views" */
   update_app_assignment_v2_views_many?: Maybe<Array<Maybe<App_Assignment_V2_Views_Mutation_Response>>>;
-  /** update data of the table: "app.assignments" */
-  update_app_assignments?: Maybe<App_Assignments_Mutation_Response>;
-  /** update single row of the table: "app.assignments" */
-  update_app_assignments_by_pk?: Maybe<App_Assignments>;
-  /** update multiples rows of table: "app.assignments" */
-  update_app_assignments_many?: Maybe<Array<Maybe<App_Assignments_Mutation_Response>>>;
   /** update data of the table: "app.assignments_v2" */
   update_app_assignments_v2?: Maybe<App_Assignments_V2_Mutation_Response>;
   /** update data of the table: "app.assignments_v2_assignment_labels_v2" */
@@ -25844,12 +23525,6 @@ export type Mutation_Root = {
   update_lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
   /** update multiples rows of table: "lookup.thesaurus_old" */
   update_lookup_thesaurus_old_many?: Maybe<Array<Maybe<Lookup_Thesaurus_Old_Mutation_Response>>>;
-  /** update data of the table: "migrate.original_publishdate" */
-  update_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
-  /** update single row of the table: "migrate.original_publishdate" */
-  update_migrate_original_publishdate_by_pk?: Maybe<Migrate_Original_Publishdate>;
-  /** update multiples rows of table: "migrate.original_publishdate" */
-  update_migrate_original_publishdate_many?: Maybe<Array<Maybe<Migrate_Original_Publishdate_Mutation_Response>>>;
   /** update data of the table: "migrate.reference_ids" */
   update_migrate_reference_ids?: Maybe<Migrate_Reference_Ids_Mutation_Response>;
   /** update single row of the table: "migrate.reference_ids" */
@@ -25926,12 +23601,6 @@ export type Mutation_Root = {
   update_users_group_permissions_by_pk?: Maybe<Users_Group_Permissions>;
   /** update multiples rows of table: "users.group_permissions" */
   update_users_group_permissions_many?: Maybe<Array<Maybe<Users_Group_Permissions_Mutation_Response>>>;
-  /** update data of the table: "users.group_user_permission_groups" */
-  update_users_group_user_permission_groups?: Maybe<Users_Group_User_Permission_Groups_Mutation_Response>;
-  /** update single row of the table: "users.group_user_permission_groups" */
-  update_users_group_user_permission_groups_by_pk?: Maybe<Users_Group_User_Permission_Groups>;
-  /** update multiples rows of table: "users.group_user_permission_groups" */
-  update_users_group_user_permission_groups_many?: Maybe<Array<Maybe<Users_Group_User_Permission_Groups_Mutation_Response>>>;
   /** update data of the table: "users.groups" */
   update_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** update single row of the table: "users.groups" */
@@ -25956,18 +23625,6 @@ export type Mutation_Root = {
   update_users_notifications_by_pk?: Maybe<Users_Notifications>;
   /** update multiples rows of table: "users.notifications" */
   update_users_notifications_many?: Maybe<Array<Maybe<Users_Notifications_Mutation_Response>>>;
-  /** update data of the table: "users.permission_group_user_permissions" */
-  update_users_permission_group_user_permissions?: Maybe<Users_Permission_Group_User_Permissions_Mutation_Response>;
-  /** update single row of the table: "users.permission_group_user_permissions" */
-  update_users_permission_group_user_permissions_by_pk?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** update multiples rows of table: "users.permission_group_user_permissions" */
-  update_users_permission_group_user_permissions_many?: Maybe<Array<Maybe<Users_Permission_Group_User_Permissions_Mutation_Response>>>;
-  /** update data of the table: "users.permission_groups" */
-  update_users_permission_groups?: Maybe<Users_Permission_Groups_Mutation_Response>;
-  /** update single row of the table: "users.permission_groups" */
-  update_users_permission_groups_by_pk?: Maybe<Users_Permission_Groups>;
-  /** update multiples rows of table: "users.permission_groups" */
-  update_users_permission_groups_many?: Maybe<Array<Maybe<Users_Permission_Groups_Mutation_Response>>>;
   /** update data of the table: "users.permissions" */
   update_users_permissions?: Maybe<Users_Permissions_Mutation_Response>;
   /** update single row of the table: "users.permissions" */
@@ -26032,18 +23689,6 @@ export type Mutation_Root = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_App_Assignment_Assignment_TagsArgs = {
-  where: App_Assignment_Assignment_Tags_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignment_Assignment_Tags_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_App_Assignment_Blocks_V2Args = {
   where: App_Assignment_Blocks_V2_Bool_Exp;
 };
@@ -26056,18 +23701,6 @@ export type Mutation_RootDelete_App_Assignment_Blocks_V2_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_App_Assignment_LabelsArgs = {
-  where: App_Assignment_Labels_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignment_Labels_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_App_Assignment_Labels_V2Args = {
   where: App_Assignment_Labels_V2_Bool_Exp;
 };
@@ -26076,18 +23709,6 @@ export type Mutation_RootDelete_App_Assignment_Labels_V2Args = {
 /** mutation root */
 export type Mutation_RootDelete_App_Assignment_Labels_V2_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignment_ResponsesArgs = {
-  where: App_Assignment_Responses_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignment_Responses_By_PkArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -26112,18 +23733,6 @@ export type Mutation_RootDelete_App_Assignment_V2_ViewsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_App_Assignment_V2_Views_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_AssignmentsArgs = {
-  where: App_Assignments_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignments_By_PkArgs = {
-  uuid: Scalars['uuid'];
 };
 
 
@@ -26809,18 +24418,6 @@ export type Mutation_RootDelete_Lookup_Thesaurus_Old_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Migrate_Original_PublishdateArgs = {
-  where: Migrate_Original_Publishdate_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Migrate_Original_Publishdate_By_PkArgs = {
-  mediamosa_id: Scalars['String'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_Migrate_Reference_IdsArgs = {
   where: Migrate_Reference_Ids_Bool_Exp;
 };
@@ -26971,18 +24568,6 @@ export type Mutation_RootDelete_Users_Group_Permissions_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Users_Group_User_Permission_GroupsArgs = {
-  where: Users_Group_User_Permission_Groups_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Group_User_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_Users_GroupsArgs = {
   where: Users_Groups_Bool_Exp;
 };
@@ -27027,30 +24612,6 @@ export type Mutation_RootDelete_Users_NotificationsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Users_Notifications_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Permission_Group_User_PermissionsArgs = {
-  where: Users_Permission_Group_User_Permissions_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Permission_Group_User_Permissions_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Permission_GroupsArgs = {
-  where: Users_Permission_Groups_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -27175,20 +24736,6 @@ export type Mutation_RootDelete_Users_Users_Sync_Cm_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_App_Assignment_Assignment_TagsArgs = {
-  objects: Array<App_Assignment_Assignment_Tags_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignment_Assignment_Tags_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignment_Assignment_Tags_OneArgs = {
-  object: App_Assignment_Assignment_Tags_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignment_Assignment_Tags_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_App_Assignment_Blocks_V2Args = {
   objects: Array<App_Assignment_Blocks_V2_Insert_Input>;
   on_conflict?: InputMaybe<App_Assignment_Blocks_V2_On_Conflict>;
@@ -27203,20 +24750,6 @@ export type Mutation_RootInsert_App_Assignment_Blocks_V2_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_App_Assignment_LabelsArgs = {
-  objects: Array<App_Assignment_Labels_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignment_Labels_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignment_Labels_OneArgs = {
-  object: App_Assignment_Labels_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignment_Labels_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_App_Assignment_Labels_V2Args = {
   objects: Array<App_Assignment_Labels_V2_Insert_Input>;
   on_conflict?: InputMaybe<App_Assignment_Labels_V2_On_Conflict>;
@@ -27227,20 +24760,6 @@ export type Mutation_RootInsert_App_Assignment_Labels_V2Args = {
 export type Mutation_RootInsert_App_Assignment_Labels_V2_OneArgs = {
   object: App_Assignment_Labels_V2_Insert_Input;
   on_conflict?: InputMaybe<App_Assignment_Labels_V2_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignment_ResponsesArgs = {
-  objects: Array<App_Assignment_Responses_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignment_Responses_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignment_Responses_OneArgs = {
-  object: App_Assignment_Responses_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignment_Responses_On_Conflict>;
 };
 
 
@@ -27269,20 +24788,6 @@ export type Mutation_RootInsert_App_Assignment_V2_ViewsArgs = {
 export type Mutation_RootInsert_App_Assignment_V2_Views_OneArgs = {
   object: App_Assignment_V2_Views_Insert_Input;
   on_conflict?: InputMaybe<App_Assignment_V2_Views_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_AssignmentsArgs = {
-  objects: Array<App_Assignments_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignments_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignments_OneArgs = {
-  object: App_Assignments_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignments_On_Conflict>;
 };
 
 
@@ -28083,20 +25588,6 @@ export type Mutation_RootInsert_Lookup_Thesaurus_Old_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Migrate_Original_PublishdateArgs = {
-  objects: Array<Migrate_Original_Publishdate_Insert_Input>;
-  on_conflict?: InputMaybe<Migrate_Original_Publishdate_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Migrate_Original_Publishdate_OneArgs = {
-  object: Migrate_Original_Publishdate_Insert_Input;
-  on_conflict?: InputMaybe<Migrate_Original_Publishdate_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_Migrate_Reference_IdsArgs = {
   objects: Array<Migrate_Reference_Ids_Insert_Input>;
   on_conflict?: InputMaybe<Migrate_Reference_Ids_On_Conflict>;
@@ -28277,20 +25768,6 @@ export type Mutation_RootInsert_Users_Group_Permissions_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Users_Group_User_Permission_GroupsArgs = {
-  objects: Array<Users_Group_User_Permission_Groups_Insert_Input>;
-  on_conflict?: InputMaybe<Users_Group_User_Permission_Groups_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Group_User_Permission_Groups_OneArgs = {
-  object: Users_Group_User_Permission_Groups_Insert_Input;
-  on_conflict?: InputMaybe<Users_Group_User_Permission_Groups_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_Users_GroupsArgs = {
   objects: Array<Users_Groups_Insert_Input>;
   on_conflict?: InputMaybe<Users_Groups_On_Conflict>;
@@ -28343,34 +25820,6 @@ export type Mutation_RootInsert_Users_NotificationsArgs = {
 export type Mutation_RootInsert_Users_Notifications_OneArgs = {
   object: Users_Notifications_Insert_Input;
   on_conflict?: InputMaybe<Users_Notifications_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Permission_Group_User_PermissionsArgs = {
-  objects: Array<Users_Permission_Group_User_Permissions_Insert_Input>;
-  on_conflict?: InputMaybe<Users_Permission_Group_User_Permissions_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Permission_Group_User_Permissions_OneArgs = {
-  object: Users_Permission_Group_User_Permissions_Insert_Input;
-  on_conflict?: InputMaybe<Users_Permission_Group_User_Permissions_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Permission_GroupsArgs = {
-  objects: Array<Users_Permission_Groups_Insert_Input>;
-  on_conflict?: InputMaybe<Users_Permission_Groups_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Permission_Groups_OneArgs = {
-  object: Users_Permission_Groups_Insert_Input;
-  on_conflict?: InputMaybe<Users_Permission_Groups_On_Conflict>;
 };
 
 
@@ -28515,28 +25964,6 @@ export type Mutation_RootInsert_Users_Users_Sync_Cm_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Assignment_TagsArgs = {
-  _inc?: InputMaybe<App_Assignment_Assignment_Tags_Inc_Input>;
-  _set?: InputMaybe<App_Assignment_Assignment_Tags_Set_Input>;
-  where: App_Assignment_Assignment_Tags_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Assignment_Tags_By_PkArgs = {
-  _inc?: InputMaybe<App_Assignment_Assignment_Tags_Inc_Input>;
-  _set?: InputMaybe<App_Assignment_Assignment_Tags_Set_Input>;
-  pk_columns: App_Assignment_Assignment_Tags_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Assignment_Tags_ManyArgs = {
-  updates: Array<App_Assignment_Assignment_Tags_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_App_Assignment_Blocks_V2Args = {
   _inc?: InputMaybe<App_Assignment_Blocks_V2_Inc_Input>;
   _set?: InputMaybe<App_Assignment_Blocks_V2_Set_Input>;
@@ -28559,28 +25986,6 @@ export type Mutation_RootUpdate_App_Assignment_Blocks_V2_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_App_Assignment_LabelsArgs = {
-  _inc?: InputMaybe<App_Assignment_Labels_Inc_Input>;
-  _set?: InputMaybe<App_Assignment_Labels_Set_Input>;
-  where: App_Assignment_Labels_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Labels_By_PkArgs = {
-  _inc?: InputMaybe<App_Assignment_Labels_Inc_Input>;
-  _set?: InputMaybe<App_Assignment_Labels_Set_Input>;
-  pk_columns: App_Assignment_Labels_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Labels_ManyArgs = {
-  updates: Array<App_Assignment_Labels_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_App_Assignment_Labels_V2Args = {
   _set?: InputMaybe<App_Assignment_Labels_V2_Set_Input>;
   where: App_Assignment_Labels_V2_Bool_Exp;
@@ -28597,38 +26002,6 @@ export type Mutation_RootUpdate_App_Assignment_Labels_V2_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_App_Assignment_Labels_V2_ManyArgs = {
   updates: Array<App_Assignment_Labels_V2_Updates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_ResponsesArgs = {
-  _append?: InputMaybe<App_Assignment_Responses_Append_Input>;
-  _delete_at_path?: InputMaybe<App_Assignment_Responses_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<App_Assignment_Responses_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<App_Assignment_Responses_Delete_Key_Input>;
-  _inc?: InputMaybe<App_Assignment_Responses_Inc_Input>;
-  _prepend?: InputMaybe<App_Assignment_Responses_Prepend_Input>;
-  _set?: InputMaybe<App_Assignment_Responses_Set_Input>;
-  where: App_Assignment_Responses_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Responses_By_PkArgs = {
-  _append?: InputMaybe<App_Assignment_Responses_Append_Input>;
-  _delete_at_path?: InputMaybe<App_Assignment_Responses_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<App_Assignment_Responses_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<App_Assignment_Responses_Delete_Key_Input>;
-  _inc?: InputMaybe<App_Assignment_Responses_Inc_Input>;
-  _prepend?: InputMaybe<App_Assignment_Responses_Prepend_Input>;
-  _set?: InputMaybe<App_Assignment_Responses_Set_Input>;
-  pk_columns: App_Assignment_Responses_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Responses_ManyArgs = {
-  updates: Array<App_Assignment_Responses_Updates>;
 };
 
 
@@ -28671,28 +26044,6 @@ export type Mutation_RootUpdate_App_Assignment_V2_Views_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_App_Assignment_V2_Views_ManyArgs = {
   updates: Array<App_Assignment_V2_Views_Updates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_AssignmentsArgs = {
-  _inc?: InputMaybe<App_Assignments_Inc_Input>;
-  _set?: InputMaybe<App_Assignments_Set_Input>;
-  where: App_Assignments_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignments_By_PkArgs = {
-  _inc?: InputMaybe<App_Assignments_Inc_Input>;
-  _set?: InputMaybe<App_Assignments_Set_Input>;
-  pk_columns: App_Assignments_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignments_ManyArgs = {
-  updates: Array<App_Assignments_Updates>;
 };
 
 
@@ -29983,26 +27334,6 @@ export type Mutation_RootUpdate_Lookup_Thesaurus_Old_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Migrate_Original_PublishdateArgs = {
-  _set?: InputMaybe<Migrate_Original_Publishdate_Set_Input>;
-  where: Migrate_Original_Publishdate_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Migrate_Original_Publishdate_By_PkArgs = {
-  _set?: InputMaybe<Migrate_Original_Publishdate_Set_Input>;
-  pk_columns: Migrate_Original_Publishdate_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Migrate_Original_Publishdate_ManyArgs = {
-  updates: Array<Migrate_Original_Publishdate_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_Migrate_Reference_IdsArgs = {
   _inc?: InputMaybe<Migrate_Reference_Ids_Inc_Input>;
   _set?: InputMaybe<Migrate_Reference_Ids_Set_Input>;
@@ -30330,28 +27661,6 @@ export type Mutation_RootUpdate_Users_Group_Permissions_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Users_Group_User_Permission_GroupsArgs = {
-  _inc?: InputMaybe<Users_Group_User_Permission_Groups_Inc_Input>;
-  _set?: InputMaybe<Users_Group_User_Permission_Groups_Set_Input>;
-  where: Users_Group_User_Permission_Groups_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Group_User_Permission_Groups_By_PkArgs = {
-  _inc?: InputMaybe<Users_Group_User_Permission_Groups_Inc_Input>;
-  _set?: InputMaybe<Users_Group_User_Permission_Groups_Set_Input>;
-  pk_columns: Users_Group_User_Permission_Groups_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Group_User_Permission_Groups_ManyArgs = {
-  updates: Array<Users_Group_User_Permission_Groups_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_Users_GroupsArgs = {
   _inc?: InputMaybe<Users_Groups_Inc_Input>;
   _set?: InputMaybe<Users_Groups_Set_Input>;
@@ -30432,50 +27741,6 @@ export type Mutation_RootUpdate_Users_Notifications_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Users_Notifications_ManyArgs = {
   updates: Array<Users_Notifications_Updates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Group_User_PermissionsArgs = {
-  _inc?: InputMaybe<Users_Permission_Group_User_Permissions_Inc_Input>;
-  _set?: InputMaybe<Users_Permission_Group_User_Permissions_Set_Input>;
-  where: Users_Permission_Group_User_Permissions_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Group_User_Permissions_By_PkArgs = {
-  _inc?: InputMaybe<Users_Permission_Group_User_Permissions_Inc_Input>;
-  _set?: InputMaybe<Users_Permission_Group_User_Permissions_Set_Input>;
-  pk_columns: Users_Permission_Group_User_Permissions_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Group_User_Permissions_ManyArgs = {
-  updates: Array<Users_Permission_Group_User_Permissions_Updates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_GroupsArgs = {
-  _inc?: InputMaybe<Users_Permission_Groups_Inc_Input>;
-  _set?: InputMaybe<Users_Permission_Groups_Set_Input>;
-  where: Users_Permission_Groups_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Groups_By_PkArgs = {
-  _inc?: InputMaybe<Users_Permission_Groups_Inc_Input>;
-  _set?: InputMaybe<Users_Permission_Groups_Set_Input>;
-  pk_columns: Users_Permission_Groups_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Groups_ManyArgs = {
-  updates: Array<Users_Permission_Groups_Updates>;
 };
 
 
@@ -30726,36 +27991,18 @@ export enum Order_By {
 
 export type Query_Root = {
   __typename?: 'query_root';
-  /** fetch data from the table: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags: Array<App_Assignment_Assignment_Tags>;
-  /** fetch aggregated fields from the table: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags_aggregate: App_Assignment_Assignment_Tags_Aggregate;
-  /** fetch data from the table: "app.assignment_assignment_tags" using primary key columns */
-  app_assignment_assignment_tags_by_pk?: Maybe<App_Assignment_Assignment_Tags>;
   /** fetch data from the table: "app.assignment_blocks_v2" */
   app_assignment_blocks_v2: Array<App_Assignment_Blocks_V2>;
   /** fetch aggregated fields from the table: "app.assignment_blocks_v2" */
   app_assignment_blocks_v2_aggregate: App_Assignment_Blocks_V2_Aggregate;
   /** fetch data from the table: "app.assignment_blocks_v2" using primary key columns */
   app_assignment_blocks_v2_by_pk?: Maybe<App_Assignment_Blocks_V2>;
-  /** fetch data from the table: "app.assignment_labels" */
-  app_assignment_labels: Array<App_Assignment_Labels>;
-  /** fetch aggregated fields from the table: "app.assignment_labels" */
-  app_assignment_labels_aggregate: App_Assignment_Labels_Aggregate;
-  /** fetch data from the table: "app.assignment_labels" using primary key columns */
-  app_assignment_labels_by_pk?: Maybe<App_Assignment_Labels>;
   /** fetch data from the table: "app.assignment_labels_v2" */
   app_assignment_labels_v2: Array<App_Assignment_Labels_V2>;
   /** fetch aggregated fields from the table: "app.assignment_labels_v2" */
   app_assignment_labels_v2_aggregate: App_Assignment_Labels_V2_Aggregate;
   /** fetch data from the table: "app.assignment_labels_v2" using primary key columns */
   app_assignment_labels_v2_by_pk?: Maybe<App_Assignment_Labels_V2>;
-  /** fetch data from the table: "app.assignment_responses" */
-  app_assignment_responses: Array<App_Assignment_Responses>;
-  /** fetch aggregated fields from the table: "app.assignment_responses" */
-  app_assignment_responses_aggregate: App_Assignment_Responses_Aggregate;
-  /** fetch data from the table: "app.assignment_responses" using primary key columns */
-  app_assignment_responses_by_pk?: Maybe<App_Assignment_Responses>;
   /** fetch data from the table: "app.assignment_responses_v2" */
   app_assignment_responses_v2: Array<App_Assignment_Responses_V2>;
   /** fetch aggregated fields from the table: "app.assignment_responses_v2" */
@@ -30768,12 +28015,6 @@ export type Query_Root = {
   app_assignment_v2_views_aggregate: App_Assignment_V2_Views_Aggregate;
   /** fetch data from the table: "app.assignment_v2_views" using primary key columns */
   app_assignment_v2_views_by_pk?: Maybe<App_Assignment_V2_Views>;
-  /** fetch data from the table: "app.assignments" */
-  app_assignments: Array<App_Assignments>;
-  /** fetch aggregated fields from the table: "app.assignments" */
-  app_assignments_aggregate: App_Assignments_Aggregate;
-  /** fetch data from the table: "app.assignments" using primary key columns */
-  app_assignments_by_pk?: Maybe<App_Assignments>;
   /** fetch data from the table: "app.assignments_v2" */
   app_assignments_v2: Array<App_Assignments_V2>;
   /** fetch aggregated fields from the table: "app.assignments_v2" */
@@ -31056,10 +28297,6 @@ export type Query_Root = {
   app_site_variables_aggregate: App_Site_Variables_Aggregate;
   /** fetch data from the table: "app.site_variables" using primary key columns */
   app_site_variables_by_pk?: Maybe<App_Site_Variables>;
-  /** fetch data from the table: "app.usage_counts" */
-  app_usage_counts: Array<App_Usage_Counts>;
-  /** fetch aggregated fields from the table: "app.usage_counts" */
-  app_usage_counts_aggregate: App_Usage_Counts_Aggregate;
   /** fetch data from the table: "lookup.enum_assignment_content_labels" */
   lookup_enum_assignment_content_labels: Array<Lookup_Enum_Assignment_Content_Labels>;
   /** fetch aggregated fields from the table: "lookup.enum_assignment_content_labels" */
@@ -31178,12 +28415,6 @@ export type Query_Root = {
   lookup_thesaurus_old_aggregate: Lookup_Thesaurus_Old_Aggregate;
   /** fetch data from the table: "lookup.thesaurus_old" using primary key columns */
   lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
-  /** fetch data from the table: "migrate.original_publishdate" */
-  migrate_original_publishdate: Array<Migrate_Original_Publishdate>;
-  /** fetch aggregated fields from the table: "migrate.original_publishdate" */
-  migrate_original_publishdate_aggregate: Migrate_Original_Publishdate_Aggregate;
-  /** fetch data from the table: "migrate.original_publishdate" using primary key columns */
-  migrate_original_publishdate_by_pk?: Maybe<Migrate_Original_Publishdate>;
   /** fetch data from the table: "migrate.reference_ids" */
   migrate_reference_ids: Array<Migrate_Reference_Ids>;
   /** fetch aggregated fields from the table: "migrate.reference_ids" */
@@ -31280,12 +28511,6 @@ export type Query_Root = {
   users_group_permissions_aggregate: Users_Group_Permissions_Aggregate;
   /** fetch data from the table: "users.group_permissions" using primary key columns */
   users_group_permissions_by_pk?: Maybe<Users_Group_Permissions>;
-  /** fetch data from the table: "users.group_user_permission_groups" */
-  users_group_user_permission_groups: Array<Users_Group_User_Permission_Groups>;
-  /** fetch aggregated fields from the table: "users.group_user_permission_groups" */
-  users_group_user_permission_groups_aggregate: Users_Group_User_Permission_Groups_Aggregate;
-  /** fetch data from the table: "users.group_user_permission_groups" using primary key columns */
-  users_group_user_permission_groups_by_pk?: Maybe<Users_Group_User_Permission_Groups>;
   /** fetch data from the table: "users.groups" */
   users_groups: Array<Users_Groups>;
   /** fetch aggregated fields from the table: "users.groups" */
@@ -31310,18 +28535,6 @@ export type Query_Root = {
   users_notifications_aggregate: Users_Notifications_Aggregate;
   /** fetch data from the table: "users.notifications" using primary key columns */
   users_notifications_by_pk?: Maybe<Users_Notifications>;
-  /** fetch data from the table: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions: Array<Users_Permission_Group_User_Permissions>;
-  /** fetch aggregated fields from the table: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions_aggregate: Users_Permission_Group_User_Permissions_Aggregate;
-  /** fetch data from the table: "users.permission_group_user_permissions" using primary key columns */
-  users_permission_group_user_permissions_by_pk?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** fetch data from the table: "users.permission_groups" */
-  users_permission_groups: Array<Users_Permission_Groups>;
-  /** fetch aggregated fields from the table: "users.permission_groups" */
-  users_permission_groups_aggregate: Users_Permission_Groups_Aggregate;
-  /** fetch data from the table: "users.permission_groups" using primary key columns */
-  users_permission_groups_by_pk?: Maybe<Users_Permission_Groups>;
   /** fetch data from the table: "users.permission_matrix_view" */
   users_permission_matrix_view: Array<Users_Permission_Matrix_View>;
   /** fetch aggregated fields from the table: "users.permission_matrix_view" */
@@ -31393,29 +28606,6 @@ export type Query_Root = {
 };
 
 
-export type Query_RootApp_Assignment_Assignment_TagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Assignment_Tags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Assignment_Tags_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type Query_RootApp_Assignment_Blocks_V2Args = {
   distinct_on?: InputMaybe<Array<App_Assignment_Blocks_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -31439,29 +28629,6 @@ export type Query_RootApp_Assignment_Blocks_V2_By_PkArgs = {
 };
 
 
-export type Query_RootApp_Assignment_LabelsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Labels_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Labels_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type Query_RootApp_Assignment_Labels_V2Args = {
   distinct_on?: InputMaybe<Array<App_Assignment_Labels_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -31482,29 +28649,6 @@ export type Query_RootApp_Assignment_Labels_V2_AggregateArgs = {
 
 export type Query_RootApp_Assignment_Labels_V2_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootApp_Assignment_ResponsesArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Responses_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Responses_By_PkArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -31551,29 +28695,6 @@ export type Query_RootApp_Assignment_V2_Views_AggregateArgs = {
 
 export type Query_RootApp_Assignment_V2_Views_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootApp_AssignmentsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignments_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignments_By_PkArgs = {
-  uuid: Scalars['uuid'];
 };
 
 
@@ -32698,24 +29819,6 @@ export type Query_RootApp_Site_Variables_By_PkArgs = {
 };
 
 
-export type Query_RootApp_Usage_CountsArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Usage_Counts_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
 export type Query_RootLookup_Enum_Assignment_Content_LabelsArgs = {
   distinct_on?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -33174,29 +30277,6 @@ export type Query_RootLookup_Thesaurus_Old_By_PkArgs = {
 };
 
 
-export type Query_RootMigrate_Original_PublishdateArgs = {
-  distinct_on?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Migrate_Original_Publishdate_Order_By>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
-export type Query_RootMigrate_Original_Publishdate_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Migrate_Original_Publishdate_Order_By>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
-export type Query_RootMigrate_Original_Publishdate_By_PkArgs = {
-  mediamosa_id: Scalars['String'];
-};
-
-
 export type Query_RootMigrate_Reference_IdsArgs = {
   distinct_on?: InputMaybe<Array<Migrate_Reference_Ids_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -33581,29 +30661,6 @@ export type Query_RootUsers_Group_Permissions_By_PkArgs = {
 };
 
 
-export type Query_RootUsers_Group_User_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Group_User_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Group_User_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type Query_RootUsers_GroupsArgs = {
   distinct_on?: InputMaybe<Array<Users_Groups_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -33693,52 +30750,6 @@ export type Query_RootUsers_Notifications_AggregateArgs = {
 
 export type Query_RootUsers_Notifications_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootUsers_Permission_Group_User_PermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Permission_Group_User_Permissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Permission_Group_User_Permissions_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Query_RootUsers_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -37474,14 +34485,6 @@ export type Shared_Users_Variance_Order_By = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
-  /** fetch data from the table: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags: Array<App_Assignment_Assignment_Tags>;
-  /** fetch aggregated fields from the table: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags_aggregate: App_Assignment_Assignment_Tags_Aggregate;
-  /** fetch data from the table: "app.assignment_assignment_tags" using primary key columns */
-  app_assignment_assignment_tags_by_pk?: Maybe<App_Assignment_Assignment_Tags>;
-  /** fetch data from the table in a streaming manner: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags_stream: Array<App_Assignment_Assignment_Tags>;
   /** fetch data from the table: "app.assignment_blocks_v2" */
   app_assignment_blocks_v2: Array<App_Assignment_Blocks_V2>;
   /** fetch aggregated fields from the table: "app.assignment_blocks_v2" */
@@ -37490,14 +34493,6 @@ export type Subscription_Root = {
   app_assignment_blocks_v2_by_pk?: Maybe<App_Assignment_Blocks_V2>;
   /** fetch data from the table in a streaming manner: "app.assignment_blocks_v2" */
   app_assignment_blocks_v2_stream: Array<App_Assignment_Blocks_V2>;
-  /** fetch data from the table: "app.assignment_labels" */
-  app_assignment_labels: Array<App_Assignment_Labels>;
-  /** fetch aggregated fields from the table: "app.assignment_labels" */
-  app_assignment_labels_aggregate: App_Assignment_Labels_Aggregate;
-  /** fetch data from the table: "app.assignment_labels" using primary key columns */
-  app_assignment_labels_by_pk?: Maybe<App_Assignment_Labels>;
-  /** fetch data from the table in a streaming manner: "app.assignment_labels" */
-  app_assignment_labels_stream: Array<App_Assignment_Labels>;
   /** fetch data from the table: "app.assignment_labels_v2" */
   app_assignment_labels_v2: Array<App_Assignment_Labels_V2>;
   /** fetch aggregated fields from the table: "app.assignment_labels_v2" */
@@ -37506,14 +34501,6 @@ export type Subscription_Root = {
   app_assignment_labels_v2_by_pk?: Maybe<App_Assignment_Labels_V2>;
   /** fetch data from the table in a streaming manner: "app.assignment_labels_v2" */
   app_assignment_labels_v2_stream: Array<App_Assignment_Labels_V2>;
-  /** fetch data from the table: "app.assignment_responses" */
-  app_assignment_responses: Array<App_Assignment_Responses>;
-  /** fetch aggregated fields from the table: "app.assignment_responses" */
-  app_assignment_responses_aggregate: App_Assignment_Responses_Aggregate;
-  /** fetch data from the table: "app.assignment_responses" using primary key columns */
-  app_assignment_responses_by_pk?: Maybe<App_Assignment_Responses>;
-  /** fetch data from the table in a streaming manner: "app.assignment_responses" */
-  app_assignment_responses_stream: Array<App_Assignment_Responses>;
   /** fetch data from the table: "app.assignment_responses_v2" */
   app_assignment_responses_v2: Array<App_Assignment_Responses_V2>;
   /** fetch aggregated fields from the table: "app.assignment_responses_v2" */
@@ -37530,14 +34517,6 @@ export type Subscription_Root = {
   app_assignment_v2_views_by_pk?: Maybe<App_Assignment_V2_Views>;
   /** fetch data from the table in a streaming manner: "app.assignment_v2_views" */
   app_assignment_v2_views_stream: Array<App_Assignment_V2_Views>;
-  /** fetch data from the table: "app.assignments" */
-  app_assignments: Array<App_Assignments>;
-  /** fetch aggregated fields from the table: "app.assignments" */
-  app_assignments_aggregate: App_Assignments_Aggregate;
-  /** fetch data from the table: "app.assignments" using primary key columns */
-  app_assignments_by_pk?: Maybe<App_Assignments>;
-  /** fetch data from the table in a streaming manner: "app.assignments" */
-  app_assignments_stream: Array<App_Assignments>;
   /** fetch data from the table: "app.assignments_v2" */
   app_assignments_v2: Array<App_Assignments_V2>;
   /** fetch aggregated fields from the table: "app.assignments_v2" */
@@ -37924,12 +34903,6 @@ export type Subscription_Root = {
   app_site_variables_by_pk?: Maybe<App_Site_Variables>;
   /** fetch data from the table in a streaming manner: "app.site_variables" */
   app_site_variables_stream: Array<App_Site_Variables>;
-  /** fetch data from the table: "app.usage_counts" */
-  app_usage_counts: Array<App_Usage_Counts>;
-  /** fetch aggregated fields from the table: "app.usage_counts" */
-  app_usage_counts_aggregate: App_Usage_Counts_Aggregate;
-  /** fetch data from the table in a streaming manner: "app.usage_counts" */
-  app_usage_counts_stream: Array<App_Usage_Counts>;
   /** fetch data from the table: "lookup.enum_assignment_content_labels" */
   lookup_enum_assignment_content_labels: Array<Lookup_Enum_Assignment_Content_Labels>;
   /** fetch aggregated fields from the table: "lookup.enum_assignment_content_labels" */
@@ -38088,14 +35061,6 @@ export type Subscription_Root = {
   lookup_thesaurus_old_stream: Array<Lookup_Thesaurus_Old>;
   /** fetch data from the table in a streaming manner: "lookup.thesaurus" */
   lookup_thesaurus_stream: Array<Lookup_Thesaurus>;
-  /** fetch data from the table: "migrate.original_publishdate" */
-  migrate_original_publishdate: Array<Migrate_Original_Publishdate>;
-  /** fetch aggregated fields from the table: "migrate.original_publishdate" */
-  migrate_original_publishdate_aggregate: Migrate_Original_Publishdate_Aggregate;
-  /** fetch data from the table: "migrate.original_publishdate" using primary key columns */
-  migrate_original_publishdate_by_pk?: Maybe<Migrate_Original_Publishdate>;
-  /** fetch data from the table in a streaming manner: "migrate.original_publishdate" */
-  migrate_original_publishdate_stream: Array<Migrate_Original_Publishdate>;
   /** fetch data from the table: "migrate.reference_ids" */
   migrate_reference_ids: Array<Migrate_Reference_Ids>;
   /** fetch aggregated fields from the table: "migrate.reference_ids" */
@@ -38228,14 +35193,6 @@ export type Subscription_Root = {
   users_group_permissions_by_pk?: Maybe<Users_Group_Permissions>;
   /** fetch data from the table in a streaming manner: "users.group_permissions" */
   users_group_permissions_stream: Array<Users_Group_Permissions>;
-  /** fetch data from the table: "users.group_user_permission_groups" */
-  users_group_user_permission_groups: Array<Users_Group_User_Permission_Groups>;
-  /** fetch aggregated fields from the table: "users.group_user_permission_groups" */
-  users_group_user_permission_groups_aggregate: Users_Group_User_Permission_Groups_Aggregate;
-  /** fetch data from the table: "users.group_user_permission_groups" using primary key columns */
-  users_group_user_permission_groups_by_pk?: Maybe<Users_Group_User_Permission_Groups>;
-  /** fetch data from the table in a streaming manner: "users.group_user_permission_groups" */
-  users_group_user_permission_groups_stream: Array<Users_Group_User_Permission_Groups>;
   /** fetch data from the table: "users.groups" */
   users_groups: Array<Users_Groups>;
   /** fetch aggregated fields from the table: "users.groups" */
@@ -38268,22 +35225,6 @@ export type Subscription_Root = {
   users_notifications_by_pk?: Maybe<Users_Notifications>;
   /** fetch data from the table in a streaming manner: "users.notifications" */
   users_notifications_stream: Array<Users_Notifications>;
-  /** fetch data from the table: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions: Array<Users_Permission_Group_User_Permissions>;
-  /** fetch aggregated fields from the table: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions_aggregate: Users_Permission_Group_User_Permissions_Aggregate;
-  /** fetch data from the table: "users.permission_group_user_permissions" using primary key columns */
-  users_permission_group_user_permissions_by_pk?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** fetch data from the table in a streaming manner: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions_stream: Array<Users_Permission_Group_User_Permissions>;
-  /** fetch data from the table: "users.permission_groups" */
-  users_permission_groups: Array<Users_Permission_Groups>;
-  /** fetch aggregated fields from the table: "users.permission_groups" */
-  users_permission_groups_aggregate: Users_Permission_Groups_Aggregate;
-  /** fetch data from the table: "users.permission_groups" using primary key columns */
-  users_permission_groups_by_pk?: Maybe<Users_Permission_Groups>;
-  /** fetch data from the table in a streaming manner: "users.permission_groups" */
-  users_permission_groups_stream: Array<Users_Permission_Groups>;
   /** fetch data from the table: "users.permission_matrix_view" */
   users_permission_matrix_view: Array<Users_Permission_Matrix_View>;
   /** fetch aggregated fields from the table: "users.permission_matrix_view" */
@@ -38379,36 +35320,6 @@ export type Subscription_Root = {
 };
 
 
-export type Subscription_RootApp_Assignment_Assignment_TagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Assignment_Tags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Assignment_Tags_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootApp_Assignment_Assignment_Tags_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignment_Assignment_Tags_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
 export type Subscription_RootApp_Assignment_Blocks_V2Args = {
   distinct_on?: InputMaybe<Array<App_Assignment_Blocks_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -38439,36 +35350,6 @@ export type Subscription_RootApp_Assignment_Blocks_V2_StreamArgs = {
 };
 
 
-export type Subscription_RootApp_Assignment_LabelsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Labels_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Labels_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootApp_Assignment_Labels_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignment_Labels_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
 export type Subscription_RootApp_Assignment_Labels_V2Args = {
   distinct_on?: InputMaybe<Array<App_Assignment_Labels_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -38496,36 +35377,6 @@ export type Subscription_RootApp_Assignment_Labels_V2_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Assignment_Labels_V2_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_ResponsesArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Responses_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Responses_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootApp_Assignment_Responses_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignment_Responses_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
 };
 
 
@@ -38586,36 +35437,6 @@ export type Subscription_RootApp_Assignment_V2_Views_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Assignment_V2_Views_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Assignment_V2_Views_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_AssignmentsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_By_PkArgs = {
-  uuid: Scalars['uuid'];
-};
-
-
-export type Subscription_RootApp_Assignments_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignments_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
 };
 
 
@@ -40104,31 +36925,6 @@ export type Subscription_RootApp_Site_Variables_StreamArgs = {
 };
 
 
-export type Subscription_RootApp_Usage_CountsArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Usage_Counts_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Usage_Counts_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Usage_Counts_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
 export type Subscription_RootLookup_Enum_Assignment_Content_LabelsArgs = {
   distinct_on?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -40727,36 +37523,6 @@ export type Subscription_RootLookup_Thesaurus_StreamArgs = {
 };
 
 
-export type Subscription_RootMigrate_Original_PublishdateArgs = {
-  distinct_on?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Migrate_Original_Publishdate_Order_By>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
-export type Subscription_RootMigrate_Original_Publishdate_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Migrate_Original_Publishdate_Order_By>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
-export type Subscription_RootMigrate_Original_Publishdate_By_PkArgs = {
-  mediamosa_id: Scalars['String'];
-};
-
-
-export type Subscription_RootMigrate_Original_Publishdate_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<Migrate_Original_Publishdate_Stream_Cursor_Input>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
 export type Subscription_RootMigrate_Reference_IdsArgs = {
   distinct_on?: InputMaybe<Array<Migrate_Reference_Ids_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -41267,36 +38033,6 @@ export type Subscription_RootUsers_Group_Permissions_StreamArgs = {
 };
 
 
-export type Subscription_RootUsers_Group_User_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Group_User_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Group_User_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootUsers_Group_User_Permission_Groups_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<Users_Group_User_Permission_Groups_Stream_Cursor_Input>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
 export type Subscription_RootUsers_GroupsArgs = {
   distinct_on?: InputMaybe<Array<Users_Groups_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -41414,66 +38150,6 @@ export type Subscription_RootUsers_Notifications_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Users_Notifications_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Notifications_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Group_User_PermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Group_User_Permissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Group_User_Permissions_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootUsers_Permission_Group_User_Permissions_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<Users_Permission_Group_User_Permissions_Stream_Cursor_Input>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootUsers_Permission_Groups_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<Users_Permission_Groups_Stream_Cursor_Input>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
 };
 
 
@@ -42781,347 +39457,6 @@ export type Users_Group_Permissions_Variance_Order_By = {
   user_group_id?: InputMaybe<Order_By>;
 };
 
-/** Reference table for linking permission groups to user groups with foreign keys on both group id's. */
-export type Users_Group_User_Permission_Groups = {
-  __typename?: 'users_group_user_permission_groups';
-  /** An object relationship */
-  group: Users_Groups;
-  id: Scalars['Int'];
-  /** An object relationship */
-  permission_group: Users_Permission_Groups;
-  user_group_id: Scalars['Int'];
-  user_permission_group_id: Scalars['Int'];
-};
-
-/** aggregated selection of "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Aggregate = {
-  __typename?: 'users_group_user_permission_groups_aggregate';
-  aggregate?: Maybe<Users_Group_User_Permission_Groups_Aggregate_Fields>;
-  nodes: Array<Users_Group_User_Permission_Groups>;
-};
-
-export type Users_Group_User_Permission_Groups_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Group_User_Permission_Groups_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Aggregate_Fields = {
-  __typename?: 'users_group_user_permission_groups_aggregate_fields';
-  avg?: Maybe<Users_Group_User_Permission_Groups_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<Users_Group_User_Permission_Groups_Max_Fields>;
-  min?: Maybe<Users_Group_User_Permission_Groups_Min_Fields>;
-  stddev?: Maybe<Users_Group_User_Permission_Groups_Stddev_Fields>;
-  stddev_pop?: Maybe<Users_Group_User_Permission_Groups_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Users_Group_User_Permission_Groups_Stddev_Samp_Fields>;
-  sum?: Maybe<Users_Group_User_Permission_Groups_Sum_Fields>;
-  var_pop?: Maybe<Users_Group_User_Permission_Groups_Var_Pop_Fields>;
-  var_samp?: Maybe<Users_Group_User_Permission_Groups_Var_Samp_Fields>;
-  variance?: Maybe<Users_Group_User_Permission_Groups_Variance_Fields>;
-};
-
-
-/** aggregate fields of "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Group_User_Permission_Groups_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Group_User_Permission_Groups_Max_Order_By>;
-  min?: InputMaybe<Users_Group_User_Permission_Groups_Min_Order_By>;
-  stddev?: InputMaybe<Users_Group_User_Permission_Groups_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Group_User_Permission_Groups_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Group_User_Permission_Groups_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Group_User_Permission_Groups_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Group_User_Permission_Groups_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Group_User_Permission_Groups_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Group_User_Permission_Groups_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Arr_Rel_Insert_Input = {
-  data: Array<Users_Group_User_Permission_Groups_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Group_User_Permission_Groups_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type Users_Group_User_Permission_Groups_Avg_Fields = {
-  __typename?: 'users_group_user_permission_groups_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "users.group_user_permission_groups". All fields are combined with a logical 'AND'. */
-export type Users_Group_User_Permission_Groups_Bool_Exp = {
-  _and?: InputMaybe<Array<Users_Group_User_Permission_Groups_Bool_Exp>>;
-  _not?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-  _or?: InputMaybe<Array<Users_Group_User_Permission_Groups_Bool_Exp>>;
-  group?: InputMaybe<Users_Groups_Bool_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-  user_group_id?: InputMaybe<Int_Comparison_Exp>;
-  user_permission_group_id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "users.group_user_permission_groups" */
-export enum Users_Group_User_Permission_Groups_Constraint {
-  /** unique or primary key constraint on columns "user_permission_group_id", "user_group_id" */
-  GroupUserPermissionGroupsUserGroupIdUserPermissionGrou = 'group_user_permission_groups_user_group_id_user_permission_grou',
-  /** unique or primary key constraint on columns "id" */
-  UserGroupUserPermissionGroupsPkey = 'user_group_user_permission_groups_pkey'
-}
-
-/** input type for incrementing numeric columns in table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Insert_Input = {
-  group?: InputMaybe<Users_Groups_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Obj_Rel_Insert_Input>;
-  user_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate max on columns */
-export type Users_Group_User_Permission_Groups_Max_Fields = {
-  __typename?: 'users_group_user_permission_groups_max_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_group_id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Max_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Users_Group_User_Permission_Groups_Min_Fields = {
-  __typename?: 'users_group_user_permission_groups_min_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_group_id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Min_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Mutation_Response = {
-  __typename?: 'users_group_user_permission_groups_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users_Group_User_Permission_Groups>;
-};
-
-/** on_conflict condition type for table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_On_Conflict = {
-  constraint: Users_Group_User_Permission_Groups_Constraint;
-  update_columns?: Array<Users_Group_User_Permission_Groups_Update_Column>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "users.group_user_permission_groups". */
-export type Users_Group_User_Permission_Groups_Order_By = {
-  group?: InputMaybe<Users_Groups_Order_By>;
-  id?: InputMaybe<Order_By>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: users.group_user_permission_groups */
-export type Users_Group_User_Permission_Groups_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "users.group_user_permission_groups" */
-export enum Users_Group_User_Permission_Groups_Select_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UserGroupId = 'user_group_id',
-  /** column name */
-  UserPermissionGroupId = 'user_permission_group_id'
-}
-
-/** input type for updating data in table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Set_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate stddev on columns */
-export type Users_Group_User_Permission_Groups_Stddev_Fields = {
-  __typename?: 'users_group_user_permission_groups_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Users_Group_User_Permission_Groups_Stddev_Pop_Fields = {
-  __typename?: 'users_group_user_permission_groups_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Users_Group_User_Permission_Groups_Stddev_Samp_Fields = {
-  __typename?: 'users_group_user_permission_groups_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "users_group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Users_Group_User_Permission_Groups_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Users_Group_User_Permission_Groups_Stream_Cursor_Value_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate sum on columns */
-export type Users_Group_User_Permission_Groups_Sum_Fields = {
-  __typename?: 'users_group_user_permission_groups_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_group_id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "users.group_user_permission_groups" */
-export enum Users_Group_User_Permission_Groups_Update_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UserGroupId = 'user_group_id',
-  /** column name */
-  UserPermissionGroupId = 'user_permission_group_id'
-}
-
-export type Users_Group_User_Permission_Groups_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Users_Group_User_Permission_Groups_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Users_Group_User_Permission_Groups_Set_Input>;
-  where: Users_Group_User_Permission_Groups_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Users_Group_User_Permission_Groups_Var_Pop_Fields = {
-  __typename?: 'users_group_user_permission_groups_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Users_Group_User_Permission_Groups_Var_Samp_Fields = {
-  __typename?: 'users_group_user_permission_groups_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Users_Group_User_Permission_Groups_Variance_Fields = {
-  __typename?: 'users_group_user_permission_groups_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
 /** columns and relationships of "users.groups" */
 export type Users_Groups = {
   __typename?: 'users_groups';
@@ -43131,10 +39466,6 @@ export type Users_Groups = {
   group_permissions: Array<Users_Group_Permissions>;
   /** An aggregate relationship */
   group_permissions_aggregate: Users_Group_Permissions_Aggregate;
-  /** An array relationship */
-  group_user_permission_groups: Array<Users_Group_User_Permission_Groups>;
-  /** An aggregate relationship */
-  group_user_permission_groups_aggregate: Users_Group_User_Permission_Groups_Aggregate;
   id: Scalars['Int'];
   label: Scalars['String'];
   ldap_role?: Maybe<Scalars['String']>;
@@ -43163,26 +39494,6 @@ export type Users_GroupsGroup_Permissions_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Users_Group_Permissions_Order_By>>;
   where?: InputMaybe<Users_Group_Permissions_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.groups" */
-export type Users_GroupsGroup_User_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.groups" */
-export type Users_GroupsGroup_User_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
 };
 
 
@@ -43288,8 +39599,6 @@ export type Users_Groups_Bool_Exp = {
   description?: InputMaybe<String_Comparison_Exp>;
   group_permissions?: InputMaybe<Users_Group_Permissions_Bool_Exp>;
   group_permissions_aggregate?: InputMaybe<Users_Group_Permissions_Aggregate_Bool_Exp>;
-  group_user_permission_groups?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-  group_user_permission_groups_aggregate?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Bool_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   label?: InputMaybe<String_Comparison_Exp>;
   ldap_role?: InputMaybe<String_Comparison_Exp>;
@@ -43314,7 +39623,6 @@ export type Users_Groups_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
   group_permissions?: InputMaybe<Users_Group_Permissions_Arr_Rel_Insert_Input>;
-  group_user_permission_groups?: InputMaybe<Users_Group_User_Permission_Groups_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['Int']>;
   label?: InputMaybe<Scalars['String']>;
   ldap_role?: InputMaybe<Scalars['String']>;
@@ -43392,7 +39700,6 @@ export type Users_Groups_Order_By = {
   created_at?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   group_permissions_aggregate?: InputMaybe<Users_Group_Permissions_Aggregate_Order_By>;
-  group_user_permission_groups_aggregate?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   label?: InputMaybe<Order_By>;
   ldap_role?: InputMaybe<Order_By>;
@@ -44274,676 +40581,11 @@ export type Users_Notifications_Updates = {
   where: Users_Notifications_Bool_Exp;
 };
 
-/** columns and relationships of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions = {
-  __typename?: 'users_permission_group_user_permissions';
-  id: Scalars['Int'];
-  /** An object relationship */
-  permission: Users_Permissions;
-  /** An object relationship */
-  permission_group: Users_Permission_Groups;
-  /** An array relationship */
-  permissions: Array<Users_Permissions>;
-  /** An aggregate relationship */
-  permissions_aggregate: Users_Permissions_Aggregate;
-  user_permission_group_id: Scalars['Int'];
-  user_permission_id: Scalars['Int'];
-};
-
-
-/** columns and relationships of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_PermissionsPermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permissions_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_PermissionsPermissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permissions_Bool_Exp>;
-};
-
-/** aggregated selection of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Aggregate = {
-  __typename?: 'users_permission_group_user_permissions_aggregate';
-  aggregate?: Maybe<Users_Permission_Group_User_Permissions_Aggregate_Fields>;
-  nodes: Array<Users_Permission_Group_User_Permissions>;
-};
-
-export type Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Aggregate_Fields = {
-  __typename?: 'users_permission_group_user_permissions_aggregate_fields';
-  avg?: Maybe<Users_Permission_Group_User_Permissions_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<Users_Permission_Group_User_Permissions_Max_Fields>;
-  min?: Maybe<Users_Permission_Group_User_Permissions_Min_Fields>;
-  stddev?: Maybe<Users_Permission_Group_User_Permissions_Stddev_Fields>;
-  stddev_pop?: Maybe<Users_Permission_Group_User_Permissions_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Users_Permission_Group_User_Permissions_Stddev_Samp_Fields>;
-  sum?: Maybe<Users_Permission_Group_User_Permissions_Sum_Fields>;
-  var_pop?: Maybe<Users_Permission_Group_User_Permissions_Var_Pop_Fields>;
-  var_samp?: Maybe<Users_Permission_Group_User_Permissions_Var_Samp_Fields>;
-  variance?: Maybe<Users_Permission_Group_User_Permissions_Variance_Fields>;
-};
-
-
-/** aggregate fields of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Permission_Group_User_Permissions_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Permission_Group_User_Permissions_Max_Order_By>;
-  min?: InputMaybe<Users_Permission_Group_User_Permissions_Min_Order_By>;
-  stddev?: InputMaybe<Users_Permission_Group_User_Permissions_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Permission_Group_User_Permissions_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Permission_Group_User_Permissions_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Permission_Group_User_Permissions_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Permission_Group_User_Permissions_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Permission_Group_User_Permissions_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Permission_Group_User_Permissions_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Arr_Rel_Insert_Input = {
-  data: Array<Users_Permission_Group_User_Permissions_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Permission_Group_User_Permissions_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type Users_Permission_Group_User_Permissions_Avg_Fields = {
-  __typename?: 'users_permission_group_user_permissions_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "users.permission_group_user_permissions". All fields are combined with a logical 'AND'. */
-export type Users_Permission_Group_User_Permissions_Bool_Exp = {
-  _and?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Bool_Exp>>;
-  _not?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-  _or?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Bool_Exp>>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  permission?: InputMaybe<Users_Permissions_Bool_Exp>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-  permissions?: InputMaybe<Users_Permissions_Bool_Exp>;
-  permissions_aggregate?: InputMaybe<Users_Permissions_Aggregate_Bool_Exp>;
-  user_permission_group_id?: InputMaybe<Int_Comparison_Exp>;
-  user_permission_id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "users.permission_group_user_permissions" */
-export enum Users_Permission_Group_User_Permissions_Constraint {
-  /** unique or primary key constraint on columns "user_permission_id", "user_permission_group_id" */
-  PermissionGroupUserPermissionsUserPermissionGroupIdUser = 'permission_group_user_permissions_user_permission_group_id_user',
-  /** unique or primary key constraint on columns "id" */
-  UserPermissionGroupUserPermissionsPkey = 'user_permission_group_user_permissions_pkey'
-}
-
-/** input type for incrementing numeric columns in table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Insert_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  permission?: InputMaybe<Users_Permissions_Obj_Rel_Insert_Input>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Obj_Rel_Insert_Input>;
-  permissions?: InputMaybe<Users_Permissions_Arr_Rel_Insert_Input>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate max on columns */
-export type Users_Permission_Group_User_Permissions_Max_Fields = {
-  __typename?: 'users_permission_group_user_permissions_max_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-  user_permission_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Max_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Users_Permission_Group_User_Permissions_Min_Fields = {
-  __typename?: 'users_permission_group_user_permissions_min_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-  user_permission_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Min_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Mutation_Response = {
-  __typename?: 'users_permission_group_user_permissions_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users_Permission_Group_User_Permissions>;
-};
-
-/** on_conflict condition type for table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_On_Conflict = {
-  constraint: Users_Permission_Group_User_Permissions_Constraint;
-  update_columns?: Array<Users_Permission_Group_User_Permissions_Update_Column>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "users.permission_group_user_permissions". */
-export type Users_Permission_Group_User_Permissions_Order_By = {
-  id?: InputMaybe<Order_By>;
-  permission?: InputMaybe<Users_Permissions_Order_By>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Order_By>;
-  permissions_aggregate?: InputMaybe<Users_Permissions_Aggregate_Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: users.permission_group_user_permissions */
-export type Users_Permission_Group_User_Permissions_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "users.permission_group_user_permissions" */
-export enum Users_Permission_Group_User_Permissions_Select_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UserPermissionGroupId = 'user_permission_group_id',
-  /** column name */
-  UserPermissionId = 'user_permission_id'
-}
-
-/** input type for updating data in table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Set_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate stddev on columns */
-export type Users_Permission_Group_User_Permissions_Stddev_Fields = {
-  __typename?: 'users_permission_group_user_permissions_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Users_Permission_Group_User_Permissions_Stddev_Pop_Fields = {
-  __typename?: 'users_permission_group_user_permissions_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Users_Permission_Group_User_Permissions_Stddev_Samp_Fields = {
-  __typename?: 'users_permission_group_user_permissions_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "users_permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Users_Permission_Group_User_Permissions_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Users_Permission_Group_User_Permissions_Stream_Cursor_Value_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate sum on columns */
-export type Users_Permission_Group_User_Permissions_Sum_Fields = {
-  __typename?: 'users_permission_group_user_permissions_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-  user_permission_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "users.permission_group_user_permissions" */
-export enum Users_Permission_Group_User_Permissions_Update_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UserPermissionGroupId = 'user_permission_group_id',
-  /** column name */
-  UserPermissionId = 'user_permission_id'
-}
-
-export type Users_Permission_Group_User_Permissions_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Users_Permission_Group_User_Permissions_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Users_Permission_Group_User_Permissions_Set_Input>;
-  where: Users_Permission_Group_User_Permissions_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Users_Permission_Group_User_Permissions_Var_Pop_Fields = {
-  __typename?: 'users_permission_group_user_permissions_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Users_Permission_Group_User_Permissions_Var_Samp_Fields = {
-  __typename?: 'users_permission_group_user_permissions_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Users_Permission_Group_User_Permissions_Variance_Fields = {
-  __typename?: 'users_permission_group_user_permissions_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_Groups = {
-  __typename?: 'users_permission_groups';
-  created_at: Scalars['timestamptz'];
-  description?: Maybe<Scalars['String']>;
-  /** An array relationship */
-  group_user_permission_groups: Array<Users_Group_User_Permission_Groups>;
-  /** An aggregate relationship */
-  group_user_permission_groups_aggregate: Users_Group_User_Permission_Groups_Aggregate;
-  id: Scalars['Int'];
-  label: Scalars['String'];
-  /** An array relationship */
-  permission_group_user_permissions: Array<Users_Permission_Group_User_Permissions>;
-  /** An aggregate relationship */
-  permission_group_user_permissions_aggregate: Users_Permission_Group_User_Permissions_Aggregate;
-  updated_at: Scalars['timestamptz'];
-};
-
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_GroupsGroup_User_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_GroupsGroup_User_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_GroupsPermission_Group_User_PermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_GroupsPermission_Group_User_Permissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-/** aggregated selection of "users.permission_groups" */
-export type Users_Permission_Groups_Aggregate = {
-  __typename?: 'users_permission_groups_aggregate';
-  aggregate?: Maybe<Users_Permission_Groups_Aggregate_Fields>;
-  nodes: Array<Users_Permission_Groups>;
-};
-
-/** aggregate fields of "users.permission_groups" */
-export type Users_Permission_Groups_Aggregate_Fields = {
-  __typename?: 'users_permission_groups_aggregate_fields';
-  avg?: Maybe<Users_Permission_Groups_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<Users_Permission_Groups_Max_Fields>;
-  min?: Maybe<Users_Permission_Groups_Min_Fields>;
-  stddev?: Maybe<Users_Permission_Groups_Stddev_Fields>;
-  stddev_pop?: Maybe<Users_Permission_Groups_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Users_Permission_Groups_Stddev_Samp_Fields>;
-  sum?: Maybe<Users_Permission_Groups_Sum_Fields>;
-  var_pop?: Maybe<Users_Permission_Groups_Var_Pop_Fields>;
-  var_samp?: Maybe<Users_Permission_Groups_Var_Samp_Fields>;
-  variance?: Maybe<Users_Permission_Groups_Variance_Fields>;
-};
-
-
-/** aggregate fields of "users.permission_groups" */
-export type Users_Permission_Groups_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** aggregate avg on columns */
-export type Users_Permission_Groups_Avg_Fields = {
-  __typename?: 'users_permission_groups_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** Boolean expression to filter rows from the table "users.permission_groups". All fields are combined with a logical 'AND'. */
-export type Users_Permission_Groups_Bool_Exp = {
-  _and?: InputMaybe<Array<Users_Permission_Groups_Bool_Exp>>;
-  _not?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-  _or?: InputMaybe<Array<Users_Permission_Groups_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  description?: InputMaybe<String_Comparison_Exp>;
-  group_user_permission_groups?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-  group_user_permission_groups_aggregate?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Bool_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  label?: InputMaybe<String_Comparison_Exp>;
-  permission_group_user_permissions?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-  permission_group_user_permissions_aggregate?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "users.permission_groups" */
-export enum Users_Permission_Groups_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  UserPermissionGroupsPkey = 'user_permission_groups_pkey'
-}
-
-/** input type for incrementing numeric columns in table "users.permission_groups" */
-export type Users_Permission_Groups_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "users.permission_groups" */
-export type Users_Permission_Groups_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  group_user_permission_groups?: InputMaybe<Users_Group_User_Permission_Groups_Arr_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  permission_group_user_permissions?: InputMaybe<Users_Permission_Group_User_Permissions_Arr_Rel_Insert_Input>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate max on columns */
-export type Users_Permission_Groups_Max_Fields = {
-  __typename?: 'users_permission_groups_max_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  label?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** aggregate min on columns */
-export type Users_Permission_Groups_Min_Fields = {
-  __typename?: 'users_permission_groups_min_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  label?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** response of any mutation on the table "users.permission_groups" */
-export type Users_Permission_Groups_Mutation_Response = {
-  __typename?: 'users_permission_groups_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users_Permission_Groups>;
-};
-
-/** input type for inserting object relation for remote table "users.permission_groups" */
-export type Users_Permission_Groups_Obj_Rel_Insert_Input = {
-  data: Users_Permission_Groups_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Permission_Groups_On_Conflict>;
-};
-
-/** on_conflict condition type for table "users.permission_groups" */
-export type Users_Permission_Groups_On_Conflict = {
-  constraint: Users_Permission_Groups_Constraint;
-  update_columns?: Array<Users_Permission_Groups_Update_Column>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "users.permission_groups". */
-export type Users_Permission_Groups_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  group_user_permission_groups_aggregate?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  permission_group_user_permissions_aggregate?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: users.permission_groups */
-export type Users_Permission_Groups_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "users.permission_groups" */
-export enum Users_Permission_Groups_Select_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** input type for updating data in table "users.permission_groups" */
-export type Users_Permission_Groups_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate stddev on columns */
-export type Users_Permission_Groups_Stddev_Fields = {
-  __typename?: 'users_permission_groups_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Users_Permission_Groups_Stddev_Pop_Fields = {
-  __typename?: 'users_permission_groups_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Users_Permission_Groups_Stddev_Samp_Fields = {
-  __typename?: 'users_permission_groups_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** Streaming cursor of the table "users_permission_groups" */
-export type Users_Permission_Groups_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Users_Permission_Groups_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Users_Permission_Groups_Stream_Cursor_Value_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate sum on columns */
-export type Users_Permission_Groups_Sum_Fields = {
-  __typename?: 'users_permission_groups_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** update columns of table "users.permission_groups" */
-export enum Users_Permission_Groups_Update_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-export type Users_Permission_Groups_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Users_Permission_Groups_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Users_Permission_Groups_Set_Input>;
-  where: Users_Permission_Groups_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Users_Permission_Groups_Var_Pop_Fields = {
-  __typename?: 'users_permission_groups_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate var_samp on columns */
-export type Users_Permission_Groups_Var_Samp_Fields = {
-  __typename?: 'users_permission_groups_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate variance on columns */
-export type Users_Permission_Groups_Variance_Fields = {
-  __typename?: 'users_permission_groups_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
 /** columns and relationships of "users.permission_matrix_view" */
 export type Users_Permission_Matrix_View = {
   __typename?: 'users_permission_matrix_view';
   group_id?: Maybe<Scalars['Int']>;
-  permission_group_id?: Maybe<Scalars['Int']>;
-  permission_group_label?: Maybe<Scalars['String']>;
+  group_label?: Maybe<Scalars['String']>;
   permission_id?: Maybe<Scalars['Int']>;
   permission_label?: Maybe<Scalars['String']>;
 };
@@ -44953,17 +40595,6 @@ export type Users_Permission_Matrix_View_Aggregate = {
   __typename?: 'users_permission_matrix_view_aggregate';
   aggregate?: Maybe<Users_Permission_Matrix_View_Aggregate_Fields>;
   nodes: Array<Users_Permission_Matrix_View>;
-};
-
-export type Users_Permission_Matrix_View_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Permission_Matrix_View_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Permission_Matrix_View_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Permission_Matrix_View_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "users.permission_matrix_view" */
@@ -44989,39 +40620,11 @@ export type Users_Permission_Matrix_View_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Permission_Matrix_View_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Permission_Matrix_View_Max_Order_By>;
-  min?: InputMaybe<Users_Permission_Matrix_View_Min_Order_By>;
-  stddev?: InputMaybe<Users_Permission_Matrix_View_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Permission_Matrix_View_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Permission_Matrix_View_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Permission_Matrix_View_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Permission_Matrix_View_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Permission_Matrix_View_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Permission_Matrix_View_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Arr_Rel_Insert_Input = {
-  data: Array<Users_Permission_Matrix_View_Insert_Input>;
-};
-
 /** aggregate avg on columns */
 export type Users_Permission_Matrix_View_Avg_Fields = {
   __typename?: 'users_permission_matrix_view_avg_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Avg_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "users.permission_matrix_view". All fields are combined with a logical 'AND'. */
@@ -45030,64 +40633,33 @@ export type Users_Permission_Matrix_View_Bool_Exp = {
   _not?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Permission_Matrix_View_Bool_Exp>>;
   group_id?: InputMaybe<Int_Comparison_Exp>;
-  permission_group_id?: InputMaybe<Int_Comparison_Exp>;
-  permission_group_label?: InputMaybe<String_Comparison_Exp>;
+  group_label?: InputMaybe<String_Comparison_Exp>;
   permission_id?: InputMaybe<Int_Comparison_Exp>;
   permission_label?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** input type for inserting data into table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Insert_Input = {
-  group_id?: InputMaybe<Scalars['Int']>;
-  permission_group_id?: InputMaybe<Scalars['Int']>;
-  permission_group_label?: InputMaybe<Scalars['String']>;
-  permission_id?: InputMaybe<Scalars['Int']>;
-  permission_label?: InputMaybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Users_Permission_Matrix_View_Max_Fields = {
   __typename?: 'users_permission_matrix_view_max_fields';
   group_id?: Maybe<Scalars['Int']>;
-  permission_group_id?: Maybe<Scalars['Int']>;
-  permission_group_label?: Maybe<Scalars['String']>;
+  group_label?: Maybe<Scalars['String']>;
   permission_id?: Maybe<Scalars['Int']>;
   permission_label?: Maybe<Scalars['String']>;
-};
-
-/** order by max() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Max_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_group_label?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
-  permission_label?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Users_Permission_Matrix_View_Min_Fields = {
   __typename?: 'users_permission_matrix_view_min_fields';
   group_id?: Maybe<Scalars['Int']>;
-  permission_group_id?: Maybe<Scalars['Int']>;
-  permission_group_label?: Maybe<Scalars['String']>;
+  group_label?: Maybe<Scalars['String']>;
   permission_id?: Maybe<Scalars['Int']>;
   permission_label?: Maybe<Scalars['String']>;
-};
-
-/** order by min() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Min_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_group_label?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
-  permission_label?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "users.permission_matrix_view". */
 export type Users_Permission_Matrix_View_Order_By = {
   group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_group_label?: InputMaybe<Order_By>;
+  group_label?: InputMaybe<Order_By>;
   permission_id?: InputMaybe<Order_By>;
   permission_label?: InputMaybe<Order_By>;
 };
@@ -45097,9 +40669,7 @@ export enum Users_Permission_Matrix_View_Select_Column {
   /** column name */
   GroupId = 'group_id',
   /** column name */
-  PermissionGroupId = 'permission_group_id',
-  /** column name */
-  PermissionGroupLabel = 'permission_group_label',
+  GroupLabel = 'group_label',
   /** column name */
   PermissionId = 'permission_id',
   /** column name */
@@ -45110,45 +40680,21 @@ export enum Users_Permission_Matrix_View_Select_Column {
 export type Users_Permission_Matrix_View_Stddev_Fields = {
   __typename?: 'users_permission_matrix_view_stddev_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Stddev_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Users_Permission_Matrix_View_Stddev_Pop_Fields = {
   __typename?: 'users_permission_matrix_view_stddev_pop_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Stddev_Pop_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Users_Permission_Matrix_View_Stddev_Samp_Fields = {
   __typename?: 'users_permission_matrix_view_stddev_samp_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Stddev_Samp_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "users_permission_matrix_view" */
@@ -45162,8 +40708,7 @@ export type Users_Permission_Matrix_View_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Users_Permission_Matrix_View_Stream_Cursor_Value_Input = {
   group_id?: InputMaybe<Scalars['Int']>;
-  permission_group_id?: InputMaybe<Scalars['Int']>;
-  permission_group_label?: InputMaybe<Scalars['String']>;
+  group_label?: InputMaybe<Scalars['String']>;
   permission_id?: InputMaybe<Scalars['Int']>;
   permission_label?: InputMaybe<Scalars['String']>;
 };
@@ -45172,60 +40717,28 @@ export type Users_Permission_Matrix_View_Stream_Cursor_Value_Input = {
 export type Users_Permission_Matrix_View_Sum_Fields = {
   __typename?: 'users_permission_matrix_view_sum_fields';
   group_id?: Maybe<Scalars['Int']>;
-  permission_group_id?: Maybe<Scalars['Int']>;
   permission_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Sum_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_pop on columns */
 export type Users_Permission_Matrix_View_Var_Pop_Fields = {
   __typename?: 'users_permission_matrix_view_var_pop_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Var_Pop_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Users_Permission_Matrix_View_Var_Samp_Fields = {
   __typename?: 'users_permission_matrix_view_var_samp_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Var_Samp_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Users_Permission_Matrix_View_Variance_Fields = {
   __typename?: 'users_permission_matrix_view_variance_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Variance_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "users.permissions" */
@@ -45239,10 +40752,6 @@ export type Users_Permissions = {
   group_permissions_aggregate: Users_Group_Permissions_Aggregate;
   id: Scalars['Int'];
   label: Scalars['String'];
-  /** An array relationship */
-  permission_group_user_permissions: Array<Users_Permission_Group_User_Permissions>;
-  /** An aggregate relationship */
-  permission_group_user_permissions_aggregate: Users_Permission_Group_User_Permissions_Aggregate;
   updated_at: Scalars['timestamptz'];
 };
 
@@ -45266,42 +40775,11 @@ export type Users_PermissionsGroup_Permissions_AggregateArgs = {
   where?: InputMaybe<Users_Group_Permissions_Bool_Exp>;
 };
 
-
-/** columns and relationships of "users.permissions" */
-export type Users_PermissionsPermission_Group_User_PermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permissions" */
-export type Users_PermissionsPermission_Group_User_Permissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
 /** aggregated selection of "users.permissions" */
 export type Users_Permissions_Aggregate = {
   __typename?: 'users_permissions_aggregate';
   aggregate?: Maybe<Users_Permissions_Aggregate_Fields>;
   nodes: Array<Users_Permissions>;
-};
-
-export type Users_Permissions_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Permissions_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Permissions_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Permissions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Permissions_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "users.permissions" */
@@ -45327,37 +40805,10 @@ export type Users_Permissions_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "users.permissions" */
-export type Users_Permissions_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Permissions_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Permissions_Max_Order_By>;
-  min?: InputMaybe<Users_Permissions_Min_Order_By>;
-  stddev?: InputMaybe<Users_Permissions_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Permissions_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Permissions_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Permissions_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Permissions_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Permissions_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Permissions_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.permissions" */
-export type Users_Permissions_Arr_Rel_Insert_Input = {
-  data: Array<Users_Permissions_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Permissions_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Users_Permissions_Avg_Fields = {
   __typename?: 'users_permissions_avg_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.permissions" */
-export type Users_Permissions_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "users.permissions". All fields are combined with a logical 'AND'. */
@@ -45371,8 +40822,6 @@ export type Users_Permissions_Bool_Exp = {
   group_permissions_aggregate?: InputMaybe<Users_Group_Permissions_Aggregate_Bool_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   label?: InputMaybe<String_Comparison_Exp>;
-  permission_group_user_permissions?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-  permission_group_user_permissions_aggregate?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -45396,7 +40845,6 @@ export type Users_Permissions_Insert_Input = {
   group_permissions?: InputMaybe<Users_Group_Permissions_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['Int']>;
   label?: InputMaybe<Scalars['String']>;
-  permission_group_user_permissions?: InputMaybe<Users_Permission_Group_User_Permissions_Arr_Rel_Insert_Input>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -45410,15 +40858,6 @@ export type Users_Permissions_Max_Fields = {
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
-/** order by max() on columns of table "users.permissions" */
-export type Users_Permissions_Max_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
 /** aggregate min on columns */
 export type Users_Permissions_Min_Fields = {
   __typename?: 'users_permissions_min_fields';
@@ -45427,15 +40866,6 @@ export type Users_Permissions_Min_Fields = {
   id?: Maybe<Scalars['Int']>;
   label?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** order by min() on columns of table "users.permissions" */
-export type Users_Permissions_Min_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "users.permissions" */
@@ -45468,7 +40898,6 @@ export type Users_Permissions_Order_By = {
   group_permissions_aggregate?: InputMaybe<Users_Group_Permissions_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   label?: InputMaybe<Order_By>;
-  permission_group_user_permissions_aggregate?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -45506,31 +40935,16 @@ export type Users_Permissions_Stddev_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by stddev() on columns of table "users.permissions" */
-export type Users_Permissions_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate stddev_pop on columns */
 export type Users_Permissions_Stddev_Pop_Fields = {
   __typename?: 'users_permissions_stddev_pop_fields';
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by stddev_pop() on columns of table "users.permissions" */
-export type Users_Permissions_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate stddev_samp on columns */
 export type Users_Permissions_Stddev_Samp_Fields = {
   __typename?: 'users_permissions_stddev_samp_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.permissions" */
-export type Users_Permissions_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "users_permissions" */
@@ -45554,11 +40968,6 @@ export type Users_Permissions_Stream_Cursor_Value_Input = {
 export type Users_Permissions_Sum_Fields = {
   __typename?: 'users_permissions_sum_fields';
   id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "users.permissions" */
-export type Users_Permissions_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "users.permissions" */
@@ -45589,31 +40998,16 @@ export type Users_Permissions_Var_Pop_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by var_pop() on columns of table "users.permissions" */
-export type Users_Permissions_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate var_samp on columns */
 export type Users_Permissions_Var_Samp_Fields = {
   __typename?: 'users_permissions_var_samp_fields';
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by var_samp() on columns of table "users.permissions" */
-export type Users_Permissions_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate variance on columns */
 export type Users_Permissions_Variance_Fields = {
   __typename?: 'users_permissions_variance_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.permissions" */
-export type Users_Permissions_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "users.profile_classifications" */
@@ -47279,14 +42673,6 @@ export type Users_Profiles = {
   /** An aggregate relationship */
   assignment_labels_aggregate: App_Assignment_Labels_V2_Aggregate;
   /** An array relationship */
-  assignment_tags: Array<App_Assignment_Labels>;
-  /** An aggregate relationship */
-  assignment_tags_aggregate: App_Assignment_Labels_Aggregate;
-  /** An array relationship */
-  assignments: Array<App_Assignments>;
-  /** An aggregate relationship */
-  assignments_aggregate: App_Assignments_Aggregate;
-  /** An array relationship */
   assignments_v2: Array<App_Assignments_V2>;
   /** An aggregate relationship */
   assignments_v2_aggregate: App_Assignments_V2_Aggregate;
@@ -47382,46 +42768,6 @@ export type Users_ProfilesAssignment_Labels_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<App_Assignment_Labels_V2_Order_By>>;
   where?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
-};
-
-
-/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
-export type Users_ProfilesAssignment_TagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
-export type Users_ProfilesAssignment_Tags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
-export type Users_ProfilesAssignmentsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
-export type Users_ProfilesAssignments_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
 };
 
 
@@ -47776,10 +43122,6 @@ export type Users_Profiles_Bool_Exp = {
   alternative_email?: InputMaybe<String_Comparison_Exp>;
   assignment_labels?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
   assignment_labels_aggregate?: InputMaybe<App_Assignment_Labels_V2_Aggregate_Bool_Exp>;
-  assignment_tags?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-  assignment_tags_aggregate?: InputMaybe<App_Assignment_Labels_Aggregate_Bool_Exp>;
-  assignments?: InputMaybe<App_Assignments_Bool_Exp>;
-  assignments_aggregate?: InputMaybe<App_Assignments_Aggregate_Bool_Exp>;
   assignments_v2?: InputMaybe<App_Assignments_V2_Bool_Exp>;
   assignments_v2_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Bool_Exp>;
   avatar?: InputMaybe<String_Comparison_Exp>;
@@ -47841,8 +43183,6 @@ export type Users_Profiles_Insert_Input = {
   /** secundair e-mailadres voor communicatie */
   alternative_email?: InputMaybe<Scalars['String']>;
   assignment_labels?: InputMaybe<App_Assignment_Labels_V2_Arr_Rel_Insert_Input>;
-  assignment_tags?: InputMaybe<App_Assignment_Labels_Arr_Rel_Insert_Input>;
-  assignments?: InputMaybe<App_Assignments_Arr_Rel_Insert_Input>;
   assignments_v2?: InputMaybe<App_Assignments_V2_Arr_Rel_Insert_Input>;
   avatar?: InputMaybe<Scalars['String']>;
   bio?: InputMaybe<Scalars['String']>;
@@ -48178,8 +43518,6 @@ export type Users_Profiles_Order_By = {
   alias?: InputMaybe<Order_By>;
   alternative_email?: InputMaybe<Order_By>;
   assignment_labels_aggregate?: InputMaybe<App_Assignment_Labels_V2_Aggregate_Order_By>;
-  assignment_tags_aggregate?: InputMaybe<App_Assignment_Labels_Aggregate_Order_By>;
-  assignments_aggregate?: InputMaybe<App_Assignments_Aggregate_Order_By>;
   assignments_v2_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Order_By>;
   avatar?: InputMaybe<Order_By>;
   bio?: InputMaybe<Order_By>;
@@ -48359,9 +43697,9 @@ export type Users_Summary_View = {
   acc_created_at?: Maybe<Scalars['timestamptz']>;
   acc_updated_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
-  assignments: Array<App_Assignments>;
+  assignments: Array<App_Assignments_V2>;
   /** An aggregate relationship */
-  assignments_aggregate: App_Assignments_Aggregate;
+  assignments_aggregate: App_Assignments_V2_Aggregate;
   /** An array relationship */
   audits: Array<Users_Audit_Log>;
   /** An aggregate relationship */
@@ -48407,10 +43745,6 @@ export type Users_Summary_View = {
   organisations: Array<Users_Profile_Organizations>;
   /** An aggregate relationship */
   organisations_aggregate: Users_Profile_Organizations_Aggregate;
-  /** An array relationship */
-  permissions: Array<Users_Permission_Matrix_View>;
-  /** An aggregate relationship */
-  permissions_aggregate: Users_Permission_Matrix_View_Aggregate;
   pro_created_at?: Maybe<Scalars['timestamptz']>;
   pro_updated_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
@@ -48429,21 +43763,21 @@ export type Users_Summary_View = {
 
 /** columns and relationships of "users.summary_view" */
 export type Users_Summary_ViewAssignmentsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Bool_Exp>;
 };
 
 
 /** columns and relationships of "users.summary_view" */
 export type Users_Summary_ViewAssignments_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Bool_Exp>;
 };
 
 
@@ -48586,26 +43920,6 @@ export type Users_Summary_ViewOrganisations_AggregateArgs = {
   where?: InputMaybe<Users_Profile_Organizations_Bool_Exp>;
 };
 
-
-/** columns and relationships of "users.summary_view" */
-export type Users_Summary_ViewPermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Matrix_View_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Matrix_View_Order_By>>;
-  where?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.summary_view" */
-export type Users_Summary_ViewPermissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Matrix_View_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Matrix_View_Order_By>>;
-  where?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
-};
-
 /** aggregated selection of "users.summary_view" */
 export type Users_Summary_View_Aggregate = {
   __typename?: 'users_summary_view_aggregate';
@@ -48650,8 +43964,8 @@ export type Users_Summary_View_Bool_Exp = {
   _or?: InputMaybe<Array<Users_Summary_View_Bool_Exp>>;
   acc_created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   acc_updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  assignments?: InputMaybe<App_Assignments_Bool_Exp>;
-  assignments_aggregate?: InputMaybe<App_Assignments_Aggregate_Bool_Exp>;
+  assignments?: InputMaybe<App_Assignments_V2_Bool_Exp>;
+  assignments_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Bool_Exp>;
   audits?: InputMaybe<Users_Audit_Log_Bool_Exp>;
   audits_aggregate?: InputMaybe<Users_Audit_Log_Aggregate_Bool_Exp>;
   blocked_at?: InputMaybe<Shared_User_Last_Blocked_Bool_Exp>;
@@ -48682,8 +43996,6 @@ export type Users_Summary_View_Bool_Exp = {
   mail?: InputMaybe<String_Comparison_Exp>;
   organisations?: InputMaybe<Users_Profile_Organizations_Bool_Exp>;
   organisations_aggregate?: InputMaybe<Users_Profile_Organizations_Aggregate_Bool_Exp>;
-  permissions?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
-  permissions_aggregate?: InputMaybe<Users_Permission_Matrix_View_Aggregate_Bool_Exp>;
   pro_created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   pro_updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
@@ -48700,7 +44012,7 @@ export type Users_Summary_View_Bool_Exp = {
 export type Users_Summary_View_Insert_Input = {
   acc_created_at?: InputMaybe<Scalars['timestamptz']>;
   acc_updated_at?: InputMaybe<Scalars['timestamptz']>;
-  assignments?: InputMaybe<App_Assignments_Arr_Rel_Insert_Input>;
+  assignments?: InputMaybe<App_Assignments_V2_Arr_Rel_Insert_Input>;
   audits?: InputMaybe<Users_Audit_Log_Arr_Rel_Insert_Input>;
   blocked_at?: InputMaybe<Shared_User_Last_Blocked_Obj_Rel_Insert_Input>;
   business_category?: InputMaybe<Scalars['String']>;
@@ -48724,7 +44036,6 @@ export type Users_Summary_View_Insert_Input = {
   loms?: InputMaybe<Users_Profiles_Lom_Links_Arr_Rel_Insert_Input>;
   mail?: InputMaybe<Scalars['String']>;
   organisations?: InputMaybe<Users_Profile_Organizations_Arr_Rel_Insert_Input>;
-  permissions?: InputMaybe<Users_Permission_Matrix_View_Arr_Rel_Insert_Input>;
   pro_created_at?: InputMaybe<Scalars['timestamptz']>;
   pro_updated_at?: InputMaybe<Scalars['timestamptz']>;
   profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
@@ -48798,7 +44109,7 @@ export type Users_Summary_View_Obj_Rel_Insert_Input = {
 export type Users_Summary_View_Order_By = {
   acc_created_at?: InputMaybe<Order_By>;
   acc_updated_at?: InputMaybe<Order_By>;
-  assignments_aggregate?: InputMaybe<App_Assignments_Aggregate_Order_By>;
+  assignments_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Order_By>;
   audits_aggregate?: InputMaybe<Users_Audit_Log_Aggregate_Order_By>;
   blocked_at?: InputMaybe<Shared_User_Last_Blocked_Order_By>;
   business_category?: InputMaybe<Order_By>;
@@ -48822,7 +44133,6 @@ export type Users_Summary_View_Order_By = {
   loms_aggregate?: InputMaybe<Users_Profiles_Lom_Links_Aggregate_Order_By>;
   mail?: InputMaybe<Order_By>;
   organisations_aggregate?: InputMaybe<Users_Profile_Organizations_Aggregate_Order_By>;
-  permissions_aggregate?: InputMaybe<Users_Permission_Matrix_View_Aggregate_Order_By>;
   pro_created_at?: InputMaybe<Order_By>;
   pro_updated_at?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
@@ -50602,15 +45912,6 @@ export type InsertItemRelationMutationVariables = Exact<{
 
 
 export type InsertItemRelationMutation = { __typename?: 'mutation_root', insert_app_item_relations?: { __typename?: 'app_item_relations_mutation_response', returning: Array<{ __typename?: 'app_item_relations', id: number }> } | null };
-
-export type GetWorkspaceTabCountsQueryVariables = Exact<{
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  company_id?: InputMaybe<Scalars['String']>;
-  now?: InputMaybe<Scalars['timestamptz']>;
-}>;
-
-
-export type GetWorkspaceTabCountsQuery = { __typename?: 'query_root', collection_counts: { __typename?: 'app_collections_overview_aggregate', aggregate?: { __typename?: 'app_collections_overview_aggregate_fields', count: number } | null }, bundle_counts: { __typename?: 'app_collections_overview_aggregate', aggregate?: { __typename?: 'app_collections_overview_aggregate_fields', count: number } | null }, assignment_counts: { __typename?: 'app_assignments_v2_overview_aggregate', aggregate?: { __typename?: 'app_assignments_v2_overview_aggregate_fields', count: number } | null }, assignment_bookmark_counts: { __typename?: 'app_assignments_v2_bookmarks_aggregate', aggregate?: { __typename?: 'app_assignments_v2_bookmarks_aggregate_fields', count: number } | null }, collection_bookmark_counts: { __typename?: 'app_collection_bookmarks_aggregate', aggregate?: { __typename?: 'app_collection_bookmarks_aggregate_fields', count: number } | null }, item_bookmark_counts: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null }, organisation_content_counts: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null }, app_quick_lane_counts: { __typename?: 'app_quick_lanes_overview_aggregate', aggregate?: { __typename?: 'app_quick_lanes_overview_aggregate_fields', count: number } | null }, app_quick_lane_organisation_counts: { __typename?: 'app_quick_lanes_overview_aggregate', aggregate?: { __typename?: 'app_quick_lanes_overview_aggregate_fields', count: number } | null } };
 
 
 export const BulkAddLabelsToCollectionsDocument = `
@@ -55511,84 +50812,5 @@ export const useInsertItemRelationMutation = <
     useMutation<InsertItemRelationMutation, TError, InsertItemRelationMutationVariables, TContext>(
       ['insertItemRelation'],
       (variables?: InsertItemRelationMutationVariables) => fetchData<InsertItemRelationMutation, InsertItemRelationMutationVariables>(InsertItemRelationDocument, variables)(),
-      options
-    );
-export const GetWorkspaceTabCountsDocument = `
-    query getWorkspaceTabCounts($owner_profile_id: uuid, $company_id: String, $now: timestamptz) {
-  collection_counts: app_collections_overview_aggregate(
-    where: {collaborator_profile_id: {_eq: $owner_profile_id}, type_id: {_eq: 3}, is_deleted: {_eq: false}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  bundle_counts: app_collections_overview_aggregate(
-    where: {owner_profile_id: {_eq: $owner_profile_id}, type_id: {_eq: 4}, is_deleted: {_eq: false}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  assignment_counts: app_assignments_v2_overview_aggregate(
-    where: {collaborator_profile_id: {_eq: $owner_profile_id}, is_deleted: {_eq: false}, _or: [{deadline_at: {_gt: $now}}, {deadline_at: {_is_null: true}}]}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  assignment_bookmark_counts: app_assignments_v2_bookmarks_aggregate(
-    where: {profile_id: {_eq: $owner_profile_id}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  collection_bookmark_counts: app_collection_bookmarks_aggregate(
-    where: {profile_id: {_eq: $owner_profile_id}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  item_bookmark_counts: app_item_bookmarks_aggregate(
-    where: {profile_id: {_eq: $owner_profile_id}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  organisation_content_counts: app_collections_aggregate(
-    where: {owner: {company_id: {_eq: $company_id}}, is_deleted: {_eq: false}, is_public: {_eq: true}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  app_quick_lane_counts: app_quick_lanes_overview_aggregate(
-    where: {owner_profile_id: {_eq: $owner_profile_id}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-  app_quick_lane_organisation_counts: app_quick_lanes_overview_aggregate(
-    where: {company_id: {_eq: $company_id}}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetWorkspaceTabCountsQuery = <
-      TData = GetWorkspaceTabCountsQuery,
-      TError = unknown
-    >(
-      variables?: GetWorkspaceTabCountsQueryVariables,
-      options?: UseQueryOptions<GetWorkspaceTabCountsQuery, TError, TData>
-    ) =>
-    useQuery<GetWorkspaceTabCountsQuery, TError, TData>(
-      variables === undefined ? ['getWorkspaceTabCounts'] : ['getWorkspaceTabCounts', variables],
-      fetchData<GetWorkspaceTabCountsQuery, GetWorkspaceTabCountsQueryVariables>(GetWorkspaceTabCountsDocument, variables),
       options
     );

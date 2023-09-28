@@ -386,7 +386,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				const contributorType = isAdmin
 					? 'ADMIN'
 					: getContributorType(
-							user,
+							commonUser?.profileId,
 							assignment as Avo.Assignment.Assignment,
 							(originalAssignment.contributors || []) as Avo.Assignment.Contributor[]
 					  ).toLowerCase();

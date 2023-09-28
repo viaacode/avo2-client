@@ -27,14 +27,12 @@
     "Ward Vercruyssen <ward.vercruyssen@studiohyperdrive.be>",
     "Bram Vandenbussche <bram.vandenbussche@studiohyperdrive.be>",
     "Ian Emsens <ian.emsens@studiohypderive.be>",
-    "Benjamin Naesen <benjamin.naesen@studiohyperdrive.be>",
-    "Andry Charlier <andry.charlier@studiohyperdrive.be>",
-    "Enzo Eghermanne <enzo.eghermanne@studiohyperdrive.be>"
+    "Andry Charlier <andry.charlier@studiohyperdrive.be>"
   ],
   "dependencies": {
     "@flowplayer/player": "3.2.8",
     "@hookform/resolvers": "^2.9.9",
-    "@meemoo/admin-core-ui": "2.3.23",
+    "@meemoo/admin-core-ui": "2.3.27",
     "@meemoo/react-components": "2.26.0",
     "@react-hook/resize-observer": "^1.2.6",
     "@storybook/addon-actions": "^6.5.12",

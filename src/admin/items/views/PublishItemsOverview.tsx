@@ -160,7 +160,7 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	const triggerMamSync = async () => {
 		try {
 			const result: string = await ItemsService.triggerMamSync();
-			if (result === 'starting') {
+			if (result === 'SCHEDULED') {
 				ToastService.success(
 					tHtml(
 						'admin/items/views/publish-items-overview___een-mam-synchronisatie-is-gestart'

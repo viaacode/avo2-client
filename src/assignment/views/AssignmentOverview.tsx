@@ -34,7 +34,8 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import {
 	ArrayParam,
 	DelimitedArrayParam,
@@ -45,7 +46,6 @@ import {
 } from 'use-query-params';
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
@@ -102,7 +102,7 @@ import './AssignmentOverview.scss';
 
 type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
-interface AssignmentOverviewProps extends DefaultSecureRouteProps {
+interface AssignmentOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
@@ -119,12 +119,9 @@ const defaultFiltersAndSort = {
 	sort_order: DEFAULT_SORT_ORDER,
 };
 
-const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps> = ({
-	onUpdate = noop,
-	history,
-	user,
-	commonUser,
-}) => {
+const AssignmentOverview: FunctionComponent<
+	AssignmentOverviewProps & RouteComponentProps & UserProps
+> = ({ onUpdate = noop, history, commonUser, user }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -149,10 +146,10 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_MIJ;
 	const isContributorWithContributeRights = !!markedAssignment?.contributors?.find(
 		(c) =>
-			c.profile_id === commonUser.profileId && c.rights === ContributorInfoRight.CONTRIBUTOR
+			c.profile_id === commonUser?.profileId && c.rights === ContributorInfoRight.CONTRIBUTOR
 	);
 	const hasEditRightsForAllAssignments =
-		commonUser.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) || false;
+		commonUser?.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) || false;
 	const hasDeleteRightsForAllAssignments =
 		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) || false;
 	const shouldDeleteSelfFromAssignment = isContributor && !hasDeleteRightsForAllAssignments;
@@ -248,11 +245,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 
 	const checkPermissions = useCallback(async () => {
 		try {
-			if (user) {
+			if (commonUser) {
 				setCanEditAssignments(
 					await PermissionService.hasPermissions(
 						[PermissionName.EDIT_ANY_ASSIGNMENTS, PermissionName.EDIT_OWN_ASSIGNMENTS],
-						user
+						commonUser
 					)
 				);
 
@@ -262,13 +259,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 							PermissionName.PUBLISH_ANY_ASSIGNMENTS,
 							PermissionName.PUBLISH_OWN_ASSIGNMENTS,
 						],
-						user
+						commonUser
 					)
 				);
 			}
 		} catch (err) {
 			console.error('Failed to check permissions', err, {
-				user,
+				commonUser,
 				permissions: [
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
 					PermissionName.EDIT_OWN_ASSIGNMENTS,
@@ -280,7 +277,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 				)
 			);
 		}
-	}, [setCanEditAssignments, user, tText]);
+	}, [setCanEditAssignments, commonUser, tText]);
 
 	const fetchAssignments = useCallback(async () => {
 		try {
@@ -300,7 +297,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
-				user,
+				user as Avo.User.User,
 				query.view === AssignmentView.FINISHED, // true === past deadline
 				sortColumn,
 				sortOrder,
@@ -332,13 +329,13 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 		query,
 		sortColumn,
 		sortOrder,
-		user,
+		commonUser,
 	]);
 
 	const fetchAssignmentLabels = useCallback(async () => {
-		if (user.profile) {
+		if (commonUser?.profileId) {
 			// Fetch all labels for th current user
-			const labels = await AssignmentLabelsService.getLabelsForProfile(user.profile.id);
+			const labels = await AssignmentLabelsService.getLabelsForProfile(commonUser.profileId);
 			setAllAssignmentLabels(labels);
 		}
 	}, [user, setAllAssignmentLabels]);
@@ -434,12 +431,12 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 	};
 
 	const handleDeleteAssignmentConfirm = async () => {
-		await deleteAssignment(markedAssignment?.id, user, updateAndReset);
+		await deleteAssignment(markedAssignment?.id, user as Avo.User.User, updateAndReset);
 		handleDeleteModalClose();
 	};
 
 	const handleDeleteSelfFromAssignmentConfirm = async () => {
-		await deleteSelfFromAssignment(markedAssignment?.id, user, updateAndReset);
+		await deleteSelfFromAssignment(markedAssignment?.id, user as Avo.User.User, updateAndReset);
 		handleDeleteModalClose();
 	};
 
@@ -544,7 +541,11 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 	const renderResponsesCell = (cellData: any, assignment: Avo.Assignment.Assignment) => {
 		const responsesCount = (cellData || []).length;
 
-		const userRole = getContributorType(user, assignment, assignment.contributors || []);
+		const userRole = getContributorType(
+			commonUser?.profileId,
+			assignment,
+			assignment.contributors || []
+		);
 
 		if (responsesCount === 0 || userRole === 'VIEWER') {
 			return renderDataCell(
@@ -1060,4 +1061,7 @@ const AssignmentOverview: FunctionComponent<AssignmentOverviewProps & UserProps>
 	) : null;
 };
 
-export default withUser(AssignmentOverview) as FunctionComponent<AssignmentOverviewProps>;
+export default compose(
+	withRouter,
+	withUser
+)(AssignmentOverview) as FunctionComponent<AssignmentOverviewProps>;
