@@ -2,7 +2,7 @@
 @import "../../../styles/settings/variables";
 
 .c-translations-overview {
-	:global(.c-input) {
+	.c-input {
 		padding: 0;
 		background-color: transparent;
 		border: 0;
@@ -10,7 +10,7 @@
 		margin-top: 2rem;
 		margin-bottom: 2rem;
 
-		:global(.c-input__field) {
+		.c-input__field {
 			margin: 0;
 			border-radius: 0.3rem;
 			background-color: #fff;
@@ -29,7 +29,7 @@
 			}
 		}
 
-		:global(.c-input__icon) {
+		.c-input__icon {
 			position: absolute;
 			top: 0.5rem;
 			left: 0.8rem;
@@ -37,16 +37,16 @@
 		}
 	}
 
-	:global(.c-table__scroller) {
+	.c-table__scroller {
 		border: 1px solid $color-gray-100;
 		border-radius: 0.3rem;
 	}
 
-	:global(table) {
+	table {
 		width: 100%;
 		margin: 0 !important;
 
-		:global(th) {
+		th {
 			line-height: 2rem;
 			vertical-align: middle;
 			cursor: pointer;
@@ -65,20 +65,20 @@
 			border-left: 0;
 		}
 
-		:global(tr) {
+		tr {
 			border: 1px solid $color-gray-100;
 			border-width: 1px 0 0 0;
 			border-collapse: separate;
 		}
 
-		:global(thead tr) {
+		thead tr {
 			border-width: 0 0 1px 0;
 		}
 
-		:global(tbody tr) {
+		tbody tr {
 			vertical-align: center;
 
-			:global(td) {
+			td {
 				vertical-align: middle;
 			}
 
@@ -88,14 +88,14 @@
 			}
 		}
 
-		:global(.u-text-muted) {
+		.u-text-muted {
 			color: gray;
 		}
 
-		:global(.c-table__cell:last-child) {
+		.c-table__cell:last-child {
 			width: 6rem;
 
-			:global(> span) {
+			> span {
 				font-size: medium;
 				margin-top: 0.4rem;
 			}
@@ -103,13 +103,13 @@
 	}
 }
 
-:global(.c-translations-overview__modal) :global(.c-modal) {
+.c-translations-overview__modal .c-modal {
 	max-width: 100rem;
 
-	:global(.c-modal__body) {
+	.c-modal__body {
 		height: 49.4rem;
 
-		:global(.c-button--copy-to-clipboard) {
+		.c-button--copy-to-clipboard {
 			max-height: none;
 			background-color: transparent;
 			border: 0;
@@ -119,7 +119,7 @@
 				background-color: $color-gray-25;
 			}
 
-			:global(.c-button__content) {
+			.c-button__content {
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
@@ -127,21 +127,21 @@
 			}
 		}
 
-		:global(.bf-container) {
+		.bf-container {
 			border: 1px solid $color-gray-100;
 			border-radius: 0.3rem;
 
-			:global(.bf-content) {
+			.bf-content {
 				height: 31rem;
 			}
 		}
 	}
 
-	:global(.c-button-toolbar > div) {
+	.c-button-toolbar > div {
 		display: flex;
 		flex-direction: row-reverse;
 
-		:global(.c-button:last-child) {
+		.c-button:last-child {
 			background-color: transparent;
 			border: 0;
 			color: black;

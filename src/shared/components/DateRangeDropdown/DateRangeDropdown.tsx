@@ -12,15 +12,8 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import { format, parse } from 'date-fns';
-import React, {
-	FunctionComponent,
-	MouseEvent,
-	ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import { format } from 'date-fns';
+import React, { FC, MouseEvent, ReactText, useCallback, useEffect, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { reorderDate } from '../../helpers';
@@ -53,7 +46,7 @@ const DEFAULT_FUTURE_DATE_RANGE = {
 	lte: '',
 };
 
-const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
+const DateRangeDropdown: FC<DateRangeDropdownProps> = ({
 	label,
 	id,
 	range = DEFAULT_DATE_RANGE,
@@ -238,8 +231,8 @@ const DateRangeDropdown: FunctionComponent<DateRangeDropdownProps> = ({
 		tillYear = (till || yearInputLte || '').split('-')[0];
 	}
 
-	const fromDate: Date | null = from ? parse(from, 'yyyy-MM-dd HH:mm:ss', new Date()) : null;
-	const tillDate: Date | null = till ? parse(till, 'yyyy-MM-dd HH:mm:ss', new Date()) : null;
+	const fromDate: Date | null = from ? new Date(from) : null;
+	const tillDate: Date | null = till ? new Date(till) : null;
 
 	return (
 		<Dropdown
