@@ -28,7 +28,6 @@ import { Helmet } from 'react-helmet';
 
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
@@ -46,8 +45,9 @@ import {
 import { GetWorkspaceTabCountsDocument } from '../../shared/generated/graphql-db-react-query';
 import { buildLink, navigate } from '../../shared/helpers';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { dataService } from '../../shared/services/data-service';
+import { useGetWorkspaceCounts } from '../hooks/useGetWorkspaceCounts';
 import {
 	ASSIGNMENTS_ID,
 	BOOKMARKS_ID,
@@ -56,6 +56,7 @@ import {
 	GET_TABS,
 	ORGANISATION_CONTENT_ID,
 	QUICK_LANE_ID,
+	WORKSPACE_TAB_ID_TO_COUNT_ID,
 } from '../workspace.const';
 import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
 
@@ -64,33 +65,10 @@ import OrganisationContentOverview from './OrganisationContentOverview';
 import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
 
 export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
 }
-
-// Using `hasAtLeastOnePerm` to avoid async
-const getQuickLaneCount = (user: Avo.User.User, response: GetWorkspaceTabCountsQuery): number => {
-	// Show count of personal quick lane
-	if (
-		PermissionService.hasAtLeastOnePerm(user, [
-			PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
-		])
-	) {
-		return response.app_quick_lane_counts.aggregate?.count || 0;
-	}
-
-	if (
-		PermissionService.hasAtLeastOnePerm(user, [
-			PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
-		])
-	) {
-		return response.app_quick_lane_organisation_counts.aggregate?.count || 0;
-	}
-
-	return 0;
-};
 
 interface WorkspacePermissions {
 	canViewOwnCollections?: boolean;
@@ -115,9 +93,9 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 	const [activeFilter, setActiveFilter] = useState<ReactText>();
 	const [tabId, setTabId] = useState<string | null>(null);
 	const [tabs, setTabs] = useState<TabViewMap>({});
-	const [tabCounts, setTabCounts] = useState<{ [tabId: string]: number }>({});
 	const [permissions, setPermissions] = useState<WorkspacePermissions>({});
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const { data: workspaceCounts, refetch: refetchWorkspaceCounts } = useGetWorkspaceCounts();
 
 	// Methods
 	// react to route changes by navigating back wih the browser history back button
@@ -126,16 +104,8 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 		param && setTabId(param);
 	}, [match.params.tabId]);
 
-	const updatePermissionsAndCounts = useCallback(() => {
+	const updatePermissions = useCallback(() => {
 		Promise.all([
-			dataService.query<GetWorkspaceTabCountsQuery, GetWorkspaceTabCountsQueryVariables>({
-				query: GetWorkspaceTabCountsDocument,
-				variables: {
-					owner_profile_id: getProfileId(user),
-					company_id: get(user, 'profile.company_id') || 'EMPTY',
-					now: new Date().toISOString(),
-				},
-			}),
 			PermissionService.hasPermission(PermissionName.VIEW_OWN_COLLECTIONS, null, user),
 			PermissionService.hasPermission(PermissionName.VIEW_OWN_BUNDLES, null, user),
 			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
@@ -152,34 +122,20 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 			]),
 		])
 			.then((response) => {
-				setTabCounts({
-					[COLLECTIONS_ID]: response[0].collection_counts.aggregate?.count ?? 0,
-					[BUNDLES_ID]: response[0].bundle_counts.aggregate?.count ?? 0,
-					[ASSIGNMENTS_ID]: response[0].assignment_counts.aggregate?.count ?? 0,
-					[BOOKMARKS_ID]:
-						(response[0].item_bookmark_counts.aggregate?.count ?? 0) +
-						(response[0].collection_bookmark_counts.aggregate?.count ?? 0) +
-						(response[0].assignment_bookmark_counts.aggregate?.count ?? 0),
-					[ORGANISATION_CONTENT_ID]:
-						response[0].organisation_content_counts.aggregate?.count ?? 0,
-					[QUICK_LANE_ID]: getQuickLaneCount(user, response[0]),
-				});
 				setPermissions({
-					canViewOwnCollections: response[1],
-					canViewOwnBundles: response[2],
-					canCreateAssignments: response[3],
-					canViewAssignments: response[4],
-					canCreateBookmarks: response[5],
-					canViewContentInSameCompany: response[6],
-					canViewSomeQuickLanes: response[7],
+					canViewOwnCollections: response[0],
+					canViewOwnBundles: response[1],
+					canCreateAssignments: response[2],
+					canViewAssignments: response[3],
+					canCreateBookmarks: response[4],
+					canViewContentInSameCompany: response[5],
+					canViewSomeQuickLanes: response[6],
 				});
 			})
 			.catch((err) => {
-				console.error(
-					'Failed to check permissions or get tab counts for workspace overview page',
-					err,
-					{ user }
-				);
+				console.error('Failed to check permissions for workspace overview page', err, {
+					user,
+				});
 				setLoadingInfo({
 					state: 'error',
 					message: tHtml(
@@ -198,9 +154,11 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 				? {
 						component: (
 							<CollectionOrBundleOverview
-								numberOfItems={tabCounts[COLLECTIONS_ID]}
+								numberOfItems={workspaceCounts?.collections || 0}
 								type="collection"
-								onUpdate={updatePermissionsAndCounts}
+								onUpdate={() => {
+									refetchWorkspaceCounts();
+								}}
 								history={history}
 								location={location}
 								match={match}
@@ -214,9 +172,11 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 				? {
 						component: (
 							<CollectionOrBundleOverview
-								numberOfItems={tabCounts[BUNDLES_ID]}
+								numberOfItems={workspaceCounts?.bundles || 0}
 								type="bundle"
-								onUpdate={updatePermissionsAndCounts}
+								onUpdate={() => {
+									refetchWorkspaceCounts();
+								}}
 								history={history}
 								location={location}
 								match={match}
@@ -231,12 +191,9 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 					? {
 							component: (
 								<AssignmentOverview
-									onUpdate={updatePermissionsAndCounts}
-									history={history}
-									location={location}
-									match={match}
-									user={user}
-									commonUser={commonUser}
+									onUpdate={() => {
+										refetchWorkspaceCounts();
+									}}
 								/>
 							),
 					  }
@@ -245,13 +202,10 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 				? {
 						component: (
 							<BookmarksOverview
-								onUpdate={updatePermissionsAndCounts}
-								history={history}
-								location={location}
-								match={match}
-								user={user}
-								commonUser={commonUser}
-								numberOfItems={tabCounts[BOOKMARKS_ID]}
+								onUpdate={() => {
+									refetchWorkspaceCounts();
+								}}
+								numberOfItems={workspaceCounts?.bookmarks || 0}
 							/>
 						),
 				  }
@@ -260,13 +214,10 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 				? {
 						component: (
 							<OrganisationContentOverview
-								onUpdate={updatePermissionsAndCounts}
-								history={history}
-								location={location}
-								match={match}
-								user={user}
-								commonUser={commonUser}
-								numberOfItems={tabCounts[ORGANISATION_CONTENT_ID]}
+								onUpdate={() => {
+									refetchWorkspaceCounts();
+								}}
+								numberOfItems={workspaceCounts?.organisationContent || 0}
 							/>
 						),
 				  }
@@ -274,19 +225,12 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 			[QUICK_LANE_ID]: permissions.canViewSomeQuickLanes
 				? {
 						component: (
-							<QuickLaneOverview
-								history={history}
-								location={location}
-								match={match}
-								user={user}
-								commonUser={commonUser}
-								numberOfItems={tabCounts[QUICK_LANE_ID]}
-							/>
+							<QuickLaneOverview numberOfItems={workspaceCounts?.quickLanes || 0} />
 						),
 				  }
 				: empty,
 		});
-	}, [tabCounts, permissions, tText, history, location, match, user, updatePermissionsAndCounts]);
+	}, [workspaceCounts, permissions, tText, history, location, match, user, updatePermissions]);
 
 	const goToTab = useCallback(
 		(id: ReactText) => {
@@ -313,8 +257,8 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 	}, [tabs, tabId, getFirstRenderableTab]);
 
 	useEffect(() => {
-		updatePermissionsAndCounts();
-	}, [updatePermissionsAndCounts]);
+		updatePermissions();
+	}, [updatePermissions]);
 
 	useEffect(() => {
 		if (!isEmpty(permissions) && !isEmpty(tabs)) {
@@ -343,11 +287,11 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 					return {
 						...tab,
 						active: isTabActive,
-						label: tabCounts[tab.id] ? (
+						label: workspaceCounts?.[WORKSPACE_TAB_ID_TO_COUNT_ID[tab.id]] ? (
 							<>
 								{tab.label}
 								<Pill variants={isTabActive ? [PillVariants.active] : []}>
-									{tabCounts[tab.id]}
+									{workspaceCounts[WORKSPACE_TAB_ID_TO_COUNT_ID[tab.id]]}
 								</Pill>
 							</>
 						) : (
@@ -358,7 +302,7 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 				return null;
 			})
 		);
-	}, [tabs, tabId, tabCounts]);
+	}, [tabs, tabId, workspaceCounts]);
 
 	const handleMenuContentClick = (menuItemId: ReactText) => setActiveFilter(menuItemId);
 

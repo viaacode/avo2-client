@@ -43,15 +43,15 @@ export const transformContributorsToSimpleContributors = (
 };
 
 export const getContributorType = (
-	user: Avo.User.User,
+	userProfileId: string | undefined,
 	subject: Avo.Assignment.Assignment | Avo.Collection.Collection,
 	contributors: (Avo.Assignment.Contributor | Avo.Collection.Contributor)[]
 ): ContributorInfoRight => {
-	if (user.profile?.id === subject.owner_profile_id) {
+	if (userProfileId === subject.owner_profile_id) {
 		return ContributorInfoRight.OWNER;
 	}
 
 	return contributors.find(
-		(contributor) => (contributor.profile_id || contributor?.profile?.id) === user.profile?.id
+		(contributor) => (contributor.profile_id || contributor?.profile?.id) === userProfileId
 	)?.rights as ContributorInfoRight;
 };

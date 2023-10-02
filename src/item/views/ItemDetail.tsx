@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading, stripRichTextParagraph } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	ButtonToolbar,
@@ -57,7 +57,6 @@ import {
 	LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
-import Html from '../../shared/components/Html/Html';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { LANGUAGES, ROUTE_PARTS } from '../../shared/constants';
 import {
@@ -244,15 +243,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			}
 
 			if (itemObj.depublish_reason) {
+				const depublishReason = stripRichTextParagraph(itemObj.depublish_reason);
 				setLoadingInfo({
 					state: 'error',
-					message: (
-						<>
-							{tHtml(
-								'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden'
-							)}
-							<Html content={itemObj.depublish_reason} type="span" />
-						</>
+					message: tHtml(
+						'item/views/item-detail___dit-item-werdt-gedepubliceerd-met-volgende-reden',
+						{ depublishReason }
 					),
 					icon: IconName.cameraOff,
 				});

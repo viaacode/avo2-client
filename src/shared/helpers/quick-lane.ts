@@ -7,14 +7,14 @@ import { QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types
 
 import { tText } from './translate';
 
-export const isOrganisational = (user: Avo.User.User): boolean => {
-	return PermissionService.hasAtLeastOnePerm(user, [
+export const isOrganisational = (commonUser?: Avo.User.CommonUser): boolean => {
+	return PermissionService.hasAtLeastOnePerm(commonUser, [
 		PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
 	]);
 };
 
-export const isPersonal = (user: Avo.User.User): boolean => {
-	return PermissionService.hasAtLeastOnePerm(user, [
+export const isPersonal = (commonUser?: Avo.User.CommonUser): boolean => {
+	return PermissionService.hasAtLeastOnePerm(commonUser, [
 		PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 	]);
 };

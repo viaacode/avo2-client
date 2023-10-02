@@ -383,7 +383,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	useEffect(() => {
 		if (collectionState.currentCollection && contributors && isCollection) {
 			const userContributorRole = getContributorType(
-				user,
+				commonUser?.profileId,
 				collectionState.currentCollection as Avo.Collection.Collection,
 				contributors
 			);
@@ -498,7 +498,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			if (contributors?.length) {
 				const userContributorRole = getContributorType(
-					user,
+					commonUser?.profileId,
 					collectionObj as Avo.Collection.Collection,
 					contributors
 				);
@@ -787,7 +787,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 					const contributorType = (
 						isAdmin
 							? 'ADMIN'
-							: getContributorType(user, newCollection, contributors || [])
+							: getContributorType(
+									commonUser?.profileId,
+									newCollection,
+									contributors || []
+							  )
 					).toLowerCase();
 					trackEvents(
 						{

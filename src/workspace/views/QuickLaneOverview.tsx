@@ -7,7 +7,6 @@ import FilterTable, {
 	FilterableColumn,
 } from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { QuickLaneService } from '../../quick-lane/quick-lane.service';
 import { DeleteObjectModal, LoadingInfo } from '../../shared/components';
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
@@ -16,6 +15,7 @@ import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../shared/constants/qui
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -31,7 +31,7 @@ import './QuickLaneOverview.scss';
 
 // Typings
 
-interface QuickLaneOverviewProps extends DefaultSecureRouteProps {
+interface QuickLaneOverviewProps {
 	numberOfItems: number;
 }
 
@@ -39,7 +39,9 @@ interface QuickLaneOverviewProps extends DefaultSecureRouteProps {
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
-const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) => {
+const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> = ({
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -84,7 +86,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 						filterProps: { options: getTypeOptions() },
 					},
 
-					...(isOrganisational(user)
+					...(isOrganisational(commonUser)
 						? [
 								{
 									id: 'author' as const,
@@ -132,7 +134,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 		setLoadingInfo({ state: 'loading' });
 
 		try {
-			if (!user.profile || debouncedFilters === undefined) {
+			if (!commonUser?.profileId || debouncedFilters === undefined) {
 				setLoadingInfo({
 					state: 'error',
 					message: tHtml(
@@ -156,8 +158,8 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				offset: debouncedFilters.page * ITEMS_PER_PAGE,
 			};
 
-			if (isOrganisational(user)) {
-				if (!user.profile.company_id) {
+			if (isOrganisational(commonUser)) {
+				if (!commonUser.companyId) {
 					setLoadingInfo({
 						state: 'error',
 						message: tHtml(
@@ -170,11 +172,11 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				// If the user has access to their entire organisation's quick_lane urls load them all, including their own
 				params = {
 					...params,
-					companyIds: [user.profile.company_id],
+					companyIds: [commonUser.companyId],
 					profileIds: debouncedFilters.author,
 				};
-			} else if (isPersonal(user)) {
-				if (!user.profile.id) {
+			} else if (isPersonal(commonUser)) {
+				if (!commonUser.profileId) {
 					setLoadingInfo({
 						state: 'error',
 						message: tHtml(
@@ -187,7 +189,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				// If they do not have access to their organisation's but do have access to their own, change the params
 				params = {
 					...params,
-					profileIds: [user.profile.id],
+					profileIds: [commonUser.profileId],
 				};
 			}
 
@@ -198,7 +200,9 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
-			console.error(new CustomError('Failed to get all quick_lanes for user', err, { user }));
+			console.error(
+				new CustomError('Failed to get all quick_lanes for user', err, { commonUser })
+			);
 
 			setLoadingInfo({
 				state: 'error',
@@ -207,7 +211,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 				),
 			});
 		}
-	}, [user, setQuickLanes, setLoadingInfo, tText, debouncedFilters]); // eslint-disable-line
+	}, [commonUser, setQuickLanes, setLoadingInfo, tText, debouncedFilters]); // eslint-disable-line
 
 	const fetchQuickLaneDetail = async (selected: QuickLaneUrlObject) => {
 		const details = await QuickLaneService.fetchQuickLaneById(selected.id);
@@ -222,12 +226,12 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	};
 
 	const removeQuickLane = (id: QuickLaneUrlObject['id']) => {
-		if (!user.profile?.id) {
+		if (!commonUser?.profileId) {
 			return;
 		}
 
 		try {
-			QuickLaneService.removeQuickLanesById([id], user.profile?.id).then(async () => {
+			QuickLaneService.removeQuickLanesById([id], commonUser.profileId).then(async () => {
 				await fetchQuickLanes();
 
 				ToastService.success(
@@ -393,4 +397,4 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps> = ({ user }) 
 	);
 };
 
-export default QuickLaneOverview;
+export default withUser(QuickLaneOverview) as FC<QuickLaneOverviewProps>;

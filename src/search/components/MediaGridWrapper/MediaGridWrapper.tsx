@@ -12,7 +12,7 @@ import {
 	RenderLinkFunction,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { isEmpty, isNil } from 'lodash-es';
+import { compact, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
@@ -243,12 +243,12 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 	};
 
 	const getThumbnailFromItem = (
-		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment
+		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment | null
 	) => {
-		if (itemOrCollectionOrAssignment.type?.label === 'audio') {
+		if (itemOrCollectionOrAssignment?.type?.label === 'audio') {
 			return DEFAULT_AUDIO_STILL;
 		}
-		if (itemOrCollectionOrAssignment.type?.label === 'opdracht') {
+		if (itemOrCollectionOrAssignment?.type?.label === 'opdracht') {
 			return itemOrCollectionOrAssignment?.thumbnail_path || placeholderImage;
 		}
 		return itemOrCollectionOrAssignment?.thumbnail_path || '';
@@ -384,7 +384,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 
 	// Render
 	const renderMediaGridBlock = () => {
-		const elements = (resolvedResults || []).map(mapItemOrCollectionOrAssignmentData);
+		const elements = compact(resolvedResults || []).map(mapItemOrCollectionOrAssignmentData);
 		return (
 			<>
 				<BlockMediaGrid

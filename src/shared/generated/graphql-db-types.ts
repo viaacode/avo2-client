@@ -96,330 +96,6 @@ export type _Text_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['_text']>>;
 };
 
-/** Reference table for lniking assignments and user tags. */
-export type App_Assignment_Assignment_Tags = {
-  __typename?: 'app_assignment_assignment_tags';
-  /** An object relationship */
-  assignment?: Maybe<App_Assignments>;
-  /** An object relationship */
-  assignment_tag: App_Assignment_Labels;
-  assignment_tag_id: Scalars['Int'];
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  id: Scalars['Int'];
-};
-
-/** aggregated selection of "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Aggregate = {
-  __typename?: 'app_assignment_assignment_tags_aggregate';
-  aggregate?: Maybe<App_Assignment_Assignment_Tags_Aggregate_Fields>;
-  nodes: Array<App_Assignment_Assignment_Tags>;
-};
-
-export type App_Assignment_Assignment_Tags_Aggregate_Bool_Exp = {
-  count?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignment_Assignment_Tags_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Aggregate_Fields = {
-  __typename?: 'app_assignment_assignment_tags_aggregate_fields';
-  avg?: Maybe<App_Assignment_Assignment_Tags_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignment_Assignment_Tags_Max_Fields>;
-  min?: Maybe<App_Assignment_Assignment_Tags_Min_Fields>;
-  stddev?: Maybe<App_Assignment_Assignment_Tags_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Assignment_Assignment_Tags_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Assignment_Assignment_Tags_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Assignment_Assignment_Tags_Sum_Fields>;
-  var_pop?: Maybe<App_Assignment_Assignment_Tags_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Assignment_Assignment_Tags_Var_Samp_Fields>;
-  variance?: Maybe<App_Assignment_Assignment_Tags_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Assignment_Assignment_Tags_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignment_Assignment_Tags_Max_Order_By>;
-  min?: InputMaybe<App_Assignment_Assignment_Tags_Min_Order_By>;
-  stddev?: InputMaybe<App_Assignment_Assignment_Tags_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Assignment_Assignment_Tags_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Assignment_Assignment_Tags_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Assignment_Assignment_Tags_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Assignment_Assignment_Tags_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Assignment_Assignment_Tags_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Assignment_Assignment_Tags_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignment_Assignment_Tags_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignment_Assignment_Tags_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type App_Assignment_Assignment_Tags_Avg_Fields = {
-  __typename?: 'app_assignment_assignment_tags_avg_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Avg_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignment_assignment_tags". All fields are combined with a logical 'AND'. */
-export type App_Assignment_Assignment_Tags_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignment_Assignment_Tags_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignment_Assignment_Tags_Bool_Exp>>;
-  assignment?: InputMaybe<App_Assignments_Bool_Exp>;
-  assignment_tag?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-  assignment_tag_id?: InputMaybe<Int_Comparison_Exp>;
-  assignment_uuid?: InputMaybe<Uuid_Comparison_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignment_assignment_tags" */
-export enum App_Assignment_Assignment_Tags_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  AssignmentAsiignmentTagsPkey = 'assignment_asiignment_tags_pkey',
-  /** unique or primary key constraint on columns "assignment_uuid", "assignment_tag_id" */
-  AssignmentAssignmentTagsAssignmentUuidAssignmentTagIdKe = 'assignment_assignment_tags_assignment_uuid_assignment_tag_id_ke'
-}
-
-/** input type for incrementing numeric columns in table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Inc_Input = {
-  assignment_tag_id?: InputMaybe<Scalars['Int']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Insert_Input = {
-  assignment?: InputMaybe<App_Assignments_Obj_Rel_Insert_Input>;
-  assignment_tag?: InputMaybe<App_Assignment_Labels_Obj_Rel_Insert_Input>;
-  assignment_tag_id?: InputMaybe<Scalars['Int']>;
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate max on columns */
-export type App_Assignment_Assignment_Tags_Max_Fields = {
-  __typename?: 'app_assignment_assignment_tags_max_fields';
-  assignment_tag_id?: Maybe<Scalars['Int']>;
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Max_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  assignment_uuid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignment_Assignment_Tags_Min_Fields = {
-  __typename?: 'app_assignment_assignment_tags_min_fields';
-  assignment_tag_id?: Maybe<Scalars['Int']>;
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Min_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  assignment_uuid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Mutation_Response = {
-  __typename?: 'app_assignment_assignment_tags_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignment_Assignment_Tags>;
-};
-
-/** on_conflict condition type for table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_On_Conflict = {
-  constraint: App_Assignment_Assignment_Tags_Constraint;
-  update_columns?: Array<App_Assignment_Assignment_Tags_Update_Column>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignment_assignment_tags". */
-export type App_Assignment_Assignment_Tags_Order_By = {
-  assignment?: InputMaybe<App_Assignments_Order_By>;
-  assignment_tag?: InputMaybe<App_Assignment_Labels_Order_By>;
-  assignment_tag_id?: InputMaybe<Order_By>;
-  assignment_uuid?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: app.assignment_assignment_tags */
-export type App_Assignment_Assignment_Tags_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "app.assignment_assignment_tags" */
-export enum App_Assignment_Assignment_Tags_Select_Column {
-  /** column name */
-  AssignmentTagId = 'assignment_tag_id',
-  /** column name */
-  AssignmentUuid = 'assignment_uuid',
-  /** column name */
-  Id = 'id'
-}
-
-/** input type for updating data in table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Set_Input = {
-  assignment_tag_id?: InputMaybe<Scalars['Int']>;
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Assignment_Assignment_Tags_Stddev_Fields = {
-  __typename?: 'app_assignment_assignment_tags_stddev_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Stddev_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Assignment_Assignment_Tags_Stddev_Pop_Fields = {
-  __typename?: 'app_assignment_assignment_tags_stddev_pop_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Stddev_Pop_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Assignment_Assignment_Tags_Stddev_Samp_Fields = {
-  __typename?: 'app_assignment_assignment_tags_stddev_samp_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Stddev_Samp_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignment_Assignment_Tags_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignment_Assignment_Tags_Stream_Cursor_Value_Input = {
-  assignment_tag_id?: InputMaybe<Scalars['Int']>;
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate sum on columns */
-export type App_Assignment_Assignment_Tags_Sum_Fields = {
-  __typename?: 'app_assignment_assignment_tags_sum_fields';
-  assignment_tag_id?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Sum_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "app.assignment_assignment_tags" */
-export enum App_Assignment_Assignment_Tags_Update_Column {
-  /** column name */
-  AssignmentTagId = 'assignment_tag_id',
-  /** column name */
-  AssignmentUuid = 'assignment_uuid',
-  /** column name */
-  Id = 'id'
-}
-
-export type App_Assignment_Assignment_Tags_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Assignment_Assignment_Tags_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignment_Assignment_Tags_Set_Input>;
-  where: App_Assignment_Assignment_Tags_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type App_Assignment_Assignment_Tags_Var_Pop_Fields = {
-  __typename?: 'app_assignment_assignment_tags_var_pop_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Var_Pop_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Assignment_Assignment_Tags_Var_Samp_Fields = {
-  __typename?: 'app_assignment_assignment_tags_var_samp_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Var_Samp_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Assignment_Assignment_Tags_Variance_Fields = {
-  __typename?: 'app_assignment_assignment_tags_variance_fields';
-  assignment_tag_id?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.assignment_assignment_tags" */
-export type App_Assignment_Assignment_Tags_Variance_Order_By = {
-  assignment_tag_id?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
 /** columns and relationships of "app.assignment_blocks_v2" */
 export type App_Assignment_Blocks_V2 = {
   __typename?: 'app_assignment_blocks_v2';
@@ -960,337 +636,6 @@ export type App_Assignment_Blocks_V2_Variance_Order_By = {
   start_oc?: InputMaybe<Order_By>;
 };
 
-/** Table for user tags of assignments with colors (enum) and labels. */
-export type App_Assignment_Labels = {
-  __typename?: 'app_assignment_labels';
-  color_enum_value: Lookup_Enum_Colors_Enum;
-  color_override?: Maybe<Scalars['String']>;
-  /** An object relationship */
-  enum_color: Lookup_Enum_Colors;
-  id: Scalars['Int'];
-  label?: Maybe<Scalars['String']>;
-  owner_profile_id: Scalars['uuid'];
-  /** An object relationship */
-  profile: Users_Profiles;
-  /** An array relationship */
-  tags: Array<App_Assignment_Assignment_Tags>;
-  /** An aggregate relationship */
-  tags_aggregate: App_Assignment_Assignment_Tags_Aggregate;
-};
-
-
-/** Table for user tags of assignments with colors (enum) and labels. */
-export type App_Assignment_LabelsTagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-/** Table for user tags of assignments with colors (enum) and labels. */
-export type App_Assignment_LabelsTags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-/** aggregated selection of "app.assignment_labels" */
-export type App_Assignment_Labels_Aggregate = {
-  __typename?: 'app_assignment_labels_aggregate';
-  aggregate?: Maybe<App_Assignment_Labels_Aggregate_Fields>;
-  nodes: Array<App_Assignment_Labels>;
-};
-
-export type App_Assignment_Labels_Aggregate_Bool_Exp = {
-  count?: InputMaybe<App_Assignment_Labels_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignment_Labels_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignment_labels" */
-export type App_Assignment_Labels_Aggregate_Fields = {
-  __typename?: 'app_assignment_labels_aggregate_fields';
-  avg?: Maybe<App_Assignment_Labels_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignment_Labels_Max_Fields>;
-  min?: Maybe<App_Assignment_Labels_Min_Fields>;
-  stddev?: Maybe<App_Assignment_Labels_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Assignment_Labels_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Assignment_Labels_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Assignment_Labels_Sum_Fields>;
-  var_pop?: Maybe<App_Assignment_Labels_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Assignment_Labels_Var_Samp_Fields>;
-  variance?: Maybe<App_Assignment_Labels_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.assignment_labels" */
-export type App_Assignment_Labels_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignment_labels" */
-export type App_Assignment_Labels_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Assignment_Labels_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignment_Labels_Max_Order_By>;
-  min?: InputMaybe<App_Assignment_Labels_Min_Order_By>;
-  stddev?: InputMaybe<App_Assignment_Labels_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Assignment_Labels_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Assignment_Labels_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Assignment_Labels_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Assignment_Labels_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Assignment_Labels_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Assignment_Labels_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.assignment_labels" */
-export type App_Assignment_Labels_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignment_Labels_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignment_Labels_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type App_Assignment_Labels_Avg_Fields = {
-  __typename?: 'app_assignment_labels_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignment_labels". All fields are combined with a logical 'AND'. */
-export type App_Assignment_Labels_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignment_Labels_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignment_Labels_Bool_Exp>>;
-  color_enum_value?: InputMaybe<Lookup_Enum_Colors_Enum_Comparison_Exp>;
-  color_override?: InputMaybe<String_Comparison_Exp>;
-  enum_color?: InputMaybe<Lookup_Enum_Colors_Bool_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  label?: InputMaybe<String_Comparison_Exp>;
-  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
-  tags?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-  tags_aggregate?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Bool_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignment_labels" */
-export enum App_Assignment_Labels_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  AssignmentTagsPkey = 'assignment_tags_pkey'
-}
-
-/** input type for incrementing numeric columns in table "app.assignment_labels" */
-export type App_Assignment_Labels_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.assignment_labels" */
-export type App_Assignment_Labels_Insert_Input = {
-  color_enum_value?: InputMaybe<Lookup_Enum_Colors_Enum>;
-  color_override?: InputMaybe<Scalars['String']>;
-  enum_color?: InputMaybe<Lookup_Enum_Colors_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
-  tags?: InputMaybe<App_Assignment_Assignment_Tags_Arr_Rel_Insert_Input>;
-};
-
-/** aggregate max on columns */
-export type App_Assignment_Labels_Max_Fields = {
-  __typename?: 'app_assignment_labels_max_fields';
-  color_override?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  label?: Maybe<Scalars['String']>;
-  owner_profile_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Max_Order_By = {
-  color_override?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignment_Labels_Min_Fields = {
-  __typename?: 'app_assignment_labels_min_fields';
-  color_override?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  label?: Maybe<Scalars['String']>;
-  owner_profile_id?: Maybe<Scalars['uuid']>;
-};
-
-/** order by min() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Min_Order_By = {
-  color_override?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignment_labels" */
-export type App_Assignment_Labels_Mutation_Response = {
-  __typename?: 'app_assignment_labels_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignment_Labels>;
-};
-
-/** input type for inserting object relation for remote table "app.assignment_labels" */
-export type App_Assignment_Labels_Obj_Rel_Insert_Input = {
-  data: App_Assignment_Labels_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignment_Labels_On_Conflict>;
-};
-
-/** on_conflict condition type for table "app.assignment_labels" */
-export type App_Assignment_Labels_On_Conflict = {
-  constraint: App_Assignment_Labels_Constraint;
-  update_columns?: Array<App_Assignment_Labels_Update_Column>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignment_labels". */
-export type App_Assignment_Labels_Order_By = {
-  color_enum_value?: InputMaybe<Order_By>;
-  color_override?: InputMaybe<Order_By>;
-  enum_color?: InputMaybe<Lookup_Enum_Colors_Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
-  tags_aggregate?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Order_By>;
-};
-
-/** primary key columns input for table: app.assignment_labels */
-export type App_Assignment_Labels_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "app.assignment_labels" */
-export enum App_Assignment_Labels_Select_Column {
-  /** column name */
-  ColorEnumValue = 'color_enum_value',
-  /** column name */
-  ColorOverride = 'color_override',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  OwnerProfileId = 'owner_profile_id'
-}
-
-/** input type for updating data in table "app.assignment_labels" */
-export type App_Assignment_Labels_Set_Input = {
-  color_enum_value?: InputMaybe<Lookup_Enum_Colors_Enum>;
-  color_override?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Assignment_Labels_Stddev_Fields = {
-  __typename?: 'app_assignment_labels_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Assignment_Labels_Stddev_Pop_Fields = {
-  __typename?: 'app_assignment_labels_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Assignment_Labels_Stddev_Samp_Fields = {
-  __typename?: 'app_assignment_labels_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_assignment_labels" */
-export type App_Assignment_Labels_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignment_Labels_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignment_Labels_Stream_Cursor_Value_Input = {
-  color_enum_value?: InputMaybe<Lookup_Enum_Colors_Enum>;
-  color_override?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate sum on columns */
-export type App_Assignment_Labels_Sum_Fields = {
-  __typename?: 'app_assignment_labels_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "app.assignment_labels" */
-export enum App_Assignment_Labels_Update_Column {
-  /** column name */
-  ColorEnumValue = 'color_enum_value',
-  /** column name */
-  ColorOverride = 'color_override',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  OwnerProfileId = 'owner_profile_id'
-}
-
-export type App_Assignment_Labels_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Assignment_Labels_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignment_Labels_Set_Input>;
-  where: App_Assignment_Labels_Bool_Exp;
-};
-
 /** columns and relationships of "app.assignment_labels_v2" */
 export type App_Assignment_Labels_V2 = {
   __typename?: 'app_assignment_labels_v2';
@@ -1528,451 +873,6 @@ export type App_Assignment_Labels_V2_Updates = {
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<App_Assignment_Labels_V2_Set_Input>;
   where: App_Assignment_Labels_V2_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type App_Assignment_Labels_Var_Pop_Fields = {
-  __typename?: 'app_assignment_labels_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Assignment_Labels_Var_Samp_Fields = {
-  __typename?: 'app_assignment_labels_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Assignment_Labels_Variance_Fields = {
-  __typename?: 'app_assignment_labels_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.assignment_labels" */
-export type App_Assignment_Labels_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Pupil responses to teacher's assignments. */
-export type App_Assignment_Responses = {
-  __typename?: 'app_assignment_responses';
-  /** An object relationship */
-  assignment?: Maybe<App_Assignments>;
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  /** An object relationship */
-  collection?: Maybe<App_Collections>;
-  collection_uuid?: Maybe<Scalars['uuid']>;
-  created_at: Scalars['timestamptz'];
-  id: Scalars['Int'];
-  is_archived: Scalars['Boolean'];
-  /** array van gebruikersprofielen */
-  owner_profile_ids: Scalars['jsonb'];
-  submitted_at?: Maybe<Scalars['timestamptz']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-
-/** Pupil responses to teacher's assignments. */
-export type App_Assignment_ResponsesOwner_Profile_IdsArgs = {
-  path?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregated selection of "app.assignment_responses" */
-export type App_Assignment_Responses_Aggregate = {
-  __typename?: 'app_assignment_responses_aggregate';
-  aggregate?: Maybe<App_Assignment_Responses_Aggregate_Fields>;
-  nodes: Array<App_Assignment_Responses>;
-};
-
-export type App_Assignment_Responses_Aggregate_Bool_Exp = {
-  bool_and?: InputMaybe<App_Assignment_Responses_Aggregate_Bool_Exp_Bool_And>;
-  bool_or?: InputMaybe<App_Assignment_Responses_Aggregate_Bool_Exp_Bool_Or>;
-  count?: InputMaybe<App_Assignment_Responses_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignment_Responses_Aggregate_Bool_Exp_Bool_And = {
-  arguments: App_Assignment_Responses_Select_Column_App_Assignment_Responses_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type App_Assignment_Responses_Aggregate_Bool_Exp_Bool_Or = {
-  arguments: App_Assignment_Responses_Select_Column_App_Assignment_Responses_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type App_Assignment_Responses_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignment_responses" */
-export type App_Assignment_Responses_Aggregate_Fields = {
-  __typename?: 'app_assignment_responses_aggregate_fields';
-  avg?: Maybe<App_Assignment_Responses_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignment_Responses_Max_Fields>;
-  min?: Maybe<App_Assignment_Responses_Min_Fields>;
-  stddev?: Maybe<App_Assignment_Responses_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Assignment_Responses_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Assignment_Responses_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Assignment_Responses_Sum_Fields>;
-  var_pop?: Maybe<App_Assignment_Responses_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Assignment_Responses_Var_Samp_Fields>;
-  variance?: Maybe<App_Assignment_Responses_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.assignment_responses" */
-export type App_Assignment_Responses_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignment_responses" */
-export type App_Assignment_Responses_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Assignment_Responses_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignment_Responses_Max_Order_By>;
-  min?: InputMaybe<App_Assignment_Responses_Min_Order_By>;
-  stddev?: InputMaybe<App_Assignment_Responses_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Assignment_Responses_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Assignment_Responses_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Assignment_Responses_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Assignment_Responses_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Assignment_Responses_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Assignment_Responses_Variance_Order_By>;
-};
-
-/** append existing jsonb value of filtered columns with new jsonb value */
-export type App_Assignment_Responses_Append_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** input type for inserting array relation for remote table "app.assignment_responses" */
-export type App_Assignment_Responses_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignment_Responses_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignment_Responses_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type App_Assignment_Responses_Avg_Fields = {
-  __typename?: 'app_assignment_responses_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignment_responses". All fields are combined with a logical 'AND'. */
-export type App_Assignment_Responses_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignment_Responses_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignment_Responses_Bool_Exp>>;
-  assignment?: InputMaybe<App_Assignments_Bool_Exp>;
-  assignment_uuid?: InputMaybe<Uuid_Comparison_Exp>;
-  collection?: InputMaybe<App_Collections_Bool_Exp>;
-  collection_uuid?: InputMaybe<Uuid_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  is_archived?: InputMaybe<Boolean_Comparison_Exp>;
-  owner_profile_ids?: InputMaybe<Jsonb_Comparison_Exp>;
-  submitted_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignment_responses" */
-export enum App_Assignment_Responses_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  AssignmentResponsesPkey = 'assignment_responses_pkey'
-}
-
-/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-export type App_Assignment_Responses_Delete_At_Path_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Array<Scalars['String']>>;
-};
-
-/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-export type App_Assignment_Responses_Delete_Elem_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['Int']>;
-};
-
-/** delete key/value pair or string element. key/value pairs are matched based on their key value */
-export type App_Assignment_Responses_Delete_Key_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['String']>;
-};
-
-/** input type for incrementing numeric columns in table "app.assignment_responses" */
-export type App_Assignment_Responses_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.assignment_responses" */
-export type App_Assignment_Responses_Insert_Input = {
-  assignment?: InputMaybe<App_Assignments_Obj_Rel_Insert_Input>;
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  collection?: InputMaybe<App_Collections_Obj_Rel_Insert_Input>;
-  collection_uuid?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-  submitted_at?: InputMaybe<Scalars['timestamptz']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate max on columns */
-export type App_Assignment_Responses_Max_Fields = {
-  __typename?: 'app_assignment_responses_max_fields';
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  collection_uuid?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
-  submitted_at?: Maybe<Scalars['timestamptz']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** order by max() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Max_Order_By = {
-  assignment_uuid?: InputMaybe<Order_By>;
-  collection_uuid?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  submitted_at?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignment_Responses_Min_Fields = {
-  __typename?: 'app_assignment_responses_min_fields';
-  assignment_uuid?: Maybe<Scalars['uuid']>;
-  collection_uuid?: Maybe<Scalars['uuid']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  id?: Maybe<Scalars['Int']>;
-  submitted_at?: Maybe<Scalars['timestamptz']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** order by min() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Min_Order_By = {
-  assignment_uuid?: InputMaybe<Order_By>;
-  collection_uuid?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  submitted_at?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignment_responses" */
-export type App_Assignment_Responses_Mutation_Response = {
-  __typename?: 'app_assignment_responses_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignment_Responses>;
-};
-
-/** on_conflict condition type for table "app.assignment_responses" */
-export type App_Assignment_Responses_On_Conflict = {
-  constraint: App_Assignment_Responses_Constraint;
-  update_columns?: Array<App_Assignment_Responses_Update_Column>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignment_responses". */
-export type App_Assignment_Responses_Order_By = {
-  assignment?: InputMaybe<App_Assignments_Order_By>;
-  assignment_uuid?: InputMaybe<Order_By>;
-  collection?: InputMaybe<App_Collections_Order_By>;
-  collection_uuid?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  is_archived?: InputMaybe<Order_By>;
-  owner_profile_ids?: InputMaybe<Order_By>;
-  submitted_at?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: app.assignment_responses */
-export type App_Assignment_Responses_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** prepend existing jsonb value of filtered columns with new jsonb value */
-export type App_Assignment_Responses_Prepend_Input = {
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-};
-
-/** select columns of table "app.assignment_responses" */
-export enum App_Assignment_Responses_Select_Column {
-  /** column name */
-  AssignmentUuid = 'assignment_uuid',
-  /** column name */
-  CollectionUuid = 'collection_uuid',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  OwnerProfileIds = 'owner_profile_ids',
-  /** column name */
-  SubmittedAt = 'submitted_at',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** select "app_assignment_responses_aggregate_bool_exp_bool_and_arguments_columns" columns of table "app.assignment_responses" */
-export enum App_Assignment_Responses_Select_Column_App_Assignment_Responses_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
-  /** column name */
-  IsArchived = 'is_archived'
-}
-
-/** select "app_assignment_responses_aggregate_bool_exp_bool_or_arguments_columns" columns of table "app.assignment_responses" */
-export enum App_Assignment_Responses_Select_Column_App_Assignment_Responses_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
-  /** column name */
-  IsArchived = 'is_archived'
-}
-
-/** input type for updating data in table "app.assignment_responses" */
-export type App_Assignment_Responses_Set_Input = {
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  collection_uuid?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-  submitted_at?: InputMaybe<Scalars['timestamptz']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Assignment_Responses_Stddev_Fields = {
-  __typename?: 'app_assignment_responses_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Assignment_Responses_Stddev_Pop_Fields = {
-  __typename?: 'app_assignment_responses_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Assignment_Responses_Stddev_Samp_Fields = {
-  __typename?: 'app_assignment_responses_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_assignment_responses" */
-export type App_Assignment_Responses_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignment_Responses_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignment_Responses_Stream_Cursor_Value_Input = {
-  assignment_uuid?: InputMaybe<Scalars['uuid']>;
-  collection_uuid?: InputMaybe<Scalars['uuid']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  /** array van gebruikersprofielen */
-  owner_profile_ids?: InputMaybe<Scalars['jsonb']>;
-  submitted_at?: InputMaybe<Scalars['timestamptz']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate sum on columns */
-export type App_Assignment_Responses_Sum_Fields = {
-  __typename?: 'app_assignment_responses_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "app.assignment_responses" */
-export enum App_Assignment_Responses_Update_Column {
-  /** column name */
-  AssignmentUuid = 'assignment_uuid',
-  /** column name */
-  CollectionUuid = 'collection_uuid',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  OwnerProfileIds = 'owner_profile_ids',
-  /** column name */
-  SubmittedAt = 'submitted_at',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-export type App_Assignment_Responses_Updates = {
-  /** append existing jsonb value of filtered columns with new jsonb value */
-  _append?: InputMaybe<App_Assignment_Responses_Append_Input>;
-  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
-  _delete_at_path?: InputMaybe<App_Assignment_Responses_Delete_At_Path_Input>;
-  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
-  _delete_elem?: InputMaybe<App_Assignment_Responses_Delete_Elem_Input>;
-  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
-  _delete_key?: InputMaybe<App_Assignment_Responses_Delete_Key_Input>;
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Assignment_Responses_Inc_Input>;
-  /** prepend existing jsonb value of filtered columns with new jsonb value */
-  _prepend?: InputMaybe<App_Assignment_Responses_Prepend_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignment_Responses_Set_Input>;
-  where: App_Assignment_Responses_Bool_Exp;
 };
 
 /** columns and relationships of "app.assignment_responses_v2" */
@@ -2251,39 +1151,6 @@ export type App_Assignment_Responses_V2_Updates = {
   where: App_Assignment_Responses_V2_Bool_Exp;
 };
 
-/** aggregate var_pop on columns */
-export type App_Assignment_Responses_Var_Pop_Fields = {
-  __typename?: 'app_assignment_responses_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Assignment_Responses_Var_Samp_Fields = {
-  __typename?: 'app_assignment_responses_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Assignment_Responses_Variance_Fields = {
-  __typename?: 'app_assignment_responses_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.assignment_responses" */
-export type App_Assignment_Responses_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** columns and relationships of "app.assignment_v2_views" */
 export type App_Assignment_V2_Views = {
   __typename?: 'app_assignment_v2_views';
@@ -2523,593 +1390,6 @@ export type App_Assignment_V2_Views_Var_Samp_Fields = {
 export type App_Assignment_V2_Views_Variance_Fields = {
   __typename?: 'app_assignment_v2_views_variance_fields';
   count?: Maybe<Scalars['Float']>;
-};
-
-/** Table for assignments from teacher to student. */
-export type App_Assignments = {
-  __typename?: 'app_assignments';
-  answer_url?: Maybe<Scalars['String']>;
-  assignment_type?: Maybe<Scalars['String']>;
-  available_at?: Maybe<Scalars['timestamptz']>;
-  class_room?: Maybe<Scalars['String']>;
-  content_id: Scalars['String'];
-  /** Welke content wordt er gebruikt in de opdracht. */
-  content_label: Lookup_Enum_Assignment_Content_Labels_Enum;
-  content_layout: Scalars['Int'];
-  created_at: Scalars['timestamptz'];
-  deadline_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  /** An object relationship */
-  enum_assignment_content_label: Lookup_Enum_Assignment_Content_Labels;
-  id: Scalars['Int'];
-  is_archived: Scalars['Boolean'];
-  is_collaborative: Scalars['Boolean'];
-  is_deleted: Scalars['Boolean'];
-  /** An object relationship */
-  owner?: Maybe<Users_Summary_View>;
-  owner_profile_id: Scalars['uuid'];
-  /** An object relationship */
-  profile: Users_Profiles;
-  /** An array relationship */
-  responses: Array<App_Assignment_Responses>;
-  /** An aggregate relationship */
-  responses_aggregate: App_Assignment_Responses_Aggregate;
-  /** An array relationship */
-  tags: Array<App_Assignment_Assignment_Tags>;
-  /** An aggregate relationship */
-  tags_aggregate: App_Assignment_Assignment_Tags_Aggregate;
-  title?: Maybe<Scalars['String']>;
-  updated_at: Scalars['timestamptz'];
-  uuid: Scalars['uuid'];
-};
-
-
-/** Table for assignments from teacher to student. */
-export type App_AssignmentsResponsesArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-/** Table for assignments from teacher to student. */
-export type App_AssignmentsResponses_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-/** Table for assignments from teacher to student. */
-export type App_AssignmentsTagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-/** Table for assignments from teacher to student. */
-export type App_AssignmentsTags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-/** aggregated selection of "app.assignments" */
-export type App_Assignments_Aggregate = {
-  __typename?: 'app_assignments_aggregate';
-  aggregate?: Maybe<App_Assignments_Aggregate_Fields>;
-  nodes: Array<App_Assignments>;
-};
-
-export type App_Assignments_Aggregate_Bool_Exp = {
-  bool_and?: InputMaybe<App_Assignments_Aggregate_Bool_Exp_Bool_And>;
-  bool_or?: InputMaybe<App_Assignments_Aggregate_Bool_Exp_Bool_Or>;
-  count?: InputMaybe<App_Assignments_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Assignments_Aggregate_Bool_Exp_Bool_And = {
-  arguments: App_Assignments_Select_Column_App_Assignments_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignments_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type App_Assignments_Aggregate_Bool_Exp_Bool_Or = {
-  arguments: App_Assignments_Select_Column_App_Assignments_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignments_Bool_Exp>;
-  predicate: Boolean_Comparison_Exp;
-};
-
-export type App_Assignments_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Assignments_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.assignments" */
-export type App_Assignments_Aggregate_Fields = {
-  __typename?: 'app_assignments_aggregate_fields';
-  avg?: Maybe<App_Assignments_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Assignments_Max_Fields>;
-  min?: Maybe<App_Assignments_Min_Fields>;
-  stddev?: Maybe<App_Assignments_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Assignments_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Assignments_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Assignments_Sum_Fields>;
-  var_pop?: Maybe<App_Assignments_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Assignments_Var_Samp_Fields>;
-  variance?: Maybe<App_Assignments_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.assignments" */
-export type App_Assignments_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.assignments" */
-export type App_Assignments_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Assignments_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Assignments_Max_Order_By>;
-  min?: InputMaybe<App_Assignments_Min_Order_By>;
-  stddev?: InputMaybe<App_Assignments_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Assignments_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Assignments_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Assignments_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Assignments_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Assignments_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Assignments_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.assignments" */
-export type App_Assignments_Arr_Rel_Insert_Input = {
-  data: Array<App_Assignments_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignments_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type App_Assignments_Avg_Fields = {
-  __typename?: 'app_assignments_avg_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.assignments" */
-export type App_Assignments_Avg_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.assignments". All fields are combined with a logical 'AND'. */
-export type App_Assignments_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Assignments_Bool_Exp>>;
-  _not?: InputMaybe<App_Assignments_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Assignments_Bool_Exp>>;
-  answer_url?: InputMaybe<String_Comparison_Exp>;
-  assignment_type?: InputMaybe<String_Comparison_Exp>;
-  available_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  class_room?: InputMaybe<String_Comparison_Exp>;
-  content_id?: InputMaybe<String_Comparison_Exp>;
-  content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum_Comparison_Exp>;
-  content_layout?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  deadline_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  description?: InputMaybe<String_Comparison_Exp>;
-  enum_assignment_content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Bool_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  is_archived?: InputMaybe<Boolean_Comparison_Exp>;
-  is_collaborative?: InputMaybe<Boolean_Comparison_Exp>;
-  is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
-  owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
-  owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  profile?: InputMaybe<Users_Profiles_Bool_Exp>;
-  responses?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-  responses_aggregate?: InputMaybe<App_Assignment_Responses_Aggregate_Bool_Exp>;
-  tags?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-  tags_aggregate?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Bool_Exp>;
-  title?: InputMaybe<String_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  uuid?: InputMaybe<Uuid_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "app.assignments" */
-export enum App_Assignments_Constraint {
-  /** unique or primary key constraint on columns "uuid" */
-  AssignmentsPkey = 'assignments_pkey',
-  /** unique or primary key constraint on columns "uuid" */
-  AssignmentsUuidKey = 'assignments_uuid_key'
-}
-
-/** input type for incrementing numeric columns in table "app.assignments" */
-export type App_Assignments_Inc_Input = {
-  content_layout?: InputMaybe<Scalars['Int']>;
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.assignments" */
-export type App_Assignments_Insert_Input = {
-  answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
-  available_at?: InputMaybe<Scalars['timestamptz']>;
-  class_room?: InputMaybe<Scalars['String']>;
-  content_id?: InputMaybe<Scalars['String']>;
-  /** Welke content wordt er gebruikt in de opdracht. */
-  content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  content_layout?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  deadline_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  enum_assignment_content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  is_collaborative?: InputMaybe<Scalars['Boolean']>;
-  is_deleted?: InputMaybe<Scalars['Boolean']>;
-  owner?: InputMaybe<Users_Summary_View_Obj_Rel_Insert_Input>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
-  responses?: InputMaybe<App_Assignment_Responses_Arr_Rel_Insert_Input>;
-  tags?: InputMaybe<App_Assignment_Assignment_Tags_Arr_Rel_Insert_Input>;
-  title?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  uuid?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate max on columns */
-export type App_Assignments_Max_Fields = {
-  __typename?: 'app_assignments_max_fields';
-  answer_url?: Maybe<Scalars['String']>;
-  assignment_type?: Maybe<Scalars['String']>;
-  available_at?: Maybe<Scalars['timestamptz']>;
-  class_room?: Maybe<Scalars['String']>;
-  content_id?: Maybe<Scalars['String']>;
-  content_layout?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  deadline_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  owner_profile_id?: Maybe<Scalars['uuid']>;
-  title?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-  uuid?: Maybe<Scalars['uuid']>;
-};
-
-/** order by max() on columns of table "app.assignments" */
-export type App_Assignments_Max_Order_By = {
-  answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
-  available_at?: InputMaybe<Order_By>;
-  class_room?: InputMaybe<Order_By>;
-  content_id?: InputMaybe<Order_By>;
-  content_layout?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  deadline_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-  title?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Assignments_Min_Fields = {
-  __typename?: 'app_assignments_min_fields';
-  answer_url?: Maybe<Scalars['String']>;
-  assignment_type?: Maybe<Scalars['String']>;
-  available_at?: Maybe<Scalars['timestamptz']>;
-  class_room?: Maybe<Scalars['String']>;
-  content_id?: Maybe<Scalars['String']>;
-  content_layout?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamptz']>;
-  deadline_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  owner_profile_id?: Maybe<Scalars['uuid']>;
-  title?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-  uuid?: Maybe<Scalars['uuid']>;
-};
-
-/** order by min() on columns of table "app.assignments" */
-export type App_Assignments_Min_Order_By = {
-  answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
-  available_at?: InputMaybe<Order_By>;
-  class_room?: InputMaybe<Order_By>;
-  content_id?: InputMaybe<Order_By>;
-  content_layout?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  deadline_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-  title?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "app.assignments" */
-export type App_Assignments_Mutation_Response = {
-  __typename?: 'app_assignments_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Assignments>;
-};
-
-/** input type for inserting object relation for remote table "app.assignments" */
-export type App_Assignments_Obj_Rel_Insert_Input = {
-  data: App_Assignments_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<App_Assignments_On_Conflict>;
-};
-
-/** on_conflict condition type for table "app.assignments" */
-export type App_Assignments_On_Conflict = {
-  constraint: App_Assignments_Constraint;
-  update_columns?: Array<App_Assignments_Update_Column>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.assignments". */
-export type App_Assignments_Order_By = {
-  answer_url?: InputMaybe<Order_By>;
-  assignment_type?: InputMaybe<Order_By>;
-  available_at?: InputMaybe<Order_By>;
-  class_room?: InputMaybe<Order_By>;
-  content_id?: InputMaybe<Order_By>;
-  content_label?: InputMaybe<Order_By>;
-  content_layout?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  deadline_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  enum_assignment_content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Order_By>;
-  id?: InputMaybe<Order_By>;
-  is_archived?: InputMaybe<Order_By>;
-  is_collaborative?: InputMaybe<Order_By>;
-  is_deleted?: InputMaybe<Order_By>;
-  owner?: InputMaybe<Users_Summary_View_Order_By>;
-  owner_profile_id?: InputMaybe<Order_By>;
-  profile?: InputMaybe<Users_Profiles_Order_By>;
-  responses_aggregate?: InputMaybe<App_Assignment_Responses_Aggregate_Order_By>;
-  tags_aggregate?: InputMaybe<App_Assignment_Assignment_Tags_Aggregate_Order_By>;
-  title?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-  uuid?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: app.assignments */
-export type App_Assignments_Pk_Columns_Input = {
-  uuid: Scalars['uuid'];
-};
-
-/** select columns of table "app.assignments" */
-export enum App_Assignments_Select_Column {
-  /** column name */
-  AnswerUrl = 'answer_url',
-  /** column name */
-  AssignmentType = 'assignment_type',
-  /** column name */
-  AvailableAt = 'available_at',
-  /** column name */
-  ClassRoom = 'class_room',
-  /** column name */
-  ContentId = 'content_id',
-  /** column name */
-  ContentLabel = 'content_label',
-  /** column name */
-  ContentLayout = 'content_layout',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  DeadlineAt = 'deadline_at',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  IsCollaborative = 'is_collaborative',
-  /** column name */
-  IsDeleted = 'is_deleted',
-  /** column name */
-  OwnerProfileId = 'owner_profile_id',
-  /** column name */
-  Title = 'title',
-  /** column name */
-  UpdatedAt = 'updated_at',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-/** select "app_assignments_aggregate_bool_exp_bool_and_arguments_columns" columns of table "app.assignments" */
-export enum App_Assignments_Select_Column_App_Assignments_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  IsCollaborative = 'is_collaborative',
-  /** column name */
-  IsDeleted = 'is_deleted'
-}
-
-/** select "app_assignments_aggregate_bool_exp_bool_or_arguments_columns" columns of table "app.assignments" */
-export enum App_Assignments_Select_Column_App_Assignments_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  IsCollaborative = 'is_collaborative',
-  /** column name */
-  IsDeleted = 'is_deleted'
-}
-
-/** input type for updating data in table "app.assignments" */
-export type App_Assignments_Set_Input = {
-  answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
-  available_at?: InputMaybe<Scalars['timestamptz']>;
-  class_room?: InputMaybe<Scalars['String']>;
-  content_id?: InputMaybe<Scalars['String']>;
-  /** Welke content wordt er gebruikt in de opdracht. */
-  content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  content_layout?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  deadline_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  is_collaborative?: InputMaybe<Scalars['Boolean']>;
-  is_deleted?: InputMaybe<Scalars['Boolean']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  title?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  uuid?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Assignments_Stddev_Fields = {
-  __typename?: 'app_assignments_stddev_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.assignments" */
-export type App_Assignments_Stddev_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Assignments_Stddev_Pop_Fields = {
-  __typename?: 'app_assignments_stddev_pop_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.assignments" */
-export type App_Assignments_Stddev_Pop_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Assignments_Stddev_Samp_Fields = {
-  __typename?: 'app_assignments_stddev_samp_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.assignments" */
-export type App_Assignments_Stddev_Samp_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_assignments" */
-export type App_Assignments_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Assignments_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Assignments_Stream_Cursor_Value_Input = {
-  answer_url?: InputMaybe<Scalars['String']>;
-  assignment_type?: InputMaybe<Scalars['String']>;
-  available_at?: InputMaybe<Scalars['timestamptz']>;
-  class_room?: InputMaybe<Scalars['String']>;
-  content_id?: InputMaybe<Scalars['String']>;
-  /** Welke content wordt er gebruikt in de opdracht. */
-  content_label?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  content_layout?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  deadline_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  is_archived?: InputMaybe<Scalars['Boolean']>;
-  is_collaborative?: InputMaybe<Scalars['Boolean']>;
-  is_deleted?: InputMaybe<Scalars['Boolean']>;
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  title?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-  uuid?: InputMaybe<Scalars['uuid']>;
-};
-
-/** aggregate sum on columns */
-export type App_Assignments_Sum_Fields = {
-  __typename?: 'app_assignments_sum_fields';
-  content_layout?: Maybe<Scalars['Int']>;
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "app.assignments" */
-export type App_Assignments_Sum_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "app.assignments" */
-export enum App_Assignments_Update_Column {
-  /** column name */
-  AnswerUrl = 'answer_url',
-  /** column name */
-  AssignmentType = 'assignment_type',
-  /** column name */
-  AvailableAt = 'available_at',
-  /** column name */
-  ClassRoom = 'class_room',
-  /** column name */
-  ContentId = 'content_id',
-  /** column name */
-  ContentLabel = 'content_label',
-  /** column name */
-  ContentLayout = 'content_layout',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  DeadlineAt = 'deadline_at',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  IsArchived = 'is_archived',
-  /** column name */
-  IsCollaborative = 'is_collaborative',
-  /** column name */
-  IsDeleted = 'is_deleted',
-  /** column name */
-  OwnerProfileId = 'owner_profile_id',
-  /** column name */
-  Title = 'title',
-  /** column name */
-  UpdatedAt = 'updated_at',
-  /** column name */
-  Uuid = 'uuid'
-}
-
-export type App_Assignments_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Assignments_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Assignments_Set_Input>;
-  where: App_Assignments_Bool_Exp;
 };
 
 /** columns and relationships of "app.assignments_v2" */
@@ -5754,45 +4034,6 @@ export type App_Assignments_V2_Variance_Fields = {
 /** order by variance() on columns of table "app.assignments_v2" */
 export type App_Assignments_V2_Variance_Order_By = {
   type_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type App_Assignments_Var_Pop_Fields = {
-  __typename?: 'app_assignments_var_pop_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.assignments" */
-export type App_Assignments_Var_Pop_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Assignments_Var_Samp_Fields = {
-  __typename?: 'app_assignments_var_samp_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.assignments" */
-export type App_Assignments_Var_Samp_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Assignments_Variance_Fields = {
-  __typename?: 'app_assignments_variance_fields';
-  content_layout?: Maybe<Scalars['Float']>;
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.assignments" */
-export type App_Assignments_Variance_Order_By = {
-  content_layout?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "app.bundels_index" */
@@ -11035,10 +9276,6 @@ export type App_Collections = {
   updated_by?: Maybe<Users_Profiles>;
   updated_by_profile_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
-  usage_counts: Array<App_Usage_Counts>;
-  /** An aggregate relationship */
-  usage_counts_aggregate: App_Usage_Counts_Aggregate;
-  /** An array relationship */
   view_counts: Array<App_Collection_Views>;
   /** An aggregate relationship */
   view_counts_aggregate: App_Collection_Views_Aggregate;
@@ -11288,26 +9525,6 @@ export type App_CollectionsRelations_AggregateArgs = {
 
 
 /** columns and relationships of "app.collections" */
-export type App_CollectionsUsage_CountsArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-/** columns and relationships of "app.collections" */
-export type App_CollectionsUsage_Counts_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-/** columns and relationships of "app.collections" */
 export type App_CollectionsView_CountsArgs = {
   distinct_on?: InputMaybe<Array<App_Collection_Views_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -11498,8 +9715,6 @@ export type App_Collections_Bool_Exp = {
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   updated_by?: InputMaybe<Users_Profiles_Bool_Exp>;
   updated_by_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  usage_counts?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-  usage_counts_aggregate?: InputMaybe<App_Usage_Counts_Aggregate_Bool_Exp>;
   view_counts?: InputMaybe<App_Collection_Views_Bool_Exp>;
   view_counts_aggregate?: InputMaybe<App_Collection_Views_Aggregate_Bool_Exp>;
 };
@@ -11989,7 +10204,6 @@ export type App_Collections_Insert_Input = {
   updated_at?: InputMaybe<Scalars['timestamptz']>;
   updated_by?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
   updated_by_profile_id?: InputMaybe<Scalars['uuid']>;
-  usage_counts?: InputMaybe<App_Usage_Counts_Arr_Rel_Insert_Input>;
   view_counts?: InputMaybe<App_Collection_Views_Arr_Rel_Insert_Input>;
 };
 
@@ -12382,7 +10596,6 @@ export type App_Collections_Order_By = {
   updated_at?: InputMaybe<Order_By>;
   updated_by?: InputMaybe<Users_Profiles_Order_By>;
   updated_by_profile_id?: InputMaybe<Order_By>;
-  usage_counts_aggregate?: InputMaybe<App_Usage_Counts_Aggregate_Order_By>;
   view_counts_aggregate?: InputMaybe<App_Collection_Views_Aggregate_Order_By>;
 };
 
@@ -12480,10 +10693,6 @@ export type App_Collections_Overview = {
   /** An object relationship */
   updated_by?: Maybe<Users_Profiles>;
   updated_by_profile_id?: Maybe<Scalars['uuid']>;
-  /** An array relationship */
-  usage_counts: Array<App_Usage_Counts>;
-  /** An aggregate relationship */
-  usage_counts_aggregate: App_Usage_Counts_Aggregate;
   /** An array relationship */
   view_counts: Array<App_Collection_Views>;
   /** An aggregate relationship */
@@ -12722,26 +10931,6 @@ export type App_Collections_OverviewRelations_AggregateArgs = {
 
 
 /** columns and relationships of "app.collections_overview" */
-export type App_Collections_OverviewUsage_CountsArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-/** columns and relationships of "app.collections_overview" */
-export type App_Collections_OverviewUsage_Counts_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-/** columns and relationships of "app.collections_overview" */
 export type App_Collections_OverviewView_CountsArgs = {
   distinct_on?: InputMaybe<Array<App_Collection_Views_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -12864,8 +11053,6 @@ export type App_Collections_Overview_Bool_Exp = {
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   updated_by?: InputMaybe<Users_Profiles_Bool_Exp>;
   updated_by_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
-  usage_counts?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-  usage_counts_aggregate?: InputMaybe<App_Usage_Counts_Aggregate_Bool_Exp>;
   view_counts?: InputMaybe<App_Collection_Views_Bool_Exp>;
   view_counts_aggregate?: InputMaybe<App_Collection_Views_Aggregate_Bool_Exp>;
 };
@@ -12979,7 +11166,6 @@ export type App_Collections_Overview_Order_By = {
   updated_at?: InputMaybe<Order_By>;
   updated_by?: InputMaybe<Users_Profiles_Order_By>;
   updated_by_profile_id?: InputMaybe<Order_By>;
-  usage_counts_aggregate?: InputMaybe<App_Usage_Counts_Aggregate_Order_By>;
   view_counts_aggregate?: InputMaybe<App_Collection_Views_Aggregate_Order_By>;
 };
 
@@ -20861,253 +19047,6 @@ export type App_Site_Variables_Updates = {
   where: App_Site_Variables_Bool_Exp;
 };
 
-/** columns and relationships of "app.usage_counts" */
-export type App_Usage_Counts = {
-  __typename?: 'app_usage_counts';
-  count?: Maybe<Scalars['bigint']>;
-  id?: Maybe<Scalars['uuid']>;
-  type?: Maybe<Scalars['String']>;
-  usage?: Maybe<Scalars['String']>;
-};
-
-/** aggregated selection of "app.usage_counts" */
-export type App_Usage_Counts_Aggregate = {
-  __typename?: 'app_usage_counts_aggregate';
-  aggregate?: Maybe<App_Usage_Counts_Aggregate_Fields>;
-  nodes: Array<App_Usage_Counts>;
-};
-
-export type App_Usage_Counts_Aggregate_Bool_Exp = {
-  count?: InputMaybe<App_Usage_Counts_Aggregate_Bool_Exp_Count>;
-};
-
-export type App_Usage_Counts_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "app.usage_counts" */
-export type App_Usage_Counts_Aggregate_Fields = {
-  __typename?: 'app_usage_counts_aggregate_fields';
-  avg?: Maybe<App_Usage_Counts_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Usage_Counts_Max_Fields>;
-  min?: Maybe<App_Usage_Counts_Min_Fields>;
-  stddev?: Maybe<App_Usage_Counts_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Usage_Counts_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Usage_Counts_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Usage_Counts_Sum_Fields>;
-  var_pop?: Maybe<App_Usage_Counts_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Usage_Counts_Var_Samp_Fields>;
-  variance?: Maybe<App_Usage_Counts_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.usage_counts" */
-export type App_Usage_Counts_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "app.usage_counts" */
-export type App_Usage_Counts_Aggregate_Order_By = {
-  avg?: InputMaybe<App_Usage_Counts_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<App_Usage_Counts_Max_Order_By>;
-  min?: InputMaybe<App_Usage_Counts_Min_Order_By>;
-  stddev?: InputMaybe<App_Usage_Counts_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<App_Usage_Counts_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<App_Usage_Counts_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<App_Usage_Counts_Sum_Order_By>;
-  var_pop?: InputMaybe<App_Usage_Counts_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<App_Usage_Counts_Var_Samp_Order_By>;
-  variance?: InputMaybe<App_Usage_Counts_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "app.usage_counts" */
-export type App_Usage_Counts_Arr_Rel_Insert_Input = {
-  data: Array<App_Usage_Counts_Insert_Input>;
-};
-
-/** aggregate avg on columns */
-export type App_Usage_Counts_Avg_Fields = {
-  __typename?: 'app_usage_counts_avg_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Avg_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "app.usage_counts". All fields are combined with a logical 'AND'. */
-export type App_Usage_Counts_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Usage_Counts_Bool_Exp>>;
-  _not?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Usage_Counts_Bool_Exp>>;
-  count?: InputMaybe<Bigint_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  type?: InputMaybe<String_Comparison_Exp>;
-  usage?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** input type for inserting data into table "app.usage_counts" */
-export type App_Usage_Counts_Insert_Input = {
-  count?: InputMaybe<Scalars['bigint']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  type?: InputMaybe<Scalars['String']>;
-  usage?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregate max on columns */
-export type App_Usage_Counts_Max_Fields = {
-  __typename?: 'app_usage_counts_max_fields';
-  count?: Maybe<Scalars['bigint']>;
-  id?: Maybe<Scalars['uuid']>;
-  type?: Maybe<Scalars['String']>;
-  usage?: Maybe<Scalars['String']>;
-};
-
-/** order by max() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Max_Order_By = {
-  count?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
-  usage?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type App_Usage_Counts_Min_Fields = {
-  __typename?: 'app_usage_counts_min_fields';
-  count?: Maybe<Scalars['bigint']>;
-  id?: Maybe<Scalars['uuid']>;
-  type?: Maybe<Scalars['String']>;
-  usage?: Maybe<Scalars['String']>;
-};
-
-/** order by min() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Min_Order_By = {
-  count?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
-  usage?: InputMaybe<Order_By>;
-};
-
-/** Ordering options when selecting data from "app.usage_counts". */
-export type App_Usage_Counts_Order_By = {
-  count?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  type?: InputMaybe<Order_By>;
-  usage?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "app.usage_counts" */
-export enum App_Usage_Counts_Select_Column {
-  /** column name */
-  Count = 'count',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Type = 'type',
-  /** column name */
-  Usage = 'usage'
-}
-
-/** aggregate stddev on columns */
-export type App_Usage_Counts_Stddev_Fields = {
-  __typename?: 'app_usage_counts_stddev_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Stddev_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Usage_Counts_Stddev_Pop_Fields = {
-  __typename?: 'app_usage_counts_stddev_pop_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Stddev_Pop_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Usage_Counts_Stddev_Samp_Fields = {
-  __typename?: 'app_usage_counts_stddev_samp_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Stddev_Samp_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "app_usage_counts" */
-export type App_Usage_Counts_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Usage_Counts_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Usage_Counts_Stream_Cursor_Value_Input = {
-  count?: InputMaybe<Scalars['bigint']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  type?: InputMaybe<Scalars['String']>;
-  usage?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregate sum on columns */
-export type App_Usage_Counts_Sum_Fields = {
-  __typename?: 'app_usage_counts_sum_fields';
-  count?: Maybe<Scalars['bigint']>;
-};
-
-/** order by sum() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Sum_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_pop on columns */
-export type App_Usage_Counts_Var_Pop_Fields = {
-  __typename?: 'app_usage_counts_var_pop_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Var_Pop_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Usage_Counts_Var_Samp_Fields = {
-  __typename?: 'app_usage_counts_var_samp_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Var_Samp_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type App_Usage_Counts_Variance_Fields = {
-  __typename?: 'app_usage_counts_variance_fields';
-  count?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "app.usage_counts" */
-export type App_Usage_Counts_Variance_Order_By = {
-  count?: InputMaybe<Order_By>;
-};
-
 /** Boolean expression to compare columns of type "bigint". All fields are combined with logical 'AND'. */
 export type Bigint_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['bigint']>;
@@ -21273,24 +19212,6 @@ export enum Lookup_Enum_Assignment_Content_Labels_Constraint {
   EnumAssignmentContentLabelPkey = 'enum_assignment_content_label_pkey'
 }
 
-export enum Lookup_Enum_Assignment_Content_Labels_Enum {
-  /** Een gebruikerscollectie. */
-  Collectie = 'COLLECTIE',
-  /** Een video- of audiofragment */
-  Item = 'ITEM',
-  /** Een opgeslagen zoekopdracht. */
-  Zoekopdracht = 'ZOEKOPDRACHT'
-}
-
-/** Boolean expression to compare columns of type "lookup_enum_assignment_content_labels_enum". All fields are combined with logical 'AND'. */
-export type Lookup_Enum_Assignment_Content_Labels_Enum_Comparison_Exp = {
-  _eq?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  _in?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Enum>>;
-  _is_null?: InputMaybe<Scalars['Boolean']>;
-  _neq?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_Enum>;
-  _nin?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Enum>>;
-};
-
 /** input type for inserting data into table "lookup.enum_assignment_content_labels" */
 export type Lookup_Enum_Assignment_Content_Labels_Insert_Input = {
   label?: InputMaybe<Scalars['String']>;
@@ -21318,13 +19239,6 @@ export type Lookup_Enum_Assignment_Content_Labels_Mutation_Response = {
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
   returning: Array<Lookup_Enum_Assignment_Content_Labels>;
-};
-
-/** input type for inserting object relation for remote table "lookup.enum_assignment_content_labels" */
-export type Lookup_Enum_Assignment_Content_Labels_Obj_Rel_Insert_Input = {
-  data: Lookup_Enum_Assignment_Content_Labels_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Lookup_Enum_Assignment_Content_Labels_On_Conflict>;
 };
 
 /** on_conflict condition type for table "lookup.enum_assignment_content_labels" */
@@ -24301,151 +22215,6 @@ export enum Lookup_Thesaurus_Update_Column {
   Topconceptof = 'topconceptof'
 }
 
-/** Table met de oorspronkelijke datum van toevoeging op avo1. */
-export type Migrate_Original_Publishdate = {
-  __typename?: 'migrate_original_publishdate';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  external_id: Scalars['String'];
-  mediamosa_id: Scalars['String'];
-};
-
-/** aggregated selection of "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Aggregate = {
-  __typename?: 'migrate_original_publishdate_aggregate';
-  aggregate?: Maybe<Migrate_Original_Publishdate_Aggregate_Fields>;
-  nodes: Array<Migrate_Original_Publishdate>;
-};
-
-/** aggregate fields of "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Aggregate_Fields = {
-  __typename?: 'migrate_original_publishdate_aggregate_fields';
-  count: Scalars['Int'];
-  max?: Maybe<Migrate_Original_Publishdate_Max_Fields>;
-  min?: Maybe<Migrate_Original_Publishdate_Min_Fields>;
-};
-
-
-/** aggregate fields of "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** Boolean expression to filter rows from the table "migrate.original_publishdate". All fields are combined with a logical 'AND'. */
-export type Migrate_Original_Publishdate_Bool_Exp = {
-  _and?: InputMaybe<Array<Migrate_Original_Publishdate_Bool_Exp>>;
-  _not?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-  _or?: InputMaybe<Array<Migrate_Original_Publishdate_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  external_id?: InputMaybe<String_Comparison_Exp>;
-  mediamosa_id?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "migrate.original_publishdate" */
-export enum Migrate_Original_Publishdate_Constraint {
-  /** unique or primary key constraint on columns "mediamosa_id" */
-  OriginalPublishdatePkey = 'original_publishdate_pkey'
-}
-
-/** input type for inserting data into table "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  external_id?: InputMaybe<Scalars['String']>;
-  mediamosa_id?: InputMaybe<Scalars['String']>;
-};
-
-/** aggregate max on columns */
-export type Migrate_Original_Publishdate_Max_Fields = {
-  __typename?: 'migrate_original_publishdate_max_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  external_id?: Maybe<Scalars['String']>;
-  mediamosa_id?: Maybe<Scalars['String']>;
-};
-
-/** aggregate min on columns */
-export type Migrate_Original_Publishdate_Min_Fields = {
-  __typename?: 'migrate_original_publishdate_min_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  external_id?: Maybe<Scalars['String']>;
-  mediamosa_id?: Maybe<Scalars['String']>;
-};
-
-/** response of any mutation on the table "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Mutation_Response = {
-  __typename?: 'migrate_original_publishdate_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Migrate_Original_Publishdate>;
-};
-
-/** on_conflict condition type for table "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_On_Conflict = {
-  constraint: Migrate_Original_Publishdate_Constraint;
-  update_columns?: Array<Migrate_Original_Publishdate_Update_Column>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "migrate.original_publishdate". */
-export type Migrate_Original_Publishdate_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  external_id?: InputMaybe<Order_By>;
-  mediamosa_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: migrate.original_publishdate */
-export type Migrate_Original_Publishdate_Pk_Columns_Input = {
-  mediamosa_id: Scalars['String'];
-};
-
-/** select columns of table "migrate.original_publishdate" */
-export enum Migrate_Original_Publishdate_Select_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  ExternalId = 'external_id',
-  /** column name */
-  MediamosaId = 'mediamosa_id'
-}
-
-/** input type for updating data in table "migrate.original_publishdate" */
-export type Migrate_Original_Publishdate_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  external_id?: InputMaybe<Scalars['String']>;
-  mediamosa_id?: InputMaybe<Scalars['String']>;
-};
-
-/** Streaming cursor of the table "migrate_original_publishdate" */
-export type Migrate_Original_Publishdate_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Migrate_Original_Publishdate_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Migrate_Original_Publishdate_Stream_Cursor_Value_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  external_id?: InputMaybe<Scalars['String']>;
-  mediamosa_id?: InputMaybe<Scalars['String']>;
-};
-
-/** update columns of table "migrate.original_publishdate" */
-export enum Migrate_Original_Publishdate_Update_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  ExternalId = 'external_id',
-  /** column name */
-  MediamosaId = 'mediamosa_id'
-}
-
-export type Migrate_Original_Publishdate_Updates = {
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Migrate_Original_Publishdate_Set_Input>;
-  where: Migrate_Original_Publishdate_Bool_Exp;
-};
-
 /** columns and relationships of "migrate.reference_ids" */
 export type Migrate_Reference_Ids = {
   __typename?: 'migrate_reference_ids';
@@ -24690,26 +22459,14 @@ export type Migrate_Reference_Ids_Variance_Fields = {
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
-  /** delete data from the table: "app.assignment_assignment_tags" */
-  delete_app_assignment_assignment_tags?: Maybe<App_Assignment_Assignment_Tags_Mutation_Response>;
-  /** delete single row from the table: "app.assignment_assignment_tags" */
-  delete_app_assignment_assignment_tags_by_pk?: Maybe<App_Assignment_Assignment_Tags>;
   /** delete data from the table: "app.assignment_blocks_v2" */
   delete_app_assignment_blocks_v2?: Maybe<App_Assignment_Blocks_V2_Mutation_Response>;
   /** delete single row from the table: "app.assignment_blocks_v2" */
   delete_app_assignment_blocks_v2_by_pk?: Maybe<App_Assignment_Blocks_V2>;
-  /** delete data from the table: "app.assignment_labels" */
-  delete_app_assignment_labels?: Maybe<App_Assignment_Labels_Mutation_Response>;
-  /** delete single row from the table: "app.assignment_labels" */
-  delete_app_assignment_labels_by_pk?: Maybe<App_Assignment_Labels>;
   /** delete data from the table: "app.assignment_labels_v2" */
   delete_app_assignment_labels_v2?: Maybe<App_Assignment_Labels_V2_Mutation_Response>;
   /** delete single row from the table: "app.assignment_labels_v2" */
   delete_app_assignment_labels_v2_by_pk?: Maybe<App_Assignment_Labels_V2>;
-  /** delete data from the table: "app.assignment_responses" */
-  delete_app_assignment_responses?: Maybe<App_Assignment_Responses_Mutation_Response>;
-  /** delete single row from the table: "app.assignment_responses" */
-  delete_app_assignment_responses_by_pk?: Maybe<App_Assignment_Responses>;
   /** delete data from the table: "app.assignment_responses_v2" */
   delete_app_assignment_responses_v2?: Maybe<App_Assignment_Responses_V2_Mutation_Response>;
   /** delete single row from the table: "app.assignment_responses_v2" */
@@ -24718,10 +22475,6 @@ export type Mutation_Root = {
   delete_app_assignment_v2_views?: Maybe<App_Assignment_V2_Views_Mutation_Response>;
   /** delete single row from the table: "app.assignment_v2_views" */
   delete_app_assignment_v2_views_by_pk?: Maybe<App_Assignment_V2_Views>;
-  /** delete data from the table: "app.assignments" */
-  delete_app_assignments?: Maybe<App_Assignments_Mutation_Response>;
-  /** delete single row from the table: "app.assignments" */
-  delete_app_assignments_by_pk?: Maybe<App_Assignments>;
   /** delete data from the table: "app.assignments_v2" */
   delete_app_assignments_v2?: Maybe<App_Assignments_V2_Mutation_Response>;
   /** delete data from the table: "app.assignments_v2_assignment_labels_v2" */
@@ -24948,10 +22701,6 @@ export type Mutation_Root = {
   delete_lookup_thesaurus_old?: Maybe<Lookup_Thesaurus_Old_Mutation_Response>;
   /** delete single row from the table: "lookup.thesaurus_old" */
   delete_lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
-  /** delete data from the table: "migrate.original_publishdate" */
-  delete_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
-  /** delete single row from the table: "migrate.original_publishdate" */
-  delete_migrate_original_publishdate_by_pk?: Maybe<Migrate_Original_Publishdate>;
   /** delete data from the table: "migrate.reference_ids" */
   delete_migrate_reference_ids?: Maybe<Migrate_Reference_Ids_Mutation_Response>;
   /** delete single row from the table: "migrate.reference_ids" */
@@ -25002,10 +22751,6 @@ export type Mutation_Root = {
   delete_users_group_permissions?: Maybe<Users_Group_Permissions_Mutation_Response>;
   /** delete single row from the table: "users.group_permissions" */
   delete_users_group_permissions_by_pk?: Maybe<Users_Group_Permissions>;
-  /** delete data from the table: "users.group_user_permission_groups" */
-  delete_users_group_user_permission_groups?: Maybe<Users_Group_User_Permission_Groups_Mutation_Response>;
-  /** delete single row from the table: "users.group_user_permission_groups" */
-  delete_users_group_user_permission_groups_by_pk?: Maybe<Users_Group_User_Permission_Groups>;
   /** delete data from the table: "users.groups" */
   delete_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** delete single row from the table: "users.groups" */
@@ -25022,14 +22767,6 @@ export type Mutation_Root = {
   delete_users_notifications?: Maybe<Users_Notifications_Mutation_Response>;
   /** delete single row from the table: "users.notifications" */
   delete_users_notifications_by_pk?: Maybe<Users_Notifications>;
-  /** delete data from the table: "users.permission_group_user_permissions" */
-  delete_users_permission_group_user_permissions?: Maybe<Users_Permission_Group_User_Permissions_Mutation_Response>;
-  /** delete single row from the table: "users.permission_group_user_permissions" */
-  delete_users_permission_group_user_permissions_by_pk?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** delete data from the table: "users.permission_groups" */
-  delete_users_permission_groups?: Maybe<Users_Permission_Groups_Mutation_Response>;
-  /** delete single row from the table: "users.permission_groups" */
-  delete_users_permission_groups_by_pk?: Maybe<Users_Permission_Groups>;
   /** delete data from the table: "users.permissions" */
   delete_users_permissions?: Maybe<Users_Permissions_Mutation_Response>;
   /** delete single row from the table: "users.permissions" */
@@ -25070,26 +22807,14 @@ export type Mutation_Root = {
   delete_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** delete single row from the table: "users.users_sync_cm" */
   delete_users_users_sync_cm_by_pk?: Maybe<Users_Users_Sync_Cm>;
-  /** insert data into the table: "app.assignment_assignment_tags" */
-  insert_app_assignment_assignment_tags?: Maybe<App_Assignment_Assignment_Tags_Mutation_Response>;
-  /** insert a single row into the table: "app.assignment_assignment_tags" */
-  insert_app_assignment_assignment_tags_one?: Maybe<App_Assignment_Assignment_Tags>;
   /** insert data into the table: "app.assignment_blocks_v2" */
   insert_app_assignment_blocks_v2?: Maybe<App_Assignment_Blocks_V2_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_blocks_v2" */
   insert_app_assignment_blocks_v2_one?: Maybe<App_Assignment_Blocks_V2>;
-  /** insert data into the table: "app.assignment_labels" */
-  insert_app_assignment_labels?: Maybe<App_Assignment_Labels_Mutation_Response>;
-  /** insert a single row into the table: "app.assignment_labels" */
-  insert_app_assignment_labels_one?: Maybe<App_Assignment_Labels>;
   /** insert data into the table: "app.assignment_labels_v2" */
   insert_app_assignment_labels_v2?: Maybe<App_Assignment_Labels_V2_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_labels_v2" */
   insert_app_assignment_labels_v2_one?: Maybe<App_Assignment_Labels_V2>;
-  /** insert data into the table: "app.assignment_responses" */
-  insert_app_assignment_responses?: Maybe<App_Assignment_Responses_Mutation_Response>;
-  /** insert a single row into the table: "app.assignment_responses" */
-  insert_app_assignment_responses_one?: Maybe<App_Assignment_Responses>;
   /** insert data into the table: "app.assignment_responses_v2" */
   insert_app_assignment_responses_v2?: Maybe<App_Assignment_Responses_V2_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_responses_v2" */
@@ -25098,10 +22823,6 @@ export type Mutation_Root = {
   insert_app_assignment_v2_views?: Maybe<App_Assignment_V2_Views_Mutation_Response>;
   /** insert a single row into the table: "app.assignment_v2_views" */
   insert_app_assignment_v2_views_one?: Maybe<App_Assignment_V2_Views>;
-  /** insert data into the table: "app.assignments" */
-  insert_app_assignments?: Maybe<App_Assignments_Mutation_Response>;
-  /** insert a single row into the table: "app.assignments" */
-  insert_app_assignments_one?: Maybe<App_Assignments>;
   /** insert data into the table: "app.assignments_v2" */
   insert_app_assignments_v2?: Maybe<App_Assignments_V2_Mutation_Response>;
   /** insert data into the table: "app.assignments_v2_assignment_labels_v2" */
@@ -25330,10 +23051,6 @@ export type Mutation_Root = {
   insert_lookup_thesaurus_old?: Maybe<Lookup_Thesaurus_Old_Mutation_Response>;
   /** insert a single row into the table: "lookup.thesaurus_old" */
   insert_lookup_thesaurus_old_one?: Maybe<Lookup_Thesaurus_Old>;
-  /** insert data into the table: "migrate.original_publishdate" */
-  insert_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
-  /** insert a single row into the table: "migrate.original_publishdate" */
-  insert_migrate_original_publishdate_one?: Maybe<Migrate_Original_Publishdate>;
   /** insert data into the table: "migrate.reference_ids" */
   insert_migrate_reference_ids?: Maybe<Migrate_Reference_Ids_Mutation_Response>;
   /** insert a single row into the table: "migrate.reference_ids" */
@@ -25386,10 +23103,6 @@ export type Mutation_Root = {
   insert_users_group_permissions?: Maybe<Users_Group_Permissions_Mutation_Response>;
   /** insert a single row into the table: "users.group_permissions" */
   insert_users_group_permissions_one?: Maybe<Users_Group_Permissions>;
-  /** insert data into the table: "users.group_user_permission_groups" */
-  insert_users_group_user_permission_groups?: Maybe<Users_Group_User_Permission_Groups_Mutation_Response>;
-  /** insert a single row into the table: "users.group_user_permission_groups" */
-  insert_users_group_user_permission_groups_one?: Maybe<Users_Group_User_Permission_Groups>;
   /** insert data into the table: "users.groups" */
   insert_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** insert a single row into the table: "users.groups" */
@@ -25406,14 +23119,6 @@ export type Mutation_Root = {
   insert_users_notifications?: Maybe<Users_Notifications_Mutation_Response>;
   /** insert a single row into the table: "users.notifications" */
   insert_users_notifications_one?: Maybe<Users_Notifications>;
-  /** insert data into the table: "users.permission_group_user_permissions" */
-  insert_users_permission_group_user_permissions?: Maybe<Users_Permission_Group_User_Permissions_Mutation_Response>;
-  /** insert a single row into the table: "users.permission_group_user_permissions" */
-  insert_users_permission_group_user_permissions_one?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** insert data into the table: "users.permission_groups" */
-  insert_users_permission_groups?: Maybe<Users_Permission_Groups_Mutation_Response>;
-  /** insert a single row into the table: "users.permission_groups" */
-  insert_users_permission_groups_one?: Maybe<Users_Permission_Groups>;
   /** insert data into the table: "users.permissions" */
   insert_users_permissions?: Maybe<Users_Permissions_Mutation_Response>;
   /** insert a single row into the table: "users.permissions" */
@@ -25454,36 +23159,18 @@ export type Mutation_Root = {
   insert_users_users_sync_cm?: Maybe<Users_Users_Sync_Cm_Mutation_Response>;
   /** insert a single row into the table: "users.users_sync_cm" */
   insert_users_users_sync_cm_one?: Maybe<Users_Users_Sync_Cm>;
-  /** update data of the table: "app.assignment_assignment_tags" */
-  update_app_assignment_assignment_tags?: Maybe<App_Assignment_Assignment_Tags_Mutation_Response>;
-  /** update single row of the table: "app.assignment_assignment_tags" */
-  update_app_assignment_assignment_tags_by_pk?: Maybe<App_Assignment_Assignment_Tags>;
-  /** update multiples rows of table: "app.assignment_assignment_tags" */
-  update_app_assignment_assignment_tags_many?: Maybe<Array<Maybe<App_Assignment_Assignment_Tags_Mutation_Response>>>;
   /** update data of the table: "app.assignment_blocks_v2" */
   update_app_assignment_blocks_v2?: Maybe<App_Assignment_Blocks_V2_Mutation_Response>;
   /** update single row of the table: "app.assignment_blocks_v2" */
   update_app_assignment_blocks_v2_by_pk?: Maybe<App_Assignment_Blocks_V2>;
   /** update multiples rows of table: "app.assignment_blocks_v2" */
   update_app_assignment_blocks_v2_many?: Maybe<Array<Maybe<App_Assignment_Blocks_V2_Mutation_Response>>>;
-  /** update data of the table: "app.assignment_labels" */
-  update_app_assignment_labels?: Maybe<App_Assignment_Labels_Mutation_Response>;
-  /** update single row of the table: "app.assignment_labels" */
-  update_app_assignment_labels_by_pk?: Maybe<App_Assignment_Labels>;
-  /** update multiples rows of table: "app.assignment_labels" */
-  update_app_assignment_labels_many?: Maybe<Array<Maybe<App_Assignment_Labels_Mutation_Response>>>;
   /** update data of the table: "app.assignment_labels_v2" */
   update_app_assignment_labels_v2?: Maybe<App_Assignment_Labels_V2_Mutation_Response>;
   /** update single row of the table: "app.assignment_labels_v2" */
   update_app_assignment_labels_v2_by_pk?: Maybe<App_Assignment_Labels_V2>;
   /** update multiples rows of table: "app.assignment_labels_v2" */
   update_app_assignment_labels_v2_many?: Maybe<Array<Maybe<App_Assignment_Labels_V2_Mutation_Response>>>;
-  /** update data of the table: "app.assignment_responses" */
-  update_app_assignment_responses?: Maybe<App_Assignment_Responses_Mutation_Response>;
-  /** update single row of the table: "app.assignment_responses" */
-  update_app_assignment_responses_by_pk?: Maybe<App_Assignment_Responses>;
-  /** update multiples rows of table: "app.assignment_responses" */
-  update_app_assignment_responses_many?: Maybe<Array<Maybe<App_Assignment_Responses_Mutation_Response>>>;
   /** update data of the table: "app.assignment_responses_v2" */
   update_app_assignment_responses_v2?: Maybe<App_Assignment_Responses_V2_Mutation_Response>;
   /** update single row of the table: "app.assignment_responses_v2" */
@@ -25496,12 +23183,6 @@ export type Mutation_Root = {
   update_app_assignment_v2_views_by_pk?: Maybe<App_Assignment_V2_Views>;
   /** update multiples rows of table: "app.assignment_v2_views" */
   update_app_assignment_v2_views_many?: Maybe<Array<Maybe<App_Assignment_V2_Views_Mutation_Response>>>;
-  /** update data of the table: "app.assignments" */
-  update_app_assignments?: Maybe<App_Assignments_Mutation_Response>;
-  /** update single row of the table: "app.assignments" */
-  update_app_assignments_by_pk?: Maybe<App_Assignments>;
-  /** update multiples rows of table: "app.assignments" */
-  update_app_assignments_many?: Maybe<Array<Maybe<App_Assignments_Mutation_Response>>>;
   /** update data of the table: "app.assignments_v2" */
   update_app_assignments_v2?: Maybe<App_Assignments_V2_Mutation_Response>;
   /** update data of the table: "app.assignments_v2_assignment_labels_v2" */
@@ -25842,12 +23523,6 @@ export type Mutation_Root = {
   update_lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
   /** update multiples rows of table: "lookup.thesaurus_old" */
   update_lookup_thesaurus_old_many?: Maybe<Array<Maybe<Lookup_Thesaurus_Old_Mutation_Response>>>;
-  /** update data of the table: "migrate.original_publishdate" */
-  update_migrate_original_publishdate?: Maybe<Migrate_Original_Publishdate_Mutation_Response>;
-  /** update single row of the table: "migrate.original_publishdate" */
-  update_migrate_original_publishdate_by_pk?: Maybe<Migrate_Original_Publishdate>;
-  /** update multiples rows of table: "migrate.original_publishdate" */
-  update_migrate_original_publishdate_many?: Maybe<Array<Maybe<Migrate_Original_Publishdate_Mutation_Response>>>;
   /** update data of the table: "migrate.reference_ids" */
   update_migrate_reference_ids?: Maybe<Migrate_Reference_Ids_Mutation_Response>;
   /** update single row of the table: "migrate.reference_ids" */
@@ -25924,12 +23599,6 @@ export type Mutation_Root = {
   update_users_group_permissions_by_pk?: Maybe<Users_Group_Permissions>;
   /** update multiples rows of table: "users.group_permissions" */
   update_users_group_permissions_many?: Maybe<Array<Maybe<Users_Group_Permissions_Mutation_Response>>>;
-  /** update data of the table: "users.group_user_permission_groups" */
-  update_users_group_user_permission_groups?: Maybe<Users_Group_User_Permission_Groups_Mutation_Response>;
-  /** update single row of the table: "users.group_user_permission_groups" */
-  update_users_group_user_permission_groups_by_pk?: Maybe<Users_Group_User_Permission_Groups>;
-  /** update multiples rows of table: "users.group_user_permission_groups" */
-  update_users_group_user_permission_groups_many?: Maybe<Array<Maybe<Users_Group_User_Permission_Groups_Mutation_Response>>>;
   /** update data of the table: "users.groups" */
   update_users_groups?: Maybe<Users_Groups_Mutation_Response>;
   /** update single row of the table: "users.groups" */
@@ -25954,18 +23623,6 @@ export type Mutation_Root = {
   update_users_notifications_by_pk?: Maybe<Users_Notifications>;
   /** update multiples rows of table: "users.notifications" */
   update_users_notifications_many?: Maybe<Array<Maybe<Users_Notifications_Mutation_Response>>>;
-  /** update data of the table: "users.permission_group_user_permissions" */
-  update_users_permission_group_user_permissions?: Maybe<Users_Permission_Group_User_Permissions_Mutation_Response>;
-  /** update single row of the table: "users.permission_group_user_permissions" */
-  update_users_permission_group_user_permissions_by_pk?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** update multiples rows of table: "users.permission_group_user_permissions" */
-  update_users_permission_group_user_permissions_many?: Maybe<Array<Maybe<Users_Permission_Group_User_Permissions_Mutation_Response>>>;
-  /** update data of the table: "users.permission_groups" */
-  update_users_permission_groups?: Maybe<Users_Permission_Groups_Mutation_Response>;
-  /** update single row of the table: "users.permission_groups" */
-  update_users_permission_groups_by_pk?: Maybe<Users_Permission_Groups>;
-  /** update multiples rows of table: "users.permission_groups" */
-  update_users_permission_groups_many?: Maybe<Array<Maybe<Users_Permission_Groups_Mutation_Response>>>;
   /** update data of the table: "users.permissions" */
   update_users_permissions?: Maybe<Users_Permissions_Mutation_Response>;
   /** update single row of the table: "users.permissions" */
@@ -26030,18 +23687,6 @@ export type Mutation_Root = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_App_Assignment_Assignment_TagsArgs = {
-  where: App_Assignment_Assignment_Tags_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignment_Assignment_Tags_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_App_Assignment_Blocks_V2Args = {
   where: App_Assignment_Blocks_V2_Bool_Exp;
 };
@@ -26054,18 +23699,6 @@ export type Mutation_RootDelete_App_Assignment_Blocks_V2_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_App_Assignment_LabelsArgs = {
-  where: App_Assignment_Labels_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignment_Labels_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_App_Assignment_Labels_V2Args = {
   where: App_Assignment_Labels_V2_Bool_Exp;
 };
@@ -26074,18 +23707,6 @@ export type Mutation_RootDelete_App_Assignment_Labels_V2Args = {
 /** mutation root */
 export type Mutation_RootDelete_App_Assignment_Labels_V2_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignment_ResponsesArgs = {
-  where: App_Assignment_Responses_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignment_Responses_By_PkArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -26110,18 +23731,6 @@ export type Mutation_RootDelete_App_Assignment_V2_ViewsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_App_Assignment_V2_Views_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_AssignmentsArgs = {
-  where: App_Assignments_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Assignments_By_PkArgs = {
-  uuid: Scalars['uuid'];
 };
 
 
@@ -26807,18 +24416,6 @@ export type Mutation_RootDelete_Lookup_Thesaurus_Old_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Migrate_Original_PublishdateArgs = {
-  where: Migrate_Original_Publishdate_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Migrate_Original_Publishdate_By_PkArgs = {
-  mediamosa_id: Scalars['String'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_Migrate_Reference_IdsArgs = {
   where: Migrate_Reference_Ids_Bool_Exp;
 };
@@ -26969,18 +24566,6 @@ export type Mutation_RootDelete_Users_Group_Permissions_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDelete_Users_Group_User_Permission_GroupsArgs = {
-  where: Users_Group_User_Permission_Groups_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Group_User_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDelete_Users_GroupsArgs = {
   where: Users_Groups_Bool_Exp;
 };
@@ -27025,30 +24610,6 @@ export type Mutation_RootDelete_Users_NotificationsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Users_Notifications_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Permission_Group_User_PermissionsArgs = {
-  where: Users_Permission_Group_User_Permissions_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Permission_Group_User_Permissions_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Permission_GroupsArgs = {
-  where: Users_Permission_Groups_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_Users_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -27173,20 +24734,6 @@ export type Mutation_RootDelete_Users_Users_Sync_Cm_By_PkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_App_Assignment_Assignment_TagsArgs = {
-  objects: Array<App_Assignment_Assignment_Tags_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignment_Assignment_Tags_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignment_Assignment_Tags_OneArgs = {
-  object: App_Assignment_Assignment_Tags_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignment_Assignment_Tags_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_App_Assignment_Blocks_V2Args = {
   objects: Array<App_Assignment_Blocks_V2_Insert_Input>;
   on_conflict?: InputMaybe<App_Assignment_Blocks_V2_On_Conflict>;
@@ -27201,20 +24748,6 @@ export type Mutation_RootInsert_App_Assignment_Blocks_V2_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_App_Assignment_LabelsArgs = {
-  objects: Array<App_Assignment_Labels_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignment_Labels_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignment_Labels_OneArgs = {
-  object: App_Assignment_Labels_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignment_Labels_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_App_Assignment_Labels_V2Args = {
   objects: Array<App_Assignment_Labels_V2_Insert_Input>;
   on_conflict?: InputMaybe<App_Assignment_Labels_V2_On_Conflict>;
@@ -27225,20 +24758,6 @@ export type Mutation_RootInsert_App_Assignment_Labels_V2Args = {
 export type Mutation_RootInsert_App_Assignment_Labels_V2_OneArgs = {
   object: App_Assignment_Labels_V2_Insert_Input;
   on_conflict?: InputMaybe<App_Assignment_Labels_V2_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignment_ResponsesArgs = {
-  objects: Array<App_Assignment_Responses_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignment_Responses_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignment_Responses_OneArgs = {
-  object: App_Assignment_Responses_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignment_Responses_On_Conflict>;
 };
 
 
@@ -27267,20 +24786,6 @@ export type Mutation_RootInsert_App_Assignment_V2_ViewsArgs = {
 export type Mutation_RootInsert_App_Assignment_V2_Views_OneArgs = {
   object: App_Assignment_V2_Views_Insert_Input;
   on_conflict?: InputMaybe<App_Assignment_V2_Views_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_AssignmentsArgs = {
-  objects: Array<App_Assignments_Insert_Input>;
-  on_conflict?: InputMaybe<App_Assignments_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Assignments_OneArgs = {
-  object: App_Assignments_Insert_Input;
-  on_conflict?: InputMaybe<App_Assignments_On_Conflict>;
 };
 
 
@@ -28081,20 +25586,6 @@ export type Mutation_RootInsert_Lookup_Thesaurus_Old_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Migrate_Original_PublishdateArgs = {
-  objects: Array<Migrate_Original_Publishdate_Insert_Input>;
-  on_conflict?: InputMaybe<Migrate_Original_Publishdate_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Migrate_Original_Publishdate_OneArgs = {
-  object: Migrate_Original_Publishdate_Insert_Input;
-  on_conflict?: InputMaybe<Migrate_Original_Publishdate_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_Migrate_Reference_IdsArgs = {
   objects: Array<Migrate_Reference_Ids_Insert_Input>;
   on_conflict?: InputMaybe<Migrate_Reference_Ids_On_Conflict>;
@@ -28275,20 +25766,6 @@ export type Mutation_RootInsert_Users_Group_Permissions_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsert_Users_Group_User_Permission_GroupsArgs = {
-  objects: Array<Users_Group_User_Permission_Groups_Insert_Input>;
-  on_conflict?: InputMaybe<Users_Group_User_Permission_Groups_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Group_User_Permission_Groups_OneArgs = {
-  object: Users_Group_User_Permission_Groups_Insert_Input;
-  on_conflict?: InputMaybe<Users_Group_User_Permission_Groups_On_Conflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsert_Users_GroupsArgs = {
   objects: Array<Users_Groups_Insert_Input>;
   on_conflict?: InputMaybe<Users_Groups_On_Conflict>;
@@ -28341,34 +25818,6 @@ export type Mutation_RootInsert_Users_NotificationsArgs = {
 export type Mutation_RootInsert_Users_Notifications_OneArgs = {
   object: Users_Notifications_Insert_Input;
   on_conflict?: InputMaybe<Users_Notifications_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Permission_Group_User_PermissionsArgs = {
-  objects: Array<Users_Permission_Group_User_Permissions_Insert_Input>;
-  on_conflict?: InputMaybe<Users_Permission_Group_User_Permissions_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Permission_Group_User_Permissions_OneArgs = {
-  object: Users_Permission_Group_User_Permissions_Insert_Input;
-  on_conflict?: InputMaybe<Users_Permission_Group_User_Permissions_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Permission_GroupsArgs = {
-  objects: Array<Users_Permission_Groups_Insert_Input>;
-  on_conflict?: InputMaybe<Users_Permission_Groups_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_Users_Permission_Groups_OneArgs = {
-  object: Users_Permission_Groups_Insert_Input;
-  on_conflict?: InputMaybe<Users_Permission_Groups_On_Conflict>;
 };
 
 
@@ -28513,28 +25962,6 @@ export type Mutation_RootInsert_Users_Users_Sync_Cm_OneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Assignment_TagsArgs = {
-  _inc?: InputMaybe<App_Assignment_Assignment_Tags_Inc_Input>;
-  _set?: InputMaybe<App_Assignment_Assignment_Tags_Set_Input>;
-  where: App_Assignment_Assignment_Tags_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Assignment_Tags_By_PkArgs = {
-  _inc?: InputMaybe<App_Assignment_Assignment_Tags_Inc_Input>;
-  _set?: InputMaybe<App_Assignment_Assignment_Tags_Set_Input>;
-  pk_columns: App_Assignment_Assignment_Tags_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Assignment_Tags_ManyArgs = {
-  updates: Array<App_Assignment_Assignment_Tags_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_App_Assignment_Blocks_V2Args = {
   _inc?: InputMaybe<App_Assignment_Blocks_V2_Inc_Input>;
   _set?: InputMaybe<App_Assignment_Blocks_V2_Set_Input>;
@@ -28557,28 +25984,6 @@ export type Mutation_RootUpdate_App_Assignment_Blocks_V2_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_App_Assignment_LabelsArgs = {
-  _inc?: InputMaybe<App_Assignment_Labels_Inc_Input>;
-  _set?: InputMaybe<App_Assignment_Labels_Set_Input>;
-  where: App_Assignment_Labels_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Labels_By_PkArgs = {
-  _inc?: InputMaybe<App_Assignment_Labels_Inc_Input>;
-  _set?: InputMaybe<App_Assignment_Labels_Set_Input>;
-  pk_columns: App_Assignment_Labels_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Labels_ManyArgs = {
-  updates: Array<App_Assignment_Labels_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_App_Assignment_Labels_V2Args = {
   _set?: InputMaybe<App_Assignment_Labels_V2_Set_Input>;
   where: App_Assignment_Labels_V2_Bool_Exp;
@@ -28595,38 +26000,6 @@ export type Mutation_RootUpdate_App_Assignment_Labels_V2_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_App_Assignment_Labels_V2_ManyArgs = {
   updates: Array<App_Assignment_Labels_V2_Updates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_ResponsesArgs = {
-  _append?: InputMaybe<App_Assignment_Responses_Append_Input>;
-  _delete_at_path?: InputMaybe<App_Assignment_Responses_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<App_Assignment_Responses_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<App_Assignment_Responses_Delete_Key_Input>;
-  _inc?: InputMaybe<App_Assignment_Responses_Inc_Input>;
-  _prepend?: InputMaybe<App_Assignment_Responses_Prepend_Input>;
-  _set?: InputMaybe<App_Assignment_Responses_Set_Input>;
-  where: App_Assignment_Responses_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Responses_By_PkArgs = {
-  _append?: InputMaybe<App_Assignment_Responses_Append_Input>;
-  _delete_at_path?: InputMaybe<App_Assignment_Responses_Delete_At_Path_Input>;
-  _delete_elem?: InputMaybe<App_Assignment_Responses_Delete_Elem_Input>;
-  _delete_key?: InputMaybe<App_Assignment_Responses_Delete_Key_Input>;
-  _inc?: InputMaybe<App_Assignment_Responses_Inc_Input>;
-  _prepend?: InputMaybe<App_Assignment_Responses_Prepend_Input>;
-  _set?: InputMaybe<App_Assignment_Responses_Set_Input>;
-  pk_columns: App_Assignment_Responses_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignment_Responses_ManyArgs = {
-  updates: Array<App_Assignment_Responses_Updates>;
 };
 
 
@@ -28669,28 +26042,6 @@ export type Mutation_RootUpdate_App_Assignment_V2_Views_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_App_Assignment_V2_Views_ManyArgs = {
   updates: Array<App_Assignment_V2_Views_Updates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_AssignmentsArgs = {
-  _inc?: InputMaybe<App_Assignments_Inc_Input>;
-  _set?: InputMaybe<App_Assignments_Set_Input>;
-  where: App_Assignments_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignments_By_PkArgs = {
-  _inc?: InputMaybe<App_Assignments_Inc_Input>;
-  _set?: InputMaybe<App_Assignments_Set_Input>;
-  pk_columns: App_Assignments_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Assignments_ManyArgs = {
-  updates: Array<App_Assignments_Updates>;
 };
 
 
@@ -29981,26 +27332,6 @@ export type Mutation_RootUpdate_Lookup_Thesaurus_Old_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Migrate_Original_PublishdateArgs = {
-  _set?: InputMaybe<Migrate_Original_Publishdate_Set_Input>;
-  where: Migrate_Original_Publishdate_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Migrate_Original_Publishdate_By_PkArgs = {
-  _set?: InputMaybe<Migrate_Original_Publishdate_Set_Input>;
-  pk_columns: Migrate_Original_Publishdate_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Migrate_Original_Publishdate_ManyArgs = {
-  updates: Array<Migrate_Original_Publishdate_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_Migrate_Reference_IdsArgs = {
   _inc?: InputMaybe<Migrate_Reference_Ids_Inc_Input>;
   _set?: InputMaybe<Migrate_Reference_Ids_Set_Input>;
@@ -30328,28 +27659,6 @@ export type Mutation_RootUpdate_Users_Group_Permissions_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_Users_Group_User_Permission_GroupsArgs = {
-  _inc?: InputMaybe<Users_Group_User_Permission_Groups_Inc_Input>;
-  _set?: InputMaybe<Users_Group_User_Permission_Groups_Set_Input>;
-  where: Users_Group_User_Permission_Groups_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Group_User_Permission_Groups_By_PkArgs = {
-  _inc?: InputMaybe<Users_Group_User_Permission_Groups_Inc_Input>;
-  _set?: InputMaybe<Users_Group_User_Permission_Groups_Set_Input>;
-  pk_columns: Users_Group_User_Permission_Groups_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Group_User_Permission_Groups_ManyArgs = {
-  updates: Array<Users_Group_User_Permission_Groups_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_Users_GroupsArgs = {
   _inc?: InputMaybe<Users_Groups_Inc_Input>;
   _set?: InputMaybe<Users_Groups_Set_Input>;
@@ -30430,50 +27739,6 @@ export type Mutation_RootUpdate_Users_Notifications_By_PkArgs = {
 /** mutation root */
 export type Mutation_RootUpdate_Users_Notifications_ManyArgs = {
   updates: Array<Users_Notifications_Updates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Group_User_PermissionsArgs = {
-  _inc?: InputMaybe<Users_Permission_Group_User_Permissions_Inc_Input>;
-  _set?: InputMaybe<Users_Permission_Group_User_Permissions_Set_Input>;
-  where: Users_Permission_Group_User_Permissions_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Group_User_Permissions_By_PkArgs = {
-  _inc?: InputMaybe<Users_Permission_Group_User_Permissions_Inc_Input>;
-  _set?: InputMaybe<Users_Permission_Group_User_Permissions_Set_Input>;
-  pk_columns: Users_Permission_Group_User_Permissions_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Group_User_Permissions_ManyArgs = {
-  updates: Array<Users_Permission_Group_User_Permissions_Updates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_GroupsArgs = {
-  _inc?: InputMaybe<Users_Permission_Groups_Inc_Input>;
-  _set?: InputMaybe<Users_Permission_Groups_Set_Input>;
-  where: Users_Permission_Groups_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Groups_By_PkArgs = {
-  _inc?: InputMaybe<Users_Permission_Groups_Inc_Input>;
-  _set?: InputMaybe<Users_Permission_Groups_Set_Input>;
-  pk_columns: Users_Permission_Groups_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_Users_Permission_Groups_ManyArgs = {
-  updates: Array<Users_Permission_Groups_Updates>;
 };
 
 
@@ -30724,36 +27989,18 @@ export enum Order_By {
 
 export type Query_Root = {
   __typename?: 'query_root';
-  /** fetch data from the table: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags: Array<App_Assignment_Assignment_Tags>;
-  /** fetch aggregated fields from the table: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags_aggregate: App_Assignment_Assignment_Tags_Aggregate;
-  /** fetch data from the table: "app.assignment_assignment_tags" using primary key columns */
-  app_assignment_assignment_tags_by_pk?: Maybe<App_Assignment_Assignment_Tags>;
   /** fetch data from the table: "app.assignment_blocks_v2" */
   app_assignment_blocks_v2: Array<App_Assignment_Blocks_V2>;
   /** fetch aggregated fields from the table: "app.assignment_blocks_v2" */
   app_assignment_blocks_v2_aggregate: App_Assignment_Blocks_V2_Aggregate;
   /** fetch data from the table: "app.assignment_blocks_v2" using primary key columns */
   app_assignment_blocks_v2_by_pk?: Maybe<App_Assignment_Blocks_V2>;
-  /** fetch data from the table: "app.assignment_labels" */
-  app_assignment_labels: Array<App_Assignment_Labels>;
-  /** fetch aggregated fields from the table: "app.assignment_labels" */
-  app_assignment_labels_aggregate: App_Assignment_Labels_Aggregate;
-  /** fetch data from the table: "app.assignment_labels" using primary key columns */
-  app_assignment_labels_by_pk?: Maybe<App_Assignment_Labels>;
   /** fetch data from the table: "app.assignment_labels_v2" */
   app_assignment_labels_v2: Array<App_Assignment_Labels_V2>;
   /** fetch aggregated fields from the table: "app.assignment_labels_v2" */
   app_assignment_labels_v2_aggregate: App_Assignment_Labels_V2_Aggregate;
   /** fetch data from the table: "app.assignment_labels_v2" using primary key columns */
   app_assignment_labels_v2_by_pk?: Maybe<App_Assignment_Labels_V2>;
-  /** fetch data from the table: "app.assignment_responses" */
-  app_assignment_responses: Array<App_Assignment_Responses>;
-  /** fetch aggregated fields from the table: "app.assignment_responses" */
-  app_assignment_responses_aggregate: App_Assignment_Responses_Aggregate;
-  /** fetch data from the table: "app.assignment_responses" using primary key columns */
-  app_assignment_responses_by_pk?: Maybe<App_Assignment_Responses>;
   /** fetch data from the table: "app.assignment_responses_v2" */
   app_assignment_responses_v2: Array<App_Assignment_Responses_V2>;
   /** fetch aggregated fields from the table: "app.assignment_responses_v2" */
@@ -30766,12 +28013,6 @@ export type Query_Root = {
   app_assignment_v2_views_aggregate: App_Assignment_V2_Views_Aggregate;
   /** fetch data from the table: "app.assignment_v2_views" using primary key columns */
   app_assignment_v2_views_by_pk?: Maybe<App_Assignment_V2_Views>;
-  /** fetch data from the table: "app.assignments" */
-  app_assignments: Array<App_Assignments>;
-  /** fetch aggregated fields from the table: "app.assignments" */
-  app_assignments_aggregate: App_Assignments_Aggregate;
-  /** fetch data from the table: "app.assignments" using primary key columns */
-  app_assignments_by_pk?: Maybe<App_Assignments>;
   /** fetch data from the table: "app.assignments_v2" */
   app_assignments_v2: Array<App_Assignments_V2>;
   /** fetch aggregated fields from the table: "app.assignments_v2" */
@@ -31054,10 +28295,6 @@ export type Query_Root = {
   app_site_variables_aggregate: App_Site_Variables_Aggregate;
   /** fetch data from the table: "app.site_variables" using primary key columns */
   app_site_variables_by_pk?: Maybe<App_Site_Variables>;
-  /** fetch data from the table: "app.usage_counts" */
-  app_usage_counts: Array<App_Usage_Counts>;
-  /** fetch aggregated fields from the table: "app.usage_counts" */
-  app_usage_counts_aggregate: App_Usage_Counts_Aggregate;
   /** fetch data from the table: "lookup.enum_assignment_content_labels" */
   lookup_enum_assignment_content_labels: Array<Lookup_Enum_Assignment_Content_Labels>;
   /** fetch aggregated fields from the table: "lookup.enum_assignment_content_labels" */
@@ -31176,12 +28413,6 @@ export type Query_Root = {
   lookup_thesaurus_old_aggregate: Lookup_Thesaurus_Old_Aggregate;
   /** fetch data from the table: "lookup.thesaurus_old" using primary key columns */
   lookup_thesaurus_old_by_pk?: Maybe<Lookup_Thesaurus_Old>;
-  /** fetch data from the table: "migrate.original_publishdate" */
-  migrate_original_publishdate: Array<Migrate_Original_Publishdate>;
-  /** fetch aggregated fields from the table: "migrate.original_publishdate" */
-  migrate_original_publishdate_aggregate: Migrate_Original_Publishdate_Aggregate;
-  /** fetch data from the table: "migrate.original_publishdate" using primary key columns */
-  migrate_original_publishdate_by_pk?: Maybe<Migrate_Original_Publishdate>;
   /** fetch data from the table: "migrate.reference_ids" */
   migrate_reference_ids: Array<Migrate_Reference_Ids>;
   /** fetch aggregated fields from the table: "migrate.reference_ids" */
@@ -31278,12 +28509,6 @@ export type Query_Root = {
   users_group_permissions_aggregate: Users_Group_Permissions_Aggregate;
   /** fetch data from the table: "users.group_permissions" using primary key columns */
   users_group_permissions_by_pk?: Maybe<Users_Group_Permissions>;
-  /** fetch data from the table: "users.group_user_permission_groups" */
-  users_group_user_permission_groups: Array<Users_Group_User_Permission_Groups>;
-  /** fetch aggregated fields from the table: "users.group_user_permission_groups" */
-  users_group_user_permission_groups_aggregate: Users_Group_User_Permission_Groups_Aggregate;
-  /** fetch data from the table: "users.group_user_permission_groups" using primary key columns */
-  users_group_user_permission_groups_by_pk?: Maybe<Users_Group_User_Permission_Groups>;
   /** fetch data from the table: "users.groups" */
   users_groups: Array<Users_Groups>;
   /** fetch aggregated fields from the table: "users.groups" */
@@ -31308,18 +28533,6 @@ export type Query_Root = {
   users_notifications_aggregate: Users_Notifications_Aggregate;
   /** fetch data from the table: "users.notifications" using primary key columns */
   users_notifications_by_pk?: Maybe<Users_Notifications>;
-  /** fetch data from the table: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions: Array<Users_Permission_Group_User_Permissions>;
-  /** fetch aggregated fields from the table: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions_aggregate: Users_Permission_Group_User_Permissions_Aggregate;
-  /** fetch data from the table: "users.permission_group_user_permissions" using primary key columns */
-  users_permission_group_user_permissions_by_pk?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** fetch data from the table: "users.permission_groups" */
-  users_permission_groups: Array<Users_Permission_Groups>;
-  /** fetch aggregated fields from the table: "users.permission_groups" */
-  users_permission_groups_aggregate: Users_Permission_Groups_Aggregate;
-  /** fetch data from the table: "users.permission_groups" using primary key columns */
-  users_permission_groups_by_pk?: Maybe<Users_Permission_Groups>;
   /** fetch data from the table: "users.permission_matrix_view" */
   users_permission_matrix_view: Array<Users_Permission_Matrix_View>;
   /** fetch aggregated fields from the table: "users.permission_matrix_view" */
@@ -31391,29 +28604,6 @@ export type Query_Root = {
 };
 
 
-export type Query_RootApp_Assignment_Assignment_TagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Assignment_Tags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Assignment_Tags_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type Query_RootApp_Assignment_Blocks_V2Args = {
   distinct_on?: InputMaybe<Array<App_Assignment_Blocks_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -31437,29 +28627,6 @@ export type Query_RootApp_Assignment_Blocks_V2_By_PkArgs = {
 };
 
 
-export type Query_RootApp_Assignment_LabelsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Labels_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Labels_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type Query_RootApp_Assignment_Labels_V2Args = {
   distinct_on?: InputMaybe<Array<App_Assignment_Labels_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -31480,29 +28647,6 @@ export type Query_RootApp_Assignment_Labels_V2_AggregateArgs = {
 
 export type Query_RootApp_Assignment_Labels_V2_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootApp_Assignment_ResponsesArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Responses_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignment_Responses_By_PkArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -31549,29 +28693,6 @@ export type Query_RootApp_Assignment_V2_Views_AggregateArgs = {
 
 export type Query_RootApp_Assignment_V2_Views_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootApp_AssignmentsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignments_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Assignments_By_PkArgs = {
-  uuid: Scalars['uuid'];
 };
 
 
@@ -32696,24 +29817,6 @@ export type Query_RootApp_Site_Variables_By_PkArgs = {
 };
 
 
-export type Query_RootApp_Usage_CountsArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Usage_Counts_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
 export type Query_RootLookup_Enum_Assignment_Content_LabelsArgs = {
   distinct_on?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -33172,29 +30275,6 @@ export type Query_RootLookup_Thesaurus_Old_By_PkArgs = {
 };
 
 
-export type Query_RootMigrate_Original_PublishdateArgs = {
-  distinct_on?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Migrate_Original_Publishdate_Order_By>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
-export type Query_RootMigrate_Original_Publishdate_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Migrate_Original_Publishdate_Order_By>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
-export type Query_RootMigrate_Original_Publishdate_By_PkArgs = {
-  mediamosa_id: Scalars['String'];
-};
-
-
 export type Query_RootMigrate_Reference_IdsArgs = {
   distinct_on?: InputMaybe<Array<Migrate_Reference_Ids_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -33579,29 +30659,6 @@ export type Query_RootUsers_Group_Permissions_By_PkArgs = {
 };
 
 
-export type Query_RootUsers_Group_User_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Group_User_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Group_User_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type Query_RootUsers_GroupsArgs = {
   distinct_on?: InputMaybe<Array<Users_Groups_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -33691,52 +30748,6 @@ export type Query_RootUsers_Notifications_AggregateArgs = {
 
 export type Query_RootUsers_Notifications_By_PkArgs = {
   id: Scalars['uuid'];
-};
-
-
-export type Query_RootUsers_Permission_Group_User_PermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Permission_Group_User_Permissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Permission_Group_User_Permissions_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Query_RootUsers_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Query_RootUsers_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -37472,14 +34483,6 @@ export type Shared_Users_Variance_Order_By = {
 
 export type Subscription_Root = {
   __typename?: 'subscription_root';
-  /** fetch data from the table: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags: Array<App_Assignment_Assignment_Tags>;
-  /** fetch aggregated fields from the table: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags_aggregate: App_Assignment_Assignment_Tags_Aggregate;
-  /** fetch data from the table: "app.assignment_assignment_tags" using primary key columns */
-  app_assignment_assignment_tags_by_pk?: Maybe<App_Assignment_Assignment_Tags>;
-  /** fetch data from the table in a streaming manner: "app.assignment_assignment_tags" */
-  app_assignment_assignment_tags_stream: Array<App_Assignment_Assignment_Tags>;
   /** fetch data from the table: "app.assignment_blocks_v2" */
   app_assignment_blocks_v2: Array<App_Assignment_Blocks_V2>;
   /** fetch aggregated fields from the table: "app.assignment_blocks_v2" */
@@ -37488,14 +34491,6 @@ export type Subscription_Root = {
   app_assignment_blocks_v2_by_pk?: Maybe<App_Assignment_Blocks_V2>;
   /** fetch data from the table in a streaming manner: "app.assignment_blocks_v2" */
   app_assignment_blocks_v2_stream: Array<App_Assignment_Blocks_V2>;
-  /** fetch data from the table: "app.assignment_labels" */
-  app_assignment_labels: Array<App_Assignment_Labels>;
-  /** fetch aggregated fields from the table: "app.assignment_labels" */
-  app_assignment_labels_aggregate: App_Assignment_Labels_Aggregate;
-  /** fetch data from the table: "app.assignment_labels" using primary key columns */
-  app_assignment_labels_by_pk?: Maybe<App_Assignment_Labels>;
-  /** fetch data from the table in a streaming manner: "app.assignment_labels" */
-  app_assignment_labels_stream: Array<App_Assignment_Labels>;
   /** fetch data from the table: "app.assignment_labels_v2" */
   app_assignment_labels_v2: Array<App_Assignment_Labels_V2>;
   /** fetch aggregated fields from the table: "app.assignment_labels_v2" */
@@ -37504,14 +34499,6 @@ export type Subscription_Root = {
   app_assignment_labels_v2_by_pk?: Maybe<App_Assignment_Labels_V2>;
   /** fetch data from the table in a streaming manner: "app.assignment_labels_v2" */
   app_assignment_labels_v2_stream: Array<App_Assignment_Labels_V2>;
-  /** fetch data from the table: "app.assignment_responses" */
-  app_assignment_responses: Array<App_Assignment_Responses>;
-  /** fetch aggregated fields from the table: "app.assignment_responses" */
-  app_assignment_responses_aggregate: App_Assignment_Responses_Aggregate;
-  /** fetch data from the table: "app.assignment_responses" using primary key columns */
-  app_assignment_responses_by_pk?: Maybe<App_Assignment_Responses>;
-  /** fetch data from the table in a streaming manner: "app.assignment_responses" */
-  app_assignment_responses_stream: Array<App_Assignment_Responses>;
   /** fetch data from the table: "app.assignment_responses_v2" */
   app_assignment_responses_v2: Array<App_Assignment_Responses_V2>;
   /** fetch aggregated fields from the table: "app.assignment_responses_v2" */
@@ -37528,14 +34515,6 @@ export type Subscription_Root = {
   app_assignment_v2_views_by_pk?: Maybe<App_Assignment_V2_Views>;
   /** fetch data from the table in a streaming manner: "app.assignment_v2_views" */
   app_assignment_v2_views_stream: Array<App_Assignment_V2_Views>;
-  /** fetch data from the table: "app.assignments" */
-  app_assignments: Array<App_Assignments>;
-  /** fetch aggregated fields from the table: "app.assignments" */
-  app_assignments_aggregate: App_Assignments_Aggregate;
-  /** fetch data from the table: "app.assignments" using primary key columns */
-  app_assignments_by_pk?: Maybe<App_Assignments>;
-  /** fetch data from the table in a streaming manner: "app.assignments" */
-  app_assignments_stream: Array<App_Assignments>;
   /** fetch data from the table: "app.assignments_v2" */
   app_assignments_v2: Array<App_Assignments_V2>;
   /** fetch aggregated fields from the table: "app.assignments_v2" */
@@ -37922,12 +34901,6 @@ export type Subscription_Root = {
   app_site_variables_by_pk?: Maybe<App_Site_Variables>;
   /** fetch data from the table in a streaming manner: "app.site_variables" */
   app_site_variables_stream: Array<App_Site_Variables>;
-  /** fetch data from the table: "app.usage_counts" */
-  app_usage_counts: Array<App_Usage_Counts>;
-  /** fetch aggregated fields from the table: "app.usage_counts" */
-  app_usage_counts_aggregate: App_Usage_Counts_Aggregate;
-  /** fetch data from the table in a streaming manner: "app.usage_counts" */
-  app_usage_counts_stream: Array<App_Usage_Counts>;
   /** fetch data from the table: "lookup.enum_assignment_content_labels" */
   lookup_enum_assignment_content_labels: Array<Lookup_Enum_Assignment_Content_Labels>;
   /** fetch aggregated fields from the table: "lookup.enum_assignment_content_labels" */
@@ -38086,14 +35059,6 @@ export type Subscription_Root = {
   lookup_thesaurus_old_stream: Array<Lookup_Thesaurus_Old>;
   /** fetch data from the table in a streaming manner: "lookup.thesaurus" */
   lookup_thesaurus_stream: Array<Lookup_Thesaurus>;
-  /** fetch data from the table: "migrate.original_publishdate" */
-  migrate_original_publishdate: Array<Migrate_Original_Publishdate>;
-  /** fetch aggregated fields from the table: "migrate.original_publishdate" */
-  migrate_original_publishdate_aggregate: Migrate_Original_Publishdate_Aggregate;
-  /** fetch data from the table: "migrate.original_publishdate" using primary key columns */
-  migrate_original_publishdate_by_pk?: Maybe<Migrate_Original_Publishdate>;
-  /** fetch data from the table in a streaming manner: "migrate.original_publishdate" */
-  migrate_original_publishdate_stream: Array<Migrate_Original_Publishdate>;
   /** fetch data from the table: "migrate.reference_ids" */
   migrate_reference_ids: Array<Migrate_Reference_Ids>;
   /** fetch aggregated fields from the table: "migrate.reference_ids" */
@@ -38226,14 +35191,6 @@ export type Subscription_Root = {
   users_group_permissions_by_pk?: Maybe<Users_Group_Permissions>;
   /** fetch data from the table in a streaming manner: "users.group_permissions" */
   users_group_permissions_stream: Array<Users_Group_Permissions>;
-  /** fetch data from the table: "users.group_user_permission_groups" */
-  users_group_user_permission_groups: Array<Users_Group_User_Permission_Groups>;
-  /** fetch aggregated fields from the table: "users.group_user_permission_groups" */
-  users_group_user_permission_groups_aggregate: Users_Group_User_Permission_Groups_Aggregate;
-  /** fetch data from the table: "users.group_user_permission_groups" using primary key columns */
-  users_group_user_permission_groups_by_pk?: Maybe<Users_Group_User_Permission_Groups>;
-  /** fetch data from the table in a streaming manner: "users.group_user_permission_groups" */
-  users_group_user_permission_groups_stream: Array<Users_Group_User_Permission_Groups>;
   /** fetch data from the table: "users.groups" */
   users_groups: Array<Users_Groups>;
   /** fetch aggregated fields from the table: "users.groups" */
@@ -38266,22 +35223,6 @@ export type Subscription_Root = {
   users_notifications_by_pk?: Maybe<Users_Notifications>;
   /** fetch data from the table in a streaming manner: "users.notifications" */
   users_notifications_stream: Array<Users_Notifications>;
-  /** fetch data from the table: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions: Array<Users_Permission_Group_User_Permissions>;
-  /** fetch aggregated fields from the table: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions_aggregate: Users_Permission_Group_User_Permissions_Aggregate;
-  /** fetch data from the table: "users.permission_group_user_permissions" using primary key columns */
-  users_permission_group_user_permissions_by_pk?: Maybe<Users_Permission_Group_User_Permissions>;
-  /** fetch data from the table in a streaming manner: "users.permission_group_user_permissions" */
-  users_permission_group_user_permissions_stream: Array<Users_Permission_Group_User_Permissions>;
-  /** fetch data from the table: "users.permission_groups" */
-  users_permission_groups: Array<Users_Permission_Groups>;
-  /** fetch aggregated fields from the table: "users.permission_groups" */
-  users_permission_groups_aggregate: Users_Permission_Groups_Aggregate;
-  /** fetch data from the table: "users.permission_groups" using primary key columns */
-  users_permission_groups_by_pk?: Maybe<Users_Permission_Groups>;
-  /** fetch data from the table in a streaming manner: "users.permission_groups" */
-  users_permission_groups_stream: Array<Users_Permission_Groups>;
   /** fetch data from the table: "users.permission_matrix_view" */
   users_permission_matrix_view: Array<Users_Permission_Matrix_View>;
   /** fetch aggregated fields from the table: "users.permission_matrix_view" */
@@ -38377,36 +35318,6 @@ export type Subscription_Root = {
 };
 
 
-export type Subscription_RootApp_Assignment_Assignment_TagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Assignment_Tags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Assignment_Tags_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Assignment_Tags_Order_By>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Assignment_Tags_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootApp_Assignment_Assignment_Tags_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignment_Assignment_Tags_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignment_Assignment_Tags_Bool_Exp>;
-};
-
-
 export type Subscription_RootApp_Assignment_Blocks_V2Args = {
   distinct_on?: InputMaybe<Array<App_Assignment_Blocks_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -38437,36 +35348,6 @@ export type Subscription_RootApp_Assignment_Blocks_V2_StreamArgs = {
 };
 
 
-export type Subscription_RootApp_Assignment_LabelsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Labels_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Labels_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootApp_Assignment_Labels_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignment_Labels_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
 export type Subscription_RootApp_Assignment_Labels_V2Args = {
   distinct_on?: InputMaybe<Array<App_Assignment_Labels_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -38494,36 +35375,6 @@ export type Subscription_RootApp_Assignment_Labels_V2_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Assignment_Labels_V2_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_ResponsesArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Responses_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Responses_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Responses_Order_By>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignment_Responses_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootApp_Assignment_Responses_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignment_Responses_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignment_Responses_Bool_Exp>;
 };
 
 
@@ -38584,36 +35435,6 @@ export type Subscription_RootApp_Assignment_V2_Views_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Assignment_V2_Views_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Assignment_V2_Views_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_AssignmentsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Assignments_By_PkArgs = {
-  uuid: Scalars['uuid'];
-};
-
-
-export type Subscription_RootApp_Assignments_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Assignments_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
 };
 
 
@@ -40102,31 +36923,6 @@ export type Subscription_RootApp_Site_Variables_StreamArgs = {
 };
 
 
-export type Subscription_RootApp_Usage_CountsArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Usage_Counts_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Usage_Counts_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Usage_Counts_Order_By>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Usage_Counts_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Usage_Counts_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Usage_Counts_Bool_Exp>;
-};
-
-
 export type Subscription_RootLookup_Enum_Assignment_Content_LabelsArgs = {
   distinct_on?: InputMaybe<Array<Lookup_Enum_Assignment_Content_Labels_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -40725,36 +37521,6 @@ export type Subscription_RootLookup_Thesaurus_StreamArgs = {
 };
 
 
-export type Subscription_RootMigrate_Original_PublishdateArgs = {
-  distinct_on?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Migrate_Original_Publishdate_Order_By>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
-export type Subscription_RootMigrate_Original_Publishdate_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Migrate_Original_Publishdate_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Migrate_Original_Publishdate_Order_By>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
-export type Subscription_RootMigrate_Original_Publishdate_By_PkArgs = {
-  mediamosa_id: Scalars['String'];
-};
-
-
-export type Subscription_RootMigrate_Original_Publishdate_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<Migrate_Original_Publishdate_Stream_Cursor_Input>>;
-  where?: InputMaybe<Migrate_Original_Publishdate_Bool_Exp>;
-};
-
-
 export type Subscription_RootMigrate_Reference_IdsArgs = {
   distinct_on?: InputMaybe<Array<Migrate_Reference_Ids_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -41265,36 +38031,6 @@ export type Subscription_RootUsers_Group_Permissions_StreamArgs = {
 };
 
 
-export type Subscription_RootUsers_Group_User_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Group_User_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Group_User_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootUsers_Group_User_Permission_Groups_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<Users_Group_User_Permission_Groups_Stream_Cursor_Input>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
 export type Subscription_RootUsers_GroupsArgs = {
   distinct_on?: InputMaybe<Array<Users_Groups_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
@@ -41412,66 +38148,6 @@ export type Subscription_RootUsers_Notifications_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<Users_Notifications_Stream_Cursor_Input>>;
   where?: InputMaybe<Users_Notifications_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Group_User_PermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Group_User_Permissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Group_User_Permissions_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootUsers_Permission_Group_User_Permissions_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<Users_Permission_Group_User_Permissions_Stream_Cursor_Input>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-
-export type Subscription_RootUsers_Permission_Groups_By_PkArgs = {
-  id: Scalars['Int'];
-};
-
-
-export type Subscription_RootUsers_Permission_Groups_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<Users_Permission_Groups_Stream_Cursor_Input>>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
 };
 
 
@@ -42779,347 +39455,6 @@ export type Users_Group_Permissions_Variance_Order_By = {
   user_group_id?: InputMaybe<Order_By>;
 };
 
-/** Reference table for linking permission groups to user groups with foreign keys on both group id's. */
-export type Users_Group_User_Permission_Groups = {
-  __typename?: 'users_group_user_permission_groups';
-  /** An object relationship */
-  group: Users_Groups;
-  id: Scalars['Int'];
-  /** An object relationship */
-  permission_group: Users_Permission_Groups;
-  user_group_id: Scalars['Int'];
-  user_permission_group_id: Scalars['Int'];
-};
-
-/** aggregated selection of "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Aggregate = {
-  __typename?: 'users_group_user_permission_groups_aggregate';
-  aggregate?: Maybe<Users_Group_User_Permission_Groups_Aggregate_Fields>;
-  nodes: Array<Users_Group_User_Permission_Groups>;
-};
-
-export type Users_Group_User_Permission_Groups_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Group_User_Permission_Groups_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Aggregate_Fields = {
-  __typename?: 'users_group_user_permission_groups_aggregate_fields';
-  avg?: Maybe<Users_Group_User_Permission_Groups_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<Users_Group_User_Permission_Groups_Max_Fields>;
-  min?: Maybe<Users_Group_User_Permission_Groups_Min_Fields>;
-  stddev?: Maybe<Users_Group_User_Permission_Groups_Stddev_Fields>;
-  stddev_pop?: Maybe<Users_Group_User_Permission_Groups_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Users_Group_User_Permission_Groups_Stddev_Samp_Fields>;
-  sum?: Maybe<Users_Group_User_Permission_Groups_Sum_Fields>;
-  var_pop?: Maybe<Users_Group_User_Permission_Groups_Var_Pop_Fields>;
-  var_samp?: Maybe<Users_Group_User_Permission_Groups_Var_Samp_Fields>;
-  variance?: Maybe<Users_Group_User_Permission_Groups_Variance_Fields>;
-};
-
-
-/** aggregate fields of "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Group_User_Permission_Groups_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Group_User_Permission_Groups_Max_Order_By>;
-  min?: InputMaybe<Users_Group_User_Permission_Groups_Min_Order_By>;
-  stddev?: InputMaybe<Users_Group_User_Permission_Groups_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Group_User_Permission_Groups_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Group_User_Permission_Groups_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Group_User_Permission_Groups_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Group_User_Permission_Groups_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Group_User_Permission_Groups_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Group_User_Permission_Groups_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Arr_Rel_Insert_Input = {
-  data: Array<Users_Group_User_Permission_Groups_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Group_User_Permission_Groups_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type Users_Group_User_Permission_Groups_Avg_Fields = {
-  __typename?: 'users_group_user_permission_groups_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "users.group_user_permission_groups". All fields are combined with a logical 'AND'. */
-export type Users_Group_User_Permission_Groups_Bool_Exp = {
-  _and?: InputMaybe<Array<Users_Group_User_Permission_Groups_Bool_Exp>>;
-  _not?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-  _or?: InputMaybe<Array<Users_Group_User_Permission_Groups_Bool_Exp>>;
-  group?: InputMaybe<Users_Groups_Bool_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-  user_group_id?: InputMaybe<Int_Comparison_Exp>;
-  user_permission_group_id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "users.group_user_permission_groups" */
-export enum Users_Group_User_Permission_Groups_Constraint {
-  /** unique or primary key constraint on columns "user_permission_group_id", "user_group_id" */
-  GroupUserPermissionGroupsUserGroupIdUserPermissionGrou = 'group_user_permission_groups_user_group_id_user_permission_grou',
-  /** unique or primary key constraint on columns "id" */
-  UserGroupUserPermissionGroupsPkey = 'user_group_user_permission_groups_pkey'
-}
-
-/** input type for incrementing numeric columns in table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Insert_Input = {
-  group?: InputMaybe<Users_Groups_Obj_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Obj_Rel_Insert_Input>;
-  user_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate max on columns */
-export type Users_Group_User_Permission_Groups_Max_Fields = {
-  __typename?: 'users_group_user_permission_groups_max_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_group_id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Max_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Users_Group_User_Permission_Groups_Min_Fields = {
-  __typename?: 'users_group_user_permission_groups_min_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_group_id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Min_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Mutation_Response = {
-  __typename?: 'users_group_user_permission_groups_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users_Group_User_Permission_Groups>;
-};
-
-/** on_conflict condition type for table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_On_Conflict = {
-  constraint: Users_Group_User_Permission_Groups_Constraint;
-  update_columns?: Array<Users_Group_User_Permission_Groups_Update_Column>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "users.group_user_permission_groups". */
-export type Users_Group_User_Permission_Groups_Order_By = {
-  group?: InputMaybe<Users_Groups_Order_By>;
-  id?: InputMaybe<Order_By>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: users.group_user_permission_groups */
-export type Users_Group_User_Permission_Groups_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "users.group_user_permission_groups" */
-export enum Users_Group_User_Permission_Groups_Select_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UserGroupId = 'user_group_id',
-  /** column name */
-  UserPermissionGroupId = 'user_permission_group_id'
-}
-
-/** input type for updating data in table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Set_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate stddev on columns */
-export type Users_Group_User_Permission_Groups_Stddev_Fields = {
-  __typename?: 'users_group_user_permission_groups_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Users_Group_User_Permission_Groups_Stddev_Pop_Fields = {
-  __typename?: 'users_group_user_permission_groups_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Users_Group_User_Permission_Groups_Stddev_Samp_Fields = {
-  __typename?: 'users_group_user_permission_groups_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "users_group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Users_Group_User_Permission_Groups_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Users_Group_User_Permission_Groups_Stream_Cursor_Value_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate sum on columns */
-export type Users_Group_User_Permission_Groups_Sum_Fields = {
-  __typename?: 'users_group_user_permission_groups_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_group_id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "users.group_user_permission_groups" */
-export enum Users_Group_User_Permission_Groups_Update_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UserGroupId = 'user_group_id',
-  /** column name */
-  UserPermissionGroupId = 'user_permission_group_id'
-}
-
-export type Users_Group_User_Permission_Groups_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Users_Group_User_Permission_Groups_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Users_Group_User_Permission_Groups_Set_Input>;
-  where: Users_Group_User_Permission_Groups_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Users_Group_User_Permission_Groups_Var_Pop_Fields = {
-  __typename?: 'users_group_user_permission_groups_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Users_Group_User_Permission_Groups_Var_Samp_Fields = {
-  __typename?: 'users_group_user_permission_groups_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Users_Group_User_Permission_Groups_Variance_Fields = {
-  __typename?: 'users_group_user_permission_groups_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_group_id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.group_user_permission_groups" */
-export type Users_Group_User_Permission_Groups_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_group_id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-};
-
 /** columns and relationships of "users.groups" */
 export type Users_Groups = {
   __typename?: 'users_groups';
@@ -43129,10 +39464,6 @@ export type Users_Groups = {
   group_permissions: Array<Users_Group_Permissions>;
   /** An aggregate relationship */
   group_permissions_aggregate: Users_Group_Permissions_Aggregate;
-  /** An array relationship */
-  group_user_permission_groups: Array<Users_Group_User_Permission_Groups>;
-  /** An aggregate relationship */
-  group_user_permission_groups_aggregate: Users_Group_User_Permission_Groups_Aggregate;
   id: Scalars['Int'];
   label: Scalars['String'];
   ldap_role?: Maybe<Scalars['String']>;
@@ -43161,26 +39492,6 @@ export type Users_GroupsGroup_Permissions_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<Users_Group_Permissions_Order_By>>;
   where?: InputMaybe<Users_Group_Permissions_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.groups" */
-export type Users_GroupsGroup_User_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.groups" */
-export type Users_GroupsGroup_User_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
 };
 
 
@@ -43286,8 +39597,6 @@ export type Users_Groups_Bool_Exp = {
   description?: InputMaybe<String_Comparison_Exp>;
   group_permissions?: InputMaybe<Users_Group_Permissions_Bool_Exp>;
   group_permissions_aggregate?: InputMaybe<Users_Group_Permissions_Aggregate_Bool_Exp>;
-  group_user_permission_groups?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-  group_user_permission_groups_aggregate?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Bool_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   label?: InputMaybe<String_Comparison_Exp>;
   ldap_role?: InputMaybe<String_Comparison_Exp>;
@@ -43312,7 +39621,6 @@ export type Users_Groups_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   description?: InputMaybe<Scalars['String']>;
   group_permissions?: InputMaybe<Users_Group_Permissions_Arr_Rel_Insert_Input>;
-  group_user_permission_groups?: InputMaybe<Users_Group_User_Permission_Groups_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['Int']>;
   label?: InputMaybe<Scalars['String']>;
   ldap_role?: InputMaybe<Scalars['String']>;
@@ -43390,7 +39698,6 @@ export type Users_Groups_Order_By = {
   created_at?: InputMaybe<Order_By>;
   description?: InputMaybe<Order_By>;
   group_permissions_aggregate?: InputMaybe<Users_Group_Permissions_Aggregate_Order_By>;
-  group_user_permission_groups_aggregate?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   label?: InputMaybe<Order_By>;
   ldap_role?: InputMaybe<Order_By>;
@@ -44272,676 +40579,11 @@ export type Users_Notifications_Updates = {
   where: Users_Notifications_Bool_Exp;
 };
 
-/** columns and relationships of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions = {
-  __typename?: 'users_permission_group_user_permissions';
-  id: Scalars['Int'];
-  /** An object relationship */
-  permission: Users_Permissions;
-  /** An object relationship */
-  permission_group: Users_Permission_Groups;
-  /** An array relationship */
-  permissions: Array<Users_Permissions>;
-  /** An aggregate relationship */
-  permissions_aggregate: Users_Permissions_Aggregate;
-  user_permission_group_id: Scalars['Int'];
-  user_permission_id: Scalars['Int'];
-};
-
-
-/** columns and relationships of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_PermissionsPermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permissions_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_PermissionsPermissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permissions_Bool_Exp>;
-};
-
-/** aggregated selection of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Aggregate = {
-  __typename?: 'users_permission_group_user_permissions_aggregate';
-  aggregate?: Maybe<Users_Permission_Group_User_Permissions_Aggregate_Fields>;
-  nodes: Array<Users_Permission_Group_User_Permissions>;
-};
-
-export type Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
-};
-
-/** aggregate fields of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Aggregate_Fields = {
-  __typename?: 'users_permission_group_user_permissions_aggregate_fields';
-  avg?: Maybe<Users_Permission_Group_User_Permissions_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<Users_Permission_Group_User_Permissions_Max_Fields>;
-  min?: Maybe<Users_Permission_Group_User_Permissions_Min_Fields>;
-  stddev?: Maybe<Users_Permission_Group_User_Permissions_Stddev_Fields>;
-  stddev_pop?: Maybe<Users_Permission_Group_User_Permissions_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Users_Permission_Group_User_Permissions_Stddev_Samp_Fields>;
-  sum?: Maybe<Users_Permission_Group_User_Permissions_Sum_Fields>;
-  var_pop?: Maybe<Users_Permission_Group_User_Permissions_Var_Pop_Fields>;
-  var_samp?: Maybe<Users_Permission_Group_User_Permissions_Var_Samp_Fields>;
-  variance?: Maybe<Users_Permission_Group_User_Permissions_Variance_Fields>;
-};
-
-
-/** aggregate fields of "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** order by aggregate values of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Permission_Group_User_Permissions_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Permission_Group_User_Permissions_Max_Order_By>;
-  min?: InputMaybe<Users_Permission_Group_User_Permissions_Min_Order_By>;
-  stddev?: InputMaybe<Users_Permission_Group_User_Permissions_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Permission_Group_User_Permissions_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Permission_Group_User_Permissions_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Permission_Group_User_Permissions_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Permission_Group_User_Permissions_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Permission_Group_User_Permissions_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Permission_Group_User_Permissions_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Arr_Rel_Insert_Input = {
-  data: Array<Users_Permission_Group_User_Permissions_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Permission_Group_User_Permissions_On_Conflict>;
-};
-
-/** aggregate avg on columns */
-export type Users_Permission_Group_User_Permissions_Avg_Fields = {
-  __typename?: 'users_permission_group_user_permissions_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** Boolean expression to filter rows from the table "users.permission_group_user_permissions". All fields are combined with a logical 'AND'. */
-export type Users_Permission_Group_User_Permissions_Bool_Exp = {
-  _and?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Bool_Exp>>;
-  _not?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-  _or?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Bool_Exp>>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  permission?: InputMaybe<Users_Permissions_Bool_Exp>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-  permissions?: InputMaybe<Users_Permissions_Bool_Exp>;
-  permissions_aggregate?: InputMaybe<Users_Permissions_Aggregate_Bool_Exp>;
-  user_permission_group_id?: InputMaybe<Int_Comparison_Exp>;
-  user_permission_id?: InputMaybe<Int_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "users.permission_group_user_permissions" */
-export enum Users_Permission_Group_User_Permissions_Constraint {
-  /** unique or primary key constraint on columns "user_permission_id", "user_permission_group_id" */
-  PermissionGroupUserPermissionsUserPermissionGroupIdUser = 'permission_group_user_permissions_user_permission_group_id_user',
-  /** unique or primary key constraint on columns "id" */
-  UserPermissionGroupUserPermissionsPkey = 'user_permission_group_user_permissions_pkey'
-}
-
-/** input type for incrementing numeric columns in table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Insert_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  permission?: InputMaybe<Users_Permissions_Obj_Rel_Insert_Input>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Obj_Rel_Insert_Input>;
-  permissions?: InputMaybe<Users_Permissions_Arr_Rel_Insert_Input>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate max on columns */
-export type Users_Permission_Group_User_Permissions_Max_Fields = {
-  __typename?: 'users_permission_group_user_permissions_max_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-  user_permission_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Max_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate min on columns */
-export type Users_Permission_Group_User_Permissions_Min_Fields = {
-  __typename?: 'users_permission_group_user_permissions_min_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-  user_permission_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Min_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** response of any mutation on the table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Mutation_Response = {
-  __typename?: 'users_permission_group_user_permissions_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users_Permission_Group_User_Permissions>;
-};
-
-/** on_conflict condition type for table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_On_Conflict = {
-  constraint: Users_Permission_Group_User_Permissions_Constraint;
-  update_columns?: Array<Users_Permission_Group_User_Permissions_Update_Column>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "users.permission_group_user_permissions". */
-export type Users_Permission_Group_User_Permissions_Order_By = {
-  id?: InputMaybe<Order_By>;
-  permission?: InputMaybe<Users_Permissions_Order_By>;
-  permission_group?: InputMaybe<Users_Permission_Groups_Order_By>;
-  permissions_aggregate?: InputMaybe<Users_Permissions_Aggregate_Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: users.permission_group_user_permissions */
-export type Users_Permission_Group_User_Permissions_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "users.permission_group_user_permissions" */
-export enum Users_Permission_Group_User_Permissions_Select_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UserPermissionGroupId = 'user_permission_group_id',
-  /** column name */
-  UserPermissionId = 'user_permission_id'
-}
-
-/** input type for updating data in table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Set_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate stddev on columns */
-export type Users_Permission_Group_User_Permissions_Stddev_Fields = {
-  __typename?: 'users_permission_group_user_permissions_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Users_Permission_Group_User_Permissions_Stddev_Pop_Fields = {
-  __typename?: 'users_permission_group_user_permissions_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Users_Permission_Group_User_Permissions_Stddev_Samp_Fields = {
-  __typename?: 'users_permission_group_user_permissions_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** Streaming cursor of the table "users_permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Users_Permission_Group_User_Permissions_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Users_Permission_Group_User_Permissions_Stream_Cursor_Value_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-  user_permission_group_id?: InputMaybe<Scalars['Int']>;
-  user_permission_id?: InputMaybe<Scalars['Int']>;
-};
-
-/** aggregate sum on columns */
-export type Users_Permission_Group_User_Permissions_Sum_Fields = {
-  __typename?: 'users_permission_group_user_permissions_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-  user_permission_group_id?: Maybe<Scalars['Int']>;
-  user_permission_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** update columns of table "users.permission_group_user_permissions" */
-export enum Users_Permission_Group_User_Permissions_Update_Column {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UserPermissionGroupId = 'user_permission_group_id',
-  /** column name */
-  UserPermissionId = 'user_permission_id'
-}
-
-export type Users_Permission_Group_User_Permissions_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Users_Permission_Group_User_Permissions_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Users_Permission_Group_User_Permissions_Set_Input>;
-  where: Users_Permission_Group_User_Permissions_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Users_Permission_Group_User_Permissions_Var_Pop_Fields = {
-  __typename?: 'users_permission_group_user_permissions_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate var_samp on columns */
-export type Users_Permission_Group_User_Permissions_Var_Samp_Fields = {
-  __typename?: 'users_permission_group_user_permissions_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** aggregate variance on columns */
-export type Users_Permission_Group_User_Permissions_Variance_Fields = {
-  __typename?: 'users_permission_group_user_permissions_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-  user_permission_group_id?: Maybe<Scalars['Float']>;
-  user_permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.permission_group_user_permissions" */
-export type Users_Permission_Group_User_Permissions_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
-  user_permission_group_id?: InputMaybe<Order_By>;
-  user_permission_id?: InputMaybe<Order_By>;
-};
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_Groups = {
-  __typename?: 'users_permission_groups';
-  created_at: Scalars['timestamptz'];
-  description?: Maybe<Scalars['String']>;
-  /** An array relationship */
-  group_user_permission_groups: Array<Users_Group_User_Permission_Groups>;
-  /** An aggregate relationship */
-  group_user_permission_groups_aggregate: Users_Group_User_Permission_Groups_Aggregate;
-  id: Scalars['Int'];
-  label: Scalars['String'];
-  /** An array relationship */
-  permission_group_user_permissions: Array<Users_Permission_Group_User_Permissions>;
-  /** An aggregate relationship */
-  permission_group_user_permissions_aggregate: Users_Permission_Group_User_Permissions_Aggregate;
-  updated_at: Scalars['timestamptz'];
-};
-
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_GroupsGroup_User_Permission_GroupsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_GroupsGroup_User_Permission_Groups_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Group_User_Permission_Groups_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Group_User_Permission_Groups_Order_By>>;
-  where?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_GroupsPermission_Group_User_PermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permission_groups" */
-export type Users_Permission_GroupsPermission_Group_User_Permissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-/** aggregated selection of "users.permission_groups" */
-export type Users_Permission_Groups_Aggregate = {
-  __typename?: 'users_permission_groups_aggregate';
-  aggregate?: Maybe<Users_Permission_Groups_Aggregate_Fields>;
-  nodes: Array<Users_Permission_Groups>;
-};
-
-/** aggregate fields of "users.permission_groups" */
-export type Users_Permission_Groups_Aggregate_Fields = {
-  __typename?: 'users_permission_groups_aggregate_fields';
-  avg?: Maybe<Users_Permission_Groups_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<Users_Permission_Groups_Max_Fields>;
-  min?: Maybe<Users_Permission_Groups_Min_Fields>;
-  stddev?: Maybe<Users_Permission_Groups_Stddev_Fields>;
-  stddev_pop?: Maybe<Users_Permission_Groups_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Users_Permission_Groups_Stddev_Samp_Fields>;
-  sum?: Maybe<Users_Permission_Groups_Sum_Fields>;
-  var_pop?: Maybe<Users_Permission_Groups_Var_Pop_Fields>;
-  var_samp?: Maybe<Users_Permission_Groups_Var_Samp_Fields>;
-  variance?: Maybe<Users_Permission_Groups_Variance_Fields>;
-};
-
-
-/** aggregate fields of "users.permission_groups" */
-export type Users_Permission_Groups_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Users_Permission_Groups_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** aggregate avg on columns */
-export type Users_Permission_Groups_Avg_Fields = {
-  __typename?: 'users_permission_groups_avg_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** Boolean expression to filter rows from the table "users.permission_groups". All fields are combined with a logical 'AND'. */
-export type Users_Permission_Groups_Bool_Exp = {
-  _and?: InputMaybe<Array<Users_Permission_Groups_Bool_Exp>>;
-  _not?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-  _or?: InputMaybe<Array<Users_Permission_Groups_Bool_Exp>>;
-  created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  description?: InputMaybe<String_Comparison_Exp>;
-  group_user_permission_groups?: InputMaybe<Users_Group_User_Permission_Groups_Bool_Exp>;
-  group_user_permission_groups_aggregate?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Bool_Exp>;
-  id?: InputMaybe<Int_Comparison_Exp>;
-  label?: InputMaybe<String_Comparison_Exp>;
-  permission_group_user_permissions?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-  permission_group_user_permissions_aggregate?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp>;
-  updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "users.permission_groups" */
-export enum Users_Permission_Groups_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  UserPermissionGroupsPkey = 'user_permission_groups_pkey'
-}
-
-/** input type for incrementing numeric columns in table "users.permission_groups" */
-export type Users_Permission_Groups_Inc_Input = {
-  id?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "users.permission_groups" */
-export type Users_Permission_Groups_Insert_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  group_user_permission_groups?: InputMaybe<Users_Group_User_Permission_Groups_Arr_Rel_Insert_Input>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  permission_group_user_permissions?: InputMaybe<Users_Permission_Group_User_Permissions_Arr_Rel_Insert_Input>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate max on columns */
-export type Users_Permission_Groups_Max_Fields = {
-  __typename?: 'users_permission_groups_max_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  label?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** aggregate min on columns */
-export type Users_Permission_Groups_Min_Fields = {
-  __typename?: 'users_permission_groups_min_fields';
-  created_at?: Maybe<Scalars['timestamptz']>;
-  description?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['Int']>;
-  label?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** response of any mutation on the table "users.permission_groups" */
-export type Users_Permission_Groups_Mutation_Response = {
-  __typename?: 'users_permission_groups_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<Users_Permission_Groups>;
-};
-
-/** input type for inserting object relation for remote table "users.permission_groups" */
-export type Users_Permission_Groups_Obj_Rel_Insert_Input = {
-  data: Users_Permission_Groups_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Permission_Groups_On_Conflict>;
-};
-
-/** on_conflict condition type for table "users.permission_groups" */
-export type Users_Permission_Groups_On_Conflict = {
-  constraint: Users_Permission_Groups_Constraint;
-  update_columns?: Array<Users_Permission_Groups_Update_Column>;
-  where?: InputMaybe<Users_Permission_Groups_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "users.permission_groups". */
-export type Users_Permission_Groups_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  group_user_permission_groups_aggregate?: InputMaybe<Users_Group_User_Permission_Groups_Aggregate_Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  permission_group_user_permissions_aggregate?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: users.permission_groups */
-export type Users_Permission_Groups_Pk_Columns_Input = {
-  id: Scalars['Int'];
-};
-
-/** select columns of table "users.permission_groups" */
-export enum Users_Permission_Groups_Select_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** input type for updating data in table "users.permission_groups" */
-export type Users_Permission_Groups_Set_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate stddev on columns */
-export type Users_Permission_Groups_Stddev_Fields = {
-  __typename?: 'users_permission_groups_stddev_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Users_Permission_Groups_Stddev_Pop_Fields = {
-  __typename?: 'users_permission_groups_stddev_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Users_Permission_Groups_Stddev_Samp_Fields = {
-  __typename?: 'users_permission_groups_stddev_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** Streaming cursor of the table "users_permission_groups" */
-export type Users_Permission_Groups_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Users_Permission_Groups_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Users_Permission_Groups_Stream_Cursor_Value_Input = {
-  created_at?: InputMaybe<Scalars['timestamptz']>;
-  description?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Int']>;
-  label?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['timestamptz']>;
-};
-
-/** aggregate sum on columns */
-export type Users_Permission_Groups_Sum_Fields = {
-  __typename?: 'users_permission_groups_sum_fields';
-  id?: Maybe<Scalars['Int']>;
-};
-
-/** update columns of table "users.permission_groups" */
-export enum Users_Permission_Groups_Update_Column {
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Description = 'description',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-export type Users_Permission_Groups_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<Users_Permission_Groups_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<Users_Permission_Groups_Set_Input>;
-  where: Users_Permission_Groups_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type Users_Permission_Groups_Var_Pop_Fields = {
-  __typename?: 'users_permission_groups_var_pop_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate var_samp on columns */
-export type Users_Permission_Groups_Var_Samp_Fields = {
-  __typename?: 'users_permission_groups_var_samp_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate variance on columns */
-export type Users_Permission_Groups_Variance_Fields = {
-  __typename?: 'users_permission_groups_variance_fields';
-  id?: Maybe<Scalars['Float']>;
-};
-
 /** columns and relationships of "users.permission_matrix_view" */
 export type Users_Permission_Matrix_View = {
   __typename?: 'users_permission_matrix_view';
   group_id?: Maybe<Scalars['Int']>;
-  permission_group_id?: Maybe<Scalars['Int']>;
-  permission_group_label?: Maybe<Scalars['String']>;
+  group_label?: Maybe<Scalars['String']>;
   permission_id?: Maybe<Scalars['Int']>;
   permission_label?: Maybe<Scalars['String']>;
 };
@@ -44951,17 +40593,6 @@ export type Users_Permission_Matrix_View_Aggregate = {
   __typename?: 'users_permission_matrix_view_aggregate';
   aggregate?: Maybe<Users_Permission_Matrix_View_Aggregate_Fields>;
   nodes: Array<Users_Permission_Matrix_View>;
-};
-
-export type Users_Permission_Matrix_View_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Permission_Matrix_View_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Permission_Matrix_View_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Permission_Matrix_View_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "users.permission_matrix_view" */
@@ -44987,39 +40618,11 @@ export type Users_Permission_Matrix_View_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Permission_Matrix_View_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Permission_Matrix_View_Max_Order_By>;
-  min?: InputMaybe<Users_Permission_Matrix_View_Min_Order_By>;
-  stddev?: InputMaybe<Users_Permission_Matrix_View_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Permission_Matrix_View_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Permission_Matrix_View_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Permission_Matrix_View_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Permission_Matrix_View_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Permission_Matrix_View_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Permission_Matrix_View_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Arr_Rel_Insert_Input = {
-  data: Array<Users_Permission_Matrix_View_Insert_Input>;
-};
-
 /** aggregate avg on columns */
 export type Users_Permission_Matrix_View_Avg_Fields = {
   __typename?: 'users_permission_matrix_view_avg_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Avg_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "users.permission_matrix_view". All fields are combined with a logical 'AND'. */
@@ -45028,64 +40631,33 @@ export type Users_Permission_Matrix_View_Bool_Exp = {
   _not?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
   _or?: InputMaybe<Array<Users_Permission_Matrix_View_Bool_Exp>>;
   group_id?: InputMaybe<Int_Comparison_Exp>;
-  permission_group_id?: InputMaybe<Int_Comparison_Exp>;
-  permission_group_label?: InputMaybe<String_Comparison_Exp>;
+  group_label?: InputMaybe<String_Comparison_Exp>;
   permission_id?: InputMaybe<Int_Comparison_Exp>;
   permission_label?: InputMaybe<String_Comparison_Exp>;
-};
-
-/** input type for inserting data into table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Insert_Input = {
-  group_id?: InputMaybe<Scalars['Int']>;
-  permission_group_id?: InputMaybe<Scalars['Int']>;
-  permission_group_label?: InputMaybe<Scalars['String']>;
-  permission_id?: InputMaybe<Scalars['Int']>;
-  permission_label?: InputMaybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Users_Permission_Matrix_View_Max_Fields = {
   __typename?: 'users_permission_matrix_view_max_fields';
   group_id?: Maybe<Scalars['Int']>;
-  permission_group_id?: Maybe<Scalars['Int']>;
-  permission_group_label?: Maybe<Scalars['String']>;
+  group_label?: Maybe<Scalars['String']>;
   permission_id?: Maybe<Scalars['Int']>;
   permission_label?: Maybe<Scalars['String']>;
-};
-
-/** order by max() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Max_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_group_label?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
-  permission_label?: InputMaybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Users_Permission_Matrix_View_Min_Fields = {
   __typename?: 'users_permission_matrix_view_min_fields';
   group_id?: Maybe<Scalars['Int']>;
-  permission_group_id?: Maybe<Scalars['Int']>;
-  permission_group_label?: Maybe<Scalars['String']>;
+  group_label?: Maybe<Scalars['String']>;
   permission_id?: Maybe<Scalars['Int']>;
   permission_label?: Maybe<Scalars['String']>;
-};
-
-/** order by min() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Min_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_group_label?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
-  permission_label?: InputMaybe<Order_By>;
 };
 
 /** Ordering options when selecting data from "users.permission_matrix_view". */
 export type Users_Permission_Matrix_View_Order_By = {
   group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_group_label?: InputMaybe<Order_By>;
+  group_label?: InputMaybe<Order_By>;
   permission_id?: InputMaybe<Order_By>;
   permission_label?: InputMaybe<Order_By>;
 };
@@ -45095,9 +40667,7 @@ export enum Users_Permission_Matrix_View_Select_Column {
   /** column name */
   GroupId = 'group_id',
   /** column name */
-  PermissionGroupId = 'permission_group_id',
-  /** column name */
-  PermissionGroupLabel = 'permission_group_label',
+  GroupLabel = 'group_label',
   /** column name */
   PermissionId = 'permission_id',
   /** column name */
@@ -45108,45 +40678,21 @@ export enum Users_Permission_Matrix_View_Select_Column {
 export type Users_Permission_Matrix_View_Stddev_Fields = {
   __typename?: 'users_permission_matrix_view_stddev_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Stddev_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Users_Permission_Matrix_View_Stddev_Pop_Fields = {
   __typename?: 'users_permission_matrix_view_stddev_pop_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Stddev_Pop_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Users_Permission_Matrix_View_Stddev_Samp_Fields = {
   __typename?: 'users_permission_matrix_view_stddev_samp_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Stddev_Samp_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "users_permission_matrix_view" */
@@ -45160,8 +40706,7 @@ export type Users_Permission_Matrix_View_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Users_Permission_Matrix_View_Stream_Cursor_Value_Input = {
   group_id?: InputMaybe<Scalars['Int']>;
-  permission_group_id?: InputMaybe<Scalars['Int']>;
-  permission_group_label?: InputMaybe<Scalars['String']>;
+  group_label?: InputMaybe<Scalars['String']>;
   permission_id?: InputMaybe<Scalars['Int']>;
   permission_label?: InputMaybe<Scalars['String']>;
 };
@@ -45170,60 +40715,28 @@ export type Users_Permission_Matrix_View_Stream_Cursor_Value_Input = {
 export type Users_Permission_Matrix_View_Sum_Fields = {
   __typename?: 'users_permission_matrix_view_sum_fields';
   group_id?: Maybe<Scalars['Int']>;
-  permission_group_id?: Maybe<Scalars['Int']>;
   permission_id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Sum_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_pop on columns */
 export type Users_Permission_Matrix_View_Var_Pop_Fields = {
   __typename?: 'users_permission_matrix_view_var_pop_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Var_Pop_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Users_Permission_Matrix_View_Var_Samp_Fields = {
   __typename?: 'users_permission_matrix_view_var_samp_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Var_Samp_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Users_Permission_Matrix_View_Variance_Fields = {
   __typename?: 'users_permission_matrix_view_variance_fields';
   group_id?: Maybe<Scalars['Float']>;
-  permission_group_id?: Maybe<Scalars['Float']>;
   permission_id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.permission_matrix_view" */
-export type Users_Permission_Matrix_View_Variance_Order_By = {
-  group_id?: InputMaybe<Order_By>;
-  permission_group_id?: InputMaybe<Order_By>;
-  permission_id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "users.permissions" */
@@ -45237,10 +40750,6 @@ export type Users_Permissions = {
   group_permissions_aggregate: Users_Group_Permissions_Aggregate;
   id: Scalars['Int'];
   label: Scalars['String'];
-  /** An array relationship */
-  permission_group_user_permissions: Array<Users_Permission_Group_User_Permissions>;
-  /** An aggregate relationship */
-  permission_group_user_permissions_aggregate: Users_Permission_Group_User_Permissions_Aggregate;
   updated_at: Scalars['timestamptz'];
 };
 
@@ -45264,42 +40773,11 @@ export type Users_PermissionsGroup_Permissions_AggregateArgs = {
   where?: InputMaybe<Users_Group_Permissions_Bool_Exp>;
 };
 
-
-/** columns and relationships of "users.permissions" */
-export type Users_PermissionsPermission_Group_User_PermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.permissions" */
-export type Users_PermissionsPermission_Group_User_Permissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Group_User_Permissions_Order_By>>;
-  where?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-};
-
 /** aggregated selection of "users.permissions" */
 export type Users_Permissions_Aggregate = {
   __typename?: 'users_permissions_aggregate';
   aggregate?: Maybe<Users_Permissions_Aggregate_Fields>;
   nodes: Array<Users_Permissions>;
-};
-
-export type Users_Permissions_Aggregate_Bool_Exp = {
-  count?: InputMaybe<Users_Permissions_Aggregate_Bool_Exp_Count>;
-};
-
-export type Users_Permissions_Aggregate_Bool_Exp_Count = {
-  arguments?: InputMaybe<Array<Users_Permissions_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-  filter?: InputMaybe<Users_Permissions_Bool_Exp>;
-  predicate: Int_Comparison_Exp;
 };
 
 /** aggregate fields of "users.permissions" */
@@ -45325,37 +40803,10 @@ export type Users_Permissions_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "users.permissions" */
-export type Users_Permissions_Aggregate_Order_By = {
-  avg?: InputMaybe<Users_Permissions_Avg_Order_By>;
-  count?: InputMaybe<Order_By>;
-  max?: InputMaybe<Users_Permissions_Max_Order_By>;
-  min?: InputMaybe<Users_Permissions_Min_Order_By>;
-  stddev?: InputMaybe<Users_Permissions_Stddev_Order_By>;
-  stddev_pop?: InputMaybe<Users_Permissions_Stddev_Pop_Order_By>;
-  stddev_samp?: InputMaybe<Users_Permissions_Stddev_Samp_Order_By>;
-  sum?: InputMaybe<Users_Permissions_Sum_Order_By>;
-  var_pop?: InputMaybe<Users_Permissions_Var_Pop_Order_By>;
-  var_samp?: InputMaybe<Users_Permissions_Var_Samp_Order_By>;
-  variance?: InputMaybe<Users_Permissions_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "users.permissions" */
-export type Users_Permissions_Arr_Rel_Insert_Input = {
-  data: Array<Users_Permissions_Insert_Input>;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Users_Permissions_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Users_Permissions_Avg_Fields = {
   __typename?: 'users_permissions_avg_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "users.permissions" */
-export type Users_Permissions_Avg_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "users.permissions". All fields are combined with a logical 'AND'. */
@@ -45369,8 +40820,6 @@ export type Users_Permissions_Bool_Exp = {
   group_permissions_aggregate?: InputMaybe<Users_Group_Permissions_Aggregate_Bool_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   label?: InputMaybe<String_Comparison_Exp>;
-  permission_group_user_permissions?: InputMaybe<Users_Permission_Group_User_Permissions_Bool_Exp>;
-  permission_group_user_permissions_aggregate?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Bool_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -45394,7 +40843,6 @@ export type Users_Permissions_Insert_Input = {
   group_permissions?: InputMaybe<Users_Group_Permissions_Arr_Rel_Insert_Input>;
   id?: InputMaybe<Scalars['Int']>;
   label?: InputMaybe<Scalars['String']>;
-  permission_group_user_permissions?: InputMaybe<Users_Permission_Group_User_Permissions_Arr_Rel_Insert_Input>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
 };
 
@@ -45408,15 +40856,6 @@ export type Users_Permissions_Max_Fields = {
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
-/** order by max() on columns of table "users.permissions" */
-export type Users_Permissions_Max_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
 /** aggregate min on columns */
 export type Users_Permissions_Min_Fields = {
   __typename?: 'users_permissions_min_fields';
@@ -45425,15 +40864,6 @@ export type Users_Permissions_Min_Fields = {
   id?: Maybe<Scalars['Int']>;
   label?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
-};
-
-/** order by min() on columns of table "users.permissions" */
-export type Users_Permissions_Min_Order_By = {
-  created_at?: InputMaybe<Order_By>;
-  description?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  label?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
 };
 
 /** response of any mutation on the table "users.permissions" */
@@ -45466,7 +40896,6 @@ export type Users_Permissions_Order_By = {
   group_permissions_aggregate?: InputMaybe<Users_Group_Permissions_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
   label?: InputMaybe<Order_By>;
-  permission_group_user_permissions_aggregate?: InputMaybe<Users_Permission_Group_User_Permissions_Aggregate_Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
 
@@ -45504,31 +40933,16 @@ export type Users_Permissions_Stddev_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by stddev() on columns of table "users.permissions" */
-export type Users_Permissions_Stddev_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate stddev_pop on columns */
 export type Users_Permissions_Stddev_Pop_Fields = {
   __typename?: 'users_permissions_stddev_pop_fields';
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by stddev_pop() on columns of table "users.permissions" */
-export type Users_Permissions_Stddev_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate stddev_samp on columns */
 export type Users_Permissions_Stddev_Samp_Fields = {
   __typename?: 'users_permissions_stddev_samp_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "users.permissions" */
-export type Users_Permissions_Stddev_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** Streaming cursor of the table "users_permissions" */
@@ -45552,11 +40966,6 @@ export type Users_Permissions_Stream_Cursor_Value_Input = {
 export type Users_Permissions_Sum_Fields = {
   __typename?: 'users_permissions_sum_fields';
   id?: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "users.permissions" */
-export type Users_Permissions_Sum_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** update columns of table "users.permissions" */
@@ -45587,31 +40996,16 @@ export type Users_Permissions_Var_Pop_Fields = {
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by var_pop() on columns of table "users.permissions" */
-export type Users_Permissions_Var_Pop_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate var_samp on columns */
 export type Users_Permissions_Var_Samp_Fields = {
   __typename?: 'users_permissions_var_samp_fields';
   id?: Maybe<Scalars['Float']>;
 };
 
-/** order by var_samp() on columns of table "users.permissions" */
-export type Users_Permissions_Var_Samp_Order_By = {
-  id?: InputMaybe<Order_By>;
-};
-
 /** aggregate variance on columns */
 export type Users_Permissions_Variance_Fields = {
   __typename?: 'users_permissions_variance_fields';
   id?: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "users.permissions" */
-export type Users_Permissions_Variance_Order_By = {
-  id?: InputMaybe<Order_By>;
 };
 
 /** columns and relationships of "users.profile_classifications" */
@@ -47277,14 +42671,6 @@ export type Users_Profiles = {
   /** An aggregate relationship */
   assignment_labels_aggregate: App_Assignment_Labels_V2_Aggregate;
   /** An array relationship */
-  assignment_tags: Array<App_Assignment_Labels>;
-  /** An aggregate relationship */
-  assignment_tags_aggregate: App_Assignment_Labels_Aggregate;
-  /** An array relationship */
-  assignments: Array<App_Assignments>;
-  /** An aggregate relationship */
-  assignments_aggregate: App_Assignments_Aggregate;
-  /** An array relationship */
   assignments_v2: Array<App_Assignments_V2>;
   /** An aggregate relationship */
   assignments_v2_aggregate: App_Assignments_V2_Aggregate;
@@ -47380,46 +42766,6 @@ export type Users_ProfilesAssignment_Labels_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   order_by?: InputMaybe<Array<App_Assignment_Labels_V2_Order_By>>;
   where?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
-};
-
-
-/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
-export type Users_ProfilesAssignment_TagsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
-export type Users_ProfilesAssignment_Tags_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignment_Labels_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignment_Labels_Order_By>>;
-  where?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-};
-
-
-/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
-export type Users_ProfilesAssignmentsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
-};
-
-
-/** Een gebruiker kan een of meer profielen hebben. Een profiel bevat de profielgebonden informatie zoals displayName,  LOM, etc. */
-export type Users_ProfilesAssignments_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
 };
 
 
@@ -47774,10 +43120,6 @@ export type Users_Profiles_Bool_Exp = {
   alternative_email?: InputMaybe<String_Comparison_Exp>;
   assignment_labels?: InputMaybe<App_Assignment_Labels_V2_Bool_Exp>;
   assignment_labels_aggregate?: InputMaybe<App_Assignment_Labels_V2_Aggregate_Bool_Exp>;
-  assignment_tags?: InputMaybe<App_Assignment_Labels_Bool_Exp>;
-  assignment_tags_aggregate?: InputMaybe<App_Assignment_Labels_Aggregate_Bool_Exp>;
-  assignments?: InputMaybe<App_Assignments_Bool_Exp>;
-  assignments_aggregate?: InputMaybe<App_Assignments_Aggregate_Bool_Exp>;
   assignments_v2?: InputMaybe<App_Assignments_V2_Bool_Exp>;
   assignments_v2_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Bool_Exp>;
   avatar?: InputMaybe<String_Comparison_Exp>;
@@ -47839,8 +43181,6 @@ export type Users_Profiles_Insert_Input = {
   /** secundair e-mailadres voor communicatie */
   alternative_email?: InputMaybe<Scalars['String']>;
   assignment_labels?: InputMaybe<App_Assignment_Labels_V2_Arr_Rel_Insert_Input>;
-  assignment_tags?: InputMaybe<App_Assignment_Labels_Arr_Rel_Insert_Input>;
-  assignments?: InputMaybe<App_Assignments_Arr_Rel_Insert_Input>;
   assignments_v2?: InputMaybe<App_Assignments_V2_Arr_Rel_Insert_Input>;
   avatar?: InputMaybe<Scalars['String']>;
   bio?: InputMaybe<Scalars['String']>;
@@ -48176,8 +43516,6 @@ export type Users_Profiles_Order_By = {
   alias?: InputMaybe<Order_By>;
   alternative_email?: InputMaybe<Order_By>;
   assignment_labels_aggregate?: InputMaybe<App_Assignment_Labels_V2_Aggregate_Order_By>;
-  assignment_tags_aggregate?: InputMaybe<App_Assignment_Labels_Aggregate_Order_By>;
-  assignments_aggregate?: InputMaybe<App_Assignments_Aggregate_Order_By>;
   assignments_v2_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Order_By>;
   avatar?: InputMaybe<Order_By>;
   bio?: InputMaybe<Order_By>;
@@ -48357,9 +43695,9 @@ export type Users_Summary_View = {
   acc_created_at?: Maybe<Scalars['timestamptz']>;
   acc_updated_at?: Maybe<Scalars['timestamptz']>;
   /** An array relationship */
-  assignments: Array<App_Assignments>;
+  assignments: Array<App_Assignments_V2>;
   /** An aggregate relationship */
-  assignments_aggregate: App_Assignments_Aggregate;
+  assignments_aggregate: App_Assignments_V2_Aggregate;
   /** An array relationship */
   audits: Array<Users_Audit_Log>;
   /** An aggregate relationship */
@@ -48405,10 +43743,6 @@ export type Users_Summary_View = {
   organisations: Array<Users_Profile_Organizations>;
   /** An aggregate relationship */
   organisations_aggregate: Users_Profile_Organizations_Aggregate;
-  /** An array relationship */
-  permissions: Array<Users_Permission_Matrix_View>;
-  /** An aggregate relationship */
-  permissions_aggregate: Users_Permission_Matrix_View_Aggregate;
   pro_created_at?: Maybe<Scalars['timestamptz']>;
   pro_updated_at?: Maybe<Scalars['timestamptz']>;
   /** An object relationship */
@@ -48427,21 +43761,21 @@ export type Users_Summary_View = {
 
 /** columns and relationships of "users.summary_view" */
 export type Users_Summary_ViewAssignmentsArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Bool_Exp>;
 };
 
 
 /** columns and relationships of "users.summary_view" */
 export type Users_Summary_ViewAssignments_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Assignments_Select_Column>>;
+  distinct_on?: InputMaybe<Array<App_Assignments_V2_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Assignments_Order_By>>;
-  where?: InputMaybe<App_Assignments_Bool_Exp>;
+  order_by?: InputMaybe<Array<App_Assignments_V2_Order_By>>;
+  where?: InputMaybe<App_Assignments_V2_Bool_Exp>;
 };
 
 
@@ -48584,26 +43918,6 @@ export type Users_Summary_ViewOrganisations_AggregateArgs = {
   where?: InputMaybe<Users_Profile_Organizations_Bool_Exp>;
 };
 
-
-/** columns and relationships of "users.summary_view" */
-export type Users_Summary_ViewPermissionsArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Matrix_View_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Matrix_View_Order_By>>;
-  where?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
-};
-
-
-/** columns and relationships of "users.summary_view" */
-export type Users_Summary_ViewPermissions_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Users_Permission_Matrix_View_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<Users_Permission_Matrix_View_Order_By>>;
-  where?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
-};
-
 /** aggregated selection of "users.summary_view" */
 export type Users_Summary_View_Aggregate = {
   __typename?: 'users_summary_view_aggregate';
@@ -48648,8 +43962,8 @@ export type Users_Summary_View_Bool_Exp = {
   _or?: InputMaybe<Array<Users_Summary_View_Bool_Exp>>;
   acc_created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   acc_updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
-  assignments?: InputMaybe<App_Assignments_Bool_Exp>;
-  assignments_aggregate?: InputMaybe<App_Assignments_Aggregate_Bool_Exp>;
+  assignments?: InputMaybe<App_Assignments_V2_Bool_Exp>;
+  assignments_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Bool_Exp>;
   audits?: InputMaybe<Users_Audit_Log_Bool_Exp>;
   audits_aggregate?: InputMaybe<Users_Audit_Log_Aggregate_Bool_Exp>;
   blocked_at?: InputMaybe<Shared_User_Last_Blocked_Bool_Exp>;
@@ -48680,8 +43994,6 @@ export type Users_Summary_View_Bool_Exp = {
   mail?: InputMaybe<String_Comparison_Exp>;
   organisations?: InputMaybe<Users_Profile_Organizations_Bool_Exp>;
   organisations_aggregate?: InputMaybe<Users_Profile_Organizations_Aggregate_Bool_Exp>;
-  permissions?: InputMaybe<Users_Permission_Matrix_View_Bool_Exp>;
-  permissions_aggregate?: InputMaybe<Users_Permission_Matrix_View_Aggregate_Bool_Exp>;
   pro_created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   pro_updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   profile?: InputMaybe<Users_Profiles_Bool_Exp>;
@@ -48698,7 +44010,7 @@ export type Users_Summary_View_Bool_Exp = {
 export type Users_Summary_View_Insert_Input = {
   acc_created_at?: InputMaybe<Scalars['timestamptz']>;
   acc_updated_at?: InputMaybe<Scalars['timestamptz']>;
-  assignments?: InputMaybe<App_Assignments_Arr_Rel_Insert_Input>;
+  assignments?: InputMaybe<App_Assignments_V2_Arr_Rel_Insert_Input>;
   audits?: InputMaybe<Users_Audit_Log_Arr_Rel_Insert_Input>;
   blocked_at?: InputMaybe<Shared_User_Last_Blocked_Obj_Rel_Insert_Input>;
   business_category?: InputMaybe<Scalars['String']>;
@@ -48722,7 +44034,6 @@ export type Users_Summary_View_Insert_Input = {
   loms?: InputMaybe<Users_Profiles_Lom_Links_Arr_Rel_Insert_Input>;
   mail?: InputMaybe<Scalars['String']>;
   organisations?: InputMaybe<Users_Profile_Organizations_Arr_Rel_Insert_Input>;
-  permissions?: InputMaybe<Users_Permission_Matrix_View_Arr_Rel_Insert_Input>;
   pro_created_at?: InputMaybe<Scalars['timestamptz']>;
   pro_updated_at?: InputMaybe<Scalars['timestamptz']>;
   profile?: InputMaybe<Users_Profiles_Obj_Rel_Insert_Input>;
@@ -48796,7 +44107,7 @@ export type Users_Summary_View_Obj_Rel_Insert_Input = {
 export type Users_Summary_View_Order_By = {
   acc_created_at?: InputMaybe<Order_By>;
   acc_updated_at?: InputMaybe<Order_By>;
-  assignments_aggregate?: InputMaybe<App_Assignments_Aggregate_Order_By>;
+  assignments_aggregate?: InputMaybe<App_Assignments_V2_Aggregate_Order_By>;
   audits_aggregate?: InputMaybe<Users_Audit_Log_Aggregate_Order_By>;
   blocked_at?: InputMaybe<Shared_User_Last_Blocked_Order_By>;
   business_category?: InputMaybe<Order_By>;
@@ -48820,7 +44131,6 @@ export type Users_Summary_View_Order_By = {
   loms_aggregate?: InputMaybe<Users_Profiles_Lom_Links_Aggregate_Order_By>;
   mail?: InputMaybe<Order_By>;
   organisations_aggregate?: InputMaybe<Users_Profile_Organizations_Aggregate_Order_By>;
-  permissions_aggregate?: InputMaybe<Users_Permission_Matrix_View_Aggregate_Order_By>;
   pro_created_at?: InputMaybe<Order_By>;
   pro_updated_at?: InputMaybe<Order_By>;
   profile?: InputMaybe<Users_Profiles_Order_By>;
@@ -49340,3 +44650,6168 @@ export type Uuid_Comparison_Exp = {
   _neq?: InputMaybe<Scalars['uuid']>;
   _nin?: InputMaybe<Array<Scalars['uuid']>>;
 };
+<<<<<<< HEAD
+=======
+
+export type BulkAddLabelsToCollectionsMutationVariables = Exact<{
+  labels: Array<App_Collection_Labels_Insert_Input> | App_Collection_Labels_Insert_Input;
+}>;
+
+
+export type BulkAddLabelsToCollectionsMutation = { __typename?: 'mutation_root', insert_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
+
+export type BulkDeleteCollectionsMutationVariables = Exact<{
+  collectionIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  now: Scalars['timestamptz'];
+  updatedByProfileId: Scalars['uuid'];
+}>;
+
+
+export type BulkDeleteCollectionsMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
+
+export type BulkDeleteLabelsFromCollectionsMutationVariables = Exact<{
+  labels: Array<Scalars['String']> | Scalars['String'];
+  collectionIds: Array<Scalars['uuid']> | Scalars['uuid'];
+}>;
+
+
+export type BulkDeleteLabelsFromCollectionsMutation = { __typename?: 'mutation_root', delete_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
+
+export type BulkUpdateAuthorForCollectionsMutationVariables = Exact<{
+  authorId: Scalars['uuid'];
+  collectionIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  now: Scalars['timestamptz'];
+  updatedByProfileId: Scalars['uuid'];
+}>;
+
+
+export type BulkUpdateAuthorForCollectionsMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
+
+export type BulkUpdateDateAndLastAuthorCollectionsMutationVariables = Exact<{
+  collectionIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  now: Scalars['timestamptz'];
+  updatedByProfileId: Scalars['uuid'];
+}>;
+
+
+export type BulkUpdateDateAndLastAuthorCollectionsMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
+
+export type BulkUpdatePublishStateForCollectionsMutationVariables = Exact<{
+  isPublic: Scalars['Boolean'];
+  collectionIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  now: Scalars['timestamptz'];
+  updatedByProfileId: Scalars['uuid'];
+}>;
+
+
+export type BulkUpdatePublishStateForCollectionsMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
+
+export type GetCollectionActualisationsQueryVariables = Exact<{
+  where: App_Collection_Actualisation_Overview_Bool_Exp;
+  orderBy: Array<App_Collection_Actualisation_Overview_Order_By> | App_Collection_Actualisation_Overview_Order_By;
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetCollectionActualisationsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_actualisation_overview', created_at?: any | null, is_public?: boolean | null, mgmt_created_at?: any | null, mgmt_current_status?: string | null, mgmt_last_eindcheck_date?: any | null, mgmt_status_expires_at?: any | null, mgmt_updated_at?: any | null, owner_profile_id?: any | null, title?: string | null, type_id?: number | null, updated_at?: any | null, updated_by_profile_id?: any | null, id?: any | null, subjects?: any | null, education_levels?: any | null, manager?: { __typename?: 'shared_user_names', full_name?: string | null, mail?: string | null, profile_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null, last_editor?: { __typename?: 'shared_user_names', profile_id?: any | null, full_name?: string | null } | null }>, app_collections_aggregate: { __typename?: 'app_collection_actualisation_overview_aggregate', aggregate?: { __typename?: 'app_collection_actualisation_overview_aggregate_fields', count: number } | null } };
+
+export type GetCollectionMarcomQueryVariables = Exact<{
+  where: App_Collection_Marcom_Overview_Bool_Exp;
+  orderBy: Array<App_Collection_Marcom_Overview_Order_By> | App_Collection_Marcom_Overview_Order_By;
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetCollectionMarcomQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_marcom_overview', channel_name?: string | null, channel_type?: string | null, created_at?: any | null, is_public?: boolean | null, klascement?: boolean | null, last_marcom_date?: any | null, title?: string | null, updated_at?: any | null, id?: any | null, subjects?: any | null, education_levels?: any | null, collection_labels: Array<{ __typename?: 'app_collection_labels', label: string, id: number }>, last_editor?: { __typename?: 'shared_user_names', full_name?: string | null } | null, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null }>, app_collections_aggregate: { __typename?: 'app_collection_marcom_overview_aggregate', aggregate?: { __typename?: 'app_collection_marcom_overview_aggregate_fields', count: number } | null } };
+
+export type GetCollectionQualityCheckQueryVariables = Exact<{
+  where: App_Collection_Qc_Overview_Bool_Exp;
+  orderBy: Array<App_Collection_Qc_Overview_Order_By> | App_Collection_Qc_Overview_Order_By;
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetCollectionQualityCheckQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_qc_overview', is_public?: boolean | null, created_at?: any | null, updated_at?: any | null, title?: string | null, updated_by_profile_id?: any | null, mgmt_quality_check?: boolean | null, mgmt_language_check?: boolean | null, mgmt_eind_check_date?: any | null, id?: any | null, subjects?: any | null, education_levels?: any | null, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, last_editor?: { __typename?: 'shared_user_names', full_name?: string | null } | null }>, app_collections_aggregate: { __typename?: 'app_collection_qc_overview_aggregate', aggregate?: { __typename?: 'app_collection_qc_overview_aggregate_fields', count: number } | null } };
+
+export type GetCollectionsQueryVariables = Exact<{
+  where: App_Collections_Bool_Exp;
+  orderBy: Array<App_Collections_Order_By> | App_Collections_Order_By;
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetCollectionsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, type_id: number, title: string, description?: string | null, is_public: boolean, is_managed?: boolean | null, created_at: any, updated_at: any, subjects?: any | null, education_levels?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, group_id?: number | null, group_name?: string | null, profile_id?: any | null, user_id?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null } | null, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null, user_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, counts?: { __typename?: 'app_collection_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, views?: number | null, copies?: any | null, quick_lane_links?: any | null } | null }>, app_collections_aggregate: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null } };
+
+export type GetCollectionsByIdsQueryVariables = Exact<{
+  where: App_Collections_Bool_Exp;
+}>;
+
+
+export type GetCollectionsByIdsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any }> };
+
+export type DeleteInteractiveTourMutationVariables = Exact<{
+  interactiveTourId: Scalars['Int'];
+}>;
+
+
+export type DeleteInteractiveTourMutation = { __typename?: 'mutation_root', delete_app_interactive_tour?: { __typename?: 'app_interactive_tour_mutation_response', affected_rows: number } | null };
+
+export type GetInteractiveTourByIdQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetInteractiveTourByIdQuery = { __typename?: 'query_root', app_interactive_tour: Array<{ __typename?: 'app_interactive_tour', name?: string | null, id: number, created_at: any, updated_at: any, steps?: any | null, page_id: string }> };
+
+export type GetInteractiveToursQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  offset: Scalars['Int'];
+  orderBy: Array<App_Interactive_Tour_Order_By> | App_Interactive_Tour_Order_By;
+  where?: InputMaybe<App_Interactive_Tour_Bool_Exp>;
+}>;
+
+
+export type GetInteractiveToursQuery = { __typename?: 'query_root', app_interactive_tour: Array<{ __typename?: 'app_interactive_tour', name?: string | null, id: number, created_at: any, updated_at: any, page_id: string }>, app_interactive_tour_aggregate: { __typename?: 'app_interactive_tour_aggregate', aggregate?: { __typename?: 'app_interactive_tour_aggregate_fields', count: number } | null } };
+
+export type InsertInteractiveTourMutationVariables = Exact<{
+  interactiveTour: App_Interactive_Tour_Insert_Input;
+}>;
+
+
+export type InsertInteractiveTourMutation = { __typename?: 'mutation_root', insert_app_interactive_tour?: { __typename?: 'app_interactive_tour_mutation_response', returning: Array<{ __typename?: 'app_interactive_tour', id: number }> } | null };
+
+export type UpdateInteractiveTourMutationVariables = Exact<{
+  interactiveTour: App_Interactive_Tour_Set_Input;
+  interactiveTourId: Scalars['Int'];
+}>;
+
+
+export type UpdateInteractiveTourMutation = { __typename?: 'mutation_root', update_app_interactive_tour?: { __typename?: 'app_interactive_tour_mutation_response', affected_rows: number } | null };
+
+export type DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables = Exact<{
+  itemExternalId: Scalars['String'];
+  itemUid: Scalars['uuid'];
+}>;
+
+
+export type DeleteItemFromCollectionBookmarksAndAssignmentsMutation = { __typename?: 'mutation_root', delete_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type GetDistinctSeriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDistinctSeriesQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', series?: string | null, is_published?: boolean | null, is_deleted?: boolean | null }> };
+
+export type GetItemByUuidQueryVariables = Exact<{
+  uuid: Scalars['uuid'];
+}>;
+
+
+export type GetItemByUuidQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', thumbnail_path: string, created_at?: any | null, depublish_at?: any | null, depublish_reason?: string | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, uid: any, is_deleted?: boolean | null, is_published?: boolean | null, issued?: any | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, title: string, updated_at?: any | null, note?: string | null, lom_typical_age_range?: any | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, relations: Array<{ __typename?: 'app_item_relations_view', object?: any | null, subject?: any | null, predicate?: string | null, created_at?: any | null, updated_at?: any | null }>, item_collaterals: Array<{ __typename?: 'app_item_collateral', path?: string | null, description?: string | null, external_id: string }>, view_counts_aggregate: { __typename?: 'app_item_views_aggregate', aggregate?: { __typename?: 'app_item_views_aggregate_fields', sum?: { __typename?: 'app_item_views_sum_fields', count?: number | null } | null } | null } }> };
+
+export type GetItemDepublishReasonByExternalIdQueryVariables = Exact<{
+  externalId: Scalars['bpchar'];
+}>;
+
+
+export type GetItemDepublishReasonByExternalIdQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', depublish_reason?: string | null, is_published?: boolean | null, is_deleted?: boolean | null }> };
+
+export type GetItemsByExternalIdQueryVariables = Exact<{
+  externalIds?: InputMaybe<Array<Scalars['bpchar']> | Scalars['bpchar']>;
+}>;
+
+
+export type GetItemsByExternalIdQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', created_at?: any | null, depublish_at?: any | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, id: number, uid: any, is_deleted?: boolean | null, is_orphaned?: boolean | null, is_published?: boolean | null, issued?: any | null, issued_edtf?: string | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, thumbnail_path: string, title: string, type_id: number, updated_at?: any | null, note?: string | null, lom_typical_age_range?: any | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, item_collaterals: Array<{ __typename?: 'app_item_collateral', path?: string | null, description?: string | null, external_id: string }>, view_counts_aggregate: { __typename?: 'app_item_views_aggregate', aggregate?: { __typename?: 'app_item_views_aggregate_fields', sum?: { __typename?: 'app_item_views_sum_fields', count?: number | null } | null } | null } }> };
+
+export type GetItemsWithFiltersQueryVariables = Exact<{
+  where: App_Item_Meta_Bool_Exp;
+  orderBy: Array<App_Item_Meta_Order_By> | App_Item_Meta_Order_By;
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetItemsWithFiltersQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', created_at?: any | null, depublish_at?: any | null, depublish_reason?: string | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, uid: any, is_deleted?: boolean | null, is_published?: boolean | null, issued?: any | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, title: string, updated_at?: any | null, note?: string | null, lom_typical_age_range?: any | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, relations: Array<{ __typename?: 'app_item_relations_view', object?: any | null, subject?: any | null, predicate?: string | null, created_at?: any | null, updated_at?: any | null }>, item_counts?: { __typename?: 'app_item_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, plays?: number | null, views?: number | null, quick_lane_links?: any | null } | null }>, app_item_meta_aggregate: { __typename?: 'app_item_meta_aggregate', aggregate?: { __typename?: 'app_item_meta_aggregate_fields', count: number } | null } };
+
+export type GetPublicItemsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetPublicItemsQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', external_id: any, title: string, is_published?: boolean | null, is_deleted?: boolean | null }> };
+
+export type GetPublicItemsByTitleOrExternalIdQueryVariables = Exact<{
+  title: Scalars['String'];
+  externalId: Scalars['bpchar'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetPublicItemsByTitleOrExternalIdQuery = { __typename?: 'query_root', itemsByTitle: Array<{ __typename?: 'app_item_meta', external_id: any, title: string, is_published?: boolean | null, is_deleted?: boolean | null }>, itemsByExternalId: Array<{ __typename?: 'app_item_meta', external_id: any, title: string, is_published?: boolean | null, is_deleted?: boolean | null }> };
+
+export type GetUnpublishedItemPidsQueryVariables = Exact<{
+  where: Shared_Items_Bool_Exp;
+}>;
+
+
+export type GetUnpublishedItemPidsQuery = { __typename?: 'query_root', shared_items: Array<{ __typename?: 'shared_items', pid: string }> };
+
+export type GetUnpublishedItemsWithFiltersQueryVariables = Exact<{
+  where: Shared_Items_Bool_Exp;
+  orderBy?: InputMaybe<Array<Shared_Items_Order_By> | Shared_Items_Order_By>;
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetUnpublishedItemsWithFiltersQuery = { __typename?: 'query_root', shared_items: Array<{ __typename?: 'shared_items', id: number, pid: string, updated_at: any, title?: string | null, status?: any | null, item_meta?: { __typename?: 'app_item_meta', id: number, external_id: any, uid: any, is_published?: boolean | null, is_deleted?: boolean | null } | null }>, shared_items_aggregate: { __typename?: 'shared_items_aggregate', aggregate?: { __typename?: 'shared_items_aggregate_fields', count: number } | null } };
+
+export type GetUserWithEitherBookmarkQueryVariables = Exact<{
+  oldItemUid: Scalars['uuid'];
+  newItemUid: Scalars['uuid'];
+}>;
+
+
+export type GetUserWithEitherBookmarkQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, item_bookmarks_aggregate: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null } }> };
+
+export type ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables = Exact<{
+  oldItemUid: Scalars['uuid'];
+  oldItemExternalId: Scalars['String'];
+  newItemUid: Scalars['uuid'];
+  newItemExternalId: Scalars['String'];
+  usersWithBothBookmarks: Array<Scalars['uuid']> | Scalars['uuid'];
+}>;
+
+
+export type ReplaceItemInCollectionsBookmarksAndAssignmentsMutation = { __typename?: 'mutation_root', update_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, update_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null, delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null, update_app_assignment_blocks_v2?: { __typename?: 'app_assignment_blocks_v2_mutation_response', affected_rows: number } | null, update_app_pupil_collection_blocks?: { __typename?: 'app_pupil_collection_blocks_mutation_response', affected_rows: number } | null };
+
+export type SetSharedItemsStatusMutationVariables = Exact<{
+  pids: Array<Scalars['String']> | Scalars['String'];
+  status?: InputMaybe<Scalars['item_publishing_status']>;
+}>;
+
+
+export type SetSharedItemsStatusMutation = { __typename?: 'mutation_root', update_shared_items?: { __typename?: 'shared_items_mutation_response', affected_rows: number } | null };
+
+export type UpdateItemDepublishReasonMutationVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+  reason?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpdateItemDepublishReasonMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
+
+export type UpdateItemNotesMutationVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+  note?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpdateItemNotesMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
+
+export type UpdateItemPublishedStateMutationVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+  isPublished: Scalars['Boolean'];
+}>;
+
+
+export type UpdateItemPublishedStateMutation = { __typename?: 'mutation_root', update_app_item_meta?: { __typename?: 'app_item_meta_mutation_response', affected_rows: number } | null };
+
+export type GetTranslationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTranslationsQuery = { __typename?: 'query_root', app_site_variables: Array<{ __typename?: 'app_site_variables', name: string, value: any }> };
+
+export type UpdateTranslationsMutationVariables = Exact<{
+  name: Scalars['String'];
+  translations: App_Site_Variables_Set_Input;
+}>;
+
+
+export type UpdateTranslationsMutation = { __typename?: 'mutation_root', update_app_site_variables?: { __typename?: 'app_site_variables_mutation_response', affected_rows: number } | null };
+
+export type GetUserGroupsWithFiltersQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  offset: Scalars['Int'];
+  orderBy: Array<Users_Groups_Order_By> | Users_Groups_Order_By;
+  where: Users_Groups_Bool_Exp;
+}>;
+
+
+export type GetUserGroupsWithFiltersQuery = { __typename?: 'query_root', users_groups: Array<{ __typename?: 'users_groups', label: string, id: number, created_at: any, description?: string | null, updated_at: any }>, users_groups_aggregate: { __typename?: 'users_groups_aggregate', aggregate?: { __typename?: 'users_groups_aggregate_fields', count: number } | null } };
+
+export type GetProfileIdsQueryVariables = Exact<{
+  where: Users_Summary_View_Bool_Exp;
+}>;
+
+
+export type GetProfileIdsQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', profile_id?: any | null }> };
+
+export type GetUsersQueryVariables = Exact<{
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+  orderBy: Array<Users_Summary_View_Order_By> | Users_Summary_View_Order_By;
+  where: Users_Summary_View_Bool_Exp;
+}>;
+
+
+export type GetUsersQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, last_blocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, last_unblocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count: number } | null } };
+
+export type GetUsersInSameCompanyQueryVariables = Exact<{
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+  orderBy: Array<Users_Summary_View_Order_By> | Users_Summary_View_Order_By;
+  where: Users_Summary_View_Bool_Exp;
+  companyId: Scalars['String'];
+}>;
+
+
+export type GetUsersInSameCompanyQuery = { __typename?: 'query_root', users_summary_view: Array<{ __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, first_name?: string | null, last_name?: string | null, mail?: string | null, last_access_at?: any | null, is_blocked?: boolean | null, profile_id?: any | null, stamboek?: string | null, acc_created_at?: any | null, group_id?: number | null, group_name?: string | null, company_name?: string | null, is_exception?: boolean | null, business_category?: string | null, last_blocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, last_unblocked_at: { __typename?: 'users_audit_log_aggregate', aggregate?: { __typename?: 'users_audit_log_aggregate_fields', max?: { __typename?: 'users_audit_log_max_fields', created_at?: any | null } | null } | null }, idps: Array<{ __typename?: 'users_idp_map', idp: Users_Idps_Enum }>, classifications: Array<{ __typename?: 'users_profile_classifications', key: string }>, contexts: Array<{ __typename?: 'users_profile_contexts', key: string }>, organisations: Array<{ __typename?: 'users_profile_organizations', organization_id: string, unit_id?: string | null, organization?: { __typename?: 'shared_ldap_organizations', ldap_description?: string | null } | null }>, user?: { __typename?: 'shared_users', temp_access?: { __typename?: 'shared_user_temp_access', until: any, from?: any | null, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null }>, users_summary_view_aggregate: { __typename?: 'users_summary_view_aggregate', aggregate?: { __typename?: 'users_summary_view_aggregate_fields', count: number } | null } };
+
+export type UpdateUserTempAccessByIdMutationVariables = Exact<{
+  user_id: Scalars['uuid'];
+  from?: InputMaybe<Scalars['date']>;
+  until: Scalars['date'];
+}>;
+
+
+export type UpdateUserTempAccessByIdMutation = { __typename?: 'mutation_root', insert_shared_user_temp_access_one?: { __typename?: 'shared_user_temp_access', user_id: any, from?: any | null, until: any, user: { __typename?: 'shared_users', full_name?: string | null, mail?: string | null } } | null };
+
+export type AssignmentPupilBlocksQueryVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type AssignmentPupilBlocksQuery = { __typename?: 'query_root', app_pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any }> };
+
+export type BulkUpdateAuthorForAssignmentsMutationVariables = Exact<{
+  authorId: Scalars['uuid'];
+  assignmentIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  now: Scalars['timestamptz'];
+}>;
+
+
+export type BulkUpdateAuthorForAssignmentsMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
+
+export type SoftDeleteAssignmentByIdMutationVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+  now: Scalars['timestamptz'];
+}>;
+
+
+export type SoftDeleteAssignmentByIdMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null, delete_app_assignments_v2_contributors?: { __typename?: 'app_assignments_v2_contributors_mutation_response', affected_rows: number } | null };
+
+export type DeleteAssignmentResponseByIdMutationVariables = Exact<{
+  assignmentResponseId: Scalars['uuid'];
+}>;
+
+
+export type DeleteAssignmentResponseByIdMutation = { __typename?: 'mutation_root', delete_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number } | null };
+
+export type DeleteAssignmentsByIdMutationVariables = Exact<{
+  assignmentIds: Array<Scalars['uuid']> | Scalars['uuid'];
+}>;
+
+
+export type DeleteAssignmentsByIdMutation = { __typename?: 'mutation_root', delete_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
+
+export type GetAssignmentBlocksQueryVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentBlocksQuery = { __typename?: 'query_root', app_assignment_blocks_v2: Array<{ __typename?: 'app_assignment_blocks_v2', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, original_title?: string | null, original_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, is_deleted: boolean, assignment_id: any }> };
+
+export type GetAssignmentByTitleOrDescriptionQueryVariables = Exact<{
+  title: Scalars['String'];
+  description: Scalars['String'];
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentByTitleOrDescriptionQuery = { __typename?: 'query_root', assignmentByTitle: Array<{ __typename?: 'app_assignments_v2', id: any }>, assignmentByDescription: Array<{ __typename?: 'app_assignments_v2', id: any }> };
+
+export type GetAssignmentIdsQueryVariables = Exact<{
+  where: App_Assignments_V2_Bool_Exp;
+}>;
+
+
+export type GetAssignmentIdsQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any }> };
+
+export type GetAssignmentResponseQueryVariables = Exact<{
+  profileId: Scalars['uuid'];
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentResponseQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, updated_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
+
+export type GetAssignmentResponseByIdQueryVariables = Exact<{
+  assignmentResponseId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentResponseByIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }> };
+
+export type GetAssignmentResponsesQueryVariables = Exact<{
+  profileId: Scalars['uuid'];
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentResponsesQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
+
+export type GetAssignmentResponsesByAssignmentIdQueryVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  order?: Array<App_Assignment_Responses_V2_Order_By> | App_Assignment_Responses_V2_Order_By;
+  filter?: InputMaybe<Array<App_Assignment_Responses_V2_Bool_Exp> | App_Assignment_Responses_V2_Bool_Exp>;
+}>;
+
+
+export type GetAssignmentResponsesByAssignmentIdQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }>, count: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null } };
+
+export type GetAssignmentWithResponseQueryVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+  pupilUuid: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentWithResponseQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, thumbnail_path?: string | null, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, position: number, type: string, custom_title?: string | null, thumbnail_path?: string | null, use_custom_fields: boolean, custom_description?: string | null, created_at: any, updated_at: any, fragment_id?: string | null, start_oc?: number | null, end_oc?: number | null, assignment_response_id: any }> }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }> };
+
+export type GetAssignmentsAdminOverviewQueryVariables = Exact<{
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+  orderBy: Array<App_Assignments_V2_Order_By> | App_Assignments_V2_Order_By;
+  where: App_Assignments_V2_Bool_Exp;
+}>;
+
+
+export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null }, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
+
+export type GetAssignmentsByOwnerOrContributorQueryVariables = Exact<{
+  collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  order?: Array<App_Assignments_V2_Overview_Order_By> | App_Assignments_V2_Overview_Order_By;
+  filter?: InputMaybe<Array<App_Assignments_V2_Overview_Bool_Exp> | App_Assignments_V2_Overview_Bool_Exp>;
+}>;
+
+
+export type GetAssignmentsByOwnerOrContributorQuery = { __typename?: 'query_root', app_assignments_v2_overview: Array<{ __typename?: 'app_assignments_v2_overview', id?: any | null, title?: string | null, description?: string | null, answer_url?: string | null, created_at?: any | null, updated_at?: any | null, available_at?: any | null, deadline_at?: any | null, is_collaborative?: boolean | null, is_deleted?: boolean | null, is_public?: boolean | null, thumbnail_path?: string | null, owner_profile_id?: any | null, share_type?: string | null, lom_learning_resource_type?: any | null, collaborator_profile_id?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile?: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null, enum_right_type: { __typename?: 'lookup_enum_right_types', value: string, description: string }, assignment: { __typename?: 'app_assignments_v2', id: any } }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom_id: string, assignment_id: any, lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, label?: string | null, scheme?: string | null, id?: string | null } | null }> }>, count: { __typename?: 'app_assignments_v2_overview_aggregate', aggregate?: { __typename?: 'app_assignments_v2_overview_aggregate_fields', count: number } | null } };
+
+export type GetAssignmentsByResponseOwnerIdQueryVariables = Exact<{
+  owner_profile_id: Scalars['uuid'];
+  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  filter?: InputMaybe<Array<App_Assignments_V2_Bool_Exp> | App_Assignments_V2_Bool_Exp>;
+  order: Array<App_Assignments_V2_Order_By> | App_Assignments_V2_Order_By;
+}>;
+
+
+export type GetAssignmentsByResponseOwnerIdQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, thumbnail_path?: string | null, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, responses: Array<{ __typename?: 'app_assignment_responses_v2', id: any }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', id: number, assignment_label: { __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, id: any, label?: string | null, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } } }>, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null, enum_right_type: { __typename?: 'lookup_enum_right_types', description: string, value: string } }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, count: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
+
+export type GetContributorsByAssignmentUuidQueryVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type GetContributorsByAssignmentUuidQuery = { __typename?: 'query_root', app_assignments_v2_contributors: Array<{ __typename?: 'app_assignments_v2_contributors', assignment_id: any, invite_email?: string | null, invite_token?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile_id?: any | null, id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null, mail?: string | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null } | null } | null }> };
+
+export type GetMaxPositionAssignmentBlocksQueryVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type GetMaxPositionAssignmentBlocksQuery = { __typename?: 'query_root', app_assignments_v2_by_pk?: { __typename?: 'app_assignments_v2', blocks_aggregate: { __typename?: 'app_assignment_blocks_v2_aggregate', aggregate?: { __typename?: 'app_assignment_blocks_v2_aggregate_fields', max?: { __typename?: 'app_assignment_blocks_v2_max_fields', position?: number | null } | null } | null } } | null };
+
+export type IncrementAssignmentViewCountMutationVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+}>;
+
+
+export type IncrementAssignmentViewCountMutation = { __typename?: 'mutation_root', update_app_assignment_v2_views?: { __typename?: 'app_assignment_v2_views_mutation_response', affected_rows: number } | null };
+
+export type InsertAssignmentMutationVariables = Exact<{
+  assignment: App_Assignments_V2_Insert_Input;
+}>;
+
+
+export type InsertAssignmentMutation = { __typename?: 'mutation_root', insert_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignments_v2', id: any }> } | null };
+
+export type InsertAssignmentBlocksMutationVariables = Exact<{
+  assignmentBlocks: Array<App_Assignment_Blocks_V2_Insert_Input> | App_Assignment_Blocks_V2_Insert_Input;
+}>;
+
+
+export type InsertAssignmentBlocksMutation = { __typename?: 'mutation_root', insert_app_assignment_blocks_v2?: { __typename?: 'app_assignment_blocks_v2_mutation_response', affected_rows: number } | null };
+
+export type InsertAssignmentResponseMutationVariables = Exact<{
+  assignmentResponses: Array<App_Assignment_Responses_V2_Insert_Input> | App_Assignment_Responses_V2_Insert_Input;
+}>;
+
+
+export type InsertAssignmentResponseMutation = { __typename?: 'mutation_root', insert_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignment_responses_v2', id: any, created_at: any, owner_profile_id: any, assignment_id: any, collection_title?: string | null, updated_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, fragment_id?: string | null, use_custom_fields: boolean, custom_title?: string | null, custom_description?: string | null, start_oc?: number | null, end_oc?: number | null, position: number, created_at: any, updated_at: any, type: string, thumbnail_path?: string | null, assignment_response_id: any }> }> } | null };
+
+export type UpdateAssignmentResponseMutationVariables = Exact<{
+  assignmentResponseId?: InputMaybe<Scalars['uuid']>;
+  collectionTitle: Scalars['String'];
+  updatedAt: Scalars['timestamptz'];
+}>;
+
+
+export type UpdateAssignmentResponseMutation = { __typename?: 'mutation_root', update_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', returning: Array<{ __typename?: 'app_assignment_responses_v2', assignment_id: any, collection_title?: string | null, created_at: any, id: any, owner_profile_id: any, pupil_collection_blocks: Array<{ __typename?: 'app_pupil_collection_blocks', assignment_response_id: any, created_at: any, custom_description?: string | null, custom_title?: string | null, end_oc?: number | null, fragment_id?: string | null, id: any, position: number, start_oc?: number | null, thumbnail_path?: string | null, type: string, updated_at: any, use_custom_fields: boolean }>, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> } | null };
+
+export type UpdateAssignmentUpdatedAtDateMutationVariables = Exact<{
+  assignmentId: Scalars['uuid'];
+  updatedAt: Scalars['timestamptz'];
+}>;
+
+
+export type UpdateAssignmentUpdatedAtDateMutation = { __typename?: 'mutation_root', update_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionFragmentByIdMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type DeleteCollectionFragmentByIdMutation = { __typename?: 'mutation_root', delete_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionLabelsMutationVariables = Exact<{
+  labels: Array<Scalars['String']> | Scalars['String'];
+  collectionId: Scalars['uuid'];
+}>;
+
+
+export type DeleteCollectionLabelsMutation = { __typename?: 'mutation_root', delete_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionLomLinksMutationVariables = Exact<{
+  collectionId: Scalars['uuid'];
+}>;
+
+
+export type DeleteCollectionLomLinksMutation = { __typename?: 'mutation_root', delete_app_collections_lom_links?: { __typename?: 'app_collections_lom_links_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionOrBundleByUuidMutationVariables = Exact<{
+  collectionOrBundleUuid: Scalars['uuid'];
+  collectionOrBundleUuidAsText: Scalars['String'];
+}>;
+
+
+export type DeleteCollectionOrBundleByUuidMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null, delete_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null, delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type DeleteMarcomEntriesByParentCollectionIdMutationVariables = Exact<{
+  parentCollectionId?: InputMaybe<Scalars['uuid']>;
+  channelName?: InputMaybe<Scalars['String']>;
+  channelType?: InputMaybe<Scalars['String']>;
+  publishDateGte?: InputMaybe<Scalars['timestamptz']>;
+  publishDateLte?: InputMaybe<Scalars['timestamptz']>;
+}>;
+
+
+export type DeleteMarcomEntriesByParentCollectionIdMutation = { __typename?: 'mutation_root', delete_app_collection_marcom_log?: { __typename?: 'app_collection_marcom_log_mutation_response', affected_rows: number } | null };
+
+export type DeleteMarcomEntryMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type DeleteMarcomEntryMutation = { __typename?: 'mutation_root', delete_app_collection_marcom_log?: { __typename?: 'app_collection_marcom_log_mutation_response', affected_rows: number } | null };
+
+export type GetBookmarkedCollectionsByOwnerQueryVariables = Exact<{
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  order?: InputMaybe<Array<App_Collection_Bookmarks_Order_By> | App_Collection_Bookmarks_Order_By>;
+  where?: InputMaybe<Array<App_Collection_Bookmarks_Bool_Exp> | App_Collection_Bookmarks_Bool_Exp>;
+}>;
+
+
+export type GetBookmarkedCollectionsByOwnerQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', bookmarkedCollection?: { __typename?: 'app_collections', id: any, updated_at: any, type_id: number, title: string, publish_at?: any | null, owner_profile_id?: any | null, is_public: boolean, external_id?: string | null, depublish_at?: any | null, created_at: any, thumbnail_path?: string | null, type: { __typename?: 'shared_types', label: string, id: number }, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null } } | null }> };
+
+export type GetBundleTitlesByOwnerQueryVariables = Exact<{
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetBundleTitlesByOwnerQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
+
+export type GetCollectionByTitleOrDescriptionQueryVariables = Exact<{
+  title: Scalars['String'];
+  description: Scalars['String'];
+  collectionId: Scalars['uuid'];
+  typeId?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetCollectionByTitleOrDescriptionQuery = { __typename?: 'query_root', collectionByTitle: Array<{ __typename?: 'app_collections', id: any }>, collectionByDescription: Array<{ __typename?: 'app_collections', id: any }> };
+
+export type GetCollectionMarcomEntriesQueryVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+}>;
+
+
+export type GetCollectionMarcomEntriesQuery = { __typename?: 'query_root', app_collection_marcom_log: Array<{ __typename?: 'app_collection_marcom_log', id: number, channel_name?: string | null, channel_type?: string | null, external_link?: string | null, publish_date?: any | null, collection_id: any, parent_collection?: { __typename?: 'app_collections', id: any, title: string } | null }> };
+
+export type GetCollectionTitlesByOwnerQueryVariables = Exact<{
+  owner_profile_id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetCollectionTitlesByOwnerQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
+
+export type GetCollectionsByItemUuidQueryVariables = Exact<{
+  fragmentId: Scalars['String'];
+}>;
+
+
+export type GetCollectionsByItemUuidQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string, is_public: boolean, profile?: { __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', name: string } | null } | null }> };
+
+export type GetCollectionsByOwnerOrContributorQueryVariables = Exact<{
+  collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
+  type_id?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  order?: InputMaybe<Array<App_Collections_Overview_Order_By> | App_Collections_Overview_Order_By>;
+  where?: InputMaybe<Array<App_Collections_Overview_Bool_Exp> | App_Collections_Overview_Bool_Exp>;
+}>;
+
+
+export type GetCollectionsByOwnerOrContributorQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, updated_at?: any | null, type_id?: number | null, title?: string | null, published_at?: any | null, owner_profile_id?: any | null, collaborator_profile_id?: any | null, is_public?: boolean | null, external_id?: string | null, depublish_at?: any | null, created_at?: any | null, thumbnail_path?: string | null, share_type?: string | null, type?: { __typename?: 'shared_types', label: string, id: number } | null, profile?: { __typename?: 'users_profiles', id: any, alias?: string | null, title?: string | null, alternative_email?: string | null, avatar?: string | null, created_at: any, stamboek?: string | null, updated_at: any, user_id?: any | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, user?: { __typename?: 'shared_users', id: number, first_name?: string | null, last_name?: string | null, profile?: { __typename?: 'users_profiles', profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null } | null, view_counts_aggregate: { __typename?: 'app_collection_views_aggregate', aggregate?: { __typename?: 'app_collection_views_aggregate_fields', sum?: { __typename?: 'app_collection_views_sum_fields', count?: number | null } | null } | null }, contributors: Array<{ __typename?: 'app_collections_contributors', profile_id?: any | null, rights: Lookup_Enum_Right_Types_Enum, enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null, uid: any } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null, collection: { __typename?: 'app_collections', id: any } }> }> };
+
+export type GetContributorsByCollectionUuidQueryVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type GetContributorsByCollectionUuidQuery = { __typename?: 'query_root', app_collections_contributors: Array<{ __typename?: 'app_collections_contributors', collection_id: any, invite_email?: string | null, invite_token?: any | null, rights: Lookup_Enum_Right_Types_Enum, profile_id?: any | null, id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null, mail?: string | null } | null } | null }> };
+
+export type GetOrganisationContentQueryVariables = Exact<{
+  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  order?: InputMaybe<Array<App_Collections_Order_By> | App_Collections_Order_By>;
+  company_id: Scalars['String'];
+}>;
+
+
+export type GetOrganisationContentQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, created_at: any, title: string, updated_at: any, type: { __typename?: 'shared_types', label: string }, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null } | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null }> };
+
+export type GetPublicCollectionsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  typeId: Scalars['Int'];
+}>;
+
+
+export type GetPublicCollectionsQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null } | null }> }> };
+
+export type GetPublicCollectionsByIdQueryVariables = Exact<{
+  id: Scalars['uuid'];
+  typeId: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetPublicCollectionsByIdQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }> }> };
+
+export type GetPublicCollectionsByTitleQueryVariables = Exact<{
+  title: Scalars['String'];
+  typeId: Scalars['Int'];
+  limit: Scalars['Int'];
+}>;
+
+
+export type GetPublicCollectionsByTitleQuery = { __typename?: 'query_root', app_collections_overview: Array<{ __typename?: 'app_collections_overview', id?: any | null, title?: string | null, share_type?: string | null, updated_at?: any | null, is_public?: boolean | null, thumbnail_path?: string | null, created_at?: any | null, contributors: Array<{ __typename?: 'app_collections_contributors', enum_right_type: { __typename?: 'lookup_enum_right_types', value: string }, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, user?: { __typename?: 'shared_users', first_name?: string | null, full_name?: string | null, last_name?: string | null } | null } | null }> }> };
+
+export type GetPublishedBundlesContainingCollectionQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetPublishedBundlesContainingCollectionQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, title: string }> };
+
+export type InsertCollectionMutationVariables = Exact<{
+  collection: App_Collections_Insert_Input;
+}>;
+
+
+export type InsertCollectionMutation = { __typename?: 'mutation_root', insert_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collections', id: any, title: string, collection_fragments: Array<{ __typename?: 'app_collection_fragments', id: number }> }> } | null };
+
+export type InsertCollectionFragmentsMutationVariables = Exact<{
+  fragments: Array<App_Collection_Fragments_Insert_Input> | App_Collection_Fragments_Insert_Input;
+}>;
+
+
+export type InsertCollectionFragmentsMutation = { __typename?: 'mutation_root', insert_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_collection_fragments', id: number }> } | null };
+
+export type InsertCollectionLabelsMutationVariables = Exact<{
+  objects: Array<App_Collection_Labels_Insert_Input> | App_Collection_Labels_Insert_Input;
+}>;
+
+
+export type InsertCollectionLabelsMutation = { __typename?: 'mutation_root', insert_app_collection_labels?: { __typename?: 'app_collection_labels_mutation_response', affected_rows: number } | null };
+
+export type InsertCollectionLomLinksMutationVariables = Exact<{
+  lomObjects: Array<App_Collections_Lom_Links_Insert_Input> | App_Collections_Lom_Links_Insert_Input;
+}>;
+
+
+export type InsertCollectionLomLinksMutation = { __typename?: 'mutation_root', insert_app_collections_lom_links?: { __typename?: 'app_collections_lom_links_mutation_response', affected_rows: number } | null };
+
+export type InsertCollectionManagementEntryMutationVariables = Exact<{
+  collection_id: Scalars['uuid'];
+  current_status?: InputMaybe<Scalars['String']>;
+  manager_profile_id?: InputMaybe<Scalars['uuid']>;
+  status_valid_until?: InputMaybe<Scalars['timestamptz']>;
+  note?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+}>;
+
+
+export type InsertCollectionManagementEntryMutation = { __typename?: 'mutation_root', insert_app_collection_management?: { __typename?: 'app_collection_management_mutation_response', affected_rows: number } | null };
+
+export type InsertCollectionManagementQualityCheckEntryMutationVariables = Exact<{
+  collection_id: Scalars['uuid'];
+  comment?: InputMaybe<Scalars['String']>;
+  assignee_profile_id?: InputMaybe<Scalars['uuid']>;
+  qc_label?: InputMaybe<Lookup_Enum_Collection_Management_Qc_Label_Enum>;
+  qc_status?: InputMaybe<Scalars['Boolean']>;
+}>;
+
+
+export type InsertCollectionManagementQualityCheckEntryMutation = { __typename?: 'mutation_root', insert_app_collection_management_QC_one?: { __typename?: 'app_collection_management_QC', id: number } | null };
+
+export type InsertMarcomEntryMutationVariables = Exact<{
+  objects: Array<App_Collection_Marcom_Log_Insert_Input> | App_Collection_Marcom_Log_Insert_Input;
+}>;
+
+
+export type InsertMarcomEntryMutation = { __typename?: 'mutation_root', insert_app_collection_marcom_log?: { __typename?: 'app_collection_marcom_log_mutation_response', affected_rows: number } | null };
+
+export type InsertMarcomNoteMutationVariables = Exact<{
+  collectionId?: InputMaybe<Scalars['uuid']>;
+  note?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type InsertMarcomNoteMutation = { __typename?: 'mutation_root', insert_app_collection_marcom_notes?: { __typename?: 'app_collection_marcom_notes_mutation_response', returning: Array<{ __typename?: 'app_collection_marcom_notes', id: number }> } | null };
+
+export type UpdateCollectionByIdMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  collection: App_Collections_Set_Input;
+}>;
+
+
+export type UpdateCollectionByIdMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
+
+export type UpdateCollectionFragmentByIdMutationVariables = Exact<{
+  id: Scalars['Int'];
+  fragment: App_Collection_Fragments_Set_Input;
+}>;
+
+
+export type UpdateCollectionFragmentByIdMutation = { __typename?: 'mutation_root', update_app_collection_fragments?: { __typename?: 'app_collection_fragments_mutation_response', affected_rows: number } | null };
+
+export type UpdateCollectionManagementEntryMutationVariables = Exact<{
+  collection_id: Scalars['uuid'];
+  current_status?: InputMaybe<Scalars['String']>;
+  manager_profile_id?: InputMaybe<Scalars['uuid']>;
+  status_valid_until?: InputMaybe<Scalars['timestamptz']>;
+  note?: InputMaybe<Scalars['String']>;
+  updated_at?: InputMaybe<Scalars['timestamptz']>;
+}>;
+
+
+export type UpdateCollectionManagementEntryMutation = { __typename?: 'mutation_root', update_app_collection_management?: { __typename?: 'app_collection_management_mutation_response', affected_rows: number } | null };
+
+export type UpdateMarcomNoteMutationVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']>;
+  note?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpdateMarcomNoteMutation = { __typename?: 'mutation_root', update_app_collection_marcom_notes?: { __typename?: 'app_collection_marcom_notes_mutation_response', returning: Array<{ __typename?: 'app_collection_marcom_notes', id: number }> } | null };
+
+export type BulkUpdateAuthorForPupilCollectionsMutationVariables = Exact<{
+  authorId: Scalars['uuid'];
+  pupilCollectionIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  now: Scalars['timestamptz'];
+}>;
+
+
+export type BulkUpdateAuthorForPupilCollectionsMutation = { __typename?: 'mutation_root', update_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number } | null };
+
+export type DeleteAssignmentResponsesMutationVariables = Exact<{
+  assignmentResponseIds: Array<Scalars['uuid']> | Scalars['uuid'];
+}>;
+
+
+export type DeleteAssignmentResponsesMutation = { __typename?: 'mutation_root', delete_app_assignment_responses_v2?: { __typename?: 'app_assignment_responses_v2_mutation_response', affected_rows: number } | null, delete_app_pupil_collection_blocks?: { __typename?: 'app_pupil_collection_blocks_mutation_response', affected_rows: number } | null };
+
+export type GetMaxPositionPupilCollectionBlocksQueryVariables = Exact<{
+  assignmentResponseId: Scalars['uuid'];
+}>;
+
+
+export type GetMaxPositionPupilCollectionBlocksQuery = { __typename?: 'query_root', app_assignment_responses_v2_by_pk?: { __typename?: 'app_assignment_responses_v2', pupil_collection_blocks_aggregate: { __typename?: 'app_pupil_collection_blocks_aggregate', aggregate?: { __typename?: 'app_pupil_collection_blocks_aggregate_fields', max?: { __typename?: 'app_pupil_collection_blocks_max_fields', position?: number | null } | null } | null } } | null };
+
+export type GetPupilCollectionIdsQueryVariables = Exact<{
+  where: App_Assignment_Responses_V2_Bool_Exp;
+}>;
+
+
+export type GetPupilCollectionIdsQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any }> };
+
+export type GetPupilCollectionsAdminOverviewQueryVariables = Exact<{
+  offset: Scalars['Int'];
+  limit: Scalars['Int'];
+  orderBy: Array<App_Assignment_Responses_V2_Order_By> | App_Assignment_Responses_V2_Order_By;
+  where: App_Assignment_Responses_V2_Bool_Exp;
+}>;
+
+
+export type GetPupilCollectionsAdminOverviewQuery = { __typename?: 'query_root', app_assignment_responses_v2: Array<{ __typename?: 'app_assignment_responses_v2', id: any, assignment_id: any, collection_title?: string | null, created_at: any, updated_at: any, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null, assignment: { __typename?: 'app_assignments_v2', id: any, title?: string | null, deadline_at?: any | null, owner_profile_id: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null } | null } }>, app_assignment_responses_v2_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null } };
+
+export type InsertPupilCollectionBlocksMutationVariables = Exact<{
+  pupilCollectionBlocks: Array<App_Pupil_Collection_Blocks_Insert_Input> | App_Pupil_Collection_Blocks_Insert_Input;
+}>;
+
+
+export type InsertPupilCollectionBlocksMutation = { __typename?: 'mutation_root', insert_app_pupil_collection_blocks?: { __typename?: 'app_pupil_collection_blocks_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_pupil_collection_blocks', id: any, created_at: any, custom_description?: string | null, end_oc?: number | null, custom_title?: string | null, fragment_id?: string | null, position: number, start_oc?: number | null, thumbnail_path?: string | null, type: string, updated_at: any, use_custom_fields: boolean, assignment_response_id: any }> } | null };
+
+export type UpdatePupilCollectionBlockMutationVariables = Exact<{
+  blockId: Scalars['uuid'];
+  update: App_Pupil_Collection_Blocks_Set_Input;
+}>;
+
+
+export type UpdatePupilCollectionBlockMutation = { __typename?: 'mutation_root', update_app_pupil_collection_blocks_by_pk?: { __typename?: 'app_pupil_collection_blocks', id: any, created_at: any, custom_description?: string | null, end_oc?: number | null, custom_title?: string | null, fragment_id?: string | null, position: number, start_oc?: number | null, thumbnail_path?: string | null, type: string, updated_at: any, use_custom_fields: boolean, assignment_response_id: any } | null };
+
+export type GetQuickLaneByContentAndOwnerQueryVariables = Exact<{
+  contentId?: InputMaybe<Scalars['uuid']>;
+  contentLabel?: InputMaybe<Scalars['String']>;
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetQuickLaneByContentAndOwnerQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> };
+
+export type GetQuickLaneByIdQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetQuickLaneByIdQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> };
+
+export type InsertQuickLanesMutationVariables = Exact<{
+  objects: Array<App_Quick_Lanes_Insert_Input> | App_Quick_Lanes_Insert_Input;
+}>;
+
+
+export type InsertQuickLanesMutation = { __typename?: 'mutation_root', insert_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> } | null };
+
+export type RemoveQuickLanesMutationVariables = Exact<{
+  ids: Array<Scalars['uuid']> | Scalars['uuid'];
+  profileId: Scalars['uuid'];
+}>;
+
+
+export type RemoveQuickLanesMutation = { __typename?: 'mutation_root', delete_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any }> } | null };
+
+export type UpdateQuickLaneByIdMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  object: App_Quick_Lanes_Set_Input;
+}>;
+
+
+export type UpdateQuickLaneByIdMutation = { __typename?: 'mutation_root', update_app_quick_lanes?: { __typename?: 'app_quick_lanes_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> } | null };
+
+export type GetProfilePreferenceQueryVariables = Exact<{
+  profileId: Scalars['uuid'];
+  key: Lookup_Enum_Profile_Preferences_Keys_Enum;
+}>;
+
+
+export type GetProfilePreferenceQuery = { __typename?: 'query_root', users_profile_preferences: Array<{ __typename?: 'users_profile_preferences', id: number, profile_id: any, key: Lookup_Enum_Profile_Preferences_Keys_Enum }> };
+
+export type SetProfilePreferenceMutationVariables = Exact<{
+  profileId: Scalars['uuid'];
+  key: Lookup_Enum_Profile_Preferences_Keys_Enum;
+}>;
+
+
+export type SetProfilePreferenceMutation = { __typename?: 'mutation_root', insert_users_profile_preferences?: { __typename?: 'users_profile_preferences_mutation_response', affected_rows: number } | null };
+
+export type GetEducationLevelsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEducationLevelsQuery = { __typename?: 'query_root', lookup_enum_lom_context: Array<{ __typename?: 'lookup_enum_lom_context', description?: string | null }> };
+
+export type GetQualityLabelsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetQualityLabelsQuery = { __typename?: 'query_root', lookup_enum_collection_labels: Array<{ __typename?: 'lookup_enum_collection_labels', description?: string | null, value: string }> };
+
+export type GetQuickLanesByContentIdQueryVariables = Exact<{
+  contentId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetQuickLanesByContentIdQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }> };
+
+export type GetQuickLanesWithFiltersQueryVariables = Exact<{
+  filterString?: InputMaybe<Scalars['String']>;
+  filters?: InputMaybe<Array<App_Quick_Lanes_Bool_Exp> | App_Quick_Lanes_Bool_Exp>;
+  orderBy?: InputMaybe<Array<App_Quick_Lanes_Order_By> | App_Quick_Lanes_Order_By>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+}>;
+
+
+export type GetQuickLanesWithFiltersQuery = { __typename?: 'query_root', app_quick_lanes: Array<{ __typename?: 'app_quick_lanes', id: any, content_id: any, content_label: string, title: string, view_mode: string, created_at: any, updated_at: any, owner: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', full_name?: string | null, first_name?: string | null, last_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } }>, app_quick_lanes_aggregate: { __typename?: 'app_quick_lanes_aggregate', aggregate?: { __typename?: 'app_quick_lanes_aggregate_fields', count: number } | null } };
+
+export type GetSubjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSubjectsQuery = { __typename?: 'query_root', lookup_enum_lom_classification: Array<{ __typename?: 'lookup_enum_lom_classification', description: string }> };
+
+export type DeleteAssignmentLabelsMutationVariables = Exact<{
+  profileId: Scalars['uuid'];
+  labelIds: Array<Scalars['uuid']> | Scalars['uuid'];
+}>;
+
+
+export type DeleteAssignmentLabelsMutation = { __typename?: 'mutation_root', delete_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', affected_rows: number } | null };
+
+export type GetAllAssignmentLabelColorsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllAssignmentLabelColorsQuery = { __typename?: 'query_root', lookup_enum_colors: Array<{ __typename?: 'lookup_enum_colors', label: string, value: string }> };
+
+export type GetAssignmentLabelsByProfileIdQueryVariables = Exact<{
+  profileId: Scalars['uuid'];
+  filters?: InputMaybe<Array<App_Assignment_Labels_V2_Bool_Exp> | App_Assignment_Labels_V2_Bool_Exp>;
+}>;
+
+
+export type GetAssignmentLabelsByProfileIdQuery = { __typename?: 'query_root', app_assignment_labels_v2: Array<{ __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, label?: string | null, id: any, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } }> };
+
+export type InsertAssignmentLabelsMutationVariables = Exact<{
+  objects: Array<App_Assignment_Labels_V2_Insert_Input> | App_Assignment_Labels_V2_Insert_Input;
+}>;
+
+
+export type InsertAssignmentLabelsMutation = { __typename?: 'mutation_root', insert_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', returning: Array<{ __typename?: 'app_assignment_labels_v2', id: any }> } | null };
+
+export type UpdateAssignmentLabelsMutationVariables = Exact<{
+  label: Scalars['String'];
+  colorEnumValue: Lookup_Enum_Colors_Enum;
+  profileId: Scalars['uuid'];
+  labelId: Scalars['uuid'];
+}>;
+
+
+export type UpdateAssignmentLabelsMutation = { __typename?: 'mutation_root', update_app_assignment_labels_v2?: { __typename?: 'app_assignment_labels_v2_mutation_response', affected_rows: number } | null };
+
+export type DeleteAssignmentBookmarksForUserMutationVariables = Exact<{
+  assignmentUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type DeleteAssignmentBookmarksForUserMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_bookmarks?: { __typename?: 'app_assignments_v2_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionBookmarksForUserMutationVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type DeleteCollectionBookmarksForUserMutation = { __typename?: 'mutation_root', delete_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type DeleteItemBookmarkMutationVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type DeleteItemBookmarkMutation = { __typename?: 'mutation_root', delete_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type GetAssignmentBookmarkViewCountsQueryVariables = Exact<{
+  assignmentUuid: Scalars['uuid'];
+  profileId: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentBookmarkViewCountsQuery = { __typename?: 'query_root', app_assignments_v2_bookmarks_aggregate: { __typename?: 'app_assignments_v2_bookmarks_aggregate', aggregate?: { __typename?: 'app_assignments_v2_bookmarks_aggregate_fields', count: number } | null }, app_assignment_v2_views: Array<{ __typename?: 'app_assignment_v2_views', count: number }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', id: any }> };
+
+export type GetBookmarkStatusesQueryVariables = Exact<{
+  profileId: Scalars['uuid'];
+  itemUuids: Array<Scalars['uuid']> | Scalars['uuid'];
+  collectionUuids: Array<Scalars['uuid']> | Scalars['uuid'];
+  assignmentUuids: Array<Scalars['uuid']> | Scalars['uuid'];
+}>;
+
+
+export type GetBookmarkStatusesQuery = { __typename?: 'query_root', app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any }>, app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', assignment_id: any }> };
+
+export type GetBookmarksForUserQueryVariables = Exact<{
+  profileId: Scalars['uuid'];
+}>;
+
+
+export type GetBookmarksForUserQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any, created_at: any, bookmarkedItem?: { __typename?: 'app_item_meta', title: string, thumbnail_path: string, duration?: any | null, issued?: any | null, item?: { __typename?: 'shared_items', external_id: string, item_meta?: { __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, organisation?: { __typename?: 'shared_organisations', name: string } | null, type?: { __typename?: 'shared_types', label: string } | null } | null } | null, view_counts: Array<{ __typename?: 'app_item_views', count?: number | null }> } | null }>, app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', collection_uuid: any, created_at: any, bookmarkedCollection?: { __typename?: 'app_collections', title: string, thumbnail_path?: string | null, created_at: any, type_id: number, view_counts: Array<{ __typename?: 'app_collection_views', count?: number | null }> } | null }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', assignment_id: any, created_at: any, assignment: { __typename?: 'app_assignments_v2', title?: string | null, thumbnail_path?: string | null, type_id: number, created_at: any, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null } }> };
+
+export type GetCollectionBookmarkViewPlayCountsQueryVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetCollectionBookmarkViewPlayCountsQuery = { __typename?: 'query_root', app_collection_views: Array<{ __typename?: 'app_collection_views', count?: number | null }>, app_collection_plays: Array<{ __typename?: 'app_collection_plays', count?: number | null }>, app_collection_bookmarks_aggregate: { __typename?: 'app_collection_bookmarks_aggregate', aggregate?: { __typename?: 'app_collection_bookmarks_aggregate_fields', count: number } | null }, app_collection_bookmarks: Array<{ __typename?: 'app_collection_bookmarks', id: number }> };
+
+export type GetCollectionPlayCountQueryVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+}>;
+
+
+export type GetCollectionPlayCountQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', play_counts: Array<{ __typename?: 'app_collection_plays', count?: number | null }> }> };
+
+export type GetCollectionViewCountQueryVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+}>;
+
+
+export type GetCollectionViewCountQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', view_counts: Array<{ __typename?: 'app_collection_views', count?: number | null }> }> };
+
+export type GetItemBookmarkViewPlayCountsQueryVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+  profileId?: InputMaybe<Scalars['uuid']>;
+}>;
+
+
+export type GetItemBookmarkViewPlayCountsQuery = { __typename?: 'query_root', app_item_plays: Array<{ __typename?: 'app_item_plays', count?: number | null }>, app_item_views: Array<{ __typename?: 'app_item_views', count?: number | null }>, app_item_bookmarks_aggregate: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null }, app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', id: number }> };
+
+export type GetItemBookmarksForUserQueryVariables = Exact<{
+  profileId: Scalars['uuid'];
+  filter?: InputMaybe<Array<App_Item_Bookmarks_Bool_Exp> | App_Item_Bookmarks_Bool_Exp>;
+  order?: Array<App_Item_Bookmarks_Order_By> | App_Item_Bookmarks_Order_By;
+}>;
+
+
+export type GetItemBookmarksForUserQuery = { __typename?: 'query_root', app_item_bookmarks: Array<{ __typename?: 'app_item_bookmarks', item_id: any, created_at: any, bookmarkedItem?: { __typename?: 'app_item_meta', title: string, thumbnail_path: string, duration?: any | null, issued?: any | null, item?: { __typename?: 'shared_items', external_id: string, item_meta?: { __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, organisation?: { __typename?: 'shared_organisations', name: string } | null, type?: { __typename?: 'shared_types', label: string } | null } | null } | null, view_counts: Array<{ __typename?: 'app_item_views', count?: number | null }> } | null }> };
+
+export type GetItemPlayCountQueryVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+}>;
+
+
+export type GetItemPlayCountQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', is_published?: boolean | null, is_deleted?: boolean | null, play_counts: Array<{ __typename?: 'app_item_plays', count?: number | null }> }> };
+
+export type GetItemViewCountQueryVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+}>;
+
+
+export type GetItemViewCountQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, view_counts: Array<{ __typename?: 'app_item_views', count?: number | null }> }> };
+
+export type GetMultipleCollectionViewCountsQueryVariables = Exact<{
+  uuids?: InputMaybe<Array<Scalars['uuid']> | Scalars['uuid']>;
+}>;
+
+
+export type GetMultipleCollectionViewCountsQuery = { __typename?: 'query_root', items: Array<{ __typename?: 'app_collection_views', count?: number | null, id: any }> };
+
+export type GetMultipleItemViewCountsQueryVariables = Exact<{
+  uuids?: InputMaybe<Array<Scalars['uuid']> | Scalars['uuid']>;
+}>;
+
+
+export type GetMultipleItemViewCountsQuery = { __typename?: 'query_root', items: Array<{ __typename?: 'app_item_views', count?: number | null, id?: any | null }> };
+
+export type IncrementCollectionPlaysMutationVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+}>;
+
+
+export type IncrementCollectionPlaysMutation = { __typename?: 'mutation_root', update_app_collection_plays?: { __typename?: 'app_collection_plays_mutation_response', affected_rows: number } | null };
+
+export type IncrementCollectionViewsMutationVariables = Exact<{
+  collectionUuid: Scalars['uuid'];
+}>;
+
+
+export type IncrementCollectionViewsMutation = { __typename?: 'mutation_root', update_app_collection_views?: { __typename?: 'app_collection_views_mutation_response', affected_rows: number } | null };
+
+export type IncrementItemPlaysMutationVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+}>;
+
+
+export type IncrementItemPlaysMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
+
+export type IncrementItemViewsMutationVariables = Exact<{
+  itemUuid: Scalars['uuid'];
+}>;
+
+
+export type IncrementItemViewsMutation = { __typename?: 'mutation_root', update_app_item_views?: { __typename?: 'app_item_views_mutation_response', affected_rows: number } | null };
+
+export type InsertAssignmentBookmarkMutationVariables = Exact<{
+  bookmarkAssignment: App_Assignments_V2_Bookmarks_Insert_Input;
+}>;
+
+
+export type InsertAssignmentBookmarkMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_bookmarks_one?: { __typename?: 'app_assignments_v2_bookmarks', id: any } | null };
+
+export type InsertCollectionBookmarkMutationVariables = Exact<{
+  bookmarkItem: App_Collection_Bookmarks_Insert_Input;
+}>;
+
+
+export type InsertCollectionBookmarkMutation = { __typename?: 'mutation_root', insert_app_collection_bookmarks?: { __typename?: 'app_collection_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type InsertItemBookmarkMutationVariables = Exact<{
+  bookmarkItem: App_Item_Bookmarks_Insert_Input;
+}>;
+
+
+export type InsertItemBookmarkMutation = { __typename?: 'mutation_root', insert_app_item_bookmarks?: { __typename?: 'app_item_bookmarks_mutation_response', affected_rows: number } | null };
+
+export type GetAllOrganisationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllOrganisationsQuery = { __typename?: 'query_root', shared_organisations: Array<{ __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null }> };
+
+export type GetDistinctOrganisationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDistinctOrganisationsQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', is_published?: boolean | null, is_deleted?: boolean | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null } | null }> };
+
+export type GetNotificationQueryVariables = Exact<{
+  key: Scalars['String'];
+  profileId: Scalars['uuid'];
+}>;
+
+
+export type GetNotificationQuery = { __typename?: 'query_root', users_notifications: Array<{ __typename?: 'users_notifications', through_email?: boolean | null, through_platform?: boolean | null }> };
+
+export type GetOrganisationsWithUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetOrganisationsWithUsersQuery = { __typename?: 'query_root', shared_organisations_with_users: Array<{ __typename?: 'shared_organisations_with_users', name?: string | null, or_id?: string | null }> };
+
+export type GetUsersByCompanyIdQueryVariables = Exact<{
+  companyId: Scalars['String'];
+}>;
+
+
+export type GetUsersByCompanyIdQuery = { __typename?: 'query_root', users_profiles: Array<{ __typename?: 'users_profiles', id: any, user?: { __typename?: 'shared_users', uid: any, full_name?: string | null, mail?: string | null, is_blocked?: boolean | null, last_access_at?: any | null, temp_access?: { __typename?: 'shared_user_temp_access', from?: any | null, until: any, current?: { __typename?: 'shared_user_temp_access_status', status?: number | null } | null } | null } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', id: number, label: string } } | null }> };
+
+export type InsertNotificationMutationVariables = Exact<{
+  key: Scalars['String'];
+  profileId: Scalars['uuid'];
+  throughEmail: Scalars['Boolean'];
+  throughPlatform: Scalars['Boolean'];
+}>;
+
+
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_users_notifications?: { __typename?: 'users_notifications_mutation_response', affected_rows: number } | null };
+
+export type UpdateNotificationMutationVariables = Exact<{
+  key: Scalars['String'];
+  profileId: Scalars['uuid'];
+  throughEmail: Scalars['Boolean'];
+  throughPlatform: Scalars['Boolean'];
+}>;
+
+
+export type UpdateNotificationMutation = { __typename?: 'mutation_root', update_users_notifications?: { __typename?: 'users_notifications_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionRelationsByObjectMutationVariables = Exact<{
+  objectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type DeleteCollectionRelationsByObjectMutation = { __typename?: 'mutation_root', delete_app_collection_relations?: { __typename?: 'app_collection_relations_mutation_response', affected_rows: number } | null };
+
+export type DeleteCollectionRelationsBySubjectMutationVariables = Exact<{
+  subjectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type DeleteCollectionRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_collection_relations?: { __typename?: 'app_collection_relations_mutation_response', affected_rows: number } | null };
+
+export type DeleteItemRelationsByObjectMutationVariables = Exact<{
+  objectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type DeleteItemRelationsByObjectMutation = { __typename?: 'mutation_root', delete_app_item_relations?: { __typename?: 'app_item_relations_mutation_response', affected_rows: number } | null };
+
+export type DeleteItemRelationsBySubjectMutationVariables = Exact<{
+  subjectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type DeleteItemRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_item_relations?: { __typename?: 'app_item_relations_mutation_response', affected_rows: number } | null };
+
+export type GetCollectionRelationsByObjectQueryVariables = Exact<{
+  objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type GetCollectionRelationsByObjectQuery = { __typename?: 'query_root', app_collection_relations: Array<{ __typename?: 'app_collection_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+export type GetCollectionRelationsBySubjectQueryVariables = Exact<{
+  subjectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type GetCollectionRelationsBySubjectQuery = { __typename?: 'query_root', app_collection_relations: Array<{ __typename?: 'app_collection_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+export type GetItemRelationsByObjectQueryVariables = Exact<{
+  objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type GetItemRelationsByObjectQuery = { __typename?: 'query_root', app_item_relations: Array<{ __typename?: 'app_item_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+export type GetItemRelationsBySubjectQueryVariables = Exact<{
+  subjectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type GetItemRelationsBySubjectQuery = { __typename?: 'query_root', app_item_relations: Array<{ __typename?: 'app_item_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+export type InsertCollectionRelationMutationVariables = Exact<{
+  objectId: Scalars['uuid'];
+  subjectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type InsertCollectionRelationMutation = { __typename?: 'mutation_root', insert_app_collection_relations?: { __typename?: 'app_collection_relations_mutation_response', returning: Array<{ __typename?: 'app_collection_relations', id: number }> } | null };
+
+export type InsertItemRelationMutationVariables = Exact<{
+  objectId: Scalars['uuid'];
+  subjectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type InsertItemRelationMutation = { __typename?: 'mutation_root', insert_app_item_relations?: { __typename?: 'app_item_relations_mutation_response', returning: Array<{ __typename?: 'app_item_relations', id: number }> } | null };
+
+
+export const BulkAddLabelsToCollectionsDocument = `
+    mutation bulkAddLabelsToCollections($labels: [app_collection_labels_insert_input!]!) {
+  insert_app_collection_labels(objects: $labels) {
+    affected_rows
+  }
+}
+    `;
+export const useBulkAddLabelsToCollectionsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<BulkAddLabelsToCollectionsMutation, TError, BulkAddLabelsToCollectionsMutationVariables, TContext>) =>
+    useMutation<BulkAddLabelsToCollectionsMutation, TError, BulkAddLabelsToCollectionsMutationVariables, TContext>(
+      ['bulkAddLabelsToCollections'],
+      (variables?: BulkAddLabelsToCollectionsMutationVariables) => fetchData<BulkAddLabelsToCollectionsMutation, BulkAddLabelsToCollectionsMutationVariables>(BulkAddLabelsToCollectionsDocument, variables)(),
+      options
+    );
+export const BulkDeleteCollectionsDocument = `
+    mutation bulkDeleteCollections($collectionIds: [uuid!]!, $now: timestamptz!, $updatedByProfileId: uuid!) {
+  update_app_collections(
+    where: {id: {_in: $collectionIds}, is_deleted: {_eq: false}}
+    _set: {is_deleted: true, updated_at: $now, updated_by_profile_id: $updatedByProfileId}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useBulkDeleteCollectionsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<BulkDeleteCollectionsMutation, TError, BulkDeleteCollectionsMutationVariables, TContext>) =>
+    useMutation<BulkDeleteCollectionsMutation, TError, BulkDeleteCollectionsMutationVariables, TContext>(
+      ['bulkDeleteCollections'],
+      (variables?: BulkDeleteCollectionsMutationVariables) => fetchData<BulkDeleteCollectionsMutation, BulkDeleteCollectionsMutationVariables>(BulkDeleteCollectionsDocument, variables)(),
+      options
+    );
+export const BulkDeleteLabelsFromCollectionsDocument = `
+    mutation bulkDeleteLabelsFromCollections($labels: [String!]!, $collectionIds: [uuid!]!) {
+  delete_app_collection_labels(
+    where: {label: {_in: $labels}, collection_uuid: {_in: $collectionIds}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useBulkDeleteLabelsFromCollectionsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<BulkDeleteLabelsFromCollectionsMutation, TError, BulkDeleteLabelsFromCollectionsMutationVariables, TContext>) =>
+    useMutation<BulkDeleteLabelsFromCollectionsMutation, TError, BulkDeleteLabelsFromCollectionsMutationVariables, TContext>(
+      ['bulkDeleteLabelsFromCollections'],
+      (variables?: BulkDeleteLabelsFromCollectionsMutationVariables) => fetchData<BulkDeleteLabelsFromCollectionsMutation, BulkDeleteLabelsFromCollectionsMutationVariables>(BulkDeleteLabelsFromCollectionsDocument, variables)(),
+      options
+    );
+export const BulkUpdateAuthorForCollectionsDocument = `
+    mutation bulkUpdateAuthorForCollections($authorId: uuid!, $collectionIds: [uuid!]!, $now: timestamptz!, $updatedByProfileId: uuid!) {
+  update_app_collections(
+    where: {id: {_in: $collectionIds}, is_deleted: {_eq: false}}
+    _set: {owner_profile_id: $authorId, updated_at: $now, updated_by_profile_id: $updatedByProfileId}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useBulkUpdateAuthorForCollectionsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<BulkUpdateAuthorForCollectionsMutation, TError, BulkUpdateAuthorForCollectionsMutationVariables, TContext>) =>
+    useMutation<BulkUpdateAuthorForCollectionsMutation, TError, BulkUpdateAuthorForCollectionsMutationVariables, TContext>(
+      ['bulkUpdateAuthorForCollections'],
+      (variables?: BulkUpdateAuthorForCollectionsMutationVariables) => fetchData<BulkUpdateAuthorForCollectionsMutation, BulkUpdateAuthorForCollectionsMutationVariables>(BulkUpdateAuthorForCollectionsDocument, variables)(),
+      options
+    );
+export const BulkUpdateDateAndLastAuthorCollectionsDocument = `
+    mutation bulkUpdateDateAndLastAuthorCollections($collectionIds: [uuid!]!, $now: timestamptz!, $updatedByProfileId: uuid!) {
+  update_app_collections(
+    where: {id: {_in: $collectionIds}, is_deleted: {_eq: false}}
+    _set: {updated_at: $now, updated_by_profile_id: $updatedByProfileId}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useBulkUpdateDateAndLastAuthorCollectionsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<BulkUpdateDateAndLastAuthorCollectionsMutation, TError, BulkUpdateDateAndLastAuthorCollectionsMutationVariables, TContext>) =>
+    useMutation<BulkUpdateDateAndLastAuthorCollectionsMutation, TError, BulkUpdateDateAndLastAuthorCollectionsMutationVariables, TContext>(
+      ['bulkUpdateDateAndLastAuthorCollections'],
+      (variables?: BulkUpdateDateAndLastAuthorCollectionsMutationVariables) => fetchData<BulkUpdateDateAndLastAuthorCollectionsMutation, BulkUpdateDateAndLastAuthorCollectionsMutationVariables>(BulkUpdateDateAndLastAuthorCollectionsDocument, variables)(),
+      options
+    );
+export const BulkUpdatePublishStateForCollectionsDocument = `
+    mutation bulkUpdatePublishStateForCollections($isPublic: Boolean!, $collectionIds: [uuid!]!, $now: timestamptz!, $updatedByProfileId: uuid!) {
+  update_app_collections(
+    where: {id: {_in: $collectionIds}, is_deleted: {_eq: false}}
+    _set: {is_public: $isPublic, updated_at: $now, updated_by_profile_id: $updatedByProfileId}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useBulkUpdatePublishStateForCollectionsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<BulkUpdatePublishStateForCollectionsMutation, TError, BulkUpdatePublishStateForCollectionsMutationVariables, TContext>) =>
+    useMutation<BulkUpdatePublishStateForCollectionsMutation, TError, BulkUpdatePublishStateForCollectionsMutationVariables, TContext>(
+      ['bulkUpdatePublishStateForCollections'],
+      (variables?: BulkUpdatePublishStateForCollectionsMutationVariables) => fetchData<BulkUpdatePublishStateForCollectionsMutation, BulkUpdatePublishStateForCollectionsMutationVariables>(BulkUpdatePublishStateForCollectionsDocument, variables)(),
+      options
+    );
+export const GetCollectionActualisationsDocument = `
+    query getCollectionActualisations($where: app_collection_actualisation_overview_bool_exp!, $orderBy: [app_collection_actualisation_overview_order_by!]!, $offset: Int!, $limit: Int!) {
+  app_collections: app_collection_actualisation_overview(
+    where: $where
+    order_by: $orderBy
+    offset: $offset
+    limit: $limit
+  ) {
+    id: collection_id
+    created_at
+    is_public
+    subjects: lom_classification
+    education_levels: lom_context
+    mgmt_created_at
+    mgmt_current_status
+    mgmt_last_eindcheck_date
+    mgmt_status_expires_at
+    mgmt_updated_at
+    manager {
+      full_name
+      mail
+      profile_id
+    }
+    owner_profile_id
+    title
+    type_id
+    updated_at
+    updated_by_profile_id
+    collection_labels: labels {
+      id
+      label
+    }
+    owner {
+      profile {
+        id
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+        profile_user_group {
+          group {
+            label
+            id
+          }
+        }
+      }
+      user_id
+      full_name
+    }
+    last_editor {
+      profile_id
+      full_name
+    }
+  }
+  app_collections_aggregate: app_collection_actualisation_overview_aggregate(
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetCollectionActualisationsQuery = <
+      TData = GetCollectionActualisationsQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionActualisationsQueryVariables,
+      options?: UseQueryOptions<GetCollectionActualisationsQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionActualisationsQuery, TError, TData>(
+      ['getCollectionActualisations', variables],
+      fetchData<GetCollectionActualisationsQuery, GetCollectionActualisationsQueryVariables>(GetCollectionActualisationsDocument, variables),
+      options
+    );
+export const GetCollectionMarcomDocument = `
+    query getCollectionMarcom($where: app_collection_marcom_overview_bool_exp!, $orderBy: [app_collection_marcom_overview_order_by!]!, $offset: Int!, $limit: Int!) {
+  app_collections: app_collection_marcom_overview(
+    where: $where
+    order_by: $orderBy
+    offset: $offset
+    limit: $limit
+  ) {
+    channel_name
+    channel_type
+    id: collection_id
+    created_at
+    is_public
+    klascement
+    collection_labels: labels {
+      label
+      id
+    }
+    last_editor {
+      full_name
+    }
+    subjects: lom_classification
+    education_levels: lom_context
+    owner {
+      profile {
+        id
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+        profile_user_group {
+          group {
+            label
+            id
+          }
+        }
+      }
+      user_id
+      full_name
+    }
+    last_marcom_date
+    title
+    updated_at
+  }
+  app_collections_aggregate: app_collection_marcom_overview_aggregate(
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetCollectionMarcomQuery = <
+      TData = GetCollectionMarcomQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionMarcomQueryVariables,
+      options?: UseQueryOptions<GetCollectionMarcomQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionMarcomQuery, TError, TData>(
+      ['getCollectionMarcom', variables],
+      fetchData<GetCollectionMarcomQuery, GetCollectionMarcomQueryVariables>(GetCollectionMarcomDocument, variables),
+      options
+    );
+export const GetCollectionQualityCheckDocument = `
+    query getCollectionQualityCheck($where: app_collection_qc_overview_bool_exp!, $orderBy: [app_collection_qc_overview_order_by!]!, $offset: Int!, $limit: Int!) {
+  app_collections: app_collection_qc_overview(
+    where: $where
+    order_by: $orderBy
+    offset: $offset
+    limit: $limit
+  ) {
+    id: collection_id
+    is_public
+    subjects: lom_classification
+    education_levels: lom_context
+    owner {
+      profile {
+        id
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+        profile_user_group {
+          group {
+            label
+            id
+          }
+        }
+      }
+      user_id
+      full_name
+    }
+    created_at
+    updated_at
+    title
+    updated_by_profile_id
+    collection_labels: labels {
+      id
+      label
+    }
+    last_editor {
+      full_name
+    }
+    mgmt_quality_check
+    mgmt_language_check
+    mgmt_eind_check_date
+  }
+  app_collections_aggregate: app_collection_qc_overview_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetCollectionQualityCheckQuery = <
+      TData = GetCollectionQualityCheckQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionQualityCheckQueryVariables,
+      options?: UseQueryOptions<GetCollectionQualityCheckQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionQualityCheckQuery, TError, TData>(
+      ['getCollectionQualityCheck', variables],
+      fetchData<GetCollectionQualityCheckQuery, GetCollectionQualityCheckQueryVariables>(GetCollectionQualityCheckDocument, variables),
+      options
+    );
+export const GetCollectionsDocument = `
+    query getCollections($where: app_collections_bool_exp!, $orderBy: [app_collections_order_by!]!, $offset: Int!, $limit: Int!) {
+  app_collections(
+    where: $where
+    order_by: $orderBy
+    offset: $offset
+    limit: $limit
+  ) {
+    id
+    type_id
+    title
+    description
+    is_public
+    is_managed
+    subjects: lom_classification
+    education_levels: lom_context
+    created_at
+    updated_at
+    owner {
+      full_name
+      group_id
+      group_name
+      profile_id
+      profile {
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+      user_id
+    }
+    last_editor {
+      full_name
+      profile_id
+      user_id
+    }
+    collection_labels {
+      id
+      label
+    }
+    counts {
+      bookmarks
+      in_assignment
+      in_collection
+      views
+      copies
+      quick_lane_links
+    }
+  }
+  app_collections_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetCollectionsQuery = <
+      TData = GetCollectionsQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionsQueryVariables,
+      options?: UseQueryOptions<GetCollectionsQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionsQuery, TError, TData>(
+      ['getCollections', variables],
+      fetchData<GetCollectionsQuery, GetCollectionsQueryVariables>(GetCollectionsDocument, variables),
+      options
+    );
+export const GetCollectionsByIdsDocument = `
+    query getCollectionsByIds($where: app_collections_bool_exp!) {
+  app_collections(where: $where) {
+    id
+  }
+}
+    `;
+export const useGetCollectionsByIdsQuery = <
+      TData = GetCollectionsByIdsQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionsByIdsQueryVariables,
+      options?: UseQueryOptions<GetCollectionsByIdsQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionsByIdsQuery, TError, TData>(
+      ['getCollectionsByIds', variables],
+      fetchData<GetCollectionsByIdsQuery, GetCollectionsByIdsQueryVariables>(GetCollectionsByIdsDocument, variables),
+      options
+    );
+export const DeleteInteractiveTourDocument = `
+    mutation deleteInteractiveTour($interactiveTourId: Int!) {
+  delete_app_interactive_tour(where: {id: {_eq: $interactiveTourId}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteInteractiveTourMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteInteractiveTourMutation, TError, DeleteInteractiveTourMutationVariables, TContext>) =>
+    useMutation<DeleteInteractiveTourMutation, TError, DeleteInteractiveTourMutationVariables, TContext>(
+      ['deleteInteractiveTour'],
+      (variables?: DeleteInteractiveTourMutationVariables) => fetchData<DeleteInteractiveTourMutation, DeleteInteractiveTourMutationVariables>(DeleteInteractiveTourDocument, variables)(),
+      options
+    );
+export const GetInteractiveTourByIdDocument = `
+    query getInteractiveTourById($id: Int!) {
+  app_interactive_tour(where: {id: {_eq: $id}}) {
+    name
+    id
+    page_id: page
+    created_at
+    updated_at
+    steps
+  }
+}
+    `;
+export const useGetInteractiveTourByIdQuery = <
+      TData = GetInteractiveTourByIdQuery,
+      TError = unknown
+    >(
+      variables: GetInteractiveTourByIdQueryVariables,
+      options?: UseQueryOptions<GetInteractiveTourByIdQuery, TError, TData>
+    ) =>
+    useQuery<GetInteractiveTourByIdQuery, TError, TData>(
+      ['getInteractiveTourById', variables],
+      fetchData<GetInteractiveTourByIdQuery, GetInteractiveTourByIdQueryVariables>(GetInteractiveTourByIdDocument, variables),
+      options
+    );
+export const GetInteractiveToursDocument = `
+    query getInteractiveTours($limit: Int!, $offset: Int!, $orderBy: [app_interactive_tour_order_by!]!, $where: app_interactive_tour_bool_exp) {
+  app_interactive_tour(
+    limit: $limit
+    offset: $offset
+    order_by: $orderBy
+    where: $where
+  ) {
+    name
+    id
+    page_id: page
+    created_at
+    updated_at
+  }
+  app_interactive_tour_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetInteractiveToursQuery = <
+      TData = GetInteractiveToursQuery,
+      TError = unknown
+    >(
+      variables: GetInteractiveToursQueryVariables,
+      options?: UseQueryOptions<GetInteractiveToursQuery, TError, TData>
+    ) =>
+    useQuery<GetInteractiveToursQuery, TError, TData>(
+      ['getInteractiveTours', variables],
+      fetchData<GetInteractiveToursQuery, GetInteractiveToursQueryVariables>(GetInteractiveToursDocument, variables),
+      options
+    );
+export const InsertInteractiveTourDocument = `
+    mutation insertInteractiveTour($interactiveTour: app_interactive_tour_insert_input!) {
+  insert_app_interactive_tour(objects: [$interactiveTour]) {
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertInteractiveTourMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertInteractiveTourMutation, TError, InsertInteractiveTourMutationVariables, TContext>) =>
+    useMutation<InsertInteractiveTourMutation, TError, InsertInteractiveTourMutationVariables, TContext>(
+      ['insertInteractiveTour'],
+      (variables?: InsertInteractiveTourMutationVariables) => fetchData<InsertInteractiveTourMutation, InsertInteractiveTourMutationVariables>(InsertInteractiveTourDocument, variables)(),
+      options
+    );
+export const UpdateInteractiveTourDocument = `
+    mutation updateInteractiveTour($interactiveTour: app_interactive_tour_set_input!, $interactiveTourId: Int!) {
+  update_app_interactive_tour(
+    where: {id: {_eq: $interactiveTourId}}
+    _set: $interactiveTour
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateInteractiveTourMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateInteractiveTourMutation, TError, UpdateInteractiveTourMutationVariables, TContext>) =>
+    useMutation<UpdateInteractiveTourMutation, TError, UpdateInteractiveTourMutationVariables, TContext>(
+      ['updateInteractiveTour'],
+      (variables?: UpdateInteractiveTourMutationVariables) => fetchData<UpdateInteractiveTourMutation, UpdateInteractiveTourMutationVariables>(UpdateInteractiveTourDocument, variables)(),
+      options
+    );
+export const DeleteItemFromCollectionBookmarksAndAssignmentsDocument = `
+    mutation deleteItemFromCollectionBookmarksAndAssignments($itemExternalId: String!, $itemUid: uuid!) {
+  delete_app_collection_fragments(where: {external_id: {_eq: $itemExternalId}}) {
+    affected_rows
+  }
+  delete_app_item_bookmarks(where: {item_id: {_eq: $itemUid}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteItemFromCollectionBookmarksAndAssignmentsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteItemFromCollectionBookmarksAndAssignmentsMutation, TError, DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables, TContext>) =>
+    useMutation<DeleteItemFromCollectionBookmarksAndAssignmentsMutation, TError, DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables, TContext>(
+      ['deleteItemFromCollectionBookmarksAndAssignments'],
+      (variables?: DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables) => fetchData<DeleteItemFromCollectionBookmarksAndAssignmentsMutation, DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables>(DeleteItemFromCollectionBookmarksAndAssignmentsDocument, variables)(),
+      options
+    );
+export const GetDistinctSeriesDocument = `
+    query getDistinctSeries {
+  app_item_meta(distinct_on: series, where: {series: {_is_null: false}}) {
+    series
+    is_published
+    is_deleted
+  }
+}
+    `;
+export const useGetDistinctSeriesQuery = <
+      TData = GetDistinctSeriesQuery,
+      TError = unknown
+    >(
+      variables?: GetDistinctSeriesQueryVariables,
+      options?: UseQueryOptions<GetDistinctSeriesQuery, TError, TData>
+    ) =>
+    useQuery<GetDistinctSeriesQuery, TError, TData>(
+      variables === undefined ? ['getDistinctSeries'] : ['getDistinctSeries', variables],
+      fetchData<GetDistinctSeriesQuery, GetDistinctSeriesQueryVariables>(GetDistinctSeriesDocument, variables),
+      options
+    );
+export const GetItemByUuidDocument = `
+    query getItemByUuid($uuid: uuid!) {
+  app_item_meta(where: {uid: {_eq: $uuid}}) {
+    thumbnail_path
+    created_at
+    depublish_at
+    depublish_reason
+    description
+    duration
+    expiry_date
+    external_id
+    uid
+    is_deleted
+    is_published
+    issued
+    lom_classification
+    lom_thema
+    lom_context
+    lom_intendedenduserrole
+    lom_keywords
+    lom_languages
+    lom_typical_age_range: lom_typicalagerange
+    org_id
+    organisation {
+      or_id
+      name
+    }
+    publish_at
+    published_at
+    series
+    title
+    type {
+      id
+      label
+    }
+    updated_at
+    note
+    relations(where: {predicate: {_eq: "IS_REPLACED_BY"}}) {
+      object
+      subject
+      predicate
+      created_at
+      updated_at
+    }
+    item_collaterals(where: {description: {_eq: "subtitle"}}) {
+      path
+      description
+      external_id
+    }
+    view_counts_aggregate {
+      aggregate {
+        sum {
+          count
+        }
+      }
+    }
+  }
+}
+    `;
+export const useGetItemByUuidQuery = <
+      TData = GetItemByUuidQuery,
+      TError = unknown
+    >(
+      variables: GetItemByUuidQueryVariables,
+      options?: UseQueryOptions<GetItemByUuidQuery, TError, TData>
+    ) =>
+    useQuery<GetItemByUuidQuery, TError, TData>(
+      ['getItemByUuid', variables],
+      fetchData<GetItemByUuidQuery, GetItemByUuidQueryVariables>(GetItemByUuidDocument, variables),
+      options
+    );
+export const GetItemDepublishReasonByExternalIdDocument = `
+    query getItemDepublishReasonByExternalId($externalId: bpchar!) {
+  app_item_meta(
+    where: {external_id: {_eq: $externalId}, is_deleted: {_eq: false}, is_published: {_eq: false}}
+  ) {
+    depublish_reason
+    is_published
+    is_deleted
+  }
+}
+    `;
+export const useGetItemDepublishReasonByExternalIdQuery = <
+      TData = GetItemDepublishReasonByExternalIdQuery,
+      TError = unknown
+    >(
+      variables: GetItemDepublishReasonByExternalIdQueryVariables,
+      options?: UseQueryOptions<GetItemDepublishReasonByExternalIdQuery, TError, TData>
+    ) =>
+    useQuery<GetItemDepublishReasonByExternalIdQuery, TError, TData>(
+      ['getItemDepublishReasonByExternalId', variables],
+      fetchData<GetItemDepublishReasonByExternalIdQuery, GetItemDepublishReasonByExternalIdQueryVariables>(GetItemDepublishReasonByExternalIdDocument, variables),
+      options
+    );
+export const GetItemsByExternalIdDocument = `
+    query getItemsByExternalId($externalIds: [bpchar!] = []) {
+  app_item_meta(
+    where: {external_id: {_in: $externalIds}, is_deleted: {_eq: false}, is_published: {_eq: true}}
+  ) {
+    created_at
+    depublish_at
+    description
+    duration
+    expiry_date
+    external_id
+    id
+    uid
+    is_deleted
+    is_orphaned
+    is_published
+    issued
+    issued_edtf
+    lom_classification
+    lom_thema
+    lom_context
+    lom_intendedenduserrole
+    lom_keywords
+    lom_languages
+    lom_typical_age_range: lom_typicalagerange
+    org_id
+    organisation {
+      or_id
+      name
+      logo_url
+    }
+    publish_at
+    published_at
+    series
+    thumbnail_path
+    title
+    type {
+      id
+      label
+    }
+    type_id
+    updated_at
+    note
+    item_collaterals(where: {description: {_eq: "subtitle"}}) {
+      path
+      description
+      external_id
+    }
+    view_counts_aggregate {
+      aggregate {
+        sum {
+          count
+        }
+      }
+    }
+  }
+}
+    `;
+export const useGetItemsByExternalIdQuery = <
+      TData = GetItemsByExternalIdQuery,
+      TError = unknown
+    >(
+      variables?: GetItemsByExternalIdQueryVariables,
+      options?: UseQueryOptions<GetItemsByExternalIdQuery, TError, TData>
+    ) =>
+    useQuery<GetItemsByExternalIdQuery, TError, TData>(
+      variables === undefined ? ['getItemsByExternalId'] : ['getItemsByExternalId', variables],
+      fetchData<GetItemsByExternalIdQuery, GetItemsByExternalIdQueryVariables>(GetItemsByExternalIdDocument, variables),
+      options
+    );
+export const GetItemsWithFiltersDocument = `
+    query getItemsWithFilters($where: app_item_meta_bool_exp!, $orderBy: [app_item_meta_order_by!]!, $offset: Int!, $limit: Int!) {
+  app_item_meta(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
+    created_at
+    depublish_at
+    depublish_reason
+    description
+    duration
+    expiry_date
+    external_id
+    uid
+    is_deleted
+    is_published
+    issued
+    lom_classification
+    lom_thema
+    lom_context
+    lom_intendedenduserrole
+    lom_keywords
+    lom_languages
+    lom_typical_age_range: lom_typicalagerange
+    org_id
+    organisation {
+      or_id
+      name
+    }
+    publish_at
+    published_at
+    series
+    title
+    type {
+      id
+      label
+    }
+    updated_at
+    note
+    relations(where: {predicate: {_eq: "IS_REPLACED_BY"}}) {
+      object
+      subject
+      predicate
+      created_at
+      updated_at
+    }
+    item_counts {
+      bookmarks
+      in_assignment
+      in_collection
+      plays
+      views
+      quick_lane_links
+    }
+  }
+  app_item_meta_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetItemsWithFiltersQuery = <
+      TData = GetItemsWithFiltersQuery,
+      TError = unknown
+    >(
+      variables: GetItemsWithFiltersQueryVariables,
+      options?: UseQueryOptions<GetItemsWithFiltersQuery, TError, TData>
+    ) =>
+    useQuery<GetItemsWithFiltersQuery, TError, TData>(
+      ['getItemsWithFilters', variables],
+      fetchData<GetItemsWithFiltersQuery, GetItemsWithFiltersQueryVariables>(GetItemsWithFiltersDocument, variables),
+      options
+    );
+export const GetPublicItemsDocument = `
+    query getPublicItems($limit: Int!) {
+  app_item_meta(
+    order_by: {title: asc}
+    limit: $limit
+    where: {is_published: {_eq: true}}
+  ) {
+    external_id
+    title
+    is_published
+    is_deleted
+  }
+}
+    `;
+export const useGetPublicItemsQuery = <
+      TData = GetPublicItemsQuery,
+      TError = unknown
+    >(
+      variables: GetPublicItemsQueryVariables,
+      options?: UseQueryOptions<GetPublicItemsQuery, TError, TData>
+    ) =>
+    useQuery<GetPublicItemsQuery, TError, TData>(
+      ['getPublicItems', variables],
+      fetchData<GetPublicItemsQuery, GetPublicItemsQueryVariables>(GetPublicItemsDocument, variables),
+      options
+    );
+export const GetPublicItemsByTitleOrExternalIdDocument = `
+    query getPublicItemsByTitleOrExternalId($title: String!, $externalId: bpchar!, $limit: Int!) {
+  itemsByTitle: app_item_meta(
+    order_by: {title: asc}
+    limit: $limit
+    where: {title: {_ilike: $title}, is_published: {_eq: true}}
+  ) {
+    external_id
+    title
+    is_published
+    is_deleted
+  }
+  itemsByExternalId: app_item_meta(
+    order_by: {title: asc}
+    limit: $limit
+    where: {external_id: {_eq: $externalId}, is_published: {_eq: true}}
+  ) {
+    external_id
+    title
+    is_published
+    is_deleted
+  }
+}
+    `;
+export const useGetPublicItemsByTitleOrExternalIdQuery = <
+      TData = GetPublicItemsByTitleOrExternalIdQuery,
+      TError = unknown
+    >(
+      variables: GetPublicItemsByTitleOrExternalIdQueryVariables,
+      options?: UseQueryOptions<GetPublicItemsByTitleOrExternalIdQuery, TError, TData>
+    ) =>
+    useQuery<GetPublicItemsByTitleOrExternalIdQuery, TError, TData>(
+      ['getPublicItemsByTitleOrExternalId', variables],
+      fetchData<GetPublicItemsByTitleOrExternalIdQuery, GetPublicItemsByTitleOrExternalIdQueryVariables>(GetPublicItemsByTitleOrExternalIdDocument, variables),
+      options
+    );
+export const GetUnpublishedItemPidsDocument = `
+    query getUnpublishedItemPids($where: shared_items_bool_exp!) {
+  shared_items(where: $where) {
+    pid
+  }
+}
+    `;
+export const useGetUnpublishedItemPidsQuery = <
+      TData = GetUnpublishedItemPidsQuery,
+      TError = unknown
+    >(
+      variables: GetUnpublishedItemPidsQueryVariables,
+      options?: UseQueryOptions<GetUnpublishedItemPidsQuery, TError, TData>
+    ) =>
+    useQuery<GetUnpublishedItemPidsQuery, TError, TData>(
+      ['getUnpublishedItemPids', variables],
+      fetchData<GetUnpublishedItemPidsQuery, GetUnpublishedItemPidsQueryVariables>(GetUnpublishedItemPidsDocument, variables),
+      options
+    );
+export const GetUnpublishedItemsWithFiltersDocument = `
+    query getUnpublishedItemsWithFilters($where: shared_items_bool_exp!, $orderBy: [shared_items_order_by!], $offset: Int!, $limit: Int!) {
+  shared_items(where: $where, order_by: $orderBy, offset: $offset, limit: $limit) {
+    id
+    pid
+    updated_at
+    title
+    status
+    item_meta {
+      id
+      external_id
+      uid
+      is_published
+      is_deleted
+    }
+  }
+  shared_items_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetUnpublishedItemsWithFiltersQuery = <
+      TData = GetUnpublishedItemsWithFiltersQuery,
+      TError = unknown
+    >(
+      variables: GetUnpublishedItemsWithFiltersQueryVariables,
+      options?: UseQueryOptions<GetUnpublishedItemsWithFiltersQuery, TError, TData>
+    ) =>
+    useQuery<GetUnpublishedItemsWithFiltersQuery, TError, TData>(
+      ['getUnpublishedItemsWithFilters', variables],
+      fetchData<GetUnpublishedItemsWithFiltersQuery, GetUnpublishedItemsWithFiltersQueryVariables>(GetUnpublishedItemsWithFiltersDocument, variables),
+      options
+    );
+export const GetUserWithEitherBookmarkDocument = `
+    query getUserWithEitherBookmark($oldItemUid: uuid!, $newItemUid: uuid!) {
+  users_profiles(
+    where: {item_bookmarks: {item_id: {_in: [$oldItemUid, $newItemUid]}}}
+  ) {
+    id
+    item_bookmarks_aggregate(where: {item_id: {_in: [$oldItemUid, $newItemUid]}}) {
+      aggregate {
+        count
+      }
+    }
+  }
+}
+    `;
+export const useGetUserWithEitherBookmarkQuery = <
+      TData = GetUserWithEitherBookmarkQuery,
+      TError = unknown
+    >(
+      variables: GetUserWithEitherBookmarkQueryVariables,
+      options?: UseQueryOptions<GetUserWithEitherBookmarkQuery, TError, TData>
+    ) =>
+    useQuery<GetUserWithEitherBookmarkQuery, TError, TData>(
+      ['getUserWithEitherBookmark', variables],
+      fetchData<GetUserWithEitherBookmarkQuery, GetUserWithEitherBookmarkQueryVariables>(GetUserWithEitherBookmarkDocument, variables),
+      options
+    );
+export const ReplaceItemInCollectionsBookmarksAndAssignmentsDocument = `
+    mutation replaceItemInCollectionsBookmarksAndAssignments($oldItemUid: uuid!, $oldItemExternalId: String!, $newItemUid: uuid!, $newItemExternalId: String!, $usersWithBothBookmarks: [uuid!]!) {
+  update_app_collection_fragments(
+    where: {external_id: {_eq: $oldItemExternalId}}
+    _set: {external_id: $newItemExternalId, start_oc: null, end_oc: null}
+  ) {
+    affected_rows
+  }
+  update_app_item_bookmarks(
+    where: {item_id: {_eq: $oldItemUid}, _not: {profile_id: {_in: $usersWithBothBookmarks}}}
+    _set: {item_id: $newItemUid}
+  ) {
+    affected_rows
+  }
+  delete_app_item_bookmarks(
+    where: {item_id: {_eq: $oldItemUid}, profile_id: {_in: $usersWithBothBookmarks}}
+  ) {
+    affected_rows
+  }
+  update_app_assignment_blocks_v2(
+    where: {fragment_id: {_eq: $oldItemExternalId}, type: {_eq: "ITEM"}}
+    _set: {fragment_id: $newItemExternalId}
+  ) {
+    affected_rows
+  }
+  update_app_pupil_collection_blocks(
+    where: {fragment_id: {_eq: $oldItemExternalId}, type: {_eq: "ITEM"}}
+    _set: {fragment_id: $newItemExternalId}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useReplaceItemInCollectionsBookmarksAndAssignmentsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation, TError, ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables, TContext>) =>
+    useMutation<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation, TError, ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables, TContext>(
+      ['replaceItemInCollectionsBookmarksAndAssignments'],
+      (variables?: ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables) => fetchData<ReplaceItemInCollectionsBookmarksAndAssignmentsMutation, ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables>(ReplaceItemInCollectionsBookmarksAndAssignmentsDocument, variables)(),
+      options
+    );
+export const SetSharedItemsStatusDocument = `
+    mutation setSharedItemsStatus($pids: [String!]!, $status: item_publishing_status) {
+  update_shared_items(where: {pid: {_in: $pids}}, _set: {status: $status}) {
+    affected_rows
+  }
+}
+    `;
+export const useSetSharedItemsStatusMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SetSharedItemsStatusMutation, TError, SetSharedItemsStatusMutationVariables, TContext>) =>
+    useMutation<SetSharedItemsStatusMutation, TError, SetSharedItemsStatusMutationVariables, TContext>(
+      ['setSharedItemsStatus'],
+      (variables?: SetSharedItemsStatusMutationVariables) => fetchData<SetSharedItemsStatusMutation, SetSharedItemsStatusMutationVariables>(SetSharedItemsStatusDocument, variables)(),
+      options
+    );
+export const UpdateItemDepublishReasonDocument = `
+    mutation updateItemDepublishReason($itemUuid: uuid!, $reason: String) {
+  update_app_item_meta(
+    where: {uid: {_eq: $itemUuid}}
+    _set: {depublish_reason: $reason}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateItemDepublishReasonMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateItemDepublishReasonMutation, TError, UpdateItemDepublishReasonMutationVariables, TContext>) =>
+    useMutation<UpdateItemDepublishReasonMutation, TError, UpdateItemDepublishReasonMutationVariables, TContext>(
+      ['updateItemDepublishReason'],
+      (variables?: UpdateItemDepublishReasonMutationVariables) => fetchData<UpdateItemDepublishReasonMutation, UpdateItemDepublishReasonMutationVariables>(UpdateItemDepublishReasonDocument, variables)(),
+      options
+    );
+export const UpdateItemNotesDocument = `
+    mutation updateItemNotes($itemUuid: uuid!, $note: String) {
+  update_app_item_meta(where: {uid: {_eq: $itemUuid}}, _set: {note: $note}) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateItemNotesMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateItemNotesMutation, TError, UpdateItemNotesMutationVariables, TContext>) =>
+    useMutation<UpdateItemNotesMutation, TError, UpdateItemNotesMutationVariables, TContext>(
+      ['updateItemNotes'],
+      (variables?: UpdateItemNotesMutationVariables) => fetchData<UpdateItemNotesMutation, UpdateItemNotesMutationVariables>(UpdateItemNotesDocument, variables)(),
+      options
+    );
+export const UpdateItemPublishedStateDocument = `
+    mutation updateItemPublishedState($itemUuid: uuid!, $isPublished: Boolean!) {
+  update_app_item_meta(
+    where: {uid: {_eq: $itemUuid}}
+    _set: {is_published: $isPublished}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateItemPublishedStateMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateItemPublishedStateMutation, TError, UpdateItemPublishedStateMutationVariables, TContext>) =>
+    useMutation<UpdateItemPublishedStateMutation, TError, UpdateItemPublishedStateMutationVariables, TContext>(
+      ['updateItemPublishedState'],
+      (variables?: UpdateItemPublishedStateMutationVariables) => fetchData<UpdateItemPublishedStateMutation, UpdateItemPublishedStateMutationVariables>(UpdateItemPublishedStateDocument, variables)(),
+      options
+    );
+export const GetTranslationsDocument = `
+    query getTranslations {
+  app_site_variables(where: {name: {_ilike: "translations-%"}}) {
+    name
+    value
+  }
+}
+    `;
+export const useGetTranslationsQuery = <
+      TData = GetTranslationsQuery,
+      TError = unknown
+    >(
+      variables?: GetTranslationsQueryVariables,
+      options?: UseQueryOptions<GetTranslationsQuery, TError, TData>
+    ) =>
+    useQuery<GetTranslationsQuery, TError, TData>(
+      variables === undefined ? ['getTranslations'] : ['getTranslations', variables],
+      fetchData<GetTranslationsQuery, GetTranslationsQueryVariables>(GetTranslationsDocument, variables),
+      options
+    );
+export const UpdateTranslationsDocument = `
+    mutation updateTranslations($name: String!, $translations: app_site_variables_set_input!) {
+  update_app_site_variables(where: {name: {_eq: $name}}, _set: $translations) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateTranslationsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateTranslationsMutation, TError, UpdateTranslationsMutationVariables, TContext>) =>
+    useMutation<UpdateTranslationsMutation, TError, UpdateTranslationsMutationVariables, TContext>(
+      ['updateTranslations'],
+      (variables?: UpdateTranslationsMutationVariables) => fetchData<UpdateTranslationsMutation, UpdateTranslationsMutationVariables>(UpdateTranslationsDocument, variables)(),
+      options
+    );
+export const GetUserGroupsWithFiltersDocument = `
+    query getUserGroupsWithFilters($limit: Int!, $offset: Int!, $orderBy: [users_groups_order_by!]!, $where: users_groups_bool_exp!) {
+  users_groups(limit: $limit, offset: $offset, order_by: $orderBy, where: $where) {
+    label
+    id
+    created_at
+    description
+    updated_at
+  }
+  users_groups_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetUserGroupsWithFiltersQuery = <
+      TData = GetUserGroupsWithFiltersQuery,
+      TError = unknown
+    >(
+      variables: GetUserGroupsWithFiltersQueryVariables,
+      options?: UseQueryOptions<GetUserGroupsWithFiltersQuery, TError, TData>
+    ) =>
+    useQuery<GetUserGroupsWithFiltersQuery, TError, TData>(
+      ['getUserGroupsWithFilters', variables],
+      fetchData<GetUserGroupsWithFiltersQuery, GetUserGroupsWithFiltersQueryVariables>(GetUserGroupsWithFiltersDocument, variables),
+      options
+    );
+export const GetProfileIdsDocument = `
+    query getProfileIds($where: users_summary_view_bool_exp!) {
+  users_summary_view(where: $where) {
+    profile_id
+  }
+}
+    `;
+export const useGetProfileIdsQuery = <
+      TData = GetProfileIdsQuery,
+      TError = unknown
+    >(
+      variables: GetProfileIdsQueryVariables,
+      options?: UseQueryOptions<GetProfileIdsQuery, TError, TData>
+    ) =>
+    useQuery<GetProfileIdsQuery, TError, TData>(
+      ['getProfileIds', variables],
+      fetchData<GetProfileIdsQuery, GetProfileIdsQueryVariables>(GetProfileIdsDocument, variables),
+      options
+    );
+export const GetUsersDocument = `
+    query getUsers($offset: Int!, $limit: Int!, $orderBy: [users_summary_view_order_by!]!, $where: users_summary_view_bool_exp!) {
+  users_summary_view(
+    offset: $offset
+    limit: $limit
+    order_by: $orderBy
+    where: $where
+  ) {
+    user_id
+    full_name
+    first_name
+    last_name
+    mail
+    last_access_at
+    is_blocked
+    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
+    }
+    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
+    }
+    profile_id
+    stamboek
+    acc_created_at
+    group_id
+    group_name
+    company_name
+    is_exception
+    business_category
+    idps {
+      idp
+    }
+    classifications {
+      key
+    }
+    contexts {
+      key
+    }
+    organisations {
+      organization_id
+      unit_id
+      organization {
+        ldap_description
+      }
+    }
+    user {
+      temp_access {
+        until
+        from
+        current {
+          status
+        }
+      }
+    }
+  }
+  users_summary_view_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetUsersQuery = <
+      TData = GetUsersQuery,
+      TError = unknown
+    >(
+      variables: GetUsersQueryVariables,
+      options?: UseQueryOptions<GetUsersQuery, TError, TData>
+    ) =>
+    useQuery<GetUsersQuery, TError, TData>(
+      ['getUsers', variables],
+      fetchData<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, variables),
+      options
+    );
+export const GetUsersInSameCompanyDocument = `
+    query getUsersInSameCompany($offset: Int!, $limit: Int!, $orderBy: [users_summary_view_order_by!]!, $where: users_summary_view_bool_exp!, $companyId: String!) {
+  users_summary_view(
+    offset: $offset
+    limit: $limit
+    order_by: $orderBy
+    where: {_and: [{company_id: {_eq: $companyId}}, $where]}
+  ) {
+    user_id
+    full_name
+    first_name
+    last_name
+    mail
+    last_access_at
+    is_blocked
+    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
+    }
+    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
+      aggregate {
+        max {
+          created_at
+        }
+      }
+    }
+    profile_id
+    stamboek
+    acc_created_at
+    group_id
+    group_name
+    company_name
+    is_exception
+    business_category
+    idps {
+      idp
+    }
+    classifications {
+      key
+    }
+    contexts {
+      key
+    }
+    organisations {
+      organization_id
+      unit_id
+      organization {
+        ldap_description
+      }
+    }
+    user {
+      temp_access {
+        until
+        from
+        current {
+          status
+        }
+      }
+    }
+  }
+  users_summary_view_aggregate(
+    where: {_and: [{company_id: {_eq: $companyId}}, $where]}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetUsersInSameCompanyQuery = <
+      TData = GetUsersInSameCompanyQuery,
+      TError = unknown
+    >(
+      variables: GetUsersInSameCompanyQueryVariables,
+      options?: UseQueryOptions<GetUsersInSameCompanyQuery, TError, TData>
+    ) =>
+    useQuery<GetUsersInSameCompanyQuery, TError, TData>(
+      ['getUsersInSameCompany', variables],
+      fetchData<GetUsersInSameCompanyQuery, GetUsersInSameCompanyQueryVariables>(GetUsersInSameCompanyDocument, variables),
+      options
+    );
+export const UpdateUserTempAccessByIdDocument = `
+    mutation updateUserTempAccessById($user_id: uuid!, $from: date, $until: date!) {
+  insert_shared_user_temp_access_one(
+    object: {user_id: $user_id, from: $from, until: $until}
+    on_conflict: {constraint: user_temp_access_pkey, update_columns: [from, until]}
+  ) {
+    user_id
+    user {
+      full_name
+      mail
+    }
+    from
+    until
+  }
+}
+    `;
+export const useUpdateUserTempAccessByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateUserTempAccessByIdMutation, TError, UpdateUserTempAccessByIdMutationVariables, TContext>) =>
+    useMutation<UpdateUserTempAccessByIdMutation, TError, UpdateUserTempAccessByIdMutationVariables, TContext>(
+      ['updateUserTempAccessById'],
+      (variables?: UpdateUserTempAccessByIdMutationVariables) => fetchData<UpdateUserTempAccessByIdMutation, UpdateUserTempAccessByIdMutationVariables>(UpdateUserTempAccessByIdDocument, variables)(),
+      options
+    );
+export const AssignmentPupilBlocksDocument = `
+    query assignmentPupilBlocks($assignmentId: uuid!) {
+  app_pupil_collection_blocks(
+    where: {assignment_responses_v2: {assignment_id: {_eq: $assignmentId}}}
+  ) {
+    id
+  }
+}
+    `;
+export const useAssignmentPupilBlocksQuery = <
+      TData = AssignmentPupilBlocksQuery,
+      TError = unknown
+    >(
+      variables: AssignmentPupilBlocksQueryVariables,
+      options?: UseQueryOptions<AssignmentPupilBlocksQuery, TError, TData>
+    ) =>
+    useQuery<AssignmentPupilBlocksQuery, TError, TData>(
+      ['assignmentPupilBlocks', variables],
+      fetchData<AssignmentPupilBlocksQuery, AssignmentPupilBlocksQueryVariables>(AssignmentPupilBlocksDocument, variables),
+      options
+    );
+export const BulkUpdateAuthorForAssignmentsDocument = `
+    mutation bulkUpdateAuthorForAssignments($authorId: uuid!, $assignmentIds: [uuid!]!, $now: timestamptz!) {
+  update_app_assignments_v2(
+    where: {id: {_in: $assignmentIds}, is_deleted: {_eq: false}}
+    _set: {owner_profile_id: $authorId, updated_at: $now}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useBulkUpdateAuthorForAssignmentsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<BulkUpdateAuthorForAssignmentsMutation, TError, BulkUpdateAuthorForAssignmentsMutationVariables, TContext>) =>
+    useMutation<BulkUpdateAuthorForAssignmentsMutation, TError, BulkUpdateAuthorForAssignmentsMutationVariables, TContext>(
+      ['bulkUpdateAuthorForAssignments'],
+      (variables?: BulkUpdateAuthorForAssignmentsMutationVariables) => fetchData<BulkUpdateAuthorForAssignmentsMutation, BulkUpdateAuthorForAssignmentsMutationVariables>(BulkUpdateAuthorForAssignmentsDocument, variables)(),
+      options
+    );
+export const SoftDeleteAssignmentByIdDocument = `
+    mutation softDeleteAssignmentById($assignmentId: uuid!, $now: timestamptz!) {
+  update_app_assignments_v2(
+    where: {id: {_eq: $assignmentId}}
+    _set: {is_deleted: true, updated_at: $now}
+  ) {
+    affected_rows
+  }
+  delete_app_assignments_v2_contributors(
+    where: {assignment_id: {_eq: $assignmentId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useSoftDeleteAssignmentByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SoftDeleteAssignmentByIdMutation, TError, SoftDeleteAssignmentByIdMutationVariables, TContext>) =>
+    useMutation<SoftDeleteAssignmentByIdMutation, TError, SoftDeleteAssignmentByIdMutationVariables, TContext>(
+      ['softDeleteAssignmentById'],
+      (variables?: SoftDeleteAssignmentByIdMutationVariables) => fetchData<SoftDeleteAssignmentByIdMutation, SoftDeleteAssignmentByIdMutationVariables>(SoftDeleteAssignmentByIdDocument, variables)(),
+      options
+    );
+export const DeleteAssignmentResponseByIdDocument = `
+    mutation deleteAssignmentResponseById($assignmentResponseId: uuid!) {
+  delete_app_assignment_responses_v2(where: {id: {_eq: $assignmentResponseId}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentResponseByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentResponseByIdMutation, TError, DeleteAssignmentResponseByIdMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentResponseByIdMutation, TError, DeleteAssignmentResponseByIdMutationVariables, TContext>(
+      ['deleteAssignmentResponseById'],
+      (variables?: DeleteAssignmentResponseByIdMutationVariables) => fetchData<DeleteAssignmentResponseByIdMutation, DeleteAssignmentResponseByIdMutationVariables>(DeleteAssignmentResponseByIdDocument, variables)(),
+      options
+    );
+export const DeleteAssignmentsByIdDocument = `
+    mutation deleteAssignmentsById($assignmentIds: [uuid!]!) {
+  delete_app_assignments_v2(where: {id: {_in: $assignmentIds}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentsByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentsByIdMutation, TError, DeleteAssignmentsByIdMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentsByIdMutation, TError, DeleteAssignmentsByIdMutationVariables, TContext>(
+      ['deleteAssignmentsById'],
+      (variables?: DeleteAssignmentsByIdMutationVariables) => fetchData<DeleteAssignmentsByIdMutation, DeleteAssignmentsByIdMutationVariables>(DeleteAssignmentsByIdDocument, variables)(),
+      options
+    );
+export const GetAssignmentBlocksDocument = `
+    query getAssignmentBlocks($assignmentId: uuid!) {
+  app_assignment_blocks_v2(
+    where: {assignment_id: {_eq: $assignmentId}, is_deleted: {_eq: false}}
+    order_by: {position: asc}
+  ) {
+    id
+    position
+    type
+    custom_title
+    thumbnail_path
+    use_custom_fields
+    custom_description
+    original_title
+    original_description
+    created_at
+    updated_at
+    fragment_id
+    start_oc
+    end_oc
+    is_deleted
+    assignment_id
+  }
+}
+    `;
+export const useGetAssignmentBlocksQuery = <
+      TData = GetAssignmentBlocksQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentBlocksQueryVariables,
+      options?: UseQueryOptions<GetAssignmentBlocksQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentBlocksQuery, TError, TData>(
+      ['getAssignmentBlocks', variables],
+      fetchData<GetAssignmentBlocksQuery, GetAssignmentBlocksQueryVariables>(GetAssignmentBlocksDocument, variables),
+      options
+    );
+export const GetAssignmentByTitleOrDescriptionDocument = `
+    query getAssignmentByTitleOrDescription($title: String!, $description: String!, $assignmentId: uuid!) {
+  assignmentByTitle: app_assignments_v2(
+    where: {title: {_eq: $title}, is_deleted: {_eq: false}, is_public: {_eq: true}, id: {_neq: $assignmentId}}
+    limit: 1
+  ) {
+    id
+  }
+  assignmentByDescription: app_assignments_v2(
+    where: {description: {_eq: $description}, is_deleted: {_eq: false}, is_public: {_eq: true}, id: {_neq: $assignmentId}}
+    limit: 1
+  ) {
+    id
+  }
+}
+    `;
+export const useGetAssignmentByTitleOrDescriptionQuery = <
+      TData = GetAssignmentByTitleOrDescriptionQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentByTitleOrDescriptionQueryVariables,
+      options?: UseQueryOptions<GetAssignmentByTitleOrDescriptionQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentByTitleOrDescriptionQuery, TError, TData>(
+      ['getAssignmentByTitleOrDescription', variables],
+      fetchData<GetAssignmentByTitleOrDescriptionQuery, GetAssignmentByTitleOrDescriptionQueryVariables>(GetAssignmentByTitleOrDescriptionDocument, variables),
+      options
+    );
+export const GetAssignmentIdsDocument = `
+    query getAssignmentIds($where: app_assignments_v2_bool_exp!) {
+  app_assignments_v2(where: $where) {
+    id
+  }
+}
+    `;
+export const useGetAssignmentIdsQuery = <
+      TData = GetAssignmentIdsQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentIdsQueryVariables,
+      options?: UseQueryOptions<GetAssignmentIdsQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentIdsQuery, TError, TData>(
+      ['getAssignmentIds', variables],
+      fetchData<GetAssignmentIdsQuery, GetAssignmentIdsQueryVariables>(GetAssignmentIdsDocument, variables),
+      options
+    );
+export const GetAssignmentResponseDocument = `
+    query getAssignmentResponse($profileId: uuid!, $assignmentId: uuid!) {
+  app_assignment_responses_v2(
+    where: {owner_profile_id: {_eq: $profileId}, assignment_id: {_eq: $assignmentId}}
+  ) {
+    id
+    created_at
+    updated_at
+    owner_profile_id
+    assignment_id
+    collection_title
+    pupil_collection_blocks(
+      where: {is_deleted: {_eq: false}}
+      order_by: {position: asc}
+    ) {
+      id
+      fragment_id
+      use_custom_fields
+      custom_title
+      custom_description
+      start_oc
+      end_oc
+      position
+      created_at
+      updated_at
+      type
+      thumbnail_path
+      assignment_response_id
+    }
+    owner {
+      full_name
+    }
+  }
+}
+    `;
+export const useGetAssignmentResponseQuery = <
+      TData = GetAssignmentResponseQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentResponseQueryVariables,
+      options?: UseQueryOptions<GetAssignmentResponseQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentResponseQuery, TError, TData>(
+      ['getAssignmentResponse', variables],
+      fetchData<GetAssignmentResponseQuery, GetAssignmentResponseQueryVariables>(GetAssignmentResponseDocument, variables),
+      options
+    );
+export const GetAssignmentResponseByIdDocument = `
+    query getAssignmentResponseById($assignmentResponseId: uuid!) {
+  app_assignment_responses_v2(where: {id: {_eq: $assignmentResponseId}}) {
+    id
+    assignment_id
+    collection_title
+    created_at
+    updated_at
+    owner_profile_id
+    owner {
+      full_name
+    }
+    assignment {
+      id
+      title
+      deadline_at
+      owner {
+        full_name
+      }
+      owner_profile_id
+    }
+    pupil_collection_blocks(
+      where: {is_deleted: {_eq: false}}
+      order_by: {position: asc}
+    ) {
+      id
+      position
+      type
+      custom_title
+      thumbnail_path
+      use_custom_fields
+      custom_description
+      created_at
+      updated_at
+      fragment_id
+      start_oc
+      end_oc
+      assignment_response_id
+    }
+  }
+}
+    `;
+export const useGetAssignmentResponseByIdQuery = <
+      TData = GetAssignmentResponseByIdQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentResponseByIdQueryVariables,
+      options?: UseQueryOptions<GetAssignmentResponseByIdQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentResponseByIdQuery, TError, TData>(
+      ['getAssignmentResponseById', variables],
+      fetchData<GetAssignmentResponseByIdQuery, GetAssignmentResponseByIdQueryVariables>(GetAssignmentResponseByIdDocument, variables),
+      options
+    );
+export const GetAssignmentResponsesDocument = `
+    query getAssignmentResponses($profileId: uuid!, $assignmentId: uuid!) {
+  app_assignment_responses_v2(
+    where: {assignment: {owner_profile_id: {_eq: $profileId}}, assignment_id: {_eq: $assignmentId}}
+  ) {
+    id
+    created_at
+    owner_profile_id
+    assignment_id
+    collection_title
+    pupil_collection_blocks(
+      where: {is_deleted: {_eq: false}}
+      order_by: {position: asc}
+    ) {
+      id
+      fragment_id
+      use_custom_fields
+      custom_title
+      custom_description
+      start_oc
+      end_oc
+      position
+      created_at
+      updated_at
+      type
+      thumbnail_path
+      assignment_response_id
+    }
+    owner {
+      full_name
+    }
+  }
+}
+    `;
+export const useGetAssignmentResponsesQuery = <
+      TData = GetAssignmentResponsesQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentResponsesQueryVariables,
+      options?: UseQueryOptions<GetAssignmentResponsesQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentResponsesQuery, TError, TData>(
+      ['getAssignmentResponses', variables],
+      fetchData<GetAssignmentResponsesQuery, GetAssignmentResponsesQueryVariables>(GetAssignmentResponsesDocument, variables),
+      options
+    );
+export const GetAssignmentResponsesByAssignmentIdDocument = `
+    query getAssignmentResponsesByAssignmentId($assignmentId: uuid!, $offset: Int = 0, $limit: Int, $order: [app_assignment_responses_v2_order_by!]! = {updated_at: desc}, $filter: [app_assignment_responses_v2_bool_exp!]) {
+  app_assignment_responses_v2(
+    where: {assignment_id: {_eq: $assignmentId}, _and: $filter}
+    offset: $offset
+    limit: $limit
+    order_by: $order
+  ) {
+    id
+    assignment_id
+    collection_title
+    created_at
+    updated_at
+    owner_profile_id
+    owner {
+      full_name
+    }
+    assignment {
+      id
+      title
+      deadline_at
+      owner {
+        full_name
+      }
+      owner_profile_id
+    }
+    pupil_collection_blocks(where: {type: {_eq: "ITEM"}}) {
+      id
+      position
+      type
+      custom_title
+      thumbnail_path
+      use_custom_fields
+      custom_description
+      created_at
+      updated_at
+      fragment_id
+      start_oc
+      end_oc
+      assignment_response_id
+    }
+  }
+  count: app_assignment_responses_v2_aggregate(
+    where: {assignment_id: {_eq: $assignmentId}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetAssignmentResponsesByAssignmentIdQuery = <
+      TData = GetAssignmentResponsesByAssignmentIdQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentResponsesByAssignmentIdQueryVariables,
+      options?: UseQueryOptions<GetAssignmentResponsesByAssignmentIdQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentResponsesByAssignmentIdQuery, TError, TData>(
+      ['getAssignmentResponsesByAssignmentId', variables],
+      fetchData<GetAssignmentResponsesByAssignmentIdQuery, GetAssignmentResponsesByAssignmentIdQueryVariables>(GetAssignmentResponsesByAssignmentIdDocument, variables),
+      options
+    );
+export const GetAssignmentWithResponseDocument = `
+    query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
+  app_assignments_v2(
+    where: {id: {_eq: $assignmentId}, is_deleted: {_eq: false}}
+    order_by: [{deadline_at: desc}]
+  ) {
+    id
+    title
+    description
+    answer_url
+    created_at
+    updated_at
+    available_at
+    deadline_at
+    is_collaborative
+    is_deleted
+    is_public
+    thumbnail_path
+    owner_profile_id
+    owner {
+      full_name
+    }
+    profile {
+      id
+      avatar
+      user: usersByuserId {
+        first_name
+        last_name
+        id
+      }
+      organisation {
+        logo_url
+        name
+        or_id
+      }
+      profile_user_group {
+        group {
+          label
+          id
+        }
+      }
+    }
+    labels(order_by: {assignment_label: {label: asc}}) {
+      id
+      assignment_label {
+        color_enum_value
+        color_override
+        enum_color {
+          label
+          value
+        }
+        id
+        label
+        type
+        owner_profile_id
+      }
+    }
+    responses(where: {owner_profile_id: {_eq: $pupilUuid}}) {
+      id
+      assignment_id
+      collection_title
+      created_at
+      updated_at
+      owner_profile_id
+      owner {
+        full_name
+      }
+      assignment {
+        id
+        title
+        deadline_at
+        owner {
+          full_name
+        }
+        owner_profile_id
+      }
+      pupil_collection_blocks(
+        where: {is_deleted: {_eq: false}}
+        order_by: {position: asc}
+      ) {
+        id
+        position
+        type
+        custom_title
+        thumbnail_path
+        use_custom_fields
+        custom_description
+        created_at
+        updated_at
+        fragment_id
+        start_oc
+        end_oc
+        assignment_response_id
+      }
+    }
+    contributors {
+      profile {
+        avatar
+        user_id
+        user: usersByuserId {
+          last_name
+          first_name
+          mail
+          full_name
+        }
+        id
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+      id
+      profile_id
+      rights
+    }
+    loms {
+      lom {
+        id
+        label
+        scheme
+        broader
+      }
+    }
+    lom_learning_resource_type
+  }
+}
+    `;
+export const useGetAssignmentWithResponseQuery = <
+      TData = GetAssignmentWithResponseQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentWithResponseQueryVariables,
+      options?: UseQueryOptions<GetAssignmentWithResponseQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentWithResponseQuery, TError, TData>(
+      ['getAssignmentWithResponse', variables],
+      fetchData<GetAssignmentWithResponseQuery, GetAssignmentWithResponseQueryVariables>(GetAssignmentWithResponseDocument, variables),
+      options
+    );
+export const GetAssignmentsAdminOverviewDocument = `
+    query getAssignmentsAdminOverview($offset: Int!, $limit: Int!, $orderBy: [app_assignments_v2_order_by!]!, $where: app_assignments_v2_bool_exp!) {
+  app_assignments_v2(
+    offset: $offset
+    limit: $limit
+    order_by: $orderBy
+    where: $where
+  ) {
+    id
+    title
+    description
+    answer_url
+    created_at
+    updated_at
+    available_at
+    deadline_at
+    is_collaborative
+    is_deleted
+    is_public
+    owner_profile_id
+    owner {
+      full_name
+      profile_id
+    }
+    profile {
+      id
+      avatar
+      user: usersByuserId {
+        first_name
+        last_name
+        id
+      }
+      organisation {
+        logo_url
+        name
+        or_id
+      }
+      profile_user_group {
+        group {
+          label
+          id
+        }
+      }
+    }
+    view_count {
+      count
+    }
+    responses_aggregate(where: {collection_title: {_is_null: false}}) {
+      aggregate {
+        count
+      }
+    }
+    lom_learning_resource_type
+    contributors {
+      profile {
+        avatar
+        user_id
+        user: usersByuserId {
+          last_name
+          first_name
+          mail
+          full_name
+        }
+        id
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+      id
+    }
+    loms {
+      lom {
+        id
+        label
+        scheme
+        broader
+      }
+    }
+  }
+  app_assignments_v2_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetAssignmentsAdminOverviewQuery = <
+      TData = GetAssignmentsAdminOverviewQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentsAdminOverviewQueryVariables,
+      options?: UseQueryOptions<GetAssignmentsAdminOverviewQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentsAdminOverviewQuery, TError, TData>(
+      ['getAssignmentsAdminOverview', variables],
+      fetchData<GetAssignmentsAdminOverviewQuery, GetAssignmentsAdminOverviewQueryVariables>(GetAssignmentsAdminOverviewDocument, variables),
+      options
+    );
+export const GetAssignmentsByOwnerOrContributorDocument = `
+    query getAssignmentsByOwnerOrContributor($collaborator_profile_id: uuid, $offset: Int = 0, $limit: Int, $order: [app_assignments_v2_overview_order_by!]! = [{deadline_at: desc}], $filter: [app_assignments_v2_overview_bool_exp!]) {
+  app_assignments_v2_overview(
+    where: {collaborator_profile_id: {_eq: $collaborator_profile_id}, is_deleted: {_eq: false}, _and: $filter}
+    offset: $offset
+    limit: $limit
+    order_by: $order
+  ) {
+    id
+    title
+    description
+    answer_url
+    created_at
+    updated_at
+    available_at
+    deadline_at
+    is_collaborative
+    is_deleted
+    is_public
+    thumbnail_path
+    owner_profile_id
+    owner {
+      full_name
+    }
+    profile {
+      id
+      avatar
+      user: usersByuserId {
+        first_name
+        last_name
+        id
+      }
+      organisation {
+        logo_url
+        name
+        or_id
+      }
+      profile_user_group {
+        group {
+          label
+          id
+        }
+      }
+    }
+    responses {
+      id
+    }
+    labels(order_by: {assignment_label: {label: asc}}) {
+      id
+      assignment_label {
+        color_enum_value
+        color_override
+        enum_color {
+          label
+          value
+        }
+        id
+        label
+        type
+        owner_profile_id
+      }
+    }
+    contributors {
+      profile {
+        avatar
+        user_id
+        user: usersByuserId {
+          last_name
+          first_name
+          mail
+          full_name
+        }
+        id
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+      id
+      profile_id
+      rights
+      enum_right_type {
+        value
+        description
+      }
+      assignment {
+        id
+      }
+    }
+    loms {
+      lom_id
+      lom {
+        broader
+        label
+        scheme
+        id
+      }
+      assignment_id
+    }
+    share_type
+    lom_learning_resource_type
+    collaborator_profile_id
+  }
+  count: app_assignments_v2_overview_aggregate(
+    where: {collaborator_profile_id: {_eq: $collaborator_profile_id}, is_deleted: {_eq: false}, _and: $filter}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetAssignmentsByOwnerOrContributorQuery = <
+      TData = GetAssignmentsByOwnerOrContributorQuery,
+      TError = unknown
+    >(
+      variables?: GetAssignmentsByOwnerOrContributorQueryVariables,
+      options?: UseQueryOptions<GetAssignmentsByOwnerOrContributorQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentsByOwnerOrContributorQuery, TError, TData>(
+      variables === undefined ? ['getAssignmentsByOwnerOrContributor'] : ['getAssignmentsByOwnerOrContributor', variables],
+      fetchData<GetAssignmentsByOwnerOrContributorQuery, GetAssignmentsByOwnerOrContributorQueryVariables>(GetAssignmentsByOwnerOrContributorDocument, variables),
+      options
+    );
+export const GetAssignmentsByResponseOwnerIdDocument = `
+    query getAssignmentsByResponseOwnerId($owner_profile_id: uuid!, $offset: Int = 0, $limit: Int, $filter: [app_assignments_v2_bool_exp!], $order: [app_assignments_v2_order_by!]!) {
+  app_assignments_v2(
+    where: {responses: {owner_profile_id: {_eq: $owner_profile_id}}, is_deleted: {_eq: false}, _and: $filter}
+    limit: $limit
+    offset: $offset
+    order_by: $order
+  ) {
+    id
+    title
+    description
+    answer_url
+    created_at
+    updated_at
+    available_at
+    deadline_at
+    is_collaborative
+    is_deleted
+    is_public
+    thumbnail_path
+    owner_profile_id
+    owner {
+      full_name
+    }
+    profile {
+      id
+      avatar
+      user: usersByuserId {
+        first_name
+        last_name
+        id
+      }
+      organisation {
+        logo_url
+        name
+        or_id
+      }
+      profile_user_group {
+        group {
+          label
+          id
+        }
+      }
+    }
+    responses {
+      id
+    }
+    labels(order_by: {assignment_label: {label: asc}}) {
+      id
+      assignment_label {
+        color_enum_value
+        color_override
+        enum_color {
+          label
+          value
+        }
+        id
+        label
+        type
+        owner_profile_id
+      }
+    }
+    lom_learning_resource_type
+    contributors {
+      profile {
+        avatar
+        user_id
+        user: usersByuserId {
+          last_name
+          first_name
+          mail
+          full_name
+        }
+        id
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+      id
+      profile_id
+      rights
+      enum_right_type {
+        description
+        value
+      }
+    }
+    loms {
+      lom {
+        id
+        label
+        scheme
+        broader
+      }
+    }
+  }
+  count: app_assignments_v2_aggregate(
+    where: {responses: {owner_profile_id: {_eq: $owner_profile_id}}, is_deleted: {_eq: false}, _and: $filter}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetAssignmentsByResponseOwnerIdQuery = <
+      TData = GetAssignmentsByResponseOwnerIdQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentsByResponseOwnerIdQueryVariables,
+      options?: UseQueryOptions<GetAssignmentsByResponseOwnerIdQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentsByResponseOwnerIdQuery, TError, TData>(
+      ['getAssignmentsByResponseOwnerId', variables],
+      fetchData<GetAssignmentsByResponseOwnerIdQuery, GetAssignmentsByResponseOwnerIdQueryVariables>(GetAssignmentsByResponseOwnerIdDocument, variables),
+      options
+    );
+export const GetContributorsByAssignmentUuidDocument = `
+    query getContributorsByAssignmentUuid($id: uuid!) {
+  app_assignments_v2_contributors(where: {assignment_id: {_eq: $id}}) {
+    assignment_id
+    invite_email
+    invite_token
+    rights
+    profile_id
+    id
+    profile {
+      avatar
+      user: usersByuserId {
+        first_name
+        full_name
+        last_name
+        mail
+        profile {
+          organisation {
+            name
+            logo_url
+            or_id
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useGetContributorsByAssignmentUuidQuery = <
+      TData = GetContributorsByAssignmentUuidQuery,
+      TError = unknown
+    >(
+      variables: GetContributorsByAssignmentUuidQueryVariables,
+      options?: UseQueryOptions<GetContributorsByAssignmentUuidQuery, TError, TData>
+    ) =>
+    useQuery<GetContributorsByAssignmentUuidQuery, TError, TData>(
+      ['getContributorsByAssignmentUuid', variables],
+      fetchData<GetContributorsByAssignmentUuidQuery, GetContributorsByAssignmentUuidQueryVariables>(GetContributorsByAssignmentUuidDocument, variables),
+      options
+    );
+export const GetMaxPositionAssignmentBlocksDocument = `
+    query getMaxPositionAssignmentBlocks($assignmentId: uuid!) {
+  app_assignments_v2_by_pk(id: $assignmentId) {
+    blocks_aggregate {
+      aggregate {
+        max {
+          position
+        }
+      }
+    }
+  }
+}
+    `;
+export const useGetMaxPositionAssignmentBlocksQuery = <
+      TData = GetMaxPositionAssignmentBlocksQuery,
+      TError = unknown
+    >(
+      variables: GetMaxPositionAssignmentBlocksQueryVariables,
+      options?: UseQueryOptions<GetMaxPositionAssignmentBlocksQuery, TError, TData>
+    ) =>
+    useQuery<GetMaxPositionAssignmentBlocksQuery, TError, TData>(
+      ['getMaxPositionAssignmentBlocks', variables],
+      fetchData<GetMaxPositionAssignmentBlocksQuery, GetMaxPositionAssignmentBlocksQueryVariables>(GetMaxPositionAssignmentBlocksDocument, variables),
+      options
+    );
+export const IncrementAssignmentViewCountDocument = `
+    mutation incrementAssignmentViewCount($assignmentId: uuid!) {
+  update_app_assignment_v2_views(
+    where: {assignment_uuid: {_eq: $assignmentId}}
+    _inc: {count: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementAssignmentViewCountMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementAssignmentViewCountMutation, TError, IncrementAssignmentViewCountMutationVariables, TContext>) =>
+    useMutation<IncrementAssignmentViewCountMutation, TError, IncrementAssignmentViewCountMutationVariables, TContext>(
+      ['incrementAssignmentViewCount'],
+      (variables?: IncrementAssignmentViewCountMutationVariables) => fetchData<IncrementAssignmentViewCountMutation, IncrementAssignmentViewCountMutationVariables>(IncrementAssignmentViewCountDocument, variables)(),
+      options
+    );
+export const InsertAssignmentDocument = `
+    mutation insertAssignment($assignment: app_assignments_v2_insert_input!) {
+  insert_app_assignments_v2(objects: [$assignment]) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertAssignmentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>(
+      ['insertAssignment'],
+      (variables?: InsertAssignmentMutationVariables) => fetchData<InsertAssignmentMutation, InsertAssignmentMutationVariables>(InsertAssignmentDocument, variables)(),
+      options
+    );
+export const InsertAssignmentBlocksDocument = `
+    mutation insertAssignmentBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
+  insert_app_assignment_blocks_v2(objects: $assignmentBlocks) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertAssignmentBlocksMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentBlocksMutation, TError, InsertAssignmentBlocksMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentBlocksMutation, TError, InsertAssignmentBlocksMutationVariables, TContext>(
+      ['insertAssignmentBlocks'],
+      (variables?: InsertAssignmentBlocksMutationVariables) => fetchData<InsertAssignmentBlocksMutation, InsertAssignmentBlocksMutationVariables>(InsertAssignmentBlocksDocument, variables)(),
+      options
+    );
+export const InsertAssignmentResponseDocument = `
+    mutation insertAssignmentResponse($assignmentResponses: [app_assignment_responses_v2_insert_input!]!) {
+  insert_app_assignment_responses_v2(objects: $assignmentResponses) {
+    affected_rows
+    returning {
+      id
+      created_at
+      owner_profile_id
+      assignment_id
+      collection_title
+      updated_at
+      owner {
+        full_name
+      }
+      assignment {
+        id
+        title
+        deadline_at
+        owner {
+          full_name
+        }
+        owner_profile_id
+      }
+      pupil_collection_blocks(
+        where: {is_deleted: {_eq: false}}
+        order_by: {position: asc}
+      ) {
+        id
+        fragment_id
+        use_custom_fields
+        custom_title
+        custom_description
+        start_oc
+        end_oc
+        position
+        created_at
+        updated_at
+        type
+        thumbnail_path
+        assignment_response_id
+      }
+    }
+  }
+}
+    `;
+export const useInsertAssignmentResponseMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentResponseMutation, TError, InsertAssignmentResponseMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentResponseMutation, TError, InsertAssignmentResponseMutationVariables, TContext>(
+      ['insertAssignmentResponse'],
+      (variables?: InsertAssignmentResponseMutationVariables) => fetchData<InsertAssignmentResponseMutation, InsertAssignmentResponseMutationVariables>(InsertAssignmentResponseDocument, variables)(),
+      options
+    );
+export const UpdateAssignmentResponseDocument = `
+    mutation updateAssignmentResponse($assignmentResponseId: uuid, $collectionTitle: String!, $updatedAt: timestamptz!) {
+  update_app_assignment_responses_v2(
+    where: {id: {_eq: $assignmentResponseId}}
+    _set: {collection_title: $collectionTitle, updated_at: $updatedAt}
+  ) {
+    returning {
+      assignment_id
+      collection_title
+      created_at
+      id
+      owner_profile_id
+      pupil_collection_blocks(
+        where: {is_deleted: {_eq: false}}
+        order_by: {position: asc}
+      ) {
+        assignment_response_id
+        created_at
+        custom_description
+        custom_title
+        end_oc
+        fragment_id
+        id
+        position
+        start_oc
+        thumbnail_path
+        type
+        updated_at
+        use_custom_fields
+      }
+      owner {
+        full_name
+      }
+    }
+  }
+}
+    `;
+export const useUpdateAssignmentResponseMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateAssignmentResponseMutation, TError, UpdateAssignmentResponseMutationVariables, TContext>) =>
+    useMutation<UpdateAssignmentResponseMutation, TError, UpdateAssignmentResponseMutationVariables, TContext>(
+      ['updateAssignmentResponse'],
+      (variables?: UpdateAssignmentResponseMutationVariables) => fetchData<UpdateAssignmentResponseMutation, UpdateAssignmentResponseMutationVariables>(UpdateAssignmentResponseDocument, variables)(),
+      options
+    );
+export const UpdateAssignmentUpdatedAtDateDocument = `
+    mutation updateAssignmentUpdatedAtDate($assignmentId: uuid!, $updatedAt: timestamptz!) {
+  update_app_assignments_v2(
+    where: {id: {_eq: $assignmentId}}
+    _set: {updated_at: $updatedAt}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateAssignmentUpdatedAtDateMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateAssignmentUpdatedAtDateMutation, TError, UpdateAssignmentUpdatedAtDateMutationVariables, TContext>) =>
+    useMutation<UpdateAssignmentUpdatedAtDateMutation, TError, UpdateAssignmentUpdatedAtDateMutationVariables, TContext>(
+      ['updateAssignmentUpdatedAtDate'],
+      (variables?: UpdateAssignmentUpdatedAtDateMutationVariables) => fetchData<UpdateAssignmentUpdatedAtDateMutation, UpdateAssignmentUpdatedAtDateMutationVariables>(UpdateAssignmentUpdatedAtDateDocument, variables)(),
+      options
+    );
+export const DeleteCollectionFragmentByIdDocument = `
+    mutation deleteCollectionFragmentById($id: Int!) {
+  delete_app_collection_fragments(where: {id: {_eq: $id}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionFragmentByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionFragmentByIdMutation, TError, DeleteCollectionFragmentByIdMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionFragmentByIdMutation, TError, DeleteCollectionFragmentByIdMutationVariables, TContext>(
+      ['deleteCollectionFragmentById'],
+      (variables?: DeleteCollectionFragmentByIdMutationVariables) => fetchData<DeleteCollectionFragmentByIdMutation, DeleteCollectionFragmentByIdMutationVariables>(DeleteCollectionFragmentByIdDocument, variables)(),
+      options
+    );
+export const DeleteCollectionLabelsDocument = `
+    mutation deleteCollectionLabels($labels: [String!]!, $collectionId: uuid!) {
+  delete_app_collection_labels(
+    where: {label: {_in: $labels}, collection_uuid: {_eq: $collectionId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionLabelsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionLabelsMutation, TError, DeleteCollectionLabelsMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionLabelsMutation, TError, DeleteCollectionLabelsMutationVariables, TContext>(
+      ['deleteCollectionLabels'],
+      (variables?: DeleteCollectionLabelsMutationVariables) => fetchData<DeleteCollectionLabelsMutation, DeleteCollectionLabelsMutationVariables>(DeleteCollectionLabelsDocument, variables)(),
+      options
+    );
+export const DeleteCollectionLomLinksDocument = `
+    mutation deleteCollectionLomLinks($collectionId: uuid!) {
+  delete_app_collections_lom_links(where: {collection_id: {_eq: $collectionId}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionLomLinksMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionLomLinksMutation, TError, DeleteCollectionLomLinksMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionLomLinksMutation, TError, DeleteCollectionLomLinksMutationVariables, TContext>(
+      ['deleteCollectionLomLinks'],
+      (variables?: DeleteCollectionLomLinksMutationVariables) => fetchData<DeleteCollectionLomLinksMutation, DeleteCollectionLomLinksMutationVariables>(DeleteCollectionLomLinksDocument, variables)(),
+      options
+    );
+export const DeleteCollectionOrBundleByUuidDocument = `
+    mutation deleteCollectionOrBundleByUuid($collectionOrBundleUuid: uuid!, $collectionOrBundleUuidAsText: String!) {
+  update_app_collections(
+    where: {id: {_eq: $collectionOrBundleUuid}}
+    _set: {is_deleted: true}
+  ) {
+    affected_rows
+  }
+  delete_app_collection_fragments(
+    where: {type: {_eq: "COLLECTION"}, external_id: {_eq: $collectionOrBundleUuidAsText}}
+  ) {
+    affected_rows
+  }
+  delete_app_collection_bookmarks(
+    where: {collection_uuid: {_eq: $collectionOrBundleUuid}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionOrBundleByUuidMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionOrBundleByUuidMutation, TError, DeleteCollectionOrBundleByUuidMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionOrBundleByUuidMutation, TError, DeleteCollectionOrBundleByUuidMutationVariables, TContext>(
+      ['deleteCollectionOrBundleByUuid'],
+      (variables?: DeleteCollectionOrBundleByUuidMutationVariables) => fetchData<DeleteCollectionOrBundleByUuidMutation, DeleteCollectionOrBundleByUuidMutationVariables>(DeleteCollectionOrBundleByUuidDocument, variables)(),
+      options
+    );
+export const DeleteMarcomEntriesByParentCollectionIdDocument = `
+    mutation deleteMarcomEntriesByParentCollectionId($parentCollectionId: uuid, $channelName: String, $channelType: String, $publishDateGte: timestamptz, $publishDateLte: timestamptz) {
+  delete_app_collection_marcom_log(
+    where: {parent_collection_id: {_eq: $parentCollectionId}, publish_date: {_gte: $publishDateGte, _lte: $publishDateLte}, channel_name: {_eq: $channelName}, channel_type: {_eq: $channelType}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteMarcomEntriesByParentCollectionIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteMarcomEntriesByParentCollectionIdMutation, TError, DeleteMarcomEntriesByParentCollectionIdMutationVariables, TContext>) =>
+    useMutation<DeleteMarcomEntriesByParentCollectionIdMutation, TError, DeleteMarcomEntriesByParentCollectionIdMutationVariables, TContext>(
+      ['deleteMarcomEntriesByParentCollectionId'],
+      (variables?: DeleteMarcomEntriesByParentCollectionIdMutationVariables) => fetchData<DeleteMarcomEntriesByParentCollectionIdMutation, DeleteMarcomEntriesByParentCollectionIdMutationVariables>(DeleteMarcomEntriesByParentCollectionIdDocument, variables)(),
+      options
+    );
+export const DeleteMarcomEntryDocument = `
+    mutation deleteMarcomEntry($id: Int) {
+  delete_app_collection_marcom_log(where: {id: {_eq: $id}}) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteMarcomEntryMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteMarcomEntryMutation, TError, DeleteMarcomEntryMutationVariables, TContext>) =>
+    useMutation<DeleteMarcomEntryMutation, TError, DeleteMarcomEntryMutationVariables, TContext>(
+      ['deleteMarcomEntry'],
+      (variables?: DeleteMarcomEntryMutationVariables) => fetchData<DeleteMarcomEntryMutation, DeleteMarcomEntryMutationVariables>(DeleteMarcomEntryDocument, variables)(),
+      options
+    );
+export const GetBookmarkedCollectionsByOwnerDocument = `
+    query getBookmarkedCollectionsByOwner($owner_profile_id: uuid, $offset: Int = 0, $limit: Int, $order: [app_collection_bookmarks_order_by!] = {updated_at: desc}, $where: [app_collection_bookmarks_bool_exp!] = []) {
+  app_collection_bookmarks(
+    where: {profile_id: {_eq: $owner_profile_id}, bookmarkedCollection: {}, _and: $where}
+    offset: $offset
+    limit: $limit
+    order_by: $order
+  ) {
+    bookmarkedCollection {
+      id
+      updated_at
+      type_id
+      type {
+        label
+        id
+      }
+      title
+      publish_at
+      owner_profile_id
+      profile {
+        id
+        alias
+        title
+        alternative_email
+        avatar
+        organisation {
+          logo_url
+          name
+          or_id
+        }
+        created_at
+        stamboek
+        updated_at
+        user_id
+        user: usersByuserId {
+          id
+          first_name
+          last_name
+          profile {
+            profile_user_group {
+              group {
+                label
+                id
+              }
+            }
+          }
+        }
+      }
+      is_public
+      external_id
+      depublish_at
+      created_at
+      thumbnail_path
+      view_counts_aggregate {
+        aggregate {
+          sum {
+            count
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export const useGetBookmarkedCollectionsByOwnerQuery = <
+      TData = GetBookmarkedCollectionsByOwnerQuery,
+      TError = unknown
+    >(
+      variables?: GetBookmarkedCollectionsByOwnerQueryVariables,
+      options?: UseQueryOptions<GetBookmarkedCollectionsByOwnerQuery, TError, TData>
+    ) =>
+    useQuery<GetBookmarkedCollectionsByOwnerQuery, TError, TData>(
+      variables === undefined ? ['getBookmarkedCollectionsByOwner'] : ['getBookmarkedCollectionsByOwner', variables],
+      fetchData<GetBookmarkedCollectionsByOwnerQuery, GetBookmarkedCollectionsByOwnerQueryVariables>(GetBookmarkedCollectionsByOwnerDocument, variables),
+      options
+    );
+export const GetBundleTitlesByOwnerDocument = `
+    query getBundleTitlesByOwner($owner_profile_id: uuid) {
+  app_collections(
+    where: {type_id: {_eq: 4}, owner_profile_id: {_eq: $owner_profile_id}, is_deleted: {_eq: false}}
+    order_by: {updated_at: desc}
+  ) {
+    id
+    title
+  }
+}
+    `;
+export const useGetBundleTitlesByOwnerQuery = <
+      TData = GetBundleTitlesByOwnerQuery,
+      TError = unknown
+    >(
+      variables?: GetBundleTitlesByOwnerQueryVariables,
+      options?: UseQueryOptions<GetBundleTitlesByOwnerQuery, TError, TData>
+    ) =>
+    useQuery<GetBundleTitlesByOwnerQuery, TError, TData>(
+      variables === undefined ? ['getBundleTitlesByOwner'] : ['getBundleTitlesByOwner', variables],
+      fetchData<GetBundleTitlesByOwnerQuery, GetBundleTitlesByOwnerQueryVariables>(GetBundleTitlesByOwnerDocument, variables),
+      options
+    );
+export const GetCollectionByTitleOrDescriptionDocument = `
+    query getCollectionByTitleOrDescription($title: String!, $description: String!, $collectionId: uuid!, $typeId: Int) {
+  collectionByTitle: app_collections(
+    where: {title: {_eq: $title}, is_deleted: {_eq: false}, is_public: {_eq: true}, id: {_neq: $collectionId}, type_id: {_eq: $typeId}}
+    limit: 1
+  ) {
+    id
+  }
+  collectionByDescription: app_collections(
+    where: {description: {_eq: $description}, is_deleted: {_eq: false}, is_public: {_eq: true}, id: {_neq: $collectionId}, type_id: {_eq: $typeId}}
+    limit: 1
+  ) {
+    id
+  }
+}
+    `;
+export const useGetCollectionByTitleOrDescriptionQuery = <
+      TData = GetCollectionByTitleOrDescriptionQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionByTitleOrDescriptionQueryVariables,
+      options?: UseQueryOptions<GetCollectionByTitleOrDescriptionQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionByTitleOrDescriptionQuery, TError, TData>(
+      ['getCollectionByTitleOrDescription', variables],
+      fetchData<GetCollectionByTitleOrDescriptionQuery, GetCollectionByTitleOrDescriptionQueryVariables>(GetCollectionByTitleOrDescriptionDocument, variables),
+      options
+    );
+export const GetCollectionMarcomEntriesDocument = `
+    query getCollectionMarcomEntries($collectionUuid: uuid!) {
+  app_collection_marcom_log(
+    where: {collection_id: {_eq: $collectionUuid}}
+    limit: 10
+    order_by: [{created_at: desc_nulls_last}]
+  ) {
+    id
+    channel_name
+    channel_type
+    external_link
+    publish_date
+    collection_id
+    parent_collection {
+      id
+      title
+    }
+  }
+}
+    `;
+export const useGetCollectionMarcomEntriesQuery = <
+      TData = GetCollectionMarcomEntriesQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionMarcomEntriesQueryVariables,
+      options?: UseQueryOptions<GetCollectionMarcomEntriesQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionMarcomEntriesQuery, TError, TData>(
+      ['getCollectionMarcomEntries', variables],
+      fetchData<GetCollectionMarcomEntriesQuery, GetCollectionMarcomEntriesQueryVariables>(GetCollectionMarcomEntriesDocument, variables),
+      options
+    );
+export const GetCollectionTitlesByOwnerDocument = `
+    query getCollectionTitlesByOwner($owner_profile_id: uuid) {
+  app_collections(
+    where: {type_id: {_eq: 3}, owner_profile_id: {_eq: $owner_profile_id}, is_deleted: {_eq: false}}
+    order_by: {updated_at: desc}
+  ) {
+    id
+    title
+  }
+}
+    `;
+export const useGetCollectionTitlesByOwnerQuery = <
+      TData = GetCollectionTitlesByOwnerQuery,
+      TError = unknown
+    >(
+      variables?: GetCollectionTitlesByOwnerQueryVariables,
+      options?: UseQueryOptions<GetCollectionTitlesByOwnerQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionTitlesByOwnerQuery, TError, TData>(
+      variables === undefined ? ['getCollectionTitlesByOwner'] : ['getCollectionTitlesByOwner', variables],
+      fetchData<GetCollectionTitlesByOwnerQuery, GetCollectionTitlesByOwnerQueryVariables>(GetCollectionTitlesByOwnerDocument, variables),
+      options
+    );
+export const GetCollectionsByItemUuidDocument = `
+    query getCollectionsByItemUuid($fragmentId: String!) {
+  app_collections(
+    where: {collection_fragments: {external_id: {_eq: $fragmentId}}, is_deleted: {_eq: false}}
+  ) {
+    id
+    title
+    is_public
+    profile {
+      user: usersByuserId {
+        first_name
+        last_name
+        id
+      }
+      id
+      organisation {
+        name
+      }
+    }
+  }
+}
+    `;
+export const useGetCollectionsByItemUuidQuery = <
+      TData = GetCollectionsByItemUuidQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionsByItemUuidQueryVariables,
+      options?: UseQueryOptions<GetCollectionsByItemUuidQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionsByItemUuidQuery, TError, TData>(
+      ['getCollectionsByItemUuid', variables],
+      fetchData<GetCollectionsByItemUuidQuery, GetCollectionsByItemUuidQueryVariables>(GetCollectionsByItemUuidDocument, variables),
+      options
+    );
+export const GetCollectionsByOwnerOrContributorDocument = `
+    query getCollectionsByOwnerOrContributor($collaborator_profile_id: uuid, $type_id: Int, $offset: Int = 0, $limit: Int, $order: [app_collections_overview_order_by!] = {updated_at: desc}, $where: [app_collections_overview_bool_exp!] = []) {
+  app_collections_overview(
+    where: {type_id: {_eq: $type_id}, collaborator_profile_id: {_eq: $collaborator_profile_id}, is_deleted: {_eq: false}, _and: $where}
+    offset: $offset
+    limit: $limit
+    order_by: $order
+  ) {
+    id
+    updated_at
+    type_id
+    type {
+      label
+      id
+    }
+    title
+    published_at
+    owner_profile_id
+    collaborator_profile_id
+    profile {
+      id
+      alias
+      title
+      alternative_email
+      avatar
+      organisation {
+        logo_url
+        name
+        or_id
+      }
+      created_at
+      stamboek
+      updated_at
+      user_id
+      user: usersByuserId {
+        id
+        first_name
+        last_name
+        profile {
+          profile_user_group {
+            group {
+              label
+              id
+            }
+          }
+        }
+      }
+    }
+    is_public
+    external_id
+    depublish_at
+    created_at
+    thumbnail_path
+    view_counts_aggregate {
+      aggregate {
+        sum {
+          count
+        }
+      }
+    }
+    share_type
+    contributors {
+      profile_id
+      rights
+      enum_right_type {
+        value
+      }
+      profile {
+        user: usersByuserId {
+          full_name
+          first_name
+          last_name
+          uid
+        }
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+      collection {
+        id
+      }
+    }
+  }
+}
+    `;
+export const useGetCollectionsByOwnerOrContributorQuery = <
+      TData = GetCollectionsByOwnerOrContributorQuery,
+      TError = unknown
+    >(
+      variables?: GetCollectionsByOwnerOrContributorQueryVariables,
+      options?: UseQueryOptions<GetCollectionsByOwnerOrContributorQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionsByOwnerOrContributorQuery, TError, TData>(
+      variables === undefined ? ['getCollectionsByOwnerOrContributor'] : ['getCollectionsByOwnerOrContributor', variables],
+      fetchData<GetCollectionsByOwnerOrContributorQuery, GetCollectionsByOwnerOrContributorQueryVariables>(GetCollectionsByOwnerOrContributorDocument, variables),
+      options
+    );
+export const GetContributorsByCollectionUuidDocument = `
+    query getContributorsByCollectionUuid($id: uuid!) {
+  app_collections_contributors(where: {collection_id: {_eq: $id}}) {
+    collection_id
+    invite_email
+    invite_token
+    rights
+    profile_id
+    id
+    profile {
+      avatar
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+      user: usersByuserId {
+        first_name
+        full_name
+        last_name
+        mail
+      }
+    }
+  }
+}
+    `;
+export const useGetContributorsByCollectionUuidQuery = <
+      TData = GetContributorsByCollectionUuidQuery,
+      TError = unknown
+    >(
+      variables: GetContributorsByCollectionUuidQueryVariables,
+      options?: UseQueryOptions<GetContributorsByCollectionUuidQuery, TError, TData>
+    ) =>
+    useQuery<GetContributorsByCollectionUuidQuery, TError, TData>(
+      ['getContributorsByCollectionUuid', variables],
+      fetchData<GetContributorsByCollectionUuidQuery, GetContributorsByCollectionUuidQueryVariables>(GetContributorsByCollectionUuidDocument, variables),
+      options
+    );
+export const GetOrganisationContentDocument = `
+    query getOrganisationContent($offset: Int = 0, $limit: Int, $order: [app_collections_order_by!] = {updated_at: desc}, $company_id: String!) {
+  app_collections(
+    where: {owner: {company_id: {_eq: $company_id}}, is_deleted: {_eq: false}, is_public: {_eq: true}}
+    offset: $offset
+    limit: $limit
+    order_by: $order
+  ) {
+    id
+    created_at
+    title
+    updated_at
+    type {
+      label
+    }
+    last_editor {
+      full_name
+    }
+    owner {
+      full_name
+    }
+  }
+}
+    `;
+export const useGetOrganisationContentQuery = <
+      TData = GetOrganisationContentQuery,
+      TError = unknown
+    >(
+      variables: GetOrganisationContentQueryVariables,
+      options?: UseQueryOptions<GetOrganisationContentQuery, TError, TData>
+    ) =>
+    useQuery<GetOrganisationContentQuery, TError, TData>(
+      ['getOrganisationContent', variables],
+      fetchData<GetOrganisationContentQuery, GetOrganisationContentQueryVariables>(GetOrganisationContentDocument, variables),
+      options
+    );
+export const GetPublicCollectionsDocument = `
+    query getPublicCollections($limit: Int!, $typeId: Int!) {
+  app_collections_overview(
+    order_by: {title: asc}
+    where: {type_id: {_eq: $typeId}, is_public: {_eq: true}, is_deleted: {_eq: false}}
+    limit: $limit
+  ) {
+    id
+    title
+    share_type
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+        user: usersByuserId {
+          first_name
+          full_name
+          last_name
+        }
+      }
+    }
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+  }
+}
+    `;
+export const useGetPublicCollectionsQuery = <
+      TData = GetPublicCollectionsQuery,
+      TError = unknown
+    >(
+      variables: GetPublicCollectionsQueryVariables,
+      options?: UseQueryOptions<GetPublicCollectionsQuery, TError, TData>
+    ) =>
+    useQuery<GetPublicCollectionsQuery, TError, TData>(
+      ['getPublicCollections', variables],
+      fetchData<GetPublicCollectionsQuery, GetPublicCollectionsQueryVariables>(GetPublicCollectionsDocument, variables),
+      options
+    );
+export const GetPublicCollectionsByIdDocument = `
+    query getPublicCollectionsById($id: uuid!, $typeId: Int!, $limit: Int!) {
+  app_collections_overview(
+    order_by: {title: asc}
+    where: {type_id: {_eq: $typeId}, id: {_eq: $id}, is_public: {_eq: true}, is_deleted: {_eq: false}}
+    limit: $limit
+  ) {
+    id
+    title
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        user: usersByuserId {
+          first_name
+          full_name
+          last_name
+        }
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+    }
+    share_type
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+  }
+}
+    `;
+export const useGetPublicCollectionsByIdQuery = <
+      TData = GetPublicCollectionsByIdQuery,
+      TError = unknown
+    >(
+      variables: GetPublicCollectionsByIdQueryVariables,
+      options?: UseQueryOptions<GetPublicCollectionsByIdQuery, TError, TData>
+    ) =>
+    useQuery<GetPublicCollectionsByIdQuery, TError, TData>(
+      ['getPublicCollectionsById', variables],
+      fetchData<GetPublicCollectionsByIdQuery, GetPublicCollectionsByIdQueryVariables>(GetPublicCollectionsByIdDocument, variables),
+      options
+    );
+export const GetPublicCollectionsByTitleDocument = `
+    query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) {
+  app_collections_overview(
+    order_by: {title: asc}
+    where: {type_id: {_eq: $typeId}, title: {_ilike: $title}, is_public: {_eq: true}, is_deleted: {_eq: false}}
+    limit: $limit
+  ) {
+    id
+    title
+    share_type
+    contributors {
+      enum_right_type {
+        value
+      }
+      profile {
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+        user: usersByuserId {
+          first_name
+          full_name
+          last_name
+        }
+      }
+    }
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+  }
+}
+    `;
+export const useGetPublicCollectionsByTitleQuery = <
+      TData = GetPublicCollectionsByTitleQuery,
+      TError = unknown
+    >(
+      variables: GetPublicCollectionsByTitleQueryVariables,
+      options?: UseQueryOptions<GetPublicCollectionsByTitleQuery, TError, TData>
+    ) =>
+    useQuery<GetPublicCollectionsByTitleQuery, TError, TData>(
+      ['getPublicCollectionsByTitle', variables],
+      fetchData<GetPublicCollectionsByTitleQuery, GetPublicCollectionsByTitleQueryVariables>(GetPublicCollectionsByTitleDocument, variables),
+      options
+    );
+export const GetPublishedBundlesContainingCollectionDocument = `
+    query getPublishedBundlesContainingCollection($id: String!) {
+  app_collections(
+    where: {is_public: {_eq: true}, collection_fragments: {external_id: {_eq: $id}}, is_deleted: {_eq: false}}
+  ) {
+    id
+    title
+  }
+}
+    `;
+export const useGetPublishedBundlesContainingCollectionQuery = <
+      TData = GetPublishedBundlesContainingCollectionQuery,
+      TError = unknown
+    >(
+      variables: GetPublishedBundlesContainingCollectionQueryVariables,
+      options?: UseQueryOptions<GetPublishedBundlesContainingCollectionQuery, TError, TData>
+    ) =>
+    useQuery<GetPublishedBundlesContainingCollectionQuery, TError, TData>(
+      ['getPublishedBundlesContainingCollection', variables],
+      fetchData<GetPublishedBundlesContainingCollectionQuery, GetPublishedBundlesContainingCollectionQueryVariables>(GetPublishedBundlesContainingCollectionDocument, variables),
+      options
+    );
+export const InsertCollectionDocument = `
+    mutation insertCollection($collection: app_collections_insert_input!) {
+  insert_app_collections(objects: [$collection]) {
+    affected_rows
+    returning {
+      id
+      title
+      collection_fragments(order_by: {position: asc}) {
+        id
+      }
+    }
+  }
+}
+    `;
+export const useInsertCollectionMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionMutation, TError, InsertCollectionMutationVariables, TContext>) =>
+    useMutation<InsertCollectionMutation, TError, InsertCollectionMutationVariables, TContext>(
+      ['insertCollection'],
+      (variables?: InsertCollectionMutationVariables) => fetchData<InsertCollectionMutation, InsertCollectionMutationVariables>(InsertCollectionDocument, variables)(),
+      options
+    );
+export const InsertCollectionFragmentsDocument = `
+    mutation insertCollectionFragments($fragments: [app_collection_fragments_insert_input!]!) {
+  insert_app_collection_fragments(objects: $fragments) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertCollectionFragmentsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionFragmentsMutation, TError, InsertCollectionFragmentsMutationVariables, TContext>) =>
+    useMutation<InsertCollectionFragmentsMutation, TError, InsertCollectionFragmentsMutationVariables, TContext>(
+      ['insertCollectionFragments'],
+      (variables?: InsertCollectionFragmentsMutationVariables) => fetchData<InsertCollectionFragmentsMutation, InsertCollectionFragmentsMutationVariables>(InsertCollectionFragmentsDocument, variables)(),
+      options
+    );
+export const InsertCollectionLabelsDocument = `
+    mutation insertCollectionLabels($objects: [app_collection_labels_insert_input!]!) {
+  insert_app_collection_labels(objects: $objects) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertCollectionLabelsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionLabelsMutation, TError, InsertCollectionLabelsMutationVariables, TContext>) =>
+    useMutation<InsertCollectionLabelsMutation, TError, InsertCollectionLabelsMutationVariables, TContext>(
+      ['insertCollectionLabels'],
+      (variables?: InsertCollectionLabelsMutationVariables) => fetchData<InsertCollectionLabelsMutation, InsertCollectionLabelsMutationVariables>(InsertCollectionLabelsDocument, variables)(),
+      options
+    );
+export const InsertCollectionLomLinksDocument = `
+    mutation insertCollectionLomLinks($lomObjects: [app_collections_lom_links_insert_input!]!) {
+  insert_app_collections_lom_links(objects: $lomObjects) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertCollectionLomLinksMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionLomLinksMutation, TError, InsertCollectionLomLinksMutationVariables, TContext>) =>
+    useMutation<InsertCollectionLomLinksMutation, TError, InsertCollectionLomLinksMutationVariables, TContext>(
+      ['insertCollectionLomLinks'],
+      (variables?: InsertCollectionLomLinksMutationVariables) => fetchData<InsertCollectionLomLinksMutation, InsertCollectionLomLinksMutationVariables>(InsertCollectionLomLinksDocument, variables)(),
+      options
+    );
+export const InsertCollectionManagementEntryDocument = `
+    mutation insertCollectionManagementEntry($collection_id: uuid!, $current_status: String, $manager_profile_id: uuid, $status_valid_until: timestamptz, $note: String, $updated_at: timestamptz) {
+  insert_app_collection_management(
+    objects: [{collection_id: $collection_id, current_status: $current_status, manager_profile_id: $manager_profile_id, status_valid_until: $status_valid_until, note: $note, updated_at: $updated_at}]
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertCollectionManagementEntryMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionManagementEntryMutation, TError, InsertCollectionManagementEntryMutationVariables, TContext>) =>
+    useMutation<InsertCollectionManagementEntryMutation, TError, InsertCollectionManagementEntryMutationVariables, TContext>(
+      ['insertCollectionManagementEntry'],
+      (variables?: InsertCollectionManagementEntryMutationVariables) => fetchData<InsertCollectionManagementEntryMutation, InsertCollectionManagementEntryMutationVariables>(InsertCollectionManagementEntryDocument, variables)(),
+      options
+    );
+export const InsertCollectionManagementQualityCheckEntryDocument = `
+    mutation insertCollectionManagementQualityCheckEntry($collection_id: uuid!, $comment: String, $assignee_profile_id: uuid, $qc_label: lookup_enum_collection_management_qc_label_enum, $qc_status: Boolean) {
+  insert_app_collection_management_QC_one(
+    object: {comment: $comment, assignee_profile_id: $assignee_profile_id, qc_label: $qc_label, qc_status: $qc_status, collection_id: $collection_id}
+  ) {
+    id
+  }
+}
+    `;
+export const useInsertCollectionManagementQualityCheckEntryMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionManagementQualityCheckEntryMutation, TError, InsertCollectionManagementQualityCheckEntryMutationVariables, TContext>) =>
+    useMutation<InsertCollectionManagementQualityCheckEntryMutation, TError, InsertCollectionManagementQualityCheckEntryMutationVariables, TContext>(
+      ['insertCollectionManagementQualityCheckEntry'],
+      (variables?: InsertCollectionManagementQualityCheckEntryMutationVariables) => fetchData<InsertCollectionManagementQualityCheckEntryMutation, InsertCollectionManagementQualityCheckEntryMutationVariables>(InsertCollectionManagementQualityCheckEntryDocument, variables)(),
+      options
+    );
+export const InsertMarcomEntryDocument = `
+    mutation insertMarcomEntry($objects: [app_collection_marcom_log_insert_input!]!) {
+  insert_app_collection_marcom_log(objects: $objects) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertMarcomEntryMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertMarcomEntryMutation, TError, InsertMarcomEntryMutationVariables, TContext>) =>
+    useMutation<InsertMarcomEntryMutation, TError, InsertMarcomEntryMutationVariables, TContext>(
+      ['insertMarcomEntry'],
+      (variables?: InsertMarcomEntryMutationVariables) => fetchData<InsertMarcomEntryMutation, InsertMarcomEntryMutationVariables>(InsertMarcomEntryDocument, variables)(),
+      options
+    );
+export const InsertMarcomNoteDocument = `
+    mutation insertMarcomNote($collectionId: uuid, $note: String) {
+  insert_app_collection_marcom_notes(
+    objects: {note: $note, collection_id: $collectionId}
+  ) {
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertMarcomNoteMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertMarcomNoteMutation, TError, InsertMarcomNoteMutationVariables, TContext>) =>
+    useMutation<InsertMarcomNoteMutation, TError, InsertMarcomNoteMutationVariables, TContext>(
+      ['insertMarcomNote'],
+      (variables?: InsertMarcomNoteMutationVariables) => fetchData<InsertMarcomNoteMutation, InsertMarcomNoteMutationVariables>(InsertMarcomNoteDocument, variables)(),
+      options
+    );
+export const UpdateCollectionByIdDocument = `
+    mutation updateCollectionById($id: uuid!, $collection: app_collections_set_input!) {
+  update_app_collections(
+    where: {id: {_eq: $id}, is_deleted: {_eq: false}}
+    _set: $collection
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateCollectionByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateCollectionByIdMutation, TError, UpdateCollectionByIdMutationVariables, TContext>) =>
+    useMutation<UpdateCollectionByIdMutation, TError, UpdateCollectionByIdMutationVariables, TContext>(
+      ['updateCollectionById'],
+      (variables?: UpdateCollectionByIdMutationVariables) => fetchData<UpdateCollectionByIdMutation, UpdateCollectionByIdMutationVariables>(UpdateCollectionByIdDocument, variables)(),
+      options
+    );
+export const UpdateCollectionFragmentByIdDocument = `
+    mutation updateCollectionFragmentById($id: Int!, $fragment: app_collection_fragments_set_input!) {
+  update_app_collection_fragments(where: {id: {_eq: $id}}, _set: $fragment) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateCollectionFragmentByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateCollectionFragmentByIdMutation, TError, UpdateCollectionFragmentByIdMutationVariables, TContext>) =>
+    useMutation<UpdateCollectionFragmentByIdMutation, TError, UpdateCollectionFragmentByIdMutationVariables, TContext>(
+      ['updateCollectionFragmentById'],
+      (variables?: UpdateCollectionFragmentByIdMutationVariables) => fetchData<UpdateCollectionFragmentByIdMutation, UpdateCollectionFragmentByIdMutationVariables>(UpdateCollectionFragmentByIdDocument, variables)(),
+      options
+    );
+export const UpdateCollectionManagementEntryDocument = `
+    mutation updateCollectionManagementEntry($collection_id: uuid!, $current_status: String, $manager_profile_id: uuid, $status_valid_until: timestamptz, $note: String, $updated_at: timestamptz) {
+  update_app_collection_management(
+    where: {collection_id: {_eq: $collection_id}}
+    _set: {current_status: $current_status, manager_profile_id: $manager_profile_id, status_valid_until: $status_valid_until, note: $note, updated_at: $updated_at}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateCollectionManagementEntryMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateCollectionManagementEntryMutation, TError, UpdateCollectionManagementEntryMutationVariables, TContext>) =>
+    useMutation<UpdateCollectionManagementEntryMutation, TError, UpdateCollectionManagementEntryMutationVariables, TContext>(
+      ['updateCollectionManagementEntry'],
+      (variables?: UpdateCollectionManagementEntryMutationVariables) => fetchData<UpdateCollectionManagementEntryMutation, UpdateCollectionManagementEntryMutationVariables>(UpdateCollectionManagementEntryDocument, variables)(),
+      options
+    );
+export const UpdateMarcomNoteDocument = `
+    mutation updateMarcomNote($id: Int, $note: String) {
+  update_app_collection_marcom_notes(where: {id: {_eq: $id}}, _set: {note: $note}) {
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useUpdateMarcomNoteMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateMarcomNoteMutation, TError, UpdateMarcomNoteMutationVariables, TContext>) =>
+    useMutation<UpdateMarcomNoteMutation, TError, UpdateMarcomNoteMutationVariables, TContext>(
+      ['updateMarcomNote'],
+      (variables?: UpdateMarcomNoteMutationVariables) => fetchData<UpdateMarcomNoteMutation, UpdateMarcomNoteMutationVariables>(UpdateMarcomNoteDocument, variables)(),
+      options
+    );
+export const BulkUpdateAuthorForPupilCollectionsDocument = `
+    mutation bulkUpdateAuthorForPupilCollections($authorId: uuid!, $pupilCollectionIds: [uuid!]!, $now: timestamptz!) {
+  update_app_assignment_responses_v2(
+    where: {id: {_in: $pupilCollectionIds}}
+    _set: {owner_profile_id: $authorId, updated_at: $now}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useBulkUpdateAuthorForPupilCollectionsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<BulkUpdateAuthorForPupilCollectionsMutation, TError, BulkUpdateAuthorForPupilCollectionsMutationVariables, TContext>) =>
+    useMutation<BulkUpdateAuthorForPupilCollectionsMutation, TError, BulkUpdateAuthorForPupilCollectionsMutationVariables, TContext>(
+      ['bulkUpdateAuthorForPupilCollections'],
+      (variables?: BulkUpdateAuthorForPupilCollectionsMutationVariables) => fetchData<BulkUpdateAuthorForPupilCollectionsMutation, BulkUpdateAuthorForPupilCollectionsMutationVariables>(BulkUpdateAuthorForPupilCollectionsDocument, variables)(),
+      options
+    );
+export const DeleteAssignmentResponsesDocument = `
+    mutation deleteAssignmentResponses($assignmentResponseIds: [uuid!]!) {
+  delete_app_assignment_responses_v2(where: {id: {_in: $assignmentResponseIds}}) {
+    affected_rows
+  }
+  delete_app_pupil_collection_blocks(
+    where: {assignment_response_id: {_in: $assignmentResponseIds}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentResponsesMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentResponsesMutation, TError, DeleteAssignmentResponsesMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentResponsesMutation, TError, DeleteAssignmentResponsesMutationVariables, TContext>(
+      ['deleteAssignmentResponses'],
+      (variables?: DeleteAssignmentResponsesMutationVariables) => fetchData<DeleteAssignmentResponsesMutation, DeleteAssignmentResponsesMutationVariables>(DeleteAssignmentResponsesDocument, variables)(),
+      options
+    );
+export const GetMaxPositionPupilCollectionBlocksDocument = `
+    query getMaxPositionPupilCollectionBlocks($assignmentResponseId: uuid!) {
+  app_assignment_responses_v2_by_pk(id: $assignmentResponseId) {
+    pupil_collection_blocks_aggregate {
+      aggregate {
+        max {
+          position
+        }
+      }
+    }
+  }
+}
+    `;
+export const useGetMaxPositionPupilCollectionBlocksQuery = <
+      TData = GetMaxPositionPupilCollectionBlocksQuery,
+      TError = unknown
+    >(
+      variables: GetMaxPositionPupilCollectionBlocksQueryVariables,
+      options?: UseQueryOptions<GetMaxPositionPupilCollectionBlocksQuery, TError, TData>
+    ) =>
+    useQuery<GetMaxPositionPupilCollectionBlocksQuery, TError, TData>(
+      ['getMaxPositionPupilCollectionBlocks', variables],
+      fetchData<GetMaxPositionPupilCollectionBlocksQuery, GetMaxPositionPupilCollectionBlocksQueryVariables>(GetMaxPositionPupilCollectionBlocksDocument, variables),
+      options
+    );
+export const GetPupilCollectionIdsDocument = `
+    query getPupilCollectionIds($where: app_assignment_responses_v2_bool_exp!) {
+  app_assignment_responses_v2(
+    where: {_and: [$where, {collection_title: {_is_null: false}}, {assignment: {is_deleted: {_eq: false}}}]}
+  ) {
+    id
+  }
+}
+    `;
+export const useGetPupilCollectionIdsQuery = <
+      TData = GetPupilCollectionIdsQuery,
+      TError = unknown
+    >(
+      variables: GetPupilCollectionIdsQueryVariables,
+      options?: UseQueryOptions<GetPupilCollectionIdsQuery, TError, TData>
+    ) =>
+    useQuery<GetPupilCollectionIdsQuery, TError, TData>(
+      ['getPupilCollectionIds', variables],
+      fetchData<GetPupilCollectionIdsQuery, GetPupilCollectionIdsQueryVariables>(GetPupilCollectionIdsDocument, variables),
+      options
+    );
+export const GetPupilCollectionsAdminOverviewDocument = `
+    query getPupilCollectionsAdminOverview($offset: Int!, $limit: Int!, $orderBy: [app_assignment_responses_v2_order_by!]!, $where: app_assignment_responses_v2_bool_exp!) {
+  app_assignment_responses_v2(
+    offset: $offset
+    limit: $limit
+    order_by: $orderBy
+    where: {_and: [$where, {collection_title: {_is_null: false}, assignment: {is_deleted: {_eq: false}}}]}
+  ) {
+    id
+    assignment_id
+    collection_title
+    created_at
+    updated_at
+    owner {
+      full_name
+    }
+    owner_profile_id
+    assignment {
+      id
+      title
+      deadline_at
+      owner {
+        full_name
+      }
+      owner_profile_id
+    }
+  }
+  app_assignment_responses_v2_aggregate(
+    where: {_and: [$where, {collection_title: {_is_null: false}}, {assignment: {is_deleted: {_eq: false}}}]}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetPupilCollectionsAdminOverviewQuery = <
+      TData = GetPupilCollectionsAdminOverviewQuery,
+      TError = unknown
+    >(
+      variables: GetPupilCollectionsAdminOverviewQueryVariables,
+      options?: UseQueryOptions<GetPupilCollectionsAdminOverviewQuery, TError, TData>
+    ) =>
+    useQuery<GetPupilCollectionsAdminOverviewQuery, TError, TData>(
+      ['getPupilCollectionsAdminOverview', variables],
+      fetchData<GetPupilCollectionsAdminOverviewQuery, GetPupilCollectionsAdminOverviewQueryVariables>(GetPupilCollectionsAdminOverviewDocument, variables),
+      options
+    );
+export const InsertPupilCollectionBlocksDocument = `
+    mutation insertPupilCollectionBlocks($pupilCollectionBlocks: [app_pupil_collection_blocks_insert_input!]!) {
+  insert_app_pupil_collection_blocks(objects: $pupilCollectionBlocks) {
+    affected_rows
+    returning {
+      id
+      created_at
+      custom_description
+      end_oc
+      custom_title
+      fragment_id
+      position
+      start_oc
+      thumbnail_path
+      type
+      updated_at
+      use_custom_fields
+      assignment_response_id
+    }
+  }
+}
+    `;
+export const useInsertPupilCollectionBlocksMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertPupilCollectionBlocksMutation, TError, InsertPupilCollectionBlocksMutationVariables, TContext>) =>
+    useMutation<InsertPupilCollectionBlocksMutation, TError, InsertPupilCollectionBlocksMutationVariables, TContext>(
+      ['insertPupilCollectionBlocks'],
+      (variables?: InsertPupilCollectionBlocksMutationVariables) => fetchData<InsertPupilCollectionBlocksMutation, InsertPupilCollectionBlocksMutationVariables>(InsertPupilCollectionBlocksDocument, variables)(),
+      options
+    );
+export const UpdatePupilCollectionBlockDocument = `
+    mutation updatePupilCollectionBlock($blockId: uuid!, $update: app_pupil_collection_blocks_set_input!) {
+  update_app_pupil_collection_blocks_by_pk(
+    pk_columns: {id: $blockId}
+    _set: $update
+  ) {
+    id
+    created_at
+    custom_description
+    end_oc
+    custom_title
+    fragment_id
+    position
+    start_oc
+    thumbnail_path
+    type
+    updated_at
+    use_custom_fields
+    assignment_response_id
+  }
+}
+    `;
+export const useUpdatePupilCollectionBlockMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdatePupilCollectionBlockMutation, TError, UpdatePupilCollectionBlockMutationVariables, TContext>) =>
+    useMutation<UpdatePupilCollectionBlockMutation, TError, UpdatePupilCollectionBlockMutationVariables, TContext>(
+      ['updatePupilCollectionBlock'],
+      (variables?: UpdatePupilCollectionBlockMutationVariables) => fetchData<UpdatePupilCollectionBlockMutation, UpdatePupilCollectionBlockMutationVariables>(UpdatePupilCollectionBlockDocument, variables)(),
+      options
+    );
+export const GetQuickLaneByContentAndOwnerDocument = `
+    query getQuickLaneByContentAndOwner($contentId: uuid = "", $contentLabel: String = "", $profileId: uuid = "") {
+  app_quick_lanes(
+    where: {content_id: {_eq: $contentId}, content_label: {_eq: $contentLabel}, owner_profile_id: {_eq: $profileId}}
+  ) {
+    id
+    content_id
+    content_label
+    title
+    view_mode
+    created_at
+    updated_at
+    owner {
+      id
+      avatar
+      user: usersByuserId {
+        full_name
+        first_name
+        last_name
+      }
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+    }
+  }
+}
+    `;
+export const useGetQuickLaneByContentAndOwnerQuery = <
+      TData = GetQuickLaneByContentAndOwnerQuery,
+      TError = unknown
+    >(
+      variables?: GetQuickLaneByContentAndOwnerQueryVariables,
+      options?: UseQueryOptions<GetQuickLaneByContentAndOwnerQuery, TError, TData>
+    ) =>
+    useQuery<GetQuickLaneByContentAndOwnerQuery, TError, TData>(
+      variables === undefined ? ['getQuickLaneByContentAndOwner'] : ['getQuickLaneByContentAndOwner', variables],
+      fetchData<GetQuickLaneByContentAndOwnerQuery, GetQuickLaneByContentAndOwnerQueryVariables>(GetQuickLaneByContentAndOwnerDocument, variables),
+      options
+    );
+export const GetQuickLaneByIdDocument = `
+    query getQuickLaneById($id: uuid = "") {
+  app_quick_lanes(where: {id: {_eq: $id}}) {
+    id
+    content_id
+    content_label
+    title
+    view_mode
+    created_at
+    updated_at
+    owner {
+      id
+      avatar
+      user: usersByuserId {
+        full_name
+        first_name
+        last_name
+      }
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+    }
+  }
+}
+    `;
+export const useGetQuickLaneByIdQuery = <
+      TData = GetQuickLaneByIdQuery,
+      TError = unknown
+    >(
+      variables?: GetQuickLaneByIdQueryVariables,
+      options?: UseQueryOptions<GetQuickLaneByIdQuery, TError, TData>
+    ) =>
+    useQuery<GetQuickLaneByIdQuery, TError, TData>(
+      variables === undefined ? ['getQuickLaneById'] : ['getQuickLaneById', variables],
+      fetchData<GetQuickLaneByIdQuery, GetQuickLaneByIdQueryVariables>(GetQuickLaneByIdDocument, variables),
+      options
+    );
+export const InsertQuickLanesDocument = `
+    mutation insertQuickLanes($objects: [app_quick_lanes_insert_input!]!) {
+  insert_app_quick_lanes(objects: $objects) {
+    affected_rows
+    returning {
+      id
+      content_id
+      content_label
+      title
+      view_mode
+      created_at
+      updated_at
+      owner {
+        id
+        avatar
+        user: usersByuserId {
+          full_name
+          first_name
+          last_name
+        }
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+    }
+  }
+}
+    `;
+export const useInsertQuickLanesMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertQuickLanesMutation, TError, InsertQuickLanesMutationVariables, TContext>) =>
+    useMutation<InsertQuickLanesMutation, TError, InsertQuickLanesMutationVariables, TContext>(
+      ['insertQuickLanes'],
+      (variables?: InsertQuickLanesMutationVariables) => fetchData<InsertQuickLanesMutation, InsertQuickLanesMutationVariables>(InsertQuickLanesDocument, variables)(),
+      options
+    );
+export const RemoveQuickLanesDocument = `
+    mutation RemoveQuickLanes($ids: [uuid!]!, $profileId: uuid!) {
+  delete_app_quick_lanes(
+    where: {id: {_in: $ids}, owner: {usersByuserId: {profile: {id: {_eq: $profileId}}}}}
+  ) {
+    affected_rows
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useRemoveQuickLanesMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RemoveQuickLanesMutation, TError, RemoveQuickLanesMutationVariables, TContext>) =>
+    useMutation<RemoveQuickLanesMutation, TError, RemoveQuickLanesMutationVariables, TContext>(
+      ['RemoveQuickLanes'],
+      (variables?: RemoveQuickLanesMutationVariables) => fetchData<RemoveQuickLanesMutation, RemoveQuickLanesMutationVariables>(RemoveQuickLanesDocument, variables)(),
+      options
+    );
+export const UpdateQuickLaneByIdDocument = `
+    mutation updateQuickLaneById($id: uuid!, $object: app_quick_lanes_set_input!) {
+  update_app_quick_lanes(where: {id: {_eq: $id}}, _set: $object) {
+    affected_rows
+    returning {
+      id
+      content_id
+      content_label
+      title
+      view_mode
+      created_at
+      updated_at
+      owner {
+        id
+        avatar
+        user: usersByuserId {
+          full_name
+          first_name
+          last_name
+        }
+        organisation {
+          name
+          logo_url
+          or_id
+        }
+      }
+    }
+  }
+}
+    `;
+export const useUpdateQuickLaneByIdMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateQuickLaneByIdMutation, TError, UpdateQuickLaneByIdMutationVariables, TContext>) =>
+    useMutation<UpdateQuickLaneByIdMutation, TError, UpdateQuickLaneByIdMutationVariables, TContext>(
+      ['updateQuickLaneById'],
+      (variables?: UpdateQuickLaneByIdMutationVariables) => fetchData<UpdateQuickLaneByIdMutation, UpdateQuickLaneByIdMutationVariables>(UpdateQuickLaneByIdDocument, variables)(),
+      options
+    );
+export const GetProfilePreferenceDocument = `
+    query getProfilePreference($profileId: uuid!, $key: lookup_enum_profile_preferences_keys_enum!) {
+  users_profile_preferences(
+    where: {_and: {key: {_eq: $key}, profile_id: {_eq: $profileId}}}
+  ) {
+    id
+    profile_id
+    key
+  }
+}
+    `;
+export const useGetProfilePreferenceQuery = <
+      TData = GetProfilePreferenceQuery,
+      TError = unknown
+    >(
+      variables: GetProfilePreferenceQueryVariables,
+      options?: UseQueryOptions<GetProfilePreferenceQuery, TError, TData>
+    ) =>
+    useQuery<GetProfilePreferenceQuery, TError, TData>(
+      ['getProfilePreference', variables],
+      fetchData<GetProfilePreferenceQuery, GetProfilePreferenceQueryVariables>(GetProfilePreferenceDocument, variables),
+      options
+    );
+export const SetProfilePreferenceDocument = `
+    mutation setProfilePreference($profileId: uuid!, $key: lookup_enum_profile_preferences_keys_enum!) {
+  insert_users_profile_preferences(objects: {key: $key, profile_id: $profileId}) {
+    affected_rows
+  }
+}
+    `;
+export const useSetProfilePreferenceMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SetProfilePreferenceMutation, TError, SetProfilePreferenceMutationVariables, TContext>) =>
+    useMutation<SetProfilePreferenceMutation, TError, SetProfilePreferenceMutationVariables, TContext>(
+      ['setProfilePreference'],
+      (variables?: SetProfilePreferenceMutationVariables) => fetchData<SetProfilePreferenceMutation, SetProfilePreferenceMutationVariables>(SetProfilePreferenceDocument, variables)(),
+      options
+    );
+export const GetEducationLevelsDocument = `
+    query getEducationLevels {
+  lookup_enum_lom_context {
+    description
+  }
+}
+    `;
+export const useGetEducationLevelsQuery = <
+      TData = GetEducationLevelsQuery,
+      TError = unknown
+    >(
+      variables?: GetEducationLevelsQueryVariables,
+      options?: UseQueryOptions<GetEducationLevelsQuery, TError, TData>
+    ) =>
+    useQuery<GetEducationLevelsQuery, TError, TData>(
+      variables === undefined ? ['getEducationLevels'] : ['getEducationLevels', variables],
+      fetchData<GetEducationLevelsQuery, GetEducationLevelsQueryVariables>(GetEducationLevelsDocument, variables),
+      options
+    );
+export const GetQualityLabelsDocument = `
+    query getQualityLabels {
+  lookup_enum_collection_labels {
+    description
+    value
+  }
+}
+    `;
+export const useGetQualityLabelsQuery = <
+      TData = GetQualityLabelsQuery,
+      TError = unknown
+    >(
+      variables?: GetQualityLabelsQueryVariables,
+      options?: UseQueryOptions<GetQualityLabelsQuery, TError, TData>
+    ) =>
+    useQuery<GetQualityLabelsQuery, TError, TData>(
+      variables === undefined ? ['getQualityLabels'] : ['getQualityLabels', variables],
+      fetchData<GetQualityLabelsQuery, GetQualityLabelsQueryVariables>(GetQualityLabelsDocument, variables),
+      options
+    );
+export const GetQuickLanesByContentIdDocument = `
+    query getQuickLanesByContentId($contentId: uuid) {
+  app_quick_lanes(where: {content_id: {_eq: $contentId}}) {
+    id
+    content_id
+    content_label
+    title
+    view_mode
+    created_at
+    updated_at
+    owner {
+      id
+      avatar
+      user: usersByuserId {
+        full_name
+        first_name
+        last_name
+      }
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+    }
+  }
+}
+    `;
+export const useGetQuickLanesByContentIdQuery = <
+      TData = GetQuickLanesByContentIdQuery,
+      TError = unknown
+    >(
+      variables?: GetQuickLanesByContentIdQueryVariables,
+      options?: UseQueryOptions<GetQuickLanesByContentIdQuery, TError, TData>
+    ) =>
+    useQuery<GetQuickLanesByContentIdQuery, TError, TData>(
+      variables === undefined ? ['getQuickLanesByContentId'] : ['getQuickLanesByContentId', variables],
+      fetchData<GetQuickLanesByContentIdQuery, GetQuickLanesByContentIdQueryVariables>(GetQuickLanesByContentIdDocument, variables),
+      options
+    );
+export const GetQuickLanesWithFiltersDocument = `
+    query getQuickLanesWithFilters($filterString: String, $filters: [app_quick_lanes_bool_exp!], $orderBy: [app_quick_lanes_order_by!], $limit: Int = 100, $offset: Int = 0) {
+  app_quick_lanes(
+    where: {_and: [{_or: [{title: {_ilike: $filterString}}, {owner: {_or: [{usersByuserId: {first_name: {_ilike: $filterString}}}, {usersByuserId: {last_name: {_ilike: $filterString}}}]}}]}, {_and: $filters}]}
+    order_by: $orderBy
+    offset: $offset
+    limit: $limit
+  ) {
+    id
+    content_id
+    content_label
+    title
+    view_mode
+    created_at
+    updated_at
+    owner {
+      id
+      avatar
+      user: usersByuserId {
+        full_name
+        first_name
+        last_name
+      }
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+    }
+  }
+  app_quick_lanes_aggregate(
+    where: {_and: [{_or: [{title: {_ilike: $filterString}}, {owner: {_or: [{usersByuserId: {first_name: {_ilike: $filterString}}}, {usersByuserId: {last_name: {_ilike: $filterString}}}]}}]}, {_and: $filters}]}
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+    `;
+export const useGetQuickLanesWithFiltersQuery = <
+      TData = GetQuickLanesWithFiltersQuery,
+      TError = unknown
+    >(
+      variables?: GetQuickLanesWithFiltersQueryVariables,
+      options?: UseQueryOptions<GetQuickLanesWithFiltersQuery, TError, TData>
+    ) =>
+    useQuery<GetQuickLanesWithFiltersQuery, TError, TData>(
+      variables === undefined ? ['getQuickLanesWithFilters'] : ['getQuickLanesWithFilters', variables],
+      fetchData<GetQuickLanesWithFiltersQuery, GetQuickLanesWithFiltersQueryVariables>(GetQuickLanesWithFiltersDocument, variables),
+      options
+    );
+export const GetSubjectsDocument = `
+    query getSubjects {
+  lookup_enum_lom_classification {
+    description
+  }
+}
+    `;
+export const useGetSubjectsQuery = <
+      TData = GetSubjectsQuery,
+      TError = unknown
+    >(
+      variables?: GetSubjectsQueryVariables,
+      options?: UseQueryOptions<GetSubjectsQuery, TError, TData>
+    ) =>
+    useQuery<GetSubjectsQuery, TError, TData>(
+      variables === undefined ? ['getSubjects'] : ['getSubjects', variables],
+      fetchData<GetSubjectsQuery, GetSubjectsQueryVariables>(GetSubjectsDocument, variables),
+      options
+    );
+export const DeleteAssignmentLabelsDocument = `
+    mutation deleteAssignmentLabels($profileId: uuid!, $labelIds: [uuid!]!) {
+  delete_app_assignment_labels_v2(
+    where: {owner_profile_id: {_eq: $profileId}, id: {_in: $labelIds}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentLabelsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentLabelsMutation, TError, DeleteAssignmentLabelsMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentLabelsMutation, TError, DeleteAssignmentLabelsMutationVariables, TContext>(
+      ['deleteAssignmentLabels'],
+      (variables?: DeleteAssignmentLabelsMutationVariables) => fetchData<DeleteAssignmentLabelsMutation, DeleteAssignmentLabelsMutationVariables>(DeleteAssignmentLabelsDocument, variables)(),
+      options
+    );
+export const GetAllAssignmentLabelColorsDocument = `
+    query getAllAssignmentLabelColors {
+  lookup_enum_colors {
+    label
+    value
+  }
+}
+    `;
+export const useGetAllAssignmentLabelColorsQuery = <
+      TData = GetAllAssignmentLabelColorsQuery,
+      TError = unknown
+    >(
+      variables?: GetAllAssignmentLabelColorsQueryVariables,
+      options?: UseQueryOptions<GetAllAssignmentLabelColorsQuery, TError, TData>
+    ) =>
+    useQuery<GetAllAssignmentLabelColorsQuery, TError, TData>(
+      variables === undefined ? ['getAllAssignmentLabelColors'] : ['getAllAssignmentLabelColors', variables],
+      fetchData<GetAllAssignmentLabelColorsQuery, GetAllAssignmentLabelColorsQueryVariables>(GetAllAssignmentLabelColorsDocument, variables),
+      options
+    );
+export const GetAssignmentLabelsByProfileIdDocument = `
+    query getAssignmentLabelsByProfileId($profileId: uuid!, $filters: [app_assignment_labels_v2_bool_exp!]) {
+  app_assignment_labels_v2(
+    where: {_and: [{owner_profile_id: {_eq: $profileId}}, {_and: $filters}]}
+    order_by: {label: asc}
+  ) {
+    color_enum_value
+    color_override
+    label
+    id
+    enum_color {
+      label
+      value
+    }
+    type
+    owner_profile_id
+  }
+}
+    `;
+export const useGetAssignmentLabelsByProfileIdQuery = <
+      TData = GetAssignmentLabelsByProfileIdQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentLabelsByProfileIdQueryVariables,
+      options?: UseQueryOptions<GetAssignmentLabelsByProfileIdQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentLabelsByProfileIdQuery, TError, TData>(
+      ['getAssignmentLabelsByProfileId', variables],
+      fetchData<GetAssignmentLabelsByProfileIdQuery, GetAssignmentLabelsByProfileIdQueryVariables>(GetAssignmentLabelsByProfileIdDocument, variables),
+      options
+    );
+export const InsertAssignmentLabelsDocument = `
+    mutation insertAssignmentLabels($objects: [app_assignment_labels_v2_insert_input!]!) {
+  insert_app_assignment_labels_v2(objects: $objects) {
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertAssignmentLabelsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentLabelsMutation, TError, InsertAssignmentLabelsMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentLabelsMutation, TError, InsertAssignmentLabelsMutationVariables, TContext>(
+      ['insertAssignmentLabels'],
+      (variables?: InsertAssignmentLabelsMutationVariables) => fetchData<InsertAssignmentLabelsMutation, InsertAssignmentLabelsMutationVariables>(InsertAssignmentLabelsDocument, variables)(),
+      options
+    );
+export const UpdateAssignmentLabelsDocument = `
+    mutation updateAssignmentLabels($label: String!, $colorEnumValue: lookup_enum_colors_enum!, $profileId: uuid!, $labelId: uuid!) {
+  update_app_assignment_labels_v2(
+    _set: {label: $label, color_enum_value: $colorEnumValue}
+    where: {owner_profile_id: {_eq: $profileId}, id: {_eq: $labelId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateAssignmentLabelsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateAssignmentLabelsMutation, TError, UpdateAssignmentLabelsMutationVariables, TContext>) =>
+    useMutation<UpdateAssignmentLabelsMutation, TError, UpdateAssignmentLabelsMutationVariables, TContext>(
+      ['updateAssignmentLabels'],
+      (variables?: UpdateAssignmentLabelsMutationVariables) => fetchData<UpdateAssignmentLabelsMutation, UpdateAssignmentLabelsMutationVariables>(UpdateAssignmentLabelsDocument, variables)(),
+      options
+    );
+export const DeleteAssignmentBookmarksForUserDocument = `
+    mutation deleteAssignmentBookmarksForUser($assignmentUuid: uuid!, $profileId: uuid) {
+  delete_app_assignments_v2_bookmarks(
+    where: {assignment_id: {_eq: $assignmentUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentBookmarksForUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentBookmarksForUserMutation, TError, DeleteAssignmentBookmarksForUserMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentBookmarksForUserMutation, TError, DeleteAssignmentBookmarksForUserMutationVariables, TContext>(
+      ['deleteAssignmentBookmarksForUser'],
+      (variables?: DeleteAssignmentBookmarksForUserMutationVariables) => fetchData<DeleteAssignmentBookmarksForUserMutation, DeleteAssignmentBookmarksForUserMutationVariables>(DeleteAssignmentBookmarksForUserDocument, variables)(),
+      options
+    );
+export const DeleteCollectionBookmarksForUserDocument = `
+    mutation deleteCollectionBookmarksForUser($collectionUuid: uuid!, $profileId: uuid) {
+  delete_app_collection_bookmarks(
+    where: {collection_uuid: {_eq: $collectionUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionBookmarksForUserMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionBookmarksForUserMutation, TError, DeleteCollectionBookmarksForUserMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionBookmarksForUserMutation, TError, DeleteCollectionBookmarksForUserMutationVariables, TContext>(
+      ['deleteCollectionBookmarksForUser'],
+      (variables?: DeleteCollectionBookmarksForUserMutationVariables) => fetchData<DeleteCollectionBookmarksForUserMutation, DeleteCollectionBookmarksForUserMutationVariables>(DeleteCollectionBookmarksForUserDocument, variables)(),
+      options
+    );
+export const DeleteItemBookmarkDocument = `
+    mutation deleteItemBookmark($itemUuid: uuid!, $profileId: uuid) {
+  delete_app_item_bookmarks(
+    where: {item_id: {_eq: $itemUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteItemBookmarkMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteItemBookmarkMutation, TError, DeleteItemBookmarkMutationVariables, TContext>) =>
+    useMutation<DeleteItemBookmarkMutation, TError, DeleteItemBookmarkMutationVariables, TContext>(
+      ['deleteItemBookmark'],
+      (variables?: DeleteItemBookmarkMutationVariables) => fetchData<DeleteItemBookmarkMutation, DeleteItemBookmarkMutationVariables>(DeleteItemBookmarkDocument, variables)(),
+      options
+    );
+export const GetAssignmentBookmarkViewCountsDocument = `
+    query getAssignmentBookmarkViewCounts($assignmentUuid: uuid!, $profileId: uuid!) {
+  app_assignments_v2_bookmarks_aggregate(
+    where: {assignment_id: {_eq: $assignmentUuid}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  app_assignment_v2_views(where: {assignment_uuid: {_eq: $assignmentUuid}}) {
+    count
+  }
+  app_assignments_v2_bookmarks(
+    where: {assignment_id: {_eq: $assignmentUuid}, profile_id: {_eq: $profileId}}
+  ) {
+    id
+  }
+}
+    `;
+export const useGetAssignmentBookmarkViewCountsQuery = <
+      TData = GetAssignmentBookmarkViewCountsQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentBookmarkViewCountsQueryVariables,
+      options?: UseQueryOptions<GetAssignmentBookmarkViewCountsQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentBookmarkViewCountsQuery, TError, TData>(
+      ['getAssignmentBookmarkViewCounts', variables],
+      fetchData<GetAssignmentBookmarkViewCountsQuery, GetAssignmentBookmarkViewCountsQueryVariables>(GetAssignmentBookmarkViewCountsDocument, variables),
+      options
+    );
+export const GetBookmarkStatusesDocument = `
+    query getBookmarkStatuses($profileId: uuid!, $itemUuids: [uuid!]!, $collectionUuids: [uuid!]!, $assignmentUuids: [uuid!]!) {
+  app_collection_bookmarks(
+    where: {profile_id: {_eq: $profileId}, collection_uuid: {_in: $collectionUuids}}
+  ) {
+    collection_uuid
+  }
+  app_item_bookmarks(
+    where: {profile_id: {_eq: $profileId}, item_id: {_in: $itemUuids}}
+  ) {
+    item_id
+  }
+  app_assignments_v2_bookmarks(
+    where: {profile_id: {_eq: $profileId}, assignment_id: {_in: $assignmentUuids}}
+  ) {
+    assignment_id
+  }
+}
+    `;
+export const useGetBookmarkStatusesQuery = <
+      TData = GetBookmarkStatusesQuery,
+      TError = unknown
+    >(
+      variables: GetBookmarkStatusesQueryVariables,
+      options?: UseQueryOptions<GetBookmarkStatusesQuery, TError, TData>
+    ) =>
+    useQuery<GetBookmarkStatusesQuery, TError, TData>(
+      ['getBookmarkStatuses', variables],
+      fetchData<GetBookmarkStatusesQuery, GetBookmarkStatusesQueryVariables>(GetBookmarkStatusesDocument, variables),
+      options
+    );
+export const GetBookmarksForUserDocument = `
+    query getBookmarksForUser($profileId: uuid!) {
+  app_item_bookmarks(where: {profile_id: {_eq: $profileId}}) {
+    bookmarkedItem {
+      title
+      thumbnail_path
+      duration
+      issued
+      item {
+        external_id
+        item_meta {
+          organisation {
+            name
+          }
+          is_deleted
+          is_published
+          type {
+            label
+          }
+        }
+      }
+      view_counts {
+        count
+      }
+    }
+    item_id
+    created_at
+  }
+  app_collection_bookmarks(where: {profile_id: {_eq: $profileId}}) {
+    bookmarkedCollection {
+      title
+      thumbnail_path
+      created_at
+      type_id
+      view_counts {
+        count
+      }
+    }
+    collection_uuid
+    created_at
+  }
+  app_assignments_v2_bookmarks(where: {profile_id: {_eq: $profileId}}) {
+    assignment {
+      title
+      thumbnail_path
+      type_id
+      created_at
+      view_count {
+        count
+      }
+    }
+    assignment_id
+    created_at
+  }
+}
+    `;
+export const useGetBookmarksForUserQuery = <
+      TData = GetBookmarksForUserQuery,
+      TError = unknown
+    >(
+      variables: GetBookmarksForUserQueryVariables,
+      options?: UseQueryOptions<GetBookmarksForUserQuery, TError, TData>
+    ) =>
+    useQuery<GetBookmarksForUserQuery, TError, TData>(
+      ['getBookmarksForUser', variables],
+      fetchData<GetBookmarksForUserQuery, GetBookmarksForUserQueryVariables>(GetBookmarksForUserDocument, variables),
+      options
+    );
+export const GetCollectionBookmarkViewPlayCountsDocument = `
+    query getCollectionBookmarkViewPlayCounts($collectionUuid: uuid!, $profileId: uuid) {
+  app_collection_views(where: {collection_uuid: {_eq: $collectionUuid}}, limit: 1) {
+    count
+  }
+  app_collection_plays(where: {collection_uuid: {_eq: $collectionUuid}}, limit: 1) {
+    count
+  }
+  app_collection_bookmarks_aggregate(
+    where: {collection_uuid: {_eq: $collectionUuid}}
+  ) {
+    aggregate {
+      count
+    }
+  }
+  app_collection_bookmarks(
+    where: {profile_id: {_eq: $profileId}, collection_uuid: {_eq: $collectionUuid}}
+    limit: 1
+  ) {
+    id
+  }
+}
+    `;
+export const useGetCollectionBookmarkViewPlayCountsQuery = <
+      TData = GetCollectionBookmarkViewPlayCountsQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionBookmarkViewPlayCountsQueryVariables,
+      options?: UseQueryOptions<GetCollectionBookmarkViewPlayCountsQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionBookmarkViewPlayCountsQuery, TError, TData>(
+      ['getCollectionBookmarkViewPlayCounts', variables],
+      fetchData<GetCollectionBookmarkViewPlayCountsQuery, GetCollectionBookmarkViewPlayCountsQueryVariables>(GetCollectionBookmarkViewPlayCountsDocument, variables),
+      options
+    );
+export const GetCollectionPlayCountDocument = `
+    query getCollectionPlayCount($collectionUuid: uuid!) {
+  app_collections(where: {id: {_eq: $collectionUuid}}) {
+    play_counts {
+      count
+    }
+  }
+}
+    `;
+export const useGetCollectionPlayCountQuery = <
+      TData = GetCollectionPlayCountQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionPlayCountQueryVariables,
+      options?: UseQueryOptions<GetCollectionPlayCountQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionPlayCountQuery, TError, TData>(
+      ['getCollectionPlayCount', variables],
+      fetchData<GetCollectionPlayCountQuery, GetCollectionPlayCountQueryVariables>(GetCollectionPlayCountDocument, variables),
+      options
+    );
+export const GetCollectionViewCountDocument = `
+    query getCollectionViewCount($collectionUuid: uuid!) {
+  app_collections(where: {id: {_eq: $collectionUuid}}) {
+    view_counts {
+      count
+    }
+  }
+}
+    `;
+export const useGetCollectionViewCountQuery = <
+      TData = GetCollectionViewCountQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionViewCountQueryVariables,
+      options?: UseQueryOptions<GetCollectionViewCountQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionViewCountQuery, TError, TData>(
+      ['getCollectionViewCount', variables],
+      fetchData<GetCollectionViewCountQuery, GetCollectionViewCountQueryVariables>(GetCollectionViewCountDocument, variables),
+      options
+    );
+export const GetItemBookmarkViewPlayCountsDocument = `
+    query getItemBookmarkViewPlayCounts($itemUuid: uuid!, $profileId: uuid) {
+  app_item_plays(where: {item_id: {_eq: $itemUuid}}, limit: 1) {
+    count
+  }
+  app_item_views(where: {item_id: {_eq: $itemUuid}}, limit: 1) {
+    count
+  }
+  app_item_bookmarks_aggregate(where: {item_id: {_eq: $itemUuid}}) {
+    aggregate {
+      count
+    }
+  }
+  app_item_bookmarks(
+    where: {profile_id: {_eq: $profileId}, item_id: {_eq: $itemUuid}}
+    limit: 1
+  ) {
+    id
+  }
+}
+    `;
+export const useGetItemBookmarkViewPlayCountsQuery = <
+      TData = GetItemBookmarkViewPlayCountsQuery,
+      TError = unknown
+    >(
+      variables: GetItemBookmarkViewPlayCountsQueryVariables,
+      options?: UseQueryOptions<GetItemBookmarkViewPlayCountsQuery, TError, TData>
+    ) =>
+    useQuery<GetItemBookmarkViewPlayCountsQuery, TError, TData>(
+      ['getItemBookmarkViewPlayCounts', variables],
+      fetchData<GetItemBookmarkViewPlayCountsQuery, GetItemBookmarkViewPlayCountsQueryVariables>(GetItemBookmarkViewPlayCountsDocument, variables),
+      options
+    );
+export const GetItemBookmarksForUserDocument = `
+    query getItemBookmarksForUser($profileId: uuid!, $filter: [app_item_bookmarks_bool_exp!], $order: [app_item_bookmarks_order_by!]! = [{created_at: desc}]) {
+  app_item_bookmarks(
+    where: {profile_id: {_eq: $profileId}, _and: $filter}
+    order_by: $order
+  ) {
+    bookmarkedItem {
+      title
+      thumbnail_path
+      duration
+      issued
+      item {
+        external_id
+        item_meta {
+          organisation {
+            name
+          }
+          is_deleted
+          is_published
+          type {
+            label
+          }
+        }
+      }
+      view_counts {
+        count
+      }
+    }
+    item_id
+    created_at
+  }
+}
+    `;
+export const useGetItemBookmarksForUserQuery = <
+      TData = GetItemBookmarksForUserQuery,
+      TError = unknown
+    >(
+      variables: GetItemBookmarksForUserQueryVariables,
+      options?: UseQueryOptions<GetItemBookmarksForUserQuery, TError, TData>
+    ) =>
+    useQuery<GetItemBookmarksForUserQuery, TError, TData>(
+      ['getItemBookmarksForUser', variables],
+      fetchData<GetItemBookmarksForUserQuery, GetItemBookmarksForUserQueryVariables>(GetItemBookmarksForUserDocument, variables),
+      options
+    );
+export const GetItemPlayCountDocument = `
+    query getItemPlayCount($itemUuid: uuid!) {
+  app_item_meta(where: {uid: {_eq: $itemUuid}}) {
+    play_counts {
+      count
+    }
+    is_published
+    is_deleted
+  }
+}
+    `;
+export const useGetItemPlayCountQuery = <
+      TData = GetItemPlayCountQuery,
+      TError = unknown
+    >(
+      variables: GetItemPlayCountQueryVariables,
+      options?: UseQueryOptions<GetItemPlayCountQuery, TError, TData>
+    ) =>
+    useQuery<GetItemPlayCountQuery, TError, TData>(
+      ['getItemPlayCount', variables],
+      fetchData<GetItemPlayCountQuery, GetItemPlayCountQueryVariables>(GetItemPlayCountDocument, variables),
+      options
+    );
+export const GetItemViewCountDocument = `
+    query getItemViewCount($itemUuid: uuid!) {
+  app_item_meta(where: {uid: {_eq: $itemUuid}}) {
+    view_counts {
+      count
+    }
+    is_deleted
+    is_published
+  }
+}
+    `;
+export const useGetItemViewCountQuery = <
+      TData = GetItemViewCountQuery,
+      TError = unknown
+    >(
+      variables: GetItemViewCountQueryVariables,
+      options?: UseQueryOptions<GetItemViewCountQuery, TError, TData>
+    ) =>
+    useQuery<GetItemViewCountQuery, TError, TData>(
+      ['getItemViewCount', variables],
+      fetchData<GetItemViewCountQuery, GetItemViewCountQueryVariables>(GetItemViewCountDocument, variables),
+      options
+    );
+export const GetMultipleCollectionViewCountsDocument = `
+    query getMultipleCollectionViewCounts($uuids: [uuid!]) {
+  items: app_collection_views(where: {collection_uuid: {_in: $uuids}}) {
+    count
+    id: collection_uuid
+  }
+}
+    `;
+export const useGetMultipleCollectionViewCountsQuery = <
+      TData = GetMultipleCollectionViewCountsQuery,
+      TError = unknown
+    >(
+      variables?: GetMultipleCollectionViewCountsQueryVariables,
+      options?: UseQueryOptions<GetMultipleCollectionViewCountsQuery, TError, TData>
+    ) =>
+    useQuery<GetMultipleCollectionViewCountsQuery, TError, TData>(
+      variables === undefined ? ['getMultipleCollectionViewCounts'] : ['getMultipleCollectionViewCounts', variables],
+      fetchData<GetMultipleCollectionViewCountsQuery, GetMultipleCollectionViewCountsQueryVariables>(GetMultipleCollectionViewCountsDocument, variables),
+      options
+    );
+export const GetMultipleItemViewCountsDocument = `
+    query getMultipleItemViewCounts($uuids: [uuid!]) {
+  items: app_item_views(where: {item_id: {_in: $uuids}}) {
+    count
+    id: item_id
+  }
+}
+    `;
+export const useGetMultipleItemViewCountsQuery = <
+      TData = GetMultipleItemViewCountsQuery,
+      TError = unknown
+    >(
+      variables?: GetMultipleItemViewCountsQueryVariables,
+      options?: UseQueryOptions<GetMultipleItemViewCountsQuery, TError, TData>
+    ) =>
+    useQuery<GetMultipleItemViewCountsQuery, TError, TData>(
+      variables === undefined ? ['getMultipleItemViewCounts'] : ['getMultipleItemViewCounts', variables],
+      fetchData<GetMultipleItemViewCountsQuery, GetMultipleItemViewCountsQueryVariables>(GetMultipleItemViewCountsDocument, variables),
+      options
+    );
+export const IncrementCollectionPlaysDocument = `
+    mutation incrementCollectionPlays($collectionUuid: uuid!) {
+  update_app_collection_plays(
+    where: {collection_uuid: {_eq: $collectionUuid}}
+    _inc: {count: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementCollectionPlaysMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementCollectionPlaysMutation, TError, IncrementCollectionPlaysMutationVariables, TContext>) =>
+    useMutation<IncrementCollectionPlaysMutation, TError, IncrementCollectionPlaysMutationVariables, TContext>(
+      ['incrementCollectionPlays'],
+      (variables?: IncrementCollectionPlaysMutationVariables) => fetchData<IncrementCollectionPlaysMutation, IncrementCollectionPlaysMutationVariables>(IncrementCollectionPlaysDocument, variables)(),
+      options
+    );
+export const IncrementCollectionViewsDocument = `
+    mutation incrementCollectionViews($collectionUuid: uuid!) {
+  update_app_collection_views(
+    where: {collection_uuid: {_eq: $collectionUuid}}
+    _inc: {count: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementCollectionViewsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementCollectionViewsMutation, TError, IncrementCollectionViewsMutationVariables, TContext>) =>
+    useMutation<IncrementCollectionViewsMutation, TError, IncrementCollectionViewsMutationVariables, TContext>(
+      ['incrementCollectionViews'],
+      (variables?: IncrementCollectionViewsMutationVariables) => fetchData<IncrementCollectionViewsMutation, IncrementCollectionViewsMutationVariables>(IncrementCollectionViewsDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysDocument = `
+    mutation incrementItemPlays($itemUuid: uuid!) {
+  update_app_item_plays(where: {item_id: {_eq: $itemUuid}}, _inc: {count: 1}) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysMutation, TError, IncrementItemPlaysMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysMutation, TError, IncrementItemPlaysMutationVariables, TContext>(
+      ['incrementItemPlays'],
+      (variables?: IncrementItemPlaysMutationVariables) => fetchData<IncrementItemPlaysMutation, IncrementItemPlaysMutationVariables>(IncrementItemPlaysDocument, variables)(),
+      options
+    );
+export const IncrementItemViewsDocument = `
+    mutation incrementItemViews($itemUuid: uuid!) {
+  update_app_item_views(where: {item_id: {_eq: $itemUuid}}, _inc: {count: 1}) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemViewsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemViewsMutation, TError, IncrementItemViewsMutationVariables, TContext>) =>
+    useMutation<IncrementItemViewsMutation, TError, IncrementItemViewsMutationVariables, TContext>(
+      ['incrementItemViews'],
+      (variables?: IncrementItemViewsMutationVariables) => fetchData<IncrementItemViewsMutation, IncrementItemViewsMutationVariables>(IncrementItemViewsDocument, variables)(),
+      options
+    );
+export const InsertAssignmentBookmarkDocument = `
+    mutation insertAssignmentBookmark($bookmarkAssignment: app_assignments_v2_bookmarks_insert_input!) {
+  insert_app_assignments_v2_bookmarks_one(object: $bookmarkAssignment) {
+    id
+  }
+}
+    `;
+export const useInsertAssignmentBookmarkMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentBookmarkMutation, TError, InsertAssignmentBookmarkMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentBookmarkMutation, TError, InsertAssignmentBookmarkMutationVariables, TContext>(
+      ['insertAssignmentBookmark'],
+      (variables?: InsertAssignmentBookmarkMutationVariables) => fetchData<InsertAssignmentBookmarkMutation, InsertAssignmentBookmarkMutationVariables>(InsertAssignmentBookmarkDocument, variables)(),
+      options
+    );
+export const InsertCollectionBookmarkDocument = `
+    mutation insertCollectionBookmark($bookmarkItem: app_collection_bookmarks_insert_input!) {
+  insert_app_collection_bookmarks(objects: [$bookmarkItem]) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertCollectionBookmarkMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionBookmarkMutation, TError, InsertCollectionBookmarkMutationVariables, TContext>) =>
+    useMutation<InsertCollectionBookmarkMutation, TError, InsertCollectionBookmarkMutationVariables, TContext>(
+      ['insertCollectionBookmark'],
+      (variables?: InsertCollectionBookmarkMutationVariables) => fetchData<InsertCollectionBookmarkMutation, InsertCollectionBookmarkMutationVariables>(InsertCollectionBookmarkDocument, variables)(),
+      options
+    );
+export const InsertItemBookmarkDocument = `
+    mutation insertItemBookmark($bookmarkItem: app_item_bookmarks_insert_input!) {
+  insert_app_item_bookmarks(objects: [$bookmarkItem]) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertItemBookmarkMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertItemBookmarkMutation, TError, InsertItemBookmarkMutationVariables, TContext>) =>
+    useMutation<InsertItemBookmarkMutation, TError, InsertItemBookmarkMutationVariables, TContext>(
+      ['insertItemBookmark'],
+      (variables?: InsertItemBookmarkMutationVariables) => fetchData<InsertItemBookmarkMutation, InsertItemBookmarkMutationVariables>(InsertItemBookmarkDocument, variables)(),
+      options
+    );
+export const GetAllOrganisationsDocument = `
+    query getAllOrganisations {
+  shared_organisations(order_by: {name: asc}) {
+    or_id
+    name
+    logo_url
+  }
+}
+    `;
+export const useGetAllOrganisationsQuery = <
+      TData = GetAllOrganisationsQuery,
+      TError = unknown
+    >(
+      variables?: GetAllOrganisationsQueryVariables,
+      options?: UseQueryOptions<GetAllOrganisationsQuery, TError, TData>
+    ) =>
+    useQuery<GetAllOrganisationsQuery, TError, TData>(
+      variables === undefined ? ['getAllOrganisations'] : ['getAllOrganisations', variables],
+      fetchData<GetAllOrganisationsQuery, GetAllOrganisationsQueryVariables>(GetAllOrganisationsDocument, variables),
+      options
+    );
+export const GetDistinctOrganisationsDocument = `
+    query getDistinctOrganisations {
+  app_item_meta(distinct_on: org_id, where: {organisation: {}}) {
+    organisation {
+      or_id
+      name
+      logo_url
+    }
+    is_published
+    is_deleted
+  }
+}
+    `;
+export const useGetDistinctOrganisationsQuery = <
+      TData = GetDistinctOrganisationsQuery,
+      TError = unknown
+    >(
+      variables?: GetDistinctOrganisationsQueryVariables,
+      options?: UseQueryOptions<GetDistinctOrganisationsQuery, TError, TData>
+    ) =>
+    useQuery<GetDistinctOrganisationsQuery, TError, TData>(
+      variables === undefined ? ['getDistinctOrganisations'] : ['getDistinctOrganisations', variables],
+      fetchData<GetDistinctOrganisationsQuery, GetDistinctOrganisationsQueryVariables>(GetDistinctOrganisationsDocument, variables),
+      options
+    );
+export const GetNotificationDocument = `
+    query getNotification($key: String!, $profileId: uuid!) {
+  users_notifications(where: {profile_id: {_eq: $profileId}, key: {_eq: $key}}) {
+    through_email
+    through_platform
+  }
+}
+    `;
+export const useGetNotificationQuery = <
+      TData = GetNotificationQuery,
+      TError = unknown
+    >(
+      variables: GetNotificationQueryVariables,
+      options?: UseQueryOptions<GetNotificationQuery, TError, TData>
+    ) =>
+    useQuery<GetNotificationQuery, TError, TData>(
+      ['getNotification', variables],
+      fetchData<GetNotificationQuery, GetNotificationQueryVariables>(GetNotificationDocument, variables),
+      options
+    );
+export const GetOrganisationsWithUsersDocument = `
+    query getOrganisationsWithUsers {
+  shared_organisations_with_users {
+    or_id: company_id
+    name
+  }
+}
+    `;
+export const useGetOrganisationsWithUsersQuery = <
+      TData = GetOrganisationsWithUsersQuery,
+      TError = unknown
+    >(
+      variables?: GetOrganisationsWithUsersQueryVariables,
+      options?: UseQueryOptions<GetOrganisationsWithUsersQuery, TError, TData>
+    ) =>
+    useQuery<GetOrganisationsWithUsersQuery, TError, TData>(
+      variables === undefined ? ['getOrganisationsWithUsers'] : ['getOrganisationsWithUsers', variables],
+      fetchData<GetOrganisationsWithUsersQuery, GetOrganisationsWithUsersQueryVariables>(GetOrganisationsWithUsersDocument, variables),
+      options
+    );
+export const GetUsersByCompanyIdDocument = `
+    query getUsersByCompanyId($companyId: String!) {
+  users_profiles(
+    order_by: {usersByuserId: {first_name: asc}}
+    where: {company_id: {_eq: $companyId}, is_deleted: {_eq: false}}
+  ) {
+    id
+    user: usersByuserId {
+      uid
+      full_name
+      mail
+      is_blocked
+      last_access_at
+      temp_access {
+        from
+        until
+        current {
+          status
+        }
+      }
+    }
+    profile_user_group {
+      group {
+        id
+        label
+      }
+    }
+  }
+}
+    `;
+export const useGetUsersByCompanyIdQuery = <
+      TData = GetUsersByCompanyIdQuery,
+      TError = unknown
+    >(
+      variables: GetUsersByCompanyIdQueryVariables,
+      options?: UseQueryOptions<GetUsersByCompanyIdQuery, TError, TData>
+    ) =>
+    useQuery<GetUsersByCompanyIdQuery, TError, TData>(
+      ['getUsersByCompanyId', variables],
+      fetchData<GetUsersByCompanyIdQuery, GetUsersByCompanyIdQueryVariables>(GetUsersByCompanyIdDocument, variables),
+      options
+    );
+export const InsertNotificationDocument = `
+    mutation insertNotification($key: String!, $profileId: uuid!, $throughEmail: Boolean!, $throughPlatform: Boolean!) {
+  insert_users_notifications(
+    objects: {key: $key, profile_id: $profileId, through_email: $throughEmail, through_platform: $throughPlatform}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useInsertNotificationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertNotificationMutation, TError, InsertNotificationMutationVariables, TContext>) =>
+    useMutation<InsertNotificationMutation, TError, InsertNotificationMutationVariables, TContext>(
+      ['insertNotification'],
+      (variables?: InsertNotificationMutationVariables) => fetchData<InsertNotificationMutation, InsertNotificationMutationVariables>(InsertNotificationDocument, variables)(),
+      options
+    );
+export const UpdateNotificationDocument = `
+    mutation updateNotification($key: String!, $profileId: uuid!, $throughEmail: Boolean!, $throughPlatform: Boolean!) {
+  update_users_notifications(
+    where: {profile_id: {_eq: $profileId}, key: {_eq: $key}}
+    _set: {through_email: $throughEmail, through_platform: $throughPlatform}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useUpdateNotificationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateNotificationMutation, TError, UpdateNotificationMutationVariables, TContext>) =>
+    useMutation<UpdateNotificationMutation, TError, UpdateNotificationMutationVariables, TContext>(
+      ['updateNotification'],
+      (variables?: UpdateNotificationMutationVariables) => fetchData<UpdateNotificationMutation, UpdateNotificationMutationVariables>(UpdateNotificationDocument, variables)(),
+      options
+    );
+export const DeleteCollectionRelationsByObjectDocument = `
+    mutation deleteCollectionRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  delete_app_collection_relations(
+    where: {object: {_eq: $objectId}, predicate: {_eq: $relationType}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionRelationsByObjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionRelationsByObjectMutation, TError, DeleteCollectionRelationsByObjectMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionRelationsByObjectMutation, TError, DeleteCollectionRelationsByObjectMutationVariables, TContext>(
+      ['deleteCollectionRelationsByObject'],
+      (variables?: DeleteCollectionRelationsByObjectMutationVariables) => fetchData<DeleteCollectionRelationsByObjectMutation, DeleteCollectionRelationsByObjectMutationVariables>(DeleteCollectionRelationsByObjectDocument, variables)(),
+      options
+    );
+export const DeleteCollectionRelationsBySubjectDocument = `
+    mutation deleteCollectionRelationsBySubject($subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  delete_app_collection_relations(
+    where: {subject: {_eq: $subjectId}, predicate: {_eq: $relationType}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteCollectionRelationsBySubjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteCollectionRelationsBySubjectMutation, TError, DeleteCollectionRelationsBySubjectMutationVariables, TContext>) =>
+    useMutation<DeleteCollectionRelationsBySubjectMutation, TError, DeleteCollectionRelationsBySubjectMutationVariables, TContext>(
+      ['deleteCollectionRelationsBySubject'],
+      (variables?: DeleteCollectionRelationsBySubjectMutationVariables) => fetchData<DeleteCollectionRelationsBySubjectMutation, DeleteCollectionRelationsBySubjectMutationVariables>(DeleteCollectionRelationsBySubjectDocument, variables)(),
+      options
+    );
+export const DeleteItemRelationsByObjectDocument = `
+    mutation deleteItemRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  delete_app_item_relations(
+    where: {object: {_eq: $objectId}, predicate: {_eq: $relationType}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteItemRelationsByObjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteItemRelationsByObjectMutation, TError, DeleteItemRelationsByObjectMutationVariables, TContext>) =>
+    useMutation<DeleteItemRelationsByObjectMutation, TError, DeleteItemRelationsByObjectMutationVariables, TContext>(
+      ['deleteItemRelationsByObject'],
+      (variables?: DeleteItemRelationsByObjectMutationVariables) => fetchData<DeleteItemRelationsByObjectMutation, DeleteItemRelationsByObjectMutationVariables>(DeleteItemRelationsByObjectDocument, variables)(),
+      options
+    );
+export const DeleteItemRelationsBySubjectDocument = `
+    mutation deleteItemRelationsBySubject($subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  delete_app_item_relations(
+    where: {subject: {_eq: $subjectId}, predicate: {_eq: $relationType}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteItemRelationsBySubjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteItemRelationsBySubjectMutation, TError, DeleteItemRelationsBySubjectMutationVariables, TContext>) =>
+    useMutation<DeleteItemRelationsBySubjectMutation, TError, DeleteItemRelationsBySubjectMutationVariables, TContext>(
+      ['deleteItemRelationsBySubject'],
+      (variables?: DeleteItemRelationsBySubjectMutationVariables) => fetchData<DeleteItemRelationsBySubjectMutation, DeleteItemRelationsBySubjectMutationVariables>(DeleteItemRelationsBySubjectDocument, variables)(),
+      options
+    );
+export const GetCollectionRelationsByObjectDocument = `
+    query getCollectionRelationsByObject($objectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
+  app_collection_relations(
+    where: {object: {_in: $objectIds}, predicate: {_eq: $relationType}}
+  ) {
+    id
+    object
+    subject
+    predicate
+    created_at
+    updated_at
+  }
+}
+    `;
+export const useGetCollectionRelationsByObjectQuery = <
+      TData = GetCollectionRelationsByObjectQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionRelationsByObjectQueryVariables,
+      options?: UseQueryOptions<GetCollectionRelationsByObjectQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionRelationsByObjectQuery, TError, TData>(
+      ['getCollectionRelationsByObject', variables],
+      fetchData<GetCollectionRelationsByObjectQuery, GetCollectionRelationsByObjectQueryVariables>(GetCollectionRelationsByObjectDocument, variables),
+      options
+    );
+export const GetCollectionRelationsBySubjectDocument = `
+    query getCollectionRelationsBySubject($subjectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
+  app_collection_relations(
+    where: {subject: {_in: $subjectIds}, predicate: {_eq: $relationType}}
+  ) {
+    id
+    object
+    subject
+    predicate
+    created_at
+    updated_at
+  }
+}
+    `;
+export const useGetCollectionRelationsBySubjectQuery = <
+      TData = GetCollectionRelationsBySubjectQuery,
+      TError = unknown
+    >(
+      variables: GetCollectionRelationsBySubjectQueryVariables,
+      options?: UseQueryOptions<GetCollectionRelationsBySubjectQuery, TError, TData>
+    ) =>
+    useQuery<GetCollectionRelationsBySubjectQuery, TError, TData>(
+      ['getCollectionRelationsBySubject', variables],
+      fetchData<GetCollectionRelationsBySubjectQuery, GetCollectionRelationsBySubjectQueryVariables>(GetCollectionRelationsBySubjectDocument, variables),
+      options
+    );
+export const GetItemRelationsByObjectDocument = `
+    query getItemRelationsByObject($objectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
+  app_item_relations(
+    where: {object: {_in: $objectIds}, predicate: {_eq: $relationType}}
+  ) {
+    id
+    object
+    subject
+    predicate
+    created_at
+    updated_at
+  }
+}
+    `;
+export const useGetItemRelationsByObjectQuery = <
+      TData = GetItemRelationsByObjectQuery,
+      TError = unknown
+    >(
+      variables: GetItemRelationsByObjectQueryVariables,
+      options?: UseQueryOptions<GetItemRelationsByObjectQuery, TError, TData>
+    ) =>
+    useQuery<GetItemRelationsByObjectQuery, TError, TData>(
+      ['getItemRelationsByObject', variables],
+      fetchData<GetItemRelationsByObjectQuery, GetItemRelationsByObjectQueryVariables>(GetItemRelationsByObjectDocument, variables),
+      options
+    );
+export const GetItemRelationsBySubjectDocument = `
+    query getItemRelationsBySubject($subjectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
+  app_item_relations(
+    where: {subject: {_in: $subjectIds}, predicate: {_eq: $relationType}}
+  ) {
+    id
+    object
+    subject
+    predicate
+    created_at
+    updated_at
+  }
+}
+    `;
+export const useGetItemRelationsBySubjectQuery = <
+      TData = GetItemRelationsBySubjectQuery,
+      TError = unknown
+    >(
+      variables: GetItemRelationsBySubjectQueryVariables,
+      options?: UseQueryOptions<GetItemRelationsBySubjectQuery, TError, TData>
+    ) =>
+    useQuery<GetItemRelationsBySubjectQuery, TError, TData>(
+      ['getItemRelationsBySubject', variables],
+      fetchData<GetItemRelationsBySubjectQuery, GetItemRelationsBySubjectQueryVariables>(GetItemRelationsBySubjectDocument, variables),
+      options
+    );
+export const InsertCollectionRelationDocument = `
+    mutation insertCollectionRelation($objectId: uuid!, $subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  insert_app_collection_relations(
+    objects: [{object: $objectId, subject: $subjectId, predicate: $relationType}]
+  ) {
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertCollectionRelationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertCollectionRelationMutation, TError, InsertCollectionRelationMutationVariables, TContext>) =>
+    useMutation<InsertCollectionRelationMutation, TError, InsertCollectionRelationMutationVariables, TContext>(
+      ['insertCollectionRelation'],
+      (variables?: InsertCollectionRelationMutationVariables) => fetchData<InsertCollectionRelationMutation, InsertCollectionRelationMutationVariables>(InsertCollectionRelationDocument, variables)(),
+      options
+    );
+export const InsertItemRelationDocument = `
+    mutation insertItemRelation($objectId: uuid!, $subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  insert_app_item_relations(
+    objects: [{object: $objectId, subject: $subjectId, predicate: $relationType}]
+  ) {
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertItemRelationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertItemRelationMutation, TError, InsertItemRelationMutationVariables, TContext>) =>
+    useMutation<InsertItemRelationMutation, TError, InsertItemRelationMutationVariables, TContext>(
+      ['insertItemRelation'],
+      (variables?: InsertItemRelationMutationVariables) => fetchData<InsertItemRelationMutation, InsertItemRelationMutationVariables>(InsertItemRelationDocument, variables)(),
+      options
+    );
+>>>>>>> deploy-int

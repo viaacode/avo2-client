@@ -568,7 +568,7 @@ export class ItemsService {
 	 * - started
 	 * - running
 	 */
-	public static async triggerMamSync(): Promise<string> {
+	public static async triggerMamSync(): Promise<'SCHEDULED' | string> {
 		let url: string | undefined = undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/mam-syncrator/trigger-delta-sync`;

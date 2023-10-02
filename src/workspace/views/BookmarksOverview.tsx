@@ -9,11 +9,12 @@ import {
 	TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import { orderBy } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { FC, FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
@@ -23,6 +24,7 @@ import {
 } from '../../shared/components';
 import { buildLink, CustomError, formatDate, fromNow, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
@@ -37,17 +39,14 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 const ITEMS_PER_PAGE = 5;
 
-interface BookmarksOverviewProps extends DefaultSecureRouteProps {
+interface BookmarksOverviewProps {
 	numberOfItems: number;
 	onUpdate: () => void | Promise<void>;
 }
 
-const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
-	numberOfItems,
-	onUpdate,
-	history,
-	user,
-}) => {
+const BookmarksOverview: FunctionComponent<
+	BookmarksOverviewProps & UserProps & RouteComponentProps
+> = ({ numberOfItems, onUpdate, history, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -87,11 +86,15 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 
 	const fetchBookmarks = useCallback(async () => {
 		try {
-			const bookmarkInfos = await BookmarksViewsPlaysService.getAllBookmarksForUser(user);
+			const bookmarkInfos = await BookmarksViewsPlaysService.getAllBookmarksForUser(
+				commonUser as Avo.User.CommonUser
+			);
 			setBookmarks(bookmarkInfos);
 			setLoadingInfo({ state: 'loaded' });
 		} catch (err) {
-			console.error(new CustomError('Failed to get all bookmarks for user', err, { user }));
+			console.error(
+				new CustomError('Failed to get all bookmarks for user', err, { commonUser })
+			);
 			setLoadingInfo({
 				state: 'error',
 				message: tHtml(
@@ -99,7 +102,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 				),
 			});
 		}
-	}, [user, setBookmarks, setLoadingInfo, tText]);
+	}, [commonUser, setBookmarks, setLoadingInfo, tText]);
 
 	useEffect(() => {
 		fetchBookmarks();
@@ -129,7 +132,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			}
 			await BookmarksViewsPlaysService.toggleBookmark(
 				bookmarkToDelete.contentId,
-				user,
+				commonUser as Avo.User.CommonUser,
 				CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[bookmarkToDelete.contentType],
 				true
 			);
@@ -139,7 +142,7 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 			ToastService.success(tHtml('workspace/views/bookmarks___de-bladwijzer-is-verwijderd'));
 		} catch (err) {
 			console.error(
-				new CustomError('Failed t delete bookmark', err, { bookmarkToDelete, user })
+				new CustomError('Failed t delete bookmark', err, { bookmarkToDelete, commonUser })
 			);
 			ToastService.danger(
 				tHtml('workspace/views/bookmarks___het-verwijderen-van-de-bladwijzer-is-mislukt')
@@ -340,4 +343,4 @@ const BookmarksOverview: FunctionComponent<BookmarksOverviewProps> = ({
 	);
 };
 
-export default BookmarksOverview;
+export default compose(withRouter, withUser)(BookmarksOverview) as FC<BookmarksOverviewProps>;
