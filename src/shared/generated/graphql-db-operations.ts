@@ -1258,12 +1258,3 @@ export type InsertItemRelationMutationVariables = Exact<{
 
 
 export type InsertItemRelationMutation = { __typename?: 'mutation_root', insert_app_item_relations?: { __typename?: 'app_item_relations_mutation_response', returning: Array<{ __typename?: 'app_item_relations', id: number }> } | null };
-
-export type GetWorkspaceTabCountsQueryVariables = Exact<{
-  owner_profile_id?: InputMaybe<Scalars['uuid']>;
-  company_id?: InputMaybe<Scalars['String']>;
-  now?: InputMaybe<Scalars['timestamptz']>;
-}>;
-
-
-export type GetWorkspaceTabCountsQuery = { __typename?: 'query_root', collection_counts: { __typename?: 'app_collections_overview_aggregate', aggregate?: { __typename?: 'app_collections_overview_aggregate_fields', count: number } | null }, bundle_counts: { __typename?: 'app_collections_overview_aggregate', aggregate?: { __typename?: 'app_collections_overview_aggregate_fields', count: number } | null }, assignment_counts: { __typename?: 'app_assignments_v2_overview_aggregate', aggregate?: { __typename?: 'app_assignments_v2_overview_aggregate_fields', count: number } | null }, assignment_bookmark_counts: { __typename?: 'app_assignments_v2_bookmarks_aggregate', aggregate?: { __typename?: 'app_assignments_v2_bookmarks_aggregate_fields', count: number } | null }, collection_bookmark_counts: { __typename?: 'app_collection_bookmarks_aggregate', aggregate?: { __typename?: 'app_collection_bookmarks_aggregate_fields', count: number } | null }, item_bookmark_counts: { __typename?: 'app_item_bookmarks_aggregate', aggregate?: { __typename?: 'app_item_bookmarks_aggregate_fields', count: number } | null }, organisation_content_counts: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null }, app_quick_lane_counts: { __typename?: 'app_quick_lanes_overview_aggregate', aggregate?: { __typename?: 'app_quick_lanes_overview_aggregate_fields', count: number } | null }, app_quick_lane_organisation_counts: { __typename?: 'app_quick_lanes_overview_aggregate', aggregate?: { __typename?: 'app_quick_lanes_overview_aggregate_fields', count: number } | null } };
