@@ -8,6 +8,7 @@ interface Window {
 		SSUM_ACCOUNT_EDIT_URL: string;
 		SSUM_PASSWORD_EDIT_URL: string;
 		GOOGLE_ANALYTICS_ID: string;
+		MOUSEFLOW_ANALYTICS_ID: string;
 		PORT: string;
 		NODE_ENV: string;
 		ENV: 'local' | 'qas' | 'production';

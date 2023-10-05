@@ -11,17 +11,18 @@ const CI_ENV_VARIABLES = {
 	SSUM_ACCOUNT_EDIT_URL: process.env.SSUM_ACCOUNT_EDIT_URL,
 	SSUM_PASSWORD_EDIT_URL: process.env.SSUM_PASSWORD_EDIT_URL,
 	GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID,
+	MOUSEFLOW_ANALYTICS_ID: process.env.MOUSEFLOW_ANALYTICS_ID,
 };
 
 let envVariables = {};
 
 if (fs.existsSync('.env')) {
 	const envFile = fs.readFileSync('.env').toString();
-	const lines = envFile.split('\n').map(line => line.trim());
+	const lines = envFile.split('\n').map((line) => line.trim());
 
-	lines.forEach(line => {
+	lines.forEach((line) => {
 		const [envKey, ...envValueParts] = line.split('=');
-		const envValue = envValueParts.join('=')
+		const envValue = envValueParts.join('=');
 
 		if (!CI_ENV_VARIABLES[envKey] || CI_ENV_VARIABLES[envKey][0] === '$') {
 			envVariables[envKey] = envValue;
@@ -35,7 +36,7 @@ if (fs.existsSync('.env')) {
 
 let outputString = 'window._ENV_ = {\n';
 
-Object.keys(envVariables).forEach(envName => {
+Object.keys(envVariables).forEach((envName) => {
 	if (envName) {
 		outputString += `\t\"${envName}\": \"${envVariables[envName]}\",\n`;
 	}
