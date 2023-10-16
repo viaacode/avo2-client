@@ -95,16 +95,21 @@ export const getLoginStateAction = (forceRefetch = false) => {
 				);
 			}
 
-			// Trigger extra Google Analytics event to track what the user group is of the logged-in user
-			// https://meemoo.atlassian.net/browse/AVO-3011
-			const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn).commonUserInfo;
-			(window as any)?.dataLayer?.push({
-				event: 'visit',
-				userData: {
-					userGroup: userInfo.userGroup?.label,
-					educationLevels: compact(userInfo.loms?.map((lom) => lom?.lom?.label)),
-				},
-			});
+			if (loginStateResponse.message === 'LOGGED_IN') {
+				// Trigger extra Google Analytics event to track what the user group is of the logged-in user
+				// https://meemoo.atlassian.net/browse/AVO-3011
+				const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)
+					.commonUserInfo;
+				(window as any)?.dataLayer?.push({
+					event: 'visit',
+					userData: {
+						userGroup: userInfo?.userGroup?.label,
+						educationLevels: compact(
+							(userInfo?.loms || []).map((lom) => lom?.lom?.label)
+						),
+					},
+				});
+			}
 
 			response = dispatch(setLoginSuccess(loginStateResponse));
 		} catch (err) {
