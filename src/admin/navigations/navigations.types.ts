@@ -1,8 +1,8 @@
 export type MenuOverviewTableCols = 'placement' | 'description' | 'actions';
 
 export interface MenuEditParams {
-	menu?: string;
-	id?: string;
+	navigationBarId?: string;
+	navigationItemId?: string;
 }
 
 export type MenuEditPageType = 'edit' | 'create';

@@ -14,7 +14,7 @@ type NavigationItemEditProps = DefaultSecureRouteProps<MenuEditParams>;
 
 const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match }) => {
 	const { tText } = useTranslation();
-	const { menu: menuParentId, id: menuItemId } = match.params;
+	const { navigationBarId, navigationItemId } = match.params;
 
 	// Render
 	return (
@@ -25,7 +25,7 @@ const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match 
 						tText(
 							'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-title'
 						),
-						menuItemId
+						navigationItemId
 							? tText(
 									'admin/menu/views/menu-edit___menu-item-beheer-bewerk-pagina-titel'
 							  )
@@ -42,8 +42,8 @@ const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match 
 				/>
 			</Helmet>
 			<NavigationEdit
-				navigationBarId={menuParentId as string}
-				navigationItemId={menuItemId}
+				navigationBarId={navigationBarId as string}
+				navigationItemId={navigationItemId}
 			/>
 		</div>
 	);

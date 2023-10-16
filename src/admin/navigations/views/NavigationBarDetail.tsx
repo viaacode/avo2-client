@@ -9,12 +9,12 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarDetail.scss';
 
-type NavigationBarDetailProps = DefaultSecureRouteProps<{ menu: string }>;
+type NavigationBarDetailProps = DefaultSecureRouteProps<{ navigationBarId: string }>;
 
 const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ match }) => {
 	const { tText } = useTranslation();
 
-	const navigationBarId = match.params.menu;
+	const navigationBarId = match.params.navigationBarId;
 
 	return (
 		<div className="c-admin__navigation-detail">
