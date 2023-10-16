@@ -1,7 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { Button, Spacer } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+import { type Avo } from '@viaa/avo2-types';
+import { compact } from 'lodash-es';
 import moment from 'moment';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -83,7 +83,8 @@ export const getLoginStateAction = (forceRefetch = false) => {
 
 			// Check if session is about to expire and show warning toast
 			// Redirect to login page when session actually expires
-			const expiresAt = get(loginStateResponse, 'sessionExpiresAt');
+			const expiresAt = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)
+				?.sessionExpiresAt;
 			if (expiresAt) {
 				if (checkSessionTimeoutTimerId) {
 					clearInterval(checkSessionTimeoutTimerId);
@@ -93,6 +94,18 @@ export const getLoginStateAction = (forceRefetch = false) => {
 					5 * 60 * 1000
 				);
 			}
+
+			// Trigger extra Google Analytics event to track what the user group is of the logged-in user
+			// https://meemoo.atlassian.net/browse/AVO-3011
+			const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn).commonUserInfo;
+			(window as any)?.dataLayer?.push({
+				event: 'visit',
+				userData: {
+					userGroup: userInfo.userGroup?.label,
+					educationLevels: compact(userInfo.loms?.map((lom) => lom?.lom?.label)),
+				},
+			});
+
 			response = dispatch(setLoginSuccess(loginStateResponse));
 		} catch (err) {
 			console.error('failed to check login state', err);
