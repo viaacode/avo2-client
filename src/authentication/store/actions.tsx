@@ -98,17 +98,17 @@ export const getLoginStateAction = (forceRefetch = false) => {
 			if (loginStateResponse.message === 'LOGGED_IN') {
 				// Trigger extra Google Analytics event to track what the user group is of the logged-in user
 				// https://meemoo.atlassian.net/browse/AVO-3011
-				const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn)
-					.commonUserInfo;
-				(window as any)?.dataLayer?.push({
+				const userInfo = (loginStateResponse as Avo.Auth.LoginResponseLoggedIn).userInfo;
+				const event = {
 					event: 'visit',
 					userData: {
-						userGroup: userInfo?.userGroup?.label,
+						userGroup: userInfo?.role?.label,
 						educationLevels: compact(
-							(userInfo?.loms || []).map((lom) => lom?.lom?.label)
+							(userInfo?.profile?.loms || []).map((lom) => lom?.lom?.label)
 						),
 					},
-				});
+				};
+				(window as any)?.dataLayer?.push(event);
 			}
 
 			response = dispatch(setLoginSuccess(loginStateResponse));
