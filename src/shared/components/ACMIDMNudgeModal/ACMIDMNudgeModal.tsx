@@ -57,7 +57,13 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		const hasDismissed = localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL;
 
 		// Stop early if previously dismissed
-		if (hasDismissed) {
+		// Or if user is logging out https://meemoo.atlassian.net/browse/ARC-1731
+		if (
+			hasDismissed ||
+			!user ||
+			!getProfileId(user) ||
+			window.location.href.includes(ROUTE_PARTS.logout)
+		) {
 			setShowNudgingModal(false);
 			return;
 		}
