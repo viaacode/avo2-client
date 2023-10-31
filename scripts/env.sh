@@ -17,5 +17,6 @@ echo "  LDAP_DASHBOARD_PEOPLE_URL: \"$LDAP_DASHBOARD_PEOPLE_URL\"," >> ./env-con
 echo "  SSUM_ACCOUNT_EDIT_URL: \"$SSUM_ACCOUNT_EDIT_URL\"," >> ./env-config.js
 echo "  SSUM_PASSWORD_EDIT_URL: \"$SSUM_PASSWORD_EDIT_URL\"," >> ./env-config.js
 echo "  GOOGLE_ANALYTICS_ID: \"$GOOGLE_ANALYTICS_ID\"," >> ./env-config.js
+echo "  MOUSEFLOW_ANALYTICS_ID: \"$MOUSEFLOW_ANALYTICS_ID\"," >> ./env-config.js
 
 echo "};" >> ./env-config.js
