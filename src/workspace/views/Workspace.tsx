@@ -38,11 +38,6 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import {
-	GetWorkspaceTabCountsQuery,
-	GetWorkspaceTabCountsQueryVariables,
-} from '../../shared/generated/graphql-db-operations';
-import { GetWorkspaceTabCountsDocument } from '../../shared/generated/graphql-db-react-query';
 import { buildLink, navigate } from '../../shared/helpers';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { UserProps } from '../../shared/hocs/withUser';

@@ -1,6 +1,6 @@
 import { IconName, MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { isEqual } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { FC, FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
 
 import FilterTable, {
