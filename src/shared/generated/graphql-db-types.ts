@@ -31654,6 +31654,7 @@ export type Shared_Ldap_Organizations = {
   created_at: Scalars['timestamptz'];
   id: Scalars['Int'];
   ldap_content: Scalars['jsonb'];
+  ldap_createtimestamp?: Maybe<Scalars['timestamptz']>;
   ldap_description?: Maybe<Scalars['String']>;
   ldap_entryuuid: Scalars['uuid'];
   ldap_modifytimestamp: Scalars['timestamptz'];
@@ -31717,6 +31718,7 @@ export type Shared_Ldap_Organizations_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   ldap_content?: InputMaybe<Jsonb_Comparison_Exp>;
+  ldap_createtimestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
   ldap_description?: InputMaybe<String_Comparison_Exp>;
   ldap_entryuuid?: InputMaybe<Uuid_Comparison_Exp>;
   ldap_modifytimestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -32218,6 +32220,7 @@ export type Shared_Ldap_Organizations_Insert_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   ldap_content?: InputMaybe<Scalars['jsonb']>;
+  ldap_createtimestamp?: InputMaybe<Scalars['timestamptz']>;
   ldap_description?: InputMaybe<Scalars['String']>;
   ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
   ldap_modifytimestamp?: InputMaybe<Scalars['timestamptz']>;
@@ -32231,6 +32234,7 @@ export type Shared_Ldap_Organizations_Max_Fields = {
   __typename?: 'shared_ldap_organizations_max_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
+  ldap_createtimestamp?: Maybe<Scalars['timestamptz']>;
   ldap_description?: Maybe<Scalars['String']>;
   ldap_entryuuid?: Maybe<Scalars['uuid']>;
   ldap_modifytimestamp?: Maybe<Scalars['timestamptz']>;
@@ -32244,6 +32248,7 @@ export type Shared_Ldap_Organizations_Min_Fields = {
   __typename?: 'shared_ldap_organizations_min_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
+  ldap_createtimestamp?: Maybe<Scalars['timestamptz']>;
   ldap_description?: Maybe<Scalars['String']>;
   ldap_entryuuid?: Maybe<Scalars['uuid']>;
   ldap_modifytimestamp?: Maybe<Scalars['timestamptz']>;
@@ -32280,6 +32285,7 @@ export type Shared_Ldap_Organizations_Order_By = {
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   ldap_content?: InputMaybe<Order_By>;
+  ldap_createtimestamp?: InputMaybe<Order_By>;
   ldap_description?: InputMaybe<Order_By>;
   ldap_entryuuid?: InputMaybe<Order_By>;
   ldap_modifytimestamp?: InputMaybe<Order_By>;
@@ -32307,6 +32313,8 @@ export enum Shared_Ldap_Organizations_Select_Column {
   /** column name */
   LdapContent = 'ldap_content',
   /** column name */
+  LdapCreatetimestamp = 'ldap_createtimestamp',
+  /** column name */
   LdapDescription = 'ldap_description',
   /** column name */
   LdapEntryuuid = 'ldap_entryuuid',
@@ -32325,6 +32333,7 @@ export type Shared_Ldap_Organizations_Set_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   ldap_content?: InputMaybe<Scalars['jsonb']>;
+  ldap_createtimestamp?: InputMaybe<Scalars['timestamptz']>;
   ldap_description?: InputMaybe<Scalars['String']>;
   ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
   ldap_modifytimestamp?: InputMaybe<Scalars['timestamptz']>;
@@ -32364,6 +32373,7 @@ export type Shared_Ldap_Organizations_Stream_Cursor_Value_Input = {
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   ldap_content?: InputMaybe<Scalars['jsonb']>;
+  ldap_createtimestamp?: InputMaybe<Scalars['timestamptz']>;
   ldap_description?: InputMaybe<Scalars['String']>;
   ldap_entryuuid?: InputMaybe<Scalars['uuid']>;
   ldap_modifytimestamp?: InputMaybe<Scalars['timestamptz']>;
@@ -32386,6 +32396,8 @@ export enum Shared_Ldap_Organizations_Update_Column {
   Id = 'id',
   /** column name */
   LdapContent = 'ldap_content',
+  /** column name */
+  LdapCreatetimestamp = 'ldap_createtimestamp',
   /** column name */
   LdapDescription = 'ldap_description',
   /** column name */

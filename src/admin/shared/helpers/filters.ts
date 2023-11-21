@@ -221,3 +221,50 @@ function setNestedValues(
 		})
 	);
 }
+
+/**
+ * takes a list of lom ids and generates a where object for a graphql query
+ * the list can also contain a null value: NULL_FILTER
+ * @param values
+ * @param scheme
+ */
+export function generateLomFilter(
+	values: string[],
+	scheme:
+		| 'https://w3id.org/onderwijs-vlaanderen/id/vak'
+		| 'https://data.hetarchief.be/id/onderwijs/thema'
+		| 'https://w3id.org/onderwijs-vlaanderen/id/structuur'
+): any {
+	if (values.includes(NULL_FILTER)) {
+		return {
+			_or: [
+				{
+					loms: {
+						lom_id: {
+							_in: without(values, NULL_FILTER),
+						},
+					},
+				},
+				{
+					_not: {
+						loms: {
+							lom: {
+								scheme: {
+									_eq: scheme,
+								},
+							},
+						},
+					},
+				},
+			],
+		};
+	} else {
+		return {
+			loms: {
+				lom_id: {
+					_in: without(values, NULL_FILTER),
+				},
+			},
+		};
+	}
+}

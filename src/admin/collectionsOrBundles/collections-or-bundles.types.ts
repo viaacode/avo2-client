@@ -10,6 +10,7 @@ type CollectionsOrBundlesOverviewTableColsBase =
 	| 'is_public'
 	| 'collection_labels'
 	| 'subjects'
+	| 'themas'
 	| 'education_levels'
 	| 'actions';
 

@@ -13,8 +13,6 @@ query getCollectionActualisations(
 		id: collection_id
 		created_at
 		is_public
-		subjects: lom_classification
-		education_levels: lom_context
 		mgmt_created_at
 		mgmt_current_status
 		mgmt_last_eindcheck_date

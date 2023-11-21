@@ -1,23 +1,24 @@
+import { Avo } from '@viaa/avo2-types';
 import { useEffect, useState } from 'react';
 
-import { SettingsService } from '../../settings/settings.service';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers';
+import { LomService } from '../services/lom.service';
 import { ToastService } from '../services/toast-service';
 
-type UseSubjectsTuple = [string[], boolean];
+type UseLomSubjectsTuple = [Avo.Lom.LomField[], boolean];
 
-export const useSubjects = (): UseSubjectsTuple => {
+export const useLomSubjects = (): UseLomSubjectsTuple => {
 	const { tText, tHtml } = useTranslation();
 
-	const [subjects, setSubjects] = useState<string[]>([]);
+	const [subjects, setSubjects] = useState<Avo.Lom.LomField[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		setIsLoading(true);
 
-		SettingsService.fetchSubjects()
-			.then((subjects: string[]) => {
+		LomService.fetchSubjects()
+			.then((subjects: Avo.Lom.LomField[]) => {
 				setSubjects(subjects);
 			})
 			.catch((err) => {

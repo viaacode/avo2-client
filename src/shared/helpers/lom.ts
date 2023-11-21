@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { LomSchemeType, LomType } from '@viaa/avo2-types';
 import { compact, groupBy, map } from 'lodash-es';
 
-import { LomFieldsByScheme, LomsByScheme } from '../types/lom';
+import { LomFieldsByScheme } from '../types/lom';
 
 const EDUCATION_LEVEL_IDS = [
 	'https://w3id.org/onderwijs-vlaanderen/id/structuur/kleuteronderwijs',
@@ -13,8 +13,8 @@ const EDUCATION_LEVEL_IDS = [
 	'https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs',
 ];
 
-export const groupLoms = (loms: Avo.Lom.LomField[]): LomFieldsByScheme => {
-	const groupedLoms = groupBy(loms, (lom) => lom?.scheme);
+export const groupLoms = (loms: Avo.Lom.LomField[] | undefined | null): LomFieldsByScheme => {
+	const groupedLoms = groupBy(loms || [], (lom) => lom?.scheme);
 
 	return {
 		educationLevel: (groupedLoms[LomSchemeType.structure] || []).filter((lom) =>
@@ -28,15 +28,18 @@ export const groupLoms = (loms: Avo.Lom.LomField[]): LomFieldsByScheme => {
 	};
 };
 
-export const groupLomLinks = (lomLinks: Avo.Lom.Lom[]): LomsByScheme => {
-	const groupedLoms = groupBy(lomLinks, (lom) => lom?.lom?.scheme);
+export const groupLomLinks = (lomLinks: Avo.Lom.Lom[] | undefined | null): LomFieldsByScheme => {
+	const groupedLoms = groupBy(
+		compact((lomLinks || []).map((lomLink) => lomLink.lom)),
+		(lom) => lom?.scheme
+	);
 
 	return {
 		educationLevel: (groupedLoms[LomSchemeType.structure] || []).filter(
-			(lom) => lom.lom?.id && EDUCATION_LEVEL_IDS.includes(lom.lom?.id)
+			(lom) => lom?.id && EDUCATION_LEVEL_IDS.includes(lom?.id)
 		),
 		educationDegree: (groupedLoms[LomSchemeType.structure] || []).filter(
-			(lom) => lom.lom?.id && !EDUCATION_LEVEL_IDS.includes(lom.lom?.id)
+			(lom) => lom?.id && !EDUCATION_LEVEL_IDS.includes(lom?.id)
 		),
 		subject: groupedLoms[LomSchemeType.subject] || [],
 		theme: groupedLoms[LomSchemeType.theme] || [],

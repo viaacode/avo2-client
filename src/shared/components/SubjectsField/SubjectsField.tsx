@@ -1,36 +1,21 @@
 import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Avo } from '@viaa/avo2-types';
+import { compact } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
 
-import { SettingsService } from '../../../settings/settings.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { CustomError } from '../../helpers';
-import { stringToTagInfo } from '../../helpers/string-to-select-options';
+import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { useLomSubjects } from '../../hooks/useLomSubjects';
 
 interface SubjectsFieldProps {
 	onChange?: (values: TagInfo[]) => void;
-	value: string[] | null;
+	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
 const SubjectsField: FunctionComponent<SubjectsFieldProps> = ({ onChange, value }) => {
 	const { tText } = useTranslation();
 
-	const [subjects, setSubjects] = useState<TagInfo[]>([]);
-
-	useEffect(() => {
-		let fetch = true;
-
-		SettingsService.fetchSubjects()
-			.then((levels: string[]) => {
-				fetch && setSubjects(levels.map(stringToTagInfo));
-			})
-			.catch((err) => {
-				console.error(new CustomError('Failed to get subjects from the database', err));
-			});
-
-		return () => {
-			fetch = false;
-		};
-	}, [setSubjects]);
+	const [subjects] = useLomSubjects();
 
 	return (
 		<FormGroup
@@ -38,8 +23,16 @@ const SubjectsField: FunctionComponent<SubjectsFieldProps> = ({ onChange, value 
 			labelFor="subjectsId"
 		>
 			<TagsInput
-				options={subjects}
-				value={(value || []).map(stringToTagInfo)}
+				options={subjects.map(lomToTagInfo)}
+				value={compact(
+					(value || []).map((stringValue): Avo.Lom.LomField | undefined =>
+						subjects.find(
+							(subject) =>
+								subject.label.toLowerCase() === stringValue ||
+								subject.id === stringValue
+						)
+					)
+				).map(lomToTagInfo)}
 				onChange={onChange}
 			/>
 		</FormGroup>

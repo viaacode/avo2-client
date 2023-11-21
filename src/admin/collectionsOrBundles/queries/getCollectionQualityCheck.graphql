@@ -12,8 +12,6 @@ query getCollectionQualityCheck(
 	) {
 		id: collection_id
 		is_public
-		subjects: lom_classification
-		education_levels: lom_context
 		owner {
 			profile {
 				id

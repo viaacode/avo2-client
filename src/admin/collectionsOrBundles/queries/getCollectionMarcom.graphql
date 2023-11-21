@@ -23,8 +23,6 @@ query getCollectionMarcom(
 		last_editor {
 			full_name
 		}
-		subjects: lom_classification
-		education_levels: lom_context
 		owner {
 			profile {
 				id
