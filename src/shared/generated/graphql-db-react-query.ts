@@ -601,7 +601,6 @@ export const GetItemByUuidDocument = `
     lom_intendedenduserrole
     lom_keywords
     lom_languages
-    lom_typical_age_range: lom_typicalagerange
     org_id
     organisation {
       or_id
@@ -698,7 +697,6 @@ export const GetItemsByExternalIdDocument = `
     lom_intendedenduserrole
     lom_keywords
     lom_languages
-    lom_typical_age_range: lom_typicalagerange
     org_id
     organisation {
       or_id
@@ -764,7 +762,6 @@ export const GetItemsWithFiltersDocument = `
     lom_intendedenduserrole
     lom_keywords
     lom_languages
-    lom_typical_age_range: lom_typicalagerange
     org_id
     organisation {
       or_id
