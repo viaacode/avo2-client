@@ -73,6 +73,7 @@ import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import './AssignmentDetail.scss';
+import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
@@ -113,6 +114,8 @@ const AssignmentDetail: FC<
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
+
+	const isAssignmentExpired = useAssignmentPastDeadline(assignment)
 
 	// Errors
 	const [isForbidden, setIsForbidden] = useState<boolean>(false);
@@ -576,6 +579,7 @@ const AssignmentDetail: FC<
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							isAssignmentExpired={isAssignmentExpired}
 						/>
 					)}
 				{permissions.canPublishAssignments && !inviteToken && (
