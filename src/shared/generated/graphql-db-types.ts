@@ -4162,6 +4162,10 @@ export type App_Collection_Actualisation_Overview = {
   last_editor?: Maybe<Shared_User_Names>;
   lom_classification?: Maybe<Scalars['jsonb']>;
   lom_context?: Maybe<Scalars['jsonb']>;
+  /** An array relationship */
+  loms: Array<App_Collections_Lom_Links>;
+  /** An aggregate relationship */
+  loms_aggregate: App_Collections_Lom_Links_Aggregate;
   /** An object relationship */
   manager?: Maybe<Shared_User_Names>;
   mgmt_created_at?: Maybe<Scalars['timestamptz']>;
@@ -4209,6 +4213,26 @@ export type App_Collection_Actualisation_OverviewLom_ClassificationArgs = {
 /** columns and relationships of "app.collection_actualisation_overview" */
 export type App_Collection_Actualisation_OverviewLom_ContextArgs = {
   path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "app.collection_actualisation_overview" */
+export type App_Collection_Actualisation_OverviewLomsArgs = {
+  distinct_on?: InputMaybe<Array<App_Collections_Lom_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collections_Lom_Links_Order_By>>;
+  where?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
+};
+
+
+/** columns and relationships of "app.collection_actualisation_overview" */
+export type App_Collection_Actualisation_OverviewLoms_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Collections_Lom_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collections_Lom_Links_Order_By>>;
+  where?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
 };
 
 /** aggregated selection of "app.collection_actualisation_overview" */
@@ -4260,6 +4284,8 @@ export type App_Collection_Actualisation_Overview_Bool_Exp = {
   last_editor?: InputMaybe<Shared_User_Names_Bool_Exp>;
   lom_classification?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
+  loms?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
+  loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Bool_Exp>;
   manager?: InputMaybe<Shared_User_Names_Bool_Exp>;
   mgmt_created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   mgmt_current_status?: InputMaybe<String_Comparison_Exp>;
@@ -4320,6 +4346,7 @@ export type App_Collection_Actualisation_Overview_Order_By = {
   last_editor?: InputMaybe<Shared_User_Names_Order_By>;
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
+  loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Order_By>;
   manager?: InputMaybe<Shared_User_Names_Order_By>;
   mgmt_created_at?: InputMaybe<Order_By>;
   mgmt_current_status?: InputMaybe<Order_By>;
@@ -7569,6 +7596,10 @@ export type App_Collection_Marcom_Overview = {
   last_marcom_date?: Maybe<Scalars['timestamptz']>;
   lom_classification?: Maybe<Scalars['jsonb']>;
   lom_context?: Maybe<Scalars['jsonb']>;
+  /** An array relationship */
+  loms: Array<App_Collections_Lom_Links>;
+  /** An aggregate relationship */
+  loms_aggregate: App_Collections_Lom_Links_Aggregate;
   /** An object relationship */
   owner?: Maybe<Users_Summary_View>;
   owner_profile_id?: Maybe<Scalars['uuid']>;
@@ -7609,6 +7640,26 @@ export type App_Collection_Marcom_OverviewLom_ClassificationArgs = {
 /** columns and relationships of "app.collection_marcom_overview" */
 export type App_Collection_Marcom_OverviewLom_ContextArgs = {
   path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "app.collection_marcom_overview" */
+export type App_Collection_Marcom_OverviewLomsArgs = {
+  distinct_on?: InputMaybe<Array<App_Collections_Lom_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collections_Lom_Links_Order_By>>;
+  where?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
+};
+
+
+/** columns and relationships of "app.collection_marcom_overview" */
+export type App_Collection_Marcom_OverviewLoms_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Collections_Lom_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collections_Lom_Links_Order_By>>;
+  where?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
 };
 
 /** aggregated selection of "app.collection_marcom_overview" */
@@ -7664,6 +7715,8 @@ export type App_Collection_Marcom_Overview_Bool_Exp = {
   last_marcom_date?: InputMaybe<Timestamptz_Comparison_Exp>;
   lom_classification?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
+  loms?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
+  loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Bool_Exp>;
   owner?: InputMaybe<Users_Summary_View_Bool_Exp>;
   owner_profile_id?: InputMaybe<Uuid_Comparison_Exp>;
   parent_collection_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -7718,6 +7771,7 @@ export type App_Collection_Marcom_Overview_Order_By = {
   last_marcom_date?: InputMaybe<Order_By>;
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
+  loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Order_By>;
   owner?: InputMaybe<Users_Summary_View_Order_By>;
   owner_profile_id?: InputMaybe<Order_By>;
   parent_collection_id?: InputMaybe<Order_By>;
@@ -8191,6 +8245,10 @@ export type App_Collection_Qc_Overview = {
   last_editor?: Maybe<Shared_User_Names>;
   lom_classification?: Maybe<Scalars['jsonb']>;
   lom_context?: Maybe<Scalars['jsonb']>;
+  /** An array relationship */
+  loms: Array<App_Collections_Lom_Links>;
+  /** An aggregate relationship */
+  loms_aggregate: App_Collections_Lom_Links_Aggregate;
   mgmt_eind_check_date?: Maybe<Scalars['timestamptz']>;
   mgmt_language_check?: Maybe<Scalars['Boolean']>;
   mgmt_quality_check?: Maybe<Scalars['Boolean']>;
@@ -8233,6 +8291,26 @@ export type App_Collection_Qc_OverviewLom_ClassificationArgs = {
 /** columns and relationships of "app.collection_qc_overview" */
 export type App_Collection_Qc_OverviewLom_ContextArgs = {
   path?: InputMaybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "app.collection_qc_overview" */
+export type App_Collection_Qc_OverviewLomsArgs = {
+  distinct_on?: InputMaybe<Array<App_Collections_Lom_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collections_Lom_Links_Order_By>>;
+  where?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
+};
+
+
+/** columns and relationships of "app.collection_qc_overview" */
+export type App_Collection_Qc_OverviewLoms_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<App_Collections_Lom_Links_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  order_by?: InputMaybe<Array<App_Collections_Lom_Links_Order_By>>;
+  where?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
 };
 
 /** aggregated selection of "app.collection_qc_overview" */
@@ -8284,6 +8362,8 @@ export type App_Collection_Qc_Overview_Bool_Exp = {
   last_editor?: InputMaybe<Shared_User_Names_Bool_Exp>;
   lom_classification?: InputMaybe<Jsonb_Comparison_Exp>;
   lom_context?: InputMaybe<Jsonb_Comparison_Exp>;
+  loms?: InputMaybe<App_Collections_Lom_Links_Bool_Exp>;
+  loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Bool_Exp>;
   mgmt_eind_check_date?: InputMaybe<Timestamptz_Comparison_Exp>;
   mgmt_language_check?: InputMaybe<Boolean_Comparison_Exp>;
   mgmt_quality_check?: InputMaybe<Boolean_Comparison_Exp>;
@@ -8330,6 +8410,7 @@ export type App_Collection_Qc_Overview_Order_By = {
   last_editor?: InputMaybe<Shared_User_Names_Order_By>;
   lom_classification?: InputMaybe<Order_By>;
   lom_context?: InputMaybe<Order_By>;
+  loms_aggregate?: InputMaybe<App_Collections_Lom_Links_Aggregate_Order_By>;
   mgmt_eind_check_date?: InputMaybe<Order_By>;
   mgmt_language_check?: InputMaybe<Order_By>;
   mgmt_quality_check?: InputMaybe<Order_By>;

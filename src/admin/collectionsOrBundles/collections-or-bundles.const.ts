@@ -370,7 +370,7 @@ const getCollectionSubjectsColumn = (
 	} as CheckboxDropdownModalProps,
 });
 
-const getCollectionThemasColumn = () // themes: Avo.Lom.LomField[]
+const getCollectionThemesColumn = () // themes: Avo.Lom.LomField[]
 : FilterableColumn<CollectionTableCols> => ({
 	id: 'themas',
 	label: tText('Themas'),
@@ -590,7 +590,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	...getCollectionInAssignmentColumn(isCollection),
 	getCollectionQuickLanesColumn(),
 	getCollectionSubjectsColumn(subjects),
-	getCollectionThemasColumn(),
+	getCollectionThemesColumn(),
 	getCollectionEducationLevelsColumn(educationLevels),
 	getCollectionOrganisationColumn(organisations),
 	{
@@ -623,6 +623,7 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 	getCollectionIsPublicColumn(),
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
+	getCollectionThemesColumn(),
 	getCollectionEducationLevelsColumn(educationLevels),
 	getCollectionOrganisationColumn(organisations),
 	{
@@ -653,6 +654,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 	getCollectionIsPublicColumn(),
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
+	getCollectionThemesColumn(),
 	getCollectionEducationLevelsColumn(educationLevels),
 	getCollectionOrganisationColumn(organisations),
 	{

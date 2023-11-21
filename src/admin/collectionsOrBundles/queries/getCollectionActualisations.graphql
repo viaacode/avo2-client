@@ -54,6 +54,14 @@ query getCollectionActualisations(
 			profile_id
 			full_name
 		}
+		loms {
+			lom {
+				broader
+				id
+				label
+				scheme
+			}
+		}
 	}
 	app_collections_aggregate: app_collection_actualisation_overview_aggregate(where: $where) {
 		aggregate {

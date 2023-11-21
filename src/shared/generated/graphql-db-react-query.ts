@@ -164,6 +164,14 @@ export const GetCollectionActualisationsDocument = `
       profile_id
       full_name
     }
+    loms {
+      lom {
+        broader
+        id
+        label
+        scheme
+      }
+    }
   }
   app_collections_aggregate: app_collection_actualisation_overview_aggregate(
     where: $where
@@ -228,6 +236,14 @@ export const GetCollectionMarcomDocument = `
     last_marcom_date
     title
     updated_at
+    loms {
+      lom {
+        broader
+        id
+        label
+        scheme
+      }
+    }
   }
   app_collections_aggregate: app_collection_marcom_overview_aggregate(
     where: $where
@@ -292,6 +308,14 @@ export const GetCollectionQualityCheckDocument = `
     mgmt_quality_check
     mgmt_language_check
     mgmt_eind_check_date
+    loms {
+      lom {
+        broader
+        id
+        label
+        scheme
+      }
+    }
   }
   app_collections_aggregate: app_collection_qc_overview_aggregate(where: $where) {
     aggregate {

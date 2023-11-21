@@ -44,6 +44,14 @@ query getCollectionMarcom(
 		last_marcom_date
 		title
 		updated_at
+		loms {
+			lom {
+				broader
+				id
+				label
+				scheme
+			}
+		}
 	}
 	app_collections_aggregate: app_collection_marcom_overview_aggregate(where: $where) {
 		aggregate {
