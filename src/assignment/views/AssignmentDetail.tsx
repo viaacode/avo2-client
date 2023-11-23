@@ -68,12 +68,12 @@ import {
 } from '../helpers/assignment-share-with-collegue-handlers';
 import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import './AssignmentDetail.scss';
-import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
@@ -115,7 +115,7 @@ const AssignmentDetail: FC<
 		refetchIntervalInBackground: true,
 	});
 
-	const isAssignmentExpired = useAssignmentPastDeadline(assignment)
+	const isAssignmentExpired = useAssignmentPastDeadline(assignment);
 
 	// Errors
 	const [isForbidden, setIsForbidden] = useState<boolean>(false);
