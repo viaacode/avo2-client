@@ -68,6 +68,7 @@ import {
 } from '../helpers/assignment-share-with-collegue-handlers';
 import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
@@ -113,6 +114,8 @@ const AssignmentDetail: FC<
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
+
+	const isAssignmentExpired = useAssignmentPastDeadline(assignment);
 
 	// Errors
 	const [isForbidden, setIsForbidden] = useState<boolean>(false);
@@ -576,6 +579,7 @@ const AssignmentDetail: FC<
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							isAssignmentExpired={isAssignmentExpired}
 						/>
 					)}
 				{permissions.canPublishAssignments && !inviteToken && (
