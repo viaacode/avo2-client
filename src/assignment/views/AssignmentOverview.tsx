@@ -465,7 +465,7 @@ const AssignmentOverview: FunctionComponent<
 						label={getMoreOptionsLabel()}
 						menuItems={[
 							...createDropdownMenuItem(
-								AssignmentAction.editAssignment,
+								AssignmentAction.edit,
 								tText('assignment/views/assignment-overview___bewerk'),
 								IconName.edit2,
 								query.view !== AssignmentView.FINISHED &&
