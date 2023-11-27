@@ -533,6 +533,7 @@ export class AssignmentService {
 			deadline_at: null,
 			answer_url: null,
 			is_public: false,
+			created_at: new Date().toISOString(),
 			published_at: undefined,
 			contributors: [],
 			labels: [],
