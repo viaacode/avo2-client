@@ -196,14 +196,14 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
-	ASSIGNMENT_CREATE: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
-		showInContentPicker: true,
-		showForInteractiveTour: true,
-	},
 	ASSIGNMENT_DETAIL: {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id`,
 		showInContentPicker: false,
+		showForInteractiveTour: true,
+	},
+	ASSIGNMENT_CREATE: {
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
+		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_EDIT: {
