@@ -1532,7 +1532,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 				{isCollection && (
 					<InActivityWarningModal
 						onActivity={updateCollectionEditor}
-						onExit={releaseCollectionEditStatus}
+						// AVO-2934: do not release edit status after delete collection
+						//onExit={releaseCollectionEditStatus}
+						onExit={() => true}
 						warningMessage={tHtml(
 							'collection/components/collection-or-bundle-edit___door-inactiviteit-zal-de-collectie-zichzelf-sluiten'
 						)}

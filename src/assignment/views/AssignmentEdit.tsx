@@ -891,7 +891,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 					<InActivityWarningModal
 						onActivity={updateAssignmentEditor}
-						onExit={releaseAssignmentEditStatus}
+						// AVO-2934: do not release edit status after delete assignment
+						//onExit={releaseAssignmentEditStatus}
+						onExit={() => true}
 						warningMessage={tHtml(
 							'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
 						)}
