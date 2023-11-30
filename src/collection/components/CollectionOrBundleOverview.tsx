@@ -44,6 +44,7 @@ import {
 	createDropdownMenuItem,
 	formatDate,
 	formatTimestamp,
+	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -757,44 +758,24 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	const renderTable = (collections: Collection[]) => {
-		return renderMobileDesktop({
-			mobile: (
-				<>
-					<Table
-						columns={getColumnsMobile()}
-						data={collections}
-						emptyStateMessage={tText(
-							'collection/views/collection-overview___geen-resultaten-gevonden'
-						)}
-						renderCell={renderCell}
-						rowKey="id"
-						variant="styled"
-						onColumnClick={onClickColumn as any}
-						sortColumn={sortColumn}
-						sortOrder={sortOrder}
-					/>
-					<Spacer margin="top-large">{renderPagination()}</Spacer>
-				</>
-			),
-			desktop: (
-				<>
-					<Table
-						columns={getColumnsDesktop()}
-						data={collections}
-						emptyStateMessage={tText(
-							'collection/views/collection-overview___geen-resultaten-gevonden'
-						)}
-						renderCell={renderCell}
-						rowKey="id"
-						variant="styled"
-						onColumnClick={onClickColumn as any}
-						sortColumn={sortColumn}
-						sortOrder={sortOrder}
-					/>
-					<Spacer margin="top-large">{renderPagination()}</Spacer>
-				</>
-			),
-		});
+		return (
+			<>
+				<Table
+					columns={isMobileWidth() ? getColumnsMobile() : getColumnsDesktop()}
+					data={collections}
+					emptyStateMessage={tText(
+						'collection/views/collection-overview___geen-resultaten-gevonden'
+					)}
+					renderCell={renderCell}
+					rowKey="id"
+					variant="styled"
+					onColumnClick={onClickColumn as any}
+					sortColumn={sortColumn}
+					sortOrder={sortOrder}
+				/>
+				<Spacer margin="top-large">{renderPagination()}</Spacer>
+			</>
+		);
 	};
 
 	const renderEmptyFallback = () => (
