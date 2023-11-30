@@ -196,14 +196,17 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
-	ASSIGNMENT_CREATE: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
-		showInContentPicker: true,
-		showForInteractiveTour: true,
-	},
+	// This entry must come before the ASSIGNMENT_CREATE route,
+	// otherwise the interactive tour button doesn't correctly identify the route
+	// https://meemoo.atlassian.net/browse/AVO-2923
 	ASSIGNMENT_DETAIL: {
 		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id`,
 		showInContentPicker: false,
+		showForInteractiveTour: true,
+	},
+	ASSIGNMENT_CREATE: {
+		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
+		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_EDIT: {
