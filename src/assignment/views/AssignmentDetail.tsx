@@ -490,7 +490,7 @@ const AssignmentDetail: FC<
 			case AssignmentAction.toggleBookmark:
 				await toggleBookmark();
 				break;
-			case AssignmentAction.editAssignment:
+			case AssignmentAction.edit:
 				onEditAssignment();
 				break;
 			case AssignmentAction.share:
@@ -638,7 +638,7 @@ const AssignmentDetail: FC<
 							title={tText(
 								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
 							)}
-							onClick={() => executeAction(AssignmentAction.editAssignment)}
+							onClick={() => executeAction(AssignmentAction.edit)}
 							disabled={isBeingEdited}
 							toolTipContent={tHtml(
 								'assignment/views/assignment-detail___deze-opdracht-wordt-momenteel-bewerkt-door-een-andere-gebruiker-het-is-niet-mogelijk-met-met-meer-dan-1-gebruiker-simultaan-te-bewerken'
@@ -654,7 +654,7 @@ const AssignmentDetail: FC<
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
-				AssignmentAction.editAssignment,
+				AssignmentAction.edit,
 				tText('assignment/views/assignment-detail___bewerken'),
 				IconName.edit2,
 				permissions.canEditAssignments || isOwner || false

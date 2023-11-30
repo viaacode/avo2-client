@@ -116,7 +116,7 @@ export enum AssignmentAction {
 	delete = 'delete',
 	openPublishCollectionModal = 'openPublishAssignmentModal',
 	toggleBookmark = 'toggleBookmark',
-	editAssignment = 'editAssignment',
+	edit = 'edit',
 	share = 'share',
 	publish = 'publish',
 }
