@@ -1,4 +1,4 @@
-import { Button, ButtonToolbar, IconName, TagList } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil, partition } from 'lodash-es';
 import React, {
@@ -332,24 +332,15 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 	const renderTableCell = (
 		assignment: Partial<Avo.Assignment.Assignment>,
-		columnId: AssignmentOverviewTableColumns,
-		rowIndex: number
+		columnId: AssignmentOverviewTableColumns
 	) => {
-		const { id, created_at, updated_at, deadline_at, title } = assignment;
+		const { id, created_at, updated_at, deadline_at } = assignment;
 
 		switch (columnId) {
 			case 'title':
 				return (
 					<Link to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id })}>
 						{truncateTableValue(assignment.title)}
-						{title?.startsWith(
-							tText('assignment/views/assignment-overview___kopie')
-						) && (
-							<TagList
-								tags={[{ id: rowIndex + (assignment.title || ''), label: 'Kopie' }]}
-								swatches={false}
-							/>
-						)}
 					</Link>
 				);
 
@@ -525,16 +516,8 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					columns={columns}
 					data={assignments}
 					dataCount={assignmentCount}
-					renderCell={(
-						rowData: Partial<Avo.Assignment.Assignment>,
-						columnId: string,
-						rowIndex: number
-					) =>
-						renderTableCell(
-							rowData,
-							columnId as AssignmentOverviewTableColumns,
-							rowIndex
-						)
+					renderCell={(rowData: Partial<Avo.Assignment.Assignment>, columnId: string) =>
+						renderTableCell(rowData, columnId as AssignmentOverviewTableColumns)
 					}
 					searchTextPlaceholder={tText(
 						'admin/assignments/views/assignments-overview-admin___zoeken-op-titel-en-auteur'
