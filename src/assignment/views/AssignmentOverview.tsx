@@ -919,7 +919,7 @@ const AssignmentOverview: FunctionComponent<
 		if (canEditAssignments) {
 			// Teacher
 			if (query.view === AssignmentView.ACTIVE) {
-				return tText(
+				return tHtml(
 					'assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken'
 				);
 			}
