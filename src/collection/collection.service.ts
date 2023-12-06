@@ -1275,14 +1275,14 @@ export class CollectionService {
 	}
 
 	static async fetchCollectionsByOwnerOrContributorProfileId(
-		user: Avo.User.User,
-		offset: number,
+		user: Avo.User.User | undefined,
+		offset: number | null,
 		limit: number | null,
 		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined,
 		shareTypeIds: string[] | undefined
-	): Promise<Collection[]> {
+	): Promise<Partial<Avo.Collection.Collection>[]> {
 		let variables: GetCollectionsByOwnerOrContributorQueryVariables | null = null;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
@@ -1313,7 +1313,7 @@ export class CollectionService {
 				variables,
 			});
 
-			return response.app_collections_overview as unknown as Collection[];
+			return response.app_collections_overview as unknown as Avo.Collection.Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
