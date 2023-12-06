@@ -34,6 +34,7 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
 	const [isTimedOut, setIsTimedOut] = useState<boolean>(false);
 	const [idleStart, setIdleStart] = useState<Date | null>(null);
+	const [documentTitle] = useState(document.title);
 
 	useEffect(() => {
 		if (!isTimedOut) {
@@ -96,6 +97,16 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 		if (remainingTime === 0) {
 			setIsTimedOut(true);
 			onForcedExit();
+		}
+
+		// AVO-2846: show timer in tab title when timer starts counting down
+		if (remainingTime < maxIdleTime) {
+			document.title = format(new Date(remainingTime * 1000), 'mm:ss');
+		}
+
+		// AVO-2846: set document title back to original when there is activity
+		if (remainingTime >= maxIdleTime) {
+			document.title = documentTitle;
 		}
 	}, [remainingTime]);
 
