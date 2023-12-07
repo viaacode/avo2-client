@@ -27,9 +27,9 @@ import {
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useEducationLevels } from '../../../shared/hooks/useEducationLevels';
+import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { useSubjects } from '../../../shared/hooks/useSubjects';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -69,8 +69,8 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
 	const [userGroups] = useUserGroups(false);
-	const [subjects] = useSubjects();
-	const [educationLevels] = useEducationLevels();
+	const [subjects] = useLomSubjects();
+	const [educationLevels] = useLomEducationLevels();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 

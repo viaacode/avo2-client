@@ -23,8 +23,6 @@ query getCollectionMarcom(
 		last_editor {
 			full_name
 		}
-		subjects: lom_classification
-		education_levels: lom_context
 		owner {
 			profile {
 				id
@@ -46,6 +44,14 @@ query getCollectionMarcom(
 		last_marcom_date
 		title
 		updated_at
+		loms {
+			lom {
+				broader
+				id
+				label
+				scheme
+			}
+		}
 	}
 	app_collections_aggregate: app_collection_marcom_overview_aggregate(where: $where) {
 		aggregate {

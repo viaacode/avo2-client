@@ -28,7 +28,7 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 	const groupedThemes = groupBy(allThemes, 'broader');
 	const { null: categories, ...themeGroups } = groupedThemes;
 	const themeOptions = map(themeGroups, (themeGroup, categoryId) => ({
-		label: categories.find((category) => category.id === categoryId)?.label,
+		label: (categories || []).find((category) => category.id === categoryId)?.label,
 		options: themeGroup.map((theme) => ({ label: theme.label, value: theme.id })),
 	}));
 

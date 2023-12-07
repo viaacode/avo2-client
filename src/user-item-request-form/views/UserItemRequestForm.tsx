@@ -22,6 +22,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
 import { getFullName, isMobileWidth } from '../../shared/helpers';
 import { DOC_TYPES, isPhoto } from '../../shared/helpers/files';
+import { groupLomLinks } from '../../shared/helpers/lom';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -29,7 +30,11 @@ import { ZendeskService } from '../../shared/services/zendesk-service';
 
 export type UserItemRequestFormProps = DefaultSecureRouteProps;
 
-const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ history, user }) => {
+const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
+	history,
+	user,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [description, setDescription] = useState<string>('');
@@ -60,9 +65,9 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 		);
 		if (wantsToUploadAttachment && attachmentUrl) {
 			if (isPhoto(attachmentUrl)) {
-				return `<img src='${attachmentUrl}' alt='Bijlage'/>`;
+				return `<img src="${attachmentUrl}" alt="Bijlage"/>`;
 			}
-			return `<a href='${attachmentUrl}'>${filename}</a>`;
+			return `<a href="${attachmentUrl}">${filename}</a>`;
 		}
 		return tText(
 			'user-item-request-form/views/user-item-request-form___er-werd-geen-bijlage-toegevoegd'
@@ -80,16 +85,19 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({ hist
 
 			setIsLoading(true);
 			// create zendesk ticket
+			const groupedLoms = groupLomLinks(commonUser.loms);
 			const body = {
 				description,
 				firstName: user.first_name,
 				lastName: user.last_name,
 				email: user.mail,
-				organization: get(user, 'profile.organizations', [])
-					.map((org: { label: string }) => org.label)
+				organization: (commonUser?.educationalOrganisations || [])
+					.map((org) => org.organisationLabel)
 					.join(', '),
-				subjects: get(user, 'profile.subjects', []).join(', '),
-				educationLevels: get(user, 'profile.educationLevels', []).join(', '),
+				subjects: groupedLoms.subject.map((subject) => subject.label).join(', '),
+				educationLevels: groupedLoms.educationLevel
+					.map((educationLevel) => educationLevel.label)
+					.join(', '),
 			};
 			ticket = {
 				comment: {

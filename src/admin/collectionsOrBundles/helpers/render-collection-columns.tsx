@@ -14,7 +14,8 @@ import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser';
 import { APP_PATH } from '../../../constants';
 import { Lookup_Enum_Collection_Management_Qc_Label_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, formatDate } from '../../../shared/helpers';
-import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
+import { groupLomLinks } from '../../../shared/helpers/lom';
+import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { tText } from '../../../shared/helpers/translate';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { getCollectionManagementStatuses } from '../collections-or-bundles.const';
@@ -121,10 +122,22 @@ export const renderCollectionOverviewColumns = (
 			}
 			return 'Nee';
 
-		case 'education_levels':
+		case 'education_levels': {
+			const groupedLoms = groupLomLinks(rowData.loms);
+			return (
+				lomsToTagList([...groupedLoms.educationLevel, ...groupedLoms.educationDegree]) ||
+				'-'
+			);
+		}
+
 		case 'subjects': {
-			const labels = get(rowData, columnId, []);
-			return stringsToTagList(labels, null) || '-';
+			const groupedLoms = groupLomLinks(rowData.loms);
+			return lomsToTagList(groupedLoms.subject) || '-';
+		}
+
+		case 'themas': {
+			const groupedLoms = groupLomLinks(rowData.loms);
+			return lomsToTagList(groupedLoms.theme) || '-';
 		}
 
 		case 'actualisation_status':

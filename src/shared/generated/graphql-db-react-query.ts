@@ -123,8 +123,6 @@ export const GetCollectionActualisationsDocument = `
     id: collection_id
     created_at
     is_public
-    subjects: lom_classification
-    education_levels: lom_context
     mgmt_created_at
     mgmt_current_status
     mgmt_last_eindcheck_date
@@ -165,6 +163,14 @@ export const GetCollectionActualisationsDocument = `
     last_editor {
       profile_id
       full_name
+    }
+    loms {
+      lom {
+        broader
+        id
+        label
+        scheme
+      }
     }
   }
   app_collections_aggregate: app_collection_actualisation_overview_aggregate(
@@ -209,8 +215,6 @@ export const GetCollectionMarcomDocument = `
     last_editor {
       full_name
     }
-    subjects: lom_classification
-    education_levels: lom_context
     owner {
       profile {
         id
@@ -232,6 +236,14 @@ export const GetCollectionMarcomDocument = `
     last_marcom_date
     title
     updated_at
+    loms {
+      lom {
+        broader
+        id
+        label
+        scheme
+      }
+    }
   }
   app_collections_aggregate: app_collection_marcom_overview_aggregate(
     where: $where
@@ -264,8 +276,6 @@ export const GetCollectionQualityCheckDocument = `
   ) {
     id: collection_id
     is_public
-    subjects: lom_classification
-    education_levels: lom_context
     owner {
       profile {
         id
@@ -298,6 +308,14 @@ export const GetCollectionQualityCheckDocument = `
     mgmt_quality_check
     mgmt_language_check
     mgmt_eind_check_date
+    loms {
+      lom {
+        broader
+        id
+        label
+        scheme
+      }
+    }
   }
   app_collections_aggregate: app_collection_qc_overview_aggregate(where: $where) {
     aggregate {
@@ -332,8 +350,6 @@ export const GetCollectionsDocument = `
     description
     is_public
     is_managed
-    subjects: lom_classification
-    education_levels: lom_context
     created_at
     updated_at
     owner {
@@ -366,6 +382,14 @@ export const GetCollectionsDocument = `
       views
       copies
       quick_lane_links
+    }
+    loms {
+      lom {
+        broader
+        id
+        label
+        scheme
+      }
     }
   }
   app_collections_aggregate(where: $where) {
@@ -577,7 +601,6 @@ export const GetItemByUuidDocument = `
     lom_intendedenduserrole
     lom_keywords
     lom_languages
-    lom_typical_age_range: lom_typicalagerange
     org_id
     organisation {
       or_id
@@ -674,7 +697,6 @@ export const GetItemsByExternalIdDocument = `
     lom_intendedenduserrole
     lom_keywords
     lom_languages
-    lom_typical_age_range: lom_typicalagerange
     org_id
     organisation {
       or_id
@@ -740,7 +762,6 @@ export const GetItemsWithFiltersDocument = `
     lom_intendedenduserrole
     lom_keywords
     lom_languages
-    lom_typical_age_range: lom_typicalagerange
     org_id
     organisation {
       or_id
@@ -3724,25 +3745,6 @@ export const useSetProfilePreferenceMutation = <
       (variables?: SetProfilePreferenceMutationVariables) => fetchData<SetProfilePreferenceMutation, SetProfilePreferenceMutationVariables>(SetProfilePreferenceDocument, variables)(),
       options
     );
-export const GetEducationLevelsDocument = `
-    query getEducationLevels {
-  lookup_enum_lom_context {
-    description
-  }
-}
-    `;
-export const useGetEducationLevelsQuery = <
-      TData = GetEducationLevelsQuery,
-      TError = unknown
-    >(
-      variables?: GetEducationLevelsQueryVariables,
-      options?: UseQueryOptions<GetEducationLevelsQuery, TError, TData>
-    ) =>
-    useQuery<GetEducationLevelsQuery, TError, TData>(
-      variables === undefined ? ['getEducationLevels'] : ['getEducationLevels', variables],
-      fetchData<GetEducationLevelsQuery, GetEducationLevelsQueryVariables>(GetEducationLevelsDocument, variables),
-      options
-    );
 export const GetQualityLabelsDocument = `
     query getQualityLabels {
   lookup_enum_collection_labels {
@@ -3851,25 +3853,6 @@ export const useGetQuickLanesWithFiltersQuery = <
     useQuery<GetQuickLanesWithFiltersQuery, TError, TData>(
       variables === undefined ? ['getQuickLanesWithFilters'] : ['getQuickLanesWithFilters', variables],
       fetchData<GetQuickLanesWithFiltersQuery, GetQuickLanesWithFiltersQueryVariables>(GetQuickLanesWithFiltersDocument, variables),
-      options
-    );
-export const GetSubjectsDocument = `
-    query getSubjects {
-  lookup_enum_lom_classification {
-    description
-  }
-}
-    `;
-export const useGetSubjectsQuery = <
-      TData = GetSubjectsQuery,
-      TError = unknown
-    >(
-      variables?: GetSubjectsQueryVariables,
-      options?: UseQueryOptions<GetSubjectsQuery, TError, TData>
-    ) =>
-    useQuery<GetSubjectsQuery, TError, TData>(
-      variables === undefined ? ['getSubjects'] : ['getSubjects', variables],
-      fetchData<GetSubjectsQuery, GetSubjectsQueryVariables>(GetSubjectsDocument, variables),
       options
     );
 export const DeleteAssignmentLabelsDocument = `
