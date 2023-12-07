@@ -41,14 +41,6 @@ query getAssignmentsAdminOverview(
 				}
 			}
 		}
-		view_count {
-			count
-		}
-		responses_aggregate(where: { collection_title: { _is_null: false } }) {
-			aggregate {
-				count
-			}
-		}
 		lom_learning_resource_type
 		contributors {
 			profile {
@@ -68,6 +60,12 @@ query getAssignmentsAdminOverview(
 				}
 			}
 			id
+		}
+		counts {
+			bookmarks
+			views
+			copies
+			contributors
 		}
 		loms {
 			lom {
