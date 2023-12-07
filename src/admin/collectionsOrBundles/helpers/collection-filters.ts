@@ -220,7 +220,7 @@ export function generateCollectionWhereObject(
 		...getBooleanFilters(
 			filters,
 			['quality_check_language_check', 'quality_check_quality_check'],
-			['mgmt_quality_check', 'mgmt_language_check']
+			['mgmt_language_check', 'mgmt_quality_check']
 		)
 	);
 

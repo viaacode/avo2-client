@@ -36,12 +36,10 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 
 	const getApprovedAtDate = (collection: Avo.Collection.Collection): Date | null => {
 		if (
-			get(collection, 'management_language_check[0].qc_status') &&
-			get(collection, 'management_quality_check[0].qc_status')
+			collection?.management_language_check?.[0]?.qc_status &&
+			collection?.management_quality_check?.[0]?.qc_status
 		) {
-			return (
-				toDateObject(get(collection, 'management_approved_at[0].created_at')) || new Date()
-			);
+			return toDateObject(collection?.mgmt_eind_check_date) || new Date();
 		}
 		return null;
 	};

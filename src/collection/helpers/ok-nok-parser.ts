@@ -10,7 +10,7 @@ export function okNokToBoolean(value: 'OK' | 'NOK' | null): boolean | null {
 	return null;
 }
 
-export function booleanToOkNok(value: boolean | null): 'OK' | 'NOK' | null {
+export function booleanToOkNok(value: boolean | undefined | null): 'OK' | 'NOK' | null {
 	if (value) {
 		return 'OK';
 	}
