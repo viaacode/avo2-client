@@ -266,6 +266,15 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 					selectedCollection as Partial<Avo.Collection.Collection>
 				);
 
+	const handleCollectionTitleChange = (title: string) => {
+		// AVO-2827: add max title length
+		if (title.length > 110) {
+			return;
+		} else {
+			setNewCollectionTitle(title);
+		}
+	};
+
 	const renderAddToCollectionModal = () => {
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
 		const [start, end] = getValidStartAndEnd(
@@ -400,7 +409,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 														)}
 														disabled={!createNewCollection}
 														value={newCollectionTitle}
-														onChange={setNewCollectionTitle}
+														onChange={handleCollectionTitleChange}
 													/>
 												</div>
 											</Spacer>

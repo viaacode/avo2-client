@@ -1396,6 +1396,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 									collectionPropValue: title,
 								})
 							}
+							maxLength={110}
 						/>
 					}
 					category={type}

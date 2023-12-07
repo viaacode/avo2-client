@@ -193,7 +193,7 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<Avo.Assignment.Assignment> => {
 	return object({
 		id: string().optional(),
-		title: string().required(tText('assignment/assignment___titel-is-verplicht')),
+		title: string().required(tText('assignment/assignment___titel-is-verplicht')).max(110),
 		labels: array(
 			object({
 				assignment_label: object()
