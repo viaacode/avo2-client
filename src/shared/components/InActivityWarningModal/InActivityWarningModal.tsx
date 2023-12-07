@@ -99,12 +99,13 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 			onForcedExit();
 		}
 
-		// AVO-2846: show timer in tab title when timer starts counting down
+		// AVO-2846: show timer before tab title when timer starts counting down
 		if (remainingTime < maxIdleTime) {
-			document.title = format(new Date(remainingTime * 1000), 'mm:ss');
+			document.title =
+				format(new Date(remainingTime * 1000), 'mm:ss') + ' | ' + documentTitle;
 		}
 
-		// AVO-2846: set document title back to original when there is activity
+		// AVO-2846: hide timer in tab title when there is activity
 		if (remainingTime >= maxIdleTime) {
 			document.title = documentTitle;
 		}
