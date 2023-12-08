@@ -1,6 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
+import { CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { endOfDay, startOfDay } from 'date-fns';
 import {
 	cloneDeep,
@@ -15,7 +16,7 @@ import {
 } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
-import { reorderBlockPositions } from '../assignment/assignment.helper';
+import { reorderBlockPositions, setBlockPositionToIndex } from '../assignment/assignment.helper';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
@@ -202,7 +203,7 @@ export class CollectionService {
 			newCollection.id = insertedCollection.id;
 
 			// retrieve collection fragments from inserted collection
-			const fragments = getFragmentsFromCollection(newCollection);
+			const fragments = setBlockPositionToIndex(getFragmentsFromCollection(newCollection));
 
 			// insert fragments
 			if (fragments && fragments.length) {
@@ -291,7 +292,11 @@ export class CollectionService {
 				getFragmentIdsFromCollection(newCollection);
 
 			// Fragments to insert do not have an id yet
-			const newFragments = getFragmentsFromCollection(newCollection).filter(
+			const newFragments = (
+				setBlockPositionToIndex(
+					getFragmentsFromCollection(newCollection)
+				) as CollectionFragment[]
+			).filter(
 				(fragment) =>
 					(isNumber(fragment.id) && fragment.id < 0) ||
 					Object.is(fragment.id, -0) ||
@@ -1022,18 +1027,16 @@ export class CollectionService {
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			const cleanedFragments = reorderBlockPositions(
-				cloneDeep(fragments).map((fragment) => {
-					delete (fragment as any).__typename;
-					delete fragment.item_meta;
+			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
+				delete (fragment as any).__typename;
+				delete fragment.item_meta;
 
-					return {
-						...fragment,
-						collection_uuid: collectionId,
-						id: undefined,
-					};
-				}) as Positioned[]
-			);
+				return {
+					...fragment,
+					collection_uuid: collectionId,
+					id: undefined,
+				};
+			}) as Positioned[];
 
 			const variables: InsertCollectionFragmentsMutationVariables = {
 				fragments: cleanedFragments,
@@ -1058,7 +1061,7 @@ export class CollectionService {
 				}
 			);
 
-			return reorderBlockPositions(fragments as Positioned[]) as Avo.Collection.Fragment[];
+			return fragments as CollectionFragment[];
 		} catch (err) {
 			throw new CustomError('Failed to insert fragments into collection', err, {
 				collectionId,

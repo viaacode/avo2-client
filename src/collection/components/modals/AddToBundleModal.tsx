@@ -131,6 +131,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 			}
 			const fragment = getFragment(bundle);
 			delete fragment.item_meta;
+			fragment.position = bundle.collection_fragments?.length || 0;
 			await CollectionService.insertFragments(bundle.id, [fragment]);
 
 			ToastService.success(
