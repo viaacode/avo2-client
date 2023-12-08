@@ -1275,8 +1275,8 @@ export class CollectionService {
 	}
 
 	static async fetchCollectionsByOwnerOrContributorProfileId(
-		user: Avo.User.User | undefined,
-		offset: number | null,
+		user: Avo.User.User,
+		offset: number,
 		limit: number | null,
 		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,

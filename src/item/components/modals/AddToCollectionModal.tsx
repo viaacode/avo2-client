@@ -70,9 +70,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 	const fetchCollections = React.useCallback(
 		() =>
 			CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-				user,
-				null,
-				null,
+				user as Avo.User.User,
+				0,
+				500,
 				[],
 				ContentTypeNumber.collection,
 				undefined,
