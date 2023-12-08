@@ -215,7 +215,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			);
 			return;
 		}
-		addCollectionCallback && addCollectionCallback(selectedCollectionId, createWithDescription);
+		addCollectionCallback?.(selectedCollectionId, createWithDescription);
 		resetStateAndCallOnClose();
 	};
 
