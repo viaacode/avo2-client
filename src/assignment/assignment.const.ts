@@ -193,7 +193,12 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<Avo.Assignment.Assignment> => {
 	return object({
 		id: string().optional(),
-		title: string().required(tText('assignment/assignment___titel-is-verplicht')).max(110),
+		title: string()
+			.required(tText('assignment/assignment___titel-is-verplicht'))
+			.max(
+				110,
+				tText('assignment/assignment___de-titel-mag-maximum-110-karakters-lang-zijn')
+			),
 		labels: array(
 			object({
 				assignment_label: object()
