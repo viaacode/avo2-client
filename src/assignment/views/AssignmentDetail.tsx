@@ -68,6 +68,7 @@ import {
 } from '../helpers/assignment-share-with-collegue-handlers';
 import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
@@ -113,6 +114,8 @@ const AssignmentDetail: FC<
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
+
+	const isAssignmentExpired = useAssignmentPastDeadline(assignment);
 
 	// Errors
 	const [isForbidden, setIsForbidden] = useState<boolean>(false);
@@ -487,7 +490,7 @@ const AssignmentDetail: FC<
 			case AssignmentAction.toggleBookmark:
 				await toggleBookmark();
 				break;
-			case AssignmentAction.editAssignment:
+			case AssignmentAction.edit:
 				onEditAssignment();
 				break;
 			case AssignmentAction.share:
@@ -576,6 +579,7 @@ const AssignmentDetail: FC<
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							isAssignmentExpired={isAssignmentExpired}
 						/>
 					)}
 				{permissions.canPublishAssignments && !inviteToken && (
@@ -634,7 +638,7 @@ const AssignmentDetail: FC<
 							title={tText(
 								'assignment/views/assignment-response-edit___pas-deze-opdracht-aan'
 							)}
-							onClick={() => executeAction(AssignmentAction.editAssignment)}
+							onClick={() => executeAction(AssignmentAction.edit)}
 							disabled={isBeingEdited}
 							toolTipContent={tHtml(
 								'assignment/views/assignment-detail___deze-opdracht-wordt-momenteel-bewerkt-door-een-andere-gebruiker-het-is-niet-mogelijk-met-met-meer-dan-1-gebruiker-simultaan-te-bewerken'
@@ -650,7 +654,7 @@ const AssignmentDetail: FC<
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS_MOBILE = [
 			...createDropdownMenuItem(
-				AssignmentAction.editAssignment,
+				AssignmentAction.edit,
 				tText('assignment/views/assignment-detail___bewerken'),
 				IconName.edit2,
 				permissions.canEditAssignments || isOwner || false

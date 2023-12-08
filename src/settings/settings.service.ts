@@ -1,19 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
-import { sortBy } from 'lodash-es';
 
-import {
-	GetEducationLevelsQuery,
-	GetEducationLevelsQueryVariables,
-	GetSubjectsQuery,
-	GetSubjectsQueryVariables,
-} from '../shared/generated/graphql-db-operations';
-import {
-	GetEducationLevelsDocument,
-	GetSubjectsDocument,
-} from '../shared/generated/graphql-db-react-query';
 import { CustomError, getEnv } from '../shared/helpers';
-import { dataService } from '../shared/services/data-service';
 
 export class SettingsService {
 	public static async updateProfileInfo(
@@ -31,48 +19,6 @@ export class SettingsService {
 		} catch (err) {
 			throw new CustomError('Failed to update profile information', err, {
 				profile,
-			});
-		}
-	}
-
-	public static async fetchSubjects(): Promise<string[]> {
-		try {
-			const response: GetSubjectsQuery = await dataService.query<
-				GetSubjectsQuery,
-				GetSubjectsQueryVariables
-			>({
-				query: GetSubjectsDocument,
-			});
-
-			const subjects = (response.lookup_enum_lom_classification || []).map(
-				(item: { description: string }) => item.description
-			);
-
-			return sortBy(subjects, (subject) => subject.toLowerCase());
-		} catch (err) {
-			throw new CustomError('Failed to get subjects from the database', err, {
-				query: 'GET_SUBJECTS',
-			});
-		}
-	}
-
-	public static async fetchEducationLevels(): Promise<string[]> {
-		try {
-			const response = await dataService.query<
-				GetEducationLevelsQuery,
-				GetEducationLevelsQueryVariables
-			>({
-				query: GetEducationLevelsDocument,
-			});
-
-			return (
-				(response.lookup_enum_lom_context || []) as {
-					description: string;
-				}[]
-			).map((item: { description: string }) => item.description);
-		} catch (err) {
-			throw new CustomError('Failed to get education levels from the database', err, {
-				query: 'GET_EDUCATION_LEVELS',
 			});
 		}
 	}

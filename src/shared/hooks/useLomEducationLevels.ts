@@ -1,23 +1,24 @@
+import { Avo } from '@viaa/avo2-types';
 import { useEffect, useState } from 'react';
 
-import { SettingsService } from '../../settings/settings.service';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers';
+import { LomService } from '../services/lom.service';
 import { ToastService } from '../services/toast-service';
 
-type UseEducationLevelsTuple = [string[], boolean];
+type UseLomEducationLevelsTuple = [Avo.Lom.LomField[], boolean];
 
-export const useEducationLevels = (): UseEducationLevelsTuple => {
+export const useLomEducationLevels = (): UseLomEducationLevelsTuple => {
 	const { tText, tHtml } = useTranslation();
 
-	const [educationLevels, setEducationLevels] = useState<string[]>([]);
+	const [educationLevels, setEducationLevels] = useState<Avo.Lom.LomField[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		setIsLoading(true);
 
-		SettingsService.fetchEducationLevels()
-			.then((educationLevels: string[]) => {
+		LomService.fetchEducationLevels()
+			.then((educationLevels: Avo.Lom.LomField[]) => {
 				setEducationLevels(educationLevels);
 			})
 			.catch((err) => {

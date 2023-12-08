@@ -28,9 +28,9 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useEducationLevels } from '../../../shared/hooks/useEducationLevels';
+import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
-import { useSubjects } from '../../../shared/hooks/useSubjects';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -91,8 +91,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [changeLabelsModalOpen, setAddLabelModalOpen] = useState<boolean>(false);
 
 	const [userGroups] = useUserGroups(false);
-	const [subjects] = useSubjects();
-	const [educationLevels] = useEducationLevels();
+	const [subjects] = useLomSubjects();
+	const [educationLevels] = useLomEducationLevels();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 	const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<Avo.Share.EditStatus[]>(

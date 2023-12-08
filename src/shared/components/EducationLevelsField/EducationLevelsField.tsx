@@ -1,14 +1,15 @@
 import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Avo } from '@viaa/avo2-types';
+import { compact } from 'lodash-es';
+import React, { FunctionComponent } from 'react';
 
-import { SettingsService } from '../../../settings/settings.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { CustomError } from '../../helpers';
-import { stringToTagInfo } from '../../helpers/string-to-select-options';
+import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
 
 interface EducationLevelsFieldProps {
 	onChange?: (values: TagInfo[]) => void;
-	value: string[] | null;
+	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
 const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
@@ -17,25 +18,7 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 }) => {
 	const { tText } = useTranslation();
 
-	const [educationLevels, setEducationLevels] = useState<TagInfo[]>([]);
-
-	useEffect(() => {
-		let fetch = true;
-
-		SettingsService.fetchEducationLevels()
-			.then((levels: string[]) => {
-				fetch && setEducationLevels(levels.map(stringToTagInfo));
-			})
-			.catch((err) => {
-				console.error(
-					new CustomError('Failed to get education levels from the database', err)
-				);
-			});
-
-		return () => {
-			fetch = false;
-		};
-	}, [setEducationLevels]);
+	const [educationLevels] = useLomEducationLevels();
 
 	return (
 		<FormGroup
@@ -43,8 +26,16 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 			labelFor="classificationId"
 		>
 			<TagsInput
-				options={educationLevels}
-				value={(value || []).map(stringToTagInfo)}
+				options={educationLevels.map(lomToTagInfo)}
+				value={compact(
+					(value || []).map((stringValue): Avo.Lom.LomField | undefined =>
+						educationLevels.find(
+							(educationLevel) =>
+								educationLevel.label.toLowerCase() === stringValue ||
+								educationLevel.id === stringValue
+						)
+					)
+				).map(lomToTagInfo)}
 				onChange={onChange}
 			/>
 		</FormGroup>
