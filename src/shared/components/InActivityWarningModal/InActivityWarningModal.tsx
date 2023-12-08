@@ -1,5 +1,5 @@
 import { Modal, ModalBody } from '@viaa/avo2-components';
-import { differenceInSeconds, format } from 'date-fns';
+import { differenceInSeconds } from 'date-fns';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import { matchPath } from 'react-router';
@@ -9,6 +9,7 @@ import {
 	IDLE_TIME_UNTIL_WARNING,
 	MAX_EDIT_IDLE_TIME,
 } from '../../constants';
+import { formatDurationMinutesSeconds } from '../../helpers';
 import { tHtml } from '../../helpers/translate';
 import { useBeforeUnload } from '../../hooks/useBeforeUnload';
 
@@ -34,6 +35,7 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
 	const [isTimedOut, setIsTimedOut] = useState<boolean>(false);
 	const [idleStart, setIdleStart] = useState<Date | null>(null);
+	const [documentTitle] = useState(document.title);
 
 	useEffect(() => {
 		if (!isTimedOut) {
@@ -97,6 +99,16 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 			setIsTimedOut(true);
 			onForcedExit();
 		}
+
+		// AVO-2846: show timer before tab title when timer starts counting down
+		if (remainingTime < maxIdleTime) {
+			document.title = formatDurationMinutesSeconds(remainingTime) + ' | ' + documentTitle;
+		}
+
+		// AVO-2846: hide timer in tab title when there is activity
+		if (remainingTime >= maxIdleTime) {
+			document.title = documentTitle;
+		}
 	}, [remainingTime]);
 
 	return (
@@ -108,7 +120,7 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 			size="medium"
 		>
 			<ModalBody>
-				<p>{format(new Date(remainingTime * 1000), 'mm:ss')}</p>
+				<p>{formatDurationMinutesSeconds(remainingTime)}</p>
 
 				{warningMessage}
 			</ModalBody>
