@@ -69,7 +69,15 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 
 	const fetchCollections = React.useCallback(
 		() =>
-			CollectionService.fetchCollectionsOrBundlesByUser('collection', user)
+			CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
+				user as Avo.User.User,
+				0,
+				500,
+				[],
+				ContentTypeNumber.collection,
+				undefined,
+				undefined
+			)
 				.then((collectionTitles: Partial<Avo.Collection.Collection>[]) => {
 					setCollections(collectionTitles);
 				})
