@@ -230,6 +230,15 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 		? addCollectionToNewBundle
 		: () => addCollectionToExistingBundle(selectedBundle as Partial<Avo.Collection.Collection>);
 
+	const handleBundleTitleChange = (title: string) => {
+		// AVO-2827: add max title length
+		if (title.length > 110) {
+			return;
+		} else {
+			setNewBundleTitle(title);
+		}
+	};
+
 	return (
 		<Modal
 			title={tHtml(
@@ -302,7 +311,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 											)}
 											disabled={!createNewBundle}
 											value={newBundleTitle}
-											onChange={setNewBundleTitle}
+											onChange={handleBundleTitleChange}
 										/>
 									</div>
 								</Spacer>
