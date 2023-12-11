@@ -194,8 +194,6 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		}
 	}, [fetchAssignments, assignments]);
 
-	//console.log(tableState);
-
 	const setAllAssignmentsAsSelected = async () => {
 		setIsLoading(true);
 		try {
