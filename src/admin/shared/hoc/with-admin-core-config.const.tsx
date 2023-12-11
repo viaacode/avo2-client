@@ -12,8 +12,6 @@ import React, { FunctionComponent } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { APP_PATH, RouteId } from '../../../constants';
-import BlockSearch from '../../../search/components/BlockSearch';
-import MediaGridWrapper from '../../../search/components/MediaGridWrapper/MediaGridWrapper';
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { getEnv } from '../../../shared/helpers';
@@ -21,6 +19,8 @@ import { tHtml, tText } from '../../../shared/helpers/translate';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
+import BlockSearch from '../../content-page/components/blocks/BlockSearch/BlockSearch';
+import MediaGridWrapper from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
 import { GET_ADMIN_ICON_OPTIONS } from '../constants';
 
 const alertIcons: IconName[] = [

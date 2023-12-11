@@ -164,7 +164,9 @@ export interface OrganisationContentItem {
 }
 
 export class CollectionService {
-	private static collectionLabels: { [id: string]: string } | null;
+	private static collectionLabels: {
+		[id: string]: string;
+	} | null;
 
 	/**
 	 * Insert collection and underlying collection fragments.
@@ -466,7 +468,11 @@ export class CollectionService {
 	private static saveCollectionManagementData = async (
 		collectionId: string,
 		initialCollection: Partial<Avo.Collection.Collection> | null,
-		updatedCollection: Partial<Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo }>
+		updatedCollection: Partial<
+			Avo.Collection.Collection & {
+				marcom_note?: MarcomNoteInfo;
+			}
+		>
 	) => {
 		try {
 			if (!initialCollection?.management && !!updatedCollection?.management) {
@@ -1053,7 +1059,12 @@ export class CollectionService {
 				});
 			}
 			(response.insert_app_collection_fragments?.returning ?? []).forEach(
-				(f: { id: number }, index: number) => {
+				(
+					f: {
+						id: number;
+					},
+					index: number
+				) => {
 					fragments[index].id = f.id;
 				}
 			);
@@ -1190,7 +1201,9 @@ export class CollectionService {
 	}
 
 	// TODO investigate why this isn't used anymore
-	static async getCollectionLabels(): Promise<{ [id: string]: string }> {
+	static async getCollectionLabels(): Promise<{
+		[id: string]: string;
+	}> {
 		try {
 			if (!CollectionService.collectionLabels) {
 				// Fetch collection labels and cache them in memory
@@ -1220,7 +1233,10 @@ export class CollectionService {
 		description: string | null,
 		collectionId: string,
 		typeId: ContentTypeNumber
-	): Promise<{ byTitle: boolean; byDescription: boolean }> {
+	): Promise<{
+		byTitle: boolean;
+		byDescription: boolean;
+	}> {
 		try {
 			const response = await dataService.query<
 				GetCollectionByTitleOrDescriptionQuery,
@@ -1328,7 +1344,7 @@ export class CollectionService {
 		limit: number | null,
 		order: GetBookmarkedCollectionsByOwnerQueryVariables['order'],
 		filterString: string | undefined
-	): Promise<Collection[]> {
+	): Promise<Avo.Collection.Collection[]> {
 		let variables: GetBookmarkedCollectionsByOwnerQueryVariables | undefined = undefined;
 		try {
 			const trimmedFilterString = filterString?.trim();
@@ -1365,7 +1381,9 @@ export class CollectionService {
 
 	static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
 		try {
-			const json = await fetchWithLogoutJson<{ uuid: string } | null>(
+			const json = await fetchWithLogoutJson<{
+				uuid: string;
+			} | null>(
 				`${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify({
 					id: avo1Id,
 				})}`

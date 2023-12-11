@@ -86,7 +86,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [collections, setCollections] = useState<Collection[] | null>(null);
 	const [permissions, setPermissions] = useState<{
-		[collectionUuid: string]: { canEdit?: boolean; canDelete?: boolean };
+		[collectionUuid: string]: {
+			canEdit?: boolean;
+			canDelete?: boolean;
+		};
 	}>({});
 	const [showPublicState, setShowPublicState] = useState(false);
 
@@ -157,32 +160,34 @@ const CollectionOrBundleOverview: FunctionComponent<
 
 			if (isCollection) {
 				perms = await Promise.all(
-					(collections || []).map(async (collection: Collection) => {
-						return await PermissionService.checkPermissions(
-							{
-								canEdit: [
-									{
-										name: PermissionName.EDIT_OWN_COLLECTIONS,
-										obj: collection,
-									},
-									{ name: PermissionName.EDIT_ANY_COLLECTIONS },
-								],
-								canDelete: [
-									{
-										name: PermissionName.DELETE_OWN_COLLECTIONS,
-										obj: collection,
-									},
-									{ name: PermissionName.DELETE_ANY_COLLECTIONS },
-								],
-							},
-							user
-						);
-					})
+					(collections || []).map(
+						async (collection: Partial<Avo.Collection.Collection>) => {
+							return await PermissionService.checkPermissions(
+								{
+									canEdit: [
+										{
+											name: PermissionName.EDIT_OWN_COLLECTIONS,
+											obj: collection,
+										},
+										{ name: PermissionName.EDIT_ANY_COLLECTIONS },
+									],
+									canDelete: [
+										{
+											name: PermissionName.DELETE_OWN_COLLECTIONS,
+											obj: collection,
+										},
+										{ name: PermissionName.DELETE_ANY_COLLECTIONS },
+									],
+								},
+								user
+							);
+						}
+					)
 				);
 			} else {
 				// bundles
 				perms = await Promise.all(
-					collections.map(async (bundle: Collection) => {
+					collections.map(async (bundle: Partial<Avo.Collection.Collection>) => {
 						return await PermissionService.checkPermissions(
 							{
 								canEdit: [
@@ -213,7 +218,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 					])
 				)
 			);
-			setCollections(collections);
+			setCollections(collections as unknown as Collection[]);
 		} catch (err) {
 			console.error('Failed to fetch collections', err, {});
 			setLoadingInfo({
@@ -378,7 +383,13 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	// Render functions
-	const getLinkProps = (id: string, title: string): { to: string; title: string } => ({
+	const getLinkProps = (
+		id: string,
+		title: string
+	): {
+		to: string;
+		title: string;
+	} => ({
 		title,
 		to: buildLink(
 			isCollection ? APP_PATH.COLLECTION_DETAIL.route : APP_PATH.BUNDLE_DETAIL.route,
