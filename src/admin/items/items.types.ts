@@ -85,3 +85,21 @@ export interface UnpublishedItem {
 }
 
 export interface UnpublishedItemsTableState extends UnpublishedItem, FilterableTableState {}
+
+export interface ItemUsedByEntry {
+	title: string;
+	owner: string;
+	organisation: string | undefined;
+	isPublic?: boolean;
+	createdAt: string;
+	id: string;
+	type: 'COLLECTION' | 'ASSIGNMENT' | 'QUICK_LANE';
+}
+
+export interface ItemUsedByResponse {
+	collections: ItemUsedByEntry[];
+	assignments: ItemUsedByEntry[];
+	quickLanes: ItemUsedByEntry[];
+}
+
+export type ItemUsedByColumnId = keyof ItemUsedByEntry;

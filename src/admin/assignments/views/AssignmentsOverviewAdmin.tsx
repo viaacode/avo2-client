@@ -129,21 +129,17 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		andFilters.push(...getBooleanFilters(filters, ['is_public']));
 
 		// pupil collections filter: has collections, does not have collections
-		if (!isNil(filters.pupilCollections?.[0]) && filters.pupilCollections?.length === 1) {
-			if (filters.pupilCollections?.[0] === 'true') {
+		if (!isNil(filters.responses?.[0]) && filters.responses?.length === 1) {
+			if (filters.responses?.[0] === 'true') {
 				// Assignments with pupil collections
 				andFilters.push({
-					responses: {
-						collection_title: { _is_null: false },
-					},
+					responses: {},
 				});
 			} else {
 				// Assignments without pupil collections
 				andFilters.push({
 					_not: {
-						responses: {
-							collection_title: { _is_null: false },
-						},
+						responses: {},
 					},
 				});
 			}

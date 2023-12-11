@@ -1,70 +1,40 @@
-import { PermissionName } from '@viaa/avo2-types';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
+import { stringifyUrl } from 'query-string';
 
-import { PermissionService } from '../../../../../authentication/helpers/permission-service';
-import { CustomError } from '../../../../../shared/helpers';
-import { TableColumnDataType } from '../../../../../shared/types/table-column-data-type';
-import { UserService } from '../../../../users/user.service';
+import { CustomError, getEnv } from '../../../../../shared/helpers';
 import { PickerItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
-const shouldFetchUsersInCompany = (user?: Avo.User.User) => {
-	return (
-		user &&
-		PermissionService.hasPerm(user, PermissionName.VIEW_USERS_IN_SAME_COMPANY) &&
-		!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_USER)
-	);
-};
-
 // Fetch profiles from GQL
-export const retrieveProfiles = async (
-	name: string | null,
-	limit = 5,
-	user?: Avo.User.User
-): Promise<PickerItem[]> => {
+export const retrieveProfiles = async (name: string | null, limit = 5): Promise<PickerItem[]> => {
 	try {
-		const where = {
-			...(name
-				? {
-						_or: [
-							{ full_name: { _ilike: `%${name}%` } },
-							{ mail: { _ilike: `%${name}%` } },
-						],
-				  }
-				: {}),
-		};
-
-		const response: [Avo.User.Profile[], number] = await (shouldFetchUsersInCompany(user)
-			? UserService.getCompanyProfiles(
-					0,
-					'last_access_at',
-					'desc',
-					TableColumnDataType.dateTime,
-					where,
-					user,
-					limit
-			  )
-			: UserService.getProfiles(
-					0,
-					'last_access_at',
-					'desc',
-					TableColumnDataType.dateTime,
-					where,
-					limit
-			  ));
-
-		return parseProfiles(response[0]);
+		return await getUsers(limit, name);
 	} catch (err) {
 		throw new CustomError('Failed to get profiles for content picker', err, { name, limit });
 	}
 };
 
 // Convert profiles to react-select options
-const parseProfiles = (profiles: Avo.User.Profile[]): PickerItem[] => {
-	return profiles.map(
-		(profile): PickerItem => ({
-			...parsePickerItem('PROFILE', profile.id),
-			label: `${profile.user.full_name} (${profile.user.mail})`,
+const parseProfiles = (users: Partial<Avo.User.CommonUser>[]): PickerItem[] => {
+	return users.map(
+		(user): PickerItem => ({
+			...parsePickerItem('PROFILE', user.profileId as string),
+			label: `${user.fullName} (${user.email})`,
 		})
 	);
 };
+
+async function getUsers(limit: number, partialName: string | null): Promise<PickerItem[]> {
+	const url = stringifyUrl({
+		url: `${getEnv('PROXY_URL')}/user/get-names-and-emails`,
+		query: {
+			offset: 0,
+			limit,
+			name: partialName,
+		},
+	});
+	const users = await fetchWithLogoutJson<Partial<Avo.User.CommonUser>[]>(url);
+
+	return parseProfiles(users);
+}

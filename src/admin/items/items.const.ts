@@ -243,3 +243,61 @@ export const GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS: () => FilterableColumn<Unpubl
 			visibleByDefault: true,
 		},
 	];
+
+export const GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS = () => [
+	{
+		label: tText('admin/items/views/item-detail___titel'),
+		id: 'title',
+		sortable: true,
+		dataType: TableColumnDataType.string,
+	},
+	{
+		label: tText('admin/items/views/item-detail___auteur'),
+		id: 'owner',
+		sortable: true,
+		dataType: TableColumnDataType.string,
+	},
+	{
+		label: 'Organisatie',
+		id: 'organisation',
+		sortable: true,
+	},
+	{
+		label: tText('admin/items/items___publiek'),
+		id: 'isPublic',
+		sortable: true,
+		dataType: TableColumnDataType.boolean,
+	},
+	{
+		tooltip: tText('admin/items/views/item-detail___acties'),
+		id: 'actions',
+		sortable: false,
+	},
+];
+
+export const GET_ITEM_USED_BY_QUICK_LANES = () => [
+	{
+		id: 'title',
+		label: tText('workspace/views/quick-lane-overview___titel'),
+		sortable: true,
+		dataType: TableColumnDataType.string,
+	},
+	{
+		id: 'owner',
+		label: tText('workspace/views/quick-lane-overview___aangemaakt-door'),
+		sortable: true,
+		dataType: TableColumnDataType.string,
+	},
+	{
+		id: 'organisation',
+		label: tText('workspace/views/quick-lane-overview___organisatie'),
+		sortable: true,
+		dataType: TableColumnDataType.string,
+	},
+	{
+		id: 'createdAt',
+		label: tText('workspace/views/quick-lane-overview___aangemaakt-op'),
+		sortable: true,
+		dataType: TableColumnDataType.dateTime,
+	},
+];
