@@ -1731,7 +1731,7 @@ export const useGetAssignmentResponsesByAssignmentIdQuery = <
       options
     );
 export const GetAssignmentWithResponseDocument = `
-    query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
+    query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!, $profileId: uuid!) {
   app_assignments_v2(
     where: {id: {_eq: $assignmentId}, is_deleted: {_eq: false}}
     order_by: [{deadline_at: desc}]
@@ -1772,7 +1772,10 @@ export const GetAssignmentWithResponseDocument = `
         }
       }
     }
-    labels(order_by: {assignment_label: {label: asc}}) {
+    labels(
+      order_by: {assignment_label: {label: asc}}
+      where: {assignment_label: {owner_profile_id: {_eq: $profileId}}}
+    ) {
       id
       assignment_label {
         color_enum_value
@@ -2017,7 +2020,10 @@ export const GetAssignmentsByOwnerOrContributorDocument = `
     responses {
       id
     }
-    labels(order_by: {assignment_label: {label: asc}}) {
+    labels(
+      order_by: {assignment_label: {label: asc}}
+      where: {assignment_label: {owner_profile_id: {_eq: $collaborator_profile_id}}}
+    ) {
       id
       assignment_label {
         color_enum_value
@@ -2142,7 +2148,10 @@ export const GetAssignmentsByResponseOwnerIdDocument = `
     responses {
       id
     }
-    labels(order_by: {assignment_label: {label: asc}}) {
+    labels(
+      order_by: {assignment_label: {label: asc}}
+      where: {assignment_label: {owner_profile_id: {_eq: $owner_profile_id}}}
+    ) {
       id
       assignment_label {
         color_enum_value

@@ -424,6 +424,7 @@ export type GetAssignmentResponsesByAssignmentIdQuery = { __typename?: 'query_ro
 export type GetAssignmentWithResponseQueryVariables = Exact<{
   assignmentId: Scalars['uuid'];
   pupilUuid: Scalars['uuid'];
+  profileId: Scalars['uuid'];
 }>;
 
 
