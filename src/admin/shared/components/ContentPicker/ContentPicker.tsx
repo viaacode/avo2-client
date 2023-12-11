@@ -206,7 +206,7 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 			newValue = propValue as string | null;
 		} else if (prop === 'selectedItem') {
 			newValue = (propValue as PickerItem)?.value || null;
-			newLabel = (propValue as PickerItem).label;
+			newLabel = (propValue as PickerItem)?.label;
 		} else if (selectedType.picker === 'TEXT_INPUT') {
 			newValue = input;
 		} else if (selectedType.picker === 'SELECT' && selectedItem) {
