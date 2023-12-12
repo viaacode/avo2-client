@@ -605,6 +605,8 @@ export const GetItemByUuidDocument = `
     organisation {
       or_id
       name
+      logo_url
+      overlay
     }
     publish_at
     published_at
@@ -702,6 +704,7 @@ export const GetItemsByExternalIdDocument = `
       or_id
       name
       logo_url
+      overlay
     }
     publish_at
     published_at
@@ -766,6 +769,8 @@ export const GetItemsWithFiltersDocument = `
     organisation {
       or_id
       name
+      logo_url
+      overlay
     }
     publish_at
     published_at
@@ -1917,7 +1922,7 @@ export const GetAssignmentsAdminOverviewDocument = `
     view_count {
       count
     }
-    responses_aggregate(where: {collection_title: {_is_null: false}}) {
+    responses_aggregate {
       aggregate {
         count
       }
