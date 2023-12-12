@@ -20,18 +20,17 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { CONTENT_TYPE_TRANSLATIONS } from '../../collection/collection.types';
-import { generateContentLinkString, generateSearchLinkString } from '../../shared/helpers';
-import { useDebounce } from '../../shared/hooks/useDebounce';
-import useTranslation from '../../shared/hooks/useTranslation';
-import { ToastService } from '../../shared/services/toast-service';
-import { KeyCode } from '../../shared/types';
-import { AppState } from '../../store';
-import { SearchFilter } from '../search.const';
-import { getSearchResults } from '../store/actions';
-import { selectSearchLoading, selectSearchResults } from '../store/selectors';
-
+import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
+import { CONTENT_TYPE_TRANSLATIONS } from '../../../../../collection/collection.types';
+import { SearchFilter } from '../../../../../search/search.const';
+import { getSearchResults } from '../../../../../search/store/actions';
+import { selectSearchLoading, selectSearchResults } from '../../../../../search/store/selectors';
+import { generateContentLinkString, generateSearchLinkString } from '../../../../../shared/helpers';
+import { useDebounce } from '../../../../../shared/hooks/useDebounce';
+import useTranslation from '../../../../../shared/hooks/useTranslation';
+import { ToastService } from '../../../../../shared/services/toast-service';
+import { KeyCode } from '../../../../../shared/types';
+import { AppState } from '../../../../../store';
 import './BlockSearch.scss';
 
 interface BlockSearchProps {
