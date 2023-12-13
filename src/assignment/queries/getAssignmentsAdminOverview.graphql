@@ -41,6 +41,11 @@ query getAssignmentsAdminOverview(
 				}
 			}
 		}
+		responses_aggregate {
+			aggregate {
+				count
+			}
+		}
 		lom_learning_resource_type
 		contributors {
 			profile {
