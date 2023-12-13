@@ -67,6 +67,7 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
 	ItemsOverviewTableCols,
+	ItemUsedByResponse,
 	UnpublishedItem,
 	UnpublishedItemsOverviewTableCols,
 } from './items.types';
@@ -609,6 +610,29 @@ export class ItemsService {
 			throw new CustomError('Failed to get unpublished item pids from the database', err, {
 				variables,
 				query: 'GET_UNPUBLISHED_ITEM_PIDS',
+			});
+		}
+	}
+
+	static async getItemUsedBy(
+		itemUuid: string,
+		sortProp: string | undefined,
+		sortDirection: string | undefined
+	): Promise<ItemUsedByResponse> {
+		let url: string | null = null;
+		try {
+			url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/items/${itemUuid}/used-by`,
+				query: {
+					sortProp,
+					sortDirection,
+				},
+			});
+			const response = await fetchWithLogoutJson<ItemUsedByResponse>(url);
+			return response;
+		} catch (err) {
+			throw new CustomError('Failed to get item used by from the database', err, {
+				itemUuid,
 			});
 		}
 	}

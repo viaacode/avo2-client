@@ -131,6 +131,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 			}
 			const fragment = getFragment(bundle);
 			delete fragment.item_meta;
+			fragment.position = bundle.collection_fragments?.length || 0;
 			await CollectionService.insertFragments(bundle.id, [fragment]);
 
 			ToastService.success(
@@ -230,6 +231,15 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 		? addCollectionToNewBundle
 		: () => addCollectionToExistingBundle(selectedBundle as Partial<Avo.Collection.Collection>);
 
+	const handleBundleTitleChange = (title: string) => {
+		// AVO-2827: add max title length
+		if (title.length > 110) {
+			return;
+		} else {
+			setNewBundleTitle(title);
+		}
+	};
+
 	return (
 		<Modal
 			title={tHtml(
@@ -302,7 +312,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 											)}
 											disabled={!createNewBundle}
 											value={newBundleTitle}
-											onChange={setNewBundleTitle}
+											onChange={handleBundleTitleChange}
 										/>
 									</div>
 								</Spacer>

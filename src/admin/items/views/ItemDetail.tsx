@@ -4,44 +4,34 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
+	Flex,
 	Icon,
 	IconName,
 	Spacer,
+	Spinner,
 	Table,
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { get, orderBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import React, { FunctionComponent, ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
+import { StringParam, useQueryParams } from 'use-query-params';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
-import { CollectionService } from '../../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import AssociatedQuickLaneTable, {
-	AssociatedQuickLaneTableOrderBy,
-} from '../../../quick-lane/components/AssociatedQuickLaneTable';
-import {
-	DeleteObjectModal,
-	LoadingErrorLoadedComponent,
-	LoadingInfo,
-} from '../../../shared/components';
+import { DeleteObjectModal } from '../../../shared/components';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
-import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../../shared/constants/quick-lane';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { QuickLaneContainingService } from '../../../shared/services/quick-lane-containing.service';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { QuickLaneUrlObject } from '../../../shared/types';
-import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import {
 	renderDateDetailRows,
@@ -50,128 +40,44 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
+import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
+import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
+import {
+	GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS,
+	GET_ITEM_USED_BY_QUICK_LANES,
+} from '../items.const';
 import { ItemsService } from '../items.service';
-
-type CollectionColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const columnIdToCollectionPath: { [columnId in CollectionColumnId]: string } = {
-	/* eslint-enable @typescript-eslint/no-unused-vars */
-	title: 'title',
-	author: 'profile.user.last_name',
-	is_public: 'is_public',
-	organization: 'profile.profile_organizations[0].organization_id',
-	actions: '',
-};
+import { ItemUsedByColumnId, ItemUsedByEntry } from '../items.types';
 
 type ItemDetailProps = RouteComponentProps<{ id: string }>;
 
 const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
+	const itemUuid = match.params.id;
 	// Hooks
-	const [item, setItem] = useState<Avo.Item.Item | null>(null);
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+	const [queryParams, setQueryParams] = useQueryParams({
+		sortProp: StringParam,
+		sortDirection: StringParam,
+	});
+	const {
+		data: item,
+		isLoading: itemIsLoading,
+		refetch: refetchItem,
+	} = useGetItemWithRelations(itemUuid);
+	const { data: itemUsedBy, isError: itemUsedByIsError } = useGetItemUsedBy(
+		{
+			itemUuid: itemUuid as string,
+			sortProp: queryParams.sortProp || undefined,
+			sortDirection: queryParams.sortDirection || undefined,
+		},
+		{ enabled: !!itemUuid }
+	);
 
 	const [isConfirmPublishModalOpen, setIsConfirmPublishModalOpen] = useState<boolean>(false);
 	const [isDepublishItemModalOpen, setDepublishItemModalOpen] = useState<boolean>(false);
 
-	const [collectionsContainingItem, setCollectionsContainingItem] = useState<
-		Avo.Collection.Collection[]
-	>([]);
-	const [collectionSortColumn, setCollectionSortColumn] = useState<string>('title');
-	const [collectionSortOrder, setCollectionSortOrder] =
-		useState<Avo.Search.OrderDirection>('asc');
-
-	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
-	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
-		QUICK_LANE_DEFAULTS.sort_column
-	);
-	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>('asc');
-
 	const [noteEditorState, setNoteEditorState] = useState<RichEditorState>();
 
 	const { tText, tHtml } = useTranslation();
-
-	const fetchItemById = useCallback(async () => {
-		try {
-			const itemObj = await ItemsService.fetchItemByUuid(match.params.id);
-
-			const replacedByUuid: string | undefined = get(itemObj, 'relations[0].object');
-			if (replacedByUuid && itemObj.relations) {
-				itemObj.relations[0].object_meta =
-					await ItemsService.fetchItemByUuid(replacedByUuid);
-			}
-
-			setItem(itemObj);
-		} catch (err) {
-			console.error(new CustomError('Failed to get item by uuid', err));
-			setLoadingInfo({
-				state: 'error',
-				message: tHtml(
-					'admin/items/views/item-detail___het-ophalen-van-de-item-info-is-mislukt'
-				),
-			});
-		}
-	}, [setItem, setLoadingInfo, tText, match.params.id]);
-
-	const fetchCollectionsByItemExternalId = useCallback(async () => {
-		try {
-			if (!item) {
-				return;
-			}
-			const colls = await CollectionService.fetchCollectionsByFragmentId(item.external_id);
-			setCollectionsContainingItem(colls);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to get collections containing item', err, {
-					item,
-				})
-			);
-			ToastService.danger(
-				tHtml(
-					'admin/items/views/item-detail___het-ophalen-van-de-collecties-die-dit-item-bevatten-is-mislukt'
-				)
-			);
-		}
-	}, [setCollectionsContainingItem, tText, item]);
-
-	const fetchAssociatedQuickLanes = useCallback(async () => {
-		try {
-			if (!item) {
-				return;
-			}
-
-			const quickLanes = await QuickLaneContainingService.fetchQuickLanesByContentId(
-				item.uid
-			);
-			setAssociatedQuickLanes(quickLanes);
-		} catch (err) {
-			console.error(
-				new CustomError('Failed to get quick lane urls containing item', err, {
-					item,
-				})
-			);
-			ToastService.danger(
-				tHtml(
-					'admin/items/views/item-detail___het-ophalen-van-de-gedeelde-links-die-naar-dit-fragment-wijzen-is-mislukt'
-				)
-			);
-		}
-	}, [setAssociatedQuickLanes, tText, item]);
-
-	useEffect(() => {
-		fetchItemById();
-	}, [fetchItemById]);
-
-	useEffect(() => {
-		if (item) {
-			fetchCollectionsByItemExternalId();
-			fetchAssociatedQuickLanes();
-
-			setLoadingInfo({
-				state: 'loaded',
-			});
-		}
-	}, [item, setLoadingInfo, fetchCollectionsByItemExternalId, fetchAssociatedQuickLanes]);
 
 	const toggleItemPublishedState = async () => {
 		try {
@@ -188,7 +94,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 				);
 				await ItemsService.setItemDepublishReason(item.uid, null);
 
-				await fetchItemById();
+				await refetchItem();
 				ToastService.success(
 					tHtml('admin/items/views/item-detail___het-item-is-gepubliceerd')
 				);
@@ -221,34 +127,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		redirectToClientPage(link, history);
 	};
 
-	const handleCollectionColumnClick = (columnId: CollectionColumnId) => {
-		const sortOrder = collectionSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
-
-		setCollectionSortColumn(columnId);
-		setCollectionSortOrder(sortOrder);
-
-		setCollectionsContainingItem(
-			orderBy(
-				collectionsContainingItem,
-				[(coll) => get(coll, columnIdToCollectionPath[columnId])],
-				[sortOrder]
-			)
-		);
+	const navigateToAssignmentDetail = (id: string) => {
+		const link = buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id });
+		redirectToClientPage(link, history);
 	};
 
-	const handleQuickLaneColumnClick = (id: QuickLaneColumn) => {
-		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+	const handleColumnClick = (columnId: string) => {
+		const sortDirection = queryParams.sortDirection === 'asc' ? 'desc' : 'asc'; // toggle
 
-		setQuickLaneSortColumn(id);
-		setQuickLaneSortOrder(sortOrder);
-
-		setAssociatedQuickLanes(
-			orderBy(
-				associatedQuickLanes,
-				[(col) => get(col, AssociatedQuickLaneTableOrderBy[id] || id)],
-				[sortOrder]
-			)
-		);
+		setQueryParams({
+			sortProp: columnId,
+			sortDirection,
+		});
 	};
 
 	const saveNotes = async () => {
@@ -272,27 +162,23 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		}
 	};
 
-	const renderCollectionCell = (
-		rowData: Partial<Avo.Collection.Collection>,
-		columnId: CollectionColumnId
+	const renderCell = (
+		rowData: ItemUsedByEntry,
+		columnId: ItemUsedByColumnId & 'actions'
 	): ReactNode => {
 		switch (columnId) {
-			case 'author': {
-				const user = rowData.profile?.user;
-				if (!user) {
-					return '-';
-				}
-				return truncateTableValue(`${user.first_name} ${user.last_name}`);
+			case 'owner': {
+				return truncateTableValue(rowData.owner || '-');
 			}
 
-			case 'organization':
-				return get(rowData, 'profile.organisation.name', '-');
+			case 'organisation':
+				return rowData.organisation || '-';
 
-			case 'is_public':
+			case 'isPublic':
 				return (
 					<div
 						title={
-							rowData.is_public
+							rowData.isPublic
 								? tText(
 										'collection/components/collection-or-bundle-overview___publiek'
 								  )
@@ -301,27 +187,37 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								  )
 						}
 					>
-						<Icon name={rowData.is_public ? IconName.unlock3 : IconName.lock} />
+						<Icon name={rowData.isPublic ? IconName.unlock3 : IconName.lock} />
 					</div>
 				);
 
-			case 'actions':
+			case 'actions': {
+				if (rowData.type === 'QUICK_LANE') {
+					return null; // quick lanes do not have a detail page
+				}
+				const label =
+					rowData.type === 'COLLECTION'
+						? tText(
+								'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
+						  )
+						: tText('Ga naar de opdracht detail pagina');
 				return (
 					<Button
 						type="borderless"
 						icon={IconName.eye}
-						title={tText(
-							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
-						)}
-						ariaLabel={tText(
-							'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
-						)}
+						title={label}
+						ariaLabel={label}
 						onClick={(evt) => {
 							evt.stopPropagation();
-							navigateToCollectionDetail(rowData.id as string);
+							if (rowData.type === 'COLLECTION') {
+								navigateToCollectionDetail(rowData.id as string);
+							} else {
+								navigateToAssignmentDetail(rowData.id as string);
+							}
 						}}
 					/>
 				);
+			}
 
 			default:
 				return rowData[columnId];
@@ -335,47 +231,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					{tText('admin/items/views/item-detail___collecties-die-dit-item-bevatten')}
 				</BlockHeading>
 			</Spacer>
-			{!!collectionsContainingItem && !!collectionsContainingItem.length ? (
+			{itemUsedBy?.collections?.length ? (
 				<Table
-					columns={[
-						{
-							label: tText('admin/items/views/item-detail___titel'),
-							id: 'title',
-							sortable: true,
-							dataType: TableColumnDataType.string,
-						},
-						{
-							label: tText('admin/items/views/item-detail___auteur'),
-							id: 'author',
-							sortable: true,
-							dataType: TableColumnDataType.string,
-						},
-						{
-							label: 'Organisatie',
-							id: 'organization',
-							sortable: false,
-						},
-						{
-							label: tText('admin/items/items___publiek'),
-							id: 'is_public',
-							sortable: true,
-							dataType: TableColumnDataType.boolean,
-						},
-						{
-							tooltip: tText('admin/items/views/item-detail___acties'),
-							id: 'actions',
-							sortable: false,
-						},
-					]}
-					data={collectionsContainingItem}
-					emptyStateMessage={tText(
-						'admin/items/views/item-detail___dit-item-is-in-geen-enkele-collectie-opgenomen'
-					)}
-					onColumnClick={handleCollectionColumnClick as any}
+					columns={GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS()}
+					data={itemUsedBy.collections}
+					onColumnClick={handleColumnClick as any}
 					onRowClick={(coll) => navigateToCollectionDetail(coll.id)}
-					renderCell={renderCollectionCell as any}
-					sortColumn={collectionSortColumn}
-					sortOrder={collectionSortOrder}
+					renderCell={renderCell as any}
+					sortColumn={queryParams.sortProp || undefined}
+					sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
 					variant="bordered"
 					rowKey="id"
 				/>
@@ -387,6 +251,29 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		</>
 	);
 
+	const renderContainingAssignmentTable = () => (
+		<>
+			<Spacer margin={['top-extra-large', 'bottom-small']}>
+				<BlockHeading type="h2">{tText('Opdrachten die dit item bevatten')}</BlockHeading>
+			</Spacer>
+			{itemUsedBy?.assignments?.length ? (
+				<Table
+					columns={GET_ITEM_USED_BY_COLLECTIONS_AND_ASSIGNMENTS_COLUMNS()}
+					data={itemUsedBy.assignments}
+					onColumnClick={handleColumnClick as any}
+					onRowClick={(coll) => navigateToAssignmentDetail(coll.id)}
+					renderCell={renderCell as any}
+					sortColumn={queryParams.sortProp || undefined}
+					sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
+					variant="bordered"
+					rowKey="id"
+				/>
+			) : (
+				tText('Dit item is in geen enkele opdracht opgenomen')
+			)}
+		</>
+	);
+
 	const renderAssociatedQuickLaneTable = () => (
 		<>
 			<Spacer margin={['top-extra-large', 'bottom-small']}>
@@ -394,16 +281,19 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					{tText('admin/items/views/item-detail___gedeelde-links-naar-dit-fragment')}
 				</BlockHeading>
 			</Spacer>
-			{!!associatedQuickLanes && !!associatedQuickLanes.length ? (
-				<AssociatedQuickLaneTable
-					data={associatedQuickLanes}
-					emptyStateMessage={tText(
-						'admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld'
-					)}
-					onColumnClick={handleQuickLaneColumnClick as any}
-					sortColumn={quickLaneSortColumn}
-					sortOrder={quickLaneSortOrder}
-				/>
+			{itemUsedBy?.quickLanes?.length ? (
+				<>
+					<Table
+						columns={GET_ITEM_USED_BY_QUICK_LANES()}
+						data={itemUsedBy.quickLanes}
+						onColumnClick={handleColumnClick}
+						renderCell={renderCell as any}
+						sortColumn={queryParams.sortProp || undefined}
+						sortOrder={queryParams.sortDirection as SearchOrderDirection | undefined}
+						variant="bordered"
+						rowKey="id"
+					/>
+				</>
 			) : (
 				tText('admin/items/views/item-detail___dit-fragment-is-nog-niet-gedeeld')
 			)}
@@ -420,9 +310,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			return;
 		}
 
-		const replacementTitle = get(item, 'relations[0].object_meta.title');
-		const replacementExternalId = get(item, 'relations[0].object_meta.external_id');
-		const replacementUuid = get(item, 'relations[0].object_meta.uid');
+		const itemMeta = item?.relations?.[0]?.object_meta;
+		const replacementTitle = itemMeta?.title;
+		const replacementExternalId = itemMeta?.external_id;
+		const replacementUuid = itemMeta?.uid;
 
 		const subtitles = getSubtitles(item);
 
@@ -525,7 +416,12 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 							)}
 						</tbody>
 					</Table>
+					{itemUsedByIsError &&
+						tText(
+							'Het ophalen van de collecties, opdrachten en sneldeel links die dit item gebruiken is mislukt'
+						)}
 					{renderContainingCollectionTable()}
+					{renderContainingAssignmentTable()}
 					{renderAssociatedQuickLaneTable()}
 					<DeleteObjectModal
 						title={
@@ -554,9 +450,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					<DepublishItemModal
 						item={item}
 						isOpen={isDepublishItemModalOpen}
-						onClose={() => {
+						onClose={async () => {
 							setDepublishItemModalOpen(false);
-							fetchItemById();
+							await refetchItem();
 						}}
 					/>
 				</Container>
@@ -565,6 +461,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	};
 
 	const renderItemDetailPage = () => {
+		if (itemIsLoading) {
+			return (
+				<Container mode="vertical">
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				</Container>
+			);
+		}
 		if (!item) {
 			return null;
 		}
@@ -631,17 +536,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
-						get(item, 'title'),
+						item?.title,
 						tText('admin/items/views/item-detail___item-beheer-detail-pagina-titel')
 					)}
 				</title>
-				<meta name="description" content={get(item, 'description') || ''} />
+				<meta name="description" content={item?.description || ''} />
 			</Helmet>
-			<LoadingErrorLoadedComponent
-				loadingInfo={loadingInfo}
-				dataObject={item}
-				render={renderItemDetailPage}
-			/>
+			{renderItemDetailPage()}
 		</>
 	);
 };
