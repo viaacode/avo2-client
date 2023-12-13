@@ -200,7 +200,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 						? tText(
 								'admin/items/views/item-detail___ga-naar-de-collectie-detail-pagina'
 						  )
-						: tText('Ga naar de opdracht detail pagina');
+						: tText(
+								'admin/items/views/item-detail___ga-naar-de-opdracht-detail-pagina'
+						  );
 				return (
 					<Button
 						type="borderless"
@@ -254,7 +256,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	const renderContainingAssignmentTable = () => (
 		<>
 			<Spacer margin={['top-extra-large', 'bottom-small']}>
-				<BlockHeading type="h2">{tText('Opdrachten die dit item bevatten')}</BlockHeading>
+				<BlockHeading type="h2">
+					{tText('admin/items/views/item-detail___opdrachten-die-dit-item-bevatten')}
+				</BlockHeading>
 			</Spacer>
 			{itemUsedBy?.assignments?.length ? (
 				<Table
@@ -269,7 +273,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					rowKey="id"
 				/>
 			) : (
-				tText('Dit item is in geen enkele opdracht opgenomen')
+				tText(
+					'admin/items/views/item-detail___dit-item-is-in-geen-enkele-opdracht-opgenomen'
+				)
 			)}
 		</>
 	);
@@ -418,7 +424,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 					</Table>
 					{itemUsedByIsError &&
 						tText(
-							'Het ophalen van de collecties, opdrachten en sneldeel links die dit item gebruiken is mislukt'
+							'admin/items/views/item-detail___het-ophalen-van-de-collecties-opdrachten-en-sneldeel-links-die-dit-item-gebruiken-is-mislukt'
 						)}
 					{renderContainingCollectionTable()}
 					{renderContainingAssignmentTable()}

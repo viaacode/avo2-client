@@ -25,6 +25,7 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'quick_lane_links'
 	| 'is_copy'
 	| 'organisation'
+	| 'contributors'
 	| 'share_type'
 	| 'share_type_order';
 

@@ -23,7 +23,9 @@ export const useLomThemes = (): UseLomThemesTuple => {
 			})
 			.catch((err) => {
 				console.error(new CustomError('Failed to get lom themes from the database', err));
-				ToastService.danger(tHtml('Het ophalen van de themas is mislukt'));
+				ToastService.danger(
+					tHtml('shared/hooks/use-lom-themes___het-ophalen-van-de-themas-is-mislukt')
+				);
 			})
 			.finally(() => {
 				setIsLoading(false);
