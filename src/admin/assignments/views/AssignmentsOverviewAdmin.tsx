@@ -1,4 +1,4 @@
-import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, TagList } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil, partition } from 'lodash-es';
 import React, {
@@ -336,7 +336,21 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			case 'title':
 				return (
 					<Link to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id })}>
-						{truncateTableValue(assignment.title)}
+						<span>{truncateTableValue(assignment.title)}</span>
+						{!!assignment.relations?.[0].object && (
+							<a
+								href={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+									id: assignment.relations?.[0].object,
+								})}
+							>
+								<TagList
+									tags={[
+										{ id: assignment.relations?.[0].object, label: 'Kopie' },
+									]}
+									swatches={false}
+								/>
+							</a>
+						)}
 					</Link>
 				);
 

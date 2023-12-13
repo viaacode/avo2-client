@@ -1,6 +1,10 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
+	DeleteAssignmentRelationsByObjectMutation,
+	DeleteAssignmentRelationsByObjectMutationVariables,
+	DeleteAssignmentRelationsBySubjectMutation,
+	DeleteAssignmentRelationsBySubjectMutationVariables,
 	DeleteCollectionRelationsByObjectMutation,
 	DeleteCollectionRelationsByObjectMutationVariables,
 	DeleteCollectionRelationsBySubjectMutation,
@@ -9,6 +13,10 @@ import {
 	DeleteItemRelationsByObjectMutationVariables,
 	DeleteItemRelationsBySubjectMutation,
 	DeleteItemRelationsBySubjectMutationVariables,
+	GetAssignmentRelationsByObjectQuery,
+	GetAssignmentRelationsByObjectQueryVariables,
+	GetAssignmentRelationsBySubjectQuery,
+	GetAssignmentRelationsBySubjectQueryVariables,
 	GetCollectionRelationsByObjectQuery,
 	GetCollectionRelationsByObjectQueryVariables,
 	GetCollectionRelationsBySubjectQuery,
@@ -17,20 +25,27 @@ import {
 	GetItemRelationsByObjectQueryVariables,
 	GetItemRelationsBySubjectQuery,
 	GetItemRelationsBySubjectQueryVariables,
+	InsertAssignmentRelationMutation,
+	InsertAssignmentRelationMutationVariables,
 	InsertCollectionRelationMutation,
 	InsertCollectionRelationMutationVariables,
 	InsertItemRelationMutation,
 	InsertItemRelationMutationVariables,
 } from '../../generated/graphql-db-operations';
 import {
+	DeleteAssignmentRelationsByObjectDocument,
+	DeleteAssignmentRelationsBySubjectDocument,
 	DeleteCollectionRelationsByObjectDocument,
 	DeleteCollectionRelationsBySubjectDocument,
 	DeleteItemRelationsByObjectDocument,
 	DeleteItemRelationsBySubjectDocument,
+	GetAssignmentRelationsByObjectDocument,
+	GetAssignmentRelationsBySubjectDocument,
 	GetCollectionRelationsByObjectDocument,
 	GetCollectionRelationsBySubjectDocument,
 	GetItemRelationsByObjectDocument,
 	GetItemRelationsBySubjectDocument,
+	InsertAssignmentRelationDocument,
 	InsertCollectionRelationDocument,
 	InsertItemRelationDocument,
 } from '../../generated/graphql-db-react-query';
@@ -40,29 +55,45 @@ import { dataService } from '../data-service';
 
 export class RelationService {
 	public static async fetchRelationsByObject(
-		type: 'collection' | 'item',
+		type: 'collection' | 'assignment' | 'item',
 		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectIds: string[]
-	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+	): Promise<
+		| Avo.Collection.RelationEntry<
+				Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment
+		  >[]
+		| Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[]
+	> {
 		return this.fetchRelations(type, null, relationType, objectIds);
 	}
 
 	public static async fetchRelationsBySubject(
-		type: 'collection' | 'item',
+		type: 'collection' | 'assignment' | 'item',
 		subjectIds: string[],
 		relationType: Lookup_Enum_Relation_Types_Enum
-	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+	): Promise<
+		| Avo.Collection.RelationEntry<
+				Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment
+		  >[]
+		| Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[]
+	> {
 		return this.fetchRelations(type, subjectIds, relationType, null);
 	}
 
 	private static async fetchRelations(
-		type: 'collection' | 'item',
+		type: 'collection' | 'assignment' | 'item',
 		subjectIds: string[] | null,
 		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectIds: string[] | null
-	): Promise<Avo.Collection.RelationEntry<Avo.Item.Item | Avo.Collection.Collection>[]> {
+	): Promise<
+		| Avo.Collection.RelationEntry<
+				Avo.Item.Item | Avo.Collection.Collection | Avo.Assignment.Assignment
+		  >[]
+		| Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[]
+	> {
 		let variables: any = undefined;
 		const isCollection = type === 'collection';
+		const isAssignment = type === 'assignment';
 		try {
 			variables = {
 				relationType,
@@ -72,21 +103,28 @@ export class RelationService {
 			const collectionQuery = objectIds
 				? GetCollectionRelationsByObjectDocument
 				: GetCollectionRelationsBySubjectDocument;
+			const assignmentQuery = objectIds
+				? GetAssignmentRelationsByObjectDocument
+				: GetAssignmentRelationsBySubjectDocument;
 			const itemQuery = objectIds
 				? GetItemRelationsByObjectDocument
 				: GetItemRelationsBySubjectDocument;
 			const response = await dataService.query<
 				| GetCollectionRelationsByObjectQuery
 				| GetCollectionRelationsBySubjectQuery
+				| GetAssignmentRelationsByObjectQuery
+				| GetAssignmentRelationsBySubjectQuery
 				| GetItemRelationsByObjectQuery
 				| GetItemRelationsBySubjectQuery,
 				| GetCollectionRelationsByObjectQueryVariables
 				| GetCollectionRelationsBySubjectQueryVariables
+				| GetAssignmentRelationsByObjectQueryVariables
+				| GetAssignmentRelationsBySubjectQueryVariables
 				| GetItemRelationsByObjectQueryVariables
 				| GetItemRelationsBySubjectQueryVariables
 			>({
 				variables,
-				query: isCollection ? collectionQuery : itemQuery,
+				query: isCollection ? collectionQuery : isAssignment ? assignmentQuery : itemQuery,
 			});
 			if (isCollection) {
 				return ((
@@ -95,6 +133,13 @@ export class RelationService {
 						| GetCollectionRelationsBySubjectQuery
 				).app_collection_relations ||
 					[]) as Avo.Collection.RelationEntry<Avo.Collection.Collection>[];
+			} else if (isAssignment) {
+				return ((
+					response as
+						| GetAssignmentRelationsByObjectQuery
+						| GetAssignmentRelationsBySubjectQuery
+				).app_assignment_relations ||
+					[]) as Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[];
 			} else {
 				return ((response as GetItemRelationsByObjectQuery | GetItemRelationsBySubjectQuery)
 					.app_item_relations || []) as Avo.Collection.RelationEntry<Avo.Item.Item>[];
@@ -104,6 +149,8 @@ export class RelationService {
 				variables,
 				query: isCollection
 					? 'FETCH_COLLECTION_RELATIONS_BY_OBJECTS or FETCH_COLLECTION_RELATIONS_BY_SUBJECTS'
+					: isAssignment
+					? 'FETCH_ASSIGNMENT_RELATIONS_BY_OBJECTS or FETCH_ASSIGNMENT_RELATIONS_BY_SUBJECTS'
 					: 'FETCH_ITEM_RELATIONS_BY_OBJECTS or FETCH_ITEM_RELATIONS_BY_SUBJECTS',
 			});
 		}
@@ -117,13 +164,14 @@ export class RelationService {
 	 * @param objectId
 	 */
 	public static async insertRelation(
-		type: 'collection' | 'item',
+		type: 'collection' | 'assignment' | 'item',
 		subjectId: string,
 		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string
 	): Promise<number> {
 		let variables: any;
 		const isCollection = type === 'collection';
+		const isAssignment = type === 'assignment';
 		try {
 			variables = {
 				relationType,
@@ -131,16 +179,27 @@ export class RelationService {
 				subjectId,
 			};
 			const response = await dataService.query<
-				InsertCollectionRelationMutation | InsertItemRelationMutation,
-				InsertCollectionRelationMutationVariables | InsertItemRelationMutationVariables
+				| InsertCollectionRelationMutation
+				| InsertAssignmentRelationMutation
+				| InsertItemRelationMutation,
+				| InsertCollectionRelationMutationVariables
+				| InsertAssignmentRelationMutationVariables
+				| InsertItemRelationMutationVariables
 			>({
 				variables,
-				query: isCollection ? InsertCollectionRelationDocument : InsertItemRelationDocument,
+				query: isCollection
+					? InsertCollectionRelationDocument
+					: isAssignment
+					? InsertAssignmentRelationDocument
+					: InsertItemRelationDocument,
 			});
 			let relationId;
 			if (isCollection) {
 				relationId = (response as InsertCollectionRelationMutation)
 					.insert_app_collection_relations?.returning?.[0]?.id;
+			} else if (isAssignment) {
+				relationId = (response as InsertAssignmentRelationMutation)
+					.insert_app_assignment_relations?.returning?.[0]?.id;
 			} else {
 				relationId = (response as InsertItemRelationMutation).insert_app_item_relations
 					?.returning?.[0]?.id;
@@ -154,13 +213,17 @@ export class RelationService {
 		} catch (err) {
 			throw new CustomError('Failed to insert relation into the database', err, {
 				variables,
-				query: isCollection ? 'INSERT_COLLECTION_RELATION' : 'INSERT_ITEM_RELATION',
+				query: isCollection
+					? 'INSERT_COLLECTION_RELATION'
+					: isAssignment
+					? 'INSERT_ASSIGNMENT_RELATION'
+					: 'INSERT_ITEM_RELATION',
 			});
 		}
 	}
 
 	public static async deleteRelationsByObject(
-		type: 'collection' | 'item',
+		type: 'collection' | 'assignment' | 'item',
 		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string
 	): Promise<void> {
@@ -168,7 +231,7 @@ export class RelationService {
 	}
 
 	public static async deleteRelationsBySubject(
-		type: 'collection' | 'item',
+		type: 'collection' | 'assignment' | 'item',
 		subjectId: string,
 		relationType: Lookup_Enum_Relation_Types_Enum
 	): Promise<void> {
@@ -176,12 +239,13 @@ export class RelationService {
 	}
 
 	private static async deleteRelations(
-		type: 'collection' | 'item',
+		type: 'collection' | 'assignment' | 'item',
 		subjectId: string | null,
 		relationType: Lookup_Enum_Relation_Types_Enum,
 		objectId: string | null
 	): Promise<void> {
 		const isCollection = type === 'collection';
+		const isAssignment = type === 'assignment';
 		let variables: any;
 		try {
 			variables = {
@@ -192,26 +256,37 @@ export class RelationService {
 			const collectionQuery = objectId
 				? DeleteCollectionRelationsByObjectDocument
 				: DeleteCollectionRelationsBySubjectDocument;
+			const assignmentQuery = objectId
+				? DeleteAssignmentRelationsByObjectDocument
+				: DeleteAssignmentRelationsBySubjectDocument;
 			const itemQuery = objectId
 				? DeleteItemRelationsByObjectDocument
 				: DeleteItemRelationsBySubjectDocument;
 			await dataService.query<
 				| DeleteCollectionRelationsByObjectMutation
 				| DeleteCollectionRelationsBySubjectMutation
+				| DeleteAssignmentRelationsByObjectMutation
+				| DeleteAssignmentRelationsBySubjectMutation
 				| DeleteItemRelationsByObjectMutation
 				| DeleteItemRelationsBySubjectMutation,
 				| DeleteCollectionRelationsByObjectMutationVariables
 				| DeleteCollectionRelationsBySubjectMutationVariables
+				| DeleteAssignmentRelationsByObjectMutationVariables
+				| DeleteAssignmentRelationsBySubjectMutationVariables
 				| DeleteItemRelationsByObjectMutationVariables
 				| DeleteItemRelationsBySubjectMutationVariables
 			>({
 				variables,
-				query: isCollection ? collectionQuery : itemQuery,
+				query: isCollection ? collectionQuery : isAssignment ? assignmentQuery : itemQuery,
 			});
 		} catch (err) {
 			throw new CustomError('Failed to delete relation from the database', err, {
 				variables,
-				query: isCollection ? 'DELETE_COLLECTION_RELATIONS' : 'DELETE_ITEM_RELATIONS',
+				query: isCollection
+					? 'DELETE_COLLECTION_RELATIONS'
+					: isAssignment
+					? 'DELETE_ASSIGNMENT_RELATION'
+					: 'DELETE_ITEM_RELATIONS',
 			});
 		}
 	}

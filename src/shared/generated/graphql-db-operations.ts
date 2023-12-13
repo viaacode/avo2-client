@@ -1183,6 +1183,23 @@ export type DeleteCollectionRelationsBySubjectMutationVariables = Exact<{
 
 export type DeleteCollectionRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_collection_relations?: { __typename?: 'app_collection_relations_mutation_response', affected_rows: number } | null };
 
+export type DeleteAssignmentRelationsByObjectMutationVariables = Exact<{
+	objectId: Scalars['uuid'];
+	relationType: Lookup_Enum_Relation_Types_Enum;
+  }>;
+
+
+  export type DeleteAssignmentRelationsByObjectMutation = { __typename?: 'mutation_root', delete_app_assignment_relations?: { __typename?: 'app_assignment_relations_mutation_response', affected_rows: number } | null };
+
+  export type DeleteAssignmentRelationsBySubjectMutationVariables = Exact<{
+	subjectId: Scalars['uuid'];
+	relationType: Lookup_Enum_Relation_Types_Enum;
+  }>;
+
+
+  export type DeleteAssignmentRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_assignment_relations?: { __typename?: 'app_assignment_relations_mutation_response', affected_rows: number } | null };
+
+
 export type DeleteItemRelationsByObjectMutationVariables = Exact<{
   objectId: Scalars['uuid'];
   relationType: Lookup_Enum_Relation_Types_Enum;
@@ -1215,6 +1232,23 @@ export type GetCollectionRelationsBySubjectQueryVariables = Exact<{
 
 export type GetCollectionRelationsBySubjectQuery = { __typename?: 'query_root', app_collection_relations: Array<{ __typename?: 'app_collection_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
 
+export type GetAssignmentRelationsByObjectQueryVariables = Exact<{
+	objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+	relationType: Lookup_Enum_Relation_Types_Enum;
+  }>;
+
+
+  export type GetAssignmentRelationsByObjectQuery = { __typename?: 'query_root', app_assignment_relations: Array<{ __typename?: 'app_assignment_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+  export type GetAssignmentRelationsBySubjectQueryVariables = Exact<{
+	subjectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+	relationType: Lookup_Enum_Relation_Types_Enum;
+  }>;
+
+
+  export type GetAssignmentRelationsBySubjectQuery = { __typename?: 'query_root', app_assignment_relations: Array<{ __typename?: 'app_assignment_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+
 export type GetItemRelationsByObjectQueryVariables = Exact<{
   objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
   relationType: Lookup_Enum_Relation_Types_Enum;
@@ -1239,6 +1273,16 @@ export type InsertCollectionRelationMutationVariables = Exact<{
 
 
 export type InsertCollectionRelationMutation = { __typename?: 'mutation_root', insert_app_collection_relations?: { __typename?: 'app_collection_relations_mutation_response', returning: Array<{ __typename?: 'app_collection_relations', id: number }> } | null };
+
+export type InsertAssignmentRelationMutationVariables = Exact<{
+	objectId: Scalars['uuid'];
+	subjectId: Scalars['uuid'];
+	relationType: Lookup_Enum_Relation_Types_Enum;
+  }>;
+
+
+  export type InsertAssignmentRelationMutation = { __typename?: 'mutation_root', insert_app_assignment_relations?: { __typename?: 'app_assignment_relations_mutation_response', returning: Array<{ __typename?: 'app_assignment_relations', id: number }> } | null };
+
 
 export type InsertItemRelationMutationVariables = Exact<{
   objectId: Scalars['uuid'];
