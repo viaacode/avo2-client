@@ -1959,6 +1959,12 @@ export const GetAssignmentsAdminOverviewDocument = `
         id
       }
     }
+    last_user_edit_profile {
+      usersByuserId {
+        full_name
+        last_name
+      }
+    }
   }
   app_assignments_v2_aggregate(where: $where) {
     aggregate {

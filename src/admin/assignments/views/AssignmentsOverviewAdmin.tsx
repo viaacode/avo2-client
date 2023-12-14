@@ -20,7 +20,11 @@ import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetA
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import {
+	CheckboxOption,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
@@ -42,9 +46,11 @@ import {
 	getBooleanFilters,
 	getDateRangeFilters,
 	getMultiOptionFilters,
+	NULL_FILTER,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	GET_ASSIGNMENT_BULK_ACTIONS,
 	GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
@@ -52,6 +58,7 @@ import {
 } from '../assignments.const';
 import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
 import './AssignmentsOverviewAdmin.scss';
+//import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
@@ -73,6 +80,9 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const [selectedBulkAction, setSelectedBulkAction] = useState<AssignmentsBulkAction | null>(
 		null
 	);
+	//const [assignmentLabels] = useQualityLabels(true);
+	const [userGroups] = useUserGroups(false);
+
 	const { data: editStatuses } = useGetAssignmentsEditStatuses(
 		assignments?.map((assignment) => assignment.id) || [],
 		{
@@ -82,7 +92,54 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		}
 	);
 
-	const columns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(), []);
+	const userGroupOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
+				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+					// TO FIX: get all available user_groups
+					NULL_FILTER
+				),
+			},
+			...userGroups.map(
+				(option): CheckboxOption => ({
+					id: String(option.id),
+					label: option.label as string,
+					checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+						String(option.id)
+					),
+				})
+			),
+		],
+		[tableState, userGroups, tText]
+	);
+
+	// const assignmentLabelOptions = useMemo(
+	// 	() => [
+	// 		{
+	// 			id: NULL_FILTER,
+	// 			label: tText('Geen label'),
+	// 			checked: get(tableState, 'labels', [] as string[]).includes(NULL_FILTER),
+	// 		},
+	// 		...assignmentLabels.map(
+	// 			(option): CheckboxOption => ({
+	// 				id: String(option.value),
+	// 				label: option.description,
+	// 				checked: get(tableState, 'labels', [] as string[]).includes(
+	// 					String(option.value)
+	// 				),
+	// 			})
+	// 		),
+	// 	],
+	// 	[assignmentLabels, tText, tableState]
+	// );
+
+	const columns = useMemo(
+		() => GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(userGroupOptions, []),
+		//() => GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(userGroupOptions, assignmentLabelOptions),
+		[]
+	);
 
 	const generateWhereObject = useCallback((filters: Partial<AssignmentsOverviewTableState>) => {
 		const andFilters: any[] = [];
@@ -147,7 +204,6 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		}
 
 		// user group
-		// TO FIX
 		if (filters.author_user_group && filters.author_user_group.length) {
 			const defaultGroupFilter = {
 				profile: {
@@ -162,7 +218,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			};
 
 			andFilters.push({
-				_or: [{ owner: defaultGroupFilter }],
+				_or: [defaultGroupFilter],
 			});
 		}
 
@@ -183,7 +239,6 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		}
 
 		// labels
-		// TO FIX
 		if (!isNil(filters.labels?.[0]) && filters.labels?.length === 1) {
 			if (filters.labels?.[0] === 'true') {
 				// Assignments with labels
@@ -422,12 +477,11 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					) || '-'
 				);
 
-			case 'last_updated_by_profile': {
+			case 'last_user_edit_profile': {
 				// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
 				return (
 					assignment?.updated_by?.user?.full_name ||
-					(assignment as any)?.last_editor?.full_name ||
-					(assignment as any)?.last_editor_name ||
+					(assignment as any)?.last_user_edit_profile?.usersByuserId?.full_name ||
 					'-'
 				);
 			}

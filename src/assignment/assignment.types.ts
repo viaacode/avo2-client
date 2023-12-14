@@ -24,7 +24,7 @@ export type AssignmentOverviewTableColumns =
 	| 'title'
 	| 'author'
 	| 'author_user_group'
-	| 'last_updated_by_profile'
+	| 'last_user_edit_profile'
 	| 'created_at'
 	| 'updated_at'
 	| 'deadline_at'
