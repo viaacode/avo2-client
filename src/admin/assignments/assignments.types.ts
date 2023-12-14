@@ -15,9 +15,11 @@ export type AssignmentsOverviewTableCols =
 export interface AssignmentsOverviewTableState extends FilterableTableState {
 	title: string;
 	author: string;
+	author_user_group: string;
 	created_at: string;
 	updated_at: string;
 	deadline_at: string;
+	labels: ('true' | 'false')[];
 	status: ('true' | 'false')[];
 	responses: ('true' | 'false')[];
 	share_type: string;

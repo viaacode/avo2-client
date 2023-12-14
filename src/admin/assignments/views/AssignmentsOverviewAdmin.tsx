@@ -1,6 +1,6 @@
-import { Button, ButtonToolbar, IconName, TagList } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, TagList, TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, isNil, partition } from 'lodash-es';
+import { compact, first, get, isNil, partition } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactText,
@@ -17,11 +17,13 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.co
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
 import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
+import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
@@ -49,7 +51,6 @@ import {
 	ITEMS_PER_PAGE,
 } from '../assignments.const';
 import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
-
 import './AssignmentsOverviewAdmin.scss';
 
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
@@ -140,6 +141,60 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				andFilters.push({
 					_not: {
 						responses: {},
+					},
+				});
+			}
+		}
+
+		// user group
+		// TO FIX
+		if (filters.author_user_group && filters.author_user_group.length) {
+			const defaultGroupFilter = {
+				profile: {
+					profile_user_group: {
+						group: {
+							id: {
+								_in: filters.author_user_group,
+							},
+						},
+					},
+				},
+			};
+
+			andFilters.push({
+				_or: [{ owner: defaultGroupFilter }],
+			});
+		}
+
+		// is copy
+		const isCopy = first(get(filters, 'is_copy'));
+		if (!isNil(isCopy)) {
+			if (isCopy === 'true') {
+				andFilters.push({
+					relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
+				});
+			} else if (isCopy === 'false') {
+				andFilters.push({
+					_not: {
+						relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
+					},
+				});
+			}
+		}
+
+		// labels
+		// TO FIX
+		if (!isNil(filters.labels?.[0]) && filters.labels?.length === 1) {
+			if (filters.labels?.[0] === 'true') {
+				// Assignments with labels
+				andFilters.push({
+					labels: {},
+				});
+			} else {
+				// Assignments without labels
+				andFilters.push({
+					_not: {
+						labels: {},
 					},
 				});
 			}
@@ -357,6 +412,26 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			case 'author':
 				return truncateTableValue((assignment as any)?.owner?.full_name);
 
+			case 'author_user_group':
+				return (
+					getUserGroupLabel(
+						(assignment?.profile || assignment?.owner) as
+							| Avo.User.Profile
+							| { profile: Avo.User.Profile }
+							| undefined
+					) || '-'
+				);
+
+			case 'last_updated_by_profile': {
+				// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
+				return (
+					assignment?.updated_by?.user?.full_name ||
+					(assignment as any)?.last_editor?.full_name ||
+					(assignment as any)?.last_editor_name ||
+					'-'
+				);
+			}
+
 			case 'created_at':
 				return formatDate(created_at) || '-';
 
@@ -376,6 +451,40 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				return assignment.is_public
 					? tText('admin/assignments/views/assignments-overview-admin___ja')
 					: tText('admin/assignments/views/assignments-overview-admin___nee');
+
+			case 'labels': {
+				const labelObjects: { id: string; label: string }[] =
+					assignment?.labels?.map((label) => {
+						return {
+							id: label.assignment_label.id,
+							label: label.assignment_label.label || '',
+						};
+					}) || [];
+
+				const tags: TagOption[] = compact(labelObjects);
+
+				if (tags.length) {
+					return <TagList tags={tags} swatches={false} />;
+				}
+
+				return '-';
+			}
+
+			case 'is_copy': {
+				const relationObjectId = assignment?.relations?.[0]?.object;
+				if (relationObjectId) {
+					return (
+						<a
+							href={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+								id: relationObjectId,
+							})}
+						>
+							Ja
+						</a>
+					);
+				}
+				return 'Nee';
+			}
 
 			case 'responses': {
 				const responsesLength =
@@ -402,6 +511,15 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 			case 'views':
 				return assignment?.view_count?.count || '0';
+
+			case 'bookmarks':
+				return assignment?.counts?.bookmarks || '0';
+
+			case 'copies':
+				return assignment?.counts?.copies || '0';
+
+			case 'contributors':
+				return assignment?.counts?.contributors || '0';
 
 			case 'actions': {
 				if (!editStatuses) {

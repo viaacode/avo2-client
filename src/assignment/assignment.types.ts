@@ -23,6 +23,8 @@ export type EditablePupilCollectionFragment = PupilCollectionFragment & Editable
 export type AssignmentOverviewTableColumns =
 	| 'title'
 	| 'author'
+	| 'author_user_group'
+	| 'last_updated_by_profile'
 	| 'created_at'
 	| 'updated_at'
 	| 'deadline_at'
@@ -31,6 +33,10 @@ export type AssignmentOverviewTableColumns =
 	| 'labels'
 	| 'class_room'
 	| 'views'
+	| 'bookmarks'
+	| 'copies'
+	| 'is_copy'
+	| 'contributors'
 	| 'actions'
 	| 'share_type'
 	| 'is_public';

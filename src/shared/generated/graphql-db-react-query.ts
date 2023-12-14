@@ -1953,6 +1953,12 @@ export const GetAssignmentsAdminOverviewDocument = `
         broader
       }
     }
+    labels {
+      assignment_label {
+        label
+        id
+      }
+    }
   }
   app_assignments_v2_aggregate(where: $where) {
     aggregate {

@@ -373,7 +373,7 @@ const getCollectionSubjectsColumn = (
 const getCollectionThemesColumn = () // themes: Avo.Lom.LomField[]
 : FilterableColumn<CollectionTableCols> => ({
 	id: 'themas',
-	label: tText('Themas'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___themas'),
 	sortable: false,
 	visibleByDefault: false,
 	// filterType: 'CheckboxDropdownModal',
