@@ -238,20 +238,6 @@ export class AssignmentService {
 				});
 			}
 
-			// also fetch if the assignment is a copy in a separate query to avoid making the main query slower
-			const relations = (await RelationService.fetchRelationsBySubject(
-				'assignment',
-				assignments.map((coll) => coll.id),
-				Lookup_Enum_Relation_Types_Enum.IsCopyOf
-			)) as Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[];
-
-			relations.forEach((relation) => {
-				const assignment = assignments.find((coll) => coll.id === relation.subject);
-				if (assignment) {
-					(assignment as unknown as Avo.Assignment.Assignment).relations = [relation];
-				}
-			});
-
 			return {
 				assignments: (assignments || []) as unknown as Avo.Assignment.Assignment[],
 				count: assignmentResponse.count.aggregate?.count || 0,
@@ -1288,6 +1274,20 @@ export class AssignmentService {
 					response,
 				});
 			}
+
+			// also fetch if the assignment is a copy in a separate query to avoid making the main query slower
+			const relations = (await RelationService.fetchRelationsBySubject(
+				'assignment',
+				assignments.map((coll) => coll.id),
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf
+			)) as Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[];
+
+			relations.forEach((relation) => {
+				const assignment = assignments.find((coll) => coll.id === relation.subject);
+				if (assignment) {
+					(assignment as unknown as Avo.Assignment.Assignment).relations = [relation];
+				}
+			});
 
 			return [assignments as unknown as Avo.Assignment.Assignment[], assignmentCount];
 		} catch (err) {

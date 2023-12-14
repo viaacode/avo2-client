@@ -138,7 +138,7 @@ export class RelationService {
 					response as
 						| GetAssignmentRelationsByObjectQuery
 						| GetAssignmentRelationsBySubjectQuery
-				).app_assignment_relations ||
+				).app_assignments_v2_relations ||
 					[]) as Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[];
 			} else {
 				return ((response as GetItemRelationsByObjectQuery | GetItemRelationsBySubjectQuery)
@@ -199,7 +199,7 @@ export class RelationService {
 					.insert_app_collection_relations?.returning?.[0]?.id;
 			} else if (isAssignment) {
 				relationId = (response as InsertAssignmentRelationMutation)
-					.insert_app_assignment_relations?.returning?.[0]?.id;
+					.insert_app_assignments_v2_relations?.returning?.[0]?.id;
 			} else {
 				relationId = (response as InsertItemRelationMutation).insert_app_item_relations
 					?.returning?.[0]?.id;

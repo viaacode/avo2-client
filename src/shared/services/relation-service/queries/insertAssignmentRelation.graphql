@@ -3,7 +3,7 @@ mutation insertAssignmentRelation(
 	$subjectId: uuid!
 	$relationType: lookup_enum_relation_types_enum!
 ) {
-	insert_app_assignment_relations(
+	insert_app_assignments_v2_relations(
 		objects: [{ object: $objectId, subject: $subjectId, predicate: $relationType }]
 	) {
 		returning {

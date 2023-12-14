@@ -1914,10 +1914,7 @@ export const GetAssignmentsAdminOverviewDocument = `
         }
       }
     }
-    view_count {
-      count
-    }
-    responses_aggregate(where: {collection_title: {_is_null: false}}) {
+    responses_aggregate {
       aggregate {
         count
       }
@@ -1941,6 +1938,12 @@ export const GetAssignmentsAdminOverviewDocument = `
         }
       }
       id
+    }
+    counts {
+      bookmarks
+      views
+      copies
+      contributors
     }
     loms {
       lom {
@@ -4669,6 +4672,42 @@ export const useUpdateNotificationMutation = <
       (variables?: UpdateNotificationMutationVariables) => fetchData<UpdateNotificationMutation, UpdateNotificationMutationVariables>(UpdateNotificationDocument, variables)(),
       options
     );
+export const DeleteAssignmentRelationsByObjectDocument = `
+    mutation deleteAssignmentRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  delete_app_assignments_v2_relations(
+    where: {object: {_eq: $objectId}, predicate: {_eq: $relationType}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentRelationsByObjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentRelationsByObjectMutation, TError, DeleteAssignmentRelationsByObjectMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentRelationsByObjectMutation, TError, DeleteAssignmentRelationsByObjectMutationVariables, TContext>(
+      ['deleteAssignmentRelationsByObject'],
+      (variables?: DeleteAssignmentRelationsByObjectMutationVariables) => fetchData<DeleteAssignmentRelationsByObjectMutation, DeleteAssignmentRelationsByObjectMutationVariables>(DeleteAssignmentRelationsByObjectDocument, variables)(),
+      options
+    );
+export const DeleteAssignmentRelationsBySubjectDocument = `
+    mutation deleteAssignmentRelationsBySubject($subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  delete_app_assignments_v2_relations(
+    where: {subject: {_eq: $subjectId}, predicate: {_eq: $relationType}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useDeleteAssignmentRelationsBySubjectMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteAssignmentRelationsBySubjectMutation, TError, DeleteAssignmentRelationsBySubjectMutationVariables, TContext>) =>
+    useMutation<DeleteAssignmentRelationsBySubjectMutation, TError, DeleteAssignmentRelationsBySubjectMutationVariables, TContext>(
+      ['deleteAssignmentRelationsBySubject'],
+      (variables?: DeleteAssignmentRelationsBySubjectMutationVariables) => fetchData<DeleteAssignmentRelationsBySubjectMutation, DeleteAssignmentRelationsBySubjectMutationVariables>(DeleteAssignmentRelationsBySubjectDocument, variables)(),
+      options
+    );
 export const DeleteCollectionRelationsByObjectDocument = `
     mutation deleteCollectionRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
   delete_app_collection_relations(
@@ -4705,42 +4744,6 @@ export const useDeleteCollectionRelationsBySubjectMutation = <
       (variables?: DeleteCollectionRelationsBySubjectMutationVariables) => fetchData<DeleteCollectionRelationsBySubjectMutation, DeleteCollectionRelationsBySubjectMutationVariables>(DeleteCollectionRelationsBySubjectDocument, variables)(),
       options
     );
-	export const DeleteAssignmentRelationsByObjectDocument = `
-    mutation deleteAssignmentRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  delete_app_assignment_relations(
-    where: {object: {_eq: $objectId}, predicate: {_eq: $relationType}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentRelationsByObjectMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentRelationsByObjectMutation, TError, DeleteAssignmentRelationsByObjectMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentRelationsByObjectMutation, TError, DeleteAssignmentRelationsByObjectMutationVariables, TContext>(
-      ['deleteAssignmentRelationsByObject'],
-      (variables?: DeleteAssignmentRelationsByObjectMutationVariables) => fetchData<DeleteAssignmentRelationsByObjectMutation, DeleteAssignmentRelationsByObjectMutationVariables>(DeleteAssignmentRelationsByObjectDocument, variables)(),
-      options
-    );
-export const DeleteAssignmentRelationsBySubjectDocument = `
-    mutation deleteAssignmentRelationsBySubject($subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  delete_app_assignment_relations(
-    where: {subject: {_eq: $subjectId}, predicate: {_eq: $relationType}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentRelationsBySubjectMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentRelationsBySubjectMutation, TError, DeleteAssignmentRelationsBySubjectMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentRelationsBySubjectMutation, TError, DeleteAssignmentRelationsBySubjectMutationVariables, TContext>(
-      ['deleteAssignmentRelationsBySubject'],
-      (variables?: DeleteAssignmentRelationsBySubjectMutationVariables) => fetchData<DeleteAssignmentRelationsBySubjectMutation, DeleteAssignmentRelationsBySubjectMutationVariables>(DeleteAssignmentRelationsBySubjectDocument, variables)(),
-      options
-    );
 export const DeleteItemRelationsByObjectDocument = `
     mutation deleteItemRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
   delete_app_item_relations(
@@ -4775,6 +4778,58 @@ export const useDeleteItemRelationsBySubjectMutation = <
     useMutation<DeleteItemRelationsBySubjectMutation, TError, DeleteItemRelationsBySubjectMutationVariables, TContext>(
       ['deleteItemRelationsBySubject'],
       (variables?: DeleteItemRelationsBySubjectMutationVariables) => fetchData<DeleteItemRelationsBySubjectMutation, DeleteItemRelationsBySubjectMutationVariables>(DeleteItemRelationsBySubjectDocument, variables)(),
+      options
+    );
+export const GetAssignmentRelationsByObjectDocument = `
+    query getAssignmentRelationsByObject($objectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
+  app_assignments_v2_relations(
+    where: {object: {_in: $objectIds}, predicate: {_eq: $relationType}}
+  ) {
+    id
+    object
+    subject
+    predicate
+    created_at
+    updated_at
+  }
+}
+    `;
+export const useGetAssignmentRelationsByObjectQuery = <
+      TData = GetAssignmentRelationsByObjectQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentRelationsByObjectQueryVariables,
+      options?: UseQueryOptions<GetAssignmentRelationsByObjectQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentRelationsByObjectQuery, TError, TData>(
+      ['getAssignmentRelationsByObject', variables],
+      fetchData<GetAssignmentRelationsByObjectQuery, GetAssignmentRelationsByObjectQueryVariables>(GetAssignmentRelationsByObjectDocument, variables),
+      options
+    );
+export const GetAssignmentRelationsBySubjectDocument = `
+    query getAssignmentRelationsBySubject($subjectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
+  app_assignments_v2_relations(
+    where: {subject: {_in: $subjectIds}, predicate: {_eq: $relationType}}
+  ) {
+    id
+    object
+    subject
+    predicate
+    created_at
+    updated_at
+  }
+}
+    `;
+export const useGetAssignmentRelationsBySubjectQuery = <
+      TData = GetAssignmentRelationsBySubjectQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentRelationsBySubjectQueryVariables,
+      options?: UseQueryOptions<GetAssignmentRelationsBySubjectQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentRelationsBySubjectQuery, TError, TData>(
+      ['getAssignmentRelationsBySubject', variables],
+      fetchData<GetAssignmentRelationsBySubjectQuery, GetAssignmentRelationsBySubjectQueryVariables>(GetAssignmentRelationsBySubjectDocument, variables),
       options
     );
 export const GetCollectionRelationsByObjectDocument = `
@@ -4829,59 +4884,6 @@ export const useGetCollectionRelationsBySubjectQuery = <
       fetchData<GetCollectionRelationsBySubjectQuery, GetCollectionRelationsBySubjectQueryVariables>(GetCollectionRelationsBySubjectDocument, variables),
       options
     );
-
-	export const GetAssignmentRelationsByObjectDocument = `
-    query getAssignmentRelationsByObject($objectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
-  app_assignment_relations(
-    where: {object: {_in: $objectIds}, predicate: {_eq: $relationType}}
-  ) {
-    id
-    object
-    subject
-    predicate
-    created_at
-    updated_at
-  }
-}
-    `;
-export const useGetAssignmentRelationsByObjectQuery = <
-      TData = GetAssignmentRelationsByObjectQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentRelationsByObjectQueryVariables,
-      options?: UseQueryOptions<GetAssignmentRelationsByObjectQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentRelationsByObjectQuery, TError, TData>(
-      ['getAssignmentRelationsByObject', variables],
-      fetchData<GetAssignmentRelationsByObjectQuery, GetAssignmentRelationsByObjectQueryVariables>(GetAssignmentRelationsByObjectDocument, variables),
-      options
-    );
-export const GetAssignmentRelationsBySubjectDocument = `
-    query getAssignmentRelationsBySubject($subjectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
-  app_assignment_relations(
-    where: {subject: {_in: $subjectIds}, predicate: {_eq: $relationType}}
-  ) {
-    id
-    object
-    subject
-    predicate
-    created_at
-    updated_at
-  }
-}
-    `;
-export const useGetAssignmentRelationsBySubjectQuery = <
-      TData = GetAssignmentRelationsBySubjectQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentRelationsBySubjectQueryVariables,
-      options?: UseQueryOptions<GetAssignmentRelationsBySubjectQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentRelationsBySubjectQuery, TError, TData>(
-      ['getAssignmentRelationsBySubject', variables],
-      fetchData<GetAssignmentRelationsBySubjectQuery, GetAssignmentRelationsBySubjectQueryVariables>(GetAssignmentRelationsBySubjectDocument, variables),
-      options
-    );
 export const GetItemRelationsByObjectDocument = `
     query getItemRelationsByObject($objectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
   app_item_relations(
@@ -4934,6 +4936,26 @@ export const useGetItemRelationsBySubjectQuery = <
       fetchData<GetItemRelationsBySubjectQuery, GetItemRelationsBySubjectQueryVariables>(GetItemRelationsBySubjectDocument, variables),
       options
     );
+export const InsertAssignmentRelationDocument = `
+    mutation insertAssignmentRelation($objectId: uuid!, $subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
+  insert_app_assignments_v2_relations(
+    objects: [{object: $objectId, subject: $subjectId, predicate: $relationType}]
+  ) {
+    returning {
+      id
+    }
+  }
+}
+    `;
+export const useInsertAssignmentRelationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<InsertAssignmentRelationMutation, TError, InsertAssignmentRelationMutationVariables, TContext>) =>
+    useMutation<InsertAssignmentRelationMutation, TError, InsertAssignmentRelationMutationVariables, TContext>(
+      ['insertAssignmentRelation'],
+      (variables?: InsertAssignmentRelationMutationVariables) => fetchData<InsertAssignmentRelationMutation, InsertAssignmentRelationMutationVariables>(InsertAssignmentRelationDocument, variables)(),
+      options
+    );
 export const InsertCollectionRelationDocument = `
     mutation insertCollectionRelation($objectId: uuid!, $subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
   insert_app_collection_relations(
@@ -4952,27 +4974,6 @@ export const useInsertCollectionRelationMutation = <
     useMutation<InsertCollectionRelationMutation, TError, InsertCollectionRelationMutationVariables, TContext>(
       ['insertCollectionRelation'],
       (variables?: InsertCollectionRelationMutationVariables) => fetchData<InsertCollectionRelationMutation, InsertCollectionRelationMutationVariables>(InsertCollectionRelationDocument, variables)(),
-      options
-    );
-
-	export const InsertAssignmentRelationDocument = `
-    mutation insertAssignmentRelation($objectId: uuid!, $subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  insert_app_assignment_relations(
-    objects: [{object: $objectId, subject: $subjectId, predicate: $relationType}]
-  ) {
-    returning {
-      id
-    }
-  }
-}
-    `;
-export const useInsertAssignmentRelationMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertAssignmentRelationMutation, TError, InsertAssignmentRelationMutationVariables, TContext>) =>
-    useMutation<InsertAssignmentRelationMutation, TError, InsertAssignmentRelationMutationVariables, TContext>(
-      ['insertAssignmentRelation'],
-      (variables?: InsertAssignmentRelationMutationVariables) => fetchData<InsertAssignmentRelationMutation, InsertAssignmentRelationMutationVariables>(InsertAssignmentRelationDocument, variables)(),
       options
     );
 export const InsertItemRelationDocument = `

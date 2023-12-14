@@ -437,7 +437,7 @@ export type GetAssignmentsAdminOverviewQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null }, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
+export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null }, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, counts?: { __typename?: 'app_assignments_v2_counts', bookmarks?: any | null, views?: number | null, copies?: any | null, contributors?: any | null } | null, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
 
 export type GetAssignmentsByOwnerOrContributorQueryVariables = Exact<{
   collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
@@ -1167,6 +1167,22 @@ export type UpdateNotificationMutationVariables = Exact<{
 
 export type UpdateNotificationMutation = { __typename?: 'mutation_root', update_users_notifications?: { __typename?: 'users_notifications_mutation_response', affected_rows: number } | null };
 
+export type DeleteAssignmentRelationsByObjectMutationVariables = Exact<{
+  objectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type DeleteAssignmentRelationsByObjectMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_relations?: { __typename?: 'app_assignments_v2_relations_mutation_response', affected_rows: number } | null };
+
+export type DeleteAssignmentRelationsBySubjectMutationVariables = Exact<{
+  subjectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type DeleteAssignmentRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_relations?: { __typename?: 'app_assignments_v2_relations_mutation_response', affected_rows: number } | null };
+
 export type DeleteCollectionRelationsByObjectMutationVariables = Exact<{
   objectId: Scalars['uuid'];
   relationType: Lookup_Enum_Relation_Types_Enum;
@@ -1182,23 +1198,6 @@ export type DeleteCollectionRelationsBySubjectMutationVariables = Exact<{
 
 
 export type DeleteCollectionRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_collection_relations?: { __typename?: 'app_collection_relations_mutation_response', affected_rows: number } | null };
-
-export type DeleteAssignmentRelationsByObjectMutationVariables = Exact<{
-	objectId: Scalars['uuid'];
-	relationType: Lookup_Enum_Relation_Types_Enum;
-  }>;
-
-
-  export type DeleteAssignmentRelationsByObjectMutation = { __typename?: 'mutation_root', delete_app_assignment_relations?: { __typename?: 'app_assignment_relations_mutation_response', affected_rows: number } | null };
-
-  export type DeleteAssignmentRelationsBySubjectMutationVariables = Exact<{
-	subjectId: Scalars['uuid'];
-	relationType: Lookup_Enum_Relation_Types_Enum;
-  }>;
-
-
-  export type DeleteAssignmentRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_assignment_relations?: { __typename?: 'app_assignment_relations_mutation_response', affected_rows: number } | null };
-
 
 export type DeleteItemRelationsByObjectMutationVariables = Exact<{
   objectId: Scalars['uuid'];
@@ -1216,6 +1215,22 @@ export type DeleteItemRelationsBySubjectMutationVariables = Exact<{
 
 export type DeleteItemRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_item_relations?: { __typename?: 'app_item_relations_mutation_response', affected_rows: number } | null };
 
+export type GetAssignmentRelationsByObjectQueryVariables = Exact<{
+  objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type GetAssignmentRelationsByObjectQuery = { __typename?: 'query_root', app_assignments_v2_relations: Array<{ __typename?: 'app_assignments_v2_relations', id: any, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+export type GetAssignmentRelationsBySubjectQueryVariables = Exact<{
+  subjectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type GetAssignmentRelationsBySubjectQuery = { __typename?: 'query_root', app_assignments_v2_relations: Array<{ __typename?: 'app_assignments_v2_relations', id: any, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
 export type GetCollectionRelationsByObjectQueryVariables = Exact<{
   objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
   relationType: Lookup_Enum_Relation_Types_Enum;
@@ -1231,23 +1246,6 @@ export type GetCollectionRelationsBySubjectQueryVariables = Exact<{
 
 
 export type GetCollectionRelationsBySubjectQuery = { __typename?: 'query_root', app_collection_relations: Array<{ __typename?: 'app_collection_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
-
-export type GetAssignmentRelationsByObjectQueryVariables = Exact<{
-	objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
-	relationType: Lookup_Enum_Relation_Types_Enum;
-  }>;
-
-
-  export type GetAssignmentRelationsByObjectQuery = { __typename?: 'query_root', app_assignment_relations: Array<{ __typename?: 'app_assignment_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
-
-  export type GetAssignmentRelationsBySubjectQueryVariables = Exact<{
-	subjectIds: Array<Scalars['uuid']> | Scalars['uuid'];
-	relationType: Lookup_Enum_Relation_Types_Enum;
-  }>;
-
-
-  export type GetAssignmentRelationsBySubjectQuery = { __typename?: 'query_root', app_assignment_relations: Array<{ __typename?: 'app_assignment_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
-
 
 export type GetItemRelationsByObjectQueryVariables = Exact<{
   objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
@@ -1265,6 +1263,15 @@ export type GetItemRelationsBySubjectQueryVariables = Exact<{
 
 export type GetItemRelationsBySubjectQuery = { __typename?: 'query_root', app_item_relations: Array<{ __typename?: 'app_item_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
 
+export type InsertAssignmentRelationMutationVariables = Exact<{
+  objectId: Scalars['uuid'];
+  subjectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type InsertAssignmentRelationMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_relations?: { __typename?: 'app_assignments_v2_relations_mutation_response', returning: Array<{ __typename?: 'app_assignments_v2_relations', id: any }> } | null };
+
 export type InsertCollectionRelationMutationVariables = Exact<{
   objectId: Scalars['uuid'];
   subjectId: Scalars['uuid'];
@@ -1273,16 +1280,6 @@ export type InsertCollectionRelationMutationVariables = Exact<{
 
 
 export type InsertCollectionRelationMutation = { __typename?: 'mutation_root', insert_app_collection_relations?: { __typename?: 'app_collection_relations_mutation_response', returning: Array<{ __typename?: 'app_collection_relations', id: number }> } | null };
-
-export type InsertAssignmentRelationMutationVariables = Exact<{
-	objectId: Scalars['uuid'];
-	subjectId: Scalars['uuid'];
-	relationType: Lookup_Enum_Relation_Types_Enum;
-  }>;
-
-
-  export type InsertAssignmentRelationMutation = { __typename?: 'mutation_root', insert_app_assignment_relations?: { __typename?: 'app_assignment_relations_mutation_response', returning: Array<{ __typename?: 'app_assignment_relations', id: number }> } | null };
-
 
 export type InsertItemRelationMutationVariables = Exact<{
   objectId: Scalars['uuid'];
