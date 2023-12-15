@@ -36,7 +36,7 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { StringParam, useQueryParam } from 'use-query-params';
 
@@ -793,14 +793,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						/>
 					)}
 					{PermissionService.hasPerm(user, PermissionName.VIEW_ITEMS_OVERVIEW) && (
-						<Button
-							type="tertiary"
-							icon={IconName.edit}
-							label={tText('item/views/item-detail___media-item-beheren')}
-							ariaLabel={tText('item/views/item-detail___media-item-beheren')}
-							title={tText('item/views/item-detail___media-item-beheren')}
-							onClick={navigateToItemDetail}
-						/>
+						<Link to={buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid })}>
+							<Button
+								className="c-button-link"
+								type="tertiary"
+								icon={IconName.settings}
+								label={tText('item/views/item-detail___media-item-beheren')}
+								ariaLabel={tText('item/views/item-detail___media-item-beheren')}
+								title={tText('item/views/item-detail___media-item-beheren')}
+								onClick={navigateToItemDetail}
+							/>
+						</Link>
 					)}
 				</div>
 
