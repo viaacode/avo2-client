@@ -49,7 +49,6 @@ import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentM
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
@@ -482,11 +481,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		}
 	};
 
-	const navigateToItemDetail = () => {
-		const link = buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid });
-		redirectToClientPage(link, history);
-	};
-
 	const renderEducationLevels = (item: Avo.Item.Item) => {
 		if (
 			!item.external_id ||
@@ -801,7 +795,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 								label={tText('item/views/item-detail___media-item-beheren')}
 								ariaLabel={tText('item/views/item-detail___media-item-beheren')}
 								title={tText('item/views/item-detail___media-item-beheren')}
-								onClick={navigateToItemDetail}
 							/>
 						</Link>
 					)}
