@@ -229,12 +229,10 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			const defaultNullFilter = { profile: { _not: { profile_user_groups: {} } } };
 
 			const groupFilter = [defaultGroupFilter];
-			const nullFilter = defaultNullFilter;
-
 			andFilters.push({
 				_or: [
 					...groupFilter,
-					...(filters.author_user_group.includes(NULL_FILTER) ? [nullFilter] : []),
+					...(filters.author_user_group.includes(NULL_FILTER) ? [defaultNullFilter] : []),
 				],
 			});
 		}
