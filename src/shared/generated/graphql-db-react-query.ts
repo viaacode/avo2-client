@@ -1953,6 +1953,18 @@ export const GetAssignmentsAdminOverviewDocument = `
         broader
       }
     }
+    labels {
+      assignment_label {
+        label
+        id
+      }
+    }
+    last_user_edit_profile {
+      usersByuserId {
+        full_name
+        last_name
+      }
+    }
   }
   app_assignments_v2_aggregate(where: $where) {
     aggregate {
@@ -3894,6 +3906,34 @@ export const useGetAllAssignmentLabelColorsQuery = <
     useQuery<GetAllAssignmentLabelColorsQuery, TError, TData>(
       variables === undefined ? ['getAllAssignmentLabelColors'] : ['getAllAssignmentLabelColors', variables],
       fetchData<GetAllAssignmentLabelColorsQuery, GetAllAssignmentLabelColorsQueryVariables>(GetAllAssignmentLabelColorsDocument, variables),
+      options
+    );
+export const GetAssignmentLabelsDocument = `
+    query getAssignmentLabels {
+  app_assignment_labels_v2(order_by: {label: asc}) {
+    color_enum_value
+    color_override
+    label
+    id
+    enum_color {
+      label
+      value
+    }
+    type
+    owner_profile_id
+  }
+}
+    `;
+export const useGetAssignmentLabelsQuery = <
+      TData = GetAssignmentLabelsQuery,
+      TError = unknown
+    >(
+      variables?: GetAssignmentLabelsQueryVariables,
+      options?: UseQueryOptions<GetAssignmentLabelsQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentLabelsQuery, TError, TData>(
+      variables === undefined ? ['getAssignmentLabels'] : ['getAssignmentLabels', variables],
+      fetchData<GetAssignmentLabelsQuery, GetAssignmentLabelsQueryVariables>(GetAssignmentLabelsDocument, variables),
       options
     );
 export const GetAssignmentLabelsByProfileIdDocument = `
