@@ -75,6 +75,11 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 			quick_lane_links: order,
 		},
 	}),
+	contributors: (order: Avo.Search.OrderDirection) => ({
+		counts: {
+			contributors: order,
+		},
+	}),
 };
 
 export const EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
@@ -354,6 +359,15 @@ const getCollectionQuickLanesColumn = (): FilterableColumn<CollectionTableCols> 
 	dataType: TableColumnDataType.number,
 });
 
+const getCollectionSharedColumn = (): FilterableColumn<CollectionTableCols> => ({
+	id: 'contributors',
+	tooltip: tText('admin/collections-or-bundles/collections-or-bundles___gedeeld'),
+	icon: IconName.share2,
+	sortable: true,
+	visibleByDefault: true,
+	dataType: TableColumnDataType.number,
+});
+
 const getCollectionSubjectsColumn = (
 	subjects: Avo.Lom.LomField[]
 ): FilterableColumn<CollectionTableCols> => ({
@@ -589,6 +603,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	...getCollectionInBundleColumn(isCollection),
 	...getCollectionInAssignmentColumn(isCollection),
 	getCollectionQuickLanesColumn(),
+	getCollectionSharedColumn(),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionThemesColumn(),
 	getCollectionEducationLevelsColumn(educationLevels),

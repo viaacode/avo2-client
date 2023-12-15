@@ -16,7 +16,7 @@ import {
 } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
-import { reorderBlockPositions, setBlockPositionToIndex } from '../assignment/assignment.helper';
+import { setBlockPositionToIndex } from '../assignment/assignment.helper';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {

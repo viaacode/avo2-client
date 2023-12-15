@@ -382,6 +382,7 @@ export const GetCollectionsDocument = `
       views
       copies
       quick_lane_links
+      contributors
     }
     loms {
       lom {
@@ -605,6 +606,8 @@ export const GetItemByUuidDocument = `
     organisation {
       or_id
       name
+      logo_url
+      overlay
     }
     publish_at
     published_at
@@ -702,6 +705,7 @@ export const GetItemsByExternalIdDocument = `
       or_id
       name
       logo_url
+      overlay
     }
     publish_at
     published_at
@@ -766,6 +770,8 @@ export const GetItemsWithFiltersDocument = `
     organisation {
       or_id
       name
+      logo_url
+      overlay
     }
     publish_at
     published_at
