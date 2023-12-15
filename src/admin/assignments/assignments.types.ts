@@ -23,6 +23,8 @@ export interface AssignmentsOverviewTableState extends FilterableTableState {
 	status: ('true' | 'false')[];
 	responses: ('true' | 'false')[];
 	share_type: string;
+	subjects: string[];
+	education_levels: string[];
 }
 
 export type AssignmentsBulkAction = 'delete' | 'change_author';

@@ -34,7 +34,11 @@ export const useAssignmentLabels = (enabled: boolean): UseAssignmentLabelsTuple 
 				console.error(
 					new CustomError('Failed to get AssignmentLabels from the database', err)
 				);
-				ToastService.danger(tHtml('Het ophalen van de labels is mislukt'));
+				ToastService.danger(
+					tHtml(
+						'shared/hooks/use-assignment-labels___het-ophalen-van-de-labels-is-mislukt'
+					)
+				);
 			})
 			.finally(() => {
 				setIsLoading(false);

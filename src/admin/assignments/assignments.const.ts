@@ -7,9 +7,11 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
 import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { NULL_FILTER } from '../shared/helpers/filters';
 
 export const ASSIGNMENTS_PATH = {
 	ASSIGNMENTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}`,
@@ -45,7 +47,9 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (user: Avo.User.User): AssignmentBulk
 
 export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 	userGroupOptions: CheckboxOption[],
-	assignmentLabelOptions: CheckboxOption[]
+	assignmentLabelOptions: CheckboxOption[],
+	subjects: Avo.Lom.LomField[],
+	educationLevels: Avo.Lom.LomField[]
 ): FilterableColumn<AssignmentOverviewTableColumns>[] => [
 	{
 		id: 'title',
@@ -114,6 +118,40 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 			includeEmpty: false,
 		} as BooleanCheckboxDropdownProps,
 		dataType: TableColumnDataType.boolean,
+	},
+	{
+		id: 'subjects',
+		label: tText('admin/assignments/assignments___vakken'),
+		sortable: false,
+		visibleByDefault: false,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				...subjects.map(lomToCheckboxOption),
+				{
+					checked: false,
+					label: tText('admin/assignments/assignments___leeg'),
+					id: NULL_FILTER,
+				},
+			],
+		} as CheckboxDropdownModalProps,
+	},
+	{
+		id: 'education_levels',
+		label: tText('admin/assignments/assignments___opleidingsniveaus'),
+		sortable: false,
+		visibleByDefault: false,
+		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: [
+				...educationLevels.map(lomToCheckboxOption),
+				{
+					checked: false,
+					label: tText('admin/assignments/assignments___leeg'),
+					id: NULL_FILTER,
+				},
+			],
+		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'is_public',

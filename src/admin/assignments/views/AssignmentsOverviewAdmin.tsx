@@ -30,9 +30,13 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
+import { groupLomLinks } from '../../../shared/helpers/lom';
+import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { useAssignmentLabels } from '../../../shared/hooks/useAssignmentLabels';
+import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -44,6 +48,7 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import {
+	generateLomFilter,
 	getBooleanFilters,
 	getDateRangeFilters,
 	getMultiOptionFilters,
@@ -82,6 +87,8 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	);
 	const [assignmentLabels] = useAssignmentLabels(true);
 	const [userGroups] = useUserGroups(false);
+	const [subjects] = useLomSubjects();
+	const [educationLevels] = useLomEducationLevels();
 
 	const { data: editStatuses } = useGetAssignmentsEditStatuses(
 		assignments?.map((assignment) => assignment.id) || [],
@@ -116,7 +123,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		() => [
 			{
 				id: NULL_FILTER,
-				label: tText('Geen label'),
+				label: tText('admin/assignments/views/assignments-overview-admin___geen-label'),
 				checked: get(tableState, 'labels', [] as string[]).includes(NULL_FILTER),
 			},
 			...assignmentLabels.map(
@@ -133,7 +140,13 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	);
 
 	const columns = useMemo(
-		() => GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(userGroupOptions, assignmentLabelOptions),
+		() =>
+			GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(
+				userGroupOptions,
+				assignmentLabelOptions,
+				subjects,
+				educationLevels
+			),
 		[userGroupOptions, assignmentLabelOptions]
 	);
 
@@ -262,6 +275,30 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 						: []),
 				],
 			});
+		}
+
+		// subjects
+		if (filters.subjects && filters.subjects.length) {
+			andFilters.push(
+				generateLomFilter(filters.subjects, 'https://w3id.org/onderwijs-vlaanderen/id/vak')
+			);
+		}
+
+		// // Enable when meemoo requests a column and folder for lom themes
+		// if (filters.themes && filters.themes.length) {
+		// 	andFilters.push(
+		// 		generateLomFilter(filters.themes, 'https://data.hetarchief.be/id/onderwijs/thema')
+		// 	);
+		// }
+
+		// education-levels
+		if (filters.education_levels && filters.education_levels.length) {
+			andFilters.push(
+				generateLomFilter(
+					filters.education_levels,
+					'https://w3id.org/onderwijs-vlaanderen/id/structuur'
+				)
+			);
 		}
 
 		return { _and: andFilters };
@@ -509,6 +546,21 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					new Date(assignment.deadline_at).getTime() < new Date().getTime()
 					? tText('admin/assignments/views/assignments-overview-admin___afgelopen')
 					: tText('admin/assignments/views/assignments-overview-admin___actief');
+
+			case 'subjects': {
+				const groupedLoms = groupLomLinks(assignment.loms);
+				return lomsToTagList(groupedLoms.subject) || '-';
+			}
+
+			case 'education_levels': {
+				const groupedLoms = groupLomLinks(assignment.loms);
+				return (
+					lomsToTagList([
+						...groupedLoms.educationLevel,
+						...groupedLoms.educationDegree,
+					]) || '-'
+				);
+			}
 
 			case 'is_public':
 				return assignment.is_public

@@ -29,6 +29,8 @@ export type AssignmentOverviewTableColumns =
 	| 'updated_at'
 	| 'deadline_at'
 	| 'status'
+	| 'subjects'
+	| 'education_levels'
 	| 'responses'
 	| 'labels'
 	| 'class_room'
