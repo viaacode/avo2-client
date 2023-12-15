@@ -927,6 +927,11 @@ export type GetAllAssignmentLabelColorsQueryVariables = Exact<{ [key: string]: n
 
 export type GetAllAssignmentLabelColorsQuery = { __typename?: 'query_root', lookup_enum_colors: Array<{ __typename?: 'lookup_enum_colors', label: string, value: string }> };
 
+export type GetAssignmentLabelsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAssignmentLabelsQuery = { __typename?: 'query_root', app_assignment_labels_v2: Array<{ __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, label?: string | null, id: any, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } }> };
+
 export type GetAssignmentLabelsByProfileIdQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   filters?: InputMaybe<Array<App_Assignment_Labels_V2_Bool_Exp> | App_Assignment_Labels_V2_Bool_Exp>;

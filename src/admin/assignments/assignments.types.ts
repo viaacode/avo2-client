@@ -19,7 +19,7 @@ export interface AssignmentsOverviewTableState extends FilterableTableState {
 	created_at: string;
 	updated_at: string;
 	deadline_at: string;
-	labels: ('true' | 'false')[];
+	labels: string[];
 	status: ('true' | 'false')[];
 	responses: ('true' | 'false')[];
 	share_type: string;

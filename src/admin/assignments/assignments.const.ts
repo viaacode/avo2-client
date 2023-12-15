@@ -43,13 +43,10 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (user: Avo.User.User): AssignmentBulk
 	];
 };
 
-export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: (
+export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 	userGroupOptions: CheckboxOption[],
 	assignmentLabelOptions: CheckboxOption[]
-) => FilterableColumn<AssignmentOverviewTableColumns>[] = (
-	userGroupOptions: CheckboxOption[]
-	//assignmentLabelOptions: CheckboxOption[]
-) => [
+): FilterableColumn<AssignmentOverviewTableColumns>[] => [
 	{
 		id: 'title',
 		label: tText('admin/assignments/assignments___title'),
@@ -132,6 +129,9 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS: (
 		sortable: false,
 		visibleByDefault: true,
 		filterType: 'CheckboxDropdownModal',
+		filterProps: {
+			options: assignmentLabelOptions,
+		} as CheckboxDropdownModalProps,
 	},
 	{
 		id: 'is_copy',

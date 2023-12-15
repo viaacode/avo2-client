@@ -9,6 +9,8 @@ import {
 	GetAllAssignmentLabelColorsQueryVariables,
 	GetAssignmentLabelsByProfileIdQuery,
 	GetAssignmentLabelsByProfileIdQueryVariables,
+	GetAssignmentLabelsQuery,
+	GetAssignmentLabelsQueryVariables,
 	InsertAssignmentLabelsMutation,
 	InsertAssignmentLabelsMutationVariables,
 	UpdateAssignmentLabelsMutation,
@@ -18,6 +20,7 @@ import {
 	DeleteAssignmentLabelsDocument,
 	GetAllAssignmentLabelColorsDocument,
 	GetAssignmentLabelsByProfileIdDocument,
+	GetAssignmentLabelsDocument,
 	InsertAssignmentLabelsDocument,
 	UpdateAssignmentLabelsDocument,
 } from '../../generated/graphql-db-react-query';
@@ -50,6 +53,24 @@ export class AssignmentLabelsService {
 			throw new CustomError('Failed to get assignment labels', err, {
 				profileId,
 				query: 'GET_ASSIGNMENT_LABELS_BY_PROFILE_ID',
+			});
+		}
+	}
+
+	public static async getLabels(): Promise<Avo.Assignment.Label[]> {
+		try {
+			const response = await dataService.query<
+				GetAssignmentLabelsQuery,
+				GetAssignmentLabelsQueryVariables
+			>({
+				query: GetAssignmentLabelsDocument,
+				variables: {},
+			});
+
+			return (response.app_assignment_labels_v2 || []) as Avo.Assignment.Label[];
+		} catch (err) {
+			throw new CustomError('Failed to get assignment labels', err, {
+				query: 'GET_ASSIGNMENT_LABELS',
 			});
 		}
 	}
