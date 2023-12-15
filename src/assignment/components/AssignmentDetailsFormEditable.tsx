@@ -12,7 +12,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
-import { isPast } from 'date-fns';
+import { isAfter, isPast } from 'date-fns';
 import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
 import { compose } from 'redux';
@@ -222,28 +222,35 @@ const AssignmentDetailsFormEditable: FC<
 											defaultTime="23:59"
 										/>
 										<p className="c-form-help-text">
-											{tText(
+											{tHtml(
 												'assignment/assignment___na-deze-datum-kan-de-leerling-de-opdracht-niet-meer-invullen'
 											)}
 										</p>
 										{deadline && isPast(deadline) && (
 											<p className="c-form-help-text--error">
-												{tText(
+												{tHtml(
 													'assignment/components/assignment-details-form-editable___de-deadline-mag-niet-in-het-verleden-liggen'
 												)}
 											</p>
 										)}
 										{isDeadlineBeforeAvailableAt(availableAt, deadline) && (
 											<p className="c-form-help-text--error">
-												{tText(
+												{tHtml(
 													'assignment/components/assignment-details-form-editable___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
+												)}
+											</p>
+										)}
+										{deadline && isAfter(deadline, endOfAcademicYear()) && (
+											<p className="c-form-help-text--error">
+												{tHtml(
+													'assignment/components/assignment-details-form-editable___de-deadline-moet-voor-31-augustus-liggen'
 												)}
 											</p>
 										)}
 									</FormGroup>
 
 									<FormGroup
-										label={`${tText('assignment/assignment___link')} (${tText(
+										label={`${tHtml('assignment/assignment___link')} (${tHtml(
 											'assignment/assignment___optioneel'
 										)})`}
 										labelFor={getId(AssignmentDetailsFormIds.answer_url)}

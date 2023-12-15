@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
-import { isPast } from 'date-fns';
+import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
 	Dispatch,
@@ -70,6 +70,7 @@ import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataForm
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTeacherTabs from '../components/AssignmentTeacherTabs';
 import AssignmentTitle from '../components/AssignmentTitle';
+import { endOfAcademicYear } from '../helpers/academic-year';
 import {
 	onAddNewContributor,
 	onDeleteContributor,
@@ -336,6 +337,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				tHtml(
 					'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
 				)
+			);
+			return;
+		}
+
+		if (
+			assignment?.deadline_at &&
+			isAfter(new Date(assignment.deadline_at), endOfAcademicYear())
+		) {
+			ToastService.danger(
+				tHtml('assignment/views/assignment-edit___de-deadline-moet-voor-31-augustus-liggen')
 			);
 			return;
 		}
