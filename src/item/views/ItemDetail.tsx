@@ -40,6 +40,7 @@ import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { StringParam, useQueryParam } from 'use-query-params';
 
+import { ITEMS_PATH } from '../../admin/items/items.const';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -48,6 +49,7 @@ import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentM
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
@@ -108,7 +110,6 @@ import {
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
-
 import './ItemDetail.scss';
 
 interface ItemDetailProps {
@@ -481,6 +482,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		}
 	};
 
+	const navigateToItemDetail = () => {
+		const link = buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid });
+		redirectToClientPage(link, history);
+	};
+
 	const renderEducationLevels = (item: Avo.Item.Item) => {
 		if (
 			!item.external_id ||
@@ -784,6 +790,16 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							onClick={() => {
 								setIsQuickLaneModalOpen(true);
 							}}
+						/>
+					)}
+					{PermissionService.hasPerm(user, PermissionName.VIEW_ITEMS_OVERVIEW) && (
+						<Button
+							type="tertiary"
+							icon={IconName.edit}
+							label={tText('item/views/item-detail___media-item-beheren')}
+							ariaLabel={tText('item/views/item-detail___media-item-beheren')}
+							title={tText('item/views/item-detail___media-item-beheren')}
+							onClick={navigateToItemDetail}
 						/>
 					)}
 				</div>
