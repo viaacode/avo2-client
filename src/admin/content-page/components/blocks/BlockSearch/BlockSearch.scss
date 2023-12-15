@@ -1,5 +1,9 @@
 @import "../../../../../styles/settings/colors";
 
+.c-content-block__search {
+	z-index: 2 !important;
+}
+
 .m-search-block {
 	.c-dropdown__wrapper {
 		position: relative;
