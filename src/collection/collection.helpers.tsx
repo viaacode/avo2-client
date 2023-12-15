@@ -373,20 +373,29 @@ export const keepCoreCollectionProperties = (
 		return collection;
 	}
 	const propertiesToDelete = [
+		'QC',
 		'__typename',
-		'type',
-		'profile',
-		'updated_by',
+		'briefing_id',
 		'collection_labels',
-		'relations',
 		'id',
 		'is_managed',
 		'management',
-		'QC',
+		'management_actualised_at',
+		'management_actualised_at',
+		'management_approved_at',
+		'management_approved_at',
+		'management_language_check',
 		'management_language_check',
 		'management_quality_check',
-		'management_approved_at',
-		'management_actualised_at',
+		'management_quality_check',
+		'marcom_note',
+		'note',
+		'owner_profile_id',
+		'profile',
+		'relations',
+		'type',
+		'updated_by',
+		'updated_by_profile_id',
 	];
 
 	return omit(collection, propertiesToDelete);
