@@ -59,8 +59,8 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
 import {
 	Collection,
-	CollectionAction,
 	CollectionCreateUpdateTab,
+	CollectionMenuAction,
 	CollectionShareType,
 	ContentTypeNumber,
 } from '../collection.types';
@@ -436,13 +436,13 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const renderActions = (collectionUuid: string) => {
 		const ROW_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
-				CollectionAction.editCollection,
+				CollectionMenuAction.editCollection,
 				tText('collection/views/collection-overview___bewerk'),
 				'edit2',
 				(permissions[collectionUuid] && permissions[collectionUuid].canEdit) || false
 			),
 			...createDropdownMenuItem(
-				CollectionAction.createAssignment,
+				CollectionMenuAction.createAssignment,
 				tText('collection/views/collection-overview___maak-opdracht'),
 				'clipboard',
 				(isCollection &&
@@ -450,19 +450,19 @@ const CollectionOrBundleOverview: FunctionComponent<
 					false
 			),
 			...createDropdownMenuItem(
-				CollectionAction.openQuickLane,
+				CollectionMenuAction.openQuickLane,
 				tText('collection/views/collection-overview___delen-met-leerlingen'),
 				'link-2',
 				isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE)
 			),
 			...createDropdownMenuItem(
-				CollectionAction.delete,
+				CollectionMenuAction.delete,
 				tText('collection/views/collection-overview___verwijderen'),
 				undefined,
 				!shouldDeleteSelfFromCollection
 			),
 			...createDropdownMenuItem(
-				CollectionAction.delete,
+				CollectionMenuAction.delete,
 				tText(
 					'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
 				),
@@ -474,7 +474,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 		// Listeners
 		const onClickDropdownItem = (item: ReactText) => {
 			switch (item) {
-				case CollectionAction.editCollection:
+				case CollectionMenuAction.editCollection:
 					navigate(
 						history,
 						isCollection
@@ -484,21 +484,21 @@ const CollectionOrBundleOverview: FunctionComponent<
 					);
 					break;
 
-				case CollectionAction.createAssignment:
+				case CollectionMenuAction.createAssignment:
 					setActiveModalInfo({
 						collectionUuid,
 						activeModal: 'CREATE_ASSIGNMENT',
 					});
 					break;
 
-				case CollectionAction.openQuickLane:
+				case CollectionMenuAction.openQuickLane:
 					setActiveModalInfo({
 						collectionUuid,
 						activeModal: 'QUICK_LANE',
 					});
 					break;
 
-				case CollectionAction.delete:
+				case CollectionMenuAction.delete:
 					setActiveModalInfo({
 						collectionUuid,
 						activeModal: 'DELETE',
