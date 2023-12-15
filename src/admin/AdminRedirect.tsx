@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import './Admin.scss';
 import { Redirect } from 'react-router';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 

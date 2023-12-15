@@ -1,9 +1,4 @@
-import {
-	BlockMediaGrid,
-	MediaGridBlockComponentState,
-	MediaGridBlockState,
-	MediaListItem,
-} from '@meemoo/admin-core-ui';
+import { MediaGridBlockComponentState, MediaGridBlockState } from '@meemoo/admin-core-ui';
 import {
 	ButtonAction,
 	IconName,
@@ -15,27 +10,33 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 
-import { ContentPageService } from '../../../admin/content-page/services/content-page.service';
-import placeholderImage from '../../../assets/images/assignment-placeholder.png';
-import { CONTENT_TYPE_TRANSLATIONS, ContentTypeString } from '../../../collection/collection.types';
-import { APP_PATH } from '../../../constants';
-import { ItemVideoDescription } from '../../../item/components';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
-import { buildLink, CustomError, formatDate, isMobileWidth } from '../../../shared/helpers';
-import { defaultRenderBookmarkButton } from '../../../shared/helpers/default-render-bookmark-button';
-import { parseIntOrDefault } from '../../../shared/helpers/parsers/number';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import useTranslation from '../../../shared/hooks/useTranslation';
-import { BookmarksViewsPlaysService } from '../../../shared/services/bookmarks-views-plays-service';
-import { ToastService } from '../../../shared/services/toast-service';
+import placeholderImage from '../../../../../assets/images/assignment-placeholder.png';
+import {
+	CONTENT_TYPE_TRANSLATIONS,
+	ContentTypeString,
+} from '../../../../../collection/collection.types';
+import { APP_PATH } from '../../../../../constants';
+import { ItemVideoDescription } from '../../../../../item/components';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
+import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants';
+import { buildLink, CustomError, formatDate, isMobileWidth } from '../../../../../shared/helpers';
+import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
+import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
+import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
+import useTranslation from '../../../../../shared/hooks/useTranslation';
+import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
+import { ToastService } from '../../../../../shared/services/toast-service';
+import { ContentPageService } from '../../../services/content-page.service';
 
+import { BlockMediaGrid, MediaListItem } from './BlockMediaGrid';
 import { ResolvedItemOrCollectionOrAssignment } from './MediaGridWrapper.types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;
 	searchQueryLimit: string;
-	elements: { mediaItem: ButtonAction }[];
+	elements: {
+		mediaItem: ButtonAction;
+	}[];
 	results: ResolvedItemOrCollectionOrAssignment[];
 	renderLink: RenderLinkFunction;
 	buttonAltTitle?: string;

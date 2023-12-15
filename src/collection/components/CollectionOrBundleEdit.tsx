@@ -528,8 +528,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			// check quality check approved_at date
 			if (
-				!get(collectionObj, 'management_language_check[0].qc_status') ||
-				!get(collectionObj, 'management_quality_check[0].qc_status')
+				!collectionObj?.management_language_check?.[0]?.qc_status ||
+				!collectionObj?.management_quality_check?.[0]?.qc_status
 			) {
 				set(collectionObj, 'management_approved_at[0].created_at', null);
 			}
@@ -688,13 +688,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 	const isCollectionValid = (): ReactNode | null => {
 		if (
-			get(collectionState.currentCollection, 'is_managed', true) &&
-			(!!get(collectionState.currentCollection, 'management_language_check[0]') ||
-				!!get(collectionState.currentCollection, 'management_quality_check[0]')) &&
-			!get(
-				collectionState.currentCollection,
-				'management_language_check[0].assignee_profile_id'
-			)
+			(collectionState.currentCollection?.is_managed || true) &&
+			(!!collectionState.currentCollection?.management_language_check?.[0] ||
+				!!collectionState.currentCollection?.management_quality_check?.[0]) &&
+			!collectionState.currentCollection?.management_language_check?.[0]?.assignee_profile_id
 		) {
 			history.push(
 				buildLink(
@@ -1396,6 +1393,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 									collectionPropValue: title,
 								})
 							}
+							maxLength={110}
 						/>
 					}
 					category={type}

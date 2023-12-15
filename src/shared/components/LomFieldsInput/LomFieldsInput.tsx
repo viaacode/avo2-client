@@ -5,7 +5,10 @@ import { filter, map, sortBy, uniq } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 
 import { groupLoms } from '../../helpers/lom';
-import { useGetLomFields } from '../../hooks/useGetLomFields';
+import { lomToTagInfo } from '../../helpers/string-to-select-options';
+import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
+import { useLomSubjects } from '../../hooks/useLomSubjects';
+import { useLomThemes } from '../../hooks/useLomThemes';
 import useTranslation from '../../hooks/useTranslation';
 import { LomFieldsByScheme } from '../../types/lom';
 import MultiThemeSelectDropdown from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown';
@@ -41,10 +44,9 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	const lomFields = useMemo(() => {
 		return groupLoms(loms);
 	}, [loms]);
-	const { data: allEducationLevels, isLoading: isEducationLevelsLoading } =
-		useGetLomFields('structure');
-	const { data: allSubjects, isLoading: isSubjectsLoading } = useGetLomFields('subject');
-	const { data: allThemes, isLoading: isThemesLoading } = useGetLomFields('theme');
+	const [allEducationLevels, isEducationLevelsLoading] = useLomEducationLevels();
+	const [allSubjects, isSubjectsLoading] = useLomSubjects();
+	const [allThemes, isThemesLoading] = useLomThemes();
 
 	const getEducationLevelOptions = (loms: Avo.Lom.LomField[]) => {
 		// Group loms to split the incoming loms in levels and degrees
@@ -104,7 +106,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					<TagsInput
 						id="educationId"
 						isLoading={isEducationLevelsLoading}
-						options={getEducationLevelOptions(allEducationLevels || [])}
+						options={allEducationLevels?.map(lomToTagInfo)}
 						value={
 							getEducationLevelOptions([
 								...lomFields.educationDegree,
@@ -118,15 +120,14 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					/>
 				</FormGroup>
 			)}
-
-			{showThemes && (
+			{showThemes && !!allThemes?.length && (
 				<FormGroup
 					label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
 					labelFor="themeId"
 				>
 					<MultiThemeSelectDropdown
 						id="themeId"
-						allThemes={allThemes || []}
+						allThemes={allThemes}
 						value={mapLomFieldsToOptions(lomFields.theme) || []}
 						onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
 						placeholder={themesPlaceholder}
@@ -134,7 +135,6 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					/>
 				</FormGroup>
 			)}
-
 			{showSubjects && (
 				<FormGroup
 					label={tText('shared/components/lom-fields-input/lom-fields-input___vakken')}
@@ -143,7 +143,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					<TagsInput
 						id="subjectId"
 						isLoading={isSubjectsLoading}
-						options={mapLomFieldsToOptions(allSubjects || [])}
+						options={allSubjects?.map(lomToTagInfo)}
 						value={mapLomFieldsToOptions(lomFields.subject) || []}
 						onChange={(values) =>
 							handleChange(values, LomType.subject, allSubjects || [])

@@ -12,8 +12,6 @@ query getCollectionQualityCheck(
 	) {
 		id: collection_id
 		is_public
-		subjects: lom_classification
-		education_levels: lom_context
 		owner {
 			profile {
 				id
@@ -46,6 +44,14 @@ query getCollectionQualityCheck(
 		mgmt_quality_check
 		mgmt_language_check
 		mgmt_eind_check_date
+		loms {
+			lom {
+				broader
+				id
+				label
+				scheme
+			}
+		}
 	}
 	app_collections_aggregate: app_collection_qc_overview_aggregate(where: $where) {
 		aggregate {

@@ -10,6 +10,7 @@ type CollectionsOrBundlesOverviewTableColsBase =
 	| 'is_public'
 	| 'collection_labels'
 	| 'subjects'
+	| 'themas'
 	| 'education_levels'
 	| 'actions';
 
@@ -24,6 +25,7 @@ export type CollectionsOrBundlesOverviewTableCols =
 	| 'quick_lane_links'
 	| 'is_copy'
 	| 'organisation'
+	| 'contributors'
 	| 'share_type'
 	| 'share_type_order';
 

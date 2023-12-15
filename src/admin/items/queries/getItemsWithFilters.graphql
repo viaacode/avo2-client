@@ -22,11 +22,12 @@ query getItemsWithFilters(
 		lom_intendedenduserrole
 		lom_keywords
 		lom_languages
-		lom_typical_age_range: lom_typicalagerange
 		org_id
 		organisation {
 			or_id
 			name
+			logo_url
+			overlay
 		}
 		publish_at
 		published_at

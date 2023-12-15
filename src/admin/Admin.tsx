@@ -2,9 +2,10 @@ import { Flex, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
+import { HorizontalPageSplit } from 'react-page-split';
 
 import { PermissionService } from '../authentication/helpers/permission-service';
-import { LoadingErrorLoadedComponent, LoadingInfo, ResizablePanels } from '../shared/components';
+import { LoadingErrorLoadedComponent, LoadingInfo } from '../shared/components';
 import { CustomError } from '../shared/helpers';
 import withUser from '../shared/hocs/withUser';
 import useTranslation from '../shared/hooks/useTranslation';
@@ -13,7 +14,6 @@ import { NavigationItemInfo } from '../shared/types';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
-import './Admin.scss';
 import { Sidebar } from './shared/components';
 
 const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
@@ -61,26 +61,16 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 			return null;
 		}
 		return (
-			<div className="m-resizable-panels">
-				<ResizablePanels
-					displayDirection="row"
-					panelsSize={[300]}
-					sizeUnitMeasure="px"
-					resizerSize="15px"
-				>
-					<Sidebar
-						headerLink={ADMIN_PATH.DASHBOARD}
-						navItems={navigationItems}
-						className="o-app--admin__sidebar"
-					/>
-					<Flex
-						className="o-app--admin__main u-flex-auto u-scroll"
-						orientation="vertical"
-					>
-						{renderAdminRoutes(userPermissions)}
-					</Flex>
-				</ResizablePanels>
-			</div>
+			<HorizontalPageSplit className="m-resizable-panels" widths={['300px', '*']}>
+				<Sidebar
+					headerLink={ADMIN_PATH.DASHBOARD}
+					navItems={navigationItems}
+					className="o-app--admin__sidebar"
+				/>
+				<Flex className="o-app--admin__main u-flex-auto u-scroll" orientation="vertical">
+					{renderAdminRoutes(userPermissions)}
+				</Flex>
+			</HorizontalPageSplit>
 		);
 	};
 

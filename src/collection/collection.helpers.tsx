@@ -341,6 +341,9 @@ export const cleanCollectionBeforeSave = (
 		'profile',
 		'updated_by',
 		'collection_labels',
+		'lom_typical_age_range',
+		'lom_context',
+		'lom_classification',
 		'relations',
 		'id',
 		'management',
@@ -354,10 +357,6 @@ export const cleanCollectionBeforeSave = (
 		'contributors',
 	];
 	const cleanCollection = omit(collection, propertiesToDelete);
-
-	// Rename lom_typical_age_range to lom_typicalagerange since graphql has a different naming from elasticsearch
-	(cleanCollection as any).lom_typicalagerange = cleanCollection.lom_typical_age_range;
-	delete cleanCollection.lom_typical_age_range;
 
 	return cleanCollection;
 };

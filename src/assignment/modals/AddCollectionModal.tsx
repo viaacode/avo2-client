@@ -137,7 +137,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			const columnDataType: TableColumnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
 
-			let collections: Collection[];
+			let collections: Partial<Avo.Collection.Collection>[];
 			if (activeView === AddCollectionTab.myCollections) {
 				collections = await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
 					user,
@@ -167,7 +167,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					filterString
 				);
 			}
-			setCollections(collections);
+			setCollections(collections as unknown as Collection[]);
 		} catch (err) {
 			console.error(new CustomError('Failed to get collections', err));
 			setLoadingInfo({
@@ -215,7 +215,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			);
 			return;
 		}
-		addCollectionCallback && addCollectionCallback(selectedCollectionId, createWithDescription);
+		addCollectionCallback?.(selectedCollectionId, createWithDescription);
 		resetStateAndCallOnClose();
 	};
 
