@@ -168,7 +168,7 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & Us
 									label={tText(
 										'assignment/modals/publish-assignment-modal___annuleren'
 									)}
-									onClick={() => onClose()}
+									onClick={() => closeModal(assignment)}
 								/>
 								<Button
 									type="primary"
