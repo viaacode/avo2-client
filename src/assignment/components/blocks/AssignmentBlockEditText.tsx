@@ -6,7 +6,7 @@ import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptio
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { EditBlockProps } from '../../assignment.types';
 
-export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock }) => {
+export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock, onFocus }) => {
 	const { tText } = useTranslation();
 
 	return (
@@ -42,6 +42,7 @@ export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock })
 						custom_description: value.toHTML(),
 					}),
 			}}
+			onFocus={onFocus}
 		/>
 	);
 };

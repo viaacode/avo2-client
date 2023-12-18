@@ -41,11 +41,12 @@ export interface AssignmentDetailsFormEditableProps {
 	assignment: Partial<AssignmentFields>;
 	setAssignment: Dispatch<SetStateAction<AssignmentFields>>;
 	setValue: UseFormSetValue<AssignmentFields>;
+	onFocus?: () => void;
 }
 
 const AssignmentDetailsFormEditable: FC<
 	AssignmentDetailsFormEditableProps & UserProps & DefaultProps
-> = ({ assignment, setAssignment, setValue, className, style, commonUser }) => {
+> = ({ assignment, setAssignment, setValue, className, style, commonUser, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const getId = useCallback(
@@ -268,6 +269,7 @@ const AssignmentDetailsFormEditable: FC<
 												} as AssignmentFields);
 											}}
 											value={assignment.answer_url || undefined}
+											onFocus={onFocus}
 										/>
 										<p className="c-form-help-text">
 											{tText(
