@@ -712,7 +712,13 @@ const AssignmentDetail: FC<
 	const renderHeader = () => {
 		if (assignment) {
 			return (
-				<Header title={assignment.title || ''} category="assignment" showMetaData>
+				<Header
+					title={assignment.title || ''}
+					category="assignment"
+					showMetaData
+					bookmarks={String(bookmarkViewCounts.bookmarkCount || 0)}
+					views={String(bookmarkViewCounts.viewCount || 0)}
+				>
 					<HeaderMiddleRowRight>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderMiddleRowRight>
