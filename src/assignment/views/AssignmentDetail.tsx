@@ -6,6 +6,7 @@ import {
 	Grid,
 	Header,
 	HeaderBottomRowLeft,
+	HeaderBottomRowRight,
 	HeaderMiddleRowRight,
 	IconName,
 	isUuid,
@@ -646,7 +647,6 @@ const AssignmentDetail: FC<
 						/>
 					)}
 				</Spacer>
-				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
 	};
@@ -712,13 +712,26 @@ const AssignmentDetail: FC<
 	const renderHeader = () => {
 		if (assignment) {
 			return (
-				<Header title={assignment.title || ''} category="assignment" showMetaData>
+				<Header
+					title={assignment.title || ''}
+					category="assignment"
+					showMetaData
+					className={'c-assignment-detail--header'}
+				>
 					<HeaderMiddleRowRight>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderMiddleRowRight>
 					<HeaderBottomRowLeft>
-						<HeaderOwnerAndContributors subject={assignment} user={user} />
+						<Spacer margin={'bottom-large'}>
+							<HeaderOwnerAndContributors subject={assignment} user={user} />
+						</Spacer>
 					</HeaderBottomRowLeft>
+
+					<HeaderBottomRowRight>
+						<Spacer margin={'top-small'}>
+							<InteractiveTour showButton />
+						</Spacer>
+					</HeaderBottomRowRight>
 				</Header>
 			);
 		}

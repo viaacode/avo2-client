@@ -1485,6 +1485,7 @@ const CollectionDetail: FunctionComponent<
 						showMetaData
 						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
 						views={String(bookmarkViewPlayCounts.viewCount || 0)}
+						className="c-header--bottom-row"
 					>
 						{!showLoginPopup && (
 							<HeaderMiddleRowRight>
@@ -1495,12 +1496,14 @@ const CollectionDetail: FunctionComponent<
 						)}
 
 						<HeaderBottomRowLeft>
-							<div className="u-flex-space-between">
-								<HeaderOwnerAndContributors
-									subject={collection}
-									user={user as Avo.User.User}
-								/>
-							</div>
+							<Spacer margin={'bottom-large'}>
+								<div className="u-flex-space-between">
+									<HeaderOwnerAndContributors
+										subject={collection}
+										user={user as Avo.User.User}
+									/>
+								</div>
+							</Spacer>
 						</HeaderBottomRowLeft>
 						{!showLoginPopup && (
 							<HeaderBottomRowRight>

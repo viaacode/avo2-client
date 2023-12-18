@@ -10,6 +10,7 @@ import {
 	Grid,
 	Header,
 	HeaderBottomRowLeft,
+	HeaderBottomRowRight,
 	HeaderContentType,
 	HeaderMiddleRowRight,
 	Icon,
@@ -877,41 +878,49 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 										label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
 									})}
 							</MetaData>
-							{renderInteractiveTour?.()}
 						</ButtonToolbar>
 					</HeaderMiddleRowRight>
 					<HeaderBottomRowLeft>
-						<MetaData category={englishContentType}>
-							{!!get(item, 'organisation.name') && (
-								<MetaDataItem>
-									<p className="c-body-2 u-text-muted">
-										{renderSearchLink(item.organisation.name, {
-											filters: { provider: [item.organisation.name] },
-										})}
-									</p>
-								</MetaDataItem>
-							)}
-							{!!item.issued && (
-								<MetaDataItem>
-									<p className="c-body-2 u-text-muted">
-										{`${tText(
-											'item/views/item-detail___uitgezonden-op'
-										)} ${reorderDate(item.issued || null, '/')}`}
-									</p>
-								</MetaDataItem>
-							)}
-							{!!item.series && (
-								<MetaDataItem>
-									<p className="c-body-2 u-text-muted">
-										<span>{`${tText('item/views/item-detail___reeks')} `}</span>
-										{renderSearchLink(item.series, {
-											filters: { serie: [item.series] },
-										})}
-									</p>
-								</MetaDataItem>
-							)}
-						</MetaData>
+						<Spacer margin={'bottom-large'}>
+							<MetaData category={englishContentType}>
+								{!!get(item, 'organisation.name') && (
+									<MetaDataItem>
+										<p className="c-body-2 u-text-muted">
+											{renderSearchLink(item.organisation.name, {
+												filters: { provider: [item.organisation.name] },
+											})}
+										</p>
+									</MetaDataItem>
+								)}
+								{!!item.issued && (
+									<MetaDataItem>
+										<p className="c-body-2 u-text-muted">
+											{`${tText(
+												'item/views/item-detail___uitgezonden-op'
+											)} ${reorderDate(item.issued || null, '/')}`}
+										</p>
+									</MetaDataItem>
+								)}
+								{!!item.series && (
+									<MetaDataItem>
+										<p className="c-body-2 u-text-muted">
+											<span>{`${tText(
+												'item/views/item-detail___reeks'
+											)} `}</span>
+											{renderSearchLink(item.series, {
+												filters: { serie: [item.series] },
+											})}
+										</p>
+									</MetaDataItem>
+								)}
+							</MetaData>
+						</Spacer>
 					</HeaderBottomRowLeft>
+					{renderInteractiveTour?.() && (
+						<HeaderBottomRowRight>
+							<Spacer margin={'top-small'}>{renderInteractiveTour()}</Spacer>
+						</HeaderBottomRowRight>
+					)}
 				</Header>
 				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">
