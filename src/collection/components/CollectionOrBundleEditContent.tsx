@@ -18,11 +18,12 @@ interface CollectionOrBundleEditContentProps {
 	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditContent: FunctionComponent<
 	CollectionOrBundleEditContentProps & UserProps
-> = ({ type, collection, changeCollectionState, user, commonUser }) => {
+> = ({ type, collection, changeCollectionState, user, commonUser, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -326,6 +327,7 @@ const CollectionOrBundleEditContent: FunctionComponent<
 							}
 							return null;
 						}}
+						onFocus={onFocus}
 					/>
 				))}
 			</Container>

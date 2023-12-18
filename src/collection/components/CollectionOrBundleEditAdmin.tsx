@@ -61,11 +61,12 @@ interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 	history: RouteComponentProps['history'];
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditAdmin: FunctionComponent<
 	CollectionOrBundleEditAdminProps & UserProps
-> = ({ collection, changeCollectionState, history, user }) => {
+> = ({ collection, changeCollectionState, history, user, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -420,6 +421,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 														collectionPropValue: newBriefing,
 													})
 												}
+												onFocus={onFocus}
 											/>
 										</FormGroup>
 									)}
