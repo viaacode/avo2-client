@@ -43,6 +43,7 @@ query getCollections(
 			views
 			copies
 			quick_lane_links
+			contributors
 		}
 		loms {
 			lom {

@@ -36,10 +36,11 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { StringParam, useQueryParam } from 'use-query-params';
 
+import { ITEMS_PATH } from '../../admin/items/items.const';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -108,7 +109,6 @@ import {
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
-
 import './ItemDetail.scss';
 
 interface ItemDetailProps {
@@ -785,6 +785,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 								setIsQuickLaneModalOpen(true);
 							}}
 						/>
+					)}
+					{PermissionService.hasPerm(user, PermissionName.VIEW_ITEMS_OVERVIEW) && (
+						<Link to={buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid })}>
+							<Button
+								className="c-button-link"
+								type="tertiary"
+								icon={IconName.settings}
+								label={tText('item/views/item-detail___media-item-beheren')}
+								ariaLabel={tText('item/views/item-detail___media-item-beheren')}
+								title={tText('item/views/item-detail___media-item-beheren')}
+							/>
+						</Link>
 					)}
 				</div>
 

@@ -11,6 +11,8 @@ $c-spinner-fullscreen-holder-bg: rgba(#000, 0.5);
 $c-video-player-progress-inner-bg: $color-teal-bright;
 
 .c-video-player {
+	display: flex;
+	flex-direction: column;
 	position: relative;
 	border-radius: 0.4rem;
 	overflow: hidden;

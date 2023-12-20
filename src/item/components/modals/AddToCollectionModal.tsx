@@ -165,6 +165,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 		try {
 			const fragment = await getFragment(collection);
 			delete fragment.item_meta;
+			fragment.position = collection.collection_fragments?.length || 0;
 			await CollectionService.insertFragments(collection.id as string, [
 				fragment as Avo.Collection.Fragment,
 			]);

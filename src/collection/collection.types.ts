@@ -93,9 +93,10 @@ export interface BlockItemComponent {
 	block?: Avo.Core.BlockItemBase;
 }
 
-export enum CollectionAction {
+export enum CollectionMenuAction {
 	duplicate = 'duplicate',
 	addToBundle = 'addToBundle',
+	addItemById = 'addItemById',
 	delete = 'delete',
 	openShareThroughEmail = 'openShareThroughEmail',
 	openPublishCollectionModal = 'openPublishCollectionModal',
@@ -106,4 +107,8 @@ export enum CollectionAction {
 	openQuickLane = 'openQuickLane',
 	openAutoplayCollectionModal = 'openAutoplayCollectionModal',
 	share = 'share',
+	redirectToDetail = 'redirectToDetail',
+	save = 'save',
+	openPublishModal = 'openPublishModal',
+	rename = 'rename',
 }

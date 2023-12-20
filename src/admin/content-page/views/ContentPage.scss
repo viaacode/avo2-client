@@ -15,10 +15,6 @@ $c-admin-core-add-content-block-height: 7rem;
 		height: calc(100vh - $c-admin-core-header - $c-admin-core-content-metadata-bar);
 	}
 
-	.m-resizable-panels > div > div:not(.resizable-fragment) {
-		height: auto !important;
-	}
-
 	.c-content-edit-view__sidebar {
 		.o-sidebar__content .c-scrollable {
 			height: calc(100vh - $c-admin-core-header - $c-admin-core-content-metadata-bar - $c-admin-core-add-content-block-height);
