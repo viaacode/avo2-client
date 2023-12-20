@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 declare const document: any;
 
@@ -16,28 +16,19 @@ export async function goToPageAndAcceptCookies(
 		timeout: 10000,
 	});
 
-	// await page.waitForFunction(() => document.title === 'wacht effe', title, {
-	// 	timeout: 500000,
-	// });
+	// Check navbar exists
+	await expect(page.getByRole('link', { name: 'Projecten' })).toBeVisible();
 
-	// Check if cookiebot opens
-	// const cookiebotDialog = page.locator('#CybotCookiebotDialogBody');
+	// Check cookiebot opens
+	await expect(
+		page.getByRole('heading', { name: 'Deze website maakt gebruik van cookies' })
+	).toBeVisible();
 
-	// if ((await cookiebotDialog.count()) > 0) {
-	// 	if (whichCookies === 'selection') {
-	// 		// Accept selected cookies
-	// 		await page
-	// 			.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowallSelection')
-	// 			.click();
-	// 	} else {
-	// 		// Accept selected cookies
-	// 		await page.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll').click();
-	// 	}
-	// }
-
-	// wait for animation
-	await page.waitForTimeout(1000);
+	// Accept all cookies
 	await page.getByRole('link', { name: 'Alle cookies toestaan' }).click();
-	// wait for animation
-	await page.waitForTimeout(1000);
+
+	// Check if cookiebot disappeared
+	await expect(
+		page.getByRole('heading', { name: 'Deze website maakt gebruik van cookies' })
+	).not.toBeVisible();
 }

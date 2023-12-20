@@ -1,6 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
+ * to run tests: npm run test:e2e:debug
+ * from /tests directory
+ *
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
@@ -28,7 +31,7 @@ export default defineConfig({
 			// slowMo: 100 /* TODO disable after recording all videos */,
 		},
 		contextOptions: {
-			recordVideo: { dir: 'videos/' } /* TODO disable in production */,
+			//recordVideo: { dir: 'videos/' } /* TODO disable in production */,
 		},
 		/* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
 		actionTimeout: 0,
