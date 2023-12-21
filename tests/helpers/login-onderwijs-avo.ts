@@ -12,7 +12,7 @@ export async function loginOnderwijsAvo(
 	await page.goto(url);
 
 	// Check navbar exists, not logged in
-	await expect(page.getByRole('link', { name: 'Projecten' })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Projecten', exact: true })).toBeVisible();
 	await expect(page.getByText('Inloggen', { exact: true })).toBeVisible();
 	await expect(page.getByRole('link', { name: 'Mijn werkruimte' })).not.toBeVisible();
 

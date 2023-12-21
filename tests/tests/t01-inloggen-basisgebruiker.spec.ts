@@ -15,10 +15,7 @@ test('T01: Inloggen basisgebruiker', async ({ page, context }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
-		// INT
-		//'Audiovisuele beeldbank voor leerkrachten | Het Archief voor Onderwijs'
-		// QAS
-		'Audiovisuele beeldbank | Het Archief voor Onderwijs'
+		process.env.TEST_CLIENT_TITLE as string
 	);
 
 	await loginOnderwijsAvo(
