@@ -17,7 +17,7 @@ test('T09: Nieuws - klikken op pills', async ({ page, context }) => {
 		process.env.TEST_CLIENT_TITLE as string
 	);
 
-	// Click log in button
+	// Click nieuws button
 	await page.getByRole('link', { name: 'Nieuws', exact: true }).click();
 
 	// Check Nieuws page opens
