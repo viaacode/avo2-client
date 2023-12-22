@@ -12,7 +12,8 @@
     "test:e2e:debug:t01": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t01-inloggen-basisgebruiker.spec.ts",
     "test:e2e:debug:t02": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t02-nieuw-account-aanmaken.spec.ts",
     "test:e2e:debug:t09": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t09-nieuws-klikken-op-pills.spec.ts",
-    "test:e2e:debug:t12": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t12-zoeken-zoeken-op-keyword.spec"
+    "test:e2e:debug:t12": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t12-zoeken-zoeken-op-keyword.spec",
+    "test:e2e:debug:t26": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t26-fragment-detail-knip-en-voeg-toe-aan-nieuwe-collectie.spec"
   },
   "keywords": [],
   "author": "",
