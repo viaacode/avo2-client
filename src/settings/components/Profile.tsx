@@ -122,7 +122,17 @@ const Profile: FunctionComponent<
 
 	const isExceptionAccount = commonUser?.isException || false;
 
-	const isPupil = commonUser.userGroup?.id === SpecialUserGroup.Pupil;
+	const isPupil = commonUser?.userGroup?.id === SpecialUserGroup.Pupil;
+
+	const isThemeRequired = () => {
+		if (commonUser?.userGroup?.id === SpecialUserGroup.TeacherSecondary) {
+			return false;
+		}
+		return (
+			!!commonUser?.permissions?.includes(PermissionName.REQUIRED_THEME_ON_PROFILE_PAGE) &&
+			!isExceptionAccount
+		);
+	};
 
 	useEffect(() => {
 		const tempUiPermissions = {
@@ -133,10 +143,7 @@ const Profile: FunctionComponent<
 				EDIT: !!commonUser?.permissions?.includes(
 					PermissionName.EDIT_THEME_ON_PROFILE_PAGE
 				),
-				REQUIRED:
-					!!commonUser?.permissions?.includes(
-						PermissionName.REQUIRED_THEME_ON_PROFILE_PAGE
-					) && !isExceptionAccount,
+				REQUIRED: isThemeRequired(),
 			},
 			SUBJECTS: {
 				VIEW: !!commonUser?.permissions?.includes(
@@ -260,7 +267,8 @@ const Profile: FunctionComponent<
 			filledIn = false;
 		}
 		if (
-			((uiPermissions.THEME.REQUIRED && uiPermissions.THEME.EDIT) || isCompleteProfileStep) &&
+			uiPermissions.THEME.REQUIRED &&
+			uiPermissions.THEME.EDIT &&
 			!groupedLoms.theme?.length
 		) {
 			errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
