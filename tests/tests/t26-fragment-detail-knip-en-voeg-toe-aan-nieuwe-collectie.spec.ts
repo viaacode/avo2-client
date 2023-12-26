@@ -48,8 +48,60 @@ test('T26: Fragment detail - Knip en voeg toe aan nieuwe collectie', async ({ pa
 	// Click cut and add to collection button
 	await page.click("button[aria-label='Knip of voeg toe aan collectie']");
 
-	// Wait for items to load
-	await page.waitForTimeout(5000);
+	// Check modal opens
+	await page.waitForTimeout(1000);
+	await expect(
+		page.getByRole('heading', { name: 'Voeg dit fragment toe aan een' })
+	).toContainText('Voeg dit fragment toe aan een collectie');
+
+	// Select new collection radiobutton
+	await page.getByLabel('Voeg toe aan een nieuwe').setChecked(true);
+
+	// Enter new collection title
+	const date = new Date();
+	const collectionTitle = 'Aangemaakt door automatische test ' + date;
+	await page.fill("input[placeHolder='Collectietitel']", collectionTitle);
+
+	// Save
+	await page.getByRole('button', { name: 'Toepassen' }).click();
+
+	// Wait for saving
+	await page.waitForTimeout(1000);
+
+	// Check toast message was succesful
+	await expect(
+		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
+	).toContainText('Het fragment is toegevoegd aan de collectie in je Werkruimte.');
+
+	// Go to werkruimte
+	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+
+	// Check new collection is shown
+	// Slicing because title is cut off at 60 characters,
+	// and last 3 characters are swapped with periods
+	const collectionTitleInOverview = collectionTitle.slice(0, 57) + '...';
+
+	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
+
+	// Open options of the newly created collection
+	await page
+		.locator('tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__trigger > button')
+		.click();
+
+	// Click 'Verwijderen'
+	await page
+		.locator(
+			'tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__content-open > div > div:nth-child(3)'
+		)
+		.click();
+
+	// Confirm remove modal
+	await page.getByRole('button', { name: 'Verwijder' }).click();
+
+	// Check new collection is removed
+	await expect(page.getByRole('link', { name: collectionTitleInOverview })).not.toBeVisible();
+
+	await page.waitForTimeout(2000);
 
 	// // Wait for close to save the videos
 	// await context.close();
