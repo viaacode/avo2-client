@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
+import { goToVideoDetailPage } from '../helpers/go-to-video-detail-page';
 import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
 
 /**
@@ -11,7 +12,7 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  *
  */
 
-test('T28: Fragment detail - Voeg toe aan nieuwe opdracht', async ({ page, context }) => {
+test('T28: Fragment detail - Voeg toe aan nieuwe opdracht', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
@@ -25,25 +26,8 @@ test('T28: Fragment detail - Voeg toe aan nieuwe opdracht', async ({ page, conte
 		process.env.TEST_BASIS_GEBRUIKER_PASS as string
 	);
 
-	// Click search button
-	await page.getByRole('link', { name: 'Zoeken', exact: true }).click();
-
-	// Check Search page opens
-	await expect(page.getByRole('heading', { name: 'Zoekresultaten' })).toBeVisible();
-
-	// Select video checkbox and search
-	await page.getByRole('button', { name: 'Type' }).click();
-	await page.locator('#video').check();
-	await page.getByRole('button', { name: 'Toepassen' }).click();
-
-	// Wait for items to load
-	await page.waitForTimeout(2000);
-
-	// Click first item
-	await page.locator('h2.c-search-result__title > a').first().click();
-
-	// Check title contains test
-	await expect(page.locator('h2.c-item-detail__header')).toContainText('dag van de');
+	// Go to video detail page
+	await goToVideoDetailPage(page);
 
 	// Click add to assignment button
 	await page.getByRole('button', { name: 'Voeg toe aan opdracht' }).click();
