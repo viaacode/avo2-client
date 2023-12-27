@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test';
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
 import { goToVideoDetailPage } from '../helpers/go-to-video-detail-page';
 import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
+import { createCollection } from '../helpers/create-collection';
 
 /**
  * New: https://docs.google.com/spreadsheets/d/1IvhK0v0HSntCwTcXiFseHargwwWwpoCkDMjmMehaDMA/edit#gid=0
@@ -26,36 +27,7 @@ test('T26: Fragment detail - Knip en voeg toe aan nieuwe collectie', async ({ pa
 		process.env.TEST_BASIS_GEBRUIKER_PASS as string
 	);
 
-	// Go to video detail page
-	await goToVideoDetailPage(page);
-
-	// Click cut and add to collection button
-	await page.click("button[aria-label='Knip of voeg toe aan collectie']");
-
-	// Check modal opens
-	await page.waitForTimeout(1000);
-	await expect(
-		page.getByRole('heading', { name: 'Voeg dit fragment toe aan een' })
-	).toContainText('Voeg dit fragment toe aan een collectie');
-
-	// Select new collection radiobutton
-	await page.getByLabel('Voeg toe aan een nieuwe').setChecked(true);
-
-	// Enter new collection title
-	const date = new Date();
-	const collectionTitle = 'Aangemaakt door automatische test ' + date;
-	await page.fill("input[placeHolder='Collectietitel']", collectionTitle);
-
-	// Save
-	await page.getByRole('button', { name: 'Toepassen' }).click();
-
-	// Wait for saving
-	await page.waitForTimeout(1000);
-
-	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('Het fragment is toegevoegd aan de collectie in je Werkruimte.');
+	const collectionTitle = await createCollection(page);
 
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
