@@ -19,7 +19,8 @@
     "test:e2e:debug:t29": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t29-fragment-detail-voeg-toe-aan-nieuwe-opdracht-zonder-beschrijving.spec",
     "test:e2e:debug:t31": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t31-fragment-detail-sneldeellink-voor-leerling-met-beschrijving.spec",
     "test:e2e:debug:t39": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t39-werkruimte-collecties-voeg-toe-aan-nieuwe-opdracht.spec",
-    "test:e2e:debug:t41": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t41-werkruimte-collecties-detail-collectie-zet-publiek.spec"
+    "test:e2e:debug:t41": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t41-werkruimte-collecties-detail-collectie-zet-publiek.spec",
+    "test:e2e:debug:t43": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t43-werkruimte-collecties-detail-collectie-voeg-tekstblok-toe.spec"
   },
   "keywords": [],
   "author": "",
