@@ -12,7 +12,7 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  *
  */
 
-test('T43: Werkruimte - collecties: Detail collectie voeg tekstblok toe', async ({ page }) => {
+test('T47: Werkruimte - collecties: Detail collectie stel hoofdafbeelding in', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
@@ -27,6 +27,23 @@ test('T43: Werkruimte - collecties: Detail collectie voeg tekstblok toe', async 
 	);
 
 	const collectionTitle = await createCollection(page);
+
+	// Click search button
+	await page.getByRole('link', { name: 'Zoeken', exact: true }).click();
+
+	// Check Search page opens
+	await expect(page.getByRole('heading', { name: 'Zoekresultaten' })).toBeVisible();
+
+	// Select video checkbox and search
+	await page.getByRole('button', { name: 'Type' }).click();
+	await page.locator('#video').check();
+	await page.getByRole('button', { name: 'Toepassen' }).click();
+
+	// Wait for items to load
+	await page.waitForTimeout(2000);
+
+	// Click second item
+	await page.getByRole('link', { name: 'KLAAR: phishing' }).click();
 
 	// Add a second video to the same collection
 	await page.click("button[aria-label='Knip of voeg toe aan collectie']");
@@ -53,6 +70,7 @@ test('T43: Werkruimte - collecties: Detail collectie voeg tekstblok toe', async 
 
 	await page.waitForTimeout(1000);
 
+	// *UNDER CONSTRUCTION*
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 
@@ -69,58 +87,77 @@ test('T43: Werkruimte - collecties: Detail collectie voeg tekstblok toe', async 
 	// Edit collection
 	await page.getByRole('button', { name: 'Bewerken', exact: true }).click();
 
-	await page.waitForTimeout(1000);
-
-	// Click second Add block button
-	await page
-		.locator(
-			'div.c-sticky-bar__wrapper > div > div > div:nth-child(3) > div > div:nth-child(2) > button'
-		)
-		.click();
-
-	// Fill in title and description of text block
-	await page.fill(
-		'div.m-collection-or-bundle-edit-content.o-container-vertical > div > div:nth-child(4) > div.c-panel__body > div > div > div:nth-child(1) > div > input',
-		'Automatische test titel tekst blok'
+	// Click on publication details tab
+	await page.click(
+		'div.c-collection-or-bundle-edit > div.c-navbar.c-navbar--bordered-bottom.c-navbar--auto.c-navbar--bg-alt > div > nav > div:nth-child(2)'
 	);
-	await page.fill(
-		'div.DraftEditor-editorContainer > div[contenteditable="true"]',
-		'Automatische test beschrijving tekst blok'
-	);
+
+	// Check if Onderwijs input is visible
+	await expect(page.locator('#educationId')).toBeVisible();
+	// Check if Thema's input is visible
+	await expect(page.locator('#themeId')).toBeVisible();
+	// Check if Vakken input is visible
+	await expect(page.locator('#subjectId')).toBeVisible();
+	// Check if Korte beschrijving input is visible
+	await expect(page.locator('#shortDescriptionId')).toBeVisible();
+	// Check if 'Persoonlijke notities' input is visible
+	await expect(page.locator('#personalRemarkId')).toBeVisible();
+
+	// Click on Stel een hoofdafbeelding in
+	await page.getByRole('button', { name: 'Stel een hoofdafbeelding in', exact: true }).click();
+
+	// Select second still image
+	await page.locator('div.c-image-grid-selectable > div:nth-child(2)').click();
+
+	// Get the background url to check later
+	const stillImageStyle = await page
+		.locator('div.c-image-grid-selectable > div:nth-child(2)')
+		.getAttribute('style');
+
+	// Check second still image is selected
+	await expect(
+		page.locator('div.c-image-grid-selectable > div:nth-child(2).c-image-grid__item-selected')
+	).toBeVisible();
+
+	// Save
+	await page.getByRole('button', { name: 'Opslaan', exact: true }).click();
 
 	// Check if banner appeared
 	await expect(page.locator('div.c-sticky-bar')).toContainText('Wijzigingen opslaan?');
 
 	// Wait for toast
-	await page.waitForTimeout(2000);
+	await page.waitForTimeout(4000);
 
 	// Save changes
 	await page.getByRole('button', { name: 'Opslaan' }).click();
 
-	// Wait for toast
-	await page.waitForTimeout(2000);
+	await page.waitForTimeout(3000);
 
 	// Check toast message was succesful
 	await expect(
 		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
 	).toContainText('Collectie opgeslagen');
 
-	// Close edit mode
-	await page.getByRole('button', { name: 'Sluiten' }).click();
+	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 
-	// Check if text block is visible and as a second block
-	await expect(page.locator('ul.c-collection-list > li:nth-child(2) > div > h3')).toContainText(
-		'Automatische test titel tekst blok'
-	);
-	await expect(
-		page.locator('ul.c-collection-list > li:nth-child(2) > div > div > div > p')
-	).toContainText('Automatische test beschrijving tekst blok');
-	await page.waitForTimeout(3000);
+	// Get image from first row first column
+	const stillImageStyleWerkruimte = await page
+		.locator('tr:nth-child(1) > td:nth-child(1) > a > div > div.c-thumbnail-image')
+		.first()
+		.getAttribute('style');
+
+	// Check if same thumbnail image is used in overview as was selected
+	const containsBackgroundUrl =
+		stillImageStyle &&
+		stillImageStyleWerkruimte &&
+		stillImageStyle.includes(stillImageStyleWerkruimte);
+
+	expect(containsBackgroundUrl).toBeTruthy();
 
 	// CLEANUP
 	//REMOVE COLLECTION
-	// Go to werkruimte
-	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+	// // Go to werkruimte
+	// await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 
 	// Open options of the newly created collection
 	await page
