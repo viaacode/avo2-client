@@ -11,7 +11,7 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  *
  */
 
-test('T01: Inloggen basisgebruiker', async ({ page }) => {
+test('T50: Bundel detailpagina bezoeken', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
