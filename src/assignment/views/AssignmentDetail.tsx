@@ -6,6 +6,7 @@ import {
 	Grid,
 	Header,
 	HeaderBottomRowLeft,
+	HeaderBottomRowRight,
 	HeaderMiddleRowRight,
 	IconName,
 	isUuid,
@@ -646,7 +647,6 @@ const AssignmentDetail: FC<
 						/>
 					)}
 				</Spacer>
-				<InteractiveTour showButton />
 			</ButtonToolbar>
 		);
 	};
@@ -719,6 +719,9 @@ const AssignmentDetail: FC<
 					<HeaderBottomRowLeft>
 						<HeaderOwnerAndContributors subject={assignment} user={user} />
 					</HeaderBottomRowLeft>
+					<HeaderBottomRowRight>
+						<InteractiveTour showButton />
+					</HeaderBottomRowRight>
 				</Header>
 			);
 		}
