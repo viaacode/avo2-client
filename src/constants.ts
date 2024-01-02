@@ -53,6 +53,7 @@ export type RouteId =
 	| 'SETTINGS_EMAIL'
 	| 'SETTINGS_NOTIFICATIONS'
 	| 'SETTINGS_LINKS'
+	| 'EMAIL_PREFERENCES_LOGGED_OUT'
 	| 'COMPLETE_PROFILE'
 	| 'ACCEPT_CONDITIONS'
 	| 'COOKIE_POLICY'
@@ -271,6 +272,11 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	SETTINGS_NOTIFICATIONS: {
 		route: `/${ROUTE_PARTS.settings}/${ROUTE_PARTS.notifications}`,
+		showInContentPicker: true,
+		showForInteractiveTour: true,
+	},
+	EMAIL_PREFERENCES_LOGGED_OUT: {
+		route: `/${ROUTE_PARTS.emailPreferences}`,
 		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
