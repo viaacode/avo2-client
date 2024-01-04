@@ -64,4 +64,5 @@ export const ROUTE_PARTS = Object.freeze({
 	userGroup: 'gebruikersgroep',
 	workspace: 'werkruimte',
 	alerts: 'meldingen',
+	emailPreferences: 'email-voorkeuren',
 });
