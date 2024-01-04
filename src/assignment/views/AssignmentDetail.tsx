@@ -16,6 +16,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
@@ -52,6 +53,7 @@ import {
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
 import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
 	ObjectTypes,
@@ -96,13 +98,7 @@ const AssignmentDetail: FC<
 
 	// Data
 	const [assignment, setAssignment] = useState<Avo.Assignment.Assignment | null>(null);
-	const [permissions, setPermissions] = useState<AssignmentDetailPermissions>({
-		canCreateAssignments: false,
-		canEditAssignments: false,
-		canPublishAssignments: false,
-		canDeleteAnyAssignments: false,
-		canFetchBookmarkAndViewCounts: false,
-	});
+	const [permissions, setPermissions] = useState<AssignmentDetailPermissions | null>(null);
 	const [relatedAssignments, setRelatedAssignments] = useState<Avo.Search.ResultItem[] | null>(
 		null
 	);
@@ -110,7 +106,7 @@ const AssignmentDetail: FC<
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 	const { data: editStatuses } = useGetAssignmentsEditStatuses([assignmentId], {
-		enabled: !!permissions.canEditAssignments,
+		enabled: !!permissions?.canEditAssignments,
 		refetchInterval: EDIT_STATUS_REFETCH_TIME,
 		refetchIntervalInBackground: true,
 	});
@@ -300,15 +296,6 @@ const AssignmentDetail: FC<
 			try {
 				const permissionObj = await getPermissions(user, tempAssignment);
 				setPermissions(permissionObj);
-
-				if (permissionObj.canFetchBookmarkAndViewCounts) {
-					setBookmarkViewCounts(
-						await BookmarksViewsPlaysService.getAssignmentCounts(
-							tempAssignment.id as string,
-							user
-						)
-					);
-				}
 			} catch (err) {
 				setAssignmentError({
 					message: tHtml(
@@ -345,10 +332,49 @@ const AssignmentDetail: FC<
 		});
 	}, [assignment, assignmentId]);
 
+	const triggerEvents = useCallback(async () => {
+		// Do not trigger events when a search engine loads this page
+		if (assignmentId && user && permissions) {
+			trackEvents(
+				{
+					object: assignmentId,
+					object_type: 'assignment',
+					action: 'view',
+				},
+				user
+			);
+
+			BookmarksViewsPlaysService.action('view', 'assignment', assignmentId, user).then(noop);
+
+			if (permissions?.canFetchBookmarkAndViewCounts) {
+				try {
+					setBookmarkViewCounts(
+						await BookmarksViewsPlaysService.getAssignmentCounts(assignmentId, user)
+					);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to get getAssignmentCounts', err, {
+							uuid: assignmentId,
+						})
+					);
+					ToastService.danger(
+						tHtml('Het ophalen van het aantal keer bekeken gebookmarked is mislukt')
+					);
+				}
+			}
+		}
+	}, [tText, assignmentId, user, permissions]);
+
 	// Fetch initial data
 	useEffect(() => {
-		fetchAssignment();
+		fetchAssignment().then(noop);
 	}, [fetchAssignment]);
+
+	useEffect(() => {
+		if (assignment && permissions) {
+			triggerEvents().then(noop);
+		}
+	}, [assignment, permissions, triggerEvents]);
 
 	const toggleBookmark = async () => {
 		try {
@@ -514,21 +540,21 @@ const AssignmentDetail: FC<
 				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
 				IconName.copy,
-				permissions.canCreateAssignments || false
+				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.delete,
-				permissions.canDeleteAnyAssignments || isOwner
+				permissions?.canDeleteAnyAssignments || isOwner
 					? tText('assignment/views/assignment-detail___verwijderen')
 					: tText('assignment/views/assignment-detail___verwijder-mij-van-deze-opdracht'),
 				undefined,
-				permissions.canDeleteAnyAssignments || isOwner || isContributor || false
+				permissions?.canDeleteAnyAssignments || isOwner || isContributor || false
 			),
 		];
 
 		return (
 			<ButtonToolbar>
-				{(isOwner || isEditContributor || permissions.canEditAssignments) &&
+				{(isOwner || isEditContributor || permissions?.canEditAssignments) &&
 					!inviteToken && (
 						<ShareDropdown
 							contributors={transformContributorsToSimpleContributors(
@@ -582,7 +608,7 @@ const AssignmentDetail: FC<
 							isAssignmentExpired={isAssignmentExpired}
 						/>
 					)}
-				{permissions.canPublishAssignments && !inviteToken && (
+				{permissions?.canPublishAssignments && !inviteToken && (
 					<Button
 						type="secondary"
 						title={
@@ -657,13 +683,13 @@ const AssignmentDetail: FC<
 				AssignmentAction.edit,
 				tText('assignment/views/assignment-detail___bewerken'),
 				IconName.edit2,
-				permissions.canEditAssignments || isOwner || false
+				permissions?.canEditAssignments || isOwner || false
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.duplicate,
 				tText('collection/views/collection-detail___dupliceer'),
 				IconName.copy,
-				permissions.canCreateAssignments || false
+				permissions?.canCreateAssignments || false
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.toggleBookmark,
@@ -677,21 +703,21 @@ const AssignmentDetail: FC<
 					? tText('assignment/views/assignment-detail___maak-prive')
 					: tText('assignment/views/assignment-detail___publiceer'),
 				isPublic ? IconName.unlock3 : IconName.lock,
-				permissions.canPublishAssignments || false
+				permissions?.canPublishAssignments || false
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.share,
 				tText('assignment/views/assignment-detail___deel-opdracht'),
 				IconName.userGroup,
-				isOwner || isEditContributor || permissions.canEditAssignments || false
+				isOwner || isEditContributor || permissions?.canEditAssignments || false
 			),
 			...createDropdownMenuItem(
 				AssignmentAction.delete,
-				permissions.canDeleteAnyAssignments || isOwner
+				permissions?.canDeleteAnyAssignments || isOwner
 					? tText('assignment/views/assignment-detail___verwijderen')
 					: tText('assignment/views/assignment-detail___verwijder-mij-van-deze-opdracht'),
 				undefined,
-				permissions.canDeleteAnyAssignments || isOwner || isContributor || false
+				permissions?.canDeleteAnyAssignments || isOwner || isContributor || false
 			),
 		];
 

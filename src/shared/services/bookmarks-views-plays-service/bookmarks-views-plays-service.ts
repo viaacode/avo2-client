@@ -21,10 +21,14 @@ import {
 	GetItemBookmarksForUserQueryVariables,
 	GetItemBookmarkViewPlayCountsQuery,
 	GetItemBookmarkViewPlayCountsQueryVariables,
+	GetMultipleAssignmentViewCountsQuery,
+	GetMultipleAssignmentViewCountsQueryVariables,
 	GetMultipleCollectionViewCountsQuery,
 	GetMultipleCollectionViewCountsQueryVariables,
 	GetMultipleItemViewCountsQuery,
 	GetMultipleItemViewCountsQueryVariables,
+	IncrementAssignmentViewsMutation,
+	IncrementAssignmentViewsMutationVariables,
 	IncrementCollectionPlaysMutation,
 	IncrementCollectionPlaysMutationVariables,
 	IncrementCollectionViewsMutation,
@@ -45,6 +49,7 @@ import {
 	GetCollectionBookmarkViewPlayCountsDocument,
 	GetItemBookmarksForUserDocument,
 	GetItemBookmarkViewPlayCountsDocument,
+	GetMultipleAssignmentViewCountsDocument,
 	GetMultipleCollectionViewCountsDocument,
 	GetMultipleItemViewCountsDocument,
 } from '../../generated/graphql-db-react-query';
@@ -393,15 +398,21 @@ export class BookmarksViewsPlaysService {
 	): Promise<{ [uuid: string]: number }> {
 		const variables:
 			| GetMultipleItemViewCountsQueryVariables
-			| GetMultipleCollectionViewCountsQueryVariables = { uuids: contentIds };
+			| GetMultipleCollectionViewCountsQueryVariables
+			| GetMultipleAssignmentViewCountsQueryVariables = { uuids: contentIds };
 		const response = await dataService.query<
-			GetMultipleItemViewCountsQuery | GetMultipleCollectionViewCountsQuery,
-			GetMultipleItemViewCountsQueryVariables | GetMultipleCollectionViewCountsQueryVariables
+			| GetMultipleItemViewCountsQuery
+			| GetMultipleCollectionViewCountsQuery
+			| GetMultipleAssignmentViewCountsQuery,
+			| GetMultipleItemViewCountsQueryVariables
+			| GetMultipleCollectionViewCountsQueryVariables
+			| GetMultipleAssignmentViewCountsQueryVariables
 		>({
-			query:
-				type === 'item'
-					? GetMultipleItemViewCountsDocument
-					: GetMultipleCollectionViewCountsDocument,
+			query: {
+				item: GetMultipleItemViewCountsDocument,
+				collection: GetMultipleCollectionViewCountsDocument,
+				assignment: GetMultipleAssignmentViewCountsDocument,
+			}[type],
 			variables,
 		});
 		const items = response.items;
@@ -429,10 +440,12 @@ export class BookmarksViewsPlaysService {
 				| IncrementItemViewsMutation
 				| IncrementCollectionViewsMutation
 				| IncrementCollectionPlaysMutation,
+				| IncrementAssignmentViewsMutation
 				| IncrementItemPlaysMutationVariables
 				| IncrementItemViewsMutationVariables
 				| IncrementCollectionViewsMutationVariables
 				| IncrementCollectionPlaysMutationVariables
+				| IncrementAssignmentViewsMutationVariables
 			>({
 				query,
 				variables,
@@ -473,7 +486,6 @@ export class BookmarksViewsPlaysService {
 	 *       }
 	 *     }
 	 */
-
 	public static async getBookmarkStatuses(
 		profileId: string,
 		objectInfos: BookmarkRequestInfo[]

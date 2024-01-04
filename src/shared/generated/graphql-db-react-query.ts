@@ -4095,6 +4095,27 @@ export const useGetAssignmentBookmarkViewCountsQuery = <
       fetchData<GetAssignmentBookmarkViewCountsQuery, GetAssignmentBookmarkViewCountsQueryVariables>(GetAssignmentBookmarkViewCountsDocument, variables),
       options
     );
+export const GetAssignmentViewCountDocument = `
+    query getAssignmentViewCount($assignmentUuid: uuid!) {
+  app_assignments_v2(where: {id: {_eq: $assignmentUuid}}) {
+    view_count {
+      count
+    }
+  }
+}
+    `;
+export const useGetAssignmentViewCountQuery = <
+      TData = GetAssignmentViewCountQuery,
+      TError = unknown
+    >(
+      variables: GetAssignmentViewCountQueryVariables,
+      options?: UseQueryOptions<GetAssignmentViewCountQuery, TError, TData>
+    ) =>
+    useQuery<GetAssignmentViewCountQuery, TError, TData>(
+      ['getAssignmentViewCount', variables],
+      fetchData<GetAssignmentViewCountQuery, GetAssignmentViewCountQueryVariables>(GetAssignmentViewCountDocument, variables),
+      options
+    );
 export const GetBookmarkStatusesDocument = `
     query getBookmarkStatuses($profileId: uuid!, $itemUuids: [uuid!]!, $collectionUuids: [uuid!]!, $assignmentUuids: [uuid!]!) {
   app_collection_bookmarks(
@@ -4395,6 +4416,26 @@ export const useGetItemViewCountQuery = <
       fetchData<GetItemViewCountQuery, GetItemViewCountQueryVariables>(GetItemViewCountDocument, variables),
       options
     );
+export const GetMultipleAssignmentViewCountsDocument = `
+    query getMultipleAssignmentViewCounts($uuids: [uuid!]) {
+  items: app_assignment_v2_views(where: {assignment_uuid: {_in: $uuids}}) {
+    count
+    id: assignment_uuid
+  }
+}
+    `;
+export const useGetMultipleAssignmentViewCountsQuery = <
+      TData = GetMultipleAssignmentViewCountsQuery,
+      TError = unknown
+    >(
+      variables?: GetMultipleAssignmentViewCountsQueryVariables,
+      options?: UseQueryOptions<GetMultipleAssignmentViewCountsQuery, TError, TData>
+    ) =>
+    useQuery<GetMultipleAssignmentViewCountsQuery, TError, TData>(
+      variables === undefined ? ['getMultipleAssignmentViewCounts'] : ['getMultipleAssignmentViewCounts', variables],
+      fetchData<GetMultipleAssignmentViewCountsQuery, GetMultipleAssignmentViewCountsQueryVariables>(GetMultipleAssignmentViewCountsDocument, variables),
+      options
+    );
 export const GetMultipleCollectionViewCountsDocument = `
     query getMultipleCollectionViewCounts($uuids: [uuid!]) {
   items: app_collection_views(where: {collection_uuid: {_in: $uuids}}) {
@@ -4433,6 +4474,25 @@ export const useGetMultipleItemViewCountsQuery = <
     useQuery<GetMultipleItemViewCountsQuery, TError, TData>(
       variables === undefined ? ['getMultipleItemViewCounts'] : ['getMultipleItemViewCounts', variables],
       fetchData<GetMultipleItemViewCountsQuery, GetMultipleItemViewCountsQueryVariables>(GetMultipleItemViewCountsDocument, variables),
+      options
+    );
+export const IncrementAssignmentViewsDocument = `
+    mutation incrementAssignmentViews($assignmentUuid: uuid!) {
+  update_app_assignment_v2_views(
+    where: {assignment_uuid: {_eq: $assignmentUuid}}
+    _inc: {count: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementAssignmentViewsMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementAssignmentViewsMutation, TError, IncrementAssignmentViewsMutationVariables, TContext>) =>
+    useMutation<IncrementAssignmentViewsMutation, TError, IncrementAssignmentViewsMutationVariables, TContext>(
+      ['incrementAssignmentViews'],
+      (variables?: IncrementAssignmentViewsMutationVariables) => fetchData<IncrementAssignmentViewsMutation, IncrementAssignmentViewsMutationVariables>(IncrementAssignmentViewsDocument, variables)(),
       options
     );
 export const IncrementCollectionPlaysDocument = `

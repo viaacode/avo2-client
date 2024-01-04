@@ -989,6 +989,13 @@ export type GetAssignmentBookmarkViewCountsQueryVariables = Exact<{
 
 export type GetAssignmentBookmarkViewCountsQuery = { __typename?: 'query_root', app_assignments_v2_bookmarks_aggregate: { __typename?: 'app_assignments_v2_bookmarks_aggregate', aggregate?: { __typename?: 'app_assignments_v2_bookmarks_aggregate_fields', count: number } | null }, app_assignment_v2_views: Array<{ __typename?: 'app_assignment_v2_views', count: number }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', id: any }> };
 
+export type GetAssignmentViewCountQueryVariables = Exact<{
+  assignmentUuid: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentViewCountQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null }> };
+
 export type GetBookmarkStatusesQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   itemUuids: Array<Scalars['uuid']> | Scalars['uuid'];
@@ -1059,6 +1066,13 @@ export type GetItemViewCountQueryVariables = Exact<{
 
 export type GetItemViewCountQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, view_counts: Array<{ __typename?: 'app_item_views', count?: number | null }> }> };
 
+export type GetMultipleAssignmentViewCountsQueryVariables = Exact<{
+  uuids?: InputMaybe<Array<Scalars['uuid']> | Scalars['uuid']>;
+}>;
+
+
+export type GetMultipleAssignmentViewCountsQuery = { __typename?: 'query_root', items: Array<{ __typename?: 'app_assignment_v2_views', count: number, id: any }> };
+
 export type GetMultipleCollectionViewCountsQueryVariables = Exact<{
   uuids?: InputMaybe<Array<Scalars['uuid']> | Scalars['uuid']>;
 }>;
@@ -1072,6 +1086,13 @@ export type GetMultipleItemViewCountsQueryVariables = Exact<{
 
 
 export type GetMultipleItemViewCountsQuery = { __typename?: 'query_root', items: Array<{ __typename?: 'app_item_views', count?: number | null, id?: any | null }> };
+
+export type IncrementAssignmentViewsMutationVariables = Exact<{
+  assignmentUuid: Scalars['uuid'];
+}>;
+
+
+export type IncrementAssignmentViewsMutation = { __typename?: 'mutation_root', update_app_assignment_v2_views?: { __typename?: 'app_assignment_v2_views_mutation_response', affected_rows: number } | null };
 
 export type IncrementCollectionPlaysMutationVariables = Exact<{
   collectionUuid: Scalars['uuid'];
