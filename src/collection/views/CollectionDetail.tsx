@@ -1504,9 +1504,7 @@ const CollectionDetail: FunctionComponent<
 						</HeaderBottomRowLeft>
 						{!showLoginPopup && (
 							<HeaderBottomRowRight>
-								<Spacer margin={'top-small'}>
-									<InteractiveTour showButton />
-								</Spacer>
+								<InteractiveTour showButton />
 							</HeaderBottomRowRight>
 						)}
 					</Header>
