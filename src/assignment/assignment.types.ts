@@ -118,6 +118,7 @@ export interface PupilSearchFilterState extends FilterState {
 export interface EditBlockProps {
 	block: EditableAssignmentBlock;
 	setBlock: (updatedBlock: EditableAssignmentBlock) => void;
+	onFocus?: () => void;
 }
 
 export type EditableAssignmentBlock = Avo.Assignment.Block &
