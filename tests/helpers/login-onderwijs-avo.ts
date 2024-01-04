@@ -1,7 +1,5 @@
 import { expect, Page } from '@playwright/test';
 
-declare const document: any;
-
 export async function loginOnderwijsAvo(
 	page: Page,
 	url: string = process.env.TEST_CLIENT_ENDPOINT as string,
