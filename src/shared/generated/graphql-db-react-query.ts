@@ -1737,7 +1737,7 @@ export const useGetAssignmentResponsesByAssignmentIdQuery = <
       options
     );
 export const GetAssignmentWithResponseDocument = `
-    query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!, $profileId: uuid!) {
+    query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
   app_assignments_v2(
     where: {id: {_eq: $assignmentId}, is_deleted: {_eq: false}}
     order_by: [{deadline_at: desc}]
@@ -1778,10 +1778,7 @@ export const GetAssignmentWithResponseDocument = `
         }
       }
     }
-    labels(
-      order_by: {assignment_label: {label: asc}}
-      where: {assignment_label: {owner_profile_id: {_eq: $profileId}}}
-    ) {
+    labels(order_by: {assignment_label: {label: asc}}) {
       id
       assignment_label {
         color_enum_value
