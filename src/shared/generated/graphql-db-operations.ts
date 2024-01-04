@@ -90,7 +90,7 @@ export type GetCollectionsQueryVariables = Exact<{
 }>;
 
 
-export type GetCollectionsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, type_id: number, title: string, description?: string | null, is_public: boolean, is_managed?: boolean | null, created_at: any, updated_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null, group_id?: number | null, group_name?: string | null, profile_id?: any | null, user_id?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null } | null, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null, user_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, counts?: { __typename?: 'app_collection_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, views?: number | null, copies?: any | null, quick_lane_links?: any | null } | null, loms: Array<{ __typename?: 'app_collections_lom_links', lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, id?: string | null, label?: string | null, scheme?: string | null } | null }> }>, app_collections_aggregate: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null } };
+export type GetCollectionsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, type_id: number, title: string, description?: string | null, is_public: boolean, is_managed?: boolean | null, created_at: any, updated_at: any, owner?: { __typename?: 'users_summary_view', full_name?: string | null, group_id?: number | null, group_name?: string | null, profile_id?: any | null, user_id?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null } | null, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null, user_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, counts?: { __typename?: 'app_collection_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, views?: number | null, copies?: any | null, quick_lane_links?: any | null, contributors?: any | null } | null, loms: Array<{ __typename?: 'app_collections_lom_links', lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, id?: string | null, label?: string | null, scheme?: string | null } | null }> }>, app_collections_aggregate: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null } };
 
 export type GetCollectionsByIdsQueryVariables = Exact<{
   where: App_Collections_Bool_Exp;
@@ -156,7 +156,7 @@ export type GetItemByUuidQueryVariables = Exact<{
 }>;
 
 
-export type GetItemByUuidQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', thumbnail_path: string, created_at?: any | null, depublish_at?: any | null, depublish_reason?: string | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, uid: any, is_deleted?: boolean | null, is_published?: boolean | null, issued?: any | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, title: string, updated_at?: any | null, note?: string | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, relations: Array<{ __typename?: 'app_item_relations_view', object?: any | null, subject?: any | null, predicate?: string | null, created_at?: any | null, updated_at?: any | null }>, item_collaterals: Array<{ __typename?: 'app_item_collateral', path?: string | null, description?: string | null, external_id: string }>, view_counts_aggregate: { __typename?: 'app_item_views_aggregate', aggregate?: { __typename?: 'app_item_views_aggregate_fields', sum?: { __typename?: 'app_item_views_sum_fields', count?: number | null } | null } | null } }> };
+export type GetItemByUuidQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', thumbnail_path: string, created_at?: any | null, depublish_at?: any | null, depublish_reason?: string | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, uid: any, is_deleted?: boolean | null, is_published?: boolean | null, issued?: any | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, title: string, updated_at?: any | null, note?: string | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null, overlay: boolean } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, relations: Array<{ __typename?: 'app_item_relations_view', object?: any | null, subject?: any | null, predicate?: string | null, created_at?: any | null, updated_at?: any | null }>, item_collaterals: Array<{ __typename?: 'app_item_collateral', path?: string | null, description?: string | null, external_id: string }>, view_counts_aggregate: { __typename?: 'app_item_views_aggregate', aggregate?: { __typename?: 'app_item_views_aggregate_fields', sum?: { __typename?: 'app_item_views_sum_fields', count?: number | null } | null } | null } }> };
 
 export type GetItemDepublishReasonByExternalIdQueryVariables = Exact<{
   externalId: Scalars['bpchar'];
@@ -170,7 +170,7 @@ export type GetItemsByExternalIdQueryVariables = Exact<{
 }>;
 
 
-export type GetItemsByExternalIdQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', created_at?: any | null, depublish_at?: any | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, id: number, uid: any, is_deleted?: boolean | null, is_orphaned?: boolean | null, is_published?: boolean | null, issued?: any | null, issued_edtf?: string | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, thumbnail_path: string, title: string, type_id: number, updated_at?: any | null, note?: string | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, item_collaterals: Array<{ __typename?: 'app_item_collateral', path?: string | null, description?: string | null, external_id: string }>, view_counts_aggregate: { __typename?: 'app_item_views_aggregate', aggregate?: { __typename?: 'app_item_views_aggregate_fields', sum?: { __typename?: 'app_item_views_sum_fields', count?: number | null } | null } | null } }> };
+export type GetItemsByExternalIdQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', created_at?: any | null, depublish_at?: any | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, id: number, uid: any, is_deleted?: boolean | null, is_orphaned?: boolean | null, is_published?: boolean | null, issued?: any | null, issued_edtf?: string | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, thumbnail_path: string, title: string, type_id: number, updated_at?: any | null, note?: string | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null, overlay: boolean } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, item_collaterals: Array<{ __typename?: 'app_item_collateral', path?: string | null, description?: string | null, external_id: string }>, view_counts_aggregate: { __typename?: 'app_item_views_aggregate', aggregate?: { __typename?: 'app_item_views_aggregate_fields', sum?: { __typename?: 'app_item_views_sum_fields', count?: number | null } | null } | null } }> };
 
 export type GetItemsWithFiltersQueryVariables = Exact<{
   where: App_Item_Meta_Bool_Exp;
@@ -180,7 +180,7 @@ export type GetItemsWithFiltersQueryVariables = Exact<{
 }>;
 
 
-export type GetItemsWithFiltersQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', created_at?: any | null, depublish_at?: any | null, depublish_reason?: string | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, uid: any, is_deleted?: boolean | null, is_published?: boolean | null, issued?: any | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, title: string, updated_at?: any | null, note?: string | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, relations: Array<{ __typename?: 'app_item_relations_view', object?: any | null, subject?: any | null, predicate?: string | null, created_at?: any | null, updated_at?: any | null }>, item_counts?: { __typename?: 'app_item_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, plays?: number | null, views?: number | null, quick_lane_links?: any | null } | null }>, app_item_meta_aggregate: { __typename?: 'app_item_meta_aggregate', aggregate?: { __typename?: 'app_item_meta_aggregate_fields', count: number } | null } };
+export type GetItemsWithFiltersQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', created_at?: any | null, depublish_at?: any | null, depublish_reason?: string | null, description?: string | null, duration?: any | null, expiry_date?: any | null, external_id: any, uid: any, is_deleted?: boolean | null, is_published?: boolean | null, issued?: any | null, lom_classification?: any | null, lom_thema?: any | null, lom_context?: any | null, lom_intendedenduserrole?: any | null, lom_keywords?: any | null, lom_languages?: any | null, org_id?: any | null, publish_at?: any | null, published_at: any, series?: string | null, title: string, updated_at?: any | null, note?: string | null, organisation?: { __typename?: 'shared_organisations', or_id: string, name: string, logo_url?: string | null, overlay: boolean } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, relations: Array<{ __typename?: 'app_item_relations_view', object?: any | null, subject?: any | null, predicate?: string | null, created_at?: any | null, updated_at?: any | null }>, item_counts?: { __typename?: 'app_item_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, plays?: number | null, views?: number | null, quick_lane_links?: any | null } | null }>, app_item_meta_aggregate: { __typename?: 'app_item_meta_aggregate', aggregate?: { __typename?: 'app_item_meta_aggregate_fields', count: number } | null } };
 
 export type GetPublicItemsQueryVariables = Exact<{
   limit: Scalars['Int'];
@@ -438,7 +438,7 @@ export type GetAssignmentsAdminOverviewQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null }, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }> }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
+export type GetAssignmentsAdminOverviewQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', id: any, title?: string | null, description?: string | null, answer_url?: string | null, created_at: any, updated_at: any, available_at?: any | null, deadline_at?: any | null, is_collaborative: boolean, is_deleted: boolean, is_public: boolean, owner_profile_id: any, lom_learning_resource_type?: any | null, owner?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null } | null, profile: { __typename?: 'users_profiles', id: any, avatar?: string | null, user?: { __typename?: 'shared_users', first_name?: string | null, last_name?: string | null, id: number } | null, organisation?: { __typename?: 'shared_organisations', logo_url?: string | null, name: string, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null }, responses_aggregate: { __typename?: 'app_assignment_responses_v2_aggregate', aggregate?: { __typename?: 'app_assignment_responses_v2_aggregate_fields', count: number } | null }, contributors: Array<{ __typename?: 'app_assignments_v2_contributors', id: any, profile?: { __typename?: 'users_profiles', avatar?: string | null, user_id?: any | null, id: any, user?: { __typename?: 'shared_users', last_name?: string | null, first_name?: string | null, mail?: string | null, full_name?: string | null } | null, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null }>, counts?: { __typename?: 'app_assignments_v2_counts', bookmarks?: any | null, views?: number | null, copies?: any | null, contributors?: any | null } | null, loms: Array<{ __typename?: 'app_assignments_v2_lom_links', lom?: { __typename?: 'lookup_thesaurus', id?: string | null, label?: string | null, scheme?: string | null, broader?: string | null } | null }>, labels: Array<{ __typename?: 'app_assignments_v2_assignment_labels_v2', assignment_label: { __typename?: 'app_assignment_labels_v2', label?: string | null, id: any } }>, last_user_edit_profile?: { __typename?: 'users_profiles', usersByuserId?: { __typename?: 'shared_users', full_name?: string | null, last_name?: string | null } | null } | null }>, app_assignments_v2_aggregate: { __typename?: 'app_assignments_v2_aggregate', aggregate?: { __typename?: 'app_assignments_v2_aggregate_fields', count: number } | null } };
 
 export type GetAssignmentsByOwnerOrContributorQueryVariables = Exact<{
   collaborator_profile_id?: InputMaybe<Scalars['uuid']>;
@@ -928,6 +928,11 @@ export type GetAllAssignmentLabelColorsQueryVariables = Exact<{ [key: string]: n
 
 export type GetAllAssignmentLabelColorsQuery = { __typename?: 'query_root', lookup_enum_colors: Array<{ __typename?: 'lookup_enum_colors', label: string, value: string }> };
 
+export type GetAssignmentLabelsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAssignmentLabelsQuery = { __typename?: 'query_root', app_assignment_labels_v2: Array<{ __typename?: 'app_assignment_labels_v2', color_enum_value: Lookup_Enum_Colors_Enum, color_override?: string | null, label?: string | null, id: any, type: string, owner_profile_id: any, enum_color: { __typename?: 'lookup_enum_colors', label: string, value: string } }> };
+
 export type GetAssignmentLabelsByProfileIdQueryVariables = Exact<{
   profileId: Scalars['uuid'];
   filters?: InputMaybe<Array<App_Assignment_Labels_V2_Bool_Exp> | App_Assignment_Labels_V2_Bool_Exp>;
@@ -984,6 +989,13 @@ export type GetAssignmentBookmarkViewCountsQueryVariables = Exact<{
 
 
 export type GetAssignmentBookmarkViewCountsQuery = { __typename?: 'query_root', app_assignments_v2_bookmarks_aggregate: { __typename?: 'app_assignments_v2_bookmarks_aggregate', aggregate?: { __typename?: 'app_assignments_v2_bookmarks_aggregate_fields', count: number } | null }, app_assignment_v2_views: Array<{ __typename?: 'app_assignment_v2_views', count: number }>, app_assignments_v2_bookmarks: Array<{ __typename?: 'app_assignments_v2_bookmarks', id: any }> };
+
+export type GetAssignmentViewCountQueryVariables = Exact<{
+  assignmentUuid: Scalars['uuid'];
+}>;
+
+
+export type GetAssignmentViewCountQuery = { __typename?: 'query_root', app_assignments_v2: Array<{ __typename?: 'app_assignments_v2', view_count?: { __typename?: 'app_assignment_v2_views', count: number } | null }> };
 
 export type GetBookmarkStatusesQueryVariables = Exact<{
   profileId: Scalars['uuid'];
@@ -1055,6 +1067,13 @@ export type GetItemViewCountQueryVariables = Exact<{
 
 export type GetItemViewCountQuery = { __typename?: 'query_root', app_item_meta: Array<{ __typename?: 'app_item_meta', is_deleted?: boolean | null, is_published?: boolean | null, view_counts: Array<{ __typename?: 'app_item_views', count?: number | null }> }> };
 
+export type GetMultipleAssignmentViewCountsQueryVariables = Exact<{
+  uuids?: InputMaybe<Array<Scalars['uuid']> | Scalars['uuid']>;
+}>;
+
+
+export type GetMultipleAssignmentViewCountsQuery = { __typename?: 'query_root', items: Array<{ __typename?: 'app_assignment_v2_views', count: number, id: any }> };
+
 export type GetMultipleCollectionViewCountsQueryVariables = Exact<{
   uuids?: InputMaybe<Array<Scalars['uuid']> | Scalars['uuid']>;
 }>;
@@ -1068,6 +1087,13 @@ export type GetMultipleItemViewCountsQueryVariables = Exact<{
 
 
 export type GetMultipleItemViewCountsQuery = { __typename?: 'query_root', items: Array<{ __typename?: 'app_item_views', count?: number | null, id?: any | null }> };
+
+export type IncrementAssignmentViewsMutationVariables = Exact<{
+  assignmentUuid: Scalars['uuid'];
+}>;
+
+
+export type IncrementAssignmentViewsMutation = { __typename?: 'mutation_root', update_app_assignment_v2_views?: { __typename?: 'app_assignment_v2_views_mutation_response', affected_rows: number } | null };
 
 export type IncrementCollectionPlaysMutationVariables = Exact<{
   collectionUuid: Scalars['uuid'];
@@ -1168,6 +1194,22 @@ export type UpdateNotificationMutationVariables = Exact<{
 
 export type UpdateNotificationMutation = { __typename?: 'mutation_root', update_users_notifications?: { __typename?: 'users_notifications_mutation_response', affected_rows: number } | null };
 
+export type DeleteAssignmentRelationsByObjectMutationVariables = Exact<{
+  objectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type DeleteAssignmentRelationsByObjectMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_relations?: { __typename?: 'app_assignments_v2_relations_mutation_response', affected_rows: number } | null };
+
+export type DeleteAssignmentRelationsBySubjectMutationVariables = Exact<{
+  subjectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type DeleteAssignmentRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_assignments_v2_relations?: { __typename?: 'app_assignments_v2_relations_mutation_response', affected_rows: number } | null };
+
 export type DeleteCollectionRelationsByObjectMutationVariables = Exact<{
   objectId: Scalars['uuid'];
   relationType: Lookup_Enum_Relation_Types_Enum;
@@ -1200,6 +1242,22 @@ export type DeleteItemRelationsBySubjectMutationVariables = Exact<{
 
 export type DeleteItemRelationsBySubjectMutation = { __typename?: 'mutation_root', delete_app_item_relations?: { __typename?: 'app_item_relations_mutation_response', affected_rows: number } | null };
 
+export type GetAssignmentRelationsByObjectQueryVariables = Exact<{
+  objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type GetAssignmentRelationsByObjectQuery = { __typename?: 'query_root', app_assignments_v2_relations: Array<{ __typename?: 'app_assignments_v2_relations', id: any, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+export type GetAssignmentRelationsBySubjectQueryVariables = Exact<{
+  subjectIds: Array<Scalars['uuid']> | Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type GetAssignmentRelationsBySubjectQuery = { __typename?: 'query_root', app_assignments_v2_relations: Array<{ __typename?: 'app_assignments_v2_relations', id: any, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
 export type GetCollectionRelationsByObjectQueryVariables = Exact<{
   objectIds: Array<Scalars['uuid']> | Scalars['uuid'];
   relationType: Lookup_Enum_Relation_Types_Enum;
@@ -1231,6 +1289,15 @@ export type GetItemRelationsBySubjectQueryVariables = Exact<{
 
 
 export type GetItemRelationsBySubjectQuery = { __typename?: 'query_root', app_item_relations: Array<{ __typename?: 'app_item_relations', id: number, object: any, subject: any, predicate: Lookup_Enum_Relation_Types_Enum, created_at?: any | null, updated_at?: any | null }> };
+
+export type InsertAssignmentRelationMutationVariables = Exact<{
+  objectId: Scalars['uuid'];
+  subjectId: Scalars['uuid'];
+  relationType: Lookup_Enum_Relation_Types_Enum;
+}>;
+
+
+export type InsertAssignmentRelationMutation = { __typename?: 'mutation_root', insert_app_assignments_v2_relations?: { __typename?: 'app_assignments_v2_relations_mutation_response', returning: Array<{ __typename?: 'app_assignments_v2_relations', id: any }> } | null };
 
 export type InsertCollectionRelationMutationVariables = Exact<{
   objectId: Scalars['uuid'];

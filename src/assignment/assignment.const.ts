@@ -171,6 +171,12 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 			full_name: order,
 		},
 	}),
+	author_user_group: (order: Avo.Search.OrderDirection) => ({
+		owner: { profile: { profile_user_group: { group: { label: order } } } },
+	}),
+	last_user_edit_profile: (order: Avo.Search.OrderDirection) => ({
+		last_user_edit_profile: { usersByuserId: { last_name: order } },
+	}),
 	status: (order: Avo.Search.OrderDirection) => ({
 		deadline_at: order,
 	}),
@@ -182,6 +188,21 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	views: (order: Avo.Search.OrderDirection) => ({
 		view_count: {
 			count: order,
+		},
+	}),
+	bookmarks: (order: Avo.Search.OrderDirection) => ({
+		counts: {
+			bookmarks: order,
+		},
+	}),
+	copies: (order: Avo.Search.OrderDirection) => ({
+		counts: {
+			copies: order,
+		},
+	}),
+	contributors: (order: Avo.Search.OrderDirection) => ({
+		counts: {
+			contributors: order,
 		},
 	}),
 	share_type: (order: Avo.Search.OrderDirection) => ({

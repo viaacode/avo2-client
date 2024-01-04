@@ -27,11 +27,12 @@ interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 	history: RouteComponentProps['history'];
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditQualityCheck: FunctionComponent<
 	CollectionOrBundleEditQualityCheckProps & UserProps
-> = ({ collection, changeCollectionState }) => {
+> = ({ collection, changeCollectionState, onFocus }) => {
 	const { tText } = useTranslation();
 
 	const getApprovedAtDate = (collection: Avo.Collection.Collection): Date | null => {
@@ -213,6 +214,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 													collectionPropValue: newNotes || null,
 												})
 											}
+											onFocus={onFocus}
 										/>
 									</FormGroup>
 								</Column>

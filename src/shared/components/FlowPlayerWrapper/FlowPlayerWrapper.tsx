@@ -48,8 +48,6 @@ export type FlowPlayerWrapperProps = {
 	cuePointsLabel?: CuePoints;
 	onEnded?: () => void;
 	onPlay?: (playingSrc: string) => void;
-	organisationLogo?: string;
-	organisationName?: string;
 	poster?: string;
 	src?: string | FlowplayerSourceList;
 	title?: string;
@@ -243,14 +241,15 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 							item
 								? [
 										props.issuedDate || reorderDate(item.issued || null, '.'),
-										props.organisationName ||
-											get(item, 'organisation.name', ''),
+										item?.organisation?.name || '',
 								  ]
 								: undefined
 						}
 						token={getEnv('FLOW_PLAYER_TOKEN')}
 						dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-						logo={props.organisationLogo || get(item, 'organisation.logo_url')}
+						logo={
+							item?.organisation?.overlay ? item?.organisation?.logo_url : undefined
+						}
 						speed={{
 							options: [0.5, 0.75, 1, 1.25, 1.5],
 							labels: [

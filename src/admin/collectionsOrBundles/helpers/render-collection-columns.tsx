@@ -84,6 +84,9 @@ export const renderCollectionOverviewColumns = (
 		case 'quick_lane_links':
 			return rowData?.counts?.quick_lane_links || '0';
 
+		case 'contributors':
+			return rowData?.counts?.contributors || '0';
+
 		case 'created_at':
 		case 'updated_at':
 			return rowData[columnId] ? formatDate(new Date(rowData[columnId] as string)) : '-';

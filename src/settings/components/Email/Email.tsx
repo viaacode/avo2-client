@@ -1,0 +1,225 @@
+import { BlockHeading } from '@meemoo/admin-core-ui';
+import {
+	Button,
+	Checkbox,
+	CheckboxGroup,
+	Container,
+	Form,
+	FormGroup,
+	Spacer,
+	Spinner,
+} from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { keys } from 'lodash-es';
+import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { StringParam, useQueryParams } from 'use-query-params';
+
+import { GENERATE_SITE_TITLE } from '../../../constants';
+import { ErrorView } from '../../../error/views';
+import { convertToNewsletterPreferenceUpdate, CustomError } from '../../../shared/helpers';
+import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import useTranslation from '../../../shared/hooks/useTranslation';
+import { CampaignMonitorService } from '../../../shared/services/campaign-monitor-service';
+import { ToastService } from '../../../shared/services/toast-service';
+import { NewsletterList, ReactAction } from '../../../shared/types';
+import { GET_NEWSLETTER_LABELS } from '../../settings.const';
+
+import { useGetEmailPreferences } from './hooks/getEmailPreferences';
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
+enum NewsletterPreferencesActionType {
+	SET_NEWSLETTER_PREFERENCES = '@@newsletter-preferences/SET_NEWSLETTER_PREFERENCES',
+	UPDATE_NEWSLETTER_PREFERENCES = '@@newsletter-preferences/UPDATE_NEWSLETTER_PREFERENCES',
+}
+
+/* eslint-enable @typescript-eslint/no-unused-vars */
+
+type NewsletterPreferencesAction = ReactAction<NewsletterPreferencesActionType>;
+
+const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): Avo.Newsletter.Preferences => ({
+	newsletter: false,
+	workshop: false,
+	ambassador: false,
+	allActiveUsers: false,
+});
+
+const newsletterPreferencesReducer = (
+	state: Avo.Newsletter.Preferences,
+	action: NewsletterPreferencesAction
+) => {
+	switch (action.type) {
+		case NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES:
+			return action.payload;
+		case NewsletterPreferencesActionType.UPDATE_NEWSLETTER_PREFERENCES:
+			return {
+				...state,
+				...action.payload,
+			};
+		default:
+			return state;
+	}
+};
+
+const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
+	const { tText, tHtml } = useTranslation();
+
+	const [{ preferenceCenterKey }] = useQueryParams({
+		preferenceCenterKey: StringParam,
+	});
+
+	const {
+		data: fetchedNewsletterPreferences,
+		isLoading: isLoadingGetPreferences,
+		isError: getPreferencesIsError,
+	} = useGetEmailPreferences(preferenceCenterKey as string, {
+		enabled: !!preferenceCenterKey || !!commonUser?.profileId,
+	});
+
+	const [isLoadingUpdatePreferences, setIsLoadingUpdatePreferences] = useState<boolean>(false);
+
+	const [initialNewsletterPreferences, setInitialNewsletterPreferences] =
+		useState<Avo.Newsletter.Preferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
+	const [newsletterPreferences, changeNewsletterPreferences] = useReducer<
+		Reducer<Avo.Newsletter.Preferences, NewsletterPreferencesAction>
+	>(newsletterPreferencesReducer, INITIAL_NEWSLETTER_PREFERENCES_STATE());
+
+	const newsletterLabels = GET_NEWSLETTER_LABELS();
+
+	useEffect(() => {
+		if (fetchedNewsletterPreferences) {
+			setInitialNewsletterPreferences(fetchedNewsletterPreferences);
+			changeNewsletterPreferences({
+				type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
+				payload: fetchedNewsletterPreferences,
+			});
+		}
+	}, [fetchedNewsletterPreferences]);
+
+	const onChangePreference = (preference: Partial<Avo.Newsletter.Preferences>) => {
+		changeNewsletterPreferences({
+			type: NewsletterPreferencesActionType.UPDATE_NEWSLETTER_PREFERENCES,
+			payload: preference,
+		});
+	};
+
+	const onSavePreferences = async () => {
+		try {
+			const convertedNewsletterPreferenceUpdate = convertToNewsletterPreferenceUpdate(
+				initialNewsletterPreferences,
+				newsletterPreferences
+			);
+
+			// Only perform update request if there are changes
+			if (convertedNewsletterPreferenceUpdate) {
+				setIsLoadingUpdatePreferences(true);
+
+				await CampaignMonitorService.updateNewsletterPreferences(
+					convertedNewsletterPreferenceUpdate,
+					preferenceCenterKey as string | undefined
+				);
+
+				setInitialNewsletterPreferences({
+					...initialNewsletterPreferences,
+					...newsletterPreferences,
+				});
+
+				ToastService.success(
+					tHtml('settings/components/email___je-voorkeuren-zijn-opgeslagen')
+				);
+			}
+		} catch (err) {
+			console.error(new CustomError('Failed to update newsletter preferences', err));
+
+			ToastService.danger(
+				tHtml(
+					'settings/components/email___de-nieuwsbriefvoorkeuren-konden-niet-worden-geupdatet'
+				)
+			);
+		}
+
+		setIsLoadingUpdatePreferences(false);
+	};
+
+	const renderFetchPreferencesError = () => {
+		return (
+			<ErrorView
+				message={tHtml(
+					'settings/components/email___het-ophalen-van-je-email-voorkeuren-is-mislukt'
+				)}
+			>
+				<p>
+					{commonUser
+						? tHtml(
+								'settings/components/email___probeer-uit-te-loggen-en-opnieuw-in-te-loggen-als-het-probleem-zich-blijft-voordoen-contacteer-dan-de-helpdesk'
+						  )
+						: tHtml(
+								'settings/components/email___controleer-of-de-url-correct-is-en-contacteer-indien-nodig-de-helpdesk'
+						  )}
+				</p>
+			</ErrorView>
+		);
+	};
+
+	if (getPreferencesIsError) {
+		return renderFetchPreferencesError();
+	}
+
+	return (
+		<Container mode="horizontal">
+			<Container mode="vertical">
+				<Helmet>
+					<title>
+						{GENERATE_SITE_TITLE(
+							tText('settings/components/email___nieuwsbrief-voorkeuren-pagina-titel')
+						)}
+					</title>
+					<meta
+						name="description"
+						content={tText(
+							'settings/components/email___nieuwsbrief-voorkeuren-pagina-beschrijving'
+						)}
+					/>
+				</Helmet>
+				<Spacer margin="bottom-small">
+					<BlockHeading type="h3">
+						{tText('settings/components/email___e-mail-nieuwsbrief-voorkeuren')}
+					</BlockHeading>
+				</Spacer>
+				{tHtml('settings/components/email___e-mail-nieuwsbrief-voorkeuren-beschrijving')}
+				<Spacer margin="top">
+					<Form>
+						<FormGroup labelFor="newsletter" required>
+							<CheckboxGroup>
+								{(keys(newsletterLabels) as any).map(
+									(newsletterKey: NewsletterList) => (
+										<Checkbox
+											key={`newsletter_${newsletterKey}`}
+											label={(newsletterLabels as any)[newsletterKey]}
+											checked={newsletterPreferences[newsletterKey]}
+											onChange={() => {
+												onChangePreference({
+													[newsletterKey]:
+														!newsletterPreferences[newsletterKey],
+												});
+											}}
+										/>
+									)
+								)}
+							</CheckboxGroup>
+						</FormGroup>
+					</Form>
+				</Spacer>
+				<Spacer margin="top">
+					{isLoadingGetPreferences || isLoadingUpdatePreferences ? (
+						<Spinner />
+					) : (
+						<Button label="Opslaan" type="primary" onClick={onSavePreferences} />
+					)}
+				</Spacer>
+			</Container>
+		</Container>
+	);
+};
+
+export default withUser(Email) as FunctionComponent;

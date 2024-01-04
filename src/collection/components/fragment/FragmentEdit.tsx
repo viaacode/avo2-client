@@ -56,6 +56,7 @@ interface FragmentEditProps {
 	fragment: Avo.Collection.Fragment;
 	allowedToAddLinks: boolean;
 	renderWarning?: () => ReactNode | null;
+	onFocus?: () => void;
 }
 
 const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
@@ -70,6 +71,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 	allowedToAddLinks,
 	renderWarning = () => null,
 	user,
+	onFocus,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -301,6 +303,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 						onChange={setTempTitle}
 						onBlur={() => handleChangedValue('custom_title', tempTitle)}
 						disabled={disableVideoFields}
+						onFocus={onFocus}
 					/>
 				</FormGroup>
 				{!isThisFragmentACollection && (
@@ -333,6 +336,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 									}
 								}}
 								disabled={disableVideoFields}
+								onFocus={onFocus}
 							/>
 						)}
 					</FormGroup>

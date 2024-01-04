@@ -10,12 +10,14 @@ interface ShortDescriptionFieldProps extends Pick<FormGroupProps, 'error'> {
 	onChange: (value: string) => void;
 	value: string | null;
 	placeholder?: string;
+	onFocus?: () => void;
 }
 
 const ShortDescriptionField: FunctionComponent<ShortDescriptionFieldProps> = ({
 	onChange,
 	value,
 	placeholder,
+	onFocus,
 }) => {
 	const { tText } = useTranslation();
 
@@ -43,6 +45,7 @@ const ShortDescriptionField: FunctionComponent<ShortDescriptionFieldProps> = ({
 				height="medium"
 				placeholder={placeholder}
 				onChange={onChange}
+				onFocus={onFocus}
 			/>
 			<label>{error(false)}</label>
 		</FormGroup>

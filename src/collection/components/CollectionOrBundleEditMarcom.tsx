@@ -42,11 +42,12 @@ interface CollectionOrBundleEditMarcomProps {
 	collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo };
 	changeCollectionState: (action: CollectionAction) => void;
 	history: RouteComponentProps['history'];
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditMarcom: FunctionComponent<
 	CollectionOrBundleEditMarcomProps & UserProps
-> = ({ collection, changeCollectionState }) => {
+> = ({ collection, changeCollectionState, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
@@ -312,6 +313,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 									<TextInput
 										onChange={setMarcomLink}
 										value={marcomLink || undefined}
+										onFocus={onFocus}
 									/>
 								</FormGroup>
 							</FlexItem>
@@ -368,6 +370,7 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 										},
 									});
 								}}
+								onFocus={onFocus}
 							/>
 						</FormGroup>
 					</Form>
