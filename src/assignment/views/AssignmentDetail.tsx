@@ -359,7 +359,9 @@ const AssignmentDetail: FC<
 						})
 					);
 					ToastService.danger(
-						tHtml('Het ophalen van het aantal keer bekeken gebookmarked is mislukt')
+						tHtml(
+							'assignment/views/assignment-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+						)
 					);
 				}
 			}

@@ -26,6 +26,10 @@ type LomFieldsInputProps = {
 	showEducationDegrees?: boolean;
 	showThemes?: boolean;
 	showSubjects?: boolean;
+	isEducationRequired?: boolean;
+	isEducationDegreesRequired?: boolean;
+	isThemesRequired?: boolean;
+	isSubjectsRequired?: boolean;
 	educationLevelsPlaceholder?: string;
 	subjectsPlaceholder?: string;
 	themesPlaceholder?: string;
@@ -44,6 +48,10 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	showEducationDegrees = false,
 	showThemes = true,
 	showSubjects = true,
+	isEducationRequired = false,
+	isEducationDegreesRequired = false,
+	isThemesRequired = false,
+	isSubjectsRequired = false,
 	educationLevelsPlaceholder,
 	subjectsPlaceholder,
 	themesPlaceholder,
@@ -124,6 +132,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 				<FormGroup
 					label={tText('shared/components/lom-fields-input/lom-fields-input___onderwijs')}
 					labelFor="educationId"
+					required={isEducationRequired}
 				>
 					<TagsInput
 						id="educationId"
@@ -143,7 +152,13 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 				</FormGroup>
 			)}
 			{showEducationDegrees && !!educationDegreeOptions.length && (
-				<FormGroup label={tText('Onderwijsgraden')} labelFor="educationDegreesId">
+				<FormGroup
+					label={tText(
+						'shared/components/lom-fields-input/lom-fields-input___onderwijsgraden'
+					)}
+					labelFor="educationDegreesId"
+					required={isEducationDegreesRequired}
+				>
 					<TagsInput
 						id="educationDegreesId"
 						isLoading={isEducationLevelsLoading}
@@ -168,6 +183,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 				<FormGroup
 					label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
 					labelFor="themeId"
+					required={isThemesRequired}
 				>
 					<MultiThemeSelectDropdown
 						id="themeId"
@@ -183,6 +199,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 				<FormGroup
 					label={tText('shared/components/lom-fields-input/lom-fields-input___vakken')}
 					labelFor="subjectId"
+					required={isSubjectsRequired}
 				>
 					<TagsInput
 						id="subjectId"
