@@ -4,6 +4,7 @@ export async function getCollectionInviteToken(
 ): Promise<string> {
 	const emailSwapSymbol = email.replace('+', '%2B');
 	const response = await fetch(
+		// TODO: change to INT env
 		`http://localhost:3000/collections/${collectionId}/share/get-invite-token?inviteEmail=${emailSwapSymbol}`,
 		{
 			method: 'GET',
