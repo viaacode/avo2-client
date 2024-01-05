@@ -27,6 +27,7 @@ import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -587,7 +588,7 @@ const Profile: FunctionComponent<
 			url: getEnv('SSUM_ACCOUNT_EDIT_URL') || '',
 			query: {
 				redirect_to: stringifyUrl({
-					url: getEnv('PROXY_URL') + '/auth/global-logout',
+					url: getEnv('PROXY_URL') + '/' + SERVER_LOGOUT_PAGE,
 					query: {
 						returnToUrl: window.location.href,
 					},
