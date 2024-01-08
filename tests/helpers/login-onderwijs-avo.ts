@@ -4,7 +4,8 @@ export async function loginOnderwijsAvo(
 	page: Page,
 	url: string = process.env.TEST_CLIENT_ENDPOINT as string,
 	username: string,
-	password: string
+	password: string,
+	asTeacher = true
 ): Promise<void> {
 	// Go to the avo homepage and wait for results to load
 	await page.goto(url);
@@ -17,8 +18,18 @@ export async function loginOnderwijsAvo(
 	// Click log in button
 	await page.getByText('Inloggen', { exact: true }).click();
 
+	if (asTeacher) {
+		await page.click('div[data-id="lesgever"]');
+	} else {
+		await page.click('div[data-id="leerling"]');
+	}
+
 	// Check auth modal opens up
-	await expect(page.getByRole('heading', { name: 'Log in als lesgever met:' })).toBeVisible();
+	if (asTeacher) {
+		await expect(page.getByRole('heading', { name: 'Log in als lesgever met:' })).toBeVisible();
+	} else {
+		await expect(page.getByRole('heading', { name: 'Log in als leerling met:' })).toBeVisible();
+	}
 
 	// Click email button
 	await page.getByRole('button', { name: 'E-mailadres' }).click();
