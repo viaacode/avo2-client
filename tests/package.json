@@ -30,7 +30,8 @@
     "test:e2e:debug:t51": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t51-bundel-detail-bewerken.spec",
     "test:e2e:debug:t54": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t54-opdracht-aanmaken-nieuwe-opdracht.spec",
     "test:e2e:debug:t55": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t55-opdracht-tekstblok-toevoegen.spec",
-    "test:e2e:debug:t56": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t56-opdracht-elk-type-toevoegen.spec"
+    "test:e2e:debug:t56": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t56-opdracht-elk-type-toevoegen.spec",
+    "test:e2e:debug:t57": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/t57-opdracht-toggle-beschrijving.spec"
   },
   "keywords": [],
   "author": "",
