@@ -51,6 +51,7 @@ export type FlowPlayerWrapperProps = {
 	poster?: string;
 	src?: string | FlowplayerSourceList;
 	title?: string;
+	topRight?: ReactNode;
 };
 
 /**
@@ -294,6 +295,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						renderPlaylistTile={renderPlaylistTile}
 					/>
 				) : (
+					// Fake player for logged-out users that do not yet have video playback rights
 					<div className="c-video-player__overlay" onClick={handlePosterClicked}>
 						<AspectRatioWrapper
 							className="c-video-player__item c-video-player__thumbnail"
@@ -314,6 +316,9 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 									)} - ${formatDurationHoursMinutesSeconds(end)}`}
 								</div>
 							)}
+						{!!props.topRight && (
+							<div className="c-video-player__top-right">{props.topRight}</div>
+						)}
 					</div>
 				)}
 			</div>

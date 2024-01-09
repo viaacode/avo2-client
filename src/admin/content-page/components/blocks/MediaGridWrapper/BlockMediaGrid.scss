@@ -19,6 +19,22 @@
 				display: none;
 			}
 		}
+
+		.c-thumbnail-media__top-right {
+			background-color: #0009;
+			border-bottom-left-radius: 0.3rem;
+
+			.c-button--inline-link {
+				background-color: transparent;
+				text-decoration: none;
+
+				.c-button__label {
+					text-decoration: none !important;
+					color: #fff !important;
+					font-size: 1.2rem;
+				}
+			}
+		}
 	}
 
 	.c-media-card__cta {

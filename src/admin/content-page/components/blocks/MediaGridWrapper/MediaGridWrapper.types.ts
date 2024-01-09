@@ -6,4 +6,5 @@ export type ResolvedItemOrCollectionOrAssignment = Partial<
 	src?: string;
 	view_counts_aggregate?: { aggregate?: { sum?: { count?: number } } };
 	type: { label: 'audio' | 'video' | 'collectie' | 'bundel' | 'opdracht' };
+	copyrightOrganisation: Avo.Organization.Organization | null;
 };
