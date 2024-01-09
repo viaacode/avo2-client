@@ -28,9 +28,5 @@ export async function goToAdminPage(page: Page): Promise<void> {
 	await page.getByRole('link', { name: 'Beheer' }).click();
 	await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
-	// Click on users tab
-	await page.getByRole('link', { name: 'Gebruikers' }).click();
-	await expect(page.getByRole('heading', { name: 'Gebruikers', exact: true })).toBeVisible();
-
 	await page.waitForTimeout(1000);
 }

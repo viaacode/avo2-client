@@ -14,6 +14,12 @@ import { logoutOnderwijsAvo } from '../../helpers/logout-onderwijs-avo';
 test('T07: Beheer - Gebruiker deactiveren', async ({ page }) => {
 	await goToAdminPage(page);
 
+	// Click on users tab
+	await page.getByRole('link', { name: 'Gebruikers' }).click();
+	await expect(page.getByRole('heading', { name: 'Gebruikers', exact: true })).toBeVisible();
+
+	await page.waitForTimeout(1000);
+
 	// Search user
 	await page
 		.locator('input[placeholder="Zoek op naam, e-mail, organisatie, groep, stamboeknummer"]')
