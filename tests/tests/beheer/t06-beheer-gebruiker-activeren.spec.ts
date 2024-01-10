@@ -5,7 +5,7 @@ import { loginOnderwijsAvo } from '../../helpers/login-onderwijs-avo';
 import { logoutOnderwijsAvo } from '../../helpers/logout-onderwijs-avo';
 
 /**
- * New: https://docs.google.com/spreadsheets/d/1IvhK0v0HSntCwTcXiFseHargwwWwpoCkDMjmMehaDMA/edit#gid=0
+ * New: https://docs.google.com/spreadsheets/d/1sy6q3Q6Hl3LhvXY4JeCblhh4-REj8gyzAzyYwQVZZxc/edit#gid=95954947
  *
  * to run tests: npm run test:e2e:debug
  * from /tests directory

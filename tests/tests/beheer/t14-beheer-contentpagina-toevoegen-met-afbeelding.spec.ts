@@ -10,7 +10,7 @@ import { goToAdminPage } from '../../helpers/go-to-admin';
  *
  */
 
-test('T11: Beheer - Contentpagina toevoegen', async ({ page }) => {
+test('T14: Beheer - Contentpagina toevoegen met afbeelding', async ({ page }) => {
 	await goToAdminPage(page);
 
 	// Click on contentpages tab
@@ -28,6 +28,17 @@ test('T11: Beheer - Contentpagina toevoegen', async ({ page }) => {
 	await expect(
 		page.getByRole('heading', { name: 'Content toevoegen', exact: true })
 	).toBeVisible();
+
+	// Add contentblock
+	await page.locator('div.c-select__control', { hasText: 'Voeg een contentblock toe' }).click();
+	await page.waitForTimeout(1000);
+	// Choose afbeelding
+	await page.getByText('Afbeelding of animated gif', { exact: true }).click();
+	await page.waitForTimeout(1000);
+
+	// Select image
+	await page.locator('input[type="file"]').setInputFiles('../src/assets/images/meemoo-logo.png');
+	await page.waitForTimeout(4000);
 
 	// Open publication details tab
 	await page.getByText('Publicatiedetails').click();
@@ -60,6 +71,7 @@ test('T11: Beheer - Contentpagina toevoegen', async ({ page }) => {
 
 	// Save page
 	await page.getByRole('button', { name: 'Opslaan', exact: true }).click();
+	await page.waitForTimeout(1000);
 
 	// Check toast
 	await expect(
@@ -73,6 +85,9 @@ test('T11: Beheer - Contentpagina toevoegen', async ({ page }) => {
 
 	// Check edit button is shown
 	await expect(page.getByRole('button', { name: 'Bewerken', exact: true })).toBeVisible();
+
+	// Check image is shown
+	await expect(page.locator('div.o-block-image > div.c-image')).toBeVisible();
 
 	await page.waitForTimeout(3000);
 

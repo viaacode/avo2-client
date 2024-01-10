@@ -40,7 +40,8 @@
     "test:e2e:debug:beheer:t10": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t10-beheer-navigatie-toevoegen-navigatie-item.spec",
     "test:e2e:debug:beheer:t11": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t11-beheer-contentpagina-toevoegen.spec",
     "test:e2e:debug:beheer:t12": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t12-beheer-gebruiker-link-naar-accountmanager.spec",
-    "test:e2e:debug:beheer:t13": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t13-beheer-contentpagina-toevoegen-met-mediaspeler.spec"
+    "test:e2e:debug:beheer:t13": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t13-beheer-contentpagina-toevoegen-met-mediaspeler.spec",
+    "test:e2e:debug:beheer:t14": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t14-beheer-contentpagina-toevoegen-met-afbeelding.spec"
   },
   "keywords": [],
   "author": "",
