@@ -43,7 +43,8 @@
     "test:e2e:debug:beheer:t13": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t13-beheer-contentpagina-toevoegen-met-mediaspeler.spec",
     "test:e2e:debug:beheer:t14": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t14-beheer-contentpagina-toevoegen-met-afbeelding.spec",
     "test:e2e:debug:beheer:t15": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t15-beheer-contentpagina-bewerken.spec",
-    "test:e2e:debug:beheer:t16": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t16-beheer-contentpagina-publiceren.spec"
+    "test:e2e:debug:beheer:t16": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t16-beheer-contentpagina-publiceren.spec",
+    "test:e2e:debug:beheer:t17": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t17-beheer-contentpagina-dupliceren.spec"
   },
   "keywords": [],
   "author": "",
