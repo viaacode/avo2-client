@@ -713,10 +713,7 @@ const Profile: FunctionComponent<
 											<CommonMetadata
 												enabledMetaData={
 													uiPermissions?.EDUCATION_LEVEL?.VIEW
-														? [
-																SearchFilter.educationLevel,
-																SearchFilter.educationDegree,
-														  ]
+														? [SearchFilter.educationLevel]
 														: []
 												}
 												subject={{
@@ -740,6 +737,10 @@ const Profile: FunctionComponent<
 													'settings/components/profile___selecteer-je-themas'
 												)}
 												showEducation={false}
+												showEducationDegrees={
+													uiPermissions?.EDUCATION_LEVEL?.VIEW
+												}
+												limitDegreesByAlreadySelectedLevels
 											/>
 										</>
 									)}

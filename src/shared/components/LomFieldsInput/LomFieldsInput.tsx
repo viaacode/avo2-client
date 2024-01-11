@@ -23,22 +23,31 @@ type LomFieldsInputProps = {
 	loms: Avo.Lom.LomField[];
 	onChange: (newLoms: Avo.Lom.LomField[]) => void;
 	showEducation?: boolean;
+	showEducationDegrees?: boolean;
 	showThemes?: boolean;
 	showSubjects?: boolean;
 	educationLevelsPlaceholder?: string;
 	subjectsPlaceholder?: string;
 	themesPlaceholder?: string;
+
+	/**
+	 * only show degrees for the already selected education degrees. This option is only used to allow users that haven't selected a degree but have already an education level, to also specify their education ldegrees on their profile page
+	 * https://meemoo.atlassian.net/browse/AVO-2881?focusedCommentId=43453
+	 */
+	limitDegreesByAlreadySelectedLevels?: boolean;
 };
 
 const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	loms,
 	onChange,
 	showEducation = true,
+	showEducationDegrees = false,
 	showThemes = true,
 	showSubjects = true,
 	educationLevelsPlaceholder,
 	subjectsPlaceholder,
 	themesPlaceholder,
+	limitDegreesByAlreadySelectedLevels = false,
 }) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => {
@@ -96,6 +105,19 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 		onChange(uniq(flatLomList));
 	};
 
+	const getEducationDegreeOptions = () => {
+		return groupLoms(allEducationLevels)
+			?.educationDegree?.filter((degree) => {
+				return (
+					!limitDegreesByAlreadySelectedLevels ||
+					(degree.broader &&
+						lomFields.educationLevel.map((level) => level.id).includes(degree.broader))
+				);
+			})
+			?.map(lomToTagInfo);
+	};
+
+	const educationDegreeOptions = getEducationDegreeOptions();
 	return (
 		<Spacer margin="bottom">
 			{showEducation && (
@@ -115,6 +137,28 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 						}
 						onChange={(values) =>
 							handleChange(values, LomType.educationDegree, allEducationLevels || [])
+						}
+						placeholder={educationLevelsPlaceholder}
+					/>
+				</FormGroup>
+			)}
+			{showEducationDegrees && !!educationDegreeOptions.length && (
+				<FormGroup label={tText('Onderwijsgraden')} labelFor="educationDegreesId">
+					<TagsInput
+						id="educationDegreesId"
+						isLoading={isEducationLevelsLoading}
+						options={getEducationDegreeOptions()}
+						value={getEducationLevelOptions([...lomFields.educationDegree]) || []}
+						onChange={(values) =>
+							handleChange(
+								[
+									...values,
+									...(getEducationLevelOptions([...lomFields.educationLevel]) ||
+										[]),
+								],
+								LomType.educationDegree,
+								allEducationLevels || []
+							)
 						}
 						placeholder={educationLevelsPlaceholder}
 					/>
