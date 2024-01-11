@@ -123,7 +123,7 @@ const Profile: FunctionComponent<
 
 	const isExceptionAccount = commonUser?.isException || false;
 
-	const isPupil = commonUser.userGroup?.id === SpecialUserGroup.Pupil;
+	const isPupil = commonUser?.userGroup?.id === SpecialUserGroup.Pupil;
 
 	useEffect(() => {
 		const tempUiPermissions = {
@@ -253,15 +253,16 @@ const Profile: FunctionComponent<
 		const groupedLoms = groupLoms(selectedLoms);
 
 		if (
-			((uiPermissions.SUBJECTS.REQUIRED && uiPermissions.SUBJECTS.EDIT) ||
-				isCompleteProfileStep) &&
+			uiPermissions.SUBJECTS.REQUIRED &&
+			uiPermissions.SUBJECTS.EDIT &&
 			!groupedLoms.subject?.length
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
-			((uiPermissions.THEME.REQUIRED && uiPermissions.THEME.EDIT) || isCompleteProfileStep) &&
+			uiPermissions.THEME.REQUIRED &&
+			uiPermissions.THEME.EDIT &&
 			!groupedLoms.theme?.length
 		) {
 			errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
@@ -501,6 +502,14 @@ const Profile: FunctionComponent<
 								themesPlaceholder={tText(
 									'settings/components/profile___selecteer-je-themas'
 								)}
+								showEducation={
+									uiPermissions?.EDUCATION_LEVEL?.EDIT || isCompleteProfileStep
+								}
+								showThemes={uiPermissions?.THEME?.EDIT}
+								showSubjects={uiPermissions?.SUBJECTS?.EDIT}
+								isEducationRequired={uiPermissions?.EDUCATION_LEVEL?.REQUIRED}
+								isThemesRequired={uiPermissions?.THEME?.REQUIRED}
+								isSubjectsRequired={uiPermissions?.SUBJECTS?.REQUIRED}
 							/>
 							{renderEducationOrganisationsField(true, true)}
 						</Spacer>
