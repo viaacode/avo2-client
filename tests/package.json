@@ -48,7 +48,8 @@
     "test:e2e:debug:beheer:t19": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t19-beheer-collectiebeheer-overzicht.spec",
     "test:e2e:debug:beheer:t25": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t25-beheer-collectiebeheer-collectie-verwijderen.spec",
     "test:e2e:debug:beheer:t26": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t26-beheer-collectiebeheer-deel-collectie-pas-eigenaar-aan.spec",
-    "test:e2e:debug:beheer:t33": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t33-beheer-vertalingen-opzoeken.spec"
+    "test:e2e:debug:beheer:t33": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t33-beheer-vertalingen-opzoeken.spec",
+    "test:e2e:debug:beheer:t34": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test tests/beheer/t34-beheer-vertalingen-aanpassen.spec"
   },
   "keywords": [],
   "author": "",
