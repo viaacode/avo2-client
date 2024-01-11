@@ -1822,6 +1822,7 @@
   "shared/components/loading-error-loaded-component/loading-error-loaded-component___er-is-iets-mis-gegaan-bij-het-laden-van-de-gegevens": "Er is iets misgegaan bij het laden van de gegevens. Contacteer ons via de Feedback-knop mocht dit probleem zich blijven voordoen.",
   "shared/components/loading-error-loaded-component/loading-error-loaded-component___het-gevraagde-object-is-niet-gevonden": "Het gevraagde object is niet gevonden. Contacteer ons via de Feedback-knop mocht dit probleem zich blijven voordoen.",
   "shared/components/lom-fields-input/lom-fields-input___onderwijs": "Onderwijs",
+  "shared/components/lom-fields-input/lom-fields-input___onderwijsgraden": "Onderwijsgraden",
   "shared/components/lom-fields-input/lom-fields-input___themas": "Thema's",
   "shared/components/lom-fields-input/lom-fields-input___vakken": "Vakken",
   "shared/components/multi-educational-organisation-select-modal/multi-educational-organisation-select-modal___educatieve-organisaties": "Educatieve organisaties",

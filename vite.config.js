@@ -20,12 +20,6 @@ export default defineConfig(() => {
 			port: 8080,
 		},
 		plugins: [react(), viteTsconfigPaths(), svgrPlugin(), cssInjectedByJsPlugin()],
-		define: {
-			// By default, Vite doesn't include shims for Node.js
-			// necessary for rich text editor to work
-			// https://github.com/vitejs/vite/discussions/5912#discussioncomment-5569850
-			global: 'globalThis',
-		},
 		sourcemap: true,
 		// TODO, see if we can load graphql files instead of the documents from the react-query generated file, since we don't use the react query a lot
 		// assetsInclude: ['**/*.graphql'],
