@@ -1123,7 +1123,10 @@ export class AssignmentService {
 
 	static async createAssignmentFromFragment(
 		user: Avo.User.User,
-		item: Avo.Item.Item & { start_oc?: number | null; end_oc?: number | null }
+		item: Avo.Item.Item & {
+			start_oc?: number | null;
+			end_oc?: number | null;
+		}
 	): Promise<string> {
 		const variables: InsertAssignmentMutationVariables = {
 			assignment: {
@@ -1341,7 +1344,10 @@ export class AssignmentService {
 		title: string,
 		description: string | null,
 		assignmentId: string
-	): Promise<{ byTitle: boolean; byDescription: boolean }> {
+	): Promise<{
+		byTitle: boolean;
+		byDescription: boolean;
+	}> {
 		try {
 			const variables: GetAssignmentByTitleOrDescriptionQueryVariables = {
 				title,
