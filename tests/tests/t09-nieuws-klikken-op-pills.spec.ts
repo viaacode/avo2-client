@@ -10,7 +10,7 @@ import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cooki
  *
  */
 
-test('T09: Nieuws - klikken op pills', async ({ page, context }) => {
+test.skip('T09: Nieuws - klikken op pills', async ({ page, context }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,

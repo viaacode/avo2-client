@@ -181,10 +181,10 @@ test('T56: Opdracht - Elk type toevoegen', async ({ page }) => {
 
 	// Click on the above link
 	await page.getByRole('link', { name: assignmentTitleInOverview }).click();
+	await page.waitForLoadState('networkidle');
 
 	// CHECKS
 	// Check firt block is title and description
-	await page.waitForTimeout(1000);
 	await expect(
 		page.locator(
 			'div > div.c-block-list__item:nth-child(1) > div > div > div > div.c-icon-bar__content > h2'
@@ -201,7 +201,7 @@ test('T56: Opdracht - Elk type toevoegen', async ({ page }) => {
 		page.locator(
 			'div > div.c-block-list__item:nth-child(2) > div > div > div > div.c-icon-bar__content > div > a > h2'
 		)
-	).toContainText('Fietsstraten in centrum Gent');
+	).toContainText('VTM Nieuws: wat doet hitte met ons lichaam?');
 
 	// Check third block is Zoeken en bouwen block
 	await expect(
@@ -222,12 +222,11 @@ test('T56: Opdracht - Elk type toevoegen', async ({ page }) => {
 		)
 	).toContainText('Journaal: dag van de Mantelzorg');
 
-	await page.waitForTimeout(2000);
-
 	// CLEANUP
 	// Remove assignment
 	// Click mijn werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Go to assignments tab
 	await page.click('div[data-id="opdrachten"]');
@@ -249,10 +248,12 @@ test('T56: Opdracht - Elk type toevoegen', async ({ page }) => {
 
 	// Confirm remove modal
 	await page.getByRole('button', { name: 'Verwijder' }).click();
+	await page.waitForLoadState('networkidle');
 
 	//REMOVE COLLECTION
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Open options of the newly created collection
 	await page
@@ -268,11 +269,10 @@ test('T56: Opdracht - Elk type toevoegen', async ({ page }) => {
 
 	// Confirm remove modal
 	await page.getByRole('button', { name: 'Verwijder' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check new collection is removed
 	await expect(page.getByRole('link', { name: collectionTitleInOverview })).not.toBeVisible();
-
-	await page.waitForTimeout(1000);
 
 	// // Wait for close to save the videos
 	// await context.close();

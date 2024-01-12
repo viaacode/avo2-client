@@ -19,7 +19,11 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 	const educatieveAuteur = process.env.TEST_EDUCATIEVE_AUTEUR_USER as string;
 	const educatieveAuteurPass = process.env.TEST_EDUCATIEVE_AUTEUR_PASS as string;
 
-	await goToPageAndAcceptCookies(page, clientEndpoint, process.env.TEST_CLIENT_TITLE as string);
+	await goToPageAndAcceptCookies(
+		page,
+		process.env.TEST_CLIENT_ENDPOINT as string,
+		process.env.TEST_CLIENT_TITLE as string
+	);
 
 	await loginOnderwijsAvo(
 		page,
@@ -32,6 +36,7 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check new collection is shown
 	// Slicing because title is cut off at 60 characters,
@@ -48,25 +53,21 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 
 	// Click share button
 	await page.click(`button[aria-label="Deel de collectie met collega's (kijken of bewerken)"]`);
-
 	await page.fill('input[placeholder="E-mailadres"]', educatieveAuteur);
 
 	await page.getByRole('button', { name: 'Rol' }).click();
-
+	await page.waitForLoadState('networkidle');
 	await page.getByText('Bewerker', { exact: true }).click();
-	await page.waitForTimeout(3000);
+	await page.waitForLoadState('networkidle');
 	await page.getByRole('button', { name: 'Voeg toe', exact: true }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('Uitnodiging tot samenwerken is verstuurd');
+	await expect(page.getByText('Uitnodiging tot samenwerken is verstuurd')).toBeVisible();
 
 	// Check email is shown pending
 	const emailPending = educatieveAuteur + ' (pending)';
 	await expect(page.getByText(emailPending)).toBeVisible();
-
-	await page.waitForTimeout(1000);
 
 	const collectionId = page.url().split('/').reverse()[0];
 
@@ -77,7 +78,7 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 
 	// Logout
 	await logoutOnderwijsAvo(page);
-	await page.waitForTimeout(1000);
+	await page.waitForLoadState('networkidle');
 
 	// Login as other user
 	await loginOnderwijsAvo(page, clientEndpoint, educatieveAuteur, educatieveAuteurPass);
@@ -90,17 +91,16 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 
 	// Accept invite
 	await page.getByRole('button', { name: 'Toevoegen', exact: true }).click();
-	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Go to werkruimte as other user and check new collection
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
-
-	await page.waitForTimeout(1000);
 
 	// Logout
 	await logoutOnderwijsAvo(page);
-	await page.waitForTimeout(1000);
+	await page.waitForLoadState('networkidle');
 
 	// Login as first user
 	await loginOnderwijsAvo(
@@ -112,10 +112,12 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 
 	// Go to werkruimte as other user and check new collection
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
 
 	// Click on the above link
 	await page.getByRole('link', { name: collectionTitleInOverview }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check collection opens
 	await expect(page.getByRole('heading', { name: 'Over deze collectie' })).toBeVisible();
@@ -141,18 +143,16 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 
 	// Confirm
 	await page.getByRole('button', { name: 'Bevestigen' }).click();
-
-	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('Eigenaarschap succesvol overgedragen');
+	await expect(page.getByText('Eigenaarschap succesvol overgedragen')).toBeVisible();
 
 	// CLEANUP
 	//REMOVE COLLECTION
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Open options of the newly created collection
 	await page
@@ -168,6 +168,7 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 
 	// Confirm remove modal
 	await page.getByRole('button', { name: 'Verwijder' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check new collection is removed
 	await expect(page.getByRole('link', { name: collectionTitleInOverview })).not.toBeVisible();
@@ -181,6 +182,7 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Open options of the newly created collection
 	await page
@@ -193,9 +195,11 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 			'tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__content-open > div > div:nth-child(3)'
 		)
 		.click();
+	await page.waitForLoadState('networkidle');
 
 	// Confirm remove modal
 	await page.getByRole('button', { name: 'Verwijder' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check new collection is removed
 	await expect(page.getByRole('link', { name: collectionTitleInOverview })).not.toBeVisible();

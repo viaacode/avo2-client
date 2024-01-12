@@ -10,7 +10,7 @@ import { goToAdminPage } from '../../helpers/go-to-admin';
  *
  */
 
-test('T33: Beheer - Vertlingen opzoeken', async ({ page }) => {
+test('T33: Beheer - Vertalingen opzoeken', async ({ page }) => {
 	await goToAdminPage(page);
 
 	// Click on translations tab

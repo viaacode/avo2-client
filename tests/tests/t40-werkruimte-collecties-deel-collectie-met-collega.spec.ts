@@ -106,13 +106,10 @@ test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
 
-	await page.waitForTimeout(1000);
+	await page.waitForLoadState('networkidle');
 
 	// CLEANUP
 	//REMOVE COLLECTION
-	// Go to werkruimte
-	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
-
 	// Open options of the newly created collection
 	await page
 		.locator('tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__trigger > button')
@@ -133,7 +130,7 @@ test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }
 
 	// Logout
 	await logoutOnderwijsAvo(page);
-	await page.waitForTimeout(1000);
+	await page.waitForLoadState('networkidle');
 
 	// Login as first user again
 	await loginOnderwijsAvo(
@@ -150,6 +147,7 @@ test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }
 	await page
 		.locator('tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__trigger > button')
 		.click();
+	await page.waitForLoadState('networkidle');
 
 	// Click 'Verwijderen'
 	await page
@@ -157,6 +155,7 @@ test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }
 			'tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__content-open > div > div:nth-child(3)'
 		)
 		.click();
+	await page.waitForLoadState('networkidle');
 
 	// Confirm remove modal
 	await page.getByRole('button', { name: 'Verwijder' }).click();

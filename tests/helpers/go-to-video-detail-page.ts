@@ -12,8 +12,12 @@ export async function goToVideoDetailPage(page: Page): Promise<void> {
 	await page.locator('#video').check();
 	await page.getByRole('button', { name: 'Toepassen' }).click();
 
+	// Search
+	await page.getByRole('button', { name: 'Zoeken', exact: true }).click();
+
 	// Wait for items to load
 	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Click first item
 	await page.locator('h2.c-search-result__title > a').first().click();

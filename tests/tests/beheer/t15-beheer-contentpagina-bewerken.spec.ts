@@ -180,6 +180,4 @@ test('T15: Beheer - Contentpagina bewerken', async ({ page }) => {
 		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
 	).toContainText('Het content-item is succesvol verwijderd.');
 	await expect(page.getByRole('link', { name: pageTitleInOverview })).not.toBeVisible();
-
-	await page.waitForTimeout(3000);
 });

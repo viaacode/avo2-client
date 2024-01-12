@@ -227,8 +227,6 @@ test('T58: Opdracht - Delen met leerling', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: assignmentTitle })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Bewerken' })).not.toBeVisible();
 
-	await page.waitForTimeout(3000);
-
 	// CLEANUP
 	// Remove klas
 	// Logout

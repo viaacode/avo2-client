@@ -6,6 +6,7 @@
   "scripts": {
     "test:e2e:install-chrome": "playwright install chrome",
     "test:e2e": "npx playwright test",
+    "test:e2e:all": "npx cross-env dotenv -e ../.env.dev npx playwright test",
     "test:e2e:trace": "npx playwright test --trace on",
     "test:e2e:ui": "dotenv -e ../.env.dev npx playwright test -- --ui",
     "test:e2e:debug": "cross-env PWDEBUG=console dotenv -e ../.env.dev npx playwright test --workers=1 --retries=0 --max-failures=1",

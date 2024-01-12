@@ -26,6 +26,7 @@ export async function goToAdminPage(page: Page): Promise<void> {
 
 	// Go to admin page
 	await page.getByRole('link', { name: 'Beheer' }).click();
+	await page.waitForTimeout(1000);
 	await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
 	await page.waitForTimeout(1000);

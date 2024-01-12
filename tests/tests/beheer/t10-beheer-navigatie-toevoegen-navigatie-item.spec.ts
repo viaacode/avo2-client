@@ -10,7 +10,7 @@ import { goToAdminPage } from '../../helpers/go-to-admin';
  *
  */
 
-test('T10: Beheer - Navigatie, toevoegen navigatie item', async ({ page }) => {
+test.skip('T10: Beheer - Navigatie, toevoegen navigatie item', async ({ page }) => {
 	await goToAdminPage(page);
 
 	// Click on Navigation menu

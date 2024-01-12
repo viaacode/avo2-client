@@ -10,7 +10,7 @@ import { goToAdminPage } from '../../helpers/go-to-admin';
  *
  */
 
-test('T33: Beheer - Vertlingen opzoeken', async ({ page }) => {
+test('T34: Beheer - Vertalingen aanpassen', async ({ page }) => {
 	await goToAdminPage(page);
 
 	// Click on translations tab
@@ -61,8 +61,8 @@ test('T33: Beheer - Vertlingen opzoeken', async ({ page }) => {
 
 	// Check toast message was succesful
 	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De vertaling is opgeslagen.');
+		page.getByRole('alert').locator('div').filter({ hasText: 'GeluktDe vertaling is' }).first()
+	).toBeVisible();
 
 	// Check translation
 	await expect(
@@ -99,8 +99,8 @@ test('T33: Beheer - Vertlingen opzoeken', async ({ page }) => {
 
 	// Check toast message was succesful
 	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De vertaling is opgeslagen.');
+		page.getByRole('alert').locator('div').filter({ hasText: 'GeluktDe vertaling is' }).first()
+	).toBeVisible();
 
 	// Check translation
 	await expect(

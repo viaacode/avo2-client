@@ -40,7 +40,7 @@ test('T47: Werkruimte - collecties: Detail collectie stel hoofdafbeelding in', a
 	await page.getByRole('button', { name: 'Toepassen' }).click();
 
 	// Wait for items to load
-	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Click second item
 	await page.getByRole('link', { name: 'KLAAR: phishing' }).click();

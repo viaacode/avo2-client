@@ -132,10 +132,12 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	// and last 3 characters are swapped with periods
 	const collectionTitleInOverview2 = collectionTitle2.slice(0, 57) + '...';
 
-	await expect(page.getByRole('link', { name: collectionTitleInOverview2 })).toBeVisible();
+	await expect(
+		page.getByRole('link', { name: collectionTitleInOverview2 }).first()
+	).toBeVisible();
 
 	// Click on the above link
-	await page.getByRole('link', { name: collectionTitleInOverview2 }).click();
+	await page.getByRole('link', { name: collectionTitleInOverview2 }).first().click();
 
 	// Open options of the newly created collection
 	await page.click("button[aria-label='Meer opties']");
@@ -165,17 +167,14 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	await page.getByRole('button', { name: 'Toepassen' }).click();
 
 	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De collectie is toegevoegd aan de bundel.');
+	await expect(page.getByText('De collectie is toegevoegd aan de bundel.')).toBeVisible();
 
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 
 	// Go to bundles tab
 	await page.click('div[data-id="bundels"]');
-
-	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Check new bundle is shown
 	// Slicing because title is cut off at 60 characters,
@@ -204,6 +203,8 @@ test('T51: Bundel bewerken', async ({ page }) => {
 
 	// Edit bundle
 	await page.getByRole('button', { name: 'Bewerken', exact: true }).click();
+	await page.waitForLoadState('networkidle');
+	await expect(page.locator('button[aria-label="Verplaats naar boven"]')).toBeVisible();
 
 	// Move second item up
 	await page.locator('button[aria-label="Verplaats naar boven"]').click();
@@ -213,16 +214,14 @@ test('T51: Bundel bewerken', async ({ page }) => {
 
 	// Save changes
 	await page.getByRole('button', { name: 'Opslaan' }).click();
-
-	await page.waitForTimeout(3000);
+	await page.waitForLoadState('networkidle');
 
 	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De bundel werd opgeslagen.');
+	await expect(page.getByText('De bundel werd opgeslagen.')).toBeVisible();
 
 	// Close edit mode
 	await page.getByRole('button', { name: 'Sluiten' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check order
 	const title1AfterChangeOrder = await page
@@ -239,8 +238,6 @@ test('T51: Bundel bewerken', async ({ page }) => {
 
 	expect(title1 !== title1AfterChangeOrder && title2 !== title2AfterChangeOrder).toBeTruthy();
 
-	await page.waitForTimeout(2000);
-
 	// CLEANUP
 	// REMOVE BUNDLE
 	// Open options of the newly created bundle
@@ -254,8 +251,8 @@ test('T51: Bundel bewerken', async ({ page }) => {
 
 	// Check toast message was succesful
 	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De bundel werd succesvol verwijderd. Collecties bleven ongewijzigd.');
+		page.getByText('De bundel werd succesvol verwijderd. Collecties bleven ongewijzigd.')
+	).toBeVisible();
 
 	//REMOVE COLLECTIONS
 	// Open options of the newly created collection2

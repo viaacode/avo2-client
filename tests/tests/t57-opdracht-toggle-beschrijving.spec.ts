@@ -197,7 +197,7 @@ test('T57: Opdracht - Toggle beschrijving', async ({ page }) => {
 		)
 		.click();
 
-	await page.waitForTimeout(1000);
+	await page.waitForLoadState('networkidle');
 
 	// Check description label is not shown
 	await expect(
@@ -325,8 +325,6 @@ test('T57: Opdracht - Toggle beschrijving', async ({ page }) => {
 
 	// Check new collection is removed
 	await expect(page.getByRole('link', { name: collectionTitleInOverview })).not.toBeVisible();
-
-	await page.waitForTimeout(1000);
 
 	// // Wait for close to save the videos
 	// await context.close();

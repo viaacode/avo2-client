@@ -47,7 +47,6 @@ test('T49: Werkruimte - collecties: Detail collectie beginknip stillimage', asyn
 			'ul.c-collection-list > li:nth-child(1) > div > div > div > div > div.c-video-player__thumbnail'
 		)
 		.getAttribute('style');
-	console.log(stillImageStyle);
 
 	// Edit collection
 	await page.getByRole('button', { name: 'Bewerken', exact: true }).click();
@@ -86,8 +85,6 @@ test('T49: Werkruimte - collecties: Detail collectie beginknip stillimage', asyn
 			'ul.c-collection-list > li:nth-child(1) > div > div > div > div > div.c-video-player__thumbnail'
 		)
 		.getAttribute('style');
-
-	console.log(stillImageStyleAfterCut);
 
 	// Check if same thumbnail image is used in overview as was selected
 	const containsBackgroundUrl = stillImageStyle === stillImageStyleAfterCut;

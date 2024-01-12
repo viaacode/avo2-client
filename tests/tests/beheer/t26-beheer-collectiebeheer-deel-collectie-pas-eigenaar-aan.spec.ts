@@ -33,6 +33,8 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	// Logout
 	await page.goto(process.env.TEST_CLIENT_ENDPOINT as string);
 	await logoutOnderwijsAvo(page);
+	await page.waitForLoadState('networkidle');
+	await page.waitForTimeout(2000);
 
 	// Login as admin
 	await loginOnderwijsAvo(
@@ -43,14 +45,13 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	);
 	// Go to admin page
 	await page.getByRole('link', { name: 'Beheer' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-
-	await page.waitForTimeout(1000);
 
 	// Click on collection tab
 	await page.getByRole('link', { name: 'Collectiebeheer' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('heading', { name: 'Collecties', exact: true })).toBeVisible();
-	await page.waitForTimeout(2000);
 
 	// Check new collection is shown
 	// Slicing because title is cut off at 50 characters,
@@ -61,6 +62,7 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	// Open the collection
 	await page.getByRole('link', { name: collectionTitleInAdminOverview }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check collection opens
 	await expect(page.getByRole('heading', { name: 'Over deze collectie' })).toBeVisible();
@@ -75,6 +77,7 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	await page.getByText('Bewerker', { exact: true }).click();
 	await page.waitForTimeout(3000);
 	await page.getByRole('button', { name: 'Voeg toe', exact: true }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check toast message was succesful
 	await expect(
@@ -85,8 +88,6 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	const emailPending = educatieveAuteur + ' (pending)';
 	await expect(page.getByText(emailPending)).toBeVisible();
 
-	await page.waitForTimeout(1000);
-
 	const collectionId = page.url().split('/').reverse()[0];
 
 	// Get inviteToken
@@ -96,7 +97,7 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	// Logout
 	await logoutOnderwijsAvo(page);
-	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Login as other user
 	await loginOnderwijsAvo(page, clientEndpoint, educatieveAuteur, educatieveAuteurPass);
@@ -109,7 +110,7 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	// Accept invite
 	await page.getByRole('button', { name: 'Toevoegen', exact: true }).click();
-	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Check new collection is shown
 	// Slicing because title is cut off at 60 characters,
@@ -118,14 +119,12 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	// Go to werkruimte as other user and check new collection
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
-	await page.waitForTimeout(1000);
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
-
-	await page.waitForTimeout(1000);
 
 	// Logout
 	await logoutOnderwijsAvo(page);
-	await page.waitForTimeout(1000);
+	await page.waitForLoadState('networkidle');
 
 	// Login as first user
 	await loginOnderwijsAvo(
@@ -137,14 +136,13 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	// Go to admin page
 	await page.getByRole('link', { name: 'Beheer' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-
-	await page.waitForTimeout(1000);
 
 	// Click on collection tab
 	await page.getByRole('link', { name: 'Collectiebeheer' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('heading', { name: 'Collecties', exact: true })).toBeVisible();
-	await page.waitForTimeout(2000);
 
 	// Check new collection is shown
 	await expect(page.getByRole('link', { name: collectionTitleInAdminOverview })).toBeVisible();
@@ -176,8 +174,7 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	// Confirm
 	await page.getByRole('button', { name: 'Bevestigen' }).click();
-
-	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Check toast message was succesful
 	await expect(
@@ -187,14 +184,13 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	// CLEANUP
 	//REMOVE COLLECTION
 	await page.getByRole('link', { name: 'Beheer' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-
-	await page.waitForTimeout(1000);
 
 	// Click on collection tab
 	await page.getByRole('link', { name: 'Collectiebeheer' }).click();
+	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('heading', { name: 'Collecties', exact: true })).toBeVisible();
-	await page.waitForTimeout(2000);
 
 	// Check new collection is shown
 	await expect(page.getByRole('link', { name: collectionTitleInAdminOverview })).toBeVisible();
@@ -210,7 +206,7 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	// Click remove
 	await page.getByText('Verwijderen', { exact: true }).click();
-	await page.waitForTimeout(1000);
+	await page.waitForLoadState('networkidle');
 
 	// Check remove modal opens
 	await expect(
@@ -221,8 +217,5 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	await page.getByRole('button', { name: 'Verwijder' }).click();
 
 	// Check toast
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De collectie werd succesvol verwijderd.');
-	await page.waitForTimeout(1000);
+	await expect(page.getByText('De collectie werd succesvol verwijderd.')).toBeVisible();
 });

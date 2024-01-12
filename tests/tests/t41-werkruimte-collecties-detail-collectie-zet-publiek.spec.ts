@@ -172,9 +172,7 @@ test('T41: Werkruimte - collecties: Detail collectie zet publiek', async ({ page
 	await page.waitForTimeout(3000);
 
 	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De collectie staat nu publiek.');
+	await expect(page.getByText('De collectie staat nu publiek.')).toBeVisible();
 
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();

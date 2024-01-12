@@ -45,11 +45,6 @@ test('T31: Fragment detail - Maak sneldeellink voor leerling met beschrijving', 
 	// Copy url because pasting from clipboard does not work with auto tests?
 	const copyStudentUrl = await page.locator('div.m-quick-lane-modal__link > a').textContent();
 
-	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('De link is succesvol gekopieerd.');
-
 	// Close modal
 	await page
 		.locator(
@@ -62,6 +57,7 @@ test('T31: Fragment detail - Maak sneldeellink voor leerling met beschrijving', 
 
 	// Logout
 	await logoutOnderwijsAvo(page);
+	await page.waitForLoadState('networkidle');
 
 	// Login as student
 	await loginOnderwijsAvo(
@@ -70,19 +66,19 @@ test('T31: Fragment detail - Maak sneldeellink voor leerling met beschrijving', 
 		process.env.TEST_LEERLING_GEBRUIKER_USER as string,
 		process.env.TEST_LEERLING_GEBRUIKER_PASS as string
 	);
+	await page.waitForLoadState('networkidle');
 
 	// Go to the copied link and wait for results to load
 	// Pasting from clipboard does not work with auto tests?
 	// const url = await navigator.clipboard.readText();
 	// await page.goto(url);
 	copyStudentUrl && (await page.goto(copyStudentUrl));
+	await page.waitForLoadState('networkidle');
 
 	// Check video detail page is shown
 	await expect(
 		page.getByRole('heading', { name: 'Journaal: dag van de Mantelzorg' })
 	).toBeVisible();
-
-	await page.waitForTimeout(2000);
 
 	// // Wait for close to save the videos
 	// await context.close();

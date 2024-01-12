@@ -18,19 +18,17 @@ export async function goToPageAndAcceptCookies(
 
 	// Check navbar exists
 	await expect(page.getByRole('link', { name: 'Projecten', exact: true })).toBeVisible();
+	await page.waitForTimeout(1000);
 
 	// Check cookiebot opens
-	if (
-		await page
-			.getByRole('heading', { name: 'Deze website maakt gebruik van cookies' })
-			.isVisible()
-	) {
+	if (page.getByRole('heading', { name: 'Deze website maakt gebruik van cookies' }) !== null) {
 		await expect(
 			page.getByRole('heading', { name: 'Deze website maakt gebruik van cookies' })
 		).toBeVisible();
 
 		// Accept all cookies
 		await page.getByRole('link', { name: 'Alle cookies toestaan' }).click();
+		await page.waitForTimeout(1000);
 	}
 
 	// Check if cookiebot disappeared

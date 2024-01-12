@@ -71,6 +71,7 @@ test('T55: Opdracht - Tekstblok toevoegen', async ({ page }) => {
 
 	// Save changes
 	await page.getByRole('button', { name: 'Opslaan' }).click();
+	await page.waitForLoadState('networkidle');
 
 	// Check toast message was succesful
 	await expect(
@@ -82,6 +83,7 @@ test('T55: Opdracht - Tekstblok toevoegen', async ({ page }) => {
 
 	// Go to assignments tab
 	await page.click('div[data-id="opdrachten"]');
+	await page.waitForLoadState('networkidle');
 
 	// Check new assignment is shown
 	// Slicing because title is cut off at 60 characters,

@@ -43,6 +43,8 @@ export async function loginOnderwijsAvo(
 
 	// Click the login button
 	await page.click('button[type="submit"]');
+	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Check navbar exists, logged in
 	await expect(page.getByRole('link', { name: 'Mijn werkruimte' })).toBeVisible();
