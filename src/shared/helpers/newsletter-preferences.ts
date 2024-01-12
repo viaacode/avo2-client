@@ -1,16 +1,16 @@
-import type { Avo } from '@viaa/avo2-types';
 import { isEmpty, isNil, keys } from 'lodash-es';
 
+import { NewsletterPreferences } from '../services/campaign-monitor-service';
 import { NewsletterList } from '../types';
 
 export const convertToNewsletterPreferenceUpdate = (
-	oldPreferences: Avo.Newsletter.Preferences,
-	newPreferences: Partial<Avo.Newsletter.Preferences>
+	oldPreferences: NewsletterPreferences,
+	newPreferences: Partial<NewsletterPreferences>
 ) => {
 	// Convert to update object for newsletter preferences.
 	const uniqKeys = keys(oldPreferences) as NewsletterList[];
 
-	const convertedPreferences: Partial<Avo.Newsletter.Preferences> = {};
+	const convertedPreferences: Partial<NewsletterPreferences> = {};
 	uniqKeys.forEach((key) => {
 		if (!isNil(newPreferences[key]) && oldPreferences[key] !== newPreferences[key]) {
 			convertedPreferences[key] = newPreferences[key];

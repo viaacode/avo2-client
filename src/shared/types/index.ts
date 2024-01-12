@@ -2,13 +2,15 @@ import { IconName } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { ReactElement } from 'react';
 
+import { NewsletterPreferences } from '../services/campaign-monitor-service';
+
 export * from './quick-lane';
 
 export enum KeyCode {
 	Enter = 13,
 }
 
-export type NewsletterList = keyof Avo.Newsletter.Preferences;
+export type NewsletterList = keyof NewsletterPreferences;
 
 export type NavigationItemInfo = {
 	label: string | ReactElement;

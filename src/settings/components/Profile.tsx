@@ -49,7 +49,10 @@ import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { CampaignMonitorService } from '../../shared/services/campaign-monitor-service';
+import {
+	CampaignMonitorService,
+	NewsletterPreferences,
+} from '../../shared/services/campaign-monitor-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
 import { ToastService } from '../../shared/services/toast-service';
 import store from '../../store';
@@ -350,9 +353,7 @@ const Profile: FunctionComponent<
 				getLoginState(true);
 			}
 
-			const preferences: Partial<Avo.Newsletter.Preferences> = {
-				allActiveUsers: true, // Update user info in campaign monitor after changes to profile have been saved
-			} as any;
+			const preferences: Partial<NewsletterPreferences> = {} as any;
 			if (subscribeToNewsletter) {
 				// subscribe to newsletter if checked
 				preferences.newsletter = true;

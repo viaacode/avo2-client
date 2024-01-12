@@ -9,7 +9,6 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
 import { keys } from 'lodash-es';
 import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -20,7 +19,10 @@ import { ErrorView } from '../../../error/views';
 import { convertToNewsletterPreferenceUpdate, CustomError } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { CampaignMonitorService } from '../../../shared/services/campaign-monitor-service';
+import {
+	CampaignMonitorService,
+	NewsletterPreferences,
+} from '../../../shared/services/campaign-monitor-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { NewsletterList, ReactAction } from '../../../shared/types';
 import { GET_NEWSLETTER_LABELS } from '../../settings.const';
@@ -37,15 +39,14 @@ enum NewsletterPreferencesActionType {
 
 type NewsletterPreferencesAction = ReactAction<NewsletterPreferencesActionType>;
 
-const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): Avo.Newsletter.Preferences => ({
+const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
 	newsletter: false,
 	workshop: false,
 	ambassador: false,
-	allActiveUsers: false,
 });
 
 const newsletterPreferencesReducer = (
-	state: Avo.Newsletter.Preferences,
+	state: NewsletterPreferences,
 	action: NewsletterPreferencesAction
 ) => {
 	switch (action.type) {
@@ -79,9 +80,9 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 	const [isLoadingUpdatePreferences, setIsLoadingUpdatePreferences] = useState<boolean>(false);
 
 	const [initialNewsletterPreferences, setInitialNewsletterPreferences] =
-		useState<Avo.Newsletter.Preferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
+		useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
 	const [newsletterPreferences, changeNewsletterPreferences] = useReducer<
-		Reducer<Avo.Newsletter.Preferences, NewsletterPreferencesAction>
+		Reducer<NewsletterPreferences, NewsletterPreferencesAction>
 	>(newsletterPreferencesReducer, INITIAL_NEWSLETTER_PREFERENCES_STATE());
 
 	const newsletterLabels = GET_NEWSLETTER_LABELS();
@@ -96,7 +97,7 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 		}
 	}, [fetchedNewsletterPreferences]);
 
-	const onChangePreference = (preference: Partial<Avo.Newsletter.Preferences>) => {
+	const onChangePreference = (preference: Partial<NewsletterPreferences>) => {
 		changeNewsletterPreferences({
 			type: NewsletterPreferencesActionType.UPDATE_NEWSLETTER_PREFERENCES,
 			payload: preference,
