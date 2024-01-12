@@ -13,7 +13,6 @@ import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/compon
 import { CustomError } from '../../../shared/helpers';
 import { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { CampaignMonitorService } from '../../../shared/services/campaign-monitor-service';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AppState } from '../../../store';
@@ -101,17 +100,6 @@ const AcceptConditions: FunctionComponent<
 				true,
 				true
 			);
-			try {
-				await CampaignMonitorService.updateNewsletterPreferences({
-					allActiveUsers: true,
-				});
-			} catch (err) {
-				console.error(
-					'Failed to update newsletter preferences during handleAcceptConditions',
-					err,
-					{ commonUser }
-				);
-			}
 
 			acceptConditions();
 		} catch (err) {
