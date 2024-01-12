@@ -211,6 +211,11 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 					</Form>
 				</Spacer>
 				<Spacer margin="top">
+					{tHtml(
+						'settings/components/email/email___we-kunnen-je-wel-nog-account-gerelateerde-mails-sturen-zoals-wachtwoord-opnieuw-instellen'
+					)}
+				</Spacer>
+				<Spacer margin="top">
 					{isLoadingGetPreferences || isLoadingUpdatePreferences ? (
 						<Spinner />
 					) : (
