@@ -26,6 +26,8 @@ query getItemsWithFilters(
 		organisation {
 			or_id
 			name
+			logo_url
+			overlay
 		}
 		publish_at
 		published_at

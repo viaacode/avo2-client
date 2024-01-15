@@ -1,6 +1,7 @@
 import path from 'path';
 
 import react from '@vitejs/plugin-react';
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import { defineConfig } from 'vite';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import svgrPlugin from 'vite-plugin-svgr';
@@ -11,17 +12,15 @@ export default defineConfig(() => {
 		build: {
 			outDir: 'dist',
 			sourcemap: true,
+			rollupOptions: {
+				plugins: [sourcemaps()],
+			},
 		},
 		server: {
 			port: 8080,
 		},
 		plugins: [react(), viteTsconfigPaths(), svgrPlugin(), cssInjectedByJsPlugin()],
-		define: {
-			// By default, Vite doesn't include shims for Node.js
-			// necessary for rich text editor to work
-			// https://github.com/vitejs/vite/discussions/5912#discussioncomment-5569850
-			global: 'globalThis',
-		},
+		sourcemap: true,
 		// TODO, see if we can load graphql files instead of the documents from the react-query generated file, since we don't use the react query a lot
 		// assetsInclude: ['**/*.graphql'],
 		resolve: {

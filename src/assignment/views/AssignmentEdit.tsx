@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
-import { isPast } from 'date-fns';
+import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
 	Dispatch,
@@ -70,6 +70,7 @@ import AssignmentMetaDataFormEditable from '../components/AssignmentMetaDataForm
 import AssignmentPupilPreview from '../components/AssignmentPupilPreview';
 import AssignmentTeacherTabs from '../components/AssignmentTeacherTabs';
 import AssignmentTitle from '../components/AssignmentTitle';
+import { endOfAcademicYear } from '../helpers/academic-year';
 import {
 	onAddNewContributor,
 	onDeleteContributor,
@@ -133,6 +134,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			canPublish: boolean;
 		}>
 	>({});
+	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
 	// Computed
 	const assignmentId = match.params.id;
@@ -340,6 +342,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			return;
 		}
 
+		if (
+			assignment?.deadline_at &&
+			isAfter(new Date(assignment.deadline_at), endOfAcademicYear())
+		) {
+			ToastService.danger(
+				tHtml('assignment/views/assignment-edit___de-deadline-moet-voor-31-augustus-liggen')
+			);
+			return;
+		}
+
 		if (assignmentHasResponses) {
 			setIsConfirmSaveActionModalOpen(true);
 			return;
@@ -511,9 +523,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		);
 	};
 
+	const cancelSaveBar = () => {
+		reset();
+		setHasUnsavedChanges(false);
+	};
+
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
+	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink, undefined, () =>
+		setHasUnsavedChanges(true)
+	);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment?.blocks || [],
@@ -605,7 +624,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	);
 
 	const renderTitle = useMemo(
-		() => <AssignmentTitle control={control} setAssignment={setAssignment as any} />,
+		() => (
+			<AssignmentTitle
+				control={control}
+				setAssignment={setAssignment as any}
+				onFocus={() => setHasUnsavedChanges(true)}
+			/>
+		),
 		[tText, control, setAssignment]
 	);
 
@@ -656,6 +681,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							assignment={assignment || {}}
 							setAssignment={setAssignment as any}
 							setValue={setValue}
+							onFocus={() => setHasUnsavedChanges(true)}
 						/>
 					</div>
 				);
@@ -669,6 +695,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 								setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
 							}
 							setValue={setValue as any}
+							onFocus={() => setHasUnsavedChanges(true)}
 						/>
 					</div>
 				);
@@ -904,9 +931,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 			<StickySaveBar
-				isVisible={unsavedChanges}
+				isVisible={unsavedChanges || hasUnsavedChanges}
 				onSave={handleOnSave}
-				onCancel={() => reset()}
+				onCancel={cancelSaveBar}
 			/>
 		</div>
 	);

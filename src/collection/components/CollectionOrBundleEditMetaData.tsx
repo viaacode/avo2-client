@@ -34,12 +34,14 @@ interface CollectionOrBundleEditMetaDataProps {
 	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMetaDataProps> = ({
 	type,
 	collection,
 	changeCollectionState,
+	onFocus,
 }) => {
 	const { tText } = useTranslation();
 
@@ -87,6 +89,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										placeholder={tText(
 											'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
 										)}
+										onFocus={onFocus}
 									/>
 									{!isCollection && (
 										<FormGroup
@@ -175,6 +178,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 													collectionPropValue: value,
 												})
 											}
+											onFocus={onFocus}
 										/>
 									</FormGroup>
 								</Column>

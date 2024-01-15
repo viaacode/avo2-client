@@ -9,6 +9,7 @@ type CollectionOrBundleTitleProps = {
 	title: string | undefined;
 	onChange: (title: string) => void;
 	maxLength?: number;
+	onFocus?: () => void;
 };
 
 const CollectionLOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
@@ -16,6 +17,7 @@ const CollectionLOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
 	title,
 	onChange,
 	maxLength,
+	onFocus,
 }) => {
 	const { tText } = useTranslation();
 	const [isActive, setIsActive] = useState<boolean>(false);
@@ -46,6 +48,7 @@ const CollectionLOrBundleTitle: FC<CollectionOrBundleTitleProps> = ({
 							iconEnd={() =>
 								!isActive && <Icon name={IconName.edit4} size="small" subtle />
 							}
+							onFocus={onFocus}
 						/>
 					</Flex>
 				</BlockHeading>

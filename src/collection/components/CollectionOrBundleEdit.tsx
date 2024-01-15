@@ -48,7 +48,13 @@ import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/B
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { getMoreOptionsLabel, ROUTE_PARTS } from '../../shared/constants';
-import { buildLink, createDropdownMenuItem, CustomError, navigate } from '../../shared/helpers';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	isMobileWidth,
+	navigate,
+} from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
@@ -70,7 +76,7 @@ import { ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';
-import { CollectionCreateUpdateTab } from '../collection.types';
+import { CollectionCreateUpdateTab, CollectionMenuAction } from '../collection.types';
 import { CollectionOrBundleTitle, PublishCollectionModal } from '../components';
 import {
 	onAddContributor,
@@ -227,7 +233,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const hasChanges =
 			JSON.stringify(convertRteToString(initialCollection)) !==
 			JSON.stringify(convertRteToString(currentCollection));
-		setUnsavedChanges(hasChanges);
+
+		if (!unsavedChanges) {
+			setUnsavedChanges(hasChanges);
+		}
 	};
 
 	const fetchContributors = useCallback(async (): Promise<void> => {
@@ -751,6 +760,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 		);
 	};
 
+	const cancelSaveBar = () => {
+		changeCollectionState({ type: 'RESET_COLLECTION' });
+		setUnsavedChanges(false);
+	};
+
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
@@ -843,20 +857,20 @@ const CollectionOrBundleEdit: FunctionComponent<
 	// TODO: DISABLED FEATURE
 	// const onPreviewCollection = () => {};
 
-	const executeAction = async (item: ReactText) => {
+	const executeAction = async (item: CollectionMenuAction) => {
 		setIsOptionsMenuOpen(false);
 		switch (item) {
-			case 'delete':
+			case CollectionMenuAction.delete:
 				onClickDelete();
 				break;
 
-			case 'save':
+			case CollectionMenuAction.save:
 				if (!isSavingCollection) {
 					await onSaveCollection();
 				}
 				break;
 
-			case 'openPublishModal':
+			case CollectionMenuAction.openPublishModal:
 				if (unsavedChanges && !get(collectionState.initialCollection, 'is_public')) {
 					ToastService.info(
 						tHtml(
@@ -868,7 +882,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				}
 				break;
 
-			case 'redirectToDetail':
+			case CollectionMenuAction.redirectToDetail:
 				redirectToClientPage(
 					buildLink(
 						isCollection
@@ -882,11 +896,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 				);
 				break;
 
-			case 'addItemById':
+			case CollectionMenuAction.addItemById:
 				setEnterItemIdModalOpen(true);
 				break;
 
-			case 'share':
+			case CollectionMenuAction.share:
 				setIsShareModalOpen(true);
 				break;
 
@@ -1110,6 +1124,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							type={type}
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.PUBLISH:
@@ -1118,6 +1133,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							type={type}
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.ADMIN:
@@ -1126,6 +1142,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.ACTUALISATION:
@@ -1134,6 +1151,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.QUALITY_CHECK:
@@ -1142,6 +1160,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.MARCOM:
@@ -1150,6 +1169,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				default:
@@ -1167,7 +1187,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const renderHeaderButtons = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
-				'delete',
+				CollectionMenuAction.delete,
 				shouldDeleteSelfFromCollection
 					? tText(
 							'collection/components/collection-or-bundle-edit___verwijder-mij-van-deze-collectie'
@@ -1177,7 +1197,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				true
 			),
 			...createDropdownMenuItem(
-				'addItemById',
+				CollectionMenuAction.addItemById,
 				isCollection
 					? tText('collection/components/collection-or-bundle-edit___voeg-item-toe')
 					: tText('collection/components/collection-or-bundle-edit___voeg-collectie-toe'),
@@ -1224,7 +1244,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						title={publishButtonTooltip}
 						ariaLabel={publishButtonTooltip}
 						icon={isPublic ? IconName.unlock3 : IconName.lock}
-						onClick={() => executeAction('openPublishModal')}
+						onClick={() => executeAction(CollectionMenuAction.openPublishModal)}
 					/>
 				)}
 				<Button
@@ -1239,7 +1259,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 									'collection/components/collection-or-bundle-edit___bekijk-hoe-de-bundel-er-zal-uit-zien'
 							  )
 					}
-					onClick={() => executeAction('redirectToDetail')}
+					onClick={() => executeAction(CollectionMenuAction.redirectToDetail)}
 				/>
 				{draggableListButton}
 				<MoreOptionsDropdown
@@ -1248,7 +1268,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					onClose={() => setIsOptionsMenuOpen(false)}
 					label={getMoreOptionsLabel()}
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
-					onOptionClicked={executeAction}
+					onOptionClicked={(optionId) => executeAction(optionId as CollectionMenuAction)}
 				/>
 				<InteractiveTour showButton />
 
@@ -1306,13 +1326,13 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const renderHeaderButtonsMobile = () => {
 		const COLLECTION_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
-				'save',
+				CollectionMenuAction.save,
 				tText('collection/views/collection-edit___opslaan'),
 				IconName.download,
 				true
 			),
 			...createDropdownMenuItem(
-				'openPublishModal',
+				CollectionMenuAction.openPublishModal,
 				isPublic
 					? tText('collection/components/collection-or-bundle-edit___maak-prive')
 					: tText('collection/components/collection-or-bundle-edit___publiceer'),
@@ -1320,19 +1340,19 @@ const CollectionOrBundleEdit: FunctionComponent<
 				true
 			),
 			...createDropdownMenuItem(
-				'share',
+				CollectionMenuAction.share,
 				tText('collection/components/collection-or-bundle-edit___delen'),
 				IconName.userGroup,
 				isCollection
 			),
 			...createDropdownMenuItem(
-				'redirectToDetail',
+				CollectionMenuAction.redirectToDetail,
 				tText('collection/components/collection-or-bundle-edit___bekijk'),
 				IconName.eye,
 				true
 			),
 			...createDropdownMenuItem(
-				'rename',
+				CollectionMenuAction.rename,
 				isCollection
 					? 'Collectie hernoemen'
 					: tText('collection/components/collection-or-bundle-edit___bundel-hernoemen'),
@@ -1340,7 +1360,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				true
 			),
 			...createDropdownMenuItem(
-				'delete',
+				CollectionMenuAction.delete,
 				permissions.canDelete || isOwner
 					? tText('collection/components/collection-or-bundle-edit___verwijderen')
 					: tText(
@@ -1358,7 +1378,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 					onClose={() => setIsOptionsMenuOpen(false)}
 					label={getMoreOptionsLabel()}
 					menuItems={COLLECTION_DROPDOWN_ITEMS}
-					onOptionClicked={executeAction}
+					onOptionClicked={(menuItemId) =>
+						executeAction(menuItemId as CollectionMenuAction)
+					}
 				/>
 			</ButtonToolbar>
 		);
@@ -1394,6 +1416,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 								})
 							}
 							maxLength={110}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					}
 					category={type}
@@ -1402,12 +1425,16 @@ const CollectionOrBundleEdit: FunctionComponent<
 					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
 					<HeaderMiddleRowRight>
-						<div className="c-collection-or-bundle-edit__header-buttons--mobile">
-							{renderHeaderButtonsMobile()}
-						</div>
-						<div className="c-collection-or-bundle-edit__header-buttons--desktop">
-							{renderHeaderButtons()}
-						</div>
+						{isMobileWidth() && (
+							<div className="c-collection-or-bundle-edit__header-buttons--mobile">
+								{renderHeaderButtonsMobile()}
+							</div>
+						)}
+						{!isMobileWidth() && (
+							<div className="c-collection-or-bundle-edit__header-buttons--desktop">
+								{renderHeaderButtons()}
+							</div>
+						)}
 					</HeaderMiddleRowRight>
 
 					{collectionState.currentCollection && (
@@ -1432,8 +1459,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 					{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 					<StickySaveBar
 						isVisible={unsavedChanges}
-						onSave={() => executeAction('save')}
-						onCancel={() => changeCollectionState({ type: 'RESET_COLLECTION' })}
+						onSave={() => executeAction(CollectionMenuAction.save)}
+						onCancel={cancelSaveBar}
 					/>
 				</div>
 

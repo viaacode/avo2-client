@@ -13,6 +13,7 @@ import { renderHomeRoutes } from './home/home.routes';
 import { renderItemRoutes } from './item/item.routes';
 import { renderQuickLaneRoutes } from './quick-lane/quick-lane.routes';
 import { renderSearchRoutes } from './search/search.routes';
+import { renderEmailPreferencesLoggedOutRoutes } from './settings/components/Email/email-preferences-logged-out.routes';
 import { renderSettingsRoutes } from './settings/settings.routes';
 import { renderUserItemRequestFormRoutes } from './user-item-request-form/user-item-request-form.routes';
 import { renderWorkspaceRoutes } from './workspace/workspace.routes';
@@ -33,6 +34,7 @@ export const renderRoutes = () => (
 		{renderUserItemRequestFormRoutes()}
 		{renderCookieBotRoutes()}
 		{renderQuickLaneRoutes()}
+		{renderEmailPreferencesLoggedOutRoutes()}
 		{/* This route needs to be the last one, since it handles all remaining routes */}
 		{renderDynamicRouteResolverRoutes()}
 	</Switch>

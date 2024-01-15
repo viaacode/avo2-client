@@ -23,14 +23,22 @@ export type EditablePupilCollectionFragment = PupilCollectionFragment & Editable
 export type AssignmentOverviewTableColumns =
 	| 'title'
 	| 'author'
+	| 'author_user_group'
+	| 'last_user_edit_profile'
 	| 'created_at'
 	| 'updated_at'
 	| 'deadline_at'
 	| 'status'
+	| 'subjects'
+	| 'education_levels'
 	| 'responses'
 	| 'labels'
 	| 'class_room'
 	| 'views'
+	| 'bookmarks'
+	| 'copies'
+	| 'is_copy'
+	| 'contributors'
 	| 'actions'
 	| 'share_type'
 	| 'is_public';
@@ -87,6 +95,11 @@ export interface AssignmentLabelColor {
 	value: Lookup_Enum_Colors_Enum; // BRIGHT_RED
 }
 
+export interface AssignmentLabel {
+	description: string;
+	value: string;
+}
+
 /// Zoek & bouw
 
 export type AssignmentResponseFormState = Pick<
@@ -105,6 +118,7 @@ export interface PupilSearchFilterState extends FilterState {
 export interface EditBlockProps {
 	block: EditableAssignmentBlock;
 	setBlock: (updatedBlock: EditableAssignmentBlock) => void;
+	onFocus?: () => void;
 }
 
 export type EditableAssignmentBlock = Avo.Assignment.Block &

@@ -4,11 +4,10 @@ import SecuredRoute from '../authentication/components/SecuredRoute';
 import { APP_PATH } from '../constants';
 
 import AssignmentCreate from './views/AssignmentCreate';
-import AssignmentDetail from './views/AssignmentDetail';
+import AssignmentDetailSwitcher from './views/AssignmentDetailSwitcher';
 import AssignmentEdit from './views/AssignmentEdit';
 import AssignmentPupilCollectionDetail from './views/AssignmentPupilCollectionDetail';
 import AssignmentResponseAdminEdit from './views/AssignmentResponseEdit/AssignmentResponseAdminEdit';
-import AssignmentResponseEditPage from './views/AssignmentResponseEdit/AssignmentResponseEditPage';
 
 export const renderAssignmentRoutes = (): ReactNode[] => [
 	<SecuredRoute
@@ -18,7 +17,7 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 		key={APP_PATH.ASSIGNMENT_CREATE.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentDetail}
+		component={AssignmentDetailSwitcher}
 		exact
 		path={APP_PATH.ASSIGNMENT_DETAIL.route}
 		key={APP_PATH.ASSIGNMENT_DETAIL.route}
@@ -36,13 +35,13 @@ export const renderAssignmentRoutes = (): ReactNode[] => [
 		key={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentResponseEditPage}
+		component={AssignmentDetailSwitcher}
 		exact
 		path={APP_PATH.ASSIGNMENT_RESPONSE_CREATE.route}
 		key={APP_PATH.ASSIGNMENT_RESPONSE_CREATE.route}
 	/>,
 	<SecuredRoute
-		component={AssignmentResponseEditPage}
+		component={AssignmentDetailSwitcher}
 		exact
 		path={APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route}
 		key={APP_PATH.ASSIGNMENT_RESPONSE_EDIT.route}

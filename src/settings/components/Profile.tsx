@@ -27,6 +27,7 @@ import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -122,7 +123,7 @@ const Profile: FunctionComponent<
 
 	const isExceptionAccount = commonUser?.isException || false;
 
-	const isPupil = commonUser.userGroup?.id === SpecialUserGroup.Pupil;
+	const isPupil = commonUser?.userGroup?.id === SpecialUserGroup.Pupil;
 
 	useEffect(() => {
 		const tempUiPermissions = {
@@ -252,15 +253,16 @@ const Profile: FunctionComponent<
 		const groupedLoms = groupLoms(selectedLoms);
 
 		if (
-			((uiPermissions.SUBJECTS.REQUIRED && uiPermissions.SUBJECTS.EDIT) ||
-				isCompleteProfileStep) &&
+			uiPermissions.SUBJECTS.REQUIRED &&
+			uiPermissions.SUBJECTS.EDIT &&
 			!groupedLoms.subject?.length
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
-			((uiPermissions.THEME.REQUIRED && uiPermissions.THEME.EDIT) || isCompleteProfileStep) &&
+			uiPermissions.THEME.REQUIRED &&
+			uiPermissions.THEME.EDIT &&
 			!groupedLoms.theme?.length
 		) {
 			errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
@@ -500,6 +502,14 @@ const Profile: FunctionComponent<
 								themesPlaceholder={tText(
 									'settings/components/profile___selecteer-je-themas'
 								)}
+								showEducation={
+									uiPermissions?.EDUCATION_LEVEL?.EDIT || isCompleteProfileStep
+								}
+								showThemes={uiPermissions?.THEME?.EDIT}
+								showSubjects={uiPermissions?.SUBJECTS?.EDIT}
+								isEducationRequired={uiPermissions?.EDUCATION_LEVEL?.REQUIRED}
+								isThemesRequired={uiPermissions?.THEME?.REQUIRED}
+								isSubjectsRequired={uiPermissions?.SUBJECTS?.REQUIRED}
 							/>
 							{renderEducationOrganisationsField(true, true)}
 						</Spacer>
@@ -587,7 +597,7 @@ const Profile: FunctionComponent<
 			url: getEnv('SSUM_ACCOUNT_EDIT_URL') || '',
 			query: {
 				redirect_to: stringifyUrl({
-					url: getEnv('PROXY_URL') + '/auth/global-logout',
+					url: getEnv('PROXY_URL') + '/' + SERVER_LOGOUT_PAGE,
 					query: {
 						returnToUrl: window.location.href,
 					},
@@ -712,10 +722,7 @@ const Profile: FunctionComponent<
 											<CommonMetadata
 												enabledMetaData={
 													uiPermissions?.EDUCATION_LEVEL?.VIEW
-														? [
-																SearchFilter.educationLevel,
-																SearchFilter.educationDegree,
-														  ]
+														? [SearchFilter.educationLevel]
 														: []
 												}
 												subject={{
@@ -739,6 +746,10 @@ const Profile: FunctionComponent<
 													'settings/components/profile___selecteer-je-themas'
 												)}
 												showEducation={false}
+												showEducationDegrees={
+													uiPermissions?.EDUCATION_LEVEL?.VIEW
+												}
+												limitDegreesByAlreadySelectedLevels
 											/>
 										</>
 									)}

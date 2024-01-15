@@ -28,11 +28,12 @@ interface CollectionOrBundleEditActualisationProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 	history: RouteComponentProps['history'];
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditActualisation: FunctionComponent<
 	CollectionOrBundleEditActualisationProps & UserProps
-> = ({ collection, changeCollectionState }) => {
+> = ({ collection, changeCollectionState, onFocus }) => {
 	const { tText } = useTranslation();
 
 	const actualisationStatuses = getCollectionManagementStatuses()
@@ -161,6 +162,7 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 													collectionPropValue: newNotes || null,
 												})
 											}
+											onFocus={onFocus}
 										/>
 									</FormGroup>
 								</Column>

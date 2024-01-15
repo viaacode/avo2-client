@@ -93,6 +93,7 @@ import {
 	App_Assignments_V2_Insert_Input,
 	App_Assignments_V2_Set_Input,
 	App_Pupil_Collection_Blocks,
+	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { getLomLearningResourceTypesFromBlocks } from '../shared/helpers/block-types-to-lom-learning-resource-type';
@@ -100,6 +101,7 @@ import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
+import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { Positioned } from '../shared/types';
@@ -561,6 +563,13 @@ export class AssignmentService {
 					newTitle,
 					initialAssignment,
 				}
+			);
+		} else {
+			await RelationService.insertRelation(
+				'assignment',
+				duplicatedAssignment.id,
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf,
+				initialAssignment.id
 			);
 		}
 
@@ -1114,7 +1123,10 @@ export class AssignmentService {
 
 	static async createAssignmentFromFragment(
 		user: Avo.User.User,
-		item: Avo.Item.Item & { start_oc?: number | null; end_oc?: number | null }
+		item: Avo.Item.Item & {
+			start_oc?: number | null;
+			end_oc?: number | null;
+		}
 	): Promise<string> {
 		const variables: InsertAssignmentMutationVariables = {
 			assignment: {
@@ -1266,6 +1278,20 @@ export class AssignmentService {
 				});
 			}
 
+			// also fetch if the assignment is a copy in a separate query to avoid making the main query slower
+			const relations = (await RelationService.fetchRelationsBySubject(
+				'assignment',
+				assignments.map((coll) => coll.id),
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf
+			)) as Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[];
+
+			relations.forEach((relation) => {
+				const assignment = assignments.find((coll) => coll.id === relation.subject);
+				if (assignment) {
+					(assignment as unknown as Avo.Assignment.Assignment).relations = [relation];
+				}
+			});
+
 			return [assignments as unknown as Avo.Assignment.Assignment[], assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get assignments from the database', err, {
@@ -1318,7 +1344,10 @@ export class AssignmentService {
 		title: string,
 		description: string | null,
 		assignmentId: string
-	): Promise<{ byTitle: boolean; byDescription: boolean }> {
+	): Promise<{
+		byTitle: boolean;
+		byDescription: boolean;
+	}> {
 		try {
 			const variables: GetAssignmentByTitleOrDescriptionQueryVariables = {
 				title,
