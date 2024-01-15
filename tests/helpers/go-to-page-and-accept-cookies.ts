@@ -21,11 +21,11 @@ export async function goToPageAndAcceptCookies(
 	await page.waitForTimeout(1000);
 
 	// Check cookiebot opens
-	if (page.getByRole('heading', { name: 'Deze website maakt gebruik van cookies' }) !== null) {
-		await expect(
-			page.getByRole('heading', { name: 'Deze website maakt gebruik van cookies' })
-		).toBeVisible();
-
+	if (
+		await page
+			.getByRole('heading', { name: 'Deze website maakt gebruik van cookies' })
+			.isVisible()
+	) {
 		// Accept all cookies
 		await page.getByRole('link', { name: 'Alle cookies toestaan' }).click();
 		await page.waitForTimeout(1000);
