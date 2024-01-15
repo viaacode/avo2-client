@@ -175,9 +175,7 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	await page.getByRole('button', { name: 'Toepassen' }).click();
 
 	// Check toast message was succesful
-	await expect(page.getByText('De collectie is toegevoegd aan de bundel.')).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByText('De collectie is toegevoegd aan de bundel.')).toBeVisible();
 
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
@@ -190,17 +188,16 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	// Slicing because title is cut off at 60 characters,
 	// and last 3 characters are swapped with periods
 	const bundleTitleInOverview = bundleTitle.slice(0, 57) + '...';
-	await expect(page.getByRole('link', { name: bundleTitleInOverview })).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('link', { name: bundleTitleInOverview })).toBeVisible();
 
+	await page.waitForTimeout(2000);
 	// Click on the above link
 	await page.getByRole('link', { name: bundleTitleInOverview }).click();
 
 	// Check bundle page is opened
-	await expect(page.getByRole('heading', { name: 'Over deze bundel' })).toBeVisible({
-		timeout: 30000,
-	});
+	// await page.waitForTimeout(2000);
+	// await page.screenshot({ path: 'screenshot.png', fullPage: true });
+	await expect(page.getByRole('heading', { name: 'Over deze bundel' })).toBeVisible();
 
 	// Check order
 	const title1 = await page
@@ -218,9 +215,7 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	// Edit bundle
 	await page.getByRole('button', { name: 'Bewerken', exact: true }).click();
 	await page.waitForLoadState('networkidle');
-	await expect(page.locator('button[aria-label="Verplaats naar boven"]')).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.locator('button[aria-label="Verplaats naar boven"]')).toBeVisible();
 
 	// Move second item up
 	await page.locator('button[aria-label="Verplaats naar boven"]').click();
@@ -236,7 +231,7 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	await expect(page.getByText('De bundel werd opgeslagen.')).toBeVisible();
 
 	// Close edit mode
-	await page.getByRole('button', { name: 'Sluitennnnn' }).click();
+	await page.getByRole('button', { name: 'Sluiten' }).click();
 	await page.waitForLoadState('networkidle');
 
 	// Check order

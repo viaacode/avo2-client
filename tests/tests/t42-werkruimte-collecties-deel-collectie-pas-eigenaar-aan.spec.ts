@@ -96,9 +96,7 @@ test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async (
 	// Go to werkruimte as other user and check new collection
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 	await page.waitForLoadState('networkidle');
-	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
 
 	// Logout
 	await logoutOnderwijsAvo(page);

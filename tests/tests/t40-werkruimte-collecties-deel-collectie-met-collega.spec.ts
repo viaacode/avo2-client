@@ -105,9 +105,7 @@ test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }
 	// Go to werkruimte as other user and check new collection
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).focus();
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
-	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
 
 	await page.waitForLoadState('networkidle');
 

@@ -66,11 +66,10 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	await expect(
 		page.getByRole('link', { name: collectionTitleInAdminOverview }).first()
-	).toBeVisible({
-		timeout: 30000,
-	});
+	).toBeVisible();
 
 	// Open the collection
+
 	await page.getByRole('link', { name: collectionTitleInAdminOverview }).click();
 	await page.waitForLoadState('networkidle');
 
@@ -131,9 +130,8 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).focus();
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 	await page.waitForLoadState('networkidle');
-	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible({
-		timeout: 30000,
-	});
+
+	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
 
 	// Logout
 	await logoutOnderwijsAvo(page);
@@ -158,21 +156,15 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: 'Collecties', exact: true })).toBeVisible();
 
 	// Check that new collection is shown in a table
-	await expect(page.locator('tbody > tr').first()).toContainText('Aangemaakt door', {
-		timeout: 30000,
-	});
+	await expect(page.locator('tbody > tr').first()).toContainText('Aangemaakt door');
 	// Check new collection is shown
-	await expect(page.getByRole('link', { name: collectionTitleInAdminOverview })).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('link', { name: collectionTitleInAdminOverview })).toBeVisible();
 
 	// Open the collection
 	await page.getByRole('link', { name: collectionTitleInAdminOverview }).click();
 
 	// Check collection opens
-	await expect(page.getByRole('heading', { name: 'Over deze collectie' })).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('heading', { name: 'Over deze collectie' })).toBeVisible();
 
 	// Click share button
 	await page.click(`button[aria-label="Deel de collectie met collega's (kijken of bewerken)"]`);
@@ -199,7 +191,7 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 
 	// Check toast message was succesful
 	// await expect(page.getByText('Eigenaarschap succesvol overgedragen')).toBeVisible({
-	// 	timeout: 30000,
+	// 	timeout: TIMEOUT_SECONDS,
 	// });
 
 	// CLEANUP

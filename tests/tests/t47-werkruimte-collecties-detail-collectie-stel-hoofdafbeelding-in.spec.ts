@@ -43,9 +43,7 @@ test('T47: Werkruimte - collecties: Detail collectie stel hoofdafbeelding in', a
 	await page.waitForLoadState('networkidle');
 
 	// Click second item
-	await expect(page.getByRole('link', { name: 'KLAAR: phishing' })).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('link', { name: 'KLAAR: phishing' })).toBeVisible();
 	await page.getByRole('link', { name: 'KLAAR: phishing' }).click();
 
 	// Add a second video to the same collection

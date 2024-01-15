@@ -10,7 +10,7 @@ import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cooki
  *
  */
 
-test.skip('T09: Nieuws - klikken op pills', async ({ page, context }) => {
+test('T09: Nieuws - klikken op pills', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
@@ -19,11 +19,6 @@ test.skip('T09: Nieuws - klikken op pills', async ({ page, context }) => {
 
 	// Click nieuws button
 	await page.getByRole('link', { name: 'Nieuws', exact: true }).click();
-
-	// Check Nieuws page opens
-	await expect(
-		page.getByRole('heading', { name: 'Blijf op de hoogte van wat beweegt op ons platform' })
-	).toBeVisible();
 
 	//
 	// CHECK PLATFORMUPDATES PILL

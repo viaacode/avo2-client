@@ -232,12 +232,8 @@ test('T58: Opdracht - Delen met leerling', async ({ page }) => {
 	await page.goto(shareUrl as string);
 
 	// Assignment is opened
-	await expect(page.getByRole('heading', { name: assignmentTitle })).toBeVisible({
-		timeout: 30000,
-	});
-	await expect(page.getByRole('button', { name: 'Bewerken' })).not.toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('heading', { name: assignmentTitle })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Bewerken' })).not.toBeVisible();
 
 	// CLEANUP
 	// Remove klas

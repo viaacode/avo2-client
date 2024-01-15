@@ -35,9 +35,7 @@ export async function loginOnderwijsAvo(
 	await page.getByRole('button', { name: 'E-mailadres' }).click();
 
 	// Check login page is opened
-	await expect(page.getByRole('heading', { name: 'Inloggen' })).toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('heading', { name: 'Inloggen' })).toBeVisible();
 
 	// Fill in credentials
 	await page.fill('#emailId', username);
@@ -47,10 +45,6 @@ export async function loginOnderwijsAvo(
 	await page.click('button[type="submit"]');
 
 	// Check navbar exists, logged in
-	await expect(page.getByRole('link', { name: 'Mijn werkruimte' })).toBeVisible({
-		timeout: 30000,
-	});
-	await expect(page.getByText('Inloggen', { exact: true })).not.toBeVisible({
-		timeout: 30000,
-	});
+	await expect(page.getByRole('link', { name: 'Mijn werkruimte' })).toBeVisible();
+	await expect(page.getByText('Inloggen', { exact: true })).not.toBeVisible();
 }

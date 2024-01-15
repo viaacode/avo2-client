@@ -38,7 +38,6 @@ async function removeCollectionsByE2ETest(page: Page): Promise<void> {
 
 		// Click remove
 		await page.getByText('Verwijderen', { exact: true }).click();
-		await page.waitForTimeout(1000);
 
 		// Check remove modal opens
 		await expect(
@@ -60,7 +59,7 @@ async function removeBundlesByE2ETest(page: Page): Promise<void> {
 	// as long as there are collections with 'Aangemaakt door ...' it needs to be removed
 	await page.waitForTimeout(2000);
 	// Go to admin page
-	await page.getByRole('link', { name: 'Beheer' }).click();
+	await page.getByRole('link', { name: 'Beheer', exact: true }).click();
 	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
 
