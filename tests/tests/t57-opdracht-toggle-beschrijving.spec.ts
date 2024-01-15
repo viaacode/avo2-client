@@ -276,8 +276,6 @@ test('T57: Opdracht - Toggle beschrijving', async ({ page }) => {
 		)
 	).not.toBeVisible();
 
-	await page.waitForTimeout(2000);
-
 	// CLEANUP
 	// Remove assignment
 	// Click mijn werkruimte

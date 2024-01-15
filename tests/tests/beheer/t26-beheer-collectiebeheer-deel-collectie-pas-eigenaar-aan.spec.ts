@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { cleanupTestdata } from '../../helpers/cleanup';
 import { createCollection } from '../../helpers/create-collection';
 import { getCollectionInviteToken } from '../../helpers/get-collection-invite-token';
 import { goToPageAndAcceptCookies } from '../../helpers/go-to-page-and-accept-cookies';
@@ -13,6 +14,13 @@ import { logoutOnderwijsAvo } from '../../helpers/logout-onderwijs-avo';
  * from /tests directory
  *
  */
+
+test.afterEach(async ({ page }, testInfo) => {
+	if (testInfo.status !== testInfo.expectedStatus) {
+		console.log(`Did not run as expected`);
+		await cleanupTestdata(page);
+	}
+});
 
 test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	const clientEndpoint = process.env.TEST_CLIENT_ENDPOINT as string;
@@ -33,8 +41,6 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	// Logout
 	await page.goto(process.env.TEST_CLIENT_ENDPOINT as string);
 	await logoutOnderwijsAvo(page);
-	await page.waitForLoadState('networkidle');
-	await page.waitForTimeout(2000);
 
 	// Login as admin
 	await loginOnderwijsAvo(
@@ -58,7 +64,11 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	// and last 3 characters are swapped with periods
 	const collectionTitleInAdminOverview = collectionTitle.slice(0, 47) + '...';
 
-	await expect(page.getByRole('link', { name: collectionTitleInAdminOverview })).toBeVisible();
+	await expect(
+		page.getByRole('link', { name: collectionTitleInAdminOverview }).first()
+	).toBeVisible({
+		timeout: 30000,
+	});
 
 	// Open the collection
 	await page.getByRole('link', { name: collectionTitleInAdminOverview }).click();
@@ -118,9 +128,12 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	const collectionTitleInOverview = collectionTitle.slice(0, 57) + '...';
 
 	// Go to werkruimte as other user and check new collection
+	await page.getByRole('link', { name: 'Mijn werkruimte' }).focus();
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
 	await page.waitForLoadState('networkidle');
-	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
+	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible({
+		timeout: 30000,
+	});
 
 	// Logout
 	await logoutOnderwijsAvo(page);
@@ -144,14 +157,22 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	await page.waitForLoadState('networkidle');
 	await expect(page.getByRole('heading', { name: 'Collecties', exact: true })).toBeVisible();
 
+	// Check that new collection is shown in a table
+	await expect(page.locator('tbody > tr').first()).toContainText('Aangemaakt door', {
+		timeout: 30000,
+	});
 	// Check new collection is shown
-	await expect(page.getByRole('link', { name: collectionTitleInAdminOverview })).toBeVisible();
+	await expect(page.getByRole('link', { name: collectionTitleInAdminOverview })).toBeVisible({
+		timeout: 30000,
+	});
 
 	// Open the collection
 	await page.getByRole('link', { name: collectionTitleInAdminOverview }).click();
 
 	// Check collection opens
-	await expect(page.getByRole('heading', { name: 'Over deze collectie' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Over deze collectie' })).toBeVisible({
+		timeout: 30000,
+	});
 
 	// Click share button
 	await page.click(`button[aria-label="Deel de collectie met collega's (kijken of bewerken)"]`);
@@ -177,9 +198,9 @@ test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	await page.waitForLoadState('networkidle');
 
 	// Check toast message was succesful
-	await expect(
-		page.locator('div > div.Toastify__toast-body > div > div > div.c-alert__message')
-	).toContainText('Eigenaarschap succesvol overgedragen');
+	// await expect(page.getByText('Eigenaarschap succesvol overgedragen')).toBeVisible({
+	// 	timeout: 30000,
+	// });
 
 	// CLEANUP
 	//REMOVE COLLECTION

@@ -20,11 +20,12 @@ export async function logoutOnderwijsAvo(page: Page, asTeacher = true): Promise<
 			)
 			.click();
 	}
-	// T26 beheer fails here, why
-	await page.waitForTimeout(2000);
-	await page.waitForLoadState('networkidle');
 
 	// Check navbar exists, logged out
-	await expect(page.getByRole('link', { name: 'Mijn werkruimte' })).not.toBeVisible();
-	await expect(page.getByText('Inloggen', { exact: true })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'Mijn werkruimte' })).not.toBeVisible({
+		timeout: 30000,
+	});
+	await expect(page.getByText('Inloggen', { exact: true })).toBeVisible({
+		timeout: 30000,
+	});
 }

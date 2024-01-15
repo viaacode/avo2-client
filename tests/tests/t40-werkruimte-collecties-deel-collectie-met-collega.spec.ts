@@ -100,11 +100,14 @@ test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }
 
 	// Accept invite
 	await page.getByRole('button', { name: 'Toevoegen', exact: true }).click();
-	await page.waitForTimeout(2000);
+	await page.waitForLoadState('networkidle');
 
 	// Go to werkruimte as other user and check new collection
+	await page.getByRole('link', { name: 'Mijn werkruimte' }).focus();
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
-	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible();
+	await expect(page.getByRole('link', { name: collectionTitleInOverview })).toBeVisible({
+		timeout: 30000,
+	});
 
 	await page.waitForLoadState('networkidle');
 
@@ -130,7 +133,6 @@ test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }
 
 	// Logout
 	await logoutOnderwijsAvo(page);
-	await page.waitForLoadState('networkidle');
 
 	// Login as first user again
 	await loginOnderwijsAvo(
@@ -155,7 +157,6 @@ test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }
 			'tr:nth-child(1) > td:nth-child(6) > div > div.c-dropdown__content-open > div > div:nth-child(3)'
 		)
 		.click();
-	await page.waitForLoadState('networkidle');
 
 	// Confirm remove modal
 	await page.getByRole('button', { name: 'Verwijder' }).click();

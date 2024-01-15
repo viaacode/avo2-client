@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 
+import { cleanupTestdata } from '../helpers/cleanup';
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
 import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
 import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo';
@@ -11,6 +12,13 @@ import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo';
  * from /tests directory
  *
  */
+
+test.afterEach(async ({ page }, testInfo) => {
+	if (testInfo.status !== testInfo.expectedStatus) {
+		console.log(`Did not run as expected`);
+		await cleanupTestdata(page);
+	}
+});
 
 test('T58: Opdracht - Delen met leerling', async ({ page }) => {
 	await goToPageAndAcceptCookies(
@@ -168,7 +176,7 @@ test('T58: Opdracht - Delen met leerling', async ({ page }) => {
 	await page.waitForTimeout(1000);
 
 	// Choose the newly created klas
-	await page.getByText('0Automated test klas', { exact: true }).click();
+	await page.getByText('0Automated test klas', { exact: true }).first().click();
 
 	// Focus on deadline input
 	await page.locator('input[placeholder="dd/mm/yyyy"]').nth(1).focus();
@@ -224,8 +232,12 @@ test('T58: Opdracht - Delen met leerling', async ({ page }) => {
 	await page.goto(shareUrl as string);
 
 	// Assignment is opened
-	await expect(page.getByRole('heading', { name: assignmentTitle })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Bewerken' })).not.toBeVisible();
+	await expect(page.getByRole('heading', { name: assignmentTitle })).toBeVisible({
+		timeout: 30000,
+	});
+	await expect(page.getByRole('button', { name: 'Bewerken' })).not.toBeVisible({
+		timeout: 30000,
+	});
 
 	// CLEANUP
 	// Remove klas

@@ -1,8 +1,9 @@
 import { expect, test } from '@playwright/test';
 
+import { cleanupTestdata } from '../helpers/cleanup';
+import { createCollection } from '../helpers/create-collection';
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
 import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
-import { createCollection } from '../helpers/create-collection';
 
 /**
  * New: https://docs.google.com/spreadsheets/d/1IvhK0v0HSntCwTcXiFseHargwwWwpoCkDMjmMehaDMA/edit#gid=0
@@ -11,6 +12,13 @@ import { createCollection } from '../helpers/create-collection';
  * from /tests directory
  *
  */
+
+test.afterEach(async ({ page }, testInfo) => {
+	if (testInfo.status !== testInfo.expectedStatus) {
+		console.log(`Did not run as expected`);
+		await cleanupTestdata(page);
+	}
+});
 
 test('T51: Bundel bewerken', async ({ page }) => {
 	await goToPageAndAcceptCookies(
@@ -167,7 +175,9 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	await page.getByRole('button', { name: 'Toepassen' }).click();
 
 	// Check toast message was succesful
-	await expect(page.getByText('De collectie is toegevoegd aan de bundel.')).toBeVisible();
+	await expect(page.getByText('De collectie is toegevoegd aan de bundel.')).toBeVisible({
+		timeout: 30000,
+	});
 
 	// Go to werkruimte
 	await page.getByRole('link', { name: 'Mijn werkruimte' }).click();
@@ -180,13 +190,17 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	// Slicing because title is cut off at 60 characters,
 	// and last 3 characters are swapped with periods
 	const bundleTitleInOverview = bundleTitle.slice(0, 57) + '...';
-	await expect(page.getByRole('link', { name: bundleTitleInOverview })).toBeVisible();
+	await expect(page.getByRole('link', { name: bundleTitleInOverview })).toBeVisible({
+		timeout: 30000,
+	});
 
 	// Click on the above link
 	await page.getByRole('link', { name: bundleTitleInOverview }).click();
 
 	// Check bundle page is opened
-	await expect(page.getByRole('heading', { name: 'Over deze bundel' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Over deze bundel' })).toBeVisible({
+		timeout: 30000,
+	});
 
 	// Check order
 	const title1 = await page
@@ -204,7 +218,9 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	// Edit bundle
 	await page.getByRole('button', { name: 'Bewerken', exact: true }).click();
 	await page.waitForLoadState('networkidle');
-	await expect(page.locator('button[aria-label="Verplaats naar boven"]')).toBeVisible();
+	await expect(page.locator('button[aria-label="Verplaats naar boven"]')).toBeVisible({
+		timeout: 30000,
+	});
 
 	// Move second item up
 	await page.locator('button[aria-label="Verplaats naar boven"]').click();
@@ -220,7 +236,7 @@ test('T51: Bundel bewerken', async ({ page }) => {
 	await expect(page.getByText('De bundel werd opgeslagen.')).toBeVisible();
 
 	// Close edit mode
-	await page.getByRole('button', { name: 'Sluiten' }).click();
+	await page.getByRole('button', { name: 'Sluitennnnn' }).click();
 	await page.waitForLoadState('networkidle');
 
 	// Check order

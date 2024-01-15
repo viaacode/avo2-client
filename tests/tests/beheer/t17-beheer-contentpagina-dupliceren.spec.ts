@@ -184,7 +184,6 @@ test('T17: Beheer - Contentpagina dupliceren', async ({ page }) => {
 
 	// Confirm to remove page
 	await page.getByRole('button', { name: 'Verwijder', exact: true }).click();
-	await page.waitForTimeout(1000);
 
 	// Check page is removed
 	await expect(
