@@ -10,6 +10,7 @@ import {
 	Grid,
 	Header,
 	HeaderBottomRowLeft,
+	HeaderBottomRowRight,
 	HeaderContentType,
 	HeaderMiddleRowRight,
 	Icon,
@@ -877,7 +878,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 										label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
 									})}
 							</MetaData>
-							{renderInteractiveTour?.()}
 						</ButtonToolbar>
 					</HeaderMiddleRowRight>
 					<HeaderBottomRowLeft>
@@ -912,6 +912,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							)}
 						</MetaData>
 					</HeaderBottomRowLeft>
+					<HeaderBottomRowRight>{renderInteractiveTour?.()}</HeaderBottomRowRight>
 				</Header>
 				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">

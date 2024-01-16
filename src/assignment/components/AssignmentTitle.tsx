@@ -16,9 +16,10 @@ type AssignmentTitleProps = {
 					previous: Partial<AssignmentFields> | undefined
 			  ) => Partial<AssignmentFields> | undefined)
 	) => void;
+	onFocus?: () => void;
 };
 
-const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) => {
+const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment, onFocus }) => {
 	const { tText } = useTranslation();
 	const [isActive, setIsActive] = useState<boolean>(false);
 
@@ -62,6 +63,7 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment }) =
 										setIsActive(false);
 										// setAssignment && setAssignment((previous) => previous);
 									}}
+									onFocus={onFocus}
 									iconEnd={() =>
 										!isActive && (
 											<Icon name={IconName.edit4} size="small" subtle />

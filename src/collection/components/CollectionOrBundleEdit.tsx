@@ -233,7 +233,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 		const hasChanges =
 			JSON.stringify(convertRteToString(initialCollection)) !==
 			JSON.stringify(convertRteToString(currentCollection));
-		setUnsavedChanges(hasChanges);
+
+		if (!unsavedChanges) {
+			setUnsavedChanges(hasChanges);
+		}
 	};
 
 	const fetchContributors = useCallback(async (): Promise<void> => {
@@ -757,6 +760,11 @@ const CollectionOrBundleEdit: FunctionComponent<
 		);
 	};
 
+	const cancelSaveBar = () => {
+		changeCollectionState({ type: 'RESET_COLLECTION' });
+		setUnsavedChanges(false);
+	};
+
 	// Listeners
 	const onSaveCollection = async () => {
 		setIsSavingCollection(true);
@@ -1116,6 +1124,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							type={type}
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.PUBLISH:
@@ -1124,6 +1133,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							type={type}
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.ADMIN:
@@ -1132,6 +1142,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.ACTUALISATION:
@@ -1140,6 +1151,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.QUALITY_CHECK:
@@ -1148,6 +1160,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				case CollectionCreateUpdateTab.MARCOM:
@@ -1156,6 +1169,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 							collection={collectionState.currentCollection}
 							changeCollectionState={changeCollectionState}
 							history={history}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					);
 				default:
@@ -1402,6 +1416,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 								})
 							}
 							maxLength={110}
+							onFocus={() => setUnsavedChanges(true)}
 						/>
 					}
 					category={type}
@@ -1445,7 +1460,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 					<StickySaveBar
 						isVisible={unsavedChanges}
 						onSave={() => executeAction(CollectionMenuAction.save)}
-						onCancel={() => changeCollectionState({ type: 'RESET_COLLECTION' })}
+						onCancel={cancelSaveBar}
 					/>
 				</div>
 

@@ -43451,6 +43451,7 @@ export type Users_Profiles = {
   email_preferences: Array<Users_Email_Preferences>;
   /** An aggregate relationship */
   email_preferences_aggregate: Users_Email_Preferences_Aggregate;
+  email_preferences_center_access_key: Scalars['uuid'];
   /** Een gebruiker kan een of meer profielen hebben */
   id: Scalars['uuid'];
   is_deleted: Scalars['Boolean'];
@@ -43890,6 +43891,7 @@ export type Users_Profiles_Bool_Exp = {
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   email_preferences?: InputMaybe<Users_Email_Preferences_Bool_Exp>;
   email_preferences_aggregate?: InputMaybe<Users_Email_Preferences_Aggregate_Bool_Exp>;
+  email_preferences_center_access_key?: InputMaybe<Uuid_Comparison_Exp>;
   id?: InputMaybe<Uuid_Comparison_Exp>;
   is_deleted?: InputMaybe<Boolean_Comparison_Exp>;
   is_exception?: InputMaybe<Boolean_Comparison_Exp>;
@@ -43922,6 +43924,8 @@ export type Users_Profiles_Bool_Exp = {
 
 /** unique or primary key constraints on table "users.profiles" */
 export enum Users_Profiles_Constraint {
+  /** unique or primary key constraint on columns "email_preferences_center_access_key" */
+  ProfilesEmailPreferencesCenterAccessKeyKey = 'profiles_email_preferences_center_access_key_key',
   /** unique or primary key constraint on columns "id" */
   ProfilesPIdKey = 'profiles_p_id_key',
   /** unique or primary key constraint on columns "id" */
@@ -43947,6 +43951,7 @@ export type Users_Profiles_Insert_Input = {
   company_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   email_preferences?: InputMaybe<Users_Email_Preferences_Arr_Rel_Insert_Input>;
+  email_preferences_center_access_key?: InputMaybe<Scalars['uuid']>;
   /** Een gebruiker kan een of meer profielen hebben */
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -44177,6 +44182,7 @@ export type Users_Profiles_Max_Fields = {
   business_category?: Maybe<Scalars['String']>;
   company_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
+  email_preferences_center_access_key?: Maybe<Scalars['uuid']>;
   /** Een gebruiker kan een of meer profielen hebben */
   id?: Maybe<Scalars['uuid']>;
   stamboek?: Maybe<Scalars['String']>;
@@ -44196,6 +44202,7 @@ export type Users_Profiles_Max_Order_By = {
   business_category?: InputMaybe<Order_By>;
   company_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  email_preferences_center_access_key?: InputMaybe<Order_By>;
   /** Een gebruiker kan een of meer profielen hebben */
   id?: InputMaybe<Order_By>;
   stamboek?: InputMaybe<Order_By>;
@@ -44216,6 +44223,7 @@ export type Users_Profiles_Min_Fields = {
   business_category?: Maybe<Scalars['String']>;
   company_id?: Maybe<Scalars['String']>;
   created_at?: Maybe<Scalars['timestamptz']>;
+  email_preferences_center_access_key?: Maybe<Scalars['uuid']>;
   /** Een gebruiker kan een of meer profielen hebben */
   id?: Maybe<Scalars['uuid']>;
   stamboek?: Maybe<Scalars['String']>;
@@ -44235,6 +44243,7 @@ export type Users_Profiles_Min_Order_By = {
   business_category?: InputMaybe<Order_By>;
   company_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  email_preferences_center_access_key?: InputMaybe<Order_By>;
   /** Een gebruiker kan een of meer profielen hebben */
   id?: InputMaybe<Order_By>;
   stamboek?: InputMaybe<Order_By>;
@@ -44281,6 +44290,7 @@ export type Users_Profiles_Order_By = {
   company_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   email_preferences_aggregate?: InputMaybe<Users_Email_Preferences_Aggregate_Order_By>;
+  email_preferences_center_access_key?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   is_deleted?: InputMaybe<Order_By>;
   is_exception?: InputMaybe<Order_By>;
@@ -44325,6 +44335,8 @@ export enum Users_Profiles_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  EmailPreferencesCenterAccessKey = 'email_preferences_center_access_key',
+  /** column name */
   Id = 'id',
   /** column name */
   IsDeleted = 'is_deleted',
@@ -44367,6 +44379,7 @@ export type Users_Profiles_Set_Input = {
   business_category?: InputMaybe<Scalars['String']>;
   company_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
+  email_preferences_center_access_key?: InputMaybe<Scalars['uuid']>;
   /** Een gebruiker kan een of meer profielen hebben */
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -44396,6 +44409,7 @@ export type Users_Profiles_Stream_Cursor_Value_Input = {
   business_category?: InputMaybe<Scalars['String']>;
   company_id?: InputMaybe<Scalars['String']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
+  email_preferences_center_access_key?: InputMaybe<Scalars['uuid']>;
   /** Een gebruiker kan een of meer profielen hebben */
   id?: InputMaybe<Scalars['uuid']>;
   is_deleted?: InputMaybe<Scalars['Boolean']>;
@@ -44422,6 +44436,8 @@ export enum Users_Profiles_Update_Column {
   CompanyId = 'company_id',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  EmailPreferencesCenterAccessKey = 'email_preferences_center_access_key',
   /** column name */
   Id = 'id',
   /** column name */

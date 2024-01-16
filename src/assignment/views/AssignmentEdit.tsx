@@ -134,6 +134,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			canPublish: boolean;
 		}>
 	>({});
+	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
 
 	// Computed
 	const assignmentId = match.params.id;
@@ -522,9 +523,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		);
 	};
 
+	const cancelSaveBar = () => {
+		reset();
+		setHasUnsavedChanges(false);
+	};
+
 	// Render
 
-	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink);
+	const renderBlockContent = useEditBlocks(setBlock, buildGlobalSearchLink, undefined, () =>
+		setHasUnsavedChanges(true)
+	);
 
 	const [renderedModals, confirmSliceModal, addBlockModal] = useBlockListModals(
 		assignment?.blocks || [],
@@ -616,7 +624,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	);
 
 	const renderTitle = useMemo(
-		() => <AssignmentTitle control={control} setAssignment={setAssignment as any} />,
+		() => (
+			<AssignmentTitle
+				control={control}
+				setAssignment={setAssignment as any}
+				onFocus={() => setHasUnsavedChanges(true)}
+			/>
+		),
 		[tText, control, setAssignment]
 	);
 
@@ -667,6 +681,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							assignment={assignment || {}}
 							setAssignment={setAssignment as any}
 							setValue={setValue}
+							onFocus={() => setHasUnsavedChanges(true)}
 						/>
 					</div>
 				);
@@ -680,6 +695,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 								setAssignment as Dispatch<SetStateAction<Avo.Assignment.Assignment>>
 							}
 							setValue={setValue as any}
+							onFocus={() => setHasUnsavedChanges(true)}
 						/>
 					</div>
 				);
@@ -915,9 +931,9 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
 			<StickySaveBar
-				isVisible={unsavedChanges}
+				isVisible={unsavedChanges || hasUnsavedChanges}
 				onSave={handleOnSave}
-				onCancel={() => reset()}
+				onCancel={cancelSaveBar}
 			/>
 		</div>
 	);

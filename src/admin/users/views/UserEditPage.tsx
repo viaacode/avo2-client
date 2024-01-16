@@ -179,10 +179,10 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 							</FormGroup>
 
 							<FormGroup label={tText('admin/users/views/user-detail___voornaam')}>
-								<TextInput value={firstName} onChange={setFirstName} />
+								<TextInput value={firstName} onChange={setFirstName} disabled />
 							</FormGroup>
 							<FormGroup label={tText('admin/users/views/user-detail___achternaam')}>
-								<TextInput value={lastName} onChange={setLastName} />
+								<TextInput value={lastName} onChange={setLastName} disabled />
 							</FormGroup>
 							<FormGroup label={tText('admin/users/views/user-detail___functie')}>
 								<TextInput value={title} onChange={setTitle} />

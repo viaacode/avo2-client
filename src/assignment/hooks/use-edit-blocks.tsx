@@ -11,7 +11,8 @@ import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEdi
 export function useEditBlocks(
 	setBlock: (updatedBlock: Avo.Core.BlockItemBase) => void,
 	buildSearchLink?: (props: Partial<FilterState>) => ReactNode | string,
-	AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[]
+	AssignmentBlockItemDescriptionTypes?: AssignmentBlockItemDescriptionType[],
+	onFocus?: () => void
 ): (block: Avo.Core.BlockItemBase) => ReactNode | null {
 	return function useEditBlocks(block: Avo.Core.BlockItemBase) {
 		switch (block.type) {
@@ -20,6 +21,7 @@ export function useEditBlocks(
 					<AssignmentBlockEditText
 						setBlock={setBlock}
 						block={block as EditableAssignmentBlock}
+						onFocus={onFocus}
 					/>
 				);
 

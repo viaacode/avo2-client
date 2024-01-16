@@ -4,6 +4,7 @@ import {
 	DeleteAssignmentBookmarksForUserMutationVariables,
 	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkMutationVariables,
+	GetAssignmentViewCountQuery,
 	GetCollectionPlayCountQuery,
 	GetCollectionViewCountQuery,
 	GetItemPlayCountQuery,
@@ -14,10 +15,12 @@ import {
 	DeleteAssignmentBookmarksForUserDocument,
 	DeleteCollectionBookmarksForUserDocument,
 	DeleteItemBookmarkDocument,
+	GetAssignmentViewCountDocument,
 	GetCollectionPlayCountDocument,
 	GetCollectionViewCountDocument,
 	GetItemPlayCountDocument,
 	GetItemViewCountDocument,
+	IncrementAssignmentViewsDocument,
 	IncrementCollectionPlaysDocument,
 	IncrementCollectionViewsDocument,
 	IncrementItemPlaysDocument,
@@ -157,13 +160,14 @@ export const GET_EVENT_QUERIES: () => {
 			getResponseCount: (response: GetCollectionViewCountQuery): number =>
 				response.app_collections[0]?.view_counts?.[0]?.count || 0,
 		},
-		// TODO: Add request views of an assignment https://meemoo.atlassian.net/browse/AVO-2725
 		assignment: {
-			get: '',
-			increment: '',
+			get: GetAssignmentViewCountDocument,
+			increment: IncrementAssignmentViewsDocument,
 			variables: (assignmentUuid: string) => ({
 				assignmentUuid,
 			}),
+			getResponseCount: (response: GetAssignmentViewCountQuery): number =>
+				response.app_assignments_v2[0]?.view_count?.count || 0,
 		},
 	},
 	play: {
