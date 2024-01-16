@@ -37,6 +37,7 @@ export type MediaListItem = {
 		label: string;
 		meta?: string;
 		src?: string;
+		topRight?: ReactNode;
 	};
 	src?: string;
 	title: string;

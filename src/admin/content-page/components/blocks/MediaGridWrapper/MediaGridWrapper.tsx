@@ -1,5 +1,6 @@
 import { MediaGridBlockComponentState, MediaGridBlockState } from '@meemoo/admin-core-ui';
 import {
+	Button,
 	ButtonAction,
 	IconName,
 	Modal,
@@ -36,6 +37,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQueryLimit: string;
 	elements: {
 		mediaItem: ButtonAction;
+		copyrightOwnerOrId: string | 'NO_COPYRIGHT_NOTICE';
 	}[];
 	results: ResolvedItemOrCollectionOrAssignment[];
 	renderLink: RenderLinkFunction;
@@ -85,6 +87,9 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 		(Avo.Item.Item & ResolvedItemOrCollectionOrAssignment) | null
 	>(null);
 	const [activeItemBookmarkStatus, setActiveItemBookmarkStatus] = useState<boolean | null>(null);
+	const [activeCopyright, setActiveCopyright] = useState<Avo.Organization.Organization | null>(
+		null
+	);
 
 	const resolveMediaResults = useCallback(async () => {
 		try {
@@ -295,6 +300,15 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 		);
 	};
 
+	const handleCopyrightClicked = (
+		evt: React.MouseEvent<HTMLElement, MouseEvent>,
+		orgInfo: Avo.Organization.Organization
+	) => {
+		evt.stopPropagation();
+		evt.preventDefault();
+		setActiveCopyright(orgInfo);
+	};
+
 	const mapItemOrCollectionOrAssignmentData = (
 		itemOrCollectionOrAssignment: ResolvedItemOrCollectionOrAssignment,
 		index: number
@@ -337,7 +351,24 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 			thumbnail: {
 				label: itemLabel,
 				meta: getThumbnailMetadata(itemOrCollectionOrAssignment),
-				src: getThumbnailFromItem(itemOrCollectionOrAssignment),
+				src: element.copyrightImage || getThumbnailFromItem(itemOrCollectionOrAssignment),
+				topRight: !!itemOrCollectionOrAssignment.copyrightOrganisation && (
+					<Button
+						type="inline-link"
+						onClick={(evt) =>
+							handleCopyrightClicked(
+								evt,
+								itemOrCollectionOrAssignment.copyrightOrganisation as Avo.Organization.Organization
+							)
+						}
+						label={tText(
+							'admin/content-page/components/blocks/media-grid-wrapper/media-grid-wrapper___bron'
+						)}
+						title={tText(
+							'admin/content-page/components/blocks/media-grid-wrapper/media-grid-wrapper___bekijk-de-copyright-info-van-deze-afbeelding'
+						)}
+					/>
+				),
 			},
 			src: itemOrCollectionOrAssignment?.src,
 			item_collaterals:
@@ -356,7 +387,9 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 					onClick={() =>
 						setActiveItem(
 							(resolvedResults?.find((resultItem) => resultItem.src === item.src) ||
-								null) as Avo.Item.Item | null
+								null) as
+								| (Avo.Item.Item & ResolvedItemOrCollectionOrAssignment)
+								| null
 						)
 					}
 				>
@@ -411,6 +444,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 					renderLink={renderLink}
 					renderMediaCardWrapper={renderMediaCardWrapper}
 				/>
+				{/* Modal for playing video on klaar pages without having to login */}
 				<Modal
 					isOpen={!!activeItem}
 					onClose={() => {
@@ -438,6 +472,27 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 								collapseDescription={false}
 								renderButtons={renderBookmarkButton}
 							/>
+						)}
+					</ModalBody>
+				</Modal>
+				{/* Modal for displaying copyright info about the tile's image https://meemoo.atlassian.net/browse/AVO-3015 */}
+				<Modal
+					isOpen={!!activeCopyright}
+					onClose={() => {
+						setActiveCopyright(null);
+					}}
+					size="small"
+					title={tText(
+						'admin/content-page/components/blocks/media-grid-wrapper/media-grid-wrapper___copyright-info'
+					)}
+				>
+					<ModalBody>
+						{tHtml(
+							'admin/content-page/components/blocks/media-grid-wrapper/media-grid-wrapper___deze-afbeelding-valt-onder-copyright-van-organisation-name',
+							{
+								organisationName: activeCopyright?.name || '',
+								organisationWebsite: activeCopyright?.website || '',
+							}
 						)}
 					</ModalBody>
 				</Modal>

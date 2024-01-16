@@ -9,8 +9,14 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil, isString } from 'lodash-es';
+import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { RouteComponentProps } from 'react-router';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import {
 	CustomError,
@@ -51,6 +57,7 @@ export type FlowPlayerWrapperProps = {
 	poster?: string;
 	src?: string | FlowplayerSourceList;
 	title?: string;
+	topRight?: ReactNode;
 };
 
 /**
@@ -58,7 +65,9 @@ export type FlowPlayerWrapperProps = {
  * @param props
  * @constructor
  */
-const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> = (props) => {
+const FlowPlayerWrapper: FunctionComponent<
+	FlowPlayerWrapperProps & UserProps & RouteComponentProps
+> = (props) => {
 	const { tText, tHtml } = useTranslation();
 
 	const item: Avo.Item.Item | undefined = props.item;
@@ -137,11 +146,23 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
-	const handlePosterClicked = () => {
+	const handlePosterClicked = async () => {
 		setClickedThumbnail(true);
 
 		if (!src) {
-			initFlowPlayer();
+			if (!props.commonUser) {
+				redirectToClientPage(
+					stringifyUrl({
+						url: APP_PATH.REGISTER_OR_LOGIN.route,
+						query: {
+							returnToUrl: props.location.pathname,
+						},
+					}),
+					props.history
+				);
+				return;
+			}
+			await initFlowPlayer();
 		}
 	};
 
@@ -294,6 +315,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						renderPlaylistTile={renderPlaylistTile}
 					/>
 				) : (
+					// Fake player for logged-out users that do not yet have video playback rights
 					<div className="c-video-player__overlay" onClick={handlePosterClicked}>
 						<AspectRatioWrapper
 							className="c-video-player__item c-video-player__thumbnail"
@@ -314,6 +336,9 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 									)} - ${formatDurationHoursMinutesSeconds(end)}`}
 								</div>
 							)}
+						{!!props.topRight && (
+							<div className="c-video-player__top-right">{props.topRight}</div>
+						)}
 					</div>
 				)}
 			</div>
@@ -330,4 +355,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	);
 };
 
-export default withUser(FlowPlayerWrapper) as FunctionComponent<FlowPlayerWrapperProps>;
+export default compose(
+	withRouter,
+	withUser
+)(FlowPlayerWrapper) as FunctionComponent<FlowPlayerWrapperProps>;
