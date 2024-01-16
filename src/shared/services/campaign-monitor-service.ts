@@ -1,17 +1,23 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
 import { CustomError, getEnv } from '../helpers';
 
 export type EmailTemplateType = 'item' | 'collection' | 'bundle';
 
+// TODO replace withAvo.Newsletter.Preferences when typings v2.49.5 is released together with proxy v1.26.0 (rondje 3)
+export interface NewsletterPreferences {
+	newsletter: boolean;
+	workshop: boolean;
+	ambassador: boolean;
+}
+
 export class CampaignMonitorService {
 	public static async fetchNewsletterPreferences(
 		preferenceCenterKey?: string
-	): Promise<Avo.Newsletter.Preferences> {
+	): Promise<NewsletterPreferences> {
 		try {
-			return fetchWithLogoutJson<Avo.Newsletter.Preferences>(
+			return fetchWithLogoutJson<NewsletterPreferences>(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/campaign-monitor/preferences`,
 					query: {
@@ -25,7 +31,7 @@ export class CampaignMonitorService {
 	}
 
 	public static async updateNewsletterPreferences(
-		preferences: Partial<Avo.Newsletter.Preferences>,
+		preferences: Partial<NewsletterPreferences>,
 		preferenceCenterKey?: string
 	) {
 		try {
