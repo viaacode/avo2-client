@@ -351,7 +351,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 			thumbnail: {
 				label: itemLabel,
 				meta: getThumbnailMetadata(itemOrCollectionOrAssignment),
-				src: getThumbnailFromItem(itemOrCollectionOrAssignment),
+				src: element.copyrightImage || getThumbnailFromItem(itemOrCollectionOrAssignment),
 				topRight: !!itemOrCollectionOrAssignment.copyrightOrganisation && (
 					<Button
 						type="inline-link"
