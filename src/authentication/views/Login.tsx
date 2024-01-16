@@ -1,6 +1,5 @@
 import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import React, { FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -44,7 +43,7 @@ const Login: FunctionComponent<LoginProps> = ({
 
 		// Redirect to previous requested path or the default page for that user group (LOGGED_IN_HOME or WORKSPACE_ASSIGNMENTS)
 		if (loginState && loginState.message === LoginMessage.LOGGED_IN && !loginStateLoading) {
-			let path: string | undefined = get(location, 'state.from.pathname');
+			let path: string | undefined = (location?.state as any)?.from?.pathname;
 
 			if (!path) {
 				if (getUserGroupId(loginState?.userInfo?.profile) === SpecialUserGroup.Pupil) {
