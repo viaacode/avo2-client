@@ -14,6 +14,10 @@ export async function getCollectionInviteToken(
 		}
 	);
 
-	const json = await response.json();
+	const json = (await response.json()) as {
+		collectionId: string;
+		inviteToken: string;
+		url: string;
+	};
 	return json.inviteToken;
 }

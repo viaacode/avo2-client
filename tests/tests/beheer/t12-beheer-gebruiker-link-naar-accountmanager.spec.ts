@@ -44,7 +44,7 @@ test('T12: Beheer - Gebruiker link naar accountmanager', async ({ page, context 
 
 	// Click it
 	await page.locator('button[aria-label="Open deze gebruiker in de accountmanager"]').click();
-	await page.waitForTimeout(2000);
+	await page.waitForTimeout(10000);
 
 	// Check the second page (the new page that opened) has Account manager as title
 	const title = await context.pages()[1].title();

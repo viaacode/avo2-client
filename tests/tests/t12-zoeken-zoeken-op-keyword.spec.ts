@@ -11,7 +11,7 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  *
  */
 
-test('T12: Zoeken - zoeken op keyword', async ({ page, context }) => {
+test('T12: Zoeken - zoeken op keyword', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
