@@ -132,11 +132,21 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 		return true;
 	}
 
+	if (userGroupId !== SpecialUserGroup.TeacherSecondary) {
+		return (
+			!!profile &&
+			!!profile.organizations &&
+			!!profile.organizations.length &&
+			!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure) &&
+			!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject)
+		);
+	}
+	// userGroupId === SpecialUserGroup.Teacher
 	return (
 		!!profile &&
 		!!profile.organizations &&
 		!!profile.organizations.length &&
 		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure) &&
-		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject)
+		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.theme)
 	);
 }
