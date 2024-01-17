@@ -12,8 +12,8 @@ import { redirectToServerLinkAccount } from '../../../authentication/helpers/red
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AppState } from '../../../store';
-import { setShowNudgingModalAction } from '../../../uistate/store/actions';
-import { selectShowNudgingModal } from '../../../uistate/store/selectors';
+import { setShowNudgingModalAction } from '../../../store/actions';
+import { selectShowNudgingModal } from '../../../store/selectors';
 import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';

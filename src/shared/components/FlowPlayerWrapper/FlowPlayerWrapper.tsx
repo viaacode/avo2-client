@@ -8,16 +8,18 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, isNil, isString } from 'lodash-es';
+import { get, isNil, isString, noop, throttle } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
-import { compose } from 'redux';
+import { compose, Dispatch } from 'redux';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { setLastVideoPlayedAtAction } from '../../../store/actions';
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
@@ -66,7 +68,9 @@ export type FlowPlayerWrapperProps = {
  * @constructor
  */
 const FlowPlayerWrapper: FunctionComponent<
-	FlowPlayerWrapperProps & UserProps & RouteComponentProps
+	FlowPlayerWrapperProps &
+		UserProps &
+		RouteComponentProps & { setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) => Dispatch }
 > = (props) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -145,6 +149,17 @@ const FlowPlayerWrapper: FunctionComponent<
 			});
 		}
 	};
+
+	const handleTimeUpdate = throttle(
+		() => {
+			// Keep track of the last time a video was played in the redux store
+			// Since it influences when we want to show the "you are inactive" modal for editing collections and assignments
+			// https://meemoo.atlassian.net/browse/AVO-2983
+			props.setLastVideoPlayedAt(new Date());
+		},
+		30000,
+		{ leading: true, trailing: true }
+	);
 
 	const handlePosterClicked = async () => {
 		setClickedThumbnail(true);
@@ -299,6 +314,7 @@ const FlowPlayerWrapper: FunctionComponent<
 						playlistScrollable={!isMobileWidth()}
 						onPlay={handlePlay}
 						onEnded={props.onEnded}
+						onTimeUpdate={handleTimeUpdate}
 						googleAnalyticsId={trackingId}
 						googleAnalyticsEvents={
 							[
@@ -336,7 +352,7 @@ const FlowPlayerWrapper: FunctionComponent<
 									)} - ${formatDurationHoursMinutesSeconds(end)}`}
 								</div>
 							)}
-						{!!props.topRight && (
+						{!!props.topRight && !props.commonUser && (
 							<div className="c-video-player__top-right">{props.topRight}</div>
 						)}
 					</div>
@@ -355,7 +371,13 @@ const FlowPlayerWrapper: FunctionComponent<
 	);
 };
 
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) =>
+		dispatch(setLastVideoPlayedAtAction(lastVideoPlayedAt) as any),
+});
+
 export default compose(
+	connect(noop, mapDispatchToProps),
 	withRouter,
 	withUser
 )(FlowPlayerWrapper) as FunctionComponent<FlowPlayerWrapperProps>;

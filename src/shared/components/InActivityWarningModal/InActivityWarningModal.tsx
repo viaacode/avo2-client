@@ -1,9 +1,13 @@
 import { Modal, ModalBody } from '@viaa/avo2-components';
-import { differenceInSeconds } from 'date-fns';
+import { addMinutes, differenceInSeconds, isAfter } from 'date-fns';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
+import { connect } from 'react-redux';
 import { matchPath } from 'react-router';
+import { compose } from 'redux';
 
+import { AppState } from '../../../store';
+import { selectLastVideoPlayedAt } from '../../../store/selectors';
 import {
 	EDIT_STATUS_REFETCH_TIME,
 	IDLE_TIME_UNTIL_WARNING,
@@ -22,13 +26,16 @@ type InActivityWarningModalProps = {
 	currentPath: string;
 };
 
-const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
+const InActivityWarningModal: FC<
+	InActivityWarningModalProps & { lastVideoPlayedAt: Date | null }
+> = ({
 	onActivity,
 	onExit,
 	onForcedExit,
 	warningMessage,
 	editPath,
 	currentPath,
+	lastVideoPlayedAt,
 }) => {
 	const maxIdleTime = MAX_EDIT_IDLE_TIME / 1000;
 	const [remainingTime, setRemainingTime] = useState<number>(maxIdleTime);
@@ -65,8 +72,15 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	};
 
 	const onIdle = () => {
-		setIsWarningModalOpen(true);
-		setIdleStart(new Date());
+		// Last video play was less than 1 minute ago?
+		if (!!lastVideoPlayedAt && isAfter(lastVideoPlayedAt, addMinutes(new Date(), -1))) {
+			// Video is playing => do not show modal
+			// https://meemoo.atlassian.net/browse/AVO-2983
+		} else {
+			// No video is playing and user is idle
+			setIsWarningModalOpen(true);
+			setIdleStart(new Date());
+		}
 	};
 
 	const { reset } = useIdleTimer({
@@ -127,5 +141,10 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 		</Modal>
 	);
 };
+const mapStateToProps = (state: AppState) => ({
+	lastVideoPlayedAt: selectLastVideoPlayedAt(state),
+});
 
-export default InActivityWarningModal;
+export default compose(connect(mapStateToProps))(
+	InActivityWarningModal
+) as FC<InActivityWarningModalProps>;

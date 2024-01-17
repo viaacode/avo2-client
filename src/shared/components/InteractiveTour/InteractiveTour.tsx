@@ -11,7 +11,7 @@ import { compose } from 'redux';
 import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AppState } from '../../../store';
-import { selectShowNudgingModal } from '../../../uistate/store/selectors';
+import { selectShowNudgingModal } from '../../../store/selectors';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
 import { InteractiveTourService, TourInfo } from '../../services/interactive-tour.service';
