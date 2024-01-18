@@ -24,7 +24,10 @@ describe('login > store > selectors', () => {
 			loading: false,
 			error: false,
 		},
-		uiState: {},
+		uiState: {
+			showNudgingModal: null,
+			lastVideoPlayedAt: null,
+		},
 	};
 
 	it('Should get the login error-state from the store', () => {

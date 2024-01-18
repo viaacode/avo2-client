@@ -41,7 +41,7 @@ import CommonMetadata from '../../shared/components/CommonMetaData/CommonMetaDat
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { CustomError, formatDate, getEnv } from '../../shared/helpers';
-import { EducationLevelId, groupLomLinks, groupLoms } from '../../shared/helpers/lom';
+import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -87,7 +87,6 @@ const Profile: FunctionComponent<
 	const [selectedLoms, setSelectedLoms] = useState<Avo.Lom.LomField[]>(
 		compact(map(commonUser?.loms, 'lom'))
 	);
-	const groupedLoms = groupLoms(selectedLoms);
 
 	const firstName = commonUser?.firstName || '';
 	const lastName = commonUser?.lastName || '';
@@ -735,4 +734,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 export default withUser(
 	withRouter(connect(null, mapDispatchToProps)(Profile))
-) as FunctionComponent;
+) as FunctionComponent<any>;

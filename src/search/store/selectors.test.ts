@@ -29,7 +29,10 @@ describe('search > store > selectors', () => {
 			loading: false,
 			error: false,
 		},
-		uiState: {},
+		uiState: {
+			showNudgingModal: null,
+			lastVideoPlayedAt: null,
+		},
 	};
 
 	it('Should get the search tree from the store', () => {
