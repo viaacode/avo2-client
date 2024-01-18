@@ -1,6 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
+import { CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { endOfDay, startOfDay } from 'date-fns';
 import {
 	cloneDeep,
@@ -15,7 +16,7 @@ import {
 } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
-import { reorderBlockPositions } from '../assignment/assignment.helper';
+import { setBlockPositionToIndex } from '../assignment/assignment.helper';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
@@ -23,102 +24,106 @@ import {
 	ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
-	App_Collection_Marcom_Log_Insert_Input,
-	DeleteCollectionFragmentByIdDocument,
 	DeleteCollectionFragmentByIdMutation,
 	DeleteCollectionFragmentByIdMutationVariables,
-	DeleteCollectionLabelsDocument,
 	DeleteCollectionLabelsMutation,
 	DeleteCollectionLabelsMutationVariables,
-	DeleteCollectionLomLinksDocument,
 	DeleteCollectionLomLinksMutation,
 	DeleteCollectionLomLinksMutationVariables,
-	DeleteCollectionOrBundleByUuidDocument,
 	DeleteCollectionOrBundleByUuidMutation,
 	DeleteCollectionOrBundleByUuidMutationVariables,
-	DeleteMarcomEntriesByParentCollectionIdDocument,
 	DeleteMarcomEntriesByParentCollectionIdMutation,
 	DeleteMarcomEntriesByParentCollectionIdMutationVariables,
-	DeleteMarcomEntryDocument,
 	DeleteMarcomEntryMutation,
 	DeleteMarcomEntryMutationVariables,
-	GetBookmarkedCollectionsByOwnerDocument,
 	GetBookmarkedCollectionsByOwnerQuery,
 	GetBookmarkedCollectionsByOwnerQueryVariables,
-	GetBundleTitlesByOwnerDocument,
 	GetBundleTitlesByOwnerQuery,
 	GetBundleTitlesByOwnerQueryVariables,
-	GetCollectionByTitleOrDescriptionDocument,
 	GetCollectionByTitleOrDescriptionQuery,
 	GetCollectionByTitleOrDescriptionQueryVariables,
-	GetCollectionMarcomEntriesDocument,
 	GetCollectionMarcomEntriesQuery,
 	GetCollectionMarcomEntriesQueryVariables,
-	GetCollectionsByItemUuidDocument,
 	GetCollectionsByItemUuidQuery,
 	GetCollectionsByItemUuidQueryVariables,
-	GetCollectionsByOwnerOrContributorDocument,
 	GetCollectionsByOwnerOrContributorQuery,
 	GetCollectionsByOwnerOrContributorQueryVariables,
-	GetCollectionTitlesByOwnerDocument,
 	GetCollectionTitlesByOwnerQuery,
 	GetCollectionTitlesByOwnerQueryVariables,
-	GetContributorsByCollectionUuidDocument,
 	GetContributorsByCollectionUuidQuery,
 	GetContributorsByCollectionUuidQueryVariables,
-	GetOrganisationContentDocument,
 	GetOrganisationContentQuery,
 	GetOrganisationContentQueryVariables,
-	GetPublicCollectionsByIdDocument,
 	GetPublicCollectionsByIdQuery,
 	GetPublicCollectionsByIdQueryVariables,
-	GetPublicCollectionsByTitleDocument,
 	GetPublicCollectionsByTitleQuery,
 	GetPublicCollectionsByTitleQueryVariables,
-	GetPublicCollectionsDocument,
 	GetPublicCollectionsQuery,
 	GetPublicCollectionsQueryVariables,
-	GetPublishedBundlesContainingCollectionDocument,
 	GetPublishedBundlesContainingCollectionQuery,
 	GetPublishedBundlesContainingCollectionQueryVariables,
-	InsertCollectionDocument,
-	InsertCollectionFragmentsDocument,
 	InsertCollectionFragmentsMutation,
 	InsertCollectionFragmentsMutationVariables,
-	InsertCollectionLabelsDocument,
 	InsertCollectionLabelsMutation,
 	InsertCollectionLabelsMutationVariables,
-	InsertCollectionLomLinksDocument,
 	InsertCollectionLomLinksMutation,
 	InsertCollectionLomLinksMutationVariables,
-	InsertCollectionManagementEntryDocument,
 	InsertCollectionManagementEntryMutation,
 	InsertCollectionManagementEntryMutationVariables,
-	InsertCollectionManagementQualityCheckEntryDocument,
 	InsertCollectionManagementQualityCheckEntryMutation,
 	InsertCollectionManagementQualityCheckEntryMutationVariables,
 	InsertCollectionMutation,
 	InsertCollectionMutationVariables,
-	InsertMarcomEntryDocument,
 	InsertMarcomEntryMutation,
 	InsertMarcomEntryMutationVariables,
-	InsertMarcomNoteDocument,
 	InsertMarcomNoteMutation,
 	InsertMarcomNoteMutationVariables,
-	Lookup_Enum_Collection_Management_Qc_Label_Enum,
-	Lookup_Enum_Relation_Types_Enum,
-	UpdateCollectionByIdDocument,
 	UpdateCollectionByIdMutation,
 	UpdateCollectionByIdMutationVariables,
-	UpdateCollectionFragmentByIdDocument,
 	UpdateCollectionFragmentByIdMutation,
 	UpdateCollectionFragmentByIdMutationVariables,
-	UpdateCollectionManagementEntryDocument,
 	UpdateCollectionManagementEntryMutation,
 	UpdateCollectionManagementEntryMutationVariables,
-	UpdateMarcomNoteDocument,
 	UpdateMarcomNoteMutation,
 	UpdateMarcomNoteMutationVariables,
+} from '../shared/generated/graphql-db-operations';
+import {
+	DeleteCollectionFragmentByIdDocument,
+	DeleteCollectionLabelsDocument,
+	DeleteCollectionLomLinksDocument,
+	DeleteCollectionOrBundleByUuidDocument,
+	DeleteMarcomEntriesByParentCollectionIdDocument,
+	DeleteMarcomEntryDocument,
+	GetBookmarkedCollectionsByOwnerDocument,
+	GetBundleTitlesByOwnerDocument,
+	GetCollectionByTitleOrDescriptionDocument,
+	GetCollectionMarcomEntriesDocument,
+	GetCollectionsByItemUuidDocument,
+	GetCollectionsByOwnerOrContributorDocument,
+	GetCollectionTitlesByOwnerDocument,
+	GetContributorsByCollectionUuidDocument,
+	GetOrganisationContentDocument,
+	GetPublicCollectionsByIdDocument,
+	GetPublicCollectionsByTitleDocument,
+	GetPublicCollectionsDocument,
+	GetPublishedBundlesContainingCollectionDocument,
+	InsertCollectionDocument,
+	InsertCollectionFragmentsDocument,
+	InsertCollectionLabelsDocument,
+	InsertCollectionLomLinksDocument,
+	InsertCollectionManagementEntryDocument,
+	InsertCollectionManagementQualityCheckEntryDocument,
+	InsertMarcomEntryDocument,
+	InsertMarcomNoteDocument,
+	UpdateCollectionByIdDocument,
+	UpdateCollectionFragmentByIdDocument,
+	UpdateCollectionManagementEntryDocument,
+	UpdateMarcomNoteDocument,
+} from '../shared/generated/graphql-db-react-query';
+import {
+	App_Collection_Marcom_Log_Insert_Input,
+	Lookup_Enum_Collection_Management_Qc_Label_Enum,
+	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { convertRteToString } from '../shared/helpers/convert-rte-to-string';
@@ -160,7 +165,9 @@ export interface OrganisationContentItem {
 }
 
 export class CollectionService {
-	private static collectionLabels: { [id: string]: string } | null;
+	private static collectionLabels: {
+		[id: string]: string;
+	} | null;
 
 	/**
 	 * Insert collection and underlying collection fragments.
@@ -198,7 +205,7 @@ export class CollectionService {
 			newCollection.id = insertedCollection.id;
 
 			// retrieve collection fragments from inserted collection
-			const fragments = getFragmentsFromCollection(newCollection);
+			const fragments = setBlockPositionToIndex(getFragmentsFromCollection(newCollection));
 
 			// insert fragments
 			if (fragments && fragments.length) {
@@ -287,7 +294,11 @@ export class CollectionService {
 				getFragmentIdsFromCollection(newCollection);
 
 			// Fragments to insert do not have an id yet
-			const newFragments = getFragmentsFromCollection(newCollection).filter(
+			const newFragments = (
+				setBlockPositionToIndex(
+					getFragmentsFromCollection(newCollection)
+				) as CollectionFragment[]
+			).filter(
 				(fragment) =>
 					(isNumber(fragment.id) && fragment.id < 0) ||
 					Object.is(fragment.id, -0) ||
@@ -371,9 +382,8 @@ export class CollectionService {
 
 			if (newCollection.type_id === ContentTypeNumber.collection) {
 				// determine new thumbnail path since videos could have changed order / been deleted
-				newCollection.thumbnail_path = await this.getThumbnailPathForCollection(
-					newCollection
-				);
+				newCollection.thumbnail_path =
+					await this.getThumbnailPathForCollection(newCollection);
 			}
 
 			// update collection
@@ -463,7 +473,11 @@ export class CollectionService {
 	private static saveCollectionManagementData = async (
 		collectionId: string,
 		initialCollection: Partial<Avo.Collection.Collection> | null,
-		updatedCollection: Partial<Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo }>
+		updatedCollection: Partial<
+			Avo.Collection.Collection & {
+				marcom_note?: MarcomNoteInfo;
+			}
+		>
 	) => {
 		try {
 			if (!initialCollection?.management && !!updatedCollection?.management) {
@@ -776,9 +790,8 @@ export class CollectionService {
 			}
 
 			// insert duplicated collection
-			const duplicatedCollection = await CollectionService.insertCollection(
-				collectionToInsert
-			);
+			const duplicatedCollection =
+				await CollectionService.insertCollection(collectionToInsert);
 
 			await RelationService.insertRelation(
 				'collection',
@@ -1020,18 +1033,16 @@ export class CollectionService {
 		fragments: Partial<Avo.Collection.Fragment>[]
 	): Promise<Avo.Collection.Fragment[]> {
 		try {
-			const cleanedFragments = reorderBlockPositions(
-				cloneDeep(fragments).map((fragment) => {
-					delete (fragment as any).__typename;
-					delete fragment.item_meta;
+			const cleanedFragments = cloneDeep(fragments).map((fragment) => {
+				delete (fragment as any).__typename;
+				delete fragment.item_meta;
 
-					return {
-						...fragment,
-						collection_uuid: collectionId,
-						id: undefined,
-					};
-				}) as Positioned[]
-			);
+				return {
+					...fragment,
+					collection_uuid: collectionId,
+					id: undefined,
+				};
+			}) as Positioned[];
 
 			const variables: InsertCollectionFragmentsMutationVariables = {
 				fragments: cleanedFragments,
@@ -1051,12 +1062,17 @@ export class CollectionService {
 				});
 			}
 			(response.insert_app_collection_fragments?.returning ?? []).forEach(
-				(f: { id: number }, index: number) => {
+				(
+					f: {
+						id: number;
+					},
+					index: number
+				) => {
 					fragments[index].id = f.id;
 				}
 			);
 
-			return reorderBlockPositions(fragments as Positioned[]) as Avo.Collection.Fragment[];
+			return fragments as CollectionFragment[];
 		} catch (err) {
 			throw new CustomError('Failed to insert fragments into collection', err, {
 				collectionId,
@@ -1188,7 +1204,9 @@ export class CollectionService {
 	}
 
 	// TODO investigate why this isn't used anymore
-	static async getCollectionLabels(): Promise<{ [id: string]: string }> {
+	static async getCollectionLabels(): Promise<{
+		[id: string]: string;
+	}> {
 		try {
 			if (!CollectionService.collectionLabels) {
 				// Fetch collection labels and cache them in memory
@@ -1218,7 +1236,10 @@ export class CollectionService {
 		description: string | null,
 		collectionId: string,
 		typeId: ContentTypeNumber
-	): Promise<{ byTitle: boolean; byDescription: boolean }> {
+	): Promise<{
+		byTitle: boolean;
+		byDescription: boolean;
+	}> {
 		try {
 			const response = await dataService.query<
 				GetCollectionByTitleOrDescriptionQuery,
@@ -1280,7 +1301,7 @@ export class CollectionService {
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined,
 		shareTypeIds: string[] | undefined
-	): Promise<Collection[]> {
+	): Promise<Partial<Avo.Collection.Collection>[]> {
 		let variables: GetCollectionsByOwnerOrContributorQueryVariables | null = null;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
@@ -1311,7 +1332,7 @@ export class CollectionService {
 				variables,
 			});
 
-			return response.app_collections_overview as unknown as Collection[];
+			return response.app_collections_overview as unknown as Avo.Collection.Collection[];
 		} catch (err) {
 			throw new CustomError('Fetch collections by fragment id failed', err, {
 				variables,
@@ -1326,7 +1347,7 @@ export class CollectionService {
 		limit: number | null,
 		order: GetBookmarkedCollectionsByOwnerQueryVariables['order'],
 		filterString: string | undefined
-	): Promise<Collection[]> {
+	): Promise<Avo.Collection.Collection[]> {
 		let variables: GetBookmarkedCollectionsByOwnerQueryVariables | undefined = undefined;
 		try {
 			const trimmedFilterString = filterString?.trim();
@@ -1363,7 +1384,9 @@ export class CollectionService {
 
 	static async fetchUuidByAvo1Id(avo1Id: string): Promise<string | null> {
 		try {
-			const json = await fetchWithLogoutJson<{ uuid: string } | null>(
+			const json = await fetchWithLogoutJson<{
+				uuid: string;
+			} | null>(
 				`${getEnv('PROXY_URL')}/collections/fetch-uuid-by-avo1-id?${queryString.stringify({
 					id: avo1Id,
 				})}`

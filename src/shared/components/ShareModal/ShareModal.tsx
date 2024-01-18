@@ -3,7 +3,7 @@ import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useEffect, useState } from 'react';
 
 import { tText } from '../../helpers/translate';
-import { useTabs } from '../../hooks';
+import { useTabs } from '../../hooks/useTabs';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
 import {

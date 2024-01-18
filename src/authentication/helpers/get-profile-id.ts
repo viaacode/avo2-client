@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 
 import { CustomError } from '../../shared/helpers';

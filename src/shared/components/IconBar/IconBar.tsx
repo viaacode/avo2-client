@@ -1,9 +1,10 @@
 import { Icon, IconName, IconProps } from '@viaa/avo2-components';
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 
 import './IconBar.scss';
 
 export interface IconBarProps {
+	children?: ReactNode;
 	icon?: IconProps;
 }
 

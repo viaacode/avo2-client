@@ -1,4 +1,4 @@
-import { isArray, isEmpty, isNil, isPlainObject, isString, omitBy } from 'lodash';
+import { isArray, isEmpty, isNil, isPlainObject, isString, omitBy } from 'lodash-es';
 
 // Removes all props where the value is undefined, null, [], {}, ''
 export function cleanupObject(obj: any) {

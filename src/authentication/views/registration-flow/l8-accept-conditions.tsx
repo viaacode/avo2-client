@@ -1,9 +1,9 @@
 import { ContentPageInfo, ContentPageRenderer, ContentPageService } from '@meemoo/admin-core-ui';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
@@ -164,7 +164,7 @@ const AcceptConditions: FunctionComponent<
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText(
@@ -178,7 +178,7 @@ const AcceptConditions: FunctionComponent<
 						'authentication/views/registration-flow/l-8-accept-conditions___voorwaarden-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={pages[0]}

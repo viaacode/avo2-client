@@ -1,24 +1,25 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { endOfDay, isBefore } from 'date-fns';
 import { compact, get, isNil } from 'lodash-es';
-import moment from 'moment';
 
 import {
-	GetProfileIdsDocument,
 	GetProfileIdsQuery,
 	GetProfileIdsQueryVariables,
-	GetUsersDocument,
-	GetUsersInSameCompanyDocument,
 	GetUsersInSameCompanyQuery,
 	GetUsersInSameCompanyQueryVariables,
 	GetUsersQuery,
 	GetUsersQueryVariables,
-	UpdateUserTempAccessByIdDocument,
 	UpdateUserTempAccessByIdMutation,
 	UpdateUserTempAccessByIdMutationVariables,
-} from '../../shared/generated/graphql-db-types';
-import { CustomError, getEnv } from '../../shared/helpers';
+} from '../../shared/generated/graphql-db-operations';
+import {
+	GetProfileIdsDocument,
+	GetUsersDocument,
+	GetUsersInSameCompanyDocument,
+	UpdateUserTempAccessByIdDocument,
+} from '../../shared/generated/graphql-db-react-query';
+import { CustomError, getEnv, toIsoDate } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -62,7 +63,7 @@ export class UserService {
 				await UserService.updateTempAccessBlockStatusByProfileIds(
 					[profileId],
 					isBlocked,
-					moment(tempAccess.until).format('DD-MM-YYYY'),
+					toIsoDate(new Date(tempAccess.until)),
 					true
 				);
 			}
@@ -225,7 +226,7 @@ export class UserService {
 							temp_access: user.user?.temp_access,
 							idpmaps: user.idps.map((idp) => idp.idp),
 						},
-					} as any)
+					}) as any
 			);
 
 			const profileCount = response.users_summary_view_aggregate.aggregate?.count ?? 0;

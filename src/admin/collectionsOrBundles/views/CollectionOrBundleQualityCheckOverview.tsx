@@ -1,5 +1,5 @@
 import { Button, ButtonToolbar, IconName, TagList } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -9,7 +9,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -22,7 +22,9 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
-import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
+import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -33,7 +35,7 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { useUserGroups } from '../../user-groups/hooks';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	GET_COLLECTION_QUALITY_CHECK_COLUMNS,
@@ -65,8 +67,8 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
 	const [userGroups] = useUserGroups(false);
-	const [subjects] = useSubjects();
-	const [educationLevels] = useEducationLevels();
+	const [subjects] = useLomSubjects();
+	const [educationLevels] = useLomEducationLevels();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -400,7 +402,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
@@ -424,7 +426,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 								  )
 						}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={collections}

@@ -9,7 +9,7 @@ import {
 	Spacer,
 	TextArea,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { map } from 'lodash-es';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { UseFormSetValue } from 'react-hook-form';
@@ -22,12 +22,14 @@ type AssignmentMetaDataFormEditableProps = {
 	assignment: Avo.Assignment.Assignment;
 	setAssignment: Dispatch<SetStateAction<Avo.Assignment.Assignment>>;
 	setValue: UseFormSetValue<Avo.Assignment.Assignment>;
+	onFocus?: () => void;
 };
 
 const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = ({
 	assignment,
 	setAssignment,
 	setValue,
+	onFocus,
 }) => {
 	const { tText } = useTranslation();
 	const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] = useState<boolean>(false);
@@ -89,6 +91,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 												}));
 											}
 										}}
+										onFocus={onFocus}
 									/>
 
 									<FormGroup
@@ -120,6 +123,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 													}));
 												}
 											}}
+											onFocus={onFocus}
 										/>
 									</FormGroup>
 								</Column>

@@ -10,6 +10,7 @@ import {
 	Grid,
 	Header,
 	HeaderBottomRowLeft,
+	HeaderBottomRowRight,
 	HeaderContentType,
 	HeaderMiddleRowRight,
 	Icon,
@@ -24,7 +25,7 @@ import {
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
 import React, {
@@ -35,11 +36,12 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
-import { withRouter } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import { StringParam, useQueryParam } from 'use-query-params';
 
+import { ITEMS_PATH } from '../../admin/items/items.const';
 import { ItemsService } from '../../admin/items/items.service';
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
@@ -108,7 +110,6 @@ import {
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { ItemTrimInfo } from '../item.types';
-
 import './ItemDetail.scss';
 
 interface ItemDetailProps {
@@ -786,6 +787,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							}}
 						/>
 					)}
+					{PermissionService.hasPerm(user, PermissionName.VIEW_ITEMS_OVERVIEW) && (
+						<Link to={buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid })}>
+							<Button
+								className="c-button-link"
+								type="tertiary"
+								icon={IconName.settings}
+								label={tText('item/views/item-detail___media-item-beheren')}
+								ariaLabel={tText('item/views/item-detail___media-item-beheren')}
+								title={tText('item/views/item-detail___media-item-beheren')}
+							/>
+						</Link>
+					)}
 				</div>
 
 				<div className="c-item-detail__action-buttons--right">
@@ -865,7 +878,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 										label: String(bookmarkViewPlayCounts.bookmarkCount || 0),
 									})}
 							</MetaData>
-							{renderInteractiveTour?.()}
 						</ButtonToolbar>
 					</HeaderMiddleRowRight>
 					<HeaderBottomRowLeft>
@@ -900,6 +912,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							)}
 						</MetaData>
 					</HeaderBottomRowLeft>
+					<HeaderBottomRowRight>{renderInteractiveTour?.()}</HeaderBottomRowRight>
 				</Header>
 				<Container className="c-item-view__main" mode="vertical">
 					<Container mode="horizontal">
@@ -1069,7 +1082,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						item?.title ||
@@ -1077,7 +1090,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					)}
 				</title>
 				<meta name="description" content={get(item, 'description', '')} />
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				dataObject={item}

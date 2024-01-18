@@ -1,7 +1,7 @@
-import moment from 'moment';
-import 'moment/locale/nl-be';
+import { setDefaultOptions } from 'date-fns';
+import { nlBE } from 'date-fns/locale';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import pkg from '../package.json';
 
@@ -9,11 +9,14 @@ import App from './App';
 
 // Expose app info through the window object
 window.APP_INFO = {
-	mode: process.env.NODE_ENV,
+	mode: (process.env.NODE_ENV || 'development') as 'development' | 'production' | 'test',
 	version: pkg.version,
 };
 
-// Set moment language to dutch
-moment.locale('nl-be');
+// Set moment language to Dutch
+setDefaultOptions({
+	locale: nlBE,
+});
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const root = createRoot(document.getElementById('root') as HTMLElement);
+root.render(<App />);

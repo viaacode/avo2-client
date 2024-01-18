@@ -24,7 +24,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { compose } from 'redux';
@@ -37,7 +37,7 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { useTableSort } from '../../shared/hooks';
+import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -137,7 +137,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			const columnDataType: TableColumnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
 
-			let collections: Collection[];
+			let collections: Partial<Avo.Collection.Collection>[];
 			if (activeView === AddCollectionTab.myCollections) {
 				collections = await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
 					user,
@@ -167,7 +167,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 					filterString
 				);
 			}
-			setCollections(collections);
+			setCollections(collections as unknown as Collection[]);
 		} catch (err) {
 			console.error(new CustomError('Failed to get collections', err));
 			setLoadingInfo({
@@ -215,7 +215,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			);
 			return;
 		}
-		addCollectionCallback && addCollectionCallback(selectedCollectionId, createWithDescription);
+		addCollectionCallback?.(selectedCollectionId, createWithDescription);
 		resetStateAndCallOnClose();
 	};
 

@@ -1,9 +1,9 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { isString } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -235,7 +235,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText(
@@ -250,7 +250,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 						'assignment/views/assignment-response-edit___maak-opdracht-antwoord-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 
 			{renderPageContent()}
 		</>

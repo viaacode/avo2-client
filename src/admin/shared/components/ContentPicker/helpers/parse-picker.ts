@@ -1,5 +1,5 @@
 import { LinkTarget } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import queryString from 'query-string';
 
 import { tHtml } from '../../../../../shared/helpers/translate';

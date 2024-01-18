@@ -9,7 +9,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 

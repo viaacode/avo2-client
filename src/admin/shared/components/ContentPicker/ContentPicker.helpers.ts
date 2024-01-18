@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PropsValue } from 'react-select/dist/react-select.cjs';
 
 import { PickerItem, PickerItemControls, PickerTypeOption } from '../../types';

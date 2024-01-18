@@ -22,6 +22,7 @@ export type CustomiseItemFormTitleField = LabeledFormField & TextInputProps;
 export type CustomiseItemFormDescriptionField = LabeledFormField & RichTextEditorWrapperProps;
 
 export interface CustomiseItemFormProps extends DefaultProps {
+	children?: ReactNode;
 	id: string | number;
 	toggle?: CustomiseItemFormToggleField;
 	title?: CustomiseItemFormTitleField;

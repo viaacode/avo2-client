@@ -1,5 +1,5 @@
 import { RichEditorState } from '@meemoo/react-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import immer, { Draft } from 'immer';
 import { cloneDeep } from 'lodash-es';
 

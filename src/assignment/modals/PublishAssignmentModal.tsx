@@ -11,7 +11,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import withUser, { UserProps } from '../../shared/hocs/withUser';
@@ -62,9 +62,8 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & Us
 
 			// Validate if user wants to publish
 			if (isPublished) {
-				const validationErrors: string[] = await getValidationErrorsForPublishAssignment(
-					assignment
-				);
+				const validationErrors: string[] =
+					await getValidationErrorsForPublishAssignment(assignment);
 
 				if (validationErrors && validationErrors.length) {
 					setValidationError(validationErrors);
@@ -169,7 +168,7 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & Us
 									label={tText(
 										'assignment/modals/publish-assignment-modal___annuleren'
 									)}
-									onClick={() => onClose()}
+									onClick={() => closeModal(assignment)}
 								/>
 								<Button
 									type="primary"

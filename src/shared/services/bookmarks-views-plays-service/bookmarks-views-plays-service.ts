@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
@@ -9,30 +9,26 @@ import {
 	DeleteCollectionBookmarksForUserMutationVariables,
 	DeleteItemBookmarkMutation,
 	DeleteItemBookmarkMutationVariables,
-	GetAssignmentBookmarkViewCountsDocument,
 	GetAssignmentBookmarkViewCountsQuery,
 	GetAssignmentBookmarkViewCountsQueryVariables,
-	GetBookmarksForUserDocument,
 	GetBookmarksForUserQuery,
 	GetBookmarksForUserQueryVariables,
-	GetBookmarkStatusesDocument,
 	GetBookmarkStatusesQuery,
 	GetBookmarkStatusesQueryVariables,
-	GetCollectionBookmarkViewPlayCountsDocument,
 	GetCollectionBookmarkViewPlayCountsQuery,
 	GetCollectionBookmarkViewPlayCountsQueryVariables,
-	GetItemBookmarksForUserDocument,
 	GetItemBookmarksForUserQuery,
 	GetItemBookmarksForUserQueryVariables,
-	GetItemBookmarkViewPlayCountsDocument,
 	GetItemBookmarkViewPlayCountsQuery,
 	GetItemBookmarkViewPlayCountsQueryVariables,
-	GetMultipleCollectionViewCountsDocument,
+	GetMultipleAssignmentViewCountsQuery,
+	GetMultipleAssignmentViewCountsQueryVariables,
 	GetMultipleCollectionViewCountsQuery,
 	GetMultipleCollectionViewCountsQueryVariables,
-	GetMultipleItemViewCountsDocument,
 	GetMultipleItemViewCountsQuery,
 	GetMultipleItemViewCountsQueryVariables,
+	IncrementAssignmentViewsMutation,
+	IncrementAssignmentViewsMutationVariables,
 	IncrementCollectionPlaysMutation,
 	IncrementCollectionPlaysMutationVariables,
 	IncrementCollectionViewsMutation,
@@ -45,7 +41,18 @@ import {
 	InsertCollectionBookmarkMutationVariables,
 	InsertItemBookmarkMutation,
 	InsertItemBookmarkMutationVariables,
-} from '../../generated/graphql-db-types';
+} from '../../generated/graphql-db-operations';
+import {
+	GetAssignmentBookmarkViewCountsDocument,
+	GetBookmarksForUserDocument,
+	GetBookmarkStatusesDocument,
+	GetCollectionBookmarkViewPlayCountsDocument,
+	GetItemBookmarksForUserDocument,
+	GetItemBookmarkViewPlayCountsDocument,
+	GetMultipleAssignmentViewCountsDocument,
+	GetMultipleCollectionViewCountsDocument,
+	GetMultipleItemViewCountsDocument,
+} from '../../generated/graphql-db-react-query';
 import { CustomError, normalizeTimestamp } from '../../helpers';
 import { dataService } from '../data-service';
 import { trackEvents } from '../event-logging-service';
@@ -247,12 +254,12 @@ export class BookmarksViewsPlaysService {
 				contentLinkId: itemBookmark.bookmarkedItem.item.external_id,
 				contentType: itemBookmark.bookmarkedItem.item.item_meta.type
 					.label as Avo.ContentType.English,
-				createdAt: normalizeTimestamp(itemBookmark.created_at).toDate().getTime(),
+				createdAt: normalizeTimestamp(itemBookmark.created_at).getTime(),
 				contentTitle: itemBookmark.bookmarkedItem.title,
 				contentDuration: itemBookmark.bookmarkedItem.duration,
 				contentThumbnailPath: thumbnailPath,
 				contentCreatedAt: itemBookmark.bookmarkedItem.issued
-					? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).toDate().getTime()
+					? normalizeTimestamp(itemBookmark.bookmarkedItem.issued).getTime()
 					: null,
 				contentViews: get(itemBookmark, 'bookmarkedItem.view_counts[0].count') || 0,
 				contentOrganisation:
@@ -321,14 +328,12 @@ export class BookmarksViewsPlaysService {
 						ContentTypeNumber.collection
 							? 'collection'
 							: 'bundle',
-					createdAt: normalizeTimestamp(collectionBookmark.created_at).toDate().getTime(),
+					createdAt: normalizeTimestamp(collectionBookmark.created_at).getTime(),
 					contentTitle: collectionBookmark.bookmarkedCollection.title,
 					contentThumbnailPath: collectionBookmark.bookmarkedCollection.thumbnail_path,
 					contentCreatedAt: normalizeTimestamp(
 						collectionBookmark.bookmarkedCollection.created_at
-					)
-						.toDate()
-						.getTime(),
+					).getTime(),
 					contentViews:
 						get(collectionBookmark, 'bookmarkedCollection.view_counts[0].count') || 0,
 				};
@@ -343,12 +348,12 @@ export class BookmarksViewsPlaysService {
 					contentId: assignmentBookmark.assignment_id,
 					contentLinkId: assignmentBookmark.assignment_id,
 					contentType: 'assignment',
-					createdAt: normalizeTimestamp(assignmentBookmark.created_at).toDate().getTime(),
+					createdAt: normalizeTimestamp(assignmentBookmark.created_at).getTime(),
 					contentTitle: assignmentBookmark.assignment.title,
 					contentThumbnailPath: assignmentBookmark.assignment.thumbnail_path,
-					contentCreatedAt: normalizeTimestamp(assignmentBookmark.assignment.created_at)
-						.toDate()
-						.getTime(),
+					contentCreatedAt: normalizeTimestamp(
+						assignmentBookmark.assignment.created_at
+					).getTime(),
 					contentViews:
 						get(assignmentBookmark, 'bookmarkedCollection.view_counts[0].count') || 0,
 				};
@@ -393,15 +398,21 @@ export class BookmarksViewsPlaysService {
 	): Promise<{ [uuid: string]: number }> {
 		const variables:
 			| GetMultipleItemViewCountsQueryVariables
-			| GetMultipleCollectionViewCountsQueryVariables = { uuids: contentIds };
+			| GetMultipleCollectionViewCountsQueryVariables
+			| GetMultipleAssignmentViewCountsQueryVariables = { uuids: contentIds };
 		const response = await dataService.query<
-			GetMultipleItemViewCountsQuery | GetMultipleCollectionViewCountsQuery,
-			GetMultipleItemViewCountsQueryVariables | GetMultipleCollectionViewCountsQueryVariables
+			| GetMultipleItemViewCountsQuery
+			| GetMultipleCollectionViewCountsQuery
+			| GetMultipleAssignmentViewCountsQuery,
+			| GetMultipleItemViewCountsQueryVariables
+			| GetMultipleCollectionViewCountsQueryVariables
+			| GetMultipleAssignmentViewCountsQueryVariables
 		>({
-			query:
-				type === 'item'
-					? GetMultipleItemViewCountsDocument
-					: GetMultipleCollectionViewCountsDocument,
+			query: {
+				item: GetMultipleItemViewCountsDocument,
+				collection: GetMultipleCollectionViewCountsDocument,
+				assignment: GetMultipleAssignmentViewCountsDocument,
+			}[type],
 			variables,
 		});
 		const items = response.items;
@@ -429,10 +440,12 @@ export class BookmarksViewsPlaysService {
 				| IncrementItemViewsMutation
 				| IncrementCollectionViewsMutation
 				| IncrementCollectionPlaysMutation,
+				| IncrementAssignmentViewsMutation
 				| IncrementItemPlaysMutationVariables
 				| IncrementItemViewsMutationVariables
 				| IncrementCollectionViewsMutationVariables
 				| IncrementCollectionPlaysMutationVariables
+				| IncrementAssignmentViewsMutationVariables
 			>({
 				query,
 				variables,
@@ -473,7 +486,6 @@ export class BookmarksViewsPlaysService {
 	 *       }
 	 *     }
 	 */
-
 	public static async getBookmarkStatuses(
 		profileId: string,
 		objectInfos: BookmarkRequestInfo[]

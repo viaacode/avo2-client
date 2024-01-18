@@ -12,8 +12,8 @@ import { redirectToServerLinkAccount } from '../../../authentication/helpers/red
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AppState } from '../../../store';
-import { setShowNudgingModalAction } from '../../../uistate/store/actions';
-import { selectShowNudgingModal } from '../../../uistate/store/selectors';
+import { setShowNudgingModalAction } from '../../../store/actions';
+import { selectShowNudgingModal } from '../../../store/selectors';
 import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers';
 import withUser, { UserProps } from '../../hocs/withUser';
@@ -57,7 +57,13 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 		const hasDismissed = localStorage.getItem(NOT_NOW_LOCAL_STORAGE_KEY) === NOT_NOW_VAL;
 
 		// Stop early if previously dismissed
-		if (hasDismissed) {
+		// Or if user is logging out https://meemoo.atlassian.net/browse/ARC-1731
+		if (
+			hasDismissed ||
+			!user ||
+			!getProfileId(user) ||
+			window.location.href.includes(ROUTE_PARTS.logout)
+		) {
 			setShowNudgingModal(false);
 			return;
 		}

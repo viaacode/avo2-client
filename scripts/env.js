@@ -16,8 +16,12 @@ const CI_ENV_VARIABLES = {
 
 let envVariables = {};
 
-if (fs.existsSync('.env')) {
-	const envFile = fs.readFileSync('.env').toString();
+const envExists = fs.existsSync('.env');
+const envQasExists = fs.existsSync('.env.qas');
+if (envExists || envQasExists) {
+	const envFile = envExists
+		? fs.readFileSync('.env').toString()
+		: fs.readFileSync('.env.qas').toString();
 	const lines = envFile.split('\n').map((line) => line.trim());
 
 	lines.forEach((line) => {
@@ -37,8 +41,8 @@ if (fs.existsSync('.env')) {
 let outputString = 'window._ENV_ = {\n';
 
 Object.keys(envVariables).forEach((envName) => {
-	if (envName) {
-		outputString += `\t\"${envName}\": \"${envVariables[envName]}\",\n`;
+	if (envName && envVariables[envName] && Object.keys(CI_ENV_VARIABLES).includes(envName)) {
+		outputString += `\t${envName}: '${envVariables[envName]}',\n`;
 	}
 });
 

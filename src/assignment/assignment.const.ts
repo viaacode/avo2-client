@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
@@ -171,6 +171,12 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 			full_name: order,
 		},
 	}),
+	author_user_group: (order: Avo.Search.OrderDirection) => ({
+		owner: { profile: { profile_user_group: { group: { label: order } } } },
+	}),
+	last_user_edit_profile: (order: Avo.Search.OrderDirection) => ({
+		last_user_edit_profile: { usersByuserId: { last_name: order } },
+	}),
 	status: (order: Avo.Search.OrderDirection) => ({
 		deadline_at: order,
 	}),
@@ -184,6 +190,21 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 			count: order,
 		},
 	}),
+	bookmarks: (order: Avo.Search.OrderDirection) => ({
+		counts: {
+			bookmarks: order,
+		},
+	}),
+	copies: (order: Avo.Search.OrderDirection) => ({
+		counts: {
+			copies: order,
+		},
+	}),
+	contributors: (order: Avo.Search.OrderDirection) => ({
+		counts: {
+			contributors: order,
+		},
+	}),
 	share_type: (order: Avo.Search.OrderDirection) => ({
 		share_type_order: order,
 	}),
@@ -193,7 +214,12 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<Avo.Assignment.Assignment> => {
 	return object({
 		id: string().optional(),
-		title: string().required(tText('assignment/assignment___titel-is-verplicht')),
+		title: string()
+			.required(tText('assignment/assignment___titel-is-verplicht'))
+			.max(
+				110,
+				tText('assignment/assignment___de-titel-mag-maximum-110-karakters-lang-zijn')
+			),
 		labels: array(
 			object({
 				assignment_label: object()

@@ -5,7 +5,7 @@ import { Link, MemoryRouter, RouteComponentProps, BrowserRouter as Router } from
 import { APP_PATH } from '../../../constants';
 import { getMockRouterProps } from '../../mocks/route-components-props-mock';
 
-import { Navigation } from './Navigation';
+import { NavigationForTests } from './Navigation';
 
 const linkLoginState: {
 	[routePath: string]: { showWhenLoggedIn: boolean; showWhenLoggedOut: boolean };
@@ -51,7 +51,16 @@ function checkLinks(menuItems: ReactWrapper<any, any>, loggedIn: boolean) {
 	});
 }
 
-const mockProps = getMockRouterProps({});
+const mockProps = {
+	...getMockRouterProps({}),
+	loginState: null,
+	loginStateLoading: false,
+	loginStateError: false,
+	getLoginState: () => {
+		// ignore
+		return {} as any;
+	},
+};
 
 describe('<Navigation />', () => {
 	it('Should be able to render', () => {
@@ -59,7 +68,7 @@ describe('<Navigation />', () => {
 		// https://redux.js.org/recipes/writing-tests#connected-components
 		mount(
 			<MemoryRouter>
-				<Navigation {...mockProps} />
+				<NavigationForTests {...mockProps} />
 			</MemoryRouter>
 		);
 	});
@@ -67,7 +76,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged out on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} />
+				<NavigationForTests {...mockProps} />
 			</Router>
 		);
 
@@ -87,7 +96,7 @@ describe('<Navigation />', () => {
 	it('Should correctly render navbar links when logged in on desktop', () => {
 		const navigationComponent = mount(
 			<Router>
-				<Navigation {...mockProps} />
+				<NavigationForTests {...mockProps} />
 			</Router>
 		);
 

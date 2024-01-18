@@ -7,11 +7,19 @@ import {
 	MediaCardThumbnail,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { get, isNil, isString } from 'lodash-es';
+import { type Avo } from '@viaa/avo2-types';
+import { get, isNil, isString, noop, throttle } from 'lodash-es';
+import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { RouteComponentProps } from 'react-router';
+import { withRouter } from 'react-router-dom';
+import { compose, Dispatch } from 'redux';
 
+import { redirectToClientPage } from '../../../authentication/helpers/redirects';
+import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { setLastVideoPlayedAtAction } from '../../../store/actions';
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
@@ -48,11 +56,10 @@ export type FlowPlayerWrapperProps = {
 	cuePointsLabel?: CuePoints;
 	onEnded?: () => void;
 	onPlay?: (playingSrc: string) => void;
-	organisationLogo?: string;
-	organisationName?: string;
 	poster?: string;
 	src?: string | FlowplayerSourceList;
 	title?: string;
+	topRight?: ReactNode;
 };
 
 /**
@@ -60,7 +67,11 @@ export type FlowPlayerWrapperProps = {
  * @param props
  * @constructor
  */
-const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> = (props) => {
+const FlowPlayerWrapper: FunctionComponent<
+	FlowPlayerWrapperProps &
+		UserProps &
+		RouteComponentProps & { setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) => Dispatch }
+> = (props) => {
 	const { tText, tHtml } = useTranslation();
 
 	const item: Avo.Item.Item | undefined = props.item;
@@ -139,11 +150,34 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 		}
 	};
 
-	const handlePosterClicked = () => {
+	const handleTimeUpdate = throttle(
+		() => {
+			// Keep track of the last time a video was played in the redux store
+			// Since it influences when we want to show the "you are inactive" modal for editing collections and assignments
+			// https://meemoo.atlassian.net/browse/AVO-2983
+			props.setLastVideoPlayedAt(new Date());
+		},
+		30000,
+		{ leading: true, trailing: true }
+	);
+
+	const handlePosterClicked = async () => {
 		setClickedThumbnail(true);
 
 		if (!src) {
-			initFlowPlayer();
+			if (!props.commonUser) {
+				redirectToClientPage(
+					stringifyUrl({
+						url: APP_PATH.REGISTER_OR_LOGIN.route,
+						query: {
+							returnToUrl: props.location.pathname,
+						},
+					}),
+					props.history
+				);
+				return;
+			}
+			await initFlowPlayer();
 		}
 	};
 
@@ -243,14 +277,15 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 							item
 								? [
 										props.issuedDate || reorderDate(item.issued || null, '.'),
-										props.organisationName ||
-											get(item, 'organisation.name', ''),
+										item?.organisation?.name || '',
 								  ]
 								: undefined
 						}
 						token={getEnv('FLOW_PLAYER_TOKEN')}
 						dataPlayerId={getEnv('FLOW_PLAYER_ID')}
-						logo={props.organisationLogo || get(item, 'organisation.logo_url')}
+						logo={
+							item?.organisation?.overlay ? item?.organisation?.logo_url : undefined
+						}
 						speed={{
 							options: [0.5, 0.75, 1, 1.25, 1.5],
 							labels: [
@@ -279,6 +314,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						playlistScrollable={!isMobileWidth()}
 						onPlay={handlePlay}
 						onEnded={props.onEnded}
+						onTimeUpdate={handleTimeUpdate}
 						googleAnalyticsId={trackingId}
 						googleAnalyticsEvents={
 							[
@@ -295,6 +331,7 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 						renderPlaylistTile={renderPlaylistTile}
 					/>
 				) : (
+					// Fake player for logged-out users that do not yet have video playback rights
 					<div className="c-video-player__overlay" onClick={handlePosterClicked}>
 						<AspectRatioWrapper
 							className="c-video-player__item c-video-player__thumbnail"
@@ -315,6 +352,9 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 									)} - ${formatDurationHoursMinutesSeconds(end)}`}
 								</div>
 							)}
+						{!!props.topRight && !props.commonUser && (
+							<div className="c-video-player__top-right">{props.topRight}</div>
+						)}
 					</div>
 				)}
 			</div>
@@ -331,4 +371,13 @@ const FlowPlayerWrapper: FunctionComponent<FlowPlayerWrapperProps & UserProps> =
 	);
 };
 
-export default withUser(FlowPlayerWrapper) as FunctionComponent<FlowPlayerWrapperProps>;
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) =>
+		dispatch(setLastVideoPlayedAtAction(lastVideoPlayedAt) as any),
+});
+
+export default compose(
+	connect(noop, mapDispatchToProps),
+	withRouter,
+	withUser
+)(FlowPlayerWrapper) as FunctionComponent<FlowPlayerWrapperProps>;

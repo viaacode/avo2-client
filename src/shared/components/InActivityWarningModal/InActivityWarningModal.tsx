@@ -1,16 +1,21 @@
 import { Modal, ModalBody } from '@viaa/avo2-components';
-import { differenceInSeconds, format } from 'date-fns';
+import { addMinutes, differenceInSeconds, isAfter } from 'date-fns';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
+import { connect } from 'react-redux';
 import { matchPath } from 'react-router';
+import { compose } from 'redux';
 
+import { AppState } from '../../../store';
+import { selectLastVideoPlayedAt } from '../../../store/selectors';
 import {
 	EDIT_STATUS_REFETCH_TIME,
 	IDLE_TIME_UNTIL_WARNING,
 	MAX_EDIT_IDLE_TIME,
 } from '../../constants';
+import { formatDurationMinutesSeconds } from '../../helpers';
 import { tHtml } from '../../helpers/translate';
-import { useBeforeUnload } from '../../hooks';
+import { useBeforeUnload } from '../../hooks/useBeforeUnload';
 
 type InActivityWarningModalProps = {
 	onActivity: () => void;
@@ -21,19 +26,23 @@ type InActivityWarningModalProps = {
 	currentPath: string;
 };
 
-const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
+const InActivityWarningModal: FC<
+	InActivityWarningModalProps & { lastVideoPlayedAt: Date | null }
+> = ({
 	onActivity,
 	onExit,
 	onForcedExit,
 	warningMessage,
 	editPath,
 	currentPath,
+	lastVideoPlayedAt,
 }) => {
 	const maxIdleTime = MAX_EDIT_IDLE_TIME / 1000;
 	const [remainingTime, setRemainingTime] = useState<number>(maxIdleTime);
 	const [isWarningModalOpen, setIsWarningModalOpen] = useState<boolean>(false);
 	const [isTimedOut, setIsTimedOut] = useState<boolean>(false);
 	const [idleStart, setIdleStart] = useState<Date | null>(null);
+	const [documentTitle] = useState(document.title);
 
 	useEffect(() => {
 		if (!isTimedOut) {
@@ -63,8 +72,15 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 	};
 
 	const onIdle = () => {
-		setIsWarningModalOpen(true);
-		setIdleStart(new Date());
+		// Last video play was less than 1 minute ago?
+		if (!!lastVideoPlayedAt && isAfter(lastVideoPlayedAt, addMinutes(new Date(), -1))) {
+			// Video is playing => do not show modal
+			// https://meemoo.atlassian.net/browse/AVO-2983
+		} else {
+			// No video is playing and user is idle
+			setIsWarningModalOpen(true);
+			setIdleStart(new Date());
+		}
 	};
 
 	const { reset } = useIdleTimer({
@@ -97,6 +113,16 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 			setIsTimedOut(true);
 			onForcedExit();
 		}
+
+		// AVO-2846: show timer before tab title when timer starts counting down
+		if (remainingTime < maxIdleTime) {
+			document.title = formatDurationMinutesSeconds(remainingTime) + ' | ' + documentTitle;
+		}
+
+		// AVO-2846: hide timer in tab title when there is activity
+		if (remainingTime >= maxIdleTime) {
+			document.title = documentTitle;
+		}
 	}, [remainingTime]);
 
 	return (
@@ -108,12 +134,17 @@ const InActivityWarningModal: FC<InActivityWarningModalProps> = ({
 			size="medium"
 		>
 			<ModalBody>
-				<p>{format(new Date(remainingTime * 1000), 'mm:ss')}</p>
+				<p>{formatDurationMinutesSeconds(remainingTime)}</p>
 
 				{warningMessage}
 			</ModalBody>
 		</Modal>
 	);
 };
+const mapStateToProps = (state: AppState) => ({
+	lastVideoPlayedAt: selectLastVideoPlayedAt(state),
+});
 
-export default InActivityWarningModal;
+export default compose(connect(mapStateToProps))(
+	InActivityWarningModal
+) as FC<InActivityWarningModalProps>;

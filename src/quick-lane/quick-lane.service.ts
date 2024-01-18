@@ -1,26 +1,28 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
 import { CollectionService } from '../collection/collection.service';
 import { QuickLaneType } from '../shared/components/QuickLaneModal/QuickLaneModal.types';
 import {
-	GetQuickLaneByContentAndOwnerDocument,
 	GetQuickLaneByContentAndOwnerQuery,
 	GetQuickLaneByContentAndOwnerQueryVariables,
-	GetQuickLaneByIdDocument,
 	GetQuickLaneByIdQuery,
 	GetQuickLaneByIdQueryVariables,
-	InsertQuickLanesDocument,
 	InsertQuickLanesMutation,
 	InsertQuickLanesMutationVariables,
-	RemoveQuickLanesDocument,
 	RemoveQuickLanesMutation,
 	RemoveQuickLanesMutationVariables,
-	UpdateQuickLaneByIdDocument,
 	UpdateQuickLaneByIdMutation,
 	UpdateQuickLaneByIdMutationVariables,
-} from '../shared/generated/graphql-db-types';
+} from '../shared/generated/graphql-db-operations';
+import {
+	GetQuickLaneByContentAndOwnerDocument,
+	GetQuickLaneByIdDocument,
+	InsertQuickLanesDocument,
+	RemoveQuickLanesDocument,
+	UpdateQuickLaneByIdDocument,
+} from '../shared/generated/graphql-db-react-query';
 import { CustomError } from '../shared/helpers';
 import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
 import { dataService } from '../shared/services/data-service';

@@ -1,6 +1,6 @@
 import { NavigationEdit } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -14,18 +14,18 @@ type NavigationItemEditProps = DefaultSecureRouteProps<MenuEditParams>;
 
 const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match }) => {
 	const { tText } = useTranslation();
-	const { menu: menuParentId, id: menuItemId } = match.params;
+	const { navigationBarId, navigationItemId } = match.params;
 
 	// Render
 	return (
 		<div className="c-admin__navigation-edit">
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText(
 							'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-title'
 						),
-						menuItemId
+						navigationItemId
 							? tText(
 									'admin/menu/views/menu-edit___menu-item-beheer-bewerk-pagina-titel'
 							  )
@@ -40,10 +40,10 @@ const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match 
 						'admin/navigations/views/navigation-item-edit___navigation-item-edit-page-description'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<NavigationEdit
-				navigationBarId={menuParentId as string}
-				navigationItemId={menuItemId}
+				navigationBarId={navigationBarId as string}
+				navigationItemId={navigationItemId}
 			/>
 		</div>
 	);

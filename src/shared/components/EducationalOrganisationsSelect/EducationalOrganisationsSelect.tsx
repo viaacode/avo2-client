@@ -1,5 +1,5 @@
 import { Alert, Select, Spacer } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { pullAllBy, remove, uniq } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';

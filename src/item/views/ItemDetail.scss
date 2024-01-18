@@ -42,6 +42,7 @@
 		}
 
 		&--right {
+			text-align: right;
 			> .c-button,
 			> .c-dropdown__trigger {
 				&:not(:first-child) {
@@ -87,4 +88,8 @@
 			justify-content: start;
 		}
 	}
+}
+
+.c-button-link {
+	margin-top: 0.8rem !important;
 }

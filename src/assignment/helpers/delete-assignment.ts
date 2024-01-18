@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash-es';
 import { ReactNode } from 'react';
 
 import { tHtml } from '../../shared/helpers/translate';

@@ -1,12 +1,12 @@
 import { Alert, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import withUser, { UserProps } from '../../hocs/withUser';
-import { useTabs } from '../../hooks';
+import { useTabs } from '../../hooks/useTabs';
 import { ToastService } from '../../services/toast-service';
 
 import { isShareable } from './QuickLaneModal.helpers';

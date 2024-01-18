@@ -9,7 +9,7 @@ import {
 	Spacer,
 	TextArea,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -27,21 +27,20 @@ interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 	history: RouteComponentProps['history'];
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditQualityCheck: FunctionComponent<
 	CollectionOrBundleEditQualityCheckProps & UserProps
-> = ({ collection, changeCollectionState }) => {
+> = ({ collection, changeCollectionState, onFocus }) => {
 	const { tText } = useTranslation();
 
 	const getApprovedAtDate = (collection: Avo.Collection.Collection): Date | null => {
 		if (
-			get(collection, 'management_language_check[0].qc_status') &&
-			get(collection, 'management_quality_check[0].qc_status')
+			collection?.management_language_check?.[0]?.qc_status &&
+			collection?.management_quality_check?.[0]?.qc_status
 		) {
-			return (
-				toDateObject(get(collection, 'management_approved_at[0].created_at')) || new Date()
-			);
+			return toDateObject(collection?.mgmt_eind_check_date) || new Date();
 		}
 		return null;
 	};
@@ -215,6 +214,7 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 													collectionPropValue: newNotes || null,
 												})
 											}
+											onFocus={onFocus}
 										/>
 									</FormGroup>
 								</Column>

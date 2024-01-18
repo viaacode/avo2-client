@@ -1,25 +1,32 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { omit } from 'lodash-es';
 
 import { AssignmentLabelColor } from '../../../assignment/assignment.types';
 import {
-	App_Assignment_Labels_V2_Insert_Input,
-	DeleteAssignmentLabelsDocument,
 	DeleteAssignmentLabelsMutation,
 	DeleteAssignmentLabelsMutationVariables,
-	GetAllAssignmentLabelColorsDocument,
 	GetAllAssignmentLabelColorsQuery,
 	GetAllAssignmentLabelColorsQueryVariables,
-	GetAssignmentLabelsByProfileIdDocument,
 	GetAssignmentLabelsByProfileIdQuery,
 	GetAssignmentLabelsByProfileIdQueryVariables,
-	InsertAssignmentLabelsDocument,
+	GetAssignmentLabelsQuery,
+	GetAssignmentLabelsQueryVariables,
 	InsertAssignmentLabelsMutation,
 	InsertAssignmentLabelsMutationVariables,
-	Lookup_Enum_Colors_Enum,
-	UpdateAssignmentLabelsDocument,
 	UpdateAssignmentLabelsMutation,
 	UpdateAssignmentLabelsMutationVariables,
+} from '../../generated/graphql-db-operations';
+import {
+	DeleteAssignmentLabelsDocument,
+	GetAllAssignmentLabelColorsDocument,
+	GetAssignmentLabelsByProfileIdDocument,
+	GetAssignmentLabelsDocument,
+	InsertAssignmentLabelsDocument,
+	UpdateAssignmentLabelsDocument,
+} from '../../generated/graphql-db-react-query';
+import {
+	App_Assignment_Labels_V2_Insert_Input,
+	Lookup_Enum_Colors_Enum,
 } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
 import { dataService } from '../data-service';
@@ -46,6 +53,24 @@ export class AssignmentLabelsService {
 			throw new CustomError('Failed to get assignment labels', err, {
 				profileId,
 				query: 'GET_ASSIGNMENT_LABELS_BY_PROFILE_ID',
+			});
+		}
+	}
+
+	public static async getLabels(): Promise<Avo.Assignment.Label[]> {
+		try {
+			const response = await dataService.query<
+				GetAssignmentLabelsQuery,
+				GetAssignmentLabelsQueryVariables
+			>({
+				query: GetAssignmentLabelsDocument,
+				variables: {},
+			});
+
+			return (response.app_assignment_labels_v2 || []) as Avo.Assignment.Label[];
+		} catch (err) {
+			throw new CustomError('Failed to get assignment labels', err, {
+				query: 'GET_ASSIGNMENT_LABELS',
 			});
 		}
 	}

@@ -1,5 +1,0 @@
-query getSubjects {
-	lookup_enum_lom_classification {
-		description
-	}
-}

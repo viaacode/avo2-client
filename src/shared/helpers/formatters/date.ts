@@ -1,8 +1,7 @@
-import { isNumber } from 'lodash-es';
-import moment, { Moment } from 'moment';
+import { format, formatDistance } from 'date-fns';
+import { isNumber, isString } from 'lodash-es';
 
-type DateLike = string | Moment | Date | number;
-type DateLikeNullable = DateLike | undefined | null;
+type DateLike = string | Date | number;
 
 /**
  * Converts a date from format 2000-12-31 to 31/12/2000
@@ -11,70 +10,76 @@ export function reorderDate(dateString: string | null, separator = '/'): string 
 	return (dateString || '').substring(0, 10).split('-').reverse().join(separator);
 }
 
-/**
- * @deprecated Use date-fns functions where possible
- */
-export function normalizeTimestamp(timestamp: DateLike): Moment {
-	if (moment.isMoment(timestamp)) {
+export function normalizeTimestamp(timestamp: DateLike): Date {
+	if (timestamp instanceof Date) {
 		return timestamp;
+	} else if (isNumber(timestamp)) {
+		return new Date(timestamp);
 	}
-	if (timestamp instanceof Date || isNumber(timestamp)) {
-		return moment(timestamp);
-	}
-	if (
-		timestamp.match(
-			/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[+-][0-9]{2}:[0-9]{2}/g
-		)
-	) {
-		return moment.parseZone(timestamp);
-	}
-	return moment(timestamp);
+
+	return new Date(timestamp);
 }
 
 /**
  * Convert viaa format to relative date
  * @param timestamp
  */
-export function fromNow(timestamp: DateLikeNullable): string {
+export function fromNow(timestamp: Date | undefined | null): string {
 	if (!timestamp) {
 		return '';
 	}
-	return normalizeTimestamp(timestamp).fromNow();
+	return formatDistance(timestamp, new Date());
 }
 
-export function formatTimestamp(timestamp: DateLikeNullable, includeSeconds = true): string {
+export function formatTimestamp(
+	timestamp: Date | string | undefined | null,
+	includeSeconds = true
+): string {
 	if (!timestamp) {
 		return '';
 	}
-	return normalizeTimestamp(timestamp)
-		.local()
-		.format(`D MMMM YYYY HH:mm${includeSeconds ? ':ss' : ''}`);
+	return format(normalizeTimestamp(timestamp), `d MMMM yyyy HH:mm${includeSeconds ? ':ss' : ''}`);
 }
 
-export function formatCustomTimestamp(timestamp: DateLikeNullable, format: string): string {
+export function formatCustomTimestamp(
+	timestamp: Date | string | undefined | null,
+	dateFormat: string
+): string {
 	if (!timestamp) {
 		return '';
 	}
-	return normalizeTimestamp(timestamp).local().format(format);
+	if (isString(timestamp)) {
+		return format(new Date(timestamp), dateFormat);
+	}
+	return format(timestamp, dateFormat);
 }
 
-export function formatDate(timestamp: DateLikeNullable): string {
+export function formatDate(timestamp: Date | string | undefined | null): string {
 	if (!timestamp) {
 		return '';
 	}
-	return normalizeTimestamp(timestamp).local().format('DD-MM-YYYY');
+	if (isString(timestamp)) {
+		return format(new Date(timestamp), 'dd-MM-yyyy');
+	}
+	return format(timestamp, 'dd-MM-yyyy');
 }
 
-export function toIsoDate(timestamp: DateLikeNullable): string {
+export function toIsoDate(timestamp: Date | string | undefined | null): string {
 	if (!timestamp) {
 		return '';
 	}
-	return normalizeTimestamp(timestamp).format('YYYY-MM-DD');
+	if (isString(timestamp)) {
+		return format(new Date(timestamp), 'yyyy-MM-dd');
+	}
+	return format(timestamp, 'yyyy-MM-dd');
 }
 
-export function toDateObject(timestamp: DateLikeNullable): Date | null {
+export function toDateObject(timestamp: Date | string | undefined | null): Date | null {
 	if (!timestamp) {
 		return null;
 	}
-	return normalizeTimestamp(timestamp).toDate();
+	if (isString(timestamp)) {
+		return new Date(timestamp);
+	}
+	return timestamp;
 }

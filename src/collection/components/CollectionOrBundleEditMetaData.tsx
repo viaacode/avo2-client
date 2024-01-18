@@ -11,7 +11,7 @@ import {
 	Spacer,
 	TextArea,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { StringMap } from 'i18next';
 import { compact, map } from 'lodash-es';
 import React, { FunctionComponent, useState } from 'react';
@@ -34,12 +34,14 @@ interface CollectionOrBundleEditMetaDataProps {
 	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMetaDataProps> = ({
 	type,
 	collection,
 	changeCollectionState,
+	onFocus,
 }) => {
 	const { tText } = useTranslation();
 
@@ -55,7 +57,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 		changeCollectionState({
 			collectionProp: 'loms',
 			type: 'UPDATE_COLLECTION_PROP',
-			collectionPropValue: loms.map((lom) => ({ lom } as Avo.Lom.Lom)),
+			collectionPropValue: loms.map((lom) => ({ lom }) as Avo.Lom.Lom),
 		});
 	};
 
@@ -87,6 +89,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 										placeholder={tText(
 											'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
 										)}
+										onFocus={onFocus}
 									/>
 									{!isCollection && (
 										<FormGroup
@@ -175,6 +178,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 													collectionPropValue: value,
 												})
 											}
+											onFocus={onFocus}
 										/>
 									</FormGroup>
 								</Column>

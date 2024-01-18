@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 export function isContentBeingEdited(
 	editStatus: Avo.Share.EditStatus | null | undefined,

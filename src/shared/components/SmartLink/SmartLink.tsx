@@ -1,5 +1,5 @@
 import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { fromPairs, map } from 'lodash-es';
 import queryString from 'query-string';

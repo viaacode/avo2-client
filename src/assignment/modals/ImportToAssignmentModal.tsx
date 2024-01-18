@@ -16,7 +16,7 @@ import {
 	TextInput,
 	Toggle,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -38,7 +38,7 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import { useTableSort } from '../../shared/hooks';
+import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';

@@ -1,5 +1,5 @@
 import { convertToHtml } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FC, ReactNode } from 'react';
 
 import { FilterState } from '../../../search/search.types';

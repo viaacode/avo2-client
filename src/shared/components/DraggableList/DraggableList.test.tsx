@@ -1,5 +1,5 @@
 import { mount, shallow } from 'enzyme';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import React from 'react';
 
 import DraggableList from './DraggableList';

@@ -1,7 +1,7 @@
 import { UserOverview } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -19,7 +19,7 @@ const UserOverviewPage: FC<UserProps> = ({ commonUser }) => {
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -33,7 +33,7 @@ const UserOverviewPage: FC<UserProps> = ({ commonUser }) => {
 							'admin/users/views/user-overview___gebruikersbeheer-overzicht-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 
 				<UserOverview commonUser={commonUser as Avo.User.CommonUser} />
 			</AdminLayoutBody>

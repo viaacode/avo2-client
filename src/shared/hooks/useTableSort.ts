@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { Dispatch, SetStateAction, useState } from 'react';
 
 type UseTableSortTuple<T> = [
@@ -6,7 +6,7 @@ type UseTableSortTuple<T> = [
 	Avo.Search.OrderDirection,
 	(columnId: T) => { sortColumn: T; sortOrder: Avo.Search.OrderDirection },
 	Dispatch<SetStateAction<T>>,
-	Dispatch<SetStateAction<Avo.Search.OrderDirection>>
+	Dispatch<SetStateAction<Avo.Search.OrderDirection>>,
 ];
 
 export const useTableSort = <T>(

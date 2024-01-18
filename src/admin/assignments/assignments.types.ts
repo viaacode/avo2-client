@@ -15,12 +15,16 @@ export type AssignmentsOverviewTableCols =
 export interface AssignmentsOverviewTableState extends FilterableTableState {
 	title: string;
 	author: string;
+	author_user_group: string;
 	created_at: string;
 	updated_at: string;
 	deadline_at: string;
+	labels: string[];
 	status: ('true' | 'false')[];
-	pupilCollections: ('true' | 'false')[];
+	responses: ('true' | 'false')[];
 	share_type: string;
+	subjects: string[];
+	education_levels: string[];
 }
 
 export type AssignmentsBulkAction = 'delete' | 'change_author';

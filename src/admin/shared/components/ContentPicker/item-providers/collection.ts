@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { CollectionService } from '../../../../../collection/collection.service';
 import { Collection, ContentTypeNumber } from '../../../../../collection/collection.types';

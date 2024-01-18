@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 export const isItemWithMeta = (block: Avo.Core.BlockItemBase): boolean => {
 	if (block.type === 'ITEM') {

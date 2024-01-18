@@ -15,7 +15,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, uniq } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 

@@ -1,8 +1,8 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { DefaultProps, Flex, FlexItem, Icon } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
-import { truncate } from 'lodash';
+import { truncate } from 'lodash-es';
 import React, { FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';

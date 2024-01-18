@@ -11,8 +11,6 @@ query getCollections(
 		description
 		is_public
 		is_managed
-		subjects: lom_classification
-		education_levels: lom_context
 		created_at
 		updated_at
 		owner {
@@ -45,6 +43,15 @@ query getCollections(
 			views
 			copies
 			quick_lane_links
+			contributors
+		}
+		loms {
+			lom {
+				broader
+				id
+				label
+				scheme
+			}
 		}
 	}
 	app_collections_aggregate(where: $where) {

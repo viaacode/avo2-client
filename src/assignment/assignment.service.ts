@@ -1,5 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, compact, isEmpty, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
@@ -14,81 +14,86 @@ import {
 	ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
+	AssignmentPupilBlocksQuery,
+	AssignmentPupilBlocksQueryVariables,
+	BulkUpdateAuthorForAssignmentsMutation,
+	BulkUpdateAuthorForAssignmentsMutationVariables,
+	DeleteAssignmentResponseByIdMutation,
+	DeleteAssignmentResponseByIdMutationVariables,
+	DeleteAssignmentsByIdMutation,
+	DeleteAssignmentsByIdMutationVariables,
+	GetAssignmentBlocksQuery,
+	GetAssignmentBlocksQueryVariables,
+	GetAssignmentByTitleOrDescriptionQuery,
+	GetAssignmentByTitleOrDescriptionQueryVariables,
+	GetAssignmentIdsQuery,
+	GetAssignmentIdsQueryVariables,
+	GetAssignmentResponseByIdQuery,
+	GetAssignmentResponseByIdQueryVariables,
+	GetAssignmentResponseQuery,
+	GetAssignmentResponseQueryVariables,
+	GetAssignmentResponsesByAssignmentIdQuery,
+	GetAssignmentResponsesByAssignmentIdQueryVariables,
+	GetAssignmentResponsesQuery,
+	GetAssignmentResponsesQueryVariables,
+	GetAssignmentsAdminOverviewQuery,
+	GetAssignmentsAdminOverviewQueryVariables,
+	GetAssignmentsByOwnerOrContributorQuery,
+	GetAssignmentsByOwnerOrContributorQueryVariables,
+	GetAssignmentsByResponseOwnerIdQuery,
+	GetAssignmentsByResponseOwnerIdQueryVariables,
+	GetAssignmentWithResponseQuery,
+	GetAssignmentWithResponseQueryVariables,
+	GetContributorsByAssignmentUuidQuery,
+	GetContributorsByAssignmentUuidQueryVariables,
+	GetMaxPositionAssignmentBlocksQuery,
+	GetMaxPositionAssignmentBlocksQueryVariables,
+	IncrementAssignmentViewCountMutation,
+	IncrementAssignmentViewCountMutationVariables,
+	InsertAssignmentBlocksMutation,
+	InsertAssignmentBlocksMutationVariables,
+	InsertAssignmentMutation,
+	InsertAssignmentMutationVariables,
+	InsertAssignmentResponseMutation,
+	InsertAssignmentResponseMutationVariables,
+	SoftDeleteAssignmentByIdMutation,
+	SoftDeleteAssignmentByIdMutationVariables,
+	UpdateAssignmentResponseMutation,
+	UpdateAssignmentResponseMutationVariables,
+	UpdateAssignmentUpdatedAtDateMutation,
+	UpdateAssignmentUpdatedAtDateMutationVariables,
+} from '../shared/generated/graphql-db-operations';
+import {
+	AssignmentPupilBlocksDocument,
+	BulkUpdateAuthorForAssignmentsDocument,
+	DeleteAssignmentResponseByIdDocument,
+	DeleteAssignmentsByIdDocument,
+	GetAssignmentBlocksDocument,
+	GetAssignmentByTitleOrDescriptionDocument,
+	GetAssignmentIdsDocument,
+	GetAssignmentResponseByIdDocument,
+	GetAssignmentResponseDocument,
+	GetAssignmentResponsesByAssignmentIdDocument,
+	GetAssignmentResponsesDocument,
+	GetAssignmentsAdminOverviewDocument,
+	GetAssignmentsByOwnerOrContributorDocument,
+	GetAssignmentsByResponseOwnerIdDocument,
+	GetAssignmentWithResponseDocument,
+	GetContributorsByAssignmentUuidDocument,
+	GetMaxPositionAssignmentBlocksDocument,
+	IncrementAssignmentViewCountDocument,
+	InsertAssignmentBlocksDocument,
+	InsertAssignmentDocument,
+	InsertAssignmentResponseDocument,
+	SoftDeleteAssignmentByIdDocument,
+	UpdateAssignmentResponseDocument,
+	UpdateAssignmentUpdatedAtDateDocument,
+} from '../shared/generated/graphql-db-react-query';
+import {
 	App_Assignments_V2_Insert_Input,
 	App_Assignments_V2_Set_Input,
 	App_Pupil_Collection_Blocks,
-	AssignmentPupilBlocksDocument,
-	AssignmentPupilBlocksQuery,
-	AssignmentPupilBlocksQueryVariables,
-	BulkUpdateAuthorForAssignmentsDocument,
-	BulkUpdateAuthorForAssignmentsMutation,
-	BulkUpdateAuthorForAssignmentsMutationVariables,
-	DeleteAssignmentResponseByIdDocument,
-	DeleteAssignmentResponseByIdMutation,
-	DeleteAssignmentResponseByIdMutationVariables,
-	DeleteAssignmentsByIdDocument,
-	DeleteAssignmentsByIdMutation,
-	DeleteAssignmentsByIdMutationVariables,
-	GetAssignmentBlocksDocument,
-	GetAssignmentBlocksQuery,
-	GetAssignmentBlocksQueryVariables,
-	GetAssignmentByTitleOrDescriptionDocument,
-	GetAssignmentByTitleOrDescriptionQuery,
-	GetAssignmentByTitleOrDescriptionQueryVariables,
-	GetAssignmentIdsDocument,
-	GetAssignmentIdsQuery,
-	GetAssignmentIdsQueryVariables,
-	GetAssignmentResponseByIdDocument,
-	GetAssignmentResponseByIdQuery,
-	GetAssignmentResponseByIdQueryVariables,
-	GetAssignmentResponseDocument,
-	GetAssignmentResponseQuery,
-	GetAssignmentResponseQueryVariables,
-	GetAssignmentResponsesByAssignmentIdDocument,
-	GetAssignmentResponsesByAssignmentIdQuery,
-	GetAssignmentResponsesByAssignmentIdQueryVariables,
-	GetAssignmentResponsesDocument,
-	GetAssignmentResponsesQuery,
-	GetAssignmentResponsesQueryVariables,
-	GetAssignmentsAdminOverviewDocument,
-	GetAssignmentsAdminOverviewQuery,
-	GetAssignmentsAdminOverviewQueryVariables,
-	GetAssignmentsByOwnerOrContributorDocument,
-	GetAssignmentsByOwnerOrContributorQuery,
-	GetAssignmentsByOwnerOrContributorQueryVariables,
-	GetAssignmentsByResponseOwnerIdDocument,
-	GetAssignmentsByResponseOwnerIdQuery,
-	GetAssignmentsByResponseOwnerIdQueryVariables,
-	GetAssignmentWithResponseDocument,
-	GetAssignmentWithResponseQuery,
-	GetAssignmentWithResponseQueryVariables,
-	GetContributorsByAssignmentUuidDocument,
-	GetContributorsByAssignmentUuidQuery,
-	GetContributorsByAssignmentUuidQueryVariables,
-	GetMaxPositionAssignmentBlocksDocument,
-	GetMaxPositionAssignmentBlocksQuery,
-	GetMaxPositionAssignmentBlocksQueryVariables,
-	IncrementAssignmentViewCountDocument,
-	IncrementAssignmentViewCountMutation,
-	IncrementAssignmentViewCountMutationVariables,
-	InsertAssignmentBlocksDocument,
-	InsertAssignmentBlocksMutation,
-	InsertAssignmentBlocksMutationVariables,
-	InsertAssignmentDocument,
-	InsertAssignmentMutation,
-	InsertAssignmentMutationVariables,
-	InsertAssignmentResponseDocument,
-	InsertAssignmentResponseMutation,
-	InsertAssignmentResponseMutationVariables,
-	SoftDeleteAssignmentByIdDocument,
-	SoftDeleteAssignmentByIdMutation,
-	SoftDeleteAssignmentByIdMutationVariables,
-	UpdateAssignmentResponseDocument,
-	UpdateAssignmentResponseMutation,
-	UpdateAssignmentResponseMutationVariables,
-	UpdateAssignmentUpdatedAtDateDocument,
-	UpdateAssignmentUpdatedAtDateMutation,
-	UpdateAssignmentUpdatedAtDateMutationVariables,
+	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
 import { getLomLearningResourceTypesFromBlocks } from '../shared/helpers/block-types-to-lom-learning-resource-type';
@@ -96,6 +101,7 @@ import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
+import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { Positioned } from '../shared/types';
@@ -529,6 +535,7 @@ export class AssignmentService {
 			deadline_at: null,
 			answer_url: null,
 			is_public: false,
+			created_at: new Date().toISOString(),
 			published_at: undefined,
 			contributors: [],
 			labels: [],
@@ -556,6 +563,13 @@ export class AssignmentService {
 					newTitle,
 					initialAssignment,
 				}
+			);
+		} else {
+			await RelationService.insertRelation(
+				'assignment',
+				duplicatedAssignment.id,
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf,
+				initialAssignment.id
 			);
 		}
 
@@ -685,10 +699,11 @@ export class AssignmentService {
 
 			// Enrich assignmentResponses with item infos
 			const fragmentExternalIds = compact(
-				assignmentResponses.flatMap((response) =>
-					response.pupil_collection_blocks?.map(
-						(block) => (block as App_Pupil_Collection_Blocks).fragment_id
-					)
+				assignmentResponses.flatMap(
+					(response) =>
+						response.pupil_collection_blocks?.map(
+							(block) => (block as App_Pupil_Collection_Blocks).fragment_id
+						)
 				)
 			);
 			const itemMetas = await ItemsService.fetchItemsByExternalIds(fragmentExternalIds);
@@ -982,9 +997,8 @@ export class AssignmentService {
 		withDescription: boolean
 	): Promise<boolean> {
 		if (collection.collection_fragments.length > 0) {
-			const currentMaxPosition = await AssignmentService.getAssignmentBlockMaxPosition(
-				assignmentId
-			);
+			const currentMaxPosition =
+				await AssignmentService.getAssignmentBlockMaxPosition(assignmentId);
 			const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
 			const blocks = reorderBlockPositions(
 				collection.collection_fragments.map((fragment: any, index: number) => {
@@ -1109,7 +1123,10 @@ export class AssignmentService {
 
 	static async createAssignmentFromFragment(
 		user: Avo.User.User,
-		item: Avo.Item.Item & { start_oc?: number | null; end_oc?: number | null }
+		item: Avo.Item.Item & {
+			start_oc?: number | null;
+			end_oc?: number | null;
+		}
 	): Promise<string> {
 		const variables: InsertAssignmentMutationVariables = {
 			assignment: {
@@ -1184,9 +1201,8 @@ export class AssignmentService {
 			: null;
 
 		// Determine block position
-		const currentMaxPosition = await AssignmentService.getAssignmentBlockMaxPosition(
-			assignmentId
-		);
+		const currentMaxPosition =
+			await AssignmentService.getAssignmentBlockMaxPosition(assignmentId);
 		const startPosition = currentMaxPosition === null ? 0 : currentMaxPosition + 1;
 
 		// Add block with this fragment
@@ -1262,6 +1278,20 @@ export class AssignmentService {
 				});
 			}
 
+			// also fetch if the assignment is a copy in a separate query to avoid making the main query slower
+			const relations = (await RelationService.fetchRelationsBySubject(
+				'assignment',
+				assignments.map((coll) => coll.id),
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf
+			)) as Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[];
+
+			relations.forEach((relation) => {
+				const assignment = assignments.find((coll) => coll.id === relation.subject);
+				if (assignment) {
+					(assignment as unknown as Avo.Assignment.Assignment).relations = [relation];
+				}
+			});
+
 			return [assignments as unknown as Avo.Assignment.Assignment[], assignmentCount];
 		} catch (err) {
 			throw new CustomError('Failed to get assignments from the database', err, {
@@ -1314,7 +1344,10 @@ export class AssignmentService {
 		title: string,
 		description: string | null,
 		assignmentId: string
-	): Promise<{ byTitle: boolean; byDescription: boolean }> {
+	): Promise<{
+		byTitle: boolean;
+		byDescription: boolean;
+	}> {
 		try {
 			const variables: GetAssignmentByTitleOrDescriptionQueryVariables = {
 				title,

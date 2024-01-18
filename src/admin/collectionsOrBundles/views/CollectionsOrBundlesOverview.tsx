@@ -1,5 +1,5 @@
 import { Button, ButtonToolbar, IconName, TagInfo, TagList } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, get, partition, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
@@ -9,7 +9,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
@@ -27,7 +27,9 @@ import {
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
-import { useCompaniesWithUsers, useEducationLevels, useSubjects } from '../../../shared/hooks';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
+import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -44,7 +46,7 @@ import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBei
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
-import { useUserGroups } from '../../user-groups/hooks';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
 	GET_COLLECTION_BULK_ACTIONS,
@@ -89,8 +91,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [changeLabelsModalOpen, setAddLabelModalOpen] = useState<boolean>(false);
 
 	const [userGroups] = useUserGroups(false);
-	const [subjects] = useSubjects();
-	const [educationLevels] = useEducationLevels();
+	const [subjects] = useLomSubjects();
+	const [educationLevels] = useLomEducationLevels();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 	const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<Avo.Share.EditStatus[]>(
@@ -310,9 +312,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			return;
 		}
 
-		const selectedCollectionEditStatuses = await CollectionService.getCollectionsEditStatuses(
-			selectedCollectionIds
-		);
+		const selectedCollectionEditStatuses =
+			await CollectionService.getCollectionsEditStatuses(selectedCollectionIds);
 		const partitionedCollectionIds = partition(
 			Object.entries(selectedCollectionEditStatuses),
 			(entry) => !!entry[1]
@@ -771,7 +772,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							isCollection
@@ -795,7 +796,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 								  )
 						}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={collections}

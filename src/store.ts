@@ -6,12 +6,15 @@ import loginReducer from './authentication/store/reducer';
 import { LoginState } from './authentication/store/types';
 import searchReducer from './search/store/reducer';
 import { SearchState } from './search/store/types';
-import uiStateReducer from './uistate/store/reducer';
+import uiStateReducer from './store/reducer';
 
 export interface AppState {
 	loginState: LoginState;
 	search: SearchState;
-	uiState: Record<string, string | boolean>;
+	uiState: {
+		showNudgingModal: boolean | null;
+		lastVideoPlayedAt: Date | null;
+	};
 }
 
 const middleware = [thunk];

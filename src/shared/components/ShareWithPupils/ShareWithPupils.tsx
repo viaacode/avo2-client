@@ -1,5 +1,5 @@
 import { Alert, Button, Flex, IconName, Spacer, TextInput } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { FC } from 'react';
 

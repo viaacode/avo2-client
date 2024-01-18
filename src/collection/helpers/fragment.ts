@@ -1,6 +1,5 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import moment from 'moment';
 
 export const getFragmentProperty = (
 	itemMetaData: Avo.Item.Item | Avo.Collection.Collection | undefined,
@@ -36,7 +35,7 @@ export const showReplacementWarning = (
 		!!profileId &&
 		ownsCollection &&
 		!!replacedRelation &&
-		moment(replacedRelation.created_at) > moment(collection.updated_at) &&
-		moment(replacedRelation.created_at) > moment(collectionFragment.created_at)
+		new Date(replacedRelation.created_at) > new Date(collection.updated_at) &&
+		new Date(replacedRelation.created_at) > new Date(collectionFragment.created_at)
 	);
 };

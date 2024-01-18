@@ -1,6 +1,5 @@
-import { Container } from '@viaa/avo2-components';
-import { ContainerPropsSchema } from '@viaa/avo2-components/dist/esm/components/Container/Container';
-import type { Avo } from '@viaa/avo2-types';
+import { Container, type ContainerProps } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { FC, ReactNode } from 'react';
 
@@ -20,7 +19,7 @@ import './BlockList.scss';
 
 const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
-		const layout = (children?: ReactNode, background?: ContainerPropsSchema['background']) => (
+		const layout = (children?: ReactNode, background?: ContainerProps['background']) => (
 			<Container
 				mode="horizontal"
 				size="full-width"

@@ -2,7 +2,7 @@ import { ContentPageOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, FunctionComponent, useCallback } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -52,7 +52,7 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps & UserP
 				)}
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -66,7 +66,7 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps & UserP
 							'admin/content-page/views/content-page-overview-page___contentbeheer-beheer-content-paginas-via-dit-overzicht'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				{renderPageContent()}
 			</AdminLayoutBody>
 		</AdminLayout>

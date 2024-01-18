@@ -1,12 +1,10 @@
 import { goToLoginBecauseOfUnauthorizedError } from '@meemoo/admin-core-ui';
-import { print } from 'graphql/language/printer';
-import { isString } from 'lodash-es';
 
 import { getEnv } from '../helpers';
 
 // Use by graphql codegen in codegen.yml to fetch info from the dataservice and wrap those requests in react-query hooks
 export const fetchData = <TData, TVariables>(
-	query: string | any,
+	query: string,
 	variables?: TVariables,
 	options?: RequestInit['headers']
 ): (() => Promise<TData>) => {
@@ -19,7 +17,7 @@ export const fetchData = <TData, TVariables>(
 			},
 			credentials: 'include',
 			body: JSON.stringify({
-				query: isString(query) ? query : print(query),
+				query: query,
 				variables,
 			}),
 		});

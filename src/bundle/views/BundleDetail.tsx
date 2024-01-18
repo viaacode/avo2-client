@@ -23,12 +23,12 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import React, { FunctionComponent, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
@@ -87,6 +87,7 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
+import { BundleAction } from '../bundle.types';
 
 import './BundleDetail.scss';
 
@@ -410,31 +411,31 @@ const BundleDetail: FunctionComponent<
 		}
 	};
 
-	const executeAction = async (item: ReactText) => {
+	const executeAction = async (action: BundleAction) => {
 		setIsOptionsMenuOpen(false);
 
-		switch (item) {
-			case 'delete':
+		switch (action) {
+			case BundleAction.delete:
 				setIsDeleteModalOpen(true);
 				break;
 
-			case 'duplicate':
+			case BundleAction.duplicate:
 				await onDuplicateBundle();
 				break;
 
-			case 'openPublishModal':
+			case BundleAction.publish:
 				setIsPublishModalOpen(true);
 				break;
 
-			case 'edit':
+			case BundleAction.edit:
 				onEditBundle();
 				break;
 
-			case 'toggleBookmark':
+			case BundleAction.toggleBookmark:
 				await toggleBookmark();
 				break;
 
-			case 'openShareThroughEmailModal':
+			case BundleAction.share:
 				setIsShareThroughEmailModalOpen(true);
 				break;
 
@@ -546,13 +547,13 @@ const BundleDetail: FunctionComponent<
 	const renderActionDropdown = () => {
 		const BUNDLE_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
-				'duplicate',
+				BundleAction.duplicate,
 				tText('bundle/views/bundle-detail___dupliceer'),
 				'copy',
 				permissions.canCreateBundles || false
 			),
 			...createDropdownMenuItem(
-				'delete',
+				BundleAction.delete,
 				tText('bundle/views/bundle-detail___verwijder'),
 				undefined,
 				permissions.canDeleteBundle || false
@@ -565,7 +566,7 @@ const BundleDetail: FunctionComponent<
 				onOpen={() => setIsOptionsMenuOpen(true)}
 				onClose={() => setIsOptionsMenuOpen(false)}
 				menuItems={BUNDLE_DROPDOWN_ITEMS}
-				onOptionClicked={executeAction}
+				onOptionClicked={(action) => executeAction(action as BundleAction)}
 				label={getMoreOptionsLabel()}
 			/>
 		);
@@ -575,19 +576,19 @@ const BundleDetail: FunctionComponent<
 		if (isMobileWidth()) {
 			const BUNDLE_DROPDOWN_ITEMS = [
 				...createDropdownMenuItem(
-					'edit',
+					BundleAction.edit,
 					tText('bundle/views/bundle-detail___bewerken'),
 					'edit',
 					permissions.canEditBundle || false
 				),
 				...createDropdownMenuItem(
-					'openPublishModal',
+					BundleAction.publish,
 					tText('bundle/views/bundle-detail___delen'),
 					'lock',
 					permissions.canPublishBundle || false
 				),
 				...createDropdownMenuItem(
-					'toggleBookmark',
+					BundleAction.toggleBookmark,
 					bookmarkViewPlayCounts.isBookmarked
 						? tText('bundle/views/bundle-detail___verwijder-bladwijzer')
 						: tText('bundle/views/bundle-detail___maak-bladwijzer'),
@@ -595,19 +596,19 @@ const BundleDetail: FunctionComponent<
 					!isOwner
 				),
 				...createDropdownMenuItem(
-					'openShareThroughEmailModal',
+					BundleAction.share,
 					tText('bundle/views/bundle-detail___share-bundel'),
 					'share-2',
 					!!bundle && bundle.is_public
 				),
 				...createDropdownMenuItem(
-					'duplicate',
+					BundleAction.duplicate,
 					tText('bundle/views/bundle-detail___dupliceer'),
 					'copy',
 					permissions.canCreateBundles || false
 				),
 				...createDropdownMenuItem(
-					'delete',
+					BundleAction.delete,
 					tText('bundle/views/bundle-detail___verwijder'),
 					undefined,
 					permissions.canDeleteBundle || false
@@ -620,7 +621,7 @@ const BundleDetail: FunctionComponent<
 					onClose={() => setIsOptionsMenuOpen(false)}
 					label={getMoreOptionsLabel()}
 					menuItems={BUNDLE_DROPDOWN_ITEMS}
-					onOptionClicked={executeAction}
+					onOptionClicked={(action) => executeAction(action as BundleAction)}
 				/>
 			);
 		}
@@ -640,7 +641,7 @@ const BundleDetail: FunctionComponent<
 								: tText('bundle/views/bundle-detail___maak-deze-bundel-openbaar')
 						}
 						icon={isPublic ? IconName.unlock3 : IconName.lock}
-						onClick={() => executeAction('openPublishModal')}
+						onClick={() => executeAction(BundleAction.publish)}
 						type="secondary"
 					/>
 				)}
@@ -648,7 +649,7 @@ const BundleDetail: FunctionComponent<
 					<Button
 						label={tText('bundle/views/bundle-detail___bewerken')}
 						title={tText('bundle/views/bundle-detail___pas-de-bundel-aan')}
-						onClick={() => executeAction('edit')}
+						onClick={() => executeAction(BundleAction.edit)}
 						type="primary"
 					/>
 				)}
@@ -658,7 +659,7 @@ const BundleDetail: FunctionComponent<
 					icon={IconName.bookmark}
 					active={bookmarkViewPlayCounts.isBookmarked}
 					ariaLabel={tText('collection/views/collection-detail___bladwijzer')}
-					onClick={() => executeAction('toggleBookmark')}
+					onClick={() => executeAction(BundleAction.toggleBookmark)}
 				/>
 				{isPublic && (
 					<Button
@@ -666,7 +667,7 @@ const BundleDetail: FunctionComponent<
 						type="secondary"
 						icon={IconName.share2}
 						ariaLabel={tText('bundle/views/bundle-detail___share-bundel')}
-						onClick={() => executeAction('openShareThroughEmailModal')}
+						onClick={() => executeAction(BundleAction.share)}
 					/>
 				)}
 				{renderActionDropdown()}
@@ -713,7 +714,7 @@ const BundleDetail: FunctionComponent<
 
 		return (
 			<>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							get(
@@ -724,7 +725,7 @@ const BundleDetail: FunctionComponent<
 						)}
 					</title>
 					<meta name="description" content={get(bundle, 'description') || ''} />
-				</MetaTags>
+				</Helmet>
 				<JsonLd
 					url={window.location.href}
 					title={get(bundle, 'title')}

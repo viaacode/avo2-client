@@ -1,6 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import React, { FC, ReactNode } from 'react';
 
-export const AdminLayoutBody: FunctionComponent = ({ children }) => <>{children}</>;
-export const AdminLayoutHeader: FunctionComponent = ({ children }) => <>{children}</>;
-export const AdminLayoutTopBarCenter: FunctionComponent = ({ children }) => <>{children}</>;
-export const AdminLayoutTopBarRight: FunctionComponent = ({ children }) => <>{children}</>;
+export const AdminLayoutBody: FC<{ children?: ReactNode }> = ({ children }) => <>{children}</>;
+export const AdminLayoutHeader: FC<{ children?: ReactNode }> = ({ children }) => <>{children}</>;
+export const AdminLayoutTopBarCenter: FC<{ children?: ReactNode }> = ({ children }) => (
+	<>{children}</>
+);
+export const AdminLayoutTopBarRight: FC<{ children?: ReactNode }> = ({ children }) => (
+	<>{children}</>
+);

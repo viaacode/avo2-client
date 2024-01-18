@@ -10,8 +10,8 @@ import {
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { isArray, isNil, isString, omit, uniq } from 'lodash-es';
+import { type Avo } from '@viaa/avo2-types';
+import { compact, isArray, isNil, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
 import React, { FunctionComponent, ReactNode } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
@@ -141,7 +141,7 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 			<Container size="medium" mode="horizontal">
 				<Blankslate body="" icon={errorIcon} title={errorMessage} className="c-content">
 					{children}
-					{renderButtons(buttons)}
+					{renderButtons(compact(buttons))}
 				</Blankslate>
 			</Container>
 		</Container>

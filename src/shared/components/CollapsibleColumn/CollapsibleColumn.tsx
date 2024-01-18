@@ -1,12 +1,13 @@
-import useResizeObserver from '@react-hook/resize-observer';
 import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, ReactNode, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
+import useResizeObserver from '../../hooks/useResizeObserver';
 
 import './CollapsibleColumn.scss';
 
 export type CollapsibleColumnProps = DefaultProps & {
+	children?: ReactNode;
 	button?: Partial<Omit<ButtonProps, 'icon' | 'label'>> & {
 		icon?: (expanded: boolean) => IconName;
 		label?: (expanded: boolean) => string;
@@ -15,7 +16,6 @@ export type CollapsibleColumnProps = DefaultProps & {
 
 const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, children, button }) => {
 	const { tText } = useTranslation();
-	const el = useRef<HTMLDivElement>(null);
 
 	const [overflowing, setOverflowing] = useState(false);
 	const [expanded, setExpanded] = useState(false);
@@ -27,9 +27,8 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, child
 		className,
 	].join(' ');
 
-	useResizeObserver(el, () => {
-		const isOverflowing =
-			(el.current?.offsetHeight || 0) > (el.current?.parentElement?.offsetHeight || 0);
+	const ref = useResizeObserver((el: HTMLDivElement) => {
+		const isOverflowing = (el.offsetHeight || 0) > (el.parentElement?.offsetHeight || 0);
 
 		if (isOverflowing !== overflowing) {
 			setOverflowing(isOverflowing);
@@ -56,7 +55,7 @@ const CollapsibleColumn: FC<CollapsibleColumnProps> = ({ style, className, child
 
 	return (
 		<div className={wrapperClassName} style={style}>
-			<div className="c-collapsible-column__content" ref={el}>
+			<div className="c-collapsible-column__content" ref={ref}>
 				{children}
 			</div>
 

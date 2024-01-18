@@ -9,7 +9,7 @@ import {
 	MetaDataItem,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { LomSchemeType } from '@viaa/avo2-types';
 import { compact, isNil, omit } from 'lodash-es';
 import React, { ReactNode } from 'react';
@@ -341,6 +341,9 @@ export const cleanCollectionBeforeSave = (
 		'profile',
 		'updated_by',
 		'collection_labels',
+		'lom_typical_age_range',
+		'lom_context',
+		'lom_classification',
 		'relations',
 		'id',
 		'management',
@@ -354,10 +357,6 @@ export const cleanCollectionBeforeSave = (
 		'contributors',
 	];
 	const cleanCollection = omit(collection, propertiesToDelete);
-
-	// Rename lom_typical_age_range to lom_typicalagerange since graphql has a different naming from elasticsearch
-	(cleanCollection as any).lom_typicalagerange = cleanCollection.lom_typical_age_range;
-	delete cleanCollection.lom_typical_age_range;
 
 	return cleanCollection;
 };
@@ -374,20 +373,29 @@ export const keepCoreCollectionProperties = (
 		return collection;
 	}
 	const propertiesToDelete = [
+		'QC',
 		'__typename',
-		'type',
-		'profile',
-		'updated_by',
+		'briefing_id',
 		'collection_labels',
-		'relations',
 		'id',
 		'is_managed',
 		'management',
-		'QC',
+		'management_actualised_at',
+		'management_actualised_at',
+		'management_approved_at',
+		'management_approved_at',
+		'management_language_check',
 		'management_language_check',
 		'management_quality_check',
-		'management_approved_at',
-		'management_actualised_at',
+		'management_quality_check',
+		'marcom_note',
+		'note',
+		'owner_profile_id',
+		'profile',
+		'relations',
+		'type',
+		'updated_by',
+		'updated_by_profile_id',
 	];
 
 	return omit(collection, propertiesToDelete);

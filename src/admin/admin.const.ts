@@ -108,9 +108,12 @@ function hasPermissions(
 	return [];
 }
 
-async function getContentPageDetailRouteByPath(path: string): Promise<string | undefined> {
+async function getContentPageDetailRouteByPath(
+	path: string,
+	infoOnly = false
+): Promise<string | undefined> {
 	try {
-		const page = await ContentPageService.getContentPageByPath(path);
+		const page = await ContentPageService.getContentPageByPath(path, infoOnly);
 		if (!page) {
 			throw new CustomError('Failed to fetch content page by path, response was null', null, {
 				page,
@@ -129,6 +132,11 @@ async function getContentPageDetailRouteByPath(path: string): Promise<string | u
 }
 
 export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<NavigationItemInfo[]> => {
+	const contentPageInfos = await Promise.all([
+		getContentPageDetailRouteByPath('/', true),
+		getContentPageDetailRouteByPath('/leerlingen', true),
+		getContentPageDetailRouteByPath('/start', true),
+	]);
 	return [
 		...getUserNavItems(userPermissions),
 		...hasPermissions([PermissionName.EDIT_NAVIGATION_BARS], 'OR', userPermissions, {
@@ -152,19 +160,19 @@ export const GET_NAV_ITEMS = async (userPermissions: string[]): Promise<Navigati
 						? [
 								{
 									label: tText('admin/admin___start-uitgelogd'),
-									location: await getContentPageDetailRouteByPath('/'),
+									location: contentPageInfos[0],
 									key: 'faqs',
 									exact: true,
 								},
 								{
 									label: tText('admin/admin___start-uitgelogd-leerlingen'),
-									location: await getContentPageDetailRouteByPath('/leerlingen'),
+									location: contentPageInfos[1],
 									key: 'faqs',
 									exact: true,
 								},
 								{
 									label: tText('admin/admin___start-ingelogd-lesgever'),
-									location: await getContentPageDetailRouteByPath('/start'),
+									location: contentPageInfos[2],
 									key: 'faqs',
 									exact: true,
 								},

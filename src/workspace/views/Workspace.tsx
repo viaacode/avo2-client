@@ -21,10 +21,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { AssignmentOverview } from '../../assignment/views';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -439,7 +439,7 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('workspace/views/workspace___mijn-werkruimte-pagina-titel')
@@ -451,7 +451,7 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 						'workspace/views/workspace___mijn-werkruimte-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				render={renderTabsAndContent}

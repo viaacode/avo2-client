@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { ReactNode } from 'react';
 
 export type QuickLaneType = 'COLLECTIE' | 'ITEM';

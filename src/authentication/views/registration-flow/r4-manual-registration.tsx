@@ -17,17 +17,18 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
+import { Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import { CustomError, validateEmailAddress } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { fetchEducationLevels } from '../../../shared/services/education-levels-service';
 import { trackEvents } from '../../../shared/services/event-logging-service';
+import { LomService } from '../../../shared/services/lom.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
 
@@ -51,12 +52,12 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 
 	const retrieveEducationLevels = useCallback(async () => {
 		try {
-			const educationLevels = await fetchEducationLevels();
+			const educationLevels: Avo.Lom.LomField[] = await LomService.fetchEducationLevels();
 
 			setEducationLevels(
-				educationLevels.map((item: any) => ({
-					value: item,
-					label: item,
+				educationLevels.map((item: Avo.Lom.LomField) => ({
+					value: item.id,
+					label: item.label,
 				}))
 			);
 		} catch (err) {
@@ -360,7 +361,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -374,7 +375,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							'authentication/views/registration-flow/r-4-manual-registration___manuele-account-aanvraag-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<div className="c-content">{hasBeenSent ? renderConfirmation() : renderForm()}</div>
 			</Container>
 		</Container>

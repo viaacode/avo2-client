@@ -1,5 +1,5 @@
 import { Button, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { Dispatch, FC, FunctionComponent, SetStateAction, useState } from 'react';
 

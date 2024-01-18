@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { Action, Dispatch } from 'redux';
 
 import { DEFAULT_AUDIO_STILL } from '../../shared/constants';

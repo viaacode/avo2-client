@@ -1,6 +1,6 @@
 import { ContentPageRenderer } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -22,7 +22,7 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, com
 	}
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(tText('home/views/home___ingelogde-start-pagina-titel'))}
 				</title>
@@ -30,7 +30,7 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, com
 					name="description"
 					content={tText('home/views/home___ingelogde-start-pagina-beschrijving')}
 				/>
-			</MetaTags>
+			</Helmet>
 			{contentPageInfo && (
 				<ContentPageRenderer
 					contentPageInfo={contentPageInfo}

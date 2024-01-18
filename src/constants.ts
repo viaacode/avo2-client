@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 
 import { ROUTE_PARTS } from './shared/constants';
@@ -197,33 +197,36 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 		showInContentPicker: true,
 		showForInteractiveTour: true,
 	},
-	ASSIGNMENT_CREATE: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
-		showInContentPicker: true,
-		showForInteractiveTour: true,
-	},
+	// This entry must come before the ASSIGNMENT_CREATE route,
+	// otherwise the interactive tour button doesn't correctly identify the route
+	// https://meemoo.atlassian.net/browse/AVO-2923
 	ASSIGNMENT_DETAIL: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id`,
+		route: `/${ROUTE_PARTS.assignments}/:id`,
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
+	ASSIGNMENT_CREATE: {
+		route: `/${ROUTE_PARTS.assignments}/${ROUTE_PARTS.create}`,
+		showInContentPicker: true,
+		showForInteractiveTour: true,
+	},
 	ASSIGNMENT_EDIT: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}`,
+		route: `/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}`,
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_EDIT_TAB: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}/:tabId`,
+		route: `/${ROUTE_PARTS.assignments}/:id/${ROUTE_PARTS.edit}/:tabId`,
 		showInContentPicker: false,
 		showForInteractiveTour: true,
 	},
 	ASSIGNMENT_PUPIL_COLLECTION_DETAIL: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId`,
+		route: `/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},
 	ASSIGNMENT_PUPIL_COLLECTION_ADMIN_EDIT: {
-		route: `/${ROUTE_PARTS.workspace}/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId/${ROUTE_PARTS.edit}`,
+		route: `/${ROUTE_PARTS.assignments}/:assignmentId/${ROUTE_PARTS.responses}/:responseId/${ROUTE_PARTS.edit}`,
 		showInContentPicker: false,
 		showForInteractiveTour: false,
 	},

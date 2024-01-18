@@ -2,7 +2,7 @@ import { UserGroupOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@meemoo/react-components';
 import { Icon, IconName, Toolbar, ToolbarRight } from '@viaa/avo2-components';
 import React, { FunctionComponent, useRef, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/use-translation/use-translation';
@@ -93,7 +93,7 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 				{hasChanges && <>{renderActionButtons()}</>}
 			</AdminLayoutTopBarRight>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -107,7 +107,7 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 							'admin/user-groups/views/user-group-overview___gebruikersgroepen-beheer-overzicht-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				{renderPageContent()}
 			</AdminLayoutBody>
 		</AdminLayout>

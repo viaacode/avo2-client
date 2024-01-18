@@ -1,5 +1,5 @@
-import type { Avo } from '@viaa/avo2-types';
-import moment from 'moment';
+import { type Avo } from '@viaa/avo2-types';
+import { addDays } from 'date-fns';
 
 import { LoginMessage } from '../../authentication/authentication.types';
 import { AppState } from '../../store';
@@ -19,7 +19,7 @@ describe('search > store > selectors', () => {
 				userInfo: {} as Avo.User.User,
 				commonUserInfo: {} as Avo.User.CommonUser,
 				acceptedConditions: true,
-				sessionExpiresAt: moment().add(1, 'days').toString(),
+				sessionExpiresAt: addDays(new Date(), 1).toString(),
 			},
 			loading: false,
 			error: false,
@@ -29,7 +29,10 @@ describe('search > store > selectors', () => {
 			loading: false,
 			error: false,
 		},
-		uiState: {},
+		uiState: {
+			showNudgingModal: null,
+			lastVideoPlayedAt: null,
+		},
 	};
 
 	it('Should get the search tree from the store', () => {

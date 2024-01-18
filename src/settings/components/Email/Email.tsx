@@ -228,4 +228,4 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 	);
 };
 
-export default withUser(Email) as FunctionComponent;
+export default withUser(Email) as FunctionComponent<any>;

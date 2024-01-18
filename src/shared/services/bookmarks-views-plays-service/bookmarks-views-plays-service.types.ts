@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 export interface BookmarkRequestInfo {
 	type: EventContentTypeSimplified;
@@ -67,6 +67,7 @@ export interface AppCollectionBookmark {
 	collection_uuid: string;
 	created_at: string;
 }
+
 export interface AppAssignmentBookmark {
 	assignment?: {
 		title: string;

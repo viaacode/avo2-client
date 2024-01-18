@@ -1,15 +1,15 @@
 import {
 	Button,
 	ButtonToolbar,
-	ButtonType,
+	type ButtonType,
 	Modal,
 	ModalBody,
+	type ModalProps,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { ModalPropsSchema } from '@viaa/avo2-components/src/components/Modal/Modal';
-import { noop } from 'lodash';
+import { noop } from 'lodash-es';
 import React, { FunctionComponent, ReactNode } from 'react';
 
 import useTranslation from '../../hooks/useTranslation';
@@ -20,7 +20,7 @@ export interface ConfirmModalProps {
 	cancelLabel?: string;
 	confirmLabel?: string;
 	confirmButtonType?: ButtonType;
-	size?: ModalPropsSchema['size'];
+	size?: ModalProps['size'];
 	isOpen: boolean;
 	onClose?: () => void;
 	confirmCallback?: () => void;

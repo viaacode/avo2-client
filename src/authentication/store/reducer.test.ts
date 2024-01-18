@@ -1,5 +1,5 @@
-import type { Avo } from '@viaa/avo2-types';
-import moment from 'moment';
+import { type Avo } from '@viaa/avo2-types';
+import { addDays } from 'date-fns';
 
 import { LoginMessage } from '../authentication.types';
 
@@ -27,7 +27,7 @@ describe('login > store > reducer', () => {
 			userInfo: {} as Avo.User.User,
 			commonUserInfo: {} as Avo.User.CommonUser,
 			acceptedConditions: true,
-			sessionExpiresAt: moment().add(1, 'days').toString(),
+			sessionExpiresAt: addDays(new Date(), 1).toString(),
 		};
 
 		const state = loginReducer(initialState, setLoginSuccess(payload));

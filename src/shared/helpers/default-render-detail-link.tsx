@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { ReactNode } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 

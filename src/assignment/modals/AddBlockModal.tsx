@@ -5,11 +5,10 @@ import {
 	IconName,
 	Modal,
 	ModalBody,
-	ModalProps,
+	type ModalProps,
 	Spacer,
 } from '@viaa/avo2-components';
-import { IconNameSchema } from '@viaa/avo2-components/src/components/Icon/Icon.types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import React, { FunctionComponent, ReactNode, useMemo } from 'react';
 
@@ -27,7 +26,7 @@ type AddBlockModalType =
 
 interface AddBlockModalOption {
 	type: AddBlockModalType;
-	icon: IconNameSchema;
+	icon: IconName;
 	title: ReactNode;
 	description: ReactNode;
 	disabled?: boolean;

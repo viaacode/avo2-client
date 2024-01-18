@@ -1,4 +1,4 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { Dispatch, SetStateAction, useState } from 'react';
 
@@ -32,7 +32,7 @@ export interface AssignmentFields {
 
 export type useAssignmentFormState = [
 	AssignmentFields,
-	Dispatch<SetStateAction<Partial<AssignmentFields> | undefined>>
+	Dispatch<SetStateAction<Partial<AssignmentFields> | undefined>>,
 ];
 
 export function useAssignmentForm(
@@ -41,7 +41,7 @@ export function useAssignmentForm(
 ): [
 	Partial<AssignmentFields> | undefined,
 	Dispatch<SetStateAction<Partial<AssignmentFields> | undefined>>,
-	Partial<AssignmentFields> | undefined
+	Partial<AssignmentFields> | undefined,
 ] {
 	// Data
 	const [defaultValues] = useState<Partial<AssignmentFields> | undefined>(

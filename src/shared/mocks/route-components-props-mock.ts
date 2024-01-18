@@ -25,10 +25,6 @@ export function getMockRouterProps(data: any) {
 		},
 		history: createMemoryHistory() as unknown as RouteComponentProps['history'],
 		staticContext: {},
-		loginState: {} as any,
-		loginStateLoading: false,
-		loginStateError: false,
-		getLoginState: () => ({} as any),
 	};
 
 	return props;

@@ -5,11 +5,11 @@ import {
 	DbContentPage,
 } from '@meemoo/admin-core-ui';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, RouteComponentProps, withRouter } from 'react-router';
 import { compose, Dispatch } from 'redux';
@@ -110,9 +110,8 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				const avo1Id = (pathname.split('/').pop() || '').trim();
 				if (avo1Id) {
 					// Check if id matches an item mediamosa id
-					const itemExternalId = await ItemsService.fetchItemExternalIdByMediamosaId(
-						avo1Id
-					);
+					const itemExternalId =
+						await ItemsService.fetchItemExternalIdByMediamosaId(avo1Id);
 
 					if (itemExternalId) {
 						// Redirect to the new bundle url, since we want to discourage use of the old avo1 urls
@@ -272,10 +271,10 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				'';
 			return (
 				<>
-					<MetaTags>
+					<Helmet>
 						<title>{GENERATE_SITE_TITLE(get(routeInfo.data, 'title'))}</title>
 						<meta name="description" content={description} />
-					</MetaTags>
+					</Helmet>
 					<JsonLd
 						url={window.location.href}
 						title={get(routeInfo.data, 'title', '')}

@@ -1,6 +1,6 @@
 import { Button, ButtonToolbar, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -15,7 +15,7 @@ const LinkYourAccount: FunctionComponent<RouteComponentProps> = ({ history }) =>
 	return (
 		<Container mode="horizontal" size="medium">
 			<Container mode="vertical">
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText('authentication/views/link-your-account___link-uw-account')
@@ -27,7 +27,7 @@ const LinkYourAccount: FunctionComponent<RouteComponentProps> = ({ history }) =>
 							'authentication/views/link-your-account___link-uw-account-paginabeschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<Spacer margin="bottom-extra-large">
 					<h1 className="c-h1 u-m-0">
 						{tHtml(

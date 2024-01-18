@@ -8,7 +8,7 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 

@@ -1,9 +1,9 @@
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -354,7 +354,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -368,7 +368,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 							'admin/items/views/items-overview___item-beheer-overview-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={items}

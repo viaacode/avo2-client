@@ -1,11 +1,13 @@
 import {
-	GetTranslationsDocument,
 	GetTranslationsQuery,
 	GetTranslationsQueryVariables,
-	UpdateTranslationsDocument,
 	UpdateTranslationsMutation,
 	UpdateTranslationsMutationVariables,
-} from '../../shared/generated/graphql-db-types';
+} from '../../shared/generated/graphql-db-operations';
+import {
+	GetTranslationsDocument,
+	UpdateTranslationsDocument,
+} from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 

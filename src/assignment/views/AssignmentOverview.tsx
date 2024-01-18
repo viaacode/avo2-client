@@ -21,14 +21,13 @@ import {
 	useKeyPress,
 } from '@viaa/avo2-components';
 import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	KeyboardEvent,
 	ReactNode,
-	ReactText,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -74,7 +73,7 @@ import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { useTableSort } from '../../shared/hooks';
+import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -99,8 +98,6 @@ import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 
 import './AssignmentOverview.scss';
-
-type ExtraAssignmentOptions = 'edit' | 'duplicate' | 'archive' | 'delete';
 
 interface AssignmentOverviewProps {
 	onUpdate: () => void | Promise<void>;
@@ -366,7 +363,7 @@ const AssignmentOverview: FunctionComponent<
 	};
 
 	const handleExtraOptionsItemClicked = async (
-		actionId: ExtraAssignmentOptions,
+		actionId: AssignmentAction,
 		assignmentRow: Avo.Assignment.Assignment
 	) => {
 		setDropdownOpenForAssignmentId(null);
@@ -381,13 +378,13 @@ const AssignmentOverview: FunctionComponent<
 
 		setMarkedAssignment(assignmentRow);
 		switch (actionId) {
-			case 'edit':
+			case AssignmentAction.edit:
 				navigate(history, APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
 					id: assignmentRow.id,
 					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 				});
 				break;
-			case 'duplicate':
+			case AssignmentAction.duplicate:
 				try {
 					if (!user?.profile?.id) {
 						ToastService.danger(
@@ -417,7 +414,7 @@ const AssignmentOverview: FunctionComponent<
 
 				break;
 
-			case 'delete':
+			case AssignmentAction.delete:
 				setDeleteAssignmentModalOpen(true);
 				break;
 			default:
@@ -441,11 +438,8 @@ const AssignmentOverview: FunctionComponent<
 	};
 
 	const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
-		const handleOptionClicked = async (actionId: ReactText) => {
-			await handleExtraOptionsItemClicked(
-				actionId.toString() as ExtraAssignmentOptions,
-				assignmentRow
-			);
+		const handleOptionClicked = async (actionId: AssignmentAction) => {
+			await handleExtraOptionsItemClicked(actionId as AssignmentAction, assignmentRow);
 		};
 
 		return (
@@ -465,7 +459,7 @@ const AssignmentOverview: FunctionComponent<
 						label={getMoreOptionsLabel()}
 						menuItems={[
 							...createDropdownMenuItem(
-								AssignmentAction.editAssignment,
+								AssignmentAction.edit,
 								tText('assignment/views/assignment-overview___bewerk'),
 								IconName.edit2,
 								query.view !== AssignmentView.FINISHED &&
@@ -494,7 +488,9 @@ const AssignmentOverview: FunctionComponent<
 								!hasDeleteRightsForAllAssignments && !isOwner
 							),
 						]}
-						onOptionClicked={handleOptionClicked}
+						onOptionClicked={(action) =>
+							handleOptionClicked(action as AssignmentAction)
+						}
 					/>
 				)}
 			</ButtonToolbar>
@@ -659,7 +655,7 @@ const AssignmentOverview: FunctionComponent<
 
 			case 'share_type':
 				return createShareIconTableOverview(
-					assignment.share_type,
+					assignment.share_type as ShareWithColleagueTypeEnum,
 					assignment.contributors,
 					'assignment',
 					'c-assignment-overview__shared'
@@ -923,7 +919,7 @@ const AssignmentOverview: FunctionComponent<
 		if (canEditAssignments) {
 			// Teacher
 			if (query.view === AssignmentView.ACTIVE) {
-				return tText(
+				return tHtml(
 					'assignment/views/assignment-overview___beschrijving-hoe-een-opdracht-aan-te-maken'
 				);
 			}

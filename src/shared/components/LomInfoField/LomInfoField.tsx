@@ -30,7 +30,7 @@ const LomInfoField: FC<LomInfoFieldProps> = ({
 
 			<p className="c-body-1">
 				{lomLabels && lomLabels.length ? (
-					renderSearchLinks(renderSearchLink, id, searchFilterType, lomLabels)
+					renderSearchLinks(renderSearchLink, id, searchFilterType, lomLabels?.sort())
 				) : (
 					<span className="u-d-block">-</span>
 				)}

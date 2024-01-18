@@ -1,6 +1,6 @@
 import { NavigationOverview } from '@meemoo/admin-core-ui';
 import React, { FC } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -16,7 +16,7 @@ const NavigationBarOverview: FC<NavigationBarOverviewProps> = () => {
 
 	return (
 		<div className="c-admin__navigation-overview">
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-titel')
@@ -28,7 +28,7 @@ const NavigationBarOverview: FC<NavigationBarOverviewProps> = () => {
 						'admin/menu/views/menu-overview___menu-overzicht-beheer-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<NavigationOverview />
 		</div>
 	);

@@ -1,5 +1,5 @@
 import { Alert, Container, Spacer } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
@@ -18,11 +18,12 @@ interface CollectionOrBundleEditContentProps {
 	type: 'collection' | 'bundle';
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditContent: FunctionComponent<
 	CollectionOrBundleEditContentProps & UserProps
-> = ({ type, collection, changeCollectionState, user, commonUser }) => {
+> = ({ type, collection, changeCollectionState, user, commonUser, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -326,6 +327,7 @@ const CollectionOrBundleEditContent: FunctionComponent<
 							}
 							return null;
 						}}
+						onFocus={onFocus}
 					/>
 				))}
 			</Container>

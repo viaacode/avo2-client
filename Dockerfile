@@ -9,7 +9,7 @@ ENV NODE_ENV $NODE_ENV
 ENV CI $CI
 ENV TZ=Europe/Brussels
 WORKDIR /app
-RUN mkdir ./build/ &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  g+w /app
+RUN mkdir ./dist/ &&chown -R node:node /app && chmod -R  g+s /app && chmod -R  g+w /app
 COPY  --chown=node:node . .
 RUN chown -R node:node /app && chmod -R  g+sw /app
 RUN apk update
@@ -35,7 +35,7 @@ FROM nginxinc/nginx-unprivileged
 ENV NODE_ENV $NODE_ENV
 USER root
 COPY default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/dist /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 COPY scripts/env.sh ./
 COPY docker-entrypoint.sh /docker-entrypoint.sh

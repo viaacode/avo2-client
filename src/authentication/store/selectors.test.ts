@@ -1,5 +1,5 @@
-import type { Avo } from '@viaa/avo2-types';
-import moment from 'moment';
+import { type Avo } from '@viaa/avo2-types';
+import { addDays } from 'date-fns';
 
 import { AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
@@ -14,7 +14,7 @@ describe('login > store > selectors', () => {
 				userInfo: {} as Avo.User.User,
 				commonUserInfo: {} as Avo.User.CommonUser,
 				acceptedConditions: true,
-				sessionExpiresAt: moment().add(1, 'days').toString(),
+				sessionExpiresAt: addDays(new Date(), 1).toString(),
 			},
 			loading: false,
 			error: false,
@@ -24,7 +24,10 @@ describe('login > store > selectors', () => {
 			loading: false,
 			error: false,
 		},
-		uiState: {},
+		uiState: {
+			showNudgingModal: null,
+			lastVideoPlayedAt: null,
+		},
 	};
 
 	it('Should get the login error-state from the store', () => {

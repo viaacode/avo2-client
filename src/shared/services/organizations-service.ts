@@ -1,20 +1,22 @@
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 
 import {
-	GetAllOrganisationsDocument,
 	GetAllOrganisationsQuery,
 	GetAllOrganisationsQueryVariables,
-	GetDistinctOrganisationsDocument,
 	GetDistinctOrganisationsQuery,
 	GetDistinctOrganisationsQueryVariables,
-	GetOrganisationsWithUsersDocument,
 	GetOrganisationsWithUsersQuery,
 	GetOrganisationsWithUsersQueryVariables,
-	GetUsersByCompanyIdDocument,
 	GetUsersByCompanyIdQuery,
 	GetUsersByCompanyIdQueryVariables,
-} from '../generated/graphql-db-types';
+} from '../generated/graphql-db-operations';
+import {
+	GetAllOrganisationsDocument,
+	GetDistinctOrganisationsDocument,
+	GetOrganisationsWithUsersDocument,
+	GetUsersByCompanyIdDocument,
+} from '../generated/graphql-db-react-query';
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';

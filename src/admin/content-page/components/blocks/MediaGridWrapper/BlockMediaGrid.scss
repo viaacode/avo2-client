@@ -1,0 +1,82 @@
+@import "../../../../../styles/settings/colors";
+
+.c-media-card__cta {
+	.c-thumbnail {
+		padding-top: 0;
+	}
+}
+
+.c-block-media-list {
+	.c-media-card {
+		cursor: pointer;
+
+		.c-thumbnail-media__category {
+			.o-svg-icon {
+				margin-right: 0;
+			}
+
+			p {
+				display: none;
+			}
+		}
+
+		.c-thumbnail-media__top-right {
+			background-color: #0009;
+			border-bottom-left-radius: 0.3rem;
+
+			.c-button--inline-link {
+				background-color: transparent;
+				text-decoration: none;
+
+				.c-button__label {
+					text-decoration: none !important;
+					color: #fff !important;
+					font-size: 1.2rem;
+				}
+			}
+		}
+	}
+
+	.c-media-card__cta {
+		display: flex;
+		flex-direction: column;
+
+		.c-media-card-thumb {
+			width: 100%;
+			flex: initial;
+		}
+
+		.c-thumbnail {
+			background-color: $color-gray-50;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			position: relative;
+			border-radius: 0.3rem;
+			width: 100%;
+			padding-top: calc(100% * 9 / 16);
+			height: auto;
+
+			.c-thumbnail__content {
+				position: absolute;
+				top: 2rem;
+				right: 2rem;
+				bottom: 2rem;
+				left: 2rem;
+
+				> *:first-child {
+					margin-top: 0;
+				}
+			}
+		}
+
+		.c-media-card-content {
+			margin-top: 0.8rem;
+
+			p,
+			h4 {
+				color: transparent !important;
+			}
+		}
+	}
+}

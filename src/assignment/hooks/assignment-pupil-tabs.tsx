@@ -1,5 +1,5 @@
 import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -18,7 +18,7 @@ export function useAssignmentPupilTabs(
 	ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS | undefined,
 	(newTab: ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS) => void,
 	(id: string | number) => void,
-	() => void // Start pill animation
+	() => void, // Start pill animation
 ] {
 	const { tText, tHtml } = useTranslation();
 

@@ -1,3 +1,4 @@
+import AvoLogo from '@assets/images/avo-logo-i.svg';
 import {
 	Avatar,
 	Button,
@@ -11,15 +12,14 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get, last } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, { FC, FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
-import { ReactComponent as AvoLogo } from '../../../assets/images/avo-logo-i.svg';
 import {
 	getFirstName,
 	getProfileAvatar,
@@ -48,14 +48,10 @@ import { ToastService } from '../../services/toast-service';
 import { NavigationItemInfo } from '../../types';
 
 import { NavigationItem } from './NavigationItem';
+
 import './Navigation.scss';
 
-export interface NavigationParams extends RouteComponentProps {
-	loginState: Avo.Auth.LoginResponse | null;
-	loginStateLoading: boolean;
-	loginStateError: boolean;
-	getLoginState: () => Dispatch;
-}
+export type NavigationParams = RouteComponentProps;
 
 /**
  * Main navigation bar component
@@ -65,7 +61,14 @@ export interface NavigationParams extends RouteComponentProps {
  * @param loginMessage
  * @constructor
  */
-export const Navigation: FunctionComponent<NavigationParams> = ({
+const Navigation: FunctionComponent<
+	NavigationParams & {
+		loginState: Avo.Auth.LoginResponse | null;
+		loginStateLoading: boolean;
+		loginStateError: boolean;
+		getLoginState: () => Dispatch;
+	}
+> = ({
 	loginState,
 	loginStateLoading,
 	loginStateError,
@@ -253,7 +256,7 @@ export const Navigation: FunctionComponent<NavigationParams> = ({
 												: APP_PATH.LOGGED_OUT_HOME.route
 										}
 									>
-										<AvoLogo />
+										<img alt="Archief voor Onderwijs logo" src={AvoLogo} />
 									</Link>
 								</h1>
 							</ToolbarItem>
@@ -338,4 +341,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navigation));
+export const NavigationForTests = Navigation;
+
+export default withRouter(
+	connect(mapStateToProps, mapDispatchToProps)(Navigation)
+) as unknown as FC<NavigationParams>;

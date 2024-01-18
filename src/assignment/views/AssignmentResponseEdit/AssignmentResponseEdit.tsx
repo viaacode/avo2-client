@@ -11,7 +11,7 @@ import {
 	Spinner,
 	Tabs,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, {
 	Dispatch,
@@ -58,8 +58,8 @@ import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
 import { backToOverview } from '../../helpers/links';
-import { useAssignmentPupilTabs } from '../../hooks';
 import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
+import { useAssignmentPupilTabs } from '../../hooks/assignment-pupil-tabs';
 
 import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
 import AssignmentResponsePupilCollectionTab from './tabs/AssignmentResponsePupilCollectionTab';
@@ -131,7 +131,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	};
 	const [filterState, setFilterState] = useQueryParams(queryParamConfig) as [
 		PupilSearchFilterState,
-		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void
+		(FilterState: PupilSearchFilterState, updateType?: UrlUpdateType) => void,
 	];
 	const [tabs, activeTab, setTab, onTabClick, animatePill] = useAssignmentPupilTabs(
 		assignment,

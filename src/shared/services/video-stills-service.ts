@@ -1,5 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, uniq, without } from 'lodash-es';
 
 import { ContentTypeString } from '../../collection/collection.types';
@@ -34,8 +34,17 @@ export class VideoStillService {
 	 * @return url to frame from video
 	 */
 	public static async getVideoStill(externalId: string, startTime: number): Promise<string> {
-		const stills = await VideoStillService.getVideoStills([{ externalId, startTime }]);
-		return stills[0].previewImagePath;
+		try {
+			const stills = await VideoStillService.getVideoStills([{ externalId, startTime }]);
+			if (stills[0] && stills[0].previewImagePath) {
+				return stills[0].previewImagePath;
+			}
+			return '';
+		} catch (err) {
+			throw new CustomError('Failed to get video still previewImagePath', err, {
+				externalId,
+			});
+		}
 	}
 
 	public static async getThumbnailsForSubject(

@@ -1,6 +1,6 @@
-import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { get, isNil, partition } from 'lodash-es';
+import { Button, ButtonToolbar, IconName, TagList, TagOption } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import { compact, first, get, isNil, partition, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
 	ReactText,
@@ -9,7 +9,7 @@ import React, {
 	useMemo,
 	useState,
 } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -17,15 +17,26 @@ import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.co
 import { AssignmentService } from '../../../assignment/assignment.service';
 import { AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
 import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
+import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import {
+	CheckboxOption,
+	LoadingErrorLoadedComponent,
+	LoadingInfo,
+} from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
+import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
+import { groupLomLinks } from '../../../shared/helpers/lom';
+import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { useAssignmentLabels } from '../../../shared/hooks/useAssignmentLabels';
+import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -37,19 +48,21 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import {
+	generateLomFilter,
 	getBooleanFilters,
 	getDateRangeFilters,
 	getMultiOptionFilters,
+	NULL_FILTER,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { PickerItem } from '../../shared/types';
+import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	GET_ASSIGNMENT_BULK_ACTIONS,
 	GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
 } from '../assignments.const';
 import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
-
 import './AssignmentsOverviewAdmin.scss';
 
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
@@ -72,6 +85,11 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const [selectedBulkAction, setSelectedBulkAction] = useState<AssignmentsBulkAction | null>(
 		null
 	);
+	const [assignmentLabels] = useAssignmentLabels(true);
+	const [userGroups] = useUserGroups(false);
+	const [subjects] = useLomSubjects();
+	const [educationLevels] = useLomEducationLevels();
+
 	const { data: editStatuses } = useGetAssignmentsEditStatuses(
 		assignments?.map((assignment) => assignment.id) || [],
 		{
@@ -81,7 +99,56 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		}
 	);
 
-	const columns = useMemo(() => GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(), []);
+	const userGroupOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
+				checked: get(tableState, 'author_user_group', [] as string[]).includes(NULL_FILTER),
+			},
+			...userGroups.map(
+				(option): CheckboxOption => ({
+					id: String(option.id),
+					label: option.label as string,
+					checked: get(tableState, 'author_user_group', [] as string[]).includes(
+						String(option.id)
+					),
+				})
+			),
+		],
+		[tableState, userGroups, tText]
+	);
+
+	const assignmentLabelOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: tText('admin/assignments/views/assignments-overview-admin___geen-label'),
+				checked: get(tableState, 'labels', [] as string[]).includes(NULL_FILTER),
+			},
+			...assignmentLabels.map(
+				(option): CheckboxOption => ({
+					id: String(option.value),
+					label: option.value,
+					checked: get(tableState, 'labels', [] as string[]).includes(
+						String(option.value)
+					),
+				})
+			),
+		],
+		[assignmentLabels, tText, tableState]
+	);
+
+	const columns = useMemo(
+		() =>
+			GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(
+				userGroupOptions,
+				assignmentLabelOptions,
+				subjects,
+				educationLevels
+			),
+		[userGroupOptions, assignmentLabelOptions]
+	);
 
 	const generateWhereObject = useCallback((filters: Partial<AssignmentsOverviewTableState>) => {
 		const andFilters: any[] = [];
@@ -129,24 +196,107 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		andFilters.push(...getBooleanFilters(filters, ['is_public']));
 
 		// pupil collections filter: has collections, does not have collections
-		if (!isNil(filters.pupilCollections?.[0]) && filters.pupilCollections?.length === 1) {
-			if (filters.pupilCollections?.[0] === 'true') {
+		if (!isNil(filters.responses?.[0]) && filters.responses?.length === 1) {
+			if (filters.responses?.[0] === 'true') {
 				// Assignments with pupil collections
 				andFilters.push({
-					responses: {
-						collection_title: { _is_null: false },
-					},
+					responses: {},
 				});
 			} else {
 				// Assignments without pupil collections
 				andFilters.push({
 					_not: {
-						responses: {
-							collection_title: { _is_null: false },
-						},
+						responses: {},
 					},
 				});
 			}
+		}
+
+		// user group
+		if (filters.author_user_group && filters.author_user_group.length) {
+			const defaultGroupFilter = {
+				profile: {
+					profile_user_group: {
+						group: {
+							id: {
+								_in: without(filters.author_user_group, NULL_FILTER),
+							},
+						},
+					},
+				},
+			};
+
+			const defaultNullFilter = { profile: { _not: { profile_user_groups: {} } } };
+
+			const groupFilter = [defaultGroupFilter];
+			andFilters.push({
+				_or: [
+					...groupFilter,
+					...(filters.author_user_group.includes(NULL_FILTER) ? [defaultNullFilter] : []),
+				],
+			});
+		}
+
+		// is copy
+		const isCopy = first(get(filters, 'is_copy'));
+		if (!isNil(isCopy)) {
+			if (isCopy === 'true') {
+				andFilters.push({
+					relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
+				});
+			} else if (isCopy === 'false') {
+				andFilters.push({
+					_not: {
+						relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
+					},
+				});
+			}
+		}
+
+		// labels
+		if (filters.labels && filters.labels.length) {
+			const filterKey = 'labels';
+
+			andFilters.push({
+				_or: [
+					{
+						[filterKey]: {
+							assignment_label: {
+								label: {
+									_in: filters.labels,
+								},
+							},
+						},
+					},
+					...(filters.labels.includes(NULL_FILTER)
+						? [{ _not: { [filterKey]: {} } }]
+						: []),
+				],
+			});
+		}
+
+		// subjects
+		if (filters.subjects && filters.subjects.length) {
+			andFilters.push(
+				generateLomFilter(filters.subjects, 'https://w3id.org/onderwijs-vlaanderen/id/vak')
+			);
+		}
+
+		// // Enable when meemoo requests a column and folder for lom themes
+		// if (filters.themes && filters.themes.length) {
+		// 	andFilters.push(
+		// 		generateLomFilter(filters.themes, 'https://data.hetarchief.be/id/onderwijs/thema')
+		// 	);
+		// }
+
+		// education-levels
+		if (filters.education_levels && filters.education_levels.length) {
+			andFilters.push(
+				generateLomFilter(
+					filters.education_levels,
+					'https://w3id.org/onderwijs-vlaanderen/id/structuur'
+				)
+			);
 		}
 
 		return { _and: andFilters };
@@ -236,9 +386,8 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			return;
 		}
 
-		const selectedAssignmentEditStatuses = await AssignmentService.getAssignmentsEditStatuses(
-			selectedAssignmentIds
-		);
+		const selectedAssignmentEditStatuses =
+			await AssignmentService.getAssignmentsEditStatuses(selectedAssignmentIds);
 		const partitionedAssignmentIds = partition(
 			Object.entries(selectedAssignmentEditStatuses),
 			(entry) => !!entry[1]
@@ -341,12 +490,45 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			case 'title':
 				return (
 					<Link to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id })}>
-						{truncateTableValue(assignment.title)}
+						<span>{truncateTableValue(assignment.title)}</span>
+						{!!assignment.relations?.[0].object && (
+							<a
+								href={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+									id: assignment.relations?.[0].object,
+								})}
+							>
+								<TagList
+									tags={[
+										{ id: assignment.relations?.[0].object, label: 'Kopie' },
+									]}
+									swatches={false}
+								/>
+							</a>
+						)}
 					</Link>
 				);
 
 			case 'author':
 				return truncateTableValue((assignment as any)?.owner?.full_name);
+
+			case 'author_user_group':
+				return (
+					getUserGroupLabel(
+						(assignment?.profile || assignment?.owner) as
+							| Avo.User.Profile
+							| { profile: Avo.User.Profile }
+							| undefined
+					) || '-'
+				);
+
+			case 'last_user_edit_profile': {
+				// Multiple options because we are processing multiple views: collections, actualisation, quality_check and marcom
+				return (
+					assignment?.updated_by?.user?.full_name ||
+					(assignment as any)?.last_user_edit_profile?.usersByuserId?.full_name ||
+					'-'
+				);
+			}
 
 			case 'created_at':
 				return formatDate(created_at) || '-';
@@ -363,10 +545,59 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					? tText('admin/assignments/views/assignments-overview-admin___afgelopen')
 					: tText('admin/assignments/views/assignments-overview-admin___actief');
 
+			case 'subjects': {
+				const groupedLoms = groupLomLinks(assignment.loms);
+				return lomsToTagList(groupedLoms.subject) || '-';
+			}
+
+			case 'education_levels': {
+				const groupedLoms = groupLomLinks(assignment.loms);
+				return (
+					lomsToTagList([
+						...groupedLoms.educationLevel,
+						...groupedLoms.educationDegree,
+					]) || '-'
+				);
+			}
+
 			case 'is_public':
 				return assignment.is_public
 					? tText('admin/assignments/views/assignments-overview-admin___ja')
 					: tText('admin/assignments/views/assignments-overview-admin___nee');
+
+			case 'labels': {
+				const labelObjects: { id: string; label: string }[] =
+					assignment?.labels?.map((label) => {
+						return {
+							id: label.assignment_label.id,
+							label: label.assignment_label.label || '',
+						};
+					}) || [];
+
+				const tags: TagOption[] = compact(labelObjects);
+
+				if (tags.length) {
+					return <TagList tags={tags} swatches={false} />;
+				}
+
+				return '-';
+			}
+
+			case 'is_copy': {
+				const relationObjectId = assignment?.relations?.[0]?.object;
+				if (relationObjectId) {
+					return (
+						<a
+							href={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
+								id: relationObjectId,
+							})}
+						>
+							Ja
+						</a>
+					);
+				}
+				return 'Nee';
+			}
 
 			case 'responses': {
 				const responsesLength =
@@ -393,6 +624,15 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 			case 'views':
 				return assignment?.view_count?.count || '0';
+
+			case 'bookmarks':
+				return assignment?.counts?.bookmarks || '0';
+
+			case 'copies':
+				return assignment?.counts?.copies || '0';
+
+			case 'contributors':
+				return assignment?.counts?.contributors || '0';
 
 			case 'actions': {
 				if (!editStatuses) {
@@ -632,7 +872,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			size="full-width"
 		>
 			<AdminLayoutBody>
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -646,7 +886,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 							'admin/assignments/views/assignments-overview-admin___opdrachten-overzicht-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<LoadingErrorLoadedComponent
 					loadingInfo={loadingInfo}
 					dataObject={assignments}

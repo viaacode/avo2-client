@@ -1,5 +1,5 @@
 import { Avatar, IconName, TagOption, Thumbnail } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, trimStart } from 'lodash-es';
 import React, { FunctionComponent } from 'react';
 
@@ -105,7 +105,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 			return (
 				<Avatar
 					image={
-						result.owner?.avatar_path || result.owner?.company_avatar_path || undefined
+						result.owner?.company_avatar_path || result.owner?.avatar_path || undefined
 					}
 					name={name}
 					initials={initials.toLocaleUpperCase()}

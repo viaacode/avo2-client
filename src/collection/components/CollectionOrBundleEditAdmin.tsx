@@ -16,7 +16,7 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, orderBy } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
@@ -61,11 +61,12 @@ interface CollectionOrBundleEditAdminProps {
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 	history: RouteComponentProps['history'];
+	onFocus?: () => void;
 }
 
 const CollectionOrBundleEditAdmin: FunctionComponent<
 	CollectionOrBundleEditAdminProps & UserProps
-> = ({ collection, changeCollectionState, history, user }) => {
+> = ({ collection, changeCollectionState, history, user, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -420,6 +421,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 														collectionPropValue: newBriefing,
 													})
 												}
+												onFocus={onFocus}
 											/>
 										</FormGroup>
 									)}

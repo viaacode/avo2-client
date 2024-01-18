@@ -17,7 +17,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { once } from 'lodash-es';
 import React, { FunctionComponent, useEffect, useState } from 'react';
 
@@ -69,7 +69,15 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 
 	const fetchCollections = React.useCallback(
 		() =>
-			CollectionService.fetchCollectionsOrBundlesByUser('collection', user)
+			CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
+				user as Avo.User.User,
+				0,
+				500,
+				[],
+				ContentTypeNumber.collection,
+				undefined,
+				undefined
+			)
 				.then((collectionTitles: Partial<Avo.Collection.Collection>[]) => {
 					setCollections(collectionTitles);
 				})
@@ -157,6 +165,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 		try {
 			const fragment = await getFragment(collection);
 			delete fragment.item_meta;
+			fragment.position = collection.collection_fragments?.length || 0;
 			await CollectionService.insertFragments(collection.id as string, [
 				fragment as Avo.Collection.Fragment,
 			]);
@@ -265,6 +274,15 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 				addItemToExistingCollection(
 					selectedCollection as Partial<Avo.Collection.Collection>
 				);
+
+	const handleCollectionTitleChange = (title: string) => {
+		// AVO-2827: add max title length
+		if (title.length > 110) {
+			return;
+		} else {
+			setNewCollectionTitle(title);
+		}
+	};
 
 	const renderAddToCollectionModal = () => {
 		const fragmentDuration = toSeconds(itemMetaData.duration) || 0;
@@ -400,7 +418,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 														)}
 														disabled={!createNewCollection}
 														value={newCollectionTitle}
-														onChange={setNewCollectionTitle}
+														onChange={handleCollectionTitleChange}
 													/>
 												</div>
 											</Spacer>

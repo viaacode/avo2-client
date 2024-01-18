@@ -1,6 +1,6 @@
 import { NavigationDetail } from '@meemoo/admin-core-ui';
 import React, { FunctionComponent } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -9,16 +9,16 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarDetail.scss';
 
-type NavigationBarDetailProps = DefaultSecureRouteProps<{ menu: string }>;
+type NavigationBarDetailProps = DefaultSecureRouteProps<{ navigationBarId: string }>;
 
 const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ match }) => {
 	const { tText } = useTranslation();
 
-	const navigationBarId = match.params.menu;
+	const navigationBarId = match.params.navigationBarId;
 
 	return (
 		<div className="c-admin__navigation-detail">
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						navigationBarId,
@@ -31,7 +31,7 @@ const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ matc
 						'admin/menu/views/menu-detail___menu-beheer-detail-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<NavigationDetail navigationBarId={navigationBarId} />
 		</div>
 	);

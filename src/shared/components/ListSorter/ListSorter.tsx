@@ -1,5 +1,5 @@
 import { Button, Icon, IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { FC, Fragment, ReactNode, useMemo } from 'react';
 

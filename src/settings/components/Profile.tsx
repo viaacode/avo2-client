@@ -3,7 +3,6 @@ import {
 	Alert,
 	Box,
 	Button,
-	Checkbox,
 	Column,
 	Container,
 	Flex,
@@ -17,42 +16,35 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
-import { LomFieldSchema } from '@viaa/avo2-types/types/lom';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Dispatch } from 'redux';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
-import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	getLoginResponse,
 	getLoginStateAction,
 	setLoginSuccess,
 } from '../../authentication/store/actions';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
+import { GENERATE_SITE_TITLE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { FileUpload } from '../../shared/components';
 import CommonMetadata from '../../shared/components/CommonMetaData/CommonMetaData';
 import { EducationalOrganisationsSelect } from '../../shared/components/EducationalOrganisationsSelect/EducationalOrganisationsSelect';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
-import { ROUTE_PARTS } from '../../shared/constants';
 import { CustomError, formatDate, getEnv } from '../../shared/helpers';
 import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import {
-	CampaignMonitorService,
-	NewsletterPreferences,
-} from '../../shared/services/campaign-monitor-service';
 import { OrganisationService } from '../../shared/services/organizations-service';
 import { ToastService } from '../../shared/services/toast-service';
 import store from '../../store';
@@ -82,30 +74,20 @@ interface FieldPermissions {
 	ORGANISATION: FieldPermission & { VIEW_USERS_IN_SAME_COMPANY: boolean };
 }
 
-export interface ProfileProps extends DefaultSecureRouteProps {
-	redirectTo?: string;
-}
-
 const Profile: FunctionComponent<
-	ProfileProps & {
+	{
 		getLoginState: (forceRefetch: boolean) => Dispatch;
-	} & UserProps
-> = ({
-	redirectTo = APP_PATH.LOGGED_IN_HOME.route,
-	history,
-	location,
-	user,
-	commonUser,
-	getLoginState,
-}) => {
+	} & UserProps &
+		DefaultSecureRouteProps
+> = ({ user, commonUser, getLoginState }) => {
 	const { tText, tHtml } = useTranslation();
-	const isCompleteProfileStep = location.pathname.includes(ROUTE_PARTS.completeProfile);
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
 	>(commonUser?.educationalOrganisations || []);
-	const [selectedLoms, setSelectedLoms] = useState<LomFieldSchema[]>(
+	const [selectedLoms, setSelectedLoms] = useState<Avo.Lom.LomField[]>(
 		compact(map(commonUser?.loms, 'lom'))
 	);
+
 	const firstName = commonUser?.firstName || '';
 	const lastName = commonUser?.lastName || '';
 	const email = commonUser?.email || '';
@@ -114,7 +96,6 @@ const Profile: FunctionComponent<
 	const [title, setTitle] = useState<string | null>(commonUser?.title || null);
 	const [bio, setBio] = useState<string | null>(commonUser?.bio || null);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
-	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
 	const [allOrganisations, setAllOrganisations] = useState<
 		Partial<Avo.Organization.Organization>[] | null
 	>(null);
@@ -246,7 +227,7 @@ const Profile: FunctionComponent<
 					);
 				});
 		}
-	}, [uiPermissions, isCompleteProfileStep, tText, user, setAllOrganisations]);
+	}, [uiPermissions, tText, user, setAllOrganisations]);
 
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<Avo.User.UpdateProfileValues>) => {
 		if (!uiPermissions) {
@@ -257,32 +238,32 @@ const Profile: FunctionComponent<
 		const groupedLoms = groupLoms(selectedLoms);
 
 		if (
-			((uiPermissions.SUBJECTS.REQUIRED && uiPermissions.SUBJECTS.EDIT) ||
-				isCompleteProfileStep) &&
+			uiPermissions.SUBJECTS.REQUIRED &&
+			uiPermissions.SUBJECTS.EDIT &&
 			!groupedLoms.subject?.length
 		) {
 			errors.push(tText('settings/components/profile___vakken-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
-			((uiPermissions.THEME.REQUIRED && uiPermissions.THEME.EDIT) || isCompleteProfileStep) &&
+			uiPermissions.THEME.REQUIRED &&
+			uiPermissions.THEME.EDIT &&
 			!groupedLoms.theme?.length
 		) {
 			errors.push(tText('settings/components/profile___themas-zijn-verplicht'));
 			filledIn = false;
 		}
 		if (
-			((uiPermissions.EDUCATION_LEVEL.REQUIRED && uiPermissions.EDUCATION_LEVEL.EDIT) ||
-				isCompleteProfileStep) &&
+			uiPermissions.EDUCATION_LEVEL.REQUIRED &&
+			uiPermissions.EDUCATION_LEVEL.EDIT &&
 			!groupedLoms.educationLevel?.length
 		) {
 			errors.push(tText('settings/components/profile___opleidingsniveau-is-verplicht'));
 			filledIn = false;
 		}
 		if (
-			((uiPermissions.EDUCATIONAL_ORGANISATION.REQUIRED &&
-				uiPermissions.EDUCATIONAL_ORGANISATION.EDIT) ||
-				isCompleteProfileStep) &&
+			uiPermissions.EDUCATIONAL_ORGANISATION.REQUIRED &&
+			uiPermissions.EDUCATIONAL_ORGANISATION.EDIT &&
 			!profileInfo.organizations?.length
 		) {
 			errors.push(tText('settings/components/profile___educatieve-organisatie-is-verplicht'));
@@ -291,8 +272,7 @@ const Profile: FunctionComponent<
 		if (
 			uiPermissions.ORGANISATION.REQUIRED &&
 			uiPermissions.ORGANISATION.EDIT &&
-			!profileInfo.company_id &&
-			!isCompleteProfileStep
+			!profileInfo.company_id
 		) {
 			errors.push(tText('settings/components/profile___organisatie-is-verplicht'));
 			filledIn = false;
@@ -348,47 +328,13 @@ const Profile: FunctionComponent<
 				throw err;
 			}
 
-			if (isCompleteProfileStep) {
-				// Refetch user permissions since education level can change user group
-				getLoginState(true);
-			}
-
-			const preferences: Partial<NewsletterPreferences> = {} as any;
-			if (subscribeToNewsletter) {
-				// subscribe to newsletter if checked
-				preferences.newsletter = true;
-			}
-			try {
-				await CampaignMonitorService.updateNewsletterPreferences(preferences);
-			} catch (err) {
-				console.error(
-					new CustomError('Failed to updateNewsletterPreferences', err, {
-						preferences,
-						user,
-					})
-				);
-				ToastService.danger(
-					tHtml(
-						'settings/components/profile___het-updaten-van-de-nieuwsbrief-voorkeuren-is-mislukt'
-					)
-				);
-			}
-
 			// Refresh the login state, so the profile info will be up-to-date
 			const loginResponse: Avo.Auth.LoginResponse = await getLoginResponse();
 			store.dispatch(setLoginSuccess(loginResponse));
 
-			if (isCompleteProfileStep) {
-				// Wait for login response to be set into the store before redirecting
-				setTimeout(() => {
-					redirectToClientPage(redirectTo, history);
-					setIsSaving(false);
-				}, 0);
-			} else {
-				getLoginState(true);
-				ToastService.success(tHtml('settings/components/profile___opgeslagen'));
-				setIsSaving(false);
-			}
+			getLoginState(true);
+			ToastService.success(tHtml('settings/components/profile___opgeslagen'));
+			setIsSaving(false);
 		} catch (err) {
 			console.error(err);
 			ToastService.danger(
@@ -439,9 +385,7 @@ const Profile: FunctionComponent<
 	const renderEducationOrganisationsField = (editable: boolean, required: boolean) => {
 		if (
 			// Don't show schools on profile page if no schools exist
-			(!isCompleteProfileStep &&
-				(commonUser?.educationalOrganisations || []).length === 0 &&
-				isExceptionAccount) ||
+			((commonUser?.educationalOrganisations || []).length === 0 && isExceptionAccount) ||
 			// Only show schools if user has permissions to see them
 			!uiPermissions?.EDUCATIONAL_ORGANISATION?.VIEW
 		) {
@@ -470,64 +414,6 @@ const Profile: FunctionComponent<
 					stringsToTagList(selectedOrganisations.map((org) => org.organisationLabel))
 				)}
 			</FormGroup>
-		);
-	};
-
-	const renderCompleteProfilePage = () => {
-		return (
-			<Container mode="horizontal" size="medium">
-				<Container mode="vertical" className="p-profile-page">
-					<BlockHeading type="h1">
-						{tHtml(
-							'settings/components/profile___je-bent-er-bijna-vervolledig-nog-je-profiel'
-						)}
-					</BlockHeading>
-					<Spacer margin="top-large">
-						<Alert type="info">
-							{tHtml(
-								'settings/components/profile___we-gebruiken-deze-info-om-je-gepersonaliseerde-content-te-tonen'
-							)}
-						</Alert>
-					</Spacer>
-					<Form type="standard">
-						<Spacer margin={['top-large', 'bottom-large']}>
-							<LomFieldsInput
-								loms={selectedLoms || []}
-								onChange={(newLoms) => setSelectedLoms(newLoms)}
-								educationLevelsPlaceholder={tText(
-									'settings/components/profile___selecteer-een-of-meerdere-onderwijsniveaus'
-								)}
-								subjectsPlaceholder={tText(
-									'settings/components/profile___selecteer-de-vakken-die-je-geeft'
-								)}
-								themesPlaceholder={tText(
-									'settings/components/profile___selecteer-je-themas'
-								)}
-							/>
-							{renderEducationOrganisationsField(true, true)}
-						</Spacer>
-						{user?.role?.name === 'lesgever' && (
-							<Spacer margin="bottom">
-								<FormGroup>
-									<Checkbox
-										label={tText(
-											'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
-										)}
-										checked={subscribeToNewsletter}
-										onChange={setSubscribeToNewsletter}
-									/>
-								</FormGroup>
-							</Spacer>
-						)}
-					</Form>
-					<Button
-						label={tText('settings/components/profile___inloggen')}
-						type="primary"
-						disabled={isSaving}
-						onClick={saveProfileChanges}
-					/>
-				</Container>
-			</Container>
 		);
 	};
 
@@ -590,7 +476,7 @@ const Profile: FunctionComponent<
 			url: getEnv('SSUM_ACCOUNT_EDIT_URL') || '',
 			query: {
 				redirect_to: stringifyUrl({
-					url: getEnv('PROXY_URL') + '/auth/global-logout',
+					url: getEnv('PROXY_URL') + '/' + SERVER_LOGOUT_PAGE,
 					query: {
 						returnToUrl: window.location.href,
 					},
@@ -715,10 +601,7 @@ const Profile: FunctionComponent<
 											<CommonMetadata
 												enabledMetaData={
 													uiPermissions?.EDUCATION_LEVEL?.VIEW
-														? [
-																SearchFilter.educationLevel,
-																SearchFilter.educationDegree,
-														  ]
+														? [SearchFilter.educationLevel]
 														: []
 												}
 												subject={{
@@ -726,7 +609,7 @@ const Profile: FunctionComponent<
 														(lomField) =>
 															({
 																lom: lomField,
-															} as Avo.Lom.Lom)
+															}) as Avo.Lom.Lom
 													),
 													id: user.profile?.id as string,
 												}}
@@ -742,6 +625,14 @@ const Profile: FunctionComponent<
 													'settings/components/profile___selecteer-je-themas'
 												)}
 												showEducation={false}
+												showEducationDegrees={
+													uiPermissions?.EDUCATION_LEVEL?.VIEW
+												}
+												isThemesRequired={uiPermissions?.THEME?.REQUIRED}
+												isSubjectsRequired={
+													uiPermissions?.SUBJECTS?.REQUIRED
+												}
+												limitDegreesByAlreadySelectedLevels
 											/>
 										</>
 									)}
@@ -807,16 +698,6 @@ const Profile: FunctionComponent<
 		);
 	};
 
-	const renderPage = () => {
-		if (isCompleteProfileStep) {
-			// Render profile for the complete profile step of the registration process
-			return renderCompleteProfilePage();
-		}
-
-		// Render profile for the settings page
-		return renderProfilePage();
-	};
-
 	return isSaving ? (
 		<Spacer margin="top-extra-large">
 			<Flex orientation="horizontal" center>
@@ -825,7 +706,7 @@ const Profile: FunctionComponent<
 		</Spacer>
 	) : (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('settings/components/profile___profiel-instellingen-pagina-titel')
@@ -837,8 +718,8 @@ const Profile: FunctionComponent<
 						'settings/components/profile___profiel-instellingen-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
-			{renderPage()}
+			</Helmet>
+			{renderProfilePage()}
 		</>
 	);
 };
@@ -853,4 +734,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 export default withUser(
 	withRouter(connect(null, mapDispatchToProps)(Profile))
-) as FunctionComponent<ProfileProps>;
+) as FunctionComponent<any>;

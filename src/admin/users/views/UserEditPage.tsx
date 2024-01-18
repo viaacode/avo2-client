@@ -15,10 +15,10 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import React, { FC, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 
 import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -29,7 +29,7 @@ import LomFieldsInput from '../../../shared/components/LomFieldsInput/LomFieldsI
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { UserProps } from '../../../shared/hocs/withUser';
-import { useCompaniesWithUsers } from '../../../shared/hooks';
+import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -179,10 +179,10 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 							</FormGroup>
 
 							<FormGroup label={tText('admin/users/views/user-detail___voornaam')}>
-								<TextInput value={firstName} onChange={setFirstName} />
+								<TextInput value={firstName} onChange={setFirstName} disabled />
 							</FormGroup>
 							<FormGroup label={tText('admin/users/views/user-detail___achternaam')}>
-								<TextInput value={lastName} onChange={setLastName} />
+								<TextInput value={lastName} onChange={setLastName} disabled />
 							</FormGroup>
 							<FormGroup label={tText('admin/users/views/user-detail___functie')}>
 								<TextInput value={title} onChange={setTitle} />
@@ -269,7 +269,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						profile?.fullName,
@@ -282,7 +282,7 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 						'admin/users/views/user-detail___gebruikersbeheer-detail-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 
 			{renderUserEditPage()}
 		</>

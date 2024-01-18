@@ -1,5 +1,6 @@
 @use "sass:math";
 @import "../../../styles/settings/colors";
+@import "../../../styles/settings/variables";
 
 $player-play-button-dimensions: 7rem;
 $player-play-button-icon-dimensions: 3rem;
@@ -11,6 +12,8 @@ $c-spinner-fullscreen-holder-bg: rgba(#000, 0.5);
 $c-video-player-progress-inner-bg: $color-teal-bright;
 
 .c-video-player {
+	display: flex;
+	flex-direction: column;
 	position: relative;
 	border-radius: 0.4rem;
 	overflow: hidden;
@@ -122,6 +125,29 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 			height: 1.5rem;
 
 			margin-right: 0.5rem;
+		}
+	}
+
+	.c-video-player__top-right {
+		position: absolute;
+		top: 0;
+		right: 0;
+		//color: #fff !important;
+		//background-color: #0009;
+		padding: math.div($g-spacer-unit, 2) $g-spacer-unit;
+
+		background-color: #0009;
+		border-bottom-left-radius: 0.3rem;
+
+		.c-button--inline-link {
+			background-color: transparent !important;
+			text-decoration: none;
+
+			.c-button__label {
+				text-decoration: none !important;
+				color: #fff !important;
+				font-size: 1.2rem;
+			}
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ./.git*
 ./node_modules*
 ./ci-results*
+./dist/*
 ./build/*
 ./openshift/*
 ./cypress/*

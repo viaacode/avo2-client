@@ -12,10 +12,10 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { Dispatch, FunctionComponent, ReactNode, SetStateAction, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -194,7 +194,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						tText('settings/components/linked-accounts___koppelingen-pagina-titel')
@@ -206,7 +206,7 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 						'settings/components/linked-accounts___koppelingen-pagina-beschrijving'
 					)}
 				/>
-			</MetaTags>
+			</Helmet>
 			<Container mode="vertical">
 				<Spacer margin="bottom">
 					<Grid>

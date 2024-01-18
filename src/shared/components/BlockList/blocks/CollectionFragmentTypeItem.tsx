@@ -18,7 +18,7 @@ import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
 import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';
 
 import './CollectionFragmentTypeItem.scss';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 export interface CollectionFragmentTypeItemProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;

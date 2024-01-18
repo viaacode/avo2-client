@@ -7,10 +7,9 @@ import { DefaultSecureRouteProps } from '../../../authentication/components/Secu
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
-const ContentPageDetailPage: FC<DefaultSecureRouteProps<ContentPageDetailProps> & UserProps> = ({
-	match,
-	commonUser,
-}) => {
+const ContentPageDetailPage: FC<
+	DefaultSecureRouteProps<{ id: string }> & ContentPageDetailProps & UserProps
+> = ({ match, commonUser }) => {
 	const { id } = match.params;
 	return (
 		<ContentPageEdit

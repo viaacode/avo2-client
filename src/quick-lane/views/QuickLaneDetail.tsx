@@ -13,11 +13,11 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
@@ -325,7 +325,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 
 	return (
 		<>
-			<MetaTags>
+			<Helmet>
 				<title>
 					{GENERATE_SITE_TITLE(
 						get(
@@ -338,7 +338,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 					)}
 				</title>
 				<meta name="description" content={get(quickLane, 'description') || ''} />
-			</MetaTags>
+			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
 				notFoundError={tText(

@@ -1,0 +1,10 @@
+.c-header .c-header__bottom-row-right-slot {
+	position: relative;
+
+	// AVO-2918 move interactive tour more down
+	.c-interactive-tour {
+		position: absolute;
+		right: 0;
+		bottom: -3rem;
+	}
+}

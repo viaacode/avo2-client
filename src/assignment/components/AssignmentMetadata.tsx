@@ -1,5 +1,5 @@
 import { Flex } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import React, { FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers';
@@ -28,16 +28,6 @@ const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 	const pupilName = who === 'pupil' && assignmentResponse?.owner?.full_name;
 	const deadline = formatTimestamp(assignment?.deadline_at, false);
 
-	const labels = (assignment?.labels || [])
-		.filter((label) => label.assignment_label.type === 'LABEL')
-		.map((label) => label.assignment_label.label)
-		.join(', ');
-
-	const classes = (assignment?.labels || [])
-		.filter((label) => label.assignment_label.type === 'CLASS')
-		.map((label) => label.assignment_label.label)
-		.join(', ');
-
 	return (
 		<section className="u-spacer-bottom">
 			<Flex className="l-assignment-response__meta-data">
@@ -58,18 +48,6 @@ const AssignmentMetadata: FC<AssignmentMetadataProps> = ({
 						<>
 							{tHtml('assignment/views/assignment-response-edit___deadline')}:
 							<b>{` ${deadline}`}</b>
-						</>
-					),
-					labels && (
-						<>
-							{tHtml('assignment/views/assignment-response-edit___label')}:
-							<b>{` ${labels}`}</b>
-						</>
-					),
-					classes && (
-						<>
-							{tHtml('assignment/views/assignment-response-edit___klas')}:
-							<b>{` ${classes}`}</b>
 						</>
 					),
 				]

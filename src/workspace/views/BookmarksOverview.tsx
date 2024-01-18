@@ -22,14 +22,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../shared/components';
-import {
-	buildLink,
-	CustomError,
-	formatDate,
-	formatTimestamp,
-	fromNow,
-	isMobileWidth,
-} from '../../shared/helpers';
+import { buildLink, CustomError, formatDate, fromNow, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -229,8 +222,8 @@ const BookmarksOverview: FunctionComponent<
 				<MetaData category={contentType}>
 					<MetaDataItem>
 						{contentCreatedAt && (
-							<span title={`Aangemaakt: ${formatDate(contentCreatedAt)}`}>
-								{formatDate(contentCreatedAt)}
+							<span title={`Aangemaakt: ${formatDate(new Date(contentCreatedAt))}`}>
+								{formatDate(new Date(contentCreatedAt))}
 							</span>
 						)}
 					</MetaDataItem>
@@ -263,7 +256,11 @@ const BookmarksOverview: FunctionComponent<
 
 			case 'createdAt': {
 				const cellData = bookmarkInfo.createdAt;
-				return <span title={formatTimestamp(cellData)}>{fromNow(cellData)}</span>;
+				return (
+					<span title={new Date(cellData).toISOString()}>
+						{fromNow(new Date(cellData))}
+					</span>
+				);
 			}
 			case 'actions':
 				return renderDeleteAction(bookmarkInfo);

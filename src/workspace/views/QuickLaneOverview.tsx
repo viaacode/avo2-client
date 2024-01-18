@@ -1,6 +1,5 @@
-import { IconName, MoreOptionsDropdown } from '@viaa/avo2-components';
-import { MenuItemInfoSchema } from '@viaa/avo2-components/dist/esm/components/Menu/MenuContent/MenuContent';
-import { isEqual } from 'lodash';
+import { IconName, MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
+import { isEqual } from 'lodash-es';
 import React, { FC, FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
 
@@ -17,7 +16,7 @@ import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
-import { useDebounce } from '../../shared/hooks';
+import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	QuickLaneFilters,
@@ -290,7 +289,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> =
 						id: 'delete',
 						label: tText('workspace/views/quick-lane-overview___verwijder'),
 					},
-				] as (MenuItemInfoSchema & { id: actions })[];
+				] as (MenuItemInfo & { id: actions })[];
 
 				return (
 					data && (

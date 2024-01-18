@@ -10,16 +10,13 @@ import {
 	Pagination,
 	Spacer,
 	Table,
-	TableColumn,
+	type TableColumn,
 	Thumbnail,
 	Toolbar,
 	ToolbarItem,
 	ToolbarLeft,
 } from '@viaa/avo2-components';
-import { TableColumnSchema } from '@viaa/avo2-components/dist/esm/components/Table/Table';
-import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import type { Avo } from '@viaa/avo2-types';
-import { ShareWithColleagueType } from '@viaa/avo2-types/types/shared/shared-with-colluegue-type';
+import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
 import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -41,12 +38,13 @@ import {
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
-import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-types';
+import { useDeleteCollectionOrBundleByUuidMutation } from '../../shared/generated/graphql-db-react-query';
 import {
 	buildLink,
 	createDropdownMenuItem,
 	formatDate,
 	formatTimestamp,
+	isMobileWidth,
 	navigate,
 } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -61,8 +59,8 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
 import {
 	Collection,
-	CollectionAction,
 	CollectionCreateUpdateTab,
+	CollectionMenuAction,
 	CollectionShareType,
 	ContentTypeNumber,
 } from '../collection.types';
@@ -88,7 +86,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [collections, setCollections] = useState<Collection[] | null>(null);
 	const [permissions, setPermissions] = useState<{
-		[collectionUuid: string]: { canEdit?: boolean; canDelete?: boolean };
+		[collectionUuid: string]: {
+			canEdit?: boolean;
+			canDelete?: boolean;
+		};
 	}>({});
 	const [showPublicState, setShowPublicState] = useState(false);
 
@@ -159,32 +160,34 @@ const CollectionOrBundleOverview: FunctionComponent<
 
 			if (isCollection) {
 				perms = await Promise.all(
-					(collections || []).map(async (collection: Collection) => {
-						return await PermissionService.checkPermissions(
-							{
-								canEdit: [
-									{
-										name: PermissionName.EDIT_OWN_COLLECTIONS,
-										obj: collection,
-									},
-									{ name: PermissionName.EDIT_ANY_COLLECTIONS },
-								],
-								canDelete: [
-									{
-										name: PermissionName.DELETE_OWN_COLLECTIONS,
-										obj: collection,
-									},
-									{ name: PermissionName.DELETE_ANY_COLLECTIONS },
-								],
-							},
-							user
-						);
-					})
+					(collections || []).map(
+						async (collection: Partial<Avo.Collection.Collection>) => {
+							return await PermissionService.checkPermissions(
+								{
+									canEdit: [
+										{
+											name: PermissionName.EDIT_OWN_COLLECTIONS,
+											obj: collection,
+										},
+										{ name: PermissionName.EDIT_ANY_COLLECTIONS },
+									],
+									canDelete: [
+										{
+											name: PermissionName.DELETE_OWN_COLLECTIONS,
+											obj: collection,
+										},
+										{ name: PermissionName.DELETE_ANY_COLLECTIONS },
+									],
+								},
+								user
+							);
+						}
+					)
 				);
 			} else {
 				// bundles
 				perms = await Promise.all(
-					collections.map(async (bundle: Collection) => {
+					collections.map(async (bundle: Partial<Avo.Collection.Collection>) => {
 						return await PermissionService.checkPermissions(
 							{
 								canEdit: [
@@ -215,7 +218,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 					])
 				)
 			);
-			setCollections(collections);
+			setCollections(collections as unknown as Collection[]);
 		} catch (err) {
 			console.error('Failed to fetch collections', err, {});
 			setLoadingInfo({
@@ -380,7 +383,13 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	// Render functions
-	const getLinkProps = (id: string, title: string): { to: string; title: string } => ({
+	const getLinkProps = (
+		id: string,
+		title: string
+	): {
+		to: string;
+		title: string;
+	} => ({
 		title,
 		to: buildLink(
 			isCollection ? APP_PATH.COLLECTION_DETAIL.route : APP_PATH.BUNDLE_DETAIL.route,
@@ -427,13 +436,13 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const renderActions = (collectionUuid: string) => {
 		const ROW_DROPDOWN_ITEMS = [
 			...createDropdownMenuItem(
-				CollectionAction.editCollection,
+				CollectionMenuAction.editCollection,
 				tText('collection/views/collection-overview___bewerk'),
 				'edit2',
 				(permissions[collectionUuid] && permissions[collectionUuid].canEdit) || false
 			),
 			...createDropdownMenuItem(
-				CollectionAction.createAssignment,
+				CollectionMenuAction.createAssignment,
 				tText('collection/views/collection-overview___maak-opdracht'),
 				'clipboard',
 				(isCollection &&
@@ -441,19 +450,19 @@ const CollectionOrBundleOverview: FunctionComponent<
 					false
 			),
 			...createDropdownMenuItem(
-				CollectionAction.openQuickLane,
+				CollectionMenuAction.openQuickLane,
 				tText('collection/views/collection-overview___delen-met-leerlingen'),
 				'link-2',
 				isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE)
 			),
 			...createDropdownMenuItem(
-				CollectionAction.delete,
+				CollectionMenuAction.delete,
 				tText('collection/views/collection-overview___verwijderen'),
 				undefined,
 				!shouldDeleteSelfFromCollection
 			),
 			...createDropdownMenuItem(
-				CollectionAction.delete,
+				CollectionMenuAction.delete,
 				tText(
 					'collection/components/collection-or-bundle-overview___verwijder-mij-van-deze-collectie'
 				),
@@ -465,7 +474,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 		// Listeners
 		const onClickDropdownItem = (item: ReactText) => {
 			switch (item) {
-				case CollectionAction.editCollection:
+				case CollectionMenuAction.editCollection:
 					navigate(
 						history,
 						isCollection
@@ -475,21 +484,21 @@ const CollectionOrBundleOverview: FunctionComponent<
 					);
 					break;
 
-				case CollectionAction.createAssignment:
+				case CollectionMenuAction.createAssignment:
 					setActiveModalInfo({
 						collectionUuid,
 						activeModal: 'CREATE_ASSIGNMENT',
 					});
 					break;
 
-				case CollectionAction.openQuickLane:
+				case CollectionMenuAction.openQuickLane:
 					setActiveModalInfo({
 						collectionUuid,
 						activeModal: 'QUICK_LANE',
 					});
 					break;
 
-				case CollectionAction.delete:
+				case CollectionMenuAction.delete:
 					setActiveModalInfo({
 						collectionUuid,
 						activeModal: 'DELETE',
@@ -608,7 +617,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 
 			case 'share_type':
 				return createShareIconTableOverview(
-					collection.share_type as ShareWithColleagueType | undefined,
+					collection.share_type as ShareWithColleagueTypeEnum | undefined,
 					collection.contributors as unknown as
 						| Avo.Collection.Contributor[]
 						| null
@@ -681,7 +690,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 							col: '2',
 							sortable: true,
 							dataType: TableColumnDataType.boolean,
-						} as TableColumnSchema,
+						} as TableColumn,
 				  ]
 				: []),
 			// TODO re-enable once we can put collections in folders https://meemoo.atlassian.net/browse/AVO-591
@@ -760,44 +769,24 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	const renderTable = (collections: Collection[]) => {
-		return renderMobileDesktop({
-			mobile: (
-				<>
-					<Table
-						columns={getColumnsMobile()}
-						data={collections}
-						emptyStateMessage={tText(
-							'collection/views/collection-overview___geen-resultaten-gevonden'
-						)}
-						renderCell={renderCell}
-						rowKey="id"
-						variant="styled"
-						onColumnClick={onClickColumn as any}
-						sortColumn={sortColumn}
-						sortOrder={sortOrder}
-					/>
-					<Spacer margin="top-large">{renderPagination()}</Spacer>
-				</>
-			),
-			desktop: (
-				<>
-					<Table
-						columns={getColumnsDesktop()}
-						data={collections}
-						emptyStateMessage={tText(
-							'collection/views/collection-overview___geen-resultaten-gevonden'
-						)}
-						renderCell={renderCell}
-						rowKey="id"
-						variant="styled"
-						onColumnClick={onClickColumn as any}
-						sortColumn={sortColumn}
-						sortOrder={sortOrder}
-					/>
-					<Spacer margin="top-large">{renderPagination()}</Spacer>
-				</>
-			),
-		});
+		return (
+			<>
+				<Table
+					columns={isMobileWidth() ? getColumnsMobile() : getColumnsDesktop()}
+					data={collections}
+					emptyStateMessage={tText(
+						'collection/views/collection-overview___geen-resultaten-gevonden'
+					)}
+					renderCell={renderCell}
+					rowKey="id"
+					variant="styled"
+					onColumnClick={onClickColumn as any}
+					sortColumn={sortColumn}
+					sortOrder={sortOrder}
+				/>
+				<Spacer margin="top-large">{renderPagination()}</Spacer>
+			</>
+		);
 	};
 
 	const renderEmptyFallback = () => (

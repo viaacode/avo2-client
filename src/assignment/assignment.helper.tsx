@@ -1,8 +1,5 @@
-import { IconName } from '@viaa/avo2-components';
-import { RadioOption } from '@viaa/avo2-components/dist/esm/components/RadioButtonGroup/RadioButtonGroup';
-import type { Avo } from '@viaa/avo2-types';
-import { LomSchemeType } from '@viaa/avo2-types';
-import { UserSchema } from '@viaa/avo2-types/types/user';
+import { IconName, type RadioOption } from '@viaa/avo2-components';
+import { type Avo, LomSchemeType } from '@viaa/avo2-types';
 import { compact, orderBy } from 'lodash-es';
 import { ReactNode } from 'react';
 
@@ -91,14 +88,14 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 }
 
 export function isUserAssignmentOwner(
-	user: UserSchema,
+	user: Avo.User.User,
 	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
 	return assignment?.owner_profile_id === user.profile?.id;
 }
 
 export function isUserAssignmentContributor(
-	user: UserSchema,
+	user: Avo.User.User,
 	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
 	if (assignment.contributors) {

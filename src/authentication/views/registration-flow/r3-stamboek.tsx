@@ -1,7 +1,7 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { Alert, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 import React, { FunctionComponent, useState } from 'react';
-import MetaTags from 'react-meta-tags';
+import { Helmet } from 'react-helmet';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
@@ -35,7 +35,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 	return (
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="medium">
-				<MetaTags>
+				<Helmet>
 					<title>
 						{GENERATE_SITE_TITLE(
 							tText(
@@ -49,7 +49,7 @@ const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }
 							'authentication/views/registration-flow/r-3-stamboek___stamboek-pagina-beschrijving'
 						)}
 					/>
-				</MetaTags>
+				</Helmet>
 				<div className="c-content">
 					<BlockHeading type="h2">
 						{tHtml(

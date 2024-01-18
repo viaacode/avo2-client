@@ -3,7 +3,7 @@ import { Button, ButtonProps, DropdownProps, IconName, Tabs } from '@viaa/avo2-c
 import { PermissionName } from '@viaa/avo2-types';
 import React, { FC, useState } from 'react';
 
-import { useTabs } from '../../hooks';
+import { useTabs } from '../../hooks/useTabs';
 import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
 import {
@@ -33,6 +33,7 @@ export type ShareDropdownProps = {
 		[ContributorInfoRight.VIEWER]: PermissionName;
 	};
 	isAdmin: boolean;
+	isAssignmentExpired?: boolean;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
 	contributors,
@@ -45,6 +46,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	withPupils = true,
 	availableRights,
 	isAdmin,
+	isAssignmentExpired = false,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -94,7 +96,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					ariaLabel={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					label={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					onClick={handleShareButtonClicked}
-					disabled={false}
+					disabled={isAssignmentExpired}
 					icon={IconName.userGroup}
 					{...buttonProps}
 				/>

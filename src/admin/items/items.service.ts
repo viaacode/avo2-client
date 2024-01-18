@@ -1,59 +1,61 @@
 import { fetchWithLogout, fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
 
-import {
-	DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
+import type {
 	DeleteItemFromCollectionBookmarksAndAssignmentsMutation,
 	DeleteItemFromCollectionBookmarksAndAssignmentsMutationVariables,
-	GetDistinctSeriesDocument,
 	GetDistinctSeriesQuery,
 	GetDistinctSeriesQueryVariables,
-	GetItemByUuidDocument,
 	GetItemByUuidQuery,
 	GetItemByUuidQueryVariables,
-	GetItemDepublishReasonByExternalIdDocument,
 	GetItemDepublishReasonByExternalIdQuery,
 	GetItemDepublishReasonByExternalIdQueryVariables,
-	GetItemsByExternalIdDocument,
 	GetItemsByExternalIdQuery,
 	GetItemsByExternalIdQueryVariables,
-	GetItemsWithFiltersDocument,
 	GetItemsWithFiltersQuery,
 	GetItemsWithFiltersQueryVariables,
-	GetPublicItemsByTitleOrExternalIdDocument,
 	GetPublicItemsByTitleOrExternalIdQuery,
 	GetPublicItemsByTitleOrExternalIdQueryVariables,
-	GetPublicItemsDocument,
 	GetPublicItemsQuery,
 	GetPublicItemsQueryVariables,
-	GetUnpublishedItemPidsDocument,
 	GetUnpublishedItemPidsQuery,
 	GetUnpublishedItemPidsQueryVariables,
-	GetUnpublishedItemsWithFiltersDocument,
 	GetUnpublishedItemsWithFiltersQuery,
 	GetUnpublishedItemsWithFiltersQueryVariables,
-	GetUserWithEitherBookmarkDocument,
 	GetUserWithEitherBookmarkQuery,
 	GetUserWithEitherBookmarkQueryVariables,
-	Lookup_Enum_Relation_Types_Enum,
-	ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsMutation,
 	ReplaceItemInCollectionsBookmarksAndAssignmentsMutationVariables,
-	SetSharedItemsStatusDocument,
 	SetSharedItemsStatusMutation,
 	SetSharedItemsStatusMutationVariables,
-	UpdateItemDepublishReasonDocument,
 	UpdateItemDepublishReasonMutation,
 	UpdateItemDepublishReasonMutationVariables,
-	UpdateItemNotesDocument,
 	UpdateItemNotesMutation,
 	UpdateItemNotesMutationVariables,
-	UpdateItemPublishedStateDocument,
 	UpdateItemPublishedStateMutation,
 	UpdateItemPublishedStateMutationVariables,
-} from '../../shared/generated/graphql-db-types';
+} from '../../shared/generated/graphql-db-operations';
+import {
+	DeleteItemFromCollectionBookmarksAndAssignmentsDocument,
+	GetDistinctSeriesDocument,
+	GetItemByUuidDocument,
+	GetItemDepublishReasonByExternalIdDocument,
+	GetItemsByExternalIdDocument,
+	GetItemsWithFiltersDocument,
+	GetPublicItemsByTitleOrExternalIdDocument,
+	GetPublicItemsDocument,
+	GetUnpublishedItemPidsDocument,
+	GetUnpublishedItemsWithFiltersDocument,
+	GetUserWithEitherBookmarkDocument,
+	ReplaceItemInCollectionsBookmarksAndAssignmentsDocument,
+	SetSharedItemsStatusDocument,
+	UpdateItemDepublishReasonDocument,
+	UpdateItemNotesDocument,
+	UpdateItemPublishedStateDocument,
+} from '../../shared/generated/graphql-db-react-query';
+import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../../shared/helpers';
 import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
@@ -65,6 +67,7 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
 	ItemsOverviewTableCols,
+	ItemUsedByResponse,
 	UnpublishedItem,
 	UnpublishedItemsOverviewTableCols,
 } from './items.types';
@@ -607,6 +610,29 @@ export class ItemsService {
 			throw new CustomError('Failed to get unpublished item pids from the database', err, {
 				variables,
 				query: 'GET_UNPUBLISHED_ITEM_PIDS',
+			});
+		}
+	}
+
+	static async getItemUsedBy(
+		itemUuid: string,
+		sortProp: string | undefined,
+		sortDirection: string | undefined
+	): Promise<ItemUsedByResponse> {
+		let url: string | null = null;
+		try {
+			url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/items/${itemUuid}/used-by`,
+				query: {
+					sortProp,
+					sortDirection,
+				},
+			});
+			const response = await fetchWithLogoutJson<ItemUsedByResponse>(url);
+			return response;
+		} catch (err) {
+			throw new CustomError('Failed to get item used by from the database', err, {
+				itemUuid,
 			});
 		}
 	}

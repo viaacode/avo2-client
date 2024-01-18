@@ -1,8 +1,8 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { Button, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { subMinutes } from 'date-fns';
 import { compact } from 'lodash-es';
-import moment from 'moment';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Action, Dispatch } from 'redux';
@@ -25,7 +25,7 @@ import {
 let checkSessionTimeoutTimerId: number | null = null;
 
 function checkIfSessionExpires(expiresAt: string) {
-	const date = moment(expiresAt);
+	const date = new Date(expiresAt);
 
 	// Create fake location object
 	const location = {
@@ -34,9 +34,9 @@ function checkIfSessionExpires(expiresAt: string) {
 			from: { pathname: window.location.pathname, search: window.location.search },
 		},
 	} as unknown as RouteComponentProps['location'];
-	if (date.subtract(5, 'minutes').valueOf() < new Date().getTime()) {
+	if (subMinutes(date, 5).getTime() < new Date().getTime()) {
 		logoutAndRedirectToLogin(location);
-	} else if (date.subtract(10, 'minutes').valueOf() < new Date().getTime()) {
+	} else if (subMinutes(date, 10).getTime() < new Date().getTime()) {
 		// Show warning since user is about to be logged out
 		ToastService.info(
 			<>

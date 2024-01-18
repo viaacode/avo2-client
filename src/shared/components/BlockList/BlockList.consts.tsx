@@ -1,5 +1,5 @@
 import { IconName } from '@viaa/avo2-components';
-import type { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
 import { tText } from '../../helpers/translate';
 

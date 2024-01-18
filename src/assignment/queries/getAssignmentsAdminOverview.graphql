@@ -41,10 +41,7 @@ query getAssignmentsAdminOverview(
 				}
 			}
 		}
-		view_count {
-			count
-		}
-		responses_aggregate(where: { collection_title: { _is_null: false } }) {
+		responses_aggregate {
 			aggregate {
 				count
 			}
@@ -69,12 +66,30 @@ query getAssignmentsAdminOverview(
 			}
 			id
 		}
+		counts {
+			bookmarks
+			views
+			copies
+			contributors
+		}
 		loms {
 			lom {
 				id
 				label
 				scheme
 				broader
+			}
+		}
+		labels {
+			assignment_label {
+				label
+				id
+			}
+		}
+		last_user_edit_profile {
+			usersByuserId {
+				full_name
+				last_name
 			}
 		}
 	}
