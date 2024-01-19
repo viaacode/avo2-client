@@ -4,13 +4,8 @@ import {
 	Button,
 	ButtonToolbar,
 	Container,
-	Flex,
-	FlexItem,
 	Form,
 	FormGroup,
-	IconName,
-	Select,
-	Spacer,
 	Spinner,
 	TextArea,
 	TextInput,
@@ -29,7 +24,6 @@ import LomFieldsInput from '../../../shared/components/LomFieldsInput/LomFieldsI
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { PHOTO_TYPES } from '../../../shared/helpers/files';
 import { UserProps } from '../../../shared/hocs/withUser';
-import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
@@ -47,7 +41,6 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 		Partial<{ [prop in keyof Avo.User.UpdateProfileValues]: string }>
 	>({});
 
-	const [companies] = useCompaniesWithUsers();
 	const [firstName, setFirstName] = useState<string | undefined>();
 	const [lastName, setLastName] = useState<string | undefined>();
 	const [avatar, setAvatar] = useState<string | undefined>();
@@ -178,12 +171,6 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 								{!!companyId && !companyLogo && 'geen avatar'}
 							</FormGroup>
 
-							<FormGroup label={tText('admin/users/views/user-detail___voornaam')}>
-								<TextInput value={firstName} onChange={setFirstName} disabled />
-							</FormGroup>
-							<FormGroup label={tText('admin/users/views/user-detail___achternaam')}>
-								<TextInput value={lastName} onChange={setLastName} disabled />
-							</FormGroup>
 							<FormGroup label={tText('admin/users/views/user-detail___functie')}>
 								<TextInput value={title} onChange={setTitle} />
 							</FormGroup>
@@ -197,42 +184,6 @@ const UserEditPage: FC<UserEditPageProps & UserProps> = ({ history, match }) => 
 								<TextInput value={alias} onChange={setAlias} />
 							</FormGroup>
 							<LomFieldsInput loms={loms} onChange={setLoms} />
-							<FormGroup label={tText('admin/users/views/user-detail___bedrijf')}>
-								<Flex>
-									<FlexItem>
-										<Select
-											options={compact(
-												(companies || []).map((org) => {
-													if (!org.name || !org.or_id) {
-														return null;
-													}
-
-													return {
-														label: org.name,
-														value: org.or_id,
-													};
-												})
-											)}
-											value={companyId}
-											onChange={setCompanyId}
-											clearable
-										/>
-									</FlexItem>
-									<FlexItem shrink>
-										<Spacer margin="left">
-											<Button
-												type="danger"
-												size="large"
-												ariaLabel={tText(
-													'admin/users/views/user-edit___verbreek-de-link-tussen-deze-gebruiker-en-dit-bedrijf'
-												)}
-												icon={'delete' as IconName}
-												onClick={() => setCompanyId(undefined)}
-											/>
-										</Spacer>
-									</FlexItem>
-								</Flex>
-							</FormGroup>
 						</Form>
 					</Box>
 				</Container>
