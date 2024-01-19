@@ -125,14 +125,8 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 
 	// Only teachers have to fill in their profile for now
 	const userGroupId = getUserGroupId(user?.profile);
-	if (
-		userGroupId !== SpecialUserGroup.Teacher &&
-		userGroupId !== SpecialUserGroup.TeacherSecondary
-	) {
-		return true;
-	}
 
-	if (userGroupId !== SpecialUserGroup.TeacherSecondary) {
+	if (userGroupId === SpecialUserGroup.TeacherSecondary) {
 		return (
 			!!profile &&
 			!!profile.organizations &&
@@ -141,12 +135,15 @@ export function isProfileComplete(user: Avo.User.User): boolean {
 			!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject)
 		);
 	}
-	// userGroupId === SpecialUserGroup.Teacher
-	return (
-		!!profile &&
-		!!profile.organizations &&
-		!!profile.organizations.length &&
-		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure) &&
-		!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.theme)
-	);
+	if (userGroupId === SpecialUserGroup.Teacher) {
+		return (
+			!!profile &&
+			!!profile.organizations &&
+			!!profile.organizations.length &&
+			!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.structure) &&
+			!!profile.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.theme)
+		);
+	}
+
+	return true;
 }
