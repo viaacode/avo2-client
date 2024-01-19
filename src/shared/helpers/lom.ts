@@ -11,6 +11,7 @@ export enum EducationLevelId {
 	secundairOnderwijs = 'https://w3id.org/onderwijs-vlaanderen/id/structuur/secundair-onderwijs',
 	hogerOnderwijs = 'https://w3id.org/onderwijs-vlaanderen/id/structuur/hoger-onderwijs',
 	volwassenenOnderwijs = 'https://w3id.org/onderwijs-vlaanderen/id/structuur/volwassenenonderwijs',
+	andere = 'andere',
 }
 
 const EDUCATION_LEVEL_IDS = Object.values(EducationLevelId);

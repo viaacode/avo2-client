@@ -209,7 +209,6 @@ export const GET_USER_OVERVIEW_TABLE_COLS: (
 		filterProps: {
 			options: [
 				...educationLevels,
-				{ label: tText('admin/users/user___andere'), id: 'Andere' },
 				{ label: tText('admin/users/user___leeg'), id: NULL_FILTER },
 			],
 		} as CheckboxDropdownModalProps,
