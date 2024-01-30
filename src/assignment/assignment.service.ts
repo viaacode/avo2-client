@@ -52,8 +52,6 @@ import {
 	IncrementAssignmentViewCountMutationVariables,
 	InsertAssignmentBlocksMutation,
 	InsertAssignmentBlocksMutationVariables,
-	InsertAssignmentMutation,
-	InsertAssignmentMutationVariables,
 	InsertAssignmentResponseMutation,
 	InsertAssignmentResponseMutationVariables,
 	SoftDeleteAssignmentByIdMutation,
@@ -83,7 +81,6 @@ import {
 	GetMaxPositionAssignmentBlocksDocument,
 	IncrementAssignmentViewCountDocument,
 	InsertAssignmentBlocksDocument,
-	InsertAssignmentDocument,
 	InsertAssignmentResponseDocument,
 	SoftDeleteAssignmentByIdDocument,
 	UpdateAssignmentResponseDocument,
@@ -96,7 +93,6 @@ import {
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
-import { getLomLearningResourceTypesFromBlocks } from '../shared/helpers/block-types-to-lom-learning-resource-type';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
@@ -322,9 +318,6 @@ export class AssignmentService {
 		profileId: string
 	): Promise<App_Assignments_V2_Insert_Input | App_Assignments_V2_Set_Input> {
 		const assignmentToSave = cloneDeep(assignment);
-		assignmentToSave.lom_learning_resource_type = getLomLearningResourceTypesFromBlocks(
-			assignment.blocks || []
-		);
 
 		if (assignmentToSave.answer_url && !/^(https?:)?\/\//.test(assignmentToSave.answer_url)) {
 			assignmentToSave.answer_url = `//${assignmentToSave.answer_url}`;
@@ -1066,26 +1059,16 @@ export class AssignmentService {
 		collection: Avo.Collection.Collection,
 		withDescription: boolean
 	): Promise<string> {
-		const variables: InsertAssignmentMutationVariables = {
-			assignment: {
+		const assignment = await AssignmentService.insertAssignment(
+			{
 				title: collection.title,
-				description: collection.description,
+				description: collection.description ?? undefined,
 				owner_profile_id: getProfileId(user),
-				lom_learning_resource_type: getLomLearningResourceTypesFromBlocks(
-					collection.collection_fragments || []
-				),
 			},
-		};
+			user.profile?.id as string
+		);
 
-		const assignment = await dataService.query<
-			InsertAssignmentMutation,
-			InsertAssignmentMutationVariables
-		>({
-			query: InsertAssignmentDocument,
-			variables,
-		});
-
-		const assignmentId = assignment.insert_app_assignments_v2?.returning?.[0]?.id;
+		const assignmentId = assignment?.id;
 
 		if (isNil(assignmentId)) {
 			throw new CustomError(
@@ -1128,25 +1111,30 @@ export class AssignmentService {
 			end_oc?: number | null;
 		}
 	): Promise<string> {
-		const variables: InsertAssignmentMutationVariables = {
-			assignment: {
+		const assignment = await AssignmentService.insertAssignment(
+			{
 				title: item.title,
 				owner_profile_id: getProfileId(user),
-				lom_learning_resource_type: [AssignmentType.KIJK],
+				blocks: [
+					{
+						fragment_id: item.external_id,
+						type: AssignmentBlockType.ITEM,
+						position: 0,
+						start_oc: item.start_oc || null,
+						end_oc: item.end_oc || null,
+						thumbnail_path: item.start_oc
+							? await VideoStillService.getVideoStill(
+									item.external_id,
+									item.start_oc * 1000
+							  )
+							: null,
+					},
+				] as Avo.Assignment.Assignment['blocks'],
 			},
-		};
+			user.profile?.id as string
+		);
 
-		const assignment = await dataService.query<
-			InsertAssignmentMutation,
-			InsertAssignmentMutationVariables
-		>({
-			query: InsertAssignmentDocument,
-			variables,
-		});
-
-		const assignmentId = assignment.insert_app_assignments_v2?.returning?.[0]?.id;
-
-		if (isNil(assignmentId)) {
+		if (!assignment) {
 			throw new CustomError(
 				'Saving the assignment failed, assignment id was undefined',
 				null,
@@ -1156,30 +1144,7 @@ export class AssignmentService {
 			);
 		}
 
-		// Add block with this fragment
-		const block = {
-			assignment_id: assignmentId,
-			fragment_id: item.external_id,
-			type: 'ITEM',
-			position: 0,
-			start_oc: item.start_oc,
-			end_oc: item.end_oc,
-			thumbnail_path: item.start_oc
-				? await VideoStillService.getVideoStill(item.external_id, item.start_oc * 1000)
-				: null,
-		};
-
-		await dataService.query<
-			InsertAssignmentBlocksMutation,
-			InsertAssignmentBlocksMutationVariables
-		>({
-			query: InsertAssignmentBlocksDocument,
-			variables: {
-				assignmentBlocks: [block],
-			},
-		});
-
-		return assignmentId;
+		return assignment.id;
 	}
 
 	static async importFragmentToAssignment(

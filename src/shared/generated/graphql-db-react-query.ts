@@ -2324,25 +2324,6 @@ export const useIncrementAssignmentViewCountMutation = <
       (variables?: IncrementAssignmentViewCountMutationVariables) => fetchData<IncrementAssignmentViewCountMutation, IncrementAssignmentViewCountMutationVariables>(IncrementAssignmentViewCountDocument, variables)(),
       options
     );
-export const InsertAssignmentDocument = `
-    mutation insertAssignment($assignment: app_assignments_v2_insert_input!) {
-  insert_app_assignments_v2(objects: [$assignment]) {
-    affected_rows
-    returning {
-      id
-    }
-  }
-}
-    `;
-export const useInsertAssignmentMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>) =>
-    useMutation<InsertAssignmentMutation, TError, InsertAssignmentMutationVariables, TContext>(
-      ['insertAssignment'],
-      (variables?: InsertAssignmentMutationVariables) => fetchData<InsertAssignmentMutation, InsertAssignmentMutationVariables>(InsertAssignmentDocument, variables)(),
-      options
-    );
 export const InsertAssignmentBlocksDocument = `
     mutation insertAssignmentBlocks($assignmentBlocks: [app_assignment_blocks_v2_insert_input!]!) {
   insert_app_assignment_blocks_v2(objects: $assignmentBlocks) {

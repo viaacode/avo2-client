@@ -1,8 +1,0 @@
-mutation insertAssignment($assignment: app_assignments_v2_insert_input!) {
-	insert_app_assignments_v2(objects: [$assignment]) {
-		affected_rows
-		returning {
-			id
-		}
-	}
-}

@@ -482,13 +482,6 @@ export type IncrementAssignmentViewCountMutationVariables = Exact<{
 
 export type IncrementAssignmentViewCountMutation = { __typename?: 'mutation_root', update_app_assignment_v2_views?: { __typename?: 'app_assignment_v2_views_mutation_response', affected_rows: number } | null };
 
-export type InsertAssignmentMutationVariables = Exact<{
-  assignment: App_Assignments_V2_Insert_Input;
-}>;
-
-
-export type InsertAssignmentMutation = { __typename?: 'mutation_root', insert_app_assignments_v2?: { __typename?: 'app_assignments_v2_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'app_assignments_v2', id: any }> } | null };
-
 export type InsertAssignmentBlocksMutationVariables = Exact<{
   assignmentBlocks: Array<App_Assignment_Blocks_V2_Insert_Input> | App_Assignment_Blocks_V2_Insert_Input;
 }>;

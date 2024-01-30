@@ -22490,12 +22490,6 @@ export type Lookup_Thesaurus_Bool_Exp = {
   topconceptof?: InputMaybe<String_Comparison_Exp>;
 };
 
-/** unique or primary key constraints on table "lookup.thesaurus" */
-export enum Lookup_Thesaurus_Constraint {
-  /** unique or primary key constraint on columns "scheme", "label", "id", "broader" */
-  LookupThesaurusUniqueIdx = 'lookup_thesaurus_unique_idx'
-}
-
 /** input type for inserting data into table "lookup.thesaurus" */
 export type Lookup_Thesaurus_Insert_Input = {
   broader?: InputMaybe<Scalars['String']>;
@@ -22534,8 +22528,6 @@ export type Lookup_Thesaurus_Min_Fields = {
 /** input type for inserting object relation for remote table "lookup.thesaurus" */
 export type Lookup_Thesaurus_Obj_Rel_Insert_Input = {
   data: Lookup_Thesaurus_Insert_Input;
-  /** upsert condition */
-  on_conflict?: InputMaybe<Lookup_Thesaurus_On_Conflict>;
 };
 
 /** columns and relationships of "lookup.thesaurus_old" */
@@ -22683,13 +22675,6 @@ export type Lookup_Thesaurus_Old_Updates = {
   where: Lookup_Thesaurus_Old_Bool_Exp;
 };
 
-/** on_conflict condition type for table "lookup.thesaurus" */
-export type Lookup_Thesaurus_On_Conflict = {
-  constraint: Lookup_Thesaurus_Constraint;
-  update_columns?: Array<Lookup_Thesaurus_Update_Column>;
-  where?: InputMaybe<Lookup_Thesaurus_Bool_Exp>;
-};
-
 /** Ordering options when selecting data from "lookup.thesaurus". */
 export type Lookup_Thesaurus_Order_By = {
   broader?: InputMaybe<Order_By>;
@@ -22745,28 +22730,6 @@ export type Lookup_Thesaurus_Stream_Cursor_Value_Input = {
   scheme?: InputMaybe<Scalars['String']>;
   topconceptof?: InputMaybe<Scalars['String']>;
 };
-
-/** update columns of table "lookup.thesaurus" */
-export enum Lookup_Thesaurus_Update_Column {
-  /** column name */
-  Broader = 'broader',
-  /** column name */
-  Definition = 'definition',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Label = 'label',
-  /** column name */
-  Member = 'member',
-  /** column name */
-  Narrower = 'narrower',
-  /** column name */
-  Related = 'related',
-  /** column name */
-  Scheme = 'scheme',
-  /** column name */
-  Topconceptof = 'topconceptof'
-}
 
 /** columns and relationships of "migrate.reference_ids" */
 export type Migrate_Reference_Ids = {

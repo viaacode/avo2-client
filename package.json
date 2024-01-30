@@ -25,7 +25,7 @@
     "analyse": "source-map-explorer 'dist/assets/index-*.js'",
     "build-and-analyse": "npm run build && source-map-explorer 'dist/assets/index-*.js' --no-border-checks",
     "analyse-old": "source-map-explorer '../avo2-client_build-before_vite/static/js/main.a10a3298.js'",
-    "generate-database-types": "dotenv -e .env graphql-codegen -- --verbose --config codegen.yml",
+    "generate-database-types": "dotenv -e .env.qas graphql-codegen -- --verbose --config codegen.yml",
     "bump": "bump-package-versions --part=patch --strategy=highest ./package.json",
     "list-of-changed-translations": "git diff 296b12bc26a4d5c83b8bb35be5f05115ac6356fe b56c8382a7622a13a7f983c682c1094daa514c94 --no-ext-diff --unified=0 --exit-code -a --no-prefix src/shared/translations/nl.json > translation-changes.txt"
   },
