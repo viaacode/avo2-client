@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { reverse, toPairs } from 'lodash-es';
-import { matchPath } from 'react-router';
+import { compact, reverse, sortBy, toPairs } from 'lodash-es';
+import { match, matchPath } from 'react-router';
 
 import { APP_PATH, RouteId, RouteInfo } from '../../../../constants';
 import { QUERY_KEYS } from '../../../constants/query-keys';
@@ -23,13 +23,32 @@ async function getInteractiveTourForPage(
 		toPairs(APP_PATH).filter((pair) => pair[1].showForInteractiveTour)
 	);
 
-	const matchingRoutePair: [string, RouteInfo] | undefined = interactiveRoutePairs.find(
-		(pair) => {
+	const matchingRoutePairs: [string, RouteInfo, match][] = compact(
+		interactiveRoutePairs.map((pair) => {
 			const route = pair[1].route;
 			const match = matchPath(currentPath, route);
-			return !!match;
-		}
+			if (match) {
+				return [...pair, match];
+			} else {
+				return null;
+			}
+		})
 	);
+
+	const matchingRoutePairsSorted = sortBy(matchingRoutePairs, (pair) => {
+		if (pair[2].path === pair[2].url) {
+			// Exact match always should be considered first
+			// eg: /opdrachten/maak is better than /opdrachten/:id
+			return -1000;
+		} else {
+			// A more specific path should be used first
+			// eg: /opdrachten/:id/bewerk/:tabId is better than /opdrachten/:id
+			return -pair[2].path.length;
+		}
+	});
+
+	// Prefer exact route matches over matches with a parameter
+	const matchingRoutePair = matchingRoutePairsSorted[0];
 
 	let routeId: RouteId | undefined;
 	if (matchingRoutePair) {
@@ -57,10 +76,17 @@ async function getInteractiveTourForPage(
 		profileId,
 		tourDisplayDates
 	);
-	return {
-		tour: tourTemp,
-		routeId,
-	};
+	if (document.querySelector(tourTemp?.steps[0].target)) {
+		return {
+			tour: tourTemp,
+			routeId,
+		};
+	} else {
+		return {
+			tour: null,
+			routeId: null,
+		};
+	}
 }
 
 export const useGetInteractiveTourForPage = (
