@@ -26,7 +26,7 @@ const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
 		result: Avo.Search.ResultItem
 	): { typeTags: TagOption[]; qualityTags: TagOption[] } => {
 		const qualityLabels = compact(result?.collection_labels || []) as string[];
-		const assignmentTypeLabels = compact(result?.lom_learning_resource_type || []);
+		const assignmentTypeLabels = compact(result?.lom_learning_resource_type || []).sort();
 
 		const TAG_TRANSLATIONS: Record<string, string> = {
 			PARTNER: tText('search/components/search-result-item___partner'),
