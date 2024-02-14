@@ -18,7 +18,6 @@ export interface TitleDescriptionFormProps extends DefaultProps {
 	id: string | number;
 	title?: TitleDescriptionFormTitleField;
 	description?: TitleDescriptionFormDescriptionField;
-	onFocus?: () => void;
 }
 
 export const TitleDescriptionFormIds = {
@@ -27,7 +26,7 @@ export const TitleDescriptionFormIds = {
 };
 
 export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
-	const { id, style, className, onFocus } = props;
+	const { id, style, className } = props;
 
 	const titleValue = props.title?.value;
 	const descriptionInitialHtml = props.description?.initialHtml;
@@ -62,7 +61,6 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
 						onChange={setTitle}
 						onBlur={() => props.title?.onChange?.(title as string)}
 						id={getId(TitleDescriptionFormIds.title)}
-						onFocus={onFocus}
 					/>
 				</FormGroup>
 			)}
@@ -78,7 +76,6 @@ export const TitleDescriptionForm: FC<TitleDescriptionFormProps> = (props) => {
 						onChange={setDescription}
 						onBlur={() => props.description?.onChange?.(description as RichEditorState)}
 						id={getId(TitleDescriptionFormIds.description)}
-						onFocus={onFocus}
 					/>
 				</FormGroup>
 			)}

@@ -24,6 +24,7 @@ export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock, o
 					: tText('assignment/views/assignment-edit___instructies-of-omschrijving'),
 				value: block.custom_title || '',
 				onChange: (value) => setBlock({ ...block, custom_title: value }),
+				onFocus,
 			}}
 			description={{
 				placeholder: block.assignment_response_id
@@ -41,8 +42,8 @@ export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock, o
 						...block,
 						custom_description: value.toHTML(),
 					}),
+				onFocus,
 			}}
-			onFocus={onFocus}
 		/>
 	);
 };
