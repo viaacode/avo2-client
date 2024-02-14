@@ -422,6 +422,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				ToastService.success(
 					tHtml('assignment/views/assignment-edit___de-opdracht-is-succesvol-aangepast')
 				);
+
+				setHasUnsavedChanges(false);
 			}
 		} catch (err) {
 			console.error(err);
