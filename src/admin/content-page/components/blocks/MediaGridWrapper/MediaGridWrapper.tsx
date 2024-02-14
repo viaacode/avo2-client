@@ -27,6 +27,7 @@ import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
 import { ToastService } from '../../../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
 
 import { BlockMediaGrid, MediaListItem } from './BlockMediaGrid';
@@ -154,6 +155,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 				}
 			}
 		} catch (err) {
+			console.error(err);
 			setLoadingInfo({
 				state: 'error',
 				message: tHtml(
@@ -318,6 +320,9 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 			itemOrCollectionOrAssignment?.view_counts_aggregate?.aggregate?.sum?.count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
+		const showCopyrightNotice =
+			!!itemOrCollectionOrAssignment.copyrightOrganisation &&
+			(!commonUser || location.pathname.startsWith(ADMIN_PATH.DASHBOARD));
 
 		return {
 			category:
@@ -352,7 +357,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 				label: itemLabel,
 				meta: getThumbnailMetadata(itemOrCollectionOrAssignment),
 				src: element.copyrightImage || getThumbnailFromItem(itemOrCollectionOrAssignment),
-				topRight: !!itemOrCollectionOrAssignment.copyrightOrganisation && !commonUser && (
+				topRight: showCopyrightNotice && (
 					<Button
 						type="inline-link"
 						onClick={(evt) =>

@@ -13,7 +13,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { APP_PATH, RouteId } from '../../../constants';
 import { FlowPlayerWrapper } from '../../../shared/components';
-import { ROUTE_PARTS } from '../../../shared/constants';
+import { DEFAULT_AUDIO_STILL, ROUTE_PARTS } from '../../../shared/constants';
 import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
@@ -147,6 +147,7 @@ export function getAdminCoreConfig(): AdminConfig {
 			loader: {
 				component: () => <Spinner size="large" />,
 			},
+			defaultAudioStill: DEFAULT_AUDIO_STILL,
 			buttonTypes: () => [
 				{
 					label: tText('admin/content-block/content-block___primair'),
