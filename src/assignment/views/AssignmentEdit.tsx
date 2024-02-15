@@ -47,6 +47,7 @@ import {
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { UserProps } from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
+import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
@@ -87,7 +88,6 @@ import {
 	useEditBlocks,
 } from '../hooks';
 import { AssignmentFields } from '../hooks/assignment-form';
-import { useAssignmentPastDeadline } from '../hooks/assignment-past-deadline';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import AssignmentResponses from './AssignmentResponses';

@@ -5,6 +5,7 @@ import React, { FC } from 'react';
 
 import { APP_PATH } from '../../../constants';
 import { buildLink, copyToClipboard } from '../../helpers';
+import { useAssignmentPastDeadline } from '../../hooks/useAssignmentPastDeadline';
 import useTranslation from '../../hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
 
@@ -23,6 +24,8 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 
+	const isAssignmentExpired = useAssignmentPastDeadline(assignment);
+
 	// Computed
 	const assignmentShareLink: string = assignment
 		? window.location.origin +
@@ -30,6 +33,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 				id: assignment.id,
 		  })
 		: '';
+
 	const isAssignmentDetailsComplete =
 		!!(assignment?.labels || []).filter(
 			(l: { assignment_label: Avo.Assignment.Label }) => l.assignment_label.type === 'CLASS'
@@ -38,7 +42,10 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 		// !!assignment?.labels.filter((l) => l.assignment_label.type === 'LABEL')?.length &&
 		!!assignment?.available_at &&
 		!!assignment?.deadline_at;
+
 	const hasAssignmentContent = !!assignment?.blocks?.length;
+
+	const canCopy = !isAssignmentExpired && hasAssignmentContent && isAssignmentDetailsComplete;
 
 	const handleCopyButtonClicked = () => {
 		copyToClipboard(assignmentShareLink);
@@ -60,8 +67,7 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 	return (
 		<div
 			className={classnames('c-share-with-pupil', {
-				['c-share-with-pupil--disabled']:
-					!hasAssignmentContent || !isAssignmentDetailsComplete,
+				['c-share-with-pupil--disabled']: !canCopy,
 			})}
 		>
 			<Flex>
@@ -70,10 +76,11 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 					label={tText('assignment/components/share-assignment-with-pupil___kopieer')}
 					icon={IconName.copy}
 					onClick={handleCopyButtonClicked}
+					disabled={!canCopy}
 					type="tertiary"
 				/>
 			</Flex>
-			{(!isAssignmentDetailsComplete || !hasAssignmentContent) && (
+			{!canCopy && (
 				<>
 					<Spacer margin="bottom" />
 					<Alert
@@ -82,11 +89,17 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 							<>
 								<h4>
 									<strong>
-										{tText(
-											'assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar'
-										)}
+										{(!hasAssignmentContent || !isAssignmentDetailsComplete) &&
+											tText(
+												'assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar'
+											)}
+										{isAssignmentExpired &&
+											tText(
+												'assignment/components/share-assignment-with-pupil___opdracht-is-verlopen--titel'
+											)}
 									</strong>
 								</h4>
+
 								{!hasAssignmentContent && (
 									<p>
 										{tText(
@@ -118,6 +131,13 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 											tText(
 												'assignment/components/share-assignment-with-pupil___aan'
 											)}
+									</p>
+								)}
+								{isAssignmentExpired && (
+									<p>
+										{tHtml(
+											'assignment/components/share-assignment-with-pupil___opdracht-is-verlopen--beschrijving'
+										)}
 									</p>
 								)}
 							</>

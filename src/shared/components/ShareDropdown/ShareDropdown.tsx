@@ -46,7 +46,6 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 	withPupils = true,
 	availableRights,
 	isAdmin,
-	isAssignmentExpired = false,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -96,7 +95,6 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					ariaLabel={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					label={tText('shared/components/share-dropdown/share-dropdown___delen')}
 					onClick={handleShareButtonClicked}
-					disabled={isAssignmentExpired}
 					icon={IconName.userGroup}
 					{...buttonProps}
 				/>

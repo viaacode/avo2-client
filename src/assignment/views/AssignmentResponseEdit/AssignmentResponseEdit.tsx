@@ -38,6 +38,7 @@ import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPromp
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -58,7 +59,6 @@ import AssignmentMetadata from '../../components/AssignmentMetadata';
 import { buildAssignmentSearchLink } from '../../helpers/build-search-link';
 import { cleanupTitleAndDescriptions } from '../../helpers/cleanup-title-and-descriptions';
 import { backToOverview } from '../../helpers/links';
-import { useAssignmentPastDeadline } from '../../hooks/assignment-past-deadline';
 import { useAssignmentPupilTabs } from '../../hooks/assignment-pupil-tabs';
 
 import AssignmentResponseAssignmentTab from './tabs/AssignmentResponseAssignmentTab';
