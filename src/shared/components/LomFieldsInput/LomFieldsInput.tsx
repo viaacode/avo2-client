@@ -137,7 +137,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					<TagsInput
 						id="educationId"
 						isLoading={isEducationLevelsLoading}
-						options={allEducationLevels?.map(lomToTagInfo)}
+						options={getEducationLevelOptions(allEducationLevels)}
 						value={
 							getEducationLevelOptions([
 								...lomFields.educationDegree,
