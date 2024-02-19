@@ -14,7 +14,7 @@ module.exports = {
 			},
 		},
 		{
-			files: ['package.json', 'package-lock.json', 'src/shared/translations/nl.json'],
+			files: ['**/*.json'],
 			options: {
 				useTabs: false,
 				tabWidth: 2,
