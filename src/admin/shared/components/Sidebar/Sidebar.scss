@@ -1,3 +1,5 @@
+@use "sass:color";
+
 @import "../../../../styles/settings/colors";
 @import "../../../../styles/settings/variables";
 
@@ -49,16 +51,17 @@
 	.o-sidebar__nav-item-sublink > a {
 		padding: 6px 0 6px 44px;
 		display: block;
-		background-color: rgba(255, 255, 255, 0.04);
+		background-color: color.adjust($color-gray-700, $lightness: 4%);
 	}
 
 	.o-sidebar__nav-item-wrapper {
-		border-color: rgba($color-gray-50, 0.4);
+		border-color: color.adjust($color-gray-700, $lightness: 18%);
 	}
 
 	.o-sidebar__nav-item {
 		padding: 1.6rem 3.2rem;
 		color: $color-gray-50;
+		background-color: $color-gray-700;
 
 		&:focus,
 		&:hover {
