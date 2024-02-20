@@ -34,7 +34,7 @@ export const parseSearchQuery = (input: string): string => {
 			)
 		);
 
-		return 'Ongeldige zoekfilter';
+		return '';
 	}
 };
 
