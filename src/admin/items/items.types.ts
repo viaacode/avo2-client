@@ -87,12 +87,12 @@ export interface UnpublishedItem {
 export interface UnpublishedItemsTableState extends UnpublishedItem, FilterableTableState {}
 
 export interface ItemUsedByEntry {
-	title: string;
-	owner: string;
-	organisation: string | undefined;
-	isPublic?: boolean;
 	createdAt: string;
 	id: string;
+	isPublic?: boolean;
+	organisation: string | undefined;
+	owner: string;
+	title: string;
 	type: 'COLLECTION' | 'ASSIGNMENT' | 'QUICK_LANE';
 }
 

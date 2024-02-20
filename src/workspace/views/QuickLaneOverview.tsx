@@ -295,7 +295,7 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> =
 					data && (
 						<MoreOptionsDropdown
 							isOpen={data?.id === selected?.id}
-							onOpen={() => setSelected(data)}
+							onOpen={() => setSelected(data as QuickLaneUrlObject)}
 							onClose={() => {
 								const isAModalOpen =
 									isQuickLaneModalOpen || isConfirmationModalOpen;

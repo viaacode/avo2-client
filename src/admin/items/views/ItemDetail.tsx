@@ -23,6 +23,7 @@ import { StringParam, useQueryParams } from 'use-query-params';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { DeleteObjectModal } from '../../../shared/components';
+import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
@@ -40,6 +41,7 @@ import {
 } from '../../shared/helpers/render-detail-fields';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
+import { mapItemUsedByToQuickLane } from '../helpers';
 import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';
 import { useGetItemWithRelations } from '../hooks/useGetItemWithRelations';
 import {
@@ -167,6 +169,38 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		columnId: ItemUsedByColumnId & 'actions'
 	): ReactNode => {
 		switch (columnId) {
+			case 'createdAt': {
+				switch (rowData.type) {
+					case 'QUICK_LANE': {
+						return (
+							<QuickLaneFilterTableCell
+								id="created_at"
+								data={mapItemUsedByToQuickLane(rowData)}
+							/>
+						);
+					}
+
+					default:
+						return rowData[columnId];
+				}
+			}
+
+			case 'title': {
+				switch (rowData.type) {
+					case 'QUICK_LANE': {
+						return (
+							<QuickLaneFilterTableCell
+								id={columnId}
+								data={mapItemUsedByToQuickLane(rowData)}
+							/>
+						);
+					}
+
+					default:
+						return rowData[columnId];
+				}
+			}
+
 			case 'owner': {
 				return truncateTableValue(rowData.owner || '-');
 			}
