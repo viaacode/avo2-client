@@ -362,6 +362,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 												<div>
 													{collections.length ? (
 														<Select
+															onFocus={fetchCollections}
 															id="existingCollection"
 															options={[
 																{

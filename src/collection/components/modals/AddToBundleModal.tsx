@@ -267,6 +267,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 									<div>
 										{bundles.length ? (
 											<Select
+												onFocus={fetchBundles}
 												id="existingCollection"
 												placeholder={tText(
 													'collection/components/modals/add-to-bundle-modal___kies-bundel'
