@@ -85,6 +85,10 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 		});
 	}, [fetchBundles, tText]);
 
+	useEffect(() => {
+		isOpen && fetchBundles();
+	}, [isOpen, fetchBundles]);
+
 	const setSelectedBundleIdAndGetBundleInfo = async (id: string) => {
 		try {
 			setSelectedBundle(null);
@@ -267,7 +271,6 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 									<div>
 										{bundles.length ? (
 											<Select
-												onFocus={fetchBundles}
 												id="existingCollection"
 												placeholder={tText(
 													'collection/components/modals/add-to-bundle-modal___kies-bundel'

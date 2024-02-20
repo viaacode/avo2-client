@@ -104,6 +104,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 	}, [fetchCollections, tText]);
 
 	useEffect(() => {
+		isOpen && fetchCollections();
+	}, [isOpen, fetchCollections]);
+
+	useEffect(() => {
 		if (isOpen) {
 			// Reset the state
 			setCreateNewCollection(!collections.length);
@@ -362,7 +366,6 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 												<div>
 													{collections.length ? (
 														<Select
-															onFocus={fetchCollections}
 															id="existingCollection"
 															options={[
 																{
