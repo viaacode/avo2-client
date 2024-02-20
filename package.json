@@ -108,6 +108,7 @@
     "@babel/plugin-proposal-private-property-in-object": "7.21.0-placeholder-for-preset-env.2",
     "@commitlint/cli": "17.7.1",
     "@commitlint/config-conventional": "17.7.0",
+    "@esbuild/darwin-arm64": "^0.20.1",
     "@graphql-codegen/add": "3.2.3",
     "@graphql-codegen/cli": "2.16.5",
     "@graphql-codegen/introspection": "2.2.3",
