@@ -162,7 +162,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		dataType: TableColumnDataType.boolean,
 	},
 	{
-		id: 'labels',
+		id: 'quality_labels',
 		label: tText('admin/assignments/assignments___labels'),
 		sortable: false,
 		visibleByDefault: true,
