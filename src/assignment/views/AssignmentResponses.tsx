@@ -442,22 +442,25 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					'c-assignment-responses__updated-at'
 				);
 
-			case 'collection_title':
-				return (
-					(cellData || '').length > 0 &&
-					renderDataCell(
-						<Link
-							to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
-								assignmentId: match.params.id,
-								responseId: assignmentResponse.id,
-							})}
-						>
-							{cellData}
-						</Link>,
-						tText('assignment/views/assignment-responses___leerlingencollectie'),
-						'c-assignment-responses__collection-title'
-					)
+			case 'collection_title': {
+				const collectionName =
+					cellData ||
+					tText(
+						'assignment/views/assignment-responses___leerlingencollectie-zonder-naam'
+					);
+				return renderDataCell(
+					<Link
+						to={buildLink(APP_PATH.ASSIGNMENT_PUPIL_COLLECTION_DETAIL.route, {
+							assignmentId: match.params.id,
+							responseId: assignmentResponse.id,
+						})}
+					>
+						{collectionName}
+					</Link>,
+					tText('assignment/views/assignment-responses___leerlingencollectie'),
+					'c-assignment-responses__collection-title'
 				);
+			}
 
 			case 'actions':
 				return (
@@ -477,7 +480,9 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				<ToolbarLeft>
 					<BlockHeading type="h2" className="u-m-0">
 						{assignmentResponsesCount}{' '}
-						{tText('assignment/views/assignment-responses___responsen')}
+						{assignmentResponsesCount === 1
+							? tText('assignment/views/assignment-responses___reactie')
+							: tText('assignment/views/assignment-responses___reacties')}
 					</BlockHeading>
 				</ToolbarLeft>
 				<ToolbarRight>
