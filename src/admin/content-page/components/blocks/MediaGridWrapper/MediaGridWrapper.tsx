@@ -10,6 +10,9 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isEmpty, isNil } from 'lodash-es';
 import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import { withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
+import { compose } from 'redux';
 
 import placeholderImage from '../../../../../assets/images/assignment-placeholder.png';
 import {
@@ -27,6 +30,7 @@ import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
 import { ToastService } from '../../../../../shared/services/toast-service';
+import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
 
 import { BlockMediaGrid, MediaListItem } from './BlockMediaGrid';
@@ -45,7 +49,9 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	ctaButtonAltTitle?: string;
 }
 
-const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = ({
+const MediaGridWrapper: FunctionComponent<
+	MediaGridWrapperProps & UserProps & RouteComponentProps
+> = ({
 	title,
 	buttonLabel,
 	buttonAltTitle,
@@ -70,6 +76,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 	results,
 	renderLink,
 	commonUser,
+	location,
 }: any) => {
 	// TODO remove any when typings for admin-core-ui is fixed
 	const { tText, tHtml } = useTranslation();
@@ -154,6 +161,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 				}
 			}
 		} catch (err) {
+			console.error(err);
 			setLoadingInfo({
 				state: 'error',
 				message: tHtml(
@@ -318,6 +326,9 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 			itemOrCollectionOrAssignment?.view_counts_aggregate?.aggregate?.sum?.count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
+		const showCopyrightNotice =
+			!!itemOrCollectionOrAssignment.copyrightOrganisation &&
+			(!commonUser || location.pathname.startsWith(ADMIN_PATH.DASHBOARD));
 
 		return {
 			category:
@@ -352,7 +363,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 				label: itemLabel,
 				meta: getThumbnailMetadata(itemOrCollectionOrAssignment),
 				src: element.copyrightImage || getThumbnailFromItem(itemOrCollectionOrAssignment),
-				topRight: !!itemOrCollectionOrAssignment.copyrightOrganisation && !commonUser && (
+				topRight: showCopyrightNotice && (
 					<Button
 						type="inline-link"
 						onClick={(evt) =>
@@ -509,4 +520,7 @@ const MediaGridWrapper: FunctionComponent<MediaGridWrapperProps & UserProps> = (
 	);
 };
 
-export default withUser(MediaGridWrapper) as FunctionComponent<MediaGridWrapperProps>;
+export default compose(
+	withRouter,
+	withUser
+)(MediaGridWrapper) as FunctionComponent<MediaGridWrapperProps>;
