@@ -6,17 +6,17 @@ import {
 } from '../components/ShareWithColleagues/ShareWithColleagues.types';
 
 export const transformContributorsToSimpleContributors = (
-	owner: Avo.User.User,
+	owner: Avo.User.User | undefined,
 	contributors: (Avo.Collection.Contributor | Avo.Assignment.Contributor)[]
 ): ContributorInfo[] => {
 	const defaultContributors: ContributorInfo[] = [
 		{
-			email: owner.mail as string,
+			email: owner?.mail,
 			rights: ContributorInfoRight.OWNER,
-			firstName: owner.first_name,
-			lastName: owner.last_name,
+			firstName: owner?.first_name,
+			lastName: owner?.last_name,
 			profileImage: owner?.profile?.organisation?.logo_url || owner?.profile?.avatar,
-			profileId: owner.profile?.id,
+			profileId: owner?.profile?.id,
 		} as ContributorInfo,
 	];
 
