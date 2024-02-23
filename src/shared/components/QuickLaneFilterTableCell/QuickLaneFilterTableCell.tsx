@@ -5,10 +5,10 @@ import { formatDate, formatTimestamp } from '../../helpers';
 import { QuickLaneUrlObject } from '../../types';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
-interface QuickLaneFilterTableCellProps {
+export interface QuickLaneFilterTableCellProps {
 	id: string;
-	data: QuickLaneUrlObject;
-	actions?: (data?: QuickLaneUrlObject) => ReactNode;
+	data: Omit<QuickLaneUrlObject, 'view_mode'>;
+	actions?: (data?: QuickLaneFilterTableCellProps['data']) => ReactNode;
 }
 
 const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
@@ -30,7 +30,7 @@ const QuickLaneFilterTableCell: FC<QuickLaneFilterTableCellProps> = ({
 		return label;
 	};
 
-	const getItemTimestamp = (data: QuickLaneUrlObject) => {
+	const getItemTimestamp = (data: QuickLaneFilterTableCellProps['data']) => {
 		const date = data[id as 'created_at' | 'updated_at'];
 		return <span title={formatTimestamp(date)}>{formatDate(date)}</span>;
 	};
