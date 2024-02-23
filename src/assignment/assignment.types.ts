@@ -32,7 +32,7 @@ export type AssignmentOverviewTableColumns =
 	| 'subjects'
 	| 'education_levels'
 	| 'responses'
-	| 'labels'
+	| 'quality_labels'
 	| 'class_room'
 	| 'views'
 	| 'bookmarks'

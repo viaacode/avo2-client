@@ -34,9 +34,9 @@ import { groupLomLinks } from '../../../shared/helpers/lom';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
-import { useAssignmentLabels } from '../../../shared/hooks/useAssignmentLabels';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
+import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
@@ -85,7 +85,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const [selectedBulkAction, setSelectedBulkAction] = useState<AssignmentsBulkAction | null>(
 		null
 	);
-	const [assignmentLabels] = useAssignmentLabels(true);
+	const [qualityLabels] = useQualityLabels(true);
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
 	const [educationLevels] = useLomEducationLevels();
@@ -104,13 +104,13 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			{
 				id: NULL_FILTER,
 				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
-				checked: get(tableState, 'author_user_group', [] as string[]).includes(NULL_FILTER),
+				checked: (tableState.author_user_group || ([] as string[])).includes(NULL_FILTER),
 			},
 			...userGroups.map(
 				(option): CheckboxOption => ({
 					id: String(option.id),
 					label: option.label as string,
-					checked: get(tableState, 'author_user_group', [] as string[]).includes(
+					checked: (tableState.author_user_group || ([] as string[])).includes(
 						String(option.id)
 					),
 				})
@@ -124,19 +124,17 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			{
 				id: NULL_FILTER,
 				label: tText('admin/assignments/views/assignments-overview-admin___geen-label'),
-				checked: get(tableState, 'labels', [] as string[]).includes(NULL_FILTER),
+				checked: (tableState.quality_labels || []).includes(NULL_FILTER),
 			},
-			...assignmentLabels.map(
+			...qualityLabels.map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
-					label: option.value,
-					checked: get(tableState, 'labels', [] as string[]).includes(
-						String(option.value)
-					),
+					label: option.description,
+					checked: (tableState.quality_labels || []).includes(String(option.value)),
 				})
 			),
 		],
-		[assignmentLabels, tText, tableState]
+		[qualityLabels, tText, tableState]
 	);
 
 	const columns = useMemo(
@@ -254,21 +252,21 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		}
 
 		// labels
-		if (filters.labels && filters.labels.length) {
-			const filterKey = 'labels';
+		if (filters.quality_labels && filters.quality_labels.length) {
+			const filterKey = 'quality_labels';
 
 			andFilters.push({
 				_or: [
 					{
 						[filterKey]: {
-							assignment_label: {
-								label: {
-									_in: filters.labels,
+							enum_collection_label: {
+								value: {
+									_in: filters.quality_labels,
 								},
 							},
 						},
 					},
-					...(filters.labels.includes(NULL_FILTER)
+					...(filters.quality_labels.includes(NULL_FILTER)
 						? [{ _not: { [filterKey]: {} } }]
 						: []),
 				],
@@ -307,7 +305,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			setIsLoading(true);
 
 			const column = columns.find((tableColumn: FilterableColumn) => {
-				return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
+				return tableColumn.id === (tableState.sort_column || 'empty');
 			});
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
@@ -565,12 +563,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					? tText('admin/assignments/views/assignments-overview-admin___ja')
 					: tText('admin/assignments/views/assignments-overview-admin___nee');
 
-			case 'labels': {
+			case 'quality_labels': {
 				const labelObjects: { id: string; label: string }[] =
-					assignment?.labels?.map((label) => {
+					assignment?.quality_labels?.map(({ label, id }) => {
 						return {
-							id: label.assignment_label.id,
-							label: label.assignment_label.label || '',
+							id: `${id}`,
+							label,
 						};
 					}) || [];
 

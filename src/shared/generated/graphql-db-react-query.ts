@@ -1971,6 +1971,10 @@ export const GetAssignmentsAdminOverviewDocument = `
         last_name
       }
     }
+    quality_labels {
+      id
+      label
+    }
   }
   app_assignments_v2_aggregate(where: $where) {
     aggregate {
