@@ -156,10 +156,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		setValue,
 		trigger,
 	} = useForm<AssignmentFields>({
-		defaultValues: useMemo(
-			() => (originalAssignment as AssignmentFields) || undefined,
-			[originalAssignment]
-		),
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
 	});
 
@@ -992,6 +988,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			/>
 		);
 	}
+
+	useEffect(() => {
+		originalAssignment && resetForm(originalAssignment as any);
+	}, [originalAssignment]);
 
 	return (
 		<>

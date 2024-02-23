@@ -43,15 +43,14 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment, onF
 									)}
 									nodeCancel={<Icon name={IconName.x} size="small" />}
 									nodeSubmit={<Icon name={IconName.check} size="small" />}
-									onConfirm={(title) => {
-										setAssignment &&
-											setAssignment((previous) => {
-												return {
-													...previous,
-													title: title as string,
-												};
-											});
-									}}
+									onConfirm={(title) =>
+										setAssignment?.((previous) => {
+											return {
+												...previous,
+												title: title as string,
+											};
+										})
+									}
 									onCancel={() => {
 										setIsActive(false);
 										setAssignment &&
