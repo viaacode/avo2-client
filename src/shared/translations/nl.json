@@ -1869,7 +1869,6 @@
   "shared/helpers/share-icon-table-overview___gedeeld-met-mij": "Gedeeld met mij",
   "shared/helpers/share-icon-table-overview___mijn-collectie": "Mijn collectie",
   "shared/helpers/share-icon-table-overview___mijn-opdracht": "Mijn opdracht",
-  "shared/hooks/use-assignment-labels___het-ophalen-van-de-labels-is-mislukt": "Het ophalen van de labels is mislukt",
   "shared/hooks/use-draggable-list-modal___herorden-de-onderdelen-via-drag-and-drop": "Herorden de onderdelen via drag-and-drop",
   "shared/hooks/use-education-levels___ophalen-van-de-opleidingsniveaus-is-mislukt": "Het ophalen van de opleidingsniveaus is mislukt.",
   "shared/hooks/use-lom-themes___het-ophalen-van-de-themas-is-mislukt": "Het ophalen van de themas is mislukt",
