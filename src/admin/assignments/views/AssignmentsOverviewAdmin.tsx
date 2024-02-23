@@ -104,13 +104,13 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			{
 				id: NULL_FILTER,
 				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
-				checked: get(tableState, 'author_user_group', [] as string[]).includes(NULL_FILTER),
+				checked: (tableState.author_user_group || ([] as string[])).includes(NULL_FILTER),
 			},
 			...userGroups.map(
 				(option): CheckboxOption => ({
 					id: String(option.id),
 					label: option.label as string,
-					checked: get(tableState, 'author_user_group', [] as string[]).includes(
+					checked: (tableState.author_user_group || ([] as string[])).includes(
 						String(option.id)
 					),
 				})
@@ -124,15 +124,13 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			{
 				id: NULL_FILTER,
 				label: tText('admin/assignments/views/assignments-overview-admin___geen-label'),
-				checked: get(tableState, 'quality_labels', [] as string[]).includes(NULL_FILTER),
+				checked: (tableState.quality_labels || []).includes(NULL_FILTER),
 			},
 			...qualityLabels.map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
 					label: option.description,
-					checked: get(tableState, 'quality_labels', [] as string[]).includes(
-						String(option.value)
-					),
+					checked: (tableState.quality_labels || []).includes(String(option.value)),
 				})
 			),
 		],
@@ -307,7 +305,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			setIsLoading(true);
 
 			const column = columns.find((tableColumn: FilterableColumn) => {
-				return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
+				return tableColumn.id === (tableState.sort_column || 'empty');
 			});
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
