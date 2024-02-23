@@ -623,7 +623,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			}
 
 			case 'views':
-				return assignment?.view_count?.count || '0';
+				return assignment?.counts?.views || '0';
 
 			case 'bookmarks':
 				return assignment?.counts?.bookmarks || '0';
