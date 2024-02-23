@@ -649,6 +649,8 @@
   "assignment/components/share-assignment-with-pupil___inhoud": "inhoud",
   "assignment/components/share-assignment-with-pupil___kopieer": "Kopieer",
   "assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar": "Link nog niet deelbaar",
+  "assignment/components/share-assignment-with-pupil___opdracht-is-verlopen--beschrijving": "Deze opdracht is verlopen en kan niet langer gedeeld worden. Dupliceer de opdracht via de '...' om opnieuw te delen met leerlingen.",
+  "assignment/components/share-assignment-with-pupil___opdracht-is-verlopen--titel": "Link niet meer deelbaar",
   "assignment/components/share-assignment-with-pupil___vul-de-ontbrekende-informatie-onder": "Vul de ontbrekende informatie onder",
   "assignment/components/share-dropdown___deel-de-collectie-met-collegas": "Deel de collectie met collega&#x27;s (kijken of bewerken)",
   "assignment/components/share-dropdown___deel-de-opdracht-met-leerlingen-of-collegas": "Deel de opdracht met leerlingen of collega's",

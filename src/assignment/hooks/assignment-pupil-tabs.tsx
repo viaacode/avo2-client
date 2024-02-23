@@ -2,11 +2,10 @@ import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
+import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../assignment.const';
 import { AssignmentType } from '../assignment.types';
-
-import { useAssignmentPastDeadline } from './assignment-past-deadline';
 
 export function useAssignmentPupilTabs(
 	assignment: Avo.Assignment.Assignment | null,

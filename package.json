@@ -14,7 +14,7 @@
     "preview": "vite preview",
     "postbuild": "npx ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/add-cookiebot-ignore-attributes.ts",
     "unit-tests": "jest --transformIgnorePatterns \"node_modules/(?!(lodash-es))/\"",
-    "lint": "eslint \"{src ,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --cache",
+    "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --cache",
     "lint:fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --fix",
     "format:fix": "prettier --write \"src/**/*.{ts,tsx,scss,graphql}\"",
     "type-check": "tsc --noEmit",
