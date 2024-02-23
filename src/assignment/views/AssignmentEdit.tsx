@@ -627,7 +627,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				onFocus={() => setHasUnsavedChanges(true)}
 			/>
 		),
-		[tText, control, setAssignment, assignment]
+		[tText, control, setAssignment]
 	);
 
 	const renderedTabContent = useMemo(() => {
