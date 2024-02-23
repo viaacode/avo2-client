@@ -1300,12 +1300,13 @@ export class CollectionService {
 		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined,
-		shareTypeIds: string[] | undefined
+		shareTypeIds: string[] | undefined,
+		where: any[] = []
 	): Promise<Partial<Avo.Collection.Collection>[]> {
 		let variables: GetCollectionsByOwnerOrContributorQueryVariables | null = null;
 		try {
 			const trimmedFilterString = filterString && filterString.trim();
-			const filterArray: any[] = [];
+			const filterArray: any[] = [...where];
 			if (trimmedFilterString) {
 				filterArray.push({
 					title: { _ilike: `%${trimmedFilterString}%` },

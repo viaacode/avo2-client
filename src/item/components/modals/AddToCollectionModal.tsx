@@ -76,7 +76,21 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 				{ created_at: 'desc' },
 				ContentTypeNumber.collection,
 				undefined,
-				undefined
+				undefined,
+				[
+					{
+						_or: [
+							{
+								contributors: {
+									rights: { _eq: 'CONTRIBUTOR' },
+								},
+							},
+							{
+								owner_profile_id: { _eq: getProfileId(user) },
+							},
+						],
+					},
+				]
 			)
 				.then((collectionTitles: Partial<Avo.Collection.Collection>[]) => {
 					setCollections(collectionTitles);
