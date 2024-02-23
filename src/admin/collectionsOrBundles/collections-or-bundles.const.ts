@@ -359,14 +359,22 @@ const getCollectionQuickLanesColumn = (): FilterableColumn<CollectionTableCols> 
 	dataType: TableColumnDataType.number,
 });
 
-const getCollectionSharedColumn = (): FilterableColumn<CollectionTableCols> => ({
-	id: 'contributors',
-	tooltip: tText('admin/collections-or-bundles/collections-or-bundles___gedeeld'),
-	icon: IconName.share2,
-	sortable: true,
-	visibleByDefault: true,
-	dataType: TableColumnDataType.number,
-});
+const getCollectionSharedColumn = (
+	isCollection: boolean
+): FilterableColumn<CollectionTableCols>[] => {
+	if (!isCollection) return [];
+
+	return [
+		{
+			id: 'contributors',
+			tooltip: tText('admin/collections-or-bundles/collections-or-bundles___gedeeld'),
+			icon: IconName.share2,
+			sortable: true,
+			visibleByDefault: true,
+			dataType: TableColumnDataType.number,
+		},
+	];
+};
 
 const getCollectionSubjectsColumn = (
 	subjects: Avo.Lom.LomField[]
@@ -603,7 +611,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	...getCollectionInBundleColumn(isCollection),
 	...getCollectionInAssignmentColumn(isCollection),
 	getCollectionQuickLanesColumn(),
-	getCollectionSharedColumn(),
+	...getCollectionSharedColumn(isCollection),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionThemesColumn(),
 	getCollectionEducationLevelsColumn(educationLevels),
