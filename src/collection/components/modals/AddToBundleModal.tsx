@@ -85,6 +85,10 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 		});
 	}, [fetchBundles, tText]);
 
+	useEffect(() => {
+		isOpen && fetchBundles();
+	}, [isOpen, fetchBundles]);
+
 	const setSelectedBundleIdAndGetBundleInfo = async (id: string) => {
 		try {
 			setSelectedBundle(null);

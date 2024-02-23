@@ -73,7 +73,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 				user as Avo.User.User,
 				0,
 				500,
-				[],
+				{ created_at: 'desc' },
 				ContentTypeNumber.collection,
 				undefined,
 				undefined
@@ -102,6 +102,10 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 			);
 		});
 	}, [fetchCollections, tText]);
+
+	useEffect(() => {
+		isOpen && fetchCollections();
+	}, [isOpen, fetchCollections]);
 
 	useEffect(() => {
 		if (isOpen) {
