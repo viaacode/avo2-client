@@ -79,12 +79,16 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 				undefined,
 				[
 					{
-						_not: {
-							contributors: {
-								profile_id: { _eq: getProfileId(user) },
-								rights: { _neq: 'CONTRIBUTOR' },
+						_or: [
+							{
+								contributors: {
+									rights: { _eq: 'CONTRIBUTOR' },
+								},
 							},
-						},
+							{
+								owner_profile_id: { _eq: getProfileId(user) },
+							},
+						],
 					},
 				]
 			)
