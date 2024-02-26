@@ -39,7 +39,7 @@
   "dependencies": {
     "@flowplayer/player": "3.3.0",
     "@hookform/resolvers": "2.9.11",
-    "@meemoo/admin-core-ui": "3.1.27",
+    "@meemoo/admin-core-ui": "3.1.29",
     "@meemoo/react-components": "3.0.22",
     "@popperjs/core": "2.11.6",
     "@studiohyperdrive/pagination": "1.0.0",
