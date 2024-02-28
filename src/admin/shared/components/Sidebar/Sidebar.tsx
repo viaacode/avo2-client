@@ -58,13 +58,13 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 		return (
 			<li
 				key={`${navItem.location}-${index}`}
-				className={classnames('o-sidebar__nav-item-wrapper', {
-					'o-sidebar__nav-item-sublink': isSubLink || false,
+				className={classnames('o-sidebar__avo__nav-item-wrapper', {
+					'o-sidebar__avo__nav-item-sublink': isSubLink || false,
 				})}
 			>
 				<NavLink
-					className={classnames('o-sidebar__nav-item')}
-					activeClassName="o-sidebar__nav-item--active"
+					className={classnames('o-sidebar__avo__nav-item')}
+					activeClassName="o-sidebar__avo__nav-item--active"
 					isActive={(_match, location) => isActiveClass(navItem, location)}
 					to={navItem.location || '/'}
 				>
@@ -87,17 +87,17 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 	};
 
 	return (
-		<div className={classnames(className, 'o-sidebar', { 'o-sidebar--light': light })}>
+		<div className={classnames(className, 'o-sidebar__avo', { 'o-sidebar__avo--light': light })}>
 			{headerLink && (
-				<div className="o-sidebar__header">
+				<div className="o-sidebar__avo__header">
 					<Link
-						className="u-remove-link-styling u-color-white o-sidebar__header__admin-home"
+						className="u-remove-link-styling u-color-white o-sidebar__avo__header__admin-home"
 						to={headerLink}
 					>
 						{tHtml('admin/shared/components/sidebar/sidebar___beheer')}
 					</Link>
 					<Link
-						className="u-remove-link-styling u-color-white o-sidebar__header__side-link"
+						className="u-remove-link-styling u-color-white o-sidebar__avo__header__side-link"
 						to={APP_PATH.LOGOUT.route}
 					>
 						<span title={tText('admin/shared/components/sidebar/sidebar___uitloggen')}>
@@ -105,7 +105,7 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 						</span>
 					</Link>
 					<Link
-						className="u-remove-link-styling u-color-white o-sidebar__header__side-link"
+						className="u-remove-link-styling u-color-white o-sidebar__avo__header__side-link"
 						to={APP_PATH.HOME.route}
 					>
 						<span title={tText('admin/shared/components/sidebar/sidebar___homepagina')}>
@@ -114,9 +114,9 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 					</Link>
 				</div>
 			)}
-			<div className="o-sidebar__content">
+			<div className="o-sidebar__avo__content">
 				{navItems ? (
-					<ul className="o-sidebar__nav c-bordered-list">{renderNavItems()}</ul>
+					<ul className="o-sidebar__avo__nav c-bordered-list">{renderNavItems()}</ul>
 				) : (
 					children
 				)}

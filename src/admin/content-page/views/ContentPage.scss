@@ -16,7 +16,7 @@ $c-admin-core-add-content-block-height: 7rem;
 	}
 
 	.c-content-edit-view__sidebar {
-		.o-sidebar__content .c-scrollable {
+		.o-sidebar__avo__content .c-scrollable {
 			height: calc(100vh - $c-admin-core-header - $c-admin-core-content-metadata-bar - $c-admin-core-add-content-block-height);
 			overflow-y: auto;
 			padding: 1.6rem;
