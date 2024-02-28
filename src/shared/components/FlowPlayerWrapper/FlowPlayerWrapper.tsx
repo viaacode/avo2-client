@@ -271,6 +271,7 @@ const FlowPlayerWrapper: FunctionComponent<
 				{src && (props.autoplay || clickedThumbnail || !item) ? (
 					<FlowPlayer
 						src={getBrowserSafeUrl(src)}
+						type={(item?.type?.label as 'video' | 'audio' | undefined) || 'video'}
 						poster={poster}
 						title={props.title}
 						metadata={
