@@ -1,4 +1,3 @@
-import { stringifyUrl } from 'query-string';
 import React, { ReactNode } from 'react';
 import { Redirect } from 'react-router';
 
