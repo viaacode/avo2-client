@@ -178,7 +178,8 @@
   },
   "optionalDependencies": {
     "@esbuild/darwin-arm64": "^0.20.1",
-    "@esbuild/win32-x64": "^0.20.1"
+    "@esbuild/win32-x64": "^0.20.1",
+    "@esbuild/linux-x64": "^0.20.1"
   },
   "overrides": {
     "react": "18.2.0",
