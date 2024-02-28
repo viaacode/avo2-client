@@ -1,42 +1,7 @@
 import { LinkTarget } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import queryString from 'query-string';
 
-import { tHtml } from '../../../../../shared/helpers/translate';
-import { ToastService } from '../../../../../shared/services/toast-service';
 import { PickerItem } from '../../../types';
-
-export const parseSearchQuery = (input: string): string => {
-	try {
-		// replace %22 by "
-		const replacedString = decodeURI(input);
-
-		// split on first instance of ?
-		const splitString = replacedString.includes('?')
-			? replacedString.split('?').slice(1).join('?')
-			: replacedString;
-
-		// parse as objects
-		let filterDefinition: any;
-		if (splitString.trim()[0] !== '{') {
-			filterDefinition = queryString.parse(splitString);
-			filterDefinition.filters = JSON.parse(filterDefinition.filters as string);
-		} else {
-			filterDefinition = JSON.parse(splitString);
-		}
-
-		return JSON.stringify(filterDefinition);
-	} catch (err) {
-		console.error('Failed to parse search query input', err);
-		ToastService.danger(
-			tHtml(
-				'admin/shared/helpers/content-picker/parse-picker___gelieve-een-correcte-zoekfilter-link-in-te-vullen'
-			)
-		);
-
-		return '';
-	}
-};
 
 export const parsePickerItem = (
 	type: Avo.Core.ContentPickerType,
@@ -45,5 +10,5 @@ export const parsePickerItem = (
 ): PickerItem => ({
 	type,
 	target,
-	value: type === 'SEARCH_QUERY' ? parseSearchQuery(value) : value,
+	value,
 });
