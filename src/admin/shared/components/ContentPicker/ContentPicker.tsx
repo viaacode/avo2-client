@@ -27,7 +27,6 @@ import {
 } from './ContentPicker.const';
 import { filterTypes, setInitialInput, setInitialItem } from './ContentPicker.helpers';
 import './ContentPicker.scss';
-import { parseSearchQuery } from './helpers/parse-picker';
 
 export interface ContentPickerProps {
 	allowedTypes?: Avo.Core.ContentPickerType[];
@@ -214,9 +213,6 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 			newValue = (selectedItem as PickerItem).value;
 		} else {
 			newValue = null;
-		}
-		if (newType === 'SEARCH_QUERY' && newValue) {
-			newValue = parseSearchQuery(newValue);
 		}
 
 		let newTarget: LinkTarget;

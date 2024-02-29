@@ -19,7 +19,10 @@ export const renderWorkspaceRoutes = (): ReactNode[] => [
 			match: {
 				params: { id },
 			},
-		}) => <Redirect to={`/${ROUTE_PARTS.assignments}/${id}`} />}
+			location,
+		}) => {
+			return <Redirect to={`/${ROUTE_PARTS.assignments}/${id}${location.search}`} />;
+		}}
 		exact
 		path={`${APP_PATH.WORKSPACE.route}${APP_PATH.ASSIGNMENT_DETAIL.route}`}
 		key={`${APP_PATH.WORKSPACE.route}${APP_PATH.ASSIGNMENT_DETAIL.route}`}
