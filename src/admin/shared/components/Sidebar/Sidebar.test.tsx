@@ -29,7 +29,7 @@ describe('<Sidebar />', () => {
 	});
 
 	it('Should render a header with `headerLink`', () => {
-		const sidebarHeader = sidebarComponent.find('.o-sidebar__header');
+		const sidebarHeader = sidebarComponent.find('.o-sidebar__avo__header');
 		const sidebarHeaderLink = sidebarComponent.find('Link');
 
 		expect(sidebarHeader).toHaveLength(1);
@@ -38,8 +38,8 @@ describe('<Sidebar />', () => {
 	});
 
 	it('Should render the `navItems`', () => {
-		const sidebarNav = sidebarComponent.find('.o-sidebar__nav');
-		const sidebarNavItems = sidebarNav.find('.o-sidebar__nav-item');
+		const sidebarNav = sidebarComponent.find('.o-sidebar__avo__nav');
+		const sidebarNavItems = sidebarNav.find('.o-sidebar__avo__nav-item');
 		const sidebarLastLink = sidebarNavItems.at(1).childAt(0);
 
 		expect(sidebarNav).toHaveLength(1);
