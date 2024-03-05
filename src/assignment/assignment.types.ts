@@ -34,6 +34,7 @@ export type AssignmentOverviewTableColumns =
 	| 'responses'
 	| 'quality_labels'
 	| 'class_room'
+	| 'labels'
 	| 'views'
 	| 'bookmarks'
 	| 'copies'
