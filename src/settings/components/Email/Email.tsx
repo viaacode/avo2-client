@@ -10,7 +10,7 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { keys } from 'lodash-es';
-import React, { FunctionComponent, Reducer, useEffect, useReducer, useState } from 'react';
+import React, { FunctionComponent, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { StringParam, useQueryParams } from 'use-query-params';
 
@@ -24,43 +24,16 @@ import {
 	NewsletterPreferences,
 } from '../../../shared/services/campaign-monitor-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { NewsletterList, ReactAction } from '../../../shared/types';
+import { NewsletterList } from '../../../shared/types';
 import { GET_NEWSLETTER_LABELS } from '../../settings.const';
 
 import { useGetEmailPreferences } from './hooks/getEmailPreferences';
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-enum NewsletterPreferencesActionType {
-	SET_NEWSLETTER_PREFERENCES = '@@newsletter-preferences/SET_NEWSLETTER_PREFERENCES',
-	UPDATE_NEWSLETTER_PREFERENCES = '@@newsletter-preferences/UPDATE_NEWSLETTER_PREFERENCES',
-}
-
-/* eslint-enable @typescript-eslint/no-unused-vars */
-
-type NewsletterPreferencesAction = ReactAction<NewsletterPreferencesActionType>;
 
 const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
 	newsletter: false,
 	workshop: false,
 	ambassador: false,
 });
-
-const newsletterPreferencesReducer = (
-	state: NewsletterPreferences,
-	action: NewsletterPreferencesAction
-) => {
-	switch (action.type) {
-		case NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES:
-			return action.payload;
-		case NewsletterPreferencesActionType.UPDATE_NEWSLETTER_PREFERENCES:
-			return {
-				...state,
-				...action.payload,
-			};
-		default:
-			return state;
-	}
-};
 
 const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
@@ -81,56 +54,50 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 
 	const [initialNewsletterPreferences, setInitialNewsletterPreferences] =
 		useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
-	const [newsletterPreferences, changeNewsletterPreferences] = useReducer<
-		Reducer<NewsletterPreferences, NewsletterPreferencesAction>
-	>(newsletterPreferencesReducer, INITIAL_NEWSLETTER_PREFERENCES_STATE());
+	const [currentNewsletterPreferences, setCurrentNewsletterPreferences] =
+		useState<NewsletterPreferences>(INITIAL_NEWSLETTER_PREFERENCES_STATE());
 
 	const newsletterLabels = GET_NEWSLETTER_LABELS();
 
 	useEffect(() => {
 		if (fetchedNewsletterPreferences) {
 			setInitialNewsletterPreferences(fetchedNewsletterPreferences);
-			changeNewsletterPreferences({
-				type: NewsletterPreferencesActionType.SET_NEWSLETTER_PREFERENCES,
-				payload: fetchedNewsletterPreferences,
-			});
+			setCurrentNewsletterPreferences(fetchedNewsletterPreferences);
 		}
 	}, [fetchedNewsletterPreferences]);
 
 	const onChangePreference = (preference: Partial<NewsletterPreferences>) => {
-		changeNewsletterPreferences({
-			type: NewsletterPreferencesActionType.UPDATE_NEWSLETTER_PREFERENCES,
-			payload: preference,
+		setCurrentNewsletterPreferences((currentPreferences) => {
+			return {
+				...currentPreferences,
+				...preference,
+			};
 		});
 	};
 
 	const onSavePreferences = async () => {
 		try {
-			const convertedNewsletterPreferenceUpdate = convertToNewsletterPreferenceUpdate(
-				initialNewsletterPreferences,
-				newsletterPreferences
+			setIsLoadingUpdatePreferences(true);
+
+			await CampaignMonitorService.updateNewsletterPreferences(
+				currentNewsletterPreferences,
+				preferenceCenterKey as string | undefined
 			);
 
-			// Only perform update request if there are changes
-			if (convertedNewsletterPreferenceUpdate) {
-				setIsLoadingUpdatePreferences(true);
+			setInitialNewsletterPreferences({
+				...initialNewsletterPreferences,
+				...currentNewsletterPreferences,
+			});
 
-				await CampaignMonitorService.updateNewsletterPreferences(
-					convertedNewsletterPreferenceUpdate,
-					preferenceCenterKey as string | undefined
-				);
-
-				setInitialNewsletterPreferences({
-					...initialNewsletterPreferences,
-					...newsletterPreferences,
-				});
-
-				ToastService.success(
-					tHtml('settings/components/email___je-voorkeuren-zijn-opgeslagen')
-				);
-			}
+			ToastService.success(
+				tHtml('settings/components/email___je-voorkeuren-zijn-opgeslagen')
+			);
 		} catch (err) {
 			console.error(new CustomError('Failed to update newsletter preferences', err));
+
+			setCurrentNewsletterPreferences({
+				...initialNewsletterPreferences,
+			});
 
 			ToastService.danger(
 				tHtml(
@@ -197,11 +164,13 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 										<Checkbox
 											key={`newsletter_${newsletterKey}`}
 											label={(newsletterLabels as any)[newsletterKey]}
-											checked={newsletterPreferences[newsletterKey]}
+											checked={currentNewsletterPreferences[newsletterKey]}
 											onChange={() => {
 												onChangePreference({
 													[newsletterKey]:
-														!newsletterPreferences[newsletterKey],
+														!currentNewsletterPreferences[
+															newsletterKey
+														],
 												});
 											}}
 										/>
