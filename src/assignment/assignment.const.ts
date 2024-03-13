@@ -36,17 +36,21 @@ export const CONTENT_LABEL_TO_ROUTE_PARTS: {
 
 type ColumnDataType = 'string' | 'number' | 'boolean' | 'dateTime' | undefined;
 
-const getLabelsColumn = (): AssignmentColumn[] => {
-	return [
-		{
-			id: 'labels' as AssignmentOverviewTableColumns,
-			label: tText('assignment/assignment___label'),
-			sortable: false,
-		},
-	];
+const getLabelsColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	// Only show labels to teachers, not to pupils
+	return canEditAssignments
+		? [
+				{
+					id: 'labels' as AssignmentOverviewTableColumns,
+					label: tText('assignment/assignment___label'),
+					sortable: false,
+				},
+		  ]
+		: [];
 };
 
 const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
+	// Only show the teacher column to pupils
 	return canEditAssignments
 		? []
 		: [
@@ -57,7 +61,7 @@ const getTeacherColumn = (canEditAssignments: boolean | null): AssignmentColumn[
 					dataType: TableColumnDataType.string as ColumnDataType,
 				},
 		  ];
-}; // Only show teacher for pupils
+};
 
 const getClassColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
 	return canEditAssignments
@@ -141,7 +145,7 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL = (
 		dataType: TableColumnDataType.string,
 	},
 	...getClassColumn(canEditAssignments),
-	...getLabelsColumn(),
+	...getLabelsColumn(canEditAssignments),
 	...getTeacherColumn(canEditAssignments),
 	{
 		id: 'deadline_at' as AssignmentOverviewTableColumns,

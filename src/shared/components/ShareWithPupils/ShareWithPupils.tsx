@@ -34,14 +34,9 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 		  })
 		: '';
 
-	const isAssignmentDetailsComplete =
-		!!(assignment?.labels || []).filter(
-			(l: { assignment_label: Avo.Assignment.Label }) => l.assignment_label.type === 'CLASS'
-		)?.length &&
-		// Disabled due to https://meemoo.atlassian.net/browse/AVO-2051
-		// !!assignment?.labels.filter((l) => l.assignment_label.type === 'LABEL')?.length &&
-		!!assignment?.available_at &&
-		!!assignment?.deadline_at;
+	// https://meemoo.atlassian.net/browse/AVO-2819
+	// https://meemoo.atlassian.net/browse/AVO-2051
+	const isAssignmentDetailsComplete = !!assignment?.available_at && !!assignment?.deadline_at;
 
 	const hasAssignmentContent = !!assignment?.blocks?.length;
 

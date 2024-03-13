@@ -175,6 +175,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	}, [setAssignmentLoading]);
 
 	useEffect(() => {
+		if (match.params.tabId) {
+			setTab(match.params.tabId as ASSIGNMENT_CREATE_UPDATE_TABS);
+		}
+	}, [match]);
+
+	useEffect(() => {
 		updateAssignmentEditorWithLoading();
 	}, [updateAssignmentEditorWithLoading]);
 
@@ -618,7 +624,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[tText, backToOverview]
+		[tText]
 	);
 
 	const renderTitle = useMemo(
@@ -629,7 +635,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				onFocus={() => setHasUnsavedChanges(true)}
 			/>
 		),
-		[tText, control, setAssignment]
+		[control, setAssignment]
 	);
 
 	const renderedTabContent = useMemo(() => {
@@ -746,6 +752,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	useEffect(() => {
 		originalAssignment && reset();
 	}, [originalAssignment, reset]);
+
+	useEffect(() => {
+		originalAssignment && resetForm(originalAssignment as any);
+	}, [originalAssignment]);
 
 	const handleTabChange = (tabId: ASSIGNMENT_CREATE_UPDATE_TABS) => {
 		setTab(tabId);
@@ -988,10 +998,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			/>
 		);
 	}
-
-	useEffect(() => {
-		originalAssignment && resetForm(originalAssignment as any);
-	}, [originalAssignment]);
 
 	return (
 		<>
