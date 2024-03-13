@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, first, get, isNil, partition, without } from 'lodash-es';
 import React, {
 	FunctionComponent,
-	ReactText,
+	ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -31,6 +31,7 @@ import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graph
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { groupLomLinks } from '../../../shared/helpers/lom';
+import { renderCollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/helpers/render-collection-or-bundle-or-assignment-title-and-copy-tag';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
@@ -483,28 +484,15 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		columnId: AssignmentOverviewTableColumns
 	) => {
 		const { id, created_at, updated_at, deadline_at } = assignment;
+		const editLink = buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+			id,
+			tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+		});
 
 		switch (columnId) {
-			case 'title':
-				return (
-					<Link to={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id })}>
-						<span>{truncateTableValue(assignment.title)}</span>
-						{!!assignment.relations?.[0].object && (
-							<a
-								href={buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, {
-									id: assignment.relations?.[0].object,
-								})}
-							>
-								<TagList
-									tags={[
-										{ id: assignment.relations?.[0].object, label: 'Kopie' },
-									]}
-									swatches={false}
-								/>
-							</a>
-						)}
-					</Link>
-				);
+			case 'title': {
+				return renderCollectionOrBundleOrAssignmentTitleAndCopyTag(assignment, editLink);
+			}
 
 			case 'author':
 				return truncateTableValue((assignment as any)?.owner?.full_name);
@@ -674,12 +662,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 								disabled={true}
 							/>
 						) : (
-							<Link
-								to={buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
-									id: assignment.id,
-									tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-								})}
-							>
+							<Link to={editLink}>
 								<Button
 									type="secondary"
 									icon={IconName.edit}
@@ -772,7 +755,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					isLoading={isLoading}
 					showCheckboxes
 					selectedItemIds={selectedAssignmentIds}
-					onSelectionChanged={setSelectedAssignmentIds as (ids: ReactText[]) => void}
+					onSelectionChanged={setSelectedAssignmentIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllAssignmentsAsSelected}
 					onSelectBulkAction={handleBulkAction as any}
 					bulkActions={GET_ASSIGNMENT_BULK_ACTIONS(user as Avo.User.User)}

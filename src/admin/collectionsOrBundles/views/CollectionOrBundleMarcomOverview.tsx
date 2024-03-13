@@ -1,9 +1,8 @@
-import { Button, ButtonToolbar, IconName, TagList } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, truncate } from 'lodash-es';
 import React, {
 	FunctionComponent,
-	ReactText,
+	ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -26,6 +25,7 @@ import {
 	LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError } from '../../../shared/helpers';
+import { renderCollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/helpers/render-collection-or-bundle-or-assignment-title-and-copy-tag';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
@@ -75,27 +75,25 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	const [organisations] = useCompaniesWithUsers();
 
 	// computed
-	const userGroupOptions = useMemo(
-		() => [
+
+	const userGroupOptions = useMemo(() => {
+		return [
 			{
 				id: NULL_FILTER,
 				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
-				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
-					NULL_FILTER
-				),
+				checked: ((tableState?.author_user_group || []) as string[]).includes(NULL_FILTER),
 			},
 			...userGroups.map(
 				(option): CheckboxOption => ({
 					id: String(option.id),
 					label: option.label as string,
-					checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+					checked: (tableState?.author_user_group || ([] as string[])).includes(
 						String(option.id)
 					),
 				})
 			),
-		],
-		[tableState, userGroups, tText]
-	);
+		];
+	}, [tableState, userGroups, tText]);
 
 	const collectionLabelOptions = useMemo(
 		() => [
@@ -104,19 +102,41 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				label: tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 				),
-				checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
+				checked: ((tableState?.collection_labels || []) as string[]).includes(NULL_FILTER),
 			},
 			...collectionLabels.map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
 					label: option.description,
-					checked: get(tableState, 'collection_labels', [] as string[]).includes(
+					checked: ((tableState?.collection_labels || []) as string[]).includes(
 						String(option.value)
 					),
 				})
 			),
 		],
 		[collectionLabels, tText, tableState]
+	);
+
+	const organisationOptions = useMemo(
+		() => [
+			{
+				id: NULL_FILTER,
+				label: tText(
+					'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___geen-organisatie'
+				),
+				checked: ((tableState?.organisation || []) as string[]).includes(NULL_FILTER),
+			},
+			...organisations.map(
+				(option): CheckboxOption => ({
+					id: String(option.or_id),
+					label: option.name,
+					checked: ((tableState?.organisation || []) as string[]).includes(
+						String(option.or_id)
+					),
+				})
+			),
+		],
+		[organisations, tText, tableState]
 	);
 
 	const channelNameOptions = useMemo(() => {
@@ -139,7 +159,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 			},
 			...options,
 		];
-	}, [GET_MARCOM_CHANNEL_TYPE_OPTIONS, tableState]);
+	}, [tText, tableState?.marcom_last_communication_channel_name]);
 
 	const channelTypeOptions = useMemo(
 		() => [
@@ -151,29 +171,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				),
 			})),
 		],
-		[GET_MARCOM_CHANNEL_TYPE_OPTIONS, tableState]
-	);
-
-	const organisationOptions = useMemo(
-		() => [
-			{
-				id: NULL_FILTER,
-				label: tText(
-					'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___geen-organisatie'
-				),
-				checked: get(tableState, 'organisation', [] as string[]).includes(NULL_FILTER),
-			},
-			...organisations.map(
-				(option): CheckboxOption => ({
-					id: String(option.or_id),
-					label: option.name,
-					checked: get(tableState, 'organisation', [] as string[]).includes(
-						String(option.or_id)
-					),
-				})
-			),
-		],
-		[organisations, tText, tableState]
+		[tableState]
 	);
 
 	const tableColumns = useMemo(
@@ -305,32 +303,18 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	};
 
 	const renderTableCell = (
-		rowData: Partial<Avo.Collection.Collection>,
+		collectionOrBundle: Partial<Avo.Collection.Collection>,
 		columnId: CollectionOrBundleMarcomOverviewTableCols
 	) => {
 		const editLink = buildLink(
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-			{ id: rowData.id, tabId: CollectionCreateUpdateTab.MARCOM }
+			{ id: collectionOrBundle.id, tabId: CollectionCreateUpdateTab.MARCOM }
 		);
 		switch (columnId) {
 			case 'title': {
-				const title = truncate((rowData as any)[columnId] || '-', { length: 50 });
-				return (
-					<Link to={editLink}>
-						<span>{title}</span>
-						{!!rowData.relations?.[0].object && (
-							<a
-								href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
-									id: rowData.relations?.[0].object,
-								})}
-							>
-								<TagList
-									tags={[{ id: rowData.relations?.[0].object, label: 'Kopie' }]}
-									swatches={false}
-								/>
-							</a>
-						)}
-					</Link>
+				return renderCollectionOrBundleOrAssignmentTitleAndCopyTag(
+					collectionOrBundle,
+					editLink
 				);
 			}
 
@@ -365,7 +349,11 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				);
 
 			default:
-				return renderCollectionOverviewColumns(rowData, columnId, collectionLabels);
+				return renderCollectionOverviewColumns(
+					collectionOrBundle,
+					columnId,
+					collectionLabels
+				);
 		}
 	};
 
@@ -413,7 +401,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 					renderNoResults={renderNoResults}
 					rowKey="id"
 					selectedItemIds={selectedCollectionIds}
-					onSelectionChanged={setSelectedCollectionIds as (ids: ReactText[]) => void}
+					onSelectionChanged={setSelectedCollectionIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
 				/>
