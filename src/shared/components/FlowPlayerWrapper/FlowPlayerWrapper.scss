@@ -25,6 +25,10 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 		color: $color-gray-200;
 	}
 
+	.a-block-image__annotation > h3 {
+		margin-top: 1rem;
+	}
+
 	.c-video-player__playlist__item {
 		padding: 1.7rem 1rem 0.5rem;
 		border-radius: 0.4rem;
