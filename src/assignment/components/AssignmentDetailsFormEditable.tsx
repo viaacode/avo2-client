@@ -79,7 +79,6 @@ const AssignmentDetailsFormEditable: FC<
 									<FormGroup
 										label={tText('assignment/assignment___klas')}
 										labelFor={getId(AssignmentDetailsFormIds.classrooms)}
-										required
 									>
 										<AssignmentLabels
 											type="CLASS"
