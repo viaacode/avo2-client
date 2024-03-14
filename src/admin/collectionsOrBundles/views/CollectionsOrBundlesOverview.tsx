@@ -1,9 +1,9 @@
-import { Button, ButtonToolbar, IconName, TagInfo, TagList } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact, get, partition, truncate } from 'lodash-es';
+import { compact, partition } from 'lodash-es';
 import React, {
 	FunctionComponent,
-	ReactText,
+	ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -24,6 +24,7 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
@@ -103,29 +104,26 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	);
 
 	// computed
-	const userGroupOptions = useMemo(
-		() => [
+
+	const userGroupOptions = useMemo(() => {
+		return [
 			{
 				id: NULL_FILTER,
-				label: tText(
-					'admin/collections-or-bundles/views/collections-or-bundles___geen-rol'
-				),
-				checked: get(tableState, 'author.user_groups', [] as string[]).includes(
-					NULL_FILTER
-				),
+				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
+				checked: ((tableState?.author_user_group || []) as string[]).includes(NULL_FILTER),
 			},
 			...userGroups.map(
 				(option): CheckboxOption => ({
 					id: String(option.id),
 					label: option.label as string,
-					checked: get(tableState, 'author.user_groups', [] as string[]).includes(
+					checked: (tableState?.author_user_group || ([] as string[])).includes(
 						String(option.id)
 					),
 				})
 			),
-		],
-		[tableState, userGroups, tText]
-	);
+		];
+	}, [tableState, userGroups, tText]);
+
 	const collectionLabelOptions = useMemo(
 		() => [
 			{
@@ -133,13 +131,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				label: tText(
 					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-label'
 				),
-				checked: get(tableState, 'collection_labels', [] as string[]).includes(NULL_FILTER),
+				checked: ((tableState?.collection_labels || []) as string[]).includes(NULL_FILTER),
 			},
 			...collectionLabels.map(
 				(option): CheckboxOption => ({
 					id: String(option.value),
 					label: option.description,
-					checked: get(tableState, 'collection_labels', [] as string[]).includes(
+					checked: ((tableState?.collection_labels || []) as string[]).includes(
 						String(option.value)
 					),
 				})
@@ -153,15 +151,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			{
 				id: NULL_FILTER,
 				label: tText(
-					'admin/collections-or-bundles/views/collections-or-bundles-overview___geen-organisatie'
+					'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___geen-organisatie'
 				),
-				checked: get(tableState, 'organisation', [] as string[]).includes(NULL_FILTER),
+				checked: ((tableState?.organisation || []) as string[]).includes(NULL_FILTER),
 			},
 			...organisations.map(
 				(option): CheckboxOption => ({
 					id: String(option.or_id),
 					label: option.name,
-					checked: get(tableState, 'organisation', [] as string[]).includes(
+					checked: ((tableState?.organisation || []) as string[]).includes(
 						String(option.or_id)
 					),
 				})
@@ -518,38 +516,24 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	};
 
 	const renderTableCell = (
-		collection: Partial<Avo.Collection.Collection>,
+		collectionOrBundle: Partial<Avo.Collection.Collection>,
 		columnId: CollectionsOrBundlesOverviewTableCols
 	) => {
+		const editLink = buildLink(
+			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
+			{
+				id: collectionOrBundle.id,
+				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+			}
+		);
+
 		switch (columnId) {
 			case 'title': {
 				return (
-					<Link
-						to={buildLink(
-							isCollection
-								? APP_PATH.COLLECTION_DETAIL.route
-								: APP_PATH.BUNDLE_DETAIL.route,
-							{ id: collection.id }
-						)}
-					>
-						<span>
-							{truncate((collection as any)[columnId] || '-', { length: 50 })}
-						</span>
-						{!!collection.relations?.[0].object && (
-							<a
-								href={buildLink(APP_PATH.COLLECTION_DETAIL.route, {
-									id: collection.relations?.[0].object,
-								})}
-							>
-								<TagList
-									tags={[
-										{ id: collection.relations?.[0].object, label: 'Kopie' },
-									]}
-									swatches={false}
-								/>
-							</a>
-						)}
-					</Link>
+					<CollectionOrBundleOrAssignmentTitleAndCopyTag
+						collOrBundleOrAssignment={collectionOrBundle}
+						editLink={editLink}
+					/>
 				);
 			}
 
@@ -558,7 +542,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					return null;
 				}
 				const isCollectionBeingEdited = isContentBeingEdited(
-					editStatuses?.[collection.id as string],
+					editStatuses?.[collectionOrBundle.id as string],
 					user.profile?.id
 				);
 				const viewButtonTitle = isCollection
@@ -587,7 +571,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 									? APP_PATH.COLLECTION_DETAIL.route
 									: APP_PATH.BUNDLE_DETAIL.route,
 								{
-									id: collection.id,
+									id: collectionOrBundle.id,
 								}
 							)}
 						>
@@ -608,17 +592,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 								disabled={true}
 							/>
 						) : (
-							<Link
-								to={buildLink(
-									isCollection
-										? APP_PATH.COLLECTION_EDIT_TAB.route
-										: APP_PATH.BUNDLE_EDIT_TAB.route,
-									{
-										id: collection.id,
-										tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
-									}
-								)}
-							>
+							<Link to={editLink}>
 								<Button
 									type="secondary"
 									icon={IconName.edit}
@@ -632,7 +606,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			}
 
 			default:
-				return renderCollectionOverviewColumns(collection, columnId, collectionLabels);
+				return renderCollectionOverviewColumns(
+					collectionOrBundle,
+					columnId,
+					collectionLabels
+				);
 		}
 	};
 
@@ -683,7 +661,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					bulkActions={GET_COLLECTION_BULK_ACTIONS()}
 					onSelectBulkAction={handleBulkAction as any}
 					selectedItemIds={selectedCollectionIds}
-					onSelectionChanged={setSelectedCollectionIds as (ids: ReactText[]) => void}
+					onSelectionChanged={setSelectedCollectionIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
 				/>
