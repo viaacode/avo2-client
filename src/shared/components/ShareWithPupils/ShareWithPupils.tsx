@@ -84,7 +84,9 @@ export const ShareWithPupil: FC<ShareWithPupilsProps> = ({
 							<>
 								<h4>
 									<strong>
-										{(!hasAssignmentContent || !isAssignmentDetailsComplete) &&
+										{!isAssignmentExpired &&
+											(!hasAssignmentContent ||
+												!isAssignmentDetailsComplete) &&
 											tText(
 												'assignment/components/share-assignment-with-pupil___link-nog-niet-deelbaar'
 											)}
