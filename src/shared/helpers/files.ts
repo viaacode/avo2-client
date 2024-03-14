@@ -1,4 +1,10 @@
-export const PHOTO_TYPES: string[] = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml'];
+export const PHOTO_TYPES: string[] = [
+	'image/jpeg',
+	'image/png',
+	'image/gif',
+	'image/svg+xml',
+	'image/webp',
+];
 export const VIDEO_TYPES: string[] = ['video/mp4', 'video/webm'];
 export const DOC_TYPES: string[] = [
 	'application/pdf',
@@ -14,6 +20,7 @@ export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
 	png: 'image/png',
 	gif: 'image/gif',
 	svg: 'image/svg+xml',
+	webp: 'image/webp',
 	mp4: 'video/mp4',
 	webm: 'video/webm',
 };
