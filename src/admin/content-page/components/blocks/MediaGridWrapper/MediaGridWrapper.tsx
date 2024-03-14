@@ -326,6 +326,9 @@ const MediaGridWrapper: FunctionComponent<
 			itemOrCollectionOrAssignment?.view_counts_aggregate?.aggregate?.sum?.count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
+
+		// Show copy right notice when the block requires it and the user is not logged in, or when they are editing the content page (preview)
+		// https://meemoo.atlassian.net/browse/AVO-3015
 		const showCopyrightNotice =
 			!!itemOrCollectionOrAssignment.copyrightOrganisation &&
 			(!commonUser || location.pathname.startsWith(ADMIN_PATH.DASHBOARD));

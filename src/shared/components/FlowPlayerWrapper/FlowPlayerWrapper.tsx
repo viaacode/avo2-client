@@ -353,7 +353,7 @@ const FlowPlayerWrapper: FunctionComponent<
 									)} - ${formatDurationHoursMinutesSeconds(end)}`}
 								</div>
 							)}
-						{!!props.topRight && !props.commonUser && (
+						{!!props.topRight && (
 							<div className="c-video-player__top-right">{props.topRight}</div>
 						)}
 					</div>
