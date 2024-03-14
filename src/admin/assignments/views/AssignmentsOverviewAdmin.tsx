@@ -25,13 +25,13 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { groupLomLinks } from '../../../shared/helpers/lom';
-import { renderCollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/helpers/render-collection-or-bundle-or-assignment-title-and-copy-tag';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { UserProps } from '../../../shared/hocs/withUser';
@@ -491,7 +491,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 		switch (columnId) {
 			case 'title': {
-				return renderCollectionOrBundleOrAssignmentTitleAndCopyTag(assignment, editLink);
+				return (
+					<CollectionOrBundleOrAssignmentTitleAndCopyTag
+						collOrBundleOrAssignment={assignment}
+						editLink={editLink}
+					/>
+				);
 			}
 
 			case 'author':

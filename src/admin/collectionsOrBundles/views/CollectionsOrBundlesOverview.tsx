@@ -24,10 +24,10 @@ import {
 	LoadingErrorLoadedComponent,
 	LoadingInfo,
 } from '../../../shared/components';
+import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
-import { renderCollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/helpers/render-collection-or-bundle-or-assignment-title-and-copy-tag';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
@@ -529,9 +529,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 		switch (columnId) {
 			case 'title': {
-				return renderCollectionOrBundleOrAssignmentTitleAndCopyTag(
-					collectionOrBundle,
-					editLink
+				return (
+					<CollectionOrBundleOrAssignmentTitleAndCopyTag
+						collOrBundleOrAssignment={collectionOrBundle}
+						editLink={editLink}
+					/>
 				);
 			}
 

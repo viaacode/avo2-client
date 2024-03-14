@@ -1,19 +1,22 @@
 import { TagList } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import { truncate } from 'lodash-es';
-import React from 'react';
+import React, { FC } from 'react';
 import { Link } from 'react-router-dom';
 
-import { APP_PATH } from '../../constants';
+import { APP_PATH } from '../../../constants';
+import { buildLink } from '../../helpers';
 
-import { buildLink } from './link';
-
-export function renderCollectionOrBundleOrAssignmentTitleAndCopyTag(
+interface CollectionOrBundleOrAssignmentTitleAndCopyTagProps {
 	collOrBundleOrAssignment:
 		| Partial<Avo.Collection.Collection>
-		| Partial<Avo.Assignment.Assignment>,
-	editLink: string
-) {
+		| Partial<Avo.Assignment.Assignment>;
+	editLink: string;
+}
+
+export const CollectionOrBundleOrAssignmentTitleAndCopyTag: FC<
+	CollectionOrBundleOrAssignmentTitleAndCopyTagProps
+> = ({ collOrBundleOrAssignment, editLink }) => {
 	const title = truncate((collOrBundleOrAssignment as any).title || '-', { length: 50 });
 	return (
 		<>
@@ -36,4 +39,4 @@ export function renderCollectionOrBundleOrAssignmentTitleAndCopyTag(
 			)}
 		</>
 	);
-}
+};
