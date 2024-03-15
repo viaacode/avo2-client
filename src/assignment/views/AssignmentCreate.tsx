@@ -330,7 +330,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		});
 
 		trigger();
-	}, [assignment, setValue, trigger]);
+	}, [assignment as any, setValue, trigger]);
 
 	// Set the loading state when the form is ready
 	useEffect(() => {
