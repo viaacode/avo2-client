@@ -1,17 +1,15 @@
-import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
+import { LinkTarget } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { fromPairs, get, isArray, isEmpty, isNil, isString, map } from 'lodash-es';
+import { get, isArray, isEmpty, isNil, isString } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Fragment, ReactElement, ReactNode } from 'react';
+import React, { Fragment, ReactNode } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
 import { FilterState } from '../../search/search.types';
-import SmartLink from '../components/SmartLink/SmartLink';
 import { ToastService } from '../services/toast-service';
 
-import { getEnv } from './env';
 import { tHtml } from './translate';
 
 type RouteParams = { [key: string]: string | number | undefined };
