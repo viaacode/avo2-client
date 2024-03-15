@@ -49,7 +49,7 @@ $c-video-player-progress-inner-bg: $color-teal-bright;
 	position: relative;
 	width: 100%;
 
-	.c-video-player__thumbnail {
+	&.c-video-player__thumbnail {
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
