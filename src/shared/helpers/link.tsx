@@ -119,104 +119,6 @@ export function navigateToAbsoluteOrRelativeUrl(
 	}
 }
 
-export const generateSmartLink = (
-	action: ButtonAction | null | undefined,
-	children: ReactNode,
-	title?: string
-): ReactElement<any, any> | null => {
-	return (
-		<SmartLink action={action} title={title}>
-			{children}
-		</SmartLink>
-	);
-};
-
-export const navigateToContentType = (
-	action: ButtonAction,
-	history: RouteComponentProps['history']
-): void => {
-	if (action) {
-		const { type, value, target } = action;
-
-		switch (type as Avo.Core.ContentPickerType) {
-			case 'INTERNAL_LINK':
-			case 'CONTENT_PAGE':
-			case 'PROJECTS':
-				navigateToAbsoluteOrRelativeUrl(String(value), history, target);
-				break;
-
-			case 'COLLECTION': {
-				const collectionUrl = buildLink(APP_PATH.COLLECTION_DETAIL.route, {
-					id: value as string,
-				});
-				navigateToAbsoluteOrRelativeUrl(collectionUrl, history, target);
-				break;
-			}
-
-			case 'ITEM': {
-				const itemUrl = buildLink(APP_PATH.ITEM_DETAIL.route, {
-					id: value,
-				});
-				navigateToAbsoluteOrRelativeUrl(itemUrl, history, target);
-				break;
-			}
-
-			case 'BUNDLE': {
-				const bundleUrl = buildLink(APP_PATH.BUNDLE_DETAIL.route, {
-					id: value,
-				});
-				navigateToAbsoluteOrRelativeUrl(bundleUrl, history, target);
-				break;
-			}
-
-			case 'EXTERNAL_LINK': {
-				const externalUrl = ((value as string) || '').replace(
-					'{{PROXY_URL}}',
-					getEnv('PROXY_URL') || ''
-				);
-				navigateToAbsoluteOrRelativeUrl(externalUrl, history, target);
-				break;
-			}
-
-			case 'ANCHOR_LINK': {
-				const urlWithoutQueryOrAnchor = window.location.href.split('?')[0].split('#')[0];
-				navigateToAbsoluteOrRelativeUrl(
-					`${urlWithoutQueryOrAnchor}#${value}`,
-					history,
-					target
-				);
-				break;
-			}
-
-			case 'FILE':
-				navigateToAbsoluteOrRelativeUrl(value as string, history, LinkTarget.Blank);
-				break;
-
-			case 'SEARCH_QUERY': {
-				const queryParams = JSON.parse(value as string);
-				navigateToAbsoluteOrRelativeUrl(
-					buildLink(
-						APP_PATH.SEARCH.route,
-						{},
-						fromPairs(
-							map(queryParams, (queryParamValue, queryParam) => [
-								queryParam,
-								JSON.stringify(queryParamValue),
-							])
-						)
-					),
-					history,
-					target
-				);
-				break;
-			}
-
-			default:
-				break;
-		}
-	}
-};
-
 export const renderSearchLinks = (
 	renderSearchLink: (
 		linkText: string | ReactNode,
@@ -276,11 +178,4 @@ export function generateSearchLinkString(
 
 export function generateContentLinkString(contentType: Avo.Core.ContentType, id: string): string {
 	return buildLink(`${CONTENT_TYPE_TO_ROUTE[contentType]}`, { id });
-}
-
-export function openLinkInNewTab(link: string): void {
-	const newWindow = window.open(link, '_blank', 'noopener,noreferrer');
-	if (newWindow) {
-		newWindow.opener = null;
-	}
 }

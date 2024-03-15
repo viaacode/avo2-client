@@ -103,7 +103,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 						)
 					);
 				}),
-		[user, tText]
+		[user, tHtml]
 	);
 
 	useEffect(() => {
@@ -115,7 +115,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 				)
 			);
 		});
-	}, [fetchCollections, tText]);
+	}, [fetchCollections, tHtml, tText]);
 
 	useEffect(() => {
 		isOpen && fetchCollections();

@@ -239,12 +239,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[tText, backToOverview]
+		[tText]
 	);
 
 	const renderTitle = useMemo(
 		() => <AssignmentTitle control={control} setAssignment={setAssignment as any} />,
-		[tText, control, setAssignment]
+		[control, setAssignment]
 	);
 
 	const renderTabContent = useMemo(() => {
@@ -330,7 +330,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		});
 
 		trigger();
-	}, [assignment as any, setValue, trigger]);
+	}, [assignment, setValue, trigger]);
 
 	// Set the loading state when the form is ready
 	useEffect(() => {

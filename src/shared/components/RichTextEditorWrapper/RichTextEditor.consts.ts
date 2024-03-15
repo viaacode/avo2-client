@@ -52,34 +52,6 @@ export const RICH_TEXT_EDITOR_OPTIONS_FULL: RichTextEditorControl[] = [
 	'remove-styles',
 ];
 
-export const RichTextEditor_OPTIONS_FULL_WITHOUT_ALIGN: RichTextEditorControl[] = [
-	'fullscreen',
-	'separator',
-	'undo',
-	'redo',
-	'separator',
-	'headings',
-	'separator',
-	'bold',
-	'italic',
-	'strike-through',
-	'underline',
-	'separator',
-	'list-ul',
-	'list-ol',
-	'separator',
-	'subscript',
-	'superscript',
-	'separator',
-	'hr',
-	'separator',
-	'link',
-	'separator',
-	'table',
-	'separator',
-	'remove-styles',
-];
-
 export const RICH_TEXT_EDITOR_OPTIONS_DEFAULT_NO_TITLES: RichTextEditorControl[] = [
 	'undo',
 	'redo',

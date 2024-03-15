@@ -48,7 +48,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 				actionButtons: ['home', 'helpdesk'],
 			});
 		}
-	}, [user, setLoadingInfo, tText]);
+	}, [user, setLoadingInfo, tText, tHtml]);
 
 	useEffect(() => {
 		if (userPermissions && navigationItems) {
