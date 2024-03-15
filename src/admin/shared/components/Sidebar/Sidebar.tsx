@@ -87,7 +87,9 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 	};
 
 	return (
-		<div className={classnames(className, 'o-sidebar__avo', { 'o-sidebar__avo--light': light })}>
+		<div
+			className={classnames(className, 'o-sidebar__avo', { 'o-sidebar__avo--light': light })}
+		>
 			{headerLink && (
 				<div className="o-sidebar__avo__header">
 					<Link
