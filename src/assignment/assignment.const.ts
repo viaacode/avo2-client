@@ -3,7 +3,7 @@ import { TFunction } from 'i18next';
 import { array, object, SchemaOf, string } from 'yup';
 
 import { ContentTypeString } from '../collection/collection.types';
-import { SearchFilter, SearchOrderProperty } from '../search/search.const';
+import { SearchFilter, SearchOrderAndDirectionProperty } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
 import { tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
@@ -352,10 +352,10 @@ export const ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH: Avo.Core.ContentType[] = 
 	ContentTypeString.audio,
 ];
 
-export const ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH: SearchOrderProperty[] = [
-	SearchOrderProperty.relevanceDesc,
-	SearchOrderProperty.broadcastDateDesc,
-	SearchOrderProperty.broadcastDateAsc,
+export const ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH: SearchOrderAndDirectionProperty[] = [
+	SearchOrderAndDirectionProperty.relevanceDesc,
+	SearchOrderAndDirectionProperty.broadcastDateDesc,
+	SearchOrderAndDirectionProperty.broadcastDateAsc,
 ];
 
 export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
