@@ -7,7 +7,7 @@ import { DefaultSecureRouteProps } from '../authentication/components/SecuredRou
 import { CollectionLabelLookup, QualityLabel } from '../collection/collection.types';
 import { BookmarkStatusLookup } from '../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
-import { SearchOrderProperty } from './search.const';
+import { SearchOrderAndDirectionProperty, SearchOrderProperty } from './search.const';
 
 export type SearchFilterFieldValues = string | string[] | Avo.Search.DateRange | null;
 export type SearchFilterMultiOptions = { [key: string]: Avo.Search.OptionProp[] };
@@ -44,7 +44,7 @@ interface RenderLinks {
 export interface SearchFiltersAndResultsPropsManual extends RenderLinks {
 	enabledFilters?: (keyof Avo.Search.Filters)[];
 	enabledTypeOptions?: Avo.Core.ContentType[];
-	enabledOrderProperties?: SearchOrderProperty[];
+	enabledOrderProperties?: SearchOrderAndDirectionProperty[];
 	bookmarks: boolean;
 	filterState: FilterState;
 	setFilterState: (state: FilterState, urlPushType?: UrlUpdateType) => void;
@@ -57,7 +57,7 @@ export interface SortOrder {
 
 export interface FilterState {
 	filters?: Partial<Avo.Search.Filters>;
-	orderProperty?: Avo.Search.OrderProperty;
+	orderProperty?: SearchOrderProperty;
 	orderDirection?: Avo.Search.OrderDirection;
 	page?: number;
 }
