@@ -29,11 +29,6 @@ export type ReactSelectOption<T = any> = {
 	value: T;
 };
 
-export type ReactAction<T, P = any> = {
-	type: T;
-	payload: P;
-};
-
 // Get all possible values from object
 export type ValueOf<T> = T[keyof T];
 

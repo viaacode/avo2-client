@@ -19,11 +19,6 @@ export interface SetSearchResultsErrorAction extends Action {
 	error: boolean;
 }
 
-export type SearchAction =
-	| SetSearchResultsSuccessAction
-	| SetSearchResultsLoadingAction
-	| SetSearchResultsErrorAction;
-
 export interface SearchState {
 	readonly data: Avo.Search.Search | null;
 	readonly loading: boolean;

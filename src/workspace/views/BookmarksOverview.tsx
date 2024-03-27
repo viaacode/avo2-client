@@ -102,7 +102,7 @@ const BookmarksOverview: FunctionComponent<
 				),
 			});
 		}
-	}, [commonUser, setBookmarks, setLoadingInfo, tText]);
+	}, [commonUser, tHtml]);
 
 	useEffect(() => {
 		fetchBookmarks();

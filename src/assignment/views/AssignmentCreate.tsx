@@ -239,12 +239,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[tText, backToOverview]
+		[tText]
 	);
 
 	const renderTitle = useMemo(
 		() => <AssignmentTitle control={control} setAssignment={setAssignment as any} />,
-		[tText, control, setAssignment]
+		[control, setAssignment]
 	);
 
 	const renderTabContent = useMemo(() => {
@@ -324,7 +324,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	// Synchronise the React state that triggers renders with the useForm hook
 	useEffect(() => {
-		Object.keys(assignment || {}).forEach((key) => {
+		Object.keys((assignment || {}) as any).forEach((key) => {
 			const cast = key as keyof AssignmentFields;
 			(setValue as any)(cast, assignment?.[cast]);
 		});

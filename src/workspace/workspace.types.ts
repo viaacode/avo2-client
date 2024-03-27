@@ -43,19 +43,6 @@ export interface WorkspaceTab extends TabProps {
 	id: WorkspaceTabNames;
 }
 
-interface Aggregate {
-	count: number;
-}
-
-interface AggregateResponse {
-	aggregate: Aggregate;
-}
-
-export interface TabAggregates {
-	app_collections_aggregate: AggregateResponse;
-	app_assignments_aggregate: AggregateResponse;
-}
-
 export type WorkspaceCounts = {
 	collections: number;
 	bundles: number;

@@ -80,23 +80,6 @@ export const getUserGroupId = (
 	return userGroupId as SpecialUserGroup | '0';
 };
 
-export function getProfileFromUser(
-	user: Avo.User.User | undefined,
-	silent = false
-): Avo.User.Profile | null {
-	if (!user) {
-		if (silent) {
-			return null;
-		}
-		throw new CustomError('Failed to get profile because the logged in user is undefined');
-	}
-	const profile = user?.profile;
-	if (!profile) {
-		throw new CustomError('No profile could be found for the logged in user');
-	}
-	return profile;
-}
-
 export function getProfileAvatar(user: Avo.User.User | undefined): string {
 	const profile = get(user, 'profile');
 	if (!profile) {
