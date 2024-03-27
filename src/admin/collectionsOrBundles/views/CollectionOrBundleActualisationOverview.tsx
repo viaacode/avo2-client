@@ -271,13 +271,25 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
 			{ id: collectionOrBundle.id, tabId: CollectionCreateUpdateTab.ACTUALISATION }
 		);
+		const editLinkOriginal = collectionOrBundle.relations?.[0].object
+			? buildLink(
+					isCollection
+						? APP_PATH.COLLECTION_EDIT_TAB.route
+						: APP_PATH.BUNDLE_EDIT_TAB.route,
+					{
+						id: collectionOrBundle.relations?.[0].object,
+						tabId: CollectionCreateUpdateTab.ACTUALISATION,
+					}
+			  )
+			: null;
 
 		switch (columnId) {
 			case 'title': {
 				return (
 					<CollectionOrBundleOrAssignmentTitleAndCopyTag
-						collOrBundleOrAssignment={collectionOrBundle}
+						title={collectionOrBundle.title}
 						editLink={editLink}
+						editLinkOriginal={editLinkOriginal}
 					/>
 				);
 			}

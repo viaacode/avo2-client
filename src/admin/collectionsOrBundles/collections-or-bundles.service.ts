@@ -192,7 +192,21 @@ export class CollectionsOrBundlesService {
 				variables,
 			});
 
-			const collections = response.app_collections;
+			const collections = response.app_collections as Avo.Collection.Collection[];
+
+			// also fetch if the collection is a copy in a separate query to avoid making the main query slower
+			const relations = (await RelationService.fetchRelationsBySubject(
+				'collection',
+				collections.map((coll) => coll.id),
+				Lookup_Enum_Relation_Types_Enum.IsCopyOf
+			)) as Avo.Collection.RelationEntry<Avo.Collection.Collection>[];
+
+			relations.forEach((relation) => {
+				const collection = collections.find((coll) => coll.id === relation.subject);
+				if (collection) {
+					(collection as Avo.Collection.Collection).relations = [relation];
+				}
+			});
 
 			const collectionsCount = response.app_collections_aggregate.aggregate?.count ?? 0;
 
@@ -202,7 +216,7 @@ export class CollectionsOrBundlesService {
 				});
 			}
 
-			return [collections as Avo.Collection.Collection[], collectionsCount];
+			return [collections, collectionsCount];
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get collection editorial entries from the database',

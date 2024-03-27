@@ -65,6 +65,14 @@ export const DEFAULT_SORT_ORDER: SortOrder = {
 };
 
 export enum SearchOrderProperty {
+	relevance = 'relevance',
+	views = 'views',
+	broadcastDate = 'broadcastDate',
+	createdAt = 'createdAt',
+	updatedAt = 'updatedAt',
+}
+
+export enum SearchOrderAndDirectionProperty {
 	relevanceDesc = 'relevance_desc',
 	viewsDesc = 'views_desc',
 	broadcastDateDesc = 'broadcastDate_desc',
@@ -73,29 +81,32 @@ export enum SearchOrderProperty {
 	updatedAtDesc = 'updatedAt_desc',
 }
 
-export const GET_SEARCH_ORDER_OPTIONS = (): { label: string; value: SearchOrderProperty }[] => [
+export const GET_SEARCH_ORDER_OPTIONS = (): {
+	label: string;
+	value: SearchOrderAndDirectionProperty;
+}[] => [
 	{
 		label: tText('search/views/search___meest-relevant'),
-		value: SearchOrderProperty.relevanceDesc,
+		value: SearchOrderAndDirectionProperty.relevanceDesc,
 	},
 	{
 		label: tText('search/views/search___meest-bekeken'),
-		value: SearchOrderProperty.viewsDesc,
+		value: SearchOrderAndDirectionProperty.viewsDesc,
 	},
 	{
 		label: tText('search/views/search___uitzenddatum-aflopend'),
-		value: SearchOrderProperty.broadcastDateDesc,
+		value: SearchOrderAndDirectionProperty.broadcastDateDesc,
 	},
 	{
 		label: tText('search/views/search___uitzenddatum-oplopend'),
-		value: SearchOrderProperty.broadcastDateAsc,
+		value: SearchOrderAndDirectionProperty.broadcastDateAsc,
 	},
 	{
 		label: tText('search/views/search___laatst-toegevoegd'),
-		value: SearchOrderProperty.createdAtDesc,
+		value: SearchOrderAndDirectionProperty.createdAtDesc,
 	},
 	{
 		label: tText('search/views/search___laatst-gewijzigd'),
-		value: SearchOrderProperty.updatedAtDesc,
+		value: SearchOrderAndDirectionProperty.updatedAtDesc,
 	},
 ];

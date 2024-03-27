@@ -526,13 +526,25 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 			}
 		);
+		const editLinkOriginal = collectionOrBundle.relations?.[0].object
+			? buildLink(
+					isCollection
+						? APP_PATH.COLLECTION_EDIT_TAB.route
+						: APP_PATH.BUNDLE_EDIT_TAB.route,
+					{
+						id: collectionOrBundle.relations?.[0].object,
+						tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+					}
+			  )
+			: null;
 
 		switch (columnId) {
 			case 'title': {
 				return (
 					<CollectionOrBundleOrAssignmentTitleAndCopyTag
-						collOrBundleOrAssignment={collectionOrBundle}
+						title={collectionOrBundle.title}
 						editLink={editLink}
+						editLinkOriginal={editLinkOriginal}
 					/>
 				);
 			}

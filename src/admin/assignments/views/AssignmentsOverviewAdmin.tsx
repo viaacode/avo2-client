@@ -488,13 +488,20 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			id,
 			tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
 		});
+		const editLinkOriginal = assignment.relations?.[0].object
+			? buildLink(APP_PATH.ASSIGNMENT_EDIT_TAB.route, {
+					id: assignment.relations?.[0].object,
+					tabId: ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT,
+			  })
+			: null;
 
 		switch (columnId) {
 			case 'title': {
 				return (
 					<CollectionOrBundleOrAssignmentTitleAndCopyTag
-						collOrBundleOrAssignment={assignment}
+						title={assignment.title}
 						editLink={editLink}
+						editLinkOriginal={editLinkOriginal}
 					/>
 				);
 			}

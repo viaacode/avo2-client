@@ -18,6 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
+import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import {
 	cloneDeep,
 	every,
@@ -60,6 +61,7 @@ import {
 	GET_SEARCH_ORDER_OPTIONS,
 	ITEMS_PER_PAGE,
 	SearchFilter,
+	SearchOrderProperty,
 } from '../search.const';
 import {
 	FilterState,
@@ -237,11 +239,14 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	}, [getBookmarkStatuses, user]);
 
 	const handleOrderChanged = async (value = 'relevance_desc') => {
-		const valueParts: string[] = value.split('_');
+		const valueParts: [SearchOrderProperty, SearchOrderDirection] = value.split('_') as [
+			SearchOrderProperty,
+			SearchOrderDirection,
+		];
 		setFilterState(
 			{
 				...filterState,
-				orderProperty: valueParts[0] as Avo.Search.OrderProperty,
+				orderProperty: valueParts[0] as SearchOrderProperty,
 				orderDirection: valueParts[1] as Avo.Search.OrderDirection,
 				page: 0,
 			},

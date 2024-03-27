@@ -1,12 +1,5 @@
 import { FlowPlayer, FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
-import {
-	AspectRatioWrapper,
-	Icon,
-	IconName,
-	MediaCard,
-	MediaCardThumbnail,
-	Thumbnail,
-} from '@viaa/avo2-components';
+import { Icon, IconName, MediaCard, MediaCardThumbnail, Thumbnail } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil, isString, noop, throttle } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
@@ -267,7 +260,7 @@ const FlowPlayerWrapper: FunctionComponent<
 
 	return (
 		<>
-			<div className="c-video-player t-player-skin--dark">
+			<div className="c-video-player t-player-skin--dark" style={{ aspectRatio: '16/9' }}>
 				{src && (props.autoplay || clickedThumbnail || !item) ? (
 					<FlowPlayer
 						src={getBrowserSafeUrl(src)}
@@ -333,11 +326,11 @@ const FlowPlayerWrapper: FunctionComponent<
 					/>
 				) : (
 					// Fake player for logged-out users that do not yet have video playback rights
-					<div className="c-video-player__overlay" onClick={handlePosterClicked}>
-						<AspectRatioWrapper
-							className="c-video-player__item c-video-player__thumbnail"
-							style={{ backgroundImage: `url(${poster})` }}
-						/>
+					<div
+						className="c-video-player__overlay c-video-player__item c-video-player__thumbnail"
+						onClick={handlePosterClicked}
+						style={{ aspectRatio: '16/9', backgroundImage: `url(${poster})` }}
+					>
 						<div className="c-play-overlay">
 							<div className="c-play-overlay__inner">
 								<Icon name={IconName.play} className="c-play-overlay__button" />

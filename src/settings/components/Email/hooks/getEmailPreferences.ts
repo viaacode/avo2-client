@@ -6,16 +6,18 @@ import { CampaignMonitorService } from '../../../../shared/services/campaign-mon
 export const useGetEmailPreferences = (
 	preferenceCenterKey: string,
 	options: {
-		enabled: boolean;
-	} = {
-		enabled: true,
-	}
+		enabled?: boolean;
+	} = {}
 ) => {
 	return useQuery(
 		[QUERY_KEYS.GET_EMAIL_PREFERENCES, preferenceCenterKey],
 		() => {
 			return CampaignMonitorService.fetchNewsletterPreferences(preferenceCenterKey);
 		},
-		options
+		{
+			enabled: true,
+			cacheTime: 0,
+			...options,
+		}
 	);
 };
