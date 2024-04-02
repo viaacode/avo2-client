@@ -122,8 +122,8 @@ const FlowPlayerWrapper: FunctionComponent<
 
 	const handlePlay = (playingSrc: string) => {
 		// Only trigger once per video
-		if (item && item.uid && !triggeredForUrlRef.current[playingSrc]) {
-			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch(
+		if (item && item.uid && !triggeredForUrlRef.current[playingSrc] && props.commonUser) {
+			BookmarksViewsPlaysService.action('play', 'item', item.uid, props.commonUser).catch(
 				(err: unknown) => {
 					console.error(
 						new CustomError('Failed to track item play event', err, {
