@@ -65,6 +65,7 @@ import {
 	createDropdownMenuItem,
 	CustomError,
 	formatDate,
+	isMobileWidth,
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
@@ -974,7 +975,7 @@ const AssignmentOverview: FunctionComponent<
 		</>
 	);
 
-	const renderTable = (useCards: boolean) => {
+	const renderTable = () => {
 		return (
 			<Table
 				className="m-assignment-overview__table"
@@ -1001,7 +1002,7 @@ const AssignmentOverview: FunctionComponent<
 				onColumnClick={handleSortOrderChange}
 				sortColumn={sortColumn}
 				sortOrder={sortOrder}
-				useCards={useCards}
+				useCards={isMobileWidth()}
 			/>
 		);
 	};
@@ -1016,10 +1017,7 @@ const AssignmentOverview: FunctionComponent<
 		return (
 			<>
 				{renderHeader()}
-				{renderMobileDesktop({
-					mobile: renderTable(true),
-					desktop: renderTable(false),
-				})}
+				{renderTable()}
 				<Spacer margin="top-large">
 					<Pagination
 						pageCount={Math.ceil(assignmentCount / ITEMS_PER_PAGE)}
