@@ -686,14 +686,11 @@ const AssignmentOverview: FunctionComponent<
 				return renderResponsesCell(cellData, assignment);
 
 			case 'actions':
-				return renderMobileDesktop({
-					mobile: (
-						<Spacer className="c-assignment-overview__actions" margin="top">
-							{renderActions(assignment)}
-						</Spacer>
-					),
-					desktop: renderActions(assignment),
-				});
+				return (
+					<div className="c-assignment-overview__actions">
+						{renderActions(assignment)}
+					</div>
+				);
 
 			default:
 				return JSON.stringify(cellData);
