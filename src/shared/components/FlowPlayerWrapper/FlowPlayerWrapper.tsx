@@ -122,8 +122,8 @@ const FlowPlayerWrapper: FunctionComponent<
 
 	const handlePlay = (playingSrc: string) => {
 		// Only trigger once per video
-		if (item && item.uid && !triggeredForUrlRef.current[playingSrc]) {
-			BookmarksViewsPlaysService.action('play', 'item', item.uid, undefined).catch(
+		if (item && item.uid && !triggeredForUrlRef.current[playingSrc] && props.commonUser) {
+			BookmarksViewsPlaysService.action('play', 'item', item.uid, props.commonUser).catch(
 				(err: unknown) => {
 					console.error(
 						new CustomError('Failed to track item play event', err, {
@@ -260,7 +260,10 @@ const FlowPlayerWrapper: FunctionComponent<
 
 	return (
 		<>
-			<div className="c-video-player t-player-skin--dark" style={{ aspectRatio: '16/9' }}>
+			<div
+				className="c-video-player t-player-skin--dark"
+				style={isPlaylist ? {} : { aspectRatio: '16/9' }}
+			>
 				{src && (props.autoplay || clickedThumbnail || !item) ? (
 					<FlowPlayer
 						src={getBrowserSafeUrl(src)}
