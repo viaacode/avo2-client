@@ -1,15 +1,15 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	DeleteAssignmentBookmarksForUserMutationVariables,
-	DeleteCollectionBookmarksForUserMutationVariables,
-	DeleteItemBookmarkMutationVariables,
-	GetAssignmentViewCountQuery,
-	GetCollectionPlayCountQuery,
-	GetCollectionViewCountQuery,
-	GetItemPlayCountQuery,
-	GetItemViewCountQuery,
-	InsertAssignmentBookmarkMutationVariables,
+	type DeleteAssignmentBookmarksForUserMutationVariables,
+	type DeleteCollectionBookmarksForUserMutationVariables,
+	type DeleteItemBookmarkMutationVariables,
+	type GetAssignmentViewCountQuery,
+	type GetCollectionPlayCountQuery,
+	type GetCollectionViewCountQuery,
+	type GetItemPlayCountQuery,
+	type GetItemViewCountQuery,
+	type InsertAssignmentBookmarkMutationVariables,
 } from '../../generated/graphql-db-operations';
 import {
 	DeleteAssignmentBookmarksForUserDocument,
@@ -31,10 +31,10 @@ import {
 } from '../../generated/graphql-db-react-query';
 
 import {
-	BookmarkViewPlayCounts,
-	EventAction,
-	EventContentType,
-	EventContentTypeSimplified,
+	type BookmarkViewPlayCounts,
+	type EventAction,
+	type EventContentType,
+	type EventContentTypeSimplified,
 } from './bookmarks-views-plays-service.types';
 
 export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {

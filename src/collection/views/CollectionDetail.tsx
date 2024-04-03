@@ -21,10 +21,16 @@ import { PermissionName } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 import { StringParam, useQueryParams } from 'use-query-params';
 
@@ -38,13 +44,13 @@ import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
-import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
+import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
 import {
 	CommonMetaData,
 	EditButton,
 	HeaderOwnerAndContributors,
 	InteractiveTour,
-	LoadingInfo,
+	type LoadingInfo,
 	ShareDropdown,
 	ShareModal,
 } from '../../shared/components';
@@ -69,13 +75,13 @@ import {
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { isUuid } from '../../shared/helpers/uuid';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -89,7 +95,7 @@ import {
 	CollectionCreateUpdateTab,
 	CollectionMenuAction,
 	ContentTypeString,
-	Relation,
+	type Relation,
 } from '../collection.types';
 import { AutoplayCollectionModal, FragmentList, PublishCollectionModal } from '../components';
 import AddToBundleModal from '../components/modals/AddToBundleModal';

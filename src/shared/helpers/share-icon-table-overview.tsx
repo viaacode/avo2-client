@@ -1,7 +1,7 @@
 import { Icon, IconName, Tooltip, TooltipContent, TooltipTrigger } from '@viaa/avo2-components';
 import { type Avo, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { renderMobileDesktop } from './renderMobileDesktop';
 import { tHtml, tText } from './translate';

@@ -1,14 +1,14 @@
 import { Icon, IconName } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { flatten } from 'lodash-es';
-import React, { FunctionComponent, ReactElement, ReactNode } from 'react';
-import { Link, NavLink, RouteComponentProps } from 'react-router-dom';
+import React, { type FunctionComponent, type ReactElement, type ReactNode } from 'react';
+import { Link, NavLink, type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../../../constants';
 import { CustomError } from '../../../../shared/helpers';
 import { tText } from '../../../../shared/helpers/translate';
 import useTranslation from '../../../../shared/hooks/useTranslation';
-import { NavigationItemInfo } from '../../../../shared/types';
+import { type NavigationItemInfo } from '../../../../shared/types';
 
 import './Sidebar.scss';
 

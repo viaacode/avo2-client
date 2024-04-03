@@ -1,12 +1,12 @@
 import { useSlot } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import React, { type FunctionComponent, type ReactNode, useEffect, useState } from 'react';
 
 import { LoadingErrorLoadedComponent } from '../../shared/components';
-import { LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { Permissions, PermissionService } from '../helpers/permission-service';
+import { type Permissions, PermissionService } from '../helpers/permission-service';
 
 import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
 

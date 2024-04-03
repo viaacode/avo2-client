@@ -1,7 +1,7 @@
-import { TagInfo } from '@viaa/avo2-components';
+import { type TagInfo } from '@viaa/avo2-components';
 import { useEffect, useState } from 'react';
 
-import { CheckboxOption } from '../../../shared/components';
+import { type CheckboxOption } from '../../../shared/components';
 import { CustomError } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';

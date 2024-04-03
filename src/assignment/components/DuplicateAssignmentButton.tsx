@@ -1,8 +1,8 @@
-import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
+import { Button, type ButtonProps, type DefaultProps, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC, MouseEvent } from 'react';
+import React, { type FC, type MouseEvent } from 'react';
 
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';

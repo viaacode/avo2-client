@@ -61,15 +61,15 @@ import { addDefaultAudioStillToItem } from '../../shared/helpers/default-still';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
-import { UnpublishableItem } from '../../shared/types';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { type UnpublishableItem } from '../../shared/types';
+import { type TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './items.const';
 import {
-	ItemsOverviewTableCols,
-	ItemUsedByResponse,
-	UnpublishedItem,
-	UnpublishedItemsOverviewTableCols,
+	type ItemsOverviewTableCols,
+	type ItemUsedByResponse,
+	type UnpublishedItem,
+	type UnpublishedItemsOverviewTableCols,
 } from './items.types';
 
 export class ItemsService {

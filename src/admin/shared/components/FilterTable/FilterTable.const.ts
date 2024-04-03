@@ -1,9 +1,9 @@
 import { compact, fromPairs } from 'lodash-es';
-import { NumberParam, QueryParamConfig, StringParam } from 'use-query-params';
+import { NumberParam, type QueryParamConfig, StringParam } from 'use-query-params';
 
 import { CheckboxListParam, DateRangeParam } from '../../helpers/query-string-converters';
 
-import { FilterableColumn } from './FilterTable';
+import { type FilterableColumn } from './FilterTable';
 import { cleanupObject } from './FilterTable.utils';
 
 const FILTER_TYPE_TO_QUERY_PARAM_CONVERTER = {

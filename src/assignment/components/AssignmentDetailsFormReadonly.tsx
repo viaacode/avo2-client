@@ -1,7 +1,7 @@
-import { DefaultProps, Form, FormGroup } from '@viaa/avo2-components';
+import { type DefaultProps, Form, FormGroup } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';

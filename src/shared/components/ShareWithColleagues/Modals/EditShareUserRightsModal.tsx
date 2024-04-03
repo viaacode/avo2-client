@@ -7,16 +7,16 @@ import {
 	ModalBody,
 	ModalFooterRight,
 	Select,
-	SelectOption,
+	type SelectOption,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import React, { FC, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
 import { findRightByValue } from '../ShareWithColleagues.helpers';
-import { ContributorInfoRight } from '../ShareWithColleagues.types';
+import { type ContributorInfoRight } from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;

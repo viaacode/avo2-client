@@ -1,5 +1,5 @@
 import { Button, IconName, Tooltip, TooltipContent, TooltipTrigger } from '@viaa/avo2-components';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 type EditButtonProps = {
 	onClick: () => void;

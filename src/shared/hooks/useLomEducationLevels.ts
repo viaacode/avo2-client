@@ -1,4 +1,4 @@
-import { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import { useEffect, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';

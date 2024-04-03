@@ -1,5 +1,5 @@
-import { IconName, MetaDataItem, MetaDataItemProps } from '@viaa/avo2-components';
-import React, { ReactNode } from 'react';
+import { IconName, MetaDataItem, type MetaDataItemProps } from '@viaa/avo2-components';
+import React, { type ReactNode } from 'react';
 
 export type renderBookmarkCountProps = Pick<MetaDataItemProps, 'label'>;
 

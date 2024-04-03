@@ -1,14 +1,14 @@
 import { UserGroupOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@meemoo/react-components';
 import { Icon, IconName, Toolbar, ToolbarRight } from '@viaa/avo2-components';
-import React, { FunctionComponent, useRef, useState } from 'react';
+import React, { type FunctionComponent, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/use-translation/use-translation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { UserGroupOverviewRef } from '../../shared/services/user-groups/user-groups.types';
+import { type UserGroupOverviewRef } from '../../shared/services/user-groups/user-groups.types';
 
 import './UserGroupOverviewPage.scss';
 

@@ -1,4 +1,4 @@
-import { UiState } from './types';
+import { type UiState } from './types';
 
 const initialState: UiState = Object.freeze({
 	showNudgingModal: null,

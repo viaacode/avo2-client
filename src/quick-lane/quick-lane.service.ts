@@ -3,18 +3,18 @@ import { type Avo } from '@viaa/avo2-types';
 import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
 import { CollectionService } from '../collection/collection.service';
-import { QuickLaneType } from '../shared/components/QuickLaneModal/QuickLaneModal.types';
+import { type QuickLaneType } from '../shared/components/QuickLaneModal/QuickLaneModal.types';
 import {
-	GetQuickLaneByContentAndOwnerQuery,
-	GetQuickLaneByContentAndOwnerQueryVariables,
-	GetQuickLaneByIdQuery,
-	GetQuickLaneByIdQueryVariables,
-	InsertQuickLanesMutation,
-	InsertQuickLanesMutationVariables,
-	RemoveQuickLanesMutation,
-	RemoveQuickLanesMutationVariables,
-	UpdateQuickLaneByIdMutation,
-	UpdateQuickLaneByIdMutationVariables,
+	type GetQuickLaneByContentAndOwnerQuery,
+	type GetQuickLaneByContentAndOwnerQueryVariables,
+	type GetQuickLaneByIdQuery,
+	type GetQuickLaneByIdQueryVariables,
+	type InsertQuickLanesMutation,
+	type InsertQuickLanesMutationVariables,
+	type RemoveQuickLanesMutation,
+	type RemoveQuickLanesMutationVariables,
+	type UpdateQuickLaneByIdMutation,
+	type UpdateQuickLaneByIdMutationVariables,
 } from '../shared/generated/graphql-db-operations';
 import {
 	GetQuickLaneByContentAndOwnerDocument,
@@ -26,7 +26,7 @@ import {
 import { CustomError } from '../shared/helpers';
 import { quickLaneUrlRecordToObject } from '../shared/helpers/quick-lane-url-record-to-object';
 import { dataService } from '../shared/services/data-service';
-import { QuickLaneUrlObject, QuickLaneUrlRecord } from '../shared/types';
+import { type QuickLaneUrlObject, type QuickLaneUrlRecord } from '../shared/types';
 
 // Mappers
 

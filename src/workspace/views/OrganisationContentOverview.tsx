@@ -1,14 +1,17 @@
-import { IconName, Pagination, Spacer, Table, TableColumn } from '@viaa/avo2-components';
-import React, { FC, FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { IconName, Pagination, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
+import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { CollectionService, OrganisationContentItem } from '../../collection/collection.service';
+import {
+	CollectionService,
+	type OrganisationContentItem,
+} from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
@@ -77,7 +80,7 @@ const OrganisationContentOverview: FunctionComponent<
 				actionButtons: ['home'],
 			});
 		}
-	}, [page, sortColumn, sortOrder, tText, commonUser]);
+	}, [page, sortColumn, sortOrder, tHtml, commonUser]);
 
 	useEffect(() => {
 		fetchOrganisationContent();

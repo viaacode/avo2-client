@@ -1,6 +1,6 @@
 import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
-import React, { FunctionComponent, ReactNode } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import React, { type FunctionComponent, type ReactNode } from 'react';
+import { type RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import { APP_PATH } from '../../constants';

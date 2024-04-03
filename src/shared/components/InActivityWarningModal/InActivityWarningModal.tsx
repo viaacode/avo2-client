@@ -1,12 +1,12 @@
 import { Modal, ModalBody } from '@viaa/avo2-components';
 import { addMinutes, differenceInSeconds, isAfter } from 'date-fns';
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import { connect } from 'react-redux';
 import { matchPath } from 'react-router';
 import { compose } from 'redux';
 
-import { AppState } from '../../../store';
+import { type AppState } from '../../../store';
 import { selectLastVideoPlayedAt } from '../../../store/selectors';
 import {
 	EDIT_STATUS_REFETCH_TIME,

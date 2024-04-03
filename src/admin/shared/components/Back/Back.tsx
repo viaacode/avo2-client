@@ -1,5 +1,5 @@
-import { Button, ButtonProps, IconName } from '@viaa/avo2-components';
-import React, { FC } from 'react';
+import { Button, type ButtonProps, IconName } from '@viaa/avo2-components';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../../../shared/hooks/useTranslation';
 

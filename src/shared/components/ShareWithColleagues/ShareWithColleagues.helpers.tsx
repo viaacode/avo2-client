@@ -2,7 +2,7 @@ import { groupBy } from 'lodash-es';
 
 import { tText } from '../../helpers/translate';
 
-import { ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
+import { type ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
 
 export const sortContributors = (users: ContributorInfo[]): ContributorInfo[] => {
 	const groupedUsers: Partial<Record<ContributorInfoRight, ContributorInfo[]>> = groupBy(

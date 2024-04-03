@@ -4,14 +4,14 @@ import { endOfDay, isBefore } from 'date-fns';
 import { compact, get, isNil } from 'lodash-es';
 
 import {
-	GetProfileIdsQuery,
-	GetProfileIdsQueryVariables,
-	GetUsersInSameCompanyQuery,
-	GetUsersInSameCompanyQueryVariables,
-	GetUsersQuery,
-	GetUsersQueryVariables,
-	UpdateUserTempAccessByIdMutation,
-	UpdateUserTempAccessByIdMutationVariables,
+	type GetProfileIdsQuery,
+	type GetProfileIdsQueryVariables,
+	type GetUsersInSameCompanyQuery,
+	type GetUsersInSameCompanyQueryVariables,
+	type GetUsersQuery,
+	type GetUsersQueryVariables,
+	type UpdateUserTempAccessByIdMutation,
+	type UpdateUserTempAccessByIdMutationVariables,
 } from '../../shared/generated/graphql-db-operations';
 import {
 	GetProfileIdsDocument,
@@ -22,10 +22,10 @@ import {
 import { CustomError, getEnv, toIsoDate } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { type TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import { ITEMS_PER_PAGE, TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './user.const';
-import { UserOverviewTableCol } from './user.types';
+import { type UserOverviewTableCol } from './user.types';
 
 export class UserService {
 	/**

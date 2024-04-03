@@ -2,14 +2,14 @@ import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 
 import {
-	GetAllOrganisationsQuery,
-	GetAllOrganisationsQueryVariables,
-	GetDistinctOrganisationsQuery,
-	GetDistinctOrganisationsQueryVariables,
-	GetOrganisationsWithUsersQuery,
-	GetOrganisationsWithUsersQueryVariables,
-	GetUsersByCompanyIdQuery,
-	GetUsersByCompanyIdQueryVariables,
+	type GetAllOrganisationsQuery,
+	type GetAllOrganisationsQueryVariables,
+	type GetDistinctOrganisationsQuery,
+	type GetDistinctOrganisationsQueryVariables,
+	type GetOrganisationsWithUsersQuery,
+	type GetOrganisationsWithUsersQueryVariables,
+	type GetUsersByCompanyIdQuery,
+	type GetUsersByCompanyIdQueryVariables,
 } from '../generated/graphql-db-operations';
 import {
 	GetAllOrganisationsDocument,

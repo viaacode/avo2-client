@@ -7,59 +7,59 @@ import { ItemsService } from '../admin/items/items.service';
 import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
 import { getUserGroupIds } from '../authentication/authentication.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
-import { ItemTrimInfo } from '../item/item.types';
+import { type ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
-	ContributorInfo,
-	ContributorInfoRight,
+	type ContributorInfo,
+	type ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
-	AssignmentPupilBlocksQuery,
-	AssignmentPupilBlocksQueryVariables,
-	BulkUpdateAuthorForAssignmentsMutation,
-	BulkUpdateAuthorForAssignmentsMutationVariables,
-	DeleteAssignmentResponseByIdMutation,
-	DeleteAssignmentResponseByIdMutationVariables,
-	DeleteAssignmentsByIdMutation,
-	DeleteAssignmentsByIdMutationVariables,
-	GetAssignmentBlocksQuery,
-	GetAssignmentBlocksQueryVariables,
-	GetAssignmentByTitleOrDescriptionQuery,
-	GetAssignmentByTitleOrDescriptionQueryVariables,
-	GetAssignmentIdsQuery,
-	GetAssignmentIdsQueryVariables,
-	GetAssignmentResponseByIdQuery,
-	GetAssignmentResponseByIdQueryVariables,
-	GetAssignmentResponseQuery,
-	GetAssignmentResponseQueryVariables,
-	GetAssignmentResponsesByAssignmentIdQuery,
-	GetAssignmentResponsesByAssignmentIdQueryVariables,
-	GetAssignmentResponsesQuery,
-	GetAssignmentResponsesQueryVariables,
-	GetAssignmentsAdminOverviewQuery,
-	GetAssignmentsAdminOverviewQueryVariables,
-	GetAssignmentsByOwnerOrContributorQuery,
-	GetAssignmentsByOwnerOrContributorQueryVariables,
-	GetAssignmentsByResponseOwnerIdQuery,
-	GetAssignmentsByResponseOwnerIdQueryVariables,
-	GetAssignmentWithResponseQuery,
-	GetAssignmentWithResponseQueryVariables,
-	GetContributorsByAssignmentUuidQuery,
-	GetContributorsByAssignmentUuidQueryVariables,
-	GetMaxPositionAssignmentBlocksQuery,
-	GetMaxPositionAssignmentBlocksQueryVariables,
-	IncrementAssignmentViewCountMutation,
-	IncrementAssignmentViewCountMutationVariables,
-	InsertAssignmentBlocksMutation,
-	InsertAssignmentBlocksMutationVariables,
-	InsertAssignmentResponseMutation,
-	InsertAssignmentResponseMutationVariables,
-	SoftDeleteAssignmentByIdMutation,
-	SoftDeleteAssignmentByIdMutationVariables,
-	UpdateAssignmentResponseMutation,
-	UpdateAssignmentResponseMutationVariables,
-	UpdateAssignmentUpdatedAtDateMutation,
-	UpdateAssignmentUpdatedAtDateMutationVariables,
+	type AssignmentPupilBlocksQuery,
+	type AssignmentPupilBlocksQueryVariables,
+	type BulkUpdateAuthorForAssignmentsMutation,
+	type BulkUpdateAuthorForAssignmentsMutationVariables,
+	type DeleteAssignmentResponseByIdMutation,
+	type DeleteAssignmentResponseByIdMutationVariables,
+	type DeleteAssignmentsByIdMutation,
+	type DeleteAssignmentsByIdMutationVariables,
+	type GetAssignmentBlocksQuery,
+	type GetAssignmentBlocksQueryVariables,
+	type GetAssignmentByTitleOrDescriptionQuery,
+	type GetAssignmentByTitleOrDescriptionQueryVariables,
+	type GetAssignmentIdsQuery,
+	type GetAssignmentIdsQueryVariables,
+	type GetAssignmentResponseByIdQuery,
+	type GetAssignmentResponseByIdQueryVariables,
+	type GetAssignmentResponseQuery,
+	type GetAssignmentResponseQueryVariables,
+	type GetAssignmentResponsesByAssignmentIdQuery,
+	type GetAssignmentResponsesByAssignmentIdQueryVariables,
+	type GetAssignmentResponsesQuery,
+	type GetAssignmentResponsesQueryVariables,
+	type GetAssignmentsAdminOverviewQuery,
+	type GetAssignmentsAdminOverviewQueryVariables,
+	type GetAssignmentsByOwnerOrContributorQuery,
+	type GetAssignmentsByOwnerOrContributorQueryVariables,
+	type GetAssignmentsByResponseOwnerIdQuery,
+	type GetAssignmentsByResponseOwnerIdQueryVariables,
+	type GetAssignmentWithResponseQuery,
+	type GetAssignmentWithResponseQueryVariables,
+	type GetContributorsByAssignmentUuidQuery,
+	type GetContributorsByAssignmentUuidQueryVariables,
+	type GetMaxPositionAssignmentBlocksQuery,
+	type GetMaxPositionAssignmentBlocksQueryVariables,
+	type IncrementAssignmentViewCountMutation,
+	type IncrementAssignmentViewCountMutationVariables,
+	type InsertAssignmentBlocksMutation,
+	type InsertAssignmentBlocksMutationVariables,
+	type InsertAssignmentResponseMutation,
+	type InsertAssignmentResponseMutationVariables,
+	type SoftDeleteAssignmentByIdMutation,
+	type SoftDeleteAssignmentByIdMutationVariables,
+	type UpdateAssignmentResponseMutation,
+	type UpdateAssignmentResponseMutationVariables,
+	type UpdateAssignmentUpdatedAtDateMutation,
+	type UpdateAssignmentUpdatedAtDateMutationVariables,
 } from '../shared/generated/graphql-db-operations';
 import {
 	AssignmentPupilBlocksDocument,
@@ -87,9 +87,9 @@ import {
 	UpdateAssignmentUpdatedAtDateDocument,
 } from '../shared/generated/graphql-db-react-query';
 import {
-	App_Assignments_V2_Insert_Input,
-	App_Assignments_V2_Set_Input,
-	App_Pupil_Collection_Blocks,
+	type App_Assignments_V2_Insert_Input,
+	type App_Assignments_V2_Set_Input,
+	type App_Pupil_Collection_Blocks,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
 import { CustomError, getEnv } from '../shared/helpers';
@@ -100,8 +100,8 @@ import { trackEvents } from '../shared/services/event-logging-service';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import { Positioned } from '../shared/types';
-import { TableColumnDataType } from '../shared/types/table-column-data-type';
+import { type Positioned } from '../shared/types';
+import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
@@ -111,9 +111,9 @@ import {
 import { reorderBlockPositions } from './assignment.helper';
 import {
 	AssignmentBlockType,
-	AssignmentOverviewTableColumns,
+	type AssignmentOverviewTableColumns,
 	AssignmentType,
-	PupilCollectionFragment,
+	type PupilCollectionFragment,
 } from './assignment.types';
 import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
 import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';

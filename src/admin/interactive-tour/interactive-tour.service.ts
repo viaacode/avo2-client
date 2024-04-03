@@ -2,16 +2,16 @@ import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 
 import {
-	DeleteInteractiveTourMutation,
-	DeleteInteractiveTourMutationVariables,
-	GetInteractiveTourByIdQuery,
-	GetInteractiveTourByIdQueryVariables,
-	GetInteractiveToursQuery,
-	GetInteractiveToursQueryVariables,
-	InsertInteractiveTourMutation,
-	InsertInteractiveTourMutationVariables,
-	UpdateInteractiveTourMutation,
-	UpdateInteractiveTourMutationVariables,
+	type DeleteInteractiveTourMutation,
+	type DeleteInteractiveTourMutationVariables,
+	type GetInteractiveTourByIdQuery,
+	type GetInteractiveTourByIdQueryVariables,
+	type GetInteractiveToursQuery,
+	type GetInteractiveToursQueryVariables,
+	type InsertInteractiveTourMutation,
+	type InsertInteractiveTourMutationVariables,
+	type UpdateInteractiveTourMutation,
+	type UpdateInteractiveTourMutationVariables,
 } from '../../shared/generated/graphql-db-operations';
 import {
 	DeleteInteractiveTourDocument,
@@ -25,9 +25,9 @@ import { dataService } from '../../shared/services/data-service';
 
 import { ITEMS_PER_PAGE } from './interactive-tour.const';
 import {
-	EditableInteractiveTour,
-	EditableStep,
-	InteractiveTourOverviewTableCols,
+	type EditableInteractiveTour,
+	type EditableStep,
+	type InteractiveTourOverviewTableCols,
 } from './interactive-tour.types';
 
 export class InteractiveTourService {

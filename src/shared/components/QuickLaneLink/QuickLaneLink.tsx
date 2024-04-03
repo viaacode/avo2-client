@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
 

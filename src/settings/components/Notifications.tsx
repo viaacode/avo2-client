@@ -1,4 +1,4 @@
-import React, { FC, FunctionComponent } from 'react';
+import React, { type FC, type FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../constants';

@@ -3,33 +3,39 @@ import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { UrlUpdateType } from 'use-query-params';
+import { type UrlUpdateType } from 'use-query-params';
 
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
 import { CutFragmentForAssignmentModal } from '../../../../item/components';
-import { ItemTrimInfo } from '../../../../item/item.types';
+import { type ItemTrimInfo } from '../../../../item/item.types';
 import ItemDetail from '../../../../item/views/ItemDetail';
 import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';
 import { SearchFiltersAndResults } from '../../../../search/components';
-import { FilterState } from '../../../../search/search.types';
+import { type FilterState } from '../../../../search/search.types';
 import { selectSearchResults } from '../../../../search/store/selectors';
-import withUser, { UserProps } from '../../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../../shared/hocs/withUser';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
 import { ObjectTypesAll } from '../../../../shared/services/related-items-service';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { AppState } from '../../../../store';
+import { type AppState } from '../../../../store';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
 } from '../../../assignment.const';
 import { AssignmentService } from '../../../assignment.service';
-import { AssignmentType, PupilSearchFilterState } from '../../../assignment.types';
+import { AssignmentType, type PupilSearchFilterState } from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
 	assignment: Avo.Assignment.Assignment | null;

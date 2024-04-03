@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { FlowPlayerWrapper } from '../../shared/components';
-import { FlowPlayerWrapperProps } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
-import { BlockItemComponent } from '../collection.types';
+import { type FlowPlayerWrapperProps } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { type BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentFlowPlayerProps = BlockItemComponent & FlowPlayerWrapperProps;
 

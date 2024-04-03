@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
-import { PropsValue } from 'react-select/dist/react-select.cjs';
+import { type PropsValue } from 'react-select/dist/react-select.cjs';
 
-import { PickerItem, PickerItemControls, PickerTypeOption } from '../../types';
+import { type PickerItem, type PickerItemControls, type PickerTypeOption } from '../../types';
 
 export const filterTypes = (
 	types: PickerTypeOption<Avo.Core.ContentPickerType>[],

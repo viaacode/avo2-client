@@ -1,12 +1,12 @@
 import { UserDetail } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { UserService } from '../user.service';

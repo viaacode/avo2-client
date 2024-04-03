@@ -16,7 +16,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import type { Requests } from 'node-zendesk';
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 
 import { getFullName } from '../../../shared/helpers';
 import { tText } from '../../../shared/helpers/translate';

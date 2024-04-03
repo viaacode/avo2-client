@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 // eslint-disable-next-line import/no-unresolved
-import { Requests } from 'node-zendesk';
+import { type Requests } from 'node-zendesk';
 
 import { getEnv } from '../helpers';
 

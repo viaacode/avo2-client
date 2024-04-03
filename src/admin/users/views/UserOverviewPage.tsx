@@ -1,11 +1,11 @@
 import { UserOverview } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';

@@ -1,6 +1,6 @@
 import { Flex } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { formatTimestamp } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';

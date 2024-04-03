@@ -1,14 +1,14 @@
 import {
 	BlockHeading,
 	BlockRichTextWrapper,
-	ImageTitleTextButtonBlockComponentState,
+	type ImageTitleTextButtonBlockComponentState,
 } from '@meemoo/admin-core-ui';
 import { Button, Column, Grid, Image } from '@viaa/avo2-components';
 import classNames from 'classnames';
-import React, { FC, FunctionComponent } from 'react';
+import React, { type FC, type FunctionComponent } from 'react';
 
 import { generateSmartLink } from '../../../../../shared/helpers';
-import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../../../shared/hocs/withUser';
 
 export const ImageTitleTextButtonWrapper: FC<
 	ImageTitleTextButtonBlockComponentState & UserProps

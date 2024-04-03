@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import { AssignmentLayout } from '../../../assignment/assignment.types';
-import { QuickLaneUrlObject } from '../../types';
+import { type QuickLaneUrlObject } from '../../types';
 
-import { QuickLaneType } from './QuickLaneModal.types';
+import { type QuickLaneType } from './QuickLaneModal.types';
 
 export const isShareable = (
 	content: Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item

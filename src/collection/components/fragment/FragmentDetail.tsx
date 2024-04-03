@@ -1,7 +1,7 @@
 import { BlockIntro } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components';

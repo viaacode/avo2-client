@@ -1,7 +1,7 @@
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import { withRouter } from 'react-router';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import CollectionOrBundleEdit from '../../collection/components/CollectionOrBundleEdit';
 
 type CollectionEditProps = DefaultSecureRouteProps<{ id: string }>;

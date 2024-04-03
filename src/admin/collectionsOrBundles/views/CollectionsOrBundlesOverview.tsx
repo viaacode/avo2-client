@@ -1,9 +1,9 @@
-import { Button, ButtonToolbar, IconName, TagInfo } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, partition } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	ReactNode,
+	type FunctionComponent,
+	type ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -13,16 +13,16 @@ import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
-	CheckboxOption,
+	type CheckboxOption,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../../shared/components';
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
@@ -36,17 +36,17 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import AddOrRemoveLinkedElementsModal, {
-	AddOrRemove,
+	type AddOrRemove,
 } from '../../shared/components/AddOrRemoveLinkedElementsModal/AddOrRemoveLinkedElementsModal';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, {
-	FilterableColumn,
+	type FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import { NULL_FILTER } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { PickerItem } from '../../shared/types';
+import { type PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	COLLECTIONS_OR_BUNDLES_PATH,
@@ -56,9 +56,9 @@ import {
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
-	CollectionsBulkAction,
-	CollectionsOrBundlesOverviewTableCols,
-	CollectionsOrBundlesTableState,
+	type CollectionsBulkAction,
+	type CollectionsOrBundlesOverviewTableCols,
+	type CollectionsOrBundlesTableState,
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';

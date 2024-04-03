@@ -1,4 +1,4 @@
-import { AppState } from '../store';
+import { type AppState } from '../store';
 
 export const selectShowNudgingModal = ({ uiState }: AppState) => {
 	return uiState?.showNudgingModal;

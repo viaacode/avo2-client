@@ -1,20 +1,20 @@
 import { type Avo } from '@viaa/avo2-types';
 import { omit } from 'lodash-es';
 
-import { AssignmentLabelColor } from '../../../assignment/assignment.types';
+import { type AssignmentLabelColor } from '../../../assignment/assignment.types';
 import {
-	DeleteAssignmentLabelsMutation,
-	DeleteAssignmentLabelsMutationVariables,
-	GetAllAssignmentLabelColorsQuery,
-	GetAllAssignmentLabelColorsQueryVariables,
-	GetAssignmentLabelsByProfileIdQuery,
-	GetAssignmentLabelsByProfileIdQueryVariables,
-	GetAssignmentLabelsQuery,
-	GetAssignmentLabelsQueryVariables,
-	InsertAssignmentLabelsMutation,
-	InsertAssignmentLabelsMutationVariables,
-	UpdateAssignmentLabelsMutation,
-	UpdateAssignmentLabelsMutationVariables,
+	type DeleteAssignmentLabelsMutation,
+	type DeleteAssignmentLabelsMutationVariables,
+	type GetAllAssignmentLabelColorsQuery,
+	type GetAllAssignmentLabelColorsQueryVariables,
+	type GetAssignmentLabelsByProfileIdQuery,
+	type GetAssignmentLabelsByProfileIdQueryVariables,
+	type GetAssignmentLabelsQuery,
+	type GetAssignmentLabelsQueryVariables,
+	type InsertAssignmentLabelsMutation,
+	type InsertAssignmentLabelsMutationVariables,
+	type UpdateAssignmentLabelsMutation,
+	type UpdateAssignmentLabelsMutationVariables,
 } from '../../generated/graphql-db-operations';
 import {
 	DeleteAssignmentLabelsDocument,
@@ -25,8 +25,8 @@ import {
 	UpdateAssignmentLabelsDocument,
 } from '../../generated/graphql-db-react-query';
 import {
-	App_Assignment_Labels_V2_Insert_Input,
-	Lookup_Enum_Colors_Enum,
+	type App_Assignment_Labels_V2_Insert_Input,
+	type Lookup_Enum_Colors_Enum,
 } from '../../generated/graphql-db-types';
 import { CustomError } from '../../helpers';
 import { dataService } from '../data-service';

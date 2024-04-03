@@ -1,7 +1,7 @@
-import { RichEditorState } from '@meemoo/react-components';
+import { type RichEditorState } from '@meemoo/react-components';
 
-import { GetInteractiveTourByIdQuery } from '../../shared/generated/graphql-db-operations';
-import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
+import { type GetInteractiveTourByIdQuery } from '../../shared/generated/graphql-db-operations';
+import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type InteractiveTourOverviewTableCols =
 	| 'name'

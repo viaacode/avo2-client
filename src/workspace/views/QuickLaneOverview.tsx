@@ -1,29 +1,36 @@
-import { IconName, MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
+import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { isEqual } from 'lodash-es';
-import React, { FC, FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FC,
+	type FunctionComponent,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { useQueryParams } from 'use-query-params';
 
 import FilterTable, {
-	FilterableColumn,
+	type FilterableColumn,
 } from '../../admin/shared/components/FilterTable/FilterTable';
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from '../../admin/shared/components/FilterTable/FilterTable.const';
 import { QuickLaneService } from '../../quick-lane/quick-lane.service';
-import { DeleteObjectModal, LoadingInfo } from '../../shared/components';
+import { DeleteObjectModal, type LoadingInfo } from '../../shared/components';
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
-import { QUICK_LANE_DEFAULTS, QuickLaneColumn } from '../../shared/constants/quick-lane';
+import { QUICK_LANE_DEFAULTS, type QuickLaneColumn } from '../../shared/constants/quick-lane';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
 import { copyQuickLaneToClipboard } from '../../shared/helpers/generate-quick-lane-href';
 import { getTypeOptions, isOrganisational, isPersonal } from '../../shared/helpers/quick-lane';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDebounce } from '../../shared/hooks/useDebounce';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
-	QuickLaneFilters,
+	type QuickLaneFilters,
 	QuickLaneFilterService,
 } from '../../shared/services/quick-lane-filter-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { QuickLaneOverviewFilterState, QuickLaneUrlObject } from '../../shared/types';
+import { type QuickLaneOverviewFilterState, type QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../workspace.const';
 

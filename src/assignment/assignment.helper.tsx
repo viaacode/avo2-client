@@ -1,11 +1,11 @@
 import { IconName, type RadioOption } from '@viaa/avo2-components';
 import { type Avo, LomSchemeType } from '@viaa/avo2-types';
 import { compact, orderBy } from 'lodash-es';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { stripHtml } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
-import { Positioned } from '../shared/types';
+import { type Positioned } from '../shared/types';
 
 import { MAX_LONG_DESCRIPTION_LENGTH, MAX_SEARCH_DESCRIPTION_LENGTH } from './assignment.const';
 import { AssignmentService } from './assignment.service';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { QualityLabel } from '../../collection/collection.types';
+import { type QualityLabel } from '../../collection/collection.types';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CustomError } from '../helpers';
 import { QualityLabelsService } from '../services/quality-labels.service';
@@ -37,7 +37,7 @@ export const useQualityLabels = (enabled: boolean): UseQualityLabelsTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [tText]);
+	}, [tText, tHtml]);
 
 	return [collectionQualityLabels, isLoading];
 };

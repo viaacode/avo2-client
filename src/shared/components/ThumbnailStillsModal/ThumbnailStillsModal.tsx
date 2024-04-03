@@ -17,7 +17,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, uniq } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 
 import { STILL_DIMENSIONS } from '../../constants';
 import useTranslation from '../../hooks/useTranslation';
@@ -74,7 +74,7 @@ const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
 		};
 
 		fetchThumbnailImages();
-	}, [isOpen, subject, tText]);
+	}, [isOpen, subject, tHtml]);
 
 	const saveCoverImage = () => {
 		onClose({ ...subject, thumbnail_path: selectedCoverImages[0] });

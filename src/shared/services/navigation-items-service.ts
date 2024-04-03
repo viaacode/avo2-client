@@ -1,5 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
-import { IconName } from '@viaa/avo2-components';
+import { type IconName } from '@viaa/avo2-components';
 import { memoize } from 'lodash-es';
 
 import { CustomError, getEnv } from '../helpers';

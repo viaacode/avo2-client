@@ -1,4 +1,4 @@
-import { TagList, TagOption } from '@viaa/avo2-components';
+import { TagList, type TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isBefore } from 'date-fns';
 import { compact } from 'lodash-es';
@@ -9,7 +9,7 @@ import {
 	GET_MARCOM_CHANNEL_NAME_OPTIONS,
 	GET_MARCOM_CHANNEL_TYPE_OPTIONS,
 } from '../../../collection/collection.const';
-import { QualityLabel } from '../../../collection/collection.types';
+import { type QualityLabel } from '../../../collection/collection.types';
 import { booleanToOkNok } from '../../../collection/helpers/ok-nok-parser';
 import { APP_PATH } from '../../../constants';
 import { buildLink, formatDate } from '../../../shared/helpers';
@@ -18,7 +18,7 @@ import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { tText } from '../../../shared/helpers/translate';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { getCollectionManagementStatuses } from '../collections-or-bundles.const';
-import { CollectionTableCols, ManagementStatus } from '../collections-or-bundles.types';
+import { type CollectionTableCols, type ManagementStatus } from '../collections-or-bundles.types';
 
 export const getDisplayTextForManagementStatus = (
 	status: ManagementStatus | null | undefined

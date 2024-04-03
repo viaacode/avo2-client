@@ -1,9 +1,9 @@
 import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { type FunctionComponent, type ReactNode } from 'react';
 
 import { ErrorView } from '../../../../error/views';
-import { FilterState } from '../../../../search/search.types';
+import { type FilterState } from '../../../../search/search.types';
 import BlockList from '../../../../shared/components/BlockList/BlockList';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';

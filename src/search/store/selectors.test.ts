@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { addDays } from 'date-fns';
 
 import { LoginMessage } from '../../authentication/authentication.types';
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 
 import {
 	selectSearch,

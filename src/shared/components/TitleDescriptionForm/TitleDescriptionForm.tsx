@@ -1,9 +1,15 @@
-import { RichEditorState } from '@meemoo/react-components';
-import { DefaultProps, Form, FormGroup, TextInput, TextInputProps } from '@viaa/avo2-components';
-import React, { FC, useEffect, useState } from 'react';
+import { type RichEditorState } from '@meemoo/react-components';
+import {
+	type DefaultProps,
+	Form,
+	FormGroup,
+	TextInput,
+	type TextInputProps,
+} from '@viaa/avo2-components';
+import React, { type FC, useEffect, useState } from 'react';
 
 import RichTextEditorWrapper, {
-	RichTextEditorWrapperProps,
+	type RichTextEditorWrapperProps,
 } from '../RichTextEditorWrapper/RichTextEditorWrapper';
 
 export interface TitleDescriptionFormField {

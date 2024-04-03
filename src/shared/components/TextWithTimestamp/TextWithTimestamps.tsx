@@ -1,7 +1,7 @@
 import { SanitizePreset } from '@meemoo/admin-core-ui';
 import { setPlayingVideoSeekTime } from '@meemoo/react-components';
 import { convertToHtml } from '@viaa/avo2-components';
-import React, { FC, useCallback, useEffect, useRef } from 'react';
+import React, { type FC, useCallback, useEffect, useRef } from 'react';
 
 import { parseDuration } from '../../helpers';
 import Html from '../Html/Html';
@@ -38,9 +38,10 @@ const TextWithTimestamps: FC<TextWithTimestampsProps> = ({ content }) => {
 
 	useEffect(() => {
 		textWrapperRef?.current?.addEventListener('click', handleTimestampClicked);
+		const textWrapperRefCurrent = textWrapperRef?.current;
 
 		return () => {
-			textWrapperRef?.current?.removeEventListener('click', handleTimestampClicked);
+			textWrapperRefCurrent?.removeEventListener('click', handleTimestampClicked);
 		};
 	}, [textWrapperRef, handleTimestampClicked]);
 

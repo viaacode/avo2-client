@@ -9,10 +9,10 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 
 import useTranslation from '../../../../shared/hooks/useTranslation';
-import { PickerItem } from '../../types';
+import { type PickerItem } from '../../types';
 import { ContentPicker } from '../ContentPicker/ContentPicker';
 
 interface ChangeAuthorModalProps {

@@ -1,8 +1,8 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import { Button, convertToHtml, DefaultProps, Flex, Spacer } from '@viaa/avo2-components';
+import { Button, convertToHtml, type DefaultProps, Flex, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
 import { CollectionFragmentRichText } from '../../../../collection/components';
