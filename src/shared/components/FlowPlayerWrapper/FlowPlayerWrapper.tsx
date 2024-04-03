@@ -260,7 +260,10 @@ const FlowPlayerWrapper: FunctionComponent<
 
 	return (
 		<>
-			<div className="c-video-player t-player-skin--dark" style={{ aspectRatio: '16/9' }}>
+			<div
+				className="c-video-player t-player-skin--dark"
+				style={isPlaylist ? {} : { aspectRatio: '16/9' }}
+			>
 				{src && (props.autoplay || clickedThumbnail || !item) ? (
 					<FlowPlayer
 						src={getBrowserSafeUrl(src)}
