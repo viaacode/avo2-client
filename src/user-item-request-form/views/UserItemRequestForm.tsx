@@ -15,6 +15,7 @@ import queryString from 'query-string';
 import React, { FunctionComponent, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
+import { compose } from 'redux';
 
 import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -23,6 +24,7 @@ import { FileUpload } from '../../shared/components';
 import { getFullName, isMobileWidth } from '../../shared/helpers';
 import { DOC_TYPES, isPhoto } from '../../shared/helpers/files';
 import { groupLomLinks } from '../../shared/helpers/lom';
+import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -253,4 +255,4 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 	);
 };
 
-export default withRouter(UserItemRequestForm);
+export default compose(withRouter, withUser)(UserItemRequestForm) as FunctionComponent;
