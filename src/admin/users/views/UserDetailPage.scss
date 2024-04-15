@@ -17,6 +17,10 @@
 		width: 10rem;
 		height: 10rem;
 
+		&.c-avatar--img {
+			overflow: hidden;
+		}
+
 		> img {
 			object-fit: contain;
 			width: auto;
