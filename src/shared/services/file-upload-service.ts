@@ -26,7 +26,7 @@ export class FileUploadService {
 
 	public static async uploadFileToZendesk(file: File): Promise<string> {
 		let url: string | undefined;
-		let body: Avo.FileUpload.ZendeskFileInfo | undefined;
+		let body: Avo.FileUpload.ZendeskFileInfo | undefined = undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/zendesk/upload-attachment`;
 			const base64 = await this.fileToBase64(file);

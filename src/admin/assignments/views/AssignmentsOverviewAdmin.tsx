@@ -333,7 +333,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			});
 		}
 		setIsLoading(false);
-	}, [columns, tableState, generateWhereObject, tText]);
+	}, [columns, tableState, generateWhereObject, tHtml]);
 
 	useEffect(() => {
 		fetchAssignments();
