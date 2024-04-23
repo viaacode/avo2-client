@@ -161,21 +161,6 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 			case LoginOptionsTabs.STUDENT:
 				return [
 					<Button
-						key="login-button-archief-pupil"
-						block
-						label={tText(
-							'authentication/components/login-options___inloggen-met-e-mailadres'
-						)}
-						icon={IconName.at}
-						type="primary"
-						className="c-login-with-archief c-button-mail"
-						onClick={() => {
-							onOptionClicked();
-							redirectToServerLoginPage(location);
-						}}
-					/>,
-
-					<Button
 						key="login-button-leerid-pupil"
 						block
 						type="secondary"
@@ -200,6 +185,20 @@ const LoginOptions: FunctionComponent<LoginOptionsProps> = ({
 						onClick={() => {
 							onOptionClicked();
 							redirectToServerSmartschoolLogin(location);
+						}}
+					/>,
+
+					<Button
+						key="login-button-archief-pupil"
+						block
+						label={tText(
+							'authentication/components/login-options___inloggen-met-e-mailadres'
+						)}
+						type="inline-link"
+						className="c-login-with-archief c-button-mail c-login-button--pupil"
+						onClick={() => {
+							onOptionClicked();
+							redirectToServerLoginPage(location);
 						}}
 					/>,
 				];
