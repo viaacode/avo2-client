@@ -10,6 +10,6 @@ export function userIsElementaryPupil(user: CommonUserSchema) {
 	return userIs(user, SpecialUserGroup.ElementaryPupil);
 }
 
-export function userIs(user: CommonUserSchema, group: SpecialUserGroup) {
-	return user.userGroup?.id === group;
+export function userIs(user?: CommonUserSchema, group?: SpecialUserGroup) {
+	return user?.userGroup?.id === group;
 }
