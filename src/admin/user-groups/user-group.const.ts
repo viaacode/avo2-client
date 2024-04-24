@@ -34,4 +34,5 @@ export enum SpecialUserGroup {
 	EducativeAuthor = '10',
 	EducativePublisher = '11',
 	EducativePartner = '12',
+	ElementaryPupil = '29',
 }
