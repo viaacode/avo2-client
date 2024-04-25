@@ -1,3 +1,4 @@
+import { BlockHeading, BlockRichText, BlockVideoWrapper } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Column,
@@ -54,7 +55,11 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 				)
 			);
 
-			ToastService.danger(tHtml('Het opslaan van je voorkeuren is niet gelukt.'));
+			ToastService.danger(
+				tHtml(
+					'authentication/views/registration-flow/accept-elementary-pupil-conditions___het-opslaan-van-je-voorkeuren-is-niet-gelukt'
+				)
+			);
 
 			setLoading(false); // Disable on on error, if success => we redirect to other route
 		}
@@ -65,19 +70,62 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Grid>
-						<Column size="1">Visual landingpage</Column>
+						<Column size="1-12">
+							<Spacer margin="medium">
+								<BlockHeading type="h1">
+									{tHtml(
+										'authentication/views/registration-flow/accept-elementary-pupil-conditions___welkom-op-het-archief-voor-lager-onderwijs'
+									)}
+								</BlockHeading>
+							</Spacer>
+
+							<Spacer margin="medium">
+								<BlockRichText
+									elements={{
+										content: tText(
+											'authentication/views/registration-flow/accept-elementary-pupil-conditions___bekijk-dit-filmpje-voor-een-overzicht-wat-je-als-leerling-lager-mag-verwachten'
+										),
+									}}
+								/>
+							</Spacer>
+
+							<Spacer margin="medium">
+								<BlockVideoWrapper
+									title={tText(
+										'authentication/views/registration-flow/accept-elementary-pupil-conditions___toegankelijkheids-titel-van-het-introductiefilmpje-voor-leerlingen-lager'
+									)}
+									src={tText(
+										'authentication/views/registration-flow/accept-elementary-pupil-conditions___url-van-het-introductiefilmpje-voor-leerlingen-lager'
+									)}
+								/>
+							</Spacer>
+
+							<Spacer margin="medium">
+								<BlockRichText
+									elements={{
+										content: tText(
+											'authentication/views/registration-flow/accept-elementary-pupil-conditions___met-deze-informatie-ben-je-helemaal-klaar-om-het-archief-voor-lager-onderwijs-te-verkennen'
+										),
+									}}
+								/>
+							</Spacer>
+						</Column>
 					</Grid>
 				</Container>
 			</Container>
-			<Spacer margin="large">
+			<Spacer margin="bottom-large">
 				<Toolbar>
 					<ToolbarCenter>
 						{loading ? (
 							<Spinner size={'large'} />
 						) : (
 							<Button
-								label={tText('TODO')}
-								title={tText('TODO')}
+								label={tText(
+									'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
+								)}
+								title={tText(
+									'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
+								)}
 								type="primary"
 								onClick={handleAcceptPupilConditions}
 							/>
