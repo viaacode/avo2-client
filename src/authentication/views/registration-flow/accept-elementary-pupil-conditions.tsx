@@ -56,7 +56,7 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 
 			ToastService.danger(tHtml('Het opslaan van je voorkeuren is niet gelukt.'));
 
-			setLoading(false); // Disable on on error, if success => we redirect to other route
+			setLoading(false); // Disable spinner on error, if success => we redirect to other route
 		}
 	};
 
