@@ -10,7 +10,7 @@ import { Dispatch } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
-import { CustomError, userIsElementaryPupil } from '../../../shared/helpers';
+import { CustomError, isUserElementaryPupil } from '../../../shared/helpers';
 import { UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
@@ -41,7 +41,7 @@ const AcceptConditions: FunctionComponent<
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
 	const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
-	const isElementaryPupil = userIsElementaryPupil(commonUser);
+	const isElementaryPupil = isUserElementaryPupil(commonUser);
 	const dataObject = isElementaryPupil ? {} : pages[0];
 
 	const fetchContentPage = useCallback(async () => {
