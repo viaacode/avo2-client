@@ -96,6 +96,10 @@ query getAssignmentsAdminOverview(
 			id
 			label
 		}
+		education_level
+		level {
+			label
+		}
 	}
 	app_assignments_v2_aggregate(where: $where) {
 		aggregate {
