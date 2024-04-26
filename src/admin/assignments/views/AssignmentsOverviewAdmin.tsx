@@ -548,6 +548,25 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				return lomsToTagList(groupedLoms.subject) || '-';
 			}
 
+			case 'education_level': {
+				// TODO: update avo2-types
+				const level = (assignment as any).level?.label;
+				return level ? (
+					<TagList
+						swatches={false}
+						tags={[
+							{
+								id: level,
+								label: level,
+								color: undefined,
+							},
+						]}
+					/>
+				) : (
+					'-'
+				);
+			}
+
 			case 'education_levels': {
 				const groupedLoms = groupLomLinks(assignment.loms);
 				return (
