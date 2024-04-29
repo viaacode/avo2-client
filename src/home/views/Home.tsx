@@ -16,7 +16,7 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, com
 	const { data: contentPageInfo } = useGetContentPageByPath(`/${ROUTE_PARTS.loggedInHome}`);
 
 	// /start when user is a pupil => should be redirected to /werkruimte/opdrachten
-	if (commonUser?.userGroup?.id === SpecialUserGroup.Pupil) {
+	if (commonUser?.userGroup?.id === SpecialUserGroup.PupilSecondary) {
 		history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 		return null;
 	}

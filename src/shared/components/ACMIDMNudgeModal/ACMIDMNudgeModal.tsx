@@ -34,7 +34,7 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 	setShowNudgingModal,
 }) => {
 	const { tText, tHtml } = useTranslation();
-	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.PupilSecondary;
 
 	// HTTP
 
