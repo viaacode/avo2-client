@@ -106,6 +106,10 @@ query getAssignmentsByResponseOwnerId(
 				broader
 			}
 		}
+		education_level
+		level {
+			label
+		}
 	}
 	count: app_assignments_v2_aggregate(
 		where: {
