@@ -187,7 +187,7 @@ export class AssignmentService {
 				}
 			}
 
-			if (getUserGroupIds(user).includes(SpecialUserGroup.Pupil)) {
+			if (getUserGroupIds(user).includes(SpecialUserGroup.PupilSecondary)) {
 				// Filter on academic year for students
 				filterArray.push({
 					_and: [

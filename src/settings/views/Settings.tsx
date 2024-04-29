@@ -45,7 +45,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 		(props.match.params.tabId as SettingsTab) || PROFILE_ID
 	);
 
-	const isPupil = get(props.user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+	const isPupil = get(props.user, 'profile.userGroupIds[0]') === SpecialUserGroup.PupilSecondary;
 
 	const generateTabHeader = (id: SettingsTab, label: string) => ({
 		id,

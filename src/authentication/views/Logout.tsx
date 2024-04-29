@@ -13,7 +13,7 @@ export interface LogoutProps extends RouteComponentProps, UserProps {}
 export const Logout: FunctionComponent<LogoutProps> = ({ location, user }) => {
 	redirectToServerLogoutPage(
 		location,
-		getUserGroupId(user?.profile) === SpecialUserGroup.Pupil
+		getUserGroupId(user?.profile) === SpecialUserGroup.PupilSecondary
 			? '/' + ROUTE_PARTS.pupils
 			: APP_PATH.HOME.route
 	);

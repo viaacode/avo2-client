@@ -46,7 +46,7 @@ const Login: FunctionComponent<LoginProps> = ({
 			let path: string | undefined = (location?.state as any)?.from?.pathname;
 
 			if (!path) {
-				if (getUserGroupId(loginState?.userInfo?.profile) === SpecialUserGroup.Pupil) {
+				if (getUserGroupId(loginState?.userInfo?.profile) === SpecialUserGroup.PupilSecondary) {
 					path = APP_PATH.WORKSPACE_ASSIGNMENTS.route;
 				} else {
 					path = APP_PATH.LOGGED_IN_HOME.route;

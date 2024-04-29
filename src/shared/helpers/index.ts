@@ -8,4 +8,5 @@ export * from './link';
 export * from './media-query';
 export * from './parsers/duration';
 export * from './redux/create-reducer';
+export * from './is-user';
 export * from './validation/email';

@@ -26,7 +26,7 @@ const AssignmentDetailSwitcher: FunctionComponent<UserProps> = (props) => {
 			</Spacer>
 		);
 	}
-	if (props.commonUser?.userGroup?.id === SpecialUserGroup.Pupil) {
+	if (props.commonUser?.userGroup?.id === SpecialUserGroup.PupilSecondary) {
 		// Render assignment response edit page
 		return <AssignmentResponseEditPage />;
 	}
