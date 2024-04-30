@@ -1,4 +1,4 @@
-import { RichEditorState } from '@meemoo/react-components';
+import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
 	ButtonToolbar,
@@ -14,7 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 
 import RichTextEditorWrapper from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';

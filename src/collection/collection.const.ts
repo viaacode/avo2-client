@@ -1,4 +1,4 @@
-import { SelectOption, TableColumn } from '@viaa/avo2-components';
+import { type SelectOption, type TableColumn } from '@viaa/avo2-components';
 
 import { tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';

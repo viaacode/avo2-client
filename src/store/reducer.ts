@@ -1,7 +1,11 @@
 import { createReducer } from '../shared/helpers';
 
 import initialState from './initial-state';
-import { SetLastVideoPlayedAtAction, SetShowNudgingModalAction, UiStateActionTypes } from './types';
+import {
+	type SetLastVideoPlayedAtAction,
+	type SetShowNudgingModalAction,
+	UiStateActionTypes,
+} from './types';
 
 const uiStateReducer = createReducer(initialState, {
 	[UiStateActionTypes.SET_SHOW_NUDGING_MODAL]: (state, action: SetShowNudgingModalAction) => ({

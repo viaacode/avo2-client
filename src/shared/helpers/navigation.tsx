@@ -1,13 +1,13 @@
 import { IconName } from '@viaa/avo2-components';
-import { TFunction } from 'i18next';
+import { type TFunction } from 'i18next';
 import { isNil, kebabCase, sortBy } from 'lodash-es';
 import React from 'react';
 
 import LoginOptionsDropdown from '../../authentication/components/LoginOptionsDropdown';
 import PupilOrTeacherDropdown from '../../authentication/components/PupilOrTeacherDropdown';
 import { APP_PATH } from '../../constants';
-import { AppContentNavElement } from '../services/navigation-items-service';
-import { NavigationItemInfo } from '../types';
+import { type AppContentNavElement } from '../services/navigation-items-service';
+import { type NavigationItemInfo } from '../types';
 
 import { buildLink } from './link';
 import { isMobileWidth } from './media-query';

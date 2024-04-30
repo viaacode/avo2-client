@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { PupilCollectionOverviewTableColumns } from './pupil-collection.types';
+import { type PupilCollectionOverviewTableColumns } from './pupil-collection.types';
 
 export const ITEMS_PER_PAGE = 20;
 

@@ -1,6 +1,6 @@
 import { noop } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import React, { type FunctionComponent } from 'react';
+import { type RouteComponentProps, withRouter } from 'react-router';
 
 import LoginOptions from './LoginOptions';
 import './LoginOptionsDropdown.scss';

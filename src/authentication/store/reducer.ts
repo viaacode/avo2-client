@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { createReducer } from '../../shared/helpers';
 
 import initialState from './initial-state';
-import { LoginActionTypes, SetLoginErrorAction, SetLoginSuccessAction } from './types';
+import { LoginActionTypes, type SetLoginErrorAction, type SetLoginSuccessAction } from './types';
 
 const loginReducer = createReducer(initialState, {
 	[LoginActionTypes.SET_LOGIN_LOADING]: (state) => ({

@@ -1,5 +1,5 @@
-import { IconName, ToggleButton, ToggleButtonProps } from '@viaa/avo2-components';
-import React, { ReactNode } from 'react';
+import { IconName, ToggleButton, type ToggleButtonProps } from '@viaa/avo2-components';
+import React, { type ReactNode } from 'react';
 
 export type renderBookmarkButtonProps = Pick<
 	ToggleButtonProps,

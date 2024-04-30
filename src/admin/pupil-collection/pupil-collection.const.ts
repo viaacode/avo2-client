@@ -2,13 +2,13 @@ import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types';
-import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+import { type PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types';
+import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { AssignmentBulkActionOption } from '../assignments/assignments.const';
-import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { type AssignmentBulkActionOption } from '../assignments/assignments.const';
+import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
 export const PUPIL_COLLECTIONS_PATH = {
 	ASSIGNMENT_PUPIL_COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.pupilCollections}`,

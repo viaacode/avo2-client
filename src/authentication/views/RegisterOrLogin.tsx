@@ -1,7 +1,7 @@
 import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';

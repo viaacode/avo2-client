@@ -1,4 +1,4 @@
-import { IconName } from '@viaa/avo2-components';
+import { type IconName } from '@viaa/avo2-components';
 
 export const createDropdownMenuItem = (
 	id: string,

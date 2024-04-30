@@ -2,7 +2,7 @@ import { SpecialPermissionGroups } from '../../authentication/authentication.typ
 import { ROUTE_PARTS } from '../../shared/constants';
 import { tText } from '../../shared/helpers/translate';
 
-import { UserGroup } from './user-group.types';
+import { type UserGroup } from './user-group.types';
 
 export const USER_GROUP_PATH = {
 	USER_GROUP_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.permissions}`,

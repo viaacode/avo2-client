@@ -1,5 +1,5 @@
 import { Button, type ButtonProps, StickyEdgeBar } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import './StickyBar.scss';
 

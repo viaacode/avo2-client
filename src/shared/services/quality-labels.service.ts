@@ -1,7 +1,7 @@
-import { QualityLabel } from '../../collection/collection.types';
+import { type QualityLabel } from '../../collection/collection.types';
 import {
-	GetQualityLabelsQuery,
-	GetQualityLabelsQueryVariables,
+	type GetQualityLabelsQuery,
+	type GetQualityLabelsQueryVariables,
 } from '../generated/graphql-db-operations';
 import { GetQualityLabelsDocument } from '../generated/graphql-db-react-query';
 import { CustomError } from '../helpers';

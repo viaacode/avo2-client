@@ -1,16 +1,16 @@
 import { Flex, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
 
 import { PermissionService } from '../authentication/helpers/permission-service';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../shared/components';
 import { CustomError } from '../shared/helpers';
 import withUser from '../shared/hocs/withUser';
 import useTranslation from '../shared/hooks/useTranslation';
 import { ToastService } from '../shared/services/toast-service';
-import { NavigationItemInfo } from '../shared/types';
+import { type NavigationItemInfo } from '../shared/types';
 
 import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';

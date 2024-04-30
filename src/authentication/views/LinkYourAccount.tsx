@@ -1,7 +1,7 @@
 import { Button, ButtonToolbar, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { navigate } from '../../shared/helpers';

@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 
 export const selectLogin = ({ loginState }: AppState) => {
 	return loginState?.data;

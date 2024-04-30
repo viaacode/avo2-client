@@ -2,8 +2,8 @@ import { PermissionName } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { CheckboxOption } from '../components';
-import { QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
+import { type CheckboxOption } from '../components';
+import { type QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
 
 import { tText } from './translate';
 

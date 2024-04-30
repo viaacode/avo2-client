@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 
 import { tText } from '../shared/helpers/translate';
 
-import { SortOrder } from './search.types';
+import { type SortOrder } from './search.types';
 
 export const ITEMS_PER_PAGE = 10;
 

@@ -1,8 +1,8 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { Alert, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';

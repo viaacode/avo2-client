@@ -11,8 +11,8 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { map } from 'lodash-es';
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import React, { type Dispatch, type FC, type SetStateAction, useState } from 'react';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';

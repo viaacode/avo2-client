@@ -1,7 +1,7 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
-import { CollectionFragment } from '@viaa/avo2-types/types/collection';
+import { type CollectionFragment } from '@viaa/avo2-types/types/collection';
 import { endOfDay, startOfDay } from 'date-fns';
 import {
 	cloneDeep,
@@ -20,72 +20,72 @@ import { setBlockPositionToIndex } from '../assignment/assignment.helper';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
-	ContributorInfo,
-	ContributorInfoRight,
+	type ContributorInfo,
+	type ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
-	DeleteCollectionFragmentByIdMutation,
-	DeleteCollectionFragmentByIdMutationVariables,
-	DeleteCollectionLabelsMutation,
-	DeleteCollectionLabelsMutationVariables,
-	DeleteCollectionLomLinksMutation,
-	DeleteCollectionLomLinksMutationVariables,
-	DeleteCollectionOrBundleByUuidMutation,
-	DeleteCollectionOrBundleByUuidMutationVariables,
-	DeleteMarcomEntriesByParentCollectionIdMutation,
-	DeleteMarcomEntriesByParentCollectionIdMutationVariables,
-	DeleteMarcomEntryMutation,
-	DeleteMarcomEntryMutationVariables,
-	GetBookmarkedCollectionsByOwnerQuery,
-	GetBookmarkedCollectionsByOwnerQueryVariables,
-	GetBundleTitlesByOwnerQuery,
-	GetBundleTitlesByOwnerQueryVariables,
-	GetCollectionByTitleOrDescriptionQuery,
-	GetCollectionByTitleOrDescriptionQueryVariables,
-	GetCollectionMarcomEntriesQuery,
-	GetCollectionMarcomEntriesQueryVariables,
-	GetCollectionsByItemUuidQuery,
-	GetCollectionsByItemUuidQueryVariables,
-	GetCollectionsByOwnerOrContributorQuery,
-	GetCollectionsByOwnerOrContributorQueryVariables,
-	GetCollectionTitlesByOwnerQuery,
-	GetCollectionTitlesByOwnerQueryVariables,
-	GetContributorsByCollectionUuidQuery,
-	GetContributorsByCollectionUuidQueryVariables,
-	GetOrganisationContentQuery,
-	GetOrganisationContentQueryVariables,
-	GetPublicCollectionsByIdQuery,
-	GetPublicCollectionsByIdQueryVariables,
-	GetPublicCollectionsByTitleQuery,
-	GetPublicCollectionsByTitleQueryVariables,
-	GetPublicCollectionsQuery,
-	GetPublicCollectionsQueryVariables,
-	GetPublishedBundlesContainingCollectionQuery,
-	GetPublishedBundlesContainingCollectionQueryVariables,
-	InsertCollectionFragmentsMutation,
-	InsertCollectionFragmentsMutationVariables,
-	InsertCollectionLabelsMutation,
-	InsertCollectionLabelsMutationVariables,
-	InsertCollectionLomLinksMutation,
-	InsertCollectionLomLinksMutationVariables,
-	InsertCollectionManagementEntryMutation,
-	InsertCollectionManagementEntryMutationVariables,
-	InsertCollectionManagementQualityCheckEntryMutation,
-	InsertCollectionManagementQualityCheckEntryMutationVariables,
-	InsertCollectionMutation,
-	InsertCollectionMutationVariables,
-	InsertMarcomEntryMutation,
-	InsertMarcomEntryMutationVariables,
-	InsertMarcomNoteMutation,
-	InsertMarcomNoteMutationVariables,
-	UpdateCollectionByIdMutation,
-	UpdateCollectionByIdMutationVariables,
-	UpdateCollectionFragmentByIdMutation,
-	UpdateCollectionFragmentByIdMutationVariables,
-	UpdateCollectionManagementEntryMutation,
-	UpdateCollectionManagementEntryMutationVariables,
-	UpdateMarcomNoteMutation,
-	UpdateMarcomNoteMutationVariables,
+	type DeleteCollectionFragmentByIdMutation,
+	type DeleteCollectionFragmentByIdMutationVariables,
+	type DeleteCollectionLabelsMutation,
+	type DeleteCollectionLabelsMutationVariables,
+	type DeleteCollectionLomLinksMutation,
+	type DeleteCollectionLomLinksMutationVariables,
+	type DeleteCollectionOrBundleByUuidMutation,
+	type DeleteCollectionOrBundleByUuidMutationVariables,
+	type DeleteMarcomEntriesByParentCollectionIdMutation,
+	type DeleteMarcomEntriesByParentCollectionIdMutationVariables,
+	type DeleteMarcomEntryMutation,
+	type DeleteMarcomEntryMutationVariables,
+	type GetBookmarkedCollectionsByOwnerQuery,
+	type GetBookmarkedCollectionsByOwnerQueryVariables,
+	type GetBundleTitlesByOwnerQuery,
+	type GetBundleTitlesByOwnerQueryVariables,
+	type GetCollectionByTitleOrDescriptionQuery,
+	type GetCollectionByTitleOrDescriptionQueryVariables,
+	type GetCollectionMarcomEntriesQuery,
+	type GetCollectionMarcomEntriesQueryVariables,
+	type GetCollectionsByItemUuidQuery,
+	type GetCollectionsByItemUuidQueryVariables,
+	type GetCollectionsByOwnerOrContributorQuery,
+	type GetCollectionsByOwnerOrContributorQueryVariables,
+	type GetCollectionTitlesByOwnerQuery,
+	type GetCollectionTitlesByOwnerQueryVariables,
+	type GetContributorsByCollectionUuidQuery,
+	type GetContributorsByCollectionUuidQueryVariables,
+	type GetOrganisationContentQuery,
+	type GetOrganisationContentQueryVariables,
+	type GetPublicCollectionsByIdQuery,
+	type GetPublicCollectionsByIdQueryVariables,
+	type GetPublicCollectionsByTitleQuery,
+	type GetPublicCollectionsByTitleQueryVariables,
+	type GetPublicCollectionsQuery,
+	type GetPublicCollectionsQueryVariables,
+	type GetPublishedBundlesContainingCollectionQuery,
+	type GetPublishedBundlesContainingCollectionQueryVariables,
+	type InsertCollectionFragmentsMutation,
+	type InsertCollectionFragmentsMutationVariables,
+	type InsertCollectionLabelsMutation,
+	type InsertCollectionLabelsMutationVariables,
+	type InsertCollectionLomLinksMutation,
+	type InsertCollectionLomLinksMutationVariables,
+	type InsertCollectionManagementEntryMutation,
+	type InsertCollectionManagementEntryMutationVariables,
+	type InsertCollectionManagementQualityCheckEntryMutation,
+	type InsertCollectionManagementQualityCheckEntryMutationVariables,
+	type InsertCollectionMutation,
+	type InsertCollectionMutationVariables,
+	type InsertMarcomEntryMutation,
+	type InsertMarcomEntryMutationVariables,
+	type InsertMarcomNoteMutation,
+	type InsertMarcomNoteMutationVariables,
+	type UpdateCollectionByIdMutation,
+	type UpdateCollectionByIdMutationVariables,
+	type UpdateCollectionFragmentByIdMutation,
+	type UpdateCollectionFragmentByIdMutationVariables,
+	type UpdateCollectionManagementEntryMutation,
+	type UpdateCollectionManagementEntryMutationVariables,
+	type UpdateMarcomNoteMutation,
+	type UpdateMarcomNoteMutationVariables,
 } from '../shared/generated/graphql-db-operations';
 import {
 	DeleteCollectionFragmentByIdDocument,
@@ -121,7 +121,7 @@ import {
 	UpdateMarcomNoteDocument,
 } from '../shared/generated/graphql-db-react-query';
 import {
-	App_Collection_Marcom_Log_Insert_Input,
+	type App_Collection_Marcom_Log_Insert_Input,
 	Lookup_Enum_Collection_Management_Qc_Label_Enum,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
@@ -134,7 +134,7 @@ import { QualityLabelsService } from '../shared/services/quality-labels.service'
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import { Positioned } from '../shared/types';
+import { type Positioned } from '../shared/types';
 
 import {
 	cleanCollectionBeforeSave,
@@ -144,8 +144,13 @@ import {
 	getValidationErrorsForPublish,
 	keepCoreCollectionProperties,
 } from './collection.helpers';
-import { Collection, ContentTypeNumber, MarcomEntry, QualityLabel } from './collection.types';
-import { MarcomNoteInfo } from './components/CollectionOrBundleEdit';
+import {
+	type Collection,
+	ContentTypeNumber,
+	type MarcomEntry,
+	type QualityLabel,
+} from './collection.types';
+import { type MarcomNoteInfo } from './components/CollectionOrBundleEdit';
 import { canManageEditorial } from './helpers/can-manage-editorial';
 
 export interface OrganisationContentItem {

@@ -13,17 +13,17 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
+import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { ItemTrimInfo } from '../../item.types';
+import { type ItemTrimInfo } from '../../item.types';
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './CutFragmentModal.scss';

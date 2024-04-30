@@ -1,5 +1,5 @@
 import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
-import { RichEditorState } from '@meemoo/react-components';
+import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
 	Column,
@@ -12,9 +12,9 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { StringMap } from 'i18next';
+import { type StringMap } from 'i18next';
 import { compact, map } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 
 import { FileUpload, ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
@@ -28,7 +28,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
 
-import { CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditMetaDataProps {
 	type: 'collection' | 'bundle';

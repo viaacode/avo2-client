@@ -2,7 +2,7 @@ import { FormGroup, Spacer, type TagInfo, TagsInput } from '@viaa/avo2-component
 import { type Avo } from '@viaa/avo2-types';
 import { LomType } from '@viaa/avo2-types';
 import { filter, map, sortBy, uniq } from 'lodash-es';
-import React, { FC, useMemo } from 'react';
+import React, { type FC, useMemo } from 'react';
 
 import { groupLoms } from '../../helpers/lom';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
@@ -10,7 +10,7 @@ import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../hooks/useLomSubjects';
 import { useLomThemes } from '../../hooks/useLomThemes';
 import useTranslation from '../../hooks/useTranslation';
-import { LomFieldsByScheme } from '../../types/lom';
+import { type LomFieldsByScheme } from '../../types/lom';
 import MultiThemeSelectDropdown from '../MultiThemeSelectDropdown/MultiThemeSelectDropdown';
 
 import {

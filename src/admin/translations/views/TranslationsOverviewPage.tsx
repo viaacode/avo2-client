@@ -1,7 +1,7 @@
 import { TranslationsOverview } from '@meemoo/admin-core-ui';
 import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useState } from 'react';
+import React, { type FunctionComponent, type ReactNode, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -11,7 +11,7 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { fetchTranslations, updateTranslations } from '../translations.service';
-import { Translation, TranslationsState } from '../translations.types';
+import { type Translation, type TranslationsState } from '../translations.types';
 
 import './TranslationsOverviewPage.scss';
 

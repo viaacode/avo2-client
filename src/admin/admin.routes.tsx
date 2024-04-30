@@ -1,6 +1,6 @@
 import { PermissionName } from '@viaa/avo2-types';
 import { every, some } from 'lodash-es';
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { Switch } from 'react-router';
 
 import { renderErrorRoutes } from '../error/error.routes';

@@ -1,7 +1,7 @@
-import { FormGroup, TagInfo, TagsInput } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';

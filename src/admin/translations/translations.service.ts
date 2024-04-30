@@ -1,8 +1,8 @@
 import {
-	GetTranslationsQuery,
-	GetTranslationsQueryVariables,
-	UpdateTranslationsMutation,
-	UpdateTranslationsMutationVariables,
+	type GetTranslationsQuery,
+	type GetTranslationsQueryVariables,
+	type UpdateTranslationsMutation,
+	type UpdateTranslationsMutationVariables,
 } from '../../shared/generated/graphql-db-operations';
 import {
 	GetTranslationsDocument,

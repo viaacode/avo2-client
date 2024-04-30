@@ -1,13 +1,13 @@
 import {
 	Container,
 	Icon,
-	IconName,
+	type IconName,
 	Spacer,
 	Toolbar,
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import './AlertBar.scss';
 

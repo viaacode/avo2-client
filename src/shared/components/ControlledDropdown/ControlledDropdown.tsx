@@ -1,4 +1,4 @@
-import { Dropdown, DropdownProps } from '@viaa/avo2-components';
+import { Dropdown, type DropdownProps } from '@viaa/avo2-components';
 import React, { useState } from 'react';
 
 const ControlledDropdown = (props: DropdownProps) => {

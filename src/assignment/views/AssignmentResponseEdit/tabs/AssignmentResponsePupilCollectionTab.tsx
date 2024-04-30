@@ -12,9 +12,9 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { Dispatch, FunctionComponent, SetStateAction, useState } from 'react';
-import { Controller, UseFormReturn } from 'react-hook-form';
-import { UrlUpdateType } from 'use-query-params';
+import React, { type Dispatch, type FunctionComponent, type SetStateAction, useState } from 'react';
+import { Controller, type UseFormReturn } from 'react-hook-form';
+import { type UrlUpdateType } from 'use-query-params';
 
 import { ReactComponent as PupilSvg } from '../../../../assets/images/leerling.svg';
 import { CollectionBlockType } from '../../../../collection/collection.const';
@@ -31,9 +31,9 @@ import {
 } from '../../../assignment.const';
 import { setBlockPositionToIndex } from '../../../assignment.helper';
 import {
-	AssignmentResponseFormState,
-	PupilCollectionFragment,
-	PupilSearchFilterState,
+	type AssignmentResponseFormState,
+	type PupilCollectionFragment,
+	type PupilSearchFilterState,
 } from '../../../assignment.types';
 import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 import { buildAssignmentSearchLink } from '../../../helpers/build-search-link';

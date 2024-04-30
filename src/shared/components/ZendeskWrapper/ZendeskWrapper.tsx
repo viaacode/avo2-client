@@ -1,5 +1,5 @@
 import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import Zendesk from 'react-zendesk';
 
 import { getEnv } from '../../helpers';

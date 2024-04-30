@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, ReactNodeArray } from 'react';
+import { type ReactElement, type ReactNode, type ReactNodeArray } from 'react';
 
 export function useSlot<T>(
 	type: T,

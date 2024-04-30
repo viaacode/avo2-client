@@ -1,7 +1,7 @@
-import { Avatar, AvatarProps } from '@viaa/avo2-components';
+import { Avatar, type AvatarProps } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 export const getProfile = (
 	obj:

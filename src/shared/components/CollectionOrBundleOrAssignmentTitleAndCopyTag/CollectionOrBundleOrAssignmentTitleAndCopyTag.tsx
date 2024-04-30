@@ -1,6 +1,6 @@
 import { TagList } from '@viaa/avo2-components';
 import { truncate } from 'lodash-es';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 import { Link } from 'react-router-dom';
 
 interface CollectionOrBundleOrAssignmentTitleAndCopyTagProps {

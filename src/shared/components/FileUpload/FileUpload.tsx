@@ -12,7 +12,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isString } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';

@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types';
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
-import { FilterState } from '../../search/search.types';
-import { AssignmentBlockType, EditableAssignmentBlock } from '../assignment.types';
-import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
+import { type FilterState } from '../../search/search.types';
+import { AssignmentBlockType, type EditableAssignmentBlock } from '../assignment.types';
+import { type AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
 import { AssignmentBlockEditItem } from '../components/blocks/AssignmentBlockEditItem';
 import { AssignmentBlockEditSearch } from '../components/blocks/AssignmentBlockEditSearch';
 import { AssignmentBlockEditText } from '../components/blocks/AssignmentBlockEditText';

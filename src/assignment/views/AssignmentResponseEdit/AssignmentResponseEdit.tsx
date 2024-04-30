@@ -14,9 +14,9 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, {
-	Dispatch,
-	FunctionComponent,
-	SetStateAction,
+	type Dispatch,
+	type FunctionComponent,
+	type SetStateAction,
 	useEffect,
 	useMemo,
 	useState,
@@ -27,17 +27,17 @@ import {
 	JsonParam,
 	NumberParam,
 	StringParam,
-	UrlUpdateType,
+	type UrlUpdateType,
 	useQueryParams,
 } from 'use-query-params';
 
 import { CollectionBlockType } from '../../../collection/collection.const';
-import { FilterState } from '../../../search/search.types';
+import { type FilterState } from '../../../search/search.types';
 import { InteractiveTour } from '../../../shared/components';
 import { BeforeUnloadPrompt } from '../../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { StickySaveBar } from '../../../shared/components/StickySaveBar/StickySaveBar';
 import { formatTimestamp } from '../../../shared/helpers';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useAssignmentPastDeadline } from '../../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../../shared/hooks/useWarningBeforeUnload';
@@ -49,10 +49,10 @@ import {
 import { reorderBlockPositions } from '../../assignment.helper';
 import { AssignmentService } from '../../assignment.service';
 import {
-	AssignmentResponseFormState,
+	type AssignmentResponseFormState,
 	AssignmentType,
-	PupilCollectionFragment,
-	PupilSearchFilterState,
+	type PupilCollectionFragment,
+	type PupilSearchFilterState,
 } from '../../assignment.types';
 import AssignmentHeading from '../../components/AssignmentHeading';
 import AssignmentMetadata from '../../components/AssignmentMetadata';

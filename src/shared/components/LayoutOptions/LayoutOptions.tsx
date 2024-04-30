@@ -1,6 +1,6 @@
 import { RadioButtonGroup, type RadioOption } from '@viaa/avo2-components';
 import { isNil, noop } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { AssignmentHelper } from '../../../assignment/assignment.helper';
 import { AssignmentLayout } from '../../../assignment/assignment.types';

@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { stringifyUrl } from 'query-string';
 
 import { CustomError, getEnv } from '../../../../../shared/helpers';
-import { PickerItem } from '../../../types';
+import { type PickerItem } from '../../../types';
 import { parsePickerItem } from '../helpers/parse-picker';
 
 // Fetch profiles from GQL

@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { Action } from 'redux';
+import { type Action } from 'redux';
 
 export enum LoginActionTypes {
 	SET_LOGIN_LOADING = '@@login/SET_LOGIN_LOADING',

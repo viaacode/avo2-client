@@ -1,8 +1,8 @@
-import { ButtonAction } from '@viaa/avo2-components';
+import { type ButtonAction } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
-import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
-import { PickerItem } from '../shared/types';
+import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
+import { type PickerItem } from '../shared/types';
 
 export type ContentPageLabelOverviewTableCols =
 	| 'label'

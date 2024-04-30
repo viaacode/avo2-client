@@ -2,7 +2,7 @@ import { type Avo } from '@viaa/avo2-types';
 
 import { ROUTE_PARTS } from '../../shared/constants';
 
-import { UserOverviewTableCol } from './user.types';
+import { type UserOverviewTableCol } from './user.types';
 
 export const USER_PATH = {
 	USER_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.users}`,

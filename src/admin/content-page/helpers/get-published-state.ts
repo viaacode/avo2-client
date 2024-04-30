@@ -1,4 +1,4 @@
-import { ContentPageInfo } from '@meemoo/admin-core-ui';
+import { type ContentPageInfo } from '@meemoo/admin-core-ui';
 import { isAfter, isBefore, isWithinInterval } from 'date-fns';
 
 export function getPublishedDate(

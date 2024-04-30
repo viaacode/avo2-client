@@ -1,5 +1,5 @@
 import { PermissionName } from '@viaa/avo2-types';
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { SecuredRoute } from '../../authentication/components';
 import { expandArray } from '../../shared/helpers/conditional-expand-array';

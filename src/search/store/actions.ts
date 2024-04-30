@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { Action, Dispatch } from 'redux';
+import { type Action, type Dispatch } from 'redux';
 
 import { DEFAULT_AUDIO_STILL } from '../../shared/constants';
 import { CustomError } from '../../shared/helpers';
@@ -7,9 +7,9 @@ import { fetchSearchResults } from '../search.service';
 
 import {
 	SearchActionTypes,
-	SetSearchResultsErrorAction,
-	SetSearchResultsLoadingAction,
-	SetSearchResultsSuccessAction,
+	type SetSearchResultsErrorAction,
+	type SetSearchResultsLoadingAction,
+	type SetSearchResultsSuccessAction,
 } from './types';
 
 const getSearchResults = (

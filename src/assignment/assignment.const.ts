@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
-import { TFunction } from 'i18next';
-import { array, object, SchemaOf, string } from 'yup';
+import { type TFunction } from 'i18next';
+import { array, object, type SchemaOf, string } from 'yup';
 
 import { ContentTypeString } from '../collection/collection.types';
 import { SearchFilter, SearchOrderAndDirectionProperty } from '../search/search.const';
@@ -9,14 +9,14 @@ import { tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
-	AssignmentColumn,
-	AssignmentOverviewTableColumns,
-	AssignmentResponseColumn,
-	AssignmentResponseFormState,
-	AssignmentResponseTableColumns,
+	type AssignmentColumn,
+	type AssignmentOverviewTableColumns,
+	type AssignmentResponseColumn,
+	type AssignmentResponseFormState,
+	type AssignmentResponseTableColumns,
 	AssignmentType,
 } from './assignment.types';
-import { AssignmentFields } from './hooks/assignment-form';
+import { type AssignmentFields } from './hooks/assignment-form';
 
 export const ITEMS_PER_PAGE = 20;
 

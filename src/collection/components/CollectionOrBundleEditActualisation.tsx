@@ -6,23 +6,23 @@ import {
 	FormGroup,
 	Grid,
 	Select,
-	SelectOption,
+	type SelectOption,
 	Spacer,
 	TextArea,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { type FunctionComponent } from 'react';
+import { type RouteComponentProps } from 'react-router-dom';
 
 import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const';
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
 import { NULL_FILTER } from '../../admin/shared/helpers/filters';
-import { PickerItem } from '../../admin/shared/types';
+import { type PickerItem } from '../../admin/shared/types';
 import { getFullName, toDateObject } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
-import { CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditActualisationProps {
 	collection: Avo.Collection.Collection;

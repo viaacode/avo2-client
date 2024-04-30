@@ -1,8 +1,8 @@
-import { Button, ButtonProps, IconName } from '@viaa/avo2-components';
-import React, { ReactNode, useState } from 'react';
+import { Button, type ButtonProps, IconName } from '@viaa/avo2-components';
+import React, { type ReactNode, useState } from 'react';
 
 import CutFragmentModal, {
-	CutFragmentModalProps,
+	type CutFragmentModalProps,
 } from '../../collection/components/modals/CutFragmentModal';
 import useTranslation from '../../shared/hooks/useTranslation';
 

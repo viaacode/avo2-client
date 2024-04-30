@@ -15,8 +15,8 @@ import {
 	NULL_FILTER,
 } from '../../shared/helpers/filters';
 import {
-	CollectionOrBundleMarcomTableState,
-	CollectionTableStates,
+	type CollectionOrBundleMarcomTableState,
+	type CollectionTableStates,
 } from '../collections-or-bundles.types';
 
 /**

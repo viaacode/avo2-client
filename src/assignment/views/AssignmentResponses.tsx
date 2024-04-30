@@ -20,8 +20,8 @@ import { PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	ReactNode,
+	type FunctionComponent,
+	type ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -32,14 +32,14 @@ import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../shared/components';
 import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
@@ -52,10 +52,10 @@ import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS } from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import {
-	AssignmentOverviewTableColumns,
-	AssignmentResponseTableColumns,
-	AssignmentType,
-	PupilCollectionFragment,
+	type AssignmentOverviewTableColumns,
+	type AssignmentResponseTableColumns,
+	type AssignmentType,
+	type PupilCollectionFragment,
 } from '../assignment.types';
 import { canViewAnAssignment } from '../helpers/can-view-an-assignment';
 import { isItemWithMeta } from '../helpers/is-item-with-meta';

@@ -1,9 +1,9 @@
-import { ButtonType, IconName, SelectOption } from '@viaa/avo2-components';
+import { type ButtonType, IconName, type SelectOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
-import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
-import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
-import { DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
+import { type CheckboxDropdownModalProps, type CheckboxOption } from '../../shared/components';
+import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+import { type DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import {
 	GetCollectionActualisationsDocument,
@@ -13,10 +13,10 @@ import {
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
-import { CollectionTableCols, EditorialType } from './collections-or-bundles.types';
+import { type CollectionTableCols, type EditorialType } from './collections-or-bundles.types';
 
 export const COLLECTIONS_OR_BUNDLES_PATH = {
 	COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}`,

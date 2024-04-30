@@ -2,9 +2,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, {
-	Dispatch,
-	FunctionComponent,
-	SetStateAction,
+	type Dispatch,
+	type FunctionComponent,
+	type SetStateAction,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -14,9 +14,9 @@ import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
@@ -47,7 +47,7 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
-import { AssignmentFields } from '../hooks/assignment-form';
+import { type AssignmentFields } from '../hooks/assignment-form';
 
 import './AssignmentCreate.scss';
 import './AssignmentPage.scss';

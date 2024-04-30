@@ -1,6 +1,6 @@
 import { get } from 'lodash-es';
 
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 
 const selectSearch = ({ search }: AppState) => {
 	return search;

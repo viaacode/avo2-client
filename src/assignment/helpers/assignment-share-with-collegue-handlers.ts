@@ -1,6 +1,6 @@
-import { ShareWithPupilsProps } from '../../shared/components';
+import { type ShareWithPupilsProps } from '../../shared/components';
 import {
-	ContributorInfo,
+	type ContributorInfo,
 	ContributorInfoRight,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';

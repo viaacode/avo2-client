@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../../shared/constants/query-keys';
 import { WorkspaceService } from '../workspace.service';
-import { WorkspaceCounts } from '../workspace.types';
+import { type WorkspaceCounts } from '../workspace.types';
 
 export const useGetWorkspaceCounts = (
 	options: {

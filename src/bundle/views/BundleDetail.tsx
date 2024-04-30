@@ -27,10 +27,10 @@ import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link, type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -46,13 +46,13 @@ import { PublishCollectionModal } from '../../collection/components';
 import { COLLECTION_COPY, COLLECTION_COPY_REGEX } from '../../collection/views/CollectionDetail';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
-import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
+import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
 import {
 	CommonMetaData,
 	DeleteObjectModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import Html from '../../shared/components/Html/Html';
@@ -73,13 +73,13 @@ import {
 } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,

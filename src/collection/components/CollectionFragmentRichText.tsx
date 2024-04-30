@@ -1,10 +1,10 @@
 import { SanitizePreset } from '@meemoo/admin-core-ui';
 import { convertToHtml } from '@viaa/avo2-components';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
-import Html, { HtmlProps } from '../../shared/components/Html/Html';
+import Html, { type HtmlProps } from '../../shared/components/Html/Html';
 import { CollectionBlockType } from '../collection.const';
-import { BlockItemComponent } from '../collection.types';
+import { type BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentRichTextProps = BlockItemComponent &
 	Omit<HtmlProps, 'content'> &

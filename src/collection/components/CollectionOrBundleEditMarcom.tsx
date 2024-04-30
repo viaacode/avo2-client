@@ -18,14 +18,20 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, uniq } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import React, {
+	type FunctionComponent,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { Link, type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
+import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import {
@@ -34,9 +40,9 @@ import {
 	GET_MARCOM_ENTRY_TABLE_COLUMNS,
 } from '../collection.const';
 import { CollectionService } from '../collection.service';
-import { ContentTypeNumber, MarcomEntry } from '../collection.types';
+import { ContentTypeNumber, type MarcomEntry } from '../collection.types';
 
-import { CollectionAction, MarcomNoteInfo } from './CollectionOrBundleEdit';
+import { type CollectionAction, type MarcomNoteInfo } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditMarcomProps {
 	collection: Avo.Collection.Collection & { marcom_note?: MarcomNoteInfo };

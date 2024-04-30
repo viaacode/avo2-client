@@ -14,9 +14,15 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { Dispatch, FunctionComponent, ReactNode, SetStateAction, useState } from 'react';
+import React, {
+	type Dispatch,
+	type FunctionComponent,
+	type ReactNode,
+	type SetStateAction,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';

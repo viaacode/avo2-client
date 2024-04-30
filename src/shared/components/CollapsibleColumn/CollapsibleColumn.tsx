@@ -1,5 +1,5 @@
-import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
-import React, { FC, ReactNode, useState } from 'react';
+import { Button, type ButtonProps, type DefaultProps, IconName } from '@viaa/avo2-components';
+import React, { type FC, type ReactNode, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import useResizeObserver from '../../hooks/useResizeObserver';

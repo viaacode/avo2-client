@@ -1,7 +1,7 @@
 import { ContentPageLabelEdit } from '@meemoo/admin-core-ui';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageLabelEditPage: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match }) => {

@@ -2,19 +2,19 @@ import { Color } from '@meemoo/admin-core-ui';
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, debounce } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import Joyride, { CallBackProps } from 'react-joyride';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import Joyride, { type CallBackProps } from 'react-joyride';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { compose } from 'redux';
 
-import { SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type SecuredRouteProps } from '../../../authentication/components/SecuredRoute';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { AppState } from '../../../store';
+import { type AppState } from '../../../store';
 import { selectShowNudgingModal } from '../../../store/selectors';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
-import { InteractiveTourService, TourInfo } from '../../services/interactive-tour.service';
+import { InteractiveTourService, type TourInfo } from '../../services/interactive-tour.service';
 import Html from '../Html/Html';
 
 import './InteractiveTour.scss';
