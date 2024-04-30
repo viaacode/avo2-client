@@ -19,11 +19,6 @@ import { EducationalOrganisationsSelect } from '../EducationalOrganisationsSelec
 
 import './MultiEducationalOrganisationSelectModal.scss';
 
-export interface Tag {
-	label: string;
-	id: string;
-}
-
 export interface MultiEducationalOrganisationSelectModalProps {
 	label: string;
 	id: string;

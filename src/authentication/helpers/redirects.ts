@@ -178,16 +178,6 @@ export function redirectToExternalPage(
 	}
 }
 
-export function toAbsoluteUrl(link: string): string {
-	if (link.includes('//')) {
-		return link;
-	}
-	if (link.startsWith('www')) {
-		return `//${link}`;
-	}
-	return `${trimEnd(window.location.origin, '/')}/${trimStart(link, '/')}`;
-}
-
 export function getBaseUrl(location: RouteComponentProps['location']): string {
 	if (location.pathname === '/') {
 		return trimEnd(window.location.href, '/');

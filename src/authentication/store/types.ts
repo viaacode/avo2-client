@@ -20,8 +20,6 @@ export interface SetLoginErrorAction extends Action {
 	error: boolean;
 }
 
-export type LoginAction = SetLoginSuccessAction | SetLoginLoadingAction | SetLoginErrorAction;
-
 export interface LoginState {
 	readonly data: Avo.Auth.LoginResponse | null;
 	readonly loading: boolean;

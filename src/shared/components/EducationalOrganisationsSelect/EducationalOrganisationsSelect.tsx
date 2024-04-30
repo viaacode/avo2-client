@@ -12,11 +12,6 @@ import { ToastService } from '../../services/toast-service';
 
 import './EducationalOrganisationsSelect.scss';
 
-export interface Tag {
-	label: string;
-	id: string;
-}
-
 export interface EducationalOrganisationsSelectProps {
 	organisations: Avo.EducationOrganization.Organization[];
 	onChange: (organisations: Avo.EducationOrganization.Organization[]) => void;

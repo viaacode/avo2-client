@@ -80,7 +80,7 @@ export function useAssignmentPupilTabs(
 				...item,
 				active: item.id === activeTab,
 			})),
-		[assignment, tText, activeTab, numOfPupilCollectionFragments, animatePill]
+		[assignment, tText, tHtml, activeTab, numOfPupilCollectionFragments, animatePill]
 	);
 
 	const onTabClick = useCallback(
