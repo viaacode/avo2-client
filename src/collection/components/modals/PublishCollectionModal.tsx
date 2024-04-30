@@ -183,7 +183,7 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps & Us
 									label={tText(
 										'collection/components/modals/share-collection-modal___annuleren'
 									)}
-									onClick={() => onClose()}
+									onClick={() => closeModal(collection)}
 								/>
 								<Button
 									type="primary"

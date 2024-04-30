@@ -100,18 +100,18 @@ const Sidebar: FunctionComponent<SidebarProps> = ({
 					</Link>
 					<Link
 						className="u-remove-link-styling u-color-white o-sidebar__avo__header__side-link"
-						to={APP_PATH.LOGOUT.route}
-					>
-						<span title={tText('admin/shared/components/sidebar/sidebar___uitloggen')}>
-							<Icon name={IconName.logOut} />
-						</span>
-					</Link>
-					<Link
-						className="u-remove-link-styling u-color-white o-sidebar__avo__header__side-link"
 						to={APP_PATH.HOME.route}
 					>
 						<span title={tText('admin/shared/components/sidebar/sidebar___homepagina')}>
 							<Icon name={IconName.home} />
+						</span>
+					</Link>
+					<Link
+						className="u-remove-link-styling u-color-white o-sidebar__avo__header__side-link"
+						to={APP_PATH.LOGOUT.route}
+					>
+						<span title={tText('admin/shared/components/sidebar/sidebar___uitloggen')}>
+							<Icon name={IconName.logOut} />
 						</span>
 					</Link>
 				</div>

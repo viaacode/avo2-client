@@ -13,9 +13,11 @@ export const mapOptionsToLomFields = (
 	options: TagInfo[],
 	originalLoms: Avo.Lom.LomField[]
 ): Avo.Lom.LomField[] => {
-	return (options || []).map((option) => {
-		return originalLoms.find((lom) => lom.id === option.value) as Avo.Lom.LomField;
-	});
+	return compact(
+		(options || []).map((option) => {
+			return originalLoms.find((lom) => lom.id === option.value) as Avo.Lom.LomField;
+		})
+	);
 };
 
 export const getParentEducationLevel = (
