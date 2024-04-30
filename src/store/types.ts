@@ -1,4 +1,4 @@
-import { Action } from 'redux';
+import { type Action } from 'redux';
 
 export enum UiStateActionTypes {
 	SET_SHOW_NUDGING_MODAL = '@@SET_SHOW_NUDGING_MODAL',

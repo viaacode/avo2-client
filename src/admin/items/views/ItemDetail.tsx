@@ -1,5 +1,5 @@
 import { BlockHeading, Color, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
-import { RichEditorState } from '@meemoo/react-components';
+import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
 	ButtonToolbar,
@@ -13,10 +13,10 @@ import {
 	Toolbar,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import React, { type FunctionComponent, type ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
@@ -49,7 +49,7 @@ import {
 	GET_ITEM_USED_BY_QUICK_LANES,
 } from '../items.const';
 import { ItemsService } from '../items.service';
-import { ItemUsedByColumnId, ItemUsedByEntry } from '../items.types';
+import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
 type ItemDetailProps = RouteComponentProps<{ id: string }>;
 

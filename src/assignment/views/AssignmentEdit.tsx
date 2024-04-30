@@ -14,9 +14,9 @@ import { PermissionName } from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
-	Dispatch,
-	FunctionComponent,
-	SetStateAction,
+	type Dispatch,
+	type FunctionComponent,
+	type SetStateAction,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -27,25 +27,25 @@ import { useForm } from 'react-hook-form';
 import { matchPath, Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
-import { ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { InActivityWarningModal, ShareModal } from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, CustomError, navigate } from '../../shared/helpers';
+import { buildLink, type CustomError, navigate } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
 } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -87,7 +87,7 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
-import { AssignmentFields } from '../hooks/assignment-form';
+import { type AssignmentFields } from '../hooks/assignment-form';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import AssignmentResponses from './AssignmentResponses';

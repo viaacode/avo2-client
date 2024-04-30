@@ -13,8 +13,8 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isArray, isNil, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, ReactNode } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import React, { type FunctionComponent, type ReactNode } from 'react';
+import { type RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
 import {
@@ -23,7 +23,7 @@ import {
 	redirectToServerLogoutPage,
 } from '../../authentication/helpers/redirects';
 import { CustomError, isMobileWidth } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
 

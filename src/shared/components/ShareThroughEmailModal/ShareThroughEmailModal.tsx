@@ -9,12 +9,15 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import React, { type FunctionComponent, type ReactNode, useState } from 'react';
 
 import { copyToClipboard } from '../../helpers';
-import withUser, { UserProps } from '../../hocs/withUser';
+import withUser, { type UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
-import { CampaignMonitorService, EmailTemplateType } from '../../services/campaign-monitor-service';
+import {
+	CampaignMonitorService,
+	type EmailTemplateType,
+} from '../../services/campaign-monitor-service';
 import { trackEvents } from '../../services/event-logging-service';
 import { ToastService } from '../../services/toast-service';
 

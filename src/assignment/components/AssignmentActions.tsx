@@ -1,6 +1,6 @@
 import {
 	Button,
-	ButtonProps,
+	type ButtonProps,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -10,15 +10,15 @@ import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+import React, { type FunctionComponent, useMemo, useState } from 'react';
 
 import { APP_PATH } from '../../constants';
-import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
-import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ShareDropdown, type ShareWithPupilsProps } from '../../shared/components';
+import { type ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { type ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	onAddNewContributor,
@@ -26,9 +26,9 @@ import {
 	onEditContributor,
 } from '../helpers/assignment-share-with-collegue-handlers';
 
-import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
+import DeleteAssignmentButton, { type DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
-	DuplicateAssignmentButtonProps,
+	type DuplicateAssignmentButtonProps,
 } from './DuplicateAssignmentButton';
 
 interface ShareProps extends ShareWithPupilsProps {

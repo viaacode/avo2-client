@@ -1,9 +1,9 @@
 import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NEW_FRAGMENT } from '../../collection.const';
-import { CollectionAction } from '../CollectionOrBundleEdit';
+import { type CollectionAction } from '../CollectionOrBundleEdit';
 
 interface FragmentAddProps {
 	index: number;

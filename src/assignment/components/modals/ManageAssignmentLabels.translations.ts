@@ -1,6 +1,6 @@
 import { tText } from '../../../shared/helpers/translate';
 
-import { ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
+import { type ManageAssignmentLabelsProps } from './ManageAssignmentLabels';
 
 export interface ManageAssignmentLabelsTranslations {
 	modal: {

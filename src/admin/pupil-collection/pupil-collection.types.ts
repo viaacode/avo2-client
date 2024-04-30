@@ -1,4 +1,4 @@
-import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
+import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export interface PupilCollectionsOverviewTableState extends FilterableTableState {
 	title: string;

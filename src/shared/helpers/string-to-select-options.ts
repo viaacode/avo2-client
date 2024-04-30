@@ -1,5 +1,5 @@
-import { TagInfo } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { type TagInfo } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 
 export function lomToTagInfo(lomEntry: Avo.Lom.LomField): TagInfo {
 	return {

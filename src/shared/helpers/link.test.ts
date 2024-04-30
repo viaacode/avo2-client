@@ -1,5 +1,5 @@
 import { createMemoryHistory } from 'history';
-import { RouteComponentProps } from 'react-router-dom';
+import { type RouteComponentProps } from 'react-router-dom';
 
 import { ROUTE_PARTS } from '../constants';
 

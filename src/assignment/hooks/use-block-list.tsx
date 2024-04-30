@@ -1,7 +1,11 @@
 import { type Avo } from '@viaa/avo2-types';
-import React, { ReactNode, useMemo } from 'react';
+import React, { type ReactNode, useMemo } from 'react';
 
-import { BlockListSorter, ListSorterItem, ListSorterProps } from '../../shared/components';
+import {
+	BlockListSorter,
+	type ListSorterItem,
+	type ListSorterProps,
+} from '../../shared/components';
 import {
 	BLOCK_ITEM_ICONS,
 	BLOCK_ITEM_LABELS,

@@ -1,15 +1,15 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	GetUserGroupsWithFiltersQuery,
-	GetUserGroupsWithFiltersQueryVariables,
+	type GetUserGroupsWithFiltersQuery,
+	type GetUserGroupsWithFiltersQueryVariables,
 } from '../../shared/generated/graphql-db-operations';
 import { GetUserGroupsWithFiltersDocument } from '../../shared/generated/graphql-db-react-query';
 import { CustomError } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 
 import { ITEMS_PER_PAGE } from './user-group.const';
-import { UserGroup } from './user-group.types';
+import { type UserGroup } from './user-group.types';
 
 export class UserGroupService {
 	public static async fetchUserGroups(

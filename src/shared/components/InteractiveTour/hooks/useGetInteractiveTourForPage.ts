@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { compact, reverse, sortBy, toPairs } from 'lodash-es';
-import { match, matchPath } from 'react-router';
+import { type match, matchPath } from 'react-router';
 
-import { APP_PATH, RouteId, RouteInfo } from '../../../../constants';
+import { APP_PATH, type RouteId, type RouteInfo } from '../../../../constants';
 import { QUERY_KEYS } from '../../../constants/query-keys';
-import { InteractiveTourService, TourInfo } from '../../../services/interactive-tour.service';
+import { InteractiveTourService, type TourInfo } from '../../../services/interactive-tour.service';
 
 async function getInteractiveTourForPage(
 	currentPath: string,

@@ -2,16 +2,16 @@ import { Alert, Container, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { FragmentAdd, FragmentEdit } from '../components';
 import { showReplacementWarning } from '../helpers/fragment';
 
-import { CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit';
 import './CollectionOrBundleEditContent.scss';
 
 interface CollectionOrBundleEditContentProps {

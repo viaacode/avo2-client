@@ -1,8 +1,10 @@
-import { DefaultProps } from '@viaa/avo2-components';
+import { type DefaultProps } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
-import ConfirmModal, { ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
+import ConfirmModal, {
+	type ConfirmModalProps,
+} from '../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 type AssignmentConfirmSaveProps = DefaultProps & {

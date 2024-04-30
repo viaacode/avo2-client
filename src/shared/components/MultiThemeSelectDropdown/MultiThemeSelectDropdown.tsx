@@ -1,8 +1,8 @@
-import { TagInfo } from '@viaa/avo2-components';
+import { type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { groupBy, map } from 'lodash-es';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 import Select from 'react-select';
 
 import './MultiThemeSelectDropdown.scss';

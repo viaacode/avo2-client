@@ -1,8 +1,8 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';

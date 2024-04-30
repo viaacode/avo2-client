@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { FilterableTableState } from '../shared/components/FilterTable/FilterTable';
+import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type PublishedStatus = 'published' | 'unpublished';
 

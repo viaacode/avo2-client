@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	ContributorInfo,
+	type ContributorInfo,
 	ContributorInfoRight,
 } from '../components/ShareWithColleagues/ShareWithColleagues.types';
 

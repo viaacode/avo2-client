@@ -10,7 +10,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import React, { type FunctionComponent, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import stamboekExampleImage from '../../assets/images/leerkrachten-kaart-voorbeeld-nummer.png';
@@ -18,7 +18,7 @@ import { APP_PATH } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AvoToastType } from '../../shared/services/toast-service';
 import { verifyStamboekNumber } from '../authentication.service';
-import { StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
+import { type StamboekValidationStatus } from '../views/registration-flow/r3-stamboek';
 
 import './StamboekInput.scss';
 

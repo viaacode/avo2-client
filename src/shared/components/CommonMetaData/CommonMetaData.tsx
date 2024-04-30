@@ -1,9 +1,9 @@
 import { Column, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { SearchFilter } from '../../../search/search.const';
-import { FilterState } from '../../../search/search.types';
+import { type FilterState } from '../../../search/search.types';
 import { formatDate } from '../../helpers';
 import { getGroupedLomsKeyValue } from '../../helpers/lom';
 import { tText } from '../../helpers/translate';

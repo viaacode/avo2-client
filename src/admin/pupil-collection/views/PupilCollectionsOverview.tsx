@@ -2,45 +2,45 @@ import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	ReactText,
+	type FunctionComponent,
+	type ReactText,
 	useCallback,
 	useEffect,
 	useMemo,
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
-import { PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import { AssignmentsBulkAction } from '../../assignments/assignments.types';
+import { type AssignmentsBulkAction } from '../../assignments/assignments.types';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, {
-	FilterableColumn,
+	type FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import { getDateRangeFilters, getMultiOptionFilters } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { PickerItem } from '../../shared/types';
+import { type PickerItem } from '../../shared/types';
 import {
 	GET_PUPIL_COLLECTION_BULK_ACTIONS,
 	GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
 } from '../pupil-collection.const';
-import { PupilCollectionsOverviewTableState } from '../pupil-collection.types';
+import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
 const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();

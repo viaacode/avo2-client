@@ -1,7 +1,7 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import React, { type FunctionComponent } from 'react';
+import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH } from '../../constants';
 import { ROUTE_PARTS } from '../../shared/constants';

@@ -13,7 +13,14 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { format } from 'date-fns';
-import React, { FC, MouseEvent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FC,
+	type MouseEvent,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { reorderDate } from '../../helpers';

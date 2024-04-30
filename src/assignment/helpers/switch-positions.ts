@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash-es';
 
-import { Positioned } from '../../shared/types';
+import { type Positioned } from '../../shared/types';
 import { reorderBlockPositions } from '../assignment.helper';
 
 export function switchAssignmentBlockPositions(

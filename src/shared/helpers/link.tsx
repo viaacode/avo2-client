@@ -2,12 +2,12 @@ import { LinkTarget } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isArray, isEmpty, isNil, isString } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Fragment, ReactNode } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { Fragment, type ReactNode } from 'react';
+import { type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
-import { FilterState } from '../../search/search.types';
+import { type FilterState } from '../../search/search.types';
 import { ToastService } from '../services/toast-service';
 
 import { tHtml } from './translate';

@@ -1,8 +1,8 @@
-import { IconName } from '@viaa/avo2-components';
+import { type IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 
-import { NewsletterPreferences } from '../services/campaign-monitor-service';
+import { type NewsletterPreferences } from '../services/campaign-monitor-service';
 
 export * from './quick-lane';
 

@@ -8,19 +8,19 @@ import {
 	IconName,
 	// Flex,
 	MenuSearchResultContent,
-	MenuSearchResultItemInfo,
+	type MenuSearchResultItemInfo,
 	Spacer,
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { find, get, isNil } from 'lodash-es';
-import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, type KeyboardEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Dispatch } from 'redux';
+import { type Dispatch } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../../../authentication/components/SecuredRoute';
 import { CONTENT_TYPE_TRANSLATIONS } from '../../../../../collection/collection.types';
 import { SearchFilter } from '../../../../../search/search.const';
 import { getSearchResults } from '../../../../../search/store/actions';
@@ -30,7 +30,7 @@ import { useDebounce } from '../../../../../shared/hooks/useDebounce';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { KeyCode } from '../../../../../shared/types';
-import { AppState } from '../../../../../store';
+import { type AppState } from '../../../../../store';
 import './BlockSearch.scss';
 
 interface BlockSearchProps {

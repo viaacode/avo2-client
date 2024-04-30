@@ -1,17 +1,17 @@
 import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -27,9 +27,9 @@ import {
 } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
-	InteractiveTour,
-	InteractiveTourOverviewTableCols,
-	InteractiveTourTableState,
+	type InteractiveTour,
+	type InteractiveTourOverviewTableCols,
+	type InteractiveTourTableState,
 } from '../interactive-tour.types';
 
 type InteractiveTourOverviewProps = DefaultSecureRouteProps;

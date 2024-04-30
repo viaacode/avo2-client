@@ -1,11 +1,11 @@
-import { Button, ButtonProps, IconName } from '@viaa/avo2-components';
+import { Button, type ButtonProps, IconName } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
-import React, { ReactNode, useState } from 'react';
+import React, { type ReactNode, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
 import DraggableBlock from '../components/DraggableBlock/DraggableBlock';
 import DraggableListModal, {
-	DraggableListModalProps,
+	type DraggableListModalProps,
 } from '../components/DraggableList/DraggableListModal';
 
 export function useDraggableListModal(config?: {

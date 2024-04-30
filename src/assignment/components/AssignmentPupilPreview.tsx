@@ -1,11 +1,17 @@
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { Dispatch, FC, FunctionComponent, SetStateAction, useState } from 'react';
+import React, {
+	type Dispatch,
+	type FC,
+	type FunctionComponent,
+	type SetStateAction,
+	useState,
+} from 'react';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import { isMobileWidth } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 

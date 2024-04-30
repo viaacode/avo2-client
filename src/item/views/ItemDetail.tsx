@@ -29,9 +29,9 @@ import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
+	type FunctionComponent,
+	type ReactNode,
+	type ReactText,
 	useCallback,
 	useEffect,
 	useState,
@@ -47,16 +47,16 @@ import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
-import { FilterState } from '../../search/search.types';
+import { type FilterState } from '../../search/search.types';
 import {
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 	ShareThroughEmailModal,
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
@@ -70,11 +70,11 @@ import {
 } from '../../shared/helpers';
 import {
 	defaultRenderBookmarkButton,
-	renderBookmarkButtonProps,
+	type renderBookmarkButtonProps,
 } from '../../shared/helpers/default-render-bookmark-button';
 import {
 	defaultRenderBookmarkCount,
-	renderBookmarkCountProps,
+	type renderBookmarkCountProps,
 } from '../../shared/helpers/default-render-bookmark-count';
 import {
 	defaultGoToDetailLink,
@@ -93,7 +93,7 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -101,7 +101,7 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { UnpublishableItem } from '../../shared/types';
+import { type UnpublishableItem } from '../../shared/types';
 import {
 	AddToCollectionModal,
 	CutFragmentForAssignmentModal,
@@ -109,7 +109,7 @@ import {
 } from '../components';
 import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
-import { ItemTrimInfo } from '../item.types';
+import { type ItemTrimInfo } from '../item.types';
 import './ItemDetail.scss';
 
 interface ItemDetailProps {

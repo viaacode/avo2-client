@@ -1,8 +1,8 @@
 import { convertToHtml } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
-import { FilterState } from '../../../search/search.types';
+import { type FilterState } from '../../../search/search.types';
 import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components';
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
@@ -10,7 +10,7 @@ import { isRichTextEmpty } from '../../../shared/helpers';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
-import { EditableAssignmentBlock, EditBlockProps } from '../../assignment.types';
+import { type EditableAssignmentBlock, type EditBlockProps } from '../../assignment.types';
 import {
 	AssignmentBlockDescriptionButtons,
 	AssignmentBlockItemDescriptionType,

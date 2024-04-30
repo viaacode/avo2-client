@@ -9,16 +9,16 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isNull } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
-import ReactSelect, { ActionMeta, PropsValue } from 'react-select';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import ReactSelect, { type ActionMeta, type PropsValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
 import { FileUpload } from '../../../../shared/components';
 import { CustomError } from '../../../../shared/helpers';
-import withUser, { UserProps } from '../../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../../shared/hocs/withUser';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { PickerItem, PickerTypeOption } from '../../types';
+import { type PickerItem, type PickerTypeOption } from '../../types';
 
 import {
 	DEFAULT_ALLOWED_TYPES,

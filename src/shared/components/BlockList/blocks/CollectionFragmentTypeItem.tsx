@@ -1,19 +1,19 @@
-import { DefaultProps, IconName } from '@viaa/avo2-components';
+import { type DefaultProps, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
-import React, { FC, useMemo } from 'react';
+import React, { type FC, useMemo } from 'react';
 
 import { CollectionBlockType } from '../../../../collection/collection.const';
 import CollectionFragmentFlowPlayer, {
-	CollectionFragmentFlowPlayerProps,
+	type CollectionFragmentFlowPlayerProps,
 } from '../../../../collection/components/CollectionFragmentFlowPlayer';
 import CollectionFragmentTitle, {
-	CollectionFragmentTitleProps,
+	type CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import {
 	BlockItemMetadata,
-	BlockItemMetadataProps,
+	type BlockItemMetadataProps,
 } from '../../BlockItemMetadata/BlockItemMetadata';
 import CollapsibleColumn from '../../CollapsibleColumn/CollapsibleColumn';
 import TextWithTimestamps from '../../TextWithTimestamp/TextWithTimestamps';

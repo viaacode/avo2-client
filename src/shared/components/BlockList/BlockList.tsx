@@ -1,7 +1,7 @@
 import { Container, type ContainerProps } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { AssignmentBlockType } from '../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../collection/collection.const';
@@ -12,7 +12,7 @@ import {
 import { IconBar } from '../index';
 
 import { BLOCK_ITEM_ICONS } from './BlockList.consts';
-import { BlockListProps } from './BlockList.types';
+import { type BlockListProps } from './BlockList.types';
 import AssignmentBlockTypeSearch from './blocks/AssignmentBlockTypeSearch';
 
 import './BlockList.scss';

@@ -3,7 +3,7 @@ import { IconName } from '@viaa/avo2-components';
 import { ROUTE_PARTS } from '../shared/constants';
 import { tText } from '../shared/helpers/translate';
 
-import { WorkspaceCounts, WorkspaceTab, WorkspaceTabNames } from './workspace.types';
+import { type WorkspaceCounts, type WorkspaceTab, type WorkspaceTabNames } from './workspace.types';
 
 export const COLLECTIONS_ID = ROUTE_PARTS.collections;
 export const BUNDLES_ID = ROUTE_PARTS.bundles;

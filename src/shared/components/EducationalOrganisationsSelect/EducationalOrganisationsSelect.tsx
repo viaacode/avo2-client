@@ -2,7 +2,7 @@ import { Alert, Select, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { pullAllBy, remove, uniq } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
@@ -47,7 +47,7 @@ export const EducationalOrganisationsSelect: FunctionComponent<
 					tHtml('settings/components/organisation___het-ophalen-van-de-steden-is-mislukt')
 				);
 			});
-	}, [setCities, tText]);
+	}, [setCities, tHtml]);
 
 	useEffect(() => {
 		(async () => {

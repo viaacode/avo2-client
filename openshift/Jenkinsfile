@@ -71,6 +71,20 @@ pipeline {
 				}
 			}
 		}
+		stage('Copy robots.txt for QAS') {
+			when {
+				not {
+					buildingTag()
+				}
+			}
+			steps {
+				script {
+					// The robots.txt file in the public folder is the production version by default
+					// If we're building for QAS, then we override that file with a QAS specific version that disallows any indexing
+					sh(script: 'cp ./scripts/robots-QAS.txt ./public/robots.txt', returnStdout: true)
+				}
+			}
+		}
 		stage('Test code') {
 			steps {
 				sh 'make -f ./openshift/Makefile test'

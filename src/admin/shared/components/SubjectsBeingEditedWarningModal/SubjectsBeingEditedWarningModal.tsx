@@ -1,12 +1,12 @@
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { type FunctionComponent, type ReactNode } from 'react';
 
-import { APP_PATH } from '../../../../constants';
+import { type APP_PATH } from '../../../../constants';
 import ConfirmModal from '../../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink } from '../../../../shared/helpers';
 import useTranslation from '../../../../shared/hooks/useTranslation';
-import { ValueOf } from '../../../../shared/types';
+import { type ValueOf } from '../../../../shared/types';
 
 import './SubjectsBeingEditedWarningModal.scss';
 

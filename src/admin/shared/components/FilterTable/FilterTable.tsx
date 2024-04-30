@@ -1,17 +1,17 @@
 import {
 	Button,
-	ButtonType,
+	type ButtonType,
 	Flex,
 	Form,
 	FormGroup,
 	IconName,
 	Pagination,
 	Select,
-	SelectOption,
+	type SelectOption,
 	Spacer,
 	Spinner,
 	Table,
-	TableColumn,
+	type TableColumn,
 	TextInput,
 	Toolbar,
 	ToolbarLeft,
@@ -21,21 +21,21 @@ import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, get, sortBy } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	KeyboardEvent,
-	ReactElement,
-	ReactNode,
+	type FunctionComponent,
+	type KeyboardEvent,
+	type ReactElement,
+	type ReactNode,
 	useEffect,
 	useState,
 } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { type RouteComponentProps, withRouter } from 'react-router';
 import { useQueryParams } from 'use-query-params';
 
 import { SearchFilter } from '../../../../search/search.const';
 import {
 	BooleanCheckboxDropdown,
 	CheckboxDropdownModal,
-	CheckboxOption,
+	type CheckboxOption,
 	DateRangeDropdown,
 	DeleteObjectModal,
 } from '../../../../shared/components';

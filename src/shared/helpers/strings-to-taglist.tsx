@@ -1,6 +1,6 @@
-import { TagList, TagOption } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
-import React, { MouseEvent, ReactNode } from 'react';
+import { TagList, type TagOption } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
+import React, { type MouseEvent, type ReactNode } from 'react';
 
 export function stringsToTagList(
 	labelsOrObjs: string[] | any[],

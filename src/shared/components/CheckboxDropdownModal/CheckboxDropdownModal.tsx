@@ -24,7 +24,7 @@ import {
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { clone, compact, fromPairs, take } from 'lodash-es';
-import React, { FunctionComponent, MouseEvent, useState } from 'react';
+import React, { type FunctionComponent, type MouseEvent, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { isMobileWidth } from '../../helpers';

@@ -3,10 +3,10 @@ import { type Avo } from '@viaa/avo2-types';
 import { compact, findLast, forIn, fromPairs, last, startsWith, uniqBy } from 'lodash-es';
 import queryString from 'query-string';
 
-import { APP_PATH } from '../../constants';
+import { type APP_PATH } from '../../constants';
 import { CustomError, getEnv } from '../helpers';
 
-import { GetInteractiveTourResponse } from './interactive-tour.types';
+import { type GetInteractiveTourResponse } from './interactive-tour.types';
 import { NotificationService } from './notification-service';
 
 const INTERACTIVE_TOUR_LATER_COOLDOWN_PERIOD = 2 * 7 * 24 * 60 * 60 * 1000; // 2 weeks

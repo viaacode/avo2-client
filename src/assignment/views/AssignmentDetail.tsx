@@ -18,18 +18,25 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FC, FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FC,
+	type FunctionComponent,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 import { StringParam, useQueryParams } from 'use-query-params';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
-import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
+import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
 import {
 	CommonMetaData,
 	EditButton,
@@ -37,7 +44,7 @@ import {
 	InteractiveTour,
 	ShareDropdown,
 	ShareModal,
-	ShareWithPupilsProps,
+	type ShareWithPupilsProps,
 } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -47,13 +54,13 @@ import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '..
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,

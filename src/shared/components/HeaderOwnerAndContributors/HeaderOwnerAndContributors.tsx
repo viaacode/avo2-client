@@ -7,7 +7,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { getFullName } from '../../helpers';
 import { tHtml, tText } from '../../helpers/translate';

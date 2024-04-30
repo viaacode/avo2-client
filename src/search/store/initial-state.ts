@@ -1,4 +1,4 @@
-import { SearchState } from './types';
+import { type SearchState } from './types';
 
 const initialState: SearchState = Object.freeze({
 	data: null,

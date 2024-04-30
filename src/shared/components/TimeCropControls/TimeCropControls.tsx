@@ -1,7 +1,7 @@
 import { Container, MultiRange, TextInput } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { clamp } from 'lodash-es';
-import React, { FC, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { formatDurationHoursMinutesSeconds, parseDuration, toSeconds } from '../../helpers';

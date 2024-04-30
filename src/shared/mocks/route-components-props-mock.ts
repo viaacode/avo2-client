@@ -1,7 +1,7 @@
 import { createMemoryHistory } from 'history';
-import { RouteComponentProps } from 'react-router-dom';
+import { type RouteComponentProps } from 'react-router-dom';
 
-import { NavigationParams } from '../components/Navigation/Navigation';
+import { type NavigationParams } from '../components/Navigation/Navigation';
 
 /**
  * This is to mock out the dependencies for react router

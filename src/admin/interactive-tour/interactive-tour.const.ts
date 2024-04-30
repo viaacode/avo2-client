@@ -2,11 +2,11 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { tText } from '../../shared/helpers/translate';
 import { generateRandomId } from '../../shared/helpers/uuid';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
 import {
-	EditableInteractiveTour,
-	InteractiveTourOverviewTableCols,
+	type EditableInteractiveTour,
+	type InteractiveTourOverviewTableCols,
 } from './interactive-tour.types';
 
 export const INTERACTIVE_TOUR_PATH = {

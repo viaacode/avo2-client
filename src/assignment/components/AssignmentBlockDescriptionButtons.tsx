@@ -1,8 +1,8 @@
 import { Button, ButtonGroup, Select } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { tText } from '../../shared/helpers/translate';
-import { EditableAssignmentBlock } from '../assignment.types';
+import { type EditableAssignmentBlock } from '../assignment.types';
 
 import './AssignmentBlockDescriptionButtons.scss';
 

@@ -19,8 +19,8 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	ReactNode,
+	type FunctionComponent,
+	type ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -29,7 +29,7 @@ import React, {
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import {
 	buildLink,
 	CustomError,
@@ -48,7 +48,7 @@ import {
 } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
-import { AssignmentOverviewTableColumns } from '../assignment.types';
+import { type AssignmentOverviewTableColumns } from '../assignment.types';
 import AssignmentDeadline from '../components/AssignmentDeadline';
 
 import './AddItemsModals.scss';
