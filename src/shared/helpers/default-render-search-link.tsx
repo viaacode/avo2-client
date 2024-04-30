@@ -17,7 +17,7 @@ export const defaultGoToSearchLink =
 			generateSearchLinkString(
 				filterProp,
 				filterValue,
-				newFilters.orderProperty,
+				newFilters.orderProperty as any,
 				newFilters.orderDirection
 			)
 		);
@@ -38,7 +38,7 @@ export const defaultRenderSearchLink = (
 			to={generateSearchLinkString(
 				filterProp,
 				filterValue,
-				newFilters.orderProperty,
+				newFilters.orderProperty as any,
 				newFilters.orderDirection
 			)}
 		>

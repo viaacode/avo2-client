@@ -6,7 +6,7 @@ import { CustomError, getEnv } from '../helpers';
 
 export class EducationOrganisationService {
 	public static async fetchCities(): Promise<string[]> {
-		let url: string | undefined;
+		let url: string | undefined = undefined;
 		try {
 			url = `${getEnv('PROXY_URL')}/education-organisations/cities`;
 
@@ -20,7 +20,7 @@ export class EducationOrganisationService {
 		city: string | null,
 		zipCode: string | null
 	): Promise<Avo.EducationOrganization.Organization[]> {
-		let url: string | undefined;
+		let url: string | undefined = undefined;
 		try {
 			url = `${getEnv(
 				'PROXY_URL'
@@ -39,7 +39,7 @@ export class EducationOrganisationService {
 		organisationId: string,
 		unitId?: string
 	): Promise<string | null> {
-		let url: string | undefined;
+		let url: string | undefined = undefined;
 		try {
 			url = `${getEnv(
 				'PROXY_URL'

@@ -21,11 +21,3 @@ export const selectUser = ({ loginState }: AppState) => {
 export const selectCommonUser = ({ loginState }: AppState) => {
 	return (loginState?.data as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
 };
-
-export const selectLoginMessage = ({ loginState }: AppState) => {
-	return loginState?.data?.message;
-};
-
-export const selectAcceptedConditions = ({ loginState }: AppState) => {
-	return (loginState?.data as Avo.Auth.LoginResponseLoggedIn)?.acceptedConditions;
-};

@@ -96,7 +96,7 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 				history.replace(url.toString().replace(url.origin, ''));
 			}
 		}
-	}, [loadingInfo]);
+	}, [loadingInfo, tHtml]);
 
 	// Render
 	const renderApp = () => {
