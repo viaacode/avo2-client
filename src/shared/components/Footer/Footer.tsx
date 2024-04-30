@@ -1,18 +1,18 @@
 import meemooLogo from '@assets/images/meemoo-logo.png';
 import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.png';
 import { Container, Spacer } from '@viaa/avo2-components';
-import React, { FC, useEffect, useState } from 'react';
-import { RouteComponentProps } from 'react-router';
+import React, { type FC, useEffect, useState } from 'react';
+import { type RouteComponentProps } from 'react-router';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
-import withUser, { UserProps } from '../../hocs/withUser';
+import { type BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
+import withUser, { type UserProps } from '../../hocs/withUser';
 import {
-	AppContentNavElement,
+	type AppContentNavElement,
 	getNavigationItems,
-	NavItemMap,
+	type NavItemMap,
 } from '../../services/navigation-items-service';
-import { NavigationItemInfo } from '../../types';
+import { type NavigationItemInfo } from '../../types';
 import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';

@@ -2,14 +2,18 @@ import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useMemo } from 'react';
+import React, { type FunctionComponent, type ReactNode, useMemo } from 'react';
 
-import { CheckboxDropdownModal, CheckboxOption, DateRangeDropdown } from '../../shared/components';
+import {
+	CheckboxDropdownModal,
+	type CheckboxOption,
+	DateRangeDropdown,
+} from '../../shared/components';
 import { LANGUAGES } from '../../shared/constants';
 import { isMobileWidth } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { SearchFilter } from '../search.const';
-import { SearchFilterControlsProps, SearchFilterMultiOptions } from '../search.types';
+import { type SearchFilterControlsProps, type SearchFilterMultiOptions } from '../search.types';
 
 import './SearchFilterControls.scss';
 

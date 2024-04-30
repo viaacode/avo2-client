@@ -1,13 +1,13 @@
 import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { cloneDeep } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { InteractiveTourAction } from '../helpers/reducers';
+import { type InteractiveTourAction } from '../helpers/reducers';
 import {
-	EditableInteractiveTour,
-	EditableStep,
+	type EditableInteractiveTour,
+	type EditableStep,
 	InteractiveTourEditActionType,
 } from '../interactive-tour.types';
 

@@ -8,16 +8,16 @@ import {
 	IconName,
 	MoreOptionsDropdown,
 	Navbar,
-	TabProps,
+	type TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { cloneDeep, get, isEmpty, isNil, set } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
+	type FunctionComponent,
+	type ReactNode,
+	type ReactText,
 	useCallback,
 	useEffect,
 	useReducer,
@@ -29,7 +29,7 @@ import { compose } from 'redux';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { reorderBlockPositions, setBlockPositionToIndex } from '../../assignment/assignment.helper';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -40,7 +40,7 @@ import {
 	InputModal,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 	ShareDropdown,
 	ShareModal,
 } from '../../shared/components';
@@ -61,7 +61,7 @@ import {
 } from '../../shared/helpers/contributors';
 import { convertRteToString } from '../../shared/helpers/convert-rte-to-string';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -69,10 +69,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { ValueOf } from '../../shared/types';
+import { type ValueOf } from '../../shared/types';
 import { COLLECTIONS_ID } from '../../workspace/workspace.const';
 import { getFragmentsFromCollection } from '../collection.helpers';
 import { CollectionService } from '../collection.service';

@@ -12,13 +12,13 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, map } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Dispatch } from 'redux';
+import { type Dispatch } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
@@ -31,11 +31,11 @@ import { EducationalOrganisationsSelect } from '../../shared/components/Educatio
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { CustomError } from '../../shared/helpers';
 import { EducationLevelId, groupLoms } from '../../shared/helpers/lom';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	CampaignMonitorService,
-	NewsletterPreferences,
+	type NewsletterPreferences,
 } from '../../shared/services/campaign-monitor-service';
 import { ToastService } from '../../shared/services/toast-service';
 import store from '../../store';

@@ -7,16 +7,16 @@ import {
 	Table,
 } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -30,7 +30,7 @@ import {
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
 import { INTERACTIVE_TOUR_PATH } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
-import { InteractiveTour } from '../interactive-tour.types';
+import { type InteractiveTour } from '../interactive-tour.types';
 
 type InteractiveTourDetailProps = RouteComponentProps<{ id: string }>;
 

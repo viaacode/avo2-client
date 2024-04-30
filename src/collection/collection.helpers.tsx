@@ -12,12 +12,12 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { LomSchemeType } from '@viaa/avo2-types';
 import { compact, isNil, omit } from 'lodash-es';
-import React, { ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 
 import { reorderBlockPositions } from '../assignment/assignment.helper';
 import { stripHtml } from '../shared/helpers';
 import { tHtml, tText } from '../shared/helpers/translate';
-import { Positioned } from '../shared/types';
+import { type Positioned } from '../shared/types';
 
 import {
 	CollectionBlockType,

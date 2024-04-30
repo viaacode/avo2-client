@@ -1,12 +1,12 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
 import { CollectionBlockType } from '../collection.const';
-import { BlockItemComponent } from '../collection.types';
+import { type BlockItemComponent } from '../collection.types';
 
 import './CollectionFragmentTitle.scss';
 

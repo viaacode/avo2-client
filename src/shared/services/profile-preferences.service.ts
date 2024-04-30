@@ -1,8 +1,8 @@
 import {
-	GetProfilePreferenceQuery,
-	GetProfilePreferenceQueryVariables,
-	SetProfilePreferenceMutation,
-	SetProfilePreferenceMutationVariables,
+	type GetProfilePreferenceQuery,
+	type GetProfilePreferenceQueryVariables,
+	type SetProfilePreferenceMutation,
+	type SetProfilePreferenceMutationVariables,
 } from '../generated/graphql-db-operations';
 import {
 	GetProfilePreferenceDocument,
@@ -11,7 +11,7 @@ import {
 import { CustomError } from '../helpers';
 
 import { dataService } from './data-service';
-import { ProfilePreferenceKey } from './profile-preferences.types';
+import { type ProfilePreferenceKey } from './profile-preferences.types';
 
 export interface ProfilePreference {
 	id: number;

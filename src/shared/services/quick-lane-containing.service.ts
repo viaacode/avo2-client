@@ -1,11 +1,11 @@
 import {
-	GetQuickLanesByContentIdQuery,
-	GetQuickLanesByContentIdQueryVariables,
+	type GetQuickLanesByContentIdQuery,
+	type GetQuickLanesByContentIdQueryVariables,
 } from '../generated/graphql-db-operations';
 import { GetQuickLanesByContentIdDocument } from '../generated/graphql-db-react-query';
 import { CustomError } from '../helpers';
 import { quickLaneUrlRecordToObject } from '../helpers/quick-lane-url-record-to-object';
-import { QuickLaneUrlObject } from '../types';
+import { type QuickLaneUrlObject } from '../types';
 
 import { dataService } from './data-service';
 

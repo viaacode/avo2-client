@@ -6,13 +6,13 @@ import {
 	Pagination,
 	Spacer,
 	Table,
-	TableColumn,
+	type TableColumn,
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { orderBy } from 'lodash-es';
-import React, { FC, FunctionComponent, useCallback, useEffect, useState } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { APP_PATH } from '../../constants';
@@ -20,19 +20,19 @@ import { ErrorView } from '../../error/views';
 import {
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../shared/components';
 import { buildLink, CustomError, formatDate, fromNow, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE,
 } from '../../shared/services/bookmarks-views-plays-service';
 import {
-	BookmarkInfo,
-	EventContentType,
+	type BookmarkInfo,
+	type EventContentType,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
@@ -102,7 +102,7 @@ const BookmarksOverview: FunctionComponent<
 				),
 			});
 		}
-	}, [commonUser, setBookmarks, setLoadingInfo, tText]);
+	}, [commonUser, setBookmarks, setLoadingInfo, tHtml]);
 
 	useEffect(() => {
 		fetchBookmarks();

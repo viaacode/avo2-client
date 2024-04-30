@@ -1,16 +1,16 @@
-import { ButtonType, IconName, SelectOption } from '@viaa/avo2-components';
+import { type ButtonType, IconName, type SelectOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 
-import { AssignmentOverviewTableColumns } from '../../assignment/assignment.types';
+import { type AssignmentOverviewTableColumns } from '../../assignment/assignment.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
-import { BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
+import { type CheckboxDropdownModalProps, type CheckboxOption } from '../../shared/components';
+import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
 export const ASSIGNMENTS_PATH = {

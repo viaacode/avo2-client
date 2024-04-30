@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { tHtml } from '../../shared/helpers/translate';
 import { trackEvents } from '../../shared/services/event-logging-service';

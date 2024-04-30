@@ -2,7 +2,7 @@ import {
 	Column,
 	Container,
 	DatePicker,
-	DefaultProps,
+	type DefaultProps,
 	Flex,
 	Form,
 	FormGroup,
@@ -13,17 +13,17 @@ import {
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { isAfter, isPast } from 'date-fns';
-import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import React, { type Dispatch, type FC, type SetStateAction, useCallback } from 'react';
+import { type UseFormSetValue } from 'react-hook-form';
 import { compose } from 'redux';
 
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { endOfAcademicYear } from '../helpers/academic-year';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
-import { AssignmentFields } from '../hooks/assignment-form';
+import { type AssignmentFields } from '../hooks/assignment-form';
 
 import AssignmentLabels from './AssignmentLabels';
 

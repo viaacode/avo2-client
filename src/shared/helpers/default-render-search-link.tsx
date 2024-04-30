@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import React, { type ReactNode } from 'react';
+import { Link, type RouteComponentProps } from 'react-router-dom';
 
-import { SearchFilter } from '../../search/search.const';
-import { FilterState } from '../../search/search.types';
+import { type SearchFilter } from '../../search/search.const';
+import { type FilterState } from '../../search/search.types';
 
 import { generateSearchLinkString } from './link';
 

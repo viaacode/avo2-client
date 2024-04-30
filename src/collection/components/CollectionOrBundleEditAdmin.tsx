@@ -11,7 +11,7 @@ import {
 	IconName,
 	Spacer,
 	Table,
-	TagInfo,
+	type TagInfo,
 	TagsInput,
 	TextArea,
 	TextInput,
@@ -19,11 +19,17 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, orderBy } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, {
+	type FunctionComponent,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
+import { type RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { PickerItem } from '../../admin/shared/types';
+import { type PickerItem } from '../../admin/shared/types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
@@ -33,17 +39,17 @@ import AssociatedQuickLaneTable, {
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { QualityLabelsService } from '../../shared/services/quality-labels.service';
 import { QuickLaneContainingService } from '../../shared/services/quick-lane-containing.service';
 import { ToastService } from '../../shared/services/toast-service';
-import { QuickLaneUrlObject } from '../../shared/types';
+import { type QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { CollectionService } from '../collection.service';
-import { QualityLabel } from '../collection.types';
+import { type QualityLabel } from '../collection.types';
 
-import { CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit';
 
 type BundleColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
 

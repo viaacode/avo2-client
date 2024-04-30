@@ -2,23 +2,23 @@ import { type Avo } from '@viaa/avo2-types';
 import { without } from 'lodash-es';
 
 import { isNewAssignmentBlock } from '../assignment/assignment.const';
-import { PupilCollectionFragment } from '../assignment/assignment.types';
-import { ItemTrimInfo } from '../item/item.types';
+import { type PupilCollectionFragment } from '../assignment/assignment.types';
+import { type ItemTrimInfo } from '../item/item.types';
 import {
-	BulkUpdateAuthorForPupilCollectionsMutation,
-	BulkUpdateAuthorForPupilCollectionsMutationVariables,
-	DeleteAssignmentResponsesMutation,
-	DeleteAssignmentResponsesMutationVariables,
-	GetMaxPositionPupilCollectionBlocksQuery,
-	GetMaxPositionPupilCollectionBlocksQueryVariables,
-	GetPupilCollectionIdsQuery,
-	GetPupilCollectionIdsQueryVariables,
-	GetPupilCollectionsAdminOverviewQuery,
-	GetPupilCollectionsAdminOverviewQueryVariables,
-	InsertPupilCollectionBlocksMutation,
-	InsertPupilCollectionBlocksMutationVariables,
-	UpdatePupilCollectionBlockMutation,
-	UpdatePupilCollectionBlockMutationVariables,
+	type BulkUpdateAuthorForPupilCollectionsMutation,
+	type BulkUpdateAuthorForPupilCollectionsMutationVariables,
+	type DeleteAssignmentResponsesMutation,
+	type DeleteAssignmentResponsesMutationVariables,
+	type GetMaxPositionPupilCollectionBlocksQuery,
+	type GetMaxPositionPupilCollectionBlocksQueryVariables,
+	type GetPupilCollectionIdsQuery,
+	type GetPupilCollectionIdsQueryVariables,
+	type GetPupilCollectionsAdminOverviewQuery,
+	type GetPupilCollectionsAdminOverviewQueryVariables,
+	type InsertPupilCollectionBlocksMutation,
+	type InsertPupilCollectionBlocksMutationVariables,
+	type UpdatePupilCollectionBlockMutation,
+	type UpdatePupilCollectionBlockMutationVariables,
 } from '../shared/generated/graphql-db-operations';
 import {
 	BulkUpdateAuthorForPupilCollectionsDocument,
@@ -33,13 +33,13 @@ import { CustomError } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { dataService } from '../shared/services/data-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import { TableColumnDataType } from '../shared/types/table-column-data-type';
+import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	ITEMS_PER_PAGE,
 	PUPIL_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './pupil-collection.const';
-import { PupilCollectionOverviewTableColumns } from './pupil-collection.types';
+import { type PupilCollectionOverviewTableColumns } from './pupil-collection.types';
 
 export class PupilCollectionService {
 	static async fetchPupilCollectionsForAdmin(

@@ -1,8 +1,8 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { AssignmentBlockTypeSearchProps } from './blocks/AssignmentBlockTypeSearch';
-import { CollectionFragmentTypeItemProps } from './blocks/CollectionFragmentTypeItem';
-import { CollectionFragmentTypeTextProps } from './blocks/CollectionFragmentTypeText';
+import { type AssignmentBlockTypeSearchProps } from './blocks/AssignmentBlockTypeSearch';
+import { type CollectionFragmentTypeItemProps } from './blocks/CollectionFragmentTypeItem';
+import { type CollectionFragmentTypeTextProps } from './blocks/CollectionFragmentTypeText';
 
 export interface BlockListProps {
 	blocks: Avo.Core.BlockItemBase[];

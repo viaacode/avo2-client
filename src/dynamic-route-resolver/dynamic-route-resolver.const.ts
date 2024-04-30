@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 import { getEnv } from '../shared/helpers';
 import { tHtml } from '../shared/helpers/translate';

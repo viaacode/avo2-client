@@ -1,6 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import { ContentInput, Flex, Icon, IconName } from '@viaa/avo2-components';
-import React, { FC, useMemo, useState } from 'react';
+import React, { type FC, useMemo, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
 

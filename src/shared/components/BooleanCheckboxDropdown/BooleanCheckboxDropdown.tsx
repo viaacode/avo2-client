@@ -1,10 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import {
 	CheckboxDropdownModal,
-	CheckboxOption,
+	type CheckboxOption,
 } from '../CheckboxDropdownModal/CheckboxDropdownModal';
 
 export interface BooleanCheckboxDropdownProps {

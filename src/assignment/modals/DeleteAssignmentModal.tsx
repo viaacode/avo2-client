@@ -1,5 +1,5 @@
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { type FunctionComponent, type ReactNode } from 'react';
 
 import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../shared/hooks/useTranslation';

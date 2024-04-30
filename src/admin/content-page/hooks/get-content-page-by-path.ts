@@ -1,5 +1,5 @@
-import { ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { type ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
+import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../../../shared/constants/query-keys';
 

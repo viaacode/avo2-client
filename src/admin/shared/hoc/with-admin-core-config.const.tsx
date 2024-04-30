@@ -1,17 +1,17 @@
 import {
-	AdminConfig,
+	type AdminConfig,
 	ContentBlockType,
 	ContentWidth,
-	LinkInfo,
-	ToastInfo,
+	type LinkInfo,
+	type ToastInfo,
 } from '@meemoo/admin-core-ui';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { APP_PATH, RouteId } from '../../../constants';
+import { APP_PATH, type RouteId } from '../../../constants';
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { DEFAULT_AUDIO_STILL, ROUTE_PARTS } from '../../../shared/constants';
 import { getEnv } from '../../../shared/helpers';

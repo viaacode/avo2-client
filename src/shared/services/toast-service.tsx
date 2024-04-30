@@ -1,8 +1,8 @@
 import { ToastType } from '@meemoo/admin-core-ui';
-import { Alert, AlertProps, Spacer } from '@viaa/avo2-components';
+import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode } from 'react';
-import { toast, ToastId, ToastOptions } from 'react-toastify';
+import React, { type FunctionComponent, type ReactNode } from 'react';
+import { toast, type ToastId, type ToastOptions } from 'react-toastify';
 
 import { ROUTE_PARTS } from '../constants';
 

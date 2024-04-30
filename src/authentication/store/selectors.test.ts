@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { addDays } from 'date-fns';
 
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 
 import { selectLogin, selectLoginError, selectLoginLoading } from './selectors';

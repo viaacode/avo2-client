@@ -1,12 +1,12 @@
 import {
 	RichTextEditor,
-	RichTextEditorMedia,
-	RichTextEditorProps,
-	RichTextEditorUploadInfo,
+	type RichTextEditorMedia,
+	type RichTextEditorProps,
+	type RichTextEditorUploadInfo,
 } from '@meemoo/react-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isEqual } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';

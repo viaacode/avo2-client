@@ -1,13 +1,23 @@
-import { FlowPlayer, FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
+import {
+	FlowPlayer,
+	type FlowplayerSourceItem,
+	type FlowplayerSourceList,
+} from '@meemoo/react-components';
 import { Icon, IconName, MediaCard, MediaCardThumbnail, Thumbnail } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil, isString, noop, throttle } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
-import { compose, Dispatch } from 'redux';
+import { compose, type Dispatch } from 'redux';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
@@ -23,7 +33,7 @@ import {
 } from '../../helpers';
 import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
-import withUser, { UserProps } from '../../hocs/withUser';
+import withUser, { type UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { ToastService } from '../../services/toast-service';

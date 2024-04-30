@@ -1,8 +1,8 @@
 import { Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
-import React, { FunctionComponent, ReactElement } from 'react';
+import React, { type FunctionComponent, type ReactElement } from 'react';
 
 import { ErrorView } from '../../../error/views';
-import { ErrorViewQueryParams } from '../../../error/views/ErrorView';
+import { type ErrorViewQueryParams } from '../../../error/views/ErrorView';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
 export type LoadingState = 'loading' | 'loaded' | 'error' | 'forbidden';

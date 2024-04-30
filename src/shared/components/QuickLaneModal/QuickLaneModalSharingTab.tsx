@@ -9,22 +9,22 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 
-import { AssignmentLayout } from '../../../assignment/assignment.types';
+import { type AssignmentLayout } from '../../../assignment/assignment.types';
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
-import withUser, { UserProps } from '../../hocs/withUser';
+import withUser, { type UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks/useDebounce';
 import { ToastService } from '../../services/toast-service';
-import { QuickLaneUrlObject } from '../../types';
+import { type QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
 import { defaultQuickLaneState, getContentUuid, isShareable } from './QuickLaneModal.helpers';
-import { QuickLaneModalProps } from './QuickLaneModal.types';
+import { type QuickLaneModalProps } from './QuickLaneModal.types';
 
 const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProps> = ({
 	isOpen,

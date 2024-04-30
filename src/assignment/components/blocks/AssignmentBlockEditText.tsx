@@ -1,10 +1,10 @@
 import { convertToHtml } from '@viaa/avo2-components';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { TitleDescriptionForm } from '../../../shared/components/TitleDescriptionForm/TitleDescriptionForm';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { EditBlockProps } from '../../assignment.types';
+import { type EditBlockProps } from '../../assignment.types';
 
 export const AssignmentBlockEditText: FC<EditBlockProps> = ({ block, setBlock, onFocus }) => {
 	const { tText } = useTranslation();

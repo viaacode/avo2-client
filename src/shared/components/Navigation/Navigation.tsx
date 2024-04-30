@@ -14,11 +14,18 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, last } from 'lodash-es';
-import React, { FC, FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FC,
+	type FunctionComponent,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { Dispatch } from 'redux';
+import { Link, type RouteComponentProps } from 'react-router-dom';
+import { type Dispatch } from 'redux';
 
 import {
 	getFirstName,
@@ -37,15 +44,15 @@ import {
 } from '../../../authentication/store/selectors';
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { AppState } from '../../../store';
+import { type AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
 import {
-	AppContentNavElement,
+	type AppContentNavElement,
 	getNavigationItems,
-	NavItemMap,
+	type NavItemMap,
 } from '../../services/navigation-items-service';
 import { ToastService } from '../../services/toast-service';
-import { NavigationItemInfo } from '../../types';
+import { type NavigationItemInfo } from '../../types';
 
 import { NavigationItem } from './NavigationItem';
 
@@ -106,7 +113,7 @@ const Navigation: FunctionComponent<
 				)
 			);
 		}
-	}, [tText]);
+	}, [tHtml]);
 
 	useEffect(() => {
 		updateNavigationItems();

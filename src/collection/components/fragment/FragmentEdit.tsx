@@ -1,4 +1,4 @@
-import { RichEditorState } from '@meemoo/react-components';
+import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
 	Column,
@@ -19,9 +19,9 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { get, isEqual, isNil, isString } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	ReactNode,
-	ReactText,
+	type FunctionComponent,
+	type ReactNode,
+	type ReactText,
 	useCallback,
 	useEffect,
 	useState,
@@ -35,12 +35,12 @@ import {
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { getMoreOptionsLabel } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
-import { CollectionAction } from '../CollectionOrBundleEdit';
+import { type CollectionAction } from '../CollectionOrBundleEdit';
 import CutFragmentModal from '../modals/CutFragmentModal';
 
 import FragmentAdd from './FragmentAdd';

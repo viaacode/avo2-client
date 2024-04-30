@@ -1,6 +1,6 @@
 import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import { get, isBoolean, isNil, isString } from 'lodash-es';
-import React, { ReactElement, ReactNode } from 'react';
+import React, { type ReactElement, type ReactNode } from 'react';
 
 import { formatDate } from '../../../shared/helpers';
 import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';

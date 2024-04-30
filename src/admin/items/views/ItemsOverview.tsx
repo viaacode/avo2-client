@@ -2,18 +2,18 @@ import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
-	CheckboxOption,
+	type CheckboxOption,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../../shared/components';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
@@ -24,7 +24,7 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import { ADMIN_PATH } from '../../admin.const';
 import FilterTable, {
-	FilterableColumn,
+	type FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import {
@@ -36,7 +36,7 @@ import {
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
 import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
-import { ItemsOverviewTableCols, ItemsTableState } from '../items.types';
+import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.types';
 
 type ItemsOverviewProps = DefaultSecureRouteProps;
 

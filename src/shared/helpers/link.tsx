@@ -1,13 +1,13 @@
-import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
+import { type ButtonAction, LinkTarget } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { fromPairs, get, isArray, isEmpty, isNil, isString, map } from 'lodash-es';
 import queryString from 'query-string';
-import React, { Fragment, ReactElement, ReactNode } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { Fragment, type ReactElement, type ReactNode } from 'react';
+import { type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH, CONTENT_TYPE_TO_ROUTE } from '../../constants';
 import { SearchFilter } from '../../search/search.const';
-import { FilterState } from '../../search/search.types';
+import { type FilterState } from '../../search/search.types';
 import SmartLink from '../components/SmartLink/SmartLink';
 import { ToastService } from '../services/toast-service';
 

@@ -1,10 +1,10 @@
 import {
-	GetNotificationQuery,
-	GetNotificationQueryVariables,
-	InsertNotificationMutation,
-	InsertNotificationMutationVariables,
-	UpdateNotificationMutation,
-	UpdateNotificationMutationVariables,
+	type GetNotificationQuery,
+	type GetNotificationQueryVariables,
+	type InsertNotificationMutation,
+	type InsertNotificationMutationVariables,
+	type UpdateNotificationMutation,
+	type UpdateNotificationMutationVariables,
 } from '../generated/graphql-db-operations';
 import {
 	GetNotificationDocument,

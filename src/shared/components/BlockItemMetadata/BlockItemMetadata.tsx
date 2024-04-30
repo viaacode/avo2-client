@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { formatDate } from '../../helpers';

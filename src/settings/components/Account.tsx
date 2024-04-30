@@ -13,9 +13,9 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects';

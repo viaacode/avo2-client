@@ -5,7 +5,7 @@ import { every, isArray, some } from 'lodash-es';
 import { buildLink, CustomError } from '../shared/helpers';
 import { tText } from '../shared/helpers/translate';
 import { ToastService } from '../shared/services/toast-service';
-import { NavigationItemInfo } from '../shared/types';
+import { type NavigationItemInfo } from '../shared/types';
 
 import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
 import { COLLECTIONS_OR_BUNDLES_PATH } from './collectionsOrBundles/collections-or-bundles.const';

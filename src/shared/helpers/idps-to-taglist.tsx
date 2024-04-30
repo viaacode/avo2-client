@@ -1,7 +1,7 @@
-import { TagList, TagOption } from '@viaa/avo2-components';
+import { TagList, type TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { ReactText } from 'react';
+import React, { type ReactText } from 'react';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export const IDP_COLORS: { [idp in Avo.Auth.IdpType]: string } = {

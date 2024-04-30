@@ -14,10 +14,10 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { uniqBy } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useEffect, useState } from 'react';
+import React, { type FunctionComponent, type ReactText, useEffect, useState } from 'react';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
-import { PickerItem } from '../../../admin/shared/types';
+import { type PickerItem } from '../../../admin/shared/types';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
 import { ToastService } from '../../services/toast-service';
@@ -82,7 +82,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 					);
 				});
 		}
-	}, [values, setSelectedProfiles, tText]);
+	}, [values, setSelectedProfiles, tHtml]);
 
 	const closeDropdown = () => {
 		setSelectedProfiles([]);

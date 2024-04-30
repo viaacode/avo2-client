@@ -1,10 +1,10 @@
 import { Table, type TableColumn, type TableProps } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { isMobileWidth } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { QuickLaneUrlObject } from '../../shared/types';
+import { type QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({

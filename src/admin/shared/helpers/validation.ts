@@ -1,4 +1,4 @@
-import { ContentBlockErrors } from '@meemoo/admin-core-ui';
+import { type ContentBlockErrors } from '@meemoo/admin-core-ui';
 import { isNumber, pick, pickBy } from 'lodash-es';
 
 import { tText } from '../../../shared/helpers/translate';

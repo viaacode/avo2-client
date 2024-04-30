@@ -1,6 +1,6 @@
-import { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 
-import { CheckboxOption } from '../components';
+import { type CheckboxOption } from '../components';
 
 export function stringToCheckboxOption(label: string): CheckboxOption {
 	return {

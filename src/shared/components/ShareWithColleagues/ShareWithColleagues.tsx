@@ -8,17 +8,17 @@ import {
 	Icon,
 	IconName,
 	MenuContent,
-	SelectOption,
+	type SelectOption,
 	Spacer,
 	Spinner,
 	TextInput,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
+import { type PermissionName } from '@viaa/avo2-types';
 import { isEmpty, isNil, truncate } from 'lodash-es';
-import React, { FC, useMemo, useState } from 'react';
+import React, { type FC, useMemo, useState } from 'react';
 
 import { validateEmailAddress } from '../../helpers';
-import withUser, { UserProps } from '../../hocs/withUser';
+import withUser, { type UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
@@ -30,7 +30,7 @@ import {
 	sortContributors,
 } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
-import { ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
+import { type ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
 
 type ShareWithColleaguesProps = {
 	contributors: ContributorInfo[];

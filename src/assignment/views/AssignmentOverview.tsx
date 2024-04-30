@@ -25,15 +25,15 @@ import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	KeyboardEvent,
-	ReactNode,
+	type FunctionComponent,
+	type KeyboardEvent,
+	type ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
 	useState,
 } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
 	ArrayParam,
@@ -51,9 +51,9 @@ import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
 	CheckboxDropdownModal,
-	CheckboxOption,
+	type CheckboxOption,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../shared/components';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
@@ -73,7 +73,7 @@ import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
@@ -89,7 +89,7 @@ import {
 import { AssignmentService } from '../assignment.service';
 import {
 	AssignmentAction,
-	AssignmentOverviewTableColumns,
+	type AssignmentOverviewTableColumns,
 	AssignmentType,
 	AssignmentView,
 } from '../assignment.types';

@@ -2,7 +2,7 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 
 import { CustomError, getEnv } from '../shared/helpers';
 
-import { WorkspaceCounts } from './workspace.types';
+import { type WorkspaceCounts } from './workspace.types';
 
 export class WorkspaceService {
 	public static getWorkspaceCounts(): Promise<WorkspaceCounts> {

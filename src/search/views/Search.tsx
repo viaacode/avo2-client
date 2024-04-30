@@ -13,15 +13,21 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, ReactText, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactNode,
+	type ReactText,
+	useEffect,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 import {
 	JsonParam,
 	NumberParam,
 	StringParam,
-	UrlUpdateType,
+	type UrlUpdateType,
 	useQueryParams,
 } from 'use-query-params';
 
@@ -37,12 +43,12 @@ import { ErrorView } from '../../error/views';
 import { InteractiveTour } from '../../shared/components';
 import { getMoreOptionsLabel } from '../../shared/constants';
 import { copyToClipboard, generateContentLinkString } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { SearchFiltersAndResults } from '../components';
-import { FilterState } from '../search.types';
+import { type FilterState } from '../search.types';
 
 import './Search.scss';
 

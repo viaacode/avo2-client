@@ -10,14 +10,14 @@ import {
 	FormGroup,
 	IconName,
 	Select,
-	SelectOption,
+	type SelectOption,
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
 import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	Reducer,
+	type FunctionComponent,
+	type Reducer,
 	useCallback,
 	useEffect,
 	useReducer,
@@ -25,14 +25,14 @@ import React, {
 } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import {
-	GetInteractiveTourByIdQuery,
-	GetInteractiveTourByIdQueryVariables,
+	type GetInteractiveTourByIdQuery,
+	type GetInteractiveTourByIdQueryVariables,
 } from '../../../shared/generated/graphql-db-operations';
 import { GetInteractiveTourByIdDocument } from '../../../shared/generated/graphql-db-react-query';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
@@ -42,11 +42,11 @@ import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
-import { PickerItem } from '../../shared/types';
+import { type PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import {
 	INTERACTIVE_TOUR_EDIT_INITIAL_STATE,
-	InteractiveTourAction,
+	type InteractiveTourAction,
 	interactiveTourEditReducer,
 } from '../helpers/reducers';
 import {
@@ -57,13 +57,13 @@ import {
 } from '../interactive-tour.const';
 import { InteractiveTourService } from '../interactive-tour.service';
 import {
-	EditableInteractiveTour,
-	EditableStep,
+	type EditableInteractiveTour,
+	type EditableStep,
 	InteractiveTourEditActionType,
-	InteractiveTourEditFormErrorState,
-	InteractiveTourPageType,
-	InteractiveTourState,
-	InteractiveTourStep,
+	type InteractiveTourEditFormErrorState,
+	type InteractiveTourPageType,
+	type InteractiveTourState,
+	type InteractiveTourStep,
 } from '../interactive-tour.types';
 
 import InteractiveTourEditStep from './InteractiveTourEditStep';

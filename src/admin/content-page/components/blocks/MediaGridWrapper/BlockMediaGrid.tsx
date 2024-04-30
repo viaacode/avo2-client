@@ -1,23 +1,23 @@
 import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Button,
-	ButtonAction,
-	ButtonType,
+	type ButtonAction,
+	type ButtonType,
 	Column,
-	DefaultProps,
+	type DefaultProps,
 	defaultRenderLinkFunction,
 	Grid,
-	HeadingType,
+	type HeadingType,
 	Icon,
-	IconName,
+	type IconName,
 	MediaCard,
 	MediaCardMetaData,
 	MediaCardThumbnail,
 	MetaData,
 	MetaDataItem,
-	MetaDataItemProps,
-	Orientation,
-	RenderLinkFunction,
+	type MetaDataItemProps,
+	type Orientation,
+	type RenderLinkFunction,
 	Spacer,
 	Thumbnail,
 	Toolbar,
@@ -26,7 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import clsx from 'clsx';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { type FunctionComponent, type ReactNode } from 'react';
 
 import './BlockMediaGrid.scss';
 

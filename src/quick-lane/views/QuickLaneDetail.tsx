@@ -16,21 +16,27 @@ import { PermissionName } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactElement,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 
 import { AssignmentLayout } from '../../assignment/assignment.types';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { FragmentList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { QuickLaneUrlObject } from '../../shared/types';
+import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
 
 import './QuickLaneDetail.scss';
@@ -151,7 +157,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				),
 			});
 		}
-	}, [setQuickLane, setLoadingInfo, match.params.id, tText, user]);
+	}, [setQuickLane, setLoadingInfo, match.params.id, tHtml, user]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
@@ -165,7 +171,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				icon: IconName.lock,
 			});
 		}
-	}, [fetchQuickLaneAndContent, user, tText]);
+	}, [fetchQuickLaneAndContent, user, tHtml]);
 
 	useEffect(() => {
 		if (quickLane) {

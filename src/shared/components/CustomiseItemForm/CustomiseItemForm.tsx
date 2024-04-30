@@ -1,18 +1,18 @@
-import { RichEditorState } from '@meemoo/react-components';
+import { type RichEditorState } from '@meemoo/react-components';
 import {
-	DefaultProps,
+	type DefaultProps,
 	Form,
 	FormGroup,
 	TextInput,
-	TextInputProps,
+	type TextInputProps,
 	Toggle,
-	ToggleProps,
+	type ToggleProps,
 } from '@viaa/avo2-components';
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
-import { LabeledFormField } from '../../types';
+import { type LabeledFormField } from '../../types';
 import RichTextEditorWrapper, {
-	RichTextEditorWrapperProps,
+	type RichTextEditorWrapperProps,
 } from '../RichTextEditorWrapper/RichTextEditorWrapper';
 
 import './CustomiseItemForm.scss';

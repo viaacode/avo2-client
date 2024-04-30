@@ -1,16 +1,16 @@
 import { IconName, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import React, { FC, useEffect, useState } from 'react';
+import { type PermissionName } from '@viaa/avo2-types';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { tText } from '../../helpers/translate';
 import { useTabs } from '../../hooks/useTabs';
 import { ShareDropdownTabs } from '../ShareDropdown/ShareDropdown.types';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
 import {
-	ContributorInfo,
-	ContributorInfoRight,
+	type ContributorInfo,
+	type ContributorInfoRight,
 } from '../ShareWithColleagues/ShareWithColleagues.types';
-import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
+import { ShareWithPupil, type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 import './ShareModal.scss';
 
 type ShareModalProps = {

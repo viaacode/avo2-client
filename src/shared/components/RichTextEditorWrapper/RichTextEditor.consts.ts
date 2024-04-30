@@ -1,4 +1,4 @@
-import { RichTextEditorControl } from '@meemoo/react-components';
+import { type RichTextEditorControl } from '@meemoo/react-components';
 
 export const RichTextEditor_OPTIONS_ALIGN: RichTextEditorControl[] = ['separator', 'text-align'];
 

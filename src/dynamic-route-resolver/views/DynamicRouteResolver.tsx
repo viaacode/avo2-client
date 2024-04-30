@@ -1,18 +1,18 @@
 import {
-	ContentPageInfo,
+	type ContentPageInfo,
 	ContentPageRenderer,
 	ContentPageService,
-	DbContentPage,
+	type DbContentPage,
 } from '@meemoo/admin-core-ui';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
-import { Redirect, RouteComponentProps, withRouter } from 'react-router';
-import { compose, Dispatch } from 'redux';
+import { Redirect, type RouteComponentProps, withRouter } from 'react-router';
+import { compose, type Dispatch } from 'redux';
 
 import { getPublishedDate } from '../../admin/content-page/helpers/get-published-state';
 import { ItemsService } from '../../admin/items/items.service';
@@ -30,7 +30,7 @@ import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { OrderDirection, SearchFilter } from '../../search/search.const';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import JsonLd from '../../shared/components/JsonLd/JsonLd';
 import {
 	buildLink,
@@ -42,7 +42,7 @@ import {
 } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
 type DynamicRouteType = 'contentPage' | 'bundle' | 'notFound' | 'depublishedContentPage';

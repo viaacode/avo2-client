@@ -18,7 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
-import { SearchOrderDirection } from '@viaa/avo2-types/types/search';
+import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import {
 	cloneDeep,
 	every,
@@ -31,11 +31,11 @@ import {
 	pickBy,
 	set,
 } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { compose, Dispatch } from 'redux';
-import { UrlUpdateType } from 'use-query-params';
+import { compose, type Dispatch } from 'redux';
+import { type UrlUpdateType } from 'use-query-params';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
@@ -50,25 +50,25 @@ import {
 	CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED,
 } from '../../shared/services/bookmarks-views-plays-service';
 import {
-	BookmarkRequestInfo,
-	BookmarkStatusLookup,
+	type BookmarkRequestInfo,
+	type BookmarkStatusLookup,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 import {
 	DEFAULT_FILTER_STATE,
 	DEFAULT_SORT_ORDER,
 	GET_SEARCH_ORDER_OPTIONS,
 	ITEMS_PER_PAGE,
 	SearchFilter,
-	SearchOrderProperty,
+	type SearchOrderProperty,
 } from '../search.const';
 import {
-	FilterState,
-	SearchFilterFieldValues,
-	SearchFilterMultiOptions,
-	SearchFiltersAndResultsProps,
-	SearchFiltersAndResultsPropsManual,
+	type FilterState,
+	type SearchFilterFieldValues,
+	type SearchFilterMultiOptions,
+	type SearchFiltersAndResultsProps,
+	type SearchFiltersAndResultsPropsManual,
 } from '../search.types';
 import { getSearchResults } from '../store/actions';
 import { selectSearchError, selectSearchLoading, selectSearchResults } from '../store/selectors';
@@ -230,7 +230,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				tHtml('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
 			);
 		}
-	}, [tText, setBookmarkStatuses, searchResults, user]);
+	}, [tHtml, setBookmarkStatuses, searchResults, user]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS)) {

@@ -5,22 +5,22 @@ import {
 	FormGroup,
 	Grid,
 	Spacer,
-	TagInfo,
+	type TagInfo,
 	TagsInput,
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
-import React, { Dispatch, FC, SetStateAction } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import React, { type Dispatch, type FC, type SetStateAction } from 'react';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { PickerItem } from '../../admin/shared/types';
+import { type PickerItem } from '../../admin/shared/types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
-import { QualityLabel } from '../../collection/collection.types';
+import { type QualityLabel } from '../../collection/collection.types';
 import { formatTimestamp, getFullName } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useGetQualityLabels } from '../../shared/hooks/useGetQualityLabels';
 import useTranslation from '../../shared/hooks/useTranslation';
 

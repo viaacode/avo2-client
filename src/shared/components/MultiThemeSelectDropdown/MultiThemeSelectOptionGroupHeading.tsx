@@ -1,6 +1,6 @@
 import { Icon, IconName } from '@viaa/avo2-components';
-import React, { FC, useEffect, useState } from 'react';
-import { components, GroupHeadingProps } from 'react-select';
+import React, { type FC, useEffect, useState } from 'react';
+import { components, type GroupHeadingProps } from 'react-select';
 
 const MultiThemeSelectOptionGroupHeading: FC<GroupHeadingProps> = (props) => {
 	const { GroupHeading } = components;

@@ -1,8 +1,8 @@
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, {
-	FunctionComponent,
-	ReactNode,
+	type FunctionComponent,
+	type ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -11,14 +11,14 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
-	CheckboxOption,
+	type CheckboxOption,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../../shared/components';
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink, CustomError } from '../../../shared/helpers';
@@ -30,7 +30,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
 import FilterTable, {
-	FilterableColumn,
+	type FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../../shared/helpers/filters';
@@ -43,8 +43,8 @@ import {
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
-	CollectionOrBundleActualisationOverviewTableCols,
-	CollectionOrBundleActualisationTableState,
+	type CollectionOrBundleActualisationOverviewTableCols,
+	type CollectionOrBundleActualisationTableState,
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';

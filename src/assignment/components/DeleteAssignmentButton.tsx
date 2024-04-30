@@ -1,13 +1,13 @@
-import { Button, ButtonProps, DefaultProps, IconName } from '@viaa/avo2-components';
+import { Button, type ButtonProps, type DefaultProps, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { FC, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { DeleteObjectModal } from '../../shared/components';
-import { ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { type ConfirmModalProps } from '../../shared/components/ConfirmModal/ConfirmModal';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { deleteAssignment, deleteAssignmentWarning } from '../helpers/delete-assignment';

@@ -1,7 +1,7 @@
 import { Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import React, { type FunctionComponent, type ReactNode, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 

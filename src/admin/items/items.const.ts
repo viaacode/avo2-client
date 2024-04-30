@@ -1,13 +1,13 @@
 import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
-import { CheckboxDropdownModalProps, CheckboxOption } from '../../shared/components';
+import { type CheckboxDropdownModalProps, type CheckboxOption } from '../../shared/components';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { FilterableColumn } from '../shared/components/FilterTable/FilterTable';
+import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
-import { ItemsOverviewTableCols, UnpublishedItemsOverviewTableCols } from './items.types';
+import { type ItemsOverviewTableCols, type UnpublishedItemsOverviewTableCols } from './items.types';
 
 export const ITEMS_PATH = {
 	ITEMS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.items}`,

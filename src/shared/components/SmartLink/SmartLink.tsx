@@ -1,9 +1,9 @@
-import { ButtonAction, LinkTarget } from '@viaa/avo2-components';
+import { type ButtonAction, LinkTarget } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { fromPairs, map } from 'lodash-es';
 import queryString from 'query-string';
-import React, { FunctionComponent, ReactElement, ReactNode } from 'react';
+import React, { type FunctionComponent, type ReactElement, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../../constants';

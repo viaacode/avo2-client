@@ -19,14 +19,14 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { get, isEqual } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { stripHtml } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { InteractiveTourAction } from '../helpers/reducers';
-import { EditableStep, InteractiveTourEditActionType } from '../interactive-tour.types';
+import { type InteractiveTourAction } from '../helpers/reducers';
+import { type EditableStep, InteractiveTourEditActionType } from '../interactive-tour.types';
 
 import './InteractiveTourEdit.scss';
 

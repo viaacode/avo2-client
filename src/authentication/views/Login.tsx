@@ -1,15 +1,15 @@
 import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { type FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
+import { type RouteComponentProps, withRouter } from 'react-router';
+import { type Dispatch } from 'redux';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 import { getUserGroupId } from '../helpers/get-profile-info';
 import { redirectToServerLoginPage } from '../helpers/redirects';

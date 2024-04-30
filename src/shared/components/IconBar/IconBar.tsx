@@ -1,5 +1,5 @@
-import { Icon, IconName, IconProps } from '@viaa/avo2-components';
-import React, { FC, ReactNode } from 'react';
+import { Icon, IconName, type IconProps } from '@viaa/avo2-components';
+import React, { type FC, type ReactNode } from 'react';
 
 import './IconBar.scss';
 

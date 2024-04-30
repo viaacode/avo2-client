@@ -1,8 +1,8 @@
 import { Spacer } from '@viaa/avo2-components';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
-import { SearchFilter } from '../../../search/search.const';
-import { FilterState } from '../../../search/search.types';
+import { type SearchFilter } from '../../../search/search.const';
+import { type FilterState } from '../../../search/search.types';
 import { renderSearchLinks } from '../../helpers';
 
 type LomInfoFieldProps = {

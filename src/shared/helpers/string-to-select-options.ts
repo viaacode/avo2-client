@@ -1,5 +1,5 @@
-import { SelectOption, TagInfo } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { type SelectOption, type TagInfo } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 
 export function stringToTagInfo(label: string): TagInfo {
 	return {

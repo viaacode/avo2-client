@@ -1,4 +1,4 @@
-import { LoginState } from './types';
+import { type LoginState } from './types';
 
 const initialState: LoginState = Object.freeze({
 	data: null,

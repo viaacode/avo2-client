@@ -1,12 +1,12 @@
 import { ContentPageDetail } from '@meemoo/admin-core-ui';
 import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui';
-import React, { FC, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
