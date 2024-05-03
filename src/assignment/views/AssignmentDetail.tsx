@@ -1,3 +1,4 @@
+import './AssignmentDetail.scss';
 import {
 	Button,
 	ButtonToolbar,
@@ -8,12 +9,19 @@ import {
 	HeaderBottomRowLeft,
 	HeaderBottomRowRight,
 	HeaderMiddleRowRight,
+	HeaderTopRowLeft,
+	Icon,
 	IconName,
 	isUuid,
+	MetaData,
+	MetaDataItem,
 	MoreOptionsDropdown,
 	Spacer,
 	Spinner,
 	ToggleButton,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
@@ -54,6 +62,7 @@ import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '..
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
+import { type EducationLevelId } from '../../shared/helpers/lom';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -82,7 +91,7 @@ import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditSta
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
-import './AssignmentDetail.scss';
+import { EducationLevelDict, EducationLevelTooltipDict } from './AssignmentDetail.const';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
@@ -740,6 +749,29 @@ const AssignmentDetail: FC<
 		);
 	};
 
+	const renderHeaderEducationLevel = () => {
+		const label =
+			EducationLevelDict[(assignment as any).education_level_id as EducationLevelId];
+		const tooltip =
+			EducationLevelTooltipDict[(assignment as any).education_level_id as EducationLevelId];
+
+		return (
+			<MetaData category="assignment">
+				<Tooltip position="top">
+					<TooltipTrigger>
+						<MetaDataItem icon={IconName.userStudent}>
+							<Icon name={IconName.userStudent} />
+
+							{tHtml(label)}
+						</MetaDataItem>
+					</TooltipTrigger>
+
+					<TooltipContent>{tHtml(tooltip)}</TooltipContent>
+				</Tooltip>
+			</MetaData>
+		);
+	};
+
 	const renderHeader = () => {
 		if (assignment) {
 			return (
@@ -750,6 +782,7 @@ const AssignmentDetail: FC<
 					bookmarks={String(bookmarkViewCounts.bookmarkCount || 0)}
 					views={String(bookmarkViewCounts.viewCount || 0)}
 				>
+					<HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
 					<HeaderMiddleRowRight>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderMiddleRowRight>
@@ -789,6 +822,9 @@ const AssignmentDetail: FC<
 						flowPlayer: {
 							canPlay: true,
 						},
+					},
+					ZOEK: {
+						educationLevel: (assignment as any).education_level_id,
 					},
 				}}
 			/>

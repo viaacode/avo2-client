@@ -149,7 +149,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		},
 		{
 			id: 'education_level',
-			label: tText('Kenmerk'),
+			label: tText('admin/assignments/assignments___kenmerk'),
 			sortable: true,
 			visibleByDefault: true,
 			filterType: 'CheckboxDropdownModal',

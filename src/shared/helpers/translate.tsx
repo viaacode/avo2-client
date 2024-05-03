@@ -10,7 +10,9 @@ import i18n from '../translations/i18n';
  * @param key
  * @param params
  */
-export function tHtml(key: string, params?: TOptions | string | undefined): ReactNode | string {
+export function tHtml(key?: string, params?: TOptions | string | undefined): ReactNode | string {
+	if (!key) return;
+
 	const translatedValue: string = tText(key, params);
 
 	if (translatedValue.includes('<')) {

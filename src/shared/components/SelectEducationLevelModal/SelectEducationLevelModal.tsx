@@ -59,10 +59,19 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 	}, [selected, onConfirm]);
 
 	return (
-		<Modal title={tHtml('Kies je onderwijsniveau')} size="medium" scrollable {...modal}>
+		<Modal
+			title={tHtml(
+				'shared/components/select-education-level-modal/select-education-level-modal___kies-je-onderwijsniveau'
+			)}
+			size="medium"
+			scrollable
+			{...modal}
+		>
 			<ModalBody>
 				<section className="u-spacer-bottom">
-					{tHtml('Waarom is het belangrijk dat je een onderwijsniveau kiest?')}
+					{tHtml(
+						'shared/components/select-education-level-modal/select-education-level-modal___waarom-is-het-belangrijk-dat-je-een-onderwijsniveau-kiest'
+					)}
 				</section>
 
 				<section className="u-spacer-bottom">
@@ -79,12 +88,16 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 							<ButtonToolbar>
 								<Button
 									type="secondary"
-									label={tText('Annuleer')}
+									label={tText(
+										'shared/components/select-education-level-modal/select-education-level-modal___annuleer'
+									)}
 									onClick={modal.onClose}
 								/>
 								<Button
 									type="primary"
-									label={tText('Kies onderwijsniveau')}
+									label={tText(
+										'shared/components/select-education-level-modal/select-education-level-modal___kies-onderwijsniveau'
+									)}
 									disabled={!selected}
 									onClick={handleConfirm}
 								/>
