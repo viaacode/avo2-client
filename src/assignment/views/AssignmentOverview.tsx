@@ -1,3 +1,5 @@
+import './AssignmentOverview.scss';
+
 import {
 	Button,
 	ButtonGroup,
@@ -22,6 +24,7 @@ import {
 } from '@viaa/avo2-components';
 import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
+import { type LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
@@ -55,6 +58,7 @@ import {
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../shared/components';
+import SelectEducationLevelModal from '../../shared/components/SelectEducationLevelModal/SelectEducationLevelModal';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
@@ -66,6 +70,7 @@ import {
 	CustomError,
 	formatDate,
 	isMobileWidth,
+	isUserDoubleTeacher,
 	navigate,
 	renderAvatar,
 } from '../../shared/helpers';
@@ -98,8 +103,6 @@ import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-as
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 
-import './AssignmentOverview.scss';
-
 interface AssignmentOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
@@ -131,6 +134,8 @@ const AssignmentOverview: FunctionComponent<
 		null
 	);
 	const [isDeleteAssignmentModalOpen, setDeleteAssignmentModalOpen] = useState<boolean>(false);
+	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
+		useState<boolean>(false);
 	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(
 		null
 	);
@@ -428,6 +433,10 @@ const AssignmentOverview: FunctionComponent<
 		setMarkedAssignment(null);
 	};
 
+	const handleSelectEducationLevelModalClose = () => {
+		setSelectEducationLevelModalOpen(false);
+	};
+
 	const handleDeleteAssignmentConfirm = async () => {
 		await deleteAssignment(markedAssignment?.id, user as Avo.User.User, updateAndReset);
 		handleDeleteModalClose();
@@ -436,6 +445,11 @@ const AssignmentOverview: FunctionComponent<
 	const handleDeleteSelfFromAssignmentConfirm = async () => {
 		await deleteSelfFromAssignment(markedAssignment?.id, user as Avo.User.User, updateAndReset);
 		handleDeleteModalClose();
+	};
+
+	const handleSelectEducationLevelModalConfirm = (lom: LomFieldSchema) => {
+		console.info({ lom }); // TODO
+		handleSelectEducationLevelModalClose();
 	};
 
 	const renderActions = (assignmentRow: Avo.Assignment.Assignment) => {
@@ -865,8 +879,19 @@ const AssignmentOverview: FunctionComponent<
 		);
 	};
 
-	const onClickCreate = () =>
-		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
+	const onClickCreate = () => {
+		if (!commonUser) return;
+
+		if (isUserDoubleTeacher(commonUser)) {
+			setSelectEducationLevelModalOpen(true);
+		} else {
+			goToAssignmentCreate();
+		}
+	};
+
+	const goToAssignmentCreate = () => {
+		return redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
+	};
 
 	const getEmptyFallbackTitle = () => {
 		const hasFilters: boolean =
@@ -1047,6 +1072,12 @@ const AssignmentOverview: FunctionComponent<
 				loadingInfo={loadingInfo}
 				dataObject={assignments}
 				render={renderAssignmentsView}
+			/>
+
+			<SelectEducationLevelModal
+				isOpen={isSelectEducationLevelModalOpen}
+				onClose={handleSelectEducationLevelModalClose}
+				onConfirm={handleSelectEducationLevelModalConfirm}
 			/>
 		</div>
 	) : null;
