@@ -122,8 +122,8 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 			}
 		}
 		lom_learning_resource_type
-		education_level
-		level {
+		education_level_id
+		education_level {
 			label
 		}
 	}

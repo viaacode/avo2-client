@@ -106,8 +106,8 @@ query getAssignmentsByResponseOwnerId(
 				broader
 			}
 		}
-		education_level
-		level {
+		education_level_id
+		education_level {
 			label
 		}
 	}
