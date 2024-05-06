@@ -477,7 +477,7 @@ const AssignmentDetail: FC<
 				return;
 			}
 
-			const duplicate = await duplicateAssignment(assignment, user.profile.id);
+			const duplicate = await duplicateAssignment(assignment, user);
 			if (duplicate) {
 				history.push(
 					generatePath(APP_PATH.ASSIGNMENT_DETAIL.route, {
@@ -762,11 +762,11 @@ const AssignmentDetail: FC<
 						<MetaDataItem icon={IconName.userStudent}>
 							<Icon name={IconName.userStudent} />
 
-							{tHtml(label)}
+							{label}
 						</MetaDataItem>
 					</TooltipTrigger>
 
-					<TooltipContent>{tHtml(tooltip)}</TooltipContent>
+					<TooltipContent>{tooltip}</TooltipContent>
 				</Tooltip>
 			</MetaData>
 		);

@@ -1,5 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
+import { type UserSchema } from '@viaa/avo2-types/types/user';
 import { cloneDeep, compact, isEmpty, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
@@ -92,8 +93,14 @@ import {
 	type App_Pupil_Collection_Blocks,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
-import { CustomError, getEnv } from '../shared/helpers';
+import {
+	CustomError,
+	getEnv,
+	isUserDoubleTeacher,
+	isUserSecondaryTeacher,
+} from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
+import { EducationLevelId } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
@@ -509,21 +516,36 @@ export class AssignmentService {
 	static async duplicateAssignment(
 		newTitle: string,
 		initialAssignment: Partial<Avo.Assignment.Assignment> | null,
-		profileId: string
+		user: UserSchema
 	): Promise<Avo.Assignment.Assignment> {
-		if (!initialAssignment || !initialAssignment.id) {
+		const owner_profile_id = user.profile?.id;
+
+		if (!initialAssignment || !initialAssignment.id || !owner_profile_id) {
 			throw new CustomError(
-				'Failed to copy assignment because the duplicateAssignment function received an empty assignment',
+				'Failed to copy assignment because the duplicateAssignment function received an empty assignment or was missing the intended user',
 				null,
-				{ newTitle, initialAssignment }
+				{ newTitle, initialAssignment, owner_profile_id }
 			);
 		}
 
+		const commonUser = {
+			loms: user.profile?.loms || [],
+			userGroup: { id: user.profile?.userGroupIds[0] },
+		};
+
+		// See table in AVO-3160
+		const education_level_id = isUserDoubleTeacher(commonUser)
+			? (initialAssignment as any).education_level_id
+			: isUserSecondaryTeacher(commonUser)
+			? EducationLevelId.secundairOnderwijs
+			: EducationLevelId.lagerOnderwijs;
+
 		// clone the assignment
-		const newAssignment: Partial<Avo.Assignment.Assignment> = {
+		// TODO: remove explicit education_level_id type
+		const newAssignment: Partial<Avo.Assignment.Assignment> & { education_level_id: string } = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
-			owner_profile_id: profileId,
+			owner_profile_id,
 			available_at: new Date().toISOString(),
 			deadline_at: null,
 			answer_url: null,
@@ -533,6 +555,7 @@ export class AssignmentService {
 			contributors: [],
 			labels: [],
 			note: null,
+			education_level_id,
 		};
 
 		delete newAssignment.owner;
@@ -545,7 +568,7 @@ export class AssignmentService {
 				...newAssignment,
 				blocks,
 			},
-			profileId
+			owner_profile_id
 		);
 
 		if (!duplicatedAssignment) {
