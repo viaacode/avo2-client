@@ -28,7 +28,8 @@ import {
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { navigate } from '../../shared/helpers';
+import { isUserDoubleTeacher, navigate } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -58,9 +59,10 @@ import {
 import { type AssignmentFields } from '../hooks/assignment-form';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
-	user,
+	commonUser,
 	history,
 	location,
+	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -170,7 +172,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
 	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-		useState<boolean>(true);
+		useState<boolean>(false);
 
 	// Render
 
@@ -357,6 +359,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		}
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
+	useEffect(() => {
+		if (!assignment || (assignment as any).education_level_id) return;
+		isUserDoubleTeacher(commonUser) && setSelectEducationLevelModalOpen(true);
+	}, [assignment, commonUser]);
+
 	// Render
 	const renderEditAssignmentPage = () => (
 		<div className="c-assignment-page c-assignment-page--create c-sticky-bar__wrapper">
@@ -451,4 +458,4 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	);
 };
 
-export default AssignmentCreate;
+export default withUser(AssignmentCreate) as FunctionComponent<DefaultSecureRouteProps>;
