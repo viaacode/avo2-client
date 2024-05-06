@@ -865,13 +865,8 @@ const AssignmentOverview: FunctionComponent<
 		);
 	};
 
-	const onClickCreate = () => {
-		goToAssignmentCreate();
-	};
-
-	const goToAssignmentCreate = () => {
-		return redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
-	};
+	const onClickCreate = () =>
+		redirectToClientPage(buildLink(APP_PATH.ASSIGNMENT_CREATE.route), history);
 
 	const getEmptyFallbackTitle = () => {
 		const hasFilters: boolean =
