@@ -366,45 +366,49 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	// Render
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create c-sticky-bar__wrapper">
-			<div>
-				<AssignmentHeading
-					back={renderBackButton}
-					title={renderTitle}
-					actions={
-						<AssignmentActions
-							duplicate={{ disabled: true }}
-							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
-							remove={{ button: { disabled: true } }}
-							route={location.pathname}
-						/>
-					}
-					tabs={
-						<AssignmentTeacherTabs
-							activeTab={tab}
-							onTabChange={setTab}
-							clicksCount={0}
-						/>
-					}
-					// Disable tour before education level is chosen
-					{...(isSelectEducationLevelModalOpen ? { tour: null } : {})}
+		<>
+			<div className="c-assignment-page c-assignment-page--create c-sticky-bar__wrapper">
+				<div>
+					<AssignmentHeading
+						back={renderBackButton}
+						title={renderTitle}
+						actions={
+							<AssignmentActions
+								duplicate={{ disabled: true }}
+								preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
+								remove={{ button: { disabled: true } }}
+								route={location.pathname}
+							/>
+						}
+						tabs={
+							<AssignmentTeacherTabs
+								activeTab={tab}
+								onTabChange={setTab}
+								clicksCount={0}
+							/>
+						}
+						// Disable tour before education level is chosen
+						{...(isSelectEducationLevelModalOpen ? { tour: null } : {})}
+					/>
+
+					<Container mode="horizontal">
+						<Spacer margin={['top-large', 'bottom-extra-large']}>
+							{renderTabContent}
+						</Spacer>
+
+						{renderedModals}
+						{draggableListModal}
+					</Container>
+				</div>
+
+				{/* Always show on create */}
+				{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
+				<StickySaveBar
+					isVisible={true}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
 				/>
-
-				<Container mode="horizontal">
-					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
-
-					{renderedModals}
-					{draggableListModal}
-				</Container>
 			</div>
-
-			{/* Always show on create */}
-			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
-			<StickySaveBar
-				isVisible={true}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
 
 			{!!user && (
 				<SelectEducationLevelModal
@@ -412,7 +416,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					onConfirm={selectLevel}
 				/>
 			)}
-		</div>
+		</>
 	);
 
 	const renderPageContent = () => {

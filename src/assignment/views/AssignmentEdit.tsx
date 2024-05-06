@@ -1,3 +1,6 @@
+import './AssignmentEdit.scss';
+import './AssignmentPage.scss';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
@@ -11,6 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
+import { type LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -35,11 +39,15 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { InActivityWarningModal, ShareModal } from '../../shared/components';
+import {
+	InActivityWarningModal,
+	SelectEducationLevelModal,
+	ShareModal,
+} from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, type CustomError, navigate } from '../../shared/helpers';
+import { buildLink, type CustomError, isUserDoubleTeacher, navigate } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
@@ -92,9 +100,6 @@ import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import AssignmentResponses from './AssignmentResponses';
 
-import './AssignmentEdit.scss';
-import './AssignmentPage.scss';
-
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
 }
@@ -127,6 +132,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
+		useState<boolean>(false);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -187,6 +194,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	useEffect(() => {
 		fetchContributors();
 	}, [fetchContributors]);
+
+	useEffect(() => {
+		if (!assignment || (assignment as any).education_level_id) return;
+		isUserDoubleTeacher(commonUser) && setSelectEducationLevelModalOpen(true);
+	}, [assignment, commonUser]);
 
 	// UI
 	useWarningBeforeUnload({
@@ -439,6 +451,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		originalAssignment && setAssignment(originalAssignment as any);
 		resetForm();
 	}, [resetForm, setAssignment, originalAssignment]);
+
+	const selectLevel = useCallback(
+		(lom: LomFieldSchema) => {
+			if (!assignment) return;
+			setSelectEducationLevelModalOpen(false);
+			(assignment as any).education_level_id = lom.id; // TODO
+		},
+		[assignment]
+	);
 
 	const updateAssignmentEditor = async () => {
 		try {
@@ -859,91 +880,99 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	};
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
-			<div>
-				{renderMobileDesktop({
-					mobile: (
-						<AssignmentHeading
-							back={renderBackButton}
-							title={renderTitle}
-							actions={renderHeadingActions(true)}
-							tabs={
-								<AssignmentTeacherTabs
-									activeTab={tab}
-									onTabChange={handleTabChange}
-									clicksCount={originalAssignment?.responses?.length ?? 0}
-								/>
-							}
-							tour={null}
-						/>
-					),
-					desktop: (
-						<AssignmentHeading
-							back={renderBackButton}
-							title={renderTitle}
-							actions={renderHeadingActions(false)}
-							tabs={
-								<AssignmentTeacherTabs
-									activeTab={tab}
-									onTabChange={handleTabChange}
-									clicksCount={originalAssignment?.responses?.length ?? 0}
-								/>
-							}
-						/>
-					),
-				})}
+		<>
+			<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
+				<div>
+					{renderMobileDesktop({
+						mobile: (
+							<AssignmentHeading
+								back={renderBackButton}
+								title={renderTitle}
+								actions={renderHeadingActions(true)}
+								tabs={
+									<AssignmentTeacherTabs
+										activeTab={tab}
+										onTabChange={handleTabChange}
+										clicksCount={originalAssignment?.responses?.length ?? 0}
+									/>
+								}
+								tour={null}
+							/>
+						),
+						desktop: (
+							<AssignmentHeading
+								back={renderBackButton}
+								title={renderTitle}
+								actions={renderHeadingActions(false)}
+								tabs={
+									<AssignmentTeacherTabs
+										activeTab={tab}
+										onTabChange={handleTabChange}
+										clicksCount={originalAssignment?.responses?.length ?? 0}
+									/>
+								}
+							/>
+						),
+					})}
 
-				<Container mode="horizontal">
-					{pastDeadline && (
-						<Spacer margin={['top-large']}>
-							<Alert type="info">
-								{tText(
-									'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
-								)}
-							</Alert>
-						</Spacer>
-					)}
-
-					<Spacer margin={['top-large', 'bottom-extra-large']}>
-						{renderedTabContent}
-					</Spacer>
-
-					{renderedModals}
-					{draggableListModal}
-
-					<AssignmentConfirmSave
-						hasBlocks={assignmentHasPupilBlocks}
-						hasResponses={assignmentHasResponses}
-						modal={{
-							isOpen: isConfirmSaveActionModalOpen,
-							onClose: () => setIsConfirmSaveActionModalOpen(false),
-							confirmCallback: () => {
-								setIsConfirmSaveActionModalOpen(false);
-								handleSubmit(submit, (...args) => console.error(args))();
-							},
-						}}
-					/>
-
-					<InActivityWarningModal
-						onActivity={updateAssignmentEditor}
-						onExit={releaseAssignmentEditStatus}
-						warningMessage={tHtml(
-							'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
+					<Container mode="horizontal">
+						{pastDeadline && (
+							<Spacer margin={['top-large']}>
+								<Alert type="info">
+									{tText(
+										'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
+									)}
+								</Alert>
+							</Spacer>
 						)}
-						currentPath={history.location.pathname}
-						editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
-						onForcedExit={onForcedExitPage}
-					/>
-				</Container>
-			</div>
 
-			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
-			<StickySaveBar
-				isVisible={unsavedChanges || hasUnsavedChanges}
-				onSave={handleOnSave}
-				onCancel={cancelSaveBar}
-			/>
-		</div>
+						<Spacer margin={['top-large', 'bottom-extra-large']}>
+							{renderedTabContent}
+						</Spacer>
+
+						{renderedModals}
+						{draggableListModal}
+
+						<AssignmentConfirmSave
+							hasBlocks={assignmentHasPupilBlocks}
+							hasResponses={assignmentHasResponses}
+							modal={{
+								isOpen: isConfirmSaveActionModalOpen,
+								onClose: () => setIsConfirmSaveActionModalOpen(false),
+								confirmCallback: () => {
+									setIsConfirmSaveActionModalOpen(false);
+									handleSubmit(submit, (...args) => console.error(args))();
+								},
+							}}
+						/>
+
+						<InActivityWarningModal
+							onActivity={updateAssignmentEditor}
+							onExit={releaseAssignmentEditStatus}
+							warningMessage={tHtml(
+								'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
+							)}
+							currentPath={history.location.pathname}
+							editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
+							onForcedExit={onForcedExitPage}
+						/>
+					</Container>
+				</div>
+
+				{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
+				<StickySaveBar
+					isVisible={unsavedChanges || hasUnsavedChanges}
+					onSave={handleOnSave}
+					onCancel={cancelSaveBar}
+				/>
+			</div>
+			{!!user && (
+				<SelectEducationLevelModal
+					isOpen={isSelectEducationLevelModalOpen}
+					onConfirm={selectLevel}
+				/>
+			)}
+		</>
 	);
 
 	const renderPageContent = () => {
