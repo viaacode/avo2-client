@@ -1,6 +1,10 @@
+import './AssignmentCreate.scss';
+import './AssignmentPage.scss';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { type LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import React, {
 	type Dispatch,
 	type FunctionComponent,
@@ -16,7 +20,11 @@ import { Link } from 'react-router-dom';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+	SelectEducationLevelModal,
+} from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
@@ -49,16 +57,15 @@ import {
 } from '../hooks';
 import { type AssignmentFields } from '../hooks/assignment-form';
 
-import './AssignmentCreate.scss';
-import './AssignmentPage.scss';
-
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	user,
 	history,
 	location,
 }) => {
 	const { tText, tHtml } = useTranslation();
+
 	// Data
+
 	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
 		ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT
 	);
@@ -68,6 +75,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
 	});
+
 	const {
 		control,
 		handleSubmit,
@@ -147,12 +155,22 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		resetForm();
 	}, [resetForm, setAssignment, defaultValues]);
 
+	const selectLevel = useCallback(
+		(lom: LomFieldSchema) => {
+			if (!assignment) return;
+			setSelectEducationLevelModalOpen(false);
+			(assignment as any).education_level_id = lom.id; // TODO
+		},
+		[assignment]
+	);
+
 	// UI
-	useWarningBeforeUnload({
-		when: isDirty,
-	});
+
+	useWarningBeforeUnload({ when: isDirty });
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
+	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
+		useState<boolean>(true);
 
 	// Render
 
@@ -361,6 +379,8 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 							clicksCount={0}
 						/>
 					}
+					// Disable tour before education level is chosen
+					{...(isSelectEducationLevelModalOpen ? { tour: null } : {})}
 				/>
 
 				<Container mode="horizontal">
@@ -378,6 +398,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				onSave={handleSubmit(submit, (...args) => console.error(args))}
 				onCancel={() => reset()}
 			/>
+
+			{!!user && (
+				<SelectEducationLevelModal
+					isOpen={isSelectEducationLevelModalOpen}
+					onConfirm={selectLevel}
+				/>
+			)}
 		</div>
 	);
 
