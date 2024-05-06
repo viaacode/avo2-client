@@ -77,6 +77,7 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 				<section className="u-spacer-bottom">
 					<Select
 						value={selected?.id}
+						placeholder={tText('Kies onderwijsniveau...')}
 						onChange={handleEducationLevelChange}
 						options={options}
 					/>
@@ -87,17 +88,8 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 						<ToolbarItem>
 							<ButtonToolbar>
 								<Button
-									type="secondary"
-									label={tText(
-										'shared/components/select-education-level-modal/select-education-level-modal___annuleer'
-									)}
-									onClick={modal.onClose}
-								/>
-								<Button
 									type="primary"
-									label={tText(
-										'shared/components/select-education-level-modal/select-education-level-modal___kies-onderwijsniveau'
-									)}
+									label={tText('Volgende')}
 									disabled={!selected}
 									onClick={handleConfirm}
 								/>
