@@ -1,5 +1,21 @@
+import './AssignmentBlockTypeSearch.scss';
+
 import { BlockHeading } from '@meemoo/admin-core-ui';
-import { Button, convertToHtml, type DefaultProps, Flex, Spacer } from '@viaa/avo2-components';
+import {
+	Button,
+	convertToHtml,
+	type DefaultProps,
+	Flex,
+	Icon,
+	IconName,
+	Pill,
+	Spacer,
+	Toolbar,
+	ToolbarLeft,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, { type FC } from 'react';
@@ -7,13 +23,15 @@ import React, { type FC } from 'react';
 import { ReactComponent as NewPartSvg } from '../../../../assets/images/nieuw-onderdeel.svg';
 import { CollectionFragmentRichText } from '../../../../collection/components';
 import useTranslation from '../../../../shared/hooks/useTranslation';
+import { type EducationLevelId } from '../../../helpers/lom';
 
-import './AssignmentBlockTypeSearch.scss';
+import { EducationLevelDict, EducationLevelTooltipDict } from './AssignmentBlockTypeSearch.const';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
 	showCollectionButton: boolean;
 	pastDeadline: boolean;
+	educationLevelId?: EducationLevelId;
 	onSearchButtonClicked: () => void;
 	onCollectionButtonClicked: () => void;
 }
@@ -23,19 +41,42 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	showCollectionButton,
 	onCollectionButtonClicked,
 	onSearchButtonClicked,
+	educationLevelId,
 	pastDeadline,
 	className,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
+	const educationLevelLabel = educationLevelId && EducationLevelDict[educationLevelId];
+	const educationLevelTooltip = educationLevelId && EducationLevelTooltipDict[educationLevelId];
+
 	return (
 		<div className={classnames('c-assignment-block-type-search', className)}>
 			<Flex orientation="vertical">
-				<BlockHeading type="h2">
-					{tHtml(
-						'shared/components/block-list/blocks/assignment-block-type-search___zoekoefening'
-					)}
-				</BlockHeading>
+				<Toolbar>
+					<ToolbarLeft>
+						<BlockHeading type="h2" className="u-spacer-right">
+							{tHtml(
+								'shared/components/block-list/blocks/assignment-block-type-search___zoekoefening'
+							)}
+						</BlockHeading>
+
+						{educationLevelId && (
+							<Tooltip position="bottom">
+								<TooltipTrigger>
+									<Pill>
+										<Icon name={IconName.userStudent} />
+										{educationLevelLabel}
+									</Pill>
+								</TooltipTrigger>
+
+								<TooltipContent>
+									<>{educationLevelTooltip}</>
+								</TooltipContent>
+							</Tooltip>
+						)}
+					</ToolbarLeft>
+				</Toolbar>
 				<CollectionFragmentRichText
 					content={convertToHtml(block.custom_description || '')}
 				/>
