@@ -11,7 +11,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type LomFieldSchema } from '@viaa/avo2-types/types/lom';
+import { type Avo } from '@viaa/avo2-types';
 import React, { type FunctionComponent, useCallback, useMemo, useState } from 'react';
 
 import { EducationLevelId } from '../../helpers/lom';
@@ -21,7 +21,7 @@ import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
 
 type SelectEducationLevelModalProps = Omit<ModalProps, 'children'> &
 	Partial<UserProps> & {
-		onConfirm?: (lom: LomFieldSchema) => void;
+		onConfirm?: (lom: Avo.Lom.LomField) => void;
 	};
 
 // Component
@@ -30,12 +30,17 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 	const { user, commonUser, onConfirm, ...modal } = props;
 
 	const [educationLevels] = useLomEducationLevels();
-	const [selected, setSelected] = useState<LomFieldSchema | undefined>(undefined);
+	const [selected, setSelected] = useState<Avo.Lom.LomField | undefined>(undefined);
+
+	const rendered = useMemo(
+		() => [EducationLevelId.lagerOnderwijs, EducationLevelId.secundairOnderwijs].map(String),
+		[]
+	);
 
 	const options = useMemo(
 		() =>
-			[EducationLevelId.lagerOnderwijs, EducationLevelId.secundairOnderwijs]
-				.map((level) => educationLevels.find((item) => item.id === level))
+			educationLevels
+				.filter((level) => rendered.includes(level.id))
 				.map(
 					(lom) =>
 						({
@@ -43,7 +48,7 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 							value: lom?.id,
 						}) as { label: string; value: string }
 				),
-		[educationLevels]
+		[educationLevels, rendered]
 	);
 
 	const handleEducationLevelChange = useCallback(

@@ -16,6 +16,10 @@ export function isUserSecondaryTeacher(user: CommonUserSchema) {
 	return isUser(user, SpecialUserGroup.TeacherSecondary);
 }
 
+/**
+ * @param user The user to evaluate
+ * @returns A boolean indicating if they have both Elementary & Secondary LOM's
+ */
 export function isUserDoubleTeacher(user: CommonUserSchema) {
 	// DoubleTeacher must always also be a SecondaryTeacher
 	if (!isUserSecondaryTeacher(user)) return false;
