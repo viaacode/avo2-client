@@ -232,7 +232,7 @@ export function getAdminCoreConfig(): AdminConfig {
 			},
 			// Use the avo2-proxy to fetch content pages, so their media tile blocks are resolved
 			// https://app.diagrams.net/#G1WCrp76U14pGpajEplYlSVGiuWfEQpRqI
-			getContentPageByPathEndpoint: `${proxyUrl}/content-pages`,
+			getContentPageByLanguageAndPathEndpoint: `${proxyUrl}/content-pages`,
 			i18n: { tHtml, tText },
 			educationOrganisationService: {
 				fetchEducationOrganisationName:

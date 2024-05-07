@@ -1,4 +1,4 @@
-import { type ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
+import { type ContentPageInfo, ContentPageService, LanguageCode } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, isString, some } from 'lodash-es';
@@ -207,7 +207,10 @@ export class PermissionService {
 			case PermissionName.EDIT_OWN_CONTENT_PAGES: {
 				try {
 					const contentPage: ContentPageInfo = isString(obj)
-						? await ContentPageService.getContentPageByPath(obj)
+						? await ContentPageService.getContentPageByLanguageAndPath(
+								LanguageCode.Nl,
+								obj
+						  )
 						: obj;
 					const contentPageOwnerId = get(contentPage, 'user_profile_id');
 					return !!profileId && !!contentPageOwnerId && profileId === contentPageOwnerId;

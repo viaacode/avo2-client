@@ -1,4 +1,4 @@
-import { ContentPageService } from '@meemoo/admin-core-ui';
+import { ContentPageService, LanguageCode } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import { every, isArray, some } from 'lodash-es';
 
@@ -113,7 +113,11 @@ async function getContentPageDetailRouteByPath(
 	infoOnly = false
 ): Promise<string | undefined> {
 	try {
-		const page = await ContentPageService.getContentPageByPath(path, infoOnly);
+		const page = await ContentPageService.getContentPageByLanguageAndPath(
+			LanguageCode.Nl,
+			path,
+			infoOnly
+		);
 		if (!page) {
 			throw new CustomError('Failed to fetch content page by path, response was null', null, {
 				page,

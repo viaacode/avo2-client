@@ -2,6 +2,7 @@ import {
 	type ContentPageInfo,
 	ContentPageRenderer,
 	ContentPageService,
+	LanguageCode,
 } from '@meemoo/admin-core-ui';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
@@ -48,8 +49,14 @@ const AcceptConditions: FunctionComponent<
 		try {
 			setPages(
 				await Promise.all([
-					ContentPageService.getContentPageByPath('/gebruikersvoorwaarden'),
-					ContentPageService.getContentPageByPath('/privacy-voorwaarden'),
+					ContentPageService.getContentPageByLanguageAndPath(
+						LanguageCode.Nl,
+						'/gebruikersvoorwaarden'
+					),
+					ContentPageService.getContentPageByLanguageAndPath(
+						LanguageCode.Nl,
+						'/privacy-voorwaarden'
+					),
 				])
 			);
 		} catch (err) {
