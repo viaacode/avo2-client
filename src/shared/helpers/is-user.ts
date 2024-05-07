@@ -1,10 +1,10 @@
-import { type CommonUserSchema } from '@viaa/avo2-types/types/user';
+import { type Avo } from '@viaa/avo2-types/types';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 
 import { EducationLevelId } from './lom';
 
-type UserLomsAndUserGroup = Pick<CommonUserSchema, 'loms' | 'userGroup'>;
+type UserLomsAndUserGroup = Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>;
 
 export function isUserPupil(user: UserLomsAndUserGroup) {
 	return isUser(user, SpecialUserGroup.PupilSecondary);

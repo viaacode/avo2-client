@@ -534,14 +534,13 @@ export class AssignmentService {
 
 		// See table in AVO-3160
 		const education_level_id = isUserDoubleTeacher(commonUser)
-			? (initialAssignment as any).education_level_id
+			? initialAssignment.education_level_id
 			: isUserSecondaryTeacher(commonUser)
 			? EducationLevelId.secundairOnderwijs
 			: EducationLevelId.lagerOnderwijs;
 
 		// clone the assignment
-		// TODO: remove explicit education_level_id type
-		const newAssignment: Partial<Avo.Assignment.Assignment> & { education_level_id: string } = {
+		const newAssignment: Partial<Avo.Assignment.Assignment> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
 			owner_profile_id: ownerProfileId,

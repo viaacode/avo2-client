@@ -59,7 +59,7 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 	);
 
 	const alertText = useMemo(() => {
-		const level = (assignment as any).education_level_id;
+		const level = assignment.education_level_id;
 
 		switch (level) {
 			case EducationLevelId.lagerOnderwijs:

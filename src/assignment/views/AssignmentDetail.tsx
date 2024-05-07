@@ -750,10 +750,9 @@ const AssignmentDetail: FC<
 	};
 
 	const renderHeaderEducationLevel = () => {
-		const label =
-			EducationLevelDict[(assignment as any).education_level_id as EducationLevelId];
+		const label = EducationLevelDict[assignment?.education_level_id as EducationLevelId];
 		const tooltip =
-			EducationLevelTooltipDict[(assignment as any).education_level_id as EducationLevelId];
+			EducationLevelTooltipDict[assignment?.education_level_id as EducationLevelId];
 
 		return (
 			<MetaData category="assignment">
@@ -824,7 +823,7 @@ const AssignmentDetail: FC<
 						},
 					},
 					ZOEK: {
-						educationLevelId: (assignment as any).education_level_id,
+						educationLevelId: assignment?.education_level_id as EducationLevelId,
 					},
 				}}
 			/>

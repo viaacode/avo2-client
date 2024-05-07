@@ -14,7 +14,6 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
-import { type LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -196,7 +195,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	}, [fetchContributors]);
 
 	useEffect(() => {
-		if (!assignment || (assignment as any).education_level_id) return; // TODO
+		if (!assignment || assignment.education_level_id) return;
 		isUserDoubleTeacher(commonUser) && setSelectEducationLevelModalOpen(true);
 	}, [assignment, commonUser]);
 
@@ -453,10 +452,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	}, [resetForm, setAssignment, originalAssignment]);
 
 	const selectLevel = useCallback(
-		(lom: LomFieldSchema) => {
+		(lom: Avo.Lom.LomField) => {
 			if (!assignment) return;
 			setSelectEducationLevelModalOpen(false);
-			(assignment as any).education_level_id = lom.id; // TODO
+			assignment.education_level_id = lom.id;
 		},
 		[assignment]
 	);

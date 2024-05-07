@@ -9,22 +9,22 @@ import {
 	Toolbar,
 	ToolbarCenter,
 } from '@viaa/avo2-components';
-import { CommonUserSchema } from '@viaa/avo2-types/types/user';
-import React, { FunctionComponent, useState } from 'react';
+import { type Avo } from '@viaa/avo2-types/types';
+import React, { type FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { type Dispatch } from 'redux';
 
 import { CustomError } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { AppState } from '../../../store';
+import { type AppState } from '../../../store';
 import { acceptConditionsAction } from '../../store/actions';
 import { selectLogin } from '../../store/selectors';
 
 export type AcceptElementaryPupilConditionsProps = {
 	acceptConditions: () => Dispatch;
-	user: CommonUserSchema;
+	user: Avo.User.CommonUser;
 };
 
 export const ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE = 'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE';

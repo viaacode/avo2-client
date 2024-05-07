@@ -160,7 +160,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		(lom: Avo.Lom.LomField) => {
 			if (!assignment) return;
 			setSelectEducationLevelModalOpen(false);
-			(assignment as any).education_level_id = lom.id; // TODO
+			assignment.education_level_id = lom.id;
 		},
 		[assignment]
 	);
@@ -359,7 +359,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
 	useEffect(() => {
-		if (!assignment || (assignment as any).education_level_id) return;
+		if (!assignment || assignment.education_level_id) return;
 		isUserDoubleTeacher(commonUser) && setSelectEducationLevelModalOpen(true);
 	}, [assignment, commonUser]);
 
