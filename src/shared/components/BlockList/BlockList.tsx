@@ -79,7 +79,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						pastDeadline={config?.ZOEK?.pastDeadline || false}
 						onSearchButtonClicked={config?.ZOEK?.onSearchButtonClicked || noop}
 						onCollectionButtonClicked={config?.ZOEK?.onCollectionButtonClicked || noop}
-						educationLevel={config?.ZOEK?.educationLevel || undefined}
+						educationLevelId={config?.ZOEK?.educationLevelId}
 					/>,
 					'alt'
 				);

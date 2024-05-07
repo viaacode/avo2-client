@@ -762,11 +762,11 @@ const AssignmentDetail: FC<
 						<MetaDataItem icon={IconName.userStudent}>
 							<Icon name={IconName.userStudent} />
 
-							{tHtml(label)}
+							{label}
 						</MetaDataItem>
 					</TooltipTrigger>
 
-					<TooltipContent>{tHtml(tooltip)}</TooltipContent>
+					<TooltipContent>{tooltip}</TooltipContent>
 				</Tooltip>
 			</MetaData>
 		);
@@ -824,7 +824,7 @@ const AssignmentDetail: FC<
 						},
 					},
 					ZOEK: {
-						educationLevel: (assignment as any).education_level_id,
+						educationLevelId: (assignment as any).education_level_id,
 					},
 				}}
 			/>

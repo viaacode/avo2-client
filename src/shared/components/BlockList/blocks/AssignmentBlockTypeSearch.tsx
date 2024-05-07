@@ -31,7 +31,7 @@ export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
 	showCollectionButton: boolean;
 	pastDeadline: boolean;
-	educationLevel?: EducationLevelId;
+	educationLevelId?: EducationLevelId;
 	onSearchButtonClicked: () => void;
 	onCollectionButtonClicked: () => void;
 }
@@ -41,14 +41,14 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 	showCollectionButton,
 	onCollectionButtonClicked,
 	onSearchButtonClicked,
-	educationLevel,
+	educationLevelId,
 	pastDeadline,
 	className,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const educationLevelLabel = educationLevel && EducationLevelDict[educationLevel];
-	const educationLevelTooltip = educationLevel && EducationLevelTooltipDict[educationLevel];
+	const educationLevelLabel = educationLevelId && EducationLevelDict[educationLevelId];
+	const educationLevelTooltip = educationLevelId && EducationLevelTooltipDict[educationLevelId];
 
 	return (
 		<div className={classnames('c-assignment-block-type-search', className)}>
@@ -61,17 +61,17 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 							)}
 						</BlockHeading>
 
-						{educationLevel && (
+						{educationLevelId && (
 							<Tooltip position="bottom">
 								<TooltipTrigger>
 									<Pill>
 										<Icon name={IconName.userStudent} />
-										{tHtml(educationLevelLabel)}
+										{educationLevelLabel}
 									</Pill>
 								</TooltipTrigger>
 
 								<TooltipContent>
-									<>{tHtml(educationLevelTooltip)}</>
+									<>{educationLevelTooltip}</>
 								</TooltipContent>
 							</Tooltip>
 						)}

@@ -63,7 +63,7 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	const { tHtml } = useTranslation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 	const isPupilUser =
-		String(props?.user?.profile?.userGroupIds?.[0]) === SpecialUserGroup.PupilSecondary;
+		String(props?.commonUser?.userGroup?.id) === SpecialUserGroup.PupilSecondary;
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
