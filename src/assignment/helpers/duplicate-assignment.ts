@@ -1,5 +1,4 @@
 import { type Avo } from '@viaa/avo2-types';
-import { type UserSchema } from '@viaa/avo2-types/types/user';
 
 import { CustomError } from '../../shared/helpers';
 import { tHtml, tText } from '../../shared/helpers/translate';
@@ -8,7 +7,7 @@ import { AssignmentService } from '../assignment.service';
 
 export async function duplicateAssignment(
 	assignment: Avo.Assignment.Assignment | null | undefined,
-	user: UserSchema
+	user: Avo.User.User
 ): Promise<Avo.Assignment.Assignment | undefined> {
 	try {
 		if (!assignment) {

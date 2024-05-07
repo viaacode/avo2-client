@@ -4,21 +4,21 @@ import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 
 import { EducationLevelId } from './lom';
 
-type User = Pick<CommonUserSchema, 'loms' | 'userGroup'>;
+type UserLomsAndUserGroup = Pick<CommonUserSchema, 'loms' | 'userGroup'>;
 
-export function isUserPupil(user: User) {
+export function isUserPupil(user: UserLomsAndUserGroup) {
 	return isUser(user, SpecialUserGroup.PupilSecondary);
 }
 
-export function isUserElementaryPupil(user: User) {
+export function isUserElementaryPupil(user: UserLomsAndUserGroup) {
 	return isUser(user, SpecialUserGroup.PupilElementary);
 }
 
-export function isUserSecondaryTeacher(user: User) {
+export function isUserSecondaryTeacher(user: UserLomsAndUserGroup) {
 	return isUser(user, SpecialUserGroup.TeacherSecondary);
 }
 
-export function isUserDoubleTeacher(user: User) {
+export function isUserDoubleTeacher(user: UserLomsAndUserGroup) {
 	// DoubleTeacher must always also be a SecondaryTeacher
 	if (!isUserSecondaryTeacher(user)) return false;
 
@@ -28,6 +28,6 @@ export function isUserDoubleTeacher(user: User) {
 	return hasLevels;
 }
 
-export function isUser(user?: User, group?: SpecialUserGroup) {
+export function isUser(user?: UserLomsAndUserGroup, group?: SpecialUserGroup) {
 	return user?.userGroup?.id === group;
 }

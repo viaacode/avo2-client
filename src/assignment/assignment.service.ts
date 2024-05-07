@@ -1,6 +1,5 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
-import { type UserSchema } from '@viaa/avo2-types/types/user';
 import { cloneDeep, compact, isEmpty, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
@@ -516,15 +515,15 @@ export class AssignmentService {
 	static async duplicateAssignment(
 		newTitle: string,
 		initialAssignment: Partial<Avo.Assignment.Assignment> | null,
-		user: UserSchema
+		user: Avo.User.User
 	): Promise<Avo.Assignment.Assignment> {
-		const owner_profile_id = user.profile?.id;
+		const ownerProfileId = user.profile?.id;
 
-		if (!initialAssignment || !initialAssignment.id || !owner_profile_id) {
+		if (!initialAssignment || !initialAssignment.id || !ownerProfileId) {
 			throw new CustomError(
 				'Failed to copy assignment because the duplicateAssignment function received an empty assignment or was missing the intended user',
 				null,
-				{ newTitle, initialAssignment, owner_profile_id }
+				{ newTitle, initialAssignment, ownerProfileId }
 			);
 		}
 
@@ -545,7 +544,7 @@ export class AssignmentService {
 		const newAssignment: Partial<Avo.Assignment.Assignment> & { education_level_id: string } = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
-			owner_profile_id,
+			owner_profile_id: ownerProfileId,
 			available_at: new Date().toISOString(),
 			deadline_at: null,
 			answer_url: null,
@@ -568,7 +567,7 @@ export class AssignmentService {
 				...newAssignment,
 				blocks,
 			},
-			owner_profile_id
+			ownerProfileId
 		);
 
 		if (!duplicatedAssignment) {
