@@ -24,6 +24,23 @@
 		}
 	}
 
+	.c-pill {
+		background: $color-gray-400;
+		color: white;
+		border-color: transparent;
+		font-weight: 500;
+
+		.o-svg-icon {
+			width: 1.2rem;
+			height: 1.2rem;
+			margin-right: 0.4rem;
+		}
+	}
+
+	.c-toolbar {
+		min-height: 0;
+	}
+
 	> div:first-child {
 		flex-basis: 60%;
 	}

@@ -553,7 +553,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 			case 'education_level': {
 				// TODO: update avo2-types
-				const level = (assignment as any).level?.label;
+				const level = (assignment as any).education_level?.label;
 				return level ? (
 					<TagList
 						swatches={false}

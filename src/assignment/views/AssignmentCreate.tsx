@@ -1,3 +1,6 @@
+import './AssignmentCreate.scss';
+import './AssignmentPage.scss';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
@@ -16,11 +19,16 @@ import { Link } from 'react-router-dom';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
-import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
+import {
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+	SelectEducationLevelModal,
+} from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { navigate } from '../../shared/helpers';
+import { isUserDoubleTeacher, navigate } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -49,16 +57,16 @@ import {
 } from '../hooks';
 import { type AssignmentFields } from '../hooks/assignment-form';
 
-import './AssignmentCreate.scss';
-import './AssignmentPage.scss';
-
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
-	user,
+	commonUser,
 	history,
 	location,
+	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
+
 	// Data
+
 	const [tab, setTab] = useState<ASSIGNMENT_CREATE_UPDATE_TABS>(
 		ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT
 	);
@@ -68,6 +76,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		defaultValues,
 		resolver: yupResolver(ASSIGNMENT_FORM_SCHEMA(tText)),
 	});
+
 	const {
 		control,
 		handleSubmit,
@@ -147,12 +156,22 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		resetForm();
 	}, [resetForm, setAssignment, defaultValues]);
 
+	const selectLevel = useCallback(
+		(lom: Avo.Lom.LomField) => {
+			if (!assignment) return;
+			setSelectEducationLevelModalOpen(false);
+			(assignment as any).education_level_id = lom.id; // TODO
+		},
+		[assignment]
+	);
+
 	// UI
-	useWarningBeforeUnload({
-		when: isDirty,
-	});
+
+	useWarningBeforeUnload({ when: isDirty });
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
+	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
+		useState<boolean>(false);
 
 	// Render
 
@@ -339,46 +358,64 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		}
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
+	useEffect(() => {
+		if (!assignment || (assignment as any).education_level_id) return;
+		isUserDoubleTeacher(commonUser) && setSelectEducationLevelModalOpen(true);
+	}, [assignment, commonUser]);
+
 	// Render
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--create c-sticky-bar__wrapper">
-			<div>
-				<AssignmentHeading
-					back={renderBackButton}
-					title={renderTitle}
-					actions={
-						<AssignmentActions
-							duplicate={{ disabled: true }}
-							preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
-							remove={{ button: { disabled: true } }}
-							route={location.pathname}
-						/>
-					}
-					tabs={
-						<AssignmentTeacherTabs
-							activeTab={tab}
-							onTabChange={setTab}
-							clicksCount={0}
-						/>
-					}
+		<>
+			<div className="c-assignment-page c-assignment-page--create c-sticky-bar__wrapper">
+				<div>
+					<AssignmentHeading
+						back={renderBackButton}
+						title={renderTitle}
+						actions={
+							<AssignmentActions
+								duplicate={{ disabled: true }}
+								preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
+								remove={{ button: { disabled: true } }}
+								route={location.pathname}
+							/>
+						}
+						tabs={
+							<AssignmentTeacherTabs
+								activeTab={tab}
+								onTabChange={setTab}
+								clicksCount={0}
+							/>
+						}
+						// Disable tour before education level is chosen
+						{...(isSelectEducationLevelModalOpen ? { tour: null } : {})}
+					/>
+
+					<Container mode="horizontal">
+						<Spacer margin={['top-large', 'bottom-extra-large']}>
+							{renderTabContent}
+						</Spacer>
+
+						{renderedModals}
+						{draggableListModal}
+					</Container>
+				</div>
+
+				{/* Always show on create */}
+				{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
+				<StickySaveBar
+					isVisible={true}
+					onSave={handleSubmit(submit, (...args) => console.error(args))}
+					onCancel={() => reset()}
 				/>
-
-				<Container mode="horizontal">
-					<Spacer margin={['top-large', 'bottom-extra-large']}>{renderTabContent}</Spacer>
-
-					{renderedModals}
-					{draggableListModal}
-				</Container>
 			</div>
 
-			{/* Always show on create */}
-			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
-			<StickySaveBar
-				isVisible={true}
-				onSave={handleSubmit(submit, (...args) => console.error(args))}
-				onCancel={() => reset()}
-			/>
-		</div>
+			{!!user && (
+				<SelectEducationLevelModal
+					isOpen={isSelectEducationLevelModalOpen}
+					onConfirm={selectLevel}
+				/>
+			)}
+		</>
 	);
 
 	const renderPageContent = () => {
@@ -424,4 +461,4 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	);
 };
 
-export default AssignmentCreate;
+export default withUser(AssignmentCreate) as FunctionComponent<DefaultSecureRouteProps>;
