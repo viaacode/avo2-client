@@ -4,7 +4,6 @@ import './AssignmentPage.scss';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { type LomFieldSchema } from '@viaa/avo2-types/types/lom';
 import React, {
 	type Dispatch,
 	type FunctionComponent,
@@ -158,7 +157,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	}, [resetForm, setAssignment, defaultValues]);
 
 	const selectLevel = useCallback(
-		(lom: LomFieldSchema) => {
+		(lom: Avo.Lom.LomField) => {
 			if (!assignment) return;
 			setSelectEducationLevelModalOpen(false);
 			(assignment as any).education_level_id = lom.id; // TODO
