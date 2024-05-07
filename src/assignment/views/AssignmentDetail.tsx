@@ -477,7 +477,7 @@ const AssignmentDetail: FC<
 				return;
 			}
 
-			const duplicate = await duplicateAssignment(assignment, user.profile.id);
+			const duplicate = await duplicateAssignment(assignment, user);
 			if (duplicate) {
 				history.push(
 					generatePath(APP_PATH.ASSIGNMENT_DETAIL.route, {

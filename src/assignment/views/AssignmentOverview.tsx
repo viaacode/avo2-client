@@ -400,7 +400,7 @@ const AssignmentOverview: FunctionComponent<
 							assignmentRow.id as unknown as string
 						);
 
-					await duplicateAssignment(latest, user.profile.id);
+					await duplicateAssignment(latest, user);
 					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
