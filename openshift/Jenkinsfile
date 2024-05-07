@@ -79,9 +79,19 @@ pipeline {
 			}
 			steps {
 				script {
-					// The robots.txt file in the public folder is the production version by default
-					// If we're building for QAS, then we override that file with a QAS specific version that disallows any indexing
+					// If we're building for QAS, then we override the public/robots.txt file with a QAS specific version that disallows any indexing
 					sh(script: 'cp ./scripts/robots-QAS.txt ./public/robots.txt', returnStdout: true)
+				}
+			}
+		}
+		stage('Copy robots.txt for PRD') {
+			when {
+				buildingTag()
+			}
+			steps {
+				script {
+					// If we're building for PRD, then we override the public/robots.txt file with a PRD specific version that only allows specific routes to be indexed
+					sh(script: 'cp ./scripts/robots-PRD.txt ./public/robots.txt', returnStdout: true)
 				}
 			}
 		}
