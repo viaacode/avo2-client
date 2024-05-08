@@ -127,6 +127,7 @@ pipeline {
 				anyOf {
 					changeRequest target: 'develop'//'master'
 					changeRequest target: 'development' // do not build on master prs
+					branch 'develop'; branch 'development'
 				}
 			}
 			steps {
