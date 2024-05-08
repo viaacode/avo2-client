@@ -100,10 +100,10 @@ pipeline {
 			when {
 				not {
 					buildingTag()
-				}
-			  not {
-					branch 'develop'
-				}
+				} // need to build on develop for INT
+	//		  not {
+	//				branch 'develop'
+	//			}
 			}
 			steps {
 				container('oc') {
