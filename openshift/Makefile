@@ -4,9 +4,8 @@ SHELL = /bin/bash
 .PHONY: all test
 
 test:
-	echo disabeld to test flow
-#	chown node:node $${WORKSPACE} -R
-#	cd ./tests
-#	npm run unit-tests
-#	npm run test:e2e:install-chrome
-#	npm run test:e2e
+	chown node:node $${WORKSPACE} -R
+	npm ci --include=dev
+	npm run lint
+# 	npm run unit-tests # TODO fix unit tests
+
