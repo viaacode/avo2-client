@@ -44,6 +44,12 @@ pipeline {
             - cat
             tty: true
             imagePullPolicy: Always
+          - name: buildimage
+            image: node:20.4-alpine
+            command:
+            - cat
+            tty: true
+            imagePullPolicy: Always
           - name: hasura-cli
             image: hasura/graphql-engine:v2.16.1.cli-migrations-v2
             command:
@@ -92,8 +98,10 @@ pipeline {
 			}
 		}
 		stage('Test code') {
-			steps {
-				sh 'make -f ./openshift/Makefile test'
+			container('buildimage') {
+				steps {
+					sh 'make -f ./openshift/Makefile test'
+				}
 			}
 		}
 		stage('Build code') {
