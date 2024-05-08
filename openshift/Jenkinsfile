@@ -98,9 +98,9 @@ pipeline {
 			}
 		}
 		stage('Test code') {
-			container('buildimage') {
 				steps {
-					sh 'make -f ./openshift/Makefile test'
+					container('buildimage') {
+						sh 'make -f ./openshift/Makefile test'
 				}
 			}
 		}
