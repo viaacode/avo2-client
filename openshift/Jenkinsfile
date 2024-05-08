@@ -150,7 +150,7 @@ pipeline {
 
 		stage('e2e-prepare') {
 			when {
-			anyOf { branch 'develop____'; branch 'development______' }
+			anyOf { branch 'develop'; branch 'development' }
 			}
 			steps {
 			container('hasura-cli') {
@@ -170,8 +170,7 @@ pipeline {
 		stage('e2e') {
 			agent { label 'node' }
 			when {
-			// remove____ to enable needs params etc to work this is the code like in hetarchief
-				anyOf { branch 'develop_______'; branch 'development________' }
+				anyOf { branch 'develop'; branch 'development' }
 			}
 			steps {
 				script {
