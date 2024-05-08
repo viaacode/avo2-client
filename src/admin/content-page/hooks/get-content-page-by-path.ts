@@ -1,4 +1,4 @@
-import { type ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
+import { type ContentPageInfo, ContentPageService, LanguageCode } from '@meemoo/admin-core-ui';
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../../../shared/constants/query-keys';
@@ -18,7 +18,7 @@ export const useGetContentPageByPath = (
 			if (!path) {
 				return null;
 			}
-			return ContentPageService.getContentPageByPath(path);
+			return ContentPageService.getContentPageByLanguageAndPath(LanguageCode.Nl, path);
 		},
 		options
 	);
