@@ -108,24 +108,21 @@ pipeline {
 			when {
 				not {
 					buildingTag()
-				} // need to build on develop for INT
-	//		  not {
-	//				branch 'develop'
-	//			}
+				}
 			}
 			steps {
 				container('oc') {
 					script {
 						sh '''#!/bin/bash
-								set -e
-								oc project $OC_PROJECT
-								oc import-image $BASE_IMG --confirm
-								oc new-build -l ref=$BRANCH_NAME --strategy=docker --name $APP_NAME --to $APP_NAME:$GIT_SHORT_COMMIT --binary --context-dir="" || echo "Probably already exists, start new build"
-								sleep 3
-								oc annotate --overwrite buildconfig/$APP_NAME ref=$BRANCH_NAME shortcommit=$GIT_SHORT_COMMIT
-								patch-bc-current-ref.sh
-								oc start-build $APP_NAME --from-dir=. --follow=true --wait=true
-								'''
+						set -e
+						oc project $OC_PROJECT
+						oc import-image $BASE_IMG --confirm
+						oc new-build -l ref=$BRANCH_NAME --strategy=docker --name $APP_NAME --to $APP_NAME:$GIT_SHORT_COMMIT --binary --context-dir="" || echo "Probably already exists, start new build"
+						sleep 3
+						oc annotate --overwrite buildconfig/$APP_NAME ref=$BRANCH_NAME shortcommit=$GIT_SHORT_COMMIT
+						patch-bc-current-ref.sh
+						oc start-build $APP_NAME --from-dir=. --follow=true --wait=true
+						'''
 					}
 				}
 			}
@@ -152,38 +149,37 @@ pipeline {
 				}
 			}
 		}
-
-  // todo endpoints etc add secret in jenkins
-  // remove____ to enable needs params etc to work this is the code like in hetarchief
-
 		stage('e2e-prepare') {
 			when {
-			anyOf {
-				changeRequest target: 'develop'
-				branch 'develop'; branch 'development' }
+				anyOf {
+					changeRequest target: 'develop'//'master'
+					changeRequest target: 'development' // do not build on master prs
+					branch 'develop'; branch 'development'
+				}
 			}
 			steps {
-			container('hasura-cli') {
-				script {
-				withCredentials([string(credentialsId: 'admin_secret', variable: 'ADMIN_SECRET')]) {
-					git branch: 'develop',
-					credentialsId: 'meemoo-ci',
-					url: 'https://github.com/viaacode/hasura-graphql.git'
-					sh """#!/bin/bash
-					hasura-cli seed apply --endpoint=https://hasura-graphql-int-avo.private.cloud.meemoo.be --admin-secret=${ADMIN_SECRET} --database-name avo-db || echo failed ; exit 0
-					"""
-				}///end credentials
-				}//end script
-			}// end container
-			}//end steps
+				container('hasura-cli') {
+					script {
+					withCredentials([string(credentialsId: 'admin_secret', variable: 'ADMIN_SECRET')]) {
+						git branch: 'develop',
+						credentialsId: 'meemoo-ci',
+						url: 'https://github.com/viaacode/hasura-graphql.git'
+						sh """#!/bin/bash
+						hasura-cli seed apply --endpoint=https://hasura-graphql-int-avo.private.cloud.meemoo.be --admin-secret=${ADMIN_SECRET} --database-name avo-db || echo failed ; exit 0
+						"""
+					}
+					}
+				}
+			}
 		}//end stage
 		stage('e2e') {
 			agent { label 'node' }
 			when {
 				anyOf {
-					changeRequest target: 'develop'
+					changeRequest target: 'develop'//'master'
+					changeRequest target: 'development' // do not build on master prs
 					branch 'develop'; branch 'development'
-					}
+				}
 			}
 			steps {
 				script {
