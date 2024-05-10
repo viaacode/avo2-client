@@ -426,14 +426,22 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 					)}
 
 					<ConfirmModal
-						body={tHtml('Opdracht delen waarschuwing beschrijving')}
-						cancelLabel={tText('Annuleren')}
+						body={tHtml(
+							'shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing-beschrijving'
+						)}
+						cancelLabel={tText(
+							'shared/components/share-with-colleagues/share-with-colleagues___annuleren'
+						)}
 						confirmButtonType="primary"
 						confirmCallback={addNewContributor}
-						confirmLabel={tText('Delen')}
+						confirmLabel={tText(
+							'shared/components/share-with-colleagues/share-with-colleagues___delen'
+						)}
 						isOpen={isShareWarningModalOpen}
 						onClose={handleOnCloseShareWarningModal}
-						title={tHtml('Opdracht delen waarschuwing')}
+						title={tHtml(
+							'shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing'
+						)}
 						remember="ShareWithColleagues"
 						size="medium"
 					/>
