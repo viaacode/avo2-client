@@ -1,18 +1,24 @@
+import { useLocalStorage } from '@uidotdev/usehooks';
 import {
 	Button,
 	ButtonToolbar,
 	type ButtonType,
+	Checkbox,
+	FormGroup,
 	Modal,
 	ModalBody,
 	type ModalProps,
+	Spacer,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FunctionComponent, type ReactNode, useEffect, useMemo } from 'react';
 
 import useTranslation from '../../hooks/useTranslation';
+
+import { RememberConfirmationKeys } from './ConfirmModal.const';
 
 export interface ConfirmModalProps {
 	title?: string | ReactNode;
@@ -25,6 +31,7 @@ export interface ConfirmModalProps {
 	onClose?: () => void;
 	confirmCallback?: () => void;
 	className?: string;
+	remember?: keyof typeof RememberConfirmationKeys;
 }
 
 const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
@@ -38,8 +45,17 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 	isOpen,
 	confirmCallback = noop,
 	className,
+	remember,
 }) => {
 	const { tHtml } = useTranslation();
+
+	const rememberKey = useMemo(
+		() => (remember ? RememberConfirmationKeys[remember] : ''),
+		[remember]
+	);
+
+	const shouldRemember = rememberKey !== '';
+	const [isRemembered, setRemember] = useLocalStorage(rememberKey, false);
 
 	return (
 		<Modal
@@ -57,6 +73,17 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 		>
 			<ModalBody>
 				{!!body && body}
+				{shouldRemember && (
+					<Spacer margin="top">
+						<FormGroup>
+							<Checkbox
+								label={tHtml('Deze boodschap niet meer tonen in de toekomst')}
+								checked={isRemembered}
+								onChange={setRemember}
+							/>
+						</FormGroup>
+					</Spacer>
+				)}
 				<Toolbar spaced>
 					<ToolbarRight>
 						<ToolbarItem>
