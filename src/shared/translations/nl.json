@@ -1739,6 +1739,7 @@
   "shared/components/common-meta-data/common-meta-data___onderwijsgraad": "Onderwijsgraden",
   "shared/components/common-meta-data/common-meta-data___themas": "Thema's",
   "shared/components/common-meta-data/common-meta-data___vakken": "Vakken",
+  "shared/components/confirm-modal/confirm-modal___deze-boodschap-niet-meer-tonen-in-de-toekomst": "Deze boodschap niet meer tonen in de toekomst",
   "shared/components/date-range-dropdown/date-range-dropdown___hoe-specifiek": "Hoe wil je zoeken?",
   "shared/components/date-range-dropdown/date-range-dropdown___in-de-toekomst": "In de toekomst",
   "shared/components/date-range-dropdown/date-range-dropdown___in-het-verleden": "In het verleden",

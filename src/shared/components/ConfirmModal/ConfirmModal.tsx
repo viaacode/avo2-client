@@ -77,7 +77,9 @@ const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
 					<Spacer margin="top">
 						<FormGroup>
 							<Checkbox
-								label={tHtml('Deze boodschap niet meer tonen in de toekomst')}
+								label={tHtml(
+									'shared/components/confirm-modal/confirm-modal___deze-boodschap-niet-meer-tonen-in-de-toekomst'
+								)}
 								checked={isRemembered}
 								onChange={setRemember}
 							/>
