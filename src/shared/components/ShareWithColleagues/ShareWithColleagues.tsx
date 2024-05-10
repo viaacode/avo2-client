@@ -318,60 +318,64 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 				currentUser.rights === ContributorInfoRight.CONTRIBUTOR ||
 				isAdmin) && (
 				<>
-					<div className="c-add-colleague">
-						<TextInput
-							type="email"
-							className="c-add-colleague__input"
-							placeholder={tText(
-								'shared/components/share-with-colleagues/share-with-colleagues___emailadres'
-							)}
-							value={contributor.email}
-							onChange={(value) => updateNewContributor({ email: value })}
-						/>
+					<section className="u-spacer-bottom">
+						<div className="c-add-colleague">
+							<TextInput
+								type="email"
+								className="c-add-colleague__input"
+								placeholder={tText(
+									'shared/components/share-with-colleagues/share-with-colleagues___emailadres'
+								)}
+								value={contributor.email}
+								onChange={(value) => updateNewContributor({ email: value })}
+							/>
 
-						<Dropdown isOpen={isRightsDropdownOpen}>
-							<DropdownButton>
-								<Button
-									icon={
-										isRightsDropdownOpen ? IconName.caretUp : IconName.caretDown
-									}
-									iconPosition="right"
-									onClick={handleRightsButtonClicked}
-									label={
-										contributor.rights
-											? getContributorRightLabel(contributor.rights)
-											: tText(
-													'shared/components/share-with-colleagues/share-with-colleagues___rol'
-											  )
-									}
-									className="c-add-colleague__select"
-								/>
-							</DropdownButton>
+							<Dropdown isOpen={isRightsDropdownOpen}>
+								<DropdownButton>
+									<Button
+										icon={
+											isRightsDropdownOpen
+												? IconName.caretUp
+												: IconName.caretDown
+										}
+										iconPosition="right"
+										onClick={handleRightsButtonClicked}
+										label={
+											contributor.rights
+												? getContributorRightLabel(contributor.rights)
+												: tText(
+														'shared/components/share-with-colleagues/share-with-colleagues___rol'
+												  )
+										}
+										className="c-add-colleague__select"
+									/>
+								</DropdownButton>
 
-							<DropdownContent>
-								<MenuContent
-									menuItems={rightsDropdownOptions}
-									onClick={(id) => {
-										updateNewContributor({ rights: id as string });
-										handleRightsButtonClicked();
-									}}
-								/>
-							</DropdownContent>
-						</Dropdown>
+								<DropdownContent>
+									<MenuContent
+										menuItems={rightsDropdownOptions}
+										onClick={(id) => {
+											updateNewContributor({ rights: id as string });
+											handleRightsButtonClicked();
+										}}
+									/>
+								</DropdownContent>
+							</Dropdown>
 
-						<Button
-							icon={IconName.add}
-							label={tText(
-								'shared/components/share-with-colleagues/share-with-colleagues___voeg-toe'
-							)}
-							className="c-add-colleague__button"
-							onClick={handleAddNewContributor}
-							disabled={isEmpty(contributor.email) || !contributor.rights}
-							type="secondary"
-						/>
-					</div>
+							<Button
+								icon={IconName.add}
+								label={tText(
+									'shared/components/share-with-colleagues/share-with-colleagues___voeg-toe'
+								)}
+								className="c-add-colleague__button"
+								onClick={handleAddNewContributor}
+								disabled={isEmpty(contributor.email) || !contributor.rights}
+								type="secondary"
+							/>
+						</div>
 
-					{error && <p className="c-add-colleague__error">{error}</p>}
+						{error && <p className="c-add-colleague__error">{error}</p>}
+					</section>
 
 					<EditShareUserRightsModal
 						toEditContributorRight={toEditContributor?.rights as ContributorInfoRight}
