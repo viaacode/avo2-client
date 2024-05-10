@@ -18,9 +18,10 @@ import { isEmpty, isNil, truncate } from 'lodash-es';
 import React, { type FC, useMemo, useState } from 'react';
 
 import { validateEmailAddress } from '../../helpers';
+import { tHtml } from '../../helpers/translate';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
-import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import { ConfirmModal, RememberConfirmationKeys } from '../ConfirmModal';
 
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
 import {
@@ -31,6 +32,8 @@ import {
 } from './ShareWithColleagues.helpers';
 import './ShareWithColleagues.scss';
 import { type ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
+
+import { useLocalStorage } from '@uidotdev/usehooks';
 
 type ShareWithColleaguesProps = {
 	contributors: ContributorInfo[];
@@ -80,12 +83,20 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState<boolean>(false);
 	const [toDeleteContributor, setToDeleteContributor] = useState<ContributorInfo | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isShareWarningModalOpen, setIsShareWarningModalOpen] = useState<boolean>(false);
+	const [isShareWarningModalRemembered] = useLocalStorage(
+		RememberConfirmationKeys.ShareWithColleagues,
+		false
+	);
 
 	const handleRightsButtonClicked = () => {
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
 	};
 
-	const handleAddNewContributor = async () => {
+	const addNewContributor = async () => {
+		setError(null); // Clear errors
+		setIsShareWarningModalOpen(false);
+
 		if (!contributor.email) {
 			setError(
 				tText(
@@ -107,6 +118,15 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			setNewContributor({ email: undefined, rights: undefined });
 			setError(null);
 			setIsLoading(false);
+		}
+	};
+
+	const handleAddNewContributor = () => {
+		if (isShareWarningModalRemembered) {
+			addNewContributor();
+		} else {
+			setIsShareWarningModalOpen(true);
+			hasModalOpen(true);
 		}
 	};
 
@@ -142,6 +162,10 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		setToDeleteContributor(null);
 		setIsDeleteUserModalOpen(false);
 		hasModalOpen(false);
+	};
+
+	const handleOnCloseShareWarningModal = () => {
+		setIsShareWarningModalOpen(false);
 	};
 
 	const updateNewContributor = (value: Record<string, string>) => {
@@ -400,6 +424,27 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							onClose={() => handleOnCloseDeleteContributor()}
 						/>
 					)}
+
+					<ConfirmModal
+						body={tHtml(
+							'shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing-beschrijving'
+						)}
+						cancelLabel={tText(
+							'shared/components/share-with-colleagues/share-with-colleagues___annuleren'
+						)}
+						confirmButtonType="primary"
+						confirmCallback={addNewContributor}
+						confirmLabel={tText(
+							'shared/components/share-with-colleagues/share-with-colleagues___delen'
+						)}
+						isOpen={isShareWarningModalOpen}
+						onClose={handleOnCloseShareWarningModal}
+						title={tHtml(
+							'shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing'
+						)}
+						remember="ShareWithColleagues"
+						size="medium"
+					/>
 				</>
 			)}
 
