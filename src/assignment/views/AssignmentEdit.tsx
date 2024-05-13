@@ -195,9 +195,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	}, [fetchContributors]);
 
 	useEffect(() => {
-		if (!assignment || assignment.education_level_id) return;
-		isUserDoubleTeacher(commonUser) && setSelectEducationLevelModalOpen(true);
-	}, [assignment, commonUser]);
+		if (!assignment || assignmentLoading) return;
+		isUserDoubleTeacher(commonUser) &&
+			setSelectEducationLevelModalOpen(!assignment.education_level_id);
+	}, [assignment, commonUser, assignmentLoading]);
 
 	// UI
 	useWarningBeforeUnload({
