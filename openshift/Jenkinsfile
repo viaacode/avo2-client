@@ -101,7 +101,7 @@ pipeline {
 			//remove echo to hard fail added for debug pipeline
 				steps {
 					container('buildimage') {
-						sh 'apk add --no-cache make bash && make -f ./openshift/Makefile test || echo failed (noneblocking fornow)'
+						sh 'apk add --no-cache make bash && make -f ./openshift/Makefile test || echo failed'
 				}
 			}
 		}
