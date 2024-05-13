@@ -875,6 +875,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				}}
 				refetchAssignment={async () => await fetchAssignment()}
 				route={location.pathname}
+				assignment={assignment}
 			/>
 		);
 	};
@@ -1103,6 +1104,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							assignment={assignment}
 						/>
 					),
 					desktop: null,

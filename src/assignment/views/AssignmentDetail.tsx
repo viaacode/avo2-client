@@ -621,6 +621,7 @@ const AssignmentDetail: FC<
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							assignment={assignment ? assignment : undefined}
 						/>
 					)}
 				{permissions?.canPublishAssignments && !inviteToken && (
@@ -1043,6 +1044,7 @@ const AssignmentDetail: FC<
 						commonUser?.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) ||
 						false
 					}
+					assignment={assignment}
 				/>
 			)}
 			<DeleteAssignmentModal

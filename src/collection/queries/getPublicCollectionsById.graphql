@@ -26,6 +26,9 @@ query getPublicCollectionsById($id: uuid!, $typeId: Int!, $limit: Int!) {
 					logo_url
 					or_id
 				}
+				loms {
+					lom_id
+				}
 			}
 		}
 		share_type

@@ -6,16 +6,20 @@ import { EducationLevelId } from './lom';
 
 type UserLomsAndUserGroup = Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>;
 
+export function isUserGroup(user?: UserLomsAndUserGroup, group?: SpecialUserGroup) {
+	return user?.userGroup?.id === group;
+}
+
 export function isUserPupil(user: UserLomsAndUserGroup) {
-	return isUser(user, SpecialUserGroup.PupilSecondary);
+	return isUserGroup(user, SpecialUserGroup.PupilSecondary);
 }
 
 export function isUserElementaryPupil(user: UserLomsAndUserGroup) {
-	return isUser(user, SpecialUserGroup.PupilElementary);
+	return isUserGroup(user, SpecialUserGroup.PupilElementary);
 }
 
 export function isUserSecondaryTeacher(user: UserLomsAndUserGroup) {
-	return isUser(user, SpecialUserGroup.TeacherSecondary);
+	return isUserGroup(user, SpecialUserGroup.TeacherSecondary);
 }
 
 /**
@@ -25,13 +29,17 @@ export function isUserSecondaryTeacher(user: UserLomsAndUserGroup) {
 export function isUserDoubleTeacher(user: UserLomsAndUserGroup) {
 	// DoubleTeacher must always also be a SecondaryTeacher
 	if (!isUserSecondaryTeacher(user)) return false;
-
-	const levels = [EducationLevelId.lagerOnderwijs, EducationLevelId.secundairOnderwijs];
-	const hasLevels = levels.every((level) => user.loms.find(({ lom }) => lom?.id === level));
-
-	return hasLevels;
+	return isUserLevel(user, [
+		EducationLevelId.lagerOnderwijs,
+		EducationLevelId.secundairOnderwijs,
+	]);
 }
 
-export function isUser(user?: UserLomsAndUserGroup, group?: SpecialUserGroup) {
-	return user?.userGroup?.id === group;
+export function isUserLevel(
+	user: Partial<Pick<UserLomsAndUserGroup, 'loms'>>,
+	levels: EducationLevelId[]
+) {
+	return levels.every(
+		(level) => user.loms?.find(({ lom, lom_id }) => (lom_id || lom?.id) === level)
+	);
 }

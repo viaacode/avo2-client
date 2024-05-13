@@ -51,19 +51,21 @@ interface AssignmentActionsProps {
 	refetchAssignment?: () => void;
 	publish?: Partial<ButtonProps>;
 	route: string;
+	assignment?: Partial<Avo.Assignment.Assignment>;
 }
 
 const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> = ({
-	view,
-	preview,
-	overflow,
-	duplicate,
-	remove,
-	shareWithColleaguesOrPupilsProps,
-	refetchAssignment = noop,
-	publish,
-	route,
+	assignment,
 	commonUser,
+	duplicate,
+	overflow,
+	preview,
+	publish,
+	refetchAssignment = noop,
+	remove,
+	route,
+	shareWithColleaguesOrPupilsProps,
+	view,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -167,6 +169,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							assignment={assignment}
 						/>
 					</div>
 				),
