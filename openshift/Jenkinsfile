@@ -143,9 +143,9 @@ pipeline {
 			}
 			post {
 				always {
-					script {
-						env.BRANCH_NAME = env.CHANGE_BRANCH
-					}
+				//	script {
+				//		env.BRANCH_NAME = env.CHANGE_BRANCH
+				//	}
 					jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'int', environmentName: 'int', environmentType: 'testing'
 				}
 			}
