@@ -23,6 +23,7 @@ import { PupilCollectionService } from '../../../../pupil-collection/pupil-colle
 import { SearchFiltersAndResults } from '../../../../search/components';
 import { type FilterState } from '../../../../search/search.types';
 import { selectSearchResults } from '../../../../search/store/selectors';
+import { EducationLevelId } from '../../../../shared/helpers/lom';
 import withUser, { type UserProps } from '../../../../shared/hocs/withUser';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
@@ -44,6 +45,12 @@ interface AssignmentResponseSearchTabProps {
 	setFilterState: any;
 	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
+
+// TODO: avoid hard-coded strings?
+const ElementaryEducationLevels = ['Lager onderwijs', 'Kleuteronderwijs'].flatMap((level) => [
+	level,
+	level.toLowerCase(),
+]);
 
 const AssignmentResponseSearchTab: FunctionComponent<
 	AssignmentResponseSearchTabProps & { searchResults: Avo.Search.Search } & UserProps
@@ -77,6 +84,16 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			item?.scrollIntoView({ block: 'center' });
 		}, 100);
 	}, [searchResults]);
+
+	useEffect(() => {
+		if (assignment?.education_level_id === EducationLevelId.lagerOnderwijs) {
+			// Mutate to avoid render loop
+			filterState.filters = {
+				...filterState.filters,
+				educationLevel: ElementaryEducationLevels,
+			};
+		}
+	}, [assignment, filterState]);
 
 	// Events
 	const goToDetailLink = (id: string): void => {
