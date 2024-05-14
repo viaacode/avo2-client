@@ -621,7 +621,7 @@ const AssignmentDetail: FC<
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
-							assignment={assignment ? assignment : undefined}
+							assignment={assignment || undefined}
 						/>
 					)}
 				{permissions?.canPublishAssignments && !inviteToken && (
