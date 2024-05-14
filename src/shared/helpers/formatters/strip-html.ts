@@ -1,4 +1,8 @@
 /**
+ * @jest-environment jsdom
+ */
+
+/**
  * Strips html tags and resolves any html entities
  * @param html
  */
