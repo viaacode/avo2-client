@@ -30,7 +30,7 @@ import useTranslation from '../../hooks/useTranslation';
 import { ConfirmModal, RememberConfirmationKeys } from '../ConfirmModal';
 
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
-import { LevelDifferenceDict } from './ShareWithColleagues.const';
+import { GET_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
 import {
 	compareUsersEmail,
 	findRightByValue,
@@ -265,7 +265,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 												</TooltipTrigger>
 												<TooltipContent>
 													{
-														LevelDifferenceDict[
+														GET_LEVEL_DIFFERENCE_DICT()[
 															assignment.education_level_id
 														]
 													}

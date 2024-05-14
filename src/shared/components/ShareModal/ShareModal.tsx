@@ -87,8 +87,6 @@ const ShareModal: FC<ShareModalProps> = ({
 		}
 	};
 
-	console.info('ShareModal', { assignment });
-
 	return (
 		<Modal isOpen={isModalOpen} onClose={handleOnClose} title={title}>
 			<ModalBody>

@@ -25,7 +25,10 @@ import { CollectionFragmentRichText } from '../../../../collection/components';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { type EducationLevelId } from '../../../helpers/lom';
 
-import { EducationLevelDict, EducationLevelTooltipDict } from './AssignmentBlockTypeSearch.const';
+import {
+	GET_EDUCATION_LEVEL_DICT,
+	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
+} from './AssignmentBlockTypeSearch.const';
 
 export interface AssignmentBlockTypeSearchProps extends DefaultProps {
 	block: Avo.Core.BlockItemBase;
@@ -47,8 +50,9 @@ const AssignmentBlockTypeSearch: FC<AssignmentBlockTypeSearchProps> = ({
 }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const educationLevelLabel = educationLevelId && EducationLevelDict[educationLevelId];
-	const educationLevelTooltip = educationLevelId && EducationLevelTooltipDict[educationLevelId];
+	const educationLevelLabel = educationLevelId && GET_EDUCATION_LEVEL_DICT()[educationLevelId];
+	const educationLevelTooltip =
+		educationLevelId && GET_EDUCATION_LEVEL_TOOLTIP_DICT()[educationLevelId];
 
 	return (
 		<div className={classnames('c-assignment-block-type-search', className)}>

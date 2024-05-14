@@ -49,13 +49,6 @@ export function hasEducationLevel(
 
 	const isBoth = isSecondary && isElementary;
 
-	console.info({
-		education_level_id,
-		contributor,
-		isSecondary,
-		isElementary,
-	});
-
 	return (
 		isBoth ||
 		(isSecondary && education_level_id === EducationLevelId.secundairOnderwijs) ||

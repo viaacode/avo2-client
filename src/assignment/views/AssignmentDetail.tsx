@@ -91,7 +91,10 @@ import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditSta
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
-import { EducationLevelDict, EducationLevelTooltipDict } from './AssignmentDetail.const';
+import {
+	GET_EDUCATION_LEVEL_DICT,
+	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
+} from './AssignmentDetail.const';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
@@ -751,9 +754,10 @@ const AssignmentDetail: FC<
 	};
 
 	const renderHeaderEducationLevel = () => {
-		const label = EducationLevelDict[assignment?.education_level_id as EducationLevelId];
+		const label =
+			GET_EDUCATION_LEVEL_DICT()[assignment?.education_level_id as EducationLevelId];
 		const tooltip =
-			EducationLevelTooltipDict[assignment?.education_level_id as EducationLevelId];
+			GET_EDUCATION_LEVEL_TOOLTIP_DICT()[assignment?.education_level_id as EducationLevelId];
 
 		return (
 			<MetaData category="assignment">

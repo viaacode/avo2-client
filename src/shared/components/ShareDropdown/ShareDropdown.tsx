@@ -90,8 +90,6 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 		}
 	};
 
-	console.info('ShareDropdown', { assignment });
-
 	return (
 		<Dropdown
 			isOpen={isShareDropdownOpen}
