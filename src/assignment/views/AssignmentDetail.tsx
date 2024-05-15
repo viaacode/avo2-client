@@ -598,7 +598,12 @@ const AssignmentDetail: FC<
 								)
 							}
 							onAddContributor={(info) =>
-								onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+								onAddNewContributor(
+									info,
+									shareWithPupilsProps,
+									fetchContributors,
+									commonUser
+								)
 							}
 							dropdownProps={{
 								placement: 'bottom-end',
@@ -1035,7 +1040,12 @@ const AssignmentDetail: FC<
 						)
 					}
 					onAddContributor={(info) =>
-						onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+						onAddNewContributor(
+							info,
+							shareWithPupilsProps,
+							fetchContributors,
+							commonUser
+						)
 					}
 					shareWithPupilsProps={shareWithPupilsProps}
 					availableRights={{

@@ -1091,7 +1091,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 								)
 							}
 							onAddContributor={(info) =>
-								onAddNewContributor(info, shareProps, fetchContributors)
+								onAddNewContributor(info, shareProps, fetchContributors, commonUser)
 							}
 							shareWithPupilsProps={shareProps}
 							availableRights={{
