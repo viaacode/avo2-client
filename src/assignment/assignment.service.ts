@@ -1117,6 +1117,7 @@ export class AssignmentService {
 				resource: {
 					type: 'collection',
 					id: collection.id,
+					education_level: String(assignment?.education_level_id),
 				},
 			},
 			user

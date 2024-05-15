@@ -424,6 +424,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						resource: {
 							is_public: assignment.is_public || false,
 							role: contributorType,
+							education_level: String(assignment?.education_level_id),
 						},
 					},
 					user
@@ -578,6 +579,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							resource: {
 								id,
 								type: 'collection',
+								education_level: String(assignment?.education_level_id),
 							},
 						},
 						user

@@ -354,6 +354,9 @@ const AssignmentDetail: FC<
 					object: assignmentId,
 					object_type: 'assignment',
 					action: 'view',
+					resource: {
+						education_level: String(assignment?.education_level_id),
+					},
 				},
 				user
 			);
@@ -506,7 +509,8 @@ const AssignmentDetail: FC<
 	};
 
 	const onDeleteAssignment = async (): Promise<void> => {
-		await deleteAssignment(assignmentId, user, () =>
+		if (!assignment) return;
+		await deleteAssignment(assignment, user, () =>
 			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
