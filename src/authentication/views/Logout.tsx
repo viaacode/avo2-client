@@ -11,12 +11,11 @@ import { redirectToServerLogoutPage } from '../helpers/redirects';
 export interface LogoutProps extends RouteComponentProps, UserProps {}
 
 export const Logout: FunctionComponent<LogoutProps> = ({ location, user }) => {
-	redirectToServerLogoutPage(
-		location,
-		getUserGroupId(user?.profile) === SpecialUserGroup.PupilSecondary
-			? '/' + ROUTE_PARTS.pupils
-			: APP_PATH.HOME.route
-	);
+	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+		.map(String)
+		.includes(getUserGroupId(user?.profile));
+
+	redirectToServerLogoutPage(location, isPupil ? '/' + ROUTE_PARTS.pupils : APP_PATH.HOME.route);
 	return null;
 };
 

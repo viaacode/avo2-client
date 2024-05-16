@@ -14,9 +14,12 @@ import useTranslation from '../../shared/hooks/useTranslation';
 const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, commonUser }) => {
 	const { tText } = useTranslation();
 	const { data: contentPageInfo } = useGetContentPageByPath(`/${ROUTE_PARTS.loggedInHome}`);
+	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+		.map(String)
+		.includes(String(commonUser?.userGroup?.id));
 
 	// /start when user is a pupil => should be redirected to /werkruimte/opdrachten
-	if (commonUser?.userGroup?.id === SpecialUserGroup.PupilSecondary) {
+	if (isPupil) {
 		history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route);
 		return null;
 	}

@@ -35,8 +35,10 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const isPupil =
-		(user?.profile?.userGroupIds?.[0] as unknown as SpecialUserGroup) ===
-		SpecialUserGroup.PupilSecondary;
+		user?.profile?.userGroupIds[0] &&
+		[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+			.map(String)
+			.includes(String(user.profile.userGroupIds[0]));
 
 	const hasTempAccess = user?.temp_access?.current?.status === 1;
 

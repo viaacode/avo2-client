@@ -108,7 +108,9 @@ const Profile: FunctionComponent<
 
 	const isExceptionAccount = commonUser?.isException || false;
 
-	const isPupil = commonUser?.userGroup?.id === SpecialUserGroup.PupilSecondary;
+	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+		.map(String)
+		.includes(String(commonUser.userGroup?.id));
 
 	useEffect(() => {
 		const tempUiPermissions = {
