@@ -199,7 +199,7 @@ pipeline {
 							catchError() {
 							sh '''
 							export NODE_ENV=dev
-							npm set-script prepare ""
+							#npm set-script prepare ""
 							npm install --force
 							npx playwright install-deps
 							npx playwright install
