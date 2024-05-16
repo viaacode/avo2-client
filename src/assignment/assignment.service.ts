@@ -1512,7 +1512,7 @@ export class AssignmentService {
 					action: 'share',
 					resource: {
 						education_level: assignment.education_level_id,
-						rights: invitee.rights || 'NONE',
+						...invitee,
 					},
 				},
 				inviter
