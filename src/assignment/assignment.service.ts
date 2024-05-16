@@ -1489,7 +1489,7 @@ export class AssignmentService {
 
 		const assignmentId = assignment.id;
 
-		if (isNil(invitee.email) || isEmpty(invitee.email)) {
+		if (!invitee.email) {
 			throw new CustomError('User has no email address');
 		}
 
