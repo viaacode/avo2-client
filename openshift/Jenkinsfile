@@ -167,10 +167,11 @@ pipeline {
 
 						loadEnvironmentVariablesFromFile('.env')
 						sh '''source .env
-									export PGUSER=$PGUSER
-									export PGPASSWORD=$PGPASSWORD
-									export PGHOST=$PGHOST
-									export PGDATABASE=postgreexport PGUSER=avo-db
+						export PGUSER=$PGUSER
+						export PGPASSWORD=$PGPASSWORD
+						export PGHOST=$PGHOST
+						export PGDATABASE=postgre
+						export PGUSER=avo-db
 						export PGDATABASE=postgres
 						psql <<EOF
 						DROP DATABASE "avo-db" WITH (FORCE)
