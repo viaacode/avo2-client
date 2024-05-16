@@ -18,7 +18,7 @@ import React, {
 	useState,
 } from 'react';
 
-import { ColorSelect } from '../../admin/content-page/components/ColorSelect/ColorSelect';
+import { ColorSelect } from '../../shared/components';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';

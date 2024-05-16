@@ -32,3 +32,4 @@ export * from './HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 export * from './ListSorter';
 export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 export * from './ShareWithPupils/ShareWithPupils';
+export * from './ColorSelect/ColorSelect';

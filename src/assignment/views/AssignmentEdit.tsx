@@ -40,6 +40,9 @@ import { ErrorView } from '../../error/views';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import {
 	InActivityWarningModal,
+	ListSorterColor,
+	ListSorterPosition,
+	ListSorterSlice,
 	SelectEducationLevelModal,
 	ShareModal,
 } from '../../shared/components';
@@ -630,11 +633,36 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						}}
 					/>
 				),
+				// Only assignments get to pick colors
+				actions: (item, i) =>
+					item && (
+						<>
+							<ListSorterColor item={item} />
+							<ListSorterPosition item={item} i={i} />
+							<ListSorterSlice item={item} />
+						</>
+					),
 			},
 			listSorterItem: {
 				onSlice: (item) => {
 					confirmSliceModal.setEntity(item);
 					confirmSliceModal.setOpen(true);
+				},
+				onBackgroundChange: (item, color) => {
+					if (!assignment) return;
+
+					setAssignment({
+						...assignment,
+						blocks: (assignment.blocks || []).map((block) => {
+							if (block.id === item.id) {
+								return { ...block, color };
+							}
+
+							return block;
+						}),
+					});
+
+					setHasUnsavedChanges(true);
 				},
 			},
 		}

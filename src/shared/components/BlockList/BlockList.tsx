@@ -19,12 +19,10 @@ import './BlockList.scss';
 
 const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
-		const layout = (children?: ReactNode, background?: ContainerProps['background']) => (
-			<Container
-				mode="horizontal"
-				size="full-width"
+		const layout = (children?: ReactNode, backgroundColor?: string) => (
+			<div
 				className="u-p-0 c-block-list__item"
-				background={background}
+				style={{ backgroundColor }}
 				key={'block-list__item--' + block.id}
 			>
 				<Container mode="horizontal">
@@ -40,7 +38,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						</IconBar>
 					</div>
 				</Container>
-			</Container>
+			</div>
 		);
 
 		switch (block.type) {
@@ -50,7 +48,8 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						{...config?.TEXT}
 						title={{ ...config?.TEXT?.title, block }}
 						block={block}
-					/>
+					/>,
+					(block as Avo.Assignment.Block).color
 				);
 
 			case CollectionBlockType.ITEM:
@@ -67,7 +66,8 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 							block,
 						}}
 						meta={{ ...config?.ITEM?.meta }}
-					/>
+					/>,
+					(block as Avo.Assignment.Block).color
 				);
 
 			case AssignmentBlockType.ZOEK:
@@ -81,7 +81,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						onCollectionButtonClicked={config?.ZOEK?.onCollectionButtonClicked || noop}
 						educationLevelId={config?.ZOEK?.educationLevelId}
 					/>,
-					'alt'
+					(block as Avo.Assignment.Block).color || '#edeff2'
 				);
 
 			default:

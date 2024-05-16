@@ -20,6 +20,9 @@ import { Link } from 'react-router-dom';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
+	ListSorterColor,
+	ListSorterPosition,
+	ListSorterSlice,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 	SelectEducationLevelModal,
@@ -245,11 +248,34 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						}}
 					/>
 				),
+				// Only assignments get to pick colors
+				actions: (item, i) =>
+					item && (
+						<>
+							<ListSorterColor item={item} />
+							<ListSorterPosition item={item} i={i} />
+							<ListSorterSlice item={item} />
+						</>
+					),
 			},
 			listSorterItem: {
 				onSlice: (item) => {
 					confirmSliceModal.setEntity(item);
 					confirmSliceModal.setOpen(true);
+				},
+				onBackgroundChange: (item, color) => {
+					if (!assignment) return;
+
+					setAssignment({
+						...assignment,
+						blocks: (assignment.blocks || []).map((block) => {
+							if (block.id === item.id) {
+								return { ...block, color };
+							}
+
+							return block;
+						}),
+					});
 				},
 			},
 		}
