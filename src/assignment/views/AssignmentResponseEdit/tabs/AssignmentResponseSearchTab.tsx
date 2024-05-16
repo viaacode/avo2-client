@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { type UrlUpdateType } from 'use-query-params';
 
+import { SpecialUserGroup } from '../../../../admin/user-groups/user-group.const';
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
 import { CutFragmentForAssignmentModal } from '../../../../item/components';
@@ -86,7 +87,14 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	}, [searchResults]);
 
 	useEffect(() => {
-		if (assignment?.education_level_id === EducationLevelId.lagerOnderwijs) {
+		if (
+			// Is the assignment intended for elementary
+			assignment?.education_level_id === EducationLevelId.lagerOnderwijs ||
+			// or is the user an elementary pupil
+			[SpecialUserGroup.PupilElementary]
+				.map(String)
+				.includes(String(user?.profile?.userGroupIds[0]))
+		) {
 			// Mutate to avoid render loop
 			filterState.filters = {
 				...filterState.filters,
