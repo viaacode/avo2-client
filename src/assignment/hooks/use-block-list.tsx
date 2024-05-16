@@ -10,7 +10,18 @@ import {
 	BLOCK_ITEM_ICONS,
 	BLOCK_ITEM_LABELS,
 } from '../../shared/components/BlockList/BlockList.consts';
+import {
+	GET_ASSIGNMENT_GREY,
+	GET_ASSIGNMENT_WHITE,
+} from '../../shared/components/ColorSelect/ColorSelect.const';
 import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
+
+const getColor = (block: Avo.Assignment.Block) => {
+	const fallback = ['ZOEK', 'BOUW'].includes(block.type)
+		? GET_ASSIGNMENT_GREY()
+		: GET_ASSIGNMENT_WHITE();
+	return block.color || fallback.value;
+};
 
 export function useBlocksList(
 	blocks: Avo.Core.BlockItemBase[],
@@ -26,6 +37,7 @@ export function useBlocksList(
 				...block,
 				...config?.listSorterItem,
 				icon: BLOCK_ITEM_ICONS()[block.type as Avo.Core.BlockItemType](block),
+				color: getColor(block as Avo.Assignment.Block),
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(
 						blocks,
