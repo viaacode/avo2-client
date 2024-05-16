@@ -48,8 +48,6 @@ export function useBlocksList(
 				},
 			};
 
-			console.info({ mapped });
-
 			return mapped;
 		});
 	}, [blocks, setBlocks, config]);
