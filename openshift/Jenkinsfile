@@ -168,7 +168,7 @@ pipeline {
 						loadEnvironmentVariablesFromFile('.env')
 						sh '''
 						#!/bin/bash
-						source .env
+						#source .env
 						export PGUSER=$PGUSER
 						export PGPASSWORD=$PGPASSWORD
 						export PGHOST=$PGHOST
