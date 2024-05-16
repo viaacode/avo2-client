@@ -176,9 +176,9 @@ pipeline {
 						export PGUSER=avo-db
 						export PGDATABASE=postgres
 						psql <<EOF
-						DROP DATABASE "avo-db" WITH (FORCE)
-						CREATE DATABASE "avo-db";
-						EOF
+            DROP DATABASE "avo-db" WITH (FORCE)
+            CREATE DATABASE "avo-db";
+            EOF
 						'''
 
 					}
