@@ -166,7 +166,11 @@ pipeline {
 								sh ('cat $end2end_env > .env')
 
 						loadEnvironmentVariablesFromFile('.env')
-						sh '''export PGUSER=avo-db
+						sh '''source .env
+									export PGUSER=$PGUSER
+									export PGPASSWORD=$PGPASSWORD
+									export PGHOST=$PGHOST
+									export PGDATABASE=postgreexport PGUSER=avo-db
 						export PGDATABASE=postgres
 						psql <<EOF
 						DROP DATABASE "avo-db" WITH (FORCE)
