@@ -166,12 +166,14 @@ pipeline {
 								sh ('cat $end2end_env > .env')
 
 						loadEnvironmentVariablesFromFile('.env')
-						sh '''export PGHOST=do-int-dbs-md.do.viaa.be
-						export PGUSER=avo-db
+						sh '''export PGUSER=avo-db
 						export PGDATABASE=postgres
-						echo "DROP DATABASE \"avo-db\" WITH (FORCE);" | psql
-						echo "CREATE DATABASE \"avo-db\"" | psql
+						psql <<EOF
+						DROP DATABASE "avo-db" WITH (FORCE)
+						CREATE DATABASE "avo-db";
+						EOF
 						'''
+
 					}
 
 				}
