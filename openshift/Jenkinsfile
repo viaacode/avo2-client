@@ -150,6 +150,35 @@ pipeline {
 				}
 			}
 		}
+
+		stage('drop DB') {
+			agent { label 'node' }
+			when {
+				anyOf {
+					changeRequest target: 'develop'
+					branch 'develop'
+				}
+			}
+			steps {
+				script {
+					configFileProvider(
+						[configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {
+								sh ('cat $end2end_env > .env')
+
+						loadEnvironmentVariablesFromFile('.env')
+						sh '''export PGHOST=do-int-dbs-md.do.viaa.be
+						export PGUSER=avo-db
+						export PGDATABASE=postgres
+						echo "DROP DATABASE \"avo-db\" WITH (FORCE);" | psql
+						echo "CREATE DATABASE \"avo-db\"" | psql
+						'''
+					}
+
+				}
+			}
+	}
+
+
 		stage('e2e-prepare') {
 			when {
 				anyOf {
@@ -205,10 +234,9 @@ pipeline {
 							npm install --force
 							npm install junit-report-builder --save --force
 							npm install @playwright/test
-                                                        npx playwright install
+							npx playwright install
 							npx playwright install-deps
-                                                        npx playwright install chrome
-
+							npx playwright install chrome
 							'''
 							sh "PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed "
 							junit 'tests/e2e_test_results.xml'
