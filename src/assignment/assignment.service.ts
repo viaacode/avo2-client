@@ -1117,6 +1117,7 @@ export class AssignmentService {
 				resource: {
 					type: 'collection',
 					id: collection.id,
+					education_level: String(assignment?.education_level_id),
 				},
 			},
 			user
@@ -1480,10 +1481,15 @@ export class AssignmentService {
 	}
 
 	static async addContributor(
-		assignmentId: string,
-		user: Partial<ContributorInfo>
+		assignment: Avo.Assignment.Assignment | null | undefined,
+		invitee: Partial<ContributorInfo>,
+		inviter?: Avo.User.CommonUser
 	): Promise<void> {
-		if (isNil(user.email) || isEmpty(user.email)) {
+		if (!assignment) return;
+
+		const assignmentId = assignment.id;
+
+		if (!invitee.email) {
 			throw new CustomError('User has no email address');
 		}
 
@@ -1492,16 +1498,30 @@ export class AssignmentService {
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor`,
 					query: {
-						email: user.email,
-						rights: user.rights,
+						email: invitee.email,
+						rights: invitee.rights,
 					},
 				}),
 				{ method: 'POST' }
 			);
+
+			trackEvents(
+				{
+					object: assignmentId,
+					object_type: 'assignment',
+					action: 'share',
+					resource: {
+						education_level: assignment.education_level_id,
+						...invitee,
+					},
+				},
+				inviter
+			);
 		} catch (err) {
 			throw new CustomError('Failed to add assignment contributor', err, {
 				assignmentId,
-				user,
+				invitee,
+				inviter,
 			});
 		}
 	}

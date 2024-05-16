@@ -429,7 +429,8 @@ const AssignmentOverview: FunctionComponent<
 	};
 
 	const handleDeleteAssignmentConfirm = async () => {
-		await deleteAssignment(markedAssignment?.id, user as Avo.User.User, updateAndReset);
+		if (!markedAssignment) return;
+		await deleteAssignment(markedAssignment, user as Avo.User.User, updateAndReset);
 		handleDeleteModalClose();
 	};
 

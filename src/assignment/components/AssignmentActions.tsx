@@ -156,7 +156,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 								onAddNewContributor(
 									info,
 									shareWithColleaguesOrPupilsProps,
-									shareWithColleaguesOrPupilsProps.fetchContributors
+									shareWithColleaguesOrPupilsProps.fetchContributors,
+									commonUser
 								)
 							}
 							{...shareDropdownProps}

@@ -9,10 +9,12 @@ import { AssignmentService } from '../assignment.service';
 import { AssignmentType } from '../assignment.types';
 
 export async function deleteAssignment(
-	assignmentId: string | null | undefined,
+	assignment: Avo.Assignment.Assignment,
 	user: Avo.User.User,
 	afterDeleteCallback?: () => void
 ): Promise<void> {
+	const assignmentId = assignment.id;
+
 	try {
 		if (isNil(assignmentId)) {
 			ToastService.danger(
@@ -39,6 +41,9 @@ export async function deleteAssignment(
 				object: assignmentId,
 				object_type: 'assignment',
 				action: 'delete',
+				resource: {
+					education_level: String(assignment?.education_level_id),
+				},
 			},
 			user
 		);

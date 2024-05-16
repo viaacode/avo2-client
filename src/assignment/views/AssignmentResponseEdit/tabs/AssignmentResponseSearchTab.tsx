@@ -153,7 +153,10 @@ const AssignmentResponseSearchTab: FunctionComponent<
 					object: assignment.id,
 					object_type: 'avo_assignment',
 					action: 'search',
-					resource: newFilterState.filters,
+					resource: {
+						...newFilterState.filters,
+						education_level: String(assignment?.education_level_id),
+					},
 				},
 				user
 			);
