@@ -170,7 +170,7 @@ pipeline {
 						export PGUSER=$PGUSER
 						export PGPASSWORD=$PGPASSWORD
 						export PGHOST=$PGHOST
-						export PGDATABASE=postgre
+						export PGDATABASE=postgres
 						export PGUSER=avo-db
 						export PGDATABASE=postgres
 						psql <<EOF
