@@ -1,4 +1,4 @@
-import { Container, type ContainerProps } from '@viaa/avo2-components';
+import { Container } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode } from 'react';
@@ -9,6 +9,7 @@ import {
 	CollectionFragmentTypeItem,
 	CollectionFragmentTypeText,
 } from '../../../collection/components';
+import { GET_ASSIGNMENT_GREY } from '../ColorSelect/ColorSelect.const';
 import { IconBar } from '../index';
 
 import { BLOCK_ITEM_ICONS } from './BlockList.consts';
@@ -81,7 +82,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						onCollectionButtonClicked={config?.ZOEK?.onCollectionButtonClicked || noop}
 						educationLevelId={config?.ZOEK?.educationLevelId}
 					/>,
-					(block as Avo.Assignment.Block).color || '#edeff2'
+					(block as Avo.Assignment.Block).color || GET_ASSIGNMENT_GREY().value
 				);
 
 			default:

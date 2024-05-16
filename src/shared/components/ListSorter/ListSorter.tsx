@@ -92,10 +92,10 @@ export const ListSorter: ListSorterType = ({
 		item && <ListSorterThumbnail item={item} />) as ListSorterRenderer<unknown>,
 	heading = () => 'heading',
 	divider = () => 'divider',
-	actions = (item, i) =>
+	actions = (item, index) =>
 		item && (
 			<>
-				<ListSorterPosition item={item} i={i} />
+				<ListSorterPosition item={item} i={index} />
 				<ListSorterSlice item={item} />
 			</>
 		),

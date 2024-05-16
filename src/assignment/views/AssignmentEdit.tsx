@@ -634,11 +634,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					/>
 				),
 				// Only assignments get to pick colors
-				actions: (item, i) =>
+				actions: (item, index) =>
 					item && (
 						<>
 							<ListSorterColor item={item} />
-							<ListSorterPosition item={item} i={i} />
+							<ListSorterPosition item={item} i={index} />
 							<ListSorterSlice item={item} />
 						</>
 					),
