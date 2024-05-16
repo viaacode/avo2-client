@@ -1,3 +1,5 @@
+import './ShareWithColleagues.scss';
+import { useLocalStorage } from '@uidotdev/usehooks';
 import {
 	Avatar,
 	Button,
@@ -12,8 +14,12 @@ import {
 	Spacer,
 	Spinner,
 	TextInput,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type PermissionName } from '@viaa/avo2-types';
+import { type Avo, type PermissionName } from '@viaa/avo2-types';
+import classNames from 'classnames';
 import { isEmpty, isNil, truncate } from 'lodash-es';
 import React, { type FC, useMemo, useState } from 'react';
 
@@ -24,16 +30,15 @@ import useTranslation from '../../hooks/useTranslation';
 import { ConfirmModal, RememberConfirmationKeys } from '../ConfirmModal';
 
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
+import { GET_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
 import {
 	compareUsersEmail,
 	findRightByValue,
 	getContributorRightLabel,
+	hasEducationLevel,
 	sortContributors,
 } from './ShareWithColleagues.helpers';
-import './ShareWithColleagues.scss';
 import { type ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
-
-import { useLocalStorage } from '@uidotdev/usehooks';
 
 type ShareWithColleaguesProps = {
 	contributors: ContributorInfo[];
@@ -46,18 +51,20 @@ type ShareWithColleaguesProps = {
 	onEditRights: (info: ContributorInfo, newRights: ContributorInfoRight) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	hasModalOpen: (open: boolean) => void;
+	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 
 const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
-	contributors,
-	user,
-	commonUser,
+	assignment,
 	availableRights,
+	commonUser,
+	contributors,
+	hasModalOpen,
+	isAdmin,
 	onAddNewContributor,
 	onDeleteContributor,
 	onEditRights,
-	hasModalOpen,
-	isAdmin,
+	user,
 }) => {
 	const { tText } = useTranslation();
 	const currentUser =
@@ -186,8 +193,10 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 						const contributorIsOwner =
 							contributor.rights === ContributorInfoRight.OWNER;
 						const isCurrentUser = currentUser.email === contributor.email;
+						const contributorHasLevel =
+							!assignment || hasEducationLevel(assignment, contributor);
 						const canEdit =
-							(!isCurrentUser && !contributorIsOwner) ||
+							(!isCurrentUser && !contributorIsOwner && contributorHasLevel) ||
 							(!isOwner && isCurrentUser) ||
 							(currentUserIsContributor && !contributorIsOwner) ||
 							(isAdmin && !contributorIsOwner);
@@ -235,11 +244,34 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									</p>
 								</div>
 
-								<div className="c-colleague-info-row__rights">
+								<div
+									className={classNames({
+										'c-colleague-info-row__rights': true,
+										'u-text-muted': !contributorHasLevel && !contributorIsOwner,
+									})}
+								>
 									<span>{getContributorRightLabel(contributor.rights)}</span>
 								</div>
 
 								<div className="c-colleague-info-row__action">
+									{!contributorHasLevel &&
+										!contributorIsOwner &&
+										assignment.education_level_id && (
+											<Tooltip position="top">
+												<TooltipTrigger>
+													<button className="c-icon-button u-text-muted">
+														<Icon name={IconName.info} />
+													</button>
+												</TooltipTrigger>
+												<TooltipContent>
+													{
+														GET_LEVEL_DIFFERENCE_DICT()[
+															assignment.education_level_id
+														]
+													}
+												</TooltipContent>
+											</Tooltip>
+										)}
 									{canEdit && (
 										<button
 											className="c-icon-button"

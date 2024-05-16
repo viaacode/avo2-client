@@ -1859,6 +1859,8 @@
   "shared/components/share-with-colleagues/share-with-colleagues___email-is-geen-geldig-emailadres": "Dit is geen geldig e-mailadres.",
   "shared/components/share-with-colleagues/share-with-colleagues___email-is-verplicht": "Email is verplicht",
   "shared/components/share-with-colleagues/share-with-colleagues___emailadres": "E-mailadres",
+  "shared/components/share-with-colleagues/share-with-colleagues___jouw-opdracht-is-gericht-naar-het-lager-onderwijs": "Jouw opdracht is gericht naar het lager onderwijs maar deze lesgever geeft enkel les aan het secundair onderwijs. Hij of zij kan jouw opdracht dus enkel bekijken.",
+  "shared/components/share-with-colleagues/share-with-colleagues___jouw-opdracht-is-gericht-naar-het-secundair-onderwijs": "Jouw opdracht is gericht naar het secundair onderwijs maar deze lesgever geeft enkel les aan het lager onderwijs. Hij of zij kan jouw opdracht dus enkel bekijken.",
   "shared/components/share-with-colleagues/share-with-colleagues___kijker": "Bekijker",
   "shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing": "Opgelet! Reacties worden ook gedeeld.",
   "shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing-beschrijving": "Let op! De <b>reacties van leerlingen zijn ook raadpleegbaar</b> door de lesgevers die toegang krijgen tot deze opdracht. Ben je zeker dat je de opdracht wilt delen?",

@@ -89,6 +89,9 @@ query getAssignmentsByResponseOwnerId(
 					logo_url
 					or_id
 				}
+				loms {
+					lom_id
+				}
 			}
 			id
 			profile_id

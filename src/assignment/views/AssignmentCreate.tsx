@@ -381,6 +381,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 								preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
 								remove={{ button: { disabled: true } }}
 								route={location.pathname}
+								assignment={assignment}
 							/>
 						}
 						tabs={

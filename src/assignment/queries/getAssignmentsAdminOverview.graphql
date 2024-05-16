@@ -63,6 +63,9 @@ query getAssignmentsAdminOverview(
 					logo_url
 					or_id
 				}
+				loms {
+					lom_id
+				}
 			}
 			id
 		}
