@@ -47,8 +47,9 @@ const Login: FunctionComponent<LoginProps> = ({
 
 			if (!path) {
 				if (
-					getUserGroupId(loginState?.userInfo?.profile) ===
-					SpecialUserGroup.PupilSecondary
+					[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+						.map(String)
+						.includes(getUserGroupId(loginState?.userInfo?.profile))
 				) {
 					path = APP_PATH.WORKSPACE_ASSIGNMENTS.route;
 				} else {

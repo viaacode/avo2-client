@@ -63,7 +63,9 @@ const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => 
 	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
 	const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] = useState<boolean>(false);
 
-	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.PupilSecondary;
+	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+		.map(String)
+		.includes(String(user.profile?.userGroupIds[0]));
 
 	const deleteIdpModals: Record<string, DeleteModalToggle> = {
 		VLAAMSEOVERHEID: {

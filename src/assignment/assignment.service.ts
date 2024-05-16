@@ -193,8 +193,14 @@ export class AssignmentService {
 				}
 			}
 
-			if (getUserGroupIds(user).includes(SpecialUserGroup.PupilSecondary)) {
-				// Filter on academic year for students
+			// Filter on academic year for students
+			if (
+				getUserGroupIds(user).some((id) =>
+					[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+						.map(String)
+						.includes(id)
+				)
+			) {
 				filterArray.push({
 					_and: [
 						{ deadline_at: { _gte: startOfAcademicYear().toISOString() } },
@@ -1505,6 +1511,9 @@ export class AssignmentService {
 				{ method: 'POST' }
 			);
 
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { loms, ...rest } = invitee;
+
 			trackEvents(
 				{
 					object: assignmentId,
@@ -1512,7 +1521,7 @@ export class AssignmentService {
 					action: 'share',
 					resource: {
 						education_level: assignment.education_level_id,
-						...invitee,
+						...rest,
 					},
 				},
 				inviter

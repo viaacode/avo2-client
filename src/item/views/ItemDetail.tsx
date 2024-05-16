@@ -213,7 +213,11 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						location.pathname.includes(`/${ROUTE_PARTS.assignments}/`))
 				)
 			) {
-				if (String(user.profile?.userGroupIds[0]) === SpecialUserGroup.PupilSecondary) {
+				const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+					.map(String)
+					.includes(String(user.profile?.userGroupIds[0]));
+
+				if (isPupil) {
 					setLoadingInfo({
 						state: 'error',
 						message: tHtml(
