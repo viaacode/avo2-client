@@ -1,8 +1,8 @@
-import { IconName } from '@viaa/avo2-components';
+import { type IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { ReactElement } from 'react';
+import { type ReactElement } from 'react';
 
-import { NewsletterPreferences } from '../services/campaign-monitor-service';
+import { type NewsletterPreferences } from '../services/campaign-monitor-service';
 
 export * from './quick-lane';
 
@@ -27,11 +27,6 @@ export type NavigationItemInfo = {
 export type ReactSelectOption<T = any> = {
 	label: string;
 	value: T;
-};
-
-export type ReactAction<T, P = any> = {
-	type: T;
-	payload: P;
 };
 
 // Get all possible values from object

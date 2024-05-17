@@ -9,7 +9,7 @@ import {
 	Icon,
 	IconName,
 	Spacer,
-	TagInfo,
+	type TagInfo,
 	TagsInput,
 	TextArea,
 	TextInput,
@@ -17,11 +17,11 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { Avo } from '@viaa/avo2-types';
+import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants';

@@ -1,4 +1,4 @@
-import { FlowplayerTrackSchema } from '@meemoo/react-components';
+import { type FlowplayerTrackSchema } from '@meemoo/react-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 

@@ -13,9 +13,9 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
-import { RouteComponentProps } from 'react-router';
+import { type RouteComponentProps } from 'react-router';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects';
@@ -35,8 +35,10 @@ const Account: FunctionComponent<AccountProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const isPupil =
-		(user?.profile?.userGroupIds?.[0] as unknown as SpecialUserGroup) ===
-		SpecialUserGroup.Pupil;
+		user?.profile?.userGroupIds[0] &&
+		[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+			.map(String)
+			.includes(String(user.profile.userGroupIds[0]));
 
 	const hasTempAccess = user?.temp_access?.current?.status === 1;
 

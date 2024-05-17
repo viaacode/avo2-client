@@ -1,13 +1,13 @@
 import { ContentPageOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { FC, FunctionComponent, useCallback } from 'react';
+import React, { type FC, type FunctionComponent, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';

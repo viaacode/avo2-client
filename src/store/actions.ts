@@ -1,4 +1,8 @@
-import { SetLastVideoPlayedAtAction, SetShowNudgingModalAction, UiStateActionTypes } from './types';
+import {
+	type SetLastVideoPlayedAtAction,
+	type SetShowNudgingModalAction,
+	UiStateActionTypes,
+} from './types';
 
 export const setShowNudgingModalAction = (data: boolean): SetShowNudgingModalAction => ({
 	data,

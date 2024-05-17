@@ -9,7 +9,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop, once } from 'lodash-es';
-import React, { FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 
 import { ItemVideoDescription } from '../../../item/components';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
@@ -20,7 +20,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
-import { CollectionAction } from '../CollectionOrBundleEdit';
+import { type CollectionAction } from '../CollectionOrBundleEdit';
 
 import './CutFragmentModal.scss';
 

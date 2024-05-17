@@ -1,9 +1,9 @@
 import { Button, IconName, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { type FC, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { compose, Dispatch } from 'redux';
+import { type RouteComponentProps, withRouter } from 'react-router-dom';
+import { compose, type Dispatch } from 'redux';
 
 import { SpecialUserGroup } from '../../../admin/user-groups/user-group.const';
 import { getProfileId } from '../../../authentication/helpers/get-profile-id';
@@ -11,12 +11,12 @@ import { hasIdpLinked, isProfileComplete } from '../../../authentication/helpers
 import { redirectToServerLinkAccount } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { AppState } from '../../../store';
+import { type AppState } from '../../../store';
 import { setShowNudgingModalAction } from '../../../store/actions';
 import { selectShowNudgingModal } from '../../../store/selectors';
 import { NOT_NOW_LOCAL_STORAGE_KEY, NOT_NOW_VAL, ROUTE_PARTS } from '../../constants';
 import { CustomError } from '../../helpers';
-import withUser, { UserProps } from '../../hocs/withUser';
+import withUser, { type UserProps } from '../../hocs/withUser';
 import { ProfilePreferencesService } from '../../services/profile-preferences.service';
 import { ProfilePreferenceKey } from '../../services/profile-preferences.types';
 
@@ -34,7 +34,10 @@ const ACMIDMNudgeModal: FC<UserProps & UiStateProps & RouteComponentProps> = ({
 	setShowNudgingModal,
 }) => {
 	const { tText, tHtml } = useTranslation();
-	const isPupil = get(user, 'profile.userGroupIds[0]') === SpecialUserGroup.Pupil;
+
+	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+		.map(String)
+		.includes(String(user?.profile?.userGroupIds[0]));
 
 	// HTTP
 

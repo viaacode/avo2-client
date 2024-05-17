@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { CollectionFragmentRichText } from '../../../../collection/components';
 import CollectionFragmentTitle, {
-	CollectionFragmentTitleProps,
+	type CollectionFragmentTitleProps,
 } from '../../../../collection/components/CollectionFragmentTitle';
 
 export interface CollectionFragmentTypeTextProps {

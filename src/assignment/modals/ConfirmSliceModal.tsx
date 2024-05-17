@@ -3,14 +3,14 @@ import {
 	ButtonToolbar,
 	Modal,
 	ModalBody,
-	ModalProps,
+	type ModalProps,
 	Spacer,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
 import useTranslation from '../../shared/hooks/useTranslation';

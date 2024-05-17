@@ -16,7 +16,7 @@ import {
 	Select,
 	Spacer,
 	Table,
-	TableColumn,
+	type TableColumn,
 	TextInput,
 	Toggle,
 	Toolbar,
@@ -26,22 +26,29 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	type FC,
+	type FunctionComponent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
-import { Collection, ContentTypeNumber } from '../../collection/collection.types';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { type Collection, ContentTypeNumber } from '../../collection/collection.types';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, formatTimestamp } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
-import { AssignmentOverviewTableColumns } from '../assignment.types';
+import { type AssignmentOverviewTableColumns } from '../assignment.types';
 
 import './AddItemsModals.scss';
 

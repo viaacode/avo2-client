@@ -1,8 +1,9 @@
 import {
+	Alert,
 	Column,
 	Container,
 	DatePicker,
-	DefaultProps,
+	type DefaultProps,
 	Flex,
 	Form,
 	FormGroup,
@@ -13,17 +14,17 @@ import {
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
 import { isAfter, isPast } from 'date-fns';
-import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import React, { type Dispatch, type FC, type SetStateAction, useCallback } from 'react';
+import { type UseFormSetValue } from 'react-hook-form';
 import { compose } from 'redux';
 
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { endOfAcademicYear } from '../helpers/academic-year';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { mergeWithOtherLabels } from '../helpers/merge-with-other-labels';
-import { AssignmentFields } from '../hooks/assignment-form';
+import { type AssignmentFields } from '../hooks/assignment-form';
 
 import AssignmentLabels from './AssignmentLabels';
 
@@ -75,7 +76,7 @@ const AssignmentDetailsFormEditable: FC<
 					<Form>
 						<Spacer margin="bottom">
 							<Grid>
-								<Column size="3-7">
+								<Column size="3-7" className="u-spacer-bottom">
 									<FormGroup
 										label={tText('assignment/assignment___klas')}
 										labelFor={getId(AssignmentDetailsFormIds.classrooms)}
@@ -277,8 +278,13 @@ const AssignmentDetailsFormEditable: FC<
 										</p>
 									</FormGroup>
 								</Column>
+
 								<Column size="3-5">
-									<></>
+									<Alert className="u-spacer-bottom">
+										{tHtml(
+											'assignment/components/assignment-details-form-editable___hier-stel-je-als-leerkracht-de-onderverdeling-van-je-opdracht-in-en-gegevens-die-leerlingen-te-zien-krijgen-bij-de-opdracht'
+										)}
+									</Alert>
 								</Column>
 							</Grid>
 						</Spacer>

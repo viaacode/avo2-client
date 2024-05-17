@@ -2,10 +2,10 @@ import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import React, {
-	Dispatch,
-	FunctionComponent,
-	ReactNode,
-	SetStateAction,
+	type Dispatch,
+	type FunctionComponent,
+	type ReactNode,
+	type SetStateAction,
 	useCallback,
 	useEffect,
 	useState,
@@ -14,11 +14,11 @@ import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AssignmentService } from '../../assignment.service';

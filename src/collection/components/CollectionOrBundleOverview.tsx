@@ -18,23 +18,29 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
-import { CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
+import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
 import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
 	CheckboxDropdownModal,
-	CheckboxOption,
+	type CheckboxOption,
 	DeleteObjectModal,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../shared/components';
 import QuickLaneModal from '../../shared/components/QuickLaneModal/QuickLaneModal';
 import { getMoreOptionsLabel } from '../../shared/constants';
@@ -51,14 +57,14 @@ import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
 import { truncateTableValue } from '../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { COLLECTION_QUERY_KEYS } from '../../shared/services/data-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { ITEMS_PER_PAGE } from '../../workspace/workspace.const';
 import { CollectionService } from '../collection.service';
 import {
-	Collection,
+	type Collection,
 	CollectionCreateUpdateTab,
 	CollectionMenuAction,
 	CollectionShareType,

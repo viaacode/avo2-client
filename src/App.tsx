@@ -4,9 +4,14 @@ import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { noop } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import { Route, RouteComponentProps, BrowserRouter as Router, withRouter } from 'react-router-dom';
+import {
+	Route,
+	type RouteComponentProps,
+	BrowserRouter as Router,
+	withRouter,
+} from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import { compose } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
@@ -18,13 +23,18 @@ import { SpecialUserGroup } from './admin/user-groups/user-group.const';
 import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
-import { Footer, LoadingErrorLoadedComponent, LoadingInfo, Navigation } from './shared/components';
+import {
+	Footer,
+	LoadingErrorLoadedComponent,
+	type LoadingInfo,
+	Navigation,
+} from './shared/components';
 import ACMIDMNudgeModal from './shared/components/ACMIDMNudgeModal/ACMIDMNudgeModal';
 import ConfirmModal from './shared/components/ConfirmModal/ConfirmModal';
 import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
-import withUser, { UserProps } from './shared/hocs/withUser';
+import withUser, { type UserProps } from './shared/hocs/withUser';
 import useTranslation from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
 import { waitForTranslations } from './shared/translations/i18n';
@@ -52,7 +62,9 @@ wrapHistory(history, {
 const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	const { tHtml } = useTranslation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
-	const isPupilUser = String(props?.user?.profile?.userGroupIds?.[0]) === SpecialUserGroup.Pupil;
+	const isPupilUser = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+		.map(String)
+		.includes(String(props.commonUser?.userGroup?.id));
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -86,7 +98,7 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 				history.replace(url.toString().replace(url.origin, ''));
 			}
 		}
-	}, [loadingInfo]);
+	}, [loadingInfo, tHtml]);
 
 	// Render
 	const renderApp = () => {

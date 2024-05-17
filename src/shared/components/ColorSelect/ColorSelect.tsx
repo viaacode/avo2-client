@@ -1,20 +1,12 @@
 import { Flex, Spacer } from '@viaa/avo2-components';
 import clsx from 'clsx';
-import React, { FunctionComponent, ReactNode } from 'react';
-import Select, { Props } from 'react-select';
+import React, { type FunctionComponent, type ReactNode } from 'react';
+import Select from 'react-select';
 
 import './ColorSelect.scss';
-import { ReactSelectOption } from '../../../../shared/types';
+import { type ReactSelectOption } from '../../types';
 
-export interface ColorOption {
-	label: string;
-	value: string;
-	color?: string; // Defaults to value for the hex color code
-}
-
-export interface ColorSelectProps extends Props {
-	options: ColorOption[];
-}
+import { type ColorOption, type ColorSelectProps } from './ColorSelect.types';
 
 export const ColorSelect: FunctionComponent<ColorSelectProps> = ({
 	className,

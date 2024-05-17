@@ -1,10 +1,10 @@
 import { Dropdown, DropdownButton, DropdownContent, Icon } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { NavLink, RouteComponentProps } from 'react-router-dom';
+import React, { type FunctionComponent } from 'react';
+import { NavLink, type RouteComponentProps } from 'react-router-dom';
 
-import { BooleanDictionary } from '../../helpers/navigation';
-import { NavigationItemInfo } from '../../types';
+import { type BooleanDictionary } from '../../helpers/navigation';
+import { type NavigationItemInfo } from '../../types';
 
 import './Navigation.scss';
 

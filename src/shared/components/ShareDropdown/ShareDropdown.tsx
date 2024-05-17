@@ -1,16 +1,22 @@
 import { Dropdown, DropdownButton, DropdownContent } from '@meemoo/react-components';
-import { Button, ButtonProps, DropdownProps, IconName, Tabs } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import React, { FC, useState } from 'react';
+import {
+	Button,
+	type ButtonProps,
+	type DropdownProps,
+	IconName,
+	Tabs,
+} from '@viaa/avo2-components';
+import { type Avo, type PermissionName } from '@viaa/avo2-types';
+import React, { type FC, useState } from 'react';
 
 import { useTabs } from '../../hooks/useTabs';
 import useTranslation from '../../hooks/useTranslation';
 import ShareWithColleagues from '../ShareWithColleagues/ShareWithColleagues';
 import {
-	ContributorInfo,
-	ContributorInfoRight,
+	type ContributorInfo,
+	type ContributorInfoRight,
 } from '../ShareWithColleagues/ShareWithColleagues.types';
-import { ShareWithPupil, ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
+import { ShareWithPupil, type ShareWithPupilsProps } from '../ShareWithPupils/ShareWithPupils';
 
 import { ShareDropdownTabs } from './ShareDropdown.types';
 
@@ -34,18 +40,20 @@ export type ShareDropdownProps = {
 	};
 	isAdmin: boolean;
 	isAssignmentExpired?: boolean;
+	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
-	contributors,
-	onAddContributor,
-	onEditContributorRights,
-	onDeleteContributor,
-	dropdownProps,
+	assignment,
+	availableRights,
 	buttonProps,
+	contributors,
+	dropdownProps,
+	isAdmin,
+	onAddContributor,
+	onDeleteContributor,
+	onEditContributorRights,
 	shareWithPupilsProps,
 	withPupils = true,
-	availableRights,
-	isAdmin,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -107,6 +115,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					<div className="c-share-dropdown__content">
 						{tab === ShareDropdownTabs.COLLEAGUES ? (
 							<ShareWithColleagues
+								assignment={assignment}
 								contributors={contributors || []}
 								availableRights={availableRights}
 								onAddNewContributor={onAddContributor}

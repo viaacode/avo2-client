@@ -1,4 +1,4 @@
-import { RichTextEditorControl } from '@meemoo/react-components';
+import { type RichTextEditorControl } from '@meemoo/react-components';
 
 export const RichTextEditor_OPTIONS_ALIGN: RichTextEditorControl[] = ['separator', 'text-align'];
 
@@ -39,34 +39,6 @@ export const RICH_TEXT_EDITOR_OPTIONS_AUTHOR: RichTextEditorControl[] = [
 // Admin
 export const RICH_TEXT_EDITOR_OPTIONS_FULL: RichTextEditorControl[] = [
 	...RICH_TEXT_EDITOR_OPTIONS_BASE,
-	'separator',
-	'subscript',
-	'superscript',
-	'separator',
-	'hr',
-	'separator',
-	'link',
-	'separator',
-	'table',
-	'separator',
-	'remove-styles',
-];
-
-export const RichTextEditor_OPTIONS_FULL_WITHOUT_ALIGN: RichTextEditorControl[] = [
-	'fullscreen',
-	'separator',
-	'undo',
-	'redo',
-	'separator',
-	'headings',
-	'separator',
-	'bold',
-	'italic',
-	'strike-through',
-	'underline',
-	'separator',
-	'list-ul',
-	'list-ol',
 	'separator',
 	'subscript',
 	'superscript',

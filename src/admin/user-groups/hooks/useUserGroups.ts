@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { GET_SPECIAL_USER_GROUPS } from '../user-group.const';
 import { UserGroupService } from '../user-group.service';
-import { UserGroup } from '../user-group.types';
+import { type UserGroup } from '../user-group.types';
 
 type UseUserGroupsTuple = [Partial<UserGroup>[], boolean];
 

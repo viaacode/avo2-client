@@ -1,3 +1,6 @@
+import './AssignmentEdit.scss';
+import './AssignmentPage.scss';
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
 	Alert,
@@ -14,9 +17,9 @@ import { PermissionName } from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
-	Dispatch,
-	FunctionComponent,
-	SetStateAction,
+	type Dispatch,
+	type FunctionComponent,
+	type SetStateAction,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -27,25 +30,32 @@ import { useForm } from 'react-hook-form';
 import { matchPath, Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { BlockList } from '../../collection/components';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
-import { ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { InActivityWarningModal, ShareModal } from '../../shared/components';
+import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
+import {
+	InActivityWarningModal,
+	ListSorterColor,
+	ListSorterPosition,
+	ListSorterSlice,
+	SelectEducationLevelModal,
+	ShareModal,
+} from '../../shared/components';
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, CustomError, navigate } from '../../shared/helpers';
+import { buildLink, type CustomError, isUserDoubleTeacher, navigate } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
 } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -87,13 +97,10 @@ import {
 	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
-import { AssignmentFields } from '../hooks/assignment-form';
+import { type AssignmentFields } from '../hooks/assignment-form';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import AssignmentResponses from './AssignmentResponses';
-
-import './AssignmentEdit.scss';
-import './AssignmentPage.scss';
 
 interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabId: string }> {
 	onUpdate: () => void | Promise<void>;
@@ -127,6 +134,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
+		useState<boolean>(false);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -187,6 +196,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	useEffect(() => {
 		fetchContributors();
 	}, [fetchContributors]);
+
+	useEffect(() => {
+		if (!assignment || assignmentLoading) return;
+		isUserDoubleTeacher(commonUser) &&
+			setSelectEducationLevelModalOpen(!assignment.education_level_id);
+	}, [assignment, commonUser, assignmentLoading]);
 
 	// UI
 	useWarningBeforeUnload({
@@ -412,6 +427,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						resource: {
 							is_public: assignment.is_public || false,
 							role: contributorType,
+							education_level: String(assignment?.education_level_id),
 						},
 					},
 					user
@@ -439,6 +455,15 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		originalAssignment && setAssignment(originalAssignment as any);
 		resetForm();
 	}, [resetForm, setAssignment, originalAssignment]);
+
+	const selectLevel = useCallback(
+		(lom: Avo.Lom.LomField) => {
+			if (!assignment) return;
+			setSelectEducationLevelModalOpen(false);
+			assignment.education_level_id = lom.id;
+		},
+		[assignment]
+	);
 
 	const updateAssignmentEditor = async () => {
 		try {
@@ -557,6 +582,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							resource: {
 								id,
 								type: 'collection',
+								education_level: String(assignment?.education_level_id),
 							},
 						},
 						user
@@ -607,11 +633,36 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						}}
 					/>
 				),
+				// Only assignments get to pick colors
+				actions: (item, index) =>
+					item && (
+						<>
+							<ListSorterColor item={item} />
+							<ListSorterPosition item={item} i={index} />
+							<ListSorterSlice item={item} />
+						</>
+					),
 			},
 			listSorterItem: {
 				onSlice: (item) => {
 					confirmSliceModal.setEntity(item);
 					confirmSliceModal.setOpen(true);
+				},
+				onBackgroundChange: (item, color) => {
+					if (!assignment) return;
+
+					setAssignment({
+						...assignment,
+						blocks: (assignment.blocks || []).map((block) => {
+							if (block.id === item.id) {
+								return { ...block, color };
+							}
+
+							return block;
+						}),
+					});
+
+					setHasUnsavedChanges(true);
 				},
 			},
 		}
@@ -854,96 +905,105 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				}}
 				refetchAssignment={async () => await fetchAssignment()}
 				route={location.pathname}
+				assignment={assignment}
 			/>
 		);
 	};
 
 	const renderEditAssignmentPage = () => (
-		<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
-			<div>
-				{renderMobileDesktop({
-					mobile: (
-						<AssignmentHeading
-							back={renderBackButton}
-							title={renderTitle}
-							actions={renderHeadingActions(true)}
-							tabs={
-								<AssignmentTeacherTabs
-									activeTab={tab}
-									onTabChange={handleTabChange}
-									clicksCount={originalAssignment?.responses?.length ?? 0}
-								/>
-							}
-							tour={null}
-						/>
-					),
-					desktop: (
-						<AssignmentHeading
-							back={renderBackButton}
-							title={renderTitle}
-							actions={renderHeadingActions(false)}
-							tabs={
-								<AssignmentTeacherTabs
-									activeTab={tab}
-									onTabChange={handleTabChange}
-									clicksCount={originalAssignment?.responses?.length ?? 0}
-								/>
-							}
-						/>
-					),
-				})}
+		<>
+			<div className="c-assignment-page c-assignment-page--edit c-sticky-bar__wrapper">
+				<div>
+					{renderMobileDesktop({
+						mobile: (
+							<AssignmentHeading
+								back={renderBackButton}
+								title={renderTitle}
+								actions={renderHeadingActions(true)}
+								tabs={
+									<AssignmentTeacherTabs
+										activeTab={tab}
+										onTabChange={handleTabChange}
+										clicksCount={originalAssignment?.responses?.length ?? 0}
+									/>
+								}
+								tour={null}
+							/>
+						),
+						desktop: (
+							<AssignmentHeading
+								back={renderBackButton}
+								title={renderTitle}
+								actions={renderHeadingActions(false)}
+								tabs={
+									<AssignmentTeacherTabs
+										activeTab={tab}
+										onTabChange={handleTabChange}
+										clicksCount={originalAssignment?.responses?.length ?? 0}
+									/>
+								}
+							/>
+						),
+					})}
 
-				<Container mode="horizontal">
-					{pastDeadline && (
-						<Spacer margin={['top-large']}>
-							<Alert type="info">
-								{tText(
-									'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
-								)}
-							</Alert>
-						</Spacer>
-					)}
-
-					<Spacer margin={['top-large', 'bottom-extra-large']}>
-						{renderedTabContent}
-					</Spacer>
-
-					{renderedModals}
-					{draggableListModal}
-
-					<AssignmentConfirmSave
-						hasBlocks={assignmentHasPupilBlocks}
-						hasResponses={assignmentHasResponses}
-						modal={{
-							isOpen: isConfirmSaveActionModalOpen,
-							onClose: () => setIsConfirmSaveActionModalOpen(false),
-							confirmCallback: () => {
-								setIsConfirmSaveActionModalOpen(false);
-								handleSubmit(submit, (...args) => console.error(args))();
-							},
-						}}
-					/>
-
-					<InActivityWarningModal
-						onActivity={updateAssignmentEditor}
-						onExit={releaseAssignmentEditStatus}
-						warningMessage={tHtml(
-							'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
+					<Container mode="horizontal">
+						{pastDeadline && (
+							<Spacer margin={['top-large']}>
+								<Alert type="info">
+									{tText(
+										'assignment/views/assignment-edit___deze-opdracht-is-afgelopen-en-kan-niet-langer-aangepast-worden-maak-een-duplicaat-aan-om-dit-opnieuw-te-delen-met-leerlingen'
+									)}
+								</Alert>
+							</Spacer>
 						)}
-						currentPath={history.location.pathname}
-						editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
-						onForcedExit={onForcedExitPage}
-					/>
-				</Container>
-			</div>
 
-			{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
-			<StickySaveBar
-				isVisible={unsavedChanges || hasUnsavedChanges}
-				onSave={handleOnSave}
-				onCancel={cancelSaveBar}
-			/>
-		</div>
+						<Spacer margin={['top-large', 'bottom-extra-large']}>
+							{renderedTabContent}
+						</Spacer>
+
+						{renderedModals}
+						{draggableListModal}
+
+						<AssignmentConfirmSave
+							hasBlocks={assignmentHasPupilBlocks}
+							hasResponses={assignmentHasResponses}
+							modal={{
+								isOpen: isConfirmSaveActionModalOpen,
+								onClose: () => setIsConfirmSaveActionModalOpen(false),
+								confirmCallback: () => {
+									setIsConfirmSaveActionModalOpen(false);
+									handleSubmit(submit, (...args) => console.error(args))();
+								},
+							}}
+						/>
+
+						<InActivityWarningModal
+							onActivity={updateAssignmentEditor}
+							onExit={releaseAssignmentEditStatus}
+							warningMessage={tHtml(
+								'assignment/views/assignment-edit___door-inactiviteit-zal-de-opdracht-zichzelf-sluiten'
+							)}
+							currentPath={history.location.pathname}
+							editPath={APP_PATH.ASSIGNMENT_EDIT_TAB.route}
+							onForcedExit={onForcedExitPage}
+						/>
+					</Container>
+				</div>
+
+				{/* Must always be the second and last element inside the c-sticky-bar__wrapper */}
+				<StickySaveBar
+					isVisible={unsavedChanges || hasUnsavedChanges}
+					onSave={handleOnSave}
+					onCancel={cancelSaveBar}
+				/>
+			</div>
+			{!!user && (
+				<SelectEducationLevelModal
+					isOpen={isSelectEducationLevelModalOpen}
+					onConfirm={selectLevel}
+				/>
+			)}
+		</>
 	);
 
 	const renderPageContent = () => {
@@ -1060,7 +1120,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 								)
 							}
 							onAddContributor={(info) =>
-								onAddNewContributor(info, shareProps, fetchContributors)
+								onAddNewContributor(info, shareProps, fetchContributors, commonUser)
 							}
 							shareWithPupilsProps={shareProps}
 							availableRights={{
@@ -1074,6 +1134,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							assignment={assignment}
 						/>
 					),
 					desktop: null,

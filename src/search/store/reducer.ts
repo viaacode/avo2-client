@@ -2,9 +2,9 @@ import { createReducer } from './../../shared/helpers';
 import initialState from './initial-state';
 import {
 	SearchActionTypes,
-	SetSearchResultsErrorAction,
-	SetSearchResultsLoadingAction,
-	SetSearchResultsSuccessAction,
+	type SetSearchResultsErrorAction,
+	type SetSearchResultsLoadingAction,
+	type SetSearchResultsSuccessAction,
 } from './types';
 
 const searchReducer = createReducer(initialState, {

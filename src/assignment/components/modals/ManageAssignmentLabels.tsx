@@ -1,4 +1,4 @@
-import { ColorOption } from '@meemoo/admin-core-ui';
+import { type ColorOption } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	ButtonToolbar,
@@ -17,18 +17,18 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, intersection, sortBy, without } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 
-import { ColorSelect } from '../../../admin/content-page/components/ColorSelect/ColorSelect';
-import { Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
+import { ColorSelect } from '../../../shared/components';
+import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers';
 import { generateRandomId } from '../../../shared/helpers/uuid';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../../shared/services/assignment-labels-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { MAX_LABEL_LENGTH } from '../../assignment.const';
-import { AssignmentLabelColor } from '../../assignment.types';
+import { type AssignmentLabelColor } from '../../assignment.types';
 
 import { getManageAssignmentLabelsTranslations } from './ManageAssignmentLabels.translations';
 

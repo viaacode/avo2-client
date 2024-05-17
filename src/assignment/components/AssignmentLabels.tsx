@@ -1,4 +1,4 @@
-import { ColorOption } from '@meemoo/admin-core-ui';
+import { type ColorOption } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Flex,
@@ -6,15 +6,21 @@ import {
 	IconName,
 	Spacer,
 	TagList,
-	TagOption,
+	type TagOption,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
-import React, { FunctionComponent, MouseEvent, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type MouseEvent,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 
-import { ColorSelect } from '../../admin/content-page/components/ColorSelect/ColorSelect';
-import { Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { ColorSelect } from '../../shared/components';
+import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';

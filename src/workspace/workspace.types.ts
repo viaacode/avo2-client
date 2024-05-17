@@ -1,13 +1,13 @@
-import { IconName, MenuItemInfo, TabProps } from '@viaa/avo2-components';
-import { ReactNode } from 'react';
+import { type IconName, type MenuItemInfo, type TabProps } from '@viaa/avo2-components';
+import { type ReactNode } from 'react';
 
 import {
-	ASSIGNMENTS_ID,
-	BOOKMARKS_ID,
-	BUNDLES_ID,
-	COLLECTIONS_ID,
-	ORGANISATION_CONTENT_ID,
-	QUICK_LANE_ID,
+	type ASSIGNMENTS_ID,
+	type BOOKMARKS_ID,
+	type BUNDLES_ID,
+	type COLLECTIONS_ID,
+	type ORGANISATION_CONTENT_ID,
+	type QUICK_LANE_ID,
 } from './workspace.const';
 
 export type TabView = {
@@ -41,19 +41,6 @@ export type WorkspaceTabNames =
 
 export interface WorkspaceTab extends TabProps {
 	id: WorkspaceTabNames;
-}
-
-interface Aggregate {
-	count: number;
-}
-
-interface AggregateResponse {
-	aggregate: Aggregate;
-}
-
-export interface TabAggregates {
-	app_collections_aggregate: AggregateResponse;
-	app_assignments_aggregate: AggregateResponse;
 }
 
 export type WorkspaceCounts = {

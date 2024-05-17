@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 import { Prompt, useLocation } from 'react-router-dom';
 
 import useTranslation from '../../../shared/hooks/useTranslation';

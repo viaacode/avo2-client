@@ -16,6 +16,12 @@ module.exports = {
 	},
 	ignorePatterns: ['.eslintrc.js', 'jest*.config.js', 'src/shared/generated/*.ts'],
 	rules: {
+		'@typescript-eslint/consistent-type-imports': [
+			'error',
+			{
+				fixStyle: 'inline-type-imports',
+			},
+		],
 		'@typescript-eslint/no-explicit-any': 'off',
 		'import/no-unresolved': [
 			2,

@@ -1,3 +1,4 @@
+import './AssignmentDetail.scss';
 import {
 	Button,
 	ButtonToolbar,
@@ -8,28 +9,42 @@ import {
 	HeaderBottomRowLeft,
 	HeaderBottomRowRight,
 	HeaderMiddleRowRight,
+	HeaderTopRowLeft,
+	Icon,
 	IconName,
 	isUuid,
+	MetaData,
+	MetaDataItem,
 	MoreOptionsDropdown,
 	Spacer,
 	Spinner,
 	ToggleButton,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FC, FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FC,
+	type FunctionComponent,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 import { StringParam, useQueryParams } from 'use-query-params';
 
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
-import ErrorView, { ErrorViewQueryParams } from '../../error/views/ErrorView';
-import { ALL_SEARCH_FILTERS, SearchFilter } from '../../search/search.const';
+import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { ALL_SEARCH_FILTERS, type SearchFilter } from '../../search/search.const';
 import {
 	CommonMetaData,
 	EditButton,
@@ -37,7 +52,7 @@ import {
 	InteractiveTour,
 	ShareDropdown,
 	ShareModal,
-	ShareWithPupilsProps,
+	type ShareWithPupilsProps,
 } from '../../shared/components';
 import BlockList from '../../shared/components/BlockList/BlockList';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
@@ -47,13 +62,14 @@ import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '..
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { type EducationLevelId } from '../../shared/helpers/lom';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -75,7 +91,10 @@ import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditSta
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
-import './AssignmentDetail.scss';
+import {
+	GET_EDUCATION_LEVEL_DICT,
+	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
+} from './AssignmentDetail.const';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
@@ -338,6 +357,9 @@ const AssignmentDetail: FC<
 					object: assignmentId,
 					object_type: 'assignment',
 					action: 'view',
+					resource: {
+						education_level: String(assignment?.education_level_id),
+					},
 				},
 				user
 			);
@@ -461,7 +483,7 @@ const AssignmentDetail: FC<
 				return;
 			}
 
-			const duplicate = await duplicateAssignment(assignment, user.profile.id);
+			const duplicate = await duplicateAssignment(assignment, user);
 			if (duplicate) {
 				history.push(
 					generatePath(APP_PATH.ASSIGNMENT_DETAIL.route, {
@@ -490,7 +512,8 @@ const AssignmentDetail: FC<
 	};
 
 	const onDeleteAssignment = async (): Promise<void> => {
-		await deleteAssignment(assignmentId, user, () =>
+		if (!assignment) return;
+		await deleteAssignment(assignment, user, () =>
 			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
@@ -578,7 +601,12 @@ const AssignmentDetail: FC<
 								)
 							}
 							onAddContributor={(info) =>
-								onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+								onAddNewContributor(
+									info,
+									shareWithPupilsProps,
+									fetchContributors,
+									commonUser
+								)
 							}
 							dropdownProps={{
 								placement: 'bottom-end',
@@ -605,6 +633,7 @@ const AssignmentDetail: FC<
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							assignment={assignment || undefined}
 						/>
 					)}
 				{permissions?.canPublishAssignments && !inviteToken && (
@@ -733,6 +762,29 @@ const AssignmentDetail: FC<
 		);
 	};
 
+	const renderHeaderEducationLevel = () => {
+		const label =
+			GET_EDUCATION_LEVEL_DICT()[assignment?.education_level_id as EducationLevelId];
+		const tooltip =
+			GET_EDUCATION_LEVEL_TOOLTIP_DICT()[assignment?.education_level_id as EducationLevelId];
+
+		return (
+			<MetaData category="assignment">
+				<Tooltip position="top">
+					<TooltipTrigger>
+						<MetaDataItem icon={IconName.userStudent}>
+							<Icon name={IconName.userStudent} />
+
+							{label}
+						</MetaDataItem>
+					</TooltipTrigger>
+
+					<TooltipContent>{tooltip}</TooltipContent>
+				</Tooltip>
+			</MetaData>
+		);
+	};
+
 	const renderHeader = () => {
 		if (assignment) {
 			return (
@@ -743,6 +795,7 @@ const AssignmentDetail: FC<
 					bookmarks={String(bookmarkViewCounts.bookmarkCount || 0)}
 					views={String(bookmarkViewCounts.viewCount || 0)}
 				>
+					<HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
 					<HeaderMiddleRowRight>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderMiddleRowRight>
@@ -782,6 +835,9 @@ const AssignmentDetail: FC<
 						flowPlayer: {
 							canPlay: true,
 						},
+					},
+					ZOEK: {
+						educationLevelId: assignment?.education_level_id as EducationLevelId,
 					},
 				}}
 			/>
@@ -989,7 +1045,12 @@ const AssignmentDetail: FC<
 						)
 					}
 					onAddContributor={(info) =>
-						onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+						onAddNewContributor(
+							info,
+							shareWithPupilsProps,
+							fetchContributors,
+							commonUser
+						)
 					}
 					shareWithPupilsProps={shareWithPupilsProps}
 					availableRights={{
@@ -1001,6 +1062,7 @@ const AssignmentDetail: FC<
 						commonUser?.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) ||
 						false
 					}
+					assignment={assignment}
 				/>
 			)}
 			<DeleteAssignmentModal

@@ -63,6 +63,9 @@ query getAssignmentsAdminOverview(
 					logo_url
 					or_id
 				}
+				loms {
+					lom_id
+				}
 			}
 			id
 		}
@@ -94,6 +97,10 @@ query getAssignmentsAdminOverview(
 		}
 		quality_labels {
 			id
+			label
+		}
+		education_level_id
+		education_level {
 			label
 		}
 	}

@@ -1,12 +1,12 @@
 import {
 	DeadlineIndicator,
-	DeadlineIndicatorColors,
-	DeadlineIndicatorShapes,
+	type DeadlineIndicatorColors,
+	type DeadlineIndicatorShapes,
 	Flex,
 	FlexItem,
 } from '@viaa/avo2-components';
 import { differenceInHours } from 'date-fns';
-import React, { FC, useMemo } from 'react';
+import React, { type FC, useMemo } from 'react';
 
 import { formatCustomTimestamp } from '../../shared/helpers';
 

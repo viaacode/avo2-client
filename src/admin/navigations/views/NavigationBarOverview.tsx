@@ -1,8 +1,8 @@
 import { NavigationOverview } from '@meemoo/admin-core-ui';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';

@@ -1,9 +1,9 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	GetCollectionMarcomEntriesQuery,
-	GetPublicCollectionsByIdQuery,
-	GetPublicCollectionsByTitleQuery,
+	type GetCollectionMarcomEntriesQuery,
+	type GetPublicCollectionsByIdQuery,
+	type GetPublicCollectionsByTitleQuery,
 } from '../shared/generated/graphql-db-operations';
 
 export type Collection = (

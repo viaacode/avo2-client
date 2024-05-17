@@ -1,10 +1,10 @@
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { ALL_SEARCH_FILTERS } from '../../search/search.const';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 
 import AssignmentDetail from './AssignmentDetail';
 import AssignmentResponseEditPage from './AssignmentResponseEdit/AssignmentResponseEditPage';
@@ -26,7 +26,11 @@ const AssignmentDetailSwitcher: FunctionComponent<UserProps> = (props) => {
 			</Spacer>
 		);
 	}
-	if (props.commonUser?.userGroup?.id === SpecialUserGroup.Pupil) {
+	if (
+		[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+			.map(String)
+			.includes(String(props.commonUser?.userGroup?.id))
+	) {
 		// Render assignment response edit page
 		return <AssignmentResponseEditPage />;
 	}

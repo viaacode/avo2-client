@@ -12,8 +12,8 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import React, { FunctionComponent, ReactNode } from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import React, { type FunctionComponent, type ReactNode } from 'react';
+import { type RouteComponentProps, withRouter } from 'react-router';
 
 import useTranslation from '../../../../shared/hooks/useTranslation';
 

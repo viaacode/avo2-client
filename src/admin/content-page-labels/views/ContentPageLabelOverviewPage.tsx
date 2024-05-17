@@ -1,5 +1,5 @@
 import { ContentPageLabelOverview } from '@meemoo/admin-core-ui';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 import { compose } from 'redux';
 
 import withUser from '../../../shared/hocs/withUser';

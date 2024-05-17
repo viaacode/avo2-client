@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { ItemsService } from '../../admin/items/items.service';
 import { CollectionService } from '../../collection/collection.service';
 import { CutFragmentForAssignmentModal } from '../../item/components';
-import { ItemTrimInfo } from '../../item/item.types';
+import { type ItemTrimInfo } from '../../item/item.types';
 import {
 	type SingleEntityModal,
 	useSingleEntityModal,
@@ -12,16 +12,16 @@ import {
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
 import { VideoStillService } from '../../shared/services/video-stills-service';
-import { Positioned } from '../../shared/types';
+import { type Positioned } from '../../shared/types';
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../assignment.const';
 import { AssignmentBlockType } from '../assignment.types';
 import { insertMultipleAtPosition } from '../helpers/insert-at-position';
-import AddBlockModal, { AddBlockModalProps } from '../modals/AddBlockModal';
+import AddBlockModal, { type AddBlockModalProps } from '../modals/AddBlockModal';
 import AddBookmarkFragmentModal, {
-	AddBookmarkFragmentModalProps,
+	type AddBookmarkFragmentModalProps,
 } from '../modals/AddBookmarkFragmentModal';
-import AddCollectionModal, { AddCollectionModalProps } from '../modals/AddCollectionModal';
-import ConfirmSliceModal, { ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
+import AddCollectionModal, { type AddCollectionModalProps } from '../modals/AddCollectionModal';
+import ConfirmSliceModal, { type ConfirmSliceModalProps } from '../modals/ConfirmSliceModal';
 
 export function useBlockListModals(
 	blocks: Avo.Core.BlockItemBase[],

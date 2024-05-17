@@ -1,17 +1,23 @@
-import { MediaGridBlockComponentState, MediaGridBlockState } from '@meemoo/admin-core-ui';
+import { type MediaGridBlockComponentState, type MediaGridBlockState } from '@meemoo/admin-core-ui';
 import {
 	Button,
-	ButtonAction,
+	type ButtonAction,
 	IconName,
 	Modal,
 	ModalBody,
-	RenderLinkFunction,
+	type RenderLinkFunction,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isEmpty, isNil } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { withRouter } from 'react-router';
-import { RouteComponentProps } from 'react-router-dom';
+import { type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
 
 import placeholderImage from '../../../../../assets/images/assignment-placeholder.png';
@@ -21,20 +27,20 @@ import {
 } from '../../../../../collection/collection.types';
 import { APP_PATH } from '../../../../../constants';
 import { ItemVideoDescription } from '../../../../../item/components';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../../../shared/components';
 import { DEFAULT_AUDIO_STILL } from '../../../../../shared/constants';
 import { buildLink, CustomError, formatDate, isMobileWidth } from '../../../../../shared/helpers';
 import { defaultRenderBookmarkButton } from '../../../../../shared/helpers/default-render-bookmark-button';
 import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number';
-import withUser, { UserProps } from '../../../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../../../shared/hocs/withUser';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
 
-import { BlockMediaGrid, MediaListItem } from './BlockMediaGrid';
-import { ResolvedItemOrCollectionOrAssignment } from './MediaGridWrapper.types';
+import { BlockMediaGrid, type MediaListItem } from './BlockMediaGrid';
+import { type ResolvedItemOrCollectionOrAssignment } from './MediaGridWrapper.types';
 
 interface MediaGridWrapperProps extends MediaGridBlockState {
 	searchQuery?: ButtonAction;

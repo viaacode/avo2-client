@@ -1,6 +1,8 @@
-import { ShareWithPupilsProps } from '../../shared/components';
+import { type Avo } from '@viaa/avo2-types';
+
+import { type ShareWithPupilsProps } from '../../shared/components';
 import {
-	ContributorInfo,
+	type ContributorInfo,
 	ContributorInfoRight,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';
@@ -57,13 +59,11 @@ export async function onEditContributor(
 export async function onAddNewContributor(
 	info: Partial<ContributorInfo>,
 	shareWithPupilsProps: ShareWithPupilsProps,
-	fetchContributors: () => void
+	fetchContributors: () => void,
+	inviter?: Avo.User.CommonUser
 ) {
 	try {
-		await AssignmentService.addContributor(
-			shareWithPupilsProps?.assignment?.id as string,
-			info
-		);
+		await AssignmentService.addContributor(shareWithPupilsProps?.assignment, info, inviter);
 
 		await fetchContributors();
 

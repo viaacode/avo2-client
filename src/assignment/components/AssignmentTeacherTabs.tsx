@@ -1,13 +1,13 @@
-import { IconName, Pill, PillVariants, TabProps, Tabs } from '@viaa/avo2-components';
+import { IconName, Pill, PillVariants, type TabProps, Tabs } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { FC, FunctionComponent, useMemo } from 'react';
-import { RouteComponentProps } from 'react-router';
+import React, { type FC, type FunctionComponent, useMemo } from 'react';
+import { type RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
 

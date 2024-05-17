@@ -2,28 +2,28 @@ import { type Avo } from '@viaa/avo2-types';
 import { flatten } from 'lodash-es';
 
 import {
-	BulkAddLabelsToCollectionsMutation,
-	BulkAddLabelsToCollectionsMutationVariables,
-	BulkDeleteCollectionsMutation,
-	BulkDeleteCollectionsMutationVariables,
-	BulkDeleteLabelsFromCollectionsMutation,
-	BulkDeleteLabelsFromCollectionsMutationVariables,
-	BulkUpdateAuthorForCollectionsMutation,
-	BulkUpdateAuthorForCollectionsMutationVariables,
-	BulkUpdateDateAndLastAuthorCollectionsMutation,
-	BulkUpdateDateAndLastAuthorCollectionsMutationVariables,
-	BulkUpdatePublishStateForCollectionsMutation,
-	BulkUpdatePublishStateForCollectionsMutationVariables,
-	GetCollectionActualisationsQuery,
-	GetCollectionActualisationsQueryVariables,
-	GetCollectionMarcomQuery,
-	GetCollectionMarcomQueryVariables,
-	GetCollectionQualityCheckQuery,
-	GetCollectionQualityCheckQueryVariables,
-	GetCollectionsByIdsQuery,
-	GetCollectionsByIdsQueryVariables,
-	GetCollectionsQuery,
-	GetCollectionsQueryVariables,
+	type BulkAddLabelsToCollectionsMutation,
+	type BulkAddLabelsToCollectionsMutationVariables,
+	type BulkDeleteCollectionsMutation,
+	type BulkDeleteCollectionsMutationVariables,
+	type BulkDeleteLabelsFromCollectionsMutation,
+	type BulkDeleteLabelsFromCollectionsMutationVariables,
+	type BulkUpdateAuthorForCollectionsMutation,
+	type BulkUpdateAuthorForCollectionsMutationVariables,
+	type BulkUpdateDateAndLastAuthorCollectionsMutation,
+	type BulkUpdateDateAndLastAuthorCollectionsMutationVariables,
+	type BulkUpdatePublishStateForCollectionsMutation,
+	type BulkUpdatePublishStateForCollectionsMutationVariables,
+	type GetCollectionActualisationsQuery,
+	type GetCollectionActualisationsQueryVariables,
+	type GetCollectionMarcomQuery,
+	type GetCollectionMarcomQueryVariables,
+	type GetCollectionQualityCheckQuery,
+	type GetCollectionQualityCheckQueryVariables,
+	type GetCollectionsByIdsQuery,
+	type GetCollectionsByIdsQueryVariables,
+	type GetCollectionsQuery,
+	type GetCollectionsQueryVariables,
 } from '../../shared/generated/graphql-db-operations';
 import {
 	BulkAddLabelsToCollectionsDocument,
@@ -40,7 +40,7 @@ import { CustomError } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { dataService } from '../../shared/services/data-service';
 import { RelationService } from '../../shared/services/relation-service/relation.service';
-import { TableColumnDataType } from '../../shared/types/table-column-data-type';
+import { type TableColumnDataType } from '../../shared/types/table-column-data-type';
 
 import {
 	EDITORIAL_QUERIES,
@@ -49,11 +49,11 @@ import {
 	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
 } from './collections-or-bundles.const';
 import {
-	CollectionOrBundleActualisationOverviewTableCols,
-	CollectionOrBundleMarcomOverviewTableCols,
-	CollectionOrBundleQualityCheckOverviewTableCols,
-	CollectionsOrBundlesOverviewTableCols,
-	EditorialType,
+	type CollectionOrBundleActualisationOverviewTableCols,
+	type CollectionOrBundleMarcomOverviewTableCols,
+	type CollectionOrBundleQualityCheckOverviewTableCols,
+	type CollectionsOrBundlesOverviewTableCols,
+	type EditorialType,
 } from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {

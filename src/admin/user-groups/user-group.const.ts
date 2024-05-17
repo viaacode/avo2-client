@@ -2,7 +2,7 @@ import { SpecialPermissionGroups } from '../../authentication/authentication.typ
 import { ROUTE_PARTS } from '../../shared/constants';
 import { tText } from '../../shared/helpers/translate';
 
-import { UserGroup } from './user-group.types';
+import { type UserGroup } from './user-group.types';
 
 export const USER_GROUP_PATH = {
 	USER_GROUP_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.permissions}`,
@@ -27,11 +27,12 @@ export enum SpecialUserGroup {
 	Admin = '1',
 	Teacher = '2',
 	TeacherSecondary = '3',
-	Pupil = '4',
+	PupilSecondary = '4',
 	Editor = '7',
 	EditorInChief = '8',
 	ContentPartner = '9',
 	EducativeAuthor = '10',
 	EducativePublisher = '11',
 	EducativePartner = '12',
+	PupilElementary = '29',
 }

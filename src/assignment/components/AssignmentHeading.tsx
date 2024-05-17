@@ -7,7 +7,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { InteractiveTour } from '../../shared/components';
 

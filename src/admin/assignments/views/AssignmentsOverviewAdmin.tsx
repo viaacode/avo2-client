@@ -1,29 +1,29 @@
-import { Button, ButtonToolbar, IconName, TagList, TagOption } from '@viaa/avo2-components';
+import { Button, ButtonToolbar, IconName, TagList, type TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, first, get, isNil, partition, without } from 'lodash-es';
 import React, {
-	FunctionComponent,
-	ReactNode,
+	type FunctionComponent,
+	type ReactNode,
 	useCallback,
 	useEffect,
 	useMemo,
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { AssignmentService } from '../../../assignment/assignment.service';
-import { AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
+import { type AssignmentOverviewTableColumns } from '../../../assignment/assignment.types';
 import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetAssignmentsEditStatuses';
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
-	CheckboxOption,
+	type CheckboxOption,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../../shared/components';
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
@@ -34,7 +34,7 @@ import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-e
 import { groupLomLinks } from '../../../shared/helpers/lom';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
@@ -44,7 +44,7 @@ import { TableColumnDataType } from '../../../shared/types/table-column-data-typ
 import { ADMIN_PATH } from '../../admin.const';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, {
-	FilterableColumn,
+	type FilterableColumn,
 	getFilters,
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
@@ -56,14 +56,17 @@ import {
 	NULL_FILTER,
 } from '../../shared/helpers/filters';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
-import { PickerItem } from '../../shared/types';
+import { type PickerItem } from '../../shared/types';
 import { useUserGroups } from '../../user-groups/hooks/useUserGroups';
 import {
 	GET_ASSIGNMENT_BULK_ACTIONS,
 	GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
 } from '../assignments.const';
-import { AssignmentsBulkAction, AssignmentsOverviewTableState } from '../assignments.types';
+import {
+	type AssignmentsBulkAction,
+	type AssignmentsOverviewTableState,
+} from '../assignments.types';
 import './AssignmentsOverviewAdmin.scss';
 
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
@@ -333,7 +336,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			});
 		}
 		setIsLoading(false);
-	}, [columns, tableState, generateWhereObject, tText]);
+	}, [columns, tableState, generateWhereObject, tHtml]);
 
 	useEffect(() => {
 		fetchAssignments();
@@ -546,6 +549,25 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			case 'subjects': {
 				const groupedLoms = groupLomLinks(assignment.loms);
 				return lomsToTagList(groupedLoms.subject) || '-';
+			}
+
+			case 'education_level': {
+				// TODO: update avo2-types
+				const level = (assignment as any).education_level?.label;
+				return level ? (
+					<TagList
+						swatches={false}
+						tags={[
+							{
+								id: level,
+								label: level,
+								color: undefined,
+							},
+						]}
+					/>
+				) : (
+					'-'
+				);
 			}
 
 			case 'education_levels': {

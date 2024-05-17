@@ -3,33 +3,41 @@ import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
-import React, { FunctionComponent, ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactNode,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { UrlUpdateType } from 'use-query-params';
+import { type UrlUpdateType } from 'use-query-params';
 
+import { SpecialUserGroup } from '../../../../admin/user-groups/user-group.const';
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
 import { CutFragmentForAssignmentModal } from '../../../../item/components';
-import { ItemTrimInfo } from '../../../../item/item.types';
+import { type ItemTrimInfo } from '../../../../item/item.types';
 import ItemDetail from '../../../../item/views/ItemDetail';
 import { PupilCollectionService } from '../../../../pupil-collection/pupil-collection.service';
 import { SearchFiltersAndResults } from '../../../../search/components';
-import { FilterState } from '../../../../search/search.types';
+import { type FilterState } from '../../../../search/search.types';
 import { selectSearchResults } from '../../../../search/store/selectors';
-import withUser, { UserProps } from '../../../../shared/hocs/withUser';
+import { EducationLevelId } from '../../../../shared/helpers/lom';
+import withUser, { type UserProps } from '../../../../shared/hocs/withUser';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
 import { ObjectTypesAll } from '../../../../shared/services/related-items-service';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { AppState } from '../../../../store';
+import { type AppState } from '../../../../store';
 import {
 	ENABLED_FILTERS_PUPIL_SEARCH,
 	ENABLED_ORDER_PROPERTIES_PUPIL_SEARCH,
 	ENABLED_TYPE_FILTER_OPTIONS_PUPIL_SEARCH,
 } from '../../../assignment.const';
 import { AssignmentService } from '../../../assignment.service';
-import { AssignmentType, PupilSearchFilterState } from '../../../assignment.types';
+import { AssignmentType, type PupilSearchFilterState } from '../../../assignment.types';
 
 interface AssignmentResponseSearchTabProps {
 	assignment: Avo.Assignment.Assignment | null;
@@ -38,6 +46,12 @@ interface AssignmentResponseSearchTabProps {
 	setFilterState: any;
 	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
+
+// TODO: avoid hard-coded strings?
+const ElementaryEducationLevels = ['Lager onderwijs', 'Kleuteronderwijs'].flatMap((level) => [
+	level,
+	level.toLowerCase(),
+]);
 
 const AssignmentResponseSearchTab: FunctionComponent<
 	AssignmentResponseSearchTabProps & { searchResults: Avo.Search.Search } & UserProps
@@ -71,6 +85,23 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			item?.scrollIntoView({ block: 'center' });
 		}, 100);
 	}, [searchResults]);
+
+	useEffect(() => {
+		if (
+			// Is the assignment intended for elementary
+			assignment?.education_level_id === EducationLevelId.lagerOnderwijs ||
+			// or is the user an elementary pupil
+			[SpecialUserGroup.PupilElementary]
+				.map(String)
+				.includes(String(user?.profile?.userGroupIds[0]))
+		) {
+			// Mutate to avoid render loop
+			filterState.filters = {
+				...filterState.filters,
+				educationLevel: ElementaryEducationLevels,
+			};
+		}
+	}, [assignment, filterState]);
 
 	// Events
 	const goToDetailLink = (id: string): void => {
@@ -147,7 +178,10 @@ const AssignmentResponseSearchTab: FunctionComponent<
 					object: assignment.id,
 					object_type: 'avo_assignment',
 					action: 'search',
-					resource: newFilterState.filters,
+					resource: {
+						...newFilterState.filters,
+						education_level: String(assignment?.education_level_id),
+					},
 				},
 				user
 			);

@@ -7,59 +7,59 @@ import { ItemsService } from '../admin/items/items.service';
 import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
 import { getUserGroupIds } from '../authentication/authentication.service';
 import { getProfileId } from '../authentication/helpers/get-profile-id';
-import { ItemTrimInfo } from '../item/item.types';
+import { type ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
-	ContributorInfo,
-	ContributorInfoRight,
+	type ContributorInfo,
+	type ContributorInfoRight,
 } from '../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
-	AssignmentPupilBlocksQuery,
-	AssignmentPupilBlocksQueryVariables,
-	BulkUpdateAuthorForAssignmentsMutation,
-	BulkUpdateAuthorForAssignmentsMutationVariables,
-	DeleteAssignmentResponseByIdMutation,
-	DeleteAssignmentResponseByIdMutationVariables,
-	DeleteAssignmentsByIdMutation,
-	DeleteAssignmentsByIdMutationVariables,
-	GetAssignmentBlocksQuery,
-	GetAssignmentBlocksQueryVariables,
-	GetAssignmentByTitleOrDescriptionQuery,
-	GetAssignmentByTitleOrDescriptionQueryVariables,
-	GetAssignmentIdsQuery,
-	GetAssignmentIdsQueryVariables,
-	GetAssignmentResponseByIdQuery,
-	GetAssignmentResponseByIdQueryVariables,
-	GetAssignmentResponseQuery,
-	GetAssignmentResponseQueryVariables,
-	GetAssignmentResponsesByAssignmentIdQuery,
-	GetAssignmentResponsesByAssignmentIdQueryVariables,
-	GetAssignmentResponsesQuery,
-	GetAssignmentResponsesQueryVariables,
-	GetAssignmentsAdminOverviewQuery,
-	GetAssignmentsAdminOverviewQueryVariables,
-	GetAssignmentsByOwnerOrContributorQuery,
-	GetAssignmentsByOwnerOrContributorQueryVariables,
-	GetAssignmentsByResponseOwnerIdQuery,
-	GetAssignmentsByResponseOwnerIdQueryVariables,
-	GetAssignmentWithResponseQuery,
-	GetAssignmentWithResponseQueryVariables,
-	GetContributorsByAssignmentUuidQuery,
-	GetContributorsByAssignmentUuidQueryVariables,
-	GetMaxPositionAssignmentBlocksQuery,
-	GetMaxPositionAssignmentBlocksQueryVariables,
-	IncrementAssignmentViewCountMutation,
-	IncrementAssignmentViewCountMutationVariables,
-	InsertAssignmentBlocksMutation,
-	InsertAssignmentBlocksMutationVariables,
-	InsertAssignmentResponseMutation,
-	InsertAssignmentResponseMutationVariables,
-	SoftDeleteAssignmentByIdMutation,
-	SoftDeleteAssignmentByIdMutationVariables,
-	UpdateAssignmentResponseMutation,
-	UpdateAssignmentResponseMutationVariables,
-	UpdateAssignmentUpdatedAtDateMutation,
-	UpdateAssignmentUpdatedAtDateMutationVariables,
+	type AssignmentPupilBlocksQuery,
+	type AssignmentPupilBlocksQueryVariables,
+	type BulkUpdateAuthorForAssignmentsMutation,
+	type BulkUpdateAuthorForAssignmentsMutationVariables,
+	type DeleteAssignmentResponseByIdMutation,
+	type DeleteAssignmentResponseByIdMutationVariables,
+	type DeleteAssignmentsByIdMutation,
+	type DeleteAssignmentsByIdMutationVariables,
+	type GetAssignmentBlocksQuery,
+	type GetAssignmentBlocksQueryVariables,
+	type GetAssignmentByTitleOrDescriptionQuery,
+	type GetAssignmentByTitleOrDescriptionQueryVariables,
+	type GetAssignmentIdsQuery,
+	type GetAssignmentIdsQueryVariables,
+	type GetAssignmentResponseByIdQuery,
+	type GetAssignmentResponseByIdQueryVariables,
+	type GetAssignmentResponseQuery,
+	type GetAssignmentResponseQueryVariables,
+	type GetAssignmentResponsesByAssignmentIdQuery,
+	type GetAssignmentResponsesByAssignmentIdQueryVariables,
+	type GetAssignmentResponsesQuery,
+	type GetAssignmentResponsesQueryVariables,
+	type GetAssignmentsAdminOverviewQuery,
+	type GetAssignmentsAdminOverviewQueryVariables,
+	type GetAssignmentsByOwnerOrContributorQuery,
+	type GetAssignmentsByOwnerOrContributorQueryVariables,
+	type GetAssignmentsByResponseOwnerIdQuery,
+	type GetAssignmentsByResponseOwnerIdQueryVariables,
+	type GetAssignmentWithResponseQuery,
+	type GetAssignmentWithResponseQueryVariables,
+	type GetContributorsByAssignmentUuidQuery,
+	type GetContributorsByAssignmentUuidQueryVariables,
+	type GetMaxPositionAssignmentBlocksQuery,
+	type GetMaxPositionAssignmentBlocksQueryVariables,
+	type IncrementAssignmentViewCountMutation,
+	type IncrementAssignmentViewCountMutationVariables,
+	type InsertAssignmentBlocksMutation,
+	type InsertAssignmentBlocksMutationVariables,
+	type InsertAssignmentResponseMutation,
+	type InsertAssignmentResponseMutationVariables,
+	type SoftDeleteAssignmentByIdMutation,
+	type SoftDeleteAssignmentByIdMutationVariables,
+	type UpdateAssignmentResponseMutation,
+	type UpdateAssignmentResponseMutationVariables,
+	type UpdateAssignmentUpdatedAtDateMutation,
+	type UpdateAssignmentUpdatedAtDateMutationVariables,
 } from '../shared/generated/graphql-db-operations';
 import {
 	AssignmentPupilBlocksDocument,
@@ -87,21 +87,27 @@ import {
 	UpdateAssignmentUpdatedAtDateDocument,
 } from '../shared/generated/graphql-db-react-query';
 import {
-	App_Assignments_V2_Insert_Input,
-	App_Assignments_V2_Set_Input,
-	App_Pupil_Collection_Blocks,
+	type App_Assignments_V2_Insert_Input,
+	type App_Assignments_V2_Set_Input,
+	type App_Pupil_Collection_Blocks,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
-import { CustomError, getEnv } from '../shared/helpers';
+import {
+	CustomError,
+	getEnv,
+	isUserDoubleTeacher,
+	isUserSecondaryTeacher,
+} from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
+import { EducationLevelId } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
 import { RelationService } from '../shared/services/relation-service/relation.service';
 import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
-import { Positioned } from '../shared/types';
-import { TableColumnDataType } from '../shared/types/table-column-data-type';
+import { type Positioned } from '../shared/types';
+import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
 	ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
@@ -111,9 +117,9 @@ import {
 import { reorderBlockPositions } from './assignment.helper';
 import {
 	AssignmentBlockType,
-	AssignmentOverviewTableColumns,
+	type AssignmentOverviewTableColumns,
 	AssignmentType,
-	PupilCollectionFragment,
+	type PupilCollectionFragment,
 } from './assignment.types';
 import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
 import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';
@@ -187,8 +193,14 @@ export class AssignmentService {
 				}
 			}
 
-			if (getUserGroupIds(user).includes(SpecialUserGroup.Pupil)) {
-				// Filter on academic year for students
+			// Filter on academic year for students
+			if (
+				getUserGroupIds(user).some((id) =>
+					[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+						.map(String)
+						.includes(id)
+				)
+			) {
 				filterArray.push({
 					_and: [
 						{ deadline_at: { _gte: startOfAcademicYear().toISOString() } },
@@ -509,21 +521,35 @@ export class AssignmentService {
 	static async duplicateAssignment(
 		newTitle: string,
 		initialAssignment: Partial<Avo.Assignment.Assignment> | null,
-		profileId: string
+		user: Avo.User.User
 	): Promise<Avo.Assignment.Assignment> {
-		if (!initialAssignment || !initialAssignment.id) {
+		const ownerProfileId = user.profile?.id;
+
+		if (!initialAssignment || !initialAssignment.id || !ownerProfileId) {
 			throw new CustomError(
-				'Failed to copy assignment because the duplicateAssignment function received an empty assignment',
+				'Failed to copy assignment because the duplicateAssignment function received an empty assignment or was missing the intended user',
 				null,
-				{ newTitle, initialAssignment }
+				{ newTitle, initialAssignment, ownerProfileId }
 			);
 		}
+
+		const commonUser = {
+			loms: user.profile?.loms || [],
+			userGroup: { id: user.profile?.userGroupIds[0] },
+		};
+
+		// See table in AVO-3160
+		const education_level_id = isUserDoubleTeacher(commonUser)
+			? initialAssignment.education_level_id
+			: isUserSecondaryTeacher(commonUser)
+			? EducationLevelId.secundairOnderwijs
+			: EducationLevelId.lagerOnderwijs;
 
 		// clone the assignment
 		const newAssignment: Partial<Avo.Assignment.Assignment> = {
 			...cloneDeep(initialAssignment),
 			title: newTitle,
-			owner_profile_id: profileId,
+			owner_profile_id: ownerProfileId,
 			available_at: new Date().toISOString(),
 			deadline_at: null,
 			answer_url: null,
@@ -533,6 +559,7 @@ export class AssignmentService {
 			contributors: [],
 			labels: [],
 			note: null,
+			education_level_id,
 		};
 
 		delete newAssignment.owner;
@@ -545,7 +572,7 @@ export class AssignmentService {
 				...newAssignment,
 				blocks,
 			},
-			profileId
+			ownerProfileId
 		);
 
 		if (!duplicatedAssignment) {
@@ -1096,6 +1123,7 @@ export class AssignmentService {
 				resource: {
 					type: 'collection',
 					id: collection.id,
+					education_level: String(assignment?.education_level_id),
 				},
 			},
 			user
@@ -1459,10 +1487,15 @@ export class AssignmentService {
 	}
 
 	static async addContributor(
-		assignmentId: string,
-		user: Partial<ContributorInfo>
+		assignment: Avo.Assignment.Assignment | null | undefined,
+		invitee: Partial<ContributorInfo>,
+		inviter?: Avo.User.CommonUser
 	): Promise<void> {
-		if (isNil(user.email) || isEmpty(user.email)) {
+		if (!assignment) return;
+
+		const assignmentId = assignment.id;
+
+		if (!invitee.email) {
 			throw new CustomError('User has no email address');
 		}
 
@@ -1471,16 +1504,33 @@ export class AssignmentService {
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor`,
 					query: {
-						email: user.email,
-						rights: user.rights,
+						email: invitee.email,
+						rights: invitee.rights,
 					},
 				}),
 				{ method: 'POST' }
 			);
+
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { loms, ...rest } = invitee;
+
+			trackEvents(
+				{
+					object: assignmentId,
+					object_type: 'assignment',
+					action: 'share',
+					resource: {
+						education_level: assignment.education_level_id,
+						...rest,
+					},
+				},
+				inviter
+			);
 		} catch (err) {
 			throw new CustomError('Failed to add assignment contributor', err, {
 				assignmentId,
-				user,
+				invitee,
+				inviter,
 			});
 		}
 	}

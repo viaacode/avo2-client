@@ -1,13 +1,13 @@
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatTimestamp } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -18,9 +18,9 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { GET_PUBLISH_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import {
-	UnpublishedItem,
-	UnpublishedItemsOverviewTableCols,
-	UnpublishedItemsTableState,
+	type UnpublishedItem,
+	type UnpublishedItemsOverviewTableCols,
+	type UnpublishedItemsTableState,
 } from '../items.types';
 
 type PublishItemsOverviewProps = DefaultSecureRouteProps;

@@ -19,15 +19,15 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
-import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
+import React, { type FunctionComponent, type ReactNode, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Dispatch } from 'redux';
+import { type Dispatch } from 'redux';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import {
 	getLoginResponse,
@@ -43,14 +43,14 @@ import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInpu
 import { CustomError, formatDate, getEnv } from '../../shared/helpers';
 import { groupLomLinks, groupLoms } from '../../shared/helpers/lom';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { OrganisationService } from '../../shared/services/organizations-service';
 import { ToastService } from '../../shared/services/toast-service';
 import store from '../../store';
 import { USERS_IN_SAME_COMPANY_COLUMNS } from '../settings.const';
 import { SettingsService } from '../settings.service';
-import { UsersInSameCompanyColumn } from '../settings.types';
+import { type UsersInSameCompanyColumn } from '../settings.types';
 
 import './Profile.scss';
 
@@ -108,7 +108,9 @@ const Profile: FunctionComponent<
 
 	const isExceptionAccount = commonUser?.isException || false;
 
-	const isPupil = commonUser?.userGroup?.id === SpecialUserGroup.Pupil;
+	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+		.map(String)
+		.includes(String(commonUser.userGroup?.id));
 
 	useEffect(() => {
 		const tempUiPermissions = {

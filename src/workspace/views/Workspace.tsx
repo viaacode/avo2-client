@@ -13,7 +13,7 @@ import {
 	Pill,
 	PillVariants,
 	Select,
-	SelectOption,
+	type SelectOption,
 	Spacer,
 	Tabs,
 	Toolbar,
@@ -23,11 +23,17 @@ import {
 import { PermissionName } from '@viaa/avo2-types';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, get, isEmpty } from 'lodash-es';
-import React, { FunctionComponent, ReactText, useCallback, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
 
 import { AssignmentOverview } from '../../assignment/views';
-import { DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
+import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import CollectionOrBundleOverview from '../../collection/components/CollectionOrBundleOverview';
@@ -36,11 +42,11 @@ import {
 	ControlledDropdown,
 	InteractiveTour,
 	LoadingErrorLoadedComponent,
-	LoadingInfo,
+	type LoadingInfo,
 } from '../../shared/components';
 import { buildLink, navigate } from '../../shared/helpers';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useGetWorkspaceCounts } from '../hooks/useGetWorkspaceCounts';
 import {
@@ -53,7 +59,7 @@ import {
 	QUICK_LANE_ID,
 	WORKSPACE_TAB_ID_TO_COUNT_ID,
 } from '../workspace.const';
-import { NavTab, TabFilter, TabView, TabViewMap } from '../workspace.types';
+import { type NavTab, type TabFilter, type TabView, type TabViewMap } from '../workspace.types';
 
 import BookmarksOverview from './BookmarksOverview';
 import OrganisationContentOverview from './OrganisationContentOverview';
@@ -138,7 +144,7 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 					),
 				});
 			});
-	}, [user, tText, setPermissions]);
+	}, [user, tHtml]);
 
 	// Make map for available tab views
 	useEffect(() => {

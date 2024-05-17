@@ -1,8 +1,8 @@
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { formatDate, formatTimestamp } from '../../helpers';
-import { QuickLaneUrlObject } from '../../types';
+import { type QuickLaneUrlObject } from '../../types';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
 
 export interface QuickLaneFilterTableCellProps {

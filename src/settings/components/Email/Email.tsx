@@ -10,21 +10,21 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { keys } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { StringParam, useQueryParams } from 'use-query-params';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { CustomError } from '../../../shared/helpers';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import {
 	CampaignMonitorService,
-	NewsletterPreferences,
+	type NewsletterPreferences,
 } from '../../../shared/services/campaign-monitor-service';
 import { ToastService } from '../../../shared/services/toast-service';
-import { NewsletterList } from '../../../shared/types';
+import { type NewsletterList } from '../../../shared/types';
 import { GET_NEWSLETTER_LABELS } from '../../settings.const';
 
 import { useGetEmailPreferences } from './hooks/getEmailPreferences';

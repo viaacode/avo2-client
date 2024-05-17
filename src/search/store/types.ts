@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { Action } from 'redux';
+import { type Action } from 'redux';
 
 export enum SearchActionTypes {
 	SET_RESULTS_LOADING = '@@search/SET_RESULTS_LOADING',
@@ -18,11 +18,6 @@ export interface SetSearchResultsLoadingAction extends Action {
 export interface SetSearchResultsErrorAction extends Action {
 	error: boolean;
 }
-
-export type SearchAction =
-	| SetSearchResultsSuccessAction
-	| SetSearchResultsLoadingAction
-	| SetSearchResultsErrorAction;
 
 export interface SearchState {
 	readonly data: Avo.Search.Search | null;

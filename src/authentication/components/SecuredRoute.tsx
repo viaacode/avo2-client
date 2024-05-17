@@ -1,16 +1,16 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { ComponentType, FunctionComponent, useEffect } from 'react';
+import React, { type ComponentType, type FunctionComponent, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, RouteComponentProps, withRouter } from 'react-router';
-import { Dispatch } from 'redux';
+import { Redirect, Route, type RouteComponentProps, withRouter } from 'react-router';
+import { type Dispatch } from 'redux';
 
 import BundleDetail from '../../bundle/views/BundleDetail';
 import { CollectionDetail } from '../../collection/views';
 import { APP_PATH } from '../../constants';
 import { buildLink } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
 import { isProfileComplete } from '../helpers/get-profile-info';
 import { redirectToClientPage } from '../helpers/redirects';

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 // Given a list on conditions and matching components, it builds a list of components where the matching condition is truthy
 export function expandArray(...conditionsAndComponents: (boolean | ReactNode)[]): ReactNode[] {

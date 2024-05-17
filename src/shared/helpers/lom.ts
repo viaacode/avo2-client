@@ -1,8 +1,7 @@
-import { type Avo } from '@viaa/avo2-types';
-import { LomSchemeType, LomType } from '@viaa/avo2-types';
+import { type Avo, LomSchemeType, type LomType } from '@viaa/avo2-types';
 import { compact, groupBy, map } from 'lodash-es';
 
-import { LomFieldsByScheme } from '../types/lom';
+import { type LomFieldsByScheme } from '../types/lom';
 
 export enum EducationLevelId {
 	kleuteronderwijs = 'https://w3id.org/onderwijs-vlaanderen/id/structuur/kleuteronderwijs',

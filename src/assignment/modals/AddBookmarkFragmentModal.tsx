@@ -12,16 +12,23 @@ import {
 	ModalFooterRight,
 	Spacer,
 	Table,
-	TableColumn,
+	type TableColumn,
 	TextInput,
 	Thumbnail,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { FC, FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	type FC,
+	type FunctionComponent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { compose } from 'redux';
 
-import { LoadingErrorLoadedComponent, LoadingInfo } from '../../shared/components';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError, formatDate, isMobileWidth } from '../../shared/helpers';
 import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
 import { tText } from '../../shared/helpers/translate';
@@ -30,7 +37,7 @@ import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
-import { BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkInfo } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 

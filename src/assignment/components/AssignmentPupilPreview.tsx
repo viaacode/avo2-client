@@ -1,11 +1,19 @@
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { Dispatch, FC, FunctionComponent, SetStateAction, useState } from 'react';
+import React, {
+	type Dispatch,
+	type FC,
+	type FunctionComponent,
+	type SetStateAction,
+	useMemo,
+	useState,
+} from 'react';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import { isMobileWidth } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import { EducationLevelId } from '../../shared/helpers/lom';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
@@ -49,13 +57,33 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 			onClick={onClose}
 		/>
 	);
+
+	const alertText = useMemo(() => {
+		const level = assignment.education_level_id;
+
+		switch (level) {
+			case EducationLevelId.lagerOnderwijs:
+				return tHtml(
+					'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-een-leerling-lager'
+				);
+
+			case EducationLevelId.secundairOnderwijs:
+				return tHtml(
+					'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-een-leerling-secundair'
+				);
+
+			default:
+				return tHtml(
+					'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-leerling'
+				);
+		}
+	}, [assignment, tHtml]);
+
 	return (
 		<>
 			<AlertBar
 				icon={IconName.info}
-				textLeft={tHtml(
-					'assignment/components/assignment-pupil-preview___je-bent-aan-het-kijken-als-leerling'
-				)}
+				textLeft={alertText}
 				contentRight={renderClosePreviewButton()}
 			/>
 			{assignmentResponse && (

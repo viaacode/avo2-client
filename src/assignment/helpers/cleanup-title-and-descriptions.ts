@@ -2,8 +2,8 @@ import { type Avo } from '@viaa/avo2-types';
 
 import {
 	AssignmentBlockType,
-	EditableAssignmentBlock,
-	EditablePupilCollectionFragment,
+	type EditableAssignmentBlock,
+	type EditablePupilCollectionFragment,
 } from '../assignment.types';
 import { AssignmentBlockItemDescriptionType } from '../components/AssignmentBlockDescriptionButtons';
 

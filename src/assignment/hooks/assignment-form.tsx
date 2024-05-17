@@ -1,6 +1,5 @@
-import { type Avo } from '@viaa/avo2-types';
-import { ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { type Avo, type ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
+import { type Dispatch, type SetStateAction, useState } from 'react';
 
 import { ASSIGNMENT_FORM_DEFAULT } from '../assignment.const';
 
@@ -28,6 +27,8 @@ export interface AssignmentFields {
 	blocks?: Avo.Assignment.Block[];
 	labels?: { assignment_label: Avo.Assignment.Label }[];
 	share_type?: ShareWithColleagueTypeEnum; // Only available when fetching assignments from the assignments_v2_overview table
+	education_level_id?: string;
+	color?: string;
 }
 
 export type useAssignmentFormState = [

@@ -1,7 +1,7 @@
-import { FlowplayerSourceItem, FlowplayerSourceList } from '@meemoo/react-components';
+import { type FlowplayerSourceItem, type FlowplayerSourceList } from '@meemoo/react-components';
 import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';

@@ -1,6 +1,6 @@
 import { sortBy } from 'lodash-es';
 
-import { Positioned } from '../../shared/types';
+import { type Positioned } from '../../shared/types';
 import { setBlockPositionToIndex } from '../assignment.helper';
 
 export function insertMultipleAtPosition(list: Positioned[], ...items: Positioned[]): Positioned[] {

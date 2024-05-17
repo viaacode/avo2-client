@@ -10,7 +10,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
-import React, { FunctionComponent, ReactNode, useMemo } from 'react';
+import React, { type FunctionComponent, type ReactNode, useMemo } from 'react';
 
 import { BLOCK_ITEM_ICONS } from '../../shared/components/BlockList/BlockList.consts';
 import useTranslation from '../../shared/hooks/useTranslation';

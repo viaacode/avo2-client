@@ -1,6 +1,6 @@
 import { decode } from 'he';
-import { TOptions } from 'i18next';
-import React, { ReactNode } from 'react';
+import { type TOptions } from 'i18next';
+import React, { type ReactNode } from 'react';
 
 import Html from '../components/Html/Html';
 import i18n from '../translations/i18n';

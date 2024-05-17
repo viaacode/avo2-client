@@ -1,5 +1,5 @@
 import { Container, Flex, Spacer } from '@viaa/avo2-components';
-import React, { FC, ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { ReactComponent as TeacherSvg } from '../../../assets/images/leerkracht.svg';
 

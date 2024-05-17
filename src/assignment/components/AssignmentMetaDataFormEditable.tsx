@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Button,
 	Column,
 	Container,
@@ -11,11 +12,12 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { map } from 'lodash-es';
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import React, { type Dispatch, type FC, type SetStateAction, useState } from 'react';
+import { type UseFormSetValue } from 'react-hook-form';
 
 import { ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { tHtml } from '../../shared/helpers/translate';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 type AssignmentMetaDataFormEditableProps = {
@@ -61,7 +63,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 					<Form>
 						<Spacer margin="bottom">
 							<Grid>
-								<Column size="3-7">
+								<Column size="3-7" className="u-spacer-bottom">
 									<LomFieldsInput
 										loms={
 											(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) ||
@@ -129,6 +131,12 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 								</Column>
 
 								<Column size="3-5">
+									<Alert className="u-spacer-bottom">
+										{tHtml(
+											'assignment/components/assignment-meta-data-form-editable___deze-gegevens-dienen-enkel-om-een-opdracht-te-publiceren-en-om-deze-op-te-nemen-in-de-zoek-binnen-het-archief-voor-onderwijs'
+										)}
+									</Alert>
+
 									<FormGroup
 										label={tText(
 											'assignment/components/assignment-meta-data-form-editable___cover-afbeelding'

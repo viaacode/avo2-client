@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
-import { AppState } from '../../store';
+import { type AppState } from '../../store';
 
 export const selectLogin = ({ loginState }: AppState) => {
 	return loginState?.data;
@@ -20,12 +20,4 @@ export const selectUser = ({ loginState }: AppState) => {
 
 export const selectCommonUser = ({ loginState }: AppState) => {
 	return (loginState?.data as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
-};
-
-export const selectLoginMessage = ({ loginState }: AppState) => {
-	return loginState?.data?.message;
-};
-
-export const selectAcceptedConditions = ({ loginState }: AppState) => {
-	return (loginState?.data as Avo.Auth.LoginResponseLoggedIn)?.acceptedConditions;
 };

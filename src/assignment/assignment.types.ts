@@ -1,10 +1,10 @@
-import { TableColumn } from '@viaa/avo2-components';
+import { type TableColumn } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 
-import { FilterState } from '../search/search.types';
-import { Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types';
+import { type FilterState } from '../search/search.types';
+import { type Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types';
 
-import { AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
+import { type AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
 
 export type PupilCollectionFragment = Avo.Core.BlockItemBase & {
 	fragment_id?: string | null;
@@ -42,7 +42,8 @@ export type AssignmentOverviewTableColumns =
 	| 'contributors'
 	| 'actions'
 	| 'share_type'
-	| 'is_public';
+	| 'is_public'
+	| 'education_level';
 
 export type AssignmentResponseTableColumns =
 	| 'pupil'

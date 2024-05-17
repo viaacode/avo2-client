@@ -1,4 +1,4 @@
-import { IconName, Pill, PillVariants, TabProps } from '@viaa/avo2-components';
+import { IconName, Pill, PillVariants, type TabProps } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { useCallback, useMemo, useState } from 'react';
 
@@ -80,7 +80,7 @@ export function useAssignmentPupilTabs(
 				...item,
 				active: item.id === activeTab,
 			})),
-		[assignment, tText, activeTab, numOfPupilCollectionFragments, animatePill]
+		[assignment, tText, tHtml, activeTab, numOfPupilCollectionFragments, animatePill]
 	);
 
 	const onTabClick = useCallback(

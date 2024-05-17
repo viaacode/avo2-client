@@ -1,10 +1,10 @@
 import { ContentPageEdit } from '@meemoo/admin-core-ui';
 import type { ContentPageDetailProps } from '@meemoo/admin-core-ui';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 import { compose } from 'redux';
 
-import { DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import withUser, { UserProps } from '../../../shared/hocs/withUser';
+import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageDetailPage: FC<

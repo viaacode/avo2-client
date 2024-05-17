@@ -4,8 +4,8 @@ import { type Avo } from '@viaa/avo2-types';
 import { subMinutes } from 'date-fns';
 import { compact } from 'lodash-es';
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-import { Action, Dispatch } from 'redux';
+import { type RouteComponentProps } from 'react-router-dom';
+import { type Action, type Dispatch } from 'redux';
 
 import { getEnv } from '../../shared/helpers';
 import { tText } from '../../shared/helpers/translate';
@@ -15,11 +15,11 @@ import { logoutAndRedirectToLogin } from '../helpers/redirects';
 
 import {
 	LoginActionTypes,
-	LoginState,
-	SetAcceptConditionsAction,
-	SetLoginErrorAction,
-	SetLoginLoadingAction,
-	SetLoginSuccessAction,
+	type LoginState,
+	type SetAcceptConditionsAction,
+	type SetLoginErrorAction,
+	type SetLoginLoadingAction,
+	type SetLoginSuccessAction,
 } from './types';
 
 let checkSessionTimeoutTimerId: number | null = null;

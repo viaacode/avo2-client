@@ -1,16 +1,16 @@
 import { Button, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, map } from 'lodash-es';
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useEffect, useState } from 'react';
 
 import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import withUser, { UserProps } from '../../hocs/withUser';
+import withUser, { type UserProps } from '../../hocs/withUser';
 import LomFieldsInput from '../LomFieldsInput/LomFieldsInput';
 
 import { isShareable } from './QuickLaneModal.helpers';
-import { QuickLaneModalProps } from './QuickLaneModal.types';
+import { type QuickLaneModalProps } from './QuickLaneModal.types';
 
 interface QuickLaneModalPublicationTabProps {
 	onComplete?: () => void;

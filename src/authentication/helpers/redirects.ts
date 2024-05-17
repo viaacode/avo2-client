@@ -1,10 +1,10 @@
 import { type Avo } from '@viaa/avo2-types';
 import { get, isString, omit, trimEnd, trimStart } from 'lodash-es';
 import queryString from 'query-string';
-import { RouteComponentProps } from 'react-router-dom';
+import { type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
-import { ErrorViewQueryParams } from '../../error/views/ErrorView';
+import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { getEnv } from '../../shared/helpers';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
@@ -176,16 +176,6 @@ export function redirectToExternalPage(
 	} else {
 		window.location.href = link;
 	}
-}
-
-export function toAbsoluteUrl(link: string): string {
-	if (link.includes('//')) {
-		return link;
-	}
-	if (link.startsWith('www')) {
-		return `//${link}`;
-	}
-	return `${trimEnd(window.location.origin, '/')}/${trimStart(link, '/')}`;
 }
 
 export function getBaseUrl(location: RouteComponentProps['location']): string {

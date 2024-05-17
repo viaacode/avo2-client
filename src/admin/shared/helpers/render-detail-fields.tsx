@@ -1,9 +1,8 @@
 import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import { get, isBoolean, isNil, isString } from 'lodash-es';
-import React, { ReactElement, ReactNode } from 'react';
+import React, { type ReactElement, type ReactNode } from 'react';
 
 import { formatDate } from '../../../shared/helpers';
-import { stringsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { tText } from '../../../shared/helpers/translate';
 
 export function renderDetailRow(value: ReactNode, label: string): ReactElement {
@@ -42,17 +41,5 @@ export function renderDateDetailRows(
 	return propAndTranslations.map((propAndTranslation) => {
 		const value = get(obj, propAndTranslation[0]);
 		return renderDetailRow(value ? formatDate(value) : '-', propAndTranslation[1]);
-	});
-}
-
-export function renderMultiOptionDetailRows(
-	obj: any,
-	propAndTranslations: [string, string][]
-): ReactElement[] {
-	return propAndTranslations.map((propAndTranslation) => {
-		return renderDetailRow(
-			obj[propAndTranslation[0]] ? stringsToTagList(obj[propAndTranslation[0]]) : '-',
-			propAndTranslation[1]
-		);
 	});
 }

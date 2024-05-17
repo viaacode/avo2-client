@@ -1,9 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
-import { goToVideoDetailPage } from '../helpers/go-to-video-detail-page';
-import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
 import { createCollection } from '../helpers/create-collection';
+import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
+import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
 
 /**
  * New: https://docs.google.com/spreadsheets/d/1IvhK0v0HSntCwTcXiFseHargwwWwpoCkDMjmMehaDMA/edit#gid=0
@@ -13,7 +12,7 @@ import { createCollection } from '../helpers/create-collection';
  *
  */
 
-test('T26: Fragment detail - Knip en voeg toe aan nieuwe collectie', async ({ page, context }) => {
+test('T26: Fragment detail - Knip en voeg toe aan nieuwe collectie', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,

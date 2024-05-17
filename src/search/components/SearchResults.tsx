@@ -10,12 +10,12 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
+import React, { type FunctionComponent } from 'react';
 
 import placeholderImage from '../../assets/images/assignment-placeholder.png';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { CONTENT_TYPE_TO_EVENT_CONTENT_TYPE_SIMPLIFIED } from '../../shared/services/bookmarks-views-plays-service';
-import { SearchResultsProps } from '../search.types';
+import { type SearchResultsProps } from '../search.types';
 
 import SearchResultItem from './SearchResultItem';
 

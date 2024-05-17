@@ -1,16 +1,16 @@
-import { RichEditorState } from '@meemoo/react-components';
+import { type RichEditorState } from '@meemoo/react-components';
 import { type Avo } from '@viaa/avo2-types';
-import immer, { Draft } from 'immer';
+import immer, { type Draft } from 'immer';
 import { cloneDeep } from 'lodash-es';
 
 import { tHtml } from '../../../../shared/helpers/translate';
 import { ToastService } from '../../../../shared/services/toast-service';
-import { ValueOf } from '../../../../shared/types';
+import { type ValueOf } from '../../../../shared/types';
 import { InteractiveTourService } from '../../interactive-tour.service';
 import {
-	EditableInteractiveTour,
+	type EditableInteractiveTour,
 	InteractiveTourEditActionType,
-	InteractiveTourState,
+	type InteractiveTourState,
 } from '../../interactive-tour.types';
 
 type StepPropUpdateAction = {

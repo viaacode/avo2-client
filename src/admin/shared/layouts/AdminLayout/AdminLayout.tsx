@@ -1,5 +1,5 @@
 import { Container, useSlot } from '@viaa/avo2-components';
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { type FunctionComponent, type ReactNode } from 'react';
 
 import { TopBar } from '../../components';
 

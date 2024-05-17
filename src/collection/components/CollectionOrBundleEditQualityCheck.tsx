@@ -11,17 +11,17 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { FunctionComponent } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { type FunctionComponent } from 'react';
+import { type RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
-import { PickerItem } from '../../admin/shared/types';
+import { type PickerItem } from '../../admin/shared/types';
 import { getFullName, toDateObject } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { booleanToOkNok, okNokToBoolean } from '../helpers/ok-nok-parser';
 
-import { CollectionAction } from './CollectionOrBundleEdit';
+import { type CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditQualityCheckProps {
 	collection: Avo.Collection.Collection;

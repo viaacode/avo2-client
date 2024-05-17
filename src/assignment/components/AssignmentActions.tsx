@@ -1,6 +1,6 @@
 import {
 	Button,
-	ButtonProps,
+	type ButtonProps,
 	Dropdown,
 	DropdownButton,
 	DropdownContent,
@@ -10,15 +10,15 @@ import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { noop } from 'lodash-es';
-import React, { FunctionComponent, useMemo, useState } from 'react';
+import React, { type FunctionComponent, useMemo, useState } from 'react';
 
 import { APP_PATH } from '../../constants';
-import { ShareDropdown, ShareWithPupilsProps } from '../../shared/components';
-import { ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
-import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
+import { ShareDropdown, type ShareWithPupilsProps } from '../../shared/components';
+import { type ShareDropdownProps } from '../../shared/components/ShareDropdown/ShareDropdown';
+import { type ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	onAddNewContributor,
@@ -26,9 +26,9 @@ import {
 	onEditContributor,
 } from '../helpers/assignment-share-with-collegue-handlers';
 
-import DeleteAssignmentButton, { DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
+import DeleteAssignmentButton, { type DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
 import DuplicateAssignmentButton, {
-	DuplicateAssignmentButtonProps,
+	type DuplicateAssignmentButtonProps,
 } from './DuplicateAssignmentButton';
 
 interface ShareProps extends ShareWithPupilsProps {
@@ -51,19 +51,21 @@ interface AssignmentActionsProps {
 	refetchAssignment?: () => void;
 	publish?: Partial<ButtonProps>;
 	route: string;
+	assignment?: Partial<Avo.Assignment.Assignment>;
 }
 
 const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> = ({
-	view,
-	preview,
-	overflow,
-	duplicate,
-	remove,
-	shareWithColleaguesOrPupilsProps,
-	refetchAssignment = noop,
-	publish,
-	route,
+	assignment,
 	commonUser,
+	duplicate,
+	overflow,
+	preview,
+	publish,
+	refetchAssignment = noop,
+	remove,
+	route,
+	shareWithColleaguesOrPupilsProps,
+	view,
 }) => {
 	const { tText } = useTranslation();
 	const [isOverflowDropdownOpen, setOverflowDropdownOpen] = useState<boolean>(false);
@@ -156,7 +158,8 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 								onAddNewContributor(
 									info,
 									shareWithColleaguesOrPupilsProps,
-									shareWithColleaguesOrPupilsProps.fetchContributors
+									shareWithColleaguesOrPupilsProps.fetchContributors,
+									commonUser
 								)
 							}
 							{...shareDropdownProps}
@@ -167,6 +170,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							assignment={assignment}
 						/>
 					</div>
 				),

@@ -1,10 +1,10 @@
-import { TOptions } from 'i18next';
-import { ReactNode } from 'react';
+import { type TOptions } from 'i18next';
+import { type ReactNode } from 'react';
 import {
-	DefaultNamespace,
-	Namespace,
+	type DefaultNamespace,
+	type Namespace,
 	useTranslation as useI18NextTranslation,
-	UseTranslationResponse,
+	type UseTranslationResponse,
 } from 'react-i18next';
 
 import { tHtml, tText } from '../../helpers/translate';

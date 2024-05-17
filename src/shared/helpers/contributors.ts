@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 
 import {
-	ContributorInfo,
+	type ContributorInfo,
 	ContributorInfoRight,
 } from '../components/ShareWithColleagues/ShareWithColleagues.types';
 
@@ -34,6 +34,7 @@ export const transformContributorsToSimpleContributors = (
 					contributor?.profile?.organisation?.logo_url || contributor.profile?.avatar,
 				profileId: contributor.profile_id,
 				contributorId: contributor.id,
+				loms: contributor.profile?.loms,
 			} as ContributorInfo;
 		});
 		return defaultContributors.concat(mappedContributors);

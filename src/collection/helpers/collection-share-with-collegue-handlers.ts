@@ -1,5 +1,5 @@
 import {
-	ContributorInfo,
+	type ContributorInfo,
 	ContributorInfoRight,
 } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { tText } from '../../shared/helpers/translate';

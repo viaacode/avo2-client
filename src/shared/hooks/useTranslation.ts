@@ -1,7 +1,7 @@
 import {
-	DefaultNamespace,
+	type DefaultNamespace,
 	useTranslation as useTranslationI18n,
-	UseTranslationResponse,
+	type UseTranslationResponse,
 } from 'react-i18next';
 
 import { tHtml, tText } from '../helpers/translate';

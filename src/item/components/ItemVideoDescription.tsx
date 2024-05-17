@@ -13,22 +13,22 @@ import { type Avo } from '@viaa/avo2-types';
 import { debounce } from 'lodash-es';
 import React, {
 	createRef,
-	FunctionComponent,
-	ReactNode,
-	RefObject,
+	type FunctionComponent,
+	type ReactNode,
+	type RefObject,
 	useEffect,
 	useRef,
 	useState,
 } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { Scrollbar } from 'react-scrollbars-custom';
 import { compose } from 'redux';
 
 import { FlowPlayerWrapper } from '../../shared/components';
-import { CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { stripHtml } from '../../shared/helpers';
-import withUser, { UserProps } from '../../shared/hocs/withUser';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
