@@ -151,41 +151,6 @@ pipeline {
 			}
 		}
 
-		stage('drop DB') {
-			agent { label 'node' }
-			when {
-				anyOf {
-					changeRequest target: 'develop'
-					branch 'develop'
-				}
-			}
-			steps {
-				script {
-					configFileProvider(
-						[configFile(fileId: 'end2end_env', variable: 'end2end_env')]) {
-								sh ('cat $end2end_env > .env')
-
-						loadEnvironmentVariablesFromFile('.env')
-						sh '''
-						#!/bin/bash
-						#source .env
-						export PGUSER=$PGUSER
-						export PGPASSWORD=$PGPASSWORD
-						export PGHOST=$PGHOST
-						export PGDATABASE=postgres
-						export PGUSER=avo-db
-						export PGDATABASE=postgres
-						psql <<EOF
-            DROP DATABASE "avo-db" WITH (FORCE)
-            CREATE DATABASE "avo-db";
-            EOF
-						'''
-
-					}
-
-				}
-			}
-	}
 
 
 		stage('e2e-prepare') {
