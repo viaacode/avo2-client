@@ -444,6 +444,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
 					onConfirm={selectLevel}
+					className="c-select-education-level--create"
 				/>
 			)}
 		</>
