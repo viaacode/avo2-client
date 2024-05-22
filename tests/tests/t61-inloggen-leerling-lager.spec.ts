@@ -3,7 +3,7 @@ import { expect, type Locator, test } from '@playwright/test';
 import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cookies';
 import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
 
-test('T62: Inloggen leerling lager', async ({ page }) => {
+test('T61: Inloggen leerling lager', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
