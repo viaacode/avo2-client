@@ -48,10 +48,12 @@ interface AssignmentResponseSearchTabProps {
 }
 
 // TODO: avoid hard-coded strings?
-const ElementaryEducationLevels = ['Lager onderwijs', 'Kleuteronderwijs'].flatMap((level) => [
-	level,
-	level.toLowerCase(),
-]);
+const ElementaryEducationDegrees = [
+	'Lager 1e graad',
+	'Lager 2e graad',
+	'Lager 3e graad',
+	'Secundair 1e graad',
+].flatMap((level) => [level, level.toLowerCase()]);
 
 const AssignmentResponseSearchTab: FunctionComponent<
 	AssignmentResponseSearchTabProps & { searchResults: Avo.Search.Search } & UserProps
@@ -98,7 +100,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			// Mutate to avoid render loop
 			filterState.filters = {
 				...filterState.filters,
-				educationLevel: ElementaryEducationLevels,
+				educationDegree: ElementaryEducationDegrees,
 			};
 		}
 	}, [assignment, filterState]);
