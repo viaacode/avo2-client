@@ -98,7 +98,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				.includes(String(user?.profile?.userGroupIds[0]))
 		) {
 			if (filterState.filters?.educationDegree !== ElementaryEducationDegrees) {
-				handleNewFilterState({
+				setFilterState({
 					...filterState,
 					filters: {
 						...filterState.filters,
