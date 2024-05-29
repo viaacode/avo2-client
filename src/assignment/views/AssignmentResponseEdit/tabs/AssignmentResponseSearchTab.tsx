@@ -97,11 +97,15 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				.map(String)
 				.includes(String(user?.profile?.userGroupIds[0]))
 		) {
-			// Mutate to avoid render loop
-			filterState.filters = {
-				...filterState.filters,
-				educationDegree: ElementaryEducationDegrees,
-			};
+			if (filterState.filters?.educationDegree !== ElementaryEducationDegrees) {
+				handleNewFilterState({
+					...filterState,
+					filters: {
+						...filterState.filters,
+						educationDegree: ElementaryEducationDegrees,
+					},
+				});
+			}
 		}
 	}, [assignment, filterState]);
 
