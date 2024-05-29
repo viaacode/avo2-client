@@ -11,7 +11,7 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { map } from 'lodash-es';
+import { intersection, map } from 'lodash-es';
 import React, { type Dispatch, type FC, type SetStateAction, useState } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';
 
@@ -56,6 +56,19 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 		}));
 	};
 
+	const filterSubjects = (subject: Avo.Lom.LomField & { related?: string[] }) => {
+		const selectedEducationLevels = (assignment.loms || []).filter(({ lom }) => {
+			return lom?.scheme === 'https://w3id.org/onderwijs-vlaanderen/id/structuur';
+		});
+
+		const inter = intersection(
+			subject.related || [],
+			selectedEducationLevels.map(({ lom_id }) => lom_id)
+		);
+
+		return inter.length > 0;
+	};
+
 	return (
 		<>
 			<Container mode="vertical">
@@ -71,6 +84,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 										}
 										onChange={onLomsChange}
 										showThemes
+										filterSubjects={filterSubjects}
 									/>
 
 									<ShortDescriptionField
