@@ -129,7 +129,14 @@ export const ListSorter: ListSorterType = ({
 						</div>
 
 						{content && (
-							<div className="c-list-sorter__item__content">{content(item, i)}</div>
+							<div
+								className="c-list-sorter__item__content"
+								style={{
+									backgroundColor: item.color,
+								}}
+							>
+								{content(item, i)}
+							</div>
 						)}
 					</li>
 				)}
