@@ -1,7 +1,7 @@
 import { Container } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { type FC, type ReactNode } from 'react';
+import React, { type CSSProperties, type FC, type ReactNode } from 'react';
 
 import { AssignmentBlockType } from '../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../collection/collection.const';
@@ -23,7 +23,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 		const layout = (children?: ReactNode, backgroundColor?: string) => (
 			<div
 				className="u-p-0 c-block-list__item"
-				style={{ backgroundColor }}
+				style={{ backgroundColor, '--block-background': backgroundColor } as CSSProperties}
 				key={'block-list__item--' + block.id}
 			>
 				<Container mode="horizontal">
