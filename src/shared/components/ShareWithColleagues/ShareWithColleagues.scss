@@ -120,12 +120,15 @@ $borderLight: 1px solid $color-gray-100;
 }
 
 .c-icon-button {
-	margin-left: 0.5rem;
 	background-color: $g-base-background;
 	border: none;
 	cursor: pointer;
 
 	svg {
 		fill: $color-navy;
+	}
+
+	&:not(:first-child) {
+		margin-left: 0.6rem;
 	}
 }

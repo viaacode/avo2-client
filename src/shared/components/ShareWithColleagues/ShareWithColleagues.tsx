@@ -187,33 +187,49 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			return (
 				<ul className="c-colleagues-info-list">
 					{sortContributors(contributors).map((contributor, index) => {
-						const isOwner = currentUser.rights === ContributorInfoRight.OWNER;
+						const currentUserIsOwner =
+							currentUser.rights === ContributorInfoRight.OWNER;
 						const currentUserIsContributor =
 							currentUser.rights === ContributorInfoRight.CONTRIBUTOR;
+
 						const contributorIsOwner =
 							contributor.rights === ContributorInfoRight.OWNER;
-						const isCurrentUser = currentUser.email === contributor.email;
-						const contributorHasLevel =
-							!assignment || hasEducationLevel(assignment, contributor);
+						const contributorIsCurrentUser = contributor.email === currentUser.email;
+						const contributorIsPending = isNil(contributor.profileId);
+						const contributorIsConflicting = !hasEducationLevel(
+							contributor,
+							assignment
+						);
+
+						const showConflictIcon =
+							!contributorIsPending &&
+							contributorIsConflicting &&
+							!contributorIsOwner;
+
 						const canEdit =
-							(!isCurrentUser && !contributorIsOwner && contributorHasLevel) ||
-							(!isOwner && isCurrentUser) ||
-							(currentUserIsContributor && !contributorIsOwner) ||
-							(isAdmin && !contributorIsOwner);
+							!showConflictIcon &&
+							((!contributorIsCurrentUser && !contributorIsOwner) ||
+								(!currentUserIsOwner && contributorIsCurrentUser) ||
+								(currentUserIsContributor && !contributorIsOwner) ||
+								(isAdmin && !contributorIsOwner));
 
 						// The owner cannot delete himself but can delete everyone else
 						// Contributors can delete themselves and every other contributor and viewer
 						// Viewers can only delete themselves, but they do not have access to this dialog
 						const canDelete =
-							(!isCurrentUser && !contributorIsOwner) ||
-							(!isOwner && isCurrentUser) ||
+							// This contributor is not the current user and not the owner
+							(!contributorIsCurrentUser && !contributorIsOwner) ||
+							// This contributor is the current user and is not the owner
+							(!currentUserIsOwner && contributorIsCurrentUser) ||
+							// The current user is a contributor and this contributor is not the owner
 							(currentUserIsContributor && !contributorIsOwner) ||
+							// The current user is an admin and this contributor is not the owner
 							(isAdmin && !contributorIsOwner);
 
 						return (
 							<li key={index} className="c-colleague-info-row">
 								<div className="c-colleague-info-row__avatar">
-									{contributor.profileId ? (
+									{!contributorIsPending ? (
 										<Avatar
 											initials={
 												contributor.firstName && contributor.lastName
@@ -236,7 +252,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									)}
 
 									<p className="c-colleague-info-row__info__email">
-										{!isNil(contributor.profileId)
+										{!contributorIsPending
 											? truncate(contributor.email, { length: 32 })
 											: `${contributor.inviteEmail} (${tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___pending'
@@ -247,31 +263,29 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 								<div
 									className={classNames({
 										'c-colleague-info-row__rights': true,
-										'u-text-muted': !contributorHasLevel && !contributorIsOwner,
+										'u-text-muted': showConflictIcon,
 									})}
 								>
 									<span>{getContributorRightLabel(contributor.rights)}</span>
 								</div>
 
 								<div className="c-colleague-info-row__action">
-									{!contributorHasLevel &&
-										!contributorIsOwner &&
-										assignment.education_level_id && (
-											<Tooltip position="top">
-												<TooltipTrigger>
-													<button className="c-icon-button u-text-muted">
-														<Icon name={IconName.info} />
-													</button>
-												</TooltipTrigger>
-												<TooltipContent>
-													{
-														GET_LEVEL_DIFFERENCE_DICT()[
-															assignment.education_level_id
-														]
-													}
-												</TooltipContent>
-											</Tooltip>
-										)}
+									{showConflictIcon && assignment?.education_level_id && (
+										<Tooltip position="top">
+											<TooltipTrigger>
+												<button className="c-icon-button u-text-muted">
+													<Icon name={IconName.info} />
+												</button>
+											</TooltipTrigger>
+											<TooltipContent>
+												{
+													GET_LEVEL_DIFFERENCE_DICT()[
+														assignment.education_level_id
+													]
+												}
+											</TooltipContent>
+										</Tooltip>
+									)}
 									{canEdit && (
 										<button
 											className="c-icon-button"
