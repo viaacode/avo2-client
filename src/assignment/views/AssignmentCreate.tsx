@@ -30,7 +30,7 @@ import {
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { isUserDoubleTeacher, navigate } from '../../shared/helpers';
+import { navigate } from '../../shared/helpers';
 import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -59,6 +59,7 @@ import {
 	useEditBlocks,
 } from '../hooks';
 import { type AssignmentFields } from '../hooks/assignment-form';
+import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	commonUser,
@@ -87,18 +88,23 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		setValue,
 		trigger,
 		formState: { isDirty },
+		watch,
 	} = form;
+
+	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
+		useEducationLevelModal(commonUser, assignment);
+
+	// Events
 
 	const updateBlocksInAssignmentState = (newBlocks: Avo.Core.BlockItemBase[]) => {
 		setAssignment((prev) => ({ ...prev, blocks: newBlocks as Avo.Assignment.Block[] }));
 		(setValue as any)('blocks', newBlocks as Avo.Assignment.Block[], { shouldDirty: true });
 	};
+
 	const setBlock = useAssignmentBlockChangeHandler(
 		assignment?.blocks || [],
 		updateBlocksInAssignmentState
 	);
-
-	// Events
 
 	const submit = async () => {
 		try {
@@ -162,13 +168,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		resetForm();
 	}, [resetForm, setAssignment, defaultValues]);
 
-	const selectLevel = useCallback(
+	const selectEducationLevel = useCallback(
 		(lom: Avo.Lom.LomField) => {
 			if (!assignment) return;
 			setSelectEducationLevelModalOpen(false);
-			assignment.education_level_id = lom.id;
+			setValue('education_level_id', lom.id);
 		},
-		[assignment]
+		[assignment as any, setSelectEducationLevelModalOpen, setValue]
 	);
 
 	// UI
@@ -176,8 +182,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	useWarningBeforeUnload({ when: isDirty });
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [isViewAsPupilEnabled, setIsViewAsPupilEnabled] = useState<boolean>();
-	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-		useState<boolean>(false);
 
 	// Render
 
@@ -388,11 +392,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		}
 	}, [assignment, loadingInfo, setLoadingInfo]);
 
-	useEffect(() => {
-		if (!assignment || assignment.education_level_id) return;
-		isUserDoubleTeacher(commonUser) && setSelectEducationLevelModalOpen(true);
-	}, [assignment, commonUser]);
-
 	// Render
 	const renderEditAssignmentPage = () => (
 		<>
@@ -443,7 +442,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			{!!user && (
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
-					onConfirm={selectLevel}
+					onConfirm={selectEducationLevel}
 				/>
 			)}
 		</>
