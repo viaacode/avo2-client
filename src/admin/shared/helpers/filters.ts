@@ -1,5 +1,7 @@
 import { compact, isArray, isNil, set, without } from 'lodash-es';
 
+import { type EducationLevelType } from '../../../shared/helpers/lom';
+
 export const NULL_FILTER = 'null';
 
 export function getQueryFilter(
@@ -228,13 +230,7 @@ function setNestedValues(
  * @param values
  * @param scheme
  */
-export function generateLomFilter(
-	values: string[],
-	scheme:
-		| 'https://w3id.org/onderwijs-vlaanderen/id/vak'
-		| 'https://data.hetarchief.be/id/onderwijs/thema'
-		| 'https://w3id.org/onderwijs-vlaanderen/id/structuur'
-): any {
+export function generateLomFilter(values: string[], scheme: EducationLevelType): any {
 	if (values.includes(NULL_FILTER)) {
 		return {
 			_or: [
