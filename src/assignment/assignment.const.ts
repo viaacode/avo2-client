@@ -1,11 +1,13 @@
 import { type Avo } from '@viaa/avo2-types';
 import { type TFunction } from 'i18next';
+import { type ReactNode } from 'react';
 import { array, object, type SchemaOf, string } from 'yup';
 
 import { ContentTypeString } from '../collection/collection.types';
 import { SearchFilter, SearchOrderAndDirectionProperty } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
-import { tText } from '../shared/helpers/translate';
+import { EducationLevelId } from '../shared/helpers/lom';
+import { tHtml, tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import {
@@ -363,3 +365,23 @@ export const NEW_ASSIGNMENT_BLOCK_ID_PREFIX = 'tmp///';
 export const isNewAssignmentBlock = (item: Pick<Avo.Core.BlockItemBase, 'id'>): boolean => {
 	return String(item.id).startsWith(NEW_ASSIGNMENT_BLOCK_ID_PREFIX);
 };
+
+export const GET_EDUCATION_LEVEL_DICT: () => Partial<Record<EducationLevelId, ReactNode>> = () => ({
+	[EducationLevelId.lagerOnderwijs]: tHtml(
+		'assignment/views/assignment-detail___lager-onderwijs'
+	),
+	[EducationLevelId.secundairOnderwijs]: tHtml(
+		'assignment/views/assignment-detail___secundair-onderwijs'
+	),
+});
+
+export const GET_EDUCATION_LEVEL_TOOLTIP_DICT: () => Partial<
+	Record<EducationLevelId, ReactNode>
+> = () => ({
+	[EducationLevelId.lagerOnderwijs]: tHtml(
+		'assignment/views/assignment-detail___lager-onderwijs-tooltip'
+	),
+	[EducationLevelId.secundairOnderwijs]: tHtml(
+		'assignment/views/assignment-detail___secundair-onderwijs-tooltip'
+	),
+});

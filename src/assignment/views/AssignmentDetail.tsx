@@ -77,7 +77,11 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	GET_EDUCATION_LEVEL_DICT,
+	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentAction, AssignmentType } from '../assignment.types';
 import {
@@ -90,11 +94,6 @@ import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
-
-import {
-	GET_EDUCATION_LEVEL_DICT,
-	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
-} from './AssignmentDetail.const';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
