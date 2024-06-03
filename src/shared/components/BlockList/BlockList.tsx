@@ -23,7 +23,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 		const layout = (children?: ReactNode, backgroundColor?: string) => (
 			<div
 				className="u-p-0 c-block-list__item"
-				style={{ backgroundColor, '--block-background': backgroundColor } as CSSProperties}
+				style={{ backgroundColor, '--block-background': backgroundColor }}
 				key={'block-list__item--' + block.id}
 			>
 				<Container mode="horizontal">
