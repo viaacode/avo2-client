@@ -9,7 +9,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import classNames from 'classnames';
+import { clsx } from 'clsx';
 import React, { type FC, type ReactNode } from 'react';
 
 import { InteractiveTour } from '../../shared/components';
@@ -39,7 +39,7 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 				background="alt"
 				placement="top"
 				autoHeight
-				className={classNames({
+				className={clsx({
 					'c-assignment-heading': true,
 					'c-assignment-heading--scrolled': (y || 0) > 0,
 				})}
@@ -47,7 +47,7 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 				<Container
 					mode="vertical"
 					size="small"
-					className={classNames({
+					className={clsx({
 						'u-p-b-0': info,
 					})}
 				>
