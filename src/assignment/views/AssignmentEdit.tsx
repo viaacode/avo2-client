@@ -460,6 +460,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		(lom: Avo.Lom.LomField) => {
 			if (!assignment) return;
 			setSelectEducationLevelModalOpen(false);
+			setHasUnsavedChanges(true);
 			assignment.education_level_id = lom.id;
 		},
 		[assignment]
