@@ -324,19 +324,19 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	};
 
 	const deleteAllFilters = () => {
-		const clone = cloneDeep(filterState);
+		const copiedFilterState = cloneDeep(filterState);
 
 		// Only remove filters that are user-editable
-		for (const key in clone) {
-			if (Object.prototype.hasOwnProperty.call(clone, key)) {
+		for (const key in copiedFilterState) {
+			if (Object.prototype.hasOwnProperty.call(copiedFilterState, key)) {
 				if (enabledFilters?.map(String).includes(key)) {
-					delete clone[key as keyof typeof clone];
+					delete copiedFilterState[key as keyof typeof copiedFilterState];
 				}
 			}
 		}
 
 		setSearchTerms('');
-		setFilterState(clone, urlUpdateType);
+		setFilterState(copiedFilterState, urlUpdateType);
 	};
 
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
