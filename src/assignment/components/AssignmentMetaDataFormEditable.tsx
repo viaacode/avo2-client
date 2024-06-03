@@ -17,6 +17,7 @@ import { type UseFormSetValue } from 'react-hook-form';
 
 import { ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { EducationLevelType } from '../../shared/helpers/lom';
 import { tHtml } from '../../shared/helpers/translate';
 import useTranslation from '../../shared/hooks/useTranslation';
 
@@ -58,7 +59,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 
 	const filterSubjects = (subject: Avo.Lom.LomField & { related?: string[] }) => {
 		const selectedEducationLevels = (assignment.loms || []).filter(({ lom }) => {
-			return lom?.scheme === 'https://w3id.org/onderwijs-vlaanderen/id/structuur';
+			return lom?.scheme === EducationLevelType.structuur;
 		});
 
 		const inter = intersection(

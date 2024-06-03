@@ -13,6 +13,12 @@ export enum EducationLevelId {
 	andere = 'andere',
 }
 
+export enum EducationLevelType {
+	structuur = 'https://w3id.org/onderwijs-vlaanderen/id/structuur',
+	thema = 'https://data.hetarchief.be/id/onderwijs/thema',
+	vak = 'https://w3id.org/onderwijs-vlaanderen/id/vak',
+}
+
 const EDUCATION_LEVEL_IDS = Object.values(EducationLevelId);
 
 export const groupLoms = (loms: Avo.Lom.LomField[] | undefined | null): LomFieldsByScheme => {
