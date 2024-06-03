@@ -1001,6 +1001,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
 					onConfirm={selectLevel}
+					className="c-select-education-level--edit"
 				/>
 			)}
 		</>

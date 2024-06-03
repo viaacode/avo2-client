@@ -21,8 +21,8 @@ test('T55: Opdracht - Tekstblok toevoegen', async ({ page }) => {
 	await loginOnderwijsAvo(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
-		process.env.TEST_BASIS_GEBRUIKER_USER as string,
-		process.env.TEST_BASIS_GEBRUIKER_PASS as string
+		process.env.TEST_LESGEVER_SECUNDAIR_GEBRUIKER_USER as string,
+		process.env.TEST_LESGEVER_SECUNDAIR_GEBRUIKER_PASS as string
 	);
 
 	// Click mijn werkruimte
@@ -65,6 +65,10 @@ test('T55: Opdracht - Tekstblok toevoegen', async ({ page }) => {
 		'div.DraftEditor-editorContainer > div[contenteditable="true"]',
 		'Automatische test beschrijving tekst blok'
 	);
+
+	await page.click('.c-color-select .react-select__control');
+
+	await page.click('.c-color-select .react-select__menu .react-select__option:nth-child(3)');
 
 	// Check if banner appeared
 	await expect(page.locator('div.c-sticky-bar')).toContainText('Wijzigingen opslaan?');
