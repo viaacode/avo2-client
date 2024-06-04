@@ -264,3 +264,35 @@ export function generateLomFilter(values: string[], scheme: EducationLevelType):
 		};
 	}
 }
+
+/**
+ * Does the same thing as `generateLomFilter` but matches a different structure
+ */
+export function generateEducationLevelFilter(values: string[], scheme: EducationLevelType): any {
+	const match = {
+		education_level: {
+			id: {
+				_in: without(values, NULL_FILTER),
+			},
+		},
+	};
+
+	if (values.includes(NULL_FILTER)) {
+		return {
+			_or: [
+				match,
+				{
+					_not: {
+						education_level: {
+							scheme: {
+								_eq: scheme,
+							},
+						},
+					},
+				},
+			],
+		};
+	} else {
+		return match;
+	}
+}

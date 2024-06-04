@@ -25,6 +25,7 @@ export interface AssignmentsOverviewTableState extends FilterableTableState {
 	share_type: string;
 	subjects: string[];
 	education_levels: string[];
+	education_level: string[]; // "Kenmerk"
 }
 
 export type AssignmentsBulkAction = 'delete' | 'change_author';

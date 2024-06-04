@@ -49,6 +49,7 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import {
+	generateEducationLevelFilter,
 	generateLomFilter,
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -293,6 +294,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		if (filters.education_levels && filters.education_levels.length) {
 			andFilters.push(
 				generateLomFilter(filters.education_levels, EducationLevelType.structuur)
+			);
+		}
+
+		if (filters.education_level && filters.education_level) {
+			andFilters.push(
+				generateEducationLevelFilter(filters.education_level, EducationLevelType.structuur)
 			);
 		}
 
