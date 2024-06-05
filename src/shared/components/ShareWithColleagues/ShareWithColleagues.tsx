@@ -129,7 +129,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	};
 
 	const handleAddNewContributor = () => {
-		if (isShareWarningModalRemembered) {
+		if (isShareWarningModalRemembered || contributor.rights === ContributorInfoRight.VIEWER) {
 			addNewContributor();
 		} else {
 			setIsShareWarningModalOpen(true);
