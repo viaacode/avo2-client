@@ -339,7 +339,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			GET_EDUCATION_LEVEL_TOOLTIP_DICT()[assignment?.education_level_id as EducationLevelId];
 
 		return (
-			<MetaData spaced={true} category="assignment">
+			<MetaData spaced category="assignment">
 				<MetaDataItem>
 					<HeaderContentType
 						category="assignment"
