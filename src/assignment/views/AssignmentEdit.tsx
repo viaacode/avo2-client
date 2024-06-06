@@ -56,7 +56,7 @@ import {
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, CustomError, isUserDoubleTeacher, navigate } from '../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
@@ -116,6 +116,7 @@ import {
 	useEditBlocks,
 } from '../hooks';
 import { type AssignmentFields } from '../hooks/assignment-form';
+import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import AssignmentResponses from './AssignmentResponses';
@@ -156,7 +157,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-		useState<boolean>(false);
+		useEducationLevelModal(commonUser, assignment);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -218,12 +219,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	useEffect(() => {
 		fetchContributors();
 	}, [fetchContributors]);
-
-	useEffect(() => {
-		if (!assignment || assignmentLoading) return;
-		isUserDoubleTeacher(commonUser) &&
-			setSelectEducationLevelModalOpen(!assignment.education_level_id);
-	}, [assignment, commonUser, assignmentLoading]);
 
 	// UI
 	useWarningBeforeUnload({
@@ -504,7 +499,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		resetForm();
 	}, [resetForm, setAssignment, originalAssignment]);
 
-	const selectLevel = useCallback(
+	const selectEducationLevel = useCallback(
 		(lom: Avo.Lom.LomField) => {
 			if (!assignment) return;
 			setSelectEducationLevelModalOpen(false);
@@ -898,7 +893,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	useEffect(() => {
 		originalAssignment && resetForm(originalAssignment as any);
-	}, [originalAssignment]);
+	}, [originalAssignment, resetForm]);
 
 	const handleTabChange = (tabId: ASSIGNMENT_CREATE_UPDATE_TABS) => {
 		setTab(tabId);
@@ -1046,6 +1041,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 										clicksCount={originalAssignment?.responses?.length ?? 0}
 									/>
 								}
+								{...(isSelectEducationLevelModalOpen ? { tour: null } : {})}
 							/>
 						),
 					})}
@@ -1104,7 +1100,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			{!!user && (
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
-					onConfirm={selectLevel}
+					onConfirm={selectEducationLevel}
 					className="c-select-education-level--edit"
 				/>
 			)}
