@@ -2,7 +2,20 @@ import './AssignmentCreate.scss';
 import './AssignmentPage.scss';
 
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
+import {
+	Button,
+	Container,
+	Flex,
+	HeaderContentType,
+	Icon,
+	IconName,
+	MetaData,
+	MetaDataItem,
+	Spacer,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, {
 	type Dispatch,
@@ -20,6 +33,7 @@ import { Link } from 'react-router-dom';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import {
+	HeaderOwnerAndContributors,
 	ListSorterColor,
 	ListSorterPosition,
 	ListSorterSlice,
@@ -31,13 +45,19 @@ import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/B
 import EmptyStateMessage from '../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
 import { isUserDoubleTeacher, navigate } from '../../shared/helpers';
+import { type EducationLevelId } from '../../shared/helpers/lom';
 import withUser from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	ASSIGNMENT_FORM_SCHEMA,
+	GET_EDUCATION_LEVEL_DICT,
+	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
+} from '../assignment.const';
 import { setBlockPositionToIndex } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
 import AssignmentActions from '../components/AssignmentActions';
@@ -166,9 +186,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		(lom: Avo.Lom.LomField) => {
 			if (!assignment) return;
 			setSelectEducationLevelModalOpen(false);
-			assignment.education_level_id = lom.id;
+			setAssignment({
+				...assignment,
+				education_level_id: lom.id,
+			});
 		},
-		[assignment]
+		[assignment, setAssignment]
 	);
 
 	// UI
@@ -296,6 +319,50 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		[control, setAssignment]
 	);
 
+	const renderContributors = useMemo(
+		() =>
+			assignment && (
+				<Flex align="start">
+					<HeaderOwnerAndContributors
+						subject={{ ...assignment, profile: user.profile || undefined }}
+						user={user}
+					/>
+				</Flex>
+			),
+		[assignment, user]
+	);
+
+	const renderMeta = useMemo(() => {
+		const label =
+			GET_EDUCATION_LEVEL_DICT()[assignment?.education_level_id as EducationLevelId];
+		const tooltip =
+			GET_EDUCATION_LEVEL_TOOLTIP_DICT()[assignment?.education_level_id as EducationLevelId];
+
+		return (
+			<MetaData spaced category="assignment">
+				<MetaDataItem>
+					<HeaderContentType
+						category="assignment"
+						label={tText('admin/shared/constants/index___opdracht')}
+					/>
+				</MetaDataItem>
+				<MetaDataItem icon={IconName.eye} label="0" />
+				<MetaDataItem icon={IconName.bookmark} label="0" />
+				<Tooltip position="top">
+					<TooltipTrigger>
+						<MetaDataItem icon={IconName.userStudent}>
+							<Icon name={IconName.userStudent} />
+
+							{label}
+						</MetaDataItem>
+					</TooltipTrigger>
+
+					<TooltipContent>{tooltip}</TooltipContent>
+				</Tooltip>
+			</MetaData>
+		);
+	}, [assignment, tText]);
+
 	const renderTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT: // TODO remove warning
@@ -400,7 +467,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				<div>
 					<AssignmentHeading
 						back={renderBackButton}
-						title={renderTitle}
+						title={
+							<div className="u-spacer-top-l">
+								{renderMeta}
+								<div className="u-spacer-top-s">{renderTitle}</div>
+							</div>
+						}
 						actions={
 							<AssignmentActions
 								duplicate={{ disabled: true }}
@@ -410,6 +482,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 								assignment={assignment}
 							/>
 						}
+						info={renderContributors}
 						tabs={
 							<AssignmentTeacherTabs
 								activeTab={tab}

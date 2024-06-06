@@ -26,9 +26,7 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment, onF
 
 	return useMemo(
 		() => (
-			<Flex center className="u-spacer-top-l c-inline-title-edit">
-				<Icon name={IconName.clipboard} size="large" subtle />
-
+			<Flex center className="c-inline-title-edit">
 				<BlockHeading type="h2">
 					<Controller
 						name="title"
