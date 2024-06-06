@@ -31,7 +31,7 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
-import { groupLomLinks } from '../../../shared/helpers/lom';
+import { EducationLevelType, groupLomLinks } from '../../../shared/helpers/lom';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
@@ -49,6 +49,7 @@ import FilterTable, {
 } from '../../shared/components/FilterTable/FilterTable';
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import {
+	generateEducationLevelFilter,
 	generateLomFilter,
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -279,24 +280,28 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 		// subjects
 		if (filters.subjects && filters.subjects.length) {
-			andFilters.push(
-				generateLomFilter(filters.subjects, 'https://w3id.org/onderwijs-vlaanderen/id/vak')
-			);
+			andFilters.push(generateLomFilter(filters.subjects, EducationLevelType.vak));
 		}
 
 		// // Enable when meemoo requests a column and folder for lom themes
 		// if (filters.themes && filters.themes.length) {
 		// 	andFilters.push(
-		// 		generateLomFilter(filters.themes, 'https://data.hetarchief.be/id/onderwijs/thema')
+		// 		generateLomFilter(filters.themes, EducationLevelType.thema)
 		// 	);
 		// }
 
 		// education-levels
 		if (filters.education_levels && filters.education_levels.length) {
 			andFilters.push(
-				generateLomFilter(
-					filters.education_levels,
-					'https://w3id.org/onderwijs-vlaanderen/id/structuur'
+				generateLomFilter(filters.education_levels, EducationLevelType.structuur)
+			);
+		}
+
+		if (filters.education_level_id) {
+			andFilters.push(
+				generateEducationLevelFilter(
+					filters.education_level_id,
+					EducationLevelType.structuur
 				)
 			);
 		}
@@ -551,10 +556,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				return lomsToTagList(groupedLoms.subject) || '-';
 			}
 
-			case 'education_level': {
-				// TODO: update avo2-types
-				const level = (assignment as any).education_level?.label;
-				return level ? (
+			case 'education_level_id': {
+				const level = assignment.education_level?.label;
+
+				if (!level) return '-';
+
+				return (
 					<TagList
 						swatches={false}
 						tags={[
@@ -565,8 +572,6 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 							},
 						]}
 					/>
-				) : (
-					'-'
 				);
 			}
 

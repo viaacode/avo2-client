@@ -1,4 +1,4 @@
-import { expect, Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 import { loginOnderwijsAvo } from './login-onderwijs-avo';
 import { logoutOnderwijsAvo } from './logout-onderwijs-avo';

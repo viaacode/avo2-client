@@ -33,6 +33,7 @@ type LomFieldsInputProps = {
 	educationLevelsPlaceholder?: string;
 	subjectsPlaceholder?: string;
 	themesPlaceholder?: string;
+	filterSubjects?: (subject: Avo.Lom.LomField) => boolean;
 
 	/**
 	 * only show degrees for the already selected education degrees. This option is only used to allow users that haven't selected a degree but have already an education level, to also specify their education ldegrees on their profile page
@@ -56,6 +57,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	subjectsPlaceholder,
 	themesPlaceholder,
 	limitDegreesByAlreadySelectedLevels = false,
+	filterSubjects = () => true,
 }) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => {
@@ -204,7 +206,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					<TagsInput
 						id="subjectId"
 						isLoading={isSubjectsLoading}
-						options={allSubjects?.map(lomToTagInfo)}
+						options={allSubjects?.filter(filterSubjects).map(lomToTagInfo)}
 						value={mapLomFieldsToOptions(lomFields.subject) || []}
 						onChange={(values) =>
 							handleChange(values, LomType.subject, allSubjects || [])

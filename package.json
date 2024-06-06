@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "1.27.1",
+  "version": "1.27.2",
   "private": true,
   "scripts": {
     "prepare": "husky install",
@@ -45,8 +45,8 @@
     "@studiohyperdrive/pagination": "1.0.0",
     "@tanstack/react-query": "4.35.3",
     "@uidotdev/usehooks": "^2.4.1",
-    "@viaa/avo2-components": "4.0.24",
-    "@viaa/avo2-types": "2.49.7",
+    "@viaa/avo2-components": "4.0.25",
+    "@viaa/avo2-types": "2.49.8",
     "autosize": "6.0.1",
     "caniuse-lite": "1.0.30001538",
     "capture-stack-trace": "1.0.1",

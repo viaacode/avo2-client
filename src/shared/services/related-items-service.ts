@@ -24,7 +24,8 @@ export async function getRelatedItems(
 	id: string | number,
 	type: ObjectTypes,
 	returnType: ObjectTypesAll = ObjectTypesAll.all,
-	limit = 5
+	limit = 5,
+	filters?: Partial<Avo.Search.Filters>
 ): Promise<Avo.Search.ResultItem[]> {
 	let url: string | undefined;
 	let body: any | undefined;
@@ -34,6 +35,7 @@ export async function getRelatedItems(
 			type,
 			returnType,
 			limit,
+			filters: JSON.stringify(filters || {}),
 		})}`;
 		const resolvedResponse = await fetchWithLogoutJson<{ results: Avo.Search.ResultItem[] }>(
 			url

@@ -41,9 +41,12 @@ export function getContributorRightLabel(right: ContributorInfoRight): string {
 }
 
 export function hasEducationLevel(
-	{ education_level_id }: Partial<Avo.Assignment.Assignment>,
-	contributor: ContributorInfo
+	contributor: ContributorInfo,
+	assignment?: Partial<Avo.Assignment.Assignment>
 ) {
+	if (!assignment) return false;
+
+	const { education_level_id } = assignment;
 	const isSecondary = isUserLevel(contributor, [EducationLevelId.secundairOnderwijs]);
 	const isElementary = isUserLevel(contributor, [EducationLevelId.lagerOnderwijs]);
 

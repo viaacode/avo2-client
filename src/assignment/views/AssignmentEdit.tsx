@@ -7,10 +7,16 @@ import {
 	Button,
 	Container,
 	Flex,
+	HeaderContentType,
 	Icon,
 	IconName,
+	MetaData,
+	MetaDataItem,
 	Spacer,
 	Spinner,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
@@ -39,6 +45,7 @@ import { ErrorNoAccess } from '../../error/components';
 import { ErrorView } from '../../error/views';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import {
+	HeaderOwnerAndContributors,
 	InActivityWarningModal,
 	ListSorterColor,
 	ListSorterPosition,
@@ -49,21 +56,32 @@ import {
 import { BeforeUnloadPrompt } from '../../shared/components/BeforeUnloadPrompt/BeforeUnloadPrompt';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveBar';
-import { buildLink, type CustomError, isUserDoubleTeacher, navigate } from '../../shared/helpers';
+import { buildLink, CustomError, navigate } from '../../shared/helpers';
 import {
 	getContributorType,
 	transformContributorsToSimpleContributors,
 } from '../../shared/helpers/contributors';
+import { type EducationLevelId } from '../../shared/helpers/lom';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
+import {
+	BookmarksViewsPlaysService,
+	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
+} from '../../shared/services/bookmarks-views-plays-service';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { ASSIGNMENT_CREATE_UPDATE_TABS, ASSIGNMENT_FORM_SCHEMA } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	ASSIGNMENT_FORM_SCHEMA,
+	GET_EDUCATION_LEVEL_DICT,
+	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
+} from '../assignment.const';
 import {
 	getValidationErrorsForPublishAssignment,
 	isUserAssignmentContributor,
@@ -98,6 +116,7 @@ import {
 	useEditBlocks,
 } from '../hooks';
 import { type AssignmentFields } from '../hooks/assignment-form';
+import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
 
 import AssignmentResponses from './AssignmentResponses';
@@ -129,18 +148,21 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	);
 	const [assignment, setAssignment] = useAssignmentForm(undefined);
 	const [contributors, setContributors] = useState<Avo.Assignment.Contributor[]>();
+	const [bookmarkViewCounts, setBookmarkViewCounts] = useState<BookmarkViewPlayCounts>(
+		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
+	);
 
-	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-		useState<boolean>(false);
+		useEducationLevelModal(commonUser, assignment);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
 			canEdit: boolean;
 			canPublish: boolean;
+			canFetchBookmarkAndViewCounts: boolean;
 		}>
 	>({});
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState<boolean>(false);
@@ -196,12 +218,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	useEffect(() => {
 		fetchContributors();
 	}, [fetchContributors]);
-
-	useEffect(() => {
-		if (!assignment || assignmentLoading) return;
-		isUserDoubleTeacher(commonUser) &&
-			setSelectEducationLevelModalOpen(!assignment.education_level_id);
-	}, [assignment, commonUser, assignmentLoading]);
 
 	// UI
 	useWarningBeforeUnload({
@@ -275,8 +291,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				return;
 			}
 
-			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
-
 			const checkedPermissions = await PermissionService.checkPermissions(
 				{
 					canEditAllAssignments: [
@@ -293,6 +307,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							name: PermissionName.PUBLISH_ANY_ASSIGNMENTS,
 						},
 					],
+					canFetchBookmarkAndViewCounts: [
+						PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS,
+						PermissionName.VIEW_ANY_UNPUBLISHED_ASSIGNMENTS,
+						PermissionName.EDIT_OWN_ASSIGNMENTS,
+						PermissionName.EDIT_ANY_ASSIGNMENTS,
+					],
 				},
 				user
 			);
@@ -303,6 +323,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					isUserAssignmentOwner(user, tempAssignment) ||
 					isUserAssignmentContributor(user, tempAssignment) ||
 					checkedPermissions.canEditAllAssignments,
+				canFetchBookmarkAndViewCounts: checkedPermissions.canFetchBookmarkAndViewCounts,
 			};
 
 			setPermissions(allPermissions);
@@ -319,10 +340,28 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				return;
 			}
 
+			if (checkedPermissions?.canFetchBookmarkAndViewCounts) {
+				try {
+					setBookmarkViewCounts(
+						await BookmarksViewsPlaysService.getAssignmentCounts(assignmentId, user)
+					);
+				} catch (err) {
+					console.error(
+						new CustomError('Failed to get getAssignmentCounts', err, {
+							uuid: assignmentId,
+						})
+					);
+					ToastService.danger(
+						tHtml(
+							'assignment/views/assignment-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+						)
+					);
+				}
+			}
+
 			setOriginalAssignment(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
-			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
 			setAssignmentError({
 				message: tHtml(
@@ -456,10 +495,11 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		resetForm();
 	}, [resetForm, setAssignment, originalAssignment]);
 
-	const selectLevel = useCallback(
+	const selectEducationLevel = useCallback(
 		(lom: Avo.Lom.LomField) => {
 			if (!assignment) return;
 			setSelectEducationLevelModalOpen(false);
+			setHasUnsavedChanges(true);
 			assignment.education_level_id = lom.id;
 		},
 		[assignment]
@@ -689,6 +729,49 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		[control, setAssignment]
 	);
 
+	const renderContributors = useMemo(
+		() =>
+			assignment && (
+				<Flex align="start">
+					<HeaderOwnerAndContributors subject={assignment} user={user} />
+				</Flex>
+			),
+		[assignment, user]
+	);
+
+	const renderMeta = useMemo(() => {
+		const bookmarks = String(bookmarkViewCounts.bookmarkCount || 0);
+		const views = String(bookmarkViewCounts.viewCount || 0);
+		const label =
+			GET_EDUCATION_LEVEL_DICT()[assignment?.education_level_id as EducationLevelId];
+		const tooltip =
+			GET_EDUCATION_LEVEL_TOOLTIP_DICT()[assignment?.education_level_id as EducationLevelId];
+
+		return (
+			<MetaData spaced={true} category="assignment">
+				<MetaDataItem>
+					<HeaderContentType
+						category="assignment"
+						label={tText('admin/shared/constants/index___opdracht')}
+					/>
+				</MetaDataItem>
+				{views && <MetaDataItem icon={IconName.eye} label={views} />}
+				{bookmarks && <MetaDataItem icon={IconName.bookmark} label={bookmarks} />}
+				<Tooltip position="top">
+					<TooltipTrigger>
+						<MetaDataItem icon={IconName.userStudent}>
+							<Icon name={IconName.userStudent} />
+
+							{label}
+						</MetaDataItem>
+					</TooltipTrigger>
+
+					<TooltipContent>{tooltip}</TooltipContent>
+				</Tooltip>
+			</MetaData>
+		);
+	}, [bookmarkViewCounts, tText, assignment]);
+
 	const renderedTabContent = useMemo(() => {
 		switch (tab) {
 			case ASSIGNMENT_CREATE_UPDATE_TABS.CONTENT:
@@ -806,7 +889,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	useEffect(() => {
 		originalAssignment && resetForm(originalAssignment as any);
-	}, [originalAssignment]);
+	}, [originalAssignment, resetForm]);
 
 	const handleTabChange = (tabId: ASSIGNMENT_CREATE_UPDATE_TABS) => {
 		setTab(tabId);
@@ -918,8 +1001,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						mobile: (
 							<AssignmentHeading
 								back={renderBackButton}
-								title={renderTitle}
+								title={
+									<div className="u-spacer-top-l">
+										{renderMeta}
+										<div className="u-spacer-top-s">{renderTitle}</div>
+									</div>
+								}
 								actions={renderHeadingActions(true)}
+								info={renderContributors}
 								tabs={
 									<AssignmentTeacherTabs
 										activeTab={tab}
@@ -933,8 +1022,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						desktop: (
 							<AssignmentHeading
 								back={renderBackButton}
-								title={renderTitle}
+								title={
+									<div className="u-spacer-top-l">
+										{renderMeta}
+										<div className="u-spacer-top-s">{renderTitle}</div>
+									</div>
+								}
 								actions={renderHeadingActions(false)}
+								info={renderContributors}
 								tabs={
 									<AssignmentTeacherTabs
 										activeTab={tab}
@@ -942,6 +1037,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 										clicksCount={originalAssignment?.responses?.length ?? 0}
 									/>
 								}
+								{...(isSelectEducationLevelModalOpen ? { tour: null } : {})}
 							/>
 						),
 					})}
@@ -965,7 +1061,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						{draggableListModal}
 
 						<AssignmentConfirmSave
-							hasBlocks={assignmentHasPupilBlocks}
 							hasResponses={assignmentHasResponses}
 							modal={{
 								isOpen: isConfirmSaveActionModalOpen,
@@ -1000,7 +1095,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			{!!user && (
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
-					onConfirm={selectLevel}
+					onConfirm={selectEducationLevel}
+					className="c-select-education-level--edit"
 				/>
 			)}
 		</>

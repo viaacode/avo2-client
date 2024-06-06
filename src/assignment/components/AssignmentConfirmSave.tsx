@@ -24,11 +24,11 @@ const AssignmentConfirmSave: FC<AssignmentConfirmSaveProps> = ({
 		'assignment/components/assignment-confirm-save___weet-je-zeker-dat-je-de-wijzigingen-wil-opslaan'
 	);
 
-	if (hasBlocks) {
+	if (hasBlocks === true) {
 		bodyHtml = tHtml(
 			'assignment/views/assignment-edit___waarschuwing-leerlingencollecties-bestaan-reeds-verwijderen'
 		);
-	} else if (hasResponses) {
+	} else if (hasResponses === true) {
 		bodyHtml = tHtml(
 			'assignment/views/assignment-edit___waarschuwing-leerlingen-reeds-bekeken'
 		);
