@@ -297,8 +297,6 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			);
 		}
 
-		console.info({ filters });
-
 		if (filters.education_level_id) {
 			andFilters.push(
 				generateEducationLevelFilter(
