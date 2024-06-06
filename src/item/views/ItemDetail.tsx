@@ -39,7 +39,7 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { Link, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
-import { StringParam, useQueryParam } from 'use-query-params';
+import { JsonParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params';
 
 import { ITEMS_PATH } from '../../admin/items/items.const';
 import { ItemsService } from '../../admin/items/items.service';
@@ -188,9 +188,18 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		setIsConfirmImportToAssignmentWithResponsesModalOpen,
 	] = useState<boolean>(false);
 	const [assignmentId, setAssignmentId] = useState<string>();
+	const [filterState] = useQueryParams({
+		filters: JsonParam,
+	});
 
 	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
-		getRelatedItems(currentItemId, ObjectTypes.items, relatedObjectTypes, limit)
+		getRelatedItems(
+			currentItemId,
+			ObjectTypes.items,
+			relatedObjectTypes,
+			limit,
+			(filterState as FilterState).filters || {}
+		)
 			.then(setRelatedItems)
 			.catch((err) => {
 				console.error('Failed to get related items', err, {
@@ -279,6 +288,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
 
 			retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
+
 			try {
 				const counts = await BookmarksViewsPlaysService.getItemCounts(
 					(itemObj as any).uid,
