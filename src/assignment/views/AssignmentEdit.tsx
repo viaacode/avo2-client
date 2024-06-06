@@ -152,7 +152,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 
-	const [assignmentHasPupilBlocks, setAssignmentHasPupilBlocks] = useState<boolean>();
 	const [assignmentHasResponses, setAssignmentHasResponses] = useState<boolean>();
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
@@ -292,8 +291,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				return;
 			}
 
-			const hasPupilBlocks = await AssignmentService.hasPupilCollectionBlocks(id);
-
 			const checkedPermissions = await PermissionService.checkPermissions(
 				{
 					canEditAllAssignments: [
@@ -365,7 +362,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			setOriginalAssignment(tempAssignment);
 			setAssignment(tempAssignment as any);
 			setAssignmentHasResponses((tempAssignment.responses?.length || 0) > 0);
-			setAssignmentHasPupilBlocks(hasPupilBlocks);
 		} catch (err) {
 			setAssignmentError({
 				message: tHtml(
@@ -1065,7 +1061,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						{draggableListModal}
 
 						<AssignmentConfirmSave
-							hasBlocks={assignmentHasPupilBlocks}
 							hasResponses={assignmentHasResponses}
 							modal={{
 								isOpen: isConfirmSaveActionModalOpen,
