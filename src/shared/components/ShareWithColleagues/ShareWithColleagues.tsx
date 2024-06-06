@@ -129,6 +129,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	};
 
 	const handleAddNewContributor = () => {
+		// Skip the warning if it's been dismissed or the new contributor is a viewer
 		if (isShareWarningModalRemembered || contributor.rights === ContributorInfoRight.VIEWER) {
 			addNewContributor();
 		} else {
