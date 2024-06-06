@@ -30,7 +30,6 @@ export async function getRelatedItems(
 	let url: string | undefined;
 	let body: any | undefined;
 	try {
-		console.info('getRelatedItems', { filters });
 		url = `${getEnv('PROXY_URL')}/search/related?${stringify({
 			id,
 			type,
