@@ -19,6 +19,7 @@ export enum SearchFilter {
 	serie = 'serie',
 	provider = 'provider',
 	collectionLabel = 'collectionLabel',
+	elementary = 'elementary',
 }
 
 export const ALL_SEARCH_FILTERS: SearchFilter[] = [

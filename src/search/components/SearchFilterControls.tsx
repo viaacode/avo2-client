@@ -36,6 +36,7 @@ const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
 		const arrayFilters = omit(filterState, [
 			SearchFilter.query,
 			SearchFilter.broadcastDate,
+			SearchFilter.elementary,
 		]) as {
 			[filterName: string]: string[];
 		};
