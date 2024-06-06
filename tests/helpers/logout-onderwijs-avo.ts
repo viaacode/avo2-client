@@ -1,10 +1,12 @@
-import { expect, Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 
 export async function logoutOnderwijsAvo(page: Page, asTeacher = true): Promise<void> {
 	// Open user dropdown from navbar
 	await page
 		.locator('div.u-mq-switch-main-nav-authentication > ul > li > div.c-dropdown__trigger')
 		.click();
+
+	await page.waitForTimeout(1000);
 
 	// Logout
 	if (asTeacher) {

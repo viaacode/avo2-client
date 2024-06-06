@@ -7,6 +7,7 @@ import { fetchSearchResults } from '../search.service';
 
 import {
 	SearchActionTypes,
+	type SetSearchResultsControllerAction,
 	type SetSearchResultsErrorAction,
 	type SetSearchResultsLoadingAction,
 	type SetSearchResultsSuccessAction,
@@ -24,7 +25,7 @@ const getSearchResults = (
 		dispatch(setSearchResultsLoading());
 
 		try {
-			const data = await fetchSearchResults(
+			const [request, controller] = fetchSearchResults(
 				orderProperty,
 				orderDirection,
 				from,
@@ -32,6 +33,10 @@ const getSearchResults = (
 				filters,
 				filterOptionSearch
 			);
+
+			dispatch(setSearchResultsControllerAction(controller));
+
+			const data = await request;
 
 			if ((data as any)?.statusCode) {
 				console.error(
@@ -84,6 +89,13 @@ const setSearchResultsError = (): SetSearchResultsErrorAction => ({
 const setSearchResultsLoading = (): SetSearchResultsLoadingAction => ({
 	type: SearchActionTypes.SET_RESULTS_LOADING,
 	loading: true,
+});
+
+const setSearchResultsControllerAction = (
+	controller: AbortController
+): SetSearchResultsControllerAction => ({
+	type: SearchActionTypes.SET_RESULTS_CONTROLLER,
+	controller,
 });
 
 export {

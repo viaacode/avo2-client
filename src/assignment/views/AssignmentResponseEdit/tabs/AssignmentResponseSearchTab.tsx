@@ -14,7 +14,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { type UrlUpdateType } from 'use-query-params';
 
-import { SpecialUserGroup } from '../../../../admin/user-groups/user-group.const';
 import { PermissionService } from '../../../../authentication/helpers/permission-service';
 import { ErrorView } from '../../../../error/views';
 import { CutFragmentForAssignmentModal } from '../../../../item/components';
@@ -46,14 +45,6 @@ interface AssignmentResponseSearchTabProps {
 	setFilterState: any;
 	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
-
-// TODO: avoid hard-coded strings?
-const ElementaryEducationDegrees = [
-	'Lager 1e graad',
-	'Lager 2e graad',
-	'Lager 3e graad',
-	'Secundair 1e graad',
-].flatMap((level) => [level, level.toLowerCase()]);
 
 const AssignmentResponseSearchTab: FunctionComponent<
 	AssignmentResponseSearchTabProps & { searchResults: Avo.Search.Search } & UserProps
@@ -89,21 +80,19 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	}, [searchResults]);
 
 	useEffect(() => {
-		if (
-			// Is the assignment intended for elementary
-			assignment?.education_level_id === EducationLevelId.lagerOnderwijs ||
-			// or is the user an elementary pupil
-			[SpecialUserGroup.PupilElementary]
-				.map(String)
-				.includes(String(user?.profile?.userGroupIds[0]))
-		) {
-			// Mutate to avoid render loop
-			filterState.filters = {
-				...filterState.filters,
-				educationDegree: ElementaryEducationDegrees,
-			};
+		// Is the assignment intended for elementary
+		if (assignment?.education_level_id === EducationLevelId.lagerOnderwijs) {
+			if (filterState.filters?.elementary !== true) {
+				setFilterState({
+					...filterState,
+					filters: {
+						...filterState.filters,
+						elementary: true,
+					},
+				});
+			}
 		}
-	}, [assignment, filterState]);
+	}, [assignment, filterState, setFilterState]);
 
 	// Events
 	const goToDetailLink = (id: string): void => {

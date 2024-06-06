@@ -148,7 +148,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 			} as CheckboxDropdownModalProps,
 		},
 		{
-			id: 'education_level',
+			id: 'education_level_id',
 			label: tText('admin/assignments/assignments___kenmerk'),
 			sortable: true,
 			visibleByDefault: true,
