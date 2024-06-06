@@ -43,7 +43,7 @@ export type AssignmentOverviewTableColumns =
 	| 'actions'
 	| 'share_type'
 	| 'is_public'
-	| 'education_level';
+	| 'education_level_id';
 
 export type AssignmentResponseTableColumns =
 	| 'pupil'
