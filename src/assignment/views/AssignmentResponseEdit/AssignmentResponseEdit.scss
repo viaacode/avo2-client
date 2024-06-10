@@ -85,7 +85,7 @@
 		@media screen and (min-width: $g-bp2) {
 			position: sticky;
 			top: $g-bar-size-regular;
-			z-index: 1;
+			z-index: $g-c-global-navbar-z;
 
 			&--scrolled {
 				.c-assignment-heading__top {
