@@ -57,11 +57,13 @@ export class CampaignMonitorService {
 	 * @param oldNewsletterPreferences
 	 * @param newNewsletterPreferences
 	 * @param commonUser
+	 * @param preferenceCenterKey
 	 */
 	public static async triggerEventsForNewsletterPreferences(
 		oldNewsletterPreferences: Partial<NewsletterPreferences>,
 		newNewsletterPreferences: Partial<NewsletterPreferences>,
-		commonUser: Avo.User.CommonUser | undefined
+		commonUser: Avo.User.CommonUser | undefined,
+		preferenceCenterKey: string
 	) {
 		if (!commonUser) {
 			return;
@@ -78,6 +80,7 @@ export class CampaignMonitorService {
 							resource: {
 								id: key,
 								type: 'campaign-monitor-list',
+								preferenceCenterKey,
 							},
 						};
 					} else if (newNewsletterPreferences[key] === false) {
@@ -89,6 +92,7 @@ export class CampaignMonitorService {
 							resource: {
 								id: key,
 								type: 'campaign-monitor-list',
+								preferenceCenterKey,
 							},
 						};
 					}

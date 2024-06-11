@@ -88,7 +88,8 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 			CampaignMonitorService.triggerEventsForNewsletterPreferences(
 				initialNewsletterPreferences,
 				currentNewsletterPreferences,
-				commonUser
+				commonUser,
+				preferenceCenterKey
 			);
 
 			setInitialNewsletterPreferences({
