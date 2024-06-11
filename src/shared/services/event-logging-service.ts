@@ -3,7 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../helpers';
 
-interface MinimalClientEvent {
+export interface MinimalClientEvent {
 	action: Avo.EventLogging.Action;
 	object: string; // entity being modified
 	object_type: Avo.EventLogging.ObjectType;
