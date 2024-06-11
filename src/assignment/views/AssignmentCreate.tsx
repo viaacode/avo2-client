@@ -47,6 +47,7 @@ import { StickySaveBar } from '../../shared/components/StickySaveBar/StickySaveB
 import { navigate } from '../../shared/helpers';
 import { type EducationLevelId } from '../../shared/helpers/lom';
 import withUser from '../../shared/hocs/withUser';
+import { useBlocksList } from '../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { useWarningBeforeUnload } from '../../shared/hooks/useWarningBeforeUnload';
@@ -75,7 +76,6 @@ import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentForm,
 	useBlockListModals,
-	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
 import { type AssignmentFields } from '../hooks/assignment-form';
