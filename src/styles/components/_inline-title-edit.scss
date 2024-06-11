@@ -47,11 +47,6 @@
 			z-index: 1;
 		}
 
-		& + .c-floating-error {
-			margin-top: 4rem;
-			font-size: $g-base-font-size;
-		}
-
 		&__submit,
 		&__cancel {
 			place-self: center;
@@ -65,5 +60,10 @@
 		&__cancel {
 			margin-right: math.div($g-spacer-unit, 2);
 		}
+	}
+
+	&__error {
+		margin-top: $g-spacer-unit;
+		font-size: $g-base-font-size;
 	}
 }
