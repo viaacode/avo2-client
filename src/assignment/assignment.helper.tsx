@@ -92,8 +92,11 @@ export function isUserAssignmentOwner(
 	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
 	return (
-		assignment?.owner_profile_id ===
-		((user as Avo.User.User).profile?.id || (user as Avo.User.CommonUser).profileId)
+		// New assignment
+		assignment.owner_profile_id === undefined ||
+		// Existing assignment
+		assignment.owner_profile_id ===
+			((user as Avo.User.User).profile?.id || (user as Avo.User.CommonUser).profileId)
 	);
 }
 
