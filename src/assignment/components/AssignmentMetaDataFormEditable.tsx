@@ -11,12 +11,13 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { intersection, map } from 'lodash-es';
+import { intersection } from 'lodash-es';
 import React, { type Dispatch, type FC, type SetStateAction, useState } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';
 
 import { ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { getBottomLoms } from '../../shared/helpers/get-bottom-loms';
 import { EducationLevelType } from '../../shared/helpers/lom';
 import { tHtml } from '../../shared/helpers/translate';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -36,6 +37,12 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 }) => {
 	const { tText } = useTranslation();
 	const [isAssignmentStillsModalOpen, setIsAssignmentStillsModalOpen] = useState<boolean>(false);
+
+	const mappedLoms: Avo.Lom.LomField[] = (assignment?.loms || []).map((item) => ({
+		...{ label: '' }, // Fallback
+		...item?.lom,
+		id: item?.lom_id || '',
+	}));
 
 	const onLomsChange = (loms: Avo.Lom.LomField[]) => {
 		const mappedLoms = loms.map((lom) => ({
@@ -58,13 +65,13 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 	};
 
 	const filterSubjects = (subject: Avo.Lom.LomField & { related?: string[] }) => {
-		const selectedEducationLevels = (assignment.loms || []).filter(({ lom }) => {
+		const selectedEducationLevels = getBottomLoms(mappedLoms).filter((lom) => {
 			return lom?.scheme === EducationLevelType.structuur;
 		});
 
 		const inter = intersection(
 			subject.related || [],
-			selectedEducationLevels.map(({ lom_id }) => lom_id)
+			selectedEducationLevels.map(({ id }) => id)
 		);
 
 		return inter.length > 0;
@@ -79,10 +86,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 							<Grid>
 								<Column size="3-7" className="u-spacer-bottom">
 									<LomFieldsInput
-										loms={
-											(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) ||
-											[]
-										}
+										loms={mappedLoms}
 										onChange={onLomsChange}
 										showThemes
 										filterSubjects={filterSubjects}
