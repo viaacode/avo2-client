@@ -41,7 +41,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 	const mappedLoms: Avo.Lom.LomField[] = (assignment?.loms || []).map((item) => ({
 		...{ label: '' }, // Fallback
 		...item?.lom,
-		id: item?.lom_id || '',
+		id: item?.id || item?.lom_id || '',
 	}));
 
 	const onLomsChange = (loms: Avo.Lom.LomField[]) => {
