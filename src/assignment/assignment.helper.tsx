@@ -88,10 +88,13 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 }
 
 export function isUserAssignmentOwner(
-	user: Avo.User.User,
+	user: Pick<Avo.User.User, 'profile'> | Pick<Avo.User.CommonUser, 'profileId'>,
 	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
-	return assignment?.owner_profile_id === user.profile?.id;
+	return (
+		assignment?.owner_profile_id ===
+		((user as Avo.User.User).profile?.id || (user as Avo.User.CommonUser).profileId)
+	);
 }
 
 export function isUserAssignmentContributor(
