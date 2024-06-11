@@ -84,6 +84,14 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 				preferenceCenterKey as string | undefined
 			);
 
+			// No await for logging events
+			CampaignMonitorService.triggerEventsForNewsletterPreferences(
+				initialNewsletterPreferences,
+				currentNewsletterPreferences,
+				commonUser,
+				preferenceCenterKey
+			);
+
 			setInitialNewsletterPreferences({
 				...initialNewsletterPreferences,
 				...currentNewsletterPreferences,
