@@ -50,8 +50,6 @@ const InteractiveTour: FunctionComponent<
 	const routeId = interactiveTourInfo?.routeId;
 	const [seen, setSeen] = useState<boolean | null>(tour?.seen ?? null);
 
-	console.info({ tour });
-
 	useEffect(() => {
 		if (tour) {
 			setSeen(tour.seen);
