@@ -939,9 +939,7 @@ const AssignmentDetail: FC<
 		return (
 			<>
 				{renderHeader()}
-				<Spacer margin={['top-extra-large', 'bottom-extra-large']}>
-					{renderAssignmentBlocks()}
-				</Spacer>
+				{renderAssignmentBlocks()}
 				{renderMetadata()}
 			</>
 		);
