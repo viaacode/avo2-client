@@ -50,6 +50,8 @@ const InteractiveTour: FunctionComponent<
 	const routeId = interactiveTourInfo?.routeId;
 	const [seen, setSeen] = useState<boolean | null>(tour?.seen ?? null);
 
+	console.info({ tour });
+
 	useEffect(() => {
 		if (tour) {
 			setSeen(tour.seen);
@@ -117,6 +119,9 @@ const InteractiveTour: FunctionComponent<
 
 				// Remove steps for which the target isn't found
 				if (!document.querySelector(mappedStep.target)) {
+					console.warn(`Could not find target for step "${mappedStep.title}}"`, {
+						target: mappedStep.target,
+					});
 					return null;
 				}
 
