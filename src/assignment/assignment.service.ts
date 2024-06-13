@@ -533,9 +533,9 @@ export class AssignmentService {
 		// };
 
 		// See table in AVO-3160, reverted by AVO-3308
-		// const education_level_id = isUserDoubleTeacher(commonUser)
+		// const education_level_id = isUserSecondaryElementary(commonUser)
 		// 	? initialAssignment.education_level_id
-		// 	: isUserSecondaryTeacher(commonUser)
+		// 	: isUserTeacherSecondary(commonUser)
 		// 	? EducationLevelId.secundairOnderwijs
 		// 	: EducationLevelId.lagerOnderwijs;
 
@@ -1514,7 +1514,7 @@ export class AssignmentService {
 					object_type: 'assignment',
 					action: 'share',
 					resource: {
-						education_level: assignment.education_level_id || 'null',
+						education_level: String(assignment.education_level_id),
 						...rest,
 					},
 				},
