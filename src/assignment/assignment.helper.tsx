@@ -4,6 +4,7 @@ import { compact, orderBy } from 'lodash-es';
 import { type ReactNode } from 'react';
 
 import { stripHtml } from '../shared/helpers';
+import { EducationLevelId } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { type Positioned } from '../shared/types';
 
@@ -166,8 +167,24 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 	},
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
-		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			!!assignment.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => {
+			// We only have subjects available for elementary and secondary education levels
+			const subjectsAvailable =
+				assignment.loms?.find((lom) =>
+					[EducationLevelId.lagerOnderwijs, EducationLevelId.secundairOnderwijs].includes(
+						(lom.id || lom.lom_id) as EducationLevelId
+					)
+				) !== undefined;
+
+			// Does the assignment have subjects?
+			const hasSubjects = !!assignment.loms?.find(
+				(lom) => lom.lom?.scheme === LomSchemeType.subject
+			);
+
+			// (true & true) or (false & false)
+			// return (subjectsAvailable && hasSubjects) || (!subjectsAvailable && !hasSubjects);
+			return subjectsAvailable === hasSubjects;
+		},
 	},
 	{
 		error: tText(
