@@ -34,6 +34,7 @@ export const transformContributorsToSimpleContributors = (
 					contributor?.profile?.organisation?.logo_url || contributor.profile?.avatar,
 				profileId: contributor.profile_id,
 				contributorId: contributor.id,
+				loms: contributor.profile?.loms,
 			} as ContributorInfo;
 		});
 		return defaultContributors.concat(mappedContributors);

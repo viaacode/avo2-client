@@ -1,5 +1,5 @@
 import { IconName, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
-import { type PermissionName } from '@viaa/avo2-types';
+import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useEffect, useState } from 'react';
 
 import { tText } from '../../helpers/translate';
@@ -31,20 +31,22 @@ type ShareModalProps = {
 		[ContributorInfoRight.VIEWER]: PermissionName;
 	};
 	isAdmin: boolean;
+	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 
 const ShareModal: FC<ShareModalProps> = ({
-	title,
-	isOpen,
-	onClose,
-	contributors,
-	onAddContributor,
-	onEditContributorRights,
-	onDeleteContributor,
-	shareWithPupilsProps,
-	withPupils = true,
+	assignment,
 	availableRights,
+	contributors,
 	isAdmin,
+	isOpen,
+	onAddContributor,
+	onClose,
+	onDeleteContributor,
+	onEditContributorRights,
+	shareWithPupilsProps,
+	title,
+	withPupils = true,
 }) => {
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [hasModalOpen, setHasModalOpen] = useState<boolean>(false);
@@ -99,6 +101,7 @@ const ShareModal: FC<ShareModalProps> = ({
 						{tab === ShareDropdownTabs.COLLEAGUES ? (
 							<Spacer margin={'top-large'}>
 								<ShareWithColleagues
+									assignment={assignment}
 									contributors={contributors || []}
 									availableRights={availableRights}
 									onAddNewContributor={onAddContributor}

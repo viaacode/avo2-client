@@ -108,6 +108,9 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 					logo_url
 					or_id
 				}
+				loms {
+					lom_id
+				}
 			}
 			id
 			profile_id
@@ -122,5 +125,9 @@ query getAssignmentWithResponse($assignmentId: uuid!, $pupilUuid: uuid!) {
 			}
 		}
 		lom_learning_resource_type
+		education_level_id
+		education_level {
+			label
+		}
 	}
 }

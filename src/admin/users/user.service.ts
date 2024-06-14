@@ -4,10 +4,10 @@ import { endOfDay, isBefore } from 'date-fns';
 import { compact } from 'lodash-es';
 
 import {
-	GetProfileIdsQuery,
-	GetProfileIdsQueryVariables,
-	UpdateUserTempAccessByIdMutation,
-	UpdateUserTempAccessByIdMutationVariables,
+	type GetProfileIdsQuery,
+	type GetProfileIdsQueryVariables,
+	type UpdateUserTempAccessByIdMutation,
+	type UpdateUserTempAccessByIdMutationVariables,
 } from '../../shared/generated/graphql-db-operations';
 import {
 	GetProfileIdsDocument,

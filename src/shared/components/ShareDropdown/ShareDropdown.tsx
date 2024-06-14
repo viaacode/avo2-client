@@ -6,7 +6,7 @@ import {
 	IconName,
 	Tabs,
 } from '@viaa/avo2-components';
-import { type PermissionName } from '@viaa/avo2-types';
+import { type Avo, type PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useState } from 'react';
 
 import { useTabs } from '../../hooks/useTabs';
@@ -40,18 +40,20 @@ export type ShareDropdownProps = {
 	};
 	isAdmin: boolean;
 	isAssignmentExpired?: boolean;
+	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 const ShareDropdown: FC<ShareDropdownProps> = ({
-	contributors,
-	onAddContributor,
-	onEditContributorRights,
-	onDeleteContributor,
-	dropdownProps,
+	assignment,
+	availableRights,
 	buttonProps,
+	contributors,
+	dropdownProps,
+	isAdmin,
+	onAddContributor,
+	onDeleteContributor,
+	onEditContributorRights,
 	shareWithPupilsProps,
 	withPupils = true,
-	availableRights,
-	isAdmin,
 }) => {
 	const { tText } = useTranslation();
 	const [isShareDropdownOpen, setIsShareDropdownOpen] = useState<boolean>(false);
@@ -113,6 +115,7 @@ const ShareDropdown: FC<ShareDropdownProps> = ({
 					<div className="c-share-dropdown__content">
 						{tab === ShareDropdownTabs.COLLEAGUES ? (
 							<ShareWithColleagues
+								assignment={assignment}
 								contributors={contributors || []}
 								availableRights={availableRights}
 								onAddNewContributor={onAddContributor}

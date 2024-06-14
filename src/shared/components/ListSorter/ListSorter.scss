@@ -65,6 +65,11 @@ $block-editor-border: 0.1rem solid $block-editor-border-color;
 			& > div {
 				margin-right: $g-spacer-unit;
 			}
+
+			.c-color-select {
+				width: 14rem;
+				max-width: 100%;
+			}
 		}
 
 		&__content {

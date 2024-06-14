@@ -26,7 +26,11 @@ const AssignmentDetailSwitcher: FunctionComponent<UserProps> = (props) => {
 			</Spacer>
 		);
 	}
-	if (props.commonUser?.userGroup?.id === SpecialUserGroup.Pupil) {
+	if (
+		[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+			.map(String)
+			.includes(String(props.commonUser?.userGroup?.id))
+	) {
 		// Render assignment response edit page
 		return <AssignmentResponseEditPage />;
 	}

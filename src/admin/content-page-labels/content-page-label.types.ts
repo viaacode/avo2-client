@@ -1,4 +1,4 @@
-import { ButtonAction } from '@viaa/avo2-components';
+import { type ButtonAction } from '@viaa/avo2-components';
 
 export interface ContentPageLabel {
 	id: number;

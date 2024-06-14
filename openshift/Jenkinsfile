@@ -110,6 +110,9 @@ pipeline {
 				not {
 					buildingTag()
 				}
+			  not {
+					branch 'develop'
+				}
 			}
 			steps {
 				container('oc') {

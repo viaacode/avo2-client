@@ -31,6 +31,7 @@ $sticky-bar-threshold: $sticky-bar-width + (math.div($sticky-bar-spacing-horizon
 
 		@media screen and (min-width: $g-bp3) {
 			justify-content: space-between;
+			align-items: center;
 		}
 
 		@media screen and (max-width: ($g-bp3 - 1px)) {
@@ -49,6 +50,7 @@ $sticky-bar-threshold: $sticky-bar-width + (math.div($sticky-bar-spacing-horizon
 
 		&__cta {
 			flex-grow: 1;
+			padding-right: $g-spacer-unit * 2;
 		}
 	}
 }

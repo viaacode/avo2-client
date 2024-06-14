@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Button,
 	Column,
 	Container,
@@ -10,12 +11,14 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { map } from 'lodash-es';
+import { intersection, map } from 'lodash-es';
 import React, { type Dispatch, type FC, type SetStateAction, useState } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';
 
 import { ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
+import { EducationLevelType } from '../../shared/helpers/lom';
+import { tHtml } from '../../shared/helpers/translate';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 type AssignmentMetaDataFormEditableProps = {
@@ -54,6 +57,19 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 		}));
 	};
 
+	const filterSubjects = (subject: Avo.Lom.LomField & { related?: string[] }) => {
+		const selectedEducationLevels = (assignment.loms || []).filter(({ lom }) => {
+			return lom?.scheme === EducationLevelType.structuur;
+		});
+
+		const inter = intersection(
+			subject.related || [],
+			selectedEducationLevels.map(({ lom_id }) => lom_id)
+		);
+
+		return inter.length > 0;
+	};
+
 	return (
 		<>
 			<Container mode="vertical">
@@ -61,7 +77,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 					<Form>
 						<Spacer margin="bottom">
 							<Grid>
-								<Column size="3-7">
+								<Column size="3-7" className="u-spacer-bottom">
 									<LomFieldsInput
 										loms={
 											(map(assignment?.loms, 'lom') as Avo.Lom.LomField[]) ||
@@ -69,6 +85,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 										}
 										onChange={onLomsChange}
 										showThemes
+										filterSubjects={filterSubjects}
 									/>
 
 									<ShortDescriptionField
@@ -129,6 +146,12 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 								</Column>
 
 								<Column size="3-5">
+									<Alert className="u-spacer-bottom">
+										{tHtml(
+											'assignment/components/assignment-meta-data-form-editable___deze-gegevens-dienen-enkel-om-een-opdracht-te-publiceren-en-om-deze-op-te-nemen-in-de-zoek-binnen-het-archief-voor-onderwijs'
+										)}
+									</Alert>
+
 									<FormGroup
 										label={tText(
 											'assignment/components/assignment-meta-data-form-editable___cover-afbeelding'

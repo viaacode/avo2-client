@@ -23,6 +23,7 @@ import { PupilCollectionService } from '../../../../pupil-collection/pupil-colle
 import { SearchFiltersAndResults } from '../../../../search/components';
 import { type FilterState } from '../../../../search/search.types';
 import { selectSearchResults } from '../../../../search/store/selectors';
+import { EducationLevelId } from '../../../../shared/helpers/lom';
 import withUser, { type UserProps } from '../../../../shared/hocs/withUser';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../../shared/services/event-logging-service';
@@ -77,6 +78,21 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			item?.scrollIntoView({ block: 'center' });
 		}, 100);
 	}, [searchResults]);
+
+	useEffect(() => {
+		// Is the assignment intended for elementary
+		if (assignment?.education_level_id === EducationLevelId.lagerOnderwijs) {
+			if (filterState.filters?.elementary !== true) {
+				setFilterState({
+					...filterState,
+					filters: {
+						...filterState.filters,
+						elementary: true,
+					},
+				});
+			}
+		}
+	}, [assignment, filterState, setFilterState]);
 
 	// Events
 	const goToDetailLink = (id: string): void => {
@@ -153,7 +169,10 @@ const AssignmentResponseSearchTab: FunctionComponent<
 					object: assignment.id,
 					object_type: 'avo_assignment',
 					action: 'search',
-					resource: newFilterState.filters,
+					resource: {
+						...newFilterState.filters,
+						education_level: String(assignment?.education_level_id),
+					},
 				},
 				user
 			);

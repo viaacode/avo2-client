@@ -20,7 +20,7 @@ import React, { type FunctionComponent, type ReactNode, type ReactText } from 'r
 
 import './SearchResult.scss';
 
-export interface SearchResultPropsSchema extends DefaultProps {
+export interface SearchResultProps extends DefaultProps {
 	title: ReactNode;
 	subTitle: ReactNode;
 	thumbnail: ReactNode;
@@ -39,7 +39,7 @@ export interface SearchResultPropsSchema extends DefaultProps {
 	onTagClicked?: (tagId: string) => void;
 }
 
-export const SearchResult: FunctionComponent<SearchResultPropsSchema> = ({
+export const SearchResult: FunctionComponent<SearchResultProps> = ({
 	title,
 	subTitle,
 	thumbnail,

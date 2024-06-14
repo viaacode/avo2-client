@@ -1,3 +1,5 @@
+import './ShareWithColleagues.scss';
+import { useLocalStorage } from '@uidotdev/usehooks';
 import {
 	Avatar,
 	Button,
@@ -12,24 +14,30 @@ import {
 	Spacer,
 	Spinner,
 	TextInput,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type PermissionName } from '@viaa/avo2-types';
+import { type Avo, type PermissionName } from '@viaa/avo2-types';
+import classNames from 'classnames';
 import { isEmpty, isNil, truncate } from 'lodash-es';
 import React, { type FC, useMemo, useState } from 'react';
 
 import { validateEmailAddress } from '../../helpers';
+import { tHtml } from '../../helpers/translate';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import useTranslation from '../../hooks/useTranslation';
-import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import { ConfirmModal, RememberConfirmationKeys } from '../ConfirmModal';
 
 import EditShareUserRightsModal from './Modals/EditShareUserRightsModal';
+import { GET_EDUCATION_LEVEL_DIFFERENCE_DICT } from './ShareWithColleagues.const';
 import {
 	compareUsersEmail,
 	findRightByValue,
 	getContributorRightLabel,
+	hasEducationLevel,
 	sortContributors,
 } from './ShareWithColleagues.helpers';
-import './ShareWithColleagues.scss';
 import { type ContributorInfo, ContributorInfoRight } from './ShareWithColleagues.types';
 
 type ShareWithColleaguesProps = {
@@ -43,18 +51,20 @@ type ShareWithColleaguesProps = {
 	onEditRights: (info: ContributorInfo, newRights: ContributorInfoRight) => Promise<void>;
 	onDeleteContributor: (info: ContributorInfo) => Promise<void>;
 	hasModalOpen: (open: boolean) => void;
+	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 
 const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
-	contributors,
-	user,
-	commonUser,
+	assignment,
 	availableRights,
+	commonUser,
+	contributors,
+	hasModalOpen,
+	isAdmin,
 	onAddNewContributor,
 	onDeleteContributor,
 	onEditRights,
-	hasModalOpen,
-	isAdmin,
+	user,
 }) => {
 	const { tText } = useTranslation();
 	const currentUser =
@@ -80,12 +90,20 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	const [isDeleteUserModalOpen, setIsDeleteUserModalOpen] = useState<boolean>(false);
 	const [toDeleteContributor, setToDeleteContributor] = useState<ContributorInfo | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isShareWarningModalOpen, setIsShareWarningModalOpen] = useState<boolean>(false);
+	const [isShareWarningModalRemembered] = useLocalStorage(
+		RememberConfirmationKeys.ShareWithColleagues,
+		false
+	);
 
 	const handleRightsButtonClicked = () => {
 		setIsRightsDropdownOpen(!isRightsDropdownOpen);
 	};
 
-	const handleAddNewContributor = async () => {
+	const addNewContributor = async () => {
+		setError(null); // Clear errors
+		setIsShareWarningModalOpen(false);
+
 		if (!contributor.email) {
 			setError(
 				tText(
@@ -107,6 +125,16 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			setNewContributor({ email: undefined, rights: undefined });
 			setError(null);
 			setIsLoading(false);
+		}
+	};
+
+	const handleAddNewContributor = () => {
+		// Skip the warning if it's been dismissed or the new contributor is a viewer
+		if (isShareWarningModalRemembered || contributor.rights === ContributorInfoRight.VIEWER) {
+			addNewContributor();
+		} else {
+			setIsShareWarningModalOpen(true);
+			hasModalOpen(true);
 		}
 	};
 
@@ -144,6 +172,10 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 		hasModalOpen(false);
 	};
 
+	const handleOnCloseShareWarningModal = () => {
+		setIsShareWarningModalOpen(false);
+	};
+
 	const updateNewContributor = (value: Record<string, string>) => {
 		setNewContributor({
 			...contributor,
@@ -156,31 +188,49 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			return (
 				<ul className="c-colleagues-info-list">
 					{sortContributors(contributors).map((contributor, index) => {
-						const isOwner = currentUser.rights === ContributorInfoRight.OWNER;
+						const currentUserIsOwner =
+							currentUser.rights === ContributorInfoRight.OWNER;
 						const currentUserIsContributor =
 							currentUser.rights === ContributorInfoRight.CONTRIBUTOR;
+
 						const contributorIsOwner =
 							contributor.rights === ContributorInfoRight.OWNER;
-						const isCurrentUser = currentUser.email === contributor.email;
+						const contributorIsCurrentUser = contributor.email === currentUser.email;
+						const contributorIsPending = isNil(contributor.profileId);
+						const contributorIsConflicting = !hasEducationLevel(
+							contributor,
+							assignment
+						);
+
+						const showConflictIcon =
+							!contributorIsPending &&
+							contributorIsConflicting &&
+							!contributorIsOwner;
+
 						const canEdit =
-							(!isCurrentUser && !contributorIsOwner) ||
-							(!isOwner && isCurrentUser) ||
-							(currentUserIsContributor && !contributorIsOwner) ||
-							(isAdmin && !contributorIsOwner);
+							!showConflictIcon &&
+							((!contributorIsCurrentUser && !contributorIsOwner) ||
+								(!currentUserIsOwner && contributorIsCurrentUser) ||
+								(currentUserIsContributor && !contributorIsOwner) ||
+								(isAdmin && !contributorIsOwner));
 
 						// The owner cannot delete himself but can delete everyone else
 						// Contributors can delete themselves and every other contributor and viewer
 						// Viewers can only delete themselves, but they do not have access to this dialog
 						const canDelete =
-							(!isCurrentUser && !contributorIsOwner) ||
-							(!isOwner && isCurrentUser) ||
+							// This contributor is not the current user and not the owner
+							(!contributorIsCurrentUser && !contributorIsOwner) ||
+							// This contributor is the current user and is not the owner
+							(!currentUserIsOwner && contributorIsCurrentUser) ||
+							// The current user is a contributor and this contributor is not the owner
 							(currentUserIsContributor && !contributorIsOwner) ||
+							// The current user is an admin and this contributor is not the owner
 							(isAdmin && !contributorIsOwner);
 
 						return (
 							<li key={index} className="c-colleague-info-row">
 								<div className="c-colleague-info-row__avatar">
-									{contributor.profileId ? (
+									{!contributorIsPending ? (
 										<Avatar
 											initials={
 												contributor.firstName && contributor.lastName
@@ -203,7 +253,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									)}
 
 									<p className="c-colleague-info-row__info__email">
-										{!isNil(contributor.profileId)
+										{!contributorIsPending
 											? truncate(contributor.email, { length: 32 })
 											: `${contributor.inviteEmail} (${tText(
 													'shared/components/share-with-colleagues/share-with-colleagues___pending'
@@ -211,11 +261,32 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 									</p>
 								</div>
 
-								<div className="c-colleague-info-row__rights">
+								<div
+									className={classNames({
+										'c-colleague-info-row__rights': true,
+										'u-text-muted': showConflictIcon,
+									})}
+								>
 									<span>{getContributorRightLabel(contributor.rights)}</span>
 								</div>
 
 								<div className="c-colleague-info-row__action">
+									{showConflictIcon && assignment?.education_level_id && (
+										<Tooltip position="top">
+											<TooltipTrigger>
+												<button className="c-icon-button u-text-muted">
+													<Icon name={IconName.info} />
+												</button>
+											</TooltipTrigger>
+											<TooltipContent>
+												{
+													GET_EDUCATION_LEVEL_DIFFERENCE_DICT()[
+														assignment.education_level_id
+													]
+												}
+											</TooltipContent>
+										</Tooltip>
+									)}
 									{canEdit && (
 										<button
 											className="c-icon-button"
@@ -294,60 +365,64 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 				currentUser.rights === ContributorInfoRight.CONTRIBUTOR ||
 				isAdmin) && (
 				<>
-					<div className="c-add-colleague">
-						<TextInput
-							type="email"
-							className="c-add-colleague__input"
-							placeholder={tText(
-								'shared/components/share-with-colleagues/share-with-colleagues___emailadres'
-							)}
-							value={contributor.email}
-							onChange={(value) => updateNewContributor({ email: value })}
-						/>
+					<section className="u-spacer-bottom">
+						<div className="c-add-colleague">
+							<TextInput
+								type="email"
+								className="c-add-colleague__input"
+								placeholder={tText(
+									'shared/components/share-with-colleagues/share-with-colleagues___emailadres'
+								)}
+								value={contributor.email}
+								onChange={(value) => updateNewContributor({ email: value })}
+							/>
 
-						<Dropdown isOpen={isRightsDropdownOpen}>
-							<DropdownButton>
-								<Button
-									icon={
-										isRightsDropdownOpen ? IconName.caretUp : IconName.caretDown
-									}
-									iconPosition="right"
-									onClick={handleRightsButtonClicked}
-									label={
-										contributor.rights
-											? getContributorRightLabel(contributor.rights)
-											: tText(
-													'shared/components/share-with-colleagues/share-with-colleagues___rol'
-											  )
-									}
-									className="c-add-colleague__select"
-								/>
-							</DropdownButton>
+							<Dropdown isOpen={isRightsDropdownOpen}>
+								<DropdownButton>
+									<Button
+										icon={
+											isRightsDropdownOpen
+												? IconName.caretUp
+												: IconName.caretDown
+										}
+										iconPosition="right"
+										onClick={handleRightsButtonClicked}
+										label={
+											contributor.rights
+												? getContributorRightLabel(contributor.rights)
+												: tText(
+														'shared/components/share-with-colleagues/share-with-colleagues___rol'
+												  )
+										}
+										className="c-add-colleague__select"
+									/>
+								</DropdownButton>
 
-							<DropdownContent>
-								<MenuContent
-									menuItems={rightsDropdownOptions}
-									onClick={(id) => {
-										updateNewContributor({ rights: id as string });
-										handleRightsButtonClicked();
-									}}
-								/>
-							</DropdownContent>
-						</Dropdown>
+								<DropdownContent>
+									<MenuContent
+										menuItems={rightsDropdownOptions}
+										onClick={(id) => {
+											updateNewContributor({ rights: id as string });
+											handleRightsButtonClicked();
+										}}
+									/>
+								</DropdownContent>
+							</Dropdown>
 
-						<Button
-							icon={IconName.add}
-							label={tText(
-								'shared/components/share-with-colleagues/share-with-colleagues___voeg-toe'
-							)}
-							className="c-add-colleague__button"
-							onClick={handleAddNewContributor}
-							disabled={isEmpty(contributor.email) || !contributor.rights}
-							type="secondary"
-						/>
-					</div>
+							<Button
+								icon={IconName.add}
+								label={tText(
+									'shared/components/share-with-colleagues/share-with-colleagues___voeg-toe'
+								)}
+								className="c-add-colleague__button"
+								onClick={handleAddNewContributor}
+								disabled={isEmpty(contributor.email) || !contributor.rights}
+								type="secondary"
+							/>
+						</div>
 
-					{error && <p className="c-add-colleague__error">{error}</p>}
+						{error && <p className="c-add-colleague__error">{error}</p>}
+					</section>
 
 					<EditShareUserRightsModal
 						toEditContributorRight={toEditContributor?.rights as ContributorInfoRight}
@@ -400,6 +475,27 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 							onClose={() => handleOnCloseDeleteContributor()}
 						/>
 					)}
+
+					<ConfirmModal
+						body={tHtml(
+							'shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing-beschrijving'
+						)}
+						cancelLabel={tText(
+							'shared/components/share-with-colleagues/share-with-colleagues___annuleren'
+						)}
+						confirmButtonType="primary"
+						confirmCallback={addNewContributor}
+						confirmLabel={tText(
+							'shared/components/share-with-colleagues/share-with-colleagues___delen'
+						)}
+						isOpen={isShareWarningModalOpen}
+						onClose={handleOnCloseShareWarningModal}
+						title={tHtml(
+							'shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing'
+						)}
+						remember="ShareWithColleagues"
+						size="medium"
+					/>
 				</>
 			)}
 
