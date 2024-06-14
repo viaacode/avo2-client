@@ -210,7 +210,7 @@ pipeline {
 							#npm set-script prepare ""
 							npm install --force
 							npm install junit-report-builder --save --force
-							npm install @playwright/test
+							npm install @playwright/test --force
 							npx playwright install
 							npx playwright install-deps
 							npx playwright install chrome
