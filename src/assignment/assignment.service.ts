@@ -92,7 +92,7 @@ import {
 	type App_Pupil_Collection_Blocks,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
-import { CustomError, getEnv } from '../shared/helpers';
+import { CustomError, getEnv, isUserSecondaryElementary } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
@@ -527,10 +527,10 @@ export class AssignmentService {
 			);
 		}
 
-		// const commonUser = {
-		// 	loms: user.profile?.loms || [],
-		// 	userGroup: { id: user.profile?.userGroupIds[0] },
-		// };
+		const commonUser = {
+			loms: user.profile?.loms || [],
+			userGroup: { id: user.profile?.userGroupIds[0] },
+		};
 
 		// See table in AVO-3160, reverted by AVO-3308
 		// const education_level_id = isUserSecondaryElementary(commonUser)
@@ -553,7 +553,7 @@ export class AssignmentService {
 			contributors: [],
 			labels: [],
 			note: null,
-			education_level_id: null,
+			education_level_id: isUserSecondaryElementary(commonUser) ? null : undefined,
 		};
 
 		delete newAssignment.owner;
