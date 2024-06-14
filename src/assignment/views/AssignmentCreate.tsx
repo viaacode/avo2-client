@@ -20,7 +20,6 @@ import { type Avo } from '@viaa/avo2-types';
 import React, {
 	type Dispatch,
 	type FunctionComponent,
-	ReactNode,
 	type SetStateAction,
 	useCallback,
 	useEffect,
@@ -109,7 +108,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 		setValue,
 		trigger,
 		formState: { isDirty },
-		watch,
 	} = form;
 
 	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =

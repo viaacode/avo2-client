@@ -156,7 +156,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-		useEducationLevelModal(commonUser, assignment);
+		useEducationLevelModal(commonUser, assignment, assignmentLoading);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
