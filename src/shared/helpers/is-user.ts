@@ -10,15 +10,15 @@ export function isUserGroup(user?: UserLomsAndUserGroup, group?: SpecialUserGrou
 	return user?.userGroup?.id === group;
 }
 
-export function isUserPupil(user: UserLomsAndUserGroup) {
+export function isUserPupilSecondary(user: UserLomsAndUserGroup) {
 	return isUserGroup(user, SpecialUserGroup.PupilSecondary);
 }
 
-export function isUserElementaryPupil(user: UserLomsAndUserGroup) {
+export function isUserPupilElementary(user: UserLomsAndUserGroup) {
 	return isUserGroup(user, SpecialUserGroup.PupilElementary);
 }
 
-export function isUserSecondaryTeacher(user: UserLomsAndUserGroup) {
+export function isUserTeacherSecondary(user: UserLomsAndUserGroup) {
 	return isUserGroup(user, SpecialUserGroup.TeacherSecondary);
 }
 
@@ -26,9 +26,7 @@ export function isUserSecondaryTeacher(user: UserLomsAndUserGroup) {
  * @param user The user to evaluate
  * @returns A boolean indicating if they have both Elementary & Secondary LOM's
  */
-export function isUserDoubleTeacher(user: UserLomsAndUserGroup) {
-	// DoubleTeacher must always also be a SecondaryTeacher
-	if (!isUserSecondaryTeacher(user)) return false;
+export function isUserSecondaryElementary(user: UserLomsAndUserGroup) {
 	return isUserLevel(user, [
 		EducationLevelId.lagerOnderwijs,
 		EducationLevelId.secundairOnderwijs,
