@@ -10,7 +10,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { clsx } from 'clsx';
-import React, { type FC, type ReactNode } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { InteractiveTour } from '../../shared/components';
 
@@ -32,6 +32,23 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 	tour = <InteractiveTour showButton />,
 }) => {
 	const [{ y }] = useWindowScroll();
+	const [isScrolled, setIsScrolled] = useState(false);
+
+	useEffect(() => {
+		/**
+		 * Roughly the height of the "Mijn opdrachten" button at `$g-bp2`
+		 * @unit px
+		 */
+		const breakpoint = 40;
+		const depth = y || 0;
+
+		if (depth >= breakpoint && !isScrolled) {
+			setIsScrolled(true);
+		} else if (depth === 0) {
+			// Only update at exact 0 to avoid page-locking repaints & pseudo-states
+			setIsScrolled(false);
+		}
+	}, [y, isScrolled, setIsScrolled]);
 
 	return (
 		<>
@@ -41,7 +58,7 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 				autoHeight
 				className={clsx({
 					'c-assignment-heading': true,
-					'c-assignment-heading--scrolled': (y || 0) > 0,
+					'c-assignment-heading--scrolled': isScrolled,
 				})}
 			>
 				<Container

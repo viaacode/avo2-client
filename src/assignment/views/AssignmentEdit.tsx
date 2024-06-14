@@ -64,6 +64,7 @@ import {
 import { type EducationLevelId } from '../../shared/helpers/lom';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
+import { useBlocksList } from '../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../shared/hooks/use-draggable-list-modal';
 import { useAssignmentPastDeadline } from '../../shared/hooks/useAssignmentPastDeadline';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -112,7 +113,6 @@ import {
 	useAssignmentBlockChangeHandler,
 	useAssignmentForm,
 	useBlockListModals,
-	useBlocksList,
 	useEditBlocks,
 } from '../hooks';
 import { type AssignmentFields } from '../hooks/assignment-form';
@@ -156,7 +156,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-		useEducationLevelModal(commonUser, assignment);
+		useEducationLevelModal(commonUser, assignment, assignmentLoading);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{

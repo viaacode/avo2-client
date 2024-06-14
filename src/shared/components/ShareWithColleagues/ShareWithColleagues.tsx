@@ -129,8 +129,13 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 	};
 
 	const handleAddNewContributor = () => {
-		// Skip the warning if it's been dismissed or the new contributor is a viewer
-		if (isShareWarningModalRemembered || contributor.rights === ContributorInfoRight.VIEWER) {
+		const isAssignment = assignment !== undefined;
+		// Skip the warning if it's not an assignment, been dismissed or the new contributor is a viewer
+		if (
+			!isAssignment ||
+			isShareWarningModalRemembered ||
+			contributor.rights === ContributorInfoRight.VIEWER
+		) {
 			addNewContributor();
 		} else {
 			setIsShareWarningModalOpen(true);
@@ -430,6 +435,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 						handleClose={() => handleOnCloseEditUserRights()}
 						handleConfirm={(right) => handleConfirmEditContributorRights(right)}
 						options={changeRightsOptions}
+						assignment={assignment}
 					/>
 
 					{toDeleteContributor && (

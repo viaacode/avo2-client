@@ -1,9 +1,10 @@
 import { FormGroup, Spacer, type TagInfo, TagsInput } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { LomType } from '@viaa/avo2-types';
-import { filter, map, sortBy, uniq } from 'lodash-es';
+import { uniq } from 'lodash-es';
 import React, { type FC, useMemo } from 'react';
 
+import { getBottomLoms } from '../../helpers/get-bottom-loms';
 import { groupLoms } from '../../helpers/lom';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
 import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
@@ -60,29 +61,13 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	filterSubjects = () => true,
 }) => {
 	const { tText } = useTranslation();
-	const lomFields = useMemo(() => {
-		return groupLoms(loms);
-	}, [loms]);
+	const lomFields = useMemo(() => groupLoms(loms), [loms]);
 	const [allEducationLevels, isEducationLevelsLoading] = useLomEducationLevels();
 	const [allSubjects, isSubjectsLoading] = useLomSubjects();
 	const [allThemes, isThemesLoading] = useLomThemes();
 
-	const getEducationLevelOptions = (loms: Avo.Lom.LomField[]) => {
-		// Group loms to split the incoming loms in levels and degrees
-		const groupedLoms = groupLoms(loms);
-		const parentIdsOfDegrees = map(groupedLoms.educationDegree, 'broader');
-		// Filter out the education levels which have a child education degree
-		const childlessLevels = filter(
-			groupedLoms.educationLevel,
-			(level) => !parentIdsOfDegrees.includes(level.id)
-		);
-
-		return mapLomFieldsToOptions(
-			sortBy([...groupedLoms.educationDegree, ...childlessLevels], (lom) =>
-				lom.label.toLocaleLowerCase()
-			)
-		);
-	};
+	const getEducationLevelOptions = (loms: Avo.Lom.LomField[]) =>
+		mapLomFieldsToOptions(getBottomLoms(loms));
 
 	const handleChange = (
 		values: TagInfo[],
