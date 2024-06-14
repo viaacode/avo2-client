@@ -1,7 +1,7 @@
 import { Container } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { type CSSProperties, type FC, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { AssignmentBlockType } from '../../../assignment/assignment.types';
 import { CollectionBlockType } from '../../../collection/collection.const';
@@ -9,7 +9,7 @@ import {
 	CollectionFragmentTypeItem,
 	CollectionFragmentTypeText,
 } from '../../../collection/components';
-import { GET_ASSIGNMENT_GREY } from '../ColorSelect/ColorSelect.const';
+import { getBlockColor } from '../../helpers/get-block-color';
 import { IconBar } from '../index';
 
 import { BLOCK_ITEM_ICONS } from './BlockList.consts';
@@ -20,7 +20,9 @@ import './BlockList.scss';
 
 const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
-		const layout = (children?: ReactNode, backgroundColor?: string) => (
+		const backgroundColor = getBlockColor(block as Avo.Assignment.Block);
+
+		const layout = (children?: ReactNode) => (
 			<div
 				className="u-p-0 c-block-list__item"
 				style={{ backgroundColor, '--block-background': backgroundColor }}
@@ -49,8 +51,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						{...config?.TEXT}
 						title={{ ...config?.TEXT?.title, block }}
 						block={block}
-					/>,
-					(block as Avo.Assignment.Block).color
+					/>
 				);
 
 			case CollectionBlockType.ITEM:
@@ -67,8 +68,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 							block,
 						}}
 						meta={{ ...config?.ITEM?.meta }}
-					/>,
-					(block as Avo.Assignment.Block).color
+					/>
 				);
 
 			case AssignmentBlockType.ZOEK:
@@ -81,8 +81,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						onSearchButtonClicked={config?.ZOEK?.onSearchButtonClicked || noop}
 						onCollectionButtonClicked={config?.ZOEK?.onCollectionButtonClicked || noop}
 						educationLevelId={config?.ZOEK?.educationLevelId}
-					/>,
-					(block as Avo.Assignment.Block).color || GET_ASSIGNMENT_GREY().value
+					/>
 				);
 
 			default:
