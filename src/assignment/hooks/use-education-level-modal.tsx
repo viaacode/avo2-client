@@ -9,9 +9,8 @@ export function useEducationLevelModal(
 	assignment: Partial<Avo.Assignment.Assignment> | undefined,
 	assignmentLoading = false
 ): [boolean, Dispatch<SetStateAction<boolean>>] {
-	const state = useState<boolean>(false);
+	const [isOpen, setOpen] = useState<boolean>(false);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const [_isOpen, setOpen] = state;
 
 	useEffect(() => {
 		if (!assignment || assignmentLoading || assignment.education_level_id) return;
@@ -20,5 +19,5 @@ export function useEducationLevelModal(
 			setOpen(true);
 	}, [assignment, assignmentLoading, commonUser, setOpen]);
 
-	return state;
+	return [isOpen, setOpen];
 }
