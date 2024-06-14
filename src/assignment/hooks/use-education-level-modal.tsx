@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 
-import { isUserDoubleTeacher } from '../../shared/helpers';
+import { isUserSecondaryElementary } from '../../shared/helpers';
 import { isUserAssignmentOwner } from '../assignment.helper';
 
 export function useEducationLevelModal(
@@ -15,7 +15,7 @@ export function useEducationLevelModal(
 	useEffect(() => {
 		if (!assignment || assignmentLoading || assignment.education_level_id) return;
 		isUserAssignmentOwner(commonUser, assignment) &&
-			isUserDoubleTeacher(commonUser) &&
+			isUserSecondaryElementary(commonUser) &&
 			setOpen(true);
 	}, [assignment, assignmentLoading, commonUser, setOpen]);
 

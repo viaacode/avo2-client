@@ -1,6 +1,6 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
-import { cloneDeep, compact, isEmpty, isNil } from 'lodash-es';
+import { cloneDeep, compact, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
@@ -92,14 +92,8 @@ import {
 	type App_Pupil_Collection_Blocks,
 	Lookup_Enum_Relation_Types_Enum,
 } from '../shared/generated/graphql-db-types';
-import {
-	CustomError,
-	getEnv,
-	isUserDoubleTeacher,
-	isUserSecondaryTeacher,
-} from '../shared/helpers';
+import { CustomError, getEnv } from '../shared/helpers';
 import { getOrderObject } from '../shared/helpers/generate-order-gql-query';
-import { EducationLevelId } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { dataService } from '../shared/services/data-service';
 import { trackEvents } from '../shared/services/event-logging-service';
@@ -533,17 +527,17 @@ export class AssignmentService {
 			);
 		}
 
-		const commonUser = {
-			loms: user.profile?.loms || [],
-			userGroup: { id: user.profile?.userGroupIds[0] },
-		};
+		// const commonUser = {
+		// 	loms: user.profile?.loms || [],
+		// 	userGroup: { id: user.profile?.userGroupIds[0] },
+		// };
 
-		// See table in AVO-3160
-		const education_level_id = isUserDoubleTeacher(commonUser)
-			? initialAssignment.education_level_id
-			: isUserSecondaryTeacher(commonUser)
-			? EducationLevelId.secundairOnderwijs
-			: EducationLevelId.lagerOnderwijs;
+		// See table in AVO-3160, reverted by AVO-3308
+		// const education_level_id = isUserSecondaryElementary(commonUser)
+		// 	? initialAssignment.education_level_id
+		// 	: isUserTeacherSecondary(commonUser)
+		// 	? EducationLevelId.secundairOnderwijs
+		// 	: EducationLevelId.lagerOnderwijs;
 
 		// clone the assignment
 		const newAssignment: Partial<Avo.Assignment.Assignment> = {
@@ -559,7 +553,7 @@ export class AssignmentService {
 			contributors: [],
 			labels: [],
 			note: null,
-			education_level_id,
+			education_level_id: null,
 		};
 
 		delete newAssignment.owner;
@@ -1520,7 +1514,7 @@ export class AssignmentService {
 					object_type: 'assignment',
 					action: 'share',
 					resource: {
-						education_level: assignment.education_level_id,
+						education_level: String(assignment.education_level_id),
 						...rest,
 					},
 				},
