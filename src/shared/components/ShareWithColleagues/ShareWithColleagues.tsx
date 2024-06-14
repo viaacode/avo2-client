@@ -435,6 +435,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 						handleClose={() => handleOnCloseEditUserRights()}
 						handleConfirm={(right) => handleConfirmEditContributorRights(right)}
 						options={changeRightsOptions}
+						assignment={assignment}
 					/>
 
 					{toDeleteContributor && (
