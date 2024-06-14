@@ -91,7 +91,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 					<Spacer margin={['top']}>
 						<Alert>
 							{tHtml(
-								'shared/components/share-with-colleagues/share-with-colleagues___opdracht-delen-waarschuwing-beschrijving'
+								'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___als-je-deze-collega-aanpast-naar-bewerker-krijgen-zij-ook-toegang-tot-de-resultaten-van-je-leerlingen-ben-je-zeker'
 							)}
 						</Alert>
 					</Spacer>
