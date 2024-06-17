@@ -36,10 +36,10 @@ const AssignmentHeading: FC<AssignmentHeadingProps> = ({
 
 	useEffect(() => {
 		/**
-		 * Roughly the height of the "Mijn opdrachten" button at `$g-bp2`
+		 * Roughly the height of the "Mijn opdrachten" button + title at `$g-bp4`
 		 * @unit px
 		 */
-		const breakpoint = 40;
+		const breakpoint = 120;
 		const depth = y || 0;
 
 		if (depth >= breakpoint && !isScrolled) {
