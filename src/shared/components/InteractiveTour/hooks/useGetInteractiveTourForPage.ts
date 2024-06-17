@@ -76,12 +76,19 @@ async function getInteractiveTourForPage(
 		profileId,
 		tourDisplayDates
 	);
-	if (document.querySelector(tourTemp?.steps[0].target)) {
+
+	const firstStep = tourTemp?.steps[0];
+
+	if (document.querySelector(firstStep?.target)) {
 		return {
 			tour: tourTemp,
 			routeId,
 		};
 	} else {
+		console.warn(`Could not find target for first step "${firstStep?.title}}"`, {
+			target: firstStep?.target,
+		});
+
 		return {
 			tour: null,
 			routeId: null,

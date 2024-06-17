@@ -35,8 +35,10 @@ import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
 	CampaignMonitorService,
+	NewsletterPreferenceKey,
 	type NewsletterPreferences,
 } from '../../shared/services/campaign-monitor-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import store from '../../store';
 import { SettingsService } from '../settings.service';
@@ -144,6 +146,20 @@ const CompleteProfileStep: FunctionComponent<
 			}
 			try {
 				await CampaignMonitorService.updateNewsletterPreferences(preferences);
+				if (subscribeToNewsletter) {
+					trackEvents(
+						{
+							action: 'add',
+							object: commonUser.profileId,
+							object_type: 'profile',
+							resource: {
+								id: NewsletterPreferenceKey.newsletter,
+								type: 'campaign-monitor-list',
+							},
+						},
+						commonUser
+					);
+				}
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to updateNewsletterPreferences', err, {

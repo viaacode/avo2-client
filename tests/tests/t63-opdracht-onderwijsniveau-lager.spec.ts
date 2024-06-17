@@ -17,10 +17,11 @@ test('T63: Onderwijsniveau kiezen voor lager onderwijs', async ({ page }) => {
 		process.env.TEST_LESGEVER_LAGER_GEBRUIKER_PASS as string
 	);
 
-	await page.waitForLoadState('networkidle');
+	await page.waitForTimeout(2000);
+
 	await page.goto(`${process.env.TEST_CLIENT_ENDPOINT}opdrachten/maak`);
-	await page.waitForLoadState('networkidle');
-	await page.waitForLoadState('domcontentloaded');
+
+	await page.waitForTimeout(2000);
 
 	const modal = page.locator('.c-select-education-level--create .c-modal').first();
 
