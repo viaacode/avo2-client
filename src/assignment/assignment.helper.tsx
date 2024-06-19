@@ -174,12 +174,14 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
 		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => {
-			// We only have subjects available for elementary and secondary education levels
+			// We only have subjects available for kindergarten, elementary and secondary education levels
 			const subjectsAvailable =
 				assignment.loms?.find((lom) =>
-					[EducationLevelId.lagerOnderwijs, EducationLevelId.secundairOnderwijs].includes(
-						(lom.id || lom.lom_id) as EducationLevelId
-					)
+					[
+						EducationLevelId.lagerOnderwijs,
+						EducationLevelId.secundairOnderwijs,
+						EducationLevelId.kleuteronderwijs,
+					].includes((lom.id || lom.lom_id) as EducationLevelId)
 				) !== undefined;
 
 			// Does the assignment have subjects?
