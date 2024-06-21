@@ -87,6 +87,7 @@ body:not(.c-interactive-tour--in-progress) .c-assignment-response-page .c-assign
 		position: sticky;
 		top: $g-bar-size-regular;
 		z-index: $g-c-local-toolbar-z;
+		transform: translateY(-2px); // AVO-3324
 
 		&--scrolled {
 			.c-assignment-heading__top {
