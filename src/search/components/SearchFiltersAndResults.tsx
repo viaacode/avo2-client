@@ -329,7 +329,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		// Only remove filters that are user-editable
 		for (const key in copiedFilterState) {
 			if (Object.prototype.hasOwnProperty.call(copiedFilterState, key)) {
-				if (enabledFilters?.map(String).includes(key)) {
+				if (enabledFilters === undefined || enabledFilters.map(String).includes(key)) {
 					delete copiedFilterState[key as keyof typeof copiedFilterState];
 				}
 			}
