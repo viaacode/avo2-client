@@ -97,9 +97,6 @@ pipeline {
 			steps {
 				script {
 					// If we're building for PRD, then we override the dist/robots.txt file with a PRD specific version that only allows specific routes to be indexed
-					sh(script: 'cp ./scripts/robots-PRD.txt ./dist/robots.txt', returnStdout: true)
-				}
-				script {
 					sh(script: 'cp ./scripts/robots-PRD.txt ./robots.txt', returnStdout: true)
 				}
 			}
