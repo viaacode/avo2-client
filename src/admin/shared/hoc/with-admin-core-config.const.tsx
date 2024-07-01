@@ -156,6 +156,7 @@ export function getAdminCoreConfig(): AdminConfig {
 				component: () => <Spinner size="large" />,
 			},
 			defaultAudioStill: DEFAULT_AUDIO_STILL,
+			enableMultiLanguage: false,
 			buttonTypes: () => [
 				{
 					label: tText('admin/content-block/content-block___primair'),
