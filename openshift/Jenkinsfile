@@ -95,8 +95,12 @@ pipeline {
 				buildingTag()
 			}
 			steps {
-				script {
-					ls
+				container ('oc') {
+					script {
+						sh '''#!/bin/bash
+									ls
+									'''
+					}
 				}
 			}
 		}
