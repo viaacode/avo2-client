@@ -8,7 +8,13 @@ import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, {
+	type ComponentType,
+	type FunctionComponent,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, type RouteComponentProps, withRouter } from 'react-router';
@@ -26,6 +32,7 @@ import {
 	selectLoginError,
 	selectLoginLoading,
 } from '../../authentication/store/selectors';
+import { type LoginState } from '../../authentication/store/types';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -334,18 +341,24 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (
+	state: AppState
+): {
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateLoading: boolean;
+	loginStateError: boolean;
+} => ({
 	loginState: selectLogin(state),
 	loginStateLoading: selectLoginLoading(state),
 	loginStateError: selectLoginError(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): { getLoginState: () => LoginState } => ({
 	getLoginState: () => dispatch(getLoginStateAction() as any),
 });
 
 export default compose(
 	withRouter,
-	connect(mapStateToProps, mapDispatchToProps),
+	connect(mapStateToProps, mapDispatchToProps) as any,
 	withAdminCoreConfig
-)(DynamicRouteResolver) as FunctionComponent;
+)(DynamicRouteResolver as ComponentType) as unknown as FunctionComponent<DynamicRouteResolverProps>;
