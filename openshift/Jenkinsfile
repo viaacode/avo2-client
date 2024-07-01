@@ -276,7 +276,6 @@ pipeline {
 							cat ./robots.txt
 							echo "Done replacing"
 							'''
-					}
 					tagNewImage('prd')
 				}
 			}
