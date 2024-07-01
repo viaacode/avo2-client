@@ -95,19 +95,9 @@ pipeline {
 				buildingTag()
 			}
 			steps {
-				container ('oc') {
-					script {
-						sh '''#!/bin/bash
-									ls
-									echo "Content before replacing:"
-									cat ./public/robots.txt
-									echo "Replacing ..."
-									cp ./scripts/robots-PRD.txt ./public/robots.txt
-									cp ./scripts/robots-PRD.txt ./robots.txt
-									cat ./public/robots.txt
-									cat ./robots.txt
-									'''
-					}
+				script {
+					// If we're building for PRD, then we override the public/robots.txt file with a PRD specific version that only allows specific routes to be indexed
+					sh(script: 'cp ./scripts/robots-PRD.txt ./public/robots.txt', returnStdout: true)
 				}
 			}
 		}
@@ -264,18 +254,6 @@ pipeline {
 			}
 			steps {
 				container('oc') {
-					sh '''#!/bin/bash
-							echo "Content in container:"
-							ls
-							echo "Content before replacing:"
-							cat ./public/robots.txt
-							echo "Replacing ..."
-							cp ./scripts/robots-PRD.txt ./public/robots.txt
-							cp ./scripts/robots-PRD.txt ./robots.txt
-							cat ./public/robots.txt
-							cat ./robots.txt
-							echo "Done replacing"
-							'''
 					tagNewImage('prd')
 				}
 			}
