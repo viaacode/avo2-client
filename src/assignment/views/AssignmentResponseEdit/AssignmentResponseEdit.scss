@@ -80,33 +80,34 @@
 			max-height: 390px;
 		}
 	}
+}
 
-	.c-assignment-heading {
-		@media screen and (min-width: $g-bp2) {
-			position: sticky;
-			top: $g-bar-size-regular;
-			z-index: $g-c-local-toolbar-z;
+body:not(.c-interactive-tour--in-progress) .c-assignment-response-page .c-assignment-heading {
+	@media screen and (min-width: $g-bp2) {
+		position: sticky;
+		top: $g-bar-size-regular;
+		z-index: $g-c-local-toolbar-z;
+		// transform: translateY(-2px); // AVO-3324, causes offset when first block is colored
 
-			&--scrolled {
-				.c-assignment-heading__top {
-					.c-toolbar__left {
-						margin-bottom: 0;
-					}
+		&--scrolled {
+			.c-assignment-heading__top {
+				.c-toolbar__left {
+					margin-bottom: 0;
 				}
+			}
 
-				.c-assignment-heading__title {
-					.c-return {
-						display: none;
-					}
-					.u-spacer-top-l {
-						margin-top: 0 !important;
-					}
-				}
-
-				// Metadata container
-				> div:nth-child(2) {
+			.c-assignment-heading__title {
+				.c-return {
 					display: none;
 				}
+				.u-spacer-top-l {
+					margin-top: 0 !important;
+				}
+			}
+
+			// Metadata container
+			> div:nth-child(2) {
+				display: none;
 			}
 		}
 	}

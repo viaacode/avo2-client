@@ -97,6 +97,7 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 									src={tText(
 										'authentication/views/registration-flow/accept-elementary-pupil-conditions___url-van-het-introductiefilmpje-voor-leerlingen-lager'
 									)}
+									autoplay
 								/>
 							</Spacer>
 

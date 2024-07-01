@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "1.27.5",
+  "version": "1.27.19",
   "private": true,
   "scripts": {
     "prepare": "husky install",
@@ -48,7 +48,6 @@
     "@viaa/avo2-components": "4.0.26",
     "@viaa/avo2-types": "2.49.10",
     "autosize": "6.0.1",
-    "caniuse-lite": "1.0.30001538",
     "capture-stack-trace": "1.0.1",
     "clsx": "2.0.0",
     "copy-to-clipboard": "3.3.1",
