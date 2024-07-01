@@ -90,6 +90,16 @@ pipeline {
 				}
 			}
 		}
+		stage('Copy robots.txt for PRD') {
+			when {
+				buildingTag()
+			}
+			steps {
+				script {
+					ls
+				}
+			}
+		}
 		stage('Test code') {
 			steps {
 				sh 'make -f ./openshift/Makefile test'
@@ -253,20 +263,6 @@ pipeline {
 						echo getAllCommitsBetweenTags(previous_tag, env.TAG_NAME)
 					}
 					jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'prd', environmentName: 'prd', environmentType: 'production'
-				}
-			}
-		}
-		stage('Copy robots.txt for PRD') {
-			when {
-				buildingTag()
-			}
-			steps {
-				script {
-					ls
-				}
-				script {
-					// If we're building for PRD, then we override the dist/robots.txt file with a PRD specific version that only allows specific routes to be indexed
-					sh(script: 'cp ./scripts/robots-PRD.txt ./robots.txt', returnStdout: true)
 				}
 			}
 		}
