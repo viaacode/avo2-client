@@ -324,8 +324,19 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	};
 
 	const deleteAllFilters = () => {
+		const copiedFilterState = cloneDeep(filterState);
+
+		// Only remove filters that are user-editable
+		for (const key in copiedFilterState) {
+			if (Object.prototype.hasOwnProperty.call(copiedFilterState, key)) {
+				if (enabledFilters === undefined || enabledFilters.map(String).includes(key)) {
+					delete copiedFilterState[key as keyof typeof copiedFilterState];
+				}
+			}
+		}
+
 		setSearchTerms('');
-		setFilterState({}, urlUpdateType);
+		setFilterState(copiedFilterState, urlUpdateType);
 	};
 
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {

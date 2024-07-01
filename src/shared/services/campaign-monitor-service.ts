@@ -1,16 +1,22 @@
 import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { type Avo } from '@viaa/avo2-types';
+import { compact } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { CustomError, getEnv } from '../helpers';
 
+import { type MinimalClientEvent, trackEvents } from './event-logging-service';
+
 export type EmailTemplateType = 'item' | 'collection' | 'bundle';
 
-// TODO replace withAvo.Newsletter.Preferences when typings v2.49.5 is released together with proxy v1.26.0 (rondje 3)
-export interface NewsletterPreferences {
-	newsletter: boolean;
-	workshop: boolean;
-	ambassador: boolean;
+export enum NewsletterPreferenceKey {
+	newsletter = 'newsletter',
+	workshop = 'workshop',
+	ambassador = 'ambassador',
 }
+
+// TODO replace withAvo.Newsletter.Preferences when typings v2.49.5 is released together with proxy v1.26.0 (rondje 3)
+export type NewsletterPreferences = Record<NewsletterPreferenceKey, boolean>;
 
 export class CampaignMonitorService {
 	public static async fetchNewsletterPreferences(
@@ -44,6 +50,57 @@ export class CampaignMonitorService {
 				preferences,
 			});
 		}
+	}
+
+	/**
+	 * Add an event for each subscribe or unsubscribe from a campaign monitor list to the events logging database
+	 * @param oldNewsletterPreferences
+	 * @param newNewsletterPreferences
+	 * @param commonUser
+	 * @param preferenceCenterKey
+	 */
+	public static async triggerEventsForNewsletterPreferences(
+		oldNewsletterPreferences: Partial<NewsletterPreferences>,
+		newNewsletterPreferences: Partial<NewsletterPreferences>,
+		commonUser: Avo.User.CommonUser | undefined,
+		preferenceCenterKey: string
+	) {
+		if (!commonUser) {
+			return;
+		}
+		const events: MinimalClientEvent[] = compact(
+			Object.values(NewsletterPreferenceKey).map((key): MinimalClientEvent | null => {
+				if (oldNewsletterPreferences[key] !== newNewsletterPreferences[key]) {
+					if (newNewsletterPreferences[key] === true) {
+						// subscribed
+						return {
+							action: 'add',
+							object: commonUser.profileId,
+							object_type: 'profile',
+							resource: {
+								id: key,
+								type: 'campaign-monitor-list',
+								preferenceCenterKey,
+							},
+						};
+					} else if (newNewsletterPreferences[key] === false) {
+						// unsubscribed
+						return {
+							action: 'remove',
+							object: commonUser.profileId,
+							object_type: 'profile',
+							resource: {
+								id: key,
+								type: 'campaign-monitor-list',
+								preferenceCenterKey,
+							},
+						};
+					}
+				}
+				return null;
+			})
+		);
+		await trackEvents(events, commonUser);
 	}
 
 	public static async shareThroughEmail(

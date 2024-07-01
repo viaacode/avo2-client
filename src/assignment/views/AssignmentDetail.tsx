@@ -1,3 +1,4 @@
+import './AssignmentDetail.scss';
 import {
 	Button,
 	ButtonToolbar,
@@ -8,12 +9,19 @@ import {
 	HeaderBottomRowLeft,
 	HeaderBottomRowRight,
 	HeaderMiddleRowRight,
+	HeaderTopRowLeft,
+	Icon,
 	IconName,
 	isUuid,
+	MetaData,
+	MetaDataItem,
 	MoreOptionsDropdown,
 	Spacer,
 	Spinner,
 	ToggleButton,
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { PermissionName } from '@viaa/avo2-types';
@@ -54,6 +62,7 @@ import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '..
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
+import { type EducationLevelId } from '../../shared/helpers/lom';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import {
@@ -68,7 +77,11 @@ import {
 	ObjectTypesAll,
 } from '../../shared/services/related-items-service';
 import { ToastService } from '../../shared/services/toast-service';
-import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../assignment.const';
+import {
+	ASSIGNMENT_CREATE_UPDATE_TABS,
+	GET_EDUCATION_LEVEL_DICT,
+	GET_EDUCATION_LEVEL_TOOLTIP_DICT,
+} from '../assignment.const';
 import { AssignmentService } from '../assignment.service';
 import { AssignmentAction, AssignmentType } from '../assignment.types';
 import {
@@ -81,8 +94,6 @@ import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
-
-import './AssignmentDetail.scss';
 
 type AssignmentDetailPermissions = Partial<{
 	canCreateAssignments: boolean;
@@ -345,6 +356,9 @@ const AssignmentDetail: FC<
 					object: assignmentId,
 					object_type: 'assignment',
 					action: 'view',
+					resource: {
+						education_level: String(assignment?.education_level_id),
+					},
 				},
 				user
 			);
@@ -468,7 +482,7 @@ const AssignmentDetail: FC<
 				return;
 			}
 
-			const duplicate = await duplicateAssignment(assignment, user.profile.id);
+			const duplicate = await duplicateAssignment(assignment, user);
 			if (duplicate) {
 				history.push(
 					generatePath(APP_PATH.ASSIGNMENT_DETAIL.route, {
@@ -497,7 +511,8 @@ const AssignmentDetail: FC<
 	};
 
 	const onDeleteAssignment = async (): Promise<void> => {
-		await deleteAssignment(assignmentId, user, () =>
+		if (!assignment) return;
+		await deleteAssignment(assignment, user, () =>
 			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
@@ -585,7 +600,12 @@ const AssignmentDetail: FC<
 								)
 							}
 							onAddContributor={(info) =>
-								onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+								onAddNewContributor(
+									info,
+									shareWithPupilsProps,
+									fetchContributors,
+									commonUser
+								)
 							}
 							dropdownProps={{
 								placement: 'bottom-end',
@@ -612,6 +632,7 @@ const AssignmentDetail: FC<
 									PermissionName.EDIT_ANY_ASSIGNMENTS
 								) || false
 							}
+							assignment={assignment || undefined}
 						/>
 					)}
 				{permissions?.canPublishAssignments && !inviteToken && (
@@ -740,6 +761,29 @@ const AssignmentDetail: FC<
 		);
 	};
 
+	const renderHeaderEducationLevel = () => {
+		const label =
+			GET_EDUCATION_LEVEL_DICT()[assignment?.education_level_id as EducationLevelId];
+		const tooltip =
+			GET_EDUCATION_LEVEL_TOOLTIP_DICT()[assignment?.education_level_id as EducationLevelId];
+
+		return (
+			<MetaData category="assignment">
+				<Tooltip position="top">
+					<TooltipTrigger>
+						<MetaDataItem icon={IconName.userStudent}>
+							<Icon name={IconName.userStudent} />
+
+							{label}
+						</MetaDataItem>
+					</TooltipTrigger>
+
+					<TooltipContent>{tooltip}</TooltipContent>
+				</Tooltip>
+			</MetaData>
+		);
+	};
+
 	const renderHeader = () => {
 		if (assignment) {
 			return (
@@ -750,6 +794,7 @@ const AssignmentDetail: FC<
 					bookmarks={String(bookmarkViewCounts.bookmarkCount || 0)}
 					views={String(bookmarkViewCounts.viewCount || 0)}
 				>
+					<HeaderTopRowLeft>{renderHeaderEducationLevel()}</HeaderTopRowLeft>
 					<HeaderMiddleRowRight>
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderMiddleRowRight>
@@ -789,6 +834,9 @@ const AssignmentDetail: FC<
 						flowPlayer: {
 							canPlay: true,
 						},
+					},
+					ZOEK: {
+						educationLevelId: assignment?.education_level_id as EducationLevelId,
 					},
 				}}
 			/>
@@ -891,9 +939,7 @@ const AssignmentDetail: FC<
 		return (
 			<>
 				{renderHeader()}
-				<Spacer margin={['top-extra-large', 'bottom-extra-large']}>
-					{renderAssignmentBlocks()}
-				</Spacer>
+				{renderAssignmentBlocks()}
 				{renderMetadata()}
 			</>
 		);
@@ -996,7 +1042,12 @@ const AssignmentDetail: FC<
 						)
 					}
 					onAddContributor={(info) =>
-						onAddNewContributor(info, shareWithPupilsProps, fetchContributors)
+						onAddNewContributor(
+							info,
+							shareWithPupilsProps,
+							fetchContributors,
+							commonUser
+						)
 					}
 					shareWithPupilsProps={shareWithPupilsProps}
 					availableRights={{
@@ -1008,6 +1059,7 @@ const AssignmentDetail: FC<
 						commonUser?.permissions?.includes(PermissionName.EDIT_ANY_ASSIGNMENTS) ||
 						false
 					}
+					assignment={assignment}
 				/>
 			)}
 			<DeleteAssignmentModal

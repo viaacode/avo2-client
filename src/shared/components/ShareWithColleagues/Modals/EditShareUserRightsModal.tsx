@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Button,
 	ButtonToolbar,
 	Form,
@@ -8,15 +9,17 @@ import {
 	ModalFooterRight,
 	Select,
 	type SelectOption,
+	Spacer,
 	Toolbar,
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import React, { type FC, useEffect, useState } from 'react';
+import { type Avo } from '@viaa/avo2-types';
+import React, { type FC, useEffect, useMemo, useState } from 'react';
 
 import { tHtml, tText } from '../../../helpers/translate';
 import { findRightByValue } from '../ShareWithColleagues.helpers';
-import { type ContributorInfoRight } from '../ShareWithColleagues.types';
+import { ContributorInfoRight } from '../ShareWithColleagues.types';
 
 type EditShareUserRightsModalProps = {
 	isOpen: boolean;
@@ -24,6 +27,7 @@ type EditShareUserRightsModalProps = {
 	handleConfirm: (right: ContributorInfoRight) => void;
 	toEditContributorRight: ContributorInfoRight;
 	options: SelectOption<ContributorInfoRight>[];
+	assignment?: Partial<Avo.Assignment.Assignment>;
 };
 
 const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
@@ -32,6 +36,7 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 	handleConfirm,
 	toEditContributorRight,
 	options,
+	assignment,
 }) => {
 	const [right, setRight] = useState<ContributorInfoRight>(toEditContributorRight);
 
@@ -46,6 +51,16 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 			handleConfirm(findRightByValue(right));
 		}
 	};
+
+	/**
+	 * Boolean indicating whether the permission is being changed from viewer to contributor
+	 */
+	const isEditToContributor = useMemo(
+		() =>
+			toEditContributorRight === ContributorInfoRight.VIEWER &&
+			right === ContributorInfoRight.CONTRIBUTOR,
+		[toEditContributorRight, right]
+	);
 
 	return (
 		<Modal
@@ -71,6 +86,16 @@ const EditShareUserRightsModal: FC<EditShareUserRightsModalProps> = ({
 						/>
 					</FormGroup>
 				</Form>
+
+				{assignment && isEditToContributor && (
+					<Spacer margin={['top']}>
+						<Alert>
+							{tHtml(
+								'shared/components/share-with-colleagues/modals/edit-share-user-rights-modal___als-je-deze-collega-aanpast-naar-bewerker-krijgen-zij-ook-toegang-tot-de-resultaten-van-je-leerlingen-ben-je-zeker'
+							)}
+						</Alert>
+					</Spacer>
+				)}
 			</ModalBody>
 			<ModalFooterRight>
 				<Toolbar>

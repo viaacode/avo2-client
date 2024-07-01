@@ -11,6 +11,20 @@
 		margin: $g-spacer-unit * 3 0;
 	}
 
+	.c-login-with-archief.c-login-button--pupil {
+		&.c-button.c-button--inline-link {
+			.c-button__label:first-child {
+				padding-left: 0;
+				margin-left: 0;
+				border-left: 0;
+			}
+
+			&:hover {
+				background-color: unset;
+			}
+		}
+	}
+
 	.c-button-smartschool,
 	.c-button-klascement,
 	.c-button-itsme {

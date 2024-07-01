@@ -1,16 +1,10 @@
 import { type Avo } from '@viaa/avo2-types';
 import React, { type ReactNode, useMemo } from 'react';
 
-import {
-	BlockListSorter,
-	type ListSorterItem,
-	type ListSorterProps,
-} from '../../shared/components';
-import {
-	BLOCK_ITEM_ICONS,
-	BLOCK_ITEM_LABELS,
-} from '../../shared/components/BlockList/BlockList.consts';
-import { switchAssignmentBlockPositions } from '../helpers/switch-positions';
+import { switchAssignmentBlockPositions } from '../../assignment/helpers/switch-positions';
+import { BlockListSorter, type ListSorterItem, type ListSorterProps } from '../components';
+import { BLOCK_ITEM_ICONS, BLOCK_ITEM_LABELS } from '../components/BlockList/BlockList.consts';
+import { getBlockColor } from '../helpers/get-block-color';
 
 export function useBlocksList(
 	blocks: Avo.Core.BlockItemBase[],
@@ -26,6 +20,7 @@ export function useBlocksList(
 				...block,
 				...config?.listSorterItem,
 				icon: BLOCK_ITEM_ICONS()[block.type as Avo.Core.BlockItemType](block),
+				color: getBlockColor(block as Avo.Assignment.Block),
 				onPositionChange: (item, delta) => {
 					const switched = switchAssignmentBlockPositions(
 						blocks,

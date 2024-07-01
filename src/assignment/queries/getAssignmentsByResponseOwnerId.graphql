@@ -89,6 +89,9 @@ query getAssignmentsByResponseOwnerId(
 					logo_url
 					or_id
 				}
+				loms {
+					lom_id
+				}
 			}
 			id
 			profile_id
@@ -105,6 +108,10 @@ query getAssignmentsByResponseOwnerId(
 				scheme
 				broader
 			}
+		}
+		education_level_id
+		education_level {
+			label
 		}
 	}
 	count: app_assignments_v2_aggregate(

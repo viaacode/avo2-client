@@ -26,54 +26,57 @@ const AssignmentTitle: FC<AssignmentTitleProps> = ({ control, setAssignment, onF
 
 	return useMemo(
 		() => (
-			<Flex center className="u-spacer-top-l c-inline-title-edit">
-				<Icon name={IconName.clipboard} size="large" subtle />
-
+			<Flex center className="c-inline-title-edit">
 				<BlockHeading type="h2">
 					<Controller
 						name="title"
 						control={control}
 						render={({ field, fieldState: { error } }) => (
-							<Flex align="start">
-								<ContentInput
-									{...field}
-									value={field.value ?? undefined}
-									placeholder={tText(
-										'assignment/views/assignment-create___placeholder'
-									)}
-									nodeCancel={<Icon name={IconName.x} size="small" />}
-									nodeSubmit={<Icon name={IconName.check} size="small" />}
-									onConfirm={(title) =>
-										setAssignment?.((previous) => {
-											return {
-												...previous,
-												title: title as string,
-											};
-										})
-									}
-									onCancel={() => {
-										setIsActive(false);
-										setAssignment &&
-											setAssignment((previous) => {
-												return { ...previous };
-											});
-									}}
-									onOpen={() => setIsActive(true)}
-									onClose={() => {
-										setIsActive(false);
-										// setAssignment && setAssignment((previous) => previous);
-									}}
-									onFocus={onFocus}
-									iconEnd={() =>
-										!isActive && (
-											<Icon name={IconName.edit4} size="small" subtle />
-										)
-									}
-									maxLength={MAX_TITLE_LENGTH}
-								/>
-
-								{error && <span className="c-floating-error">{error.message}</span>}
-							</Flex>
+							<>
+								<Flex align="start">
+									<ContentInput
+										{...field}
+										value={field.value ?? undefined}
+										placeholder={tText(
+											'assignment/views/assignment-create___placeholder'
+										)}
+										nodeCancel={<Icon name={IconName.x} size="small" />}
+										nodeSubmit={<Icon name={IconName.check} size="small" />}
+										onConfirm={(title) =>
+											setAssignment?.((previous) => {
+												return {
+													...previous,
+													title: title as string,
+												};
+											})
+										}
+										onCancel={() => {
+											setIsActive(false);
+											setAssignment &&
+												setAssignment((previous) => {
+													return { ...previous };
+												});
+										}}
+										onOpen={() => setIsActive(true)}
+										onClose={() => {
+											setIsActive(false);
+											// setAssignment && setAssignment((previous) => previous);
+										}}
+										onFocus={onFocus}
+										iconEnd={() =>
+											!isActive && (
+												<Icon name={IconName.edit4} size="small" subtle />
+											)
+										}
+										maxLength={MAX_TITLE_LENGTH}
+									/>
+								</Flex>
+								{error && (
+									<div className="c-inline-title-edit__error">
+										<span className="u-text-danger">{error.message}</span>
+									</div>
+								)}
+							</>
 						)}
 					/>
 				</BlockHeading>

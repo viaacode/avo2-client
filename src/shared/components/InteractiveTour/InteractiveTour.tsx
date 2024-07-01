@@ -117,6 +117,9 @@ const InteractiveTour: FunctionComponent<
 
 				// Remove steps for which the target isn't found
 				if (!document.querySelector(mappedStep.target)) {
+					console.warn(`Could not find target for step "${mappedStep.title}}"`, {
+						target: mappedStep.target,
+					});
 					return null;
 				}
 

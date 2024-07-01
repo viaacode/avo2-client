@@ -1,0 +1,23 @@
+import { type Avo } from '@viaa/avo2-types';
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
+
+import { isUserSecondaryElementary } from '../../shared/helpers';
+import { isUserAssignmentOwner } from '../assignment.helper';
+
+export function useEducationLevelModal(
+	commonUser: Avo.User.CommonUser,
+	assignment: Partial<Avo.Assignment.Assignment> | undefined,
+	assignmentLoading = false
+): [boolean, Dispatch<SetStateAction<boolean>>] {
+	const [isOpen, setOpen] = useState<boolean>(false);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+	useEffect(() => {
+		if (!assignment || assignmentLoading || assignment.education_level_id) return;
+		isUserAssignmentOwner(commonUser, assignment) &&
+			isUserSecondaryElementary(commonUser) &&
+			setOpen(true);
+	}, [assignment, assignmentLoading, commonUser, setOpen]);
+
+	return [isOpen, setOpen];
+}

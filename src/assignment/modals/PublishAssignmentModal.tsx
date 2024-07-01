@@ -101,6 +101,9 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & Us
 					object: String(assignment.id),
 					object_type: 'assignment',
 					action: isPublished ? 'publish' : 'unpublish',
+					resource: {
+						education_level: String(assignment?.education_level_id),
+					},
 				},
 				commonUser
 			);

@@ -1,3 +1,5 @@
+import './AssignmentResponsePupilCollectionTab.scss';
+
 import {
 	Button,
 	ButtonToolbar,
@@ -22,6 +24,7 @@ import { BlockList } from '../../../../collection/components';
 import EmptyStateMessage from '../../../../shared/components/EmptyStateMessage/EmptyStateMessage';
 import { getMoreOptionsLabel } from '../../../../shared/constants';
 import { isMobileWidth } from '../../../../shared/helpers';
+import { useBlocksList } from '../../../../shared/hooks/use-blocks-list';
 import { useDraggableListModal } from '../../../../shared/hooks/use-draggable-list-modal';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../../shared/services/toast-service';
@@ -38,14 +41,7 @@ import {
 import { AssignmentBlockItemDescriptionType } from '../../../components/AssignmentBlockDescriptionButtons';
 import { buildAssignmentSearchLink } from '../../../helpers/build-search-link';
 import { insertMultipleAtPosition } from '../../../helpers/insert-at-position';
-import {
-	useAssignmentBlockChangeHandler,
-	useBlockListModals,
-	useBlocksList,
-	useEditBlocks,
-} from '../../../hooks';
-
-import './AssignmentResponsePupilCollectionTab.scss';
+import { useAssignmentBlockChangeHandler, useBlockListModals, useEditBlocks } from '../../../hooks';
 
 enum MobileActionId {
 	reorderBlocks = 'reorderBlocks',

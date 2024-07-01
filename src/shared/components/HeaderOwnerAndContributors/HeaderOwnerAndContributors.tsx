@@ -17,7 +17,7 @@ import './HeaderOwnerAndContributors.scss';
 
 type HeaderOwnerAndContributorsProps = {
 	user: Avo.User.User;
-	subject: Avo.Assignment.Assignment | Avo.Collection.Collection;
+	subject: Partial<Avo.Assignment.Assignment> | Avo.Collection.Collection;
 };
 
 export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({

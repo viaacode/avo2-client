@@ -42,7 +42,7 @@ const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps & UserProps> 
 					);
 					return;
 				}
-				const res = await duplicateAssignment(assignment, user.profile.id);
+				const res = await duplicateAssignment(assignment, user);
 				props?.onClick && props?.onClick(e, res);
 			}}
 		/>

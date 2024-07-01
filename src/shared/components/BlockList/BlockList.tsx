@@ -1,4 +1,4 @@
-import { Container, type ContainerProps } from '@viaa/avo2-components';
+import { Container } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode } from 'react';
@@ -9,6 +9,7 @@ import {
 	CollectionFragmentTypeItem,
 	CollectionFragmentTypeText,
 } from '../../../collection/components';
+import { getBlockColor } from '../../helpers/get-block-color';
 import { IconBar } from '../index';
 
 import { BLOCK_ITEM_ICONS } from './BlockList.consts';
@@ -19,12 +20,12 @@ import './BlockList.scss';
 
 const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 	const renderCollectionFragment = (block: Avo.Core.BlockItemBase) => {
-		const layout = (children?: ReactNode, background?: ContainerProps['background']) => (
-			<Container
-				mode="horizontal"
-				size="full-width"
+		const backgroundColor = getBlockColor(block as Avo.Assignment.Block);
+
+		const layout = (children?: ReactNode) => (
+			<div
 				className="u-p-0 c-block-list__item"
-				background={background}
+				style={{ backgroundColor, '--block-background': backgroundColor }}
 				key={'block-list__item--' + block.id}
 			>
 				<Container mode="horizontal">
@@ -40,7 +41,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						</IconBar>
 					</div>
 				</Container>
-			</Container>
+			</div>
 		);
 
 		switch (block.type) {
@@ -79,8 +80,8 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						pastDeadline={config?.ZOEK?.pastDeadline || false}
 						onSearchButtonClicked={config?.ZOEK?.onSearchButtonClicked || noop}
 						onCollectionButtonClicked={config?.ZOEK?.onCollectionButtonClicked || noop}
-					/>,
-					'alt'
+						educationLevelId={config?.ZOEK?.educationLevelId}
+					/>
 				);
 
 			default:

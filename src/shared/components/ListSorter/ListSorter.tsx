@@ -1,11 +1,15 @@
+import './ListSorter.scss';
+
+import { type ColorOption } from '@meemoo/admin-core-ui';
 import { Button, Icon, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { type FC, Fragment, type ReactNode, useMemo } from 'react';
 
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
-
-import './ListSorter.scss';
+import { tText } from '../../helpers/translate';
+import { ColorSelect } from '../ColorSelect/ColorSelect';
+import { GET_ASSIGNMENT_COLORS } from '../ColorSelect/ColorSelect.const';
 
 // Types
 
@@ -13,8 +17,10 @@ export interface ListSorterItem {
 	id: string | number; // Number is deprecated but still used in collection fragment blocks
 	onSlice?: (item: ListSorterItem) => void;
 	onPositionChange?: (item: ListSorterItem, delta: number) => void;
+	onBackgroundChange?: (item: ListSorterItem, color: string) => void;
 	position: number;
 	icon?: IconName;
+	color?: string;
 }
 
 export type ListSorterRenderer<T> = (item?: T & ListSorterItem, i?: number) => ReactNode;
@@ -62,6 +68,22 @@ export const ListSorterSlice: FC<{ item: ListSorterItem }> = ({ item }) => (
 	<Button type="secondary" icon={IconName.delete} onClick={() => item.onSlice?.(item)} />
 );
 
+export const ListSorterColor: FC<{ item: ListSorterItem; options?: ColorOption[] }> = ({
+	item,
+	options,
+}) => {
+	const colors = options || GET_ASSIGNMENT_COLORS();
+	const selected = colors.find(({ value }) => value === item.color);
+
+	return (
+		<ColorSelect
+			value={selected} // Default set in use-block-list
+			options={colors}
+			onChange={(option) => item.onBackgroundChange?.(item, (option as ColorOption).value)}
+		/>
+	);
+};
+
 // Main renderer
 type ListSorterType<T = ListSorterItem & any> = FC<ListSorterProps<T>>;
 export const ListSorter: ListSorterType = ({
@@ -70,10 +92,10 @@ export const ListSorter: ListSorterType = ({
 		item && <ListSorterThumbnail item={item} />) as ListSorterRenderer<unknown>,
 	heading = () => 'heading',
 	divider = () => 'divider',
-	actions = (item, i) =>
+	actions = (item, index) =>
 		item && (
 			<>
-				<ListSorterPosition item={item} i={i} />
+				<ListSorterPosition item={item} i={index} />
 				<ListSorterSlice item={item} />
 			</>
 		),
@@ -107,7 +129,14 @@ export const ListSorter: ListSorterType = ({
 						</div>
 
 						{content && (
-							<div className="c-list-sorter__item__content">{content(item, i)}</div>
+							<div
+								className="c-list-sorter__item__content"
+								style={{
+									backgroundColor: item.color,
+								}}
+							>
+								{content(item, i)}
+							</div>
 						)}
 					</li>
 				)}

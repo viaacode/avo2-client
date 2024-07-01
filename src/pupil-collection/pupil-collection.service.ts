@@ -201,6 +201,7 @@ export class PupilCollectionService {
 			delete (block as any).onPositionChange;
 			delete (block as any).original_title; // Only needed for assignment blocks
 			delete (block as any).original_description; // Only needed for assignment blocks
+			delete (block as Avo.Assignment.Block).color;
 
 			block.updated_at = new Date().toISOString();
 

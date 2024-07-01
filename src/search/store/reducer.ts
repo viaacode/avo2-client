@@ -2,6 +2,7 @@ import { createReducer } from './../../shared/helpers';
 import initialState from './initial-state';
 import {
 	SearchActionTypes,
+	type SetSearchResultsControllerAction,
 	type SetSearchResultsErrorAction,
 	type SetSearchResultsLoadingAction,
 	type SetSearchResultsSuccessAction,
@@ -26,6 +27,20 @@ const searchReducer = createReducer(initialState, {
 		loading: false,
 		error: action.error,
 	}),
+	[SearchActionTypes.SET_RESULTS_CONTROLLER]: (
+		state,
+		action: SetSearchResultsControllerAction
+	) => {
+		// Cancel any previous requests
+		if (state.controller && !state.controller.signal.aborted) {
+			state.controller.abort();
+		}
+
+		return {
+			...state,
+			controller: action.controller,
+		};
+	},
 });
 
 export default searchReducer;

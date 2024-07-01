@@ -5,6 +5,7 @@ import { first, get, isNil, without } from 'lodash-es';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
+import { EducationLevelType } from '../../../shared/helpers/lom';
 import {
 	generateLomFilter,
 	getBooleanFilters,
@@ -101,25 +102,18 @@ export function generateCollectionWhereObject(
 	}
 
 	if (filters.subjects && filters.subjects.length) {
-		andFilters.push(
-			generateLomFilter(filters.subjects, 'https://w3id.org/onderwijs-vlaanderen/id/vak')
-		);
+		andFilters.push(generateLomFilter(filters.subjects, EducationLevelType.vak));
 	}
 
 	// // Enable when meemoo requests a column and folder for lom themes
 	// if (filters.themes && filters.themes.length) {
 	// 	andFilters.push(
-	// 		generateLomFilter(filters.themes, 'https://data.hetarchief.be/id/onderwijs/thema')
+	// 		generateLomFilter(filters.themes, EducationLevelType.thema)
 	// 	);
 	// }
 
 	if (filters.education_levels && filters.education_levels.length) {
-		andFilters.push(
-			generateLomFilter(
-				filters.education_levels,
-				'https://w3id.org/onderwijs-vlaanderen/id/structuur'
-			)
-		);
+		andFilters.push(generateLomFilter(filters.education_levels, EducationLevelType.structuur));
 	}
 
 	if (filters.organisation && filters.organisation.length) {

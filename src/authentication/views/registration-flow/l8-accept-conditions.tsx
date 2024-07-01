@@ -15,7 +15,7 @@ import { type Dispatch } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
-import { CustomError } from '../../../shared/helpers';
+import { CustomError, isUserPupilElementary } from '../../../shared/helpers';
 import { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
@@ -25,6 +25,8 @@ import { type DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';
 import { acceptConditionsAction } from '../../store/actions';
 import { selectLogin } from '../../store/selectors';
+
+import AcceptElementaryPupilConditions from './accept-elementary-pupil-conditions';
 
 export const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
 	'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
@@ -44,8 +46,15 @@ const AcceptConditions: FunctionComponent<
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
 	const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
+	const isElementaryPupil = isUserPupilElementary(commonUser);
+	const dataObject = isElementaryPupil ? {} : pages[0];
 
 	const fetchContentPage = useCallback(async () => {
+		if (isElementaryPupil) {
+			setLoadingInfo({ state: 'loaded' });
+			return;
+		}
+
 		try {
 			setPages(
 				await Promise.all([
@@ -67,7 +76,7 @@ const AcceptConditions: FunctionComponent<
 				),
 			});
 		}
-	}, [setLoadingInfo, setPages, tText]);
+	}, [setLoadingInfo, setPages, tText, commonUser]);
 
 	useEffect(() => {
 		fetchContentPage();
@@ -192,8 +201,12 @@ const AcceptConditions: FunctionComponent<
 			</Helmet>
 			<LoadingErrorLoadedComponent
 				loadingInfo={loadingInfo}
-				dataObject={pages[0]}
-				render={renderAcceptConditionsPage}
+				dataObject={dataObject}
+				render={
+					isElementaryPupil
+						? () => <AcceptElementaryPupilConditions user={commonUser} />
+						: renderAcceptConditionsPage
+				}
 			/>
 		</>
 	);

@@ -27,6 +27,9 @@ query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) 
 					full_name
 					last_name
 				}
+				loms {
+					lom_id
+				}
 			}
 		}
 		updated_at

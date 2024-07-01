@@ -4,6 +4,7 @@ import { compact, orderBy } from 'lodash-es';
 import { type ReactNode } from 'react';
 
 import { stripHtml } from '../shared/helpers';
+import { EducationLevelId } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { type Positioned } from '../shared/types';
 
@@ -88,10 +89,16 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 }
 
 export function isUserAssignmentOwner(
-	user: Avo.User.User,
+	user: Pick<Avo.User.User, 'profile'> | Pick<Avo.User.CommonUser, 'profileId'>,
 	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
-	return assignment?.owner_profile_id === user.profile?.id;
+	return (
+		// New assignment
+		assignment.owner_profile_id === undefined ||
+		// Existing assignment
+		assignment.owner_profile_id ===
+			((user as Avo.User.User).profile?.id || (user as Avo.User.CommonUser).profileId)
+	);
 }
 
 export function isUserAssignmentContributor(
@@ -166,8 +173,26 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 	},
 	{
 		error: tText('assignment/assignment___de-opdracht-heeft-geen-vakken'),
-		isValid: (assignment: Partial<Avo.Assignment.Assignment>) =>
-			!!assignment.loms?.find((lom) => lom.lom?.scheme === LomSchemeType.subject),
+		isValid: (assignment: Partial<Avo.Assignment.Assignment>) => {
+			// We only have subjects available for kindergarten, elementary and secondary education levels
+			const subjectsAvailable =
+				assignment.loms?.find((lom) =>
+					[
+						EducationLevelId.lagerOnderwijs,
+						EducationLevelId.secundairOnderwijs,
+						EducationLevelId.kleuteronderwijs,
+					].includes((lom.id || lom.lom_id) as EducationLevelId)
+				) !== undefined;
+
+			// Does the assignment have subjects?
+			const hasSubjects = !!assignment.loms?.find(
+				(lom) => lom.lom?.scheme === LomSchemeType.subject
+			);
+
+			// (true & true) or (false & false)
+			// return (subjectsAvailable && hasSubjects) || (!subjectsAvailable && !hasSubjects);
+			return subjectsAvailable === hasSubjects;
+		},
 	},
 	{
 		error: tText(

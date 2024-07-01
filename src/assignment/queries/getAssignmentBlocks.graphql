@@ -19,5 +19,6 @@ query getAssignmentBlocks($assignmentId: uuid!) {
 		end_oc
 		is_deleted
 		assignment_id
+		color
 	}
 }

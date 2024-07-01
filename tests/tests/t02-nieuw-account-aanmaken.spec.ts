@@ -14,7 +14,7 @@ import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cooki
 test.skip('T02: Nieuw account aanmaken', async ({ page }) => {
 	const userId = uuid().replace(/-/g, '');
 	const userEmail = `hetarchief2.0+atbasisgebruiker${userId}@meemoo.be`;
-	const userPassword = process.env.TEST_USER_PASSWORD as string;
+	const userPassword = process.env.TEST_NEW_USER_PASSWORD as string;
 	const stamboekNummer = '97436428856';
 
 	await goToPageAndAcceptCookies(

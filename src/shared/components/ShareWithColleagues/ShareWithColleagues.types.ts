@@ -1,3 +1,5 @@
+import { type Avo } from '@viaa/avo2-types';
+
 export enum ContributorInfoRight {
 	CONTRIBUTOR = 'CONTRIBUTOR',
 	VIEWER = 'VIEWER',
@@ -13,4 +15,5 @@ export interface ContributorInfo {
 	profileImage?: string;
 	profileId?: string;
 	contributorId?: string;
+	loms?: Avo.Lom.Lom[];
 }

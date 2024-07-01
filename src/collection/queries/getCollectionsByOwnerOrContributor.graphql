@@ -88,6 +88,9 @@ query getCollectionsByOwnerOrContributor(
 					logo_url
 					or_id
 				}
+				loms {
+					lom_id
+				}
 			}
 			collection {
 				id
