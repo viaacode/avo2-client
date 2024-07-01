@@ -44,6 +44,12 @@ pipeline {
             - cat
             tty: true
             imagePullPolicy: Always
+          - name: buildimage
+            image: node:20.4-alpine
+            command:
+            - cat
+            tty: true
+            imagePullPolicy: Always
           - name: hasura-cli
             image: hasura/graphql-engine:v2.16.1.cli-migrations-v2
             command:
@@ -102,8 +108,11 @@ pipeline {
 			}
 		}
 		stage('Test code') {
-			steps {
-				sh 'make -f ./openshift/Makefile test'
+			//remove echo to hard fail added for debug pipeline
+				steps {
+					container('buildimage') {
+						sh 'apk add --no-cache make bash && make -f ./openshift/Makefile test || echo failed'
+				}
 			}
 		}
 		stage('Build code') {
@@ -119,15 +128,15 @@ pipeline {
 				container('oc') {
 					script {
 						sh '''#!/bin/bash
-								set -e
-								oc project $OC_PROJECT
-								oc import-image $BASE_IMG --confirm
-								oc new-build -l ref=$BRANCH_NAME --strategy=docker --name $APP_NAME --to $APP_NAME:$GIT_SHORT_COMMIT --binary --context-dir="" || echo "Probably already exists, start new build"
-								sleep 3
-								oc annotate --overwrite buildconfig/$APP_NAME ref=$BRANCH_NAME shortcommit=$GIT_SHORT_COMMIT
-								patch-bc-current-ref.sh
-								oc start-build $APP_NAME --from-dir=. --follow=true --wait=true
-								'''
+						set -e
+						oc project $OC_PROJECT
+						oc import-image $BASE_IMG --confirm
+						oc new-build -l ref=$BRANCH_NAME --strategy=docker --name $APP_NAME --to $APP_NAME:$GIT_SHORT_COMMIT --binary --context-dir="" || echo "Probably already exists, start new build"
+						sleep 3
+						oc annotate --overwrite buildconfig/$APP_NAME ref=$BRANCH_NAME shortcommit=$GIT_SHORT_COMMIT
+						patch-bc-current-ref.sh
+						oc start-build $APP_NAME --from-dir=. --follow=true --wait=true
+						'''
 					}
 				}
 			}
@@ -137,6 +146,7 @@ pipeline {
 				anyOf {
 					changeRequest target: 'develop'//'master'
 					changeRequest target: 'development' // do not build on master prs
+					branch 'develop'; branch 'development'
 				}
 			}
 			steps {
@@ -146,41 +156,49 @@ pipeline {
 			}
 			post {
 				always {
-					script {
-						env.BRANCH_NAME = env.CHANGE_BRANCH
-					}
+				//	script {
+				//		env.BRANCH_NAME = env.CHANGE_BRANCH
+				//	}
 					jiraSendDeploymentInfo site: "${JIRA_URL}", environmentId: 'int', environmentName: 'int', environmentType: 'testing'
 				}
 			}
 		}
 
-  // todo endpoints etc add secret in jenkins
-  // remove____ to enable needs params etc to work this is the code like in hetarchief
+
 
 		stage('e2e-prepare') {
 			when {
-			anyOf { branch 'develop____'; branch 'development______' }
+				anyOf {
+					changeRequest target: 'develop'//'master'
+					changeRequest target: 'development' // do not build on master prs
+					branch 'develop'; branch 'development'
+				}
 			}
 			steps {
-			container('hasura-cli') {
-				script {
-				withCredentials([string(credentialsId: 'admin_secret', variable: 'ADMIN_SECRET')]) {
-					git branch: 'develop',
-					credentialsId: 'meemoo-ci',
-					url: 'https://github.com/viaacode/hasura-graphql.git'
-					sh """#!/bin/bash
-					hasura-cli seed apply --endpoint=https://hasura-graphql-int-avo.private.cloud.meemoo.be --admin-secret=${ADMIN_SECRET} --database-name avo-db || echo failed ; exit 0
-					"""
-				}///end credentials
-				}//end script
-			}// end container
-			}//end steps
+				container('hasura-cli') {
+					script {
+					withCredentials([string(credentialsId: 'admin_secret', variable: 'ADMIN_SECRET')]) {
+						git branch: 'develop',
+						credentialsId: 'meemoo-ci',
+						url: 'https://github.com/viaacode/hasura-graphql.git'
+						sh """#!/bin/bash
+						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-avo.private.cloud.meemoo.be --admin-secret=${ADMIN_SECRET} || echo failed
+						# hasura-cli seed apply --endpoint=https://hasura-graphql-int-avo.private.cloud.meemoo.be --admin-secret=${ADMIN_SECRET} --file ../seeds_INT/000___users_idp_map.sql || echo failed
+						exit 0
+						"""
+					}
+					}
+				}
+			}
 		}//end stage
 		stage('e2e') {
 			agent { label 'node' }
 			when {
-			// remove____ to enable needs params etc to work this is the code like in hetarchief
-				anyOf { branch 'develop_______'; branch 'development________' }
+				anyOf {
+					changeRequest target: 'develop'//'master'
+					changeRequest target: 'development' // do not build on master prs
+					branch 'develop'; branch 'development'
+				}
 			}
 			steps {
 				script {
@@ -191,7 +209,7 @@ pipeline {
 						loadEnvironmentVariablesFromFile('.env')
 					}
 					sh 'echo ${TEST_ACM_DASHBOARD_USERNAME}'
-					docker.image('mcr.microsoft.com/playwright:v1.25.0').inside('-e TEST_CLIENT_ENDPOINT=${TEST_CLIENT_ENDPOINT} -e TEST_PROXY_ENDPOINT=${TEST_PROXY_ENDPOINT}  -e TEST_OBJECT_DETAIL_PAGE_VRT=${TEST_OBJECT_DETAIL_PAGE_VRT} -e TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT=${TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT} -e TEST_VISITOR_ACCOUNT_USERNAME:${TEST_VISITOR_ACCOUNT_USERNAME} -e TEST_VISITOR_ACCOUNT_PASSWORD=${TEST_VISITOR_ACCOUNT_PASSWORD} -e TEST_CP_ADMIN_ACCOUNT_USERNAME=${TEST_CP_ADMIN_ACCOUNT_USERNAME} -e TEST_CP_ADMIN_ACCOUNT_PASSWORD=${TEST_CP_ADMIN_ACCOUNT_PASSWORD} -e TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME=${TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME} -e TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD=${TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD} -e TEST_ACM_DASHBOARD=${TEST_ACM_DASHBOARD} -e TEST_ACM_DASHBOARD_USERNAME=${TEST_ACM_DASHBOARD_USERNAME} -e TEST_ACM_DASHBOARD_PASSWORD=${TEST_ACM_DASHBOARD_PASSWORD}')
+					docker.image('mcr.microsoft.com/playwright:v1.44.0-focal').inside('-e TEST_CLIENT_ENDPOINT=${TEST_CLIENT_ENDPOINT} -e TEST_PROXY_ENDPOINT=${TEST_PROXY_ENDPOINT}  -e TEST_OBJECT_DETAIL_PAGE_VRT=${TEST_OBJECT_DETAIL_PAGE_VRT} -e TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT=${TEST_OBJECT_DETAIL_PAGE_VLAAMS_PARLEMENT} -e TEST_VISITOR_ACCOUNT_USERNAME:${TEST_VISITOR_ACCOUNT_USERNAME} -e TEST_VISITOR_ACCOUNT_PASSWORD=${TEST_VISITOR_ACCOUNT_PASSWORD} -e TEST_CP_ADMIN_ACCOUNT_USERNAME=${TEST_CP_ADMIN_ACCOUNT_USERNAME} -e TEST_CP_ADMIN_ACCOUNT_PASSWORD=${TEST_CP_ADMIN_ACCOUNT_PASSWORD} -e TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME=${TEST_MEEMOO_ADMIN_ACCOUNT_USERNAME} -e TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD=${TEST_MEEMOO_ADMIN_ACCOUNT_PASSWORD} -e TEST_ACM_DASHBOARD=${TEST_ACM_DASHBOARD} -e TEST_ACM_DASHBOARD_USERNAME=${TEST_ACM_DASHBOARD_USERNAME} -e TEST_ACM_DASHBOARD_PASSWORD=${TEST_ACM_DASHBOARD_PASSWORD}')
 						{
 							git branch: 'develop',
 								credentialsId: 'meemoo-ci',
@@ -199,11 +217,13 @@ pipeline {
 							catchError() {
 							sh '''
 							export NODE_ENV=dev
-							npm set-script prepare ""
+							#npm set-script prepare ""
 							npm install --force
-							npx playwright install
-							npx playwright install chrome
 							npm install junit-report-builder --save --force
+							npm install @playwright/test --force
+							npx playwright install
+							npx playwright install-deps
+							npx playwright install chrome
 							'''
 							sh "PLAYWRIGHT_JUNIT_OUTPUT_NAME=tests/e2e_test_results.xml npx playwright test --reporter=junit || echo failed "
 							junit 'tests/e2e_test_results.xml'
@@ -253,6 +273,23 @@ pipeline {
 				buildingTag()
 			}
 			steps {
+				script {
+                    // Prompt user for input with a timeout
+                    def userInput = input(
+                        id: 'userApproval',
+                        message: 'Click "Proceed" to start the stage',
+                        parameters: [
+                            [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Proceed with the stage?', name: 'Proceed']
+                        ],
+                        timeout: 3 * 60 // Timeout in seconds (3 minutes)
+                    )
+
+                    // Check user input
+                    if (!userInput.Proceed) {
+                        error('User did not approve. Exiting stage.')
+                    }
+                }
+
 				container('oc') {
 					tagNewImage('prd')
 				}

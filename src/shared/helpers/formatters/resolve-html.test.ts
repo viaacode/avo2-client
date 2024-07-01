@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { stripHtml } from './strip-html';
 
 describe('Formatters - duration', () => {

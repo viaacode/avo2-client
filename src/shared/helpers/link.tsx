@@ -1,6 +1,6 @@
 import { LinkTarget } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, isArray, isEmpty, isNil, isString } from 'lodash-es';
+import { isArray, isEmpty, isNil } from 'lodash-es';
 import queryString from 'query-string';
 import React, { Fragment, type ReactNode } from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
@@ -10,42 +10,15 @@ import { SearchFilter } from '../../search/search.const';
 import { type FilterState } from '../../search/search.types';
 import { ToastService } from '../services/toast-service';
 
+import {
+	buildLink,
+	getMissingParams,
+	navigationConsoleError,
+	type RouteParams,
+} from './build-link';
 import { tHtml } from './translate';
 
-type RouteParams = { [key: string]: string | number | undefined };
-
-const getMissingParams = (route: string): string[] => route.split('/').filter((r) => r.match(/^:/));
-const navigationConsoleError = (route: string, missingParams: string[] = []) => {
-	const paramsString = missingParams.join(', ');
-	console.error(`The following params were not included: [${paramsString}] for route ${route}`);
-};
-
-export const buildLink = (
-	route: string,
-	params: RouteParams = {},
-	search?: string | { [paramName: string]: string }
-): string => {
-	let builtLink = route;
-
-	// Replace url with given params
-	Object.keys(params).forEach((param: string) => {
-		builtLink = builtLink.replace(`:${param}`, String(get(params, [param], '')));
-	});
-
-	const missingParams = getMissingParams(builtLink);
-
-	// Return empty string if not all params were replaced
-	if (missingParams.length > 0) {
-		navigationConsoleError(route, missingParams);
-
-		return '';
-	}
-
-	// Add search query if present
-	return search
-		? `${builtLink}?${isString(search) ? search : queryString.stringify(search)}`
-		: builtLink;
-};
+export { buildLink } from './build-link';
 
 export const navigate = (
 	history: RouteComponentProps['history'],

@@ -33,7 +33,7 @@ import {
 	selectLoginError,
 	selectLoginLoading,
 } from '../../authentication/store/selectors';
-import type { LoginState } from '../../authentication/store/types';
+import { type LoginState } from '../../authentication/store/types';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
