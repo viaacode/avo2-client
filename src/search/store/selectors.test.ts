@@ -28,6 +28,7 @@ describe('search > store > selectors', () => {
 			data: { results: [], count: 0, aggregations: {} },
 			loading: false,
 			error: false,
+			controller: null,
 		},
 		uiState: {
 			showNudgingModal: null,

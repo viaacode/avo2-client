@@ -2,12 +2,11 @@ import {
 	type ContentPageInfo,
 	ContentPageRenderer,
 	ContentPageService,
+	convertDbContentPageToContentPageInfo,
 	type DbContentPage,
-	LanguageCode,
 } from '@meemoo/admin-core-ui';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
 import React, {
 	type ComponentType,
@@ -50,6 +49,7 @@ import {
 } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
+import { Locale } from '../../shared/translations/translations.types';
 import { type AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
@@ -169,13 +169,18 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 			// Check if path points to a content page
 			try {
-				const contentPage: ContentPageInfo | null =
+				const contentPage: DbContentPage | null =
 					await ContentPageService.getContentPageByLanguageAndPath(
-						LanguageCode.Nl,
+						Locale.Nl as any,
 						pathname
 					);
-				// Path is indeed a content page url
-				setRouteInfo({ type: 'contentPage', data: contentPage });
+				if (contentPage) {
+					// Path is indeed a content page url
+					setRouteInfo({
+						type: 'contentPage',
+						data: convertDbContentPageToContentPageInfo(contentPage),
+					});
+				}
 			} catch (err) {
 				console.error({
 					message: 'Failed to check if path corresponds to a content page',
@@ -214,6 +219,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		setLoadingInfo,
 		history,
 		tText,
+		tHtml,
 	]);
 
 	// Check if current user is logged in
@@ -237,7 +243,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				location
 			);
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, location]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, tHtml, location]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {

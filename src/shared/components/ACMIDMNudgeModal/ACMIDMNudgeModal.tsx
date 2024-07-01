@@ -1,5 +1,4 @@
 import { Button, IconName, Modal, ModalBody, Spacer } from '@viaa/avo2-components';
-import { get } from 'lodash-es';
 import React, { type FC, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { type RouteComponentProps, withRouter } from 'react-router-dom';
