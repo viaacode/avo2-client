@@ -23,6 +23,7 @@ describe('login > store > selectors', () => {
 			data: null,
 			loading: false,
 			error: false,
+			controller: null,
 		},
 		uiState: {
 			showNudgingModal: null,

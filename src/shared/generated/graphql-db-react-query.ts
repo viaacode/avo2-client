@@ -700,6 +700,7 @@ export const GetItemsByExternalIdDocument = `
     lom_intendedenduserrole
     lom_keywords
     lom_languages
+    lom_typical_age_range: lom_typicalagerange
     org_id
     organisation {
       or_id
@@ -1155,172 +1156,6 @@ export const useGetProfileIdsQuery = <
       fetchData<GetProfileIdsQuery, GetProfileIdsQueryVariables>(GetProfileIdsDocument, variables),
       options
     );
-export const GetUsersDocument = `
-    query getUsers($offset: Int!, $limit: Int!, $orderBy: [users_summary_view_order_by!]!, $where: users_summary_view_bool_exp!) {
-  users_summary_view(
-    offset: $offset
-    limit: $limit
-    order_by: $orderBy
-    where: $where
-  ) {
-    user_id
-    full_name
-    first_name
-    last_name
-    mail
-    last_access_at
-    is_blocked
-    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
-      aggregate {
-        max {
-          created_at
-        }
-      }
-    }
-    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
-      aggregate {
-        max {
-          created_at
-        }
-      }
-    }
-    profile_id
-    stamboek
-    acc_created_at
-    group_id
-    group_name
-    company_name
-    is_exception
-    business_category
-    idps {
-      idp
-    }
-    classifications {
-      key
-    }
-    contexts {
-      key
-    }
-    organisations {
-      organization_id
-      unit_id
-      organization {
-        ldap_description
-      }
-    }
-    user {
-      temp_access {
-        until
-        from
-        current {
-          status
-        }
-      }
-    }
-  }
-  users_summary_view_aggregate(where: $where) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetUsersQuery = <
-      TData = GetUsersQuery,
-      TError = unknown
-    >(
-      variables: GetUsersQueryVariables,
-      options?: UseQueryOptions<GetUsersQuery, TError, TData>
-    ) =>
-    useQuery<GetUsersQuery, TError, TData>(
-      ['getUsers', variables],
-      fetchData<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, variables),
-      options
-    );
-export const GetUsersInSameCompanyDocument = `
-    query getUsersInSameCompany($offset: Int!, $limit: Int!, $orderBy: [users_summary_view_order_by!]!, $where: users_summary_view_bool_exp!, $companyId: String!) {
-  users_summary_view(
-    offset: $offset
-    limit: $limit
-    order_by: $orderBy
-    where: {_and: [{company_id: {_eq: $companyId}}, $where]}
-  ) {
-    user_id
-    full_name
-    first_name
-    last_name
-    mail
-    last_access_at
-    is_blocked
-    last_blocked_at: audits_aggregate(where: {event: {_eq: "BLOCKED"}}) {
-      aggregate {
-        max {
-          created_at
-        }
-      }
-    }
-    last_unblocked_at: audits_aggregate(where: {event: {_eq: "UNBLOCKED"}}) {
-      aggregate {
-        max {
-          created_at
-        }
-      }
-    }
-    profile_id
-    stamboek
-    acc_created_at
-    group_id
-    group_name
-    company_name
-    is_exception
-    business_category
-    idps {
-      idp
-    }
-    classifications {
-      key
-    }
-    contexts {
-      key
-    }
-    organisations {
-      organization_id
-      unit_id
-      organization {
-        ldap_description
-      }
-    }
-    user {
-      temp_access {
-        until
-        from
-        current {
-          status
-        }
-      }
-    }
-  }
-  users_summary_view_aggregate(
-    where: {_and: [{company_id: {_eq: $companyId}}, $where]}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetUsersInSameCompanyQuery = <
-      TData = GetUsersInSameCompanyQuery,
-      TError = unknown
-    >(
-      variables: GetUsersInSameCompanyQueryVariables,
-      options?: UseQueryOptions<GetUsersInSameCompanyQuery, TError, TData>
-    ) =>
-    useQuery<GetUsersInSameCompanyQuery, TError, TData>(
-      ['getUsersInSameCompany', variables],
-      fetchData<GetUsersInSameCompanyQuery, GetUsersInSameCompanyQueryVariables>(GetUsersInSameCompanyDocument, variables),
-      options
-    );
 export const UpdateUserTempAccessByIdDocument = `
     mutation updateUserTempAccessById($user_id: uuid!, $from: date, $until: date!) {
   insert_shared_user_temp_access_one(
@@ -1464,6 +1299,7 @@ export const GetAssignmentBlocksDocument = `
     end_oc
     is_deleted
     assignment_id
+    color
   }
 }
     `;
@@ -1847,6 +1683,9 @@ export const GetAssignmentWithResponseDocument = `
           logo_url
           or_id
         }
+        loms {
+          lom_id
+        }
       }
       id
       profile_id
@@ -1861,6 +1700,10 @@ export const GetAssignmentWithResponseDocument = `
       }
     }
     lom_learning_resource_type
+    education_level_id
+    education_level {
+      label
+    }
   }
 }
     `;
@@ -1942,6 +1785,9 @@ export const GetAssignmentsAdminOverviewDocument = `
           logo_url
           or_id
         }
+        loms {
+          lom_id
+        }
       }
       id
     }
@@ -1973,6 +1819,10 @@ export const GetAssignmentsAdminOverviewDocument = `
     }
     quality_labels {
       id
+      label
+    }
+    education_level_id
+    education_level {
       label
     }
   }
@@ -2075,6 +1925,9 @@ export const GetAssignmentsByOwnerOrContributorDocument = `
           name
           logo_url
           or_id
+        }
+        loms {
+          lom_id
         }
       }
       id
@@ -2205,6 +2058,9 @@ export const GetAssignmentsByResponseOwnerIdDocument = `
           logo_url
           or_id
         }
+        loms {
+          lom_id
+        }
       }
       id
       profile_id
@@ -2221,6 +2077,10 @@ export const GetAssignmentsByResponseOwnerIdDocument = `
         scheme
         broader
       }
+    }
+    education_level_id
+    education_level {
+      label
     }
   }
   count: app_assignments_v2_aggregate(
@@ -2260,13 +2120,14 @@ export const GetContributorsByAssignmentUuidDocument = `
         full_name
         last_name
         mail
-        profile {
-          organisation {
-            name
-            logo_url
-            or_id
-          }
-        }
+      }
+      organisation {
+        name
+        logo_url
+        or_id
+      }
+      loms {
+        lom_id
       }
     }
   }
@@ -2871,6 +2732,9 @@ export const GetCollectionsByOwnerOrContributorDocument = `
           logo_url
           or_id
         }
+        loms {
+          lom_id
+        }
       }
       collection {
         id
@@ -2990,6 +2854,9 @@ export const GetPublicCollectionsDocument = `
           full_name
           last_name
         }
+        loms {
+          lom_id
+        }
       }
     }
     updated_at
@@ -3034,6 +2901,9 @@ export const GetPublicCollectionsByIdDocument = `
           name
           logo_url
           or_id
+        }
+        loms {
+          lom_id
         }
       }
     }
@@ -3081,6 +2951,9 @@ export const GetPublicCollectionsByTitleDocument = `
           first_name
           full_name
           last_name
+        }
+        loms {
+          lom_id
         }
       }
     }

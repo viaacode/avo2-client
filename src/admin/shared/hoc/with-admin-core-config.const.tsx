@@ -18,6 +18,7 @@ import { getEnv } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { EducationOrganisationService } from '../../../shared/services/education-organizations-service';
 import { ToastService, ToastTypeToAvoToastType } from '../../../shared/services/toast-service';
+import { Locale } from '../../../shared/translations/translations.types';
 import { ADMIN_PATH } from '../../admin.const';
 import BlockSearch from '../../content-page/components/blocks/BlockSearch/BlockSearch';
 import MediaGridWrapper from '../../content-page/components/blocks/MediaGridWrapper/MediaGridWrapper';
@@ -70,15 +71,17 @@ export function getAdminCoreConfig(): AdminConfig {
 	const proxyUrl = getEnv('PROXY_URL') as string;
 
 	return {
-		staticPages: compact(
-			(Object.keys(APP_PATH) as RouteId[]).map((routeId) => {
-				if (APP_PATH[routeId].showInContentPicker) {
-					return APP_PATH[routeId].route;
-				} else {
-					return null;
-				}
-			})
-		),
+		staticPages: {
+			[Locale.Nl]: compact(
+				(Object.keys(APP_PATH) as RouteId[]).map((routeId) => {
+					if (APP_PATH[routeId].showInContentPicker) {
+						return APP_PATH[routeId].route;
+					} else {
+						return null;
+					}
+				})
+			),
+		},
 		contentPage: {
 			availableContentBlocks: [
 				ContentBlockType.AnchorLinks,
@@ -119,26 +122,31 @@ export function getAdminCoreConfig(): AdminConfig {
 			component: ({ name }: { name: string }) => <Icon name={name as IconName} />,
 			componentProps: {
 				add: { name: IconName.plus },
-				view: { name: IconName.eye },
 				angleDown: { name: IconName.caretDown },
-				angleUp: { name: IconName.caretUp },
 				angleLeft: { name: IconName.caretLeft },
 				angleRight: { name: IconName.caretRight },
+				angleUp: { name: IconName.caretUp },
+				arrowDown: { name: IconName.arrowDown },
+				arrowRight: { name: IconName.arrowRight },
+				arrowUp: { name: IconName.arrowUp },
+				audio: { name: IconName.headphone },
+				calendar: { name: IconName.calendar },
+				check: { name: IconName.check },
+				chevronLeft: { name: IconName.chevronLeft },
+				clock: { name: IconName.clock },
+				copy: { name: IconName.copy },
 				delete: { name: IconName.delete },
 				edit: { name: IconName.edit },
-				filter: { name: IconName.search },
-				arrowUp: { name: IconName.arrowUp },
-				arrowDown: { name: IconName.arrowDown },
-				sortTable: { name: IconName.chevronsUpAndDown },
-				chevronLeft: { name: IconName.chevronLeft },
-				extraOptions: { name: IconName.moreHorizontal },
-				copy: { name: IconName.copy },
-				check: { name: IconName.check },
-				clock: { name: IconName.clock },
-				calendar: { name: IconName.calendar },
 				export: { name: IconName.download },
+				extraOptions: { name: IconName.moreHorizontal },
+				eyeOff: { name: IconName.eyeOff },
+				filter: { name: IconName.search },
 				info: { name: IconName.info },
-				arrowRight: { name: IconName.arrowRight },
+				sortTable: { name: IconName.chevronsUpAndDown },
+				video: { name: IconName.video },
+				view: { name: IconName.eye },
+				warning: { name: IconName.alertTriangle },
+				newspaper: { name: IconName.fileText },
 			},
 			list: GET_ADMIN_ICON_OPTIONS,
 			alerts: ALERT_ICON_LIST_CONFIG,
@@ -148,6 +156,7 @@ export function getAdminCoreConfig(): AdminConfig {
 				component: () => <Spinner size="large" />,
 			},
 			defaultAudioStill: DEFAULT_AUDIO_STILL,
+			enableMultiLanguage: false,
 			buttonTypes: () => [
 				{
 					label: tText('admin/content-block/content-block___primair'),
@@ -299,7 +308,9 @@ export function getAdminCoreConfig(): AdminConfig {
 		users: {
 			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
 		},
+		locale: Locale.Nl as any,
 		env: {
+			CLIENT_URL: window.location.origin,
 			LDAP_DASHBOARD_PEOPLE_URL: getEnv('LDAP_DASHBOARD_PEOPLE_URL'),
 		},
 	};
