@@ -264,6 +264,19 @@ pipeline {
 			}
 			steps {
 				container('oc') {
+					sh '''#!/bin/bash
+							echo "Content in container:"
+							ls
+							echo "Content before replacing:"
+							cat ./public/robots.txt
+							echo "Replacing ..."
+							cp ./scripts/robots-PRD.txt ./public/robots.txt
+							cp ./scripts/robots-PRD.txt ./robots.txt
+							cat ./public/robots.txt
+							cat ./robots.txt
+							echo "Done replacing"
+							'''
+					}
 					tagNewImage('prd')
 				}
 			}
