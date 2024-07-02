@@ -81,6 +81,13 @@ const GET_VALIDATION_RULES_FOR_PUBLISH = (): ValidationRule<
 	{
 		error: (collection) =>
 			collection.type_id === ContentTypeNumber.collection
+				? tText('De collectie heeft geen hoofdafbeelding.')
+				: tText('De bundel heeft geen hoofdafbeelding.'),
+		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.thumbnail_path,
+	},
+	{
+		error: (collection) =>
+			collection.type_id === ContentTypeNumber.collection
 				? tText('collection/collection___de-collectie-heeft-geen-titel')
 				: tText('collection/collection___de-bundel-heeft-geen-titel'),
 		isValid: (collection: Partial<Avo.Collection.Collection>) => !!collection.title,
