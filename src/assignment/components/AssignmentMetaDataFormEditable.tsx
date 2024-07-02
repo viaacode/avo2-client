@@ -193,7 +193,7 @@ const AssignmentMetaDataFormEditable: FC<AssignmentMetaDataFormEditableProps> = 
 					setIsAssignmentStillsModalOpen(false);
 
 					if (assignment.thumbnail_path !== updated.thumbnail_path) {
-						(setValue as any)('thumnail_path', updated.thumbnail_path, {
+						(setValue as any)('thumbnail_path', updated.thumbnail_path, {
 							shouldDirty: true,
 							shouldTouch: true,
 						});
