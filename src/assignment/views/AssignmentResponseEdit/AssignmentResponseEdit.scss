@@ -87,7 +87,9 @@ body:not(.c-interactive-tour--in-progress) .c-assignment-response-page .c-assign
 		position: sticky;
 		top: $g-bar-size-regular;
 		z-index: $g-c-local-toolbar-z;
-		// transform: translateY(-2px); // AVO-3324, causes offset when first block is colored
+
+		transform: translateY(-2px); // AVO-3324
+		margin-bottom: -2px; // AVO-3324
 
 		&--scrolled {
 			.c-assignment-heading__top {
