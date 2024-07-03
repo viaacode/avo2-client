@@ -1,3 +1,6 @@
+import './FlowPlayerWrapper.scss';
+
+import { type Config } from '@flowplayer/player';
 import {
 	FlowPlayer,
 	type FlowplayerSourceItem,
@@ -38,8 +41,6 @@ import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { ToastService } from '../../services/toast-service';
 
-import './FlowPlayerWrapper.scss';
-
 export interface CuePoints {
 	end: number | null;
 	start: number | null;
@@ -58,11 +59,15 @@ export type FlowPlayerWrapperProps = {
 	cuePointsVideo?: CuePoints;
 	cuePointsLabel?: CuePoints;
 	onEnded?: () => void;
-	onPlay?: (playingSrc: string) => void;
+	onPlay?: (playingSrc?: string) => void;
 	poster?: string;
 	src?: string | FlowplayerSourceList;
 	title?: string;
 	topRight?: ReactNode;
+	seekable?: Config['seekable'];
+	ui?: Config['ui'];
+	controls?: Config['controls'];
+	speed?: unknown | null;
 };
 
 /**
@@ -268,6 +273,8 @@ const FlowPlayerWrapper: FunctionComponent<
 			? window.ga.getAll()[0].get('trackingId')
 			: undefined;
 
+	console.info({ speed: props.speed });
+
 	return (
 		<>
 			<div
@@ -293,26 +300,30 @@ const FlowPlayerWrapper: FunctionComponent<
 						logo={
 							item?.organisation?.overlay ? item?.organisation?.logo_url : undefined
 						}
-						speed={{
-							options: [0.5, 0.75, 1, 1.25, 1.5],
-							labels: [
-								tText(
-									'shared/components/flow-player-wrapper/flow-player-wrapper___0-5'
-								),
-								tText(
-									'shared/components/flow-player-wrapper/flow-player-wrapper___0-75'
-								),
-								tText(
-									'shared/components/flow-player-wrapper/flow-player-wrapper___normaal'
-								),
-								tText(
-									'shared/components/flow-player-wrapper/flow-player-wrapper___1-25'
-								),
-								tText(
-									'shared/components/flow-player-wrapper/flow-player-wrapper___1-5'
-								),
-							],
-						}}
+						speed={
+							props.speed === null
+								? undefined
+								: {
+										options: [0.5, 0.75, 1, 1.25, 1.5],
+										labels: [
+											tText(
+												'shared/components/flow-player-wrapper/flow-player-wrapper___0-5'
+											),
+											tText(
+												'shared/components/flow-player-wrapper/flow-player-wrapper___0-75'
+											),
+											tText(
+												'shared/components/flow-player-wrapper/flow-player-wrapper___normaal'
+											),
+											tText(
+												'shared/components/flow-player-wrapper/flow-player-wrapper___1-25'
+											),
+											tText(
+												'shared/components/flow-player-wrapper/flow-player-wrapper___1-5'
+											),
+										],
+								  }
+						}
 						start={item ? start : null}
 						end={item ? end : null}
 						autoplay={(!!item && !!src) || (!isPlaylist && props.autoplay)}
@@ -336,6 +347,9 @@ const FlowPlayerWrapper: FunctionComponent<
 						}
 						googleAnalyticsTitle={props.title}
 						renderPlaylistTile={renderPlaylistTile}
+						seekable={props.seekable}
+						ui={props.ui}
+						controls={props.controls}
 					/>
 				) : (
 					// Fake player for logged-out users that do not yet have video playback rights

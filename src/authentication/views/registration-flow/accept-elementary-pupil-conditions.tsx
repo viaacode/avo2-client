@@ -1,3 +1,5 @@
+import './accept-elementary-pupil-conditions.scss';
+
 import { BlockHeading, BlockRichText, BlockVideoWrapper } from '@meemoo/admin-core-ui';
 import {
 	Button,
@@ -34,6 +36,7 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 	acceptConditions,
 }) => {
 	const [loading, setLoading] = useState(false);
+	const [finished, setFinished] = useState(false);
 
 	const handleAcceptPupilConditions = async () => {
 		try {
@@ -79,7 +82,10 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 								</BlockHeading>
 							</Spacer>
 
-							<Spacer margin="medium">
+							<Spacer
+								margin="medium"
+								className="c-accept-elementary-pupil-conditions__intro"
+							>
 								<BlockRichText
 									elements={{
 										content: tText(
@@ -97,11 +103,17 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 									src={tText(
 										'authentication/views/registration-flow/accept-elementary-pupil-conditions___url-van-het-introductiefilmpje-voor-leerlingen-lager'
 									)}
-									autoplay
+									ui={4 | 1} // NO_MUTE | NO_FULLSCREEN
+									seekable={false}
+									speed={null}
+									onEnded={() => setFinished(true)}
 								/>
 							</Spacer>
 
-							<Spacer margin="medium">
+							<Spacer
+								margin="medium"
+								className="c-accept-elementary-pupil-conditions__outro"
+							>
 								<BlockRichText
 									elements={{
 										content: tText(
@@ -110,30 +122,30 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 									}}
 								/>
 							</Spacer>
+
+							<Toolbar>
+								<ToolbarCenter>
+									{loading ? (
+										<Spinner size={'large'} />
+									) : (
+										<Button
+											disabled={!finished}
+											label={tText(
+												'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
+											)}
+											title={tText(
+												'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
+											)}
+											type="primary"
+											onClick={handleAcceptPupilConditions}
+										/>
+									)}
+								</ToolbarCenter>
+							</Toolbar>
 						</Column>
 					</Grid>
 				</Container>
 			</Container>
-			<Spacer margin="bottom-large">
-				<Toolbar>
-					<ToolbarCenter>
-						{loading ? (
-							<Spinner size={'large'} />
-						) : (
-							<Button
-								label={tText(
-									'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
-								)}
-								title={tText(
-									'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
-								)}
-								type="primary"
-								onClick={handleAcceptPupilConditions}
-							/>
-						)}
-					</ToolbarCenter>
-				</Toolbar>
-			</Spacer>
 		</>
 	);
 };

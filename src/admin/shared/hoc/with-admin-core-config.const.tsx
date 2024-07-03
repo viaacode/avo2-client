@@ -202,7 +202,7 @@ export function getAdminCoreConfig(): AdminConfig {
 					value: 'pupil-inline-link',
 				},
 			],
-			flowplayer: FlowPlayerWrapper as any,
+			flowplayer: FlowPlayerWrapper,
 		},
 		content_blocks: {
 			SEARCH: BlockSearch,
