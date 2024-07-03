@@ -273,8 +273,6 @@ const FlowPlayerWrapper: FunctionComponent<
 			? window.ga.getAll()[0].get('trackingId')
 			: undefined;
 
-	console.info({ speed: props.speed });
-
 	return (
 		<>
 			<div
