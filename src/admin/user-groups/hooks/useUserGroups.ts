@@ -1,3 +1,5 @@
+import { preferredUserGroupOrder } from '@meemoo/admin-core-ui';
+import { sortBy } from 'lodash';
 import { useEffect, useState } from 'react';
 
 import { GET_SPECIAL_USER_GROUPS } from '../user-group.const';
@@ -18,7 +20,10 @@ export const useUserGroups = (includeSpecialGroups: boolean): UseUserGroupsTuple
 				if (groups) {
 					setUserGroups([
 						...(includeSpecialGroups ? GET_SPECIAL_USER_GROUPS() : []),
-						...groups,
+						...sortBy(
+							groups,
+							(userGroup) => preferredUserGroupOrder[userGroup.label || '']
+						),
 					]);
 				}
 			})
