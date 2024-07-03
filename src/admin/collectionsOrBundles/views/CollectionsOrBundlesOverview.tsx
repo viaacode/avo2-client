@@ -107,11 +107,6 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const userGroupOptions = useMemo(() => {
 		return [
-			{
-				id: NULL_FILTER,
-				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
-				checked: ((tableState?.author_user_group || []) as string[]).includes(NULL_FILTER),
-			},
 			...userGroups.map(
 				(option): CheckboxOption => ({
 					id: String(option.id),
@@ -121,6 +116,11 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					),
 				})
 			),
+			{
+				id: NULL_FILTER,
+				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
+				checked: ((tableState?.author_user_group || []) as string[]).includes(NULL_FILTER),
+			},
 		];
 	}, [tableState, userGroups, tText]);
 
