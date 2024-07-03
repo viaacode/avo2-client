@@ -88,8 +88,10 @@ body:not(.c-interactive-tour--in-progress) .c-assignment-response-page .c-assign
 		top: $g-bar-size-regular;
 		z-index: $g-c-local-toolbar-z;
 
-		transform: translateY(-2px); // AVO-3324
-		margin-bottom: -2px; // AVO-3324
+		// Avoid text in the scrollable to be visible above the sticky header
+		// https://meemoo.atlassian.net/issues/AVO-3324
+		transform: translateY(-2px);
+		margin-bottom: -2px;
 
 		&--scrolled {
 			.c-assignment-heading__top {
