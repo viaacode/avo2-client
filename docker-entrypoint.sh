@@ -9,10 +9,10 @@ sh ./env.sh
 
 # Copy the scripts/robots-QAS.txt file or the scripts/robots-PROD.txt file to public/robots.txt based on the ENV environment variable
 echo "copy robots.txt file"
-if  [[ "$ENV" == "QAS" ]]; then
-		cp ./robots-QAS.txt ./public/robots.txt
+if  [[ "$ENV" == "qas" ]]; then
+		cp ./robots-QAS.txt ./robots.txt
 else
-		cp ./robots-PROD.txt ./public/robots.txt
+		cp ./robots-PRD.txt ./robots.txt
 fi
 
 
