@@ -7,6 +7,13 @@ import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
+const ASSETS_WITHOUT_A_HASH = [
+	// Avoid hashes in the audio still path, since it gets saved in the database
+	// And we don't want it to update the hash everytime the svg file changes
+	// https://meemoo.atlassian.net/browse/AVO-3336
+	'audio-still.svg',
+];
+
 export default defineConfig(() => {
 	return {
 		build: {
@@ -14,6 +21,13 @@ export default defineConfig(() => {
 			sourcemap: true,
 			rollupOptions: {
 				plugins: [sourcemaps()],
+				output: {
+					assetFileNames: function (file) {
+						return ASSETS_WITHOUT_A_HASH.includes(file.name)
+							? `assets/[name].[ext]`
+							: `assets/[name]-[hash].[ext]`;
+					},
+				},
 			},
 		},
 		server: {
