@@ -12,12 +12,13 @@ import {
 	ToolbarCenter,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types/types';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { type Dispatch } from 'redux';
 
 import { CustomError } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
+import { useDisablePictureInPicture } from '../../../shared/hooks/useDisablePictureInPicture';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { type AppState } from '../../../store';
@@ -35,6 +36,9 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 	user,
 	acceptConditions,
 }) => {
+	const section = useRef<HTMLElement>(null);
+	useDisablePictureInPicture(section);
+
 	const [loading, setLoading] = useState(false);
 	const [finished, setFinished] = useState(false);
 
@@ -69,7 +73,7 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 	};
 
 	return (
-		<>
+		<section ref={section}>
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Grid>
@@ -146,7 +150,7 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 					</Grid>
 				</Container>
 			</Container>
-		</>
+		</section>
 	);
 };
 
