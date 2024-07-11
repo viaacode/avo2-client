@@ -16,6 +16,7 @@ import React, { type FunctionComponent, useState } from 'react';
 import { connect } from 'react-redux';
 import { type Dispatch } from 'redux';
 
+import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png';
 import { CustomError } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
 import { NotificationService } from '../../../shared/services/notification-service';
@@ -107,6 +108,7 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 									seekable={false}
 									speed={null}
 									onEnded={() => setFinished(true)}
+									poster={poster}
 								/>
 							</Spacer>
 
