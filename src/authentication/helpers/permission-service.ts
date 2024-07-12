@@ -1,11 +1,11 @@
-import { type ContentPageInfo, ContentPageService, LanguageCode } from '@meemoo/admin-core-ui';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
-import { get, isString, some } from 'lodash-es';
+import { type ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { isString, some } from 'lodash-es';
 
 import { AssignmentService } from '../../assignment/assignment.service';
 import { CollectionService } from '../../collection/collection.service';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
+import { Locale } from '../../shared/translations/translations.types';
 
 import { getProfileId } from './get-profile-id';
 
@@ -208,11 +208,11 @@ export class PermissionService {
 				try {
 					const contentPage: ContentPageInfo = isString(obj)
 						? await ContentPageService.getContentPageByLanguageAndPath(
-								LanguageCode.Nl,
+								Locale.Nl as any,
 								obj
 						  )
 						: obj;
-					const contentPageOwnerId = get(contentPage, 'user_profile_id');
+					const contentPageOwnerId = contentPage?.userProfileId;
 					return !!profileId && !!contentPageOwnerId && profileId === contentPageOwnerId;
 				} catch (err) {
 					return false;

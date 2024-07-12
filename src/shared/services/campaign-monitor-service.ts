@@ -63,7 +63,7 @@ export class CampaignMonitorService {
 		oldNewsletterPreferences: Partial<NewsletterPreferences>,
 		newNewsletterPreferences: Partial<NewsletterPreferences>,
 		commonUser: Avo.User.CommonUser | undefined,
-		preferenceCenterKey: string
+		preferenceCenterKey: string | undefined | null
 	) {
 		if (!commonUser) {
 			return;
@@ -80,7 +80,7 @@ export class CampaignMonitorService {
 							resource: {
 								id: key,
 								type: 'campaign-monitor-list',
-								preferenceCenterKey,
+								...(preferenceCenterKey ? { preferenceCenterKey } : {}),
 							},
 						};
 					} else if (newNewsletterPreferences[key] === false) {
@@ -92,7 +92,7 @@ export class CampaignMonitorService {
 							resource: {
 								id: key,
 								type: 'campaign-monitor-list',
-								preferenceCenterKey,
+								...(preferenceCenterKey ? { preferenceCenterKey } : {}),
 							},
 						};
 					}

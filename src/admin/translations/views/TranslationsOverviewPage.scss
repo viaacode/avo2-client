@@ -60,6 +60,11 @@
 			border-left: 0;
 		}
 
+		th:first-child,
+		td:first-child {
+			width: 60%;
+		}
+
 		tr {
 			border: 1px solid $color-gray-100;
 			border-width: 1px 0 0 0;
@@ -75,11 +80,21 @@
 
 			td {
 				vertical-align: middle;
-			}
 
-			&:hover {
-				background-color: $color-gray-25;
-				cursor: pointer;
+				&:nth-child(2) {
+					border-left: 1px solid lightgray;
+					padding: 0;
+
+					&:hover {
+						background-color: $color-gray-25;
+					}
+
+					.c-translation-overview__edit-button {
+						background-color: transparent;
+						padding: 3rem 3rem 3rem 1rem;
+						cursor: pointer;
+					}
+				}
 			}
 		}
 
@@ -109,6 +124,8 @@
 			background-color: transparent;
 			border: 0;
 			margin-bottom: 2rem;
+			margin-left: -1rem;
+			padding-left: 1rem;
 
 			&:hover {
 				background-color: $color-gray-25;
@@ -122,12 +139,24 @@
 			}
 		}
 
-		.bf-container {
+		.bf-container,
+		textarea {
 			border: 1px solid $color-gray-100;
 			border-radius: 0.3rem;
 
 			.bf-content {
 				height: 31rem;
+			}
+		}
+
+		textarea {
+			width: 100%;
+			min-height: 30rem;
+			padding: 1.5rem;
+
+			&:focus {
+				outline: 0;
+				border-color: $color-teal-bright;
 			}
 		}
 	}
