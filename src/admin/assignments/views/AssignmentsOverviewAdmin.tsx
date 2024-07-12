@@ -106,11 +106,6 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 	const userGroupOptions = useMemo(
 		() => [
-			{
-				id: NULL_FILTER,
-				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
-				checked: (tableState.author_user_group || ([] as string[])).includes(NULL_FILTER),
-			},
 			...userGroups.map(
 				(option): CheckboxOption => ({
 					id: String(option.id),
@@ -120,6 +115,11 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					),
 				})
 			),
+			{
+				id: NULL_FILTER,
+				label: tText('admin/collections-or-bundles/views/collection-or-bundle___geen-rol'),
+				checked: (tableState.author_user_group || ([] as string[])).includes(NULL_FILTER),
+			},
 		],
 		[tableState, userGroups, tText]
 	);

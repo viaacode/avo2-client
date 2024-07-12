@@ -1,3 +1,5 @@
+import './accept-elementary-pupil-conditions.scss';
+
 import { BlockHeading, BlockRichText, BlockVideoWrapper } from '@meemoo/admin-core-ui';
 import {
 	Button,
@@ -10,12 +12,14 @@ import {
 	ToolbarCenter,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types/types';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FunctionComponent, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { type Dispatch } from 'redux';
 
+import poster from '../../../assets/images/elementary-pupil-terms-of-service__poster.png';
 import { CustomError } from '../../../shared/helpers';
 import { tHtml, tText } from '../../../shared/helpers/translate';
+import { useDisablePictureInPicture } from '../../../shared/hooks/useDisablePictureInPicture';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { type AppState } from '../../../store';
@@ -33,7 +37,11 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 	user,
 	acceptConditions,
 }) => {
+	const section = useRef<HTMLElement>(null);
+	useDisablePictureInPicture(section);
+
 	const [loading, setLoading] = useState(false);
+	const [finished, setFinished] = useState(false);
 
 	const handleAcceptPupilConditions = async () => {
 		try {
@@ -66,7 +74,7 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 	};
 
 	return (
-		<>
+		<section ref={section}>
 			<Container mode="vertical">
 				<Container mode="horizontal">
 					<Grid>
@@ -79,7 +87,10 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 								</BlockHeading>
 							</Spacer>
 
-							<Spacer margin="medium">
+							<Spacer
+								margin="medium"
+								className="c-accept-elementary-pupil-conditions__intro"
+							>
 								<BlockRichText
 									elements={{
 										content: tText(
@@ -97,11 +108,18 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 									src={tText(
 										'authentication/views/registration-flow/accept-elementary-pupil-conditions___url-van-het-introductiefilmpje-voor-leerlingen-lager'
 									)}
-									autoplay
+									ui={4 | 1} // NO_MUTE | NO_FULLSCREEN
+									seekable={false}
+									speed={null}
+									onEnded={() => setFinished(true)}
+									poster={poster}
 								/>
 							</Spacer>
 
-							<Spacer margin="medium">
+							<Spacer
+								margin="medium"
+								className="c-accept-elementary-pupil-conditions__outro"
+							>
 								<BlockRichText
 									elements={{
 										content: tText(
@@ -110,31 +128,31 @@ const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilCo
 									}}
 								/>
 							</Spacer>
+
+							<Toolbar>
+								<ToolbarCenter>
+									{loading ? (
+										<Spinner size={'large'} />
+									) : (
+										<Button
+											disabled={!finished}
+											label={tText(
+												'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
+											)}
+											title={tText(
+												'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
+											)}
+											type="primary"
+											onClick={handleAcceptPupilConditions}
+										/>
+									)}
+								</ToolbarCenter>
+							</Toolbar>
 						</Column>
 					</Grid>
 				</Container>
 			</Container>
-			<Spacer margin="bottom-large">
-				<Toolbar>
-					<ToolbarCenter>
-						{loading ? (
-							<Spinner size={'large'} />
-						) : (
-							<Button
-								label={tText(
-									'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
-								)}
-								title={tText(
-									'authentication/views/registration-flow/accept-elementary-pupil-conditions___ik-snap-het'
-								)}
-								type="primary"
-								onClick={handleAcceptPupilConditions}
-							/>
-						)}
-					</ToolbarCenter>
-				</Toolbar>
-			</Spacer>
-		</>
+		</section>
 	);
 };
 
