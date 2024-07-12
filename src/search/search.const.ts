@@ -58,6 +58,7 @@ export const DEFAULT_FILTER_STATE: Avo.Search.Filters = {
 	[SearchFilter.serie]: [],
 	[SearchFilter.provider]: [],
 	[SearchFilter.collectionLabel]: [],
+	[SearchFilter.elementary]: false,
 };
 
 export const DEFAULT_SORT_ORDER: SortOrder = {

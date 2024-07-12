@@ -152,9 +152,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						object: String(created.id),
 						object_type: 'assignment',
 						action: 'create',
-						resource: {
-							education_level: created.education_level_id,
-						},
+						resource: created.education_level_id
+							? {
+									education_level: created.education_level_id,
+							  }
+							: {},
 					},
 					user
 				);

@@ -18,7 +18,7 @@ I18n.use(XHR)
 	.use(initReactI18next) // passes i18n down to react-i18next
 	.init({
 		backend: {
-			loadPath: `${getEnv('PROXY_URL')}/admin/translations/nl.json`,
+			loadPath: `${getEnv('PROXY_URL')}/admin/translations/NL.json`,
 			parse: (data: any) => {
 				setTimeout(() => {
 					resolveTranslations();
