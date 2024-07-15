@@ -15,6 +15,6 @@ export const useDisablePictureInPicture = (ref: RefObject<HTMLElement>) => {
 			});
 		}
 
-		return observer.disconnect;
+		return () => observer.disconnect();
 	});
 };
