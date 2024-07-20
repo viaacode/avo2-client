@@ -11,7 +11,7 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact, map } from 'lodash-es';
+import { compact, isEqual, map } from 'lodash-es';
 import React, { type FunctionComponent, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -139,31 +139,36 @@ const CompleteProfileStep: FunctionComponent<
 			// Refetch user permissions since education level can change user group
 			getLoginState(true);
 
-			const preferences: Partial<NewsletterPreferences> = {} as any;
+			const existingPreferences = await CampaignMonitorService.fetchNewsletterPreferences();
+			const newPreferences: Partial<NewsletterPreferences> = {
+				...existingPreferences,
+			} as NewsletterPreferences;
 			if (subscribeToNewsletter) {
 				// subscribe to newsletter if checked
-				preferences.newsletter = true;
+				newPreferences.newsletter = true;
 			}
 			try {
-				await CampaignMonitorService.updateNewsletterPreferences(preferences);
-				if (subscribeToNewsletter) {
-					trackEvents(
-						{
-							action: 'add',
-							object: commonUser.profileId,
-							object_type: 'profile',
-							resource: {
-								id: NewsletterPreferenceKey.newsletter,
-								type: 'campaign-monitor-list',
+				if (!isEqual(existingPreferences, newPreferences)) {
+					await CampaignMonitorService.updateNewsletterPreferences(newPreferences);
+					if (subscribeToNewsletter) {
+						trackEvents(
+							{
+								action: 'add',
+								object: commonUser.profileId,
+								object_type: 'profile',
+								resource: {
+									id: NewsletterPreferenceKey.newsletter,
+									type: 'campaign-monitor-list',
+								},
 							},
-						},
-						commonUser
-					);
+							commonUser
+						);
+					}
 				}
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to updateNewsletterPreferences', err, {
-						preferences,
+						preferences: newPreferences,
 						user,
 					})
 				);
