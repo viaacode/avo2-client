@@ -37,6 +37,7 @@
     "Andry Charlier <andry.charlier@studiohyperdrive.be>"
   ],
   "dependencies": {
+    "@diffusionstudio/vits-web": "^1.0.2",
     "@flowplayer/player": "3.3.0",
     "@hookform/resolvers": "2.9.11",
     "@meemoo/admin-core-ui": "4.0.33",
@@ -53,7 +54,6 @@
     "copy-to-clipboard": "3.3.1",
     "date-fns": "2.30.0",
     "date-fns-tz": "2.0.0",
-    "isomorphic-dompurify": "2.11.0",
     "file-saver": "2.0.5",
     "he": "^1.2.0",
     "history": "4.10.1",
@@ -63,6 +63,7 @@
     "i18next-http-backend": "1.4.1",
     "i18next-xhr-backend": "3.2.2",
     "immer": "9.0.12",
+    "isomorphic-dompurify": "2.11.0",
     "lodash-es": "4.17.21",
     "marked": "4.0.15",
     "node-fetch": "2.7.0",
