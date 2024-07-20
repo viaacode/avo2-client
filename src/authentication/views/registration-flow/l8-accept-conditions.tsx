@@ -2,10 +2,11 @@ import {
 	type ContentPageInfo,
 	ContentPageRenderer,
 	ContentPageService,
+	convertDbContentPagesToContentPageInfos,
 } from '@meemoo/admin-core-ui';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+import { compact, get } from 'lodash-es';
 import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -19,6 +20,7 @@ import { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
 import { ToastService } from '../../../shared/services/toast-service';
+import { Locale } from '../../../shared/translations/translations.types';
 import { type AppState } from '../../../store';
 import { type DefaultSecureRouteProps } from '../../components/SecuredRoute';
 import { redirectToClientPage } from '../../helpers/redirects';
@@ -55,12 +57,19 @@ const AcceptConditions: FunctionComponent<
 		}
 
 		try {
-			setPages(
+			const dbContentPages = compact(
 				await Promise.all([
-					ContentPageService.getContentPageByPath('/gebruikersvoorwaarden'),
-					ContentPageService.getContentPageByPath('/privacy-voorwaarden'),
+					ContentPageService.getContentPageByLanguageAndPath(
+						Locale.Nl as any,
+						'/gebruikersvoorwaarden'
+					),
+					ContentPageService.getContentPageByLanguageAndPath(
+						Locale.Nl as any,
+						'/privacy-voorwaarden'
+					),
 				])
 			);
+			setPages(convertDbContentPagesToContentPageInfos(dbContentPages) || []);
 		} catch (err) {
 			setLoadingInfo({
 				state: 'error',

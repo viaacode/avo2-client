@@ -2,13 +2,19 @@ import {
 	type ContentPageInfo,
 	ContentPageRenderer,
 	ContentPageService,
+	convertDbContentPageToContentPageInfo,
 	type DbContentPage,
 } from '@meemoo/admin-core-ui';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, {
+	type ComponentType,
+	type FunctionComponent,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, type RouteComponentProps, withRouter } from 'react-router';
@@ -26,6 +32,7 @@ import {
 	selectLoginError,
 	selectLoginLoading,
 } from '../../authentication/store/selectors';
+import { type LoginState } from '../../authentication/store/types';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -42,6 +49,7 @@ import {
 } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
+import { Locale } from '../../shared/translations/translations.types';
 import { type AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
@@ -161,10 +169,18 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 			// Check if path points to a content page
 			try {
-				const contentPage: ContentPageInfo | null =
-					await ContentPageService.getContentPageByPath(pathname);
-				// Path is indeed a content page url
-				setRouteInfo({ type: 'contentPage', data: contentPage });
+				const contentPage: DbContentPage | null =
+					await ContentPageService.getContentPageByLanguageAndPath(
+						Locale.Nl as any,
+						pathname
+					);
+				if (contentPage) {
+					// Path is indeed a content page url
+					setRouteInfo({
+						type: 'contentPage',
+						data: convertDbContentPageToContentPageInfo(contentPage),
+					});
+				}
 			} catch (err) {
 				console.error({
 					message: 'Failed to check if path corresponds to a content page',
@@ -203,6 +219,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		setLoadingInfo,
 		history,
 		tText,
+		tHtml,
 	]);
 
 	// Check if current user is logged in
@@ -226,7 +243,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				location
 			);
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, location]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, tHtml, location]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {
@@ -334,18 +351,24 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (
+	state: AppState
+): {
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateLoading: boolean;
+	loginStateError: boolean;
+} => ({
 	loginState: selectLogin(state),
 	loginStateLoading: selectLoginLoading(state),
 	loginStateError: selectLoginError(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): { getLoginState: () => LoginState } => ({
 	getLoginState: () => dispatch(getLoginStateAction() as any),
 });
 
 export default compose(
 	withRouter,
-	connect(mapStateToProps, mapDispatchToProps),
+	connect(mapStateToProps, mapDispatchToProps) as any,
 	withAdminCoreConfig
-)(DynamicRouteResolver) as FunctionComponent;
+)(DynamicRouteResolver as ComponentType) as unknown as FunctionComponent<DynamicRouteResolverProps>;

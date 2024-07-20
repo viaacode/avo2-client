@@ -1,25 +1,31 @@
-import { type ContentPageInfo, ContentPageService } from '@meemoo/admin-core-ui';
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import { ContentPageService, convertDbContentPageToContentPageInfo } from '@meemoo/admin-core-ui';
+import { useQuery } from '@tanstack/react-query';
 
 import { QUERY_KEYS } from '../../../shared/constants/query-keys';
+import { Locale } from '../../../shared/translations/translations.types';
 
 export const useGetContentPageByPath = (
 	path: string | undefined,
-	options?: UseQueryOptions<
-		ContentPageInfo | null,
-		any,
-		ContentPageInfo | null,
-		QUERY_KEYS.GET_CONTENT_PAGE_BY_PATH[]
-	>
+	options: { enabled?: boolean } = {}
 ) => {
 	return useQuery(
 		[QUERY_KEYS.GET_CONTENT_PAGE_BY_PATH],
-		() => {
+		async () => {
 			if (!path) {
 				return null;
 			}
-			return ContentPageService.getContentPageByPath(path);
+			const dbContentPage = await ContentPageService.getContentPageByLanguageAndPath(
+				Locale.Nl as any,
+				path
+			);
+			if (!dbContentPage) {
+				return null;
+			}
+			return convertDbContentPageToContentPageInfo(dbContentPage);
 		},
-		options
+		{
+			enabled: true,
+			...options,
+		}
 	);
 };

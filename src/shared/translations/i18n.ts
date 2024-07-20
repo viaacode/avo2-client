@@ -1,9 +1,13 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import I18n from 'i18next';
 import XHR from 'i18next-xhr-backend';
 import { lowerCase, upperFirst } from 'lodash-es';
 import { initReactI18next } from 'react-i18next';
 
-import { getEnv } from '../helpers';
+import { getEnv } from '../helpers/env';
 
 let resolveTranslations: (value?: unknown) => void | undefined;
 export const waitForTranslations = new Promise((resolve) => {
@@ -14,7 +18,7 @@ I18n.use(XHR)
 	.use(initReactI18next) // passes i18n down to react-i18next
 	.init({
 		backend: {
-			loadPath: `${getEnv('PROXY_URL')}/admin/translations/nl.json`,
+			loadPath: `${getEnv('PROXY_URL')}/admin/translations/NL.json`,
 			parse: (data: any) => {
 				setTimeout(() => {
 					resolveTranslations();
