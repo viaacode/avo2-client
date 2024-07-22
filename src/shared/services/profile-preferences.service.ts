@@ -58,7 +58,7 @@ export class ProfilePreferencesService {
 
 			return response.insert_users_profile_preferences?.affected_rows || 0;
 		} catch (err) {
-			throw new CustomError('Het inserten van de profile preference is mislukt.', err, {
+			throw new CustomError('Het updaten van de profile preference is mislukt.', err, {
 				query: 'SET_PROFILE_PREFERENCE',
 				variables: { profileId, key },
 			});
