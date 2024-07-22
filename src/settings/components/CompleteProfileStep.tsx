@@ -11,7 +11,7 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact, isEqual, map } from 'lodash-es';
+import { compact } from 'lodash-es';
 import React, { type FunctionComponent, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -33,14 +33,10 @@ import { CustomError } from '../../shared/helpers';
 import { EducationLevelId, groupLoms } from '../../shared/helpers/lom';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import {
-	CampaignMonitorService,
-	NewsletterPreferenceKey,
-	type NewsletterPreferences,
-} from '../../shared/services/campaign-monitor-service';
-import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import store from '../../store';
+import { useGetEmailPreferences } from '../hooks/useGetEmailPreferences';
+import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 
 import './Profile.scss';
@@ -60,13 +56,16 @@ const CompleteProfileStep: FunctionComponent<
 		Avo.EducationOrganization.Organization[]
 	>(commonUser?.educationalOrganisations || []);
 	const [selectedLoms, setSelectedLoms] = useState<Avo.Lom.LomField[]>(
-		compact(map(commonUser?.loms, 'lom'))
+		compact(commonUser?.loms.map((lomLink) => lomLink.lom))
 	);
 	const groupedLoms = groupLoms(selectedLoms);
 	const firstName = commonUser?.firstName || '';
 	const lastName = commonUser?.lastName || '';
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [subscribeToNewsletter, setSubscribeToNewsletter] = useState<boolean>(false);
+	const { data: existingEmailPreferences, isLoading: isLoadingExistingEmailPreferences } =
+		useGetEmailPreferences();
+	const { mutateAsync: updateEmailPreferences } = useUpdateEmailPreferences();
 
 	const isThemesRequired = !!groupedLoms.educationLevel.find(
 		(level) => level.id !== EducationLevelId.secundairOnderwijs
@@ -99,6 +98,34 @@ const CompleteProfileStep: FunctionComponent<
 			ToastService.danger(errors);
 		}
 		return filledIn;
+	};
+
+	const saveNewsletterPreferences = () => {
+		// Only update the newsletter preferences if the user opted in
+		// We never want to unsubscribe the user from the newsletter in this screen
+		// IN case this screen is shown to an existing user, we don't want to accidentally unsubscribe them
+		// They can always unsubscribe in their account preferences or through the email preference center or unsubscribe all link
+		if (subscribeToNewsletter) {
+			updateEmailPreferences(
+				{
+					newEmailPreferences: {
+						newsletter: true,
+					},
+					preferencesCenterKey: undefined,
+				},
+				undefined
+			).catch((err) => {
+				console.error(
+					new CustomError('Failed to subscribe to newsletter', err, {
+						preferences: {
+							newsletter: true,
+						},
+						preferenceCenterKey: undefined,
+					})
+				);
+				ToastService.danger(tHtml('Het inschrijven op de nieuwsbrief is mislukt.'));
+			});
+		}
 	};
 
 	const saveProfileChanges = async () => {
@@ -139,45 +166,7 @@ const CompleteProfileStep: FunctionComponent<
 			// Refetch user permissions since education level can change user group
 			getLoginState(true);
 
-			const existingPreferences = await CampaignMonitorService.fetchNewsletterPreferences();
-			const newPreferences: Partial<NewsletterPreferences> = {
-				...existingPreferences,
-			} as NewsletterPreferences;
-			if (subscribeToNewsletter) {
-				// subscribe to newsletter if checked
-				newPreferences.newsletter = true;
-			}
-			try {
-				if (!isEqual(existingPreferences, newPreferences)) {
-					await CampaignMonitorService.updateNewsletterPreferences(newPreferences);
-					if (subscribeToNewsletter) {
-						trackEvents(
-							{
-								action: 'add',
-								object: commonUser.profileId,
-								object_type: 'profile',
-								resource: {
-									id: NewsletterPreferenceKey.newsletter,
-									type: 'campaign-monitor-list',
-								},
-							},
-							commonUser
-						);
-					}
-				}
-			} catch (err) {
-				console.error(
-					new CustomError('Failed to updateNewsletterPreferences', err, {
-						preferences: newPreferences,
-						user,
-					})
-				);
-				ToastService.danger(
-					tHtml(
-						'settings/components/profile___het-updaten-van-de-nieuwsbrief-voorkeuren-is-mislukt'
-					)
-				);
-			}
+			saveNewsletterPreferences();
 
 			// Refresh the login state, so the profile info will be up-to-date
 			const loginResponse: Avo.Auth.LoginResponse = await getLoginResponse();
@@ -259,19 +248,22 @@ const CompleteProfileStep: FunctionComponent<
 							/>
 							{renderEducationOrganisationsField()}
 						</Spacer>
-						{user?.role?.name === 'lesgever' && (
-							<Spacer margin="bottom">
-								<FormGroup>
-									<Checkbox
-										label={tText(
-											'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
-										)}
-										checked={subscribeToNewsletter}
-										onChange={setSubscribeToNewsletter}
-									/>
-								</FormGroup>
-							</Spacer>
-						)}
+						{/* Only show the subscribe checkbox to teachers and only if they are currently unsubscribed */}
+						{user?.role?.name === 'lesgever' &&
+							!isLoadingExistingEmailPreferences &&
+							!existingEmailPreferences?.newsletter && (
+								<Spacer margin="bottom">
+									<FormGroup>
+										<Checkbox
+											label={tText(
+												'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
+											)}
+											checked={subscribeToNewsletter}
+											onChange={setSubscribeToNewsletter}
+										/>
+									</FormGroup>
+								</Spacer>
+							)}
 					</Form>
 					<Button
 						label={tText('settings/components/profile___inloggen')}
