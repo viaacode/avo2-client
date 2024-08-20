@@ -74,6 +74,12 @@ const CompleteProfileStep: FunctionComponent<
 		(level) => level.id === EducationLevelId.secundairOnderwijs
 	);
 
+	// Only show the subscribe checkbox to teachers and only if they are currently unsubscribed
+	const shouldShowSubscribeCheckbox =
+		user?.role?.name === 'lesgever' &&
+		!isLoadingExistingEmailPreferences &&
+		!existingEmailPreferences?.newsletter;
+
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<Avo.User.UpdateProfileValues>) => {
 		const errors = [];
 		let filledIn = true;
@@ -248,22 +254,19 @@ const CompleteProfileStep: FunctionComponent<
 							/>
 							{renderEducationOrganisationsField()}
 						</Spacer>
-						{/* Only show the subscribe checkbox to teachers and only if they are currently unsubscribed */}
-						{user?.role?.name === 'lesgever' &&
-							!isLoadingExistingEmailPreferences &&
-							!existingEmailPreferences?.newsletter && (
-								<Spacer margin="bottom">
-									<FormGroup>
-										<Checkbox
-											label={tText(
-												'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
-											)}
-											checked={subscribeToNewsletter}
-											onChange={setSubscribeToNewsletter}
-										/>
-									</FormGroup>
-								</Spacer>
-							)}
+						{shouldShowSubscribeCheckbox && (
+							<Spacer margin="bottom">
+								<FormGroup>
+									<Checkbox
+										label={tText(
+											'settings/components/profile___ik-ontvang-graag-per-e-mail-tips-en-inspiratie-voor-mijn-lessen-vacatures-gratis-workshops-en-nieuws-van-partners'
+										)}
+										checked={subscribeToNewsletter}
+										onChange={setSubscribeToNewsletter}
+									/>
+								</FormGroup>
+							</Spacer>
+						)}
 					</Form>
 					<Button
 						label={tText('settings/components/profile___inloggen')}
