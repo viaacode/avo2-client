@@ -5,6 +5,8 @@ query getQuickLaneById($id: uuid = "") {
 		content_label
 		title
 		view_mode
+		start_oc
+		end_oc
 		created_at
 		updated_at
 		owner {
