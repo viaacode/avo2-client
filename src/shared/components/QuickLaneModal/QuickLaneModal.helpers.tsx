@@ -17,6 +17,8 @@ export const defaultQuickLaneState: QuickLaneUrlObject = {
 	id: '',
 	title: '',
 	view_mode: AssignmentLayout.PlayerAndText,
+	start_oc: 0,
+	end_oc: 0,
 };
 
 export const getContentUuid = (
