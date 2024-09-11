@@ -203,6 +203,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 									showDescription={false}
 									canPlay={isOpen}
 									cuePointsLabel={{ start, end }}
+									cuePointsVideo={{ start, end }}
 									verticalLayout={isMobileWidth()}
 								/>
 							</div>

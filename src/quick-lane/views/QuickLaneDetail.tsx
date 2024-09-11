@@ -217,6 +217,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}
+						cuePointsVideo={{ start, end }}
 					/>
 				);
 			default:
