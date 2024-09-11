@@ -212,14 +212,12 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				);
 			case 'ITEM':
 				return (
-					<>
-						<ItemVideoDescription
-							itemMetaData={quickLane.content as Avo.Item.Item}
-							showDescription={contentLayout === AssignmentLayout.PlayerAndText}
-							verticalLayout={isMobileWidth()}
-							cuePointsLabel={{ start, end }}
-						/>
-					</>
+					<ItemVideoDescription
+						itemMetaData={quickLane.content as Avo.Item.Item}
+						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
+						verticalLayout={isMobileWidth()}
+						cuePointsLabel={{ start, end }}
+					/>
 				);
 			default:
 				return (
