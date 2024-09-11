@@ -9,11 +9,15 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import { type ItemSchema } from '@viaa/avo2-types/types/item';
+import React, { type FunctionComponent, useEffect, useMemo, useState } from 'react';
 
 import { type AssignmentLayout } from '../../../assignment/assignment.types';
+import { ItemVideoDescription } from '../../../item/components';
 import { QuickLaneService } from '../../../quick-lane/quick-lane.service';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { isMobileWidth, toSeconds } from '../../helpers';
+import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks/useDebounce';
@@ -22,6 +26,7 @@ import { type QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
 import { LayoutOptions } from '../LayoutOptions/LayoutOptions';
 import QuickLaneLink from '../QuickLaneLink/QuickLaneLink';
+import TimeCropControls from '../TimeCropControls/TimeCropControls';
 
 import { defaultQuickLaneState, getContentUuid, isShareable } from './QuickLaneModal.helpers';
 import { type QuickLaneModalProps } from './QuickLaneModal.types';
@@ -34,9 +39,20 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 }) => {
 	const { tText, tHtml } = useTranslation();
 
+	const fragmentDuration = useMemo(
+		() => toSeconds((content as ItemSchema).duration) || 0,
+		[content]
+	);
+
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
 	const [exists, setExists] = useState<boolean>(false);
 	const [synced, setSynced] = useState<boolean>(false);
+	const [fragmentStartTime, setFragmentStartTime] = useState<number>(
+		quickLane.start_oc || defaultQuickLaneState.start_oc || 0
+	);
+	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
+		quickLane.end_oc || fragmentDuration || defaultQuickLaneState.end_oc || 0
+	);
 
 	const debounced = useDebounce(quickLane, 500);
 
@@ -131,6 +147,8 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 		image: user?.profile?.organisation?.logo_url,
 	};
 
+	const [start, end] = getValidStartAndEnd(fragmentStartTime, fragmentEndTime, fragmentDuration);
+
 	return user && content && content_label ? (
 		<>
 			{(avatar.name || avatar.image) && (
@@ -167,18 +185,52 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 				<FormGroup
 					label={tText('shared/components/quick-lane-modal/quick-lane-modal___inhoud')}
 				>
-					{content_label && (
+					{content_label === 'COLLECTIE' && (
 						<ContentLink
 							parent={{
 								content_label,
-								content_id: `${
-									content_label === 'ITEM'
-										? (content as Avo.Item.Item).external_id
-										: content.id
-								}`,
+								content_id: `${content.id}`,
 							}}
 							content={content}
 						/>
+					)}
+					{content_label === 'ITEM' && (
+						<>
+							<div className="u-spacer-bottom">
+								<ItemVideoDescription
+									itemMetaData={content as ItemSchema}
+									showTitle={false}
+									showDescription={false}
+									canPlay={isOpen}
+									cuePointsLabel={{ start, end }}
+									verticalLayout={isMobileWidth()}
+								/>
+							</div>
+							<TimeCropControls
+								startTime={fragmentStartTime}
+								endTime={fragmentEndTime}
+								minTime={0}
+								maxTime={fragmentDuration}
+								onChange={(newStartTime: number, newEndTime: number) => {
+									setFragmentStartTime(newStartTime);
+									setFragmentEndTime(newEndTime);
+
+									const [start_oc, end_oc] = getValidStartAndEnd(
+										newStartTime,
+										newEndTime,
+										fragmentDuration
+									);
+
+									setQuickLane({
+										...quickLane,
+										start_oc,
+										end_oc,
+									});
+
+									setSynced(false);
+								}}
+							/>
+						</>
 					)}
 				</FormGroup>
 			</Spacer>
