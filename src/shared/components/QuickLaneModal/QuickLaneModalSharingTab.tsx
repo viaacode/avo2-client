@@ -212,7 +212,6 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 									verticalLayout={isMobileWidth()}
 								/>
 							</div>
-							{JSON.stringify({ fragmentStartTime, fragmentEndTime })}
 							<TimeCropControls
 								startTime={fragmentStartTime}
 								endTime={fragmentEndTime}
