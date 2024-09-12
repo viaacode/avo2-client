@@ -91,12 +91,17 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 					}
 
 					if (items.length === 1) {
-						setExists(true);
-						setSynced(true);
-						setQuickLane({
+						const item = {
 							...quickLane,
 							...items[0],
-						});
+						};
+
+						setQuickLane(item);
+						setFragmentStartTime(item.start_oc || 0);
+						setFragmentEndTime(item.end_oc || 0);
+
+						setExists(true);
+						setSynced(true);
 					}
 				}
 			}
@@ -207,6 +212,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 									verticalLayout={isMobileWidth()}
 								/>
 							</div>
+							{JSON.stringify({ fragmentStartTime, fragmentEndTime })}
 							<TimeCropControls
 								startTime={fragmentStartTime}
 								endTime={fragmentEndTime}
@@ -228,7 +234,12 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 										end_oc,
 									});
 
-									setSynced(false);
+									if (
+										start_oc !== fragmentStartTime ||
+										end_oc !== fragmentEndTime
+									) {
+										setSynced(false);
+									}
 								}}
 							/>
 						</>
