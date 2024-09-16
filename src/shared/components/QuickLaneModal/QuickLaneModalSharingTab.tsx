@@ -80,6 +80,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 								content_label,
 								content_id: getContentUuid(content, content_label),
 								owner_profile_id: (user.profile as Avo.User.Profile).id,
+								end_oc: fragmentDuration,
 							},
 						]);
 
@@ -98,7 +99,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 
 						setQuickLane(item);
 						setFragmentStartTime(item.start_oc || 0);
-						setFragmentEndTime(item.end_oc || 0);
+						setFragmentEndTime(item.end_oc || fragmentDuration);
 
 						setExists(true);
 						setSynced(true);
@@ -146,6 +147,15 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 			}
 		})();
 	}, [debounced]);
+
+	// Ensure end_oc is never exactly 0
+	useEffect(() => {
+		if (quickLane.end_oc === 0 && fragmentDuration !== 0) {
+			setQuickLane({ ...quickLane, end_oc: fragmentDuration });
+			setFragmentEndTime(fragmentDuration);
+			setSynced(false);
+		}
+	}, [quickLane, fragmentDuration]);
 
 	const avatar = {
 		name: user?.profile?.organisation?.name,
@@ -218,14 +228,19 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 								minTime={0}
 								maxTime={fragmentDuration}
 								onChange={(newStartTime: number, newEndTime: number) => {
-									setFragmentStartTime(newStartTime);
-									setFragmentEndTime(newEndTime);
-
-									const [start_oc, end_oc] = getValidStartAndEnd(
+									const [validStart, validEnd] = getValidStartAndEnd(
 										newStartTime,
 										newEndTime,
 										fragmentDuration
 									);
+
+									const [start_oc, end_oc] = [
+										validStart || 0,
+										validEnd || fragmentDuration,
+									];
+
+									setFragmentStartTime(start_oc);
+									setFragmentEndTime(end_oc);
 
 									setQuickLane({
 										...quickLane,
