@@ -10,7 +10,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
-import React, { type FunctionComponent, useEffect, useMemo, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { type AssignmentLayout } from '../../../assignment/assignment.types';
 import { ItemVideoDescription } from '../../../item/components';
@@ -47,14 +47,29 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>(defaultQuickLaneState);
 	const [exists, setExists] = useState<boolean>(false);
 	const [synced, setSynced] = useState<boolean>(false);
-	const [fragmentStartTime, setFragmentStartTime] = useState<number>(
-		quickLane.start_oc || defaultQuickLaneState.start_oc || 0
-	);
-	const [fragmentEndTime, setFragmentEndTime] = useState<number>(
-		quickLane.end_oc || fragmentDuration || defaultQuickLaneState.end_oc || 0
-	);
+
+	const initialFragmentStart = useMemo(() => {
+		return quickLane.start_oc || 0;
+	}, [quickLane]);
+
+	const initialFragmentEnd = useMemo(() => {
+		return quickLane.end_oc || fragmentDuration;
+	}, [quickLane, fragmentDuration]);
+
+	const [fragmentStartTime, setFragmentStartTime] = useState<number>(initialFragmentStart);
+	const [fragmentEndTime, setFragmentEndTime] = useState<number>(initialFragmentEnd);
 
 	const debounced = useDebounce(quickLane, 500);
+
+	const resetState = useCallback(() => {
+		setQuickLane(defaultQuickLaneState);
+
+		setExists(false);
+		setSynced(false);
+
+		setFragmentStartTime(initialFragmentStart);
+		setFragmentEndTime(initialFragmentEnd);
+	}, [initialFragmentEnd, initialFragmentStart]);
 
 	// If the modal is open and we haven't checked if anything exists, fetch or create the record
 	useEffect(() => {
@@ -80,6 +95,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 								content_label,
 								content_id: getContentUuid(content, content_label),
 								owner_profile_id: (user.profile as Avo.User.Profile).id,
+								end_oc: fragmentDuration,
 							},
 						]);
 
@@ -98,7 +114,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 
 						setQuickLane(item);
 						setFragmentStartTime(item.start_oc || 0);
-						setFragmentEndTime(item.end_oc || 0);
+						setFragmentEndTime(item.end_oc || fragmentDuration);
 
 						setExists(true);
 						setSynced(true);
@@ -106,7 +122,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 				}
 			}
 		})();
-	}, [content, exists]);
+	}, [content, exists, isOpen]);
 
 	// When debounced changes occur, synchronise the changes with the database
 	useEffect(() => {
@@ -146,6 +162,21 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 			}
 		})();
 	}, [debounced]);
+
+	// Ensure end_oc is never exactly 0
+	useEffect(() => {
+		if (quickLane.end_oc === 0 && fragmentDuration !== 0) {
+			setQuickLane({ ...quickLane, end_oc: fragmentDuration });
+			setFragmentEndTime(fragmentDuration);
+			setSynced(false);
+		}
+	}, [quickLane, fragmentDuration]);
+
+	// Ensure a clean slate when opening other modals
+	useEffect(() => {
+		if (isOpen) return;
+		resetState();
+	}, [isOpen, resetState]);
 
 	const avatar = {
 		name: user?.profile?.organisation?.name,
@@ -218,14 +249,19 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 								minTime={0}
 								maxTime={fragmentDuration}
 								onChange={(newStartTime: number, newEndTime: number) => {
-									setFragmentStartTime(newStartTime);
-									setFragmentEndTime(newEndTime);
-
-									const [start_oc, end_oc] = getValidStartAndEnd(
+									const [validStart, validEnd] = getValidStartAndEnd(
 										newStartTime,
 										newEndTime,
 										fragmentDuration
 									);
+
+									const [start_oc, end_oc] = [
+										validStart || 0,
+										validEnd || fragmentDuration,
+									];
+
+									setFragmentStartTime(start_oc);
+									setFragmentEndTime(end_oc);
 
 									setQuickLane({
 										...quickLane,
