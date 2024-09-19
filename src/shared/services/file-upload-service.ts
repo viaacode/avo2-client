@@ -1,4 +1,4 @@
-import { AssetsService, fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 
 import { CustomError, getEnv } from '../helpers';
@@ -21,6 +21,7 @@ export class FileUploadService {
 		if (assetType === 'ZENDESK_ATTACHMENT') {
 			return await FileUploadService.uploadFileToZendesk(file);
 		}
+		const { AssetsService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
 		return await AssetsService.uploadFile(file, assetType, ownerId);
 	}
 

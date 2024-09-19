@@ -1,4 +1,7 @@
-import { type MediaGridBlockComponentState, type MediaGridBlockState } from '@meemoo/admin-core-ui';
+import {
+	type MediaGridBlockComponentState,
+	type MediaGridBlockState,
+} from '@meemoo/admin-core-ui/dist/admin.mjs';
 import {
 	Button,
 	type ButtonAction,

@@ -3,7 +3,7 @@ import {
 	ContentPageRenderer,
 	ContentPageService,
 	convertDbContentPagesToContentPageInfos,
-} from '@meemoo/admin-core-ui';
+} from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';

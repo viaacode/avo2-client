@@ -1,4 +1,4 @@
-import { BlockIntro } from '@meemoo/admin-core-ui';
+import { BlockIntro } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
 import React, { type FunctionComponent } from 'react';

@@ -1,4 +1,3 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, compact, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
@@ -266,6 +265,7 @@ export class AssignmentService {
 					inviteToken: inviteToken || undefined,
 				},
 			});
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			const assignment: Avo.Assignment.Assignment = await fetchWithLogoutJson(url, {
 				method: 'GET',
 			});
@@ -399,6 +399,7 @@ export class AssignmentService {
 		try {
 			const updatedAssignment = await this.transformAssignment(assignment, profileId);
 
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return await fetchWithLogoutJson(
 				`${getEnv('PROXY_URL')}/assignments/${updatedAssignment.id}`,
 				{
@@ -503,6 +504,7 @@ export class AssignmentService {
 				profileId
 			);
 
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return await fetchWithLogoutJson(`${getEnv('PROXY_URL')}/assignments`, {
 				method: 'POST',
 				body: JSON.stringify(assignmentToSave),
@@ -1494,6 +1496,7 @@ export class AssignmentService {
 		}
 
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/add-contributor`,
@@ -1535,6 +1538,7 @@ export class AssignmentService {
 		rights: ContributorInfoRight
 	): Promise<void> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(
@@ -1562,6 +1566,7 @@ export class AssignmentService {
 		profileId?: string
 	): Promise<void> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(
@@ -1587,6 +1592,7 @@ export class AssignmentService {
 		inviteToken: string
 	): Promise<Avo.Assignment.Contributor> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/accept-invite`,
@@ -1606,6 +1612,7 @@ export class AssignmentService {
 
 	static async declineSharedAssignment(assignmentId: string, inviteToken: string): Promise<void> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/${assignmentId}/share/reject-invite`,
@@ -1628,6 +1635,7 @@ export class AssignmentService {
 		contributorProfileId: string
 	): Promise<void> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			await fetchWithLogoutJson(
 				`${getEnv(
 					'PROXY_URL'
@@ -1643,6 +1651,7 @@ export class AssignmentService {
 
 	static async updateAssignmentEditor(assignmentId: string): Promise<void> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(
@@ -1660,6 +1669,7 @@ export class AssignmentService {
 
 	static async getAssignmentsEditStatuses(ids: string[]): Promise<Avo.Share.EditStatusResponse> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/assignments/share/edit-status`,
@@ -1678,6 +1688,7 @@ export class AssignmentService {
 		assignmentId: string
 	): Promise<Avo.Share.EditStatusResponse> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return await fetchWithLogoutJson(
 				stringifyUrl({
 					url: `${getEnv(

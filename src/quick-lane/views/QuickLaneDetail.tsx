@@ -1,6 +1,6 @@
 import './QuickLaneDetail.scss';
 
-import { BlockHeading, stripRichTextParagraph } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Container,
@@ -14,8 +14,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get } from 'lodash-es';
 import React, {
@@ -38,6 +37,7 @@ import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError, isMobileWidth, renderAvatar, toSeconds } from '../../shared/helpers';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
+import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';

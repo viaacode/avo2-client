@@ -1,5 +1,4 @@
-import { NavigationEdit } from '@meemoo/admin-core-ui';
-import React, { type FunctionComponent } from 'react';
+import React, { type FunctionComponent, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -9,6 +8,13 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { type MenuEditParams } from '../navigations.types';
 
 import './NavigationItemEdit.scss';
+import { Flex, Spinner } from '@viaa/avo2-components';
+
+const NavigationEdit = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.NavigationEdit,
+	}))
+);
 
 type NavigationItemEditProps = DefaultSecureRouteProps<MenuEditParams>;
 
@@ -41,10 +47,19 @@ const NavigationItemEdit: FunctionComponent<NavigationItemEditProps> = ({ match 
 					)}
 				/>
 			</Helmet>
-			<NavigationEdit
-				navigationBarId={navigationBarId as string}
-				navigationItemId={navigationItemId}
-			/>
+
+			<Suspense
+				fallback={
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				}
+			>
+				<NavigationEdit
+					navigationBarId={navigationBarId as string}
+					navigationItemId={navigationItemId}
+				/>
+			</Suspense>
 		</div>
 	);
 };

@@ -1,4 +1,4 @@
-import { ContentPageRenderer } from '@meemoo/admin-core-ui';
+import { ContentPageRenderer } from '@meemoo/admin-core-ui/dist/client.mjs';
 import React, { type FunctionComponent } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router';
