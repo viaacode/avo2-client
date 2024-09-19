@@ -1,3 +1,5 @@
+import './QuickLaneDetail.scss';
+
 import { BlockHeading, stripRichTextParagraph } from '@meemoo/admin-core-ui';
 import {
 	Button,
@@ -34,12 +36,11 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
-import { CustomError, isMobileWidth, renderAvatar } from '../../shared/helpers';
+import { CustomError, isMobileWidth, renderAvatar, toSeconds } from '../../shared/helpers';
+import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
-
-import './QuickLaneDetail.scss';
 
 type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
@@ -190,6 +191,12 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 		const contentLabel = quickLane.content_label;
 		const contentLayout = quickLane.view_mode;
 
+		const [start, end] = getValidStartAndEnd(
+			quickLane.start_oc,
+			quickLane.end_oc,
+			toSeconds((quickLane.content as Avo.Item.Item)?.duration || 0)
+		);
+
 		switch (contentLabel) {
 			case 'COLLECTIE':
 				return (
@@ -209,6 +216,8 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						itemMetaData={quickLane.content as Avo.Item.Item}
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
 						verticalLayout={isMobileWidth()}
+						cuePointsLabel={{ start, end }}
+						cuePointsVideo={{ start, end }}
 					/>
 				);
 			default:
