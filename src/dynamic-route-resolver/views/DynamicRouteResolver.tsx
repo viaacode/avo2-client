@@ -309,6 +309,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 							commonUser={
 								(loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
 							}
+							renderFakeTitle={
+								(routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'
+							}
 						/>
 					)}
 				</>
