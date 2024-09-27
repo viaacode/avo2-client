@@ -1,4 +1,4 @@
-import { BlockHeading, Color } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Column,
 	convertToHtml,
@@ -32,6 +32,7 @@ import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
+import { TEAL_BRIGHT } from '../../shared/constants';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
@@ -123,7 +124,7 @@ const ItemVideoDescription: FunctionComponent<
 			<BlockHeading
 				type="h3"
 				className={titleLink ? 'u-clickable' : ''}
-				color={titleLink ? Color.TealBright : undefined}
+				color={titleLink ? TEAL_BRIGHT : undefined}
 			>
 				{title}
 			</BlockHeading>

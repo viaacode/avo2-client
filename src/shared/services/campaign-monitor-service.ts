@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
 import { stringifyUrl } from 'query-string';

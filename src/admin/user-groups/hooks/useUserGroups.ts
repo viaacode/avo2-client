@@ -1,4 +1,3 @@
-import { preferredUserGroupOrder } from '@meemoo/admin-core-ui';
 import { sortBy } from 'lodash';
 import { useEffect, useState } from 'react';
 
@@ -16,8 +15,11 @@ export const useUserGroups = (includeSpecialGroups: boolean): UseUserGroupsTuple
 		setIsLoading(true);
 
 		UserGroupService.fetchAllUserGroups()
-			.then((groups) => {
+			.then(async (groups) => {
 				if (groups) {
+					const { preferredUserGroupOrder } = await import(
+						'@meemoo/admin-core-ui/dist/admin.mjs'
+					);
 					setUserGroups([
 						...(includeSpecialGroups ? GET_SPECIAL_USER_GROUPS() : []),
 						...sortBy(

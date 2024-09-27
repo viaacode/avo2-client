@@ -1,5 +1,5 @@
-import { NavigationOverview } from '@meemoo/admin-core-ui';
-import React, { type FC } from 'react';
+import { Flex, Spinner } from '@viaa/avo2-components';
+import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -8,6 +8,12 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarOverview.scss';
+
+const NavigationOverview = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.NavigationOverview,
+	}))
+);
 
 type NavigationBarOverviewProps = DefaultSecureRouteProps;
 
@@ -29,7 +35,15 @@ const NavigationBarOverview: FC<NavigationBarOverviewProps> = () => {
 					)}
 				/>
 			</Helmet>
-			<NavigationOverview />
+			<Suspense
+				fallback={
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				}
+			>
+				<NavigationOverview />
+			</Suspense>
 		</div>
 	);
 };

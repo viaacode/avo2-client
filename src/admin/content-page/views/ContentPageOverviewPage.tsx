@@ -1,7 +1,6 @@
-import { ContentPageOverview } from '@meemoo/admin-core-ui';
-import { Button } from '@viaa/avo2-components';
+import { Button, Flex, Spinner } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { type FC, type FunctionComponent, useCallback } from 'react';
+import React, { type FC, type FunctionComponent, lazy, Suspense, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
@@ -14,6 +13,12 @@ import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shar
 import { CONTENT_PAGE_PATH } from '../content-page.consts';
 
 import './ContentPage.scss';
+
+const ContentPageOverview = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.ContentPageOverview,
+	}))
+);
 
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
@@ -29,7 +34,17 @@ const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps & UserP
 	);
 
 	const renderPageContent = () => {
-		return <ContentPageOverview commonUser={commonUser} />;
+		return (
+			<Suspense
+				fallback={
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				}
+			>
+				<ContentPageOverview commonUser={commonUser} />
+			</Suspense>
+		);
 	};
 
 	return (

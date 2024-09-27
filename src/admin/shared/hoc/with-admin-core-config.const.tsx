@@ -1,10 +1,9 @@
 import {
 	type AdminConfig,
-	ContentBlockType,
-	ContentWidth,
 	type LinkInfo,
 	type ToastInfo,
-} from '@meemoo/admin-core-ui';
+} from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { ContentBlockType, ContentWidth } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
@@ -148,7 +147,6 @@ export function getAdminCoreConfig(): AdminConfig {
 				warning: { name: IconName.alertTriangle },
 				newspaper: { name: IconName.fileText },
 				noAudio: { name: IconName.bellOff },
-				noFilm: { name: IconName.videoOff },
 				noVideo: { name: IconName.videoOff },
 			},
 			list: GET_ADMIN_ICON_OPTIONS,

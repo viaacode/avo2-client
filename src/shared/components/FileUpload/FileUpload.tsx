@@ -1,4 +1,3 @@
-import { AssetsService } from '@meemoo/admin-core-ui';
 import {
 	Blankslate,
 	Button,
@@ -127,6 +126,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				const newUrls = [...urls];
 				for (let i = newUrls.length - 1; i >= 0; i -= 1) {
 					if (newUrls[i] === url) {
+						const { AssetsService } = await import(
+							'@meemoo/admin-core-ui/dist/admin.mjs'
+						);
 						await AssetsService.deleteFile(url);
 						newUrls.splice(i, 1);
 					}

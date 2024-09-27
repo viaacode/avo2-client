@@ -1,4 +1,3 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Flex,
@@ -15,8 +14,7 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, {
@@ -62,6 +60,7 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 interface AssignmentResponsesProps
 	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {

@@ -1,4 +1,3 @@
-import { ContentPageService } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import { every, isArray, some } from 'lodash-es';
 
@@ -114,6 +113,7 @@ async function getContentPageDetailRouteByPath(
 	infoOnly = false
 ): Promise<string | undefined> {
 	try {
+		const { ContentPageService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
 		const page = await ContentPageService.getContentPageByLanguageAndPath(
 			Locale.Nl as any,
 			path,

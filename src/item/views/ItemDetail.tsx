@@ -1,4 +1,4 @@
-import { BlockHeading, stripRichTextParagraph } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	ButtonToolbar,
@@ -24,8 +24,7 @@ import {
 	Table,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil } from 'lodash-es';
 import React, {
@@ -111,6 +110,7 @@ import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 import './ItemDetail.scss';
+import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)

@@ -1,7 +1,7 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import { get, isBoolean, isNil, isString } from 'lodash-es';
 import React, { type ReactElement, type ReactNode } from 'react';
 
+import Html from '../../../shared/components/Html/Html';
 import { formatDate } from '../../../shared/helpers';
 import { tText } from '../../../shared/helpers/translate';
 
@@ -10,9 +10,9 @@ export function renderDetailRow(value: ReactNode, label: string): ReactElement {
 		<tr key={`detail-row_${label}`}>
 			<th>{label}</th>
 			{isString(value) && (
-				<td
-					dangerouslySetInnerHTML={{ __html: sanitizeHtml(value, SanitizePreset.link) }}
-				/>
+				<td>
+					<Html content={value} />
+				</td>
 			)}
 			{!isString(value) && <td>{value}</td>}
 		</tr>
