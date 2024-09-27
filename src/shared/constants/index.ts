@@ -31,3 +31,5 @@ export const EDIT_STATUS_REFETCH_TIME = 15_000;
 export const IDLE_TIME_UNTIL_WARNING = 60_000;
 // Max idle time of 14 minutes after warning modal pops up (15 minutes total)
 export const MAX_EDIT_IDLE_TIME = 840_000;
+
+export const TEAL_BRIGHT = '#25A4CF';

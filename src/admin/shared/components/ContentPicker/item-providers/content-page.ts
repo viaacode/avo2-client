@@ -1,8 +1,4 @@
-import {
-	type ContentPageInfo,
-	ContentPageService,
-	type DbContentPage,
-} from '@meemoo/admin-core-ui';
+import { type ContentPageInfo, type DbContentPage } from '@meemoo/admin-core-ui/dist/admin.mjs';
 
 import { CustomError } from '../../../../../shared/helpers';
 import { type PickerItem } from '../../../types';
@@ -14,6 +10,7 @@ export const retrieveContentPages = async (
 	limit = 5
 ): Promise<PickerItem[]> => {
 	try {
+		const { ContentPageService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
 		const contentItems: Pick<DbContentPage, 'path' | 'title'>[] | null = title
 			? await ContentPageService.getPublicContentItemsByTitle(`%${title}%`, limit)
 			: await ContentPageService.getPublicContentItemsByTitle(undefined, limit);
@@ -32,6 +29,7 @@ export const retrieveProjectContentPages = async (
 	title: string | null,
 	limit = 5
 ): Promise<PickerItem[]> => {
+	const { ContentPageService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
 	const contentItems: Partial<ContentPageInfo>[] | null = title
 		? await ContentPageService.getPublicProjectContentItemsByTitle(`%${title}%`, limit)
 		: await ContentPageService.getPublicProjectContentItemsByTitle(undefined, limit);

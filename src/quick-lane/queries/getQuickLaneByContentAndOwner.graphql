@@ -17,6 +17,8 @@ query getQuickLaneByContentAndOwner(
 		view_mode
 		created_at
 		updated_at
+		start_oc
+		end_oc
 		owner {
 			id
 			avatar

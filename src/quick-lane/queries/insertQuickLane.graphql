@@ -7,6 +7,8 @@ mutation insertQuickLanes($objects: [app_quick_lanes_insert_input!]!) {
 			content_label
 			title
 			view_mode
+			start_oc
+			end_oc
 			created_at
 			updated_at
 			owner {

@@ -1,4 +1,4 @@
-import { SanitizePreset } from '@meemoo/admin-core-ui';
+import { SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { setPlayingVideoSeekTime } from '@meemoo/react-components';
 import { convertToHtml } from '@viaa/avo2-components';
 import React, { type FC, useCallback, useEffect, useRef } from 'react';

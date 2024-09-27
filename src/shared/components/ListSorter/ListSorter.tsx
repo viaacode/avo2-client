@@ -1,6 +1,6 @@
 import './ListSorter.scss';
 
-import { type ColorOption } from '@meemoo/admin-core-ui';
+import { type ColorOption } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, Icon, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';

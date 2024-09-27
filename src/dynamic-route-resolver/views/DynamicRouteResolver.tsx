@@ -4,7 +4,7 @@ import {
 	ContentPageService,
 	convertDbContentPageToContentPageInfo,
 	type DbContentPage,
-} from '@meemoo/admin-core-ui';
+} from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
@@ -308,6 +308,9 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 							onLoaded={() => scrollTo({ top: 0 })}
 							commonUser={
 								(loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
+							}
+							renderFakeTitle={
+								(routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'
 							}
 						/>
 					)}

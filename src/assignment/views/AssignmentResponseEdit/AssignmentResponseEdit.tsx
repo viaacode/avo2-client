@@ -1,5 +1,4 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Alert,
 	Box,
@@ -67,6 +66,7 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment;

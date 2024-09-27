@@ -1,4 +1,3 @@
-import { fetchWithLogout, fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
 import queryString, { stringifyUrl } from 'query-string';
@@ -376,6 +375,8 @@ export class ItemsService {
 		mediamosaId: string
 	): Promise<string | null> {
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+
 			const response = await fetchWithLogoutJson<{ externalId: string } | null>(
 				`${getEnv(
 					'PROXY_URL'
@@ -394,6 +395,7 @@ export class ItemsService {
 
 	public static async fetchItemUuidByExternalId(externalId: string): Promise<string | null> {
 		try {
+			const { fetchWithLogout } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
 			const response = await fetchWithLogout(
 				stringifyUrl({
 					url: `${getEnv('PROXY_URL')}/admin/items/ids`,
@@ -572,6 +574,7 @@ export class ItemsService {
 	public static async triggerMamSync(): Promise<'SCHEDULED' | string> {
 		let url: string | undefined = undefined;
 		try {
+			const { fetchWithLogout } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
 			url = `${getEnv('PROXY_URL')}/mam-syncrator/trigger-delta-sync`;
 			const response = await fetchWithLogout(url, {
 				method: 'POST',
@@ -621,6 +624,7 @@ export class ItemsService {
 	): Promise<ItemUsedByResponse> {
 		let url: string | null = null;
 		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			url = stringifyUrl({
 				url: `${getEnv('PROXY_URL')}/items/${itemUuid}/used-by`,
 				query: {
@@ -628,8 +632,7 @@ export class ItemsService {
 					sortDirection,
 				},
 			});
-			const response = await fetchWithLogoutJson<ItemUsedByResponse>(url);
-			return response;
+			return await fetchWithLogoutJson<ItemUsedByResponse>(url);
 		} catch (err) {
 			throw new CustomError('Failed to get item used by from the database', err, {
 				itemUuid,

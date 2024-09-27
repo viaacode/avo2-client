@@ -1,7 +1,7 @@
 import { type Avo } from '@viaa/avo2-types';
 import { type TFunction } from 'i18next';
 import { type ReactNode } from 'react';
-import { array, object, type SchemaOf, string } from 'yup';
+import { array, object, type Schema, string } from 'yup';
 
 import { ContentTypeString } from '../collection/collection.types';
 import { SearchFilter, SearchOrderAndDirectionProperty } from '../search/search.const';
@@ -217,7 +217,7 @@ export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 };
 
 /// Zoek & bouw
-export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<Avo.Assignment.Assignment> => {
+export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): Schema<Avo.Assignment.Assignment> => {
 	return object({
 		id: string().optional(),
 		title: string()
@@ -254,7 +254,7 @@ export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): SchemaOf<Avo.Assignmen
 
 export const PUPIL_COLLECTION_FORM_SCHEMA = (
 	tText: TFunction
-): SchemaOf<Partial<AssignmentResponseFormState>> => {
+): Schema<Partial<AssignmentResponseFormState>> => {
 	return object({
 		id: string().optional(),
 		collection_title: string().required(tText('assignment/assignment___titel-is-verplicht')),

@@ -15,6 +15,8 @@ export interface QuickLaneUrl {
 	owner_profile_id?: string;
 	created_at?: string;
 	updated_at?: string;
+	start_oc?: number | null;
+	end_oc?: number | null;
 }
 
 export interface QuickLaneUrlObject extends QuickLaneUrl {

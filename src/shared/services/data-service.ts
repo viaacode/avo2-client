@@ -1,4 +1,4 @@
-import { goToLoginBecauseOfUnauthorizedError } from '@meemoo/admin-core-ui';
+import { goToLoginBecauseOfUnauthorizedError } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 import { getEnv } from '../helpers';
 

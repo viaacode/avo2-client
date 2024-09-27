@@ -1,5 +1,4 @@
-import { NavigationDetail } from '@meemoo/admin-core-ui';
-import React, { type FunctionComponent } from 'react';
+import React, { type FunctionComponent, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
@@ -8,6 +7,13 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarDetail.scss';
+import { Flex, Spinner } from '@viaa/avo2-components';
+
+const NavigationDetail = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.NavigationDetail,
+	}))
+);
 
 type NavigationBarDetailProps = DefaultSecureRouteProps<{ navigationBarId: string }>;
 
@@ -32,7 +38,15 @@ const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ matc
 					)}
 				/>
 			</Helmet>
-			<NavigationDetail navigationBarId={navigationBarId} />
+			<Suspense
+				fallback={
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				}
+			>
+				<NavigationDetail navigationBarId={navigationBarId} />
+			</Suspense>
 		</div>
 	);
 };

@@ -1,4 +1,3 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Form,
@@ -164,12 +163,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 						<Spacer margin="top-small">
 							{
 								(step.contentState
-									? stripHtml(
-											sanitizeHtml(
-												step.contentState.toHTML(),
-												SanitizePreset.link
-											)
-									  )
+									? stripHtml(step.contentState.toHTML())
 									: step.content || ''
 								).length
 							}{' '}
