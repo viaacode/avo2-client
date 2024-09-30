@@ -162,6 +162,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 			<ModalBody>
 				<ItemVideoDescription
 					itemMetaData={itemMetaData}
+					showMetadata={false}
 					showTitle
 					showDescription={false}
 					canPlay={isOpen}

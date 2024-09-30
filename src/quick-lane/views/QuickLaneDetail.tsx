@@ -205,6 +205,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 							(quickLane.content as Avo.Collection.Collection).collection_fragments
 						}
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
+						showMetadata={true}
 						linkToItems={false}
 						collection={quickLane.content as Avo.Collection.Collection}
 						{...rest}
@@ -214,6 +215,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				return (
 					<ItemVideoDescription
 						itemMetaData={quickLane.content as Avo.Item.Item}
+						showMetadata={true}
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}

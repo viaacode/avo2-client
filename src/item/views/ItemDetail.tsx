@@ -932,6 +932,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					<Container mode="horizontal">
 						<ItemVideoDescription
 							itemMetaData={item}
+							showMetadata={false}
 							canPlay={
 								!isAddToCollectionModalOpen &&
 								!isShareThroughEmailModalOpen &&

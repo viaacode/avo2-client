@@ -17,8 +17,7 @@ import {
 	Spinner,
 	ToggleButton,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, isEmpty, isNil } from 'lodash-es';
 import React, {
@@ -1159,6 +1158,7 @@ const CollectionDetail: FunctionComponent<
 							<FragmentList
 								collectionFragments={collection_fragments}
 								showDescription
+								showMetadata={false}
 								linkToItems={permissions?.canViewAnyPublishedItems || false}
 								canPlay={
 									!isAddToBundleModalOpen &&

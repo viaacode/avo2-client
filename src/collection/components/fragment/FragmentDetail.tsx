@@ -14,6 +14,7 @@ import './FragmentDetail.scss';
 interface FragmentDetailProps {
 	collectionFragment: Avo.Collection.Fragment;
 	showDescription: boolean;
+	showMetadata: boolean;
 	linkToItems: boolean;
 	canPlay?: boolean;
 }
@@ -28,6 +29,7 @@ interface FragmentDetailProps {
 const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	collectionFragment,
 	showDescription,
+	showMetadata,
 	linkToItems,
 }) => {
 	if (get(collectionFragment, 'item_meta.type.label') === 'audio') {
@@ -52,6 +54,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 	return collectionFragment.item_meta ? (
 		<ItemVideoDescription
 			showDescription={showDescription}
+			showMetadata={showMetadata}
 			showTitle
 			itemMetaData={{
 				...(collectionFragment.item_meta as Avo.Item.Item),

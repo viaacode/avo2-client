@@ -330,6 +330,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 							<Form>
 								<ItemVideoDescription
 									itemMetaData={itemMetaData}
+									showMetadata={false}
 									showTitle
 									showDescription
 									canPlay={isOpen}

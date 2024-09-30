@@ -235,6 +235,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 							<div className="u-spacer-bottom">
 								<ItemVideoDescription
 									itemMetaData={content as ItemSchema}
+									showMetadata={false}
 									showTitle={false}
 									showDescription={false}
 									canPlay={isOpen}

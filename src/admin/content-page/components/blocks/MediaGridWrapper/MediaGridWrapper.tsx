@@ -485,6 +485,7 @@ const MediaGridWrapper: FunctionComponent<
 								itemMetaData={activeItem as unknown as Avo.Item.Item}
 								verticalLayout
 								showTitle
+								showMetadata={false}
 								titleLink={
 									commonUser
 										? buildLink(APP_PATH.ITEM_DETAIL.route, {
