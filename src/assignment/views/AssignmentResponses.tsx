@@ -4,7 +4,6 @@ import {
 	Form,
 	FormGroup,
 	IconName,
-	Pagination,
 	Spacer,
 	Table,
 	TextInput,
@@ -30,6 +29,7 @@ import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
@@ -61,6 +61,7 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { PaginationBar } from '@meemoo/react-components';
 
 interface AssignmentResponsesProps
 	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {
@@ -563,9 +564,11 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					useCards={isMobileWidth()}
 				/>
 				<Spacer margin="top-large">
-					<Pagination
-						pageCount={Math.ceil(assignmentResponsesCount / ITEMS_PER_PAGE)}
-						currentPage={query.page || 0}
+					<PaginationBar
+						{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+						startItem={(query.page || 0) * ITEMS_PER_PAGE}
+						itemsPerPage={ITEMS_PER_PAGE}
+						totalItems={assignmentResponsesCount}
 						onPageChange={(newPage: number) => handleQueryChanged(newPage, 'page')}
 					/>
 				</Spacer>

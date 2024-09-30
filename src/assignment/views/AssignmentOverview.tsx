@@ -1,5 +1,6 @@
 import './AssignmentOverview.scss';
 
+import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	ButtonGroup,
@@ -10,7 +11,6 @@ import {
 	Icon,
 	IconName,
 	MoreOptionsDropdown,
-	Pagination,
 	Select,
 	Spacer,
 	Table,
@@ -22,8 +22,7 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
@@ -47,6 +46,7 @@ import {
 } from 'use-query-params';
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
@@ -1017,9 +1017,11 @@ const AssignmentOverview: FunctionComponent<
 				{renderHeader()}
 				{renderTable()}
 				<Spacer margin="top-large">
-					<Pagination
-						pageCount={Math.ceil(assignmentCount / ITEMS_PER_PAGE)}
-						currentPage={query.page || 0}
+					<PaginationBar
+						{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+						startItem={(query.page || 0) * ITEMS_PER_PAGE}
+						itemsPerPage={ITEMS_PER_PAGE}
+						totalItems={assignmentCount}
 						onPageChange={(newPage: number) => handleQueryChanged(newPage, 'page')}
 					/>
 				</Spacer>

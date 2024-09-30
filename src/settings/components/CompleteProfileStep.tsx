@@ -129,7 +129,11 @@ const CompleteProfileStep: FunctionComponent<
 						preferenceCenterKey: undefined,
 					})
 				);
-				ToastService.danger(tHtml('Het inschrijven op de nieuwsbrief is mislukt.'));
+				ToastService.danger(
+					tHtml(
+						'settings/components/complete-profile-step___het-inschrijven-op-de-nieuwsbrief-is-mislukt'
+					)
+				);
 			});
 		}
 	};

@@ -1,39 +1,40 @@
+@import "../../../styles/settings/colors";
+
+.c-pagination-bar {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+
+	.c-pagination-bar__back-to-top {
+		background-color: $white;
+		border: 0;
+
+		&:hover {
+			background-color: $color-gray-100;
+		}
+	}
+}
+
 .c-pagination {
 	padding-top: 10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	gap: 0.8rem;
 
-	&__btn {
-		display: flex;
-		justify-content: center;
-		min-width: 3.2rem;
-		min-height: 3.2rem;
-		margin: 5px 5px;
-		cursor: pointer;
+	.c-button {
+		background-color: $white;
+		border: 0;
+		width: 3.6rem;
+		height: 3.6rem;
 
-		&--disabled {
-			cursor: default;
+		&:hover {
+			background-color: $color-gray-100;
 		}
-	}
 
-	&__pages {
-		display: flex;
-		align-items: baseline;
-
-		.c-pagination__btn {
-			align-items: center;
-			width: 3.2rem;
-			height: 3.2rem;
+		&--active {
+			background-color: $color-gray-700;
 		}
-	}
-
-	&__ellipsis {
-		color: $color-night-blue;
-		margin: 0 5px;
-	}
-
-	&__icon {
-		margin-top: 0.2rem;
 	}
 }

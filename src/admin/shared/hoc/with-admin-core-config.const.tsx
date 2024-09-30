@@ -122,9 +122,11 @@ export function getAdminCoreConfig(): AdminConfig {
 			componentProps: {
 				add: { name: IconName.plus },
 				angleDown: { name: IconName.caretDown },
-				angleLeft: { name: IconName.caretLeft },
-				angleRight: { name: IconName.caretRight },
+				angleLeft: { name: IconName.chevronsLeft },
+				angleRight: { name: IconName.chevronRight },
 				angleUp: { name: IconName.caretUp },
+				anglesLeft: { name: IconName.chevronsLeft },
+				anglesRight: { name: IconName.chevronsRight },
 				arrowDown: { name: IconName.arrowDown },
 				arrowRight: { name: IconName.arrowRight },
 				arrowUp: { name: IconName.arrowUp },

@@ -1,3 +1,4 @@
+import { PaginationBar } from '@meemoo/react-components';
 import { QueryClient } from '@tanstack/react-query';
 import {
 	Button,
@@ -7,7 +8,6 @@ import {
 	MetaData,
 	MetaDataItem,
 	MoreOptionsDropdown,
-	Pagination,
 	Spacer,
 	Table,
 	type TableColumn,
@@ -29,6 +29,7 @@ import { Link } from 'react-router-dom';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -724,9 +725,11 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	const renderPagination = () => (
-		<Pagination
-			pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
-			currentPage={page}
+		<PaginationBar
+			{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+			startItem={page * ITEMS_PER_PAGE}
+			itemsPerPage={ITEMS_PER_PAGE}
+			totalItems={numberOfItems}
 			onPageChange={setPage}
 		/>
 	);

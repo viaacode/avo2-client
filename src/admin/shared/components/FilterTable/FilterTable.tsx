@@ -4,8 +4,8 @@ import {
 	Flex,
 	Form,
 	FormGroup,
+	Icon,
 	IconName,
-	Pagination,
 	Select,
 	type SelectOption,
 	Spacer,
@@ -50,6 +50,7 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
 
 import './FilterTable.scss';
+import { PaginationBar } from '@meemoo/react-components';
 
 export interface FilterableTableState {
 	query?: string;
@@ -448,12 +449,48 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								onSelectAll={onSelectAll}
 							/>
 							<Spacer margin="top-large">
-								<Pagination
-									pageCount={Math.ceil(dataCount / itemsPerPage)}
-									currentPage={tableState.page || 0}
-									onPageChange={(newPage) =>
+								<PaginationBar
+									startItem={(tableState.page || 0) * itemsPerPage}
+									itemsPerPage={itemsPerPage}
+									totalItems={dataCount}
+									onPageChange={(newPage: number) =>
 										handleTableStateChanged(newPage, 'page')
 									}
+									previousLabel={tText(
+										'shared/components/filter-table/filter-table___vorige'
+									)}
+									previousIcon={<Icon name={IconName.chevronLeft} />}
+									nextLabel={tText(
+										'shared/components/filter-table/filter-table___volgende'
+									)}
+									nextIcon={<Icon name={IconName.chevronRight} />}
+									firstLabel={tText(
+										'admin/shared/components/filter-table/filter-table___eerste'
+									)}
+									firstIcon={<Icon name={IconName.chevronsLeft} />}
+									lastLabel={tText(
+										'admin/shared/components/filter-table/filter-table___laatste'
+									)}
+									lastIcon={<Icon name={IconName.chevronsRight} />}
+									backToTopLabel={tText(
+										'shared/components/filter-table/filter-table___terug-naar-boven'
+									)}
+									backToTopIcon={<Icon name={IconName.chevronsUp} />}
+									labelBetweenPageStartAndEnd={tText(
+										'modules/shared/components/filter-table/filter-table___label-between-start-and-end-page-in-pagination-bar'
+									)}
+									labelBetweenPageEndAndTotal={tText(
+										'modules/shared/components/filter-table/filter-table___label-between-end-page-and-total-in-pagination-bar'
+									)}
+									showButtonLabels={false}
+									showFirstAndLastButtons={true}
+									showBackToTop={true}
+									onScrollToTop={() => {
+										const filterTable =
+											document.querySelector('.c-filter-table');
+										const scrollable = filterTable?.closest('.c-scrollable');
+										scrollable?.scrollTo(0, 0);
+									}}
 								/>
 							</Spacer>
 						</div>
