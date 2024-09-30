@@ -1,0 +1,13 @@
+@import "../../../styles/settings/variables";
+
+/**
+ * This class makes the anchor elements in the content page move up by 64px
+ * So when you click an anchor, the title of the section you jump to isn't hidden by the fixed navigation header of the site
+ * https://meemoo.atlassian.net/browse/AVO-3351
+ */
+.c-anchor-block__anchor {
+	visibility: hidden;
+	position: relative;
+	display: block;
+	top: -$main-header-height;
+}
