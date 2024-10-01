@@ -1,6 +1,6 @@
+import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
 import React, { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -17,6 +17,7 @@ import {
 } from '../../../shared/components';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -38,6 +39,8 @@ import { GET_ITEM_OVERVIEW_TABLE_COLS, ITEMS_PER_PAGE } from '../items.const';
 import { ItemsService } from '../items.service';
 import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.types';
 
+import { ItemBulkAction } from './ItemsOverview.types';
+
 type ItemsOverviewProps = DefaultSecureRouteProps;
 
 const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
@@ -50,6 +53,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 	const [seriesOptions, setSeriesOptions] = useState<CheckboxOption[] | null>(null);
 	const [companies] = useCompanies(true);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
 
 	const companyOptions = useMemo(
 		() =>
@@ -69,6 +73,13 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		() => GET_ITEM_OVERVIEW_TABLE_COLS(seriesOptions || [], companyOptions || []),
 		[companyOptions, seriesOptions]
 	);
+
+	const getColumnDataType = (): TableColumnDataType => {
+		const column = tableColumns.find(
+			(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
+		);
+		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
+	};
 
 	// methods
 	const fetchItems = useCallback(async () => {
@@ -148,16 +159,12 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 		};
 
 		try {
-			const column = tableColumns.find(
-				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
-			);
-			const columnDataType = (column?.dataType ||
-				TableColumnDataType.string) as TableColumnDataType;
 			const [itemsTemp, collectionsCountTemp] = await ItemsService.fetchItemsWithFilters(
-				tableState.page || 0,
+				(tableState.page || 0) * ITEMS_PER_PAGE,
+				ITEMS_PER_PAGE,
 				(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
 				tableState.sort_order || 'desc',
-				columnDataType,
+				getColumnDataType(),
 				generateWhereObject(getFilters(tableState))
 			);
 			setItems(itemsTemp);
@@ -208,6 +215,12 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			});
 		}
 	}, [setLoadingInfo, items]);
+
+	const handleBulkActionClicked = (action: ItemBulkAction) => {
+		if (action === ItemBulkAction.EXPORT_ALL) {
+			setIsExportAllToCsvModalOpen(true);
+		}
+	};
 
 	const getItemDetailLink = (externalId: string | undefined) => {
 		return buildLink(APP_PATH.ITEM_DETAIL.route, { id: externalId });
@@ -343,6 +356,55 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 					renderNoResults={renderNoResults}
 					rowKey="uid"
 					isLoading={isLoading}
+					bulkActions={[
+						{
+							label: tText('admin/items/views/items-overview___exporteer-alles'),
+							value: ItemBulkAction.EXPORT_ALL,
+						},
+					]}
+					onSelectBulkAction={(action) =>
+						handleBulkActionClicked(action as ItemBulkAction)
+					}
+				/>
+				<ExportAllToCsvModal
+					title={tText(
+						'admin/items/views/items-overview___exporteren-van-alle-media-items-naar-csv'
+					)}
+					isOpen={isExportAllToCsvModalOpen}
+					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					fetchingItemsLabel={tText(
+						'admin/items/views/items-overview___bezig-met-ophalen-van-media-items'
+					)}
+					generatingCsvLabel={tText(
+						'admin/items/views/items-overview___bezig-met-genereren-van-de-csv'
+					)}
+					fetchTotalItems={async () => {
+						const response = await ItemsService.fetchItemsWithFilters(
+							0,
+							0,
+							(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							{}
+						);
+						return response[1];
+					}}
+					fetchMoreItems={async (offset: number, limit: number) => {
+						const response = await ItemsService.fetchItemsWithFilters(
+							offset,
+							limit,
+							(tableState.sort_column || 'created_at') as ItemsOverviewTableCols,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							{}
+						);
+						return response[0];
+					}}
+					renderValue={(value: any, columnId: string) =>
+						renderTableCell(value as any, columnId as ItemsOverviewTableCols)
+					}
+					columns={tableColumnListToCsvColumnList(tableColumns)}
+					exportFileName={tText('admin/items/views/items-overview___media-items-csv')}
 				/>
 			</>
 		);

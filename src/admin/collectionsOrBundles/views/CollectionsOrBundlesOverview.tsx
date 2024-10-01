@@ -1,6 +1,7 @@
+import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName, type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact, partition } from 'lodash-es';
+import { compact, noop, partition } from 'lodash-es';
 import React, {
 	type FunctionComponent,
 	type ReactNode,
@@ -28,6 +29,7 @@ import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/c
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
@@ -56,7 +58,7 @@ import {
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
-	type CollectionsBulkAction,
+	CollectionBulkAction,
 	type CollectionsOrBundlesOverviewTableCols,
 	type CollectionsOrBundlesTableState,
 } from '../collections-or-bundles.types';
@@ -76,6 +78,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [tableState, setTableState] = useState<Partial<CollectionsOrBundlesTableState>>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
 	const { data: editStatuses } = useGetCollectionsEditStatuses(
 		collections?.map((coll) => coll.id) || [],
 		{
@@ -99,9 +102,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<Avo.Share.EditStatus[]>(
 		[]
 	);
-	const [selectedBulkAction, setSelectedBulkAction] = useState<CollectionsBulkAction | null>(
-		null
-	);
+	const [selectedBulkAction, setSelectedBulkAction] = useState<CollectionBulkAction | null>(null);
 
 	// computed
 
@@ -206,22 +207,25 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		[isCollection, user]
 	);
 
+	const getColumnDataType = () => {
+		const column = tableColumns.find(
+			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
+		);
+		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
+	};
+
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
 
 		try {
-			const column = tableColumns.find(
-				(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
-			);
-			const columnDataType = (column?.dataType ||
-				TableColumnDataType.string) as TableColumnDataType;
 			const [collectionsTemp, collectionsCountTemp] =
 				await CollectionsOrBundlesService.getCollections(
-					tableState.page || 0,
+					(tableState.page || 0) * ITEMS_PER_PAGE,
+					ITEMS_PER_PAGE,
 					(tableState.sort_column ||
 						'created_at') as CollectionsOrBundlesOverviewTableCols,
 					tableState.sort_order || 'desc',
-					columnDataType,
+					getColumnDataType(),
 					generateWhereObject(getFilters(tableState))
 				);
 
@@ -248,7 +252,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
-		fetchCollectionsOrBundles();
+		fetchCollectionsOrBundles().then(noop);
 	}, [fetchCollectionsOrBundles]);
 
 	useEffect(() => {
@@ -305,22 +309,23 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		setIsLoading(false);
 	};
 
-	const handleBulkAction = async (action: CollectionsBulkAction): Promise<void> => {
-		if (!selectedCollectionIds || !selectedCollectionIds.length) {
-			return;
+	const handleBulkAction = async (action: CollectionBulkAction): Promise<void> => {
+		let selectedCollectionsThatAreBeingEdited: Avo.Share.EditStatus[] = [];
+		let selectedCollectionIdsThatAreNotBeingEdited = selectedCollectionIds;
+		if (isCollection) {
+			const selectedCollectionEditStatuses =
+				await CollectionService.getCollectionsEditStatuses(selectedCollectionIds);
+			const partitionedCollectionIds = partition(
+				Object.entries(selectedCollectionEditStatuses),
+				(entry) => !!entry[1]
+			);
+			selectedCollectionsThatAreBeingEdited = partitionedCollectionIds[0].map(
+				(entry) => entry[1]
+			);
+			selectedCollectionIdsThatAreNotBeingEdited = partitionedCollectionIds[1].map(
+				(entry) => entry[0]
+			);
 		}
-
-		const selectedCollectionEditStatuses =
-			await CollectionService.getCollectionsEditStatuses(selectedCollectionIds);
-		const partitionedCollectionIds = partition(
-			Object.entries(selectedCollectionEditStatuses),
-			(entry) => !!entry[1]
-		);
-		const selectedCollectionsThatAreBeingEdited: Avo.Share.EditStatus[] =
-			partitionedCollectionIds[0].map((entry) => entry[1]);
-		const selectedCollectionIdsThatAreNotBeingEdited = partitionedCollectionIds[1].map(
-			(entry) => entry[0]
-		);
 
 		if (selectedCollectionsThatAreBeingEdited.length > 0) {
 			// open warning modal first
@@ -332,25 +337,37 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			setCollectionsBeingEdited([]);
 			setSelectedBulkAction(null);
 
+			const hasSelectedRows = selectedCollectionIds.length > 0;
+
 			switch (action) {
-				case 'publish':
+				case CollectionBulkAction.PUBLISH:
+					if (!hasSelectedRows) return;
 					await bulkChangePublishStateForSelectedCollections(true);
 					return;
 
-				case 'depublish':
+				case CollectionBulkAction.DEPUBLISH:
+					if (!hasSelectedRows) return;
 					await bulkChangePublishStateForSelectedCollections(false);
 					return;
 
-				case 'delete':
+				case CollectionBulkAction.DELETE:
+					if (!hasSelectedRows) return;
 					await bulkDeleteSelectedCollections();
 					return;
 
-				case 'change_author':
+				case CollectionBulkAction.CHANGE_AUTHOR:
+					if (!hasSelectedRows) return;
 					setChangeAuthorModalOpen(true);
 					return;
 
-				case 'change_labels':
+				case CollectionBulkAction.CHANGE_LABELS:
+					if (!hasSelectedRows) return;
 					setAddLabelModalOpen(true);
+					return;
+
+				case CollectionBulkAction.EXPORT_ALL:
+					// No selection of rows needed since we export all rows
+					setIsExportAllToCsvModalOpen(true);
 					return;
 			}
 		}
@@ -670,7 +687,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey="id"
-					bulkActions={GET_COLLECTION_BULK_ACTIONS()}
+					bulkActions={GET_COLLECTION_BULK_ACTIONS(selectedCollectionIds.length > 0)}
 					onSelectBulkAction={handleBulkAction as any}
 					selectedItemIds={selectedCollectionIds}
 					onSelectionChanged={setSelectedCollectionIds as (ids: ReactNode[]) => void}
@@ -686,7 +703,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					confirmCallback={async () => {
 						setCollectionsBeingEdited([]);
 						if (selectedCollectionIds.length > 0) {
-							await handleBulkAction(selectedBulkAction as CollectionsBulkAction);
+							await handleBulkAction(selectedBulkAction as CollectionBulkAction);
 						} else {
 							ToastService.info(
 								tHtml(
@@ -742,6 +759,65 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 							addOrRemove,
 							labels.map((labelObj) => labelObj.value.toString())
 						)
+					}
+				/>
+				<ExportAllToCsvModal
+					title={
+						isCollection
+							? tText(
+									'admin/collections-or-bundles/views/collections-or-bundles-overview___exporteren-van-alle-collecties-naar-csv'
+							  )
+							: tText(
+									'admin/collections-or-bundles/views/collections-or-bundles-overview___exporteren-van-alle-bundels-naar-csv'
+							  )
+					}
+					isOpen={isExportAllToCsvModalOpen}
+					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					fetchingItemsLabel={tText(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___bezig-met-ophalen-van-media-items'
+					)}
+					generatingCsvLabel={tText(
+						'admin/collections-or-bundles/views/collections-or-bundles-overview___bezig-met-genereren-van-de-csv'
+					)}
+					fetchTotalItems={async () => {
+						const response = await CollectionsOrBundlesService.getCollections(
+							0,
+							0,
+							(tableState.sort_column ||
+								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							generateWhereObject(getFilters(tableState))
+						);
+						return response[1];
+					}}
+					fetchMoreItems={async (offset: number, limit: number) => {
+						const response = await CollectionsOrBundlesService.getCollections(
+							offset,
+							limit,
+							(tableState.sort_column ||
+								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							generateWhereObject(getFilters(tableState))
+						);
+						return response[0];
+					}}
+					renderValue={(value: any, columnId: string) =>
+						renderTableCell(
+							value as any,
+							columnId as CollectionsOrBundlesOverviewTableCols
+						)
+					}
+					columns={tableColumnListToCsvColumnList(tableColumns)}
+					exportFileName={
+						isCollection
+							? tText(
+									'admin/collections-or-bundles/views/collections-or-bundles-overview___collecties-csv'
+							  )
+							: tText(
+									'admin/collections-or-bundles/views/collections-or-bundles-overview___bundels-csv'
+							  )
 					}
 				/>
 			</>

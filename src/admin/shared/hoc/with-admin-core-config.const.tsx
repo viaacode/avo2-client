@@ -2,6 +2,7 @@ import {
 	type AdminConfig,
 	type LinkInfo,
 	type ToastInfo,
+	UserBulkAction,
 } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { ContentBlockType, ContentWidth } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
@@ -309,7 +310,14 @@ export function getAdminCoreConfig(): AdminConfig {
 			SEARCH: APP_PATH.SEARCH.route,
 		},
 		users: {
-			bulkActions: ['block', 'unblock', 'delete', 'change_subjects', 'export'],
+			bulkActions: [
+				UserBulkAction.BLOCK,
+				UserBulkAction.UNBLOCK,
+				UserBulkAction.DELETE,
+				UserBulkAction.CHANGE_SUBJECTS,
+				UserBulkAction.EXPORT_SELECTION,
+				UserBulkAction.EXPORT_ALL,
+			],
 		},
 		locale: Locale.Nl as any,
 		env: {

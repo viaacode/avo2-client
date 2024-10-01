@@ -64,11 +64,12 @@ import {
 	GET_ASSIGNMENT_OVERVIEW_TABLE_COLS,
 	ITEMS_PER_PAGE,
 } from '../assignments.const';
-import {
-	type AssignmentsBulkAction,
-	type AssignmentsOverviewTableState,
-} from '../assignments.types';
+import { AssignmentsBulkAction, type AssignmentsOverviewTableState } from '../assignments.types';
 import './AssignmentsOverviewAdmin.scss';
+
+import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
+
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
@@ -81,6 +82,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		sort_order: 'desc',
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
 	const [selectedAssignmentIds, setSelectedAssignmentIds] = useState<string[]>([]);
 	const [assignmentsDeleteModalOpen, setAssignmentsDeleteModalOpen] = useState<boolean>(false);
 	const [isChangeAuthorModalOpen, setIsChangeAuthorModalOpen] = useState<boolean>(false);
@@ -142,7 +144,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		[qualityLabels, tText, tableState]
 	);
 
-	const columns = useMemo(
+	const tableColumns = useMemo(
 		() =>
 			GET_ASSIGNMENT_OVERVIEW_TABLE_COLS(
 				userGroupOptions,
@@ -309,21 +311,23 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		return { _and: andFilters };
 	}, []);
 
+	const getColumnDataType = () => {
+		const column = tableColumns.find((tableColumn: FilterableColumn) => {
+			return tableColumn.id === (tableState.sort_column || 'empty');
+		});
+		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
+	};
+
 	const fetchAssignments = useCallback(async () => {
 		try {
 			setIsLoading(true);
-
-			const column = columns.find((tableColumn: FilterableColumn) => {
-				return tableColumn.id === (tableState.sort_column || 'empty');
-			});
-			const columnDataType = (column?.dataType ||
-				TableColumnDataType.string) as TableColumnDataType;
 			const [assignmentsTemp, assignmentCountTemp] =
 				await AssignmentService.fetchAssignmentsForAdmin(
-					tableState.page || 0,
+					(tableState.page || 0) * ITEMS_PER_PAGE,
+					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'created_at') as AssignmentOverviewTableColumns,
 					tableState.sort_order || 'desc',
-					columnDataType,
+					getColumnDataType(),
 					generateWhereObject(getFilters(tableState))
 				);
 
@@ -341,7 +345,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			});
 		}
 		setIsLoading(false);
-	}, [columns, tableState, generateWhereObject, tHtml]);
+	}, [tableColumns, tableState, generateWhereObject, tHtml]);
 
 	useEffect(() => {
 		fetchAssignments();
@@ -389,8 +393,14 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	};
 
 	const handleBulkAction = async (action: AssignmentsBulkAction): Promise<void> => {
-		if (!selectedAssignmentIds || !selectedAssignmentIds.length) {
+		if (action === AssignmentsBulkAction.EXPORT_ALL) {
+			// No rows need to be selected since we export everything
+			setIsExportAllToCsvModalOpen(true);
 			return;
+		}
+
+		if (selectedAssignmentIds.length === 0) {
+			return; // No rows selected, and actions below need selected rows to perform their operations
 		}
 
 		const selectedAssignmentEditStatuses =
@@ -414,12 +424,13 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			// execute action straight away
 			setAssignmentsBeingEdited([]);
 			setSelectedBulkAction(null);
+
 			switch (action) {
-				case 'delete':
+				case AssignmentsBulkAction.DELETE:
 					setAssignmentsDeleteModalOpen(true);
 					return;
 
-				case 'change_author':
+				case AssignmentsBulkAction.CHANGE_AUTHOR:
 					setIsChangeAuthorModalOpen(true);
 					return;
 			}
@@ -774,7 +785,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 		return (
 			<>
 				<FilterTable
-					columns={columns}
+					columns={tableColumns}
 					data={assignments}
 					dataCount={assignmentCount}
 					renderCell={(rowData: Partial<Avo.Assignment.Assignment>, columnId: string) =>
@@ -796,8 +807,11 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					selectedItemIds={selectedAssignmentIds}
 					onSelectionChanged={setSelectedAssignmentIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllAssignmentsAsSelected}
+					bulkActions={GET_ASSIGNMENT_BULK_ACTIONS(
+						user as Avo.User.User,
+						selectedAssignmentIds.length > 0
+					)}
 					onSelectBulkAction={handleBulkAction as any}
-					bulkActions={GET_ASSIGNMENT_BULK_ACTIONS(user as Avo.User.User)}
 					rowKey="id"
 					defaultOrderProp={'created_at'}
 					defaultOrderDirection={'desc'}
@@ -881,6 +895,50 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					callback={(newAuthor: PickerItem) =>
 						changeAuthorForSelectedAssignments(newAuthor.value)
 					}
+				/>
+				<ExportAllToCsvModal
+					title={tText(
+						'admin/assignments/views/assignments-overview-admin___exporteren-van-alle-opdrachten-naar-csv'
+					)}
+					isOpen={isExportAllToCsvModalOpen}
+					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					fetchingItemsLabel={tText(
+						'admin/assignments/views/assignments-overview-admin___bezig-met-ophalen-van-opdrachten'
+					)}
+					generatingCsvLabel={tText(
+						'admin/assignments/views/assignments-overview-admin___bezig-met-genereren-van-de-csv'
+					)}
+					fetchTotalItems={async () => {
+						const response = await AssignmentService.fetchAssignmentsForAdmin(
+							0,
+							0,
+							(tableState.sort_column ||
+								'created_at') as AssignmentOverviewTableColumns,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							{}
+						);
+						return response[1];
+					}}
+					fetchMoreItems={async (offset: number, limit: number) => {
+						const response = await AssignmentService.fetchAssignmentsForAdmin(
+							offset,
+							limit,
+							(tableState.sort_column ||
+								'created_at') as AssignmentOverviewTableColumns,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							{}
+						);
+						return response[0];
+					}}
+					renderValue={(value: any, columnId: string) =>
+						renderTableCell(value as any, columnId as AssignmentOverviewTableColumns)
+					}
+					columns={tableColumnListToCsvColumnList(tableColumns)}
+					exportFileName={tText(
+						'admin/assignments/views/assignments-overview-admin___opdrachten-csv'
+					)}
 				/>
 			</>
 		);

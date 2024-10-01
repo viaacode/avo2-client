@@ -1,10 +1,10 @@
+import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	type ButtonType,
 	Flex,
 	Form,
 	FormGroup,
-	Icon,
 	IconName,
 	Select,
 	type SelectOption,
@@ -45,12 +45,12 @@ import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-
 import { tHtml } from '../../../../shared/helpers/translate';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { KeyCode } from '../../../../shared/types';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../PaginationBar/PaginationBar.consts';
 
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
 
 import './FilterTable.scss';
-import { PaginationBar } from '@meemoo/react-components';
 
 export interface FilterableTableState {
 	query?: string;
@@ -389,7 +389,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 										placeholder={tText(
 											'admin/shared/components/filter-table/filter-table___bulkactie'
 										)}
-										disabled={!(selectedItemIds || []).length}
+										disabled={!bulkActions.find((action) => !action.disabled)}
 										className="c-bulk-action-select"
 									/>
 								)}
@@ -450,41 +450,13 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 							/>
 							<Spacer margin="top-large">
 								<PaginationBar
+									{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
 									startItem={(tableState.page || 0) * itemsPerPage}
 									itemsPerPage={itemsPerPage}
 									totalItems={dataCount}
 									onPageChange={(newPage: number) =>
 										handleTableStateChanged(newPage, 'page')
 									}
-									previousLabel={tText(
-										'shared/components/filter-table/filter-table___vorige'
-									)}
-									previousIcon={<Icon name={IconName.chevronLeft} />}
-									nextLabel={tText(
-										'shared/components/filter-table/filter-table___volgende'
-									)}
-									nextIcon={<Icon name={IconName.chevronRight} />}
-									firstLabel={tText(
-										'admin/shared/components/filter-table/filter-table___eerste'
-									)}
-									firstIcon={<Icon name={IconName.chevronsLeft} />}
-									lastLabel={tText(
-										'admin/shared/components/filter-table/filter-table___laatste'
-									)}
-									lastIcon={<Icon name={IconName.chevronsRight} />}
-									backToTopLabel={tText(
-										'shared/components/filter-table/filter-table___terug-naar-boven'
-									)}
-									backToTopIcon={<Icon name={IconName.chevronsUp} />}
-									labelBetweenPageStartAndEnd={tText(
-										'modules/shared/components/filter-table/filter-table___label-between-start-and-end-page-in-pagination-bar'
-									)}
-									labelBetweenPageEndAndTotal={tText(
-										'modules/shared/components/filter-table/filter-table___label-between-end-page-and-total-in-pagination-bar'
-									)}
-									showButtonLabels={false}
-									showFirstAndLastButtons={true}
-									showBackToTop={true}
 									onScrollToTop={() => {
 										const filterTable =
 											document.querySelector('.c-filter-table');

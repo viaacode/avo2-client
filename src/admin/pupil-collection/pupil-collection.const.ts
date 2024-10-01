@@ -1,5 +1,4 @@
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { type PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types';
@@ -8,6 +7,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type AssignmentBulkActionOption } from '../assignments/assignments.const';
+import { AssignmentsBulkAction } from '../assignments/assignments.types';
 import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 
 export const PUPIL_COLLECTIONS_PATH = {
@@ -17,25 +17,36 @@ export const PUPIL_COLLECTIONS_PATH = {
 export const ITEMS_PER_PAGE = 20;
 
 export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
-	user: Avo.User.User
+	user: Avo.User.User,
+	areRowsSelected: boolean
 ): AssignmentBulkActionOption[] => {
 	return [
 		...(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_PUPIL_COLLECTIONS)
 			? [
 					{
-						label: tText('admin/pupil-collection/pupil-collection___verwijderen'),
-						value: 'delete',
+						label: tText(
+							'admin/pupil-collection/pupil-collection___a-selectie-verwijderen'
+						),
+						value: AssignmentsBulkAction.DELETE,
+						disabled: !areRowsSelected,
 					},
 			  ]
 			: []),
 		...(PermissionService.hasPerm(user, PermissionName.EDIT_ANY_PUPIL_COLLECTIONS)
 			? [
 					{
-						label: tText('admin/pupil-collection/pupil-collection___auteur-aanpassen'),
-						value: 'change_author',
+						label: tText(
+							'admin/pupil-collection/pupil-collection___selectie-auteur-aanpassen'
+						),
+						value: AssignmentsBulkAction.CHANGE_AUTHOR,
+						disabled: !areRowsSelected,
 					},
 			  ]
 			: []),
+		{
+			label: tText('admin/pupil-collection/pupil-collection___alles-exporteren'),
+			value: AssignmentsBulkAction.EXPORT_ALL,
+		},
 	];
 };
 

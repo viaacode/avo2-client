@@ -1,6 +1,5 @@
 import { type ButtonType, IconName, type SelectOption } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 
 import { type AssignmentOverviewTableColumns } from '../../assignment/assignment.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -14,6 +13,8 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
+import { AssignmentsBulkAction } from './assignments.types';
+
 export const ASSIGNMENTS_PATH = {
 	ASSIGNMENTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}`,
 };
@@ -25,24 +26,34 @@ export type AssignmentBulkActionOption = SelectOption<string> & {
 	confirmButtonType?: ButtonType;
 };
 
-export const GET_ASSIGNMENT_BULK_ACTIONS = (user: Avo.User.User): AssignmentBulkActionOption[] => {
+export const GET_ASSIGNMENT_BULK_ACTIONS = (
+	user: Avo.User.User,
+	areRowsSelected: boolean
+): AssignmentBulkActionOption[] => {
 	return [
 		...(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_ASSIGNMENTS)
 			? [
 					{
-						label: tText('admin/assignments/assignments___verwijderen'),
-						value: 'delete',
+						label: tText('admin/assignments/assignments___selectie-verwijderen'),
+						value: AssignmentsBulkAction.DELETE,
+						disabled: !areRowsSelected,
 					},
 			  ]
 			: []),
 		...(PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENTS)
 			? [
 					{
-						label: tText('admin/assignments/assignments___auteur-aanpassen'),
-						value: 'change_author',
+						label: tText('admin/assignments/assignments___selectie-auteur-aanpassen'),
+						value: AssignmentsBulkAction.CHANGE_AUTHOR,
+						disabled: !areRowsSelected,
 					},
 			  ]
 			: []),
+		{
+			label: tText('admin/assignments/assignments___alles-exporteren'),
+			value: AssignmentsBulkAction.EXPORT_ALL,
+			disabled: false,
+		},
 	];
 };
 

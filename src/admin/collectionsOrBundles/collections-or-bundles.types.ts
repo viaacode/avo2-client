@@ -1,5 +1,14 @@
 import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
+export enum CollectionBulkAction {
+	PUBLISH = 'PUBLISH',
+	DEPUBLISH = 'DEPUBLISH',
+	DELETE = 'DELETE',
+	CHANGE_AUTHOR = 'CHANGE_AUTHOR',
+	CHANGE_LABELS = 'CHANGE_LABELS',
+	EXPORT_ALL = 'EXPORT_ALL',
+}
+
 type CollectionsOrBundlesOverviewTableColsBase =
 	| 'title'
 	| 'owner_profile_id'
@@ -108,12 +117,5 @@ export type CollectionTableStates =
 	| CollectionOrBundleActualisationTableState
 	| CollectionOrBundleQualityCheckTableState
 	| CollectionOrBundleMarcomTableState;
-
-export type CollectionsBulkAction =
-	| 'publish'
-	| 'depublish'
-	| 'delete'
-	| 'change_author'
-	| 'change_labels';
 
 export type ManagementStatus = null | 'ACTUEEL' | 'ACTUALISEREN' | 'HERZIEN' | 'GEARCHIVEERD';

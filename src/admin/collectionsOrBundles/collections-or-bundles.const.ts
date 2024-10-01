@@ -16,7 +16,11 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
-import { type CollectionTableCols, type EditorialType } from './collections-or-bundles.types';
+import {
+	CollectionBulkAction,
+	type CollectionTableCols,
+	type EditorialType,
+} from './collections-or-bundles.types';
 
 export const COLLECTIONS_OR_BUNDLES_PATH = {
 	COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}`,
@@ -135,43 +139,54 @@ type CollectionBulkActionOption = SelectOption<string> & {
 	confirmButtonType?: ButtonType;
 };
 
-export const GET_COLLECTION_BULK_ACTIONS = (): CollectionBulkActionOption[] => {
+export const GET_COLLECTION_BULK_ACTIONS = (
+	hasSelectedRows: boolean
+): CollectionBulkActionOption[] => {
 	return [
 		{
 			label: tText(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___publiceren'
+				'admin/collections-or-bundles/collections-or-bundles___selectie-publiceren'
 			),
-			value: 'publish',
+			value: CollectionBulkAction.PUBLISH,
 			confirm: true,
 			confirmButtonType: 'primary',
+			disabled: !hasSelectedRows,
 		},
 		{
 			label: tText(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___depubliceren'
+				'admin/collections-or-bundles/collections-or-bundles___selectie-depubliceren'
 			),
-			value: 'depublish',
+			value: CollectionBulkAction.DEPUBLISH,
 			confirm: true,
 			confirmButtonType: 'danger',
+			disabled: !hasSelectedRows,
 		},
 		{
 			label: tText(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___verwijderen'
+				'admin/collections-or-bundles/collections-or-bundles___selectie-verwijderen'
 			),
-			value: 'delete',
+			value: CollectionBulkAction.DELETE,
 			confirm: true,
 			confirmButtonType: 'danger',
+			disabled: !hasSelectedRows,
 		},
 		{
 			label: tText(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___auteur-aanpassen'
+				'admin/collections-or-bundles/collections-or-bundles___selectie-eigenaar-aanpassen'
 			),
-			value: 'change_author',
+			value: CollectionBulkAction.CHANGE_AUTHOR,
+			disabled: !hasSelectedRows,
 		},
 		{
 			label: tText(
-				'admin/collections-or-bundles/views/collections-or-bundles-overview___labels-aanpassen'
+				'admin/collections-or-bundles/collections-or-bundles___selectie-labels-aanpassen'
 			),
-			value: 'change_labels',
+			value: CollectionBulkAction.CHANGE_LABELS,
+			disabled: !hasSelectedRows,
+		},
+		{
+			label: tText('admin/collections-or-bundles/collections-or-bundles___alles-exporteren'),
+			value: CollectionBulkAction.EXPORT_ALL,
 		},
 	];
 };

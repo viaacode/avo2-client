@@ -1223,12 +1223,12 @@ export class AssignmentService {
 	}
 
 	static async fetchAssignmentsForAdmin(
-		page: number,
+		offset: number,
+		limit: number,
 		sortColumn: AssignmentOverviewTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any = {},
-		itemsPerPage: number = ITEMS_PER_PAGE
+		where: any = {}
 	): Promise<[Avo.Assignment.Assignment[], number]> {
 		let variables;
 		try {
@@ -1238,8 +1238,8 @@ export class AssignmentService {
 			};
 
 			variables = {
-				offset: itemsPerPage * page,
-				limit: itemsPerPage,
+				offset,
+				limit,
 				where: whereWithoutDeleted,
 				orderBy: getOrderObject(
 					sortColumn,

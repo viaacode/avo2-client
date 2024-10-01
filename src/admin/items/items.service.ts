@@ -73,7 +73,8 @@ import {
 
 export class ItemsService {
 	public static async fetchItemsWithFilters(
-		page: number,
+		offset: number,
+		limit: number,
 		sortColumn: ItemsOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
@@ -83,8 +84,8 @@ export class ItemsService {
 		try {
 			variables = {
 				where,
-				offset: ITEMS_PER_PAGE * page,
-				limit: ITEMS_PER_PAGE,
+				offset,
+				limit,
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,

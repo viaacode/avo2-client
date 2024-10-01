@@ -58,7 +58,8 @@ import {
 
 export class CollectionsOrBundlesService {
 	static async getCollections(
-		page: number,
+		offset: number,
+		limit: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
@@ -69,8 +70,8 @@ export class CollectionsOrBundlesService {
 		try {
 			variables = {
 				where,
-				offset: ITEMS_PER_PAGE * page,
-				limit: ITEMS_PER_PAGE,
+				offset,
+				limit,
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,
