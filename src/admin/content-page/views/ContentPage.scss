@@ -3,8 +3,20 @@
 $c-admin-core-content-metadata-bar: 4.8rem;
 $c-admin-core-add-content-block-height: 7rem;
 
-.c-admin-core__content-page .c-admin__content {
-	margin: 0;
+.c-admin-core__content-page {
+	.c-admin__content {
+		margin: 0;
+	}
+}
+
+.c-admin__content-page-label-overview,
+.c-admin-core__content-page {
+	.c-filter-table .c-table .c-button {
+		height: 3.6rem;
+		width: 3.6rem;
+		padding: 0.6rem !important;
+		margin-left: 0.8rem !important;
+	}
 }
 
 .c-admin-core.c-admin.c-admin__content-page-edit {
