@@ -91,6 +91,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const [isSaving, setIsSaving] = useState(false);
 
 	// Data
 	const [assignmentResponseOriginal, setAssignmentResponseOriginal] = useState<Omit<
@@ -189,15 +190,18 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 
 	const submit = async (formState: AssignmentResponseFormState) => {
 		try {
+			setIsSaving(true);
 			if (isPreview) {
 				ToastService.info(
 					tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
 					)
 				);
+				setIsSaving(false);
 				return;
 			}
 			if (!user?.profile?.id || !assignmentResponse || !assignmentResponseOriginal) {
+				setIsSaving(false);
 				return;
 			}
 
@@ -241,8 +245,10 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 						'assignment/views/assignment-response-edit/assignment-response-edit___de-collectie-is-opgeslagen'
 					)
 				);
+				setIsSaving(false);
 			}
 		} catch (err) {
+			setIsSaving(false);
 			console.error(err);
 			ToastService.danger(
 				tHtml(
@@ -436,6 +442,7 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 					isVisible={isDirty}
 					onCancel={() => resetForm()}
 					onSave={handleSubmit(submit, handleFormErrors)}
+					isSaving={isSaving}
 				/>
 			</div>
 		);

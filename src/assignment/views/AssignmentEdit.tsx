@@ -140,7 +140,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [originalAssignment, setOriginalAssignment] = useState<Avo.Assignment.Assignment | null>(
 		null
 	);
-	const [assignmentLoading, setAssignmentLoading] = useState(true);
+	const [isAssignmentLoading, setIsAssignmentLoading] = useState(true);
+	const [isSaving, setIsSaving] = useState(false);
 	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
@@ -154,7 +155,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-		useEducationLevelModal(commonUser, assignment, assignmentLoading);
+		useEducationLevelModal(commonUser, assignment, isAssignmentLoading);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -198,10 +199,38 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		updateBlocksInAssignmentState
 	);
 
+	const updateAssignmentEditor = async () => {
+		try {
+			await AssignmentService.updateAssignmentEditor(assignmentId);
+		} catch (err) {
+			redirectToClientPage(
+				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
+				history
+			);
+
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode === 409) {
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
+					)
+				);
+			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
+				return; // User has no rights to edit the assignment
+			} else {
+				await releaseAssignmentEditStatus();
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-edit___verbinding-met-bewerk-server-verloren'
+					)
+				);
+			}
+		}
+	};
+
 	const updateAssignmentEditorWithLoading = useCallback(async () => {
-		setAssignmentLoading(true);
+		setIsAssignmentLoading(true);
 		await updateAssignmentEditor();
-	}, [setAssignmentLoading]);
+	}, [updateAssignmentEditor]);
 
 	useEffect(() => {
 		if (match.params.tabId) {
@@ -233,7 +262,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	// Get query string variables and fetch the existing object
 	const fetchAssignment = useCallback(async () => {
 		try {
-			setAssignmentLoading(true);
+			setIsAssignmentLoading(true);
 			setAssignmentError(null);
 			const id = match.params.id;
 			let tempAssignment: Avo.Assignment.Assignment | null = null;
@@ -263,7 +292,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						icon: IconName.lock,
 						actionButtons: ['home'],
 					});
-					setAssignmentLoading(false);
+					setIsAssignmentLoading(false);
 					return;
 				}
 				setAssignmentError({
@@ -273,7 +302,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
-				setAssignmentLoading(false);
+				setIsAssignmentLoading(false);
 				return;
 			}
 
@@ -285,7 +314,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
-				setAssignmentLoading(false);
+				setIsAssignmentLoading(false);
 				return;
 			}
 
@@ -334,7 +363,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					icon: IconName.lock,
 					actionButtons: ['home'],
 				});
-				setAssignmentLoading(false);
+				setIsAssignmentLoading(false);
 				return;
 			}
 
@@ -371,7 +400,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				icon: IconName.alertTriangle,
 			});
 		}
-		setAssignmentLoading(false);
+		setIsAssignmentLoading(false);
 	}, [match.params.id, commonUser?.permissions, assignmentId, commonUser, setAssignment, tHtml]);
 
 	// Events
@@ -380,6 +409,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		if (!commonUser?.profileId || !originalAssignment) {
 			return;
 		}
+		setIsSaving(true);
 
 		if (assignment?.deadline_at && isPast(new Date(assignment?.deadline_at))) {
 			ToastService.danger(
@@ -387,6 +417,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					'assignment/views/assignment-edit___de-deadline-mag-niet-in-het-verleden-liggen'
 				)
 			);
+			setIsSaving(false);
 			return;
 		}
 
@@ -396,6 +427,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
 				)
 			);
+			setIsSaving(false);
 			return;
 		}
 
@@ -406,15 +438,18 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			ToastService.danger(
 				tHtml('assignment/views/assignment-edit___de-deadline-moet-voor-31-augustus-liggen')
 			);
+			setIsSaving(false);
 			return;
 		}
 
 		if (assignmentHasResponses) {
 			setIsConfirmSaveActionModalOpen(true);
+			setIsSaving(false);
 			return;
 		}
 
 		await handleSubmit(submit, (...args) => console.error(args))();
+		setIsSaving(false);
 	};
 
 	const submit = async () => {
@@ -505,34 +540,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		},
 		[assignment]
 	);
-
-	const updateAssignmentEditor = async () => {
-		try {
-			await AssignmentService.updateAssignmentEditor(assignmentId);
-		} catch (err) {
-			redirectToClientPage(
-				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
-				history
-			);
-
-			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode === 409) {
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
-					)
-				);
-			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
-				return; // User has no rights to edit the assignment
-			} else {
-				await releaseAssignmentEditStatus();
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-edit___verbinding-met-bewerk-server-verloren'
-					)
-				);
-			}
-		}
-	};
 
 	const releaseAssignmentEditStatus = async () => {
 		try {
@@ -1083,6 +1090,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					isVisible={unsavedChanges || hasUnsavedChanges}
 					onSave={handleOnSave}
 					onCancel={cancelSaveBar}
+					isSaving={isSaving}
 				/>
 			</div>
 			{!!commonUser && (
@@ -1096,7 +1104,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	);
 
 	const renderPageContent = () => {
-		if (assignmentLoading) {
+		if (isAssignmentLoading && !originalAssignment) {
 			return (
 				<Spacer margin="top-extra-large">
 					<Flex orientation="horizontal" center>

@@ -93,7 +93,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps & 
 			if (!commonUser) {
 				ToastService.danger(
 					tHtml(
-						'Er ging iets mis bij het ophalen van de opdrachten. Gelieve de pagina te herladen.'
+						'assignment/modals/import-to-assignment-modal___er-ging-iets-mis-bij-het-ophalen-van-de-opdrachten-gelieve-de-pagina-te-herladen'
 					)
 				);
 				return;

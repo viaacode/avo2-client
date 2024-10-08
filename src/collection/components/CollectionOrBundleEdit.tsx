@@ -1464,6 +1464,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						isVisible={unsavedChanges}
 						onSave={() => executeAction(CollectionMenuAction.save)}
 						onCancel={cancelSaveBar}
+						isSaving={isSavingCollection}
 					/>
 				</div>
 
