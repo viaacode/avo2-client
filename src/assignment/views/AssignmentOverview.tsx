@@ -552,7 +552,7 @@ const AssignmentOverview: FunctionComponent<
 						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'
 					)}
 				>
-					{responsesCount}
+					-
 				</span>,
 				tText('assignment/views/assignment-overview___responses')
 			);
