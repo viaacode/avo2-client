@@ -119,7 +119,7 @@ const defaultFiltersAndSort = {
 
 const AssignmentOverview: FunctionComponent<
 	AssignmentOverviewProps & RouteComponentProps & UserProps
-> = ({ onUpdate = noop, history, commonUser, user }) => {
+> = ({ onUpdate = noop, history, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -279,7 +279,7 @@ const AssignmentOverview: FunctionComponent<
 
 	const fetchAssignments = useCallback(async () => {
 		try {
-			if (isNil(canEditAssignments)) {
+			if (isNil(canEditAssignments) || !commonUser) {
 				return;
 			}
 
@@ -295,7 +295,7 @@ const AssignmentOverview: FunctionComponent<
 
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
-				user as Avo.User.User,
+				commonUser,
 				query.view === AssignmentView.FINISHED, // true === past deadline
 				sortColumn,
 				sortOrder,
@@ -336,7 +336,7 @@ const AssignmentOverview: FunctionComponent<
 			const labels = await AssignmentLabelsService.getLabelsForProfile(commonUser.profileId);
 			setAllAssignmentLabels(labels);
 		}
-	}, [user, setAllAssignmentLabels]);
+	}, [commonUser, setAllAssignmentLabels]);
 
 	useEffect(() => {
 		checkPermissions();
@@ -387,7 +387,7 @@ const AssignmentOverview: FunctionComponent<
 				break;
 			case AssignmentAction.duplicate:
 				try {
-					if (!user?.profile?.id) {
+					if (!commonUser?.profileId) {
 						ToastService.danger(
 							tHtml(
 								'assignment/views/assignment-overview___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-dupliceren'
@@ -400,7 +400,7 @@ const AssignmentOverview: FunctionComponent<
 							assignmentRow.id as unknown as string
 						);
 
-					await duplicateAssignment(latest, user);
+					await duplicateAssignment(latest, commonUser);
 					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
@@ -430,12 +430,12 @@ const AssignmentOverview: FunctionComponent<
 
 	const handleDeleteAssignmentConfirm = async () => {
 		if (!markedAssignment) return;
-		await deleteAssignment(markedAssignment, user as Avo.User.User, updateAndReset);
+		await deleteAssignment(markedAssignment, commonUser, updateAndReset);
 		handleDeleteModalClose();
 	};
 
 	const handleDeleteSelfFromAssignmentConfirm = async () => {
-		await deleteSelfFromAssignment(markedAssignment?.id, user as Avo.User.User, updateAndReset);
+		await deleteSelfFromAssignment(markedAssignment?.id, commonUser, updateAndReset);
 		handleDeleteModalClose();
 	};
 

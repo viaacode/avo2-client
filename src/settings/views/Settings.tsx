@@ -8,8 +8,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
+import { PermissionName } from '@viaa/avo2-types';
 import React, { type FunctionComponent, type ReactElement, type ReactText, useState } from 'react';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -46,7 +45,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 
 	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
 		.map(String)
-		.includes(String(props.user?.profile?.userGroupIds[0]));
+		.includes(String(props.commonUser?.userGroup?.id));
 
 	const generateTabHeader = (id: SettingsTab, label: string) => ({
 		id,
@@ -61,12 +60,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 		];
 
 		// Only pupils with an archief account can view the account tab
-		if (
-			!isPupil ||
-			get(props, 'user.idpmaps', []).find(
-				(idpMap: Avo.Auth.IdpType) => idpMap === 'HETARCHIEF'
-			)
-		) {
+		if (!isPupil || !!(props?.commonUser?.idps || {})['HETARCHIEF']) {
 			tabHeaders.push(
 				generateTabHeader(ACCOUNT_ID, tText('settings/views/settings___account'))
 			);
@@ -76,12 +70,12 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 			generateTabHeader(LINKED_ACCOUNTS, tText('settings/views/settings___koppelingen'))
 		);
 
-		if (PermissionService.hasPerm(props.user, PermissionName.VIEW_NEWSLETTERS_PAGE)) {
+		if (PermissionService.hasPerm(props.commonUser, PermissionName.VIEW_NEWSLETTERS_PAGE)) {
 			tabHeaders.push(
 				generateTabHeader(EMAIL_ID, tText('settings/views/settings___e-mail-voorkeuren'))
 			);
 		}
-		if (PermissionService.hasPerm(props.user, PermissionName.VIEW_NOTIFICATIONS_PAGE)) {
+		if (PermissionService.hasPerm(props.commonUser, PermissionName.VIEW_NOTIFICATIONS_PAGE)) {
 			generateTabHeader(NOTIFICATIONS_ID, tText('settings/views/settings___notifications'));
 		}
 
@@ -125,11 +119,11 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 	};
 
 	const viewNewsletterPage = PermissionService.hasPerm(
-		props.user,
+		props.commonUser,
 		PermissionName.VIEW_NEWSLETTERS_PAGE
 	);
 	const viewNotificationsPage = PermissionService.hasPerm(
-		props.user,
+		props.commonUser,
 		PermissionName.VIEW_NOTIFICATIONS_PAGE
 	);
 	if (
@@ -139,7 +133,7 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 	) {
 		return (
 			<ErrorView
-				message={getPageNotFoundError(!!props.user)}
+				message={getPageNotFoundError(!!props.commonUser)}
 				icon={IconName.search}
 				actionButtons={['home', 'helpdesk']}
 			/>

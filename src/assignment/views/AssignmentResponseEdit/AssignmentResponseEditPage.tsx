@@ -1,7 +1,6 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
-import { isString } from 'lodash-es';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { isString, noop } from 'lodash-es';
 import React, {
 	type FunctionComponent,
 	type ReactNode,
@@ -35,7 +34,7 @@ import './AssignmentResponseEdit.scss';
 
 const AssignmentResponseEditPage: FunctionComponent<
 	UserProps & DefaultSecureRouteProps<{ id: string }>
-> = ({ match, user }) => {
+> = ({ match, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Data
@@ -62,8 +61,8 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
 			if (
-				!PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENT_RESPONSE) &&
-				PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)
+				!PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENT_RESPONSE) &&
+				PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS)
 			) {
 				setAssignmentError({
 					message: tHtml(
@@ -75,7 +74,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 				return;
 			}
 
-			if (!canViewAnAssignment(user)) {
+			if (!canViewAnAssignment(commonUser)) {
 				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-edit-page___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
@@ -88,7 +87,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 
 			// Get assignment
 			setAssignmentError(null);
-			if (!user.profile?.id) {
+			if (!commonUser?.profileId) {
 				ToastService.danger(
 					tHtml(
 						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id'
@@ -98,7 +97,10 @@ const AssignmentResponseEditPage: FunctionComponent<
 			}
 
 			const assignmentOrError: Avo.Assignment.Assignment =
-				await AssignmentService.fetchAssignmentAndContent(user.profile.id, assignmentId);
+				await AssignmentService.fetchAssignmentAndContent(
+					commonUser.profileId,
+					assignmentId
+				);
 
 			if (isString(assignmentOrError)) {
 				// error
@@ -120,7 +122,7 @@ const AssignmentResponseEditPage: FunctionComponent<
 			}
 
 			// Track assignment view
-			AssignmentService.increaseViewCount(assignmentOrError.id); // Not waiting for view events increment
+			AssignmentService.increaseViewCount(assignmentOrError.id).then(noop); // Not waiting for view events increment
 			trackEvents(
 				{
 					object: assignmentOrError.id,
@@ -130,14 +132,14 @@ const AssignmentResponseEditPage: FunctionComponent<
 						education_level: String(assignment?.education_level_id),
 					},
 				},
-				user
+				commonUser
 			);
 
 			// Create an assignment response if needed
 			const newOrExistingAssignmentResponse =
 				await AssignmentService.createOrFetchAssignmentResponseObject(
 					assignmentOrError,
-					user
+					commonUser
 				);
 			setAssignmentResponse(newOrExistingAssignmentResponse);
 
@@ -151,12 +153,12 @@ const AssignmentResponseEditPage: FunctionComponent<
 			});
 		}
 		setAssignmentLoading(false);
-	}, [assignmentId]);
+	}, [assignment?.education_level_id, assignmentId, commonUser, tHtml]);
 
 	// Effects
 
 	useEffect(() => {
-		fetchAssignment();
+		fetchAssignment().then(noop);
 	}, []);
 
 	// Events

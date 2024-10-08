@@ -1,6 +1,5 @@
 import { Alert, Container, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
 import React, { type FunctionComponent, useEffect, useState } from 'react';
 
@@ -23,7 +22,7 @@ interface CollectionOrBundleEditContentProps {
 
 const CollectionOrBundleEditContent: FunctionComponent<
 	CollectionOrBundleEditContentProps & UserProps
-> = ({ type, collection, changeCollectionState, user, commonUser, onFocus }) => {
+> = ({ type, collection, changeCollectionState, commonUser, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -33,7 +32,7 @@ const CollectionOrBundleEditContent: FunctionComponent<
 	const isCollection = type === 'collection';
 
 	useEffect(() => {
-		PermissionService.hasPermission(PermissionName.ADD_HYPERLINK_COLLECTIONS, null, user)
+		PermissionService.hasPermission(PermissionName.ADD_HYPERLINK_COLLECTIONS, null, commonUser)
 			.then((hasPermission) => {
 				setAllowedToAddLinks(hasPermission);
 			})
@@ -41,7 +40,7 @@ const CollectionOrBundleEditContent: FunctionComponent<
 				console.error(
 					'Failed to check permissions for adding hyperlinks in collection fragment editors',
 					err,
-					{ user, permission: PermissionName.ADD_HYPERLINK_COLLECTIONS }
+					{ commonUser, permission: PermissionName.ADD_HYPERLINK_COLLECTIONS }
 				);
 				ToastService.danger(
 					tHtml(
@@ -49,7 +48,7 @@ const CollectionOrBundleEditContent: FunctionComponent<
 					)
 				);
 			});
-	}, [user, tText]);
+	}, [commonUser, tHtml, tText]);
 
 	const getFragmentKey = (fragment: Avo.Collection.Fragment) => {
 		return `fragment_${fragment.id}-${get(fragment, 'created_at')}-${get(

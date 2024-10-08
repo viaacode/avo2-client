@@ -16,21 +16,37 @@ const UserItemRequestFormConfirm: FunctionComponent<UserItemRequestFormProps> = 
 		<Container className="c-register-stamboek-view" mode="vertical">
 			<Container mode="horizontal" size="large">
 				<Helmet>
-					<title>{GENERATE_SITE_TITLE(tText('Gebruikersaanvraag pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							tText(
+								'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={tText('Gebruikersaanvraag pagina beschrijving')}
+						content={tText(
+							'user-item-request-form/views/educational-author-item-request-form-confirm___gebruikersaanvraag-pagina-beschrijving'
+						)}
 					/>
 				</Helmet>
 				<div className="c-content">
-					{tHtml('Bevestiging')}
+					{tHtml(
+						'user-item-request-form/views/educational-author-item-request-form-confirm___bevestiging'
+					)}
 					<Spacer margin="top-large">
 						<Button
 							type="primary"
 							onClick={history.goBack}
-							label={tText('Doe nog een aanvraag')}
-							title={tText('Doe nog een aanvraag')}
-							ariaLabel={tText('De nog een aanvraag')}
+							label={tText(
+								'user-item-request-form/views/educational-author-item-request-form-confirm___doe-nog-een-aanvraag'
+							)}
+							title={tText(
+								'user-item-request-form/views/educational-author-item-request-form-confirm___doe-nog-een-aanvraag'
+							)}
+							ariaLabel={tText(
+								'user-item-request-form/views/educational-author-item-request-form-confirm___de-nog-een-aanvraag'
+							)}
 						/>
 					</Spacer>
 				</div>

@@ -16,7 +16,6 @@ import {
 import queryString, { stringifyUrl } from 'query-string';
 
 import { setBlockPositionToIndex } from '../assignment/assignment.helper';
-import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { PermissionService } from '../authentication/helpers/permission-service';
 import {
 	type ContributorInfo,
@@ -238,14 +237,14 @@ export class CollectionService {
 	 *
 	 * @param initialColl
 	 * @param updatedColl
-	 * @param user
+	 * @param commonUser
 	 * @param checkValidation
 	 * @param isCollection
 	 */
 	static async updateCollection(
 		initialColl: Omit<Avo.Collection.Collection, 'loms' | 'contributors'> | null,
 		updatedColl: Partial<Avo.Collection.Collection>,
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		checkValidation = true,
 		isCollection: boolean
 	): Promise<Avo.Collection.Collection | null> {
@@ -402,7 +401,7 @@ export class CollectionService {
 				)
 			) {
 				cleanedCollection.updated_at = new Date().toISOString();
-				cleanedCollection.updated_by_profile_id = getProfileId(user);
+				cleanedCollection.updated_by_profile_id = commonUser?.profileId;
 				cleanedCollection.loms = [];
 			}
 
@@ -410,8 +409,11 @@ export class CollectionService {
 
 			// Update collection labels
 			if (
-				PermissionService.hasPerm(user, PermissionName.EDIT_COLLECTION_QUALITY_LABELS) ||
-				PermissionService.hasPerm(user, PermissionName.EDIT_BUNDLE_QUALITY_LABELS)
+				PermissionService.hasPerm(
+					commonUser,
+					PermissionName.EDIT_COLLECTION_QUALITY_LABELS
+				) ||
+				PermissionService.hasPerm(commonUser, PermissionName.EDIT_BUNDLE_QUALITY_LABELS)
 			) {
 				// Update collection labels
 				const initialLabels: string[] = this.getLabels(initialCollection).map(
@@ -736,7 +738,7 @@ export class CollectionService {
 	 * Add duplicate of collection
 	 *
 	 * @param collection
-	 * @param user
+	 * @param commonUser
 	 * @param copyPrefix
 	 * @param copyRegex
 	 *
@@ -744,7 +746,7 @@ export class CollectionService {
 	 */
 	static async duplicateCollection(
 		collection: Avo.Collection.Collection,
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		copyPrefix: string,
 		copyRegex: RegExp
 	): Promise<Avo.Collection.Collection> {
@@ -752,10 +754,10 @@ export class CollectionService {
 			const collectionToInsert = { ...collection };
 
 			// update attributes specific to duplicate
-			collectionToInsert.owner_profile_id = getProfileId(user);
+			collectionToInsert.owner_profile_id = commonUser?.profileId;
 			collectionToInsert.is_public = false;
 
-			if (canManageEditorial(user)) {
+			if (canManageEditorial(commonUser)) {
 				collectionToInsert.is_managed = true;
 			}
 
@@ -767,7 +769,7 @@ export class CollectionService {
 					copyPrefix,
 					copyRegex,
 					collectionToInsert.title,
-					user
+					commonUser
 				);
 			} catch (err) {
 				const customError = new CustomError(
@@ -789,7 +791,7 @@ export class CollectionService {
 			// Check is_managed status
 			// Should be copied to new collection if user group is one of [redacteur, eindredacteur, beheerder]
 			// Otherwise should be false
-			if (!canManageEditorial(user)) {
+			if (!canManageEditorial(commonUser)) {
 				collectionToInsert.is_managed = false;
 			}
 
@@ -808,7 +810,7 @@ export class CollectionService {
 		} catch (err) {
 			throw new CustomError('Failed to duplicate collection', err, {
 				collection,
-				user,
+				commonUser,
 				copyPrefix,
 				copyRegex,
 			});
@@ -944,19 +946,21 @@ export class CollectionService {
 	 * Retrieve collections or bundles by user.
 	 *
 	 * @param type Type of which items should be fetched.
-	 * @param user User object defining the owner fo the collection or bundle.
+	 * @param commonUser User object defining the owner fo the collection or bundle.
 	 *
 	 * @returns Collections or bundles owned by the user.
 	 */
 	static async fetchCollectionsOrBundlesByUser(
 		type: 'collection' | 'bundle',
-		user: Avo.User.User | undefined
+		commonUser: Avo.User.CommonUser | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
 		try {
 			// retrieve collections or bundles according to given type and user
 			const variables:
 				| GetCollectionTitlesByOwnerQueryVariables
-				| GetBundleTitlesByOwnerQueryVariables = { owner_profile_id: getProfileId(user) };
+				| GetBundleTitlesByOwnerQueryVariables = {
+				owner_profile_id: commonUser?.profileId,
+			};
 
 			const response = await dataService.query<
 				GetCollectionTitlesByOwnerQuery | GetBundleTitlesByOwnerQuery,
@@ -972,7 +976,7 @@ export class CollectionService {
 			return response.app_collections;
 		} catch (err) {
 			throw new CustomError('Failed to fetch existing bundle titles by owner', err, {
-				user,
+				commonUser,
 				type,
 				query:
 					type === 'collection'
@@ -1133,7 +1137,7 @@ export class CollectionService {
 	 * @param copyPrefix
 	 * @param copyRegex
 	 * @param existingTitle
-	 * @param user
+	 * @param commonUser
 	 *
 	 * @returns Potential title for duplicate collection.
 	 */
@@ -1141,11 +1145,11 @@ export class CollectionService {
 		copyPrefix: string,
 		copyRegex: RegExp,
 		existingTitle: string,
-		user: Avo.User.User
+		commonUser: Avo.User.CommonUser
 	): Promise<string> => {
 		const collections = await CollectionService.fetchCollectionsOrBundlesByUser(
 			'collection',
-			user
+			commonUser
 		);
 		const titles = collections.map((c) => c.title);
 
@@ -1298,7 +1302,7 @@ export class CollectionService {
 	}
 
 	static async fetchCollectionsByOwnerOrContributorProfileId(
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser | null | undefined,
 		offset: number,
 		limit: number | null,
 		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
@@ -1326,7 +1330,7 @@ export class CollectionService {
 				limit,
 				order,
 				type_id: contentTypeId,
-				collaborator_profile_id: getProfileId(user),
+				collaborator_profile_id: commonUser?.profileId,
 				where: filterArray.length ? filterArray : {},
 			};
 			const response = await dataService.query<
@@ -1347,7 +1351,7 @@ export class CollectionService {
 	}
 
 	static async fetchBookmarkedCollectionsByOwner(
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		offset: number,
 		limit: number | null,
 		order: GetBookmarkedCollectionsByOwnerQueryVariables['order'],
@@ -1366,7 +1370,7 @@ export class CollectionService {
 				offset,
 				limit,
 				order,
-				owner_profile_id: getProfileId(user),
+				owner_profile_id: commonUser?.profileId,
 				where: filterArray.length ? filterArray : {},
 			};
 			const response = await dataService.query<

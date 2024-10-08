@@ -26,7 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get, isNil } from 'lodash-es';
+import { get, isNil, noop } from 'lodash-es';
 import React, {
 	type FunctionComponent,
 	type ReactNode,
@@ -47,7 +47,6 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { CONTENT_TYPE_TRANSLATIONS, ContentTypeNumber } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -148,7 +147,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	history,
 	match,
 	location,
-	user,
+	commonUser,
 	id,
 	renderDetailLink = defaultRenderDetailLink,
 	renderSearchLink = defaultRenderSearchLink,
@@ -192,39 +191,45 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		filters: JsonParam,
 	});
 
-	const retrieveRelatedItems = (currentItemId: string, limit: number) => {
-		getRelatedItems(
-			currentItemId,
-			ObjectTypes.items,
-			relatedObjectTypes,
-			limit,
-			(filterState as FilterState).filters || {}
-		)
-			.then(setRelatedItems)
-			.catch((err) => {
-				console.error('Failed to get related items', err, {
-					currentItemId,
-					limit,
-					index: 'items',
+	const retrieveRelatedItems = useCallback(
+		(currentItemId: string, limit: number) => {
+			getRelatedItems(
+				currentItemId,
+				ObjectTypes.items,
+				relatedObjectTypes,
+				limit,
+				(filterState as FilterState).filters || {}
+			)
+				.then(setRelatedItems)
+				.catch((err) => {
+					console.error('Failed to get related items', err, {
+						currentItemId,
+						limit,
+						index: 'items',
+					});
+					ToastService.danger(
+						tHtml('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
+					);
 				});
-				ToastService.danger(
-					tHtml('item/views/item___het-ophalen-van-de-gerelateerde-items-is-mislukt')
-				);
-			});
-	};
+		},
+		[filterState, relatedObjectTypes, tHtml]
+	);
 
 	const checkPermissionsAndGetItem = useCallback(async () => {
 		try {
 			if (
 				!(
-					PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS) ||
-					(PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT) &&
+					PermissionService.hasPerm(
+						commonUser,
+						PermissionName.VIEW_ANY_PUBLISHED_ITEMS
+					) ||
+					(PermissionService.hasPerm(commonUser, PermissionName.SEARCH_IN_ASSIGNMENT) &&
 						location.pathname.includes(`/${ROUTE_PARTS.assignments}/`))
 				)
 			) {
 				const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
 					.map(String)
-					.includes(String(user.profile?.userGroupIds[0]));
+					.includes(String(commonUser.userGroup?.id));
 
 				if (isPupil) {
 					setLoadingInfo({
@@ -282,17 +287,17 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					object_type: 'item',
 					action: 'view',
 				},
-				user
+				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, user);
+			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, commonUser).then(noop);
 
 			retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 
 			try {
 				const counts = await BookmarksViewsPlaysService.getItemCounts(
 					(itemObj as any).uid,
-					user
+					commonUser
 				);
 				setBookmarkViewPlayCounts(counts);
 			} catch (err) {
@@ -312,7 +317,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to check permissions or get item from graphql', err, {
-					user,
+					commonUser,
 					itemId,
 				})
 			);
@@ -321,7 +326,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				message: tHtml('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
 			});
 		}
-	}, [itemId, setItem, tText, history, user]);
+	}, [commonUser, location.pathname, itemId, retrieveRelatedItems, tHtml, goToDetailLink]);
 
 	useEffect(() => {
 		if (item) {
@@ -335,14 +340,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	 * Load item from database
 	 */
 	useEffect(() => {
-		checkPermissionsAndGetItem();
+		checkPermissionsAndGetItem().then(noop);
 	}, [checkPermissionsAndGetItem]);
 
 	const toggleBookmark = async () => {
 		try {
 			await BookmarksViewsPlaysService.toggleBookmark(
 				(item as any).uid,
-				user,
+				commonUser,
 				'item',
 				bookmarkViewPlayCounts.isBookmarked
 			);
@@ -359,7 +364,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {
-					user,
+					commonUser,
 					itemId: (item as any).uid,
 					type: 'item',
 					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
@@ -380,7 +385,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				object_type: 'item',
 				action: 'play',
 			},
-			user
+			commonUser
 		);
 	};
 
@@ -431,11 +436,14 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	const createNewAssignment = async (
 		source: (Avo.Item.Item & { start_oc?: number | null; end_oc?: number | null }) | null = item
 	) => {
-		if (!source) {
+		if (!source || !commonUser) {
 			return;
 		}
 
-		const assignmentId = await AssignmentService.createAssignmentFromFragment(user, source);
+		const assignmentId = await AssignmentService.createAssignmentFromFragment(
+			commonUser,
+			source
+		);
 
 		history.push(buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }));
 	};
@@ -445,7 +453,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 
 		// check if assignment has responses. If so: show additional confirmation modal
 		const responses = await AssignmentService.getAssignmentResponses(
-			getProfileId(user),
+			commonUser.profileId,
 			importToAssignmentId
 		);
 		if (responses.length > 0) {
@@ -738,7 +746,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 		return (
 			<div className="c-item-detail__action-buttons">
 				<div className="c-item-detail__action-buttons--left">
-					{PermissionService.hasPerm(user, PermissionName.CREATE_COLLECTIONS) && (
+					{PermissionService.hasPerm(commonUser, PermissionName.CREATE_COLLECTIONS) && (
 						<Button
 							type="tertiary"
 							icon={IconName.scissors}
@@ -755,7 +763,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						/>
 					)}
 
-					{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+					{PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS) && (
 						<Dropdown
 							buttonType="tertiary"
 							icon={IconName.clipboard}
@@ -787,7 +795,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						</Dropdown>
 					)}
 
-					{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (
+					{PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE) && (
 						<Button
 							type="tertiary"
 							icon={IconName.link2}
@@ -801,7 +809,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 							}}
 						/>
 					)}
-					{PermissionService.hasPerm(user, PermissionName.VIEW_ITEMS_OVERVIEW) && (
+					{PermissionService.hasPerm(commonUser, PermissionName.VIEW_ITEMS_OVERVIEW) && (
 						<Link to={buildLink(ITEMS_PATH.ITEM_DETAIL, { id: item?.uid })}>
 							<Button
 								className="c-button-link"
@@ -816,7 +824,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				</div>
 
 				<div className="c-item-detail__action-buttons--right">
-					{PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS) &&
+					{PermissionService.hasPerm(commonUser, PermissionName.CREATE_BOOKMARKS) &&
 						renderBookmarkButton &&
 						renderBookmarkButton({
 							active: bookmarkViewPlayCounts.isBookmarked,
@@ -990,7 +998,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				</Container>
 				{!isNil(match.params.id) &&
 					isAddToCollectionModalOpen &&
-					PermissionService.hasPerm(user, PermissionName.CREATE_COLLECTIONS) && (
+					PermissionService.hasPerm(commonUser, PermissionName.CREATE_COLLECTIONS) && (
 						<AddToCollectionModal
 							itemMetaData={item}
 							externalId={match.params.id as string}
@@ -1002,7 +1010,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 					)}
 				{!isNil(match.params.id) &&
 					isAddToFragmentModalOpen &&
-					PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+					PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS) && (
 						<CutFragmentForAssignmentModal
 							itemMetaData={item}
 							isOpen={isAddToFragmentModalOpen}
@@ -1033,7 +1041,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						}}
 					/>
 				)}
-				{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (
+				{PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE) && (
 					<QuickLaneModal
 						modalTitle={tHtml('item/views/item___snel-delen-met-leerlingen')}
 						isOpen={isQuickLaneModalOpen}
@@ -1044,9 +1052,8 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						}}
 					/>
 				)}
-				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+				{PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS) && (
 					<ImportToAssignmentModal
-						user={user}
 						isOpen={isImportToAssignmentModalOpen}
 						onClose={() => setIsImportToAssignmentModalOpen(false)}
 						importToAssignmentCallback={onImportToAssignment}
@@ -1060,7 +1067,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						}}
 					/>
 				)}
-				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) && (
+				{PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS) && (
 					<ConfirmImportToAssignmentWithResponsesModal
 						isOpen={isConfirmImportToAssignmentWithResponsesModalOpen}
 						onClose={() => setIsConfirmImportToAssignmentWithResponsesModalOpen(false)}
@@ -1079,7 +1086,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						}}
 					/>
 				)}
-				{PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS) &&
+				{PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS) &&
 					item &&
 					cutModal({
 						itemMetaData: item,

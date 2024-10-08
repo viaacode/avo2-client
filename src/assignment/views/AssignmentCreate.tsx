@@ -330,11 +330,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				<Flex align="start">
 					<HeaderOwnerAndContributors
 						subject={{ ...assignment, profile: user.profile || undefined }}
-						user={user}
+						commonUser={commonUser}
 					/>
 				</Flex>
 			),
-		[assignment, user]
+		[assignment, commonUser]
 	);
 
 	const renderMeta = useMemo(() => {

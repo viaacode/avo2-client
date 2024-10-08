@@ -1,6 +1,6 @@
 import { Alert, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
 import React, { type FunctionComponent, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
@@ -24,30 +24,36 @@ const QuickLaneModalTabs = {
 
 // Helpers
 
-const needsToPublish = async (user: Avo.User.User) => {
+const needsToPublish = async (commonUser: Avo.User.CommonUser) => {
 	return await PermissionService.hasPermissions(
 		[PermissionName.REQUIRED_PUBLICATION_DETAILS_ON_QUICK_LANE],
-		user
+		commonUser
 	);
 };
 
-const isAllowedToPublish = async (user: Avo.User.User, collection?: Avo.Collection.Collection) => {
+const isAllowedToPublish = async (
+	commonUser: Avo.User.CommonUser,
+	collection?: Avo.Collection.Collection
+) => {
 	return (
 		// Is the author && can publish his own collections
-		(collection?.owner_profile_id === user.profile?.id &&
+		(collection?.owner_profile_id === commonUser?.profileId &&
 			(await PermissionService.hasPermissions(
 				[PermissionName.PUBLISH_OWN_COLLECTIONS],
-				user
+				commonUser
 			))) ||
 		// Is not the author but can publish any collections
-		(await PermissionService.hasPermissions([PermissionName.PUBLISH_ANY_COLLECTIONS], user))
+		(await PermissionService.hasPermissions(
+			[PermissionName.PUBLISH_ANY_COLLECTIONS],
+			commonUser
+		))
 	);
 };
 
 // Component
 
 const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (props) => {
-	const { modalTitle, isOpen, content_label, onClose, user } = props;
+	const { modalTitle, isOpen, content_label, onClose, commonUser } = props;
 
 	const [content, setContent] = useState<
 		Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item | undefined
@@ -82,14 +88,16 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 	// Check permissions
 	useEffect(() => {
 		async function checkPermissions() {
-			if (content_label === 'COLLECTIE' && user) {
-				setIsPublishRequired(await needsToPublish(user));
-				setCanPublish(await isAllowedToPublish(user, content as Avo.Collection.Collection));
+			if (content_label === 'COLLECTIE' && commonUser) {
+				setIsPublishRequired(await needsToPublish(commonUser));
+				setCanPublish(
+					await isAllowedToPublish(commonUser, content as Avo.Collection.Collection)
+				);
 			}
 		}
 
-		checkPermissions();
-	}, [user, content, content_label]);
+		checkPermissions().then(noop);
+	}, [commonUser, content, content_label]);
 
 	useEffect(() => {
 		if (!isOpen) return;
@@ -175,7 +183,7 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 			onClose={onClose}
 			scrollable
 		>
-			{user && content && content_label ? (
+			{commonUser && content && content_label ? (
 				<ModalBody>
 					{getTabs().length > 1 && (
 						<Spacer className="m-quick-lane-modal__tabs-wrapper" margin={'bottom'}>

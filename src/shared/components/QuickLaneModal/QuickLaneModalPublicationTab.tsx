@@ -18,7 +18,7 @@ interface QuickLaneModalPublicationTabProps {
 
 const QuickLaneModalPublicationTab: FunctionComponent<
 	QuickLaneModalProps & QuickLaneModalPublicationTabProps & UserProps
-> = ({ content, content_label, user, onComplete, onUpdate }) => {
+> = ({ content, content_label, commonUser, onComplete, onUpdate }) => {
 	const { tText } = useTranslation();
 
 	const [model, setModel] = useState(content);
@@ -28,7 +28,7 @@ const QuickLaneModalPublicationTab: FunctionComponent<
 	}, [content]);
 
 	const onSubmit = async () => {
-		if (user && content && model && content_label === 'COLLECTIE') {
+		if (commonUser && content && model && content_label === 'COLLECTIE') {
 			try {
 				const result = await CollectionService.updateCollection(
 					content as Avo.Collection.Collection,
@@ -36,7 +36,7 @@ const QuickLaneModalPublicationTab: FunctionComponent<
 						...(model as Avo.Collection.Collection),
 						is_public: true,
 					},
-					user,
+					commonUser,
 					true,
 					true
 				);

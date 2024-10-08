@@ -6,7 +6,6 @@ import {
 	Container,
 	Flex,
 	FlexItem,
-	HeaderAvatar,
 	IconName,
 	Navbar,
 	Toolbar,
@@ -14,9 +13,10 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
+import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header/Header.slots';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get } from 'lodash-es';
+import { get, noop } from 'lodash-es';
 import React, {
 	type FunctionComponent,
 	type ReactElement,
@@ -47,7 +47,7 @@ type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
 const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	history,
 	match,
-	user,
+	commonUser,
 	...rest
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -125,7 +125,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			}
 
 			if (permissionName !== undefined) {
-				setCanReadOriginal(await PermissionService.hasPerm(user, permissionName));
+				setCanReadOriginal(await PermissionService.hasPerm(commonUser, permissionName));
 			}
 
 			// Update state
@@ -146,7 +146,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch quick lane and content for detail page', err, {
-					user,
+					commonUser,
 					id: match.params.id,
 				})
 			);
@@ -158,11 +158,11 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				),
 			});
 		}
-	}, [setQuickLane, setLoadingInfo, match.params.id, tHtml, user]);
+	}, [setQuickLane, setLoadingInfo, match.params.id, tHtml, commonUser]);
 
 	useEffect(() => {
-		if (PermissionService.hasPerm(user, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
-			fetchQuickLaneAndContent();
+		if (PermissionService.hasPerm(commonUser, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
+			fetchQuickLaneAndContent().then(noop);
 		} else {
 			setLoadingInfo({
 				state: 'error',
@@ -172,7 +172,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				icon: IconName.lock,
 			});
 		}
-	}, [fetchQuickLaneAndContent, user, tHtml]);
+	}, [fetchQuickLaneAndContent, commonUser, tHtml]);
 
 	useEffect(() => {
 		if (quickLane) {
@@ -272,9 +272,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 										<ToolbarRight>
 											{!!profile && (
 												<ToolbarItem>
-													<HeaderAvatar>
+													<HeaderBottomRowLeft>
 														{renderAvatar(profile, { dark: true })}
-													</HeaderAvatar>
+													</HeaderBottomRowLeft>
 												</ToolbarItem>
 											)}
 											{canReadOriginal && (

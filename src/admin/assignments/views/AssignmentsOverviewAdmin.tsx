@@ -71,7 +71,9 @@ import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 
-const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
+const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
@@ -676,7 +678,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				}
 				const isAssignmentBeingEdited = isContentBeingEdited(
 					editStatuses?.[assignment.id as string],
-					user?.profile?.id
+					commonUser?.profileId
 				);
 				const viewButtonTitle = tText(
 					'admin/assignments/views/assignments-overview-admin___bekijk-deze-opdracht'
@@ -808,7 +810,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					onSelectionChanged={setSelectedAssignmentIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllAssignmentsAsSelected}
 					bulkActions={GET_ASSIGNMENT_BULK_ACTIONS(
-						user as Avo.User.User,
+						commonUser,
 						selectedAssignmentIds.length > 0
 					)}
 					onSelectBulkAction={handleBulkAction as any}

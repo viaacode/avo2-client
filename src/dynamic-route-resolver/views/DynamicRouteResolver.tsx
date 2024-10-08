@@ -150,11 +150,11 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 			// Special route exception
 			// /klaar/archief: redirect teachers to search page with klaar filter
-			const userInfo = (loginState as Avo.Auth.LoginResponseLoggedIn)?.userInfo;
+			const commonUserInfo = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
 			if (
 				pathname === '/klaar/archief' &&
-				userInfo &&
-				PermissionService.hasPerm(userInfo, PermissionName.SEARCH)
+				commonUserInfo &&
+				PermissionService.hasPerm(commonUserInfo, PermissionName.SEARCH)
 			) {
 				history.replace(
 					generateSearchLinkString(

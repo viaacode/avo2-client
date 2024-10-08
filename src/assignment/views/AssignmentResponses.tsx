@@ -1,3 +1,5 @@
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	Flex,
@@ -17,6 +19,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
 import React, {
+	type FC,
 	type FunctionComponent,
 	type ReactNode,
 	useCallback,
@@ -41,6 +44,7 @@ import {
 } from '../../shared/components';
 import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
@@ -60,8 +64,6 @@ import { isItemWithMeta } from '../helpers/is-item-with-meta';
 
 import './AssignmentOverview.scss';
 import './AssignmentResponses.scss';
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
-import { PaginationBar } from '@meemoo/react-components';
 
 interface AssignmentResponsesProps
 	extends Omit<DefaultSecureRouteProps<{ id: string }>, 'location'> {
@@ -73,9 +75,8 @@ const DEFAULT_SORT_ORDER = 'desc';
 
 const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	onUpdate = noop,
-	// history,
 	match,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -171,20 +172,20 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const checkPermissions = useCallback(async () => {
 		try {
-			if (user) {
+			if (commonUser) {
 				setCanViewAssignmentResponses(
 					await PermissionService.hasPermissions(
 						[
 							PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES,
 							PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES,
 						],
-						user
+						commonUser
 					)
 				);
 			}
 		} catch (err) {
 			console.error('Failed to check permissions', err, {
-				user,
+				commonUser,
 				permissions: [
 					PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES,
 					PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES,
@@ -196,11 +197,11 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				)
 			);
 		}
-	}, [setCanViewAssignmentResponses, user, tText]);
+	}, [setCanViewAssignmentResponses, commonUser, tText]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
-			if (!canViewAnAssignment(user)) {
+			if (!canViewAnAssignment(commonUser)) {
 				setLoadingInfo({
 					message: tHtml(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
@@ -250,7 +251,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 			const response = await AssignmentService.fetchAssignmentResponses(
 				assignmentId,
-				user,
+				commonUser,
 				sortColumn,
 				sortOrder,
 				columnDataType,
@@ -282,7 +283,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		canViewAssignmentResponses,
 		match.params.id,
 		tableColumns,
-		user,
+		commonUser,
 		sortColumn,
 		sortOrder,
 		query.page,
@@ -604,4 +605,6 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	) : null;
 };
 
-export default AssignmentResponses;
+export default withUser(AssignmentResponses) as FC<
+	Omit<AssignmentResponsesProps, 'user' | 'commonUser'>
+>;

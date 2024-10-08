@@ -27,11 +27,14 @@ export type AssignmentBulkActionOption = SelectOption<string> & {
 };
 
 export const GET_ASSIGNMENT_BULK_ACTIONS = (
-	user: Avo.User.User,
+	commonUser: Avo.User.CommonUser | null | undefined,
 	areRowsSelected: boolean
 ): AssignmentBulkActionOption[] => {
+	if (!commonUser) {
+		return [];
+	}
 	return [
-		...(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_ASSIGNMENTS)
+		...(PermissionService.hasPerm(commonUser, PermissionName.DELETE_ANY_ASSIGNMENTS)
 			? [
 					{
 						label: tText('admin/assignments/assignments___selectie-verwijderen'),
@@ -40,7 +43,7 @@ export const GET_ASSIGNMENT_BULK_ACTIONS = (
 					},
 			  ]
 			: []),
-		...(PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENTS)
+		...(PermissionService.hasPerm(commonUser, PermissionName.EDIT_ANY_ASSIGNMENTS)
 			? [
 					{
 						label: tText('admin/assignments/assignments___selectie-auteur-aanpassen'),

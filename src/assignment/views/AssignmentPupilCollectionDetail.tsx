@@ -1,6 +1,7 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Container, Icon, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
 import React, { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
@@ -26,7 +27,7 @@ type AssignmentPupilCollectionDetailProps = DefaultSecureRouteProps<{
 
 const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollectionDetailProps> = ({
 	match,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -44,7 +45,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
 					{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
 				],
-				user
+				commonUser
 			);
 			if (!canViewAssignmentResponses) {
 				setLoadingInfo({
@@ -72,7 +73,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch assignment and response', err, {
-					user,
+					commonUser,
 					id: assignmentResponseId,
 				})
 			);
@@ -83,13 +84,13 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 				),
 			});
 		}
-	}, [setAssignment, setLoadingInfo, assignmentResponseId, tText, user]);
+	}, [setAssignment, setLoadingInfo, assignmentResponseId, tText, commonUser]);
 
 	// Effects
 
 	useEffect(() => {
-		fetchAssignment();
-	}, [fetchAssignment, user, tText]);
+		fetchAssignment().then(noop);
+	}, [fetchAssignment, commonUser, tText]);
 
 	useEffect(() => {
 		if (assignment && assignmentResponse) {
@@ -109,7 +110,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 					{tText('assignment/views/assignment-pupil-collection-detail___alle-responsen')}
 				</Link>
 			),
-		[tText, toAssignmentResponsesOverview, assignment]
+		[tText, assignment]
 	);
 
 	const renderReadOnlyPupilCollectionBlocks = () => {
@@ -145,7 +146,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 								ITEM: {
 									title: {
 										canClickHeading: PermissionService.hasPerm(
-											user,
+											commonUser,
 											PermissionName.VIEW_ANY_PUBLISHED_ITEMS
 										),
 									},

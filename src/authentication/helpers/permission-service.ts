@@ -7,26 +7,24 @@ import { CollectionService } from '../../collection/collection.service';
 import { Lookup_Enum_Right_Types_Enum } from '../../shared/generated/graphql-db-types';
 import { Locale } from '../../shared/translations/translations.types';
 
-import { getProfileId } from './get-profile-id';
-
 type PermissionInfo = { name: PermissionName; obj?: any | null };
 
 export type Permissions = PermissionName | PermissionInfo | (PermissionName | PermissionInfo)[];
 
 export class PermissionService {
 	public static hasPerm(
-		user: Avo.User.User | Avo.User.CommonUser | undefined,
+		commonUser: Avo.User.CommonUser | undefined,
 		permName: PermissionName
 	): boolean {
-		return PermissionService.getUserPermissions(user).includes(permName);
+		return commonUser?.permissions?.includes(permName) || false;
 	}
 
 	public static hasAtLeastOnePerm(
-		user: Avo.User.User | Avo.User.CommonUser | undefined,
+		commonUser: Avo.User.CommonUser | undefined,
 		permNames: PermissionName[]
 	): boolean {
 		return some(permNames, (permName) =>
-			PermissionService.getUserPermissions(user).includes(permName)
+			PermissionService.getUserPermissions(commonUser).includes(permName)
 		);
 	}
 
@@ -41,11 +39,11 @@ export class PermissionService {
 	/**
 	 * Checks if the user has at least one permission for the permissions list
 	 * @param permissions
-	 * @param user
+	 * @param commonUser
 	 */
 	public static async hasPermissions(
 		permissions: Permissions,
-		user: Avo.User.User | Avo.User.CommonUser | null
+		commonUser: Avo.User.CommonUser | null | undefined
 	): Promise<boolean> {
 		// Reformat all permissions to format: PermissionInfo[]
 		let permissionList: PermissionInfo[];
@@ -71,13 +69,16 @@ export class PermissionService {
 		if (!permissionList.length) {
 			return true; // If no required permissions are passed, then the user is allowed to see the item/page
 		}
-		if (!user) {
-			console.warn('Checking permissions without user object', { permissionList, user });
+		if (!commonUser) {
+			console.warn('Checking permissions without user object', {
+				permissionList,
+				commonUser,
+			});
 			return false;
 		}
 		// Check every permission and return true for the first permission that returns true (lazy eval)
 		for (const perm of permissionList) {
-			if (await PermissionService.hasPermission(perm.name, perm.obj, user)) {
+			if (await PermissionService.hasPermission(perm.name, perm.obj, commonUser)) {
 				return true;
 			}
 		}
@@ -106,15 +107,14 @@ export class PermissionService {
 	public static async hasPermission(
 		permissionName: PermissionName,
 		obj: any | null | undefined,
-		user: Avo.User.User | Avo.User.CommonUser | null | undefined
+		commonUser: Avo.User.CommonUser | null | undefined
 	): Promise<boolean> {
-		const userPermissions = PermissionService.getUserPermissions(user);
-		if (!user || !userPermissions) {
+		const userPermissions = PermissionService.getUserPermissions(commonUser);
+		if (!commonUser || !userPermissions) {
 			return false;
 		}
 		// Check if user has the requested permission
-		const profileId =
-			(user as Avo.User.CommonUser)?.profileId ?? getProfileId(user as Avo.User.User);
+		const profileId = (commonUser as Avo.User.CommonUser)?.profileId;
 		if (!userPermissions.includes(permissionName)) {
 			// If the user doesn't have the permission, then we don't even need to check if the user is the owner of the object.
 			return false;
@@ -230,11 +230,11 @@ export class PermissionService {
 
 	public static async checkPermissions(
 		permissions: Record<string, Permissions>,
-		user: Avo.User.User | Avo.User.CommonUser
+		commonUser: Avo.User.CommonUser | null | undefined
 	): Promise<Record<string, boolean>> {
 		const hasPermissions = await Promise.all(
 			Object.entries(permissions).map(async ([key, permission]) => {
-				const hasPermission = await this.hasPermissions(permission, user);
+				const hasPermission = await this.hasPermissions(permission, commonUser);
 				return [key, hasPermission];
 			})
 		);

@@ -86,7 +86,7 @@ interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 
 const CollectionOrBundleOverview: FunctionComponent<
 	CollectionOrBundleOverviewProps & UserProps
-> = ({ numberOfItems, type, onUpdate = noop, history, user, commonUser }) => {
+> = ({ numberOfItems, type, onUpdate = noop, history, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -148,7 +148,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 				TableColumnDataType.string) as TableColumnDataType;
 			const collections =
 				await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-					user,
+					commonUser,
 					page * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					getOrderObject(
@@ -186,7 +186,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 										{ name: PermissionName.DELETE_ANY_COLLECTIONS },
 									],
 								},
-								user
+								commonUser
 							);
 						}
 					)
@@ -212,7 +212,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 									{ name: PermissionName.DELETE_ANY_BUNDLES },
 								],
 							},
-							user
+							commonUser
 						);
 					})
 				);
@@ -240,10 +240,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 				actionButtons: ['home'],
 			});
 		}
-	}, [user, page, sortColumn, sortOrder, isCollection, tText, query]);
+	}, [commonUser, page, sortColumn, sortOrder, isCollection, tText, query]);
 
 	useEffect(() => {
-		fetchCollections();
+		fetchCollections().then(noop);
 	}, [fetchCollections]);
 
 	useEffect(() => {
@@ -260,9 +260,9 @@ const CollectionOrBundleOverview: FunctionComponent<
 						: PermissionName.PUBLISH_ANY_BUNDLES,
 				},
 			],
-			user
+			commonUser
 		).then((showPublicState) => setShowPublicState(showPublicState));
-	}, [setShowPublicState, isCollection, user]);
+	}, [setShowPublicState, isCollection, commonUser]);
 
 	useEffect(() => {
 		if (collections) {
@@ -315,7 +315,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const handleDeleteCollection = async () => {
 		await deleteCollection(
 			activeModalInfo?.collectionUuid,
-			user,
+			commonUser,
 			isCollection,
 			async () => {
 				await triggerCollectionOrBundleDelete(
@@ -341,7 +341,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	const handleDeleteSelfFromCollection = async () => {
-		await deleteSelfFromCollection(activeModalInfo?.collectionUuid, user, () => {
+		await deleteSelfFromCollection(activeModalInfo?.collectionUuid, commonUser, () => {
 			onUpdate();
 			fetchCollections();
 		});
@@ -380,7 +380,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 		);
 		if (collection) {
 			const assignmentId = await AssignmentService.createAssignmentFromCollection(
-				user,
+				commonUser,
 				collection,
 				withDescription
 			);
@@ -453,14 +453,15 @@ const CollectionOrBundleOverview: FunctionComponent<
 				tText('collection/views/collection-overview___maak-opdracht'),
 				'clipboard',
 				(isCollection &&
-					PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)) ||
+					PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS)) ||
 					false
 			),
 			...createDropdownMenuItem(
 				CollectionMenuAction.openQuickLane,
 				tText('collection/views/collection-overview___delen-met-leerlingen'),
 				'link-2',
-				isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE)
+				isCollection &&
+					PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE)
 			),
 			...createDropdownMenuItem(
 				CollectionMenuAction.delete,
@@ -929,6 +930,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 	);
 };
 
-export default withUser(
-	CollectionOrBundleOverview
-) as FunctionComponent<CollectionOrBundleOverviewProps>;
+export default withUser(CollectionOrBundleOverview) as FunctionComponent<
+	Omit<CollectionOrBundleOverviewProps, 'user' | 'commonUser'>
+>;

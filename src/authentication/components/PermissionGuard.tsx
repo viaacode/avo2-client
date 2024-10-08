@@ -3,8 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { type FunctionComponent, type ReactNode, useEffect, useState } from 'react';
 
-import { LoadingErrorLoadedComponent } from '../../shared/components';
-import { type LoadingInfo } from '../../shared/components/LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
+import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { type Permissions, PermissionService } from '../helpers/permission-service';
 
@@ -13,14 +12,14 @@ import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slot
 export interface PermissionGuardProps {
 	children: ReactNode;
 	permissions: Permissions;
-	user: Avo.User.User | null;
+	commonUser: Avo.User.CommonUser | null;
 	noPermissionsMessage?: string;
 }
 
 const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 	children,
 	permissions,
-	user,
+	commonUser,
 	noPermissionsMessage,
 }) => {
 	const { tText } = useTranslation();
@@ -32,12 +31,12 @@ const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
 	const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
 	useEffect(() => {
-		PermissionService.hasPermissions(permissions, user)
+		PermissionService.hasPermissions(permissions, commonUser)
 			.then((response) => {
 				setHasPermission(response);
 			})
 			.catch((err) => {
-				console.error('Failed to get permissions', err, { permissions, user });
+				console.error('Failed to get permissions', err, { permissions, commonUser });
 				setLoadingInfo({
 					state: 'error',
 					message:

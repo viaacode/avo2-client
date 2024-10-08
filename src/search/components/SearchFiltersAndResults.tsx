@@ -93,7 +93,6 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	searchResultsError,
 	search,
 	history,
-	user,
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -200,12 +199,12 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	useEffect(() => {
 		onFilterStateChanged();
 		updateSearchTerms();
-	}, [onFilterStateChanged, updateSearchTerms, user]);
+	}, [onFilterStateChanged, updateSearchTerms, commonUser]);
 
 	const getBookmarkStatuses = useCallback(async () => {
 		try {
 			const results = searchResults?.results;
-			const profileId = user?.profile?.id;
+			const profileId = commonUser?.profileId;
 
 			if (!results || !profileId) {
 				// search results or user hasn't been loaded yet
@@ -229,20 +228,20 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			console.error(
 				new CustomError('Failed to get bookmark statuses', err, {
 					searchResults,
-					user,
+					commonUser,
 				})
 			);
 			ToastService.danger(
 				tHtml('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
 			);
 		}
-	}, [tHtml, setBookmarkStatuses, searchResults, user]);
+	}, [tHtml, setBookmarkStatuses, searchResults, commonUser]);
 
 	useEffect(() => {
-		if (PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS)) {
+		if (PermissionService.hasPerm(commonUser, PermissionName.CREATE_BOOKMARKS)) {
 			getBookmarkStatuses();
 		}
-	}, [getBookmarkStatuses, user]);
+	}, [getBookmarkStatuses, commonUser]);
 
 	const handleOrderChanged = async (value = 'relevance_desc') => {
 		const valueParts: [SearchOrderProperty, SearchOrderDirection] = value.split('_') as [
@@ -355,7 +354,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				throw new CustomError('Failed to find search result by id');
 			}
 			const type = CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[resultItem.administrative_type];
-			await BookmarksViewsPlaysService.toggleBookmark(uuid, user, type, !active);
+			await BookmarksViewsPlaysService.toggleBookmark(uuid, commonUser, type, !active);
 
 			// Update the local cache of bookmark statuses
 			const bookmarkStatusesTemp = cloneDeep(bookmarkStatuses) || {
@@ -374,7 +373,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {
 					uuid,
-					user,
+					commonUser,
 					searchResults,
 					isBookmarked: !active,
 				})

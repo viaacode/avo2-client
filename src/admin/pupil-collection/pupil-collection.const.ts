@@ -17,11 +17,14 @@ export const PUPIL_COLLECTIONS_PATH = {
 export const ITEMS_PER_PAGE = 20;
 
 export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
-	user: Avo.User.User,
+	commonUser: Avo.User.CommonUser | null | undefined,
 	areRowsSelected: boolean
 ): AssignmentBulkActionOption[] => {
+	if (!commonUser) {
+		return [];
+	}
 	return [
-		...(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_PUPIL_COLLECTIONS)
+		...(PermissionService.hasPerm(commonUser, PermissionName.DELETE_ANY_PUPIL_COLLECTIONS)
 			? [
 					{
 						label: tText(
@@ -32,7 +35,7 @@ export const GET_PUPIL_COLLECTION_BULK_ACTIONS = (
 					},
 			  ]
 			: []),
-		...(PermissionService.hasPerm(user, PermissionName.EDIT_ANY_PUPIL_COLLECTIONS)
+		...(PermissionService.hasPerm(commonUser, PermissionName.EDIT_ANY_PUPIL_COLLECTIONS)
 			? [
 					{
 						label: tText(

@@ -4,8 +4,6 @@ import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
 import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
-import { getUserGroupIds } from '../authentication/authentication.service';
-import { getProfileId } from '../authentication/helpers/get-profile-id';
 import { type ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
@@ -121,7 +119,7 @@ import { isItemWithMeta } from './helpers/is-item-with-meta';
 export class AssignmentService {
 	static async fetchAssignments(
 		canEditAssignments: boolean,
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		pastDeadline: boolean | null,
 		sortColumn: AssignmentOverviewTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
@@ -188,10 +186,8 @@ export class AssignmentService {
 
 			// Filter on academic year for students
 			if (
-				getUserGroupIds(user).some((id) =>
-					[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
-						.map(String)
-						.includes(id)
+				[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary].includes(
+					String(commonUser.userGroup?.id) as SpecialUserGroup
 				)
 			) {
 				filterArray.push({
@@ -212,8 +208,8 @@ export class AssignmentService {
 					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
 				),
 				...(canEditAssignments
-					? { collaborator_profile_id: getProfileId(user) }
-					: { owner_profile_id: getProfileId(user) }),
+					? { collaborator_profile_id: commonUser.profileId }
+					: { owner_profile_id: commonUser.profileId }),
 				filter: filterArray.length ? filterArray : {},
 			};
 
@@ -245,7 +241,7 @@ export class AssignmentService {
 			};
 		} catch (err) {
 			throw new CustomError('Failed to fetch assignments from database', err, {
-				user,
+				commonUser,
 				variables,
 				query: canEditAssignments
 					? 'GET_ASSIGNMENTS_BY_OWNER_ID'
@@ -517,9 +513,9 @@ export class AssignmentService {
 	static async duplicateAssignment(
 		newTitle: string,
 		initialAssignment: Partial<Avo.Assignment.Assignment> | null,
-		user: Avo.User.User
+		commonUser: Avo.User.CommonUser
 	): Promise<Avo.Assignment.Assignment> {
-		const ownerProfileId = user.profile?.id;
+		const ownerProfileId = commonUser?.profileId;
 
 		if (!initialAssignment || !initialAssignment.id || !ownerProfileId) {
 			throw new CustomError(
@@ -528,11 +524,6 @@ export class AssignmentService {
 				{ newTitle, initialAssignment, ownerProfileId }
 			);
 		}
-
-		const commonUser = {
-			loms: user.profile?.loms || [],
-			userGroup: { id: user.profile?.userGroupIds[0] },
-		};
 
 		// See table in AVO-3160, reverted by AVO-3308
 		// const education_level_id = isUserSecondaryElementary(commonUser)
@@ -646,15 +637,15 @@ export class AssignmentService {
 
 	static isOwnerOfAssignment(
 		assignment: Avo.Assignment.Assignment,
-		user: Avo.User.User | undefined
+		commonUser: Avo.User.CommonUser | undefined
 	): boolean {
-		return getProfileId(user) === assignment.owner_profile_id;
+		return !!commonUser?.profileId && commonUser?.profileId === assignment.owner_profile_id;
 	}
 
 	// Fetch assignment responses for response overview page
 	static async fetchAssignmentResponses(
 		assignmentId: string,
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		sortColumn: AssignmentOverviewTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
@@ -740,7 +731,7 @@ export class AssignmentService {
 			};
 		} catch (err) {
 			throw new CustomError('Failed to fetch assignments from database', err, {
-				user,
+				commonUser,
 				variables,
 				query: 'GET_ASSIGNMENT_RESPONSES_BY_ASSIGNMENT_ID',
 			});
@@ -921,20 +912,20 @@ export class AssignmentService {
 	 * @param assignment assignment is passed since the tempAssignment has not been set into the state yet,
 	 * since we might need to get the assignment content as well and
 	 * this looks cleaner if everything loads at once instead of staggered
-	 * @param user
+	 * @param commonUser
 	 */
 	static async createOrFetchAssignmentResponseObject(
 		assignment: Avo.Assignment.Assignment,
-		user: Avo.User.User | undefined
+		commonUser: Avo.User.CommonUser | undefined
 	): Promise<Omit<Avo.Assignment.Response, 'assignment'> | null> {
 		try {
-			if (!user || !user.profile) {
+			if (!commonUser || !commonUser.profileId) {
 				return null;
 			}
 			const existingAssignmentResponse:
 				| Omit<Avo.Assignment.Response, 'assignment'>
 				| undefined = await AssignmentService.getAssignmentResponse(
-				user.profile.id,
+				commonUser.profileId,
 				assignment?.id
 			);
 
@@ -953,7 +944,7 @@ export class AssignmentService {
 
 			// Student has never viewed this assignment before, we should create a response object for him
 			const assignmentResponse: Partial<Avo.Assignment.Response> = {
-				owner_profile_id: getProfileId(user),
+				owner_profile_id: commonUser.profileId,
 				assignment_id: assignment.id,
 				collection_title: assignment.lom_learning_resource_type?.includes(
 					AssignmentType.BOUW
@@ -1078,7 +1069,7 @@ export class AssignmentService {
 	}
 
 	static async createAssignmentFromCollection(
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		collection: Avo.Collection.Collection,
 		withDescription: boolean
 	): Promise<string> {
@@ -1086,9 +1077,9 @@ export class AssignmentService {
 			{
 				title: collection.title,
 				description: collection.description ?? undefined,
-				owner_profile_id: getProfileId(user),
+				owner_profile_id: commonUser.profileId,
 			},
-			user.profile?.id as string
+			commonUser.profileId
 		);
 
 		const assignmentId = assignment?.id;
@@ -1122,14 +1113,14 @@ export class AssignmentService {
 					education_level: String(assignment?.education_level_id),
 				},
 			},
-			user
+			commonUser
 		);
 
 		return assignmentId;
 	}
 
 	static async createAssignmentFromFragment(
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		item: Avo.Item.Item & {
 			start_oc?: number | null;
 			end_oc?: number | null;
@@ -1138,7 +1129,7 @@ export class AssignmentService {
 		const assignment = await AssignmentService.insertAssignment(
 			{
 				title: item.title,
-				owner_profile_id: getProfileId(user),
+				owner_profile_id: commonUser.profileId,
 				blocks: [
 					{
 						fragment_id: item.external_id,
@@ -1155,7 +1146,7 @@ export class AssignmentService {
 					},
 				] as Avo.Assignment.Assignment['blocks'],
 			},
-			user.profile?.id as string
+			commonUser.profileId
 		);
 
 		if (!assignment) {

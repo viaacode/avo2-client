@@ -18,8 +18,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -128,7 +127,6 @@ interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabI
 const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	onUpdate = noop,
 	match,
-	user,
 	commonUser,
 	history,
 	location,
@@ -314,14 +312,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						PermissionName.EDIT_ANY_ASSIGNMENTS,
 					],
 				},
-				user
+				commonUser
 			);
 
 			const allPermissions = {
 				canPublish: checkedPermissions.canPublish,
 				canEdit:
-					isUserAssignmentOwner(user, tempAssignment) ||
-					isUserAssignmentContributor(user, tempAssignment) ||
+					isUserAssignmentOwner(commonUser, tempAssignment) ||
+					isUserAssignmentContributor(commonUser, tempAssignment) ||
 					checkedPermissions.canEditAllAssignments,
 				canFetchBookmarkAndViewCounts: checkedPermissions.canFetchBookmarkAndViewCounts,
 			};
@@ -343,7 +341,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			if (checkedPermissions?.canFetchBookmarkAndViewCounts) {
 				try {
 					setBookmarkViewCounts(
-						await BookmarksViewsPlaysService.getAssignmentCounts(assignmentId, user)
+						await BookmarksViewsPlaysService.getAssignmentCounts(
+							assignmentId,
+							commonUser
+						)
 					);
 				} catch (err) {
 					console.error(
@@ -371,12 +372,12 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			});
 		}
 		setAssignmentLoading(false);
-	}, [user, match.params.id, tText, history, setOriginalAssignment, setAssignment]);
+	}, [match.params.id, commonUser?.permissions, assignmentId, commonUser, setAssignment, tHtml]);
 
 	// Events
 
 	const handleOnSave = async () => {
-		if (!user.profile?.id || !originalAssignment) {
+		if (!commonUser?.profileId || !originalAssignment) {
 			return;
 		}
 
@@ -418,7 +419,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 	const submit = async () => {
 		try {
-			if (!user.profile?.id || !originalAssignment || !assignment) {
+			if (!commonUser?.profileId || !originalAssignment || !assignment) {
 				return;
 			}
 
@@ -444,7 +445,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					...assignment,
 					id: originalAssignment.id,
 				},
-				user.profile?.id
+				commonUser?.profileId
 			);
 
 			if (updated && assignment?.id) {
@@ -469,7 +470,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							education_level: String(assignment?.education_level_id),
 						},
 					},
-					user
+					commonUser
 				);
 
 				// Re-fetch
@@ -550,7 +551,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const onForcedExitPage = async () => {
 		setIsForcedExit(true);
 		try {
-			if (!user.profile?.id || !originalAssignment) {
+			if (!commonUser?.profileId || !originalAssignment) {
 				return;
 			}
 
@@ -560,7 +561,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					...assignment,
 					id: originalAssignment.id,
 				},
-				user.profile?.id
+				commonUser?.profileId
 			);
 
 			ToastService.success(
@@ -625,7 +626,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 								education_level: String(assignment?.education_level_id),
 							},
 						},
-						user
+						commonUser
 					);
 				},
 			},
@@ -733,10 +734,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		() =>
 			assignment && (
 				<Flex align="start">
-					<HeaderOwnerAndContributors subject={assignment} user={user} />
+					<HeaderOwnerAndContributors subject={assignment} commonUser={commonUser} />
 				</Flex>
 			),
-		[assignment, user]
+		[assignment, commonUser]
 	);
 
 	const renderMeta = useMemo(() => {
@@ -839,15 +840,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS:
-				return (
-					<AssignmentResponses
-						history={history}
-						match={match}
-						user={user}
-						commonUser={commonUser}
-						onUpdate={onUpdate}
-					/>
-				);
+				return <AssignmentResponses history={history} match={match} onUpdate={onUpdate} />;
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
 				return (
@@ -1092,7 +1085,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					onCancel={cancelSaveBar}
 				/>
 			</div>
-			{!!user && (
+			{!!commonUser && (
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
 					onConfirm={selectEducationLevel}
@@ -1118,8 +1111,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 		if (
 			assignment?.id &&
-			!isUserAssignmentOwner(user, assignment) &&
-			!isUserAssignmentContributor(user, assignment) &&
+			!isUserAssignmentOwner(commonUser, assignment) &&
+			!isUserAssignmentContributor(commonUser, assignment) &&
 			!permissions.canEdit
 		) {
 			return (
@@ -1176,7 +1169,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 			<BeforeUnloadPrompt when={unsavedChanges && !isForcedExit} />
 
-			{!!assignment && !!user && (
+			{!!assignment && !!commonUser && (
 				<PublishAssignmentModal
 					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
 						setIsPublishModalOpen(false);

@@ -114,7 +114,7 @@ enum AddCollectionTab {
 }
 
 const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
-	user,
+	commonUser,
 	isOpen,
 	onClose = noop,
 	addCollectionCallback,
@@ -134,7 +134,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 
 	const fetchCollections = useCallback(async () => {
 		try {
-			if (!user) {
+			if (!commonUser) {
 				throw new CustomError('Could not determine authenticated user.');
 			}
 
@@ -147,7 +147,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			let collections: Partial<Avo.Collection.Collection>[];
 			if (activeView === AddCollectionTab.myCollections) {
 				collections = await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-					user,
+					commonUser,
 					0,
 					null,
 					getOrderObject(
@@ -162,7 +162,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 				);
 			} else {
 				collections = await CollectionService.fetchBookmarkedCollectionsByOwner(
-					user,
+					commonUser,
 					0,
 					null,
 					getOrderObject(
@@ -184,7 +184,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 				),
 			});
 		}
-	}, [tableColumns, activeView, user, filterString, sortColumn, sortOrder, tText]);
+	}, [commonUser, tableColumns, activeView, sortColumn, sortOrder, filterString, tHtml]);
 
 	useEffect(() => {
 		if (collections) {
@@ -196,7 +196,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 
 	useEffect(() => {
 		if (isOpen) {
-			fetchCollections();
+			fetchCollections().then(noop);
 		}
 	}, [isOpen, fetchCollections]);
 

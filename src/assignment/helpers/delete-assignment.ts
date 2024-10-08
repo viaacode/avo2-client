@@ -10,7 +10,7 @@ import { AssignmentType } from '../assignment.types';
 
 export async function deleteAssignment(
 	assignment: Avo.Assignment.Assignment,
-	user: Avo.User.User,
+	commonUser: Avo.User.CommonUser | null | undefined,
 	afterDeleteCallback?: () => void
 ): Promise<void> {
 	const assignmentId = assignment.id;
@@ -25,7 +25,7 @@ export async function deleteAssignment(
 			return;
 		}
 
-		if (!user.profile?.id) {
+		if (!commonUser?.profileId) {
 			ToastService.danger(
 				tHtml(
 					'assignment/helpers/delete-assignment___kan-opdracht-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
@@ -45,7 +45,7 @@ export async function deleteAssignment(
 					education_level: String(assignment?.education_level_id),
 				},
 			},
-			user
+			commonUser
 		);
 
 		afterDeleteCallback?.();
@@ -66,7 +66,7 @@ export async function deleteAssignment(
 
 export async function deleteSelfFromAssignment(
 	assignmentId: string | null | undefined,
-	user: Avo.User.User,
+	commonUser: Avo.User.CommonUser | null | undefined,
 	afterDeleteCallback?: () => void
 ): Promise<void> {
 	try {
@@ -79,7 +79,7 @@ export async function deleteSelfFromAssignment(
 			return;
 		}
 
-		if (!user.profile?.id) {
+		if (!commonUser?.profileId) {
 			ToastService.danger(
 				tHtml(
 					'assignment/helpers/delete-assignment___kan-opdracht-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
@@ -88,7 +88,7 @@ export async function deleteSelfFromAssignment(
 			return;
 		}
 
-		await AssignmentService.deleteContributor(assignmentId, undefined, user.profile.id);
+		await AssignmentService.deleteContributor(assignmentId, undefined, commonUser.profileId);
 
 		afterDeleteCallback?.();
 

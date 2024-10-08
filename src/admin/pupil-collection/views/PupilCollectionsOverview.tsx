@@ -44,7 +44,9 @@ import {
 } from '../pupil-collection.const';
 import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
-const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
+const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response[] | null>(
@@ -420,7 +422,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					}}
 					onSelectAll={setAllPupilCollectionsAsSelected}
 					bulkActions={GET_PUPIL_COLLECTION_BULK_ACTIONS(
-						user as Avo.User.User,
+						commonUser,
 						selectedPupilCollectionIds.length > 0
 					)}
 					onSelectBulkAction={handleBulkAction as any}

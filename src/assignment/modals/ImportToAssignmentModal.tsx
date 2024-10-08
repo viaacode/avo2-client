@@ -38,6 +38,7 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
@@ -54,7 +55,6 @@ import AssignmentDeadline from '../components/AssignmentDeadline';
 import './AddItemsModals.scss';
 
 interface ImportToAssignmentModalProps {
-	user: Avo.User.User;
 	isOpen: boolean;
 	onClose?: () => void;
 	importToAssignmentCallback: (assignmentId: string, createWithDescription: boolean) => void;
@@ -66,8 +66,8 @@ interface ImportToAssignmentModalProps {
 	};
 }
 
-const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> = ({
-	user,
+const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps & UserProps> = ({
+	commonUser,
 	isOpen,
 	onClose,
 	importToAssignmentCallback,
@@ -90,6 +90,14 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 
 	const fetchAssignments = useCallback(async () => {
 		try {
+			if (!commonUser) {
+				ToastService.danger(
+					tHtml(
+						'Er ging iets mis bij het ophalen van de opdrachten. Gelieve de pagina te herladen.'
+					)
+				);
+				return;
+			}
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
@@ -97,7 +105,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				TableColumnDataType.string) as TableColumnDataType;
 			const assignmentData = await AssignmentService.fetchAssignments(
 				true, // canEditAssignments,
-				user,
+				commonUser,
 				false, // not past deadline
 				sortColumn,
 				sortOrder,
@@ -119,7 +127,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				),
 			});
 		}
-	}, [tableColumns, user, filterString, sortColumn, sortOrder, tText]);
+	}, [commonUser, tableColumns, sortColumn, sortOrder, filterString, tHtml]);
 
 	useEffect(() => {
 		if (assignments) {
@@ -327,4 +335,4 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	);
 };
 
-export default ImportToAssignmentModal;
+export default withUser(ImportToAssignmentModal) as FunctionComponent<ImportToAssignmentModalProps>;

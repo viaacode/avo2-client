@@ -11,9 +11,8 @@ import {
 	type TabProps,
 	Tabs,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
-import { cloneDeep, get, isEmpty, isNil, set } from 'lodash-es';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { cloneDeep, get, isEmpty, isNil, noop, set } from 'lodash-es';
 import React, {
 	type FunctionComponent,
 	type ReactNode,
@@ -162,7 +161,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	CollectionOrBundleEditProps &
 		DefaultSecureRouteProps<{ id: string; tabId: CollectionCreateUpdateTab | undefined }> &
 		UserProps
-> = ({ type, history, match, user, commonUser }) => {
+> = ({ type, history, match, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -223,7 +222,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	}, [setLoadingInfo]);
 
 	useEffect(() => {
-		updateCollectionEditorWithLoading();
+		updateCollectionEditorWithLoading().then(noop);
 	}, [updateCollectionEditorWithLoading]);
 
 	const updateHasUnsavedChanges = (
@@ -383,9 +382,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const isPublic = collectionState.currentCollection?.is_public || false;
 	const isOwner =
 		!!collectionState.currentCollection?.owner_profile_id &&
-		collectionState.currentCollection?.owner_profile_id === user?.profile?.id;
+		collectionState.currentCollection?.owner_profile_id === commonUser?.profileId;
 	const isContributor = !!(collectionState.currentCollection?.contributors || []).find(
-		(contributor) => !!contributor.profile_id && contributor.profile_id === user?.profile?.id
+		(contributor) =>
+			!!contributor.profile_id && contributor.profile_id === commonUser?.profileId
 	);
 	const shouldDeleteSelfFromCollection = isContributor && !permissions.canDelete;
 
@@ -401,7 +401,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 				setLoadingInfo(noRightsError);
 			}
 		}
-	}, [user, collectionState.currentCollection, contributors]);
+	}, [commonUser, collectionState.currentCollection, contributors]);
 
 	const [draggableListButton, draggableListModal] = useDraggableListModal({
 		button: {
@@ -478,7 +478,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						},
 					],
 				},
-				user
+				commonUser
 			);
 
 			if (!permissionObj.canEdit && !isAdmin) {
@@ -520,7 +520,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 
 			try {
 				setBookmarkViewPlayCounts(
-					await BookmarksViewsPlaysService.getCollectionCounts(collectionObj.id, user)
+					await BookmarksViewsPlaysService.getCollectionCounts(
+						collectionObj.id,
+						commonUser
+					)
 				);
 			} catch (err) {
 				console.error(
@@ -578,10 +581,10 @@ const CollectionOrBundleEdit: FunctionComponent<
 				icon: IconName.alertTriangle,
 			});
 		}
-	}, [user, collectionId, setLoadingInfo, tText, isCollection, type, contributors]);
+	}, [commonUser, collectionId, setLoadingInfo, tText, isCollection, type, contributors]);
 
 	useEffect(() => {
-		checkPermissionsAndGetCollection();
+		checkPermissionsAndGetCollection().then(noop);
 	}, [checkPermissionsAndGetCollection]);
 
 	useEffect(() => {
@@ -612,12 +615,9 @@ const CollectionOrBundleEdit: FunctionComponent<
 		setCurrentTab(tabName);
 	};
 
-	const getCollectionEditTabs = (
-		user: Avo.User.User | undefined,
-		isCollection: boolean
-	): TabProps[] => {
+	const getCollectionEditTabs = (isCollection: boolean): TabProps[] => {
 		const showAdminTab: boolean = PermissionService.hasAtLeastOnePerm(
-			user,
+			commonUser,
 			isCollection
 				? [
 						PermissionName.EDIT_COLLECTION_QUALITY_LABELS,
@@ -634,12 +634,15 @@ const CollectionOrBundleEdit: FunctionComponent<
 			(isCollection &&
 				get(collectionState, 'currentCollection.is_managed') &&
 				PermissionService.hasPerm(
-					user,
+					commonUser,
 					PermissionName.VIEW_COLLECTION_EDITORIAL_OVERVIEWS
 				)) ||
 			(!isCollection &&
 				get(collectionState, 'currentCollection.is_managed') &&
-				PermissionService.hasPerm(user, PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS))
+				PermissionService.hasPerm(
+					commonUser,
+					PermissionName.VIEW_BUNDLE_EDITORIAL_OVERVIEWS
+				))
 		);
 		return [
 			{
@@ -690,7 +693,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	};
 
 	// Add active state to current tab
-	const tabs: TabProps[] = getCollectionEditTabs(user, isCollection).map((tab: TabProps) => ({
+	const tabs: TabProps[] = getCollectionEditTabs(isCollection).map((tab: TabProps) => ({
 		...tab,
 		active: currentTab === tab.id,
 	}));
@@ -754,7 +757,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 		return await CollectionService.updateCollection(
 			collectionState.initialCollection,
 			collectionState.currentCollection,
-			user,
+			commonUser,
 			checkValidation,
 			isCollection
 		);
@@ -814,7 +817,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 								role: contributorType,
 							},
 						},
-						user
+						commonUser
 					);
 				}
 			}
@@ -841,7 +844,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const handleDeleteCollection = async () => {
 		await deleteCollection(
 			collectionId,
-			user,
+			commonUser,
 			isCollection,
 			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
 			() => navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
@@ -849,7 +852,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	};
 
 	const handleDeleteSelfFromCollection = async () => {
-		await deleteSelfFromCollection(collectionId, user, () =>
+		await deleteSelfFromCollection(collectionId, commonUser, () =>
 			navigate(history, APP_PATH.WORKSPACE_TAB.route, { tabId: COLLECTIONS_ID })
 		);
 	};
@@ -1080,7 +1083,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	const onForcedExitPage = async () => {
 		setIsForcedExit(true);
 		try {
-			if (!user.profile?.id) {
+			if (!commonUser?.profileId) {
 				return;
 			}
 
@@ -1179,7 +1182,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 	};
 
 	const canAddItemToCollectionOrBundle = PermissionService.hasPerm(
-		user,
+		commonUser,
 		isCollection
 			? PermissionName.ADD_ITEM_TO_COLLECTION_BY_PID
 			: PermissionName.ADD_COLLECTION_TO_BUNDLE_BY_ID
@@ -1420,7 +1423,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						/>
 					}
 					category={type}
-					showMetaData
+					showMetaData={true}
 					bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
 					views={String(bookmarkViewPlayCounts.viewCount || 0)}
 				>
@@ -1441,7 +1444,7 @@ const CollectionOrBundleEdit: FunctionComponent<
 						<HeaderBottomRowLeft>
 							<HeaderOwnerAndContributors
 								subject={collectionState.currentCollection}
-								user={user as Avo.User.User}
+								commonUser={commonUser}
 							/>
 						</HeaderBottomRowLeft>
 					)}

@@ -95,18 +95,27 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 					url: window.location.href,
 					body: JSON.stringify(body),
 					html_body: `<dl>
-  <dt>${tText('Bericht')}</dt><dd>${body.description}</dd>
-  <dt>${tText('Bijlage')}</dt><dd>${renderAttachment(
-		formValues.attachmentUrl,
-		formValues.wantsToUploadAttachment
-  )}</dd>
-  <dt>${tText('School of organisatie')}</dt><dd>${body.organisation}</dd>
-  <dt>${tText('Methode')}</dt><dd>${body.method}</dd>
-  <dt>${tText('Onderwijsniveaus')}</dt><dd>${body.educationLevels}</dd>
+  <dt>${tText(
+		'user-item-request-form/views/educational-author-item-request-form___bericht'
+  )}</dt><dd>${body.description}</dd>
+  <dt>${tText(
+		'user-item-request-form/views/educational-author-item-request-form___bijlage'
+  )}</dt><dd>${renderAttachment(formValues.attachmentUrl, formValues.wantsToUploadAttachment)}</dd>
+  <dt>${tText(
+		'user-item-request-form/views/educational-author-item-request-form___school-of-organisatie'
+  )}</dt><dd>${body.organisation}</dd>
+  <dt>${tText(
+		'user-item-request-form/views/educational-author-item-request-form___methode'
+  )}</dt><dd>${body.method}</dd>
+  <dt>${tText(
+		'user-item-request-form/views/educational-author-item-request-form___onderwijsniveaus'
+  )}</dt><dd>${body.educationLevels}</dd>
 </dl>`,
 					public: false,
 				},
-				subject: tText('Uitgeverij aanvraag item'),
+				subject: tText(
+					'user-item-request-form/views/educational-author-item-request-form___uitgeverij-aanvraag-item'
+				),
 				requester: {
 					email: commonUser?.email,
 					name: getFullNameCommonUser(commonUser, true, false) || '',
@@ -123,14 +132,22 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 				commonUser
 			);
 
-			ToastService.success(tHtml('Je aanvraag is verstuurt'));
+			ToastService.success(
+				tHtml(
+					'user-item-request-form/views/educational-author-item-request-form___je-aanvraag-is-verstuurt'
+				)
+			);
 			redirectToClientPage(
 				APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route,
 				history
 			);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
-			ToastService.danger(tHtml('Het versturen van je aanvraag is mislukt'));
+			ToastService.danger(
+				tHtml(
+					'user-item-request-form/views/educational-author-item-request-form___het-versturen-van-je-aanvraag-is-mislukt'
+				)
+			);
 		}
 		setIsLoading(false);
 	};
@@ -139,11 +156,17 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 		return (
 			<>
 				<BlockHeading type="h2">
-					{tHtml('Niet gevonden wat je zocht? Vraag het aan')}
+					{tHtml(
+						'user-item-request-form/views/educational-author-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan'
+					)}
 				</BlockHeading>
-				{tHtml('Vul onderstaand formulier in')}
+				{tHtml(
+					'user-item-request-form/views/educational-author-item-request-form___vul-onderstaand-formulier-in'
+				)}
 				<Container mode="vertical">
-					{tHtml('Omschrijf je aanvraag')}
+					{tHtml(
+						'user-item-request-form/views/educational-author-item-request-form___omschrijf-je-aanvraag'
+					)}
 					<FormGroup error={formErrors.description}>
 						<TextArea
 							id="description"
@@ -152,12 +175,16 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 								setFormValues({ ...formValues, description: newDescription })
 							}
 							rows={isMobileWidth() ? 6 : 15}
-							placeholder={tText('Gebruikersaanvraag beschrijving')}
+							placeholder={tText(
+								'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-beschrijving'
+							)}
 						/>
 					</FormGroup>
 					<FormGroup label="" labelFor="attachment">
 						<Checkbox
-							label={tText('Ik wil een bijlage opladen')}
+							label={tText(
+								'user-item-request-form/views/educational-author-item-request-form___ik-wil-een-bijlage-opladen'
+							)}
 							checked={formValues.wantsToUploadAttachment}
 							onChange={(checked) =>
 								setFormValues({ ...formValues, wantsToUploadAttachment: checked })
@@ -173,14 +200,18 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 								ownerId=""
 								allowedTypes={DOC_TYPES}
 								allowMulti={false}
-								label={tText('Selecteer een bestand (word, excel, ... max xxx mb)')}
+								label={tText(
+									'user-item-request-form/views/educational-author-item-request-form___selecteer-een-bestand-word-excel-max-xxx-mb'
+								)}
 							/>
 						)}
 					</FormGroup>
 					{isEducationalUser(commonUser) && (
 						<>
 							<FormGroup
-								label={tText('Naam uitgeverij')}
+								label={tText(
+									'user-item-request-form/views/educational-author-item-request-form___naam-uitgeverij'
+								)}
 								labelFor="organisation"
 								error={formErrors.organisation}
 							>
@@ -197,7 +228,9 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 								/>
 							</FormGroup>
 							<FormGroup
-								label={tText('Naam methode')}
+								label={tText(
+									'user-item-request-form/views/educational-author-item-request-form___naam-methode'
+								)}
 								labelFor="method"
 								error={formErrors.method}
 							>
@@ -231,7 +264,9 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 										})
 									}
 									allowMultiSelect={true}
-									educationLabel={tText('Onderwijsgraden')}
+									educationLabel={tText(
+										'user-item-request-form/views/educational-author-item-request-form___onderwijsgraden'
+									)}
 								/>
 							</FormGroup>
 						</>
@@ -244,12 +279,16 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 								<Button
 									type="primary"
 									onClick={onSend}
-									label={tText('Aanvraag indienen')}
+									label={tText(
+										'user-item-request-form/views/educational-author-item-request-form___aanvraag-indienen'
+									)}
 								/>
 							)}
 						</FormGroup>
 					</Spacer>
-					{tHtml('Welk materiaal komt in aanmerking voor publicatie')}
+					{tHtml(
+						'user-item-request-form/views/educational-author-item-request-form___welk-materiaal-komt-in-aanmerking-voor-publicatie'
+					)}
 				</Container>
 			</>
 		);
@@ -259,10 +298,18 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 		<Container className="p-item-request-form" mode="vertical">
 			<Container mode="horizontal" size="large">
 				<Helmet>
-					<title>{GENERATE_SITE_TITLE(tText('Gebruikersaanvraag pagina titel'))}</title>
+					<title>
+						{GENERATE_SITE_TITLE(
+							tText(
+								'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-titel'
+							)
+						)}
+					</title>
 					<meta
 						name="description"
-						content={tText('Gebruikersaanvraag pagina beschrijving')}
+						content={tText(
+							'user-item-request-form/views/educational-author-item-request-form___gebruikersaanvraag-pagina-beschrijving'
+						)}
 					/>
 				</Helmet>
 				<div className="c-content">{renderForm()}</div>

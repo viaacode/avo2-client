@@ -21,7 +21,6 @@ import { type Avo } from '@viaa/avo2-types';
 import { once } from 'lodash-es';
 import React, { type FunctionComponent, useEffect, useState } from 'react';
 
-import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
@@ -50,7 +49,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 	itemMetaData,
 	isOpen,
 	onClose,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -70,7 +69,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 	const fetchCollections = React.useCallback(
 		() =>
 			CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-				user as Avo.User.User,
+				commonUser,
 				0,
 				500,
 				{ created_at: 'desc' },
@@ -86,7 +85,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 								},
 							},
 							{
-								owner_profile_id: { _eq: getProfileId(user) },
+								owner_profile_id: { _eq: commonUser?.profileId },
 							},
 						],
 					},
@@ -103,7 +102,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 						)
 					);
 				}),
-		[user, tHtml]
+		[commonUser, tHtml]
 	);
 
 	useEffect(() => {
@@ -199,7 +198,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 					object_type: 'collection',
 					action: 'add_to',
 				},
-				user
+				commonUser
 			);
 		} catch (err) {
 			console.error(err);
@@ -225,7 +224,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 				title: newCollectionTitle,
 				thumbnail_path: null,
 				is_public: false,
-				owner_profile_id: getProfileId(user),
+				owner_profile_id: commonUser?.profileId,
 				type_id: ContentTypeNumber.collection,
 			};
 			try {
@@ -245,7 +244,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 
 			// Enable is_managed by default when one of these user groups creates a collection/bundle
 			// https://meemoo.atlassian.net/browse/AVO-1453
-			if (canManageEditorial(user)) {
+			if (canManageEditorial(commonUser)) {
 				newCollection.is_managed = true;
 			}
 
@@ -258,7 +257,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 					object_type: 'collection',
 					action: 'create',
 				},
-				user
+				commonUser
 			);
 
 			// Add fragment to collection

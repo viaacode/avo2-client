@@ -43,7 +43,7 @@ import { ItemBulkAction } from './ItemsOverview.types';
 
 type ItemsOverviewProps = DefaultSecureRouteProps;
 
-const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
+const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
@@ -145,10 +145,10 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			);
 
 			// Only show published/unpublished items based on permissions
-			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
+			if (!PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_PUBLISHED_ITEMS)) {
 				andFilters.push({ is_published: { _eq: false } });
 			}
-			if (!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_ITEMS)) {
+			if (!PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_UNPUBLISHED_ITEMS)) {
 				andFilters.push({ is_published: { _eq: true } });
 			}
 
@@ -181,7 +181,7 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ user }) => {
 			});
 		}
 		setIsLoading(false);
-	}, [tableColumns, setLoadingInfo, setItems, setItemCount, tableState, user, tText]);
+	}, [tableColumns, setLoadingInfo, setItems, setItemCount, tableState, commonUser, tText]);
 
 	const fetchAllSeries = useCallback(async () => {
 		try {

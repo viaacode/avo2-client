@@ -17,7 +17,7 @@ import {
 	TextInput,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import { get, orderBy } from 'lodash-es';
+import { get, noop, orderBy } from 'lodash-es';
 import React, {
 	type FunctionComponent,
 	type ReactNode,
@@ -71,7 +71,7 @@ interface CollectionOrBundleEditAdminProps {
 
 const CollectionOrBundleEditAdmin: FunctionComponent<
 	CollectionOrBundleEditAdminProps & UserProps
-> = ({ collection, changeCollectionState, history, user, onFocus }) => {
+> = ({ collection, changeCollectionState, history, commonUser, onFocus }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -112,7 +112,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				)
 			);
 		}
-	}, [setBundlesContainingCollection, tText, collection]);
+	}, [collection, tHtml]);
 
 	const fetchQualityLabels = useCallback(async () => {
 		try {
@@ -131,7 +131,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				)
 			);
 		}
-	}, [setQualityLabels, tText]);
+	}, [tHtml]);
 
 	const fetchAssociatedQuickLanes = useCallback(async () => {
 		try {
@@ -156,12 +156,12 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				)
 			);
 		}
-	}, [setAssociatedQuickLanes, tText, collection]);
+	}, [collection, tHtml]);
 
 	useEffect(() => {
-		fetchBundlesByCollectionUuid();
-		fetchQualityLabels();
-		fetchAssociatedQuickLanes();
+		fetchBundlesByCollectionUuid().then(noop);
+		fetchQualityLabels().then(noop);
+		fetchAssociatedQuickLanes().then(noop);
 	}, [fetchBundlesByCollectionUuid, fetchQualityLabels, fetchAssociatedQuickLanes]);
 
 	const updateCollectionMultiProperty = (
@@ -431,7 +431,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										</FormGroup>
 									)}
 									{PermissionService.hasPerm(
-										user,
+										commonUser,
 										isCollection
 											? PermissionName.EDIT_COLLECTION_QUALITY_LABELS
 											: PermissionName.EDIT_BUNDLE_QUALITY_LABELS
@@ -456,7 +456,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										</FormGroup>
 									)}
 									{PermissionService.hasPerm(
-										user,
+										commonUser,
 										isCollection
 											? PermissionName.EDIT_COLLECTION_AUTHOR
 											: PermissionName.EDIT_BUNDLE_AUTHOR
@@ -486,7 +486,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										</FormGroup>
 									)}
 									{PermissionService.hasPerm(
-										user,
+										commonUser,
 										isCollection
 											? PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS
 											: PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS
