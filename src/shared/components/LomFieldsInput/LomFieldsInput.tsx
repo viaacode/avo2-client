@@ -1,6 +1,5 @@
 import { FormGroup, Spacer, type TagInfo, TagsInput } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { LomType } from '@viaa/avo2-types';
+import { type Avo, LomType } from '@viaa/avo2-types';
 import { uniq } from 'lodash-es';
 import React, { type FC, useMemo } from 'react';
 
@@ -27,6 +26,10 @@ type LomFieldsInputProps = {
 	showEducationDegrees?: boolean;
 	showThemes?: boolean;
 	showSubjects?: boolean;
+	educationLabel?: string;
+	educationDegreesLabel?: string;
+	themesLabel?: string;
+	subjectsLabel?: string;
 	isEducationRequired?: boolean;
 	isEducationDegreesRequired?: boolean;
 	isThemesRequired?: boolean;
@@ -41,6 +44,7 @@ type LomFieldsInputProps = {
 	 * https://meemoo.atlassian.net/browse/AVO-2881?focusedCommentId=43453
 	 */
 	limitDegreesByAlreadySelectedLevels?: boolean;
+	allowMultiSelect?: boolean;
 };
 
 const LomFieldsInput: FC<LomFieldsInputProps> = ({
@@ -54,11 +58,16 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	isEducationDegreesRequired = false,
 	isThemesRequired = false,
 	isSubjectsRequired = false,
+	educationLabel,
+	educationDegreesLabel,
+	themesLabel,
+	subjectsLabel,
 	educationLevelsPlaceholder,
 	subjectsPlaceholder,
 	themesPlaceholder,
 	limitDegreesByAlreadySelectedLevels = false,
 	filterSubjects = () => true,
+	allowMultiSelect = true,
 }) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => groupLoms(loms), [loms]);
@@ -117,7 +126,10 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 		<Spacer margin="bottom">
 			{showEducation && (
 				<FormGroup
-					label={tText('shared/components/lom-fields-input/lom-fields-input___onderwijs')}
+					label={
+						educationLabel ||
+						tText('shared/components/lom-fields-input/lom-fields-input___onderwijs')
+					}
 					labelFor="educationId"
 					required={isEducationRequired}
 				>
@@ -135,14 +147,18 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 							handleChange(values, LomType.educationDegree, allEducationLevels || [])
 						}
 						placeholder={educationLevelsPlaceholder}
+						allowMulti={allowMultiSelect}
 					/>
 				</FormGroup>
 			)}
 			{showEducationDegrees && !!educationDegreeOptions.length && (
 				<FormGroup
-					label={tText(
-						'shared/components/lom-fields-input/lom-fields-input___onderwijsgraden'
-					)}
+					label={
+						educationDegreesLabel ||
+						tText(
+							'shared/components/lom-fields-input/lom-fields-input___onderwijsgraden'
+						)
+					}
 					labelFor="educationDegreesId"
 					required={isEducationDegreesRequired}
 				>
@@ -163,12 +179,16 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 							)
 						}
 						placeholder={educationLevelsPlaceholder}
+						allowMulti={allowMultiSelect}
 					/>
 				</FormGroup>
 			)}
 			{showThemes && !!allThemes?.length && (
 				<FormGroup
-					label={tText('shared/components/lom-fields-input/lom-fields-input___themas')}
+					label={
+						themesLabel ||
+						tText('shared/components/lom-fields-input/lom-fields-input___themas')
+					}
 					labelFor="themeId"
 					required={isThemesRequired}
 				>
@@ -179,12 +199,16 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 						onChange={(values) => handleChange(values, LomType.theme, allThemes || [])}
 						placeholder={themesPlaceholder}
 						isLoading={isThemesLoading}
+						allowMulti={allowMultiSelect}
 					/>
 				</FormGroup>
 			)}
 			{showSubjects && (
 				<FormGroup
-					label={tText('shared/components/lom-fields-input/lom-fields-input___vakken')}
+					label={
+						subjectsLabel ||
+						tText('shared/components/lom-fields-input/lom-fields-input___vakken')
+					}
 					labelFor="subjectId"
 					required={isSubjectsRequired}
 				>
@@ -197,6 +221,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 							handleChange(values, LomType.subject, allSubjects || [])
 						}
 						placeholder={subjectsPlaceholder}
+						allowMulti={allowMultiSelect}
 					/>
 				</FormGroup>
 			)}

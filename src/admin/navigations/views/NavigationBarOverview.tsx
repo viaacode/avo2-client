@@ -11,7 +11,7 @@ import './NavigationBarOverview.scss';
 
 const NavigationOverview = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
-		default: adminCoreModule.NavigationOverview,
+		default: adminCoreModule.NavigationBarOverview,
 	}))
 );
 

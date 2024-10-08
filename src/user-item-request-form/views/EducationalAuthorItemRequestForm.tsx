@@ -1,4 +1,5 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { TextInput } from '@meemoo/react-components';
 import {
 	Button,
 	Checkbox,
@@ -8,6 +9,7 @@ import {
 	Spinner,
 	TextArea,
 } from '@viaa/avo2-components';
+import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
 import React, { type FunctionComponent, useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -18,42 +20,47 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
+import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
 import { getFullNameCommonUser, isMobileWidth } from '../../shared/helpers';
 import { DOC_TYPES } from '../../shared/helpers/files';
-import { groupLomLinks } from '../../shared/helpers/lom';
 import { validateForm } from '../../shared/helpers/validate-form';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ZendeskService } from '../../shared/services/zendesk-service';
+import { isEducationalUser } from '../helpers/is-educational-user';
 
-import { USER_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './UserItemRequestForm.consts';
+import { EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './EducationalAuthorItemRequestForm.consts';
 import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss';
 
-export type UserItemRequestFormProps = DefaultSecureRouteProps;
+export type EducationalAuthorItemRequestFormProps = DefaultSecureRouteProps;
 
 interface FormValues {
 	description: string;
 	wantsToUploadAttachment: boolean;
 	attachmentUrl: string | null;
+	organisation: string;
+	method: string;
+	educationLevels: Avo.Lom.LomField[];
 }
 
-const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
-	history,
-	commonUser,
-}) => {
+const EducationalAuthorItemRequestForm: FunctionComponent<
+	EducationalAuthorItemRequestFormProps
+> = ({ history, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [formValues, setFormValues] = useState<FormValues>({
 		description: '',
 		wantsToUploadAttachment: false,
 		attachmentUrl: null,
+		organisation: commonUser.organisation?.name || '',
+		method: '',
+		educationLevels: [],
 	});
 	const [formErrors, setFormErrors] = useState<Partial<Record<keyof FormValues, string>>>({});
-
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const onSend = async () => {
@@ -62,7 +69,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 			setIsLoading(true);
 			const newFormErrors = await validateForm(
 				formValues,
-				USER_ITEM_REQUEST_FORM_VALIDATION_SCHEMA
+				EDUCATIONAL_AUTHOR_ITEM_REQUEST_FORM_VALIDATION_SCHEMA
 			);
 			if (newFormErrors) {
 				setFormErrors(newFormErrors);
@@ -72,17 +79,14 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 			}
 
 			// create zendesk ticket
-			const groupedLoms = groupLomLinks(commonUser.loms);
 			const body = {
 				description: formValues.description,
 				firstName: commonUser.firstName,
 				lastName: commonUser.lastName,
 				email: commonUser.email,
-				organisation: (commonUser?.educationalOrganisations || [])
-					.map((org) => org.organisationLabel)
-					.join(', '),
-				subjects: groupedLoms.subject.map((subject) => subject.label).join(', '),
-				educationLevels: groupedLoms.educationLevel
+				organisation: formValues.organisation,
+				method: formValues.method,
+				educationLevels: formValues.educationLevels
 					.map((educationLevel) => educationLevel.label)
 					.join(', '),
 			};
@@ -91,27 +95,18 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 					url: window.location.href,
 					body: JSON.stringify(body),
 					html_body: `<dl>
-  <dt>${tText('user-item-request-form/views/user-item-request-form___bericht')}</dt><dd>${
-		body.description
-  }</dd>
-  <dt>${tText(
-		'user-item-request-form/views/user-item-request-form___bijlage'
-  )}</dt><dd>${renderAttachment(formValues.attachmentUrl, formValues.wantsToUploadAttachment)}</dd>
-  <dt>${tText(
-		'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
-  )}</dt><dd>${body.organisation}</dd>
-  <dt>${tText('user-item-request-form/views/user-item-request-form___vakken')}</dt><dd>${
-		body.subjects
-  }</dd>
-  <dt>${tText('user-item-request-form/views/user-item-request-form___onderwijsniveaus')}</dt><dd>${
-		body.educationLevels
-  }</dd>
+  <dt>${tText('Bericht')}</dt><dd>${body.description}</dd>
+  <dt>${tText('Bijlage')}</dt><dd>${renderAttachment(
+		formValues.attachmentUrl,
+		formValues.wantsToUploadAttachment
+  )}</dd>
+  <dt>${tText('School of organisatie')}</dt><dd>${body.organisation}</dd>
+  <dt>${tText('Methode')}</dt><dd>${body.method}</dd>
+  <dt>${tText('Onderwijsniveaus')}</dt><dd>${body.educationLevels}</dd>
 </dl>`,
 					public: false,
 				},
-				subject: tText(
-					'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-item'
-				),
+				subject: tText('Uitgeverij aanvraag item'),
 				requester: {
 					email: commonUser?.email,
 					name: getFullNameCommonUser(commonUser, true, false) || '',
@@ -128,19 +123,14 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 				commonUser
 			);
 
-			ToastService.success(
-				tHtml(
-					'authentication/views/registration-flow/r-4-manual-registration___je-aanvraag-is-verstuurt'
-				)
+			ToastService.success(tHtml('Je aanvraag is verstuurt'));
+			redirectToClientPage(
+				APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM.route,
+				history
 			);
-			redirectToClientPage(APP_PATH.USER_ITEM_REQUEST_FORM_CONFIRM.route, history);
 		} catch (err) {
 			console.error('Failed to create zendesk ticket', err, ticket);
-			ToastService.danger(
-				tHtml(
-					'user-item-request-form/views/user-item-request-form___het-versturen-van-je-aanvraag-is-mislukt'
-				)
-			);
+			ToastService.danger(tHtml('Het versturen van je aanvraag is mislukt'));
 		}
 		setIsLoading(false);
 	};
@@ -149,17 +139,11 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 		return (
 			<>
 				<BlockHeading type="h2">
-					{tHtml(
-						'user-item-request-form/views/user-item-request-form___niet-gevonden-wat-je-zocht-vraag-het-aan'
-					)}
+					{tHtml('Niet gevonden wat je zocht? Vraag het aan')}
 				</BlockHeading>
-				{tHtml(
-					'user-item-request-form/views/user-item-request-form___vul-onderstaand-formulier-in'
-				)}
+				{tHtml('Vul onderstaand formulier in')}
 				<Container mode="vertical">
-					{tHtml(
-						'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
-					)}
+					{tHtml('Omschrijf je aanvraag')}
 					<FormGroup error={formErrors.description}>
 						<TextArea
 							id="description"
@@ -168,16 +152,12 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 								setFormValues({ ...formValues, description: newDescription })
 							}
 							rows={isMobileWidth() ? 6 : 15}
-							placeholder={tText(
-								'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-beschrijving'
-							)}
+							placeholder={tText('Gebruikersaanvraag beschrijving')}
 						/>
 					</FormGroup>
 					<FormGroup label="" labelFor="attachment">
 						<Checkbox
-							label={tText(
-								'user-item-request-form/views/user-item-request-form___ik-wil-een-bijlage-opladen'
-							)}
+							label={tText('Ik wil een bijlage opladen')}
 							checked={formValues.wantsToUploadAttachment}
 							onChange={(checked) =>
 								setFormValues({ ...formValues, wantsToUploadAttachment: checked })
@@ -193,12 +173,69 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 								ownerId=""
 								allowedTypes={DOC_TYPES}
 								allowMulti={false}
-								label={tText(
-									'user-item-request-form/views/user-item-request-form___selecteer-een-betand-word-excel-max-xxx-mb'
-								)}
+								label={tText('Selecteer een bestand (word, excel, ... max xxx mb)')}
 							/>
 						)}
 					</FormGroup>
+					{isEducationalUser(commonUser) && (
+						<>
+							<FormGroup
+								label={tText('Naam uitgeverij')}
+								labelFor="organisation"
+								error={formErrors.organisation}
+							>
+								<TextInput
+									className="c-input-react-components"
+									id="organisation"
+									value={formValues.organisation}
+									onChange={(evt) =>
+										setFormValues({
+											...formValues,
+											organisation: evt.currentTarget.value,
+										})
+									}
+								/>
+							</FormGroup>
+							<FormGroup
+								label={tText('Naam methode')}
+								labelFor="method"
+								error={formErrors.method}
+							>
+								<TextInput
+									className="c-input-react-components"
+									id="method"
+									value={formValues.method}
+									onChange={(evt) =>
+										setFormValues({
+											...formValues,
+											method: evt.currentTarget.value,
+										})
+									}
+								/>
+							</FormGroup>
+							<FormGroup error={formErrors.educationLevels}>
+								<LomFieldsInput
+									loms={formValues.educationLevels}
+									isEducationRequired={true}
+									showEducation={true}
+									isEducationDegreesRequired={false}
+									showEducationDegrees={false}
+									isSubjectsRequired={false}
+									showSubjects={false}
+									isThemesRequired={false}
+									showThemes={false}
+									onChange={(newLoms) =>
+										setFormValues({
+											...formValues,
+											educationLevels: newLoms || [],
+										})
+									}
+									allowMultiSelect={true}
+									educationLabel={tText('Onderwijsgraden')}
+								/>
+							</FormGroup>
+						</>
+					)}
 					<Spacer margin={['top', 'bottom-extra-large']}>
 						<FormGroup>
 							{isLoading ? (
@@ -207,16 +244,12 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 								<Button
 									type="primary"
 									onClick={onSend}
-									label={tText(
-										'user-item-request-form/views/user-item-request-form___aanvraag-indienen'
-									)}
+									label={tText('Aanvraag indienen')}
 								/>
 							)}
 						</FormGroup>
 					</Spacer>
-					{tHtml(
-						'user-item-request-form/views/user-item-request-form___welk-materiaal-komt-in-aanmerking-voor-publicatie'
-					)}
+					{tHtml('Welk materiaal komt in aanmerking voor publicatie')}
 				</Container>
 			</>
 		);
@@ -226,18 +259,10 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 		<Container className="p-item-request-form" mode="vertical">
 			<Container mode="horizontal" size="large">
 				<Helmet>
-					<title>
-						{GENERATE_SITE_TITLE(
-							tText(
-								'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-titel'
-							)
-						)}
-					</title>
+					<title>{GENERATE_SITE_TITLE(tText('Gebruikersaanvraag pagina titel'))}</title>
 					<meta
 						name="description"
-						content={tText(
-							'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-pagina-beschrijving'
-						)}
+						content={tText('Gebruikersaanvraag pagina beschrijving')}
 					/>
 				</Helmet>
 				<div className="c-content">{renderForm()}</div>
@@ -246,4 +271,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 	);
 };
 
-export default compose(withRouter, withUser)(UserItemRequestForm) as FunctionComponent;
+export default compose(
+	withRouter,
+	withUser
+)(EducationalAuthorItemRequestForm) as FunctionComponent<EducationalAuthorItemRequestFormProps>;

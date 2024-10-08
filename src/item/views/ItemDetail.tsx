@@ -85,6 +85,7 @@ import {
 	defaultRenderSearchLink,
 } from '../../shared/helpers/default-render-search-link';
 import { stringsToTagList } from '../../shared/helpers/strings-to-taglist';
+import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import withUser from '../../shared/hocs/withUser';
 import { useCutModal } from '../../shared/hooks/use-cut-modal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -110,7 +111,6 @@ import ReportItemModal from '../components/modals/ReportItemModal';
 import { RELATED_ITEMS_AMOUNT } from '../item.const';
 import { type ItemTrimInfo } from '../item.types';
 import './ItemDetail.scss';
-import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 
 interface ItemDetailProps {
 	id?: string; // Item id when component needs to be used inside another component and the id cannot come from the url (match.params.id)
@@ -1031,7 +1031,6 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 						onClose={() => {
 							setIsReportItemModalOpen(false);
 						}}
-						user={user}
 					/>
 				)}
 				{PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE) && (

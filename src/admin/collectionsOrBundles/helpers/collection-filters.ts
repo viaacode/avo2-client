@@ -1,5 +1,4 @@
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { first, get, isNil, without } from 'lodash-es';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
@@ -23,7 +22,7 @@ import {
 /**
  * Generates the filters for the collections and bundles screens and the actualisation, quality check and marcom screens
  * @param filters the filter object containing the selected values. this is also stored in the url of the overview page
- * @param user
+ * @param commonUser
  * @param isCollection switch between collection and bundles since they are loaded from the same table
  * @param includeDeleted determines of a filter for omitting deleted collections should be added or not
  * @param checkPermissions for the collection and bundle overview you need a specific permission
@@ -31,7 +30,7 @@ import {
  */
 export function generateCollectionWhereObject(
 	filters: Partial<CollectionTableStates>,
-	user: Avo.User.User,
+	commonUser: Avo.User.CommonUser,
 	isCollection: boolean,
 	includeDeleted: boolean,
 	checkPermissions: boolean,
@@ -134,20 +133,23 @@ export function generateCollectionWhereObject(
 		// Only show published/unpublished collections/bundles based on permissions
 		if (
 			(isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS)) ||
+				!PermissionService.hasPerm(
+					commonUser,
+					PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS
+				)) ||
 			(!isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
+				!PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
 		) {
 			andFilters.push({ is_public: { _eq: false } });
 		}
 		if (
 			(isCollection &&
 				!PermissionService.hasPerm(
-					user,
+					commonUser,
 					PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS
 				)) ||
 			(!isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
+				!PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
 		) {
 			andFilters.push({ is_public: { _eq: true } });
 		}

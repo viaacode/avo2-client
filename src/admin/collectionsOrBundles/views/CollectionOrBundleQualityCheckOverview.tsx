@@ -57,7 +57,7 @@ type CollectionOrBundleQualityCheckOverviewProps = DefaultSecureRouteProps;
 
 const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 	CollectionOrBundleQualityCheckOverviewProps
-> = ({ location, user }) => {
+> = ({ location, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -161,7 +161,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 		(filters: Partial<CollectionOrBundleQualityCheckTableState>) => {
 			const andFilters: any[] = generateCollectionWhereObject(
 				filters,
-				user,
+				commonUser,
 				isCollection,
 				true,
 				false,
@@ -170,15 +170,15 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 
 			return { _and: andFilters };
 		},
-		[isCollection, user]
+		[isCollection, commonUser]
 	);
 
-	const getColumnDataType = () => {
+	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find(
 			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
 		);
 		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	};
+	}, [tableColumns, tableState.sort_column]);
 
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
@@ -221,7 +221,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 		}
 
 		setIsLoading(false);
-	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
+	}, [tableState, getColumnDataType, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();

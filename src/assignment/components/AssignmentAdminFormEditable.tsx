@@ -9,8 +9,7 @@ import {
 	TagsInput,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { type Dispatch, type FC, type SetStateAction } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';

@@ -61,7 +61,7 @@ type CollectionOrBundleMarcomOverviewProps = DefaultSecureRouteProps;
 
 const CollectionOrBundleMarcomOverview: FunctionComponent<
 	CollectionOrBundleMarcomOverviewProps
-> = ({ location, user }) => {
+> = ({ location, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -200,7 +200,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 		(filters: Partial<CollectionOrBundleMarcomTableState>) => {
 			const andFilters: any[] = generateCollectionWhereObject(
 				filters,
-				user,
+				commonUser,
 				isCollection,
 				true,
 				false,
@@ -209,7 +209,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 
 			return { _and: andFilters };
 		},
-		[isCollection, user]
+		[isCollection, commonUser]
 	);
 
 	const getColumnDataType = () => {

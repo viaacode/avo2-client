@@ -57,7 +57,7 @@ type CollectionOrBundleActualisationOverviewProps = DefaultSecureRouteProps;
 
 const CollectionOrBundleActualisationOverview: FunctionComponent<
 	CollectionOrBundleActualisationOverviewProps
-> = ({ location, user }) => {
+> = ({ location, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -162,7 +162,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 		(filters: Partial<CollectionOrBundleActualisationTableState>) => {
 			const andFilters: any[] = generateCollectionWhereObject(
 				filters,
-				user,
+				commonUser,
 				isCollection,
 				true,
 				false,
@@ -171,7 +171,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 
 			return { _and: andFilters };
 		},
-		[isCollection, user]
+		[isCollection, commonUser]
 	);
 
 	const getColumnDataType = () => {

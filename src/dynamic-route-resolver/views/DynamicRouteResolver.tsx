@@ -294,13 +294,13 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					</Helmet>
 					<JsonLd
 						url={window.location.href}
-						title={get(routeInfo.data, 'title', '')}
+						title={routeInfo.data?.title || ''}
 						description={description}
-						image={get(routeInfo.data, 'thumbnail_path')}
-						isOrganisation={!!get(routeInfo.data, 'profile.organisation')}
-						author={getFullName(get(routeInfo.data, 'profile'), true, false)}
+						image={routeInfo.data?.thumbnail_path}
+						isOrganisation={!!routeInfo.data?.profile?.organisation}
+						author={getFullName(routeInfo.data?.profile, true, false)}
 						publishedAt={getPublishedDate(routeInfo.data)}
-						updatedAt={get(routeInfo.data, 'updated_at')}
+						updatedAt={routeInfo.data?.updated_at}
 					/>
 					{routeInfo.data && (
 						<ContentPageRenderer

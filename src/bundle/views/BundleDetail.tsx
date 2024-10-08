@@ -25,7 +25,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get, isNil } from 'lodash-es';
+import { compact, get, isNil } from 'lodash-es';
 import React, { type FunctionComponent, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
@@ -727,17 +727,14 @@ const BundleDetail: FunctionComponent<
 				</Helmet>
 				<JsonLd
 					url={window.location.href}
-					title={get(bundle, 'title')}
-					description={get(bundle, 'description')}
-					image={get(bundle, 'thumbnail_path')}
-					isOrganisation={!!get(bundle, 'profile.organisation')}
-					author={getFullName(get(bundle, 'profile'), true, false)}
-					publishedAt={get(bundle, 'published_at')}
-					updatedAt={get(bundle, 'updated_at')}
-					keywords={[
-						...(get(bundle, 'lom_classification') || []),
-						...(get(bundle, 'lom_context') || []),
-					]}
+					title={bundle?.title}
+					description={bundle?.description}
+					image={bundle?.thumbnail_path}
+					isOrganisation={!!bundle?.profile?.organisation}
+					author={getFullName(bundle?.profile, true, false)}
+					publishedAt={bundle?.published_at}
+					updatedAt={bundle?.updated_at}
+					keywords={compact(bundle?.loms?.map((lom) => lom.lom?.label))}
 				/>
 				<div
 					className={classnames(

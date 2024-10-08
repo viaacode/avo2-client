@@ -11,7 +11,7 @@ import { Flex, Spinner } from '@viaa/avo2-components';
 
 const NavigationDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
-		default: adminCoreModule.NavigationDetail,
+		default: adminCoreModule.NavigationBarDetail,
 	}))
 );
 

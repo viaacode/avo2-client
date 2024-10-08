@@ -15,7 +15,6 @@ import { Link } from 'react-router-dom';
 
 import { ASSIGNMENT_CREATE_UPDATE_TABS } from '../../../assignment/assignment.const';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { CollectionService } from '../../../collection/collection.service';
 import { useGetCollectionsEditStatuses } from '../../../collection/hooks/useGetCollectionsEditStatuses';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
@@ -27,7 +26,7 @@ import {
 } from '../../../shared/components';
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
-import { buildLink, CustomError, getFullName } from '../../../shared/helpers';
+import { buildLink, CustomError, getFullNameCommonUser } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
@@ -69,7 +68,7 @@ type CollectionsOrBundlesOverviewProps = DefaultSecureRouteProps;
 
 const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOverviewProps> = ({
 	location,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -195,7 +194,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 		(filters: Partial<CollectionsOrBundlesTableState>) => {
 			const andFilters: any[] = generateCollectionWhereObject(
 				filters,
-				user,
+				commonUser,
 				isCollection,
 				false,
 				true,
@@ -204,7 +203,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			return { _and: andFilters };
 		},
-		[isCollection, user]
+		[isCollection, commonUser]
 	);
 
 	const getColumnDataType = () => {
@@ -382,7 +381,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
 				compact(selectedCollectionIds),
-				getProfileId(user)
+				commonUser.profileId
 			);
 
 			ToastService.success(
@@ -424,7 +423,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 			await CollectionsOrBundlesService.bulkDeleteCollections(
 				compact(selectedCollectionIds),
-				getProfileId(user)
+				commonUser.profileId
 			);
 
 			ToastService.success(
@@ -458,7 +457,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
 				compact(selectedCollectionIds),
-				getProfileId(user)
+				commonUser.profileId
 			);
 
 			ToastService.success(
@@ -493,7 +492,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
 					compact(selectedCollectionIds),
-					getProfileId(user)
+					commonUser.profileId
 				);
 
 				ToastService.success(
@@ -506,7 +505,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
 					labels,
 					compact(selectedCollectionIds),
-					getProfileId(user)
+					commonUser.profileId
 				);
 				ToastService.success(
 					tHtml(
@@ -572,7 +571,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				}
 				const isCollectionBeingEdited = isContentBeingEdited(
 					editStatuses?.[collectionOrBundle.id as string],
-					user.profile?.id
+					commonUser.profileId
 				);
 				const viewButtonTitle = isCollection
 					? tText(
@@ -729,12 +728,8 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					onClose={() => setChangeAuthorModalOpen(false)}
 					callback={(newAuthor: PickerItem) => bulkChangeAuthor(newAuthor.value)}
 					initialAuthor={{
-						label: getFullName(
-							user as { profile: Avo.User.Profile },
-							true,
-							false
-						) as string,
-						value: getProfileId(user),
+						label: getFullNameCommonUser(commonUser, true, false) || '',
+						value: commonUser.profileId,
 						type: 'PROFILE',
 					}}
 				/>

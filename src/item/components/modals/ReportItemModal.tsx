@@ -13,13 +13,12 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import type { Requests } from 'node-zendesk';
 import React, { type FunctionComponent, useState } from 'react';
 
-import { getFullName } from '../../../shared/helpers';
+import { getFullNameCommonUser } from '../../../shared/helpers';
 import { tText } from '../../../shared/helpers/translate';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -29,7 +28,6 @@ interface ReportItemModalProps {
 	externalId: string;
 	isOpen: boolean;
 	onClose: () => void;
-	user: Avo.User.User;
 }
 
 type Reason = 'broken' | 'inappropriate' | 'copyright';
@@ -40,11 +38,11 @@ const GET_RADIO_BUTTON_LABELS = () => ({
 	copyright: tText('item/components/modals/report-item-modal___schending-auteursrechten'),
 });
 
-const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
+const ReportItemModal: FunctionComponent<ReportItemModalProps & UserProps> = ({
 	externalId,
 	isOpen,
 	onClose,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -86,8 +84,8 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 					'item/components/modals/report-item-modal___media-item-gerapporteerd-door-gebruiker-op-av-o-2'
 				),
 				requester: {
-					email: get(user, 'mail'),
-					name: getFullName(user as any, true, false) || '',
+					email: commonUser?.email,
+					name: getFullNameCommonUser(commonUser, true, false) || '',
 				},
 			};
 			await ZendeskService.createTicket(ticket as Requests.CreateModel);
@@ -98,7 +96,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 					object_type: 'item',
 					action: 'report',
 				},
-				user
+				commonUser
 			);
 
 			onClose();
@@ -109,7 +107,7 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 			console.error('Failed to create zendesk ticket for reporting an item', err, {
 				ticket,
 				externalId,
-				user,
+				commonUser,
 			});
 			ToastService.danger(
 				tHtml(
@@ -217,4 +215,4 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps> = ({
 	return renderReportItemModal();
 };
 
-export default ReportItemModal;
+export default withUser(ReportItemModal) as FunctionComponent<ReportItemModalProps>;

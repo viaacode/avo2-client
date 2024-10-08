@@ -12,7 +12,7 @@ import { Flex, Spinner } from '@viaa/avo2-components';
 
 const NavigationEdit = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
-		default: adminCoreModule.NavigationEdit,
+		default: adminCoreModule.NavigationItemEdit,
 	}))
 );
 

@@ -15,6 +15,7 @@ interface MultiThemeSelectDropdownProps {
 	isLoading: boolean;
 	onChange: (newThemes: TagInfo[]) => void;
 	placeholder?: string;
+	allowMulti?: boolean;
 }
 
 const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
@@ -24,6 +25,7 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 	isLoading,
 	onChange,
 	placeholder,
+	allowMulti = true,
 }) => {
 	const groupedThemes = groupBy(allThemes, 'broader');
 	const { null: categories, ...themeGroups } = groupedThemes;
@@ -43,7 +45,7 @@ const MultiThemeSelectDropdown: FC<MultiThemeSelectDropdownProps> = ({
 			className={classnames('c-multi-theme-select', 'c-tags-input')}
 			classNamePrefix="c-tags-input"
 			onChange={(newValue) => onChange(newValue as TagInfo[])}
-			isMulti
+			isMulti={allowMulti}
 			isLoading={isLoading}
 			placeholder={placeholder || null}
 		/>

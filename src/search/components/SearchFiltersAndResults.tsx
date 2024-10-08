@@ -16,8 +16,7 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import {
 	cloneDeep,
@@ -55,6 +54,7 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
 import { type AppState } from '../../store';
+import { isEducationalUser } from '../../user-item-request-form/helpers/is-educational-user';
 import {
 	DEFAULT_FILTER_STATE,
 	DEFAULT_SORT_ORDER,
@@ -94,6 +94,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	search,
 	history,
 	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const resultsCount = searchResults?.count ?? 0;
@@ -107,8 +108,13 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		!enabledFilters || enabledFilters?.includes('collectionLabel')
 	);
 
-	const navigateToUserRequestForm = () =>
-		navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
+	const navigateToItemRequestForm = () => {
+		if (isEducationalUser(commonUser)) {
+			navigate(history, APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route);
+		} else {
+			navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
+		}
+	};
 
 	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
 		filterState.orderDirection || 'desc'
@@ -438,7 +444,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				}
 				bookmarkStatuses={bookmarkStatuses}
 				qualityLabels={qualityLabels}
-				navigateUserRequestForm={navigateToUserRequestForm}
+				navigateUserRequestForm={navigateToItemRequestForm}
 				bookmarkButtons={bookmarks}
 				renderDetailLink={renderDetailLink}
 				renderSearchLink={renderSearchLink}
