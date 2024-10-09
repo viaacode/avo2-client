@@ -877,10 +877,16 @@ const AssignmentDetail: FC<
 						{hasCopies && (
 							<Grid>
 								<Column size="3-3">
-									<p className="u-text-bold">{tHtml('Extra informatie')}</p>
+									<p className="u-text-bold">
+										{tHtml(
+											'assignment/views/assignment-detail___extra-informatie'
+										)}
+									</p>
 
 									<p className="c-body-1">
-										{`${tText('Deze opdracht is een kopie van')} `}
+										{`${tText(
+											'assignment/views/assignment-detail___deze-opdracht-is-een-kopie-van'
+										)} `}
 										{((assignment?.relations ?? []) as Relation[]).map(
 											(relation: Relation) => (
 												<Link
