@@ -1540,7 +1540,7 @@ const CollectionDetail: FunctionComponent<
 					<Helmet>
 						<title>
 							{GENERATE_SITE_TITLE(
-								collection?.title ??
+								collection?.title ||
 									tText(
 										'collection/views/collection-detail___collectie-detail-titel-fallback'
 									)

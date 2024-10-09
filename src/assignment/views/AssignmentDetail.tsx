@@ -949,6 +949,10 @@ const AssignmentDetail: FC<
 		);
 	};
 
+	const pageTitle = GENERATE_SITE_TITLE(
+		assignment?.title ||
+			tText('assignment/views/assignment-detail___opdracht-detail-pagina-titel')
+	);
 	return (
 		<>
 			{!assignment && !assignmentLoading && !assignmentError && isForbidden ? (
@@ -962,13 +966,7 @@ const AssignmentDetail: FC<
 				<div className="c-sticky-bar__wrapper">
 					<div>
 						<Helmet>
-							<title>
-								{GENERATE_SITE_TITLE(
-									tText(
-										'assignment/views/assignment-detail___opdracht-detail-pagina-titel'
-									)
-								)}
-							</title>
+							<title>{pageTitle}</title>
 
 							<meta
 								name="description"
