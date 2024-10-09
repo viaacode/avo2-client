@@ -326,7 +326,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				message: tHtml('item/views/item-detail___het-ophalen-van-het-item-is-mislukt'),
 			});
 		}
-	}, [commonUser, location.pathname, itemId, retrieveRelatedItems, tHtml, goToDetailLink]);
+		// Avoid calling this function too many times
+		// TODO switch fetching to react-query so these called are cached
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [itemId, setItem, tText, history, commonUser]);
 
 	useEffect(() => {
 		if (item) {
