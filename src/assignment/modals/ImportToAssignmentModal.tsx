@@ -46,6 +46,7 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL,
+	ITEMS_PER_PAGE,
 } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
@@ -103,20 +104,19 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps & 
 			);
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
-			const assignmentData = await AssignmentService.fetchAssignments(
-				true, // canEditAssignments,
-				commonUser,
-				false, // not past deadline
+			const assignmentData = await AssignmentService.fetchAssignments({
+				canEditAssignments: true,
+				pastDeadline: false,
 				sortColumn,
 				sortOrder,
-				columnDataType,
-				0, // page
-				filterString, // filter,
-				[],
-				[],
-				[],
-				null // limit: no limit
-			);
+				tableColumnDataType: columnDataType,
+				offset: 0,
+				limit: ITEMS_PER_PAGE,
+				filterString,
+				labelIds: [],
+				classIds: [],
+				shareTypeIds: [],
+			});
 			setAssignments(assignmentData.assignments);
 		} catch (err) {
 			console.error(new CustomError('Failed to get assignments', err));

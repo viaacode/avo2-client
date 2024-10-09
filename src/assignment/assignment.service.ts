@@ -3,7 +3,6 @@ import { cloneDeep, compact, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
-import { SpecialUserGroup } from '../admin/user-groups/user-group.const';
 import { type ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
@@ -35,10 +34,6 @@ import {
 	type GetAssignmentResponsesQueryVariables,
 	type GetAssignmentsAdminOverviewQuery,
 	type GetAssignmentsAdminOverviewQueryVariables,
-	type GetAssignmentsByOwnerOrContributorQuery,
-	type GetAssignmentsByOwnerOrContributorQueryVariables,
-	type GetAssignmentsByResponseOwnerIdQuery,
-	type GetAssignmentsByResponseOwnerIdQueryVariables,
 	type GetAssignmentWithResponseQuery,
 	type GetAssignmentWithResponseQueryVariables,
 	type GetContributorsByAssignmentUuidQuery,
@@ -71,8 +66,6 @@ import {
 	GetAssignmentResponsesByAssignmentIdDocument,
 	GetAssignmentResponsesDocument,
 	GetAssignmentsAdminOverviewDocument,
-	GetAssignmentsByOwnerOrContributorDocument,
-	GetAssignmentsByResponseOwnerIdDocument,
 	GetAssignmentWithResponseDocument,
 	GetContributorsByAssignmentUuidDocument,
 	GetMaxPositionAssignmentBlocksDocument,
@@ -111,140 +104,47 @@ import {
 	AssignmentType,
 	type PupilCollectionFragment,
 } from './assignment.types';
-import { endOfAcademicYear, startOfAcademicYear } from './helpers/academic-year';
 import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';
 import { isItemWithMeta } from './helpers/is-item-with-meta';
 
 export class AssignmentService {
-	static async fetchAssignments(
-		canEditAssignments: boolean,
-		commonUser: Avo.User.CommonUser,
-		pastDeadline: boolean | null,
-		sortColumn: AssignmentOverviewTableColumns,
-		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: TableColumnDataType,
-		page: number,
-		filterString: string | undefined,
-		labelIds: string[] | undefined,
-		classIds: string[] | undefined,
-		shareTypeIds: string[] | undefined,
-		limit: number | null = ITEMS_PER_PAGE
-	): Promise<{
+	static async fetchAssignments(params: {
+		pastDeadline: boolean | null;
+		sortColumn: AssignmentOverviewTableColumns;
+		sortOrder: Avo.Search.OrderDirection;
+		tableColumnDataType: TableColumnDataType;
+		offset: number;
+		limit?: number | null;
+		filterString: string | undefined;
+		labelIds: string[] | undefined;
+		classIds: string[] | undefined;
+		shareTypeIds: string[] | undefined;
+	}): Promise<{
 		assignments: Avo.Assignment.Assignment[];
 		count: number;
 	}> {
-		let variables:
-			| GetAssignmentsByOwnerOrContributorQueryVariables
-			| GetAssignmentsByResponseOwnerIdQueryVariables
-			| null = null;
 		try {
-			const trimmedFilterString = filterString && filterString.trim();
-			const filterArray: any[] = [];
-			if (trimmedFilterString) {
-				filterArray.push({
-					_or: [
-						{ title: { _ilike: `%${trimmedFilterString}%` } },
-						{
-							labels: {
-								assignment_label: { label: { _ilike: `%${trimmedFilterString}%` } },
-							},
-						},
-						...(!canEditAssignments // Only search by teacher if user is not a teacher
-							? [{ owner: { full_name: { _ilike: `%${trimmedFilterString}%` } } }]
-							: []),
-					],
-				});
-			}
-			if (labelIds && labelIds.length) {
-				filterArray.push({
-					labels: { assignment_label_id: { _in: labelIds } },
-				});
-			}
-			if (classIds && classIds.length) {
-				filterArray.push({
-					labels: { assignment_label_id: { _in: classIds } },
-				});
-			}
-			if (shareTypeIds?.length) {
-				filterArray.push({
-					share_type: { _in: shareTypeIds },
-				});
-			}
-			if (!isNil(pastDeadline)) {
-				if (pastDeadline) {
-					filterArray.push({ deadline_at: { _lt: new Date().toISOString() } });
-				} else {
-					filterArray.push({
-						_or: [
-							{ deadline_at: { _gt: new Date().toISOString() } },
-							{ deadline_at: { _is_null: true } },
-						],
-					});
-				}
-			}
-
-			// Filter on academic year for students
-			if (
-				[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary].includes(
-					String(commonUser.userGroup?.id) as SpecialUserGroup
-				)
-			) {
-				filterArray.push({
-					_and: [
-						{ deadline_at: { _gte: startOfAcademicYear().toISOString() } },
-						{ deadline_at: { _lte: endOfAcademicYear().toISOString() } },
-					],
-				});
-			}
-
-			variables = {
-				limit,
-				offset: limit === null ? 0 : page * limit,
-				order: getOrderObject(
-					sortColumn,
-					sortOrder,
-					tableColumnDataType,
-					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
-				),
-				...(canEditAssignments
-					? { collaborator_profile_id: commonUser.profileId }
-					: { owner_profile_id: commonUser.profileId }),
-				filter: filterArray.length ? filterArray : {},
-			};
-
-			// Get the assignment from graphql
-			const assignmentResponse = await dataService.query<
-				GetAssignmentsByOwnerOrContributorQuery | GetAssignmentsByResponseOwnerIdQuery,
-				| GetAssignmentsByOwnerOrContributorQueryVariables
-				| GetAssignmentsByResponseOwnerIdQueryVariables
-			>({
-				variables,
-				query: canEditAssignments
-					? GetAssignmentsByOwnerOrContributorDocument
-					: GetAssignmentsByResponseOwnerIdDocument,
+			const url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/assignments`,
+				query: {
+					pastDeadline: params.pastDeadline ? 'true' : 'false',
+					sortColumn: params.sortColumn,
+					sortOrder: params.sortOrder,
+					tableColumnDataType: params.tableColumnDataType,
+					offset: params.offset,
+					limit: params.limit || ITEMS_PER_PAGE,
+					filterString: params.filterString,
+					labelIds: params.labelIds?.join(','),
+					classIds: params.classIds?.join(','),
+					shareTypeIds: params.shareTypeIds?.join(','),
+				},
 			});
-
-			const assignments =
-				(assignmentResponse as GetAssignmentsByOwnerOrContributorQuery)
-					?.app_assignments_v2_overview ||
-				(assignmentResponse as GetAssignmentsByResponseOwnerIdQuery)?.app_assignments_v2;
-			if (!assignments || isNil(assignmentResponse.count)) {
-				throw new CustomError('Response does not have the expected format', null, {
-					assignmentResponse,
-				});
-			}
-
-			return {
-				assignments: (assignments || []) as unknown as Avo.Assignment.Assignment[],
-				count: assignmentResponse.count.aggregate?.count || 0,
-			};
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
+			return fetchWithLogoutJson(url);
 		} catch (err) {
 			throw new CustomError('Failed to fetch assignments from database', err, {
-				commonUser,
-				variables,
-				query: canEditAssignments
-					? 'GET_ASSIGNMENTS_BY_OWNER_ID'
-					: 'GET_ASSIGNMENTS_BY_RESPONSE_OWNER_ID',
+				...params,
+				url: `${getEnv('PROXY_URL')}/assignments`,
 			});
 		}
 	}
