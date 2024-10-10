@@ -20,8 +20,8 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { Scrollbar } from 'react-scrollbars-custom';
 import { compose } from 'redux';
 
 import { FlowPlayerWrapper } from '../../shared/components';
@@ -180,18 +180,17 @@ const ItemVideoDescription: FunctionComponent<
 			// The description is rendered next to the video
 			// We need to make the height of the description collapsable container the same as the video height
 			return (
-				<Scrollbar
+				<PerfectScrollbar
 					style={{
 						width: '100%',
 						height: `${videoHeight}px`, // Height of button
-						overflowY: 'auto',
 					}}
 				>
 					{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
 					<ExpandableContainer collapsedHeight={videoHeight - 36 - 18}>
 						{renderDescription()}
 					</ExpandableContainer>
-				</Scrollbar>
+				</PerfectScrollbar>
 			);
 		}
 

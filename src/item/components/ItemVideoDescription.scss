@@ -25,6 +25,22 @@
 		}
 	}
 
+	.c-item-video-description__metadata {
+		.scrollbar-container {
+			padding-right: 10px;
+
+			.c-button {
+				margin-bottom: $g-spacer-unit;
+			}
+
+			.ps__rail-x,
+			.ps__rail-y {
+				opacity: 1 !important;
+				display: block !important;
+			}
+		}
+	}
+
 	@media (max-width: $g-bp2) {
 		.o-grid-col-bp2-7 {
 			margin-left: 0;

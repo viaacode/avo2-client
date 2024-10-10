@@ -13,6 +13,14 @@
 		width: 100% !important;
 	}
 
+	.c-video-player__playlist__wrapper {
+		.ps__rail-x,
+		.ps__rail-y {
+			opacity: 1 !important;
+			display: block !important;
+		}
+	}
+
 	.c-video-player__playlist {
 		height: auto !important;
 	}
