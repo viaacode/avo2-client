@@ -1,6 +1,6 @@
-import { ContentPageDetail } from '@meemoo/admin-core-ui';
-import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui';
-import React, { type FC, useState } from 'react';
+import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core-ui/dist/admin.mjs';
+import { Flex, Spinner } from '@viaa/avo2-components';
+import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
@@ -9,6 +9,12 @@ import { GENERATE_SITE_TITLE } from '../../../constants';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
+
+const ContentPageDetail = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.ContentPageDetail,
+	}))
+);
 
 const ContentPageDetailPage: FC<
 	DefaultSecureRouteProps<{ id: string }> & ContentPageDetailProps & UserProps
@@ -33,12 +39,20 @@ const ContentPageDetailPage: FC<
 					<meta name="description" content={item.seoDescription || ''} />
 				</Helmet>
 			)}
-			<ContentPageDetail
-				className="c-admin-core"
-				id={id}
-				loaded={setItem}
-				commonUser={commonUser}
-			/>
+			<Suspense
+				fallback={
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				}
+			>
+				<ContentPageDetail
+					className="c-admin-core"
+					id={id}
+					loaded={setItem}
+					commonUser={commonUser}
+				/>
+			</Suspense>
 		</>
 	);
 };

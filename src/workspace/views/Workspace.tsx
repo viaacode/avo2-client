@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Container,
@@ -20,8 +20,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, get, isEmpty } from 'lodash-es';
 import React, {
 	type FunctionComponent,
@@ -85,7 +84,6 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 	history,
 	match,
 	location,
-	user,
 	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
@@ -107,17 +105,17 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 
 	const updatePermissions = useCallback(() => {
 		Promise.all([
-			PermissionService.hasPermission(PermissionName.VIEW_OWN_COLLECTIONS, null, user),
-			PermissionService.hasPermission(PermissionName.VIEW_OWN_BUNDLES, null, user),
-			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, user),
-			PermissionService.hasPermission(PermissionName.VIEW_ASSIGNMENTS, null, user),
-			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, user),
+			PermissionService.hasPermission(PermissionName.VIEW_OWN_COLLECTIONS, null, commonUser),
+			PermissionService.hasPermission(PermissionName.VIEW_OWN_BUNDLES, null, commonUser),
+			PermissionService.hasPermission(PermissionName.CREATE_ASSIGNMENTS, null, commonUser),
+			PermissionService.hasPermission(PermissionName.VIEW_ASSIGNMENTS, null, commonUser),
+			PermissionService.hasPermission(PermissionName.CREATE_BOOKMARKS, null, commonUser),
 			PermissionService.hasPermission(
 				PermissionName.VIEW_CONTENT_IN_SAME_COMPANY,
 				null,
-				user
+				commonUser
 			),
-			PermissionService.hasAtLeastOnePerm(user, [
+			PermissionService.hasAtLeastOnePerm(commonUser, [
 				PermissionName.VIEW_PERSONAL_QUICK_LANE_OVERVIEW,
 				PermissionName.VIEW_OWN_ORGANISATION_QUICK_LANE_OVERVIEW,
 			]),
@@ -135,7 +133,7 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 			})
 			.catch((err) => {
 				console.error('Failed to check permissions for workspace overview page', err, {
-					user,
+					commonUser,
 				});
 				setLoadingInfo({
 					state: 'error',
@@ -144,7 +142,7 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 					),
 				});
 			});
-	}, [user, tHtml]);
+	}, [commonUser, tHtml]);
 
 	// Make map for available tab views
 	useEffect(() => {
@@ -163,8 +161,6 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 								history={history}
 								location={location}
 								match={match}
-								user={user}
-								commonUser={commonUser}
 							/>
 						),
 				  }
@@ -181,8 +177,6 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 								history={history}
 								location={location}
 								match={match}
-								user={user}
-								commonUser={commonUser}
 							/>
 						),
 				  }
@@ -231,7 +225,16 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 				  }
 				: empty,
 		});
-	}, [workspaceCounts, permissions, tText, history, location, match, user, updatePermissions]);
+	}, [
+		workspaceCounts,
+		permissions,
+		tText,
+		history,
+		location,
+		match,
+		commonUser,
+		updatePermissions,
+	]);
 
 	const goToTab = useCallback(
 		(id: ReactText) => {

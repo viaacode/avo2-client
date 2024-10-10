@@ -1,4 +1,3 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { type Avo } from '@viaa/avo2-types';
 import { endOfDay, isBefore } from 'date-fns';
 import { compact } from 'lodash-es';
@@ -82,6 +81,7 @@ export class UserService {
 				sendEmail,
 			};
 
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			await fetchWithLogoutJson(url, {
 				method: 'POST',
 				body: JSON.stringify(body),

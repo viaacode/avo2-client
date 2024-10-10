@@ -1,5 +1,6 @@
 import './AssignmentOverview.scss';
 
+import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	ButtonGroup,
@@ -10,7 +11,6 @@ import {
 	Icon,
 	IconName,
 	MoreOptionsDropdown,
-	Pagination,
 	Select,
 	Spacer,
 	Table,
@@ -22,8 +22,7 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
@@ -47,6 +46,7 @@ import {
 } from 'use-query-params';
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
@@ -119,7 +119,7 @@ const defaultFiltersAndSort = {
 
 const AssignmentOverview: FunctionComponent<
 	AssignmentOverviewProps & RouteComponentProps & UserProps
-> = ({ onUpdate = noop, history, commonUser, user }) => {
+> = ({ onUpdate = noop, history, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -279,7 +279,7 @@ const AssignmentOverview: FunctionComponent<
 
 	const fetchAssignments = useCallback(async () => {
 		try {
-			if (isNil(canEditAssignments)) {
+			if (isNil(canEditAssignments) || !commonUser) {
 				return;
 			}
 
@@ -295,7 +295,7 @@ const AssignmentOverview: FunctionComponent<
 
 			const response = await AssignmentService.fetchAssignments(
 				canEditAssignments,
-				user as Avo.User.User,
+				commonUser,
 				query.view === AssignmentView.FINISHED, // true === past deadline
 				sortColumn,
 				sortOrder,
@@ -336,7 +336,7 @@ const AssignmentOverview: FunctionComponent<
 			const labels = await AssignmentLabelsService.getLabelsForProfile(commonUser.profileId);
 			setAllAssignmentLabels(labels);
 		}
-	}, [user, setAllAssignmentLabels]);
+	}, [commonUser, setAllAssignmentLabels]);
 
 	useEffect(() => {
 		checkPermissions();
@@ -387,7 +387,7 @@ const AssignmentOverview: FunctionComponent<
 				break;
 			case AssignmentAction.duplicate:
 				try {
-					if (!user?.profile?.id) {
+					if (!commonUser?.profileId) {
 						ToastService.danger(
 							tHtml(
 								'assignment/views/assignment-overview___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-dupliceren'
@@ -400,7 +400,7 @@ const AssignmentOverview: FunctionComponent<
 							assignmentRow.id as unknown as string
 						);
 
-					await duplicateAssignment(latest, user);
+					await duplicateAssignment(latest, commonUser);
 					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
@@ -430,12 +430,12 @@ const AssignmentOverview: FunctionComponent<
 
 	const handleDeleteAssignmentConfirm = async () => {
 		if (!markedAssignment) return;
-		await deleteAssignment(markedAssignment, user as Avo.User.User, updateAndReset);
+		await deleteAssignment(markedAssignment, commonUser, updateAndReset);
 		handleDeleteModalClose();
 	};
 
 	const handleDeleteSelfFromAssignmentConfirm = async () => {
-		await deleteSelfFromAssignment(markedAssignment?.id, user as Avo.User.User, updateAndReset);
+		await deleteSelfFromAssignment(markedAssignment?.id, commonUser, updateAndReset);
 		handleDeleteModalClose();
 	};
 
@@ -552,7 +552,7 @@ const AssignmentOverview: FunctionComponent<
 						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'
 					)}
 				>
-					{responsesCount}
+					-
 				</span>,
 				tText('assignment/views/assignment-overview___responses')
 			);
@@ -1017,9 +1017,11 @@ const AssignmentOverview: FunctionComponent<
 				{renderHeader()}
 				{renderTable()}
 				<Spacer margin="top-large">
-					<Pagination
-						pageCount={Math.ceil(assignmentCount / ITEMS_PER_PAGE)}
-						currentPage={query.page || 0}
+					<PaginationBar
+						{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+						startItem={(query.page || 0) * ITEMS_PER_PAGE}
+						itemsPerPage={ITEMS_PER_PAGE}
+						totalItems={assignmentCount}
 						onPageChange={(newPage: number) => handleQueryChanged(newPage, 'page')}
 					/>
 				</Spacer>

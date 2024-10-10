@@ -1,13 +1,12 @@
 import './ListSorter.scss';
 
-import { type ColorOption } from '@meemoo/admin-core-ui';
+import { type ColorOption } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, Icon, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
 import React, { type FC, Fragment, type ReactNode, useMemo } from 'react';
 
 import { NEW_ASSIGNMENT_BLOCK_ID_PREFIX } from '../../../assignment/assignment.const';
-import { tText } from '../../helpers/translate';
 import { ColorSelect } from '../ColorSelect/ColorSelect';
 import { GET_ASSIGNMENT_COLORS } from '../ColorSelect/ColorSelect.const';
 

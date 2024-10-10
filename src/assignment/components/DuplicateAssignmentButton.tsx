@@ -14,7 +14,7 @@ export type DuplicateAssignmentButtonProps = DefaultProps &
 	};
 
 const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps & UserProps> = ({
-	user,
+	commonUser,
 	assignment,
 	...props
 }) => {
@@ -36,13 +36,13 @@ const DuplicateAssignmentButton: FC<DuplicateAssignmentButtonProps & UserProps> 
 			icon={IconName.copy}
 			{...props}
 			onClick={async (e) => {
-				if (!user?.profile?.id) {
+				if (!commonUser?.profileId) {
 					ToastService.danger(
 						'Je moet ingelogd zijn om een opdracht te kunnen dupliceren'
 					);
 					return;
 				}
-				const res = await duplicateAssignment(assignment, user);
+				const res = await duplicateAssignment(assignment, commonUser);
 				props?.onClick && props?.onClick(e, res);
 			}}
 		/>

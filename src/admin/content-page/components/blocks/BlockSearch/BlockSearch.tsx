@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Container,
@@ -6,7 +6,6 @@ import {
 	DropdownButton,
 	DropdownContent,
 	IconName,
-	// Flex,
 	MenuSearchResultContent,
 	type MenuSearchResultItemInfo,
 	Spacer,

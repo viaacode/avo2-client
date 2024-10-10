@@ -1,4 +1,3 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
@@ -58,6 +57,22 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 			collectionProp: 'loms',
 			type: 'UPDATE_COLLECTION_PROP',
 			collectionPropValue: loms.map((lom) => ({ lom }) as Avo.Lom.Lom),
+		});
+	};
+
+	const handleBlurRichTextEditor = async () => {
+		const { sanitizeHtml, SanitizePreset } = await import(
+			'@meemoo/admin-core-ui/dist/admin.mjs'
+		);
+		changeCollectionState({
+			type: 'UPDATE_COLLECTION_PROP',
+			collectionProp: 'description_long',
+			collectionPropValue: sanitizeHtml(
+				descriptionLongEditorState
+					? descriptionLongEditorState.toHTML()
+					: collection.description_long || '',
+				SanitizePreset.link
+			),
 		});
 	};
 
@@ -125,18 +140,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												initialHtml={collection.description_long || ''}
 												state={descriptionLongEditorState}
 												onChange={setDescriptionLongEditorState}
-												onBlur={() =>
-													changeCollectionState({
-														type: 'UPDATE_COLLECTION_PROP',
-														collectionProp: 'description_long',
-														collectionPropValue: sanitizeHtml(
-															descriptionLongEditorState
-																? descriptionLongEditorState.toHTML()
-																: collection.description_long || '',
-															SanitizePreset.link
-														),
-													})
-												}
+												onBlur={handleBlurRichTextEditor}
 											/>
 											<label>
 												{getValidationFeedbackForDescription(

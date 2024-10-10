@@ -1,7 +1,9 @@
-import { IconName, Pagination, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
+import { PaginationBar } from '@meemoo/react-components';
+import { IconName, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
 import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import {
 	CollectionService,
 	type OrganisationContentItem,
@@ -230,9 +232,11 @@ const OrganisationContentOverview: FunctionComponent<
 	};
 
 	const renderPagination = () => (
-		<Pagination
-			pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
-			currentPage={page}
+		<PaginationBar
+			{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+			startItem={page * ITEMS_PER_PAGE}
+			itemsPerPage={ITEMS_PER_PAGE}
+			totalItems={numberOfItems}
 			onPageChange={setPage}
 		/>
 	);

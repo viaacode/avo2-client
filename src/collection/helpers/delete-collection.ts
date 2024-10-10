@@ -8,7 +8,7 @@ import { CollectionService } from '../collection.service';
 
 export async function deleteCollection(
 	collectionId: string | null | undefined,
-	user: Avo.User.User | null | undefined,
+	commonUser: Avo.User.CommonUser | null | undefined,
 	isCollection: boolean,
 	deleteCallback: () => Promise<void>,
 	afterDeleteCallback?: () => void
@@ -23,7 +23,7 @@ export async function deleteCollection(
 			return;
 		}
 
-		if (!user?.profile?.id) {
+		if (!commonUser?.profileId) {
 			ToastService.danger(
 				tHtml(
 					'collection/helpers/delete-collection___kan-collectie-niet-verwijderen-omdat-de-gebruiker-geen-profiel-id-heeft-probeer-opnieuw-in-te-loggen'
@@ -40,7 +40,7 @@ export async function deleteCollection(
 				object_type: 'collection',
 				action: 'delete',
 			},
-			user
+			commonUser
 		);
 
 		afterDeleteCallback?.();
@@ -70,7 +70,7 @@ export async function deleteCollection(
 
 export async function deleteSelfFromCollection(
 	collectionId: string | null | undefined,
-	user: Avo.User.User | null | undefined,
+	commonUser: Avo.User.CommonUser | null | undefined,
 	afterDeleteCallback?: () => void
 ): Promise<void> {
 	try {
@@ -83,7 +83,7 @@ export async function deleteSelfFromCollection(
 			return;
 		}
 
-		if (!user?.profile?.id) {
+		if (!commonUser?.profileId) {
 			ToastService.danger(
 				tHtml(
 					'collection/helpers/delete-collection___het-loskoppelen-van-je-profiel-van-de-collectie-is-mislukt-omdat-we-je-profiel-id-niet-konden-vinden-probeer-opnieuw-in-te-loggen'
@@ -92,7 +92,7 @@ export async function deleteSelfFromCollection(
 			return;
 		}
 
-		await CollectionService.deleteContributor(collectionId, undefined, user.profile.id);
+		await CollectionService.deleteContributor(collectionId, undefined, commonUser?.profileId);
 
 		afterDeleteCallback?.();
 

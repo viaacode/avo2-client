@@ -1,6 +1,6 @@
-import { UserOverview } from '@meemoo/admin-core-ui';
+import { Flex, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FC } from 'react';
+import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
@@ -9,6 +9,12 @@ import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { AdminLayout, AdminLayoutBody } from '../../shared/layouts';
+
+const UserOverview = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.UserOverview,
+	}))
+);
 
 const UserOverviewPage: FC<UserProps> = ({ commonUser }) => {
 	const { tText } = useTranslation();
@@ -35,7 +41,15 @@ const UserOverviewPage: FC<UserProps> = ({ commonUser }) => {
 					/>
 				</Helmet>
 
-				<UserOverview commonUser={commonUser as Avo.User.CommonUser} />
+				<Suspense
+					fallback={
+						<Flex orientation="horizontal" center>
+							<Spinner size="large" />
+						</Flex>
+					}
+				>
+					<UserOverview commonUser={commonUser as Avo.User.CommonUser} />
+				</Suspense>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);

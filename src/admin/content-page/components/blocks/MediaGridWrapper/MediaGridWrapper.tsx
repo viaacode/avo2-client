@@ -1,4 +1,7 @@
-import { type MediaGridBlockComponentState, type MediaGridBlockState } from '@meemoo/admin-core-ui';
+import {
+	type MediaGridBlockComponentState,
+	type MediaGridBlockState,
+} from '@meemoo/admin-core-ui/dist/admin.mjs';
 import {
 	Button,
 	type ButtonAction,
@@ -482,6 +485,7 @@ const MediaGridWrapper: FunctionComponent<
 								itemMetaData={activeItem as unknown as Avo.Item.Item}
 								verticalLayout
 								showTitle
+								showMetadata={false}
 								titleLink={
 									commonUser
 										? buildLink(APP_PATH.ITEM_DETAIL.route, {

@@ -1,4 +1,3 @@
-import { Color } from '@meemoo/admin-core-ui';
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, debounce } from 'lodash-es';
@@ -19,6 +18,8 @@ import Html from '../Html/Html';
 
 import './InteractiveTour.scss';
 import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
+
+import { TEAL_BRIGHT } from '../../constants';
 
 export const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
 
@@ -207,7 +208,7 @@ const InteractiveTour: FunctionComponent<
 					floaterProps={{ disableAnimation: true }}
 					styles={{
 						options: {
-							primaryColor: Color.TealBright,
+							primaryColor: TEAL_BRIGHT,
 						},
 					}}
 				/>

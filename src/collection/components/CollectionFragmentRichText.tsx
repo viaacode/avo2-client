@@ -1,4 +1,3 @@
-import { SanitizePreset } from '@meemoo/admin-core-ui';
 import { convertToHtml } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 
@@ -20,7 +19,7 @@ const CollectionFragmentRichText: FC<CollectionFragmentRichTextProps> = (props) 
 			<Html
 				type="div"
 				className="c-collection-fragment-rich-text__parser c-content"
-				sanitizePreset={SanitizePreset.full}
+				sanitizePreset={'full' as any}
 				content={convertToHtml(
 					block?.use_custom_fields || block?.type === CollectionBlockType.TEXT
 						? block.custom_description

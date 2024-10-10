@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Column,
 	Grid,
@@ -9,8 +9,7 @@ import {
 	MetaDataItem,
 	Thumbnail,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { LomSchemeType } from '@viaa/avo2-types';
+import { type Avo, LomSchemeType } from '@viaa/avo2-types';
 import { compact, isNil, omit } from 'lodash-es';
 import React, { type ReactNode } from 'react';
 

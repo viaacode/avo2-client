@@ -35,27 +35,24 @@ import { dataService } from '../shared/services/data-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 
-import {
-	ITEMS_PER_PAGE,
-	PUPIL_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-} from './pupil-collection.const';
+import { PUPIL_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './pupil-collection.const';
 import { type PupilCollectionOverviewTableColumns } from './pupil-collection.types';
 
 export class PupilCollectionService {
 	static async fetchPupilCollectionsForAdmin(
-		page: number,
+		offset: number,
+		limit: number,
 		sortColumn: PupilCollectionOverviewTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
-		where: any = {},
-		itemsPerPage: number = ITEMS_PER_PAGE
+		where: any = {}
 	): Promise<[Avo.Assignment.Response[], number]> {
 		let variables;
 		try {
 			variables = {
 				where,
-				offset: itemsPerPage * page,
-				limit: itemsPerPage,
+				offset,
+				limit,
 				orderBy: getOrderObject(
 					sortColumn,
 					sortOrder,

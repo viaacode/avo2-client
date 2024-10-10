@@ -1,13 +1,6 @@
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { isEqual } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
 
 import FilterTable, {
@@ -42,6 +35,11 @@ interface QuickLaneOverviewProps {
 	numberOfItems: number;
 }
 
+enum QuickLaneAction {
+	COPY = 'COPY',
+	DELETE = 'DELETE',
+}
+
 // Component
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
@@ -58,7 +56,6 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> =
 	const [quickLanesCount, setQuickLanesCount] = useState<number>(0);
 	const [isQuickLaneModalOpen, setIsQuickLaneModalOpen] = useState(false);
 	const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-	const [loadSelectedError, setLoadSelectedError] = useState<ReactNode | undefined>(undefined);
 
 	// Set default sorting
 	const [query, setQuery] = useQueryParams({
@@ -220,18 +217,6 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> =
 		}
 	}, [commonUser, setQuickLanes, setLoadingInfo, tText, debouncedFilters]); // eslint-disable-line
 
-	const fetchQuickLaneDetail = async (selected: QuickLaneUrlObject) => {
-		const details = await QuickLaneService.fetchQuickLaneById(selected.id);
-
-		if (details.content) {
-			setSelected(details);
-		} else {
-			setLoadSelectedError(
-				tText('workspace/views/quick-lane-overview___de-collectie-is-niet-gevonden')
-			);
-		}
-	};
-
 	const removeQuickLane = (id: QuickLaneUrlObject['id']) => {
 		if (!commonUser?.profileId) {
 			return;
@@ -278,25 +263,18 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> =
 			id={id}
 			data={data}
 			actions={(data) => {
-				type actions = 'edit' | 'copy' | 'delete';
-
 				const items = [
 					{
-						icon: IconName.edit,
-						id: 'edit',
-						label: tText('workspace/views/quick-lane-overview___bewerk'),
-					},
-					{
 						icon: IconName.copy,
-						id: 'copy',
+						id: QuickLaneAction.COPY,
 						label: tText('workspace/views/quick-lane-overview___kopieer-link'),
 					},
 					{
 						icon: IconName.delete,
-						id: 'delete',
+						id: QuickLaneAction.DELETE,
 						label: tText('workspace/views/quick-lane-overview___verwijder'),
 					},
-				] as (MenuItemInfo & { id: actions })[];
+				] as (MenuItemInfo & { id: QuickLaneAction })[];
 
 				return (
 					data && (
@@ -316,18 +294,13 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> =
 									return;
 								}
 
-								switch (action.toString() as actions) {
-									case 'edit':
-										await fetchQuickLaneDetail(selected);
-										setIsQuickLaneModalOpen(true);
-										break;
-
-									case 'copy':
+								switch (action.toString() as QuickLaneAction) {
+									case QuickLaneAction.COPY:
 										copyQuickLaneToClipboard(data.id);
 										setSelected(undefined);
 										break;
 
-									case 'delete':
+									case QuickLaneAction.DELETE:
 										setIsConfirmationModalOpen(true);
 										break;
 
@@ -378,12 +351,11 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> =
 				isOpen={isQuickLaneModalOpen}
 				content={selected?.content}
 				content_label={selected?.content_label}
-				onClose={() => {
+				onClose={async () => {
 					setIsQuickLaneModalOpen(false);
 					setSelected(undefined);
-					fetchQuickLanes();
+					await fetchQuickLanes();
 				}}
-				error={loadSelectedError}
 			/>
 
 			<DeleteObjectModal

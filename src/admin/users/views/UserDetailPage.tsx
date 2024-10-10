@@ -1,6 +1,6 @@
-import { UserDetail } from '@meemoo/admin-core-ui';
+import { Flex, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FC, useState } from 'react';
+import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { useParams } from 'react-router';
 import { compose } from 'redux';
@@ -12,6 +12,12 @@ import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { UserService } from '../user.service';
 
 import './UserDetailPage.scss';
+
+const UserDetail = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.UserDetail,
+	}))
+);
 
 const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
 	const { tText } = useTranslation();
@@ -35,12 +41,20 @@ const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
 				/>
 			</Helmet>
 
-			<UserDetail
-				id={id}
-				onSetTempAccess={UserService.updateTempAccessByUserId}
-				onLoaded={setUser}
-				commonUser={commonUser as Avo.User.CommonUser}
-			/>
+			<Suspense
+				fallback={
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				}
+			>
+				<UserDetail
+					id={id}
+					onSetTempAccess={UserService.updateTempAccessByUserId}
+					onLoaded={setUser}
+					commonUser={commonUser as Avo.User.CommonUser}
+				/>
+			</Suspense>
 		</>
 	);
 };

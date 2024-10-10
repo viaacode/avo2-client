@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type IconName } from '@viaa/avo2-components';
 import { memoize } from 'lodash-es';
 

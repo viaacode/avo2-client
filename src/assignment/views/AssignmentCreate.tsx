@@ -88,6 +88,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
+	const [isSaving, setIsSaving] = useState(false);
 
 	// Data
 
@@ -127,12 +128,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const submit = async () => {
 		try {
+			setIsSaving(true);
 			if (!user.profile?.id) {
 				ToastService.danger(
 					tText(
 						'assignment/views/assignment-create___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-aanmaken'
 					)
 				);
+				setIsSaving(false);
 				return;
 			}
 			const created = await AssignmentService.insertAssignment(
@@ -152,9 +155,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						object: String(created.id),
 						object_type: 'assignment',
 						action: 'create',
-						resource: {
-							education_level: created.education_level_id,
-						},
+						resource: created.education_level_id
+							? {
+									education_level: created.education_level_id,
+							  }
+							: {},
 					},
 					user
 				);
@@ -166,6 +171,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				);
 
 				resetForm();
+				setIsSaving(false);
 
 				// Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
 				setTimeout(() => {
@@ -173,6 +179,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				}, 100);
 			}
 		} catch (err) {
+			setIsSaving(false);
 			console.error(err);
 			ToastService.danger(
 				tHtml(
@@ -328,11 +335,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				<Flex align="start">
 					<HeaderOwnerAndContributors
 						subject={{ ...assignment, profile: user.profile || undefined }}
-						user={user}
+						commonUser={commonUser}
 					/>
 				</Flex>
 			),
-		[assignment, user]
+		[assignment, commonUser]
 	);
 
 	const renderMeta = useMemo(() => {
@@ -508,6 +515,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					isVisible={true}
 					onSave={handleSubmit(submit, (...args) => console.error(args))}
 					onCancel={() => reset()}
+					isSaving={isSaving}
 				/>
 			</div>
 

@@ -89,26 +89,25 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 }
 
 export function isUserAssignmentOwner(
-	user: Pick<Avo.User.User, 'profile'> | Pick<Avo.User.CommonUser, 'profileId'>,
+	commonUser: Pick<Avo.User.CommonUser, 'profileId'>,
 	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
 	return (
 		// New assignment
 		assignment.owner_profile_id === undefined ||
 		// Existing assignment
-		assignment.owner_profile_id ===
-			((user as Avo.User.User).profile?.id || (user as Avo.User.CommonUser).profileId)
+		assignment.owner_profile_id === commonUser.profileId
 	);
 }
 
 export function isUserAssignmentContributor(
-	user: Avo.User.User,
+	commonUser: Avo.User.CommonUser,
 	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
 	if (assignment.contributors) {
 		return !!assignment.contributors.find(
 			(contributor) =>
-				contributor.profile_id === user.profile?.id && contributor.rights !== 'VIEWER'
+				contributor.profile_id === commonUser?.profileId && contributor.rights !== 'VIEWER'
 		);
 	}
 	return false;

@@ -1,6 +1,5 @@
 import { Flex, IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import React, { type FunctionComponent, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
 
@@ -16,7 +15,7 @@ import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
 import { Sidebar } from './shared/components';
 
-const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
+const Admin: FunctionComponent<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -24,11 +23,11 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 	const [navigationItems, setNavigationItems] = useState<NavigationItemInfo[] | null>(null);
 
 	useEffect(() => {
-		if (!user) {
+		if (!commonUser) {
 			return;
 		}
-		if (PermissionService.hasPerm(user, PermissionName.VIEW_ADMIN_DASHBOARD)) {
-			const tempUserPermissions = PermissionService.getUserPermissions(user);
+		if (PermissionService.hasPerm(commonUser, PermissionName.VIEW_ADMIN_DASHBOARD)) {
+			const tempUserPermissions = commonUser?.permissions || [];
 			setUserPermissions(tempUserPermissions);
 			GET_NAV_ITEMS(tempUserPermissions)
 				.then(setNavigationItems)
@@ -48,7 +47,7 @@ const Admin: FunctionComponent<{ user: Avo.User.User }> = ({ user }) => {
 				actionButtons: ['home', 'helpdesk'],
 			});
 		}
-	}, [user, setLoadingInfo, tText, tHtml]);
+	}, [commonUser, setLoadingInfo, tText, tHtml]);
 
 	useEffect(() => {
 		if (userPermissions && navigationItems) {

@@ -30,6 +30,8 @@ export type RouteId =
 	| 'SEARCH'
 	| 'USER_ITEM_REQUEST_FORM'
 	| 'USER_ITEM_REQUEST_FORM_CONFIRM'
+	| 'EDUCATIONAL_USER_ITEM_REQUEST_FORM'
+	| 'EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM'
 	| 'WORKSPACE'
 	| 'WORKSPACE_TAB'
 	| 'WORKSPACE_COLLECTIONS'
@@ -163,6 +165,16 @@ export const APP_PATH: { [routeId in RouteId]: RouteInfo } = {
 	},
 	USER_ITEM_REQUEST_FORM_CONFIRM: {
 		route: '/gebruiker-item-aanvraag-bevestiging',
+		showInContentPicker: true,
+		showForInteractiveTour: false,
+	},
+	EDUCATIONAL_USER_ITEM_REQUEST_FORM: {
+		route: '/auteur-item-aanvraag',
+		showInContentPicker: true,
+		showForInteractiveTour: false,
+	},
+	EDUCATIONAL_USER_ITEM_REQUEST_FORM_CONFIRM: {
+		route: '/auteur-item-aanvraag-bevestiging',
 		showInContentPicker: true,
 		showForInteractiveTour: false,
 	},

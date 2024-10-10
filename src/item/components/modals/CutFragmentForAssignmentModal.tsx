@@ -95,6 +95,7 @@ const CutFragmentForAssignmentModal: FunctionComponent<
 									<ItemVideoDescription
 										itemMetaData={itemMetaData}
 										showTitle
+										showMetadata={false}
 										showDescription
 										canPlay={isOpen}
 										cuePointsLabel={{ start, end }}

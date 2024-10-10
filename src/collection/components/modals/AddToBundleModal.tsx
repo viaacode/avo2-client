@@ -16,9 +16,8 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
 
-import { getProfileId } from '../../../authentication/helpers/get-profile-id';
 import { CustomError } from '../../../shared/helpers';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -43,7 +42,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 	collection,
 	isOpen,
 	onClose,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -54,9 +53,9 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 	const [newBundleTitle, setNewBundleTitle] = useState<string>('');
 	const [bundles, setBundles] = useState<Partial<Avo.Collection.Collection>[]>([]);
 
-	const fetchBundles = React.useCallback(
+	const fetchBundles = useCallback(
 		() =>
-			CollectionService.fetchCollectionsOrBundlesByUser('bundle', user)
+			CollectionService.fetchCollectionsOrBundlesByUser('bundle', commonUser)
 				.then((bundleTitles: Partial<Avo.Collection.Collection>[]) => {
 					setBundles(bundleTitles);
 					if (!bundleTitles.length) {
@@ -71,7 +70,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 						)
 					);
 				}),
-		[user, tText]
+		[tHtml]
 	);
 
 	useEffect(() => {
@@ -150,7 +149,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 					object_type: 'bundle',
 					action: 'add_to',
 				},
-				user
+				commonUser
 			);
 		} catch (err) {
 			console.error(err);
@@ -176,7 +175,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 				title: newBundleTitle,
 				thumbnail_path: null,
 				is_public: false,
-				owner_profile_id: getProfileId(user),
+				owner_profile_id: commonUser?.profileId,
 				type_id: ContentTypeNumber.bundle,
 			};
 			try {
@@ -192,7 +191,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 
 			// Enable is_managed by default when one of these user groups creates a collection/bundle
 			// https://meemoo.atlassian.net/browse/AVO-1453
-			if (user && canManageEditorial(user)) {
+			if (commonUser && canManageEditorial(commonUser)) {
 				newBundle.is_managed = true;
 			}
 
@@ -204,7 +203,7 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 					object_type: 'bundle',
 					action: 'create',
 				},
-				user
+				commonUser
 			);
 
 			// Add collection to bundle

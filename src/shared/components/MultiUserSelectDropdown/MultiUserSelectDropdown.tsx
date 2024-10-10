@@ -1,4 +1,3 @@
-import { UserService } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Dropdown,
@@ -14,7 +13,13 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { uniqBy } from 'lodash-es';
-import React, { type FunctionComponent, type ReactText, useEffect, useState } from 'react';
+import React, {
+	type FunctionComponent,
+	type ReactText,
+	useCallback,
+	useEffect,
+	useState,
+} from 'react';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../../admin/shared/types';
@@ -49,6 +54,35 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 	const [selectedProfiles, setSelectedProfiles] = useState<PickerItem[]>([]);
 	const [selectedProfile, setSelectedProfile] = useState<PickerItem | undefined>(undefined);
 
+	const getProfilesByName = useCallback(async () => {
+		try {
+			const { UserService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const users: Partial<Avo.User.CommonUser>[] =
+				await UserService.getNamesByProfileIds(values);
+
+			setSelectedProfiles(
+				users.map(
+					(user): PickerItem => ({
+						label: `${user?.fullName} (${user?.email})`,
+						value: user.profileId || '',
+						type: 'PROFILE',
+					})
+				)
+			);
+		} catch (err) {
+			console.error(
+				new CustomError('Failed to fetch profile name info for profile ids', err, {
+					values,
+				})
+			);
+			ToastService.danger(
+				tHtml(
+					'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___het-ophalen-van-de-gebruikersaccount-namen-is-mislukt'
+				)
+			);
+		}
+	}, [tHtml, values]);
+
 	useEffect(() => {
 		if (selectedProfile) {
 			setSelectedProfile(undefined);
@@ -57,30 +91,7 @@ export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownP
 
 	useEffect(() => {
 		if (values.length) {
-			UserService.getNamesByProfileIds(values)
-				.then((users: Partial<Avo.User.CommonUser>[]) => {
-					setSelectedProfiles(
-						users.map(
-							(user): PickerItem => ({
-								label: `${user?.fullName} (${user?.email})`,
-								value: user.profileId || '',
-								type: 'PROFILE',
-							})
-						)
-					);
-				})
-				.catch((err) => {
-					console.error(
-						new CustomError('Failed to fetch profile name info for profile ids', err, {
-							values,
-						})
-					);
-					ToastService.danger(
-						tHtml(
-							'shared/components/multi-user-select-dropdown/multi-user-select-dropdown___het-ophalen-van-de-gebruikersaccount-namen-is-mislukt'
-						)
-					);
-				});
+			getProfilesByName();
 		}
 	}, [values, setSelectedProfiles, tHtml]);
 

@@ -1,4 +1,3 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Icon,
@@ -17,6 +16,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentBlockType } from '../assignment.types';
 
 import './AddBlockModal.scss';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 type AddBlockModalType =
 	| AssignmentBlockType.ITEM

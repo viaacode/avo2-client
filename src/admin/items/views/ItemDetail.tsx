@@ -1,4 +1,4 @@
-import { BlockHeading, Color, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
+import { BlockHeading, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
@@ -429,7 +429,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 								<>
 									<Spacer margin="right-small">
 										<Spacer margin={['top']}>
-											<div style={{ backgroundColor: Color.White }}>
+											<div style={{ backgroundColor: '#ffffff' }}>
 												<RichTextEditorWrapper
 													id="note"
 													controls={RICH_TEXT_EDITOR_OPTIONS_FULL}

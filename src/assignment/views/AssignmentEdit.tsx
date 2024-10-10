@@ -18,8 +18,7 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
@@ -128,7 +127,6 @@ interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabI
 const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	onUpdate = noop,
 	match,
-	user,
 	commonUser,
 	history,
 	location,
@@ -142,7 +140,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [originalAssignment, setOriginalAssignment] = useState<Avo.Assignment.Assignment | null>(
 		null
 	);
-	const [assignmentLoading, setAssignmentLoading] = useState(true);
+	const [isAssignmentLoading, setIsAssignmentLoading] = useState(true);
+	const [isSaving, setIsSaving] = useState(false);
 	const [assignmentError, setAssignmentError] = useState<Partial<ErrorViewQueryParams> | null>(
 		null
 	);
@@ -156,7 +155,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const [isPublishModalOpen, setIsPublishModalOpen] = useState<boolean>(false);
 	const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
 	const [isSelectEducationLevelModalOpen, setSelectEducationLevelModalOpen] =
-		useEducationLevelModal(commonUser, assignment, assignmentLoading);
+		useEducationLevelModal(commonUser, assignment, isAssignmentLoading);
 	const [isForcedExit, setIsForcedExit] = useState<boolean>(false);
 	const [permissions, setPermissions] = useState<
 		Partial<{
@@ -200,10 +199,38 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		updateBlocksInAssignmentState
 	);
 
+	const updateAssignmentEditor = async () => {
+		try {
+			await AssignmentService.updateAssignmentEditor(assignmentId);
+		} catch (err) {
+			redirectToClientPage(
+				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
+				history
+			);
+
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode === 409) {
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
+					)
+				);
+			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
+				return; // User has no rights to edit the assignment
+			} else {
+				await releaseAssignmentEditStatus();
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-edit___verbinding-met-bewerk-server-verloren'
+					)
+				);
+			}
+		}
+	};
+
 	const updateAssignmentEditorWithLoading = useCallback(async () => {
-		setAssignmentLoading(true);
+		setIsAssignmentLoading(true);
 		await updateAssignmentEditor();
-	}, [setAssignmentLoading]);
+	}, [updateAssignmentEditor]);
 
 	useEffect(() => {
 		if (match.params.tabId) {
@@ -235,7 +262,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	// Get query string variables and fetch the existing object
 	const fetchAssignment = useCallback(async () => {
 		try {
-			setAssignmentLoading(true);
+			setIsAssignmentLoading(true);
 			setAssignmentError(null);
 			const id = match.params.id;
 			let tempAssignment: Avo.Assignment.Assignment | null = null;
@@ -265,7 +292,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						icon: IconName.lock,
 						actionButtons: ['home'],
 					});
-					setAssignmentLoading(false);
+					setIsAssignmentLoading(false);
 					return;
 				}
 				setAssignmentError({
@@ -275,7 +302,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
-				setAssignmentLoading(false);
+				setIsAssignmentLoading(false);
 				return;
 			}
 
@@ -287,7 +314,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					icon: IconName.alertTriangle,
 					actionButtons: ['home'],
 				});
-				setAssignmentLoading(false);
+				setIsAssignmentLoading(false);
 				return;
 			}
 
@@ -314,14 +341,14 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						PermissionName.EDIT_ANY_ASSIGNMENTS,
 					],
 				},
-				user
+				commonUser
 			);
 
 			const allPermissions = {
 				canPublish: checkedPermissions.canPublish,
 				canEdit:
-					isUserAssignmentOwner(user, tempAssignment) ||
-					isUserAssignmentContributor(user, tempAssignment) ||
+					isUserAssignmentOwner(commonUser, tempAssignment) ||
+					isUserAssignmentContributor(commonUser, tempAssignment) ||
 					checkedPermissions.canEditAllAssignments,
 				canFetchBookmarkAndViewCounts: checkedPermissions.canFetchBookmarkAndViewCounts,
 			};
@@ -336,14 +363,17 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					icon: IconName.lock,
 					actionButtons: ['home'],
 				});
-				setAssignmentLoading(false);
+				setIsAssignmentLoading(false);
 				return;
 			}
 
 			if (checkedPermissions?.canFetchBookmarkAndViewCounts) {
 				try {
 					setBookmarkViewCounts(
-						await BookmarksViewsPlaysService.getAssignmentCounts(assignmentId, user)
+						await BookmarksViewsPlaysService.getAssignmentCounts(
+							assignmentId,
+							commonUser
+						)
 					);
 				} catch (err) {
 					console.error(
@@ -370,15 +400,16 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				icon: IconName.alertTriangle,
 			});
 		}
-		setAssignmentLoading(false);
-	}, [user, match.params.id, tText, history, setOriginalAssignment, setAssignment]);
+		setIsAssignmentLoading(false);
+	}, [match.params.id, commonUser?.permissions, assignmentId, commonUser, setAssignment, tHtml]);
 
 	// Events
 
 	const handleOnSave = async () => {
-		if (!user.profile?.id || !originalAssignment) {
+		if (!commonUser?.profileId || !originalAssignment) {
 			return;
 		}
+		setIsSaving(true);
 
 		if (assignment?.deadline_at && isPast(new Date(assignment?.deadline_at))) {
 			ToastService.danger(
@@ -386,6 +417,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					'assignment/views/assignment-edit___de-deadline-mag-niet-in-het-verleden-liggen'
 				)
 			);
+			setIsSaving(false);
 			return;
 		}
 
@@ -395,6 +427,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					'assignment/views/assignment-edit___de-beschikbaar-vanaf-datum-moet-voor-de-deadline-liggen-anders-zullen-je-leerlingen-geen-toegang-hebben-tot-deze-opdracht'
 				)
 			);
+			setIsSaving(false);
 			return;
 		}
 
@@ -405,20 +438,23 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 			ToastService.danger(
 				tHtml('assignment/views/assignment-edit___de-deadline-moet-voor-31-augustus-liggen')
 			);
+			setIsSaving(false);
 			return;
 		}
 
 		if (assignmentHasResponses) {
 			setIsConfirmSaveActionModalOpen(true);
+			setIsSaving(false);
 			return;
 		}
 
 		await handleSubmit(submit, (...args) => console.error(args))();
+		setIsSaving(false);
 	};
 
 	const submit = async () => {
 		try {
-			if (!user.profile?.id || !originalAssignment || !assignment) {
+			if (!commonUser?.profileId || !originalAssignment || !assignment) {
 				return;
 			}
 
@@ -444,7 +480,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					...assignment,
 					id: originalAssignment.id,
 				},
-				user.profile?.id
+				commonUser?.profileId
 			);
 
 			if (updated && assignment?.id) {
@@ -469,7 +505,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 							education_level: String(assignment?.education_level_id),
 						},
 					},
-					user
+					commonUser
 				);
 
 				// Re-fetch
@@ -505,34 +541,6 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		[assignment]
 	);
 
-	const updateAssignmentEditor = async () => {
-		try {
-			await AssignmentService.updateAssignmentEditor(assignmentId);
-		} catch (err) {
-			redirectToClientPage(
-				buildLink(APP_PATH.ASSIGNMENT_DETAIL.route, { id: assignmentId }),
-				history
-			);
-
-			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode === 409) {
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-edit___iemand-is-deze-opdracht-reeds-aan-het-bewerken'
-					)
-				);
-			} else if ((err as CustomError).innerException?.additionalInfo?.statusCode === 401) {
-				return; // User has no rights to edit the assignment
-			} else {
-				await releaseAssignmentEditStatus();
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-edit___verbinding-met-bewerk-server-verloren'
-					)
-				);
-			}
-		}
-	};
-
 	const releaseAssignmentEditStatus = async () => {
 		try {
 			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
@@ -550,7 +558,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	const onForcedExitPage = async () => {
 		setIsForcedExit(true);
 		try {
-			if (!user.profile?.id || !originalAssignment) {
+			if (!commonUser?.profileId || !originalAssignment) {
 				return;
 			}
 
@@ -560,7 +568,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					...assignment,
 					id: originalAssignment.id,
 				},
-				user.profile?.id
+				commonUser?.profileId
 			);
 
 			ToastService.success(
@@ -625,7 +633,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 								education_level: String(assignment?.education_level_id),
 							},
 						},
-						user
+						commonUser
 					);
 				},
 			},
@@ -733,10 +741,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		() =>
 			assignment && (
 				<Flex align="start">
-					<HeaderOwnerAndContributors subject={assignment} user={user} />
+					<HeaderOwnerAndContributors subject={assignment} commonUser={commonUser} />
 				</Flex>
 			),
-		[assignment, user]
+		[assignment, commonUser]
 	);
 
 	const renderMeta = useMemo(() => {
@@ -839,15 +847,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				);
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.CLICKS:
-				return (
-					<AssignmentResponses
-						history={history}
-						match={match}
-						user={user}
-						commonUser={commonUser}
-						onUpdate={onUpdate}
-					/>
-				);
+				return <AssignmentResponses history={history} match={match} onUpdate={onUpdate} />;
 
 			case ASSIGNMENT_CREATE_UPDATE_TABS.ADMIN:
 				return (
@@ -1090,9 +1090,10 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 					isVisible={unsavedChanges || hasUnsavedChanges}
 					onSave={handleOnSave}
 					onCancel={cancelSaveBar}
+					isSaving={isSaving}
 				/>
 			</div>
-			{!!user && (
+			{!!commonUser && (
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
 					onConfirm={selectEducationLevel}
@@ -1103,7 +1104,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	);
 
 	const renderPageContent = () => {
-		if (assignmentLoading) {
+		if (isAssignmentLoading && !originalAssignment) {
 			return (
 				<Spacer margin="top-extra-large">
 					<Flex orientation="horizontal" center>
@@ -1118,8 +1119,8 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 		if (
 			assignment?.id &&
-			!isUserAssignmentOwner(user, assignment) &&
-			!isUserAssignmentContributor(user, assignment) &&
+			!isUserAssignmentOwner(commonUser, assignment) &&
+			!isUserAssignmentContributor(commonUser, assignment) &&
 			!permissions.canEdit
 		) {
 			return (
@@ -1176,7 +1177,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 
 			<BeforeUnloadPrompt when={unsavedChanges && !isForcedExit} />
 
-			{!!assignment && !!user && (
+			{!!assignment && !!commonUser && (
 				<PublishAssignmentModal
 					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
 						setIsPublishModalOpen(false);

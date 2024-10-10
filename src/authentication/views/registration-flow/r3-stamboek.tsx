@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Alert, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
 import React, { type FunctionComponent, useState } from 'react';
 import { Helmet } from 'react-helmet';

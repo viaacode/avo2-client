@@ -1,9 +1,9 @@
+import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	IconName,
 	MetaData,
 	MetaDataItem,
-	Pagination,
 	Spacer,
 	Table,
 	type TableColumn,
@@ -15,6 +15,7 @@ import React, { type FC, type FunctionComponent, useCallback, useEffect, useStat
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
 import {
@@ -286,9 +287,11 @@ const BookmarksOverview: FunctionComponent<
 				sortOrder={sortOrder}
 			/>
 			<Spacer margin="top-large">
-				<Pagination
-					pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
-					currentPage={page}
+				<PaginationBar
+					{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+					startItem={page * ITEMS_PER_PAGE}
+					itemsPerPage={ITEMS_PER_PAGE}
+					totalItems={numberOfItems}
 					onPageChange={setPage}
 				/>
 			</Spacer>

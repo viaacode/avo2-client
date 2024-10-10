@@ -1,6 +1,5 @@
 import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
 import React, {
@@ -55,7 +54,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 	assignmentResponse,
 	appendBlockToPupilCollection,
 	searchResults,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -77,7 +76,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			) as HTMLElement | null;
 			item?.scrollIntoView({ block: 'center' });
 		}, 100);
-	}, [searchResults]);
+	}, [filterState.focus, searchResults]);
 
 	useEffect(() => {
 		// Is the assignment intended for elementary
@@ -116,7 +115,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			);
 			return;
 		}
-		if (AssignmentService.isOwnerOfAssignment(assignment, user)) {
+		if (AssignmentService.isOwnerOfAssignment(assignment, commonUser)) {
 			ToastService.info(
 				tHtml(
 					'assignment/views/assignment-response-edit___je-kan-geen-antwoord-indienen-op-je-eigen-opdracht'
@@ -174,7 +173,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 						education_level: String(assignment?.education_level_id),
 					},
 				},
-				user
+				commonUser
 			);
 		}
 	};
@@ -296,7 +295,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 			);
 		}
 		// This form receives its parent's state because we don't care about rerender performance here
-		if (!PermissionService.hasPerm(user, PermissionName.SEARCH_IN_ASSIGNMENT)) {
+		if (!PermissionService.hasPerm(commonUser, PermissionName.SEARCH_IN_ASSIGNMENT)) {
 			return (
 				<ErrorView
 					message={tHtml(
@@ -321,7 +320,7 @@ const AssignmentResponseSearchTab: FunctionComponent<
 				/>
 			</Spacer>
 		);
-	}, [filterState, handleNewFilterState, renderDetailLink, renderSearchLink, user]);
+	}, [filterState, handleNewFilterState, renderDetailLink, renderSearchLink, commonUser]);
 
 	return (
 		<>

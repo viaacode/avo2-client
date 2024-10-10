@@ -1,4 +1,3 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
 import { Button, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { subMinutes } from 'date-fns';
@@ -147,6 +146,7 @@ export const setAcceptConditions = (): SetAcceptConditionsAction => ({
 export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginResponse> => {
 	try {
 		const url = `${getEnv('PROXY_URL')}/auth/check-login?force=${force}`;
+		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 		return fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
 			forceLogout: false,
 		});

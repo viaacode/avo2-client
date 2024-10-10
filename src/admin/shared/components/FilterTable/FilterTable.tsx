@@ -1,3 +1,4 @@
+import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	type ButtonType,
@@ -5,7 +6,6 @@ import {
 	Form,
 	FormGroup,
 	IconName,
-	Pagination,
 	Select,
 	type SelectOption,
 	Spacer,
@@ -45,6 +45,7 @@ import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-
 import { tHtml } from '../../../../shared/helpers/translate';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { KeyCode } from '../../../../shared/types';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../PaginationBar/PaginationBar.consts';
 
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
@@ -388,7 +389,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 										placeholder={tText(
 											'admin/shared/components/filter-table/filter-table___bulkactie'
 										)}
-										disabled={!(selectedItemIds || []).length}
+										disabled={!bulkActions.find((action) => !action.disabled)}
 										className="c-bulk-action-select"
 									/>
 								)}
@@ -448,12 +449,20 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								onSelectAll={onSelectAll}
 							/>
 							<Spacer margin="top-large">
-								<Pagination
-									pageCount={Math.ceil(dataCount / itemsPerPage)}
-									currentPage={tableState.page || 0}
-									onPageChange={(newPage) =>
+								<PaginationBar
+									{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+									startItem={(tableState.page || 0) * itemsPerPage}
+									itemsPerPage={itemsPerPage}
+									totalItems={dataCount}
+									onPageChange={(newPage: number) =>
 										handleTableStateChanged(newPage, 'page')
 									}
+									onScrollToTop={() => {
+										const filterTable =
+											document.querySelector('.c-filter-table');
+										const scrollable = filterTable?.closest('.c-scrollable');
+										scrollable?.scrollTo(0, 0);
+									}}
 								/>
 							</Spacer>
 						</div>

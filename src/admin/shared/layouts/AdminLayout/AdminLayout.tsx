@@ -40,7 +40,7 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
 				right={topBarRight}
 				size={size === 'no-margin' ? 'full-width' : size}
 			/>
-			<div className="m-admin-layout-content">
+			<div className="m-admin-layout-content c-scrollable">
 				{header}
 				{size !== 'no-margin' && (
 					<Container className={className} mode="vertical" size="small">

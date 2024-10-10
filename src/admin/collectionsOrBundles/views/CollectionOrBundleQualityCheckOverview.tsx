@@ -1,3 +1,4 @@
+import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, {
@@ -22,6 +23,7 @@ import {
 } from '../../../shared/components';
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink, CustomError } from '../../../shared/helpers';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
@@ -43,8 +45,10 @@ import {
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
+	CollectionBulkAction,
 	type CollectionOrBundleQualityCheckOverviewTableCols,
 	type CollectionOrBundleQualityCheckTableState,
+	type CollectionsOrBundlesOverviewTableCols,
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
@@ -53,7 +57,7 @@ type CollectionOrBundleQualityCheckOverviewProps = DefaultSecureRouteProps;
 
 const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 	CollectionOrBundleQualityCheckOverviewProps
-> = ({ location, user }) => {
+> = ({ location, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -63,6 +67,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 		{}
 	);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
 
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
@@ -156,7 +161,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 		(filters: Partial<CollectionOrBundleQualityCheckTableState>) => {
 			const andFilters: any[] = generateCollectionWhereObject(
 				filters,
-				user,
+				commonUser,
 				isCollection,
 				true,
 				false,
@@ -165,25 +170,27 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 
 			return { _and: andFilters };
 		},
-		[isCollection, user]
+		[isCollection, commonUser]
 	);
+
+	const getColumnDataType = useCallback(() => {
+		const column = tableColumns.find(
+			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
+		);
+		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
+	}, [tableColumns, tableState.sort_column]);
 
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
 
 		try {
-			const column = tableColumns.find(
-				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
-			);
-			const columnDataType = (column?.dataType ||
-				TableColumnDataType.string) as TableColumnDataType;
 			const [collectionsTemp, collectionsCountTemp] =
 				await CollectionsOrBundlesService.getCollectionEditorial(
 					tableState.page || 0,
 					(tableState.sort_column ||
 						'updated_at') as CollectionOrBundleQualityCheckOverviewTableCols,
 					tableState.sort_order || 'desc',
-					columnDataType,
+					getColumnDataType(),
 					generateWhereObject(getFilters(tableState)),
 					'quality_check'
 				);
@@ -214,7 +221,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 		}
 
 		setIsLoading(false);
-	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
+	}, [tableState, getColumnDataType, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
 		fetchCollectionsOrBundles();
@@ -386,6 +393,78 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 					onSelectionChanged={setSelectedCollectionIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
+					bulkActions={[
+						{
+							label: tText(
+								'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___exporteer-alles'
+							),
+							value: CollectionBulkAction.EXPORT_ALL,
+						},
+					]}
+					onSelectBulkAction={async (action: string) => {
+						if (action === CollectionBulkAction.EXPORT_ALL) {
+							setIsExportAllToCsvModalOpen(true);
+						}
+					}}
+				/>
+				<ExportAllToCsvModal
+					title={
+						isCollection
+							? tText(
+									'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___exporteren-van-alle-collecties-naar-csv'
+							  )
+							: tText(
+									'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___exporteren-van-alle-bundels-naar-csv'
+							  )
+					}
+					isOpen={isExportAllToCsvModalOpen}
+					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					fetchingItemsLabel={tText(
+						'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bezig-met-ophalen-van-media-items'
+					)}
+					generatingCsvLabel={tText(
+						'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bezig-met-genereren-van-de-csv'
+					)}
+					fetchTotalItems={async () => {
+						const response = await CollectionsOrBundlesService.getCollections(
+							0,
+							0,
+							(tableState.sort_column ||
+								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							generateWhereObject(getFilters(tableState))
+						);
+						return response[1];
+					}}
+					fetchMoreItems={async (offset: number, limit: number) => {
+						const response = await CollectionsOrBundlesService.getCollections(
+							offset,
+							limit,
+							(tableState.sort_column ||
+								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							generateWhereObject(getFilters(tableState))
+						);
+						return response[0];
+					}}
+					renderValue={(value: any, columnId: string) =>
+						renderTableCell(
+							value as any,
+							columnId as CollectionOrBundleQualityCheckOverviewTableCols
+						)
+					}
+					columns={tableColumnListToCsvColumnList(tableColumns)}
+					exportFileName={
+						isCollection
+							? tText(
+									'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___collecties-kwaliteitscontrole-csv'
+							  )
+							: tText(
+									'admin/collections-or-bundles/views/collection-or-bundle-quality-check-overview___bundels-kwaliteitscontrole-csv'
+							  )
+					}
 				/>
 			</>
 		);

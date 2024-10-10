@@ -1,4 +1,4 @@
-import { BlockHeading, Color } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Column,
 	convertToHtml,
@@ -20,21 +20,23 @@ import React, {
 	useRef,
 	useState,
 } from 'react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
-import { Scrollbar } from 'react-scrollbars-custom';
 import { compose } from 'redux';
 
 import { FlowPlayerWrapper } from '../../shared/components';
 import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
-import { stripHtml } from '../../shared/helpers';
+import { reorderDate, stripHtml } from '../../shared/helpers';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
+import { TEAL_BRIGHT } from '../../shared/constants';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
+	showMetadata: boolean;
 	showDescription?: boolean;
 	collapseDescription?: boolean;
 	showTitle?: boolean;
@@ -57,6 +59,7 @@ const ItemVideoDescription: FunctionComponent<
 	ItemVideoDescriptionProps & UserProps & RouteComponentProps
 > = ({
 	itemMetaData,
+	showMetadata = false,
 	showTitle = false,
 	showDescription = true,
 	collapseDescription = true,
@@ -123,7 +126,7 @@ const ItemVideoDescription: FunctionComponent<
 			<BlockHeading
 				type="h3"
 				className={titleLink ? 'u-clickable' : ''}
-				color={titleLink ? Color.TealBright : undefined}
+				color={titleLink ? TEAL_BRIGHT : undefined}
 			>
 				{title}
 			</BlockHeading>
@@ -177,18 +180,17 @@ const ItemVideoDescription: FunctionComponent<
 			// The description is rendered next to the video
 			// We need to make the height of the description collapsable container the same as the video height
 			return (
-				<Scrollbar
+				<PerfectScrollbar
 					style={{
 						width: '100%',
 						height: `${videoHeight}px`, // Height of button
-						overflowY: 'auto',
 					}}
 				>
 					{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
 					<ExpandableContainer collapsedHeight={videoHeight - 36 - 18}>
 						{renderDescription()}
 					</ExpandableContainer>
-				</Scrollbar>
+				</PerfectScrollbar>
 			);
 		}
 
@@ -197,26 +199,51 @@ const ItemVideoDescription: FunctionComponent<
 
 	return (
 		<Grid className="c-item-video-description">
-			{showDescription ? (
-				<>
-					<Column size={verticalLayout ? '2-12' : '2-7'}>{renderMedia()}</Column>
-					<Column size={verticalLayout ? '2-12' : '2-5'}>
-						<Spacer margin={verticalLayout ? ['top'] : []}>
-							<div ref={descriptionRef}>{renderDescriptionWrapper()}</div>
-						</Spacer>
+			<>
+				<Column size={verticalLayout ? '2-12' : '2-7'}>{renderMedia()}</Column>
+				{(showDescription || showMetadata) && (
+					<Column
+						size={verticalLayout ? '2-12' : '2-5'}
+						className="c-item-video-description__metadata"
+					>
+						{showMetadata && !!itemMetaData.issued && (
+							<div>
+								<span className="c-item-video-description__metadata__title">
+									{tText('item/views/item___publicatiedatum')}:{' '}
+								</span>
+								<span className="c-item-video-description__metadata__value">
+									{reorderDate(itemMetaData.issued, '/')}
+								</span>
+							</div>
+						)}
+						{showMetadata && !!itemMetaData?.organisation?.name && (
+							<div>
+								<span className="c-item-video-description__metadata__title">
+									{tText('item/views/item___aanbieder')}:{' '}
+								</span>
+								<span className="c-item-video-description__metadata__value">
+									{itemMetaData.organisation.name}
+								</span>
+							</div>
+						)}
+						{showMetadata && !!itemMetaData.series && (
+							<div>
+								<span className="c-item-video-description__metadata__title">
+									{tText('item/views/item___reeks')}:{' '}
+								</span>
+								<span className="c-item-video-description__metadata__value">
+									{itemMetaData.series}
+								</span>
+							</div>
+						)}
+						{showDescription && (
+							<Spacer margin={showMetadata ? ['top'] : []}>
+								<div ref={descriptionRef}>{renderDescriptionWrapper()}</div>
+							</Spacer>
+						)}
 					</Column>
-				</>
-			) : (
-				<>
-					<Column size={verticalLayout ? '2-12' : '2-3'}>
-						<></>
-					</Column>
-					<Column size={verticalLayout ? '2-12' : '2-6'}>{renderMedia()}</Column>
-					<Column size={verticalLayout ? '2-12' : '2-3'}>
-						<></>
-					</Column>
-				</>
-			)}
+				)}
+			</>
 		</Grid>
 	);
 };

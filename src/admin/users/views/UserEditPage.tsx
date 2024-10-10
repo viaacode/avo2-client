@@ -1,4 +1,3 @@
-import { useGetProfileById } from '@meemoo/admin-core-ui';
 import {
 	Box,
 	Button,
@@ -27,6 +26,7 @@ import { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { useGetProfileById } from '../hooks/use-get-profile-by-id';
 import { USER_PATH } from '../user.const';
 
 type UserEditPageProps = DefaultSecureRouteProps<{ id: string }>;

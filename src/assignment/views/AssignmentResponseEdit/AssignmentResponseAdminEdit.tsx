@@ -1,6 +1,6 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
 import React, {
 	type Dispatch,
 	type FunctionComponent,
@@ -32,7 +32,7 @@ import './AssignmentResponseEdit.scss';
 
 const AssignmentResponseAdminEdit: FunctionComponent<
 	UserProps & DefaultSecureRouteProps<{ assignmentId: string; responseId: string }>
-> = ({ match, user }) => {
+> = ({ match, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Data
@@ -58,7 +58,9 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			setAssignmentLoading(true);
 
 			// Check if the user is a teacher, they do not have permission to create a response for assignments and should see a clear error message
-			if (!PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENT_RESPONSES)) {
+			if (
+				!PermissionService.hasPerm(commonUser, PermissionName.EDIT_ANY_ASSIGNMENT_RESPONSES)
+			) {
 				setAssignmentError({
 					message: tHtml(
 						'assignment/views/assignment-response-edit/assignment-response-admin-edit___enkel-een-admin-kan-leerlingencollecties-bewerken'
@@ -71,7 +73,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 
 			// Get assignment
 			setAssignmentError(null);
-			if (!user.profile?.id) {
+			if (!commonUser?.profileId) {
 				ToastService.danger(
 					tHtml(
 						'assignment/views/assignment-response-edit___het-ophalen-van-de-opdracht-is-mislukt-de-ingelogde-gebruiker-heeft-geen-profiel-id'
@@ -81,7 +83,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 			}
 
 			const assignment = await AssignmentService.fetchAssignmentAndContent(
-				user.profile.id,
+				commonUser?.profileId,
 				assignmentId
 			);
 
@@ -117,7 +119,7 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 	// Effects
 
 	useEffect(() => {
-		fetchAssignment();
+		fetchAssignment().then(noop);
 	}, []);
 
 	// Events

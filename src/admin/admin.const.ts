@@ -1,10 +1,10 @@
-import { ContentPageService } from '@meemoo/admin-core-ui';
 import { PermissionName } from '@viaa/avo2-types';
 import { every, isArray, some } from 'lodash-es';
 
 import { buildLink, CustomError } from '../shared/helpers';
 import { tText } from '../shared/helpers/translate';
 import { ToastService } from '../shared/services/toast-service';
+import { Locale } from '../shared/translations/translations.types';
 import { type NavigationItemInfo } from '../shared/types';
 
 import { ASSIGNMENTS_PATH } from './assignments/assignments.const';
@@ -113,7 +113,12 @@ async function getContentPageDetailRouteByPath(
 	infoOnly = false
 ): Promise<string | undefined> {
 	try {
-		const page = await ContentPageService.getContentPageByPath(path, infoOnly);
+		const { ContentPageService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+		const page = await ContentPageService.getContentPageByLanguageAndPath(
+			Locale.Nl as any,
+			path,
+			infoOnly
+		);
 		if (!page) {
 			throw new CustomError('Failed to fetch content page by path, response was null', null, {
 				page,

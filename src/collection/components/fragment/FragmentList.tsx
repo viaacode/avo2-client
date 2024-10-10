@@ -12,6 +12,7 @@ import FragmentDetail from './FragmentDetail';
 interface FragmentListProps {
 	collectionFragments: Avo.Collection.Fragment[];
 	showDescription: boolean;
+	showMetadata: boolean;
 	linkToItems: boolean;
 	collection: Avo.Collection.Collection;
 	canPlay?: boolean;
@@ -27,6 +28,7 @@ interface FragmentListProps {
 const FragmentList: FunctionComponent<FragmentListProps & UserProps> = ({
 	collectionFragments,
 	showDescription,
+	showMetadata,
 	linkToItems,
 	collection,
 	commonUser,
@@ -57,6 +59,7 @@ const FragmentList: FunctionComponent<FragmentListProps & UserProps> = ({
 						<FragmentDetail
 							collectionFragment={collectionFragment}
 							showDescription={showDescription}
+							showMetadata={showMetadata}
 							linkToItems={linkToItems}
 							{...rest}
 						/>

@@ -56,7 +56,7 @@ export default defineConfig(() => {
 				'capture-stack-trace',
 				'clsx',
 				'date-fns',
-				'dompurify',
+				'isomorphic-dompurify',
 				'file-saver',
 				'history',
 				'i18next',

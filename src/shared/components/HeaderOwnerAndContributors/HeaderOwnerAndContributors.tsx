@@ -16,16 +16,16 @@ import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues
 import './HeaderOwnerAndContributors.scss';
 
 type HeaderOwnerAndContributorsProps = {
-	user: Avo.User.User;
+	commonUser: Avo.User.CommonUser | null | undefined;
 	subject: Partial<Avo.Assignment.Assignment> | Avo.Collection.Collection;
 };
 
 export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({
-	user,
+	commonUser,
 	subject,
 }) => {
 	const { contributors, profile: owner } = subject;
-	const isOwner = owner?.id === user?.profile?.id;
+	const isOwner = owner?.id === commonUser?.profileId;
 	const nonPendingContributors = (
 		(contributors || []) as
 			| Omit<Avo.Assignment.Contributor, 'assignment_id'>[]

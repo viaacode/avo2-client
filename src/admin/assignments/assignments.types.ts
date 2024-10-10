@@ -28,4 +28,8 @@ export interface AssignmentsOverviewTableState extends FilterableTableState {
 	education_level_id: string[]; // This is the type of assignment: Lager onderwijs or secundair onderwijs. also known as "Kenmerk"
 }
 
-export type AssignmentsBulkAction = 'delete' | 'change_author';
+export enum AssignmentsBulkAction {
+	DELETE = 'DELETE',
+	CHANGE_AUTHOR = 'CHANGE_AUTHOR',
+	EXPORT_ALL = 'EXPORT_ALL',
+}

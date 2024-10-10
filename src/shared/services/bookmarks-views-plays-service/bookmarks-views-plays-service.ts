@@ -127,14 +127,14 @@ export class BookmarksViewsPlaysService {
 
 	public static async getItemCounts(
 		itemUuid: string,
-		user: Avo.User.User | null
+		commonUser: Avo.User.CommonUser | null
 	): Promise<BookmarkViewPlayCounts> {
 		const response = await dataService.query<
 			GetItemBookmarkViewPlayCountsQuery,
 			GetItemBookmarkViewPlayCountsQueryVariables
 		>({
 			query: GetItemBookmarkViewPlayCountsDocument,
-			variables: { itemUuid, profileId: get(user, 'profile.id', null) },
+			variables: { itemUuid, profileId: commonUser?.profileId || null },
 		});
 		const isBookmarked = !!response.app_item_bookmarks[0];
 		const bookmarkCount = response.app_item_bookmarks_aggregate.aggregate?.count ?? 0;
@@ -150,14 +150,14 @@ export class BookmarksViewsPlaysService {
 
 	public static async getCollectionCounts(
 		collectionUuid: string,
-		user: Avo.User.User | null
+		commonUser: Avo.User.CommonUser | undefined | null
 	): Promise<BookmarkViewPlayCounts> {
 		const response = await dataService.query<
 			GetCollectionBookmarkViewPlayCountsQuery,
 			GetCollectionBookmarkViewPlayCountsQueryVariables
 		>({
 			query: GetCollectionBookmarkViewPlayCountsDocument,
-			variables: { collectionUuid, profileId: user?.profile?.id || null },
+			variables: { collectionUuid, profileId: commonUser?.profileId || null },
 		});
 		const isBookmarked = !!response.app_collection_bookmarks[0];
 		const bookmarkCount = response.app_collection_bookmarks_aggregate.aggregate?.count || 0;
@@ -171,13 +171,19 @@ export class BookmarksViewsPlaysService {
 		};
 	}
 
-	public static async getAssignmentCounts(assignmentUuid: string, user: Avo.User.User | null) {
+	public static async getAssignmentCounts(
+		assignmentUuid: string,
+		commonUser: Avo.User.CommonUser | null
+	) {
 		const response = await dataService.query<
 			GetAssignmentBookmarkViewCountsQuery,
 			GetAssignmentBookmarkViewCountsQueryVariables
 		>({
 			query: GetAssignmentBookmarkViewCountsDocument,
-			variables: { assignmentUuid, profileId: user?.profile?.id || null },
+			variables: {
+				assignmentUuid,
+				profileId: commonUser?.profileId || null,
+			},
 		});
 
 		const isBookmarked = !!response.app_assignments_v2_bookmarks[0];
@@ -196,14 +202,14 @@ export class BookmarksViewsPlaysService {
 	/**
 	 * Toggles the bookmark for the provided item or collection or bundle
 	 * @param contentId
-	 * @param user
+	 * @param commonUser
 	 * @param type
 	 * @param isBookmarked current state of the bookmark toggle before the desired action is executed
 	 * @return {boolean} returns true of the operation was successful, otherwise false
 	 */
 	public static async toggleBookmark(
 		contentId: string,
-		user: Avo.User.User | Avo.User.CommonUser,
+		commonUser: Avo.User.CommonUser | undefined,
 		type: EventContentType,
 		isBookmarked: boolean
 	): Promise<void> {
@@ -219,7 +225,7 @@ export class BookmarksViewsPlaysService {
 				isBookmarked ? 'unbookmark' : 'bookmark',
 				type,
 				contentId,
-				user,
+				commonUser,
 				false
 			);
 
@@ -230,7 +236,7 @@ export class BookmarksViewsPlaysService {
 						object_type: type,
 						action: 'bookmark',
 					},
-					user
+					commonUser
 				);
 			}
 		} catch (err) {
