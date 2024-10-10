@@ -3,6 +3,7 @@ import { type Avo, LomSchemeType } from '@viaa/avo2-types';
 import { compact, orderBy } from 'lodash-es';
 import { type ReactNode } from 'react';
 
+import { OrderDirection } from '../search/search.const';
 import { stripHtml } from '../shared/helpers';
 import { EducationLevelId } from '../shared/helpers/lom';
 import { tHtml, tText } from '../shared/helpers/translate';
@@ -41,7 +42,11 @@ export class AssignmentHelper {
  * @param items items to reset positions for
  */
 export function reorderBlockPositions(items: Positioned[]): Positioned[] {
-	const orderedBlocks = orderBy(items || [], ['position', 'created_at'], ['asc', 'asc']);
+	const orderedBlocks = orderBy(
+		items || [],
+		['position', 'created_at'],
+		[OrderDirection.asc, OrderDirection.asc]
+	);
 	orderedBlocks.forEach((block, blockIndex) => {
 		block.position = blockIndex;
 	});

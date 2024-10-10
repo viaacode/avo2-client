@@ -1,4 +1,4 @@
-import { PaginationBar } from '@meemoo/react-components';
+import { OrderDirection, PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	IconName,
@@ -24,6 +24,7 @@ import {
 	type LoadingInfo,
 } from '../../shared/components';
 import { buildLink, CustomError, formatDate, fromNow, isMobileWidth } from '../../shared/helpers';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -55,7 +56,7 @@ const BookmarksOverview: FunctionComponent<
 	const [bookmarkToDelete, setBookmarkToDelete] = useState<BookmarkInfo | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 	const [sortColumn, setSortColumn] = useState<keyof BookmarkInfo>('createdAt');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [paginatedBookmarks, setPaginatedBookmarks] = useState<BookmarkInfo[]>([]);
@@ -157,11 +158,11 @@ const BookmarksOverview: FunctionComponent<
 	const onClickColumn = (columnId: keyof BookmarkInfo) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+			setSortOrder(toggleSortOrder(sortOrder));
 		} else {
 			// Initial column sort order
 			setSortColumn(columnId);
-			setSortOrder('asc');
+			setSortOrder(OrderDirection.asc);
 		}
 		setPage(0);
 	};

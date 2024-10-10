@@ -105,7 +105,6 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps & 
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
 			const assignmentData = await AssignmentService.fetchAssignments({
-				canEditAssignments: true,
 				pastDeadline: false,
 				sortColumn,
 				sortOrder,
@@ -113,9 +112,6 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps & 
 				offset: 0,
 				limit: ITEMS_PER_PAGE,
 				filterString,
-				labelIds: [],
-				classIds: [],
-				shareTypeIds: [],
 			});
 			setAssignments(assignmentData.assignments);
 		} catch (err) {

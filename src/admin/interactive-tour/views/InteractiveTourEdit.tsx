@@ -28,6 +28,7 @@ import { Helmet } from 'react-helmet';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { OrderDirection } from '../../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import {
@@ -115,7 +116,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				})
 			),
 			['label'],
-			['asc']
+			[OrderDirection.asc]
 		);
 	}, []);
 

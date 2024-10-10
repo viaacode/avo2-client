@@ -22,6 +22,7 @@ import { StringParam, useQueryParams } from 'use-query-params';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { OrderDirection } from '../../../search/search.const';
 import { DeleteObjectModal } from '../../../shared/components';
 import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
@@ -135,7 +136,10 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	};
 
 	const handleColumnClick = (columnId: string) => {
-		const sortDirection = queryParams.sortDirection === 'asc' ? 'desc' : 'asc'; // toggle
+		const sortDirection =
+			queryParams.sortDirection === OrderDirection.asc
+				? OrderDirection.desc
+				: OrderDirection.asc; // toggle
 
 		setQueryParams({
 			sortProp: columnId,

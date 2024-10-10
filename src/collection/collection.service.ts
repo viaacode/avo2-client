@@ -17,6 +17,7 @@ import queryString, { stringifyUrl } from 'query-string';
 
 import { setBlockPositionToIndex } from '../assignment/assignment.helper';
 import { PermissionService } from '../authentication/helpers/permission-service';
+import { type OrderDirection } from '../search/search.const';
 import {
 	type ContributorInfo,
 	type ContributorInfoRight,
@@ -1305,7 +1306,7 @@ export class CollectionService {
 		commonUser: Avo.User.CommonUser | null | undefined,
 		offset: number,
 		limit: number | null,
-		order: Record<string, 'asc' | 'desc'> | Record<string, 'asc' | 'desc'>[],
+		order: Record<string, OrderDirection> | Record<string, OrderDirection>[],
 		contentTypeId: ContentTypeNumber.collection | ContentTypeNumber.bundle,
 		filterString: string | undefined,
 		shareTypeIds: string[] | undefined,

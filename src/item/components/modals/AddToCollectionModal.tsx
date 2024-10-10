@@ -24,6 +24,7 @@ import React, { type FunctionComponent, useEffect, useState } from 'react';
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
+import { OrderDirection } from '../../../search/search.const';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
@@ -72,7 +73,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 				commonUser,
 				0,
 				500,
-				{ created_at: 'desc' },
+				{ created_at: OrderDirection.desc },
 				ContentTypeNumber.collection,
 				undefined,
 				undefined,
