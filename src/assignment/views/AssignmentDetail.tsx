@@ -2,6 +2,7 @@ import './AssignmentDetail.scss';
 import {
 	Button,
 	ButtonToolbar,
+	Column,
 	Container,
 	Flex,
 	Grid,
@@ -35,11 +36,13 @@ import React, {
 } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
+import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { renderRelatedItems } from '../../collection/collection.helpers';
+import { type Relation } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -57,7 +60,13 @@ import BlockList from '../../shared/components/BlockList/BlockList';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/constants';
-import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	isMobileWidth,
+	navigate,
+} from '../../shared/helpers';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
@@ -848,6 +857,7 @@ const AssignmentDetail: FC<
 	};
 
 	const renderMetadata = () => {
+		const hasCopies = (assignment?.relations || []).length > 0;
 		return (
 			<Container mode="vertical" className="c-assignment-detail--metadata">
 				<Container mode="horizontal">
@@ -864,6 +874,36 @@ const AssignmentDetail: FC<
 								/>
 							)}
 						</Grid>
+						{hasCopies && (
+							<Grid>
+								<Column size="3-3">
+									<p className="u-text-bold">
+										{tHtml(
+											'assignment/views/assignment-detail___extra-informatie'
+										)}
+									</p>
+
+									<p className="c-body-1">
+										{`${tText(
+											'assignment/views/assignment-detail___deze-opdracht-is-een-kopie-van'
+										)} `}
+										{((assignment?.relations ?? []) as Relation[]).map(
+											(relation: Relation) => (
+												<Link
+													key={`copy-of-link-${relation.object_meta.id}`}
+													to={buildLink(
+														APP_PATH.ASSIGNMENT_DETAIL.route,
+														{ id: relation.object_meta.id }
+													)}
+												>
+													{relation.object_meta.title}
+												</Link>
+											)
+										)}
+									</p>
+								</Column>
+							</Grid>
+						)}
 						{!!relatedAssignments &&
 							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}
 					</div>
