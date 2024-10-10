@@ -351,10 +351,10 @@ const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> =
 				isOpen={isQuickLaneModalOpen}
 				content={selected?.content}
 				content_label={selected?.content_label}
-				onClose={() => {
+				onClose={async () => {
 					setIsQuickLaneModalOpen(false);
 					setSelected(undefined);
-					fetchQuickLanes();
+					await fetchQuickLanes();
 				}}
 			/>
 
