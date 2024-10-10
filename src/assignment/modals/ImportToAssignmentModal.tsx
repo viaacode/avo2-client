@@ -112,9 +112,6 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps & 
 				offset: 0,
 				limit: ITEMS_PER_PAGE,
 				filterString,
-				labelIds: [],
-				classIds: [],
-				shareTypeIds: [],
 			});
 			setAssignments(assignmentData.assignments);
 		} catch (err) {

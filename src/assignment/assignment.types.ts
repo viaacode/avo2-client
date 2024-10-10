@@ -3,6 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 
 import { type FilterState } from '../search/search.types';
 import { type Lookup_Enum_Colors_Enum } from '../shared/generated/graphql-db-types';
+import type { TableColumnDataType } from '../shared/types/table-column-data-type';
 
 import { type AssignmentBlockItemDescriptionType } from './components/AssignmentBlockDescriptionButtons';
 
@@ -135,4 +136,17 @@ export enum AssignmentAction {
 	edit = 'edit',
 	share = 'share',
 	publish = 'publish',
+}
+
+export interface FetchAssignmentsParams {
+	pastDeadline: boolean | null;
+	sortColumn: AssignmentOverviewTableColumns;
+	sortOrder: Avo.Search.OrderDirection;
+	tableColumnDataType: TableColumnDataType;
+	offset: number;
+	limit?: number | null;
+	filterString?: string;
+	labelIds?: string[];
+	classIds?: string[];
+	shareTypeIds?: string[];
 }

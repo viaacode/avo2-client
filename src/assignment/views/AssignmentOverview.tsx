@@ -128,24 +128,18 @@ const AssignmentOverview: FunctionComponent<
 	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(
 		null
 	);
-	const canEditAssignments: boolean | null = useMemo(() => {
-		if (!commonUser) {
-			return null;
-		}
-		return (
+	const canEditAssignments = useMemo(
+		() =>
 			PermissionService.hasPerm(commonUser, PermissionName.EDIT_ANY_ASSIGNMENTS) ||
-			PermissionService.hasPerm(commonUser, PermissionName.EDIT_OWN_ASSIGNMENTS)
-		);
-	}, [commonUser]);
-	const showPublicState = useMemo(() => {
-		if (!commonUser) {
-			return null;
-		}
-		return (
+			PermissionService.hasPerm(commonUser, PermissionName.EDIT_OWN_ASSIGNMENTS),
+		[commonUser]
+	);
+	const showPublicState = useMemo(
+		() =>
 			PermissionService.hasPerm(commonUser, PermissionName.PUBLISH_ANY_ASSIGNMENTS) ||
-			PermissionService.hasPerm(commonUser, PermissionName.PUBLISH_OWN_ASSIGNMENTS)
-		);
-	}, [commonUser]);
+			PermissionService.hasPerm(commonUser, PermissionName.PUBLISH_OWN_ASSIGNMENTS),
+		[commonUser]
+	);
 
 	const isOwner =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||

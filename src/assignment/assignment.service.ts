@@ -96,24 +96,14 @@ import {
 	AssignmentBlockType,
 	type AssignmentOverviewTableColumns,
 	AssignmentType,
+	type FetchAssignmentsParams,
 	type PupilCollectionFragment,
 } from './assignment.types';
 import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';
 import { isItemWithMeta } from './helpers/is-item-with-meta';
 
 export class AssignmentService {
-	static async fetchAssignments(params: {
-		pastDeadline: boolean | null;
-		sortColumn: AssignmentOverviewTableColumns;
-		sortOrder: Avo.Search.OrderDirection;
-		tableColumnDataType: TableColumnDataType;
-		offset: number;
-		limit?: number | null;
-		filterString: string | undefined;
-		labelIds: string[] | undefined;
-		classIds: string[] | undefined;
-		shareTypeIds: string[] | undefined;
-	}): Promise<{
+	static async fetchAssignments(params: FetchAssignmentsParams): Promise<{
 		assignments: Avo.Assignment.Assignment[];
 		count: number;
 	}> {
