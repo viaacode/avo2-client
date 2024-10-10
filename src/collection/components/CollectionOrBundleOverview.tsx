@@ -77,6 +77,8 @@ import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
+import { OrderDirection } from '../../search/search.const';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
@@ -109,7 +111,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const [selectedCollection, setSelectedCollection] = useState<Collection | undefined>(undefined);
 	const [sortColumn, setSortColumn] =
 		useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
 	const [activeModalInfo, setActiveModalInfo] = useState<{
 		collectionUuid: string;
@@ -119,8 +121,8 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const [query, setQuery] = useQueryParams({
 		selectedShareTypeLabelIds: ArrayParam,
 		page: NumberParam,
-		sort_column: StringParam,
-		sort_order: StringParam,
+		sortColumn: StringParam,
+		sortOrder: StringParam,
 	});
 
 	const isContributor =
@@ -287,11 +289,11 @@ const CollectionOrBundleOverview: FunctionComponent<
 	}, [activeModalInfo?.collectionUuid, isCollection]);
 
 	useEffect(() => {
-		if (query.sort_column) {
-			setSortColumn(query.sort_column as CollectionsOrBundlesOverviewTableCols);
+		if (query.sortColumn) {
+			setSortColumn(query.sortColumn as CollectionsOrBundlesOverviewTableCols);
 		}
-		if (query.sort_order) {
-			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
+		if (query.sortOrder) {
+			setSortOrder(query.sortOrder as OrderDirection);
 		}
 	}, []);
 
@@ -364,11 +366,11 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const onClickColumn = (columnId: CollectionsOrBundlesOverviewTableCols) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+			setSortOrder(toggleSortOrder(sortOrder));
 		} else {
 			// Initial column sort order
 			setSortColumn(columnId);
-			setSortOrder('asc');
+			setSortOrder(OrderDirection.asc);
 		}
 	};
 

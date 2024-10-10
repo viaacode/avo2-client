@@ -1,4 +1,4 @@
-import { PaginationBar } from '@meemoo/react-components';
+import { type OrderDirection, PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	type ButtonType,
@@ -51,6 +51,7 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
 
 import './FilterTable.scss';
+import { toggleSortOrder } from '../../../../shared/helpers/toggle-sort-order';
 
 export interface FilterableTableState {
 	query?: string;
@@ -93,7 +94,7 @@ interface FilterTableProps extends RouteComponentProps {
 	variant?: 'bordered' | 'invisible' | 'styled';
 	isLoading?: boolean;
 	defaultOrderProp?: string;
-	defaultOrderDirection?: 'asc' | 'desc';
+	defaultOrderDirection?: OrderDirection;
 
 	// Used for automatic dropdown with bulk actions
 	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
@@ -165,7 +166,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 			...newTableState,
 			page: 0,
 			sort_column: columnId,
-			sort_order: tableState.sort_order === 'asc' ? 'desc' : 'asc',
+			sort_order: toggleSortOrder(tableState.sort_order),
 		});
 
 		setTableState(newTableState, 'replace');

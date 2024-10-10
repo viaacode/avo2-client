@@ -35,8 +35,10 @@ import { APP_PATH } from '../../constants';
 import AssociatedQuickLaneTable, {
 	AssociatedQuickLaneTableOrderBy,
 } from '../../quick-lane/components/AssociatedQuickLaneTable';
+import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -81,13 +83,17 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		Avo.Collection.Collection[] | undefined
 	>(undefined);
 	const [bundleSortColumn, setBundleSortColumn] = useState<string>('title');
-	const [bundleSortOrder, setBundleSortOrder] = useState<Avo.Search.OrderDirection>('asc');
+	const [bundleSortOrder, setBundleSortOrder] = useState<Avo.Search.OrderDirection>(
+		OrderDirection.asc
+	);
 
 	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
 	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
 		QUICK_LANE_DEFAULTS.sort_column
 	);
-	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>('asc');
+	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>(
+		OrderDirection.asc
+	);
 
 	// Computed
 	const isCollection: boolean = collection.type_id === 3;
@@ -193,7 +199,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	};
 
 	const handleBundleColumnClick = (columnId: BundleColumnId) => {
-		const sortOrder = bundleSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+		const sortOrder = toggleSortOrder(bundleSortOrder);
 		setBundleSortColumn(columnId);
 		setBundleSortOrder(sortOrder);
 		setBundlesContainingCollection(
@@ -206,7 +212,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	};
 
 	const handleQuickLaneColumnClick = (id: string) => {
-		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+		const sortOrder = toggleSortOrder(quickLaneSortOrder);
 
 		setQuickLaneSortColumn(id);
 		setQuickLaneSortOrder(sortOrder);

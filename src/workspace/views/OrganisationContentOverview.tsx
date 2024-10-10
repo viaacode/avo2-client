@@ -10,8 +10,10 @@ import {
 } from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { OrderDirection } from '../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -40,7 +42,7 @@ const OrganisationContentOverview: FunctionComponent<
 		OrganisationContentItem[] | null
 	>(null);
 	const [sortColumn, setSortColumn] = useState<keyof OrganisationContentItem>('title');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -48,11 +50,11 @@ const OrganisationContentOverview: FunctionComponent<
 	const onClickColumn = (columnId: keyof OrganisationContentItem) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+			setSortOrder(toggleSortOrder(sortOrder));
 		} else {
 			// Initial column sort order
 			setSortColumn(columnId);
-			setSortOrder('asc');
+			setSortOrder(OrderDirection.asc);
 		}
 	};
 

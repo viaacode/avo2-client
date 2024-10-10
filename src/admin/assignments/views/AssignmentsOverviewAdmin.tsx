@@ -70,6 +70,7 @@ import './AssignmentsOverviewAdmin.scss';
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { OrderDirection } from '../../../search/search.const';
 
 const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({
 	commonUser,
@@ -816,7 +817,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					onSelectBulkAction={handleBulkAction as any}
 					rowKey="id"
 					defaultOrderProp={'created_at'}
-					defaultOrderDirection={'desc'}
+					defaultOrderDirection={OrderDirection.desc}
 				/>
 				<SubjectsBeingEditedWarningModal
 					isOpen={assignmentsBeingEdited?.length > 0}
