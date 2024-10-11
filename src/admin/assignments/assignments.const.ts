@@ -172,7 +172,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		},
 		{
 			id: 'education_levels',
-			label: tText('Onderwijsniveaus'),
+			label: tText('admin/assignments/assignments___onderwijsniveaus'),
 			sortable: false,
 			visibleByDefault: false,
 			filterType: 'CheckboxDropdownModal',
@@ -187,7 +187,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		},
 		{
 			id: 'education_degrees',
-			label: tText('Onderwijsgraden'),
+			label: tText('admin/assignments/assignments___onderwijsgraden'),
 			sortable: false,
 			visibleByDefault: false,
 			filterType: 'CheckboxDropdownModal',

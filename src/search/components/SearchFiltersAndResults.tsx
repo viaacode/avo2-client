@@ -348,7 +348,11 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		try {
 			if (!commonUser) {
 				console.error('User is not logged in');
-				ToastService.danger(tHtml('Je moet aangemald zijn om een bookmark aan te maken.'));
+				ToastService.danger(
+					tHtml(
+						'search/components/search-filters-and-results___je-moet-aangemald-zijn-om-een-bookmark-aan-te-maken'
+					)
+				);
 				return;
 			}
 			const results = searchResults?.results ?? [];

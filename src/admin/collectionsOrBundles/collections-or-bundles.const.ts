@@ -426,7 +426,7 @@ const getCollectionEducationLevelsColumn = (
 	educationLevels: Avo.Lom.LomField[]
 ): FilterableColumn<CollectionTableCols> => ({
 	id: 'education_levels',
-	label: tText('Onderwijsniveaus'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___onderwijsniveaus'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',
@@ -442,7 +442,7 @@ const getCollectionEducationDegreesColumn = (
 	educationDegrees: Avo.Lom.LomField[]
 ): FilterableColumn<CollectionTableCols> => ({
 	id: 'education_degrees',
-	label: tText('Onderwijsgraden'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___onderwijsgraden'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',

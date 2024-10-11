@@ -6,8 +6,7 @@ import {
 	DropdownContent,
 	IconName,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { noop } from 'lodash-es';
 import React, { type FunctionComponent, useMemo, useState } from 'react';
@@ -253,7 +252,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 							{renderViewButton({
 								block: true,
 								className: 'c-assignment-heading__show-on-mobile',
-								icon: IconName.eye,
+								icon: IconName.close,
 								type: 'borderless',
 							})}
 							{renderShareButton({

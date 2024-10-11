@@ -1,0 +1,8 @@
+@import "../settings/variables";
+
+@media screen and (max-width: $g-bp2) {
+	nav.c-tabs {
+		overflow-x: auto;
+		overflow-y: hidden;
+	}
+}

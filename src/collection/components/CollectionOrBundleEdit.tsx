@@ -1350,8 +1350,8 @@ const CollectionOrBundleEdit: FunctionComponent<
 			),
 			...createDropdownMenuItem(
 				CollectionMenuAction.redirectToDetail,
-				tText('collection/components/collection-or-bundle-edit___bekijk'),
-				IconName.eye,
+				tText('collection/components/collection-or-bundle-edit___sluiten'),
+				IconName.close,
 				true
 			),
 			...createDropdownMenuItem(
