@@ -26,10 +26,11 @@ type SelectEducationLevelModalProps = Omit<ModalProps, 'children'> &
 
 // Component
 
-const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProps> = (props) => {
-	const { user, commonUser, onConfirm, ...modal } = props;
-
-	const [educationLevels] = useLomEducationLevelsAndDegrees();
+const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProps> = ({
+	onConfirm,
+	...modal
+}) => {
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [selected, setSelected] = useState<Avo.Lom.LomField | undefined>(undefined);
 
 	const rendered = useMemo(
@@ -39,7 +40,7 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 
 	const options = useMemo(
 		() =>
-			educationLevels
+			(educationLevelsAndDegrees || [])
 				.filter((level) => rendered.includes(level.id))
 				.map(
 					(lom) =>
@@ -48,15 +49,15 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 							value: lom?.id,
 						}) as { label: string; value: string }
 				),
-		[educationLevels, rendered]
+		[educationLevelsAndDegrees, rendered]
 	);
 
 	const handleEducationLevelChange = useCallback(
 		(input: string) => {
-			const level = educationLevels.find(({ id }) => id === input);
+			const level = (educationLevelsAndDegrees || []).find(({ id }) => id === input);
 			setSelected(level);
 		},
-		[educationLevels, setSelected]
+		[educationLevelsAndDegrees, setSelected]
 	);
 
 	const handleConfirm = useCallback(() => {

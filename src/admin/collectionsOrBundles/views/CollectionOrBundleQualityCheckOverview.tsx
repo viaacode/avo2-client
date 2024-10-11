@@ -75,7 +75,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<DefaultSecureRou
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -149,7 +149,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<DefaultSecureRou
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevelsAndDegrees,
+				educationLevelsAndDegrees || [],
 				organisationOptions
 			),
 		[
@@ -174,7 +174,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<DefaultSecureRou
 				true,
 				false,
 				'view',
-				educationLevelsAndDegrees
+				educationLevelsAndDegrees || []
 			);
 
 			return { _and: andFilters };

@@ -51,7 +51,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 		TagInfo[]
 	>([]);
 
-	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
 	const getValidationErrors = (): string[] => {
 		const requiredError = 'is verplicht';
@@ -292,7 +292,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							labelFor="classificationId"
 						>
 							<TagsInput
-								options={educationLevelsAndDegrees.map(
+								options={(educationLevelsAndDegrees || []).map(
 									(item: Avo.Lom.LomField) => ({
 										value: item.id,
 										label: item.label,

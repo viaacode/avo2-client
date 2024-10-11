@@ -76,7 +76,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<DefaultSecureRo
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -151,7 +151,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<DefaultSecureRo
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevelsAndDegrees,
+				educationLevelsAndDegrees || [],
 				organisationOptions
 			),
 		[
@@ -176,7 +176,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<DefaultSecureRo
 				true,
 				false,
 				'view',
-				educationLevelsAndDegrees
+				educationLevelsAndDegrees || []
 			);
 
 			return { _and: andFilters };

@@ -1,40 +1,18 @@
-import { type Avo } from '@viaa/avo2-types';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { type LomFieldSchema } from '@viaa/avo2-types/types/lom';
 
-import useTranslation from '../../shared/hooks/useTranslation';
-import { CustomError } from '../helpers';
+import { QUERY_KEYS } from '../constants/query-keys';
 import { LomService } from '../services/lom.service';
-import { ToastService } from '../services/toast-service';
 
-type UseLomEducationLevelsTuple = [Avo.Lom.LomField[], boolean];
-
-export const useLomEducationLevelsAndDegrees = (): UseLomEducationLevelsTuple => {
-	const { tText, tHtml } = useTranslation();
-
-	const [educationLevels, setEducationLevels] = useState<Avo.Lom.LomField[]>([]);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	useEffect(() => {
-		setIsLoading(true);
-
-		LomService.fetchEducationLevelsAndDegrees()
-			.then((educationLevels: Avo.Lom.LomField[]) => {
-				setEducationLevels(educationLevels);
-			})
-			.catch((err) => {
-				console.error(
-					new CustomError('Failed to get educationLevels from the database', err)
-				);
-				ToastService.danger(
-					tHtml(
-						'shared/hooks/use-education-levels___ophalen-van-de-opleidingsniveaus-is-mislukt'
-					)
-				);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	}, [tHtml, tText]);
-
-	return [educationLevels, isLoading];
+export const useLomEducationLevelsAndDegrees = () => {
+	return useQuery<LomFieldSchema[]>(
+		[QUERY_KEYS.GET_EDUCATION_LEVELS_AND_DEGREES],
+		() => {
+			return LomService.fetchEducationLevelsAndDegrees();
+		},
+		{
+			staleTime: Infinity,
+			cacheTime: Infinity,
+		}
+	);
 };

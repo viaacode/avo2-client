@@ -95,7 +95,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> =
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 	const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<Avo.Share.EditStatus[]>(
@@ -176,7 +176,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> =
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevelsAndDegrees,
+				educationLevelsAndDegrees || [],
 				organisationOptions
 			),
 		[
@@ -199,7 +199,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> =
 				false,
 				true,
 				'collectionTable',
-				educationLevelsAndDegrees
+				educationLevelsAndDegrees || []
 			);
 
 			return { _and: andFilters };

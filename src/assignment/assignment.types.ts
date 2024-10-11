@@ -31,7 +31,9 @@ export type AssignmentOverviewTableColumns =
 	| 'deadline_at'
 	| 'status'
 	| 'subjects'
+	| 'education_level_id'
 	| 'education_levels'
+	| 'education_degrees'
 	| 'responses'
 	| 'quality_labels'
 	| 'class_room'
@@ -43,8 +45,7 @@ export type AssignmentOverviewTableColumns =
 	| 'contributors'
 	| 'actions'
 	| 'share_type'
-	| 'is_public'
-	| 'education_level_id';
+	| 'is_public';
 
 export type AssignmentResponseTableColumns =
 	| 'pupil'

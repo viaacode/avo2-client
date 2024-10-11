@@ -78,7 +78,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<DefaultSecureRouteProp
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -189,7 +189,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<DefaultSecureRouteProp
 				collectionLabelOptions,
 				channelNameOptions,
 				subjects,
-				educationLevelsAndDegrees,
+				educationLevelsAndDegrees || [],
 				organisationOptions,
 				channelTypeOptions
 			),
@@ -216,7 +216,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<DefaultSecureRouteProp
 				true,
 				false,
 				'view',
-				educationLevelsAndDegrees
+				educationLevelsAndDegrees || []
 			);
 
 			return { _and: andFilters };

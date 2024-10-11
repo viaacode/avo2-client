@@ -71,7 +71,8 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => groupLoms(loms), [loms]);
-	const [allEducationLevels, isEducationLevelsLoading] = useLomEducationLevelsAndDegrees();
+	const { data: educationLevelsAndDegrees, isLoading: isEducationLevelsLoading } =
+		useLomEducationLevelsAndDegrees();
 	const [allSubjects, isSubjectsLoading] = useLomSubjects();
 	const [allThemes, isThemesLoading] = useLomThemes();
 
@@ -97,7 +98,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 
 			const parentEducationLevels = getParentEducationLevel(
 				mappedLoms,
-				allEducationLevels || []
+				educationLevelsAndDegrees || []
 			);
 
 			flatLomList = [...Object.values(newLoms).flat(), ...parentEducationLevels];
@@ -110,7 +111,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	};
 
 	const getEducationDegreeOptions = () => {
-		return groupLoms(allEducationLevels)
+		return groupLoms(educationLevelsAndDegrees || [])
 			?.educationDegree?.filter((degree) => {
 				return (
 					!limitDegreesByAlreadySelectedLevels ||
@@ -136,7 +137,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					<TagsInput
 						id="educationId"
 						isLoading={isEducationLevelsLoading}
-						options={getEducationLevelOptions(allEducationLevels)}
+						options={getEducationLevelOptions(educationLevelsAndDegrees || [])}
 						value={
 							getEducationLevelOptions([
 								...lomFields.educationDegree,
@@ -144,7 +145,11 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 							]) || []
 						}
 						onChange={(values) =>
-							handleChange(values, LomType.educationDegree, allEducationLevels || [])
+							handleChange(
+								values,
+								LomType.educationDegree,
+								educationLevelsAndDegrees || []
+							)
 						}
 						placeholder={educationLevelsPlaceholder}
 						allowMulti={allowMultiSelect}
@@ -175,7 +180,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 										[]),
 								],
 								LomType.educationDegree,
-								allEducationLevels || []
+								educationLevelsAndDegrees || []
 							)
 						}
 						placeholder={educationLevelsPlaceholder}

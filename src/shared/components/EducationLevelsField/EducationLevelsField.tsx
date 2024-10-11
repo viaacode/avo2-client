@@ -18,7 +18,7 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 }) => {
 	const { tText } = useTranslation();
 
-	const [educationLevels] = useLomEducationLevelsAndDegrees();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
 	return (
 		<FormGroup
@@ -26,10 +26,10 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 			labelFor="classificationId"
 		>
 			<TagsInput
-				options={educationLevels.map(lomToTagInfo)}
+				options={(educationLevelsAndDegrees || []).map(lomToTagInfo)}
 				value={compact(
 					(value || []).map((stringValue): Avo.Lom.LomField | undefined =>
-						educationLevels.find(
+						(educationLevelsAndDegrees || []).find(
 							(educationLevel) =>
 								educationLevel.label.toLowerCase() === stringValue ||
 								educationLevel.id === stringValue
