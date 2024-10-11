@@ -143,7 +143,7 @@ const CollectionOrBundleEditContent: FunctionComponent<
 	// 				return (
 	// 					<FlowPlayerWrapper
 	// 						item={meta}
-	// 						poster={fragment.thumbnail_path || meta.thumbnail_path}
+	// 						poster={getFlowPlayerPoster(fragment.thumbnail_path, meta)}
 	// 						external_id={meta.external_id}
 	// 						duration={meta.duration}
 	// 						title={meta.title}

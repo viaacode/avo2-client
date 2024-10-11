@@ -13,7 +13,9 @@ query getBookmarksForUser($profileId: uuid!) {
 					}
 					is_deleted
 					is_published
+					type_id
 					type {
+						id
 						label
 					}
 				}
@@ -31,6 +33,10 @@ query getBookmarksForUser($profileId: uuid!) {
 			thumbnail_path
 			created_at
 			type_id
+			type {
+				id
+				label
+			}
 			view_counts {
 				count
 			}
@@ -43,6 +49,10 @@ query getBookmarksForUser($profileId: uuid!) {
 			title
 			thumbnail_path
 			type_id
+			type {
+				id
+				label
+			}
 			created_at
 			view_count {
 				count

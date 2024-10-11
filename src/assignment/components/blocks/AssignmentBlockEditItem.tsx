@@ -7,6 +7,7 @@ import { BlockItemMetadata, FlowPlayerWrapper } from '../../../shared/components
 import { CustomiseItemForm } from '../../../shared/components/CustomiseItemForm';
 import { RICH_TEXT_EDITOR_OPTIONS_AUTHOR } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import { isRichTextEmpty } from '../../../shared/helpers';
+import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
@@ -56,12 +57,16 @@ export const AssignmentBlockEditItem: FC<
 	};
 
 	const handleVideoCut = async (update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>) => {
-		const thumbnail = update.start_oc
-			? await VideoStillService.getVideoStill(
-					editableBlock.fragment_id,
-					(update?.start_oc || 0) * 1000
-			  )
-			: null;
+		let thumbnail: string | null = null;
+		if (editableBlock.item_meta?.type_id) {
+			thumbnail = update.start_oc
+				? await VideoStillService.getVideoStill(
+						editableBlock.fragment_id,
+						editableBlock.item_meta.type_id,
+						(update?.start_oc || 0) * 1000
+				  )
+				: null;
+		}
 		setBlock({ ...editableBlock, ...update, thumbnail_path: thumbnail });
 	};
 
@@ -100,7 +105,7 @@ export const AssignmentBlockEditItem: FC<
 					<>
 						<FlowPlayerWrapper
 							item={item}
-							poster={block.thumbnail_path || item.thumbnail_path}
+							poster={getFlowPlayerPoster(block.thumbnail_path, item)}
 							external_id={item.external_id}
 							duration={item.duration}
 							title={item.title}

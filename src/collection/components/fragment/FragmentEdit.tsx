@@ -35,6 +35,7 @@ import {
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { getMoreOptionsLabel } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
+import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
@@ -415,9 +416,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 								{!isThisFragmentACollection ? (
 									<FlowPlayerWrapper
 										item={itemMetaData}
-										poster={
-											fragment.thumbnail_path || itemMetaData.thumbnail_path
-										}
+										poster={getFlowPlayerPoster(
+											fragment.thumbnail_path,
+											itemMetaData
+										)}
 										external_id={itemMetaData.external_id}
 										duration={itemMetaData.duration}
 										title={itemMetaData.title}

@@ -285,6 +285,7 @@ export class PupilCollectionService {
 		const thumbnailPath = trimInfo.hasCut
 			? await VideoStillService.getVideoStill(
 					item.external_id,
+					item.type_id,
 					trimInfo.fragmentStartTime * 1000
 			  )
 			: null;

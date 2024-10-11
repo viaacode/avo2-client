@@ -6,6 +6,7 @@ import React, { type FunctionComponent, useCallback, useEffect, useState } from 
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
 
@@ -47,7 +48,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 				return {
 					src: playableUrls[fragIndex],
 					title,
-					poster: frag.thumbnail_path || '',
+					poster: getFlowPlayerPoster(frag.thumbnail_path, frag.item_meta),
 					category: 'video',
 					provider: frag.item_meta?.organisation?.name || '',
 					cuepoints: start && end ? [{ startTime: start, endTime: end }] : undefined,

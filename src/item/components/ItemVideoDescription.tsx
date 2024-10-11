@@ -33,6 +33,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 import './ItemVideoDescription.scss';
 import { TEAL_BRIGHT } from '../../shared/constants';
+import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
@@ -108,7 +109,7 @@ const ItemVideoDescription: FunctionComponent<
 		return (
 			<FlowPlayerWrapper
 				src={src}
-				poster={poster}
+				poster={getFlowPlayerPoster(poster, itemMetaData)}
 				item={itemMetaData}
 				canPlay={canPlay}
 				cuePointsVideo={cuePointsVideo}

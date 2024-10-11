@@ -2,7 +2,7 @@ import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, uniq, without } from 'lodash-es';
 
-import { ContentTypeString } from '../../collection/collection.types';
+import { ContentTypeNumber, ContentTypeString } from '../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../constants';
 import { CustomError, getEnv, toSeconds } from '../helpers';
 
@@ -30,11 +30,19 @@ export class VideoStillService {
 	/**
 	 * Get video still for video with external id after start time
 	 * @param externalId id of the video
+	 * @param contentType type of item for which you're requesting a still. When 1 (audio) is passed, a default audio still will be returned
 	 * @param startTime video frame closest to this timestamp in milliseconds
 	 * @return url to frame from video
 	 */
-	public static async getVideoStill(externalId: string, startTime: number): Promise<string> {
+	public static async getVideoStill(
+		externalId: string,
+		contentType: ContentTypeNumber,
+		startTime: number
+	): Promise<string> {
 		try {
+			if (contentType === ContentTypeNumber.audio) {
+				return DEFAULT_AUDIO_STILL;
+			}
 			const stills = await VideoStillService.getVideoStills([{ externalId, startTime }]);
 			if (stills[0] && stills[0].previewImagePath) {
 				return stills[0].previewImagePath;

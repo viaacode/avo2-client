@@ -159,12 +159,14 @@ export function useBlockListModals(
 									end_oc: itemTrimInfo.hasCut
 										? itemTrimInfo.fragmentEndTime
 										: null,
-									thumbnail_path: itemTrimInfo.hasCut
-										? await VideoStillService.getVideoStill(
-												item?.external_id,
-												itemTrimInfo.fragmentStartTime * 1000
-										  )
-										: null,
+									thumbnail_path:
+										itemTrimInfo.hasCut && item?.type_id
+											? await VideoStillService.getVideoStill(
+													item.external_id,
+													item.type_id,
+													itemTrimInfo.fragmentStartTime * 1000
+											  )
+											: null,
 									created_at: new Date().toISOString(),
 								};
 								const newBlocks = insertMultipleAtPosition(blocks, assignmentBlock);

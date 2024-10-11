@@ -26,6 +26,7 @@ import { ContentTypeNumber } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
 import { OrderDirection } from '../../../search/search.const';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
@@ -171,7 +172,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 			item_meta: itemMetaData,
 			type: 'ITEM',
 			thumbnail_path: fragmentStartTime
-				? await VideoStillService.getVideoStill(externalId, fragmentStartTime * 1000)
+				? await VideoStillService.getVideoStill(
+						externalId,
+						itemMetaData.type_id,
+						fragmentStartTime * 1000
+				  )
 				: null,
 		};
 	};
@@ -182,6 +187,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 
 		try {
 			const fragment = await getFragment(collection);
+			if (fragment.item_meta?.type_id === ContentTypeNumber.audio) {
+				fragment.thumbnail_path = DEFAULT_AUDIO_STILL;
+			}
 			delete fragment.item_meta;
 			fragment.position = collection.collection_fragments?.length || 0;
 			await CollectionService.insertFragments(collection.id as string, [

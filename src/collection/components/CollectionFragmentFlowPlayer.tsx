@@ -3,6 +3,7 @@ import React, { type FC } from 'react';
 
 import { FlowPlayerWrapper } from '../../shared/components';
 import { type FlowPlayerWrapperProps } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
+import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import { type BlockItemComponent } from '../collection.types';
 
 export type CollectionFragmentFlowPlayerProps = BlockItemComponent & FlowPlayerWrapperProps;
@@ -15,7 +16,7 @@ const CollectionFragmentFlowPlayer: FC<CollectionFragmentFlowPlayerProps> = (pro
 	return (
 		<FlowPlayerWrapper
 			item={meta}
-			poster={block?.thumbnail_path || meta?.thumbnail_path}
+			poster={getFlowPlayerPoster(block?.thumbnail_path, meta)}
 			external_id={meta?.external_id}
 			duration={meta?.duration}
 			title={meta?.title}

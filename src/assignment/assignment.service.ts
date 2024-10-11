@@ -1020,6 +1020,7 @@ export class AssignmentService {
 						thumbnail_path: item.start_oc
 							? await VideoStillService.getVideoStill(
 									item.external_id,
+									item.type.id,
 									item.start_oc * 1000
 							  )
 							: null,
@@ -1056,6 +1057,7 @@ export class AssignmentService {
 		const thumbnailPath = trimInfo.hasCut
 			? await VideoStillService.getVideoStill(
 					item.external_id,
+					item.type_id,
 					trimInfo.fragmentStartTime * 1000
 			  )
 			: null;
