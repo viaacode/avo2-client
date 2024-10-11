@@ -19,16 +19,16 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FunctionComponent, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ROUTE_PARTS } from '../../../shared/constants';
-import { CustomError, validateEmailAddress } from '../../../shared/helpers';
+import { validateEmailAddress } from '../../../shared/helpers';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { trackEvents } from '../../../shared/services/event-logging-service';
-import { LomService } from '../../../shared/services/lom.service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ZendeskService } from '../../../shared/services/zendesk-service';
 
@@ -47,33 +47,11 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 	const [reason, setReason] = useState<string>('');
 	const [hasBeenSent, setHasBeenSent] = useState<boolean>(false);
 	const [acceptedPrivacyConditions, setAcceptedPrivacyConditions] = useState<boolean>(false);
-	const [selectedEducationLevels, setSelectedEducationLevels] = useState<TagInfo[]>([]);
-	const [educationLevels, setEducationLevels] = useState<TagInfo[]>([]);
+	const [selectedEducationLevelsAndDegrees, setSelectedEducationLevelsAndDegrees] = useState<
+		TagInfo[]
+	>([]);
 
-	const retrieveEducationLevels = useCallback(async () => {
-		try {
-			const educationLevels: Avo.Lom.LomField[] = await LomService.fetchEducationLevels();
-
-			setEducationLevels(
-				educationLevels.map((item: Avo.Lom.LomField) => ({
-					value: item.id,
-					label: item.label,
-				}))
-			);
-		} catch (err) {
-			console.error(new CustomError('Failed to get education levels from the database', err));
-
-			ToastService.danger(
-				tHtml(
-					'authentication/views/registration-flow/r-4-manual-registration___onderwijsniveaus-konden-niet-worden-opgehaald'
-				)
-			);
-		}
-	}, [setEducationLevels, tText]);
-
-	useEffect(() => {
-		retrieveEducationLevels();
-	}, [retrieveEducationLevels]);
+	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
 
 	const getValidationErrors = (): string[] => {
 		const requiredError = 'is verplicht';
@@ -142,7 +120,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 				return;
 			}
 
-			const parsedEducationLevels = selectedEducationLevels
+			const parsedEducationLevels = selectedEducationLevelsAndDegrees
 				.map((selectedEducationLevel) => selectedEducationLevel.label)
 				.join(', ');
 
@@ -154,7 +132,7 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 						organization,
 						profession,
 						reason,
-						educationLevels: selectedEducationLevels,
+						educationLevels: selectedEducationLevelsAndDegrees,
 					}),
 					html_body: `<dl>
   <dt>${tText(
@@ -314,9 +292,16 @@ const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ histor
 							labelFor="classificationId"
 						>
 							<TagsInput
-								options={educationLevels}
-								value={selectedEducationLevels}
-								onChange={(values: TagInfo[]) => setSelectedEducationLevels(values)}
+								options={educationLevelsAndDegrees.map(
+									(item: Avo.Lom.LomField) => ({
+										value: item.id,
+										label: item.label,
+									})
+								)}
+								value={selectedEducationLevelsAndDegrees}
+								onChange={(values: TagInfo[]) =>
+									setSelectedEducationLevelsAndDegrees(values)
+								}
 							/>
 						</FormGroup>
 						<FormGroup

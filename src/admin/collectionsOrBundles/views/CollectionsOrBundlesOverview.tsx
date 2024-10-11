@@ -32,7 +32,7 @@ import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-e
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -95,7 +95,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> =
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevels] = useLomEducationLevels();
+	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 	const [collectionsBeingEdited, setCollectionsBeingEdited] = useState<Avo.Share.EditStatus[]>(
@@ -176,12 +176,12 @@ const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> =
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevels,
+				educationLevelsAndDegrees,
 				organisationOptions
 			),
 		[
 			collectionLabelOptions,
-			educationLevels,
+			educationLevelsAndDegrees,
 			isCollection,
 			subjects,
 			userGroupOptions,
@@ -198,12 +198,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> =
 				isCollection,
 				false,
 				true,
-				'collectionTable'
+				'collectionTable',
+				educationLevelsAndDegrees
 			);
 
 			return { _and: andFilters };
 		},
-		[isCollection, commonUser]
+		[commonUser, isCollection, educationLevelsAndDegrees]
 	);
 
 	const getColumnDataType = () => {
@@ -251,10 +252,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> =
 	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
-		if (commonUser) {
+		if (commonUser && educationLevelsAndDegrees?.length) {
 			fetchCollectionsOrBundles().then(noop);
 		}
-	}, [fetchCollectionsOrBundles, commonUser]);
+	}, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
 	useEffect(() => {
 		if (collections) {

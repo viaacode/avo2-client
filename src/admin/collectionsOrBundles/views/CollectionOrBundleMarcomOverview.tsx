@@ -1,6 +1,7 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
 import React, {
 	type FC,
 	type FunctionComponent,
@@ -32,7 +33,7 @@ import { buildLink, CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -77,7 +78,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<DefaultSecureRouteProp
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevels] = useLomEducationLevels();
+	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -188,11 +189,19 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<DefaultSecureRouteProp
 				collectionLabelOptions,
 				channelNameOptions,
 				subjects,
-				educationLevels,
+				educationLevelsAndDegrees,
 				organisationOptions,
 				channelTypeOptions
 			),
-		[collectionLabelOptions, educationLevels, subjects, userGroupOptions, organisationOptions]
+		[
+			userGroupOptions,
+			collectionLabelOptions,
+			channelNameOptions,
+			subjects,
+			educationLevelsAndDegrees,
+			organisationOptions,
+			channelTypeOptions,
+		]
 	);
 	const isCollection =
 		location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW;
@@ -206,12 +215,13 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<DefaultSecureRouteProp
 				isCollection,
 				true,
 				false,
-				'view'
+				'view',
+				educationLevelsAndDegrees
 			);
 
 			return { _and: andFilters };
 		},
-		[isCollection, commonUser]
+		[commonUser, isCollection, educationLevelsAndDegrees]
 	);
 
 	const getColumnDataType = () => {
@@ -259,8 +269,10 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<DefaultSecureRouteProp
 	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
-		fetchCollectionsOrBundles();
-	}, [fetchCollectionsOrBundles]);
+		if (commonUser && educationLevelsAndDegrees?.length) {
+			fetchCollectionsOrBundles().then(noop);
+		}
+	}, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
 	useEffect(() => {
 		if (collections) {

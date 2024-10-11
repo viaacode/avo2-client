@@ -6,6 +6,7 @@ import { ContentTypeNumber } from '../../../collection/collection.types';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { EducationLevelType } from '../../../shared/helpers/lom';
 import {
+	generateEducationLomFilter,
 	generateLomFilter,
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -27,6 +28,7 @@ import {
  * @param includeDeleted determines of a filter for omitting deleted collections should be added or not
  * @param checkPermissions for the collection and bundle overview you need a specific permission
  * @param isCollectionTableOrView small differences between the editorial views and the collection/bundle table are switched using this boolean
+ * @param allEducationLevelsAndDegrees All possible education levels and degrees, so we can explicitly filter by not any of these values if the NULL_FILTER option is checked
  */
 export function generateCollectionWhereObject(
 	filters: Partial<CollectionTableStates>,
@@ -34,7 +36,8 @@ export function generateCollectionWhereObject(
 	isCollection: boolean,
 	includeDeleted: boolean,
 	checkPermissions: boolean,
-	isCollectionTableOrView: 'collectionTable' | 'view'
+	isCollectionTableOrView: 'collectionTable' | 'view',
+	allEducationLevelsAndDegrees: Avo.Lom.LomField[]
 ): any {
 	const isCollectionTable: boolean = isCollectionTableOrView === 'collectionTable';
 	const andFilters: any[] = [];
@@ -111,8 +114,22 @@ export function generateCollectionWhereObject(
 	// 	);
 	// }
 
-	if (filters.education_levels && filters.education_levels.length) {
-		andFilters.push(generateLomFilter(filters.education_levels, EducationLevelType.structuur));
+	if (filters.education_levels?.length) {
+		andFilters.push(
+			generateEducationLomFilter(
+				filters.education_levels,
+				allEducationLevelsAndDegrees.filter((item) => !item.broader).map((item) => item.id)
+			)
+		);
+	}
+
+	if (filters.education_degrees?.length) {
+		andFilters.push(
+			generateEducationLomFilter(
+				filters.education_degrees,
+				allEducationLevelsAndDegrees.filter((item) => !!item.broader).map((item) => item.id)
+			)
+		);
 	}
 
 	if (filters.organisation && filters.organisation.length) {

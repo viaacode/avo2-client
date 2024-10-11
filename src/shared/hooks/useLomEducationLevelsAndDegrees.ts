@@ -8,7 +8,7 @@ import { ToastService } from '../services/toast-service';
 
 type UseLomEducationLevelsTuple = [Avo.Lom.LomField[], boolean];
 
-export const useLomEducationLevels = (): UseLomEducationLevelsTuple => {
+export const useLomEducationLevelsAndDegrees = (): UseLomEducationLevelsTuple => {
 	const { tText, tHtml } = useTranslation();
 
 	const [educationLevels, setEducationLevels] = useState<Avo.Lom.LomField[]>([]);
@@ -17,7 +17,7 @@ export const useLomEducationLevels = (): UseLomEducationLevelsTuple => {
 	useEffect(() => {
 		setIsLoading(true);
 
-		LomService.fetchEducationLevels()
+		LomService.fetchEducationLevelsAndDegrees()
 			.then((educationLevels: Avo.Lom.LomField[]) => {
 				setEducationLevels(educationLevels);
 			})
@@ -34,7 +34,7 @@ export const useLomEducationLevels = (): UseLomEducationLevelsTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [tText]);
+	}, [tHtml, tText]);
 
 	return [educationLevels, isLoading];
 };

@@ -35,7 +35,7 @@ import { EducationLevelType, groupLomLinks } from '../../../shared/helpers/lom';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -98,7 +98,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const [qualityLabels] = useQualityLabels(true);
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevels] = useLomEducationLevels();
+	const [educationLevels] = useLomEducationLevelsAndDegrees();
 
 	const { data: editStatuses } = useGetAssignmentsEditStatuses(
 		assignments?.map((assignment) => assignment.id) || [],

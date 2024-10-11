@@ -25,16 +25,20 @@ export class LomService {
 		}
 	}
 
-	public static async fetchEducationLevels(): Promise<Avo.Lom.LomField[]> {
+	public static async fetchEducationLevelsAndDegrees(): Promise<Avo.Lom.LomField[]> {
 		try {
 			const educationLevels = await fetchWithLogoutJson<Avo.Lom.LomField[]>(
-				`${getEnv('PROXY_URL')}/admin/lookup/education-levels`
+				`${getEnv('PROXY_URL')}/admin/lookup/education-levels-and-degrees`
 			);
 			return educationLevels.filter((level) => level.id !== EducationLevelId.andere);
 		} catch (err) {
-			throw new CustomError('Failed to get education levels from the database', err, {
-				path: '/admin/lookup/education-levels',
-			});
+			throw new CustomError(
+				'Failed to get education levels and degrees from the database',
+				err,
+				{
+					path: '/admin/lookup/education-levels-and-degrees',
+				}
+			);
 		}
 	}
 }

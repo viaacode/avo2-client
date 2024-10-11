@@ -1,6 +1,7 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
 import React, {
 	type FC,
 	type FunctionComponent,
@@ -28,7 +29,7 @@ import { buildLink, CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -75,7 +76,7 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<DefaultSecureRo
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevels] = useLomEducationLevels();
+	const [educationLevelsAndDegrees] = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -150,10 +151,16 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<DefaultSecureRo
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevels,
+				educationLevelsAndDegrees,
 				organisationOptions
 			),
-		[collectionLabelOptions, educationLevels, subjects, userGroupOptions, organisationOptions]
+		[
+			collectionLabelOptions,
+			educationLevelsAndDegrees,
+			subjects,
+			userGroupOptions,
+			organisationOptions,
+		]
 	);
 
 	const isCollection =
@@ -168,12 +175,13 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<DefaultSecureRo
 				isCollection,
 				true,
 				false,
-				'view'
+				'view',
+				educationLevelsAndDegrees
 			);
 
 			return { _and: andFilters };
 		},
-		[isCollection, commonUser]
+		[commonUser, isCollection, educationLevelsAndDegrees]
 	);
 
 	const getColumnDataType = () => {
@@ -220,8 +228,10 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<DefaultSecureRo
 	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
-		fetchCollectionsOrBundles();
-	}, [fetchCollectionsOrBundles]);
+		if (commonUser && educationLevelsAndDegrees?.length) {
+			fetchCollectionsOrBundles().then(noop);
+		}
+	}, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
 	useEffect(() => {
 		if (collections) {

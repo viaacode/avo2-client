@@ -17,7 +17,7 @@ import React, { type FunctionComponent, useCallback, useMemo, useState } from 'r
 import { EducationLevelId } from '../../helpers/lom';
 import { tHtml, tText } from '../../helpers/translate';
 import withUser, { type UserProps } from '../../hocs/withUser';
-import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
 type SelectEducationLevelModalProps = Omit<ModalProps, 'children'> &
 	Partial<UserProps> & {
@@ -29,7 +29,7 @@ type SelectEducationLevelModalProps = Omit<ModalProps, 'children'> &
 const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProps> = (props) => {
 	const { user, commonUser, onConfirm, ...modal } = props;
 
-	const [educationLevels] = useLomEducationLevels();
+	const [educationLevels] = useLomEducationLevelsAndDegrees();
 	const [selected, setSelected] = useState<Avo.Lom.LomField | undefined>(undefined);
 
 	const rendered = useMemo(

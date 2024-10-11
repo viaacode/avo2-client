@@ -5,7 +5,7 @@ import React, { type FunctionComponent } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
-import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
 interface EducationLevelsFieldProps {
 	onChange?: (values: TagInfo[]) => void;
@@ -18,7 +18,7 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 }) => {
 	const { tText } = useTranslation();
 
-	const [educationLevels] = useLomEducationLevels();
+	const [educationLevels] = useLomEducationLevelsAndDegrees();
 
 	return (
 		<FormGroup
