@@ -26,13 +26,13 @@ import {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface DefaultSecureRouteProps<T extends { [K in keyof T]?: string } = {}>
 	extends RouteComponentProps<T> {
+	commonUser: Avo.User.CommonUser | null;
 	// technically this type is incorrect, it should be Avo.User.User | undefined
 	// But practically it's always Avo.User.User where we need a user and this avoids a shit ton of IF checks
 	/**
 	 * @deprecated Prefer to use commonUser instead
 	 */
-	user: Avo.User.User;
-	commonUser: Avo.User.CommonUser;
+	user: Avo.User.User | null;
 }
 
 export interface SecuredRouteProps extends DefaultSecureRouteProps<any> {
@@ -43,11 +43,11 @@ export interface SecuredRouteProps extends DefaultSecureRouteProps<any> {
 	loginStateError: boolean;
 	loginStateLoading: boolean;
 	path?: string;
+	commonUser: Avo.User.CommonUser | null;
 	/**
 	 * @deprecated Prefer to use commonUser instead
 	 */
-	user: Avo.User.User;
-	commonUser: Avo.User.CommonUser;
+	user: Avo.User.User | null;
 }
 
 const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({

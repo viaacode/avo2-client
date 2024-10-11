@@ -77,12 +77,12 @@ export class BookmarksViewsPlaysService {
 		action: EventAction,
 		contentType: EventContentType,
 		contentUuid: string,
-		user?: Avo.User.User | Avo.User.CommonUser,
+		commonUser: Avo.User.CommonUser | null,
 		silent = true
 	): Promise<void> {
 		try {
 			if (action === 'play' || action === 'view') {
-				await this.incrementCount(action, contentType, contentUuid, user, silent);
+				await this.incrementCount(action, contentType, contentUuid, commonUser, silent);
 			} else {
 				// Bookmark or unbookmark action
 				const { query, variables } = this.getQueryAndVariables(
@@ -90,7 +90,7 @@ export class BookmarksViewsPlaysService {
 					'query',
 					contentType,
 					contentUuid,
-					user
+					commonUser
 				);
 
 				await dataService.query<
@@ -115,7 +115,7 @@ export class BookmarksViewsPlaysService {
 				action,
 				contentType,
 				contentUuid,
-				user,
+				commonUser,
 			});
 			if (silent) {
 				console.error(error);
@@ -209,7 +209,7 @@ export class BookmarksViewsPlaysService {
 	 */
 	public static async toggleBookmark(
 		contentId: string,
-		commonUser: Avo.User.CommonUser | undefined,
+		commonUser: Avo.User.CommonUser | null,
 		type: EventContentType,
 		isBookmarked: boolean
 	): Promise<void> {
@@ -275,12 +275,12 @@ export class BookmarksViewsPlaysService {
 	}
 
 	public static async getItemBookmarksForUser(
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		filterString: string,
 		orderObject: GetItemBookmarksForUserQueryVariables['order']
 	): Promise<BookmarkInfo[]> {
 		const variables: GetItemBookmarksForUserQueryVariables = {
-			profileId: get(user, 'profile.id'),
+			profileId: commonUser?.profileId,
 			filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
 			order: orderObject,
 		};
@@ -377,7 +377,7 @@ export class BookmarksViewsPlaysService {
 		queryType: QueryType,
 		contentType: EventContentType,
 		contentUuid: string,
-		user: Avo.User.User | Avo.User.CommonUser | undefined
+		commonUser: Avo.User.CommonUser | null
 	) {
 		// bundle is handled the same way as a collection
 		const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
@@ -386,7 +386,7 @@ export class BookmarksViewsPlaysService {
 		const query = get(eventQueries, [action, contentTypeSimplified, queryType]);
 		const getVariablesFunc =
 			GET_EVENT_QUERIES()?.[action]?.[contentTypeSimplified]?.variables ?? noop;
-		const variables = getVariablesFunc(contentUuid, user);
+		const variables = getVariablesFunc(contentUuid, commonUser);
 		if (!query || !variables) {
 			throw new CustomError('Failed to find query/variables in query lookup table');
 		}
@@ -429,7 +429,7 @@ export class BookmarksViewsPlaysService {
 		action: EventAction,
 		contentType: EventContentType,
 		contentUuid: string,
-		user?: Avo.User.User | Avo.User.CommonUser,
+		commonUser: Avo.User.CommonUser | null,
 		silent = true
 	) {
 		try {
@@ -438,7 +438,7 @@ export class BookmarksViewsPlaysService {
 				'increment',
 				contentType,
 				contentUuid,
-				user
+				commonUser
 			);
 
 			await dataService.query<
@@ -464,7 +464,7 @@ export class BookmarksViewsPlaysService {
 					action,
 					contentType,
 					contentUuid,
-					user,
+					user: commonUser,
 				}
 			);
 			if (silent) {

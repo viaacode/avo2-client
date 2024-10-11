@@ -2,6 +2,7 @@ import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, {
+	type FC,
 	type FunctionComponent,
 	type ReactNode,
 	useCallback,
@@ -24,6 +25,7 @@ import {
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
@@ -53,11 +55,10 @@ import {
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-type CollectionOrBundleQualityCheckOverviewProps = DefaultSecureRouteProps;
-
-const CollectionOrBundleQualityCheckOverview: FunctionComponent<
-	CollectionOrBundleQualityCheckOverviewProps
-> = ({ location, commonUser }) => {
+const CollectionOrBundleQualityCheckOverview: FunctionComponent<DefaultSecureRouteProps> = ({
+	location,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -519,4 +520,4 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 	);
 };
 
-export default CollectionOrBundleQualityCheckOverview;
+export default withUser(CollectionOrBundleQualityCheckOverview) as FC;

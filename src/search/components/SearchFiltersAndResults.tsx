@@ -346,6 +346,11 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
 		try {
+			if (!commonUser) {
+				console.error('User is not logged in');
+				ToastService.danger(tHtml('Je moet aangemald zijn om een bookmark aan te maken.'));
+				return;
+			}
 			const results = searchResults?.results ?? [];
 			const resultItem: Avo.Search.ResultItem | undefined = results.find(
 				(result) => result.uid === uuid

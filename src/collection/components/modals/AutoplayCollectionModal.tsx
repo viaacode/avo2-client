@@ -48,7 +48,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 				return {
 					src: playableUrls[fragIndex],
 					title,
-					poster: getFlowPlayerPoster(frag.thumbnail_path, frag.item_meta),
+					poster: getFlowPlayerPoster(frag.thumbnail_path, frag.item_meta) || '',
 					category: 'video',
 					provider: frag.item_meta?.organisation?.name || '',
 					cuepoints: start && end ? [{ startTime: start, endTime: end }] : undefined,

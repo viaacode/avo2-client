@@ -16,6 +16,9 @@ export class RelationService {
 		  >[]
 		| Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[]
 	> {
+		if (!objectIds?.length) {
+			return [];
+		}
 		return this.fetchRelations(type, null, relationType, objectIds);
 	}
 
@@ -29,6 +32,9 @@ export class RelationService {
 		  >[]
 		| Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[]
 	> {
+		if (!subjectIds?.length) {
+			return [];
+		}
 		return this.fetchRelations(type, subjectIds, relationType, null);
 	}
 

@@ -3,6 +3,7 @@ import { Button, ButtonToolbar, IconName, type TagInfo } from '@viaa/avo2-compon
 import { type Avo } from '@viaa/avo2-types';
 import { compact, noop, partition } from 'lodash-es';
 import React, {
+	type FC,
 	type FunctionComponent,
 	type ReactNode,
 	useCallback,
@@ -29,6 +30,7 @@ import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullNameCommonUser } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
@@ -64,9 +66,7 @@ import {
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-type CollectionsOrBundlesOverviewProps = DefaultSecureRouteProps;
-
-const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOverviewProps> = ({
+const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> = ({
 	location,
 	commonUser,
 }) => {
@@ -251,8 +251,10 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
-		fetchCollectionsOrBundles().then(noop);
-	}, [fetchCollectionsOrBundles]);
+		if (commonUser) {
+			fetchCollectionsOrBundles().then(noop);
+		}
+	}, [fetchCollectionsOrBundles, commonUser]);
 
 	useEffect(() => {
 		if (collections) {
@@ -374,14 +376,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangePublishStateForSelectedCollections = async (isPublic: boolean) => {
 		try {
-			if (!selectedCollectionIds || !selectedCollectionIds.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length || !commonUser?.profileId) {
 				return;
 			}
 
 			await CollectionsOrBundlesService.bulkChangePublicStateForCollections(
 				isPublic,
 				compact(selectedCollectionIds),
-				commonUser.profileId
+				commonUser?.profileId
 			);
 
 			ToastService.success(
@@ -417,13 +419,13 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkDeleteSelectedCollections = async () => {
 		try {
-			if (!selectedCollectionIds || !selectedCollectionIds.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length || !commonUser?.profileId) {
 				return;
 			}
 
 			await CollectionsOrBundlesService.bulkDeleteCollections(
 				compact(selectedCollectionIds),
-				commonUser.profileId
+				commonUser?.profileId
 			);
 
 			ToastService.success(
@@ -450,14 +452,14 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangeAuthor = async (authorProfileId: string) => {
 		try {
-			if (!selectedCollectionIds || !selectedCollectionIds.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length || !commonUser?.profileId) {
 				return;
 			}
 
 			await CollectionsOrBundlesService.bulkUpdateAuthorForCollections(
 				authorProfileId,
 				compact(selectedCollectionIds),
-				commonUser.profileId
+				commonUser?.profileId
 			);
 
 			ToastService.success(
@@ -484,7 +486,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 
 	const bulkChangeLabels = async (addOrRemove: AddOrRemove, labels: string[]) => {
 		try {
-			if (!selectedCollectionIds || !selectedCollectionIds.length) {
+			if (!selectedCollectionIds || !selectedCollectionIds.length || !commonUser?.profileId) {
 				return;
 			}
 
@@ -492,7 +494,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				await CollectionsOrBundlesService.bulkAddLabelsToCollections(
 					labels,
 					compact(selectedCollectionIds),
-					commonUser.profileId
+					commonUser?.profileId
 				);
 
 				ToastService.success(
@@ -505,7 +507,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				await CollectionsOrBundlesService.bulkRemoveLabelsFromCollections(
 					labels,
 					compact(selectedCollectionIds),
-					commonUser.profileId
+					commonUser?.profileId
 				);
 				ToastService.success(
 					tHtml(
@@ -571,7 +573,7 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 				}
 				const isCollectionBeingEdited = isContentBeingEdited(
 					editStatuses?.[collectionOrBundle.id as string],
-					commonUser.profileId
+					commonUser?.profileId
 				);
 				const viewButtonTitle = isCollection
 					? tText(
@@ -727,11 +729,15 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 					isOpen={changeAuthorModalOpen}
 					onClose={() => setChangeAuthorModalOpen(false)}
 					callback={(newAuthor: PickerItem) => bulkChangeAuthor(newAuthor.value)}
-					initialAuthor={{
-						label: getFullNameCommonUser(commonUser, true, false) || '',
-						value: commonUser.profileId,
-						type: 'PROFILE',
-					}}
+					initialAuthor={
+						commonUser?.profileId
+							? {
+									label: getFullNameCommonUser(commonUser, true, false) || '',
+									value: commonUser?.profileId,
+									type: 'PROFILE',
+							  }
+							: undefined
+					}
 				/>
 				<AddOrRemoveLinkedElementsModal
 					title={tHtml(
@@ -868,4 +874,4 @@ const CollectionsOrBundlesOverview: FunctionComponent<CollectionsOrBundlesOvervi
 	);
 };
 
-export default CollectionsOrBundlesOverview;
+export default withUser(CollectionsOrBundlesOverview) as FC;

@@ -72,12 +72,12 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 			}
 
 			// create zendesk ticket
-			const groupedLoms = groupLomLinks(commonUser.loms);
+			const groupedLoms = groupLomLinks(commonUser?.loms);
 			const body = {
 				description: formValues.description,
-				firstName: commonUser.firstName,
-				lastName: commonUser.lastName,
-				email: commonUser.email,
+				firstName: commonUser?.firstName,
+				lastName: commonUser?.lastName,
+				email: commonUser?.email,
 				organisation: (commonUser?.educationalOrganisations || [])
 					.map((org) => org.organisationLabel)
 					.join(', '),

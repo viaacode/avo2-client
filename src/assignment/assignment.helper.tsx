@@ -94,9 +94,12 @@ export function getAssignmentErrorObj(errorType: AssignmentRetrieveError): {
 }
 
 export function isUserAssignmentOwner(
-	commonUser: Pick<Avo.User.CommonUser, 'profileId'>,
+	commonUser: Pick<Avo.User.CommonUser, 'profileId'> | null,
 	assignment: Partial<Avo.Assignment.Assignment>
 ): boolean {
+	if (!commonUser) {
+		return false;
+	}
 	return (
 		// New assignment
 		assignment.owner_profile_id === undefined ||

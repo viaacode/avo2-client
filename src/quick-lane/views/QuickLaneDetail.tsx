@@ -125,7 +125,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			}
 
 			if (permissionName !== undefined) {
-				setCanReadOriginal(await PermissionService.hasPerm(commonUser, permissionName));
+				setCanReadOriginal(PermissionService.hasPerm(commonUser, permissionName));
 			}
 
 			// Update state

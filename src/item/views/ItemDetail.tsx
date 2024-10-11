@@ -229,7 +229,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			) {
 				const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
 					.map(String)
-					.includes(String(commonUser.userGroup?.id));
+					.includes(String(commonUser?.userGroup?.id));
 
 				if (isPupil) {
 					setLoadingInfo({
@@ -452,11 +452,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	};
 
 	const onImportToAssignment = async (importToAssignmentId: string): Promise<void> => {
+		if (!commonUser) {
+			console.error('User is not logged in');
+			return;
+		}
 		setAssignmentId(importToAssignmentId);
 
 		// check if assignment has responses. If so: show additional confirmation modal
 		const responses = await AssignmentService.getAssignmentResponses(
-			commonUser.profileId,
+			commonUser?.profileId,
 			importToAssignmentId
 		);
 		if (responses.length > 0) {

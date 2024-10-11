@@ -2,6 +2,7 @@ import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, {
+	type FC,
 	type FunctionComponent,
 	type ReactNode,
 	useCallback,
@@ -10,7 +11,8 @@ import React, {
 	useState,
 } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
@@ -28,6 +30,7 @@ import {
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
@@ -57,11 +60,10 @@ import {
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-type CollectionOrBundleMarcomOverviewProps = DefaultSecureRouteProps;
-
-const CollectionOrBundleMarcomOverview: FunctionComponent<
-	CollectionOrBundleMarcomOverviewProps
-> = ({ location, commonUser }) => {
+const CollectionOrBundleMarcomOverview: FunctionComponent<DefaultSecureRouteProps> = ({
+	location,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -552,4 +554,4 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	);
 };
 
-export default CollectionOrBundleMarcomOverview;
+export default compose(withRouter, withUser)(CollectionOrBundleMarcomOverview) as FC;

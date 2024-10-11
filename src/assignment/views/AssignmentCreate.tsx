@@ -83,9 +83,9 @@ import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 
 const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	commonUser,
+	user,
 	history,
 	location,
-	user,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const [isSaving, setIsSaving] = useState(false);
@@ -129,7 +129,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	const submit = async () => {
 		try {
 			setIsSaving(true);
-			if (!user.profile?.id) {
+			if (!commonUser?.profileId) {
 				ToastService.danger(
 					tText(
 						'assignment/views/assignment-create___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-aanmaken'
@@ -144,9 +144,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					blocks: cleanupTitleAndDescriptions(
 						assignment?.blocks || []
 					) as Avo.Assignment.Block[],
-					owner_profile_id: user.profile?.id,
+					owner_profile_id: commonUser?.profileId,
 				} as Partial<Avo.Assignment.Assignment>,
-				user.profile?.id
+				commonUser?.profileId
 			);
 
 			if (created) {
@@ -161,7 +161,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 							  }
 							: {},
 					},
-					user
+					commonUser
 				);
 
 				ToastService.success(
@@ -238,7 +238,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 								education_level: String(assignment?.education_level_id),
 							},
 						},
-						user
+						commonUser
 					);
 				},
 			},
@@ -334,7 +334,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			assignment && (
 				<Flex align="start">
 					<HeaderOwnerAndContributors
-						subject={{ ...assignment, profile: user.profile || undefined }}
+						subject={{ ...assignment, profile: user?.profile || undefined }}
 						commonUser={commonUser}
 					/>
 				</Flex>
@@ -519,7 +519,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				/>
 			</div>
 
-			{!!user && (
+			{!!commonUser && (
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
 					onConfirm={selectEducationLevel}

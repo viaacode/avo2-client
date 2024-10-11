@@ -56,7 +56,7 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 		description: '',
 		wantsToUploadAttachment: false,
 		attachmentUrl: null,
-		organisation: commonUser.organisation?.name || '',
+		organisation: commonUser?.organisation?.name || '',
 		method: '',
 		educationLevels: [],
 	});
@@ -81,9 +81,9 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 			// create zendesk ticket
 			const body = {
 				description: formValues.description,
-				firstName: commonUser.firstName,
-				lastName: commonUser.lastName,
-				email: commonUser.email,
+				firstName: commonUser?.firstName,
+				lastName: commonUser?.lastName,
+				email: commonUser?.email,
 				organisation: formValues.organisation,
 				method: formValues.method,
 				educationLevels: formValues.educationLevels

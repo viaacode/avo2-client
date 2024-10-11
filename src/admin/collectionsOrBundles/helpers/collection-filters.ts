@@ -30,7 +30,7 @@ import {
  */
 export function generateCollectionWhereObject(
 	filters: Partial<CollectionTableStates>,
-	commonUser: Avo.User.CommonUser,
+	commonUser: Avo.User.CommonUser | null,
 	isCollection: boolean,
 	includeDeleted: boolean,
 	checkPermissions: boolean,

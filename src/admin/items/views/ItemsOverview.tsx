@@ -2,11 +2,17 @@ import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	type FC,
+	type FunctionComponent,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
-import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
@@ -19,6 +25,7 @@ import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graph
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
+import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
@@ -41,9 +48,7 @@ import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.type
 
 import { ItemBulkAction } from './ItemsOverview.types';
 
-type ItemsOverviewProps = DefaultSecureRouteProps;
-
-const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ commonUser }) => {
+const ItemsOverview: FunctionComponent<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);
@@ -441,4 +446,4 @@ const ItemsOverview: FunctionComponent<ItemsOverviewProps> = ({ commonUser }) =>
 	);
 };
 
-export default ItemsOverview;
+export default withUser(ItemsOverview) as FC;

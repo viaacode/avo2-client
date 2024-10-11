@@ -48,7 +48,7 @@ export interface QueryDefinition {
 	query?: string;
 	get?: string;
 	increment?: string;
-	variables: (uuid: string, user?: Avo.User.User | Avo.User.CommonUser) => any;
+	variables: (uuid: string, commonUser: Avo.User.CommonUser | null) => any;
 	getResponseCount?: (response: any) => number;
 }
 
@@ -62,25 +62,19 @@ export const GET_EVENT_QUERIES: () => {
 	bookmark: {
 		item: {
 			query: InsertItemBookmarkDocument,
-			variables: (itemUuid: string, user?: Avo.User.User | Avo.User.CommonUser) => ({
+			variables: (itemUuid: string, commonUser: Avo.User.CommonUser | null) => ({
 				bookmarkItem: {
 					item_id: itemUuid,
-					profile_id:
-						(user as Avo.User.User)?.profile?.id ||
-						(user as Avo.User.CommonUser)?.profileId ||
-						null,
+					profile_id: commonUser?.profileId || null,
 				},
 			}),
 		},
 		collection: {
 			query: InsertCollectionBookmarkDocument,
-			variables: (collectionUuid: string, user?: Avo.User.User | Avo.User.CommonUser) => ({
+			variables: (collectionUuid: string, commonUser: Avo.User.CommonUser | null) => ({
 				bookmarkItem: {
 					collection_uuid: collectionUuid,
-					profile_id:
-						(user as Avo.User.User)?.profile?.id ||
-						(user as Avo.User.CommonUser)?.profileId ||
-						null,
+					profile_id: commonUser?.profileId || null,
 				},
 			}),
 		},
@@ -88,14 +82,11 @@ export const GET_EVENT_QUERIES: () => {
 			query: InsertAssignmentBookmarkDocument,
 			variables: (
 				assignmentUuid: string,
-				user?: Avo.User.User | Avo.User.CommonUser
+				commonUser: Avo.User.CommonUser | null
 			): InsertAssignmentBookmarkMutationVariables => ({
 				bookmarkAssignment: {
 					assignment_id: assignmentUuid,
-					profile_id:
-						(user as Avo.User.User)?.profile?.id ||
-						(user as Avo.User.CommonUser)?.profileId ||
-						null,
+					profile_id: commonUser?.profileId || null,
 				},
 			}),
 		},
@@ -105,39 +96,30 @@ export const GET_EVENT_QUERIES: () => {
 			query: DeleteItemBookmarkDocument,
 			variables: (
 				itemUuid: string,
-				user?: Avo.User.User | Avo.User.CommonUser
+				commonUser: Avo.User.CommonUser | null
 			): DeleteItemBookmarkMutationVariables => ({
 				itemUuid,
-				profileId:
-					(user as Avo.User.User)?.profile?.id ||
-					(user as Avo.User.CommonUser)?.profileId ||
-					null,
+				profileId: commonUser?.profileId || null,
 			}),
 		},
 		collection: {
 			query: DeleteCollectionBookmarksForUserDocument,
 			variables: (
 				collectionUuid: string,
-				user?: Avo.User.User | Avo.User.CommonUser
+				commonUser: Avo.User.CommonUser | null
 			): DeleteCollectionBookmarksForUserMutationVariables => ({
 				collectionUuid: collectionUuid,
-				profileId:
-					(user as Avo.User.User)?.profile?.id ||
-					(user as Avo.User.CommonUser)?.profileId ||
-					null,
+				profileId: commonUser?.profileId || null,
 			}),
 		},
 		assignment: {
 			query: DeleteAssignmentBookmarksForUserDocument,
 			variables: (
 				assignmentUuid: string,
-				user?: Avo.User.User | Avo.User.CommonUser
+				commonUser: Avo.User.CommonUser | null
 			): DeleteAssignmentBookmarksForUserMutationVariables => ({
 				assignmentUuid,
-				profileId:
-					(user as Avo.User.User)?.profile?.id ||
-					(user as Avo.User.CommonUser)?.profileId ||
-					null,
+				profileId: commonUser?.profileId || null,
 			}),
 		},
 	},

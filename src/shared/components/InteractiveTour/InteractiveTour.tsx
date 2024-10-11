@@ -45,7 +45,7 @@ const InteractiveTour: FunctionComponent<
 	const { data: interactiveTourInfo } = useGetInteractiveTourForPage(
 		location.pathname,
 		tourDisplayDates,
-		commonUser.profileId
+		commonUser?.profileId
 	);
 	const tour = interactiveTourInfo?.tour;
 	const routeId = interactiveTourInfo?.routeId;
@@ -137,7 +137,7 @@ const InteractiveTour: FunctionComponent<
 				}
 				await InteractiveTourService.setInteractiveTourSeen(
 					routeId,
-					commonUser.profileId,
+					commonUser?.profileId,
 					(tour as TourInfo).id
 				);
 				setSeen(true);
@@ -145,7 +145,7 @@ const InteractiveTour: FunctionComponent<
 				console.error(
 					new CustomError('Failed to store interactive tour seen status', err, {
 						routeId,
-						profileId: commonUser.profileId,
+						profileId: commonUser?.profileId,
 						tourId: (tour as TourInfo).id,
 					})
 				);
