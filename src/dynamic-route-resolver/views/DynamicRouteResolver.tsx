@@ -258,6 +258,17 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		}
 	}, [routeInfo]);
 
+	// const handleLoaded = () => {
+	// 	if (location.hash) {
+	// 		const element = document.getElementById(location.hash.slice(1));
+	// 		if (element) {
+	// 			element.scrollIntoView({ behavior: 'smooth' });
+	// 		}
+	// 	} else {
+	// 		scrollTo({ top: 0 });
+	// 	}
+	// };
+
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
 			const routeUserGroupIds = ((routeInfo.data as DbContentPage).userGroupIds ?? []).map(
@@ -305,7 +316,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					{routeInfo.data && (
 						<ContentPageRenderer
 							contentPageInfo={routeInfo.data as ContentPageInfo}
-							onLoaded={() => scrollTo({ top: 0 })}
 							commonUser={
 								(loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
 							}

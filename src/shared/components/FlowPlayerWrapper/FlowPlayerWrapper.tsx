@@ -12,6 +12,7 @@ import { get, isNil, isString, noop, throttle } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, {
 	type FunctionComponent,
+	type MouseEvent,
 	type ReactNode,
 	useCallback,
 	useEffect,
@@ -21,6 +22,7 @@ import { connect } from 'react-redux';
 import { type RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
+import { useQueryParam } from 'use-query-params';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
@@ -101,6 +103,8 @@ const FlowPlayerWrapper: FunctionComponent<
 
 	const isPlaylist = !isString(src) && !isNil(src);
 
+	const [autoplayVideo] = useQueryParam('autoplayVideo');
+
 	useEffect(() => {
 		// reset token when item changes
 		setSrc(props.src);
@@ -130,10 +134,10 @@ const FlowPlayerWrapper: FunctionComponent<
 	}, [item, setSrc, tText]);
 
 	useEffect(() => {
-		if (props.autoplay && item) {
+		if (item && (props.autoplay || autoplayVideo === item.external_id)) {
 			initFlowPlayer();
 		}
-	}, [props.autoplay, item, initFlowPlayer]);
+	}, [props.autoplay, autoplayVideo, item, initFlowPlayer]);
 
 	const handlePlay = (playingSrc: string) => {
 		// Only trigger once per video
@@ -169,16 +173,25 @@ const FlowPlayerWrapper: FunctionComponent<
 		{ leading: true, trailing: true }
 	);
 
-	const handlePosterClicked = async () => {
+	const handlePosterClicked = async (evt: MouseEvent<HTMLDivElement>) => {
 		setClickedThumbnail(true);
 
 		if (!src) {
 			if (!props.commonUser) {
+				const anchorId = evt.currentTarget
+					.closest('[data-anchor]')
+					?.getAttribute('data-anchor');
 				redirectToClientPage(
 					stringifyUrl({
 						url: APP_PATH.REGISTER_OR_LOGIN.route,
 						query: {
-							returnToUrl: props.location.pathname,
+							// Scroll back down to this video player: https://meemoo.atlassian.net/browse/AVO-3171
+							returnToUrl: stringifyUrl({
+								url: props.location.pathname + (anchorId ? '#' + anchorId : ''),
+								query: {
+									autoplayVideo: item?.external_id,
+								},
+							}),
 						},
 					}),
 					props.history
@@ -279,7 +292,11 @@ const FlowPlayerWrapper: FunctionComponent<
 				className="c-video-player t-player-skin--dark"
 				style={isPlaylist ? {} : { aspectRatio: '16/9' }}
 			>
-				{src && (props.autoplay || clickedThumbnail || !item) ? (
+				{src &&
+				(props.autoplay ||
+					clickedThumbnail ||
+					!item ||
+					autoplayVideo === item?.external_id) ? (
 					<FlowPlayer
 						src={getBrowserSafeUrl(src)}
 						type={(item?.type?.label as 'video' | 'audio' | undefined) || 'video'}

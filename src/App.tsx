@@ -43,6 +43,7 @@ import store from './store';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './styles/main.scss';
 import './App.scss';
+import { usePageLoaded } from './shared/hooks/usePageLoaded';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
@@ -67,6 +68,12 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 		.includes(String(props.commonUser?.userGroup?.id));
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
+	const handlePageLoaded = () => {
+		document.querySelector(props.location.hash)?.scrollIntoView({ behavior: 'smooth' });
+	};
+
+	usePageLoaded(handlePageLoaded, !!props.location.hash);
 
 	useEffect(() => {
 		waitForTranslations
