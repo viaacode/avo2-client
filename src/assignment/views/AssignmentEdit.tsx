@@ -106,6 +106,7 @@ import {
 	onEditContributor,
 } from '../helpers/assignment-share-with-collegue-handlers';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
+import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
@@ -905,6 +906,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		}
 	};
 
+	const handleDuplicateAssignment = async () => {
+		const duplicatedAssignment = await duplicateAssignment(originalAssignment, commonUser);
+		if (duplicatedAssignment) {
+			window.open(toAssignmentDetail(duplicatedAssignment), '_blank');
+		}
+	};
+
 	// Render
 
 	const shareProps = {
@@ -958,9 +966,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 				}
 				duplicate={{
 					assignment: originalAssignment || undefined,
-					onClick: (_e, duplicated) => {
-						duplicated && redirectToClientPage(toAssignmentDetail(duplicated), history);
-					},
+					onClick: () => handleDuplicateAssignment(),
 				}}
 				view={{
 					label: tText('assignment/views/assignment-edit___bekijk'),
