@@ -10,13 +10,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, get } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type MouseEvent,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
 
 import { ColorSelect } from '../../shared/components';
 import { type Lookup_Enum_Colors_Enum } from '../../shared/generated/graphql-db-types';
@@ -40,7 +34,7 @@ export type AssignmentLabelsProps = {
 	type?: Avo.Assignment.LabelType;
 };
 
-const AssignmentLabels: FunctionComponent<AssignmentLabelsProps & UserProps> = ({
+const AssignmentLabels: FC<AssignmentLabelsProps & UserProps> = ({
 	id,
 	labels,
 	commonUser,
@@ -185,4 +179,4 @@ const AssignmentLabels: FunctionComponent<AssignmentLabelsProps & UserProps> = (
 	);
 };
 
-export default withUser(AssignmentLabels) as FunctionComponent<AssignmentLabelsProps>;
+export default withUser(AssignmentLabels) as FC<AssignmentLabelsProps>;

@@ -2,12 +2,15 @@ import { Flex, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { useParams } from 'react-router';
+import { type RouteChildrenProps, useParams } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 import { UserService } from '../user.service';
 
@@ -19,7 +22,7 @@ const UserDetail = lazy(() =>
 	}))
 );
 
-const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
+const UserDetailPage: FC<UserProps & RouteChildrenProps> = ({ commonUser, history }) => {
 	const { tText } = useTranslation();
 	const [user, setUser] = useState<{ fullName?: string } | undefined>();
 	const { id } = useParams<{ id: string }>();
@@ -52,6 +55,7 @@ const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
 					id={id}
 					onSetTempAccess={UserService.updateTempAccessByUserId}
 					onLoaded={setUser}
+					onGoBack={() => goBrowserBackWithFallback(ADMIN_PATH.USER_OVERVIEW, history)}
 					commonUser={commonUser as Avo.User.CommonUser}
 				/>
 			</Suspense>
@@ -59,4 +63,4 @@ const UserDetailPage: FC<UserProps> = ({ commonUser }) => {
 	);
 };
 
-export default compose(withAdminCoreConfig, withUser)(UserDetailPage) as FC;
+export default compose(withAdminCoreConfig, withUser, withRouter)(UserDetailPage) as FC;

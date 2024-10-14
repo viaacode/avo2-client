@@ -14,7 +14,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { cloneDeep, get, isEmpty, isNil, noop, set } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type ReactText,
 	useCallback,
@@ -157,7 +157,7 @@ interface CollectionOrBundleEditProps {
 	type: 'collection' | 'bundle';
 }
 
-const CollectionOrBundleEdit: FunctionComponent<
+const CollectionOrBundleEdit: FC<
 	CollectionOrBundleEditProps &
 		DefaultSecureRouteProps<{ id: string; tabId: CollectionCreateUpdateTab | undefined }> &
 		UserProps
@@ -1633,4 +1633,4 @@ const CollectionOrBundleEdit: FunctionComponent<
 export default compose(
 	withRouter,
 	withUser
-)(CollectionOrBundleEdit) as FunctionComponent<CollectionOrBundleEditProps>;
+)(CollectionOrBundleEdit) as FC<CollectionOrBundleEditProps>;

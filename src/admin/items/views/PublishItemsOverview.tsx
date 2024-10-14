@@ -1,6 +1,6 @@
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
-import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -26,7 +26,7 @@ import {
 	type UnpublishedItemsTableState,
 } from '../items.types';
 
-const PublishItemsOverview: FunctionComponent<DefaultSecureRouteProps> = ({ history }) => {
+const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [items, setItems] = useState<UnpublishedItem[] | null>(null);

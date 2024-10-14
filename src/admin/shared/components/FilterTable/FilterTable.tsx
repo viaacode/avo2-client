@@ -21,7 +21,7 @@ import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, get, sortBy } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type KeyboardEvent,
 	type ReactElement,
 	type ReactNode,
@@ -108,7 +108,7 @@ interface FilterTableProps extends RouteComponentProps {
 	hideTableColumnsButton?: boolean;
 }
 
-const FilterTable: FunctionComponent<FilterTableProps> = ({
+const FilterTable: FC<FilterTableProps> = ({
 	data,
 	dataCount,
 	itemsPerPage,

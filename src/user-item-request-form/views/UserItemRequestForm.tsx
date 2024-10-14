@@ -9,7 +9,7 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import type { Requests } from 'node-zendesk';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { compose } from 'redux';
@@ -41,10 +41,7 @@ interface FormValues {
 	attachmentUrl: string | null;
 }
 
-const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
-	history,
-	commonUser,
-}) => {
+const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ history, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [formValues, setFormValues] = useState<FormValues>({
@@ -246,4 +243,4 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 	);
 };
 
-export default compose(withRouter, withUser)(UserItemRequestForm) as FunctionComponent;
+export default compose(withRouter, withUser)(UserItemRequestForm) as FC;

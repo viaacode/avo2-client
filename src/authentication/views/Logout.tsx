@@ -1,4 +1,4 @@
-import { type FunctionComponent } from 'react';
+import { type FC } from 'react';
 import { type RouteComponentProps } from 'react-router';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
@@ -10,7 +10,7 @@ import { redirectToServerLogoutPage } from '../helpers/redirects';
 
 export interface LogoutProps extends RouteComponentProps, UserProps {}
 
-export const Logout: FunctionComponent<LogoutProps> = ({ location, user }) => {
+export const Logout: FC<LogoutProps> = ({ location, user }) => {
 	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
 		.map(String)
 		.includes(getUserGroupId(user?.profile));
@@ -19,4 +19,4 @@ export const Logout: FunctionComponent<LogoutProps> = ({ location, user }) => {
 	return null;
 };
 
-export default withUser(Logout) as FunctionComponent<RouteComponentProps>;
+export default withUser(Logout) as FC<RouteComponentProps>;

@@ -22,13 +22,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, get, isEmpty } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { AssignmentOverview } from '../../assignment/views';
@@ -80,12 +74,7 @@ interface WorkspacePermissions {
 	canViewSomeQuickLanes?: boolean;
 }
 
-const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
-	history,
-	match,
-	location,
-	commonUser,
-}) => {
+const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -471,4 +460,4 @@ const Workspace: FunctionComponent<WorkspaceProps & UserProps> = ({
 	);
 };
 
-export default withUser(Workspace) as FunctionComponent<WorkspaceProps>;
+export default withUser(Workspace) as FC<WorkspaceProps>;

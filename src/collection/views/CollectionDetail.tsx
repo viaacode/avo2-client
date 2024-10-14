@@ -20,13 +20,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, isEmpty, isNil, noop } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -138,7 +132,7 @@ type CollectionDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const CollectionDetail: FunctionComponent<
+const CollectionDetail: FC<
 	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
 > = ({ history, match, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const { tText, tHtml } = useTranslation();
@@ -1591,7 +1585,4 @@ const CollectionDetail: FunctionComponent<
 	return renderPageContent();
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(CollectionDetail) as FunctionComponent<CollectionDetailProps>;
+export default compose(withRouter, withUser)(CollectionDetail) as FC<CollectionDetailProps>;

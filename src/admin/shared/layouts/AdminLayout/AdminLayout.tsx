@@ -1,5 +1,5 @@
 import { Container, useSlot } from '@viaa/avo2-components';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { TopBar } from '../../components';
 
@@ -19,7 +19,7 @@ interface AdminLayoutProps {
 	size: 'small' | 'medium' | 'large' | 'full-width' | 'no-margin'; // TODO move this to a type in the Container component in the components repo
 }
 
-const AdminLayout: FunctionComponent<AdminLayoutProps> = ({
+const AdminLayout: FC<AdminLayoutProps> = ({
 	children,
 	className,
 	pageTitle,

@@ -1,6 +1,6 @@
 import { PaginationBar } from '@meemoo/react-components';
 import { IconName, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
-import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
@@ -32,9 +32,10 @@ interface OrganisationContentOverviewProps {
 
 // Component
 
-const OrganisationContentOverview: FunctionComponent<
-	OrganisationContentOverviewProps & UserProps
-> = ({ numberOfItems, commonUser }) => {
+const OrganisationContentOverview: FC<OrganisationContentOverviewProps & UserProps> = ({
+	numberOfItems,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State

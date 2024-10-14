@@ -12,7 +12,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useCallback, useMemo, useState } from 'react';
+import React, { type FC, useCallback, useMemo, useState } from 'react';
 
 import { EducationLevelId } from '../../helpers/lom';
 import { tHtml, tText } from '../../helpers/translate';
@@ -26,10 +26,7 @@ type SelectEducationLevelModalProps = Omit<ModalProps, 'children'> &
 
 // Component
 
-const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProps> = ({
-	onConfirm,
-	...modal
-}) => {
+const SelectEducationLevelModal: FC<SelectEducationLevelModalProps> = ({ onConfirm, ...modal }) => {
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [selected, setSelected] = useState<Avo.Lom.LomField | undefined>(undefined);
 
@@ -112,6 +109,4 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 	);
 };
 
-export default withUser(
-	SelectEducationLevelModal
-) as FunctionComponent<SelectEducationLevelModalProps>;
+export default withUser(SelectEducationLevelModal) as FC<SelectEducationLevelModalProps>;

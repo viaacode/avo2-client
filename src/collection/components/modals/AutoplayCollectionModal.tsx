@@ -1,7 +1,7 @@
 import { type FlowplayerSourceItem, type FlowplayerSourceList } from '@meemoo/react-components';
 import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
@@ -18,7 +18,7 @@ interface AutoplayCollectionModalProps {
 	collectionFragments: Avo.Collection.Fragment[];
 }
 
-const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> = ({
+const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 	isOpen,
 	onClose,
 	collectionFragments,

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { noop } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import {
 	Route,
@@ -60,7 +60,7 @@ wrapHistory(history, {
 	},
 });
 
-const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
+const App: FC<RouteComponentProps & UserProps> = (props) => {
 	const { tHtml } = useTranslation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 	const isPupilUser = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
@@ -152,13 +152,13 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	);
 };
 
-const AppWithRouter = compose(withRouter, withUser, withAdminCoreConfig)(App) as FunctionComponent;
+const AppWithRouter = compose(withRouter, withUser, withAdminCoreConfig)(App) as FC;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 
 const queryClient = new QueryClient();
 
-const Root: FunctionComponent = () => {
+const Root: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
 

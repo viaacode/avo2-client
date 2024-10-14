@@ -1,5 +1,5 @@
 import { Button, ButtonToolbar, Container, Icon, IconName, Spacer } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
@@ -9,7 +9,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkYourAccount.scss';
 
-const LinkYourAccount: FunctionComponent<RouteComponentProps> = ({ history }) => {
+const LinkYourAccount: FC<RouteComponentProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();
 
 	return (

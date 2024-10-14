@@ -9,7 +9,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop, once } from 'lodash-es';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import { ItemVideoDescription } from '../../../item/components';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
@@ -39,7 +39,7 @@ export interface CutFragmentModalProps {
 	onConfirm?: (update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>) => void;
 }
 
-const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
+const CutFragmentModal: FC<CutFragmentModalProps> = ({
 	isOpen,
 	itemMetaData,
 	index,

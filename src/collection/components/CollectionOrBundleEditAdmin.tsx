@@ -18,13 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, noop, orderBy } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
@@ -71,9 +65,13 @@ interface CollectionOrBundleEditAdminProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditAdmin: FunctionComponent<
-	CollectionOrBundleEditAdminProps & UserProps
-> = ({ collection, changeCollectionState, history, commonUser, onFocus }) => {
+const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps & UserProps> = ({
+	collection,
+	changeCollectionState,
+	history,
+	commonUser,
+	onFocus,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -555,6 +553,4 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	);
 };
 
-export default withUser(
-	CollectionOrBundleEditAdmin
-) as FunctionComponent<CollectionOrBundleEditAdminProps>;
+export default withUser(CollectionOrBundleEditAdmin) as FC<CollectionOrBundleEditAdminProps>;

@@ -12,7 +12,7 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
 import useTranslation from '../../../../shared/hooks/useTranslation';
@@ -27,7 +27,7 @@ interface TopbarProps {
 	size?: 'small' | 'medium' | 'large' | 'full-width';
 }
 
-export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProps> = ({
+export const TopBarComponent: FC<TopbarProps & RouteComponentProps> = ({
 	onClickBackButton,
 	title,
 	center,
@@ -73,4 +73,4 @@ export const TopBarComponent: FunctionComponent<TopbarProps & RouteComponentProp
 	);
 };
 
-export const TopBar = withRouter(TopBarComponent) as unknown as FunctionComponent<TopbarProps>;
+export const TopBar = withRouter(TopBarComponent) as unknown as FC<TopbarProps>;

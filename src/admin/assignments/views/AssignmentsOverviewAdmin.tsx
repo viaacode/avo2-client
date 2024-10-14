@@ -2,14 +2,7 @@ import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName, TagList, type TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, first, get, isNil, noop, partition, without } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -72,9 +65,7 @@ import { AssignmentsBulkAction, type AssignmentsOverviewTableState } from '../as
 
 import './AssignmentsOverviewAdmin.scss';
 
-const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({
-	commonUser,
-}) => {
+const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
@@ -1007,7 +998,4 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(AssignmentOverviewAdmin) as unknown as FunctionComponent;
+export default compose(withRouter, withUser)(AssignmentOverviewAdmin) as unknown as FC;

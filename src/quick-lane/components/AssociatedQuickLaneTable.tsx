@@ -1,5 +1,5 @@
 import { Table, type TableColumn, type TableProps } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import QuickLaneFilterTableCell from '../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { isMobileWidth } from '../../shared/helpers';
@@ -7,7 +7,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 
-const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
+const AssociatedQuickLaneTable: FC<TableProps> = ({
 	onColumnClick,
 	sortColumn,
 	sortOrder,
@@ -75,7 +75,7 @@ const AssociatedQuickLaneTable: FunctionComponent<TableProps> = ({
 	);
 };
 
-export default AssociatedQuickLaneTable as FunctionComponent<TableProps>;
+export default AssociatedQuickLaneTable as FC<TableProps>;
 
 export const AssociatedQuickLaneTableOrderBy: Partial<Record<string, string>> = {
 	author: 'owner.user.full_name',

@@ -1,5 +1,5 @@
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -17,7 +17,7 @@ interface DeleteCollectionModalProps {
 	shouldDeleteSelfFromCollection: boolean;
 }
 
-const DeleteCollectionModal: FunctionComponent<DeleteCollectionModalProps> = ({
+const DeleteCollectionModal: FC<DeleteCollectionModalProps> = ({
 	isOpen,
 	onClose = noop,
 	deleteCollectionCallback,

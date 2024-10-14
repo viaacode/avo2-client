@@ -19,7 +19,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import React, {
 	type Dispatch,
-	type FunctionComponent,
+	type FC,
 	type SetStateAction,
 	useCallback,
 	useEffect,
@@ -81,12 +81,7 @@ import {
 import { type AssignmentFields } from '../hooks/assignment-form';
 import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 
-const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
-	commonUser,
-	user,
-	history,
-	location,
-}) => {
+const AssignmentCreate: FC<DefaultSecureRouteProps> = ({ commonUser, user, history, location }) => {
 	const { tText, tHtml } = useTranslation();
 	const [isSaving, setIsSaving] = useState(false);
 
@@ -480,7 +475,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						}
 						actions={
 							<AssignmentActions
-								duplicate={{ disabled: true }}
 								preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
 								remove={{ button: { disabled: true } }}
 								route={location.pathname}
@@ -572,4 +566,4 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	);
 };
 
-export default withUser(AssignmentCreate) as FunctionComponent<DefaultSecureRouteProps>;
+export default withUser(AssignmentCreate) as FC<DefaultSecureRouteProps>;

@@ -13,7 +13,7 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 
@@ -31,7 +31,7 @@ export interface AccountProps extends RouteComponentProps {
 	user: Avo.User.User;
 }
 
-const Account: FunctionComponent<AccountProps> = ({ user }) => {
+const Account: FC<AccountProps> = ({ user }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const isPupil =

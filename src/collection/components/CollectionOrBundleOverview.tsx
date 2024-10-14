@@ -18,13 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
@@ -86,9 +80,13 @@ interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const CollectionOrBundleOverview: FunctionComponent<
-	CollectionOrBundleOverviewProps & UserProps
-> = ({ numberOfItems, type, onUpdate = noop, history, commonUser }) => {
+const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps> = ({
+	numberOfItems,
+	type,
+	onUpdate = noop,
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -932,6 +930,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 	);
 };
 
-export default withUser(CollectionOrBundleOverview) as FunctionComponent<
+export default withUser(CollectionOrBundleOverview) as FC<
 	Omit<CollectionOrBundleOverviewProps, 'user' | 'commonUser'>
 >;

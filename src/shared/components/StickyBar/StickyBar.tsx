@@ -1,5 +1,5 @@
 import { Button, type ButtonProps, StickyEdgeBar } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import './StickyBar.scss';
 
@@ -10,7 +10,7 @@ export interface StickySaveBarProps {
 	cancelButtonProps?: ButtonProps;
 }
 
-export const StickyBar: FunctionComponent<StickySaveBarProps> = ({
+export const StickyBar: FC<StickySaveBarProps> = ({
 	isVisible,
 	title,
 	actionButtonProps,

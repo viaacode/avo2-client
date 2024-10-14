@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
@@ -36,7 +36,7 @@ import './r4-manual-registration.scss';
 
 export type ManualRegistrationProps = RouteComponentProps;
 
-const ManualRegistration: FunctionComponent<ManualRegistrationProps> = ({ history }) => {
+const ManualRegistration: FC<ManualRegistrationProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [firstName, setFirstName] = useState<string>('');

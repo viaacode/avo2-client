@@ -12,7 +12,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, useState } from 'react';
+import React, { type FC, type ReactNode, useState } from 'react';
 
 import useTranslation from '../../shared/hooks/useTranslation';
 
@@ -27,7 +27,7 @@ interface CreateAssignmentModalProps {
 	};
 }
 
-const CreateAssignmentModal: FunctionComponent<CreateAssignmentModalProps> = ({
+const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
 	isOpen,
 	onClose,
 	createAssignmentCallback,

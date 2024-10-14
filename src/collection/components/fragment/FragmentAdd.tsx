@@ -1,5 +1,5 @@
 import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NEW_FRAGMENT } from '../../collection.const';
@@ -12,7 +12,7 @@ interface FragmentAddProps {
 	changeCollectionState: (action: CollectionAction) => void;
 }
 
-const FragmentAdd: FunctionComponent<FragmentAddProps> = ({
+const FragmentAdd: FC<FragmentAddProps> = ({
 	index,
 	collectionId,
 	numberOfFragments,

@@ -2,15 +2,7 @@ import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName, type TagInfo } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, noop, partition } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
@@ -66,10 +58,7 @@ import {
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-const CollectionsOrBundlesOverview: FunctionComponent<DefaultSecureRouteProps> = ({
-	location,
-	commonUser,
-}) => {
+const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);

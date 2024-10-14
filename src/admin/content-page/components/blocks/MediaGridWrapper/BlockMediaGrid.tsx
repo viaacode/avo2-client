@@ -26,7 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import type { Avo } from '@viaa/avo2-types';
 import clsx from 'clsx';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import './BlockMediaGrid.scss';
 
@@ -74,7 +74,7 @@ export interface BlockMediaGridProps extends DefaultProps {
 	renderMediaCardWrapper: (mediaCard: ReactNode, item: MediaListItem) => ReactNode;
 }
 
-export const BlockMediaGrid: FunctionComponent<BlockMediaGridProps> = ({
+export const BlockMediaGrid: FC<BlockMediaGridProps> = ({
 	title,
 	buttonLabel,
 	buttonAltTitle,

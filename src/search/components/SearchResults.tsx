@@ -10,7 +10,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
-import React, { type FC, type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import placeholderImage from '../../assets/images/assignment-placeholder.png';
@@ -23,7 +23,7 @@ import { type SearchResultsProps } from '../search.types';
 
 import SearchResultItem from './SearchResultItem';
 
-const SearchResults: FunctionComponent<SearchResultsProps & UserProps> = ({
+const SearchResults: FC<SearchResultsProps & UserProps> = ({
 	currentPage,
 	loading,
 	data,

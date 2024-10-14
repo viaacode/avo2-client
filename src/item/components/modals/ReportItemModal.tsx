@@ -14,7 +14,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import type { Requests } from 'node-zendesk';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import { getFullNameCommonUser } from '../../../shared/helpers';
 import { tText } from '../../../shared/helpers/translate';
@@ -38,7 +38,7 @@ const GET_RADIO_BUTTON_LABELS = () => ({
 	copyright: tText('item/components/modals/report-item-modal___schending-auteursrechten'),
 });
 
-const ReportItemModal: FunctionComponent<ReportItemModalProps & UserProps> = ({
+const ReportItemModal: FC<ReportItemModalProps & UserProps> = ({
 	externalId,
 	isOpen,
 	onClose,
@@ -215,4 +215,4 @@ const ReportItemModal: FunctionComponent<ReportItemModalProps & UserProps> = ({
 	return renderReportItemModal();
 };
 
-export default withUser(ReportItemModal) as FunctionComponent<ReportItemModalProps>;
+export default withUser(ReportItemModal) as FC<ReportItemModalProps>;

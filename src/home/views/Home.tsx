@@ -1,5 +1,5 @@
 import { ContentPageRenderer } from '@meemoo/admin-core-ui/dist/client.mjs';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
@@ -11,7 +11,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 
-const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, commonUser }) => {
+const Home: FC<UserProps & RouteComponentProps> = ({ history, commonUser }) => {
 	const { tText } = useTranslation();
 	const { data: contentPageInfo } = useGetContentPageByPath(`/${ROUTE_PARTS.loggedInHome}`);
 	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
@@ -35,14 +35,10 @@ const Home: FunctionComponent<UserProps & RouteComponentProps> = ({ history, com
 				/>
 			</Helmet>
 			{contentPageInfo && (
-				<ContentPageRenderer
-					contentPageInfo={contentPageInfo}
-					onLoaded={() => scrollTo({ top: 0 })}
-					commonUser={commonUser}
-				/>
+				<ContentPageRenderer contentPageInfo={contentPageInfo} commonUser={commonUser} />
 			)}
 		</>
 	);
 };
 
-export default compose(withRouter, withUser)(Home) as FunctionComponent;
+export default compose(withRouter, withUser)(Home) as FC;

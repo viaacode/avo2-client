@@ -17,7 +17,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, intersection, sortBy, without } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { ColorSelect } from '../../../shared/components';
 import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
@@ -40,7 +40,7 @@ export interface ManageAssignmentLabelsProps {
 	type?: Avo.Assignment.LabelType;
 }
 
-const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & UserProps> = ({
+const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 	isOpen,
 	onClose,
 	type,
@@ -352,4 +352,4 @@ const ManageAssignmentLabels: FunctionComponent<ManageAssignmentLabelsProps & Us
 	);
 };
 
-export default withUser(ManageAssignmentLabels) as FunctionComponent<ManageAssignmentLabelsProps>;
+export default withUser(ManageAssignmentLabels) as FC<ManageAssignmentLabelsProps>;

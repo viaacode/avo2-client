@@ -1,12 +1,12 @@
 import { get } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import Zendesk from 'react-zendesk';
 
 import { getEnv } from '../../helpers';
 
 declare const ResizeObserver: any;
 
-const ZendeskWrapper: FunctionComponent = () => {
+const ZendeskWrapper: FC = () => {
 	/**
 	 * Change the bottom margin of the zendesk widget so it doesn't overlap with the footer
 	 */

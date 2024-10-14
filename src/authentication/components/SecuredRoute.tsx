@@ -1,6 +1,6 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type ComponentType, type FunctionComponent, useEffect } from 'react';
+import React, { type ComponentType, type FC, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Redirect, Route, type RouteComponentProps, withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
@@ -50,7 +50,7 @@ export interface SecuredRouteProps extends DefaultSecureRouteProps<any> {
 	user: Avo.User.User | null;
 }
 
-const SecuredRoute: FunctionComponent<SecuredRouteProps> = ({
+const SecuredRoute: FC<SecuredRouteProps> = ({
 	component,
 	exact,
 	getLoginState,

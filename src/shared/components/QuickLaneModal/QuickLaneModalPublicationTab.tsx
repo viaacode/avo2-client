@@ -1,7 +1,7 @@
 import { Button, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, map } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { EducationLevelsField, ShortDescriptionField, SubjectsField } from '..';
 import { CollectionService } from '../../../collection/collection.service';
@@ -16,7 +16,7 @@ interface QuickLaneModalPublicationTabProps {
 	onComplete?: () => void;
 }
 
-const QuickLaneModalPublicationTab: FunctionComponent<
+const QuickLaneModalPublicationTab: FC<
 	QuickLaneModalProps & QuickLaneModalPublicationTabProps & UserProps
 > = ({ content, content_label, commonUser, onComplete, onUpdate }) => {
 	const { tText } = useTranslation();
@@ -130,6 +130,6 @@ const QuickLaneModalPublicationTab: FunctionComponent<
 	) : null;
 };
 
-export default withUser(QuickLaneModalPublicationTab) as FunctionComponent<
+export default withUser(QuickLaneModalPublicationTab) as FC<
 	QuickLaneModalProps & QuickLaneModalPublicationTabProps
 >;

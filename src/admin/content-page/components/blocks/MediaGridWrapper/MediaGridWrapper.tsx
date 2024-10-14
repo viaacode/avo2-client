@@ -12,13 +12,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isEmpty, isNil } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
@@ -58,9 +52,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	ctaButtonAltTitle?: string;
 }
 
-const MediaGridWrapper: FunctionComponent<
-	MediaGridWrapperProps & UserProps & RouteComponentProps
-> = ({
+const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentProps> = ({
 	title,
 	buttonLabel,
 	buttonAltTitle,
@@ -533,7 +525,4 @@ const MediaGridWrapper: FunctionComponent<
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(MediaGridWrapper) as FunctionComponent<MediaGridWrapperProps>;
+export default compose(withRouter, withUser)(MediaGridWrapper) as FC<MediaGridWrapperProps>;

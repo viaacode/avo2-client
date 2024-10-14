@@ -1,6 +1,6 @@
 import { RadioButtonGroup, type RadioOption } from '@viaa/avo2-components';
 import { isNil, noop } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { AssignmentHelper } from '../../../assignment/assignment.helper';
 import { AssignmentLayout } from '../../../assignment/assignment.types';
@@ -12,7 +12,7 @@ export interface LayoutOptionsProps {
 	options?: RadioOption[];
 }
 
-export const LayoutOptions: FunctionComponent<LayoutOptionsProps> = ({
+export const LayoutOptions: FC<LayoutOptionsProps> = ({
 	item,
 	onChange = noop,
 	disabled,

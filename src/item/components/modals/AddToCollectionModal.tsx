@@ -19,7 +19,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { once } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
@@ -46,7 +46,7 @@ interface AddToCollectionModalProps {
 	onClose: () => void;
 }
 
-const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserProps> = ({
+const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
@@ -507,4 +507,4 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 	return renderAddToCollectionModal();
 };
 
-export default withUser(AddToCollectionModal) as FunctionComponent<AddToCollectionModalProps>;
+export default withUser(AddToCollectionModal) as FC<AddToCollectionModalProps>;

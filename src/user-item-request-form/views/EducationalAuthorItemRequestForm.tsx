@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { compose } from 'redux';
@@ -47,9 +47,10 @@ interface FormValues {
 	educationLevels: Avo.Lom.LomField[];
 }
 
-const EducationalAuthorItemRequestForm: FunctionComponent<
-	EducationalAuthorItemRequestFormProps
-> = ({ history, commonUser }) => {
+const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps> = ({
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [formValues, setFormValues] = useState<FormValues>({
@@ -321,4 +322,4 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 export default compose(
 	withRouter,
 	withUser
-)(EducationalAuthorItemRequestForm) as FunctionComponent<EducationalAuthorItemRequestFormProps>;
+)(EducationalAuthorItemRequestForm) as FC<EducationalAuthorItemRequestFormProps>;

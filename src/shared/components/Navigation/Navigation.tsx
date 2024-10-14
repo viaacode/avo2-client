@@ -14,14 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, last } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -68,7 +61,7 @@ export type NavigationParams = RouteComponentProps;
  * @param loginMessage
  * @constructor
  */
-const Navigation: FunctionComponent<
+const Navigation: FC<
 	NavigationParams & {
 		loginState: Avo.Auth.LoginResponse | null;
 		loginStateLoading: boolean;

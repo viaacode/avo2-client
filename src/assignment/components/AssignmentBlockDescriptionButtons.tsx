@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Select } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { tText } from '../../shared/helpers/translate';
 import { type EditableAssignmentBlock } from '../assignment.types';
@@ -40,9 +40,7 @@ export interface AssignmentBlockDescriptionButtonsProps {
 	types?: AssignmentBlockItemDescriptionType[];
 }
 
-export const AssignmentBlockDescriptionButtons: FunctionComponent<
-	AssignmentBlockDescriptionButtonsProps
-> = ({
+export const AssignmentBlockDescriptionButtons: FC<AssignmentBlockDescriptionButtonsProps> = ({
 	block,
 	setBlock,
 	types = [

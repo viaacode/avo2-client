@@ -11,7 +11,7 @@ import {
 	TextArea,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 
 import { getCollectionManagementStatuses } from '../../admin/collectionsOrBundles/collections-or-bundles.const';
@@ -31,7 +31,7 @@ interface CollectionOrBundleEditActualisationProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditActualisation: FunctionComponent<
+const CollectionOrBundleEditActualisation: FC<
 	CollectionOrBundleEditActualisationProps & UserProps
 > = ({ collection, changeCollectionState, onFocus }) => {
 	const { tText } = useTranslation();
@@ -180,4 +180,4 @@ const CollectionOrBundleEditActualisation: FunctionComponent<
 
 export default withUser(
 	CollectionOrBundleEditActualisation
-) as FunctionComponent<CollectionOrBundleEditActualisationProps>;
+) as FC<CollectionOrBundleEditActualisationProps>;

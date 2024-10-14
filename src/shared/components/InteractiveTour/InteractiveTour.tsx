@@ -1,7 +1,7 @@
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, debounce } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import Joyride, { type CallBackProps } from 'react-joyride';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -33,9 +33,12 @@ interface UiStateProps {
 
 const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
 
-const InteractiveTour: FunctionComponent<
-	InteractiveTourProps & SecuredRouteProps & UiStateProps
-> = ({ showButton, commonUser, location, showNudgingModal }) => {
+const InteractiveTour: FC<InteractiveTourProps & SecuredRouteProps & UiStateProps> = ({
+	showButton,
+	commonUser,
+	location,
+	showNudgingModal,
+}) => {
 	const { tText } = useTranslation();
 
 	// Sometimes we render things with displayDesktopMobile so elements can be loaded but should not initialize since they are hidden for that media query (eg: mobile)
@@ -242,4 +245,4 @@ export default compose(
 	connect(mapStateToProps),
 	withRouter,
 	withUser
-)(InteractiveTour) as FunctionComponent<InteractiveTourProps>;
+)(InteractiveTour) as FC<InteractiveTourProps>;

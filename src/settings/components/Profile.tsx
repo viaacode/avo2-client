@@ -19,7 +19,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { compact, isNil, map } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
-import React, { type FunctionComponent, type ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -74,7 +74,7 @@ interface FieldPermissions {
 	ORGANISATION: FieldPermission & { VIEW_USERS_IN_SAME_COMPANY: boolean };
 }
 
-const Profile: FunctionComponent<
+const Profile: FC<
 	{
 		getLoginState: (forceRefetch: boolean) => Dispatch;
 	} & UserProps &
@@ -734,6 +734,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 	};
 };
 
-export default withUser(
-	withRouter(connect(null, mapDispatchToProps)(Profile))
-) as FunctionComponent<any>;
+export default withUser(withRouter(connect(null, mapDispatchToProps)(Profile))) as FC<any>;

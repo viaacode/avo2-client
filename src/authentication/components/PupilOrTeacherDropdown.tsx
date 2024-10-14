@@ -1,6 +1,6 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
 import { APP_PATH } from '../../constants';
@@ -12,9 +12,10 @@ export interface PupilOrTeacherDropdownProps {
 	closeDropdown?: () => void;
 }
 
-const PupilOrTeacherDropdown: FunctionComponent<
-	PupilOrTeacherDropdownProps & RouteComponentProps
-> = ({ history, closeDropdown = noop }) => {
+const PupilOrTeacherDropdown: FC<PupilOrTeacherDropdownProps & RouteComponentProps> = ({
+	history,
+	closeDropdown = noop,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	return (

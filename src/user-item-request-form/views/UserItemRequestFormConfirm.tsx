@@ -1,5 +1,5 @@
 import { Button, Container, Spacer } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 
@@ -9,7 +9,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 export type UserItemRequestFormProps = DefaultSecureRouteProps;
 
-const UserItemRequestFormConfirm: FunctionComponent<UserItemRequestFormProps> = ({ history }) => {
+const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();
 
 	return (

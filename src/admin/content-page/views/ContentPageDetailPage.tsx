@@ -2,12 +2,15 @@ import type { ContentPageDetailProps, ContentPageInfo } from '@meemoo/admin-core
 import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageDetail = lazy(() =>
@@ -18,7 +21,7 @@ const ContentPageDetail = lazy(() =>
 
 const ContentPageDetailPage: FC<
 	DefaultSecureRouteProps<{ id: string }> & ContentPageDetailProps & UserProps
-> = ({ match, commonUser }) => {
+> = ({ match, history, commonUser }) => {
 	const { id } = match.params;
 
 	const { tText } = useTranslation();
@@ -51,10 +54,13 @@ const ContentPageDetailPage: FC<
 					id={id}
 					loaded={setItem}
 					commonUser={commonUser}
+					onGoBack={() =>
+						goBrowserBackWithFallback(ADMIN_PATH.CONTENT_PAGE_OVERVIEWS, history)
+					}
 				/>
 			</Suspense>
 		</>
 	);
 };
 
-export default compose(withAdminCoreConfig, withUser)(ContentPageDetailPage) as FC;
+export default compose(withAdminCoreConfig, withUser, withRouter)(ContentPageDetailPage) as FC;

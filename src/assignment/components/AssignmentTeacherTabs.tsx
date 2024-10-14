@@ -1,6 +1,6 @@
 import { IconName, Pill, PillVariants, type TabProps, Tabs } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { type FC, type FunctionComponent, useMemo } from 'react';
+import React, { type FC, useMemo } from 'react';
 import { type RouteComponentProps } from 'react-router';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -101,4 +101,4 @@ const AssignmentTeacherTabs: FC<AssignmentTeacherTabsProps & RouteComponentProps
 export default compose(
 	withRouter,
 	withUser
-)(AssignmentTeacherTabs) as FunctionComponent<AssignmentTeacherTabsProps>;
+)(AssignmentTeacherTabs) as FC<AssignmentTeacherTabsProps>;

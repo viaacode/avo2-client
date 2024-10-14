@@ -1,7 +1,7 @@
 import { Alert, Container, Spacer } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -20,9 +20,13 @@ interface CollectionOrBundleEditContentProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditContent: FunctionComponent<
-	CollectionOrBundleEditContentProps & UserProps
-> = ({ type, collection, changeCollectionState, commonUser, onFocus }) => {
+const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & UserProps> = ({
+	type,
+	collection,
+	changeCollectionState,
+	commonUser,
+	onFocus,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -336,4 +340,4 @@ const CollectionOrBundleEditContent: FunctionComponent<
 
 export default withUser(
 	React.memo(CollectionOrBundleEditContent)
-) as FunctionComponent<CollectionOrBundleEditContentProps>;
+) as FC<CollectionOrBundleEditContentProps>;

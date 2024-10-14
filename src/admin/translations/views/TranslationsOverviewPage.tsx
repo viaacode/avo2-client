@@ -1,13 +1,6 @@
 import { Button, Flex, Modal, ModalBody, ModalFooterRight, Spinner } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	lazy,
-	type ReactNode,
-	Suspense,
-	useCallback,
-	useState,
-} from 'react';
+import React, { type FC, lazy, type ReactNode, Suspense, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -27,7 +20,7 @@ const TranslationsOverview = lazy(() =>
 	}))
 );
 
-const TranslationsOverviewPage: FunctionComponent = () => {
+const TranslationsOverviewPage: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
@@ -230,4 +223,4 @@ const TranslationsOverviewPage: FunctionComponent = () => {
 	);
 };
 
-export default withAdminCoreConfig(TranslationsOverviewPage) as FunctionComponent;
+export default withAdminCoreConfig(TranslationsOverviewPage) as FC;

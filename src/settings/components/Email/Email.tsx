@@ -10,7 +10,7 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { keys } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { StringParam, useQueryParams } from 'use-query-params';
 
@@ -35,7 +35,7 @@ const INITIAL_NEWSLETTER_PREFERENCES_STATE = (): NewsletterPreferences => ({
 	ambassador: false,
 });
 
-const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
+const Email: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [{ preferenceCenterKey }] = useQueryParams({
@@ -205,4 +205,4 @@ const Email: FunctionComponent<UserProps> = ({ commonUser }) => {
 	);
 };
 
-export default withUser(Email) as FunctionComponent<any>;
+export default withUser(Email) as FC<any>;

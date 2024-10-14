@@ -14,7 +14,7 @@ import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import React, {
 	type Dispatch,
-	type FunctionComponent,
+	type FC,
 	type SetStateAction,
 	useEffect,
 	useMemo,
@@ -80,7 +80,7 @@ interface AssignmentResponseEditProps {
 	onShowPreviewClicked: () => void;
 }
 
-const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & UserProps> = ({
+const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
 	assignment,
 	assignmentResponse,
 	onAssignmentChanged,
@@ -451,4 +451,4 @@ const AssignmentResponseEdit: FunctionComponent<AssignmentResponseEditProps & Us
 	return renderAssignmentResponseEditView();
 };
 
-export default withUser(AssignmentResponseEdit) as FunctionComponent<AssignmentResponseEditProps>;
+export default withUser(AssignmentResponseEdit) as FC<AssignmentResponseEditProps>;

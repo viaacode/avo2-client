@@ -28,7 +28,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil, noop } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type ReactText,
 	useCallback,
@@ -143,7 +143,7 @@ export const ITEM_ACTIONS = {
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
+const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
 	match,
 	location,
@@ -1129,4 +1129,4 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	);
 };
 
-export default compose(withRouter, withUser)(ItemDetail) as FunctionComponent<ItemDetailProps>;
+export default compose(withRouter, withUser)(ItemDetail) as FC<ItemDetailProps>;

@@ -26,7 +26,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, get, isNil, noop } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -95,9 +95,13 @@ type BundleDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const BundleDetail: FunctionComponent<
-	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({ history, match, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>> = ({
+	history,
+	match,
+	commonUser,
+	id,
+	enabledMetaData = ALL_SEARCH_FILTERS,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -905,4 +909,4 @@ const BundleDetail: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(BundleDetail) as FunctionComponent<BundleDetailProps>;
+export default compose(withRouter, withUser)(BundleDetail) as FC<BundleDetailProps>;

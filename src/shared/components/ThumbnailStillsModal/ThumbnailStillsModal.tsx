@@ -17,7 +17,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, uniq } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { STILL_DIMENSIONS } from '../../constants';
 import useTranslation from '../../hooks/useTranslation';
@@ -30,11 +30,7 @@ interface ThumbnailStillsModalProps {
 	subject: Avo.Collection.Collection | Avo.Assignment.Assignment;
 }
 
-const ThumbnailStillsModal: FunctionComponent<ThumbnailStillsModalProps> = ({
-	onClose,
-	isOpen,
-	subject,
-}) => {
+const ThumbnailStillsModal: FC<ThumbnailStillsModalProps> = ({ onClose, isOpen, subject }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [videoStills, setVideoStills] = useState<string[] | null>(null);

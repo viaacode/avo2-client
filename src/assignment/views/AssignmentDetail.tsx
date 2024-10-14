@@ -26,14 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -1081,4 +1074,4 @@ const AssignmentDetail: FC<
 	);
 };
 
-export default withUser(AssignmentDetail) as FunctionComponent<AssignmentDetailProps>;
+export default withUser(AssignmentDetail) as FC<AssignmentDetailProps>;

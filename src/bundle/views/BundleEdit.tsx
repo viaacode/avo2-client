@@ -1,4 +1,4 @@
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { withRouter } from 'react-router';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -6,7 +6,7 @@ import CollectionOrBundleEdit from '../../collection/components/CollectionOrBund
 
 type CollectionEditProps = DefaultSecureRouteProps<{ id: string }>;
 
-const BundleEdit: FunctionComponent<CollectionEditProps> = (props) => {
+const BundleEdit: FC<CollectionEditProps> = (props) => {
 	return <CollectionOrBundleEdit {...props} type="bundle" />;
 };
 

@@ -18,14 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { compose } from 'redux';
 
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
@@ -96,7 +89,7 @@ export interface AddBookmarkFragmentModalProps {
 	addFragmentCallback?: (fragmentId: string) => void;
 }
 
-const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps> = ({
+const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
 	commonUser,
 	isOpen,
 	onClose,

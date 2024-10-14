@@ -2,14 +2,7 @@ import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, isNil, truncate } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
@@ -48,7 +41,7 @@ import { type ItemsOverviewTableCols, type ItemsTableState } from '../items.type
 
 import { ItemBulkAction } from './ItemsOverview.types';
 
-const ItemsOverview: FunctionComponent<UserProps> = ({ commonUser }) => {
+const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [items, setItems] = useState<Avo.Item.Item[] | null>(null);

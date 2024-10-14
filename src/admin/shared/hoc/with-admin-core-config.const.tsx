@@ -8,7 +8,7 @@ import { ContentBlockType, ContentWidth } from '@meemoo/admin-core-ui/dist/clien
 import { Icon, IconName, Spinner } from '@viaa/avo2-components';
 import { DatabaseType } from '@viaa/avo2-types';
 import { compact, noop } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { APP_PATH, type RouteId } from '../../../constants';
@@ -255,7 +255,7 @@ export function getAdminCoreConfig(): AdminConfig {
 					EducationOrganisationService.fetchEducationOrganisations,
 			},
 			router: {
-				Link: InternalLink as FunctionComponent<LinkInfo>,
+				Link: InternalLink as FC<LinkInfo>,
 				useHistory: useHistory,
 			},
 			queryCache: {

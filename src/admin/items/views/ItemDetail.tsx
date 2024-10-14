@@ -14,7 +14,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
-import React, { type FunctionComponent, type ReactNode, useState } from 'react';
+import React, { type FC, type ReactNode, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -28,8 +28,9 @@ import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilter
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
-import { buildLink, CustomError, navigate } from '../../../shared/helpers';
+import { buildLink, CustomError } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
@@ -54,7 +55,7 @@ import { type ItemUsedByColumnId, type ItemUsedByEntry } from '../items.types';
 
 type ItemDetailProps = RouteComponentProps<{ id: string }>;
 
-const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
+const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 	const itemUuid = match.params.id;
 	// Hooks
 	const [queryParams, setQueryParams] = useQueryParams({
@@ -519,7 +520,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 		}
 		return (
 			<AdminLayout
-				onClickBackButton={() => navigate(history, ADMIN_PATH.ITEMS_OVERVIEW)}
+				onClickBackButton={() =>
+					goBrowserBackWithFallback(ADMIN_PATH.ITEMS_OVERVIEW, history)
+				}
 				pageTitle={`${tText('admin/items/views/item-detail___item-details')}: ${
 					item.title
 				}`}

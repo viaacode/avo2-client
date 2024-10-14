@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { orderBy } from 'lodash-es';
-import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -46,9 +46,12 @@ interface BookmarksOverviewProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const BookmarksOverview: FunctionComponent<
-	BookmarksOverviewProps & UserProps & RouteComponentProps
-> = ({ numberOfItems, onUpdate, history, commonUser }) => {
+const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentProps> = ({
+	numberOfItems,
+	onUpdate,
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State

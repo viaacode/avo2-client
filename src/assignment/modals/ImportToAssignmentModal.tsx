@@ -18,14 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
@@ -67,7 +60,7 @@ interface ImportToAssignmentModalProps {
 	};
 }
 
-const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps & UserProps> = ({
+const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
 	commonUser,
 	isOpen,
 	onClose,
@@ -331,4 +324,4 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps & 
 	);
 };
 
-export default withUser(ImportToAssignmentModal) as FunctionComponent<ImportToAssignmentModalProps>;
+export default withUser(ImportToAssignmentModal) as FC<ImportToAssignmentModalProps>;

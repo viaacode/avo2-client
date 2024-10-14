@@ -15,7 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	lazy,
 	type Reducer,
 	useCallback,
@@ -80,11 +80,7 @@ const BlockHeading = lazy(() =>
 
 export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
-const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
-	history,
-	match,
-	location,
-}) => {
+const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, location }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Hooks

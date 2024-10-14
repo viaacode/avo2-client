@@ -13,7 +13,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { debounce } from 'lodash-es';
 import React, {
 	createRef,
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type RefObject,
 	useEffect,
@@ -56,9 +56,7 @@ interface ItemVideoDescriptionProps {
 
 const DEFAULT_VIDEO_HEIGHT = 421;
 
-const ItemVideoDescription: FunctionComponent<
-	ItemVideoDescriptionProps & UserProps & RouteComponentProps
-> = ({
+const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComponentProps> = ({
 	itemMetaData,
 	showMetadata = false,
 	showTitle = false,
@@ -249,7 +247,4 @@ const ItemVideoDescription: FunctionComponent<
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(ItemVideoDescription) as FunctionComponent<ItemVideoDescriptionProps>;
+export default compose(withRouter, withUser)(ItemVideoDescription) as FC<ItemVideoDescriptionProps>;

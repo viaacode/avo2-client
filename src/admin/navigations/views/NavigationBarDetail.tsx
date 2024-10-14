@@ -1,13 +1,17 @@
-import React, { type FunctionComponent, lazy, Suspense } from 'react';
+import { Flex, Spinner } from '@viaa/avo2-components';
+import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarDetail.scss';
-import { Flex, Spinner } from '@viaa/avo2-components';
 
 const NavigationDetail = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
@@ -17,7 +21,7 @@ const NavigationDetail = lazy(() =>
 
 type NavigationBarDetailProps = DefaultSecureRouteProps<{ navigationBarId: string }>;
 
-const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ match }) => {
+const NavigationBarDetail: FC<NavigationBarDetailProps> = ({ match, history }) => {
 	const { tText } = useTranslation();
 
 	const navigationBarId = match.params.navigationBarId;
@@ -45,10 +49,15 @@ const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ matc
 					</Flex>
 				}
 			>
-				<NavigationDetail navigationBarId={navigationBarId} />
+				<NavigationDetail
+					navigationBarId={navigationBarId}
+					onGoBack={() =>
+						goBrowserBackWithFallback(ADMIN_PATH.NAVIGATIONS_OVERVIEW, history)
+					}
+				/>
 			</Suspense>
 		</div>
 	);
 };
 
-export default withAdminCoreConfig(NavigationBarDetail as FunctionComponent);
+export default compose(withAdminCoreConfig, withRouter)(NavigationBarDetail) as FC;

@@ -11,7 +11,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { get, isNil, isString, noop, throttle } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type MouseEvent,
 	type ReactNode,
 	useCallback,
@@ -77,7 +77,7 @@ export type FlowPlayerWrapperProps = {
  * @param props
  * @constructor
  */
-const FlowPlayerWrapper: FunctionComponent<
+const FlowPlayerWrapper: FC<
 	FlowPlayerWrapperProps &
 		UserProps &
 		RouteComponentProps & { setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) => Dispatch }
@@ -416,4 +416,4 @@ export default compose(
 	connect(noop, mapDispatchToProps),
 	withRouter,
 	withUser
-)(FlowPlayerWrapper) as FunctionComponent<FlowPlayerWrapperProps>;
+)(FlowPlayerWrapper) as FC<FlowPlayerWrapperProps>;

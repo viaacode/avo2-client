@@ -27,7 +27,7 @@ import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type KeyboardEvent,
 	type ReactNode,
 	useCallback,
@@ -114,9 +114,11 @@ const defaultFiltersAndSort = {
 	sort_order: DEFAULT_SORT_ORDER,
 };
 
-const AssignmentOverview: FunctionComponent<
-	AssignmentOverviewProps & RouteComponentProps & UserProps
-> = ({ onUpdate = noop, history, commonUser }) => {
+const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & UserProps> = ({
+	onUpdate = noop,
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
@@ -965,7 +967,4 @@ const AssignmentOverview: FunctionComponent<
 	return <div className="m-assignment-overview">{renderAssignmentsView()}</div>;
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(AssignmentOverview) as FunctionComponent<AssignmentOverviewProps>;
+export default compose(withRouter, withUser)(AssignmentOverview) as FC<AssignmentOverviewProps>;

@@ -1,7 +1,7 @@
 import { ToastType } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Alert, type AlertProps, Spacer } from '@viaa/avo2-components';
 import { isNil } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 import { toast, type ToastId, type ToastOptions } from 'react-toastify';
 
 import { ROUTE_PARTS } from '../constants';
@@ -26,7 +26,7 @@ interface ToastProps extends AlertProps {
 	closeToast?: () => void;
 }
 
-const Toast: FunctionComponent<ToastProps> = ({ closeToast, ...rest }) => (
+const Toast: FC<ToastProps> = ({ closeToast, ...rest }) => (
 	<Alert {...rest} className="u-spacer-top" onClose={closeToast} />
 );
 

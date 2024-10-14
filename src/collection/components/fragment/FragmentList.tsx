@@ -1,7 +1,7 @@
 import { Alert, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { sortBy } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -25,7 +25,7 @@ interface FragmentListProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentList: FunctionComponent<FragmentListProps & UserProps> = ({
+const FragmentList: FC<FragmentListProps & UserProps> = ({
 	collectionFragments,
 	showDescription,
 	showMetadata,
@@ -71,4 +71,4 @@ const FragmentList: FunctionComponent<FragmentListProps & UserProps> = ({
 	return <ul className="c-collection-list">{renderCollectionFragments()}</ul>;
 };
 
-export default withUser(FragmentList) as FunctionComponent<FragmentListProps>;
+export default withUser(FragmentList) as FC<FragmentListProps>;

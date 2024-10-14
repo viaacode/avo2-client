@@ -19,7 +19,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { get, isEqual, isNil, isString } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type ReactText,
 	useCallback,
@@ -60,7 +60,7 @@ interface FragmentEditProps {
 	onFocus?: () => void;
 }
 
-const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
+const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 	index,
 	collectionId,
 	numberOfFragments,
@@ -492,4 +492,4 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
 	);
 }
 
-export default React.memo(withUser(FragmentEdit) as FunctionComponent<FragmentEditProps>, areEqual);
+export default React.memo(withUser(FragmentEdit) as FC<FragmentEditProps>, areEqual);

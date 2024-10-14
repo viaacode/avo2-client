@@ -14,7 +14,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, useState } from 'react';
+import React, { type FC, type ReactNode, useState } from 'react';
 
 import useTranslation from '../../../../shared/hooks/useTranslation';
 
@@ -30,7 +30,7 @@ interface AddOrRemoveLinkedElementsProps {
 	callback: (addOrRemove: AddOrRemove, selectedLabels: TagInfo[]) => void;
 }
 
-const AddOrRemoveLinkedElementsModal: FunctionComponent<AddOrRemoveLinkedElementsProps> = ({
+const AddOrRemoveLinkedElementsModal: FC<AddOrRemoveLinkedElementsProps> = ({
 	title,
 	addOrRemoveLabel,
 	contentLabel,

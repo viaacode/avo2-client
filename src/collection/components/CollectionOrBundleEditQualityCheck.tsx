@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
@@ -30,7 +30,7 @@ interface CollectionOrBundleEditQualityCheckProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditQualityCheck: FunctionComponent<
+const CollectionOrBundleEditQualityCheck: FC<
 	CollectionOrBundleEditQualityCheckProps & UserProps
 > = ({ collection, changeCollectionState, onFocus }) => {
 	const { tText } = useTranslation();
@@ -232,4 +232,4 @@ const CollectionOrBundleEditQualityCheck: FunctionComponent<
 
 export default withUser(
 	CollectionOrBundleEditQualityCheck
-) as FunctionComponent<CollectionOrBundleEditQualityCheckProps>;
+) as FC<CollectionOrBundleEditQualityCheckProps>;

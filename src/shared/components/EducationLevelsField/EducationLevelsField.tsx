@@ -1,7 +1,7 @@
 import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
@@ -12,10 +12,7 @@ interface EducationLevelsFieldProps {
 	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
-const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
-	onChange,
-	value,
-}) => {
+const EducationLevelsField: FC<EducationLevelsFieldProps> = ({ onChange, value }) => {
 	const { tText } = useTranslation();
 
 	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();

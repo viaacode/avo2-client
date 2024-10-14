@@ -14,7 +14,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type Dispatch, type FunctionComponent, type SetStateAction, useState } from 'react';
+import React, { type Dispatch, type FC, type SetStateAction, useState } from 'react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import { type UrlUpdateType } from 'use-query-params';
 
@@ -57,7 +57,7 @@ interface AssignmentResponsePupilCollectionTabProps {
 	setFilterState: (state: PupilSearchFilterState, urlPushType?: UrlUpdateType) => void;
 }
 
-const AssignmentResponsePupilCollectionTab: FunctionComponent<
+const AssignmentResponsePupilCollectionTab: FC<
 	AssignmentResponsePupilCollectionTabProps &
 		Pick<UseFormReturn<AssignmentResponseFormState>, 'setValue' | 'control'>
 > = ({

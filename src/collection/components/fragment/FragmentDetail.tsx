@@ -1,7 +1,7 @@
 import { BlockIntro } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components';
@@ -26,7 +26,7 @@ interface FragmentDetailProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
+const FragmentDetail: FC<FragmentDetailProps> = ({
 	collectionFragment,
 	showDescription,
 	showMetadata,

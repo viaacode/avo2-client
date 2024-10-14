@@ -23,7 +23,7 @@ import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
 	type Dispatch,
-	type FunctionComponent,
+	type FC,
 	type SetStateAction,
 	useCallback,
 	useEffect,
@@ -125,7 +125,7 @@ interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabI
 	onUpdate: () => void | Promise<void>;
 }
 
-const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
+const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	onUpdate = noop,
 	match,
 	commonUser,
@@ -964,10 +964,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						  }
 						: undefined
 				}
-				duplicate={{
-					assignment: originalAssignment || undefined,
-					onClick: () => handleDuplicateAssignment(),
-				}}
+				onDuplicate={handleDuplicateAssignment}
 				view={{
 					label: tText('assignment/views/assignment-edit___bekijk'),
 					title: tText(
@@ -1246,4 +1243,4 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	);
 };
 
-export default withUser(AssignmentEdit) as FunctionComponent<AssignmentEditProps>;
+export default withUser(AssignmentEdit) as FC<AssignmentEditProps>;

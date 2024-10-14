@@ -1,6 +1,6 @@
 import { IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { ErrorView } from '../../../../error/views';
 import { type FilterState } from '../../../../search/search.types';
@@ -15,7 +15,7 @@ interface AssignmentResponseAssignmentTabProps {
 	buildSearchLink: (props: Partial<FilterState>) => ReactNode | string;
 }
 
-const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssignmentTabProps> = ({
+const AssignmentResponseAssignmentTab: FC<AssignmentResponseAssignmentTabProps> = ({
 	blocks,
 	pastDeadline,
 	setTab,
@@ -64,4 +64,4 @@ const AssignmentResponseAssignmentTab: FunctionComponent<AssignmentResponseAssig
 	return renderAssignmentBlocks();
 };
 
-export default AssignmentResponseAssignmentTab as FunctionComponent<AssignmentResponseAssignmentTabProps>;
+export default AssignmentResponseAssignmentTab as FC<AssignmentResponseAssignmentTabProps>;

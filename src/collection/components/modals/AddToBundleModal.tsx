@@ -16,7 +16,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { CustomError } from '../../../shared/helpers';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
@@ -37,7 +37,7 @@ interface AddToBundleModalProps {
 	onClose: () => void;
 }
 
-const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = ({
+const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 	collectionId,
 	collection,
 	isOpen,
@@ -372,4 +372,4 @@ const AddToBundleModal: FunctionComponent<AddToBundleModalProps & UserProps> = (
 	);
 };
 
-export default withUser(AddToBundleModal) as FunctionComponent<AddToBundleModalProps>;
+export default withUser(AddToBundleModal) as FC<AddToBundleModalProps>;
