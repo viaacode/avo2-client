@@ -1,5 +1,5 @@
 import { Blankslate, Button, Container, IconName } from '@viaa/avo2-components';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 import { type RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -15,7 +15,7 @@ interface ErrorNoAccessProps {
 	message: string | ReactNode;
 }
 
-const ErrorNoAccess: FunctionComponent<ErrorNoAccessProps & RouteComponentProps> = ({
+const ErrorNoAccess: FC<ErrorNoAccessProps & RouteComponentProps> = ({
 	title,
 	message,
 	history,
@@ -54,7 +54,4 @@ const ErrorNoAccess: FunctionComponent<ErrorNoAccessProps & RouteComponentProps>
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(ErrorNoAccess) as FunctionComponent<ErrorNoAccessProps>;
+export default compose(withRouter, withUser)(ErrorNoAccess) as FC<ErrorNoAccessProps>;

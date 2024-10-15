@@ -1,11 +1,11 @@
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import './OrderedList.scss';
 
 interface OrderedListProps {
 	listItems: string[];
 }
 
-export const OrderedList: FunctionComponent<OrderedListProps> = ({ listItems }) => {
+export const OrderedList: FC<OrderedListProps> = ({ listItems }) => {
 	return (
 		<div>
 			<ol className="c-ordered-list">

@@ -6,11 +6,10 @@ import {
 	DropdownContent,
 	IconName,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, useMemo, useState } from 'react';
+import React, { type FC, useMemo, useState } from 'react';
 
 import { APP_PATH } from '../../constants';
 import { ShareDropdown, type ShareWithPupilsProps } from '../../shared/components';
@@ -27,9 +26,6 @@ import {
 } from '../helpers/assignment-share-with-collegue-handlers';
 
 import DeleteAssignmentButton, { type DeleteAssignmentButtonProps } from './DeleteAssignmentButton';
-import DuplicateAssignmentButton, {
-	type DuplicateAssignmentButtonProps,
-} from './DuplicateAssignmentButton';
 
 interface ShareProps extends ShareWithPupilsProps {
 	contributors: Avo.Assignment.Contributor[];
@@ -46,7 +42,7 @@ interface AssignmentActionsProps {
 	preview?: Partial<ButtonProps>;
 	overflow?: Partial<ButtonProps>;
 	shareWithColleaguesOrPupilsProps?: ShareProps;
-	duplicate?: Partial<DuplicateAssignmentButtonProps>;
+	onDuplicate?: () => void;
 	remove?: Partial<DeleteAssignmentButtonProps>;
 	refetchAssignment?: () => void;
 	publish?: Partial<ButtonProps>;
@@ -54,10 +50,10 @@ interface AssignmentActionsProps {
 	assignment?: Partial<Avo.Assignment.Assignment>;
 }
 
-const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> = ({
+const AssignmentActions: FC<AssignmentActionsProps & UserProps> = ({
 	assignment,
 	commonUser,
-	duplicate,
+	onDuplicate,
 	overflow,
 	preview,
 	publish,
@@ -178,20 +174,32 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 		}
 	};
 
-	const renderDuplicateButton = (
-		duplicateAssignmentButtonProps?: Partial<DuplicateAssignmentButtonProps>
-	) => (
-		<DuplicateAssignmentButton
-			{...duplicate}
-			{...duplicateAssignmentButtonProps}
-			onClick={(e) => {
-				duplicate?.onClick?.(e);
-				duplicateAssignmentButtonProps?.onClick?.(e);
-
-				setOverflowDropdownOpen(false);
-			}}
-		/>
-	);
+	const renderDuplicateButton = () => {
+		if (!onDuplicate) {
+			return null;
+		}
+		return (
+			<Button
+				altTitle={tText(
+					'assignment/components/duplicate-assignment-button___dupliceer-de-opdracht'
+				)}
+				ariaLabel={tText(
+					'assignment/components/duplicate-assignment-button___dupliceer-de-opdracht'
+				)}
+				label={tText('assignment/components/duplicate-assignment-button___dupliceer')}
+				title={tText(
+					'assignment/components/duplicate-assignment-button___dupliceer-de-opdracht'
+				)}
+				type="borderless"
+				icon={IconName.copy}
+				block={true}
+				onClick={async () => {
+					onDuplicate?.();
+					setOverflowDropdownOpen(false);
+				}}
+			/>
+		);
+	};
 
 	const renderDeleteButton = (
 		deleteAssignmentButtonProps?: Partial<DeleteAssignmentButtonProps>
@@ -242,7 +250,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 								icon: IconName.eye,
 								type: 'borderless',
 							})}
-							{renderDuplicateButton({ block: true, type: 'borderless' })}
+							{renderDuplicateButton()}
 							{renderDeleteButton({ button: { block: true, type: 'borderless' } })}
 							{renderPublishButton({
 								...publish,
@@ -253,7 +261,7 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 							{renderViewButton({
 								block: true,
 								className: 'c-assignment-heading__show-on-mobile',
-								icon: IconName.eye,
+								icon: IconName.close,
 								type: 'borderless',
 							})}
 							{renderShareButton({
@@ -291,4 +299,4 @@ const AssignmentActions: FunctionComponent<AssignmentActionsProps & UserProps> =
 	);
 };
 
-export default withUser(AssignmentActions) as FunctionComponent<AssignmentActionsProps>;
+export default withUser(AssignmentActions) as FC<AssignmentActionsProps>;

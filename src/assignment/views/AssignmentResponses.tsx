@@ -18,15 +18,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
@@ -73,7 +65,7 @@ interface AssignmentResponsesProps
 const DEFAULT_SORT_COLUMN = 'updated_at';
 const DEFAULT_SORT_ORDER = 'desc';
 
-const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
+const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 	onUpdate = noop,
 	match,
 	commonUser,

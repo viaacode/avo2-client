@@ -19,7 +19,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { get, isEqual, isNil, isString } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type ReactText,
 	useCallback,
@@ -35,8 +35,10 @@ import {
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { getMoreOptionsLabel } from '../../../shared/constants';
 import { createDropdownMenuItem } from '../../../shared/helpers';
+import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
@@ -59,7 +61,7 @@ interface FragmentEditProps {
 	onFocus?: () => void;
 }
 
-const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
+const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 	index,
 	collectionId,
 	numberOfFragments,
@@ -415,9 +417,10 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 								{!isThisFragmentACollection ? (
 									<FlowPlayerWrapper
 										item={itemMetaData}
-										poster={
-											fragment.thumbnail_path || itemMetaData.thumbnail_path
-										}
+										poster={getFlowPlayerPoster(
+											fragment.thumbnail_path,
+											itemMetaData
+										)}
 										external_id={itemMetaData.external_id}
 										duration={itemMetaData.duration}
 										title={itemMetaData.title}
@@ -430,6 +433,7 @@ const FragmentEdit: FunctionComponent<FragmentEditProps & UserProps> = ({
 											end: fragment.end_oc,
 										}}
 										canPlay={!isCutModalOpen && !isDeleteModalOpen}
+										sourcePage={SourcePage.collectionPage}
 									/>
 								) : (
 									<Thumbnail
@@ -490,4 +494,4 @@ function areEqual(prevProps: FragmentEditProps, nextProps: FragmentEditProps) {
 	);
 }
 
-export default React.memo(withUser(FragmentEdit) as FunctionComponent<FragmentEditProps>, areEqual);
+export default React.memo(withUser(FragmentEdit) as FC<FragmentEditProps>, areEqual);

@@ -1,7 +1,7 @@
 import { Button, ButtonToolbar, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, useState } from 'react';
+import React, { type FC, type ReactNode, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 
@@ -17,7 +17,7 @@ export interface DraggableListModalProps {
 	size?: 'small' | 'medium' | 'large' | 'extra-large' | 'fullscreen' | 'fullwidth' | 'auto';
 }
 
-const DraggableListModal: FunctionComponent<DraggableListModalProps> = ({
+const DraggableListModal: FC<DraggableListModalProps> = ({
 	items = [],
 	renderItem,
 	isOpen,

@@ -1,14 +1,8 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import { noop } from 'lodash-es';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
@@ -24,8 +18,9 @@ import {
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -53,11 +48,10 @@ import {
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-type CollectionOrBundleQualityCheckOverviewProps = DefaultSecureRouteProps;
-
-const CollectionOrBundleQualityCheckOverview: FunctionComponent<
-	CollectionOrBundleQualityCheckOverviewProps
-> = ({ location, commonUser }) => {
+const CollectionOrBundleQualityCheckOverview: FC<DefaultSecureRouteProps> = ({
+	location,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -73,7 +67,7 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevels] = useLomEducationLevels();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -147,10 +141,16 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevels,
+				educationLevelsAndDegrees || [],
 				organisationOptions
 			),
-		[collectionLabelOptions, educationLevels, subjects, userGroupOptions, organisationOptions]
+		[
+			collectionLabelOptions,
+			educationLevelsAndDegrees,
+			subjects,
+			userGroupOptions,
+			organisationOptions,
+		]
 	);
 
 	const isCollection =
@@ -165,12 +165,13 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 				isCollection,
 				true,
 				false,
-				'view'
+				'view',
+				educationLevelsAndDegrees || []
 			);
 
 			return { _and: andFilters };
 		},
-		[isCollection, commonUser]
+		[commonUser, isCollection, educationLevelsAndDegrees]
 	);
 
 	const getColumnDataType = useCallback(() => {
@@ -224,8 +225,10 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 	}, [tableState, getColumnDataType, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
-		fetchCollectionsOrBundles();
-	}, [fetchCollectionsOrBundles]);
+		if (commonUser && educationLevelsAndDegrees?.length) {
+			fetchCollectionsOrBundles().then(noop);
+		}
+	}, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
 	useEffect(() => {
 		if (collections) {
@@ -519,4 +522,4 @@ const CollectionOrBundleQualityCheckOverview: FunctionComponent<
 	);
 };
 
-export default CollectionOrBundleQualityCheckOverview;
+export default withUser(CollectionOrBundleQualityCheckOverview) as FC;

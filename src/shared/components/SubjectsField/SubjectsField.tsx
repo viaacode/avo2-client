@@ -1,7 +1,7 @@
 import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
@@ -12,7 +12,7 @@ interface SubjectsFieldProps {
 	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
-const SubjectsField: FunctionComponent<SubjectsFieldProps> = ({ onChange, value }) => {
+const SubjectsField: FC<SubjectsFieldProps> = ({ onChange, value }) => {
 	const { tText } = useTranslation();
 
 	const [subjects] = useLomSubjects();

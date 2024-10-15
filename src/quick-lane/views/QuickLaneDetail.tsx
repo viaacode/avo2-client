@@ -17,13 +17,7 @@ import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, noop } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactElement,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactElement, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 
@@ -38,18 +32,15 @@ import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/comp
 import { CustomError, isMobileWidth, renderAvatar, toSeconds } from '../../shared/helpers';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
+import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
 
 type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
-const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
-	history,
-	match,
-	commonUser,
-	...rest
-}) => {
+const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser, ...rest }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -125,7 +116,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			}
 
 			if (permissionName !== undefined) {
-				setCanReadOriginal(await PermissionService.hasPerm(commonUser, permissionName));
+				setCanReadOriginal(PermissionService.hasPerm(commonUser, permissionName));
 			}
 
 			// Update state
@@ -208,6 +199,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						showMetadata={true}
 						linkToItems={false}
 						collection={quickLane.content as Avo.Collection.Collection}
+						sourcePage={SourcePage.quickLanePage}
 						{...rest}
 					/>
 				);
@@ -220,6 +212,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}
 						cuePointsVideo={{ start, end }}
+						sourcePage={SourcePage.quickLanePage}
 					/>
 				);
 			default:
@@ -368,4 +361,4 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	);
 };
 
-export default QuickLaneDetail;
+export default withUser(QuickLaneDetail) as FC<QuickLaneDetailProps>;

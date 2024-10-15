@@ -20,12 +20,14 @@ query getItemBookmarksForUser(
 					}
 					is_deleted
 					is_published
+					type_id
 					type {
+						id
 						label
 					}
 				}
 			}
-			view_counts {
+			view_count {
 				count
 			}
 		}

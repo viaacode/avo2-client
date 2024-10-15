@@ -12,6 +12,13 @@ query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) 
 		id
 		title
 		share_type
+		updated_at
+		is_public
+		thumbnail_path
+		created_at
+		view_count {
+			count
+		}
 		contributors {
 			enum_right_type {
 				value
@@ -32,9 +39,5 @@ query getPublicCollectionsByTitle($title: String!, $typeId: Int!, $limit: Int!) 
 				}
 			}
 		}
-		updated_at
-		is_public
-		thumbnail_path
-		created_at
 	}
 }

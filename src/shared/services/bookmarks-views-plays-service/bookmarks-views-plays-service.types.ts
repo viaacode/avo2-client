@@ -60,7 +60,7 @@ export interface AppCollectionBookmark {
 		thumbnail_path?: string;
 		created_at: string;
 		type_id: number;
-		view_counts: {
+		view_count: {
 			count: number;
 		}[];
 	};
@@ -74,9 +74,9 @@ export interface AppAssignmentBookmark {
 		thumbnail_path?: string;
 		created_at: string;
 		type_id: number;
-		view_counts: {
+		view_count: {
 			count: number;
-		}[];
+		};
 	};
 	assignment_id: string;
 	created_at: string;
@@ -86,3 +86,11 @@ export type EventAction = 'bookmark' | 'unbookmark' | 'view' | 'play';
 export type QueryType = 'query' | 'get' | 'increment';
 export type EventContentTypeSimplified = 'item' | 'collection' | 'assignment';
 export type EventContentType = EventContentTypeSimplified | 'bundle';
+
+export enum SourcePage {
+	itemPage = 'itemPage',
+	collectionPage = 'collectionPage',
+	assignmentPage = 'assignmentPage',
+	contentPage = 'contentPage',
+	quickLanePage = 'quickLanePage',
+}

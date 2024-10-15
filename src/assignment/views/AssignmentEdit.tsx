@@ -23,7 +23,7 @@ import { isAfter, isPast } from 'date-fns';
 import { noop } from 'lodash-es';
 import React, {
 	type Dispatch,
-	type FunctionComponent,
+	type FC,
 	type SetStateAction,
 	useCallback,
 	useEffect,
@@ -106,6 +106,7 @@ import {
 	onEditContributor,
 } from '../helpers/assignment-share-with-collegue-handlers';
 import { buildGlobalSearchLink } from '../helpers/build-search-link';
+import { duplicateAssignment } from '../helpers/duplicate-assignment';
 import { isDeadlineBeforeAvailableAt } from '../helpers/is-deadline-before-available-at';
 import { backToOverview, toAssignmentDetail } from '../helpers/links';
 import {
@@ -124,7 +125,7 @@ interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabI
 	onUpdate: () => void | Promise<void>;
 }
 
-const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
+const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 	onUpdate = noop,
 	match,
 	commonUser,
@@ -905,6 +906,13 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 		}
 	};
 
+	const handleDuplicateAssignment = async () => {
+		const duplicatedAssignment = await duplicateAssignment(originalAssignment, commonUser);
+		if (duplicatedAssignment) {
+			window.open(toAssignmentDetail(duplicatedAssignment), '_blank');
+		}
+	};
+
 	// Render
 
 	const shareProps = {
@@ -956,12 +964,7 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 						  }
 						: undefined
 				}
-				duplicate={{
-					assignment: originalAssignment || undefined,
-					onClick: (_e, duplicated) => {
-						duplicated && redirectToClientPage(toAssignmentDetail(duplicated), history);
-					},
-				}}
+				onDuplicate={handleDuplicateAssignment}
 				view={{
 					label: tText('assignment/views/assignment-edit___bekijk'),
 					title: tText(
@@ -1240,4 +1243,4 @@ const AssignmentEdit: FunctionComponent<AssignmentEditProps & UserProps> = ({
 	);
 };
 
-export default withUser(AssignmentEdit) as FunctionComponent<AssignmentEditProps>;
+export default withUser(AssignmentEdit) as FC<AssignmentEditProps>;

@@ -26,6 +26,10 @@ query getCollectionActualisations(
 		owner_profile_id
 		title
 		type_id
+		type {
+			id
+			label
+		}
 		updated_at
 		updated_by_profile_id
 		collection_labels: labels {

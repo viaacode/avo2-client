@@ -1,7 +1,12 @@
 import { Flex, Spinner } from '@viaa/avo2-components';
 import React, { type FC, lazy, Suspense } from 'react';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
+import { buildLink } from '../../../shared/helpers';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 const ContentPageLabelEdit = lazy(() =>
@@ -10,7 +15,10 @@ const ContentPageLabelEdit = lazy(() =>
 	}))
 );
 
-const ContentPageLabelEditPage: FC<DefaultSecureRouteProps<{ id: string }>> = ({ match }) => {
+const ContentPageLabelEditPage: FC<DefaultSecureRouteProps<{ id: string }>> = ({
+	match,
+	history,
+}) => {
 	return (
 		<Suspense
 			fallback={
@@ -22,11 +30,17 @@ const ContentPageLabelEditPage: FC<DefaultSecureRouteProps<{ id: string }>> = ({
 			<ContentPageLabelEdit
 				className="c-admin-core c-admin__content-page-label-edit"
 				contentPageLabelId={match.params.id}
+				onGoBack={() =>
+					goBrowserBackWithFallback(
+						buildLink(ADMIN_PATH.CONTENT_PAGE_DETAIL, { id: match.params.id }),
+						history
+					)
+				}
 			/>
 		</Suspense>
 	);
 };
 
-export default withAdminCoreConfig(ContentPageLabelEditPage as FC<any>) as FC<
+export default compose(withAdminCoreConfig, withRouter)(ContentPageLabelEditPage as FC<any>) as FC<
 	DefaultSecureRouteProps<{ id: string }>
 >;

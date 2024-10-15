@@ -10,7 +10,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { type ItemSchema } from '@viaa/avo2-types/types/item';
-import React, { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { type AssignmentLayout } from '../../../assignment/assignment.types';
 import { ItemVideoDescription } from '../../../item/components';
@@ -21,6 +21,7 @@ import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks/useDebounce';
+import { SourcePage } from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../services/toast-service';
 import { type QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
@@ -31,7 +32,7 @@ import TimeCropControls from '../TimeCropControls/TimeCropControls';
 import { defaultQuickLaneState, getContentUuid, isShareable } from './QuickLaneModal.helpers';
 import { type QuickLaneModalProps } from './QuickLaneModal.types';
 
-const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProps> = ({
+const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 	isOpen,
 	user,
 	content,
@@ -242,6 +243,7 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 									cuePointsLabel={{ start, end }}
 									cuePointsVideo={{ start, end }}
 									verticalLayout={isMobileWidth()}
+									sourcePage={SourcePage.quickLanePage}
 								/>
 							</div>
 							<TimeCropControls
@@ -326,4 +328,4 @@ const QuickLaneModalSharingTab: FunctionComponent<QuickLaneModalProps & UserProp
 	) : null;
 };
 
-export default withUser(QuickLaneModalSharingTab) as FunctionComponent<QuickLaneModalProps>;
+export default withUser(QuickLaneModalSharingTab) as FC<QuickLaneModalProps>;

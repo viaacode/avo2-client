@@ -1,4 +1,4 @@
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { StickyBar } from '../StickyBar/StickyBar';
@@ -10,7 +10,7 @@ export interface StickySaveBarProps {
 	onCancel: () => void;
 }
 
-export const StickySaveBar: FunctionComponent<StickySaveBarProps> = ({
+export const StickySaveBar: FC<StickySaveBarProps> = ({
 	isVisible,
 	isSaving,
 	onSave,

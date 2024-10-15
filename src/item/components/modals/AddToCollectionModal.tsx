@@ -19,12 +19,14 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { once } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { CollectionService } from '../../../collection/collection.service';
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { canManageEditorial } from '../../../collection/helpers/can-manage-editorial';
+import { OrderDirection } from '../../../search/search.const';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
@@ -36,6 +38,7 @@ import { VideoStillService } from '../../../shared/services/video-stills-service
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
+import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 interface AddToCollectionModalProps {
 	externalId: string;
@@ -44,7 +47,7 @@ interface AddToCollectionModalProps {
 	onClose: () => void;
 }
 
-const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserProps> = ({
+const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 	externalId,
 	itemMetaData,
 	isOpen,
@@ -72,7 +75,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 				commonUser,
 				0,
 				500,
-				{ created_at: 'desc' },
+				{ created_at: OrderDirection.desc },
 				ContentTypeNumber.collection,
 				undefined,
 				undefined,
@@ -170,7 +173,11 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 			item_meta: itemMetaData,
 			type: 'ITEM',
 			thumbnail_path: fragmentStartTime
-				? await VideoStillService.getVideoStill(externalId, fragmentStartTime * 1000)
+				? await VideoStillService.getVideoStill(
+						externalId,
+						itemMetaData.type_id,
+						fragmentStartTime * 1000
+				  )
 				: null,
 		};
 	};
@@ -181,6 +188,9 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 
 		try {
 			const fragment = await getFragment(collection);
+			if (fragment.item_meta?.type_id === ContentTypeNumber.audio) {
+				fragment.thumbnail_path = DEFAULT_AUDIO_STILL;
+			}
 			delete fragment.item_meta;
 			fragment.position = collection.collection_fragments?.length || 0;
 			await CollectionService.insertFragments(collection.id as string, [
@@ -336,6 +346,7 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 									onPlay={startStartTimeOnce}
 									cuePointsLabel={{ start, end }}
 									verticalLayout={isMobileWidth()}
+									sourcePage={SourcePage.collectionPage}
 								/>
 								<Grid>
 									<Column size="2-7" className="u-spacer-top-l u-spacer-bottom-l">
@@ -498,4 +509,4 @@ const AddToCollectionModal: FunctionComponent<AddToCollectionModalProps & UserPr
 	return renderAddToCollectionModal();
 };
 
-export default withUser(AddToCollectionModal) as FunctionComponent<AddToCollectionModalProps>;
+export default withUser(AddToCollectionModal) as FC<AddToCollectionModalProps>;

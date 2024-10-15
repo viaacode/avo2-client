@@ -21,6 +21,7 @@ type CollectionsOrBundlesOverviewTableColsBase =
 	| 'subjects'
 	| 'themas'
 	| 'education_levels'
+	| 'education_degrees'
 	| 'actions';
 
 export type CollectionsOrBundlesOverviewTableCols =
@@ -78,6 +79,7 @@ export interface CollectionOrBundleTableStateBase extends FilterableTableState {
 	collection_labels: string[];
 	subjects: string[];
 	education_levels: string[];
+	education_degrees: string[];
 	organisation: string[];
 }
 

@@ -1,7 +1,7 @@
 import { Avatar, IconName, type TagOption, Thumbnail } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isNil, trimStart } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { CONTENT_TYPE_TRANSLATIONS } from '../../collection/collection.types';
 import { SearchResult } from '../../shared/components/SearchResult/SearchResult';
@@ -11,7 +11,7 @@ import { type SearchResultItemProps } from '../search.types';
 
 import './SearchResultItem.scss';
 
-const SearchResultItem: FunctionComponent<SearchResultItemProps> = ({
+const SearchResultItem: FC<SearchResultItemProps> = ({
 	id,
 	handleBookmarkToggle,
 	handleTagClicked,

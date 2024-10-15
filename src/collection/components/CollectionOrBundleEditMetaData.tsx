@@ -13,7 +13,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { type StringMap } from 'i18next';
 import { compact, map } from 'lodash-es';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import { FileUpload, ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
@@ -36,7 +36,7 @@ interface CollectionOrBundleEditMetaDataProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMetaDataProps> = ({
+const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataProps> = ({
 	type,
 	collection,
 	changeCollectionState,

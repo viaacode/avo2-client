@@ -1,6 +1,6 @@
 import { Button, ButtonToolbar, IconName, Spacer } from '@viaa/avo2-components';
 import { get, isNil } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
@@ -34,9 +34,7 @@ import {
 
 type InteractiveTourOverviewProps = DefaultSecureRouteProps;
 
-const InteractiveTourGroupOverview: FunctionComponent<InteractiveTourOverviewProps> = ({
-	history,
-}) => {
+const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [interactiveTourIdToDelete, setInteractiveTourIdToDelete] = useState<number | null>(null);

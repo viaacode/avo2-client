@@ -48,10 +48,8 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 		updated_by: { usersByuserId: { last_name: order } },
 	}),
 	views: (order: Avo.Search.OrderDirection) => ({
-		view_counts_aggregate: {
-			sum: {
-				count: order,
-			},
+		view_count: {
+			count: order,
 		},
 	}),
 	bookmarks: (order: Avo.Search.OrderDirection) => ({
@@ -426,13 +424,29 @@ const getCollectionEducationLevelsColumn = (
 	educationLevels: Avo.Lom.LomField[]
 ): FilterableColumn<CollectionTableCols> => ({
 	id: 'education_levels',
-	label: tText('admin/collections-or-bundles/collections-or-bundles___opleidingsniveaus'),
+	label: tText('admin/collections-or-bundles/collections-or-bundles___onderwijsniveaus'),
 	sortable: false,
 	visibleByDefault: false,
 	filterType: 'CheckboxDropdownModal',
 	filterProps: {
 		options: [
 			...educationLevels.map(lomToCheckboxOption),
+			{ checked: false, label: tText('admin/users/user___leeg'), id: NULL_FILTER },
+		],
+	} as CheckboxDropdownModalProps,
+});
+
+const getCollectionEducationDegreesColumn = (
+	educationDegrees: Avo.Lom.LomField[]
+): FilterableColumn<CollectionTableCols> => ({
+	id: 'education_degrees',
+	label: tText('admin/collections-or-bundles/collections-or-bundles___onderwijsgraden'),
+	sortable: false,
+	visibleByDefault: false,
+	filterType: 'CheckboxDropdownModal',
+	filterProps: {
+		options: [
+			...educationDegrees.map(lomToCheckboxOption),
 			{ checked: false, label: tText('admin/users/user___leeg'), id: NULL_FILTER },
 		],
 	} as CheckboxDropdownModalProps,
@@ -607,7 +621,7 @@ export const GET_COLLECTIONS_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
 	subjects: Avo.Lom.LomField[],
-	educationLevels: Avo.Lom.LomField[],
+	educationLevelsAndDegrees: Avo.Lom.LomField[],
 	organisations: CheckboxOption[]
 ): FilterableColumn<CollectionTableCols>[] => [
 	getCollectionTitleColumn(),
@@ -629,7 +643,8 @@ export const GET_COLLECTIONS_COLUMNS = (
 	...getCollectionSharedColumn(isCollection),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionThemesColumn(),
-	getCollectionEducationLevelsColumn(educationLevels),
+	getCollectionEducationLevelsColumn(educationLevelsAndDegrees.filter((item) => !item.broader)),
+	getCollectionEducationDegreesColumn(educationLevelsAndDegrees.filter((item) => !!item.broader)),
 	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
@@ -644,7 +659,7 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
 	subjects: Avo.Lom.LomField[],
-	educationLevels: Avo.Lom.LomField[],
+	educationLevelsAndDegrees: Avo.Lom.LomField[],
 	organisations: CheckboxOption[]
 ): FilterableColumn<CollectionTableCols>[] => [
 	getCollectionTitleColumn(),
@@ -662,7 +677,8 @@ export const GET_COLLECTION_ACTUALISATION_COLUMNS = (
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionThemesColumn(),
-	getCollectionEducationLevelsColumn(educationLevels),
+	getCollectionEducationLevelsColumn(educationLevelsAndDegrees.filter((item) => !item.broader)),
+	getCollectionEducationDegreesColumn(educationLevelsAndDegrees.filter((item) => !!item.broader)),
 	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
@@ -677,7 +693,7 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 	userGroupOptions: CheckboxOption[],
 	collectionLabelOptions: CheckboxOption[],
 	subjects: Avo.Lom.LomField[],
-	educationLevels: Avo.Lom.LomField[],
+	educationLevelsAndDegrees: Avo.Lom.LomField[],
 	organisations: CheckboxOption[]
 ): FilterableColumn<CollectionTableCols>[] => [
 	getCollectionTitleColumn(),
@@ -693,7 +709,8 @@ export const GET_COLLECTION_QUALITY_CHECK_COLUMNS = (
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
 	getCollectionThemesColumn(),
-	getCollectionEducationLevelsColumn(educationLevels),
+	getCollectionEducationLevelsColumn(educationLevelsAndDegrees.filter((item) => !item.broader)),
+	getCollectionEducationDegreesColumn(educationLevelsAndDegrees.filter((item) => !!item.broader)),
 	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',
@@ -709,7 +726,7 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	collectionLabelOptions: CheckboxOption[],
 	channelNameOptions: CheckboxOption[],
 	subjects: Avo.Lom.LomField[],
-	educationLevels: Avo.Lom.LomField[],
+	educationLevelsAndDegrees: Avo.Lom.LomField[],
 	organisations: CheckboxOption[],
 	channelTypeOptions: CheckboxOption[]
 ): FilterableColumn<CollectionTableCols>[] => [
@@ -726,7 +743,8 @@ export const GET_COLLECTION_MARCOM_COLUMNS = (
 	getCollectionIsPublicColumn(),
 	getCollectionLabelsColumn(collectionLabelOptions),
 	getCollectionSubjectsColumn(subjects),
-	getCollectionEducationLevelsColumn(educationLevels),
+	getCollectionEducationLevelsColumn(educationLevelsAndDegrees.filter((item) => !item.broader)),
+	getCollectionEducationDegreesColumn(educationLevelsAndDegrees.filter((item) => !!item.broader)),
 	getCollectionOrganisationColumn(organisations),
 	{
 		id: 'actions',

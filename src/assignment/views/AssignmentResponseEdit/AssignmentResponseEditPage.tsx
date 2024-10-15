@@ -1,13 +1,7 @@
 import { Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isString, noop } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -32,9 +26,10 @@ import AssignmentResponseEdit from './AssignmentResponseEdit';
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseEditPage: FunctionComponent<
-	UserProps & DefaultSecureRouteProps<{ id: string }>
-> = ({ match, commonUser }) => {
+const AssignmentResponseEditPage: FC<UserProps & DefaultSecureRouteProps<{ id: string }>> = ({
+	match,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Data
@@ -268,4 +263,4 @@ const AssignmentResponseEditPage: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(AssignmentResponseEditPage) as FunctionComponent;
+export default compose(withRouter, withUser)(AssignmentResponseEditPage) as FC;

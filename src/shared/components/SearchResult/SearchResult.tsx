@@ -16,7 +16,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'clsx';
 import { isNil, noop, truncate } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, type ReactText } from 'react';
+import React, { type FC, type ReactNode, type ReactText } from 'react';
 
 import './SearchResult.scss';
 
@@ -39,7 +39,7 @@ export interface SearchResultProps extends DefaultProps {
 	onTagClicked?: (tagId: string) => void;
 }
 
-export const SearchResult: FunctionComponent<SearchResultProps> = ({
+export const SearchResult: FC<SearchResultProps> = ({
 	title,
 	subTitle,
 	thumbnail,

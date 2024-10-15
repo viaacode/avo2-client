@@ -1,5 +1,5 @@
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import ConfirmModal from '../../shared/components/ConfirmModal/ConfirmModal';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -19,7 +19,7 @@ interface DeleteAssignmentModalProps {
 	shouldDeleteSelfFromAssignment: boolean;
 }
 
-const DeleteAssignmentModal: FunctionComponent<DeleteAssignmentModalProps> = ({
+const DeleteAssignmentModal: FC<DeleteAssignmentModalProps> = ({
 	isOpen,
 	onClose = noop,
 	deleteAssignmentCallback,

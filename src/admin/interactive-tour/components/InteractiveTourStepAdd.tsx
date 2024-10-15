@@ -1,6 +1,6 @@
 import { Button, Container, IconName, Toolbar, ToolbarItem } from '@viaa/avo2-components';
 import { cloneDeep } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -17,7 +17,7 @@ interface InteractiveTourAddProps {
 	changeInteractiveTourState: (action: InteractiveTourAction) => void;
 }
 
-const InteractiveTourAdd: FunctionComponent<InteractiveTourAddProps> = ({
+const InteractiveTourAdd: FC<InteractiveTourAddProps> = ({
 	index,
 	interactiveTour,
 	changeInteractiveTourState,

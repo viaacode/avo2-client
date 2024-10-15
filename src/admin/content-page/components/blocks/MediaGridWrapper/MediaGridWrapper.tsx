@@ -12,13 +12,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isEmpty, isNil } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { type RouteComponentProps } from 'react-router-dom';
 import { compose } from 'redux';
@@ -38,6 +32,7 @@ import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number'
 import withUser, { type UserProps } from '../../../../../shared/hocs/withUser';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
+import { SourcePage } from '../../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
@@ -58,9 +53,7 @@ interface MediaGridWrapperProps extends MediaGridBlockState {
 	ctaButtonAltTitle?: string;
 }
 
-const MediaGridWrapper: FunctionComponent<
-	MediaGridWrapperProps & UserProps & RouteComponentProps
-> = ({
+const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentProps> = ({
 	title,
 	buttonLabel,
 	buttonAltTitle,
@@ -331,8 +324,7 @@ const MediaGridWrapper: FunctionComponent<
 		index: number
 	): MediaListItem => {
 		const itemLabel = itemOrCollectionOrAssignment?.type?.label || 'video';
-		const viewCount =
-			itemOrCollectionOrAssignment?.view_counts_aggregate?.aggregate?.sum?.count || 0;
+		const viewCount = itemOrCollectionOrAssignment?.view_count?.count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
@@ -495,6 +487,7 @@ const MediaGridWrapper: FunctionComponent<
 								}
 								collapseDescription={false}
 								renderButtons={renderBookmarkButton}
+								sourcePage={SourcePage.contentPage}
 							/>
 						)}
 					</ModalBody>
@@ -533,7 +526,4 @@ const MediaGridWrapper: FunctionComponent<
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(MediaGridWrapper) as FunctionComponent<MediaGridWrapperProps>;
+export default compose(withRouter, withUser)(MediaGridWrapper) as FC<MediaGridWrapperProps>;

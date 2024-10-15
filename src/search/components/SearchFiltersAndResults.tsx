@@ -30,7 +30,7 @@ import {
 	pickBy,
 	set,
 } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
@@ -76,7 +76,7 @@ import { selectSearchError, selectSearchLoading, selectSearchResults } from '../
 import SearchFilterControls from './SearchFilterControls';
 import SearchResults from './SearchResults';
 
-const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> = ({
+const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	// Manual props
 	enabledFilters,
 	enabledTypeOptions,
@@ -346,6 +346,15 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
 		try {
+			if (!commonUser) {
+				console.error('User is not logged in');
+				ToastService.danger(
+					tHtml(
+						'search/components/search-filters-and-results___je-moet-aangemald-zijn-om-een-bookmark-aan-te-maken'
+					)
+				);
+				return;
+			}
 			const results = searchResults?.results ?? [];
 			const resultItem: Avo.Search.ResultItem | undefined = results.find(
 				(result) => result.uid === uuid
@@ -582,4 +591,4 @@ export default compose(
 	withRouter,
 	withUser,
 	connect(mapStateToProps, mapDispatchToProps)
-)(SearchFiltersAndResults) as FunctionComponent<SearchFiltersAndResultsPropsManual>;
+)(SearchFiltersAndResults) as FC<SearchFiltersAndResultsPropsManual>;

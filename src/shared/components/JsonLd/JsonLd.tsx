@@ -1,4 +1,4 @@
-import { type FunctionComponent } from 'react';
+import { type FC } from 'react';
 
 import { toIsoDate } from '../../helpers/formatters';
 
@@ -21,7 +21,7 @@ export interface JsonLdProps {
 	keywords?: string[] | null;
 }
 
-const JsonLd: FunctionComponent<JsonLdProps> = ({
+const JsonLd: FC<JsonLdProps> = ({
 	url,
 	title,
 	description,

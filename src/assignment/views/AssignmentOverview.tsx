@@ -27,7 +27,7 @@ import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type KeyboardEvent,
 	type ReactNode,
 	useCallback,
@@ -52,6 +52,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { type OrderDirection } from '../../search/search.const';
 import { CheckboxDropdownModal, type CheckboxOption } from '../../shared/components';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
@@ -69,9 +70,9 @@ import {
 import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -113,9 +114,11 @@ const defaultFiltersAndSort = {
 	sort_order: DEFAULT_SORT_ORDER,
 };
 
-const AssignmentOverview: FunctionComponent<
-	AssignmentOverviewProps & RouteComponentProps & UserProps
-> = ({ onUpdate = noop, history, commonUser }) => {
+const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & UserProps> = ({
+	onUpdate = noop,
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
@@ -127,24 +130,18 @@ const AssignmentOverview: FunctionComponent<
 	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(
 		null
 	);
-	const canEditAssignments: boolean | null = useMemo(() => {
-		if (!commonUser) {
-			return null;
-		}
-		return (
+	const canEditAssignments = useMemo(
+		() =>
 			PermissionService.hasPerm(commonUser, PermissionName.EDIT_ANY_ASSIGNMENTS) ||
-			PermissionService.hasPerm(commonUser, PermissionName.EDIT_OWN_ASSIGNMENTS)
-		);
-	}, [commonUser]);
-	const showPublicState = useMemo(() => {
-		if (!commonUser) {
-			return null;
-		}
-		return (
+			PermissionService.hasPerm(commonUser, PermissionName.EDIT_OWN_ASSIGNMENTS),
+		[commonUser]
+	);
+	const showPublicState = useMemo(
+		() =>
 			PermissionService.hasPerm(commonUser, PermissionName.PUBLISH_ANY_ASSIGNMENTS) ||
-			PermissionService.hasPerm(commonUser, PermissionName.PUBLISH_OWN_ASSIGNMENTS)
-		);
-	}, [commonUser]);
+			PermissionService.hasPerm(commonUser, PermissionName.PUBLISH_OWN_ASSIGNMENTS),
+		[commonUser]
+	);
 
 	const isOwner =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
@@ -161,20 +158,10 @@ const AssignmentOverview: FunctionComponent<
 		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) || false;
 	const shouldDeleteSelfFromAssignment = isContributor && !hasDeleteRightsForAllAssignments;
 
-	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
-		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
-
 	const tableColumns = useMemo(
 		() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments, showPublicState),
 		[canEditAssignments, showPublicState]
 	);
-
-	const getColumnDataType = (): TableColumnDataType => {
-		const column = tableColumns.find(
-			(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
-		);
-		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	};
 
 	const [query, setQuery] = useQueryParams({
 		selectedAssignmentLabelIds: DelimitedArrayParam,
@@ -183,9 +170,16 @@ const AssignmentOverview: FunctionComponent<
 		filter: StringParam,
 		view: withDefault(StringParam, AssignmentView.ACTIVE),
 		page: NumberParam,
-		sort_column: StringParam,
-		sort_order: StringParam,
+		sortColumn: StringParam,
+		sortOrder: StringParam,
 	});
+
+	const getColumnDataType = (): TableColumnDataType => {
+		const column = tableColumns.find(
+			(tableColumn: any) => (tableColumn.id || '') === query.sortColumn
+		);
+		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
+	};
 
 	const {
 		data: assignmentResponse,
@@ -194,8 +188,8 @@ const AssignmentOverview: FunctionComponent<
 	} = useGetAssignments(
 		{
 			pastDeadline: query.view === AssignmentView.FINISHED, // true === past deadline
-			sortColumn: sortColumn,
-			sortOrder: sortOrder,
+			sortColumn: (query.sortColumn || DEFAULT_SORT_COLUMN) as AssignmentOverviewTableColumns,
+			sortOrder: (query.sortOrder || DEFAULT_SORT_ORDER) as Avo.Search.OrderDirection,
 			tableColumnDataType: getColumnDataType(),
 			offset: query.page || 0,
 			limit: ITEMS_PER_PAGE,
@@ -205,7 +199,7 @@ const AssignmentOverview: FunctionComponent<
 			shareTypeIds: (query.selectedShareTypeLabelIds as string[]) || [],
 		},
 		{
-			enabled: isNil(canEditAssignments) || !commonUser,
+			enabled: !!commonUser,
 		}
 	);
 	const assignments = useMemo(() => assignmentResponse?.assignments || [], [assignmentResponse]);
@@ -214,20 +208,6 @@ const AssignmentOverview: FunctionComponent<
 	useEffect(() => {
 		localStorage.setItem(ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS, JSON.stringify(query));
 	}, [query]);
-
-	useEffect(() => {
-		if (query.filter) {
-			setFilterString(query.filter);
-		}
-		if (query.sort_column) {
-			setSortColumn(query.sort_column as AssignmentOverviewTableColumns);
-		}
-		if (query.sort_order) {
-			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
-		}
-		// Copy the query param value from the url once time when the page loads
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	const handleQueryChanged = (value: string | string[] | number | undefined, id: string) => {
 		let newQuery: any = cloneDeep(query);
@@ -254,16 +234,12 @@ const AssignmentOverview: FunctionComponent<
 	useKeyPress('Enter', copySearchTermsToQueryState);
 
 	const handleSortOrderChange = (columnId: string) => {
-		const { sortColumn: newSortColumn, sortOrder: newSortOrder } = handleColumnClick(
-			columnId as AssignmentOverviewTableColumns
-		);
-
 		let newQuery: any = cloneDeep(query);
 
 		newQuery = cleanupObject({
 			...newQuery,
-			sort_column: newSortColumn,
-			sort_order: newSortOrder,
+			sortColumn: columnId,
+			sortOrder: toggleSortOrder(query.sortOrder),
 		});
 
 		setQuery(newQuery, 'pushIn');
@@ -271,8 +247,7 @@ const AssignmentOverview: FunctionComponent<
 
 	const resetFiltersAndSort = () => {
 		setFilterString('');
-		setSortColumn(DEFAULT_SORT_COLUMN);
-		setSortOrder(DEFAULT_SORT_ORDER);
+		setQuery({ ...query, sortColumn: DEFAULT_SORT_COLUMN, sortOrder: DEFAULT_SORT_ORDER });
 
 		setQuery(defaultFiltersAndSort);
 	};
@@ -939,8 +914,8 @@ const AssignmentOverview: FunctionComponent<
 				rowKey="id"
 				variant="styled"
 				onColumnClick={handleSortOrderChange}
-				sortColumn={sortColumn}
-				sortOrder={sortOrder}
+				sortColumn={query.sortColumn as AssignmentOverviewTableColumns}
+				sortOrder={query.sortOrder as OrderDirection}
 				useCards={isMobileWidth()}
 			/>
 		);
@@ -992,7 +967,4 @@ const AssignmentOverview: FunctionComponent<
 	return <div className="m-assignment-overview">{renderAssignmentsView()}</div>;
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(AssignmentOverview) as FunctionComponent<AssignmentOverviewProps>;
+export default compose(withRouter, withUser)(AssignmentOverview) as FC<AssignmentOverviewProps>;

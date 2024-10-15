@@ -1,5 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
+import { OrderDirection } from '../../search/search.const';
 import {
 	type GetUserGroupsWithFiltersQuery,
 	type GetUserGroupsWithFiltersQueryVariables,
@@ -61,7 +62,7 @@ export class UserGroupService {
 	}
 
 	public static async fetchAllUserGroups(): Promise<UserGroup[]> {
-		const response = await UserGroupService.fetchUserGroups(0, 'label', 'asc', {});
+		const response = await UserGroupService.fetchUserGroups(0, 'label', OrderDirection.asc, {});
 		return response[0];
 	}
 }

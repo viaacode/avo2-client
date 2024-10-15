@@ -1,7 +1,7 @@
 import { Alert, Modal, ModalBody, Spacer, Tabs } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -52,7 +52,7 @@ const isAllowedToPublish = async (
 
 // Component
 
-const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (props) => {
+const QuickLaneModal: FC<QuickLaneModalProps & UserProps> = (props) => {
 	const { modalTitle, isOpen, content_label, onClose, commonUser } = props;
 
 	const [content, setContent] = useState<
@@ -239,4 +239,4 @@ const QuickLaneModal: FunctionComponent<QuickLaneModalProps & UserProps> = (prop
 	);
 };
 
-export default withUser(QuickLaneModal) as FunctionComponent<QuickLaneModalProps>;
+export default withUser(QuickLaneModal) as FC<QuickLaneModalProps>;

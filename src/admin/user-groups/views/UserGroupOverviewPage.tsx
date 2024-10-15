@@ -1,6 +1,6 @@
 import { Button } from '@meemoo/react-components';
 import { Flex, Icon, IconName, Spinner, Toolbar, ToolbarRight } from '@viaa/avo2-components';
-import React, { type FunctionComponent, lazy, Suspense, useRef, useState } from 'react';
+import React, { type FC, lazy, Suspense, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -17,7 +17,7 @@ const UserGroupOverview = lazy(() =>
 	}))
 );
 
-const UserGroupGroupOverviewPage: FunctionComponent = () => {
+const UserGroupGroupOverviewPage: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	// Access child functions

@@ -1,14 +1,8 @@
+import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName, TagList, type TagOption } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { compact, first, get, isNil, partition, without } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import { compact, first, get, isNil, noop, partition, without } from 'lodash-es';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -20,6 +14,7 @@ import { useGetAssignmentsEditStatuses } from '../../../assignment/hooks/useGetA
 import { getUserGroupLabel } from '../../../authentication/helpers/get-profile-info';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
+import { OrderDirection } from '../../../search/search.const';
 import {
 	type CheckboxOption,
 	LoadingErrorLoadedComponent,
@@ -33,9 +28,10 @@ import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { EducationLevelType, groupLomLinks } from '../../../shared/helpers/lom';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
-import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -50,6 +46,7 @@ import FilterTable, {
 import SubjectsBeingEditedWarningModal from '../../shared/components/SubjectsBeingEditedWarningModal/SubjectsBeingEditedWarningModal';
 import {
 	generateEducationLevelFilter,
+	generateEducationLomFilter,
 	generateLomFilter,
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -65,15 +62,10 @@ import {
 	ITEMS_PER_PAGE,
 } from '../assignments.const';
 import { AssignmentsBulkAction, type AssignmentsOverviewTableState } from '../assignments.types';
+
 import './AssignmentsOverviewAdmin.scss';
 
-import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
-
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
-
-const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps> = ({
-	commonUser,
-}) => {
+const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
@@ -97,7 +89,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	const [qualityLabels] = useQualityLabels(true);
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevels] = useLomEducationLevels();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
 	const { data: editStatuses } = useGetAssignmentsEditStatuses(
 		assignments?.map((assignment) => assignment.id) || [],
@@ -152,173 +144,200 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 				userGroupOptions,
 				assignmentLabelOptions,
 				subjects,
-				educationLevels
+				educationLevelsAndDegrees || []
 			),
-		[userGroupOptions, assignmentLabelOptions]
+		[userGroupOptions, assignmentLabelOptions, subjects, educationLevelsAndDegrees]
 	);
 
-	const generateWhereObject = useCallback((filters: Partial<AssignmentsOverviewTableState>) => {
-		const andFilters: any[] = [];
+	const generateWhereObject = useCallback(
+		(filters: Partial<AssignmentsOverviewTableState>) => {
+			const andFilters: any[] = [];
 
-		// Text search
-		if (filters.query) {
-			const query = `%${filters.query}%`;
+			// Text search
+			if (filters.query) {
+				const query = `%${filters.query}%`;
 
-			andFilters.push({
-				_or: [{ title: { _ilike: query } }, { owner: { full_name: { _ilike: query } } }],
-			});
-		}
-
-		// Author multi option filter
-		andFilters.push(...getMultiOptionFilters(filters, ['author'], ['owner.profile_id']));
-
-		// Date filters
-		andFilters.push(
-			...getDateRangeFilters(
-				filters,
-				['created_at', 'updated_at', 'deadline_at'],
-				['created_at', 'updated_at', 'deadline_at']
-			)
-		);
-
-		// Status filter: active/expired
-		if (!isNil(filters.status?.[0]) && filters.status?.length === 1) {
-			if (filters.status?.[0] === 'true') {
-				// Active assignment
 				andFilters.push({
-					deadline_at: {
-						_gte: new Date().toISOString(),
-					},
-				});
-			} else {
-				// Assignment past deadline
-				andFilters.push({
-					deadline_at: {
-						_lt: new Date().toISOString(),
-					},
+					_or: [
+						{ title: { _ilike: query } },
+						{ owner: { full_name: { _ilike: query } } },
+					],
 				});
 			}
-		}
 
-		andFilters.push(...getBooleanFilters(filters, ['is_public']));
+			// Author multi option filter
+			andFilters.push(...getMultiOptionFilters(filters, ['author'], ['owner.profile_id']));
 
-		// pupil collections filter: has collections, does not have collections
-		if (!isNil(filters.responses?.[0]) && filters.responses?.length === 1) {
-			if (filters.responses?.[0] === 'true') {
-				// Assignments with pupil collections
-				andFilters.push({
-					responses: {},
-				});
-			} else {
-				// Assignments without pupil collections
-				andFilters.push({
-					_not: {
-						responses: {},
-					},
-				});
-			}
-		}
+			// Date filters
+			andFilters.push(
+				...getDateRangeFilters(
+					filters,
+					['created_at', 'updated_at', 'deadline_at'],
+					['created_at', 'updated_at', 'deadline_at']
+				)
+			);
 
-		// user group
-		if (filters.author_user_group && filters.author_user_group.length) {
-			const defaultGroupFilter = {
-				profile: {
-					profile_user_group: {
-						group: {
-							id: {
-								_in: without(filters.author_user_group, NULL_FILTER),
-							},
+			// Status filter: active/expired
+			if (!isNil(filters.status?.[0]) && filters.status?.length === 1) {
+				if (filters.status?.[0] === 'true') {
+					// Active assignment
+					andFilters.push({
+						deadline_at: {
+							_gte: new Date().toISOString(),
 						},
-					},
-				},
-			};
-
-			const defaultNullFilter = { profile: { _not: { profile_user_groups: {} } } };
-
-			const groupFilter = [defaultGroupFilter];
-			andFilters.push({
-				_or: [
-					...groupFilter,
-					...(filters.author_user_group.includes(NULL_FILTER) ? [defaultNullFilter] : []),
-				],
-			});
-		}
-
-		// is copy
-		const isCopy = first(get(filters, 'is_copy'));
-		if (!isNil(isCopy)) {
-			if (isCopy === 'true') {
-				andFilters.push({
-					relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
-				});
-			} else if (isCopy === 'false') {
-				andFilters.push({
-					_not: {
-						relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
-					},
-				});
+					});
+				} else {
+					// Assignment past deadline
+					andFilters.push({
+						deadline_at: {
+							_lt: new Date().toISOString(),
+						},
+					});
+				}
 			}
-		}
 
-		// labels
-		if (filters.quality_labels && filters.quality_labels.length) {
-			const filterKey = 'quality_labels';
+			andFilters.push(...getBooleanFilters(filters, ['is_public']));
 
-			andFilters.push({
-				_or: [
-					{
-						[filterKey]: {
-							enum_collection_label: {
-								value: {
-									_in: filters.quality_labels,
+			// pupil collections filter: has collections, does not have collections
+			if (!isNil(filters.responses?.[0]) && filters.responses?.length === 1) {
+				if (filters.responses?.[0] === 'true') {
+					// Assignments with pupil collections
+					andFilters.push({
+						responses: {},
+					});
+				} else {
+					// Assignments without pupil collections
+					andFilters.push({
+						_not: {
+							responses: {},
+						},
+					});
+				}
+			}
+
+			// user group
+			if (filters.author_user_group?.length) {
+				const defaultGroupFilter = {
+					profile: {
+						profile_user_group: {
+							group: {
+								id: {
+									_in: without(filters.author_user_group, NULL_FILTER),
 								},
 							},
 						},
 					},
-					...(filters.quality_labels.includes(NULL_FILTER)
-						? [{ _not: { [filterKey]: {} } }]
-						: []),
-				],
-			});
-		}
+				};
 
-		// subjects
-		if (filters.subjects && filters.subjects.length) {
-			andFilters.push(generateLomFilter(filters.subjects, EducationLevelType.vak));
-		}
+				const defaultNullFilter = { profile: { _not: { profile_user_groups: {} } } };
 
-		// // Enable when meemoo requests a column and folder for lom themes
-		// if (filters.themes && filters.themes.length) {
-		// 	andFilters.push(
-		// 		generateLomFilter(filters.themes, EducationLevelType.thema)
-		// 	);
-		// }
+				const groupFilter = [defaultGroupFilter];
+				andFilters.push({
+					_or: [
+						...groupFilter,
+						...(filters.author_user_group.includes(NULL_FILTER)
+							? [defaultNullFilter]
+							: []),
+					],
+				});
+			}
 
-		// education-levels
-		if (filters.education_levels && filters.education_levels.length) {
-			andFilters.push(
-				generateLomFilter(filters.education_levels, EducationLevelType.structuur)
-			);
-		}
+			// is copy
+			const isCopy = first(get(filters, 'is_copy'));
+			if (!isNil(isCopy)) {
+				if (isCopy === 'true') {
+					andFilters.push({
+						relations: { predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf } },
+					});
+				} else if (isCopy === 'false') {
+					andFilters.push({
+						_not: {
+							relations: {
+								predicate: { _eq: Lookup_Enum_Relation_Types_Enum.IsCopyOf },
+							},
+						},
+					});
+				}
+			}
 
-		if (filters.education_level_id) {
-			andFilters.push(
-				generateEducationLevelFilter(
-					filters.education_level_id,
-					EducationLevelType.structuur
-				)
-			);
-		}
+			// labels
+			if (filters.quality_labels?.length) {
+				const filterKey = 'quality_labels';
 
-		return { _and: andFilters };
-	}, []);
+				andFilters.push({
+					_or: [
+						{
+							[filterKey]: {
+								enum_collection_label: {
+									value: {
+										_in: filters.quality_labels,
+									},
+								},
+							},
+						},
+						...(filters.quality_labels.includes(NULL_FILTER)
+							? [{ _not: { [filterKey]: {} } }]
+							: []),
+					],
+				});
+			}
 
-	const getColumnDataType = () => {
+			// subjects
+			if (filters.subjects?.length) {
+				andFilters.push(generateLomFilter(filters.subjects, EducationLevelType.vak));
+			}
+
+			// // Enable when meemoo requests a column and folder for lom themes
+			// if (filters.themes && filters.themes.length) {
+			// 	andFilters.push(
+			// 		generateLomFilter(filters.themes, EducationLevelType.thema)
+			// 	);
+			// }
+
+			// Education levels
+			if (filters.education_levels && filters.education_levels.length) {
+				andFilters.push(
+					generateEducationLomFilter(
+						filters.education_levels,
+						(educationLevelsAndDegrees || [])
+							.filter((item) => !item.broader)
+							.map((item) => item.id)
+					)
+				);
+			}
+
+			// Education degrees
+			if (filters.education_degrees?.length) {
+				andFilters.push(
+					generateEducationLomFilter(
+						filters.education_degrees,
+						(educationLevelsAndDegrees || [])
+							.filter((item) => !!item.broader)
+							.map((item) => item.id)
+					)
+				);
+			}
+
+			if (filters.education_level_id) {
+				andFilters.push(
+					generateEducationLevelFilter(
+						filters.education_level_id,
+						EducationLevelType.structuur
+					)
+				);
+			}
+
+			return { _and: andFilters };
+		},
+		[educationLevelsAndDegrees]
+	);
+
+	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find((tableColumn: FilterableColumn) => {
 			return tableColumn.id === (tableState.sort_column || 'empty');
 		});
 		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	};
+	}, [tableColumns, tableState.sort_column]);
 
 	const fetchAssignments = useCallback(async () => {
 		try {
@@ -347,11 +366,13 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 			});
 		}
 		setIsLoading(false);
-	}, [tableColumns, tableState, generateWhereObject, tHtml]);
+	}, [tableState, getColumnDataType, generateWhereObject, tHtml]);
 
 	useEffect(() => {
-		fetchAssignments();
-	}, [fetchAssignments]);
+		if (commonUser && educationLevelsAndDegrees?.length) {
+			fetchAssignments().then(noop);
+		}
+	}, [commonUser, educationLevelsAndDegrees?.length, fetchAssignments]);
 
 	useEffect(() => {
 		if (assignments) {
@@ -590,12 +611,12 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 
 			case 'education_levels': {
 				const groupedLoms = groupLomLinks(assignment.loms);
-				return (
-					lomsToTagList([
-						...groupedLoms.educationLevel,
-						...groupedLoms.educationDegree,
-					]) || '-'
-				);
+				return lomsToTagList(groupedLoms.educationLevel) || '-';
+			}
+
+			case 'education_degrees': {
+				const groupedLoms = groupLomLinks(assignment.loms);
+				return lomsToTagList(groupedLoms.educationDegree) || '-';
 			}
 
 			case 'is_public':
@@ -816,7 +837,7 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 					onSelectBulkAction={handleBulkAction as any}
 					rowKey="id"
 					defaultOrderProp={'created_at'}
-					defaultOrderDirection={'desc'}
+					defaultOrderDirection={OrderDirection.desc}
 				/>
 				<SubjectsBeingEditedWarningModal
 					isOpen={assignmentsBeingEdited?.length > 0}
@@ -977,7 +998,4 @@ const AssignmentOverviewAdmin: FunctionComponent<RouteComponentProps & UserProps
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(AssignmentOverviewAdmin) as unknown as FunctionComponent;
+export default compose(withRouter, withUser)(AssignmentOverviewAdmin) as unknown as FC;

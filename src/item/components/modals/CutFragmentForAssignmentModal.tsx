@@ -13,7 +13,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 import { type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
@@ -27,6 +27,7 @@ import { type ItemTrimInfo } from '../../item.types';
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './CutFragmentModal.scss';
+import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 interface CutFragmentForAssignmentModalProps {
 	itemMetaData: Avo.Item.Item;
@@ -45,7 +46,7 @@ interface CutFragmentForAssignmentModalProps {
  * @param afterCutCallback
  * @constructor
  */
-const CutFragmentForAssignmentModal: FunctionComponent<
+const CutFragmentForAssignmentModal: FC<
 	CutFragmentForAssignmentModalProps & RouteComponentProps & UserProps
 > = ({ itemMetaData, isOpen, onClose, afterCutCallback }) => {
 	const { tText, tHtml } = useTranslation();
@@ -100,6 +101,7 @@ const CutFragmentForAssignmentModal: FunctionComponent<
 										canPlay={isOpen}
 										cuePointsLabel={{ start, end }}
 										verticalLayout={isMobileWidth()}
+										sourcePage={SourcePage.assignmentPage}
 									/>
 								}
 								<Grid>
@@ -172,4 +174,4 @@ const CutFragmentForAssignmentModal: FunctionComponent<
 export default compose(
 	withRouter,
 	withUser
-)(CutFragmentForAssignmentModal) as FunctionComponent<CutFragmentForAssignmentModalProps>;
+)(CutFragmentForAssignmentModal) as FC<CutFragmentForAssignmentModalProps>;

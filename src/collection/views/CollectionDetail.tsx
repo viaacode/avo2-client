@@ -20,13 +20,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, isEmpty, isNil, noop } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -79,7 +73,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -138,7 +135,7 @@ type CollectionDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const CollectionDetail: FunctionComponent<
+const CollectionDetail: FC<
 	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
 > = ({ history, match, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const { tText, tHtml } = useTranslation();
@@ -295,9 +292,13 @@ const CollectionDetail: FunctionComponent<
 				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'collection', collection.id, commonUser).then(
-				noop
-			);
+			BookmarksViewsPlaysService.action(
+				'view',
+				'collection',
+				SourcePage.collectionPage,
+				collection.id,
+				commonUser
+			).then(noop);
 			try {
 				setBookmarkViewPlayCounts(
 					await BookmarksViewsPlaysService.getCollectionCounts(
@@ -1178,6 +1179,7 @@ const CollectionDetail: FunctionComponent<
 									!isAutoplayCollectionModalOpen
 								}
 								collection={collection}
+								sourcePage={SourcePage.collectionPage}
 							/>
 						)}
 					</Container>
@@ -1591,7 +1593,4 @@ const CollectionDetail: FunctionComponent<
 	return renderPageContent();
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(CollectionDetail) as FunctionComponent<CollectionDetailProps>;
+export default compose(withRouter, withUser)(CollectionDetail) as FC<CollectionDetailProps>;

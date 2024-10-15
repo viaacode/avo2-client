@@ -13,7 +13,7 @@ export type Permissions = PermissionName | PermissionInfo | (PermissionName | Pe
 
 export class PermissionService {
 	public static hasPerm(
-		commonUser: Avo.User.CommonUser | undefined,
+		commonUser: Avo.User.CommonUser | undefined | null,
 		permName: PermissionName
 	): boolean {
 		return commonUser?.permissions?.includes(permName) || false;

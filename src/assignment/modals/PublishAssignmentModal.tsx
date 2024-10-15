@@ -12,7 +12,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -27,7 +27,7 @@ interface PublishAssignmentModalProps {
 	assignment: Avo.Assignment.Assignment;
 }
 
-const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & UserProps> = ({
+const PublishAssignmentModal: FC<PublishAssignmentModalProps & UserProps> = ({
 	onClose,
 	isOpen,
 	assignment,
@@ -189,4 +189,4 @@ const PublishAssignmentModal: FunctionComponent<PublishAssignmentModalProps & Us
 	);
 };
 
-export default withUser(PublishAssignmentModal) as FunctionComponent<PublishAssignmentModalProps>;
+export default withUser(PublishAssignmentModal) as FC<PublishAssignmentModalProps>;

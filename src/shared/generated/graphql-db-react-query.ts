@@ -136,6 +136,10 @@ export const GetCollectionActualisationsDocument = `
     owner_profile_id
     title
     type_id
+    type {
+      id
+      label
+    }
     updated_at
     updated_by_profile_id
     collection_labels: labels {
@@ -346,6 +350,10 @@ export const GetCollectionsDocument = `
   ) {
     id
     type_id
+    type {
+      id
+      label
+    }
     title
     description
     is_public
@@ -631,12 +639,8 @@ export const GetItemByUuidDocument = `
       description
       external_id
     }
-    view_counts_aggregate {
-      aggregate {
-        sum {
-          count
-        }
-      }
+    view_count {
+      count
     }
   }
 }
@@ -725,12 +729,8 @@ export const GetItemsByExternalIdDocument = `
       description
       external_id
     }
-    view_counts_aggregate {
-      aggregate {
-        sum {
-          count
-        }
-      }
+    view_count {
+      count
     }
   }
 }
@@ -1719,391 +1719,6 @@ export const useGetAssignmentWithResponseQuery = <
       fetchData<GetAssignmentWithResponseQuery, GetAssignmentWithResponseQueryVariables>(GetAssignmentWithResponseDocument, variables),
       options
     );
-export const GetAssignmentsAdminOverviewDocument = `
-    query getAssignmentsAdminOverview($offset: Int!, $limit: Int!, $orderBy: [app_assignments_v2_order_by!]!, $where: app_assignments_v2_bool_exp!) {
-  app_assignments_v2(
-    offset: $offset
-    limit: $limit
-    order_by: $orderBy
-    where: $where
-  ) {
-    id
-    title
-    description
-    answer_url
-    created_at
-    updated_at
-    available_at
-    deadline_at
-    is_collaborative
-    is_deleted
-    is_public
-    owner_profile_id
-    owner {
-      full_name
-      profile_id
-    }
-    profile {
-      id
-      avatar
-      user: usersByuserId {
-        first_name
-        last_name
-        id
-      }
-      organisation {
-        logo_url
-        name
-        or_id
-      }
-      profile_user_group {
-        group {
-          label
-          id
-        }
-      }
-    }
-    responses_aggregate {
-      aggregate {
-        count
-      }
-    }
-    lom_learning_resource_type
-    contributors {
-      profile {
-        avatar
-        user_id
-        user: usersByuserId {
-          last_name
-          first_name
-          mail
-          full_name
-        }
-        id
-        organisation {
-          name
-          logo_url
-          or_id
-        }
-        loms {
-          lom_id
-        }
-      }
-      id
-    }
-    counts {
-      bookmarks
-      views
-      copies
-      contributors
-    }
-    loms {
-      lom {
-        id
-        label
-        scheme
-        broader
-      }
-    }
-    labels {
-      assignment_label {
-        label
-        id
-      }
-    }
-    last_user_edit_profile {
-      usersByuserId {
-        full_name
-        last_name
-      }
-    }
-    quality_labels {
-      id
-      label
-    }
-    education_level_id
-    education_level {
-      label
-    }
-  }
-  app_assignments_v2_aggregate(where: $where) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetAssignmentsAdminOverviewQuery = <
-      TData = GetAssignmentsAdminOverviewQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentsAdminOverviewQueryVariables,
-      options?: UseQueryOptions<GetAssignmentsAdminOverviewQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentsAdminOverviewQuery, TError, TData>(
-      ['getAssignmentsAdminOverview', variables],
-      fetchData<GetAssignmentsAdminOverviewQuery, GetAssignmentsAdminOverviewQueryVariables>(GetAssignmentsAdminOverviewDocument, variables),
-      options
-    );
-export const GetAssignmentsByOwnerOrContributorDocument = `
-    query getAssignmentsByOwnerOrContributor($collaborator_profile_id: uuid, $offset: Int = 0, $limit: Int, $order: [app_assignments_v2_overview_order_by!]! = [{deadline_at: desc}], $filter: [app_assignments_v2_overview_bool_exp!]) {
-  app_assignments_v2_overview(
-    where: {collaborator_profile_id: {_eq: $collaborator_profile_id}, is_deleted: {_eq: false}, _and: $filter}
-    offset: $offset
-    limit: $limit
-    order_by: $order
-  ) {
-    id
-    title
-    description
-    answer_url
-    created_at
-    updated_at
-    available_at
-    deadline_at
-    is_collaborative
-    is_deleted
-    is_public
-    thumbnail_path
-    owner_profile_id
-    owner {
-      full_name
-    }
-    profile {
-      id
-      avatar
-      user: usersByuserId {
-        first_name
-        last_name
-        id
-      }
-      organisation {
-        logo_url
-        name
-        or_id
-      }
-      profile_user_group {
-        group {
-          label
-          id
-        }
-      }
-    }
-    responses {
-      id
-    }
-    labels(
-      order_by: {assignment_label: {label: asc}}
-      where: {assignment_label: {owner_profile_id: {_eq: $collaborator_profile_id}}}
-    ) {
-      id
-      assignment_label {
-        color_enum_value
-        color_override
-        enum_color {
-          label
-          value
-        }
-        id
-        label
-        type
-        owner_profile_id
-      }
-    }
-    contributors {
-      profile {
-        avatar
-        user_id
-        user: usersByuserId {
-          last_name
-          first_name
-          mail
-          full_name
-        }
-        id
-        organisation {
-          name
-          logo_url
-          or_id
-        }
-        loms {
-          lom_id
-        }
-      }
-      id
-      profile_id
-      rights
-      enum_right_type {
-        value
-        description
-      }
-      assignment {
-        id
-      }
-    }
-    loms {
-      lom_id
-      lom {
-        broader
-        label
-        scheme
-        id
-      }
-      assignment_id
-    }
-    share_type
-    lom_learning_resource_type
-    collaborator_profile_id
-  }
-  count: app_assignments_v2_overview_aggregate(
-    where: {collaborator_profile_id: {_eq: $collaborator_profile_id}, is_deleted: {_eq: false}, _and: $filter}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetAssignmentsByOwnerOrContributorQuery = <
-      TData = GetAssignmentsByOwnerOrContributorQuery,
-      TError = unknown
-    >(
-      variables?: GetAssignmentsByOwnerOrContributorQueryVariables,
-      options?: UseQueryOptions<GetAssignmentsByOwnerOrContributorQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentsByOwnerOrContributorQuery, TError, TData>(
-      variables === undefined ? ['getAssignmentsByOwnerOrContributor'] : ['getAssignmentsByOwnerOrContributor', variables],
-      fetchData<GetAssignmentsByOwnerOrContributorQuery, GetAssignmentsByOwnerOrContributorQueryVariables>(GetAssignmentsByOwnerOrContributorDocument, variables),
-      options
-    );
-export const GetAssignmentsByResponseOwnerIdDocument = `
-    query getAssignmentsByResponseOwnerId($owner_profile_id: uuid!, $offset: Int = 0, $limit: Int, $filter: [app_assignments_v2_bool_exp!], $order: [app_assignments_v2_order_by!]!) {
-  app_assignments_v2(
-    where: {responses: {owner_profile_id: {_eq: $owner_profile_id}}, is_deleted: {_eq: false}, _and: $filter}
-    limit: $limit
-    offset: $offset
-    order_by: $order
-  ) {
-    id
-    title
-    description
-    answer_url
-    created_at
-    updated_at
-    available_at
-    deadline_at
-    is_collaborative
-    is_deleted
-    is_public
-    thumbnail_path
-    owner_profile_id
-    owner {
-      full_name
-    }
-    profile {
-      id
-      avatar
-      user: usersByuserId {
-        first_name
-        last_name
-        id
-      }
-      organisation {
-        logo_url
-        name
-        or_id
-      }
-      profile_user_group {
-        group {
-          label
-          id
-        }
-      }
-    }
-    responses {
-      id
-    }
-    labels(
-      order_by: {assignment_label: {label: asc}}
-      where: {assignment_label: {owner_profile_id: {_eq: $owner_profile_id}}}
-    ) {
-      id
-      assignment_label {
-        color_enum_value
-        color_override
-        enum_color {
-          label
-          value
-        }
-        id
-        label
-        type
-        owner_profile_id
-      }
-    }
-    lom_learning_resource_type
-    contributors {
-      profile {
-        avatar
-        user_id
-        user: usersByuserId {
-          last_name
-          first_name
-          mail
-          full_name
-        }
-        id
-        organisation {
-          name
-          logo_url
-          or_id
-        }
-        loms {
-          lom_id
-        }
-      }
-      id
-      profile_id
-      rights
-      enum_right_type {
-        description
-        value
-      }
-    }
-    loms {
-      lom {
-        id
-        label
-        scheme
-        broader
-      }
-    }
-    education_level_id
-    education_level {
-      label
-    }
-  }
-  count: app_assignments_v2_aggregate(
-    where: {responses: {owner_profile_id: {_eq: $owner_profile_id}}, is_deleted: {_eq: false}, _and: $filter}
-  ) {
-    aggregate {
-      count
-    }
-  }
-}
-    `;
-export const useGetAssignmentsByResponseOwnerIdQuery = <
-      TData = GetAssignmentsByResponseOwnerIdQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentsByResponseOwnerIdQueryVariables,
-      options?: UseQueryOptions<GetAssignmentsByResponseOwnerIdQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentsByResponseOwnerIdQuery, TError, TData>(
-      ['getAssignmentsByResponseOwnerId', variables],
-      fetchData<GetAssignmentsByResponseOwnerIdQuery, GetAssignmentsByResponseOwnerIdQueryVariables>(GetAssignmentsByResponseOwnerIdDocument, variables),
-      options
-    );
 export const GetContributorsByAssignmentUuidDocument = `
     query getContributorsByAssignmentUuid($id: uuid!) {
   app_assignments_v2_contributors(where: {assignment_id: {_eq: $id}}) {
@@ -2490,12 +2105,8 @@ export const GetBookmarkedCollectionsByOwnerDocument = `
       depublish_at
       created_at
       thumbnail_path
-      view_counts_aggregate {
-        aggregate {
-          sum {
-            count
-          }
-        }
+      view_count {
+        count
       }
     }
   }
@@ -2706,12 +2317,8 @@ export const GetCollectionsByOwnerOrContributorDocument = `
     depublish_at
     created_at
     thumbnail_path
-    view_counts_aggregate {
-      aggregate {
-        sum {
-          count
-        }
-      }
+    view_count {
+      count
     }
     share_type
     contributors {
@@ -2887,6 +2494,14 @@ export const GetPublicCollectionsByIdDocument = `
   ) {
     id
     title
+    share_type
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+    view_count {
+      count
+    }
     contributors {
       enum_right_type {
         value
@@ -2907,11 +2522,6 @@ export const GetPublicCollectionsByIdDocument = `
         }
       }
     }
-    share_type
-    updated_at
-    is_public
-    thumbnail_path
-    created_at
   }
 }
     `;
@@ -2937,6 +2547,13 @@ export const GetPublicCollectionsByTitleDocument = `
     id
     title
     share_type
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+    view_count {
+      count
+    }
     contributors {
       enum_right_type {
         value
@@ -2957,10 +2574,6 @@ export const GetPublicCollectionsByTitleDocument = `
         }
       }
     }
-    updated_at
-    is_public
-    thumbnail_path
-    created_at
   }
 }
     `;
@@ -3424,6 +3037,8 @@ export const GetQuickLaneByContentAndOwnerDocument = `
     view_mode
     created_at
     updated_at
+    start_oc
+    end_oc
     owner {
       id
       avatar
@@ -3461,6 +3076,8 @@ export const GetQuickLaneByIdDocument = `
     content_label
     title
     view_mode
+    start_oc
+    end_oc
     created_at
     updated_at
     owner {
@@ -3502,6 +3119,8 @@ export const InsertQuickLanesDocument = `
       content_label
       title
       view_mode
+      start_oc
+      end_oc
       created_at
       updated_at
       owner {
@@ -3562,6 +3181,8 @@ export const UpdateQuickLaneByIdDocument = `
       content_label
       title
       view_mode
+      start_oc
+      end_oc
       created_at
       updated_at
       owner {
@@ -3658,6 +3279,8 @@ export const GetQuickLanesByContentIdDocument = `
     content_label
     title
     view_mode
+    start_oc
+    end_oc
     created_at
     updated_at
     owner {
@@ -3702,6 +3325,8 @@ export const GetQuickLanesWithFiltersDocument = `
     content_label
     title
     view_mode
+    start_oc
+    end_oc
     created_at
     updated_at
     owner {
@@ -4027,12 +3652,14 @@ export const GetBookmarksForUserDocument = `
           }
           is_deleted
           is_published
+          type_id
           type {
+            id
             label
           }
         }
       }
-      view_counts {
+      view_count {
         count
       }
     }
@@ -4045,7 +3672,11 @@ export const GetBookmarksForUserDocument = `
       thumbnail_path
       created_at
       type_id
-      view_counts {
+      type {
+        id
+        label
+      }
+      view_count {
         count
       }
     }
@@ -4057,6 +3688,10 @@ export const GetBookmarksForUserDocument = `
       title
       thumbnail_path
       type_id
+      type {
+        id
+        label
+      }
       created_at
       view_count {
         count
@@ -4117,7 +3752,7 @@ export const useGetCollectionBookmarkViewPlayCountsQuery = <
 export const GetCollectionPlayCountDocument = `
     query getCollectionPlayCount($collectionUuid: uuid!) {
   app_collections(where: {id: {_eq: $collectionUuid}}) {
-    play_counts {
+    play_count {
       count
     }
   }
@@ -4138,7 +3773,7 @@ export const useGetCollectionPlayCountQuery = <
 export const GetCollectionViewCountDocument = `
     query getCollectionViewCount($collectionUuid: uuid!) {
   app_collections(where: {id: {_eq: $collectionUuid}}) {
-    view_counts {
+    view_count {
       count
     }
   }
@@ -4208,12 +3843,14 @@ export const GetItemBookmarksForUserDocument = `
           }
           is_deleted
           is_published
+          type_id
           type {
+            id
             label
           }
         }
       }
-      view_counts {
+      view_count {
         count
       }
     }
@@ -4237,7 +3874,7 @@ export const useGetItemBookmarksForUserQuery = <
 export const GetItemPlayCountDocument = `
     query getItemPlayCount($itemUuid: uuid!) {
   app_item_meta(where: {uid: {_eq: $itemUuid}}) {
-    play_counts {
+    play_count {
       count
     }
     is_published
@@ -4260,7 +3897,7 @@ export const useGetItemPlayCountQuery = <
 export const GetItemViewCountDocument = `
     query getItemViewCount($itemUuid: uuid!) {
   app_item_meta(where: {uid: {_eq: $itemUuid}}) {
-    view_counts {
+    view_count {
       count
     }
     is_deleted
@@ -4378,39 +4015,137 @@ export const useIncrementCollectionPlaysMutation = <
       (variables?: IncrementCollectionPlaysMutationVariables) => fetchData<IncrementCollectionPlaysMutation, IncrementCollectionPlaysMutationVariables>(IncrementCollectionPlaysDocument, variables)(),
       options
     );
-export const IncrementCollectionViewsDocument = `
-    mutation incrementCollectionViews($collectionUuid: uuid!) {
+export const IncrementCollectionViewsViaCollectionPageDocument = `
+    mutation incrementCollectionViewsViaCollectionPage($collectionUuid: uuid!) {
   update_app_collection_views(
     where: {collection_uuid: {_eq: $collectionUuid}}
-    _inc: {count: 1}
+    _inc: {count_via_detail_page: 1}
   ) {
     affected_rows
   }
 }
     `;
-export const useIncrementCollectionViewsMutation = <
+export const useIncrementCollectionViewsViaCollectionPageMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<IncrementCollectionViewsMutation, TError, IncrementCollectionViewsMutationVariables, TContext>) =>
-    useMutation<IncrementCollectionViewsMutation, TError, IncrementCollectionViewsMutationVariables, TContext>(
-      ['incrementCollectionViews'],
-      (variables?: IncrementCollectionViewsMutationVariables) => fetchData<IncrementCollectionViewsMutation, IncrementCollectionViewsMutationVariables>(IncrementCollectionViewsDocument, variables)(),
+    >(options?: UseMutationOptions<IncrementCollectionViewsViaCollectionPageMutation, TError, IncrementCollectionViewsViaCollectionPageMutationVariables, TContext>) =>
+    useMutation<IncrementCollectionViewsViaCollectionPageMutation, TError, IncrementCollectionViewsViaCollectionPageMutationVariables, TContext>(
+      ['incrementCollectionViewsViaCollectionPage'],
+      (variables?: IncrementCollectionViewsViaCollectionPageMutationVariables) => fetchData<IncrementCollectionViewsViaCollectionPageMutation, IncrementCollectionViewsViaCollectionPageMutationVariables>(IncrementCollectionViewsViaCollectionPageDocument, variables)(),
       options
     );
-export const IncrementItemPlaysDocument = `
-    mutation incrementItemPlays($itemUuid: uuid!) {
-  update_app_item_plays(where: {item_id: {_eq: $itemUuid}}, _inc: {count: 1}) {
+export const IncrementCollectionViewsViaQuickLanePageDocument = `
+    mutation incrementCollectionViewsViaQuickLanePage($collectionUuid: uuid!) {
+  update_app_collection_views(
+    where: {collection_uuid: {_eq: $collectionUuid}}
+    _inc: {count_via_quick_lane_page: 1}
+  ) {
     affected_rows
   }
 }
     `;
-export const useIncrementItemPlaysMutation = <
+export const useIncrementCollectionViewsViaQuickLanePageMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<IncrementItemPlaysMutation, TError, IncrementItemPlaysMutationVariables, TContext>) =>
-    useMutation<IncrementItemPlaysMutation, TError, IncrementItemPlaysMutationVariables, TContext>(
-      ['incrementItemPlays'],
-      (variables?: IncrementItemPlaysMutationVariables) => fetchData<IncrementItemPlaysMutation, IncrementItemPlaysMutationVariables>(IncrementItemPlaysDocument, variables)(),
+    >(options?: UseMutationOptions<IncrementCollectionViewsViaQuickLanePageMutation, TError, IncrementCollectionViewsViaQuickLanePageMutationVariables, TContext>) =>
+    useMutation<IncrementCollectionViewsViaQuickLanePageMutation, TError, IncrementCollectionViewsViaQuickLanePageMutationVariables, TContext>(
+      ['incrementCollectionViewsViaQuickLanePage'],
+      (variables?: IncrementCollectionViewsViaQuickLanePageMutationVariables) => fetchData<IncrementCollectionViewsViaQuickLanePageMutation, IncrementCollectionViewsViaQuickLanePageMutationVariables>(IncrementCollectionViewsViaQuickLanePageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaAssignmentPageDocument = `
+    mutation incrementItemPlaysViaAssignmentPage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_assignment_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaAssignmentPageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaAssignmentPageMutation, TError, IncrementItemPlaysViaAssignmentPageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaAssignmentPageMutation, TError, IncrementItemPlaysViaAssignmentPageMutationVariables, TContext>(
+      ['incrementItemPlaysViaAssignmentPage'],
+      (variables?: IncrementItemPlaysViaAssignmentPageMutationVariables) => fetchData<IncrementItemPlaysViaAssignmentPageMutation, IncrementItemPlaysViaAssignmentPageMutationVariables>(IncrementItemPlaysViaAssignmentPageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaCollectionPageDocument = `
+    mutation incrementItemPlaysViaCollectionPage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_collection_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaCollectionPageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaCollectionPageMutation, TError, IncrementItemPlaysViaCollectionPageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaCollectionPageMutation, TError, IncrementItemPlaysViaCollectionPageMutationVariables, TContext>(
+      ['incrementItemPlaysViaCollectionPage'],
+      (variables?: IncrementItemPlaysViaCollectionPageMutationVariables) => fetchData<IncrementItemPlaysViaCollectionPageMutation, IncrementItemPlaysViaCollectionPageMutationVariables>(IncrementItemPlaysViaCollectionPageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaContentPageDocument = `
+    mutation incrementItemPlaysViaContentPage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_content_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaContentPageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaContentPageMutation, TError, IncrementItemPlaysViaContentPageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaContentPageMutation, TError, IncrementItemPlaysViaContentPageMutationVariables, TContext>(
+      ['incrementItemPlaysViaContentPage'],
+      (variables?: IncrementItemPlaysViaContentPageMutationVariables) => fetchData<IncrementItemPlaysViaContentPageMutation, IncrementItemPlaysViaContentPageMutationVariables>(IncrementItemPlaysViaContentPageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaItemPageDocument = `
+    mutation incrementItemPlaysViaItemPage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_detail_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaItemPageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaItemPageMutation, TError, IncrementItemPlaysViaItemPageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaItemPageMutation, TError, IncrementItemPlaysViaItemPageMutationVariables, TContext>(
+      ['incrementItemPlaysViaItemPage'],
+      (variables?: IncrementItemPlaysViaItemPageMutationVariables) => fetchData<IncrementItemPlaysViaItemPageMutation, IncrementItemPlaysViaItemPageMutationVariables>(IncrementItemPlaysViaItemPageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaQuickLanePageDocument = `
+    mutation incrementItemPlaysViaQuickLanePage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_quick_lane_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaQuickLanePageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaQuickLanePageMutation, TError, IncrementItemPlaysViaQuickLanePageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaQuickLanePageMutation, TError, IncrementItemPlaysViaQuickLanePageMutationVariables, TContext>(
+      ['incrementItemPlaysViaQuickLanePage'],
+      (variables?: IncrementItemPlaysViaQuickLanePageMutationVariables) => fetchData<IncrementItemPlaysViaQuickLanePageMutation, IncrementItemPlaysViaQuickLanePageMutationVariables>(IncrementItemPlaysViaQuickLanePageDocument, variables)(),
       options
     );
 export const IncrementItemViewsDocument = `
@@ -4640,329 +4375,5 @@ export const useUpdateNotificationMutation = <
     useMutation<UpdateNotificationMutation, TError, UpdateNotificationMutationVariables, TContext>(
       ['updateNotification'],
       (variables?: UpdateNotificationMutationVariables) => fetchData<UpdateNotificationMutation, UpdateNotificationMutationVariables>(UpdateNotificationDocument, variables)(),
-      options
-    );
-export const DeleteAssignmentRelationsByObjectDocument = `
-    mutation deleteAssignmentRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  delete_app_assignments_v2_relations(
-    where: {object: {_eq: $objectId}, predicate: {_eq: $relationType}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentRelationsByObjectMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentRelationsByObjectMutation, TError, DeleteAssignmentRelationsByObjectMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentRelationsByObjectMutation, TError, DeleteAssignmentRelationsByObjectMutationVariables, TContext>(
-      ['deleteAssignmentRelationsByObject'],
-      (variables?: DeleteAssignmentRelationsByObjectMutationVariables) => fetchData<DeleteAssignmentRelationsByObjectMutation, DeleteAssignmentRelationsByObjectMutationVariables>(DeleteAssignmentRelationsByObjectDocument, variables)(),
-      options
-    );
-export const DeleteAssignmentRelationsBySubjectDocument = `
-    mutation deleteAssignmentRelationsBySubject($subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  delete_app_assignments_v2_relations(
-    where: {subject: {_eq: $subjectId}, predicate: {_eq: $relationType}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteAssignmentRelationsBySubjectMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteAssignmentRelationsBySubjectMutation, TError, DeleteAssignmentRelationsBySubjectMutationVariables, TContext>) =>
-    useMutation<DeleteAssignmentRelationsBySubjectMutation, TError, DeleteAssignmentRelationsBySubjectMutationVariables, TContext>(
-      ['deleteAssignmentRelationsBySubject'],
-      (variables?: DeleteAssignmentRelationsBySubjectMutationVariables) => fetchData<DeleteAssignmentRelationsBySubjectMutation, DeleteAssignmentRelationsBySubjectMutationVariables>(DeleteAssignmentRelationsBySubjectDocument, variables)(),
-      options
-    );
-export const DeleteCollectionRelationsByObjectDocument = `
-    mutation deleteCollectionRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  delete_app_collection_relations(
-    where: {object: {_eq: $objectId}, predicate: {_eq: $relationType}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteCollectionRelationsByObjectMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteCollectionRelationsByObjectMutation, TError, DeleteCollectionRelationsByObjectMutationVariables, TContext>) =>
-    useMutation<DeleteCollectionRelationsByObjectMutation, TError, DeleteCollectionRelationsByObjectMutationVariables, TContext>(
-      ['deleteCollectionRelationsByObject'],
-      (variables?: DeleteCollectionRelationsByObjectMutationVariables) => fetchData<DeleteCollectionRelationsByObjectMutation, DeleteCollectionRelationsByObjectMutationVariables>(DeleteCollectionRelationsByObjectDocument, variables)(),
-      options
-    );
-export const DeleteCollectionRelationsBySubjectDocument = `
-    mutation deleteCollectionRelationsBySubject($subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  delete_app_collection_relations(
-    where: {subject: {_eq: $subjectId}, predicate: {_eq: $relationType}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteCollectionRelationsBySubjectMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteCollectionRelationsBySubjectMutation, TError, DeleteCollectionRelationsBySubjectMutationVariables, TContext>) =>
-    useMutation<DeleteCollectionRelationsBySubjectMutation, TError, DeleteCollectionRelationsBySubjectMutationVariables, TContext>(
-      ['deleteCollectionRelationsBySubject'],
-      (variables?: DeleteCollectionRelationsBySubjectMutationVariables) => fetchData<DeleteCollectionRelationsBySubjectMutation, DeleteCollectionRelationsBySubjectMutationVariables>(DeleteCollectionRelationsBySubjectDocument, variables)(),
-      options
-    );
-export const DeleteItemRelationsByObjectDocument = `
-    mutation deleteItemRelationsByObject($objectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  delete_app_item_relations(
-    where: {object: {_eq: $objectId}, predicate: {_eq: $relationType}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteItemRelationsByObjectMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteItemRelationsByObjectMutation, TError, DeleteItemRelationsByObjectMutationVariables, TContext>) =>
-    useMutation<DeleteItemRelationsByObjectMutation, TError, DeleteItemRelationsByObjectMutationVariables, TContext>(
-      ['deleteItemRelationsByObject'],
-      (variables?: DeleteItemRelationsByObjectMutationVariables) => fetchData<DeleteItemRelationsByObjectMutation, DeleteItemRelationsByObjectMutationVariables>(DeleteItemRelationsByObjectDocument, variables)(),
-      options
-    );
-export const DeleteItemRelationsBySubjectDocument = `
-    mutation deleteItemRelationsBySubject($subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  delete_app_item_relations(
-    where: {subject: {_eq: $subjectId}, predicate: {_eq: $relationType}}
-  ) {
-    affected_rows
-  }
-}
-    `;
-export const useDeleteItemRelationsBySubjectMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<DeleteItemRelationsBySubjectMutation, TError, DeleteItemRelationsBySubjectMutationVariables, TContext>) =>
-    useMutation<DeleteItemRelationsBySubjectMutation, TError, DeleteItemRelationsBySubjectMutationVariables, TContext>(
-      ['deleteItemRelationsBySubject'],
-      (variables?: DeleteItemRelationsBySubjectMutationVariables) => fetchData<DeleteItemRelationsBySubjectMutation, DeleteItemRelationsBySubjectMutationVariables>(DeleteItemRelationsBySubjectDocument, variables)(),
-      options
-    );
-export const GetAssignmentRelationsByObjectDocument = `
-    query getAssignmentRelationsByObject($objectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
-  app_assignments_v2_relations(
-    where: {object: {_in: $objectIds}, predicate: {_eq: $relationType}}
-  ) {
-    id
-    object
-    subject
-    predicate
-    created_at
-    updated_at
-  }
-}
-    `;
-export const useGetAssignmentRelationsByObjectQuery = <
-      TData = GetAssignmentRelationsByObjectQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentRelationsByObjectQueryVariables,
-      options?: UseQueryOptions<GetAssignmentRelationsByObjectQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentRelationsByObjectQuery, TError, TData>(
-      ['getAssignmentRelationsByObject', variables],
-      fetchData<GetAssignmentRelationsByObjectQuery, GetAssignmentRelationsByObjectQueryVariables>(GetAssignmentRelationsByObjectDocument, variables),
-      options
-    );
-export const GetAssignmentRelationsBySubjectDocument = `
-    query getAssignmentRelationsBySubject($subjectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
-  app_assignments_v2_relations(
-    where: {subject: {_in: $subjectIds}, predicate: {_eq: $relationType}}
-  ) {
-    id
-    object
-    subject
-    predicate
-    created_at
-    updated_at
-  }
-}
-    `;
-export const useGetAssignmentRelationsBySubjectQuery = <
-      TData = GetAssignmentRelationsBySubjectQuery,
-      TError = unknown
-    >(
-      variables: GetAssignmentRelationsBySubjectQueryVariables,
-      options?: UseQueryOptions<GetAssignmentRelationsBySubjectQuery, TError, TData>
-    ) =>
-    useQuery<GetAssignmentRelationsBySubjectQuery, TError, TData>(
-      ['getAssignmentRelationsBySubject', variables],
-      fetchData<GetAssignmentRelationsBySubjectQuery, GetAssignmentRelationsBySubjectQueryVariables>(GetAssignmentRelationsBySubjectDocument, variables),
-      options
-    );
-export const GetCollectionRelationsByObjectDocument = `
-    query getCollectionRelationsByObject($objectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
-  app_collection_relations(
-    where: {object: {_in: $objectIds}, predicate: {_eq: $relationType}}
-  ) {
-    id
-    object
-    subject
-    predicate
-    created_at
-    updated_at
-  }
-}
-    `;
-export const useGetCollectionRelationsByObjectQuery = <
-      TData = GetCollectionRelationsByObjectQuery,
-      TError = unknown
-    >(
-      variables: GetCollectionRelationsByObjectQueryVariables,
-      options?: UseQueryOptions<GetCollectionRelationsByObjectQuery, TError, TData>
-    ) =>
-    useQuery<GetCollectionRelationsByObjectQuery, TError, TData>(
-      ['getCollectionRelationsByObject', variables],
-      fetchData<GetCollectionRelationsByObjectQuery, GetCollectionRelationsByObjectQueryVariables>(GetCollectionRelationsByObjectDocument, variables),
-      options
-    );
-export const GetCollectionRelationsBySubjectDocument = `
-    query getCollectionRelationsBySubject($subjectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
-  app_collection_relations(
-    where: {subject: {_in: $subjectIds}, predicate: {_eq: $relationType}}
-  ) {
-    id
-    object
-    subject
-    predicate
-    created_at
-    updated_at
-  }
-}
-    `;
-export const useGetCollectionRelationsBySubjectQuery = <
-      TData = GetCollectionRelationsBySubjectQuery,
-      TError = unknown
-    >(
-      variables: GetCollectionRelationsBySubjectQueryVariables,
-      options?: UseQueryOptions<GetCollectionRelationsBySubjectQuery, TError, TData>
-    ) =>
-    useQuery<GetCollectionRelationsBySubjectQuery, TError, TData>(
-      ['getCollectionRelationsBySubject', variables],
-      fetchData<GetCollectionRelationsBySubjectQuery, GetCollectionRelationsBySubjectQueryVariables>(GetCollectionRelationsBySubjectDocument, variables),
-      options
-    );
-export const GetItemRelationsByObjectDocument = `
-    query getItemRelationsByObject($objectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
-  app_item_relations(
-    where: {object: {_in: $objectIds}, predicate: {_eq: $relationType}}
-  ) {
-    id
-    object
-    subject
-    predicate
-    created_at
-    updated_at
-  }
-}
-    `;
-export const useGetItemRelationsByObjectQuery = <
-      TData = GetItemRelationsByObjectQuery,
-      TError = unknown
-    >(
-      variables: GetItemRelationsByObjectQueryVariables,
-      options?: UseQueryOptions<GetItemRelationsByObjectQuery, TError, TData>
-    ) =>
-    useQuery<GetItemRelationsByObjectQuery, TError, TData>(
-      ['getItemRelationsByObject', variables],
-      fetchData<GetItemRelationsByObjectQuery, GetItemRelationsByObjectQueryVariables>(GetItemRelationsByObjectDocument, variables),
-      options
-    );
-export const GetItemRelationsBySubjectDocument = `
-    query getItemRelationsBySubject($subjectIds: [uuid!]!, $relationType: lookup_enum_relation_types_enum!) {
-  app_item_relations(
-    where: {subject: {_in: $subjectIds}, predicate: {_eq: $relationType}}
-  ) {
-    id
-    object
-    subject
-    predicate
-    created_at
-    updated_at
-  }
-}
-    `;
-export const useGetItemRelationsBySubjectQuery = <
-      TData = GetItemRelationsBySubjectQuery,
-      TError = unknown
-    >(
-      variables: GetItemRelationsBySubjectQueryVariables,
-      options?: UseQueryOptions<GetItemRelationsBySubjectQuery, TError, TData>
-    ) =>
-    useQuery<GetItemRelationsBySubjectQuery, TError, TData>(
-      ['getItemRelationsBySubject', variables],
-      fetchData<GetItemRelationsBySubjectQuery, GetItemRelationsBySubjectQueryVariables>(GetItemRelationsBySubjectDocument, variables),
-      options
-    );
-export const InsertAssignmentRelationDocument = `
-    mutation insertAssignmentRelation($objectId: uuid!, $subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  insert_app_assignments_v2_relations(
-    objects: [{object: $objectId, subject: $subjectId, predicate: $relationType}]
-  ) {
-    returning {
-      id
-    }
-  }
-}
-    `;
-export const useInsertAssignmentRelationMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertAssignmentRelationMutation, TError, InsertAssignmentRelationMutationVariables, TContext>) =>
-    useMutation<InsertAssignmentRelationMutation, TError, InsertAssignmentRelationMutationVariables, TContext>(
-      ['insertAssignmentRelation'],
-      (variables?: InsertAssignmentRelationMutationVariables) => fetchData<InsertAssignmentRelationMutation, InsertAssignmentRelationMutationVariables>(InsertAssignmentRelationDocument, variables)(),
-      options
-    );
-export const InsertCollectionRelationDocument = `
-    mutation insertCollectionRelation($objectId: uuid!, $subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  insert_app_collection_relations(
-    objects: [{object: $objectId, subject: $subjectId, predicate: $relationType}]
-  ) {
-    returning {
-      id
-    }
-  }
-}
-    `;
-export const useInsertCollectionRelationMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertCollectionRelationMutation, TError, InsertCollectionRelationMutationVariables, TContext>) =>
-    useMutation<InsertCollectionRelationMutation, TError, InsertCollectionRelationMutationVariables, TContext>(
-      ['insertCollectionRelation'],
-      (variables?: InsertCollectionRelationMutationVariables) => fetchData<InsertCollectionRelationMutation, InsertCollectionRelationMutationVariables>(InsertCollectionRelationDocument, variables)(),
-      options
-    );
-export const InsertItemRelationDocument = `
-    mutation insertItemRelation($objectId: uuid!, $subjectId: uuid!, $relationType: lookup_enum_relation_types_enum!) {
-  insert_app_item_relations(
-    objects: [{object: $objectId, subject: $subjectId, predicate: $relationType}]
-  ) {
-    returning {
-      id
-    }
-  }
-}
-    `;
-export const useInsertItemRelationMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<InsertItemRelationMutation, TError, InsertItemRelationMutationVariables, TContext>) =>
-    useMutation<InsertItemRelationMutation, TError, InsertItemRelationMutationVariables, TContext>(
-      ['insertItemRelation'],
-      (variables?: InsertItemRelationMutationVariables) => fetchData<InsertItemRelationMutation, InsertItemRelationMutationVariables>(InsertItemRelationDocument, variables)(),
       options
     );

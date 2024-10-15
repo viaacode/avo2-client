@@ -12,7 +12,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -45,7 +45,7 @@ export interface CompleteProfileStepProps {
 	redirectTo?: string;
 }
 
-const CompleteProfileStep: FunctionComponent<
+const CompleteProfileStep: FC<
 	CompleteProfileStepProps & {
 		getLoginState: (forceRefetch: boolean) => Dispatch;
 	} & UserProps &
@@ -319,4 +319,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 export default withUser(
 	withRouter(connect(null, mapDispatchToProps)(CompleteProfileStep))
-) as FunctionComponent<CompleteProfileStepProps>;
+) as FC<CompleteProfileStepProps>;

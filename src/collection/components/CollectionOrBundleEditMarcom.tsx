@@ -18,13 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, uniq } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Link, type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
@@ -51,9 +45,11 @@ interface CollectionOrBundleEditMarcomProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditMarcom: FunctionComponent<
-	CollectionOrBundleEditMarcomProps & UserProps
-> = ({ collection, changeCollectionState, onFocus }) => {
+const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserProps> = ({
+	collection,
+	changeCollectionState,
+	onFocus,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const isCollection = collection.type_id === ContentTypeNumber.collection;
@@ -386,6 +382,4 @@ const CollectionOrBundleEditMarcom: FunctionComponent<
 	);
 };
 
-export default withUser(
-	CollectionOrBundleEditMarcom
-) as FunctionComponent<CollectionOrBundleEditMarcomProps>;
+export default withUser(CollectionOrBundleEditMarcom) as FC<CollectionOrBundleEditMarcomProps>;

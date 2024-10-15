@@ -26,14 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -41,6 +34,7 @@ import { StringParam, useQueryParams } from 'use-query-params';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { renderRelatedItems } from '../../collection/collection.helpers';
 import { type Relation } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -77,7 +71,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -99,6 +96,7 @@ import {
 } from '../helpers/assignment-share-with-collegue-handlers';
 import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { toAssignmentDetail } from '../helpers/links';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
@@ -371,9 +369,13 @@ const AssignmentDetail: FC<
 				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'assignment', assignmentId, commonUser).then(
-				noop
-			);
+			BookmarksViewsPlaysService.action(
+				'view',
+				'assignment',
+				SourcePage.assignmentPage,
+				assignmentId,
+				commonUser
+			).then(noop);
 
 			if (permissions?.canFetchBookmarkAndViewCounts) {
 				try {
@@ -476,50 +478,9 @@ const AssignmentDetail: FC<
 	};
 
 	const onDuplicateAssignment = async (): Promise<void> => {
-		try {
-			if (!assignment) {
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-detail___de-opdracht-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
-					)
-				);
-				return;
-			}
-
-			if (!commonUser?.profileId) {
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
-					)
-				);
-				return;
-			}
-
-			const duplicate = await duplicateAssignment(assignment, commonUser);
-			if (duplicate) {
-				history.push(
-					generatePath(APP_PATH.ASSIGNMENT_DETAIL.route, {
-						id: duplicate.id,
-					})
-				);
-				setAssignment(duplicate as Avo.Assignment.Assignment);
-			}
-
-			ToastService.success(
-				tHtml(
-					'assignment/views/assignment-detail___de-opdracht-is-gekopieerd-je-kijkt-nu-naar-de-kopie'
-				)
-			);
-		} catch (err) {
-			console.error('Failed to copy assignment', err, {
-				originalAssignment: assignment,
-			});
-
-			ToastService.danger(
-				tHtml(
-					'assignment/views/assignment-detail___het-kopieren-van-de-opdracht-is-mislukt'
-				)
-			);
+		const duplicatedAssignment = await duplicateAssignment(assignment, commonUser);
+		if (duplicatedAssignment) {
+			redirectToClientPage(toAssignmentDetail(duplicatedAssignment), history);
 		}
 	};
 
@@ -846,6 +807,7 @@ const AssignmentDetail: FC<
 						},
 						flowPlayer: {
 							canPlay: true,
+							sourcePage: SourcePage.assignmentPage,
 						},
 					},
 					ZOEK: {
@@ -1120,4 +1082,4 @@ const AssignmentDetail: FC<
 	);
 };
 
-export default withUser(AssignmentDetail) as FunctionComponent<AssignmentDetailProps>;
+export default withUser(AssignmentDetail) as FC<AssignmentDetailProps>;

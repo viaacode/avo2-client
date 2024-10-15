@@ -2,7 +2,7 @@ import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Container, Icon, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentService } from '../assignment.service';
 import AssignmentHeading from '../components/AssignmentHeading';
@@ -25,7 +26,7 @@ type AssignmentPupilCollectionDetailProps = DefaultSecureRouteProps<{
 	assignmentId: string;
 }>;
 
-const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollectionDetailProps> = ({
+const AssignmentPupilCollectionDetail: FC<AssignmentPupilCollectionDetailProps> = ({
 	match,
 	commonUser,
 }) => {
@@ -196,4 +197,6 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 	);
 };
 
-export default AssignmentPupilCollectionDetail;
+export default withUser(
+	AssignmentPupilCollectionDetail
+) as FC<AssignmentPupilCollectionDetailProps>;

@@ -13,7 +13,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { debounce } from 'lodash-es';
 import React, {
 	createRef,
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type RefObject,
 	useEffect,
@@ -27,12 +27,14 @@ import { compose } from 'redux';
 import { FlowPlayerWrapper } from '../../shared/components';
 import { type CuePoints } from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
+import { TEAL_BRIGHT } from '../../shared/constants';
 import { reorderDate, stripHtml } from '../../shared/helpers';
+import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { type SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 import './ItemVideoDescription.scss';
-import { TEAL_BRIGHT } from '../../shared/constants';
 
 interface ItemVideoDescriptionProps {
 	itemMetaData: Avo.Item.Item;
@@ -51,13 +53,12 @@ interface ItemVideoDescriptionProps {
 	verticalLayout?: boolean;
 	titleLink?: string;
 	onPlay?: () => void;
+	sourcePage: SourcePage;
 }
 
 const DEFAULT_VIDEO_HEIGHT = 421;
 
-const ItemVideoDescription: FunctionComponent<
-	ItemVideoDescriptionProps & UserProps & RouteComponentProps
-> = ({
+const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComponentProps> = ({
 	itemMetaData,
 	showMetadata = false,
 	showTitle = false,
@@ -74,6 +75,7 @@ const ItemVideoDescription: FunctionComponent<
 	verticalLayout = false,
 	titleLink,
 	onPlay,
+	sourcePage,
 }) => {
 	const { tText } = useTranslation();
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
@@ -108,7 +110,7 @@ const ItemVideoDescription: FunctionComponent<
 		return (
 			<FlowPlayerWrapper
 				src={src}
-				poster={poster}
+				poster={getFlowPlayerPoster(poster, itemMetaData)}
 				item={itemMetaData}
 				canPlay={canPlay}
 				cuePointsVideo={cuePointsVideo}
@@ -117,6 +119,7 @@ const ItemVideoDescription: FunctionComponent<
 				external_id={itemMetaData.external_id}
 				duration={itemMetaData.duration}
 				title={title || undefined}
+				sourcePage={sourcePage}
 			/>
 		);
 	};
@@ -248,7 +251,4 @@ const ItemVideoDescription: FunctionComponent<
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(ItemVideoDescription) as FunctionComponent<ItemVideoDescriptionProps>;
+export default compose(withRouter, withUser)(ItemVideoDescription) as FC<ItemVideoDescriptionProps>;

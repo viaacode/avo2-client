@@ -6,7 +6,7 @@ import React, { type FC, useMemo } from 'react';
 import { getBottomLoms } from '../../helpers/get-bottom-loms';
 import { groupLoms } from '../../helpers/lom';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
-import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../hooks/useLomSubjects';
 import { useLomThemes } from '../../hooks/useLomThemes';
 import useTranslation from '../../hooks/useTranslation';
@@ -71,7 +71,8 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 }) => {
 	const { tText } = useTranslation();
 	const lomFields = useMemo(() => groupLoms(loms), [loms]);
-	const [allEducationLevels, isEducationLevelsLoading] = useLomEducationLevels();
+	const { data: educationLevelsAndDegrees, isLoading: isEducationLevelsLoading } =
+		useLomEducationLevelsAndDegrees();
 	const [allSubjects, isSubjectsLoading] = useLomSubjects();
 	const [allThemes, isThemesLoading] = useLomThemes();
 
@@ -97,7 +98,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 
 			const parentEducationLevels = getParentEducationLevel(
 				mappedLoms,
-				allEducationLevels || []
+				educationLevelsAndDegrees || []
 			);
 
 			flatLomList = [...Object.values(newLoms).flat(), ...parentEducationLevels];
@@ -110,7 +111,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 	};
 
 	const getEducationDegreeOptions = () => {
-		return groupLoms(allEducationLevels)
+		return groupLoms(educationLevelsAndDegrees || [])
 			?.educationDegree?.filter((degree) => {
 				return (
 					!limitDegreesByAlreadySelectedLevels ||
@@ -136,7 +137,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 					<TagsInput
 						id="educationId"
 						isLoading={isEducationLevelsLoading}
-						options={getEducationLevelOptions(allEducationLevels)}
+						options={getEducationLevelOptions(educationLevelsAndDegrees || [])}
 						value={
 							getEducationLevelOptions([
 								...lomFields.educationDegree,
@@ -144,7 +145,11 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 							]) || []
 						}
 						onChange={(values) =>
-							handleChange(values, LomType.educationDegree, allEducationLevels || [])
+							handleChange(
+								values,
+								LomType.educationDegree,
+								educationLevelsAndDegrees || []
+							)
 						}
 						placeholder={educationLevelsPlaceholder}
 						allowMulti={allowMultiSelect}
@@ -175,7 +180,7 @@ const LomFieldsInput: FC<LomFieldsInputProps> = ({
 										[]),
 								],
 								LomType.educationDegree,
-								allEducationLevels || []
+								educationLevelsAndDegrees || []
 							)
 						}
 						placeholder={educationLevelsPlaceholder}

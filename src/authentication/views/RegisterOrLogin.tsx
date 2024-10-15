@@ -1,5 +1,5 @@
 import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
@@ -9,7 +9,7 @@ import LoginOptions from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss';
 
-const RegisterOrLogin: FunctionComponent<RouteComponentProps> = ({ history, location, match }) => {
+const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) => {
 	const { tText, tHtml } = useTranslation();
 
 	return (

@@ -11,6 +11,7 @@ import React, { type FC, type ReactNode } from 'react';
 
 import { getFullName } from '../../helpers';
 import { tHtml, tText } from '../../helpers/translate';
+import withUser from '../../hocs/withUser';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
 
 import './HeaderOwnerAndContributors.scss';
@@ -20,7 +21,7 @@ type HeaderOwnerAndContributorsProps = {
 	subject: Partial<Avo.Assignment.Assignment> | Avo.Collection.Collection;
 };
 
-export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({
+const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({
 	commonUser,
 	subject,
 }) => {
@@ -116,3 +117,5 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 		</Spacer>
 	);
 };
+
+export default withUser(HeaderOwnerAndContributors) as FC<HeaderOwnerAndContributorsProps>;

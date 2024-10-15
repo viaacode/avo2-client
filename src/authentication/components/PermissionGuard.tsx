@@ -1,7 +1,7 @@
 import { useSlot } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -16,7 +16,7 @@ export interface PermissionGuardProps {
 	noPermissionsMessage?: string;
 }
 
-const PermissionGuard: FunctionComponent<PermissionGuardProps> = ({
+const PermissionGuard: FC<PermissionGuardProps> = ({
 	children,
 	permissions,
 	commonUser,

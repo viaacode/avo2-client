@@ -12,12 +12,12 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useCallback, useMemo, useState } from 'react';
+import React, { type FC, useCallback, useMemo, useState } from 'react';
 
 import { EducationLevelId } from '../../helpers/lom';
 import { tHtml, tText } from '../../helpers/translate';
 import withUser, { type UserProps } from '../../hocs/withUser';
-import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
 type SelectEducationLevelModalProps = Omit<ModalProps, 'children'> &
 	Partial<UserProps> & {
@@ -26,10 +26,8 @@ type SelectEducationLevelModalProps = Omit<ModalProps, 'children'> &
 
 // Component
 
-const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProps> = (props) => {
-	const { user, commonUser, onConfirm, ...modal } = props;
-
-	const [educationLevels] = useLomEducationLevels();
+const SelectEducationLevelModal: FC<SelectEducationLevelModalProps> = ({ onConfirm, ...modal }) => {
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [selected, setSelected] = useState<Avo.Lom.LomField | undefined>(undefined);
 
 	const rendered = useMemo(
@@ -39,7 +37,7 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 
 	const options = useMemo(
 		() =>
-			educationLevels
+			(educationLevelsAndDegrees || [])
 				.filter((level) => rendered.includes(level.id))
 				.map(
 					(lom) =>
@@ -48,15 +46,15 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 							value: lom?.id,
 						}) as { label: string; value: string }
 				),
-		[educationLevels, rendered]
+		[educationLevelsAndDegrees, rendered]
 	);
 
 	const handleEducationLevelChange = useCallback(
 		(input: string) => {
-			const level = educationLevels.find(({ id }) => id === input);
+			const level = (educationLevelsAndDegrees || []).find(({ id }) => id === input);
 			setSelected(level);
 		},
-		[educationLevels, setSelected]
+		[educationLevelsAndDegrees, setSelected]
 	);
 
 	const handleConfirm = useCallback(() => {
@@ -111,6 +109,4 @@ const SelectEducationLevelModal: FunctionComponent<SelectEducationLevelModalProp
 	);
 };
 
-export default withUser(
-	SelectEducationLevelModal
-) as FunctionComponent<SelectEducationLevelModalProps>;
+export default withUser(SelectEducationLevelModal) as FC<SelectEducationLevelModalProps>;

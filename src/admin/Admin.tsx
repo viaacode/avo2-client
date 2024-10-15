@@ -1,6 +1,6 @@
 import { Flex, IconName } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 import { HorizontalPageSplit } from 'react-page-split';
 
 import { PermissionService } from '../authentication/helpers/permission-service';
@@ -15,7 +15,7 @@ import { ADMIN_PATH, GET_NAV_ITEMS } from './admin.const';
 import { renderAdminRoutes } from './admin.routes';
 import { Sidebar } from './shared/components';
 
-const Admin: FunctionComponent<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
+const Admin: FC<{ commonUser: Avo.User.CommonUser }> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -82,4 +82,4 @@ const Admin: FunctionComponent<{ commonUser: Avo.User.CommonUser }> = ({ commonU
 	);
 };
 
-export default withUser(Admin) as FunctionComponent;
+export default withUser(Admin) as FC;

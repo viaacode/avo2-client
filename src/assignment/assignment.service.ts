@@ -1,3 +1,4 @@
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { cloneDeep, compact, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
@@ -32,8 +33,6 @@ import {
 	type GetAssignmentResponsesByAssignmentIdQueryVariables,
 	type GetAssignmentResponsesQuery,
 	type GetAssignmentResponsesQueryVariables,
-	type GetAssignmentsAdminOverviewQuery,
-	type GetAssignmentsAdminOverviewQueryVariables,
 	type GetAssignmentWithResponseQuery,
 	type GetAssignmentWithResponseQueryVariables,
 	type GetContributorsByAssignmentUuidQuery,
@@ -65,7 +64,6 @@ import {
 	GetAssignmentResponseDocument,
 	GetAssignmentResponsesByAssignmentIdDocument,
 	GetAssignmentResponsesDocument,
-	GetAssignmentsAdminOverviewDocument,
 	GetAssignmentWithResponseDocument,
 	GetContributorsByAssignmentUuidDocument,
 	GetMaxPositionAssignmentBlocksDocument,
@@ -92,34 +90,20 @@ import { ToastService } from '../shared/services/toast-service';
 import { VideoStillService } from '../shared/services/video-stills-service';
 import { type TableColumnDataType } from '../shared/types/table-column-data-type';
 
-import {
-	ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-	ITEMS_PER_PAGE,
-	RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-} from './assignment.const';
+import { ITEMS_PER_PAGE, RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './assignment.const';
 import { reorderBlockPositions } from './assignment.helper';
 import {
 	AssignmentBlockType,
 	type AssignmentOverviewTableColumns,
 	AssignmentType,
+	type FetchAssignmentsParams,
 	type PupilCollectionFragment,
 } from './assignment.types';
 import { cleanupTitleAndDescriptions } from './helpers/cleanup-title-and-descriptions';
 import { isItemWithMeta } from './helpers/is-item-with-meta';
 
 export class AssignmentService {
-	static async fetchAssignments(params: {
-		pastDeadline: boolean | null;
-		sortColumn: AssignmentOverviewTableColumns;
-		sortOrder: Avo.Search.OrderDirection;
-		tableColumnDataType: TableColumnDataType;
-		offset: number;
-		limit?: number | null;
-		filterString: string | undefined;
-		labelIds: string[] | undefined;
-		classIds: string[] | undefined;
-		shareTypeIds: string[] | undefined;
-	}): Promise<{
+	static async fetchAssignments(params: FetchAssignmentsParams): Promise<{
 		assignments: Avo.Assignment.Assignment[];
 		count: number;
 	}> {
@@ -139,7 +123,6 @@ export class AssignmentService {
 					shareTypeIds: params.shareTypeIds?.join(','),
 				},
 			});
-			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 			return fetchWithLogoutJson(url);
 		} catch (err) {
 			throw new CustomError('Failed to fetch assignments from database', err, {
@@ -544,7 +527,7 @@ export class AssignmentService {
 	// Fetch assignment responses for response overview page
 	static async fetchAssignmentResponses(
 		assignmentId: string,
-		commonUser: Avo.User.CommonUser,
+		commonUser: Avo.User.CommonUser | null,
 		sortColumn: AssignmentOverviewTableColumns,
 		sortOrder: Avo.Search.OrderDirection,
 		tableColumnDataType: TableColumnDataType,
@@ -1037,6 +1020,7 @@ export class AssignmentService {
 						thumbnail_path: item.start_oc
 							? await VideoStillService.getVideoStill(
 									item.external_id,
+									item.type.id,
 									item.start_oc * 1000
 							  )
 							: null,
@@ -1073,6 +1057,7 @@ export class AssignmentService {
 		const thumbnailPath = trimInfo.hasCut
 			? await VideoStillService.getVideoStill(
 					item.external_id,
+					item.type_id,
 					trimInfo.fragmentStartTime * 1000
 			  )
 			: null;
@@ -1118,62 +1103,28 @@ export class AssignmentService {
 		tableColumnDataType: TableColumnDataType,
 		where: any = {}
 	): Promise<[Avo.Assignment.Assignment[], number]> {
-		let variables;
 		try {
-			const whereWithoutDeleted = {
-				...where,
-				is_deleted: { _eq: false },
-			};
-
-			variables = {
-				offset,
-				limit,
-				where: whereWithoutDeleted,
-				orderBy: getOrderObject(
-					sortColumn,
-					sortOrder,
-					tableColumnDataType,
-					ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
-				),
-			};
-
-			const response = await dataService.query<
-				GetAssignmentsAdminOverviewQuery,
-				GetAssignmentsAdminOverviewQueryVariables
-			>({
-				query: GetAssignmentsAdminOverviewDocument,
-				variables,
-			});
-
-			const assignments = response?.app_assignments_v2;
-
-			const assignmentCount = response?.app_assignments_v2_aggregate?.aggregate?.count || 0;
-
-			if (!assignments) {
-				throw new CustomError('Response does not contain any assignments', null, {
-					response,
-				});
-			}
-
-			// also fetch if the assignment is a copy in a separate query to avoid making the main query slower
-			const relations = (await RelationService.fetchRelationsBySubject(
-				'assignment',
-				assignments.map((coll) => coll.id),
-				Lookup_Enum_Relation_Types_Enum.IsCopyOf
-			)) as Avo.Assignment.RelationEntry<Avo.Assignment.Assignment>[];
-
-			relations.forEach((relation) => {
-				const assignment = assignments.find((coll) => coll.id === relation.subject);
-				if (assignment) {
-					(assignment as unknown as Avo.Assignment.Assignment).relations = [relation];
-				}
-			});
-
-			return [assignments as unknown as Avo.Assignment.Assignment[], assignmentCount];
+			return fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/assignments/admin/overview`,
+					query: {
+						offset,
+						limit,
+						sortColumn,
+						sortOrder,
+						tableColumnDataType,
+						where: JSON.stringify(where),
+					},
+				})
+			);
 		} catch (err) {
 			throw new CustomError('Failed to get assignments from the database', err, {
-				variables,
-				query: 'GET_ASSIGNMENTS_ADMIN_OVERVIEW',
+				offset,
+				limit,
+				sortColumn,
+				sortOrder,
+				tableColumnDataType,
+				where,
 			});
 		}
 	}

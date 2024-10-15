@@ -2,13 +2,7 @@ import { Button, Container, Icon, IconName, Spacer } from '@viaa/avo2-components
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { intersection } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { type UrlUpdateType } from 'use-query-params';
@@ -45,7 +39,7 @@ interface AssignmentResponseSearchTabProps {
 	appendBlockToPupilCollection: (block: Avo.Core.BlockItemBase) => void; // Appends a block to the end of the list of blocks of the current (unsaved) pupil collection
 }
 
-const AssignmentResponseSearchTab: FunctionComponent<
+const AssignmentResponseSearchTab: FC<
 	AssignmentResponseSearchTabProps & { searchResults: Avo.Search.Search } & UserProps
 > = ({
 	filterState,
@@ -345,4 +339,4 @@ const mapStateToProps = (state: AppState) => ({
 export default compose(
 	connect(mapStateToProps),
 	withUser
-)(AssignmentResponseSearchTab) as FunctionComponent<AssignmentResponseSearchTabProps>;
+)(AssignmentResponseSearchTab) as FC<AssignmentResponseSearchTabProps>;

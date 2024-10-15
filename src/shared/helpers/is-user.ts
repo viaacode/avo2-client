@@ -26,7 +26,10 @@ export function isUserTeacherSecondary(user: UserLomsAndUserGroup) {
  * @param user The user to evaluate
  * @returns A boolean indicating if they have both Elementary & Secondary LOM's
  */
-export function isUserSecondaryElementary(user: UserLomsAndUserGroup) {
+export function isUserSecondaryElementary(user: UserLomsAndUserGroup | null): boolean {
+	if (!user) {
+		return false;
+	}
 	return isUserLevel(user, [
 		EducationLevelId.lagerOnderwijs,
 		EducationLevelId.secundairOnderwijs,

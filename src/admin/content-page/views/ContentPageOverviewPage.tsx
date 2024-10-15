@@ -1,6 +1,6 @@
 import { Button, Flex, Spinner } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { type FC, type FunctionComponent, lazy, Suspense, useCallback } from 'react';
+import React, { type FC, lazy, Suspense, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { compose } from 'redux';
 
@@ -22,7 +22,7 @@ const ContentPageOverview = lazy(() =>
 
 const { CREATE_CONTENT_PAGES } = PermissionName;
 
-const ContentPageOverviewPage: FunctionComponent<DefaultSecureRouteProps & UserProps> = ({
+const ContentPageOverviewPage: FC<DefaultSecureRouteProps & UserProps> = ({
 	history,
 	commonUser,
 }) => {

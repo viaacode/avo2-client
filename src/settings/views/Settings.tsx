@@ -9,7 +9,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { PermissionName } from '@viaa/avo2-types';
-import React, { type FunctionComponent, type ReactElement, type ReactText, useState } from 'react';
+import React, { type FC, type ReactElement, type ReactText, useState } from 'react';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -36,7 +36,7 @@ import {
 
 type ForPupilsProps = DefaultSecureRouteProps<{ tabId: string }>;
 
-const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
+const Settings: FC<ForPupilsProps & UserProps> = (props) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [activeTab, setActiveTab] = useState<SettingsTab>(
@@ -174,4 +174,4 @@ const Settings: FunctionComponent<ForPupilsProps & UserProps> = (props) => {
 	);
 };
 
-export default withUser(Settings) as FunctionComponent<ForPupilsProps>;
+export default withUser(Settings) as FC<ForPupilsProps>;

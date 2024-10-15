@@ -1,6 +1,6 @@
 import { IconName, type MenuItemInfo, MoreOptionsDropdown } from '@viaa/avo2-components';
 import { isEqual } from 'lodash-es';
-import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { useQueryParams } from 'use-query-params';
 
 import FilterTable, {
@@ -44,9 +44,7 @@ enum QuickLaneAction {
 
 const queryParamConfig = FILTER_TABLE_QUERY_PARAM_CONFIG([]);
 
-const QuickLaneOverview: FunctionComponent<QuickLaneOverviewProps & UserProps> = ({
-	commonUser,
-}) => {
+const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State

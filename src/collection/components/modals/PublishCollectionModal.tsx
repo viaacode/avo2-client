@@ -12,7 +12,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -27,7 +27,7 @@ interface PublishCollectionModalProps {
 	collection: Avo.Collection.Collection;
 }
 
-const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps & UserProps> = ({
+const PublishCollectionModal: FC<PublishCollectionModalProps & UserProps> = ({
 	onClose,
 	isOpen,
 	collection,
@@ -201,4 +201,4 @@ const PublishCollectionModal: FunctionComponent<PublishCollectionModalProps & Us
 	);
 };
 
-export default withUser(PublishCollectionModal) as FunctionComponent<PublishCollectionModalProps>;
+export default withUser(PublishCollectionModal) as FC<PublishCollectionModalProps>;

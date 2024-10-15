@@ -9,10 +9,11 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop, once } from 'lodash-es';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import { ItemVideoDescription } from '../../../item/components';
 import TimeCropControls from '../../../shared/components/TimeCropControls/TimeCropControls';
+import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { setModalVideoSeekTime } from '../../../shared/helpers/set-modal-video-seek-time';
@@ -20,9 +21,11 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { getValidationErrorsForStartAndEnd } from '../../collection.helpers';
+import { ContentTypeNumber } from '../../collection.types';
 import { type CollectionAction } from '../CollectionOrBundleEdit';
 
 import './CutFragmentModal.scss';
+import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 export interface CutFragmentModalProps {
 	isOpen: boolean;
@@ -37,7 +40,7 @@ export interface CutFragmentModalProps {
 	onConfirm?: (update: Pick<Avo.Collection.Fragment, 'start_oc' | 'end_oc'>) => void;
 }
 
-const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
+const CutFragmentModal: FC<CutFragmentModalProps> = ({
 	isOpen,
 	itemMetaData,
 	index,
@@ -94,20 +97,30 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		});
 
 		try {
-			const videoStill: string = hasNoCut
-				? itemMetaData.thumbnail_path
-				: await VideoStillService.getVideoStill(
+			if (fragment.item_meta?.type_id) {
+				let videoStill: string | null;
+				if (hasNoCut) {
+					if (fragment.item_meta.type_id === ContentTypeNumber.audio) {
+						videoStill = DEFAULT_AUDIO_STILL;
+					} else {
+						videoStill = fragment.item_meta.thumbnail_path;
+					}
+				} else {
+					videoStill = await VideoStillService.getVideoStill(
 						fragment.external_id,
+						fragment.item_meta.type_id,
 						(fragmentStartTime || 0) * 1000
-				  );
+					);
+				}
 
-			if (videoStill) {
-				changeCollectionState({
-					index,
-					type: 'UPDATE_FRAGMENT_PROP',
-					fragmentProp: 'thumbnail_path',
-					fragmentPropValue: videoStill,
-				});
+				if (videoStill) {
+					changeCollectionState({
+						index,
+						type: 'UPDATE_FRAGMENT_PROP',
+						fragmentProp: 'thumbnail_path',
+						fragmentPropValue: videoStill,
+					});
+				}
 			}
 		} catch (error) {
 			console.warn('Failed to update video still.', error);
@@ -154,7 +167,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 		<Modal
 			isOpen={isOpen}
 			title={tText('collection/components/modals/cut-fragment-modal___knip-fragment')}
-			size="auto"
+			size="large"
 			onClose={onClose}
 			scrollable
 			className="m-cut-fragment-modal"
@@ -172,6 +185,7 @@ const CutFragmentModal: FunctionComponent<CutFragmentModalProps> = ({
 					}}
 					verticalLayout={isMobileWidth()}
 					onPlay={startStartTimeOnce}
+					sourcePage={SourcePage.collectionPage}
 				/>
 				<TimeCropControls
 					className="u-spacer-top-l u-spacer-bottom-l"

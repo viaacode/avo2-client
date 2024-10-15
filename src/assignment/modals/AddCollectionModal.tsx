@@ -26,14 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
@@ -113,7 +106,7 @@ enum AddCollectionTab {
 	bookmarkedCollections = 'bookmarkedcollections',
 }
 
-const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
+const AddCollectionModal: FC<AddCollectionModalProps> = ({
 	commonUser,
 	isOpen,
 	onClose = noop,

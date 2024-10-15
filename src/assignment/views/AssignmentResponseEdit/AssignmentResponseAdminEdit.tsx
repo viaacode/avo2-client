@@ -3,7 +3,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, {
 	type Dispatch,
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type SetStateAction,
 	useCallback,
@@ -30,7 +30,7 @@ import AssignmentResponseEdit from './AssignmentResponseEdit';
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
 
-const AssignmentResponseAdminEdit: FunctionComponent<
+const AssignmentResponseAdminEdit: FC<
 	UserProps & DefaultSecureRouteProps<{ assignmentId: string; responseId: string }>
 > = ({ match, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
@@ -238,4 +238,4 @@ const AssignmentResponseAdminEdit: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(AssignmentResponseAdminEdit) as FunctionComponent;
+export default compose(withRouter, withUser)(AssignmentResponseAdminEdit) as FC;

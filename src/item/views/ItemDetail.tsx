@@ -28,7 +28,7 @@ import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { get, isNil, noop } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type ReactText,
 	useCallback,
@@ -92,7 +92,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -143,7 +146,7 @@ export const ITEM_ACTIONS = {
 	importToAssignment: 'importToAssignment',
 };
 
-const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
+const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> = ({
 	history,
 	match,
 	location,
@@ -229,7 +232,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 			) {
 				const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
 					.map(String)
-					.includes(String(commonUser.userGroup?.id));
+					.includes(String(commonUser?.userGroup?.id));
 
 				if (isPupil) {
 					setLoadingInfo({
@@ -290,7 +293,13 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, commonUser).then(noop);
+			BookmarksViewsPlaysService.action(
+				'view',
+				'item',
+				SourcePage.itemPage,
+				itemObj.uid,
+				commonUser
+			).then(noop);
 
 			retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 
@@ -452,11 +461,15 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	};
 
 	const onImportToAssignment = async (importToAssignmentId: string): Promise<void> => {
+		if (!commonUser) {
+			console.error('User is not logged in');
+			return;
+		}
 		setAssignmentId(importToAssignmentId);
 
 		// check if assignment has responses. If so: show additional confirmation modal
 		const responses = await AssignmentService.getAssignmentResponses(
-			commonUser.profileId,
+			commonUser?.profileId,
 			importToAssignmentId
 		);
 		if (responses.length > 0) {
@@ -959,6 +972,7 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
 								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
 							}}
+							sourcePage={SourcePage.itemPage}
 						/>
 						<Grid>
 							<Column size="2-7">
@@ -1125,4 +1139,4 @@ const ItemDetail: FunctionComponent<ItemDetailProps & DefaultSecureRouteProps<{ 
 	);
 };
 
-export default compose(withRouter, withUser)(ItemDetail) as FunctionComponent<ItemDetailProps>;
+export default compose(withRouter, withUser)(ItemDetail) as FC<ItemDetailProps>;

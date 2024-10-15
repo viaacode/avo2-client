@@ -9,7 +9,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isNull } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import ReactSelect, { type ActionMeta, type PropsValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
@@ -38,7 +38,7 @@ export interface ContentPickerProps {
 	errors?: string | string[];
 }
 
-const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> = ({
+const ContentPickerComponent: FC<ContentPickerProps & UserProps> = ({
 	allowedTypes = DEFAULT_ALLOWED_TYPES,
 	initialValue,
 	onSelect,
@@ -375,6 +375,4 @@ const ContentPickerComponent: FunctionComponent<ContentPickerProps & UserProps> 
 	);
 };
 
-export const ContentPicker = withUser(
-	ContentPickerComponent
-) as FunctionComponent<ContentPickerProps>;
+export const ContentPicker = withUser(ContentPickerComponent) as FC<ContentPickerProps>;

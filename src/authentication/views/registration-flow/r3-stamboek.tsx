@@ -1,6 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Alert, Button, Container, FormGroup, Spacer } from '@viaa/avo2-components';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -23,7 +23,7 @@ export type StamboekValidationStatus =
 
 export const STAMBOEK_LOCAL_STORAGE_KEY = 'AVO.stamboek';
 
-const RegisterStamboek: FunctionComponent<RegisterStamboekProps> = ({ location }) => {
+const RegisterStamboek: FC<RegisterStamboekProps> = ({ location }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [validStamboekNumber, setValidStamboekNumber] = useState<string>('');

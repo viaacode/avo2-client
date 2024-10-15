@@ -1,16 +1,11 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import { noop } from 'lodash-es';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import {
@@ -28,8 +23,9 @@ import {
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -57,11 +53,10 @@ import {
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-type CollectionOrBundleMarcomOverviewProps = DefaultSecureRouteProps;
-
-const CollectionOrBundleMarcomOverview: FunctionComponent<
-	CollectionOrBundleMarcomOverviewProps
-> = ({ location, commonUser }) => {
+const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
+	location,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -75,7 +70,7 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevels] = useLomEducationLevels();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -186,11 +181,19 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				collectionLabelOptions,
 				channelNameOptions,
 				subjects,
-				educationLevels,
+				educationLevelsAndDegrees || [],
 				organisationOptions,
 				channelTypeOptions
 			),
-		[collectionLabelOptions, educationLevels, subjects, userGroupOptions, organisationOptions]
+		[
+			userGroupOptions,
+			collectionLabelOptions,
+			channelNameOptions,
+			subjects,
+			educationLevelsAndDegrees,
+			organisationOptions,
+			channelTypeOptions,
+		]
 	);
 	const isCollection =
 		location.pathname === COLLECTIONS_OR_BUNDLES_PATH.COLLECTION_MARCOM_OVERVIEW;
@@ -204,12 +207,13 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 				isCollection,
 				true,
 				false,
-				'view'
+				'view',
+				educationLevelsAndDegrees || []
 			);
 
 			return { _and: andFilters };
 		},
-		[isCollection, commonUser]
+		[commonUser, isCollection, educationLevelsAndDegrees]
 	);
 
 	const getColumnDataType = () => {
@@ -257,8 +261,10 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
-		fetchCollectionsOrBundles();
-	}, [fetchCollectionsOrBundles]);
+		if (commonUser && educationLevelsAndDegrees?.length) {
+			fetchCollectionsOrBundles().then(noop);
+		}
+	}, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
 	useEffect(() => {
 		if (collections) {
@@ -552,4 +558,4 @@ const CollectionOrBundleMarcomOverview: FunctionComponent<
 	);
 };
 
-export default CollectionOrBundleMarcomOverview;
+export default compose(withRouter, withUser)(CollectionOrBundleMarcomOverview) as FC;

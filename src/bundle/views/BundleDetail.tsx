@@ -26,7 +26,7 @@ import {
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { compact, get, isNil, noop } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -78,7 +78,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -95,9 +98,13 @@ type BundleDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const BundleDetail: FunctionComponent<
-	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({ history, match, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>> = ({
+	history,
+	match,
+	commonUser,
+	id,
+	enabledMetaData = ALL_SEARCH_FILTERS,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -232,9 +239,13 @@ const BundleDetail: FunctionComponent<
 					commonUser
 				);
 
-				BookmarksViewsPlaysService.action('view', 'bundle', bundleObj.id, commonUser).then(
-					noop
-				);
+				BookmarksViewsPlaysService.action(
+					'view',
+					'bundle',
+					SourcePage.collectionPage,
+					bundleObj.id,
+					commonUser
+				).then(noop);
 
 				// Get view counts for each fragment
 				try {
@@ -905,4 +916,4 @@ const BundleDetail: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(BundleDetail) as FunctionComponent<BundleDetailProps>;
+export default compose(withRouter, withUser)(BundleDetail) as FC<BundleDetailProps>;

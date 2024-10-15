@@ -15,7 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	lazy,
 	type Reducer,
 	useCallback,
@@ -28,6 +28,7 @@ import { Helmet } from 'react-helmet';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { OrderDirection } from '../../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import {
@@ -79,11 +80,7 @@ const BlockHeading = lazy(() =>
 
 export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
-const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
-	history,
-	match,
-	location,
-}) => {
+const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, location }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Hooks
@@ -115,7 +112,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				})
 			),
 			['label'],
-			['asc']
+			[OrderDirection.asc]
 		);
 	}, []);
 

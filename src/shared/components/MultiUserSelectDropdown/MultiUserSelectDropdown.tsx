@@ -13,13 +13,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { uniqBy } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 
 import { ContentPicker } from '../../../admin/shared/components/ContentPicker/ContentPicker';
 import { type PickerItem } from '../../../admin/shared/types';
@@ -39,7 +33,7 @@ export interface MultiUserSelectDropdownProps {
 	showSelectedValuesOnCollapsed?: boolean;
 }
 
-export const MultiUserSelectDropdown: FunctionComponent<MultiUserSelectDropdownProps> = ({
+export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 	label,
 	id,
 	values,

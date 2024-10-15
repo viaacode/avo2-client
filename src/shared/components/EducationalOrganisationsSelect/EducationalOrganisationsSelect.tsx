@@ -2,7 +2,7 @@ import { Alert, Select, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { pullAllBy, remove, uniq } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
@@ -19,9 +19,11 @@ export interface EducationalOrganisationsSelectProps {
 	showSelectedValuesOnCollapsed?: boolean;
 }
 
-export const EducationalOrganisationsSelect: FunctionComponent<
-	EducationalOrganisationsSelectProps
-> = ({ organisations, onChange, disabled = false }) => {
+export const EducationalOrganisationsSelect: FC<EducationalOrganisationsSelectProps> = ({
+	organisations,
+	onChange,
+	disabled = false,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [cities, setCities] = useState<string[]>([]);

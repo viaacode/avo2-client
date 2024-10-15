@@ -1,12 +1,14 @@
 import { type FlowplayerSourceItem, type FlowplayerSourceList } from '@meemoo/react-components';
 import { Flex, Modal, ModalBody, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 
 import { FlowPlayerWrapper } from '../../../shared/components';
 import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
+import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
 
 import './AutoplayCollectionModal.scss';
@@ -17,7 +19,7 @@ interface AutoplayCollectionModalProps {
 	collectionFragments: Avo.Collection.Fragment[];
 }
 
-const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> = ({
+const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 	isOpen,
 	onClose,
 	collectionFragments,
@@ -47,7 +49,7 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 				return {
 					src: playableUrls[fragIndex],
 					title,
-					poster: frag.thumbnail_path || '',
+					poster: getFlowPlayerPoster(frag.thumbnail_path, frag.item_meta) || '',
 					category: 'video',
 					provider: frag.item_meta?.organisation?.name || '',
 					cuepoints: start && end ? [{ startTime: start, endTime: end }] : undefined,
@@ -70,7 +72,14 @@ const AutoplayCollectionModal: FunctionComponent<AutoplayCollectionModalProps> =
 				</Flex>
 			);
 		}
-		return <FlowPlayerWrapper src={sourceList} canPlay autoplay />;
+		return (
+			<FlowPlayerWrapper
+				src={sourceList}
+				canPlay
+				autoplay
+				sourcePage={SourcePage.collectionPage}
+			/>
+		);
 	};
 
 	const handleClose = () => {

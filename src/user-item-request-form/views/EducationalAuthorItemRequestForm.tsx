@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import type { Requests } from 'node-zendesk';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { compose } from 'redux';
@@ -47,16 +47,17 @@ interface FormValues {
 	educationLevels: Avo.Lom.LomField[];
 }
 
-const EducationalAuthorItemRequestForm: FunctionComponent<
-	EducationalAuthorItemRequestFormProps
-> = ({ history, commonUser }) => {
+const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps> = ({
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [formValues, setFormValues] = useState<FormValues>({
 		description: '',
 		wantsToUploadAttachment: false,
 		attachmentUrl: null,
-		organisation: commonUser.organisation?.name || '',
+		organisation: commonUser?.organisation?.name || '',
 		method: '',
 		educationLevels: [],
 	});
@@ -81,9 +82,9 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 			// create zendesk ticket
 			const body = {
 				description: formValues.description,
-				firstName: commonUser.firstName,
-				lastName: commonUser.lastName,
-				email: commonUser.email,
+				firstName: commonUser?.firstName,
+				lastName: commonUser?.lastName,
+				email: commonUser?.email,
 				organisation: formValues.organisation,
 				method: formValues.method,
 				educationLevels: formValues.educationLevels
@@ -321,4 +322,4 @@ const EducationalAuthorItemRequestForm: FunctionComponent<
 export default compose(
 	withRouter,
 	withUser
-)(EducationalAuthorItemRequestForm) as FunctionComponent<EducationalAuthorItemRequestFormProps>;
+)(EducationalAuthorItemRequestForm) as FC<EducationalAuthorItemRequestFormProps>;

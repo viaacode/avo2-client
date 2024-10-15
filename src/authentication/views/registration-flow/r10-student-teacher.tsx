@@ -1,6 +1,6 @@
 import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Button, Container, IconName, Spacer } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 
@@ -9,7 +9,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 
 export type StudentTeacherProps = RouteComponentProps;
 
-const StudentTeacher: FunctionComponent<StudentTeacherProps> = ({ history }) => {
+const StudentTeacher: FC<StudentTeacherProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();
 
 	return (

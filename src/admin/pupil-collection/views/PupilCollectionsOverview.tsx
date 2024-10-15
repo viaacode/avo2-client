@@ -2,14 +2,7 @@ import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -19,6 +12,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
+import { OrderDirection } from '../../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
@@ -44,9 +38,7 @@ import {
 } from '../pupil-collection.const';
 import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
-const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({
-	commonUser,
-}) => {
+const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response[] | null>(
@@ -428,7 +420,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					onSelectBulkAction={handleBulkAction as any}
 					rowKey="id"
 					defaultOrderProp={'created_at'}
-					defaultOrderDirection={'desc'}
+					defaultOrderDirection={OrderDirection.desc}
 				/>
 				<ConfirmModal
 					body={tHtml(
@@ -530,7 +522,4 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(PupilCollectionsOverview) as unknown as FunctionComponent;
+export default compose(withRouter, withUser)(PupilCollectionsOverview) as unknown as FC;

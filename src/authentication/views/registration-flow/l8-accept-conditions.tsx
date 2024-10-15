@@ -7,7 +7,7 @@ import {
 import { Button, Spacer, Spinner, Toolbar, ToolbarCenter } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, get } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -37,9 +37,12 @@ export interface AcceptConditionsProps {
 	loginState: Avo.Auth.LoginResponse | null;
 }
 
-const AcceptConditions: FunctionComponent<
-	AcceptConditionsProps & DefaultSecureRouteProps & UserProps
-> = ({ history, location, acceptConditions, loginState }) => {
+const AcceptConditions: FC<AcceptConditionsProps & DefaultSecureRouteProps & UserProps> = ({
+	history,
+	location,
+	acceptConditions,
+	loginState,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// The term of use and the privacy conditions

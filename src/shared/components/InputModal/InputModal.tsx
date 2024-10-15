@@ -11,7 +11,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, useEffect, useState } from 'react';
+import React, { type FC, type ReactNode, useEffect, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../services/toast-service';
@@ -30,7 +30,7 @@ interface InputModalProps {
 	emptyMessage?: string;
 }
 
-const InputModal: FunctionComponent<InputModalProps> = ({
+const InputModal: FC<InputModalProps> = ({
 	inputValue,
 	inputCallback,
 	isOpen,

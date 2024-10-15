@@ -8,13 +8,7 @@ import {
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
 import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
-import React, {
-	type ComponentType,
-	type FunctionComponent,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type ComponentType, type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, type RouteComponentProps, withRouter } from 'react-router';
@@ -67,7 +61,7 @@ interface DynamicRouteResolverProps extends RouteComponentProps {
 	loginStateLoading: boolean;
 }
 
-const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
+const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 	getLoginState,
 	history,
 	location,
@@ -258,6 +252,17 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		}
 	}, [routeInfo]);
 
+	// const handleLoaded = () => {
+	// 	if (location.hash) {
+	// 		const element = document.getElementById(location.hash.slice(1));
+	// 		if (element) {
+	// 			element.scrollIntoView({ behavior: 'smooth' });
+	// 		}
+	// 	} else {
+	// 		scrollTo({ top: 0 });
+	// 	}
+	// };
+
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
 			const routeUserGroupIds = ((routeInfo.data as DbContentPage).userGroupIds ?? []).map(
@@ -305,7 +310,6 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					{routeInfo.data && (
 						<ContentPageRenderer
 							contentPageInfo={routeInfo.data as ContentPageInfo}
-							onLoaded={() => scrollTo({ top: 0 })}
 							commonUser={
 								(loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
 							}
@@ -374,4 +378,4 @@ export default compose(
 	withRouter,
 	connect(mapStateToProps, mapDispatchToProps) as any,
 	withAdminCoreConfig
-)(DynamicRouteResolver as ComponentType) as unknown as FunctionComponent<DynamicRouteResolverProps>;
+)(DynamicRouteResolver as ComponentType) as unknown as FC<DynamicRouteResolverProps>;

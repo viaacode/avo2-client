@@ -1,12 +1,13 @@
 import { BlockIntro } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 import { get } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { APP_PATH } from '../../../constants';
 import { ItemVideoDescription } from '../../../item/components';
 import { DEFAULT_AUDIO_STILL } from '../../../shared/constants';
 import { buildLink, isMobileWidth } from '../../../shared/helpers';
+import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { getFragmentProperty } from '../../helpers';
 
 import './FragmentDetail.scss';
@@ -26,7 +27,7 @@ interface FragmentDetailProps {
  * @param showDescriptionNextToVideo
  * @constructor
  */
-const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
+const FragmentDetail: FC<FragmentDetailProps> = ({
 	collectionFragment,
 	showDescription,
 	showMetadata,
@@ -84,6 +85,7 @@ const FragmentDetail: FunctionComponent<FragmentDetailProps> = ({
 				end: collectionFragment.end_oc,
 			}}
 			verticalLayout={isMobileWidth()}
+			sourcePage={SourcePage.collectionPage}
 		/>
 	) : (
 		<BlockIntro

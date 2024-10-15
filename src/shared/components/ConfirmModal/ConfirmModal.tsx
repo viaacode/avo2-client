@@ -14,7 +14,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, useMemo } from 'react';
+import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import useTranslation from '../../hooks/useTranslation';
 
@@ -34,7 +34,7 @@ export interface ConfirmModalProps {
 	remember?: keyof typeof RememberConfirmationKeys;
 }
 
-const ConfirmModal: FunctionComponent<ConfirmModalProps> = ({
+const ConfirmModal: FC<ConfirmModalProps> = ({
 	title,
 	body,
 	cancelLabel = 'Annuleer',

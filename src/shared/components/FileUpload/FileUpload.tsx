@@ -11,7 +11,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isString } from 'lodash-es';
 import queryString from 'query-string';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
@@ -35,7 +35,7 @@ export interface FileUploadProps {
 	onChange: (urls: string[]) => void;
 }
 
-const FileUpload: FunctionComponent<FileUploadProps> = ({
+const FileUpload: FC<FileUploadProps> = ({
 	icon,
 	label,
 	allowedTypes = PHOTO_TYPES,

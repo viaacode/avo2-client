@@ -1,0 +1,8 @@
+mutation incrementItemPlaysViaQuickLanePage($itemUuid: uuid!) {
+	update_app_item_plays(
+		where: { item_id: { _eq: $itemUuid } }
+		_inc: { count_via_quick_lane_page: 1 }
+	) {
+		affected_rows
+	}
+}

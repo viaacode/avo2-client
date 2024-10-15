@@ -9,7 +9,7 @@ import {
 	Spacer,
 	TextInput,
 } from '@viaa/avo2-components';
-import React, { type FunctionComponent, type ReactNode, useState } from 'react';
+import React, { type FC, type ReactNode, useState } from 'react';
 
 import { copyToClipboard } from '../../helpers';
 import withUser, { type UserProps } from '../../hocs/withUser';
@@ -32,7 +32,7 @@ interface AddToCollectionModalProps {
 	onClose: () => void;
 }
 
-const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & UserProps> = ({
+const ShareThroughEmailModal: FC<AddToCollectionModalProps & UserProps> = ({
 	modalTitle,
 	type,
 	emailLinkHref,
@@ -197,4 +197,4 @@ const ShareThroughEmailModal: FunctionComponent<AddToCollectionModalProps & User
 	);
 };
 
-export default withUser(ShareThroughEmailModal) as FunctionComponent<AddToCollectionModalProps>;
+export default withUser(ShareThroughEmailModal) as FC<AddToCollectionModalProps>;

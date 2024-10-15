@@ -7,7 +7,7 @@ import {
 	Table,
 } from '@viaa/avo2-components';
 import { get } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 
@@ -34,10 +34,7 @@ import { type InteractiveTour } from '../interactive-tour.types';
 
 type InteractiveTourDetailProps = RouteComponentProps<{ id: string }>;
 
-const InteractiveTourDetail: FunctionComponent<InteractiveTourDetailProps> = ({
-	history,
-	match,
-}) => {
+const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match }) => {
 	// Hooks
 	const [interactiveTour, setInteractiveTour] = useState<InteractiveTour | null>(null);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
