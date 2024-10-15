@@ -92,7 +92,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -290,7 +293,13 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, commonUser).then(noop);
+			BookmarksViewsPlaysService.action(
+				'view',
+				'item',
+				SourcePage.itemPage,
+				itemObj.uid,
+				commonUser
+			).then(noop);
 
 			retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 
@@ -963,6 +972,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
 								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
 							}}
+							sourcePage={SourcePage.itemPage}
 						/>
 						<Grid>
 							<Column size="2-7">

@@ -1,5 +1,6 @@
 import {
 	type AdminConfig,
+	type FlowPlayerWrapperProps,
 	type LinkInfo,
 	type ToastInfo,
 	UserBulkAction,
@@ -215,7 +216,7 @@ export function getAdminCoreConfig(): AdminConfig {
 					value: 'pupil-inline-link',
 				},
 			],
-			flowplayer: FlowPlayerWrapper,
+			flowplayer: FlowPlayerWrapper as FC<FlowPlayerWrapperProps>,
 		},
 		content_blocks: {
 			SEARCH: BlockSearch,

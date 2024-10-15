@@ -71,7 +71,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -366,9 +369,13 @@ const AssignmentDetail: FC<
 				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'assignment', assignmentId, commonUser).then(
-				noop
-			);
+			BookmarksViewsPlaysService.action(
+				'view',
+				'assignment',
+				SourcePage.assignmentPage,
+				assignmentId,
+				commonUser
+			).then(noop);
 
 			if (permissions?.canFetchBookmarkAndViewCounts) {
 				try {
@@ -800,6 +807,7 @@ const AssignmentDetail: FC<
 						},
 						flowPlayer: {
 							canPlay: true,
+							sourcePage: SourcePage.assignmentPage,
 						},
 					},
 					ZOEK: {

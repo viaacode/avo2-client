@@ -20,7 +20,7 @@ query getBookmarksForUser($profileId: uuid!) {
 					}
 				}
 			}
-			view_counts {
+			view_count {
 				count
 			}
 		}
@@ -37,7 +37,7 @@ query getBookmarksForUser($profileId: uuid!) {
 				id
 				label
 			}
-			view_counts {
+			view_count {
 				count
 			}
 		}

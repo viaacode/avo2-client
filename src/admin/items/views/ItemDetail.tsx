@@ -416,7 +416,7 @@ const ItemDetail: FC<ItemDetailProps> = ({ history, match }) => {
 							)}
 							{renderSimpleDetailRows(item, [
 								[
-									'view_counts_aggregate.aggregate.sum.count',
+									'view_count.count',
 									tText('admin/items/views/item-detail___views'),
 								],
 							])}

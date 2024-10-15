@@ -21,6 +21,7 @@ import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { copyQuickLaneToClipboard } from '../../helpers/generate-quick-lane-href';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { useDebounce } from '../../hooks/useDebounce';
+import { SourcePage } from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../services/toast-service';
 import { type QuickLaneUrlObject } from '../../types';
 import { ContentLink } from '../ContentLink/ContentLink';
@@ -242,6 +243,7 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 									cuePointsLabel={{ start, end }}
 									cuePointsVideo={{ start, end }}
 									verticalLayout={isMobileWidth()}
+									sourcePage={SourcePage.quickLanePage}
 								/>
 							</div>
 							<TimeCropControls

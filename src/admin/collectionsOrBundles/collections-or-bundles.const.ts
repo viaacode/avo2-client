@@ -48,10 +48,8 @@ export const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 		updated_by: { usersByuserId: { last_name: order } },
 	}),
 	views: (order: Avo.Search.OrderDirection) => ({
-		view_counts_aggregate: {
-			sum: {
-				count: order,
-			},
+		view_count: {
+			count: order,
 		},
 	}),
 	bookmarks: (order: Avo.Search.OrderDirection) => ({

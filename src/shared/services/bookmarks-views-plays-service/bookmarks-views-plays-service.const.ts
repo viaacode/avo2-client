@@ -22,8 +22,13 @@ import {
 	GetItemViewCountDocument,
 	IncrementAssignmentViewsDocument,
 	IncrementCollectionPlaysDocument,
-	IncrementCollectionViewsDocument,
-	IncrementItemPlaysDocument,
+	IncrementCollectionViewsViaCollectionPageDocument,
+	IncrementCollectionViewsViaQuickLanePageDocument,
+	IncrementItemPlaysViaAssignmentPageDocument,
+	IncrementItemPlaysViaCollectionPageDocument,
+	IncrementItemPlaysViaContentPageDocument,
+	IncrementItemPlaysViaItemPageDocument,
+	IncrementItemPlaysViaQuickLanePageDocument,
 	IncrementItemViewsDocument,
 	InsertAssignmentBookmarkDocument,
 	InsertCollectionBookmarkDocument,
@@ -35,6 +40,7 @@ import {
 	type EventAction,
 	type EventContentType,
 	type EventContentTypeSimplified,
+	type SourcePage,
 } from './bookmarks-views-plays-service.types';
 
 export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
@@ -47,7 +53,7 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 export interface QueryDefinition {
 	query?: string;
 	get?: string;
-	increment?: string;
+	increment?: Partial<Record<SourcePage, string>>;
 	variables: (uuid: string, commonUser: Avo.User.CommonUser | null) => any;
 	getResponseCount?: (response: any) => number;
 }
@@ -126,25 +132,32 @@ export const GET_EVENT_QUERIES: () => {
 	view: {
 		item: {
 			get: GetItemViewCountDocument,
-			increment: IncrementItemViewsDocument,
+			increment: {
+				itemPage: IncrementItemViewsDocument,
+			},
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
 			getResponseCount: (response: GetItemViewCountQuery): number =>
-				response.app_item_meta[0]?.view_counts?.[0]?.count || 0,
+				response.app_item_meta[0]?.view_count?.count || 0,
 		},
 		collection: {
 			get: GetCollectionViewCountDocument,
-			increment: IncrementCollectionViewsDocument,
+			increment: {
+				collectionPage: IncrementCollectionViewsViaCollectionPageDocument,
+				quickLanePage: IncrementCollectionViewsViaQuickLanePageDocument,
+			},
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
 			getResponseCount: (response: GetCollectionViewCountQuery): number =>
-				response.app_collections[0]?.view_counts?.[0]?.count || 0,
+				response.app_collections[0]?.view_count?.count || 0,
 		},
 		assignment: {
 			get: GetAssignmentViewCountDocument,
-			increment: IncrementAssignmentViewsDocument,
+			increment: {
+				assignmentPage: IncrementAssignmentViewsDocument,
+			},
 			variables: (assignmentUuid: string) => ({
 				assignmentUuid,
 			}),
@@ -155,26 +168,34 @@ export const GET_EVENT_QUERIES: () => {
 	play: {
 		item: {
 			get: GetItemPlayCountDocument,
-			increment: IncrementItemPlaysDocument,
+			increment: {
+				itemPage: IncrementItemPlaysViaItemPageDocument,
+				collectionPage: IncrementItemPlaysViaCollectionPageDocument,
+				assignmentPage: IncrementItemPlaysViaAssignmentPageDocument,
+				contentPage: IncrementItemPlaysViaContentPageDocument,
+				quickLanePage: IncrementItemPlaysViaQuickLanePageDocument,
+			},
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
 			getResponseCount: (response: GetItemPlayCountQuery): number =>
-				response.app_item_meta[0]?.play_counts?.[0]?.count || 0,
+				response.app_item_meta[0]?.play_count?.count || 0,
 		},
 		collection: {
 			get: GetCollectionPlayCountDocument,
-			increment: IncrementCollectionPlaysDocument,
+			increment: {
+				itemPage: IncrementCollectionPlaysDocument,
+			},
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
 			getResponseCount: (response: GetCollectionPlayCountQuery): number =>
-				response.app_collections[0]?.play_counts?.[0]?.count || 0,
+				response.app_collections[0]?.play_count?.count || 0,
 		},
 		// TODO: Add request plays of an assignment https://meemoo.atlassian.net/browse/AVO-2725
 		assignment: {
 			get: '',
-			increment: '',
+			increment: {},
 			variables: (assignmentUuid: string) => ({
 				assignmentUuid,
 			}),

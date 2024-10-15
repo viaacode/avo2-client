@@ -27,7 +27,7 @@ query getItemBookmarksForUser(
 					}
 				}
 			}
-			view_counts {
+			view_count {
 				count
 			}
 		}

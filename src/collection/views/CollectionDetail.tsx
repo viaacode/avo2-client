@@ -73,7 +73,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -289,9 +292,13 @@ const CollectionDetail: FC<
 				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'collection', collection.id, commonUser).then(
-				noop
-			);
+			BookmarksViewsPlaysService.action(
+				'view',
+				'collection',
+				SourcePage.collectionPage,
+				collection.id,
+				commonUser
+			).then(noop);
 			try {
 				setBookmarkViewPlayCounts(
 					await BookmarksViewsPlaysService.getCollectionCounts(
@@ -1172,6 +1179,7 @@ const CollectionDetail: FC<
 									!isAutoplayCollectionModalOpen
 								}
 								collection={collection}
+								sourcePage={SourcePage.collectionPage}
 							/>
 						)}
 					</Container>

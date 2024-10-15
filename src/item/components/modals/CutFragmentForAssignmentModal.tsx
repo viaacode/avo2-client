@@ -27,6 +27,7 @@ import { type ItemTrimInfo } from '../../item.types';
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './CutFragmentModal.scss';
+import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 interface CutFragmentForAssignmentModalProps {
 	itemMetaData: Avo.Item.Item;
@@ -100,6 +101,7 @@ const CutFragmentForAssignmentModal: FC<
 										canPlay={isOpen}
 										cuePointsLabel={{ start, end }}
 										verticalLayout={isMobileWidth()}
+										sourcePage={SourcePage.assignmentPage}
 									/>
 								}
 								<Grid>

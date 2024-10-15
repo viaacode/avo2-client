@@ -34,6 +34,7 @@ import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
 
@@ -198,6 +199,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 						showMetadata={true}
 						linkToItems={false}
 						collection={quickLane.content as Avo.Collection.Collection}
+						sourcePage={SourcePage.quickLanePage}
 						{...rest}
 					/>
 				);
@@ -210,6 +212,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}
 						cuePointsVideo={{ start, end }}
+						sourcePage={SourcePage.quickLanePage}
 					/>
 				);
 			default:

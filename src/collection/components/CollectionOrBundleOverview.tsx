@@ -17,7 +17,7 @@ import {
 	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
+import { cloneDeep, compact, fromPairs, isNil, noop } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
@@ -433,7 +433,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 					</MetaDataItem>
 					<MetaDataItem
 						icon={IconName.eye}
-						label={get(collection, 'view_counts_aggregate.aggregate.sum.count') || '0'}
+						label={String(collection?.view_count?.count || 0)}
 					/>
 				</MetaData>
 			</div>

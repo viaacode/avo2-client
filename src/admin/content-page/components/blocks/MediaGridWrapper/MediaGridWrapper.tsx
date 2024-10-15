@@ -32,6 +32,7 @@ import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number'
 import withUser, { type UserProps } from '../../../../../shared/hocs/withUser';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
+import { SourcePage } from '../../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
@@ -323,8 +324,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 		index: number
 	): MediaListItem => {
 		const itemLabel = itemOrCollectionOrAssignment?.type?.label || 'video';
-		const viewCount =
-			itemOrCollectionOrAssignment?.view_counts_aggregate?.aggregate?.sum?.count || 0;
+		const viewCount = itemOrCollectionOrAssignment?.view_count?.count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
@@ -487,6 +487,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 								}
 								collapseDescription={false}
 								renderButtons={renderBookmarkButton}
+								sourcePage={SourcePage.contentPage}
 							/>
 						)}
 					</ModalBody>

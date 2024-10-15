@@ -38,6 +38,7 @@ import { VideoStillService } from '../../../shared/services/video-stills-service
 import ItemVideoDescription from '../ItemVideoDescription';
 
 import './AddToCollectionModal.scss';
+import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 interface AddToCollectionModalProps {
 	externalId: string;
@@ -345,6 +346,7 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 									onPlay={startStartTimeOnce}
 									cuePointsLabel={{ start, end }}
 									verticalLayout={isMobileWidth()}
+									sourcePage={SourcePage.collectionPage}
 								/>
 								<Grid>
 									<Column size="2-7" className="u-spacer-top-l u-spacer-bottom-l">

@@ -1,0 +1,8 @@
+mutation incrementItemPlaysViaCollectionPage($itemUuid: uuid!) {
+	update_app_item_plays(
+		where: { item_id: { _eq: $itemUuid } }
+		_inc: { count_via_collection_page: 1 }
+	) {
+		affected_rows
+	}
+}

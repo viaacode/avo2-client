@@ -10,6 +10,7 @@ import {
 	CollectionFragmentTypeText,
 } from '../../../collection/components';
 import { getBlockColor } from '../../helpers/get-block-color';
+import { SourcePage } from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { IconBar } from '../index';
 
 import { BLOCK_ITEM_ICONS } from './BlockList.consts';
@@ -66,6 +67,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 						flowPlayer={{
 							...config?.ITEM?.flowPlayer,
 							block,
+							sourcePage: SourcePage.collectionPage,
 						}}
 						meta={{ ...config?.ITEM?.meta }}
 					/>

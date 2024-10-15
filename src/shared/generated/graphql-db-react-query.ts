@@ -639,12 +639,8 @@ export const GetItemByUuidDocument = `
       description
       external_id
     }
-    view_counts_aggregate {
-      aggregate {
-        sum {
-          count
-        }
-      }
+    view_count {
+      count
     }
   }
 }
@@ -733,12 +729,8 @@ export const GetItemsByExternalIdDocument = `
       description
       external_id
     }
-    view_counts_aggregate {
-      aggregate {
-        sum {
-          count
-        }
-      }
+    view_count {
+      count
     }
   }
 }
@@ -2113,12 +2105,8 @@ export const GetBookmarkedCollectionsByOwnerDocument = `
       depublish_at
       created_at
       thumbnail_path
-      view_counts_aggregate {
-        aggregate {
-          sum {
-            count
-          }
-        }
+      view_count {
+        count
       }
     }
   }
@@ -2329,12 +2317,8 @@ export const GetCollectionsByOwnerOrContributorDocument = `
     depublish_at
     created_at
     thumbnail_path
-    view_counts_aggregate {
-      aggregate {
-        sum {
-          count
-        }
-      }
+    view_count {
+      count
     }
     share_type
     contributors {
@@ -2510,6 +2494,14 @@ export const GetPublicCollectionsByIdDocument = `
   ) {
     id
     title
+    share_type
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+    view_count {
+      count
+    }
     contributors {
       enum_right_type {
         value
@@ -2530,11 +2522,6 @@ export const GetPublicCollectionsByIdDocument = `
         }
       }
     }
-    share_type
-    updated_at
-    is_public
-    thumbnail_path
-    created_at
   }
 }
     `;
@@ -2560,6 +2547,13 @@ export const GetPublicCollectionsByTitleDocument = `
     id
     title
     share_type
+    updated_at
+    is_public
+    thumbnail_path
+    created_at
+    view_count {
+      count
+    }
     contributors {
       enum_right_type {
         value
@@ -2580,10 +2574,6 @@ export const GetPublicCollectionsByTitleDocument = `
         }
       }
     }
-    updated_at
-    is_public
-    thumbnail_path
-    created_at
   }
 }
     `;
@@ -3669,7 +3659,7 @@ export const GetBookmarksForUserDocument = `
           }
         }
       }
-      view_counts {
+      view_count {
         count
       }
     }
@@ -3686,7 +3676,7 @@ export const GetBookmarksForUserDocument = `
         id
         label
       }
-      view_counts {
+      view_count {
         count
       }
     }
@@ -3762,7 +3752,7 @@ export const useGetCollectionBookmarkViewPlayCountsQuery = <
 export const GetCollectionPlayCountDocument = `
     query getCollectionPlayCount($collectionUuid: uuid!) {
   app_collections(where: {id: {_eq: $collectionUuid}}) {
-    play_counts {
+    play_count {
       count
     }
   }
@@ -3783,7 +3773,7 @@ export const useGetCollectionPlayCountQuery = <
 export const GetCollectionViewCountDocument = `
     query getCollectionViewCount($collectionUuid: uuid!) {
   app_collections(where: {id: {_eq: $collectionUuid}}) {
-    view_counts {
+    view_count {
       count
     }
   }
@@ -3860,7 +3850,7 @@ export const GetItemBookmarksForUserDocument = `
           }
         }
       }
-      view_counts {
+      view_count {
         count
       }
     }
@@ -3884,7 +3874,7 @@ export const useGetItemBookmarksForUserQuery = <
 export const GetItemPlayCountDocument = `
     query getItemPlayCount($itemUuid: uuid!) {
   app_item_meta(where: {uid: {_eq: $itemUuid}}) {
-    play_counts {
+    play_count {
       count
     }
     is_published
@@ -3907,7 +3897,7 @@ export const useGetItemPlayCountQuery = <
 export const GetItemViewCountDocument = `
     query getItemViewCount($itemUuid: uuid!) {
   app_item_meta(where: {uid: {_eq: $itemUuid}}) {
-    view_counts {
+    view_count {
       count
     }
     is_deleted
@@ -4025,39 +4015,137 @@ export const useIncrementCollectionPlaysMutation = <
       (variables?: IncrementCollectionPlaysMutationVariables) => fetchData<IncrementCollectionPlaysMutation, IncrementCollectionPlaysMutationVariables>(IncrementCollectionPlaysDocument, variables)(),
       options
     );
-export const IncrementCollectionViewsDocument = `
-    mutation incrementCollectionViews($collectionUuid: uuid!) {
+export const IncrementCollectionViewsViaCollectionPageDocument = `
+    mutation incrementCollectionViewsViaCollectionPage($collectionUuid: uuid!) {
   update_app_collection_views(
     where: {collection_uuid: {_eq: $collectionUuid}}
-    _inc: {count: 1}
+    _inc: {count_via_detail_page: 1}
   ) {
     affected_rows
   }
 }
     `;
-export const useIncrementCollectionViewsMutation = <
+export const useIncrementCollectionViewsViaCollectionPageMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<IncrementCollectionViewsMutation, TError, IncrementCollectionViewsMutationVariables, TContext>) =>
-    useMutation<IncrementCollectionViewsMutation, TError, IncrementCollectionViewsMutationVariables, TContext>(
-      ['incrementCollectionViews'],
-      (variables?: IncrementCollectionViewsMutationVariables) => fetchData<IncrementCollectionViewsMutation, IncrementCollectionViewsMutationVariables>(IncrementCollectionViewsDocument, variables)(),
+    >(options?: UseMutationOptions<IncrementCollectionViewsViaCollectionPageMutation, TError, IncrementCollectionViewsViaCollectionPageMutationVariables, TContext>) =>
+    useMutation<IncrementCollectionViewsViaCollectionPageMutation, TError, IncrementCollectionViewsViaCollectionPageMutationVariables, TContext>(
+      ['incrementCollectionViewsViaCollectionPage'],
+      (variables?: IncrementCollectionViewsViaCollectionPageMutationVariables) => fetchData<IncrementCollectionViewsViaCollectionPageMutation, IncrementCollectionViewsViaCollectionPageMutationVariables>(IncrementCollectionViewsViaCollectionPageDocument, variables)(),
       options
     );
-export const IncrementItemPlaysDocument = `
-    mutation incrementItemPlays($itemUuid: uuid!) {
-  update_app_item_plays(where: {item_id: {_eq: $itemUuid}}, _inc: {count: 1}) {
+export const IncrementCollectionViewsViaQuickLanePageDocument = `
+    mutation incrementCollectionViewsViaQuickLanePage($collectionUuid: uuid!) {
+  update_app_collection_views(
+    where: {collection_uuid: {_eq: $collectionUuid}}
+    _inc: {count_via_quick_lane_page: 1}
+  ) {
     affected_rows
   }
 }
     `;
-export const useIncrementItemPlaysMutation = <
+export const useIncrementCollectionViewsViaQuickLanePageMutation = <
       TError = unknown,
       TContext = unknown
-    >(options?: UseMutationOptions<IncrementItemPlaysMutation, TError, IncrementItemPlaysMutationVariables, TContext>) =>
-    useMutation<IncrementItemPlaysMutation, TError, IncrementItemPlaysMutationVariables, TContext>(
-      ['incrementItemPlays'],
-      (variables?: IncrementItemPlaysMutationVariables) => fetchData<IncrementItemPlaysMutation, IncrementItemPlaysMutationVariables>(IncrementItemPlaysDocument, variables)(),
+    >(options?: UseMutationOptions<IncrementCollectionViewsViaQuickLanePageMutation, TError, IncrementCollectionViewsViaQuickLanePageMutationVariables, TContext>) =>
+    useMutation<IncrementCollectionViewsViaQuickLanePageMutation, TError, IncrementCollectionViewsViaQuickLanePageMutationVariables, TContext>(
+      ['incrementCollectionViewsViaQuickLanePage'],
+      (variables?: IncrementCollectionViewsViaQuickLanePageMutationVariables) => fetchData<IncrementCollectionViewsViaQuickLanePageMutation, IncrementCollectionViewsViaQuickLanePageMutationVariables>(IncrementCollectionViewsViaQuickLanePageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaAssignmentPageDocument = `
+    mutation incrementItemPlaysViaAssignmentPage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_assignment_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaAssignmentPageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaAssignmentPageMutation, TError, IncrementItemPlaysViaAssignmentPageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaAssignmentPageMutation, TError, IncrementItemPlaysViaAssignmentPageMutationVariables, TContext>(
+      ['incrementItemPlaysViaAssignmentPage'],
+      (variables?: IncrementItemPlaysViaAssignmentPageMutationVariables) => fetchData<IncrementItemPlaysViaAssignmentPageMutation, IncrementItemPlaysViaAssignmentPageMutationVariables>(IncrementItemPlaysViaAssignmentPageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaCollectionPageDocument = `
+    mutation incrementItemPlaysViaCollectionPage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_collection_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaCollectionPageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaCollectionPageMutation, TError, IncrementItemPlaysViaCollectionPageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaCollectionPageMutation, TError, IncrementItemPlaysViaCollectionPageMutationVariables, TContext>(
+      ['incrementItemPlaysViaCollectionPage'],
+      (variables?: IncrementItemPlaysViaCollectionPageMutationVariables) => fetchData<IncrementItemPlaysViaCollectionPageMutation, IncrementItemPlaysViaCollectionPageMutationVariables>(IncrementItemPlaysViaCollectionPageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaContentPageDocument = `
+    mutation incrementItemPlaysViaContentPage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_content_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaContentPageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaContentPageMutation, TError, IncrementItemPlaysViaContentPageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaContentPageMutation, TError, IncrementItemPlaysViaContentPageMutationVariables, TContext>(
+      ['incrementItemPlaysViaContentPage'],
+      (variables?: IncrementItemPlaysViaContentPageMutationVariables) => fetchData<IncrementItemPlaysViaContentPageMutation, IncrementItemPlaysViaContentPageMutationVariables>(IncrementItemPlaysViaContentPageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaItemPageDocument = `
+    mutation incrementItemPlaysViaItemPage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_detail_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaItemPageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaItemPageMutation, TError, IncrementItemPlaysViaItemPageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaItemPageMutation, TError, IncrementItemPlaysViaItemPageMutationVariables, TContext>(
+      ['incrementItemPlaysViaItemPage'],
+      (variables?: IncrementItemPlaysViaItemPageMutationVariables) => fetchData<IncrementItemPlaysViaItemPageMutation, IncrementItemPlaysViaItemPageMutationVariables>(IncrementItemPlaysViaItemPageDocument, variables)(),
+      options
+    );
+export const IncrementItemPlaysViaQuickLanePageDocument = `
+    mutation incrementItemPlaysViaQuickLanePage($itemUuid: uuid!) {
+  update_app_item_plays(
+    where: {item_id: {_eq: $itemUuid}}
+    _inc: {count_via_quick_lane_page: 1}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export const useIncrementItemPlaysViaQuickLanePageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<IncrementItemPlaysViaQuickLanePageMutation, TError, IncrementItemPlaysViaQuickLanePageMutationVariables, TContext>) =>
+    useMutation<IncrementItemPlaysViaQuickLanePageMutation, TError, IncrementItemPlaysViaQuickLanePageMutationVariables, TContext>(
+      ['incrementItemPlaysViaQuickLanePage'],
+      (variables?: IncrementItemPlaysViaQuickLanePageMutationVariables) => fetchData<IncrementItemPlaysViaQuickLanePageMutation, IncrementItemPlaysViaQuickLanePageMutationVariables>(IncrementItemPlaysViaQuickLanePageDocument, variables)(),
       options
     );
 export const IncrementItemViewsDocument = `

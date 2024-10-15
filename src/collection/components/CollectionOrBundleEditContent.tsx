@@ -159,6 +159,7 @@ const CollectionOrBundleEditContent: FC<CollectionOrBundleEditContentProps & Use
 	// 						// 	!isCutModalOpen &&
 	// 						// 	!isDeleteModalOpen
 	// 						// }
+	//                      sourcePage={SourcePage.collectionPage}
 	// 					/>
 	// 				);
 	// 			}
