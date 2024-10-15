@@ -30,6 +30,9 @@ export const usePageLoaded = (callback: () => void, enabled: boolean): void => {
 		});
 		observer.observe(document.documentElement);
 		return () => {
+			if (timeoutId) {
+				clearTimeout(timeoutId);
+			}
 			// Stop the observer since the hook is being unloaded
 			observer.disconnect();
 		};

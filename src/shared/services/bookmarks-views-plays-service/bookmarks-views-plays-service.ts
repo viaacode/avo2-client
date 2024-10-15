@@ -41,8 +41,8 @@ import {
 	type IncrementItemPlaysViaCollectionPageMutationVariables,
 	type IncrementItemPlaysViaContentPageMutation,
 	type IncrementItemPlaysViaContentPageMutationVariables,
-	type IncrementItemPlaysViaDetailPageMutation,
-	type IncrementItemPlaysViaDetailPageMutationVariables,
+	type IncrementItemPlaysViaItemPageMutation,
+	type IncrementItemPlaysViaItemPageMutationVariables,
 	type IncrementItemPlaysViaQuickLanePageMutation,
 	type IncrementItemPlaysViaQuickLanePageMutationVariables,
 	type IncrementItemViewsMutation,
@@ -478,7 +478,7 @@ export class BookmarksViewsPlaysService {
 				| IncrementItemPlaysViaAssignmentPageMutation
 				| IncrementItemPlaysViaCollectionPageMutation
 				| IncrementItemPlaysViaContentPageMutation
-				| IncrementItemPlaysViaDetailPageMutation
+				| IncrementItemPlaysViaItemPageMutation
 				| IncrementItemPlaysViaQuickLanePageMutation
 				| IncrementItemViewsMutation,
 				| IncrementAssignmentViewsMutationVariables
@@ -488,7 +488,7 @@ export class BookmarksViewsPlaysService {
 				| IncrementItemPlaysViaAssignmentPageMutationVariables
 				| IncrementItemPlaysViaCollectionPageMutationVariables
 				| IncrementItemPlaysViaContentPageMutationVariables
-				| IncrementItemPlaysViaDetailPageMutationVariables
+				| IncrementItemPlaysViaItemPageMutationVariables
 				| IncrementItemPlaysViaQuickLanePageMutationVariables
 				| IncrementItemViewsMutationVariables
 			>({
