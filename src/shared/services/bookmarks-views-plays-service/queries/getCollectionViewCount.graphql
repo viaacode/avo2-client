@@ -1,6 +1,6 @@
 query getCollectionViewCount($collectionUuid: uuid!) {
 	app_collections(where: { id: { _eq: $collectionUuid } }) {
-		view_counts {
+		view_count {
 			count
 		}
 	}

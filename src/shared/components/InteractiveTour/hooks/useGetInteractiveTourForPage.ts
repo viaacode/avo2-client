@@ -9,7 +9,7 @@ import { InteractiveTourService, type TourInfo } from '../../../services/interac
 async function getInteractiveTourForPage(
 	currentPath: string,
 	tourDisplayDates: { [tourId: string]: string } | null,
-	profileId: string
+	profileId: string | undefined
 ): Promise<{ tour: TourInfo | null; routeId: RouteId | null }> {
 	if (!tourDisplayDates) {
 		return {
@@ -99,7 +99,7 @@ async function getInteractiveTourForPage(
 export const useGetInteractiveTourForPage = (
 	currentPath: string,
 	tourDisplayDates: { [tourId: string]: string } | null,
-	profileId: string,
+	profileId: string | undefined,
 	options?: {
 		enabled: boolean;
 		refetchInterval?: number | false;

@@ -11,7 +11,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import React, { type FunctionComponent, type MouseEvent, useEffect, useState } from 'react';
+import React, { type FC, type MouseEvent, useEffect, useState } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -28,7 +28,7 @@ export interface MultiEducationalOrganisationSelectModalProps {
 	showSelectedValuesOnCollapsed?: boolean;
 }
 
-export const MultiEducationalOrganisationSelectModal: FunctionComponent<
+export const MultiEducationalOrganisationSelectModal: FC<
 	MultiEducationalOrganisationSelectModalProps
 > = ({ label, id, values, disabled, onChange, showSelectedValuesOnCollapsed = true }) => {
 	const { tText, tHtml } = useTranslation();

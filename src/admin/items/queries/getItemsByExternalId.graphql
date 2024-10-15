@@ -50,12 +50,8 @@ query getItemsByExternalId($externalIds: [bpchar!] = []) {
 			description
 			external_id
 		}
-		view_counts_aggregate {
-			aggregate {
-				sum {
-					count
-				}
-			}
+		view_count {
+			count
 		}
 	}
 }

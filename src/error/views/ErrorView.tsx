@@ -13,7 +13,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isArray, isNil, isString, omit, uniq } from 'lodash-es';
 import queryString from 'query-string';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 import { type RouteComponentProps, withRouter } from 'react-router';
 import { compose } from 'redux';
 
@@ -42,7 +42,7 @@ interface ErrorViewProps {
 	children?: ReactNode;
 }
 
-const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserProps> = ({
+const ErrorView: FC<ErrorViewProps & RouteComponentProps & UserProps> = ({
 	message,
 	icon,
 	children = null,
@@ -148,4 +148,4 @@ const ErrorView: FunctionComponent<ErrorViewProps & RouteComponentProps & UserPr
 	);
 };
 
-export default compose(withRouter, withUser)(ErrorView) as FunctionComponent<ErrorViewProps>;
+export default compose(withRouter, withUser)(ErrorView) as FC<ErrorViewProps>;

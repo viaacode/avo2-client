@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Checkbox,
@@ -8,11 +8,8 @@ import {
 	Spinner,
 	TextArea,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import type { Requests } from 'node-zendesk';
-import queryString from 'query-string';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { compose } from 'redux';
@@ -21,79 +18,64 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { FileUpload } from '../../shared/components';
-import { getFullName, isMobileWidth } from '../../shared/helpers';
-import { DOC_TYPES, isPhoto } from '../../shared/helpers/files';
+import { getFullNameCommonUser, isMobileWidth } from '../../shared/helpers';
+import { DOC_TYPES } from '../../shared/helpers/files';
 import { groupLomLinks } from '../../shared/helpers/lom';
+import { validateForm } from '../../shared/helpers/validate-form';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { ToastService } from '../../shared/services/toast-service';
 import { ZendeskService } from '../../shared/services/zendesk-service';
 
+import { USER_ITEM_REQUEST_FORM_VALIDATION_SCHEMA } from './UserItemRequestForm.consts';
+import { renderAttachment } from './UserItemRequestForm.helpers';
+
+import './ItemRequestForm.scss';
+
 export type UserItemRequestFormProps = DefaultSecureRouteProps;
 
-const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
-	history,
-	user,
-	commonUser,
-}) => {
+interface FormValues {
+	description: string;
+	wantsToUploadAttachment: boolean;
+	attachmentUrl: string | null;
+}
+
+const UserItemRequestForm: FC<UserItemRequestFormProps> = ({ history, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [description, setDescription] = useState<string>('');
-	const [wantsToUploadAttachment, setWantsToUploadAttachment] = useState<boolean>(false);
-	const [attachmentUrl, setAttachmentUrl] = useState<string | null>(null);
+	const [formValues, setFormValues] = useState<FormValues>({
+		description: '',
+		wantsToUploadAttachment: false,
+		attachmentUrl: null,
+	});
+	const [formErrors, setFormErrors] = useState<Partial<Record<keyof FormValues, string>>>({});
+
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	const getValidationErrors = (): string[] => {
-		const requiredError = tText(
-			'user-item-request-form/views/user-item-request-form___is-verplicht'
-		);
-		const errors = [];
-		if (!description) {
-			errors.push(
-				`${tText(
-					'user-item-request-form/views/user-item-request-form___omschrijving'
-				)} ${requiredError}`
-			);
-		}
-		return errors;
-	};
-
-	const renderAttachment = () => {
-		const filename = get(
-			queryString.parse((attachmentUrl || '').split('?').pop() || ''),
-			'name',
-			tText('user-item-request-form/views/user-item-request-form___bestand')
-		);
-		if (wantsToUploadAttachment && attachmentUrl) {
-			if (isPhoto(attachmentUrl)) {
-				return `<img src="${attachmentUrl}" alt="Bijlage"/>`;
-			}
-			return `<a href="${attachmentUrl}">${filename}</a>`;
-		}
-		return tText(
-			'user-item-request-form/views/user-item-request-form___er-werd-geen-bijlage-toegevoegd'
-		);
-	};
 
 	const onSend = async () => {
 		let ticket: Requests.CreateModel | undefined;
 		try {
-			const errors = getValidationErrors();
-			if (errors.length) {
-				ToastService.danger(errors);
+			setIsLoading(true);
+			const newFormErrors = await validateForm(
+				formValues,
+				USER_ITEM_REQUEST_FORM_VALIDATION_SCHEMA
+			);
+			if (newFormErrors) {
+				setFormErrors(newFormErrors);
+				ToastService.danger(Object.values(newFormErrors)[0]);
+				setIsLoading(false);
 				return;
 			}
 
-			setIsLoading(true);
 			// create zendesk ticket
-			const groupedLoms = groupLomLinks(commonUser.loms);
+			const groupedLoms = groupLomLinks(commonUser?.loms);
 			const body = {
-				description,
-				firstName: user.first_name,
-				lastName: user.last_name,
-				email: user.mail,
-				organization: (commonUser?.educationalOrganisations || [])
+				description: formValues.description,
+				firstName: commonUser?.firstName,
+				lastName: commonUser?.lastName,
+				email: commonUser?.email,
+				organisation: (commonUser?.educationalOrganisations || [])
 					.map((org) => org.organisationLabel)
 					.join(', '),
 				subjects: groupedLoms.subject.map((subject) => subject.label).join(', '),
@@ -111,10 +93,10 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
   }</dd>
   <dt>${tText(
 		'user-item-request-form/views/user-item-request-form___bijlage'
-  )}</dt><dd>${renderAttachment()}</dd>
+  )}</dt><dd>${renderAttachment(formValues.attachmentUrl, formValues.wantsToUploadAttachment)}</dd>
   <dt>${tText(
 		'authentication/views/registration-flow/r-4-manual-registration___school-of-organisatie'
-  )}</dt><dd>${body.organization}</dd>
+  )}</dt><dd>${body.organisation}</dd>
   <dt>${tText('user-item-request-form/views/user-item-request-form___vakken')}</dt><dd>${
 		body.subjects
   }</dd>
@@ -128,19 +110,19 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 					'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-item'
 				),
 				requester: {
-					email: get(user, 'mail'),
-					name: getFullName(user as { profile: Avo.User.Profile }, true, false) || '',
+					email: commonUser?.email,
+					name: getFullNameCommonUser(commonUser, true, false) || '',
 				},
 			};
 			await ZendeskService.createTicket(ticket);
 
 			trackEvents(
 				{
-					object: description,
+					object: formValues.description,
 					object_type: 'item',
 					action: 'request',
 				},
-				user
+				commonUser
 			);
 
 			ToastService.success(
@@ -175,11 +157,13 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 					{tHtml(
 						'user-item-request-form/views/user-item-request-form___omschrijf-je-aanvraag'
 					)}
-					<FormGroup>
+					<FormGroup error={formErrors.description}>
 						<TextArea
 							id="description"
-							value={description}
-							onChange={setDescription}
+							value={formValues.description}
+							onChange={(newDescription) =>
+								setFormValues({ ...formValues, description: newDescription })
+							}
 							rows={isMobileWidth() ? 6 : 15}
 							placeholder={tText(
 								'user-item-request-form/views/user-item-request-form___gebruikersaanvraag-beschrijving'
@@ -191,14 +175,18 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 							label={tText(
 								'user-item-request-form/views/user-item-request-form___ik-wil-een-bijlage-opladen'
 							)}
-							checked={wantsToUploadAttachment}
-							onChange={setWantsToUploadAttachment}
+							checked={formValues.wantsToUploadAttachment}
+							onChange={(checked) =>
+								setFormValues({ ...formValues, wantsToUploadAttachment: checked })
+							}
 						/>
-						{wantsToUploadAttachment && (
+						{formValues.wantsToUploadAttachment && (
 							<FileUpload
 								assetType="ZENDESK_ATTACHMENT"
-								urls={attachmentUrl ? [attachmentUrl] : []}
-								onChange={(attachments) => setAttachmentUrl(attachments[0])}
+								urls={formValues.attachmentUrl ? [formValues.attachmentUrl] : []}
+								onChange={(attachments) =>
+									setFormValues({ ...formValues, attachmentUrl: attachments[0] })
+								}
 								ownerId=""
 								allowedTypes={DOC_TYPES}
 								allowMulti={false}
@@ -232,7 +220,7 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 	};
 
 	return (
-		<Container className="c-register-stamboek-view" mode="vertical">
+		<Container className="p-item-request-form" mode="vertical">
 			<Container mode="horizontal" size="large">
 				<Helmet>
 					<title>
@@ -255,4 +243,4 @@ const UserItemRequestForm: FunctionComponent<UserItemRequestFormProps> = ({
 	);
 };
 
-export default compose(withRouter, withUser)(UserItemRequestForm) as FunctionComponent;
+export default compose(withRouter, withUser)(UserItemRequestForm) as FC;

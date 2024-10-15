@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
+import { compact, fromPairs, get, groupBy, isString, noop } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
@@ -31,10 +31,20 @@ import {
 	type IncrementAssignmentViewsMutationVariables,
 	type IncrementCollectionPlaysMutation,
 	type IncrementCollectionPlaysMutationVariables,
-	type IncrementCollectionViewsMutation,
-	type IncrementCollectionViewsMutationVariables,
-	type IncrementItemPlaysMutation,
-	type IncrementItemPlaysMutationVariables,
+	type IncrementCollectionViewsViaCollectionPageMutation,
+	type IncrementCollectionViewsViaCollectionPageMutationVariables,
+	type IncrementCollectionViewsViaQuickLanePageMutation,
+	type IncrementCollectionViewsViaQuickLanePageMutationVariables,
+	type IncrementItemPlaysViaAssignmentPageMutation,
+	type IncrementItemPlaysViaAssignmentPageMutationVariables,
+	type IncrementItemPlaysViaCollectionPageMutation,
+	type IncrementItemPlaysViaCollectionPageMutationVariables,
+	type IncrementItemPlaysViaContentPageMutation,
+	type IncrementItemPlaysViaContentPageMutationVariables,
+	type IncrementItemPlaysViaItemPageMutation,
+	type IncrementItemPlaysViaItemPageMutationVariables,
+	type IncrementItemPlaysViaQuickLanePageMutation,
+	type IncrementItemPlaysViaQuickLanePageMutationVariables,
 	type IncrementItemViewsMutation,
 	type IncrementItemViewsMutationVariables,
 	type InsertCollectionBookmarkMutation,
@@ -70,27 +80,37 @@ import {
 	type EventContentType,
 	type EventContentTypeSimplified,
 	type QueryType,
+	SourcePage,
 } from './bookmarks-views-plays-service.types';
 
 export class BookmarksViewsPlaysService {
 	public static async action(
 		action: EventAction,
 		contentType: EventContentType,
+		sourcePage: SourcePage,
 		contentUuid: string,
-		user?: Avo.User.User | Avo.User.CommonUser,
+		commonUser: Avo.User.CommonUser | null,
 		silent = true
 	): Promise<void> {
 		try {
 			if (action === 'play' || action === 'view') {
-				await this.incrementCount(action, contentType, contentUuid, user, silent);
+				await this.incrementCount(
+					action,
+					contentType,
+					sourcePage,
+					contentUuid,
+					commonUser,
+					silent
+				);
 			} else {
 				// Bookmark or unbookmark action
 				const { query, variables } = this.getQueryAndVariables(
 					action,
 					'query',
 					contentType,
+					sourcePage,
 					contentUuid,
-					user
+					commonUser
 				);
 
 				await dataService.query<
@@ -115,7 +135,7 @@ export class BookmarksViewsPlaysService {
 				action,
 				contentType,
 				contentUuid,
-				user,
+				commonUser,
 			});
 			if (silent) {
 				console.error(error);
@@ -127,14 +147,14 @@ export class BookmarksViewsPlaysService {
 
 	public static async getItemCounts(
 		itemUuid: string,
-		user: Avo.User.User | null
+		commonUser: Avo.User.CommonUser | null
 	): Promise<BookmarkViewPlayCounts> {
 		const response = await dataService.query<
 			GetItemBookmarkViewPlayCountsQuery,
 			GetItemBookmarkViewPlayCountsQueryVariables
 		>({
 			query: GetItemBookmarkViewPlayCountsDocument,
-			variables: { itemUuid, profileId: get(user, 'profile.id', null) },
+			variables: { itemUuid, profileId: commonUser?.profileId || null },
 		});
 		const isBookmarked = !!response.app_item_bookmarks[0];
 		const bookmarkCount = response.app_item_bookmarks_aggregate.aggregate?.count ?? 0;
@@ -150,14 +170,14 @@ export class BookmarksViewsPlaysService {
 
 	public static async getCollectionCounts(
 		collectionUuid: string,
-		user: Avo.User.User | null
+		commonUser: Avo.User.CommonUser | undefined | null
 	): Promise<BookmarkViewPlayCounts> {
 		const response = await dataService.query<
 			GetCollectionBookmarkViewPlayCountsQuery,
 			GetCollectionBookmarkViewPlayCountsQueryVariables
 		>({
 			query: GetCollectionBookmarkViewPlayCountsDocument,
-			variables: { collectionUuid, profileId: user?.profile?.id || null },
+			variables: { collectionUuid, profileId: commonUser?.profileId || null },
 		});
 		const isBookmarked = !!response.app_collection_bookmarks[0];
 		const bookmarkCount = response.app_collection_bookmarks_aggregate.aggregate?.count || 0;
@@ -171,13 +191,19 @@ export class BookmarksViewsPlaysService {
 		};
 	}
 
-	public static async getAssignmentCounts(assignmentUuid: string, user: Avo.User.User | null) {
+	public static async getAssignmentCounts(
+		assignmentUuid: string,
+		commonUser: Avo.User.CommonUser | null
+	) {
 		const response = await dataService.query<
 			GetAssignmentBookmarkViewCountsQuery,
 			GetAssignmentBookmarkViewCountsQueryVariables
 		>({
 			query: GetAssignmentBookmarkViewCountsDocument,
-			variables: { assignmentUuid, profileId: user?.profile?.id || null },
+			variables: {
+				assignmentUuid,
+				profileId: commonUser?.profileId || null,
+			},
 		});
 
 		const isBookmarked = !!response.app_assignments_v2_bookmarks[0];
@@ -196,14 +222,14 @@ export class BookmarksViewsPlaysService {
 	/**
 	 * Toggles the bookmark for the provided item or collection or bundle
 	 * @param contentId
-	 * @param user
+	 * @param commonUser
 	 * @param type
 	 * @param isBookmarked current state of the bookmark toggle before the desired action is executed
 	 * @return {boolean} returns true of the operation was successful, otherwise false
 	 */
 	public static async toggleBookmark(
 		contentId: string,
-		user: Avo.User.User | Avo.User.CommonUser,
+		commonUser: Avo.User.CommonUser | null,
 		type: EventContentType,
 		isBookmarked: boolean
 	): Promise<void> {
@@ -218,8 +244,9 @@ export class BookmarksViewsPlaysService {
 			await BookmarksViewsPlaysService.action(
 				isBookmarked ? 'unbookmark' : 'bookmark',
 				type,
+				SourcePage.itemPage, // Source page only matters for incrementing views/plays
 				contentId,
-				user,
+				commonUser,
 				false
 			);
 
@@ -230,7 +257,7 @@ export class BookmarksViewsPlaysService {
 						object_type: type,
 						action: 'bookmark',
 					},
-					user
+					commonUser
 				);
 			}
 		} catch (err) {
@@ -269,12 +296,12 @@ export class BookmarksViewsPlaysService {
 	}
 
 	public static async getItemBookmarksForUser(
-		user: Avo.User.User,
+		commonUser: Avo.User.CommonUser,
 		filterString: string,
 		orderObject: GetItemBookmarksForUserQueryVariables['order']
 	): Promise<BookmarkInfo[]> {
 		const variables: GetItemBookmarksForUserQueryVariables = {
-			profileId: get(user, 'profile.id'),
+			profileId: commonUser?.profileId,
 			filter: [{ bookmarkedItem: { title: { _ilike: `%${filterString}%` } } }],
 			order: orderObject,
 		};
@@ -370,17 +397,23 @@ export class BookmarksViewsPlaysService {
 		action: EventAction,
 		queryType: QueryType,
 		contentType: EventContentType,
+		sourcePage: SourcePage,
 		contentUuid: string,
-		user: Avo.User.User | Avo.User.CommonUser | undefined
-	) {
+		commonUser: Avo.User.CommonUser | null
+	): { query: string; variables: any; getResponseCount?: (response: any) => number } {
 		// bundle is handled the same way as a collection
 		const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
 
 		const eventQueries = GET_EVENT_QUERIES();
-		const query = get(eventQueries, [action, contentTypeSimplified, queryType]);
+		let query = eventQueries?.[action]?.[contentTypeSimplified]?.[queryType];
+		if (query && !isString(query)) {
+			// Increment queries need to know which page they happened on
+			// https://meemoo.atlassian.net/browse/AVO-1827
+			query = (query as Partial<Record<SourcePage, string>>)[sourcePage] as string;
+		}
 		const getVariablesFunc =
 			GET_EVENT_QUERIES()?.[action]?.[contentTypeSimplified]?.variables ?? noop;
-		const variables = getVariablesFunc(contentUuid, user);
+		const variables = getVariablesFunc(contentUuid, commonUser);
 		if (!query || !variables) {
 			throw new CustomError('Failed to find query/variables in query lookup table');
 		}
@@ -422,8 +455,9 @@ export class BookmarksViewsPlaysService {
 	private static async incrementCount(
 		action: EventAction,
 		contentType: EventContentType,
+		sourcePage: SourcePage,
 		contentUuid: string,
-		user?: Avo.User.User | Avo.User.CommonUser,
+		commonUser: Avo.User.CommonUser | null,
 		silent = true
 	) {
 		try {
@@ -431,21 +465,32 @@ export class BookmarksViewsPlaysService {
 				action,
 				'increment',
 				contentType,
+				sourcePage,
 				contentUuid,
-				user
+				commonUser
 			);
 
 			await dataService.query<
-				| IncrementItemPlaysMutation
-				| IncrementItemViewsMutation
-				| IncrementCollectionViewsMutation
-				| IncrementCollectionPlaysMutation,
 				| IncrementAssignmentViewsMutation
-				| IncrementItemPlaysMutationVariables
-				| IncrementItemViewsMutationVariables
-				| IncrementCollectionViewsMutationVariables
-				| IncrementCollectionPlaysMutationVariables
+				| IncrementCollectionPlaysMutation
+				| IncrementCollectionViewsViaCollectionPageMutation
+				| IncrementCollectionViewsViaQuickLanePageMutation
+				| IncrementItemPlaysViaAssignmentPageMutation
+				| IncrementItemPlaysViaCollectionPageMutation
+				| IncrementItemPlaysViaContentPageMutation
+				| IncrementItemPlaysViaItemPageMutation
+				| IncrementItemPlaysViaQuickLanePageMutation
+				| IncrementItemViewsMutation,
 				| IncrementAssignmentViewsMutationVariables
+				| IncrementCollectionPlaysMutationVariables
+				| IncrementCollectionViewsViaCollectionPageMutationVariables
+				| IncrementCollectionViewsViaQuickLanePageMutationVariables
+				| IncrementItemPlaysViaAssignmentPageMutationVariables
+				| IncrementItemPlaysViaCollectionPageMutationVariables
+				| IncrementItemPlaysViaContentPageMutationVariables
+				| IncrementItemPlaysViaItemPageMutationVariables
+				| IncrementItemPlaysViaQuickLanePageMutationVariables
+				| IncrementItemViewsMutationVariables
 			>({
 				query,
 				variables,
@@ -458,7 +503,7 @@ export class BookmarksViewsPlaysService {
 					action,
 					contentType,
 					contentUuid,
-					user,
+					user: commonUser,
 				}
 			);
 			if (silent) {

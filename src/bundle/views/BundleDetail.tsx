@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	ButtonToolbar,
@@ -23,11 +23,10 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get, isNil } from 'lodash-es';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import { compact, get, isNil, noop } from 'lodash-es';
+import React, { type FC, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -79,7 +78,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -96,9 +98,13 @@ type BundleDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const BundleDetail: FunctionComponent<
-	BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({ history, match, user, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id: string }>> = ({
+	history,
+	match,
+	commonUser,
+	id,
+	enabledMetaData = ALL_SEARCH_FILTERS,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -128,14 +134,15 @@ const BundleDetail: FunctionComponent<
 		DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS
 	);
 	const [showLoginPopup, setShowLoginPopup] = useState<boolean | null>(null);
-	const isOwner = !!bundle?.owner_profile_id && bundle?.owner_profile_id === user?.profile?.id;
+	const isOwner =
+		!!bundle?.owner_profile_id && bundle?.owner_profile_id === commonUser?.profileId;
 
 	useEffect(() => {
 		const checkPermissionsAndGetBundle = async () => {
 			let showPopup = false;
 			let permissionObj = undefined;
 
-			if (!user) {
+			if (!commonUser) {
 				showPopup = true;
 			} else {
 				permissionObj = await PermissionService.checkPermissions(
@@ -166,7 +173,7 @@ const BundleDetail: FunctionComponent<
 						canCreateBundles: [{ name: PermissionName.CREATE_BUNDLES }],
 						canViewItems: [{ name: PermissionName.VIEW_ANY_PUBLISHED_ITEMS }],
 					},
-					user
+					commonUser
 				);
 
 				if (
@@ -189,7 +196,7 @@ const BundleDetail: FunctionComponent<
 				// Ignore errors during fetch
 			}
 
-			if (!user) {
+			if (!commonUser) {
 				setBundle(bundleObj);
 				setLoadingInfo({
 					state: 'loaded',
@@ -229,10 +236,16 @@ const BundleDetail: FunctionComponent<
 						object_type: 'bundle',
 						action: 'view',
 					},
-					user
+					commonUser
 				);
 
-				BookmarksViewsPlaysService.action('view', 'bundle', bundleObj.id, user);
+				BookmarksViewsPlaysService.action(
+					'view',
+					'bundle',
+					SourcePage.collectionPage,
+					bundleObj.id,
+					commonUser
+				).then(noop);
 
 				// Get view counts for each fragment
 				try {
@@ -249,9 +262,12 @@ const BundleDetail: FunctionComponent<
 				}
 
 				try {
-					user &&
+					commonUser &&
 						setBookmarkViewPlayCounts(
-							await BookmarksViewsPlaysService.getCollectionCounts(bundleId, user)
+							await BookmarksViewsPlaysService.getCollectionCounts(
+								bundleId,
+								commonUser
+							)
 						);
 				} catch (err) {
 					console.error(
@@ -290,7 +306,7 @@ const BundleDetail: FunctionComponent<
 		};
 
 		checkPermissionsAndGetBundle().catch((err) => {
-			if ((err as CustomError)?.innerException?.statusCode === 404 && !user) {
+			if ((err as CustomError)?.innerException?.statusCode === 404 && !commonUser) {
 				// If not logged in and the bundle is not found => the bundle might be private and the user might need to login to see it
 				setShowLoginPopup(true);
 				setLoadingInfo({
@@ -315,7 +331,7 @@ const BundleDetail: FunctionComponent<
 				icon: IconName.alertTriangle,
 			});
 		});
-	}, [user, bundleId, setLoadingInfo, setShowLoginPopup, tText]);
+	}, [commonUser, bundleId, setLoadingInfo, setShowLoginPopup, tText]);
 
 	useEffect(() => {
 		if (bundle && !isNil(showLoginPopup)) {
@@ -347,7 +363,7 @@ const BundleDetail: FunctionComponent<
 					object_type: 'collection',
 					action: 'delete',
 				},
-				user
+				commonUser
 			);
 
 			history.push(APP_PATH.WORKSPACE.route);
@@ -372,7 +388,7 @@ const BundleDetail: FunctionComponent<
 				);
 				return;
 			}
-			if (!user) {
+			if (!commonUser) {
 				ToastService.danger(
 					tHtml(
 						'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
@@ -382,7 +398,7 @@ const BundleDetail: FunctionComponent<
 			}
 			const duplicateBundle = await CollectionService.duplicateCollection(
 				bundle,
-				user,
+				commonUser,
 				COLLECTION_COPY,
 				COLLECTION_COPY_REGEX
 			);
@@ -393,7 +409,7 @@ const BundleDetail: FunctionComponent<
 					object_type: 'bundle',
 					action: 'copy',
 				},
-				user
+				commonUser
 			);
 
 			defaultGoToDetailLink(history)(duplicateBundle.id, 'bundel');
@@ -445,7 +461,7 @@ const BundleDetail: FunctionComponent<
 	};
 
 	const toggleBookmark = async () => {
-		if (!user) {
+		if (!commonUser) {
 			ToastService.danger(
 				tHtml(
 					'bundle/views/bundle-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
@@ -456,7 +472,7 @@ const BundleDetail: FunctionComponent<
 		try {
 			await BookmarksViewsPlaysService.toggleBookmark(
 				bundleId,
-				user,
+				commonUser,
 				'collection',
 				bookmarkViewPlayCounts.isBookmarked
 			);
@@ -473,7 +489,7 @@ const BundleDetail: FunctionComponent<
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {
 					bundleId,
-					user,
+					commonUser,
 					type: 'bundle',
 					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
 				})
@@ -671,7 +687,7 @@ const BundleDetail: FunctionComponent<
 					/>
 				)}
 				{renderActionDropdown()}
-				{!!user && <InteractiveTour showButton />}
+				{!!commonUser && <InteractiveTour showButton />}
 			</ButtonToolbar>
 		);
 	};
@@ -728,17 +744,14 @@ const BundleDetail: FunctionComponent<
 				</Helmet>
 				<JsonLd
 					url={window.location.href}
-					title={get(bundle, 'title')}
-					description={get(bundle, 'description')}
-					image={get(bundle, 'thumbnail_path')}
-					isOrganisation={!!get(bundle, 'profile.organisation')}
-					author={getFullName(get(bundle, 'profile'), true, false)}
-					publishedAt={get(bundle, 'published_at')}
-					updatedAt={get(bundle, 'updated_at')}
-					keywords={[
-						...(get(bundle, 'lom_classification') || []),
-						...(get(bundle, 'lom_context') || []),
-					]}
+					title={bundle?.title}
+					description={bundle?.description}
+					image={bundle?.thumbnail_path}
+					isOrganisation={!!bundle?.profile?.organisation}
+					author={getFullName(bundle?.profile, true, false)}
+					publishedAt={bundle?.published_at}
+					updatedAt={bundle?.updated_at}
+					keywords={compact(bundle?.loms?.map((lom) => lom.lom?.label))}
 				/>
 				<div
 					className={classnames(
@@ -840,7 +853,7 @@ const BundleDetail: FunctionComponent<
 							</Container>
 						</Container>
 						{renderMetaDataAndRelated()}
-						{!!bundle && !!user && (
+						{!!bundle && !!commonUser && (
 							<PublishCollectionModal
 								collection={bundle}
 								isOpen={isPublishModalOpen}
@@ -903,4 +916,4 @@ const BundleDetail: FunctionComponent<
 	);
 };
 
-export default compose(withRouter, withUser)(BundleDetail) as FunctionComponent<BundleDetailProps>;
+export default compose(withRouter, withUser)(BundleDetail) as FC<BundleDetailProps>;

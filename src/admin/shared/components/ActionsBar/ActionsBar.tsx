@@ -7,7 +7,7 @@ import {
 	ToolbarLeft,
 } from '@viaa/avo2-components';
 import classnames from 'classnames';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import './ActionsBar.scss';
 
@@ -16,7 +16,7 @@ interface ActionsBarProps {
 	fixed?: boolean;
 }
 
-export const ActionsBar: FunctionComponent<ActionsBarProps> = ({ children, fixed }) => {
+export const ActionsBar: FC<ActionsBarProps> = ({ children, fixed }) => {
 	return (
 		<Navbar
 			autoHeight

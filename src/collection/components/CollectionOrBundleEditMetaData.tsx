@@ -1,4 +1,3 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import { type RichEditorState } from '@meemoo/react-components';
 import {
 	Button,
@@ -14,7 +13,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { type StringMap } from 'i18next';
 import { compact, map } from 'lodash-es';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import { FileUpload, ShortDescriptionField, ThumbnailStillsModal } from '../../shared/components';
 import LomFieldsInput from '../../shared/components/LomFieldsInput/LomFieldsInput';
@@ -37,7 +36,7 @@ interface CollectionOrBundleEditMetaDataProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMetaDataProps> = ({
+const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataProps> = ({
 	type,
 	collection,
 	changeCollectionState,
@@ -58,6 +57,22 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 			collectionProp: 'loms',
 			type: 'UPDATE_COLLECTION_PROP',
 			collectionPropValue: loms.map((lom) => ({ lom }) as Avo.Lom.Lom),
+		});
+	};
+
+	const handleBlurRichTextEditor = async () => {
+		const { sanitizeHtml, SanitizePreset } = await import(
+			'@meemoo/admin-core-ui/dist/admin.mjs'
+		);
+		changeCollectionState({
+			type: 'UPDATE_COLLECTION_PROP',
+			collectionProp: 'description_long',
+			collectionPropValue: sanitizeHtml(
+				descriptionLongEditorState
+					? descriptionLongEditorState.toHTML()
+					: collection.description_long || '',
+				SanitizePreset.link
+			),
 		});
 	};
 
@@ -125,18 +140,7 @@ const CollectionOrBundleEditMetaData: FunctionComponent<CollectionOrBundleEditMe
 												initialHtml={collection.description_long || ''}
 												state={descriptionLongEditorState}
 												onChange={setDescriptionLongEditorState}
-												onBlur={() =>
-													changeCollectionState({
-														type: 'UPDATE_COLLECTION_PROP',
-														collectionProp: 'description_long',
-														collectionPropValue: sanitizeHtml(
-															descriptionLongEditorState
-																? descriptionLongEditorState.toHTML()
-																: collection.description_long || '',
-															SanitizePreset.link
-														),
-													})
-												}
+												onBlur={handleBlurRichTextEditor}
 											/>
 											<label>
 												{getValidationFeedbackForDescription(

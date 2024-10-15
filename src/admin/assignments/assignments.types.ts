@@ -25,7 +25,12 @@ export interface AssignmentsOverviewTableState extends FilterableTableState {
 	share_type: string;
 	subjects: string[];
 	education_levels: string[]; // These are the lom values for the assignment publication details
+	education_degrees: string[]; // These are the lom values for the assignment publication details
 	education_level_id: string[]; // This is the type of assignment: Lager onderwijs or secundair onderwijs. also known as "Kenmerk"
 }
 
-export type AssignmentsBulkAction = 'delete' | 'change_author';
+export enum AssignmentsBulkAction {
+	DELETE = 'DELETE',
+	CHANGE_AUTHOR = 'CHANGE_AUTHOR',
+	EXPORT_ALL = 'EXPORT_ALL',
+}

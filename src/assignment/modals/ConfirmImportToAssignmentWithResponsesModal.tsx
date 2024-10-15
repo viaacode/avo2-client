@@ -7,7 +7,7 @@ import {
 	ToolbarItem,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 interface ConfirmImportToAssignmentWithResponsesModalProps {
 	isOpen: boolean;
@@ -23,7 +23,7 @@ interface ConfirmImportToAssignmentWithResponsesModalProps {
 	};
 }
 
-const ConfirmImportToAssignmentWithResponsesModal: FunctionComponent<
+const ConfirmImportToAssignmentWithResponsesModal: FC<
 	ConfirmImportToAssignmentWithResponsesModalProps
 > = ({ isOpen, onClose, confirmCallback, translations }) => {
 	const renderConfirmButtons = () => {

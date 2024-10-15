@@ -1,5 +1,5 @@
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { type RouteComponentProps, withRouter } from 'react-router';
 
 import LoginOptions from './LoginOptions';
@@ -9,7 +9,7 @@ export interface LoginOptionsDropdownProps {
 	closeDropdown?: () => void;
 }
 
-const LoginOptionsDropdown: FunctionComponent<LoginOptionsDropdownProps & RouteComponentProps> = ({
+const LoginOptionsDropdown: FC<LoginOptionsDropdownProps & RouteComponentProps> = ({
 	history,
 	location,
 	match,

@@ -1,6 +1,6 @@
 import { Dropdown, DropdownButton, DropdownContent, Icon } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { NavLink, type RouteComponentProps } from 'react-router-dom';
 
 import { type BooleanDictionary } from '../../helpers/navigation';
@@ -19,7 +19,7 @@ export interface NavigationItemProps extends RouteComponentProps {
 	onNavigate?: () => void;
 }
 
-export const NavigationItem: FunctionComponent<NavigationItemProps> = ({
+export const NavigationItem: FC<NavigationItemProps> = ({
 	item,
 	className,
 	exact,

@@ -62,12 +62,8 @@ query getCollectionsByOwnerOrContributor(
 		depublish_at
 		created_at
 		thumbnail_path
-		view_counts_aggregate {
-			aggregate {
-				sum {
-					count
-				}
-			}
+		view_count {
+			count
 		}
 		share_type
 		contributors {

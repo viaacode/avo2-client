@@ -1,15 +1,19 @@
-import { IconName, Pagination, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
-import React, { type FC, type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import { PaginationBar } from '@meemoo/react-components';
+import { IconName, Spacer, Table, type TableColumn } from '@viaa/avo2-components';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import {
 	CollectionService,
 	type OrganisationContentItem,
 } from '../../collection/collection.service';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { OrderDirection } from '../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { buildLink, formatDate, formatTimestamp, isMobileWidth } from '../../shared/helpers';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -28,9 +32,10 @@ interface OrganisationContentOverviewProps {
 
 // Component
 
-const OrganisationContentOverview: FunctionComponent<
-	OrganisationContentOverviewProps & UserProps
-> = ({ numberOfItems, commonUser }) => {
+const OrganisationContentOverview: FC<OrganisationContentOverviewProps & UserProps> = ({
+	numberOfItems,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -38,7 +43,7 @@ const OrganisationContentOverview: FunctionComponent<
 		OrganisationContentItem[] | null
 	>(null);
 	const [sortColumn, setSortColumn] = useState<keyof OrganisationContentItem>('title');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
@@ -46,11 +51,11 @@ const OrganisationContentOverview: FunctionComponent<
 	const onClickColumn = (columnId: keyof OrganisationContentItem) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+			setSortOrder(toggleSortOrder(sortOrder));
 		} else {
 			// Initial column sort order
 			setSortColumn(columnId);
-			setSortOrder('asc');
+			setSortOrder(OrderDirection.asc);
 		}
 	};
 
@@ -230,9 +235,11 @@ const OrganisationContentOverview: FunctionComponent<
 	};
 
 	const renderPagination = () => (
-		<Pagination
-			pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
-			currentPage={page}
+		<PaginationBar
+			{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+			startItem={page * ITEMS_PER_PAGE}
+			itemsPerPage={ITEMS_PER_PAGE}
+			totalItems={numberOfItems}
 			onPageChange={setPage}
 		/>
 	);

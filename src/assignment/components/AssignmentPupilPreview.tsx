@@ -1,14 +1,7 @@
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, {
-	type Dispatch,
-	type FC,
-	type FunctionComponent,
-	type SetStateAction,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type Dispatch, type FC, type SetStateAction, useMemo, useState } from 'react';
 
 import AlertBar from '../../shared/components/AlertBar/AlertBar';
 import { isMobileWidth } from '../../shared/helpers';
@@ -112,4 +105,4 @@ const AssignmentPupilPreview: FC<AssignmentPupilPreviewProps & UserProps> = ({
 	);
 };
 
-export default withUser(AssignmentPupilPreview) as FunctionComponent<AssignmentPupilPreviewProps>;
+export default withUser(AssignmentPupilPreview) as FC<AssignmentPupilPreviewProps>;

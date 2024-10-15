@@ -10,16 +10,9 @@ import {
 	ToolbarRight,
 	ToolbarTitle,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isEmpty } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	type ReactText,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, type ReactText, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -52,7 +45,7 @@ import { type FilterState } from '../search.types';
 
 import './Search.scss';
 
-const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) => {
+const Search: FC<UserProps & RouteComponentProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [isOptionsMenuOpen, setIsOptionsMenuOpen] = useState(false);
@@ -77,7 +70,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 					action: 'search',
 					resource: filterState.filters,
 				},
-				user
+				commonUser
 			);
 		}
 	}, [filterState]);
@@ -130,7 +123,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 					content={tText('search/views/search___zoeken-pagina-beschrijving')}
 				/>
 			</Helmet>
-			<PermissionGuard permissions={PermissionName.SEARCH} user={user || null}>
+			<PermissionGuard permissions={PermissionName.SEARCH} commonUser={commonUser || null}>
 				<PermissionGuardPass>
 					<Navbar>
 						<Container mode="horizontal">
@@ -166,7 +159,7 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 							</Toolbar>
 						</Container>
 					</Navbar>
-					{PermissionService.hasPerm(user, PermissionName.SEARCH) ? (
+					{PermissionService.hasPerm(commonUser, PermissionName.SEARCH) ? (
 						<SearchFiltersAndResults
 							bookmarks
 							filterState={filterState}
@@ -198,4 +191,4 @@ const Search: FunctionComponent<UserProps & RouteComponentProps> = ({ user }) =>
 	);
 };
 
-export default compose(withRouter, withUser)(Search) as FunctionComponent;
+export default compose(withRouter, withUser)(Search) as FC;

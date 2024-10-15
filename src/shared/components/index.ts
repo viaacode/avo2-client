@@ -26,9 +26,9 @@ export { default as ShareWithColleagues } from './ShareWithColleagues/ShareWithC
 export { default as ShortDescriptionField } from './ShortDescriptionField/ShortDescriptionField';
 export { default as SubjectsField } from './SubjectsField/SubjectsField';
 export { default as ThumbnailStillsModal } from './ThumbnailStillsModal/ThumbnailStillsModal';
+export { default as HeaderOwnerAndContributors } from './HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 export * from './BlockItemMetadata/BlockItemMetadata';
 export * from './CheckboxDropdownModal/CheckboxDropdownModal';
-export * from './HeaderOwnerAndContributors/HeaderOwnerAndContributors';
 export * from './ListSorter';
 export * from './LoadingErrorLoadedComponent/LoadingErrorLoadedComponent';
 export * from './ShareWithPupils/ShareWithPupils';

@@ -1,4 +1,3 @@
-import { AssetsService } from '@meemoo/admin-core-ui';
 import {
 	Blankslate,
 	Button,
@@ -12,7 +11,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import { compact, isString } from 'lodash-es';
 import queryString from 'query-string';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
@@ -36,7 +35,7 @@ export interface FileUploadProps {
 	onChange: (urls: string[]) => void;
 }
 
-const FileUpload: FunctionComponent<FileUploadProps> = ({
+const FileUpload: FC<FileUploadProps> = ({
 	icon,
 	label,
 	allowedTypes = PHOTO_TYPES,
@@ -127,6 +126,9 @@ const FileUpload: FunctionComponent<FileUploadProps> = ({
 				const newUrls = [...urls];
 				for (let i = newUrls.length - 1; i >= 0; i -= 1) {
 					if (newUrls[i] === url) {
+						const { AssetsService } = await import(
+							'@meemoo/admin-core-ui/dist/admin.mjs'
+						);
 						await AssetsService.deleteFile(url);
 						newUrls.splice(i, 1);
 					}

@@ -1,11 +1,11 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
+import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	Flex,
 	Form,
 	FormGroup,
 	IconName,
-	Pagination,
 	Spacer,
 	Table,
 	TextInput,
@@ -15,23 +15,16 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classNames from 'classnames';
 import { cloneDeep, compact, get, isNil, noop, uniq } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { ItemsService } from '../../admin/items/items.service';
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { APP_PATH } from '../../constants';
@@ -43,6 +36,7 @@ import {
 } from '../../shared/components';
 import { buildLink, formatDate, isMobileWidth } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { NO_RIGHTS_ERROR_MESSAGE } from '../../shared/services/data-service';
@@ -71,11 +65,10 @@ interface AssignmentResponsesProps
 const DEFAULT_SORT_COLUMN = 'updated_at';
 const DEFAULT_SORT_ORDER = 'desc';
 
-const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
+const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 	onUpdate = noop,
-	// history,
 	match,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 
@@ -171,20 +164,20 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 	const checkPermissions = useCallback(async () => {
 		try {
-			if (user) {
+			if (commonUser) {
 				setCanViewAssignmentResponses(
 					await PermissionService.hasPermissions(
 						[
 							PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES,
 							PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES,
 						],
-						user
+						commonUser
 					)
 				);
 			}
 		} catch (err) {
 			console.error('Failed to check permissions', err, {
-				user,
+				commonUser,
 				permissions: [
 					PermissionName.VIEW_OWN_ASSIGNMENT_RESPONSES,
 					PermissionName.VIEW_ANY_ASSIGNMENT_RESPONSES,
@@ -196,11 +189,11 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 				)
 			);
 		}
-	}, [setCanViewAssignmentResponses, user, tText]);
+	}, [setCanViewAssignmentResponses, commonUser, tText]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
-			if (!canViewAnAssignment(user)) {
+			if (!canViewAnAssignment(commonUser)) {
 				setLoadingInfo({
 					message: tHtml(
 						'assignment/views/assignment-responses___je-hebt-geen-rechten-om-deze-opdracht-te-bekijken'
@@ -250,7 +243,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 
 			const response = await AssignmentService.fetchAssignmentResponses(
 				assignmentId,
-				user,
+				commonUser,
 				sortColumn,
 				sortOrder,
 				columnDataType,
@@ -282,7 +275,7 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 		canViewAssignmentResponses,
 		match.params.id,
 		tableColumns,
-		user,
+		commonUser,
 		sortColumn,
 		sortOrder,
 		query.page,
@@ -564,9 +557,11 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 					useCards={isMobileWidth()}
 				/>
 				<Spacer margin="top-large">
-					<Pagination
-						pageCount={Math.ceil(assignmentResponsesCount / ITEMS_PER_PAGE)}
-						currentPage={query.page || 0}
+					<PaginationBar
+						{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+						startItem={(query.page || 0) * ITEMS_PER_PAGE}
+						itemsPerPage={ITEMS_PER_PAGE}
+						totalItems={assignmentResponsesCount}
 						onPageChange={(newPage: number) => handleQueryChanged(newPage, 'page')}
 					/>
 				</Spacer>
@@ -602,4 +597,6 @@ const AssignmentResponses: FunctionComponent<AssignmentResponsesProps> = ({
 	) : null;
 };
 
-export default AssignmentResponses;
+export default withUser(AssignmentResponses) as FC<
+	Omit<AssignmentResponsesProps, 'user' | 'commonUser'>
+>;

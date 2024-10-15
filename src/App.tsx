@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
 import { noop } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
-import React, { type FunctionComponent, useEffect, useState } from 'react';
+import React, { type FC, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import {
 	Route,
@@ -43,6 +43,7 @@ import store from './store';
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './styles/main.scss';
 import './App.scss';
+import { usePageLoaded } from './shared/hooks/usePageLoaded';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
@@ -59,7 +60,7 @@ wrapHistory(history, {
 	},
 });
 
-const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
+const App: FC<RouteComponentProps & UserProps> = (props) => {
 	const { tHtml } = useTranslation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
 	const isPupilUser = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
@@ -67,6 +68,12 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 		.includes(String(props.commonUser?.userGroup?.id));
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
+
+	const handlePageLoaded = () => {
+		document.querySelector(props.location.hash)?.scrollIntoView({ behavior: 'smooth' });
+	};
+
+	usePageLoaded(handlePageLoaded, !!props.location.hash);
 
 	useEffect(() => {
 		waitForTranslations
@@ -145,13 +152,13 @@ const App: FunctionComponent<RouteComponentProps & UserProps> = (props) => {
 	);
 };
 
-const AppWithRouter = compose(withRouter, withUser, withAdminCoreConfig)(App) as FunctionComponent;
+const AppWithRouter = compose(withRouter, withUser, withAdminCoreConfig)(App) as FC;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 
 const queryClient = new QueryClient();
 
-const Root: FunctionComponent = () => {
+const Root: FC = () => {
 	const { tText, tHtml } = useTranslation();
 	const [isUnsavedChangesModalOpen, setIsUnsavedChangesModalOpen] = useState(false);
 

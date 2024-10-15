@@ -16,8 +16,7 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { type SearchOrderDirection } from '@viaa/avo2-types/types/search';
 import {
 	cloneDeep,
@@ -31,7 +30,7 @@ import {
 	pickBy,
 	set,
 } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { compose, type Dispatch } from 'redux';
@@ -55,6 +54,7 @@ import {
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../shared/services/toast-service';
 import { type AppState } from '../../store';
+import { isEducationalUser } from '../../user-item-request-form/helpers/is-educational-user';
 import {
 	DEFAULT_FILTER_STATE,
 	DEFAULT_SORT_ORDER,
@@ -76,7 +76,7 @@ import { selectSearchError, selectSearchLoading, selectSearchResults } from '../
 import SearchFilterControls from './SearchFilterControls';
 import SearchResults from './SearchResults';
 
-const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> = ({
+const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 	// Manual props
 	enabledFilters,
 	enabledTypeOptions,
@@ -93,7 +93,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	searchResultsError,
 	search,
 	history,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const resultsCount = searchResults?.count ?? 0;
@@ -107,8 +107,13 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 		!enabledFilters || enabledFilters?.includes('collectionLabel')
 	);
 
-	const navigateToUserRequestForm = () =>
-		navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
+	const navigateToItemRequestForm = () => {
+		if (isEducationalUser(commonUser)) {
+			navigate(history, APP_PATH.EDUCATIONAL_USER_ITEM_REQUEST_FORM.route);
+		} else {
+			navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
+		}
+	};
 
 	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
 		filterState.orderDirection || 'desc'
@@ -194,12 +199,12 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 	useEffect(() => {
 		onFilterStateChanged();
 		updateSearchTerms();
-	}, [onFilterStateChanged, updateSearchTerms, user]);
+	}, [onFilterStateChanged, updateSearchTerms, commonUser]);
 
 	const getBookmarkStatuses = useCallback(async () => {
 		try {
 			const results = searchResults?.results;
-			const profileId = user?.profile?.id;
+			const profileId = commonUser?.profileId;
 
 			if (!results || !profileId) {
 				// search results or user hasn't been loaded yet
@@ -223,20 +228,20 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			console.error(
 				new CustomError('Failed to get bookmark statuses', err, {
 					searchResults,
-					user,
+					commonUser,
 				})
 			);
 			ToastService.danger(
 				tHtml('search/views/search___het-ophalen-van-de-bladwijzer-statusen-is-mislukt')
 			);
 		}
-	}, [tHtml, setBookmarkStatuses, searchResults, user]);
+	}, [tHtml, setBookmarkStatuses, searchResults, commonUser]);
 
 	useEffect(() => {
-		if (PermissionService.hasPerm(user, PermissionName.CREATE_BOOKMARKS)) {
+		if (PermissionService.hasPerm(commonUser, PermissionName.CREATE_BOOKMARKS)) {
 			getBookmarkStatuses();
 		}
-	}, [getBookmarkStatuses, user]);
+	}, [getBookmarkStatuses, commonUser]);
 
 	const handleOrderChanged = async (value = 'relevance_desc') => {
 		const valueParts: [SearchOrderProperty, SearchOrderDirection] = value.split('_') as [
@@ -341,6 +346,15 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 
 	const handleBookmarkToggle = async (uuid: string, active: boolean) => {
 		try {
+			if (!commonUser) {
+				console.error('User is not logged in');
+				ToastService.danger(
+					tHtml(
+						'search/components/search-filters-and-results___je-moet-aangemald-zijn-om-een-bookmark-aan-te-maken'
+					)
+				);
+				return;
+			}
 			const results = searchResults?.results ?? [];
 			const resultItem: Avo.Search.ResultItem | undefined = results.find(
 				(result) => result.uid === uuid
@@ -349,7 +363,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				throw new CustomError('Failed to find search result by id');
 			}
 			const type = CONTENT_TYPE_TO_EVENT_CONTENT_TYPE[resultItem.administrative_type];
-			await BookmarksViewsPlaysService.toggleBookmark(uuid, user, type, !active);
+			await BookmarksViewsPlaysService.toggleBookmark(uuid, commonUser, type, !active);
 
 			// Update the local cache of bookmark statuses
 			const bookmarkStatusesTemp = cloneDeep(bookmarkStatuses) || {
@@ -368,7 +382,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {
 					uuid,
-					user,
+					commonUser,
 					searchResults,
 					isBookmarked: !active,
 				})
@@ -438,7 +452,7 @@ const SearchFiltersAndResults: FunctionComponent<SearchFiltersAndResultsProps> =
 				}
 				bookmarkStatuses={bookmarkStatuses}
 				qualityLabels={qualityLabels}
-				navigateUserRequestForm={navigateToUserRequestForm}
+				navigateUserRequestForm={navigateToItemRequestForm}
 				bookmarkButtons={bookmarks}
 				renderDetailLink={renderDetailLink}
 				renderSearchLink={renderSearchLink}
@@ -577,4 +591,4 @@ export default compose(
 	withRouter,
 	withUser,
 	connect(mapStateToProps, mapDispatchToProps)
-)(SearchFiltersAndResults) as FunctionComponent<SearchFiltersAndResultsPropsManual>;
+)(SearchFiltersAndResults) as FC<SearchFiltersAndResultsPropsManual>;

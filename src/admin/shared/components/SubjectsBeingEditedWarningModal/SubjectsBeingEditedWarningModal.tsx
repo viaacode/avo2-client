@@ -1,6 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { type APP_PATH } from '../../../../constants';
 import ConfirmModal from '../../../../shared/components/ConfirmModal/ConfirmModal';
@@ -21,7 +21,7 @@ interface SubjectsBeingEditedWarningModalProps {
 	subjects: Avo.Share.EditStatus[];
 }
 
-const SubjectsBeingEditedWarningModal: FunctionComponent<SubjectsBeingEditedWarningModalProps> = ({
+const SubjectsBeingEditedWarningModal: FC<SubjectsBeingEditedWarningModalProps> = ({
 	onClose = noop,
 	isOpen,
 	title,

@@ -2,6 +2,7 @@ import './AssignmentDetail.scss';
 import {
 	Button,
 	ButtonToolbar,
+	Column,
 	Container,
 	Flex,
 	Grid,
@@ -23,24 +24,19 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
+import { Link } from 'react-router-dom';
 import { StringParam, useQueryParams } from 'use-query-params';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
+import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { renderRelatedItems } from '../../collection/collection.helpers';
+import { type Relation } from '../../collection/collection.types';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorNoAccess } from '../../error/components';
 import ErrorView, { type ErrorViewQueryParams } from '../../error/views/ErrorView';
@@ -58,7 +54,13 @@ import BlockList from '../../shared/components/BlockList/BlockList';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import { StickyBar } from '../../shared/components/StickyBar/StickyBar';
 import { EDIT_STATUS_REFETCH_TIME, getMoreOptionsLabel } from '../../shared/constants';
-import { createDropdownMenuItem, CustomError, isMobileWidth, navigate } from '../../shared/helpers';
+import {
+	buildLink,
+	createDropdownMenuItem,
+	CustomError,
+	isMobileWidth,
+	navigate,
+} from '../../shared/helpers';
 import { transformContributorsToSimpleContributors } from '../../shared/helpers/contributors';
 import { defaultRenderDetailLink } from '../../shared/helpers/default-render-detail-link';
 import { defaultRenderSearchLink } from '../../shared/helpers/default-render-search-link';
@@ -69,7 +71,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -91,6 +96,7 @@ import {
 } from '../helpers/assignment-share-with-collegue-handlers';
 import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { toAssignmentDetail } from '../helpers/links';
 import { useGetAssignmentsEditStatuses } from '../hooks/useGetAssignmentsEditStatuses';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 import PublishAssignmentModal from '../modals/PublishAssignmentModal';
@@ -110,7 +116,7 @@ type AssignmentDetailProps = {
 
 const AssignmentDetail: FC<
 	AssignmentDetailProps & DefaultSecureRouteProps<{ id: string }> & UserProps
-> = ({ match, user, commonUser, history, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+> = ({ match, commonUser, history, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const { tText, tHtml } = useTranslation();
 	const assignmentId = match.params.id;
 
@@ -148,16 +154,16 @@ const AssignmentDetail: FC<
 	// Computed
 	const isPublic = assignment?.is_public || false;
 	const isContributor = !!assignment?.contributors?.find(
-		(contributor) => contributor.profile_id && contributor.profile_id === user?.profile?.id
+		(contributor) => contributor.profile_id && contributor.profile_id === commonUser?.profileId
 	);
 	const isEditContributor = !!assignment?.contributors?.find(
 		(contributor) =>
 			contributor.profile_id &&
-			contributor.profile_id === user?.profile?.id &&
+			contributor.profile_id === commonUser?.profileId &&
 			contributor.rights === (ContributorInfoRight.CONTRIBUTOR as Avo.Share.Rights)
 	);
 	const isOwner =
-		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
+		!!assignment?.owner_profile_id && assignment?.owner_profile_id === commonUser?.profileId;
 	const hasDeleteRightsForAllAssignments =
 		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) || false;
 	const shouldDeleteSelfFromAssignment = isContributor && !hasDeleteRightsForAllAssignments;
@@ -165,7 +171,7 @@ const AssignmentDetail: FC<
 	const isBeingEdited =
 		editStatuses &&
 		!!editStatuses[assignmentId] &&
-		editStatuses[assignmentId]?.editingUserId !== user?.profile?.id;
+		editStatuses[assignmentId]?.editingUserId !== commonUser?.profileId;
 
 	const shareWithPupilsProps: ShareWithPupilsProps = {
 		assignment: assignment || undefined, // Needs to be saved before you can share
@@ -183,10 +189,10 @@ const AssignmentDetail: FC<
 
 	const getPermissions = useCallback(
 		async (
-			user: Avo.User.User | undefined,
+			commonUser: Avo.User.CommonUser | undefined,
 			assignment: Avo.Assignment.Assignment
 		): Promise<AssignmentDetailPermissions> => {
-			if (!user || !assignment) {
+			if (!commonUser || !assignment) {
 				return {};
 			}
 
@@ -212,10 +218,10 @@ const AssignmentDetail: FC<
 						PermissionName.EDIT_ANY_ASSIGNMENTS,
 					],
 				},
-				user
+				commonUser
 			);
 		},
-		[user, assignment, match.params.id]
+		[commonUser, assignment, match.params.id]
 	);
 
 	const getRelatedAssignments = useCallback(async () => {
@@ -310,7 +316,7 @@ const AssignmentDetail: FC<
 			await getRelatedAssignments();
 
 			try {
-				const permissionObj = await getPermissions(user, tempAssignment);
+				const permissionObj = await getPermissions(commonUser, tempAssignment);
 				setPermissions(permissionObj);
 			} catch (err) {
 				setAssignmentError({
@@ -334,7 +340,7 @@ const AssignmentDetail: FC<
 		}
 
 		setAssignmentLoading(false);
-	}, [user, match.params.id, tText, history, setAssignment]);
+	}, [commonUser, match.params.id, tText, history, setAssignment]);
 
 	const fetchContributors = useCallback(async () => {
 		if (!assignmentId || !assignment) {
@@ -350,7 +356,7 @@ const AssignmentDetail: FC<
 
 	const triggerEvents = useCallback(async () => {
 		// Do not trigger events when a search engine loads this page
-		if (assignmentId && user && permissions) {
+		if (assignmentId && commonUser && permissions) {
 			trackEvents(
 				{
 					object: assignmentId,
@@ -360,15 +366,24 @@ const AssignmentDetail: FC<
 						education_level: String(assignment?.education_level_id),
 					},
 				},
-				user
+				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'assignment', assignmentId, user).then(noop);
+			BookmarksViewsPlaysService.action(
+				'view',
+				'assignment',
+				SourcePage.assignmentPage,
+				assignmentId,
+				commonUser
+			).then(noop);
 
 			if (permissions?.canFetchBookmarkAndViewCounts) {
 				try {
 					setBookmarkViewCounts(
-						await BookmarksViewsPlaysService.getAssignmentCounts(assignmentId, user)
+						await BookmarksViewsPlaysService.getAssignmentCounts(
+							assignmentId,
+							commonUser
+						)
 					);
 				} catch (err) {
 					console.error(
@@ -384,7 +399,7 @@ const AssignmentDetail: FC<
 				}
 			}
 		}
-	}, [tText, assignmentId, user, permissions]);
+	}, [tText, assignmentId, commonUser, permissions]);
 
 	// Fetch initial data
 	useEffect(() => {
@@ -399,7 +414,7 @@ const AssignmentDetail: FC<
 
 	const toggleBookmark = async () => {
 		try {
-			if (!user) {
+			if (!commonUser) {
 				ToastService.danger(
 					tHtml(
 						'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
@@ -419,7 +434,7 @@ const AssignmentDetail: FC<
 
 			await BookmarksViewsPlaysService.toggleBookmark(
 				assignment?.id as string,
-				user,
+				commonUser,
 				'assignment',
 				bookmarkViewCounts.isBookmarked
 			);
@@ -436,7 +451,7 @@ const AssignmentDetail: FC<
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {
 					assignment,
-					user,
+					commonUser,
 					type: 'collection',
 					isBookmarked: bookmarkViewCounts.isBookmarked,
 				})
@@ -463,62 +478,21 @@ const AssignmentDetail: FC<
 	};
 
 	const onDuplicateAssignment = async (): Promise<void> => {
-		try {
-			if (!assignment) {
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-detail___de-opdracht-kan-niet-gekopieerd-worden-omdat-deze-nog-niet-is-opgehaald-van-de-database'
-					)
-				);
-				return;
-			}
-
-			if (!user.profile) {
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
-					)
-				);
-				return;
-			}
-
-			const duplicate = await duplicateAssignment(assignment, user);
-			if (duplicate) {
-				history.push(
-					generatePath(APP_PATH.ASSIGNMENT_DETAIL.route, {
-						id: duplicate.id,
-					})
-				);
-				setAssignment(duplicate as Avo.Assignment.Assignment);
-			}
-
-			ToastService.success(
-				tHtml(
-					'assignment/views/assignment-detail___de-opdracht-is-gekopieerd-je-kijkt-nu-naar-de-kopie'
-				)
-			);
-		} catch (err) {
-			console.error('Failed to copy assignment', err, {
-				originalAssignment: assignment,
-			});
-
-			ToastService.danger(
-				tHtml(
-					'assignment/views/assignment-detail___het-kopieren-van-de-opdracht-is-mislukt'
-				)
-			);
+		const duplicatedAssignment = await duplicateAssignment(assignment, commonUser);
+		if (duplicatedAssignment) {
+			redirectToClientPage(toAssignmentDetail(duplicatedAssignment), history);
 		}
 	};
 
 	const onDeleteAssignment = async (): Promise<void> => {
 		if (!assignment) return;
-		await deleteAssignment(assignment, user, () =>
+		await deleteAssignment(assignment, commonUser, () =>
 			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
 
 	const onDeleteSelfFromAssignment = async (): Promise<void> => {
-		await deleteSelfFromAssignment(assignmentId, user, () =>
+		await deleteSelfFromAssignment(assignmentId, commonUser, () =>
 			history.push(APP_PATH.WORKSPACE_ASSIGNMENTS.route)
 		);
 	};
@@ -790,7 +764,7 @@ const AssignmentDetail: FC<
 				<Header
 					title={assignment.title || ''}
 					category="assignment"
-					showMetaData
+					showMetaData={true}
 					bookmarks={String(bookmarkViewCounts.bookmarkCount || 0)}
 					views={String(bookmarkViewCounts.viewCount || 0)}
 				>
@@ -799,7 +773,7 @@ const AssignmentDetail: FC<
 						{isMobileWidth() ? renderHeaderButtonsMobile() : renderHeaderButtons()}
 					</HeaderMiddleRowRight>
 					<HeaderBottomRowLeft>
-						<HeaderOwnerAndContributors subject={assignment} user={user} />
+						<HeaderOwnerAndContributors subject={assignment} commonUser={commonUser} />
 					</HeaderBottomRowLeft>
 					<HeaderBottomRowRight>
 						<InteractiveTour showButton />
@@ -833,6 +807,7 @@ const AssignmentDetail: FC<
 						},
 						flowPlayer: {
 							canPlay: true,
+							sourcePage: SourcePage.assignmentPage,
 						},
 					},
 					ZOEK: {
@@ -844,6 +819,7 @@ const AssignmentDetail: FC<
 	};
 
 	const renderMetadata = () => {
+		const hasCopies = (assignment?.relations || []).length > 0;
 		return (
 			<Container mode="vertical" className="c-assignment-detail--metadata">
 				<Container mode="horizontal">
@@ -860,6 +836,36 @@ const AssignmentDetail: FC<
 								/>
 							)}
 						</Grid>
+						{hasCopies && (
+							<Grid>
+								<Column size="3-3">
+									<p className="u-text-bold">
+										{tHtml(
+											'assignment/views/assignment-detail___extra-informatie'
+										)}
+									</p>
+
+									<p className="c-body-1">
+										{`${tText(
+											'assignment/views/assignment-detail___deze-opdracht-is-een-kopie-van'
+										)} `}
+										{((assignment?.relations ?? []) as Relation[]).map(
+											(relation: Relation) => (
+												<Link
+													key={`copy-of-link-${relation.object_meta.id}`}
+													to={buildLink(
+														APP_PATH.ASSIGNMENT_DETAIL.route,
+														{ id: relation.object_meta.id }
+													)}
+												>
+													{relation.object_meta.title}
+												</Link>
+											)
+										)}
+									</p>
+								</Column>
+							</Grid>
+						)}
 						{!!relatedAssignments &&
 							renderRelatedItems(relatedAssignments, defaultRenderDetailLink)}
 					</div>
@@ -945,6 +951,10 @@ const AssignmentDetail: FC<
 		);
 	};
 
+	const pageTitle = GENERATE_SITE_TITLE(
+		assignment?.title ||
+			tText('assignment/views/assignment-detail___opdracht-detail-pagina-titel')
+	);
 	return (
 		<>
 			{!assignment && !assignmentLoading && !assignmentError && isForbidden ? (
@@ -958,13 +968,7 @@ const AssignmentDetail: FC<
 				<div className="c-sticky-bar__wrapper">
 					<div>
 						<Helmet>
-							<title>
-								{GENERATE_SITE_TITLE(
-									tText(
-										'assignment/views/assignment-detail___opdracht-detail-pagina-titel'
-									)
-								)}
-							</title>
+							<title>{pageTitle}</title>
 
 							<meta
 								name="description"
@@ -1001,7 +1005,7 @@ const AssignmentDetail: FC<
 				</div>
 			)}
 
-			{!!assignment && !!user && (
+			{!!assignment && !!commonUser && (
 				<PublishAssignmentModal
 					onClose={(newAssignment: Avo.Assignment.Assignment | undefined) => {
 						setIsPublishModalOpen(false);
@@ -1078,4 +1082,4 @@ const AssignmentDetail: FC<
 	);
 };
 
-export default withUser(AssignmentDetail) as FunctionComponent<AssignmentDetailProps>;
+export default withUser(AssignmentDetail) as FC<AssignmentDetailProps>;

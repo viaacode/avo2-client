@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Checkbox,
@@ -16,16 +16,9 @@ import {
 	TextArea,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
-import { get, orderBy } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { get, noop, orderBy } from 'lodash-es';
+import React, { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 
 import { ContentPicker } from '../../admin/shared/components/ContentPicker/ContentPicker';
@@ -36,8 +29,10 @@ import { APP_PATH } from '../../constants';
 import AssociatedQuickLaneTable, {
 	AssociatedQuickLaneTableOrderBy,
 } from '../../quick-lane/components/AssociatedQuickLaneTable';
+import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -70,9 +65,13 @@ interface CollectionOrBundleEditAdminProps {
 	onFocus?: () => void;
 }
 
-const CollectionOrBundleEditAdmin: FunctionComponent<
-	CollectionOrBundleEditAdminProps & UserProps
-> = ({ collection, changeCollectionState, history, user, onFocus }) => {
+const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps & UserProps> = ({
+	collection,
+	changeCollectionState,
+	history,
+	commonUser,
+	onFocus,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -82,13 +81,17 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 		Avo.Collection.Collection[] | undefined
 	>(undefined);
 	const [bundleSortColumn, setBundleSortColumn] = useState<string>('title');
-	const [bundleSortOrder, setBundleSortOrder] = useState<Avo.Search.OrderDirection>('asc');
+	const [bundleSortOrder, setBundleSortOrder] = useState<Avo.Search.OrderDirection>(
+		OrderDirection.asc
+	);
 
 	const [associatedQuickLanes, setAssociatedQuickLanes] = useState<QuickLaneUrlObject[]>([]);
 	const [quickLaneSortColumn, setQuickLaneSortColumn] = useState<string>(
 		QUICK_LANE_DEFAULTS.sort_column
 	);
-	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>('asc');
+	const [quickLaneSortOrder, setQuickLaneSortOrder] = useState<Avo.Search.OrderDirection>(
+		OrderDirection.asc
+	);
 
 	// Computed
 	const isCollection: boolean = collection.type_id === 3;
@@ -113,7 +116,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				)
 			);
 		}
-	}, [setBundlesContainingCollection, tText, collection]);
+	}, [collection, tHtml]);
 
 	const fetchQualityLabels = useCallback(async () => {
 		try {
@@ -132,7 +135,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				)
 			);
 		}
-	}, [setQualityLabels, tText]);
+	}, [tHtml]);
 
 	const fetchAssociatedQuickLanes = useCallback(async () => {
 		try {
@@ -157,12 +160,12 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 				)
 			);
 		}
-	}, [setAssociatedQuickLanes, tText, collection]);
+	}, [collection, tHtml]);
 
 	useEffect(() => {
-		fetchBundlesByCollectionUuid();
-		fetchQualityLabels();
-		fetchAssociatedQuickLanes();
+		fetchBundlesByCollectionUuid().then(noop);
+		fetchQualityLabels().then(noop);
+		fetchAssociatedQuickLanes().then(noop);
 	}, [fetchBundlesByCollectionUuid, fetchQualityLabels, fetchAssociatedQuickLanes]);
 
 	const updateCollectionMultiProperty = (
@@ -194,7 +197,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	};
 
 	const handleBundleColumnClick = (columnId: BundleColumnId) => {
-		const sortOrder = bundleSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+		const sortOrder = toggleSortOrder(bundleSortOrder);
 		setBundleSortColumn(columnId);
 		setBundleSortOrder(sortOrder);
 		setBundlesContainingCollection(
@@ -207,7 +210,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	};
 
 	const handleQuickLaneColumnClick = (id: string) => {
-		const sortOrder = quickLaneSortOrder === 'asc' ? 'desc' : 'asc'; // toggle
+		const sortOrder = toggleSortOrder(quickLaneSortOrder);
 
 		setQuickLaneSortColumn(id);
 		setQuickLaneSortOrder(sortOrder);
@@ -432,7 +435,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										</FormGroup>
 									)}
 									{PermissionService.hasPerm(
-										user,
+										commonUser,
 										isCollection
 											? PermissionName.EDIT_COLLECTION_QUALITY_LABELS
 											: PermissionName.EDIT_BUNDLE_QUALITY_LABELS
@@ -457,7 +460,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										</FormGroup>
 									)}
 									{PermissionService.hasPerm(
-										user,
+										commonUser,
 										isCollection
 											? PermissionName.EDIT_COLLECTION_AUTHOR
 											: PermissionName.EDIT_BUNDLE_AUTHOR
@@ -487,7 +490,7 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 										</FormGroup>
 									)}
 									{PermissionService.hasPerm(
-										user,
+										commonUser,
 										isCollection
 											? PermissionName.EDIT_COLLECTION_EDITORIAL_STATUS
 											: PermissionName.EDIT_BUNDLE_EDITORIAL_STATUS
@@ -550,6 +553,4 @@ const CollectionOrBundleEditAdmin: FunctionComponent<
 	);
 };
 
-export default withUser(
-	CollectionOrBundleEditAdmin
-) as FunctionComponent<CollectionOrBundleEditAdminProps>;
+export default withUser(CollectionOrBundleEditAdmin) as FC<CollectionOrBundleEditAdminProps>;

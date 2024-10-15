@@ -1,5 +1,5 @@
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -16,7 +16,7 @@ interface AssignmentEditProps extends DefaultSecureRouteProps<{ id: string; tabI
 	onUpdate: () => void | Promise<void>;
 }
 
-const AssignmentDetailSwitcher: FunctionComponent<UserProps> = (props) => {
+const AssignmentDetailSwitcher: FC<UserProps> = (props) => {
 	if (!props.commonUser?.userGroup?.id) {
 		return (
 			<Spacer margin="top-extra-large">
@@ -38,4 +38,4 @@ const AssignmentDetailSwitcher: FunctionComponent<UserProps> = (props) => {
 	return <AssignmentDetail {...props} enabledMetaData={ALL_SEARCH_FILTERS} />;
 };
 
-export default withUser(AssignmentDetailSwitcher) as FunctionComponent<AssignmentEditProps>;
+export default withUser(AssignmentDetailSwitcher) as FC<AssignmentEditProps>;

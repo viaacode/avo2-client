@@ -1,7 +1,6 @@
-import { UserGroupOverview } from '@meemoo/admin-core-ui';
 import { Button } from '@meemoo/react-components';
-import { Icon, IconName, Toolbar, ToolbarRight } from '@viaa/avo2-components';
-import React, { type FunctionComponent, useRef, useState } from 'react';
+import { Flex, Icon, IconName, Spinner, Toolbar, ToolbarRight } from '@viaa/avo2-components';
+import React, { type FC, lazy, Suspense, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -12,7 +11,13 @@ import { type UserGroupOverviewRef } from '../../shared/services/user-groups/use
 
 import './UserGroupOverviewPage.scss';
 
-const UserGroupGroupOverviewPage: FunctionComponent = () => {
+const UserGroupOverview = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.UserGroupOverview,
+	}))
+);
+
+const UserGroupGroupOverviewPage: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	// Access child functions
@@ -67,11 +72,19 @@ const UserGroupGroupOverviewPage: FunctionComponent = () => {
 	const renderPageContent = () => {
 		return (
 			<>
-				<UserGroupOverview
-					renderSearchButtons={renderSearchButtons}
-					ref={permissionsRef}
-					onChangePermissions={(value: boolean) => setHasChanges(value)}
-				/>
+				<Suspense
+					fallback={
+						<Flex orientation="horizontal" center>
+							<Spinner size="large" />
+						</Flex>
+					}
+				>
+					<UserGroupOverview
+						renderSearchButtons={renderSearchButtons}
+						ref={permissionsRef}
+						onChangePermissions={(value: boolean) => setHasChanges(value)}
+					/>
+				</Suspense>
 				{hasChanges && (
 					<Toolbar>
 						<ToolbarRight>{renderActionButtons()}</ToolbarRight>

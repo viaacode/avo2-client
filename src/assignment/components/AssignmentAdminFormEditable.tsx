@@ -9,8 +9,7 @@ import {
 	TagsInput,
 	TextInput,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { isNil } from 'lodash-es';
 import React, { type Dispatch, type FC, type SetStateAction } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';
@@ -32,9 +31,9 @@ interface AssignmentAdminFormEditableProps {
 
 const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserProps> = ({
 	assignment,
-	user,
 	setAssignment,
 	setValue,
+	commonUser,
 }) => {
 	const { tText } = useTranslation();
 	const { data: allQualityLabels, isLoading } = useGetQualityLabels();
@@ -134,7 +133,7 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 								</FormGroup>
 
 								{PermissionService.hasPerm(
-									user,
+									commonUser,
 									PermissionName.EDIT_ASSIGNMENT_QUALITY_LABELS
 								) && (
 									<FormGroup
@@ -158,7 +157,7 @@ const AssignmentAdminFormEditable: FC<AssignmentAdminFormEditableProps & UserPro
 								)}
 
 								{PermissionService.hasPerm(
-									user,
+									commonUser,
 									PermissionName.EDIT_ASSIGNMENT_AUTHOR
 								) && (
 									<FormGroup

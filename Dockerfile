@@ -38,8 +38,8 @@ COPY default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 WORKDIR /usr/share/nginx/html
 COPY scripts/env.sh ./
-COPY scripts/robots-QAS.txt ./
-COPY scripts/robots-PRD.txt ./
+COPY scripts/robots-enable-indexing.txt ./
+COPY scripts/robots-disable-indexing.txt ./
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh && chown 101:101 /docker-entrypoint.sh
 RUN chgrp -R 101 /usr/share/nginx/html && chmod -R g+rwx /usr/share/nginx/html

@@ -18,14 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { compose } from 'redux';
 
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
@@ -90,14 +83,14 @@ const TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 };
 
 export interface AddBookmarkFragmentModalProps {
-	user?: Avo.User.User;
+	commonUser?: Avo.User.CommonUser;
 	isOpen: boolean;
 	onClose?: () => void;
 	addFragmentCallback?: (fragmentId: string) => void;
 }
 
-const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps> = ({
-	user,
+const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
+	commonUser,
 	isOpen,
 	onClose,
 	addFragmentCallback = () => {
@@ -118,7 +111,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 
 	const fetchBookmarks = useCallback(async () => {
 		try {
-			if (!user) {
+			if (!commonUser) {
 				throw new CustomError('Could not determine authenticated user.');
 			}
 
@@ -129,7 +122,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 				TableColumnDataType.string) as TableColumnDataType;
 
 			const bookmarkInfos = await BookmarksViewsPlaysService.getItemBookmarksForUser(
-				user,
+				commonUser,
 				filterString,
 				getOrderObject(
 					sortColumn,
@@ -148,7 +141,7 @@ const AddBookmarkFragmentModal: FunctionComponent<AddBookmarkFragmentModalProps>
 				),
 			});
 		}
-	}, [tableColumns, user, filterString, sortColumn, sortOrder, tText]);
+	}, [tableColumns, commonUser, filterString, sortColumn, sortOrder, tText]);
 
 	useEffect(() => {
 		if (bookmarks) {

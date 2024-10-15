@@ -1,6 +1,6 @@
 query getCollectionPlayCount($collectionUuid: uuid!) {
 	app_collections(where: { id: { _eq: $collectionUuid } }) {
-		play_counts {
+		play_count {
 			count
 		}
 	}

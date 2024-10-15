@@ -1,17 +1,27 @@
-import { NavigationDetail } from '@meemoo/admin-core-ui';
-import React, { type FunctionComponent } from 'react';
+import { Flex, Spinner } from '@viaa/avo2-components';
+import React, { type FC, lazy, Suspense } from 'react';
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { GENERATE_SITE_TITLE } from '../../../constants';
+import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import { ADMIN_PATH } from '../../admin.const';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
 
 import './NavigationBarDetail.scss';
 
+const NavigationDetail = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.NavigationBarDetail,
+	}))
+);
+
 type NavigationBarDetailProps = DefaultSecureRouteProps<{ navigationBarId: string }>;
 
-const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ match }) => {
+const NavigationBarDetail: FC<NavigationBarDetailProps> = ({ match, history }) => {
 	const { tText } = useTranslation();
 
 	const navigationBarId = match.params.navigationBarId;
@@ -32,9 +42,22 @@ const NavigationBarDetail: FunctionComponent<NavigationBarDetailProps> = ({ matc
 					)}
 				/>
 			</Helmet>
-			<NavigationDetail navigationBarId={navigationBarId} />
+			<Suspense
+				fallback={
+					<Flex orientation="horizontal" center>
+						<Spinner size="large" />
+					</Flex>
+				}
+			>
+				<NavigationDetail
+					navigationBarId={navigationBarId}
+					onGoBack={() =>
+						goBrowserBackWithFallback(ADMIN_PATH.NAVIGATIONS_OVERVIEW, history)
+					}
+				/>
+			</Suspense>
 		</div>
 	);
 };
 
-export default withAdminCoreConfig(NavigationBarDetail as FunctionComponent);
+export default compose(withAdminCoreConfig, withRouter)(NavigationBarDetail) as FC;

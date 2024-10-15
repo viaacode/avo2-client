@@ -1,6 +1,6 @@
 import { Button, Flex, IconName, Spacer, Spinner } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useEffect } from 'react';
+import React, { type FC, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { type RouteComponentProps, withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
@@ -25,7 +25,7 @@ export interface LoginProps extends RouteComponentProps {
 
 const LOGIN_ATTEMPT_KEY = 'AVO_LOGIN_ATTEMPT';
 
-const Login: FunctionComponent<LoginProps> = ({
+const Login: FC<LoginProps> = ({
 	history,
 	location,
 	loginState,

@@ -1,6 +1,5 @@
 import { type ButtonType, IconName, type SelectOption } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 
 import { type AssignmentOverviewTableColumns } from '../../assignment/assignment.types';
 import { PermissionService } from '../../authentication/helpers/permission-service';
@@ -14,6 +13,8 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
+import { AssignmentsBulkAction } from './assignments.types';
+
 export const ASSIGNMENTS_PATH = {
 	ASSIGNMENTS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.assignments}`,
 };
@@ -25,24 +26,37 @@ export type AssignmentBulkActionOption = SelectOption<string> & {
 	confirmButtonType?: ButtonType;
 };
 
-export const GET_ASSIGNMENT_BULK_ACTIONS = (user: Avo.User.User): AssignmentBulkActionOption[] => {
+export const GET_ASSIGNMENT_BULK_ACTIONS = (
+	commonUser: Avo.User.CommonUser | null | undefined,
+	areRowsSelected: boolean
+): AssignmentBulkActionOption[] => {
+	if (!commonUser) {
+		return [];
+	}
 	return [
-		...(PermissionService.hasPerm(user, PermissionName.DELETE_ANY_ASSIGNMENTS)
+		...(PermissionService.hasPerm(commonUser, PermissionName.DELETE_ANY_ASSIGNMENTS)
 			? [
 					{
-						label: tText('admin/assignments/assignments___verwijderen'),
-						value: 'delete',
+						label: tText('admin/assignments/assignments___selectie-verwijderen'),
+						value: AssignmentsBulkAction.DELETE,
+						disabled: !areRowsSelected,
 					},
 			  ]
 			: []),
-		...(PermissionService.hasPerm(user, PermissionName.EDIT_ANY_ASSIGNMENTS)
+		...(PermissionService.hasPerm(commonUser, PermissionName.EDIT_ANY_ASSIGNMENTS)
 			? [
 					{
-						label: tText('admin/assignments/assignments___auteur-aanpassen'),
-						value: 'change_author',
+						label: tText('admin/assignments/assignments___selectie-auteur-aanpassen'),
+						value: AssignmentsBulkAction.CHANGE_AUTHOR,
+						disabled: !areRowsSelected,
 					},
 			  ]
 			: []),
+		{
+			label: tText('admin/assignments/assignments___alles-exporteren'),
+			value: AssignmentsBulkAction.EXPORT_ALL,
+			disabled: false,
+		},
 	];
 };
 
@@ -50,17 +64,13 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 	userGroupOptions: CheckboxOption[],
 	assignmentLabelOptions: CheckboxOption[],
 	subjects: Avo.Lom.LomField[],
-	educationLevels: Avo.Lom.LomField[]
+	educationLevelsAndDegrees: Avo.Lom.LomField[]
 ): FilterableColumn<AssignmentOverviewTableColumns>[] => {
-	const educationLevelOptions = [
-		...educationLevels.map(lomToCheckboxOption),
-		{
-			checked: false,
-			label: tText('admin/assignments/assignments___leeg'),
-			id: NULL_FILTER,
-		},
-	];
-
+	const NULL_FILTER_OPTION = {
+		checked: false,
+		label: tText('admin/users/user___leeg'),
+		id: NULL_FILTER,
+	};
 	return [
 		{
 			id: 'title',
@@ -137,14 +147,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 			visibleByDefault: false,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
-				options: [
-					...subjects.map(lomToCheckboxOption),
-					{
-						checked: false,
-						label: tText('admin/assignments/assignments___leeg'),
-						id: NULL_FILTER,
-					},
-				],
+				options: [...subjects.map(lomToCheckboxOption), NULL_FILTER_OPTION],
 			} as CheckboxDropdownModalProps,
 		},
 		{
@@ -155,24 +158,46 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
 				options: [
-					...educationLevelOptions.filter((option) => {
-						return [
-							EducationLevelId.secundairOnderwijs,
-							EducationLevelId.lagerOnderwijs,
-							NULL_FILTER,
-						].includes(option.id);
-					}),
+					...educationLevelsAndDegrees
+						.filter((item) => {
+							return [
+								EducationLevelId.secundairOnderwijs,
+								EducationLevelId.lagerOnderwijs,
+							].includes(item.id as EducationLevelId);
+						})
+						.map(lomToCheckboxOption),
+					NULL_FILTER_OPTION,
 				],
 			} as CheckboxDropdownModalProps,
 		},
 		{
 			id: 'education_levels',
-			label: tText('admin/assignments/assignments___opleidingsniveaus'),
+			label: tText('admin/assignments/assignments___onderwijsniveaus'),
 			sortable: false,
 			visibleByDefault: false,
 			filterType: 'CheckboxDropdownModal',
 			filterProps: {
-				options: [...educationLevelOptions],
+				options: [
+					...educationLevelsAndDegrees
+						.filter((item) => !item.broader)
+						.map(lomToCheckboxOption),
+					NULL_FILTER_OPTION,
+				],
+			} as CheckboxDropdownModalProps,
+		},
+		{
+			id: 'education_degrees',
+			label: tText('admin/assignments/assignments___onderwijsgraden'),
+			sortable: false,
+			visibleByDefault: false,
+			filterType: 'CheckboxDropdownModal',
+			filterProps: {
+				options: [
+					...educationLevelsAndDegrees
+						.filter((item) => item.broader)
+						.map(lomToCheckboxOption),
+					NULL_FILTER_OPTION,
+				],
 			} as CheckboxDropdownModalProps,
 		},
 		{

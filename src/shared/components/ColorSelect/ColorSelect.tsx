@@ -1,6 +1,6 @@
 import { Flex, Spacer } from '@viaa/avo2-components';
 import clsx from 'clsx';
-import React, { type FunctionComponent, type ReactNode } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 import Select from 'react-select';
 
 import './ColorSelect.scss';
@@ -8,7 +8,7 @@ import { type ReactSelectOption } from '../../types';
 
 import { type ColorOption, type ColorSelectProps } from './ColorSelect.types';
 
-export const ColorSelect: FunctionComponent<ColorSelectProps> = ({
+export const ColorSelect: FC<ColorSelectProps> = ({
 	className,
 	noOptionsMessage = ({ inputValue }) => `Geen kleuren gevonden: ${inputValue}`,
 	placeholder = '',

@@ -18,14 +18,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
@@ -38,6 +31,7 @@ import {
 	renderAvatar,
 } from '../../shared/helpers';
 import { truncateTableValue } from '../../shared/helpers/truncate';
+import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { ToastService } from '../../shared/services/toast-service';
@@ -45,6 +39,7 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import {
 	ASSIGNMENT_CREATE_UPDATE_TABS,
 	GET_ASSIGNMENT_OVERVIEW_COLUMNS_FOR_MODAL,
+	ITEMS_PER_PAGE,
 } from '../assignment.const';
 import { AssignmentHelper } from '../assignment.helper';
 import { AssignmentService } from '../assignment.service';
@@ -54,7 +49,6 @@ import AssignmentDeadline from '../components/AssignmentDeadline';
 import './AddItemsModals.scss';
 
 interface ImportToAssignmentModalProps {
-	user: Avo.User.User;
 	isOpen: boolean;
 	onClose?: () => void;
 	importToAssignmentCallback: (assignmentId: string, createWithDescription: boolean) => void;
@@ -66,8 +60,8 @@ interface ImportToAssignmentModalProps {
 	};
 }
 
-const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> = ({
-	user,
+const ImportToAssignmentModal: FC<ImportToAssignmentModalProps & UserProps> = ({
+	commonUser,
 	isOpen,
 	onClose,
 	importToAssignmentCallback,
@@ -90,25 +84,28 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 
 	const fetchAssignments = useCallback(async () => {
 		try {
+			if (!commonUser) {
+				ToastService.danger(
+					tHtml(
+						'assignment/modals/import-to-assignment-modal___er-ging-iets-mis-bij-het-ophalen-van-de-opdrachten-gelieve-de-pagina-te-herladen'
+					)
+				);
+				return;
+			}
 			const column = tableColumns.find(
 				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
 			);
 			const columnDataType = (column?.dataType ||
 				TableColumnDataType.string) as TableColumnDataType;
-			const assignmentData = await AssignmentService.fetchAssignments(
-				true, // canEditAssignments,
-				user,
-				false, // not past deadline
+			const assignmentData = await AssignmentService.fetchAssignments({
+				pastDeadline: false,
 				sortColumn,
 				sortOrder,
-				columnDataType,
-				0, // page
-				filterString, // filter,
-				[],
-				[],
-				[],
-				null // limit: no limit
-			);
+				tableColumnDataType: columnDataType,
+				offset: 0,
+				limit: ITEMS_PER_PAGE,
+				filterString,
+			});
 			setAssignments(assignmentData.assignments);
 		} catch (err) {
 			console.error(new CustomError('Failed to get assignments', err));
@@ -119,7 +116,7 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 				),
 			});
 		}
-	}, [tableColumns, user, filterString, sortColumn, sortOrder, tText]);
+	}, [commonUser, tableColumns, sortColumn, sortOrder, filterString, tHtml]);
 
 	useEffect(() => {
 		if (assignments) {
@@ -327,4 +324,4 @@ const ImportToAssignmentModal: FunctionComponent<ImportToAssignmentModalProps> =
 	);
 };
 
-export default ImportToAssignmentModal;
+export default withUser(ImportToAssignmentModal) as FC<ImportToAssignmentModalProps>;

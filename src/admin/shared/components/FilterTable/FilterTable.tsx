@@ -1,3 +1,4 @@
+import { type OrderDirection, PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	type ButtonType,
@@ -5,7 +6,6 @@ import {
 	Form,
 	FormGroup,
 	IconName,
-	Pagination,
 	Select,
 	type SelectOption,
 	Spacer,
@@ -21,7 +21,7 @@ import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, get, sortBy } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type KeyboardEvent,
 	type ReactElement,
 	type ReactNode,
@@ -45,11 +45,13 @@ import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-
 import { tHtml } from '../../../../shared/helpers/translate';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { KeyCode } from '../../../../shared/types';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../PaginationBar/PaginationBar.consts';
 
 import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
 
 import './FilterTable.scss';
+import { toggleSortOrder } from '../../../../shared/helpers/toggle-sort-order';
 
 export interface FilterableTableState {
 	query?: string;
@@ -92,7 +94,7 @@ interface FilterTableProps extends RouteComponentProps {
 	variant?: 'bordered' | 'invisible' | 'styled';
 	isLoading?: boolean;
 	defaultOrderProp?: string;
-	defaultOrderDirection?: 'asc' | 'desc';
+	defaultOrderDirection?: OrderDirection;
 
 	// Used for automatic dropdown with bulk actions
 	bulkActions?: (SelectOption<string> & { confirm?: boolean; confirmButtonType?: ButtonType })[];
@@ -106,7 +108,7 @@ interface FilterTableProps extends RouteComponentProps {
 	hideTableColumnsButton?: boolean;
 }
 
-const FilterTable: FunctionComponent<FilterTableProps> = ({
+const FilterTable: FC<FilterTableProps> = ({
 	data,
 	dataCount,
 	itemsPerPage,
@@ -164,7 +166,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 			...newTableState,
 			page: 0,
 			sort_column: columnId,
-			sort_order: tableState.sort_order === 'asc' ? 'desc' : 'asc',
+			sort_order: toggleSortOrder(tableState.sort_order),
 		});
 
 		setTableState(newTableState, 'replace');
@@ -388,7 +390,7 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 										placeholder={tText(
 											'admin/shared/components/filter-table/filter-table___bulkactie'
 										)}
-										disabled={!(selectedItemIds || []).length}
+										disabled={!bulkActions.find((action) => !action.disabled)}
 										className="c-bulk-action-select"
 									/>
 								)}
@@ -448,12 +450,20 @@ const FilterTable: FunctionComponent<FilterTableProps> = ({
 								onSelectAll={onSelectAll}
 							/>
 							<Spacer margin="top-large">
-								<Pagination
-									pageCount={Math.ceil(dataCount / itemsPerPage)}
-									currentPage={tableState.page || 0}
-									onPageChange={(newPage) =>
+								<PaginationBar
+									{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+									startItem={(tableState.page || 0) * itemsPerPage}
+									itemsPerPage={itemsPerPage}
+									totalItems={dataCount}
+									onPageChange={(newPage: number) =>
 										handleTableStateChanged(newPage, 'page')
 									}
+									onScrollToTop={() => {
+										const filterTable =
+											document.querySelector('.c-filter-table');
+										const scrollable = filterTable?.closest('.c-scrollable');
+										scrollable?.scrollTo(0, 0);
+									}}
 								/>
 							</Spacer>
 						</div>

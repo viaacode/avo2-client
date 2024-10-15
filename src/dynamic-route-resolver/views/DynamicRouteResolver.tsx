@@ -2,13 +2,13 @@ import {
 	type ContentPageInfo,
 	ContentPageRenderer,
 	ContentPageService,
+	convertDbContentPageToContentPageInfo,
 	type DbContentPage,
-} from '@meemoo/admin-core-ui';
+} from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Flex, IconName, Spinner } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { get, keys } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type ComponentType, type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import { Redirect, type RouteComponentProps, withRouter } from 'react-router';
@@ -26,6 +26,7 @@ import {
 	selectLoginError,
 	selectLoginLoading,
 } from '../../authentication/store/selectors';
+import { type LoginState } from '../../authentication/store/types';
 import { CollectionService } from '../../collection/collection.service';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
@@ -42,6 +43,7 @@ import {
 } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { getPageNotFoundError } from '../../shared/translations/page-not-found';
+import { Locale } from '../../shared/translations/translations.types';
 import { type AppState } from '../../store';
 import { GET_ERROR_MESSAGES, GET_REDIRECTS } from '../dynamic-route-resolver.const';
 
@@ -59,7 +61,7 @@ interface DynamicRouteResolverProps extends RouteComponentProps {
 	loginStateLoading: boolean;
 }
 
-const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
+const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 	getLoginState,
 	history,
 	location,
@@ -142,11 +144,11 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 			// Special route exception
 			// /klaar/archief: redirect teachers to search page with klaar filter
-			const userInfo = (loginState as Avo.Auth.LoginResponseLoggedIn)?.userInfo;
+			const commonUserInfo = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
 			if (
 				pathname === '/klaar/archief' &&
-				userInfo &&
-				PermissionService.hasPerm(userInfo, PermissionName.SEARCH)
+				commonUserInfo &&
+				PermissionService.hasPerm(commonUserInfo, PermissionName.SEARCH)
 			) {
 				history.replace(
 					generateSearchLinkString(
@@ -161,10 +163,18 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 
 			// Check if path points to a content page
 			try {
-				const contentPage: ContentPageInfo | null =
-					await ContentPageService.getContentPageByPath(pathname);
-				// Path is indeed a content page url
-				setRouteInfo({ type: 'contentPage', data: contentPage });
+				const contentPage: DbContentPage | null =
+					await ContentPageService.getContentPageByLanguageAndPath(
+						Locale.Nl as any,
+						pathname
+					);
+				if (contentPage) {
+					// Path is indeed a content page url
+					setRouteInfo({
+						type: 'contentPage',
+						data: convertDbContentPageToContentPageInfo(contentPage),
+					});
+				}
 			} catch (err) {
 				console.error({
 					message: 'Failed to check if path corresponds to a content page',
@@ -203,6 +213,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 		setLoadingInfo,
 		history,
 		tText,
+		tHtml,
 	]);
 
 	// Check if current user is logged in
@@ -226,7 +237,7 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 				location
 			);
 		}
-	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, location]);
+	}, [getLoginState, loginState, loginStateError, loginStateLoading, tText, tHtml, location]);
 
 	useEffect(() => {
 		if (loginState && location.pathname) {
@@ -240,6 +251,17 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 			setLoadingInfo({ state: 'loaded' });
 		}
 	}, [routeInfo]);
+
+	// const handleLoaded = () => {
+	// 	if (location.hash) {
+	// 		const element = document.getElementById(location.hash.slice(1));
+	// 		if (element) {
+	// 			element.scrollIntoView({ behavior: 'smooth' });
+	// 		}
+	// 	} else {
+	// 		scrollTo({ top: 0 });
+	// 	}
+	// };
 
 	const renderRouteComponent = () => {
 		if (routeInfo && routeInfo.type === 'contentPage') {
@@ -277,20 +299,22 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 					</Helmet>
 					<JsonLd
 						url={window.location.href}
-						title={get(routeInfo.data, 'title', '')}
+						title={routeInfo.data?.title || ''}
 						description={description}
-						image={get(routeInfo.data, 'thumbnail_path')}
-						isOrganisation={!!get(routeInfo.data, 'profile.organisation')}
-						author={getFullName(get(routeInfo.data, 'profile'), true, false)}
+						image={routeInfo.data?.thumbnail_path}
+						isOrganisation={!!routeInfo.data?.profile?.organisation}
+						author={getFullName(routeInfo.data?.profile, true, false)}
 						publishedAt={getPublishedDate(routeInfo.data)}
-						updatedAt={get(routeInfo.data, 'updated_at')}
+						updatedAt={routeInfo.data?.updated_at}
 					/>
 					{routeInfo.data && (
 						<ContentPageRenderer
 							contentPageInfo={routeInfo.data as ContentPageInfo}
-							onLoaded={() => scrollTo({ top: 0 })}
 							commonUser={
 								(loginState as Avo.Auth.LoginResponseLoggedIn).commonUserInfo
+							}
+							renderFakeTitle={
+								(routeInfo.data as ContentPageInfo).contentType === 'FAQ_ITEM'
 							}
 						/>
 					)}
@@ -334,18 +358,24 @@ const DynamicRouteResolver: FunctionComponent<DynamicRouteResolverProps> = ({
 	);
 };
 
-const mapStateToProps = (state: AppState) => ({
+const mapStateToProps = (
+	state: AppState
+): {
+	loginState: Avo.Auth.LoginResponse | null;
+	loginStateLoading: boolean;
+	loginStateError: boolean;
+} => ({
 	loginState: selectLogin(state),
 	loginStateLoading: selectLoginLoading(state),
 	loginStateError: selectLoginError(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
+const mapDispatchToProps = (dispatch: Dispatch): { getLoginState: () => LoginState } => ({
 	getLoginState: () => dispatch(getLoginStateAction() as any),
 });
 
 export default compose(
 	withRouter,
-	connect(mapStateToProps, mapDispatchToProps),
+	connect(mapStateToProps, mapDispatchToProps) as any,
 	withAdminCoreConfig
-)(DynamicRouteResolver) as FunctionComponent;
+)(DynamicRouteResolver as ComponentType) as unknown as FC<DynamicRouteResolverProps>;

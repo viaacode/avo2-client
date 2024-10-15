@@ -11,21 +11,22 @@ import React, { type FC, type ReactNode } from 'react';
 
 import { getFullName } from '../../helpers';
 import { tHtml, tText } from '../../helpers/translate';
+import withUser from '../../hocs/withUser';
 import { ContributorInfoRight } from '../ShareWithColleagues/ShareWithColleagues.types';
 
 import './HeaderOwnerAndContributors.scss';
 
 type HeaderOwnerAndContributorsProps = {
-	user: Avo.User.User;
+	commonUser: Avo.User.CommonUser | null | undefined;
 	subject: Partial<Avo.Assignment.Assignment> | Avo.Collection.Collection;
 };
 
-export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({
-	user,
+const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = ({
+	commonUser,
 	subject,
 }) => {
 	const { contributors, profile: owner } = subject;
-	const isOwner = owner?.id === user?.profile?.id;
+	const isOwner = owner?.id === commonUser?.profileId;
 	const nonPendingContributors = (
 		(contributors || []) as
 			| Omit<Avo.Assignment.Contributor, 'assignment_id'>[]
@@ -116,3 +117,5 @@ export const HeaderOwnerAndContributors: FC<HeaderOwnerAndContributorsProps> = (
 		</Spacer>
 	);
 };
+
+export default withUser(HeaderOwnerAndContributors) as FC<HeaderOwnerAndContributorsProps>;

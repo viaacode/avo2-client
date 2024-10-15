@@ -1,0 +1,12 @@
+@import "../../styles/settings/variables";
+
+.p-item-request-form {
+	.o-form-group {
+		margin-bottom: $g-spacer-unit * 2;
+	}
+
+	.o-form-group__label {
+		display: block;
+		margin-bottom: $g-spacer-unit;
+	}
+}

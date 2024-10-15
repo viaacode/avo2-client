@@ -17,17 +17,10 @@ import {
 	Spinner,
 	ToggleButton,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { compact, isEmpty, isNil } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import { compact, isEmpty, isNil, noop } from 'lodash-es';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -38,7 +31,6 @@ import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
-import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import RegisterOrLogin from '../../authentication/views/RegisterOrLogin';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../constants';
@@ -81,7 +73,10 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import {
+	type BookmarkViewPlayCounts,
+	SourcePage,
+} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -140,9 +135,9 @@ type CollectionDetailProps = {
 	enabledMetaData: SearchFilter[];
 };
 
-const CollectionDetail: FunctionComponent<
+const CollectionDetail: FC<
 	CollectionDetailProps & UserProps & RouteComponentProps<{ id: string }>
-> = ({ history, match, user, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
+> = ({ history, match, commonUser, id, enabledMetaData = ALL_SEARCH_FILTERS }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -166,7 +161,10 @@ const CollectionDetail: FunctionComponent<
 	const isPublic = !!collection && collection.is_public;
 	const isOwner =
 		!!collection?.owner_profile_id && collection?.owner_profile_id === commonUser?.profileId;
-	const isCollectionAdmin = PermissionService.hasPerm(user, PermissionName.EDIT_ANY_COLLECTIONS);
+	const isCollectionAdmin = PermissionService.hasPerm(
+		commonUser,
+		PermissionName.EDIT_ANY_COLLECTIONS
+	);
 	const shouldDeleteSelfFromCollection = isContributor && !permissions?.canDeleteCollections;
 
 	const [publishedBundles, setPublishedBundles] = useState<Avo.Collection.Collection[]>([]);
@@ -239,7 +237,7 @@ const CollectionDetail: FunctionComponent<
 				)
 			);
 		}
-	}, [setRelatedCollections, tText, collectionId]);
+	}, [collectionId, tHtml]);
 
 	/**
 	 * Get published bundles that contain this collection
@@ -284,20 +282,29 @@ const CollectionDetail: FunctionComponent<
 
 	const triggerEvents = useCallback(async () => {
 		// Do not trigger events when a search engine loads this page
-		if (collection?.id && user && !showLoginPopup) {
+		if (collection?.id && commonUser && !showLoginPopup) {
 			trackEvents(
 				{
 					object: collectionId,
 					object_type: 'collection',
 					action: 'view',
 				},
-				user
+				commonUser
 			);
 
-			BookmarksViewsPlaysService.action('view', 'collection', collection.id, user);
+			BookmarksViewsPlaysService.action(
+				'view',
+				'collection',
+				SourcePage.collectionPage,
+				collection.id,
+				commonUser
+			).then(noop);
 			try {
 				setBookmarkViewPlayCounts(
-					await BookmarksViewsPlaysService.getCollectionCounts(collection.id, user)
+					await BookmarksViewsPlaysService.getCollectionCounts(
+						collection.id,
+						commonUser || null
+					)
 				);
 			} catch (err) {
 				console.error(
@@ -312,7 +319,7 @@ const CollectionDetail: FunctionComponent<
 				);
 			}
 		}
-	}, [setPublishedBundles, tText, collection?.id, user, showLoginPopup]);
+	}, [setPublishedBundles, tText, collection?.id, commonUser, showLoginPopup]);
 
 	useEffect(() => {
 		setCollectionId(id || match.params.id);
@@ -326,9 +333,9 @@ const CollectionDetail: FunctionComponent<
 
 	const getPermissions = async (
 		collectionId: string,
-		user: Avo.User.User | undefined
+		commonUser: Avo.User.CommonUser | undefined
 	): Promise<CollectionDetailPermissions> => {
-		if (!user) {
+		if (!commonUser) {
 			return {};
 		}
 
@@ -360,7 +367,7 @@ const CollectionDetail: FunctionComponent<
 				canCreateAssignments: [{ name: PermissionName.CREATE_ASSIGNMENTS }],
 				canCreateBundles: [{ name: PermissionName.CREATE_BUNDLES }],
 			},
-			user
+			commonUser
 		);
 	};
 
@@ -393,11 +400,11 @@ const CollectionDetail: FunctionComponent<
 				return;
 			}
 
-			const permissionObj = await getPermissions(collectionId, user);
+			const permissionObj = await getPermissions(collectionId, commonUser);
 
 			const showNoAccessPopup = false;
 
-			if (!user) {
+			if (!commonUser) {
 				// Not logged in
 				// If thr collection is public, we should still load the metadata
 				let collectionObj: Avo.Collection.Collection | null = null;
@@ -466,7 +473,7 @@ const CollectionDetail: FunctionComponent<
 				collection: collectionObj || null,
 			});
 		} catch (err) {
-			if ((err as CustomError)?.innerException?.statusCode === 404 && !user) {
+			if ((err as CustomError)?.innerException?.statusCode === 404 && !commonUser) {
 				// If not logged in and the collection is not found => the collection might be private and the user might need to login to see it
 				setCollectionInfo({
 					showNoAccessPopup: false,
@@ -512,7 +519,7 @@ const CollectionDetail: FunctionComponent<
 			});
 		}
 		// Ensure callback only runs once even if user object is set twice // TODO investigate why user object is set twice
-	}, [collectionId, setCollectionInfo, tText, user, history, defaultGoToDetailLink]);
+	}, [collectionId, setCollectionInfo, tText, commonUser, history, defaultGoToDetailLink]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection();
@@ -557,7 +564,7 @@ const CollectionDetail: FunctionComponent<
 						);
 						return;
 					}
-					if (!user) {
+					if (!commonUser) {
 						ToastService.danger(
 							tHtml(
 								'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
@@ -567,7 +574,7 @@ const CollectionDetail: FunctionComponent<
 					}
 					const duplicateCollection = await CollectionService.duplicateCollection(
 						collection,
-						user,
+						commonUser,
 						COLLECTION_COPY,
 						COLLECTION_COPY_REGEX
 					);
@@ -578,7 +585,7 @@ const CollectionDetail: FunctionComponent<
 							object_type: 'collection',
 							action: 'copy',
 						},
-						user
+						commonUser
 					);
 
 					defaultGoToDetailLink(history)(duplicateCollection.id, 'collectie');
@@ -647,7 +654,7 @@ const CollectionDetail: FunctionComponent<
 
 	const toggleBookmark = async () => {
 		try {
-			if (!user) {
+			if (!commonUser) {
 				ToastService.danger(
 					tHtml(
 						'collection/views/collection-detail___er-was-een-probleem-met-het-controleren-van-de-ingelogde-gebruiker-log-opnieuw-in-en-probeer-opnieuw'
@@ -657,7 +664,7 @@ const CollectionDetail: FunctionComponent<
 			}
 			await BookmarksViewsPlaysService.toggleBookmark(
 				collectionId,
-				user,
+				commonUser,
 				'collection',
 				bookmarkViewPlayCounts.isBookmarked
 			);
@@ -674,7 +681,7 @@ const CollectionDetail: FunctionComponent<
 			console.error(
 				new CustomError('Failed to toggle bookmark', err, {
 					collectionId,
-					user,
+					commonUser,
 					type: 'collection',
 					isBookmarked: bookmarkViewPlayCounts.isBookmarked,
 				})
@@ -694,7 +701,7 @@ const CollectionDetail: FunctionComponent<
 	const handleDeleteCollection = async (): Promise<void> => {
 		await deleteCollection(
 			collectionId,
-			user,
+			commonUser,
 			true,
 			async () => await CollectionService.deleteCollectionOrBundle(collectionId),
 			() => history.push(APP_PATH.WORKSPACE.route)
@@ -702,15 +709,15 @@ const CollectionDetail: FunctionComponent<
 	};
 
 	const handleDeleteSelfFromCollection = async (): Promise<void> => {
-		await deleteSelfFromCollection(collectionId, user, () =>
+		await deleteSelfFromCollection(collectionId, commonUser, () =>
 			history.push(APP_PATH.WORKSPACE.route)
 		);
 	};
 
 	const onCreateAssignment = async (withDescription: boolean): Promise<void> => {
-		if (user && collection) {
+		if (commonUser && collection) {
 			const assignmentId = await AssignmentService.createAssignmentFromCollection(
-				user,
+				commonUser,
 				collection,
 				withDescription
 			);
@@ -723,13 +730,17 @@ const CollectionDetail: FunctionComponent<
 		importToAssignmentId: string,
 		withDescription: boolean
 	): Promise<void> => {
+		if (!commonUser?.profileId) {
+			console.error('Failed to import collection to assignment: no user profile id');
+			return;
+		}
 		setAssignmentId(importToAssignmentId);
 
 		setImportWithDescription(withDescription);
 
 		// check if assignment has responses. If so: show additional confirmation modal
 		const responses = await AssignmentService.getAssignmentResponses(
-			getProfileId(user),
+			commonUser?.profileId,
 			importToAssignmentId
 		);
 		if (responses.length > 0) {
@@ -769,7 +780,7 @@ const CollectionDetail: FunctionComponent<
 						id: collection.id,
 					},
 				},
-				user
+				commonUser
 			);
 
 			ToastService.success(
@@ -1155,10 +1166,11 @@ const CollectionDetail: FunctionComponent<
 			<>
 				<Container mode="vertical">
 					<Container mode="horizontal">
-						{!!collection && !!user && (
+						{!!collection && !!commonUser && (
 							<FragmentList
 								collectionFragments={collection_fragments}
 								showDescription
+								showMetadata={false}
 								linkToItems={permissions?.canViewAnyPublishedItems || false}
 								canPlay={
 									!isAddToBundleModalOpen &&
@@ -1167,6 +1179,7 @@ const CollectionDetail: FunctionComponent<
 									!isAutoplayCollectionModalOpen
 								}
 								collection={collection}
+								sourcePage={SourcePage.collectionPage}
 							/>
 						)}
 					</Container>
@@ -1252,7 +1265,7 @@ const CollectionDetail: FunctionComponent<
 
 		return (
 			<>
-				{!!collection && !!user && (
+				{!!collection && !!commonUser && (
 					<PublishCollectionModal
 						collection={collection}
 						isOpen={isPublishModalOpen}
@@ -1271,7 +1284,7 @@ const CollectionDetail: FunctionComponent<
 						}}
 					/>
 				)}
-				{collectionId !== undefined && !!user && (
+				{collectionId !== undefined && !!commonUser && (
 					<AddToBundleModal
 						collection={collection as Avo.Collection.Collection}
 						collectionId={collectionId as string}
@@ -1319,7 +1332,7 @@ const CollectionDetail: FunctionComponent<
 						}}
 					/>
 				)}
-				{!!collection && !!user && (
+				{!!collection && !!commonUser && (
 					<>
 						<CreateAssignmentModal
 							isOpen={isCreateAssignmentModalOpen}
@@ -1338,7 +1351,6 @@ const CollectionDetail: FunctionComponent<
 							}}
 						/>
 						<ImportToAssignmentModal
-							user={user}
 							isOpen={isImportToAssignmentModalOpen}
 							onClose={() => setIsImportToAssignmentModalOpen(false)}
 							importToAssignmentCallback={onImportToAssignment}
@@ -1488,7 +1500,7 @@ const CollectionDetail: FunctionComponent<
 					<Header
 						title={collection.title}
 						category="collection"
-						showMetaData
+						showMetaData={true}
 						bookmarks={String(bookmarkViewPlayCounts.bookmarkCount || 0)}
 						views={String(bookmarkViewPlayCounts.viewCount || 0)}
 					>
@@ -1504,7 +1516,7 @@ const CollectionDetail: FunctionComponent<
 							<div className="u-flex-space-between">
 								<HeaderOwnerAndContributors
 									subject={collection}
-									user={user as Avo.User.User}
+									commonUser={commonUser}
 								/>
 							</div>
 						</HeaderBottomRowLeft>
@@ -1530,7 +1542,7 @@ const CollectionDetail: FunctionComponent<
 					<Helmet>
 						<title>
 							{GENERATE_SITE_TITLE(
-								collection?.title ??
+								collection?.title ||
 									tText(
 										'collection/views/collection-detail___collectie-detail-titel-fallback'
 									)
@@ -1581,7 +1593,4 @@ const CollectionDetail: FunctionComponent<
 	return renderPageContent();
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(CollectionDetail) as FunctionComponent<CollectionDetailProps>;
+export default compose(withRouter, withUser)(CollectionDetail) as FC<CollectionDetailProps>;

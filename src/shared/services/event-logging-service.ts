@@ -1,4 +1,4 @@
-import { fetchWithLogout } from '@meemoo/admin-core-ui';
+import { fetchWithLogout } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 
 import { getEnv } from '../helpers';

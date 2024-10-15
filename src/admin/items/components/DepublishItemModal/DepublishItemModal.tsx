@@ -14,7 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, noop } from 'lodash-es';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import RichTextEditorWrapper from '../../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../../shared/generated/graphql-db-types';
@@ -35,11 +35,7 @@ interface DepublishItemModalProps {
 	onClose?: () => void;
 }
 
-const DepublishItemModal: FunctionComponent<DepublishItemModalProps> = ({
-	item,
-	onClose = noop,
-	isOpen,
-}) => {
+const DepublishItemModal: FC<DepublishItemModalProps> = ({ item, onClose = noop, isOpen }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [depublishType, setDepublishType] = useState<DepublishType>('depublish');

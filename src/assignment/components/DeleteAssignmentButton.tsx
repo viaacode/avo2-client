@@ -1,6 +1,5 @@
 import { Button, type ButtonProps, type DefaultProps, IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import React, { type FC, useState } from 'react';
 import { compose } from 'redux';
 
@@ -23,20 +22,20 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 	assignment,
 	button,
 	modal,
-	user,
+	commonUser,
 }) => {
 	const { tText } = useTranslation();
 
 	const [isOpen, setOpen] = useState<boolean>(false);
 	const canDeleteAnyAssignments = PermissionService.hasPerm(
-		user,
+		commonUser,
 		PermissionName.DELETE_ANY_ASSIGNMENTS
 	);
 	const isOwner =
-		!!assignment?.owner_profile_id && assignment?.owner_profile_id === user?.profile?.id;
+		!!assignment?.owner_profile_id && assignment?.owner_profile_id === commonUser?.profileId;
 
 	const onConfirm = async () => {
-		if (!user?.profile?.id) {
+		if (!commonUser?.profileId) {
 			ToastService.danger(
 				tText(
 					'assignment/components/delete-assignment-button___je-moet-ingelogd-zijn-om-een-opdracht-te-verwijderen'
@@ -45,7 +44,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 			return;
 		}
 
-		assignment && (await deleteAssignment(assignment, user));
+		assignment && (await deleteAssignment(assignment, commonUser));
 
 		setOpen(false);
 		modal?.confirmCallback && modal.confirmCallback();
@@ -82,7 +81,7 @@ const DeleteAssignmentButton: FC<DeleteAssignmentButtonProps> = ({
 				title={tText(
 					'assignment/views/assignment-overview___ben-je-zeker-dat-je-deze-opdracht-wil-verwijderen'
 				)}
-				body={deleteAssignmentWarning(assignment, user?.profile?.id)}
+				body={deleteAssignmentWarning(assignment, commonUser?.profileId)}
 				{...modal}
 				isOpen={isOpen}
 				onClose={() => {

@@ -5,6 +5,7 @@
 
 	.c-input {
 		border-radius: 4px 0 0 4px;
+		border-right: 0; // Avoid double border with button
 	}
 
 	.c-button--tertiary {
@@ -31,5 +32,11 @@
 
 	@media screen and (min-width: $g-bp3) {
 		width: 50rem;
+	}
+}
+
+.c-button-toolbar .c-share-with-pupil {
+	.c-button--tertiary {
+		margin-left: 0;
 	}
 }

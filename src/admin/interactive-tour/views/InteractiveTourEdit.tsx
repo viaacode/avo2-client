@@ -1,4 +1,3 @@
-import { BlockHeading, sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Box,
 	Button,
@@ -16,7 +15,8 @@ import {
 } from '@viaa/avo2-components';
 import { cloneDeep, compact, get, isEmpty, map, orderBy } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
+	lazy,
 	type Reducer,
 	useCallback,
 	useEffect,
@@ -28,6 +28,7 @@ import { Helmet } from 'react-helmet';
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { OrderDirection } from '../../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import { ROUTE_PARTS } from '../../../shared/constants';
 import {
@@ -69,14 +70,17 @@ import {
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
+
+const BlockHeading = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.BlockHeading,
+	}))
+);
 
 export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
-const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
-	history,
-	match,
-	location,
-}) => {
+const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, location }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// Hooks
@@ -108,7 +112,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 				})
 			),
 			['label'],
-			['asc']
+			[OrderDirection.asc]
 		);
 	}, []);
 
@@ -175,6 +179,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		setLoadingInfo,
 		changeInteractiveTourState,
 		tText,
+		tHtml,
 		isCreatePage,
 		getPageType,
 		match.params.id,
@@ -243,7 +248,9 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 		return isEmpty(errors) ? null : errors;
 	};
 
-	const convertTourContentToHtml = (tour: EditableInteractiveTour): EditableInteractiveTour => {
+	const convertTourContentToHtml = async (
+		tour: EditableInteractiveTour
+	): Promise<EditableInteractiveTour> => {
 		const clonedTour = cloneDeep(tour);
 		clonedTour.steps.forEach((step: EditableStep) => {
 			if (step.contentState) {
@@ -282,7 +289,7 @@ const InteractiveTourEdit: FunctionComponent<InteractiveTourEditProps> = ({
 			setIsSaving(true);
 
 			// Convert rich text editor state back to html before we save to database
-			const tour: EditableInteractiveTour = convertTourContentToHtml(
+			const tour: EditableInteractiveTour = await convertTourContentToHtml(
 				interactiveTourState.currentInteractiveTour
 			);
 

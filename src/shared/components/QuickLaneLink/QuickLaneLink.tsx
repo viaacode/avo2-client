@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { generateQuickLaneHref } from '../../helpers/generate-quick-lane-href';
 
@@ -15,7 +15,7 @@ const defaultLabel = (id: string) => {
 	return `${window.location.origin}${generateQuickLaneHref(id)}`;
 };
 
-const QuickLaneLink: FunctionComponent<QuickLaneLinkProps> = ({ id, label, short }) => {
+const QuickLaneLink: FC<QuickLaneLinkProps> = ({ id, label, short }) => {
 	const className = classNames({
 		'c-quick-lane-link': true,
 		'c-quick-lane-link--short': short === true,

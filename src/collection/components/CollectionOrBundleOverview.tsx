@@ -1,3 +1,4 @@
+import { PaginationBar } from '@meemoo/react-components';
 import { QueryClient } from '@tanstack/react-query';
 import {
 	Button,
@@ -7,7 +8,6 @@ import {
 	MetaData,
 	MetaDataItem,
 	MoreOptionsDropdown,
-	Pagination,
 	Spacer,
 	Table,
 	type TableColumn,
@@ -17,18 +17,13 @@ import {
 	ToolbarLeft,
 } from '@viaa/avo2-components';
 import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { cloneDeep, compact, fromPairs, get, isNil, noop } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import { cloneDeep, compact, fromPairs, isNil, noop } from 'lodash-es';
+import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrayParam, NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
 import { type CollectionsOrBundlesOverviewTableCols } from '../../admin/collectionsOrBundles/collections-or-bundles.types';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { AssignmentService } from '../../assignment/assignment.service';
 import CreateAssignmentModal from '../../assignment/modals/CreateAssignmentModal';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
@@ -76,6 +71,8 @@ import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
+import { OrderDirection } from '../../search/search.const';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
@@ -83,9 +80,13 @@ interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	onUpdate: () => void | Promise<void>;
 }
 
-const CollectionOrBundleOverview: FunctionComponent<
-	CollectionOrBundleOverviewProps & UserProps
-> = ({ numberOfItems, type, onUpdate = noop, history, user, commonUser }) => {
+const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps> = ({
+	numberOfItems,
+	type,
+	onUpdate = noop,
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -108,7 +109,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const [selectedCollection, setSelectedCollection] = useState<Collection | undefined>(undefined);
 	const [sortColumn, setSortColumn] =
 		useState<CollectionsOrBundlesOverviewTableCols>('updated_at');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+	const [sortOrder, setSortOrder] = useState<OrderDirection>(OrderDirection.desc);
 	const [page, setPage] = useState<number>(0);
 	const [activeModalInfo, setActiveModalInfo] = useState<{
 		collectionUuid: string;
@@ -118,8 +119,8 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const [query, setQuery] = useQueryParams({
 		selectedShareTypeLabelIds: ArrayParam,
 		page: NumberParam,
-		sort_column: StringParam,
-		sort_order: StringParam,
+		sortColumn: StringParam,
+		sortOrder: StringParam,
 	});
 
 	const isContributor =
@@ -147,7 +148,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 				TableColumnDataType.string) as TableColumnDataType;
 			const collections =
 				await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-					user,
+					commonUser,
 					page * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					getOrderObject(
@@ -185,7 +186,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 										{ name: PermissionName.DELETE_ANY_COLLECTIONS },
 									],
 								},
-								user
+								commonUser
 							);
 						}
 					)
@@ -211,7 +212,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 									{ name: PermissionName.DELETE_ANY_BUNDLES },
 								],
 							},
-							user
+							commonUser
 						);
 					})
 				);
@@ -239,10 +240,10 @@ const CollectionOrBundleOverview: FunctionComponent<
 				actionButtons: ['home'],
 			});
 		}
-	}, [user, page, sortColumn, sortOrder, isCollection, tText, query]);
+	}, [commonUser, page, sortColumn, sortOrder, isCollection, tText, query]);
 
 	useEffect(() => {
-		fetchCollections();
+		fetchCollections().then(noop);
 	}, [fetchCollections]);
 
 	useEffect(() => {
@@ -259,9 +260,9 @@ const CollectionOrBundleOverview: FunctionComponent<
 						: PermissionName.PUBLISH_ANY_BUNDLES,
 				},
 			],
-			user
+			commonUser
 		).then((showPublicState) => setShowPublicState(showPublicState));
-	}, [setShowPublicState, isCollection, user]);
+	}, [setShowPublicState, isCollection, commonUser]);
 
 	useEffect(() => {
 		if (collections) {
@@ -286,11 +287,11 @@ const CollectionOrBundleOverview: FunctionComponent<
 	}, [activeModalInfo?.collectionUuid, isCollection]);
 
 	useEffect(() => {
-		if (query.sort_column) {
-			setSortColumn(query.sort_column as CollectionsOrBundlesOverviewTableCols);
+		if (query.sortColumn) {
+			setSortColumn(query.sortColumn as CollectionsOrBundlesOverviewTableCols);
 		}
-		if (query.sort_order) {
-			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
+		if (query.sortOrder) {
+			setSortOrder(query.sortOrder as OrderDirection);
 		}
 	}, []);
 
@@ -314,7 +315,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const handleDeleteCollection = async () => {
 		await deleteCollection(
 			activeModalInfo?.collectionUuid,
-			user,
+			commonUser,
 			isCollection,
 			async () => {
 				await triggerCollectionOrBundleDelete(
@@ -340,7 +341,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	const handleDeleteSelfFromCollection = async () => {
-		await deleteSelfFromCollection(activeModalInfo?.collectionUuid, user, () => {
+		await deleteSelfFromCollection(activeModalInfo?.collectionUuid, commonUser, () => {
 			onUpdate();
 			fetchCollections();
 		});
@@ -363,11 +364,11 @@ const CollectionOrBundleOverview: FunctionComponent<
 	const onClickColumn = (columnId: CollectionsOrBundlesOverviewTableCols) => {
 		if (sortColumn === columnId) {
 			// Change column sort order
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+			setSortOrder(toggleSortOrder(sortOrder));
 		} else {
 			// Initial column sort order
 			setSortColumn(columnId);
-			setSortOrder('asc');
+			setSortOrder(OrderDirection.asc);
 		}
 	};
 
@@ -379,7 +380,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 		);
 		if (collection) {
 			const assignmentId = await AssignmentService.createAssignmentFromCollection(
-				user,
+				commonUser,
 				collection,
 				withDescription
 			);
@@ -432,7 +433,7 @@ const CollectionOrBundleOverview: FunctionComponent<
 					</MetaDataItem>
 					<MetaDataItem
 						icon={IconName.eye}
-						label={get(collection, 'view_counts_aggregate.aggregate.sum.count') || '0'}
+						label={String(collection?.view_count?.count || 0)}
 					/>
 				</MetaData>
 			</div>
@@ -452,14 +453,15 @@ const CollectionOrBundleOverview: FunctionComponent<
 				tText('collection/views/collection-overview___maak-opdracht'),
 				'clipboard',
 				(isCollection &&
-					PermissionService.hasPerm(user, PermissionName.CREATE_ASSIGNMENTS)) ||
+					PermissionService.hasPerm(commonUser, PermissionName.CREATE_ASSIGNMENTS)) ||
 					false
 			),
 			...createDropdownMenuItem(
 				CollectionMenuAction.openQuickLane,
 				tText('collection/views/collection-overview___delen-met-leerlingen'),
 				'link-2',
-				isCollection && PermissionService.hasPerm(user, PermissionName.CREATE_QUICK_LANE)
+				isCollection &&
+					PermissionService.hasPerm(commonUser, PermissionName.CREATE_QUICK_LANE)
 			),
 			...createDropdownMenuItem(
 				CollectionMenuAction.delete,
@@ -724,9 +726,11 @@ const CollectionOrBundleOverview: FunctionComponent<
 	};
 
 	const renderPagination = () => (
-		<Pagination
-			pageCount={Math.ceil(numberOfItems / ITEMS_PER_PAGE)}
-			currentPage={page}
+		<PaginationBar
+			{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+			startItem={page * ITEMS_PER_PAGE}
+			itemsPerPage={ITEMS_PER_PAGE}
+			totalItems={numberOfItems}
 			onPageChange={setPage}
 		/>
 	);
@@ -926,6 +930,6 @@ const CollectionOrBundleOverview: FunctionComponent<
 	);
 };
 
-export default withUser(
-	CollectionOrBundleOverview
-) as FunctionComponent<CollectionOrBundleOverviewProps>;
+export default withUser(CollectionOrBundleOverview) as FC<
+	Omit<CollectionOrBundleOverviewProps, 'user' | 'commonUser'>
+>;

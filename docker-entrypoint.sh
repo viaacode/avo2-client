@@ -7,16 +7,16 @@ echo "setting env"
 sh ./env.sh
 
 
-# Copy the scripts/robots-QAS.txt file or the scripts/robots-PROD.txt file to public/robots.txt based on the ENV environment variable
+# Copy the scripts/robots-enable-indexing.txt file or the scripts/robots-enable-indexing.txt file to public/robots.txt based on the ENABLE_GOOGLE_INDEXING environment variable
 echo "copy robots.txt file"
 ls -l
-if  [[ "$ENV" == "qas" ]]; then
-		cp $WD/robots-QAS.txt $WD/robots.txt
+if  [[ "$ENABLE_GOOGLE_INDEXING" == "true" ]]; then
+		cp $WD/robots-enable-indexing.txt $WD/robots.txt
 else
-		cp $WD/robots-PRD.txt $WD/robots.txt
+		cp $WD/robots-disable-indexing.txt $WD/robots.txt
 fi
-rm $WD/robots-QAS.txt
-rm $WD/robots-PRD.txt
+rm $WD/robots-enable-indexing.txt
+rm $WD/robots-disable-indexing.txt
 
 
 if  [[ "$1" == "bash" ]]; then

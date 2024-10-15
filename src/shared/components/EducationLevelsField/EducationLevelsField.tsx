@@ -1,24 +1,21 @@
 import { FormGroup, type TagInfo, TagsInput } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { lomToTagInfo } from '../../helpers/string-to-select-options';
-import { useLomEducationLevels } from '../../hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../hooks/useLomEducationLevelsAndDegrees';
 
 interface EducationLevelsFieldProps {
 	onChange?: (values: TagInfo[]) => void;
 	value: string[] | null; // id of lom field (collections, assignments, profiles) or string label (videos and audio)
 }
 
-const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
-	onChange,
-	value,
-}) => {
+const EducationLevelsField: FC<EducationLevelsFieldProps> = ({ onChange, value }) => {
 	const { tText } = useTranslation();
 
-	const [educationLevels] = useLomEducationLevels();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 
 	return (
 		<FormGroup
@@ -26,10 +23,10 @@ const EducationLevelsField: FunctionComponent<EducationLevelsFieldProps> = ({
 			labelFor="classificationId"
 		>
 			<TagsInput
-				options={educationLevels.map(lomToTagInfo)}
+				options={(educationLevelsAndDegrees || []).map(lomToTagInfo)}
 				value={compact(
 					(value || []).map((stringValue): Avo.Lom.LomField | undefined =>
-						educationLevels.find(
+						(educationLevelsAndDegrees || []).find(
 							(educationLevel) =>
 								educationLevel.label.toLowerCase() === stringValue ||
 								educationLevel.id === stringValue

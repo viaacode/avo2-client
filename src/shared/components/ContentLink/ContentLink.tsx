@@ -1,6 +1,6 @@
 import { Flex, FlexItem, Spacer, Thumbnail } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Link } from 'react-router-dom';
 
 import { CONTENT_LABEL_TO_ROUTE_PARTS } from '../../../assignment/assignment.const';
@@ -17,7 +17,7 @@ export interface ContentLinkProps {
 	content: Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item;
 }
 
-export const ContentLink: FunctionComponent<ContentLinkProps> = ({ parent, content }) => {
+export const ContentLink: FC<ContentLinkProps> = ({ parent, content }) => {
 	const { tHtml } = useTranslation();
 
 	const dutchLabel = ((content as any)?.type?.label ||

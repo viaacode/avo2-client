@@ -1,16 +1,18 @@
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { StickyBar } from '../StickyBar/StickyBar';
 
 export interface StickySaveBarProps {
 	isVisible: boolean;
+	isSaving: boolean;
 	onSave: () => void;
 	onCancel: () => void;
 }
 
-export const StickySaveBar: FunctionComponent<StickySaveBarProps> = ({
+export const StickySaveBar: FC<StickySaveBarProps> = ({
 	isVisible,
+	isSaving,
 	onSave,
 	onCancel,
 }) => {
@@ -24,7 +26,9 @@ export const StickySaveBar: FunctionComponent<StickySaveBarProps> = ({
 			title={tHtml('assignment/views/assignment-edit___wijzigingen-opslaan')}
 			isVisible={isVisible}
 			actionButtonProps={{
-				label: tText('assignment/views/assignment-edit___opslaan'),
+				label: isSaving
+					? tText('shared/components/sticky-save-bar/sticky-save-bar___bezig')
+					: tText('assignment/views/assignment-edit___opslaan'),
 				onClick: onSave,
 				type: 'tertiary',
 			}}

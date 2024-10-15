@@ -266,6 +266,45 @@ export function generateLomFilter(values: string[], scheme: EducationLevelType):
 }
 
 /**
+ * takes a list of education lom ids and generates a where object for a graphql query
+ * the list can also contain a null value: NULL_FILTER
+ * @param values
+ * @param allPossibleValues all values for the education levels or education degrees, so we can make the "NULL_FILTER" explicitly: not in any of these values
+ */
+export function generateEducationLomFilter(values: string[], allPossibleValues: string[]): any {
+	if (values.includes(NULL_FILTER)) {
+		return {
+			_or: [
+				{
+					loms: {
+						lom_id: {
+							_in: without(values, NULL_FILTER),
+						},
+					},
+				},
+				{
+					_not: {
+						loms: {
+							lom_id: {
+								_in: allPossibleValues,
+							},
+						},
+					},
+				},
+			],
+		};
+	} else {
+		return {
+			loms: {
+				lom_id: {
+					_in: without(values, NULL_FILTER),
+				},
+			},
+		};
+	}
+}
+
+/**
  * Does the same thing as `generateLomFilter` but matches a different structure
  */
 export function generateEducationLevelFilter(

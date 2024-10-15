@@ -1,7 +1,6 @@
-import { TranslationsOverview } from '@meemoo/admin-core-ui';
-import { Button, Modal, ModalBody, ModalFooterRight } from '@viaa/avo2-components';
+import { Button, Flex, Modal, ModalBody, ModalFooterRight, Spinner } from '@viaa/avo2-components';
 import { flatten, fromPairs, get, groupBy, isNil, map } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, useCallback, useState } from 'react';
+import React, { type FC, lazy, type ReactNode, Suspense, useCallback, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { GENERATE_SITE_TITLE } from '../../../constants';
@@ -15,7 +14,13 @@ import { type Translation, type TranslationsState } from '../translations.types'
 
 import './TranslationsOverviewPage.scss';
 
-const TranslationsOverviewPage: FunctionComponent = () => {
+const TranslationsOverview = lazy(() =>
+	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
+		default: adminCoreModule.TranslationsOverview,
+	}))
+);
+
+const TranslationsOverviewPage: FC = () => {
 	const { tText, tHtml } = useTranslation();
 
 	const [initialTranslations, setInitialTranslations] = useState<Translation[]>([]);
@@ -201,13 +206,21 @@ const TranslationsOverviewPage: FunctionComponent = () => {
 						)}
 					/>
 				</Helmet>
-				<TranslationsOverview
-					renderPopup={renderPopup}
-					className="c-translations-overview"
-				/>
+				<Suspense
+					fallback={
+						<Flex orientation="horizontal" center>
+							<Spinner size="large" />
+						</Flex>
+					}
+				>
+					<TranslationsOverview
+						renderPopup={renderPopup}
+						className="c-translations-overview"
+					/>
+				</Suspense>
 			</AdminLayoutBody>
 		</AdminLayout>
 	);
 };
 
-export default withAdminCoreConfig(TranslationsOverviewPage) as FunctionComponent;
+export default withAdminCoreConfig(TranslationsOverviewPage) as FC;

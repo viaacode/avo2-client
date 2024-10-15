@@ -1,6 +1,10 @@
 import './accept-elementary-pupil-conditions.scss';
 
-import { BlockHeading, BlockRichText, BlockVideoWrapper } from '@meemoo/admin-core-ui';
+import {
+	BlockHeading,
+	BlockRichText,
+	BlockVideoWrapper,
+} from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Column,
@@ -12,7 +16,7 @@ import {
 	ToolbarCenter,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types/types';
-import React, { type FunctionComponent, useRef, useState } from 'react';
+import React, { type FC, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { type Dispatch } from 'redux';
 
@@ -33,7 +37,7 @@ export type AcceptElementaryPupilConditionsProps = {
 
 export const ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE = 'ACCEPTED_ELEMENTARY_PUPIL_TERMS_OF_USE';
 
-const AcceptElementaryPupilConditions: FunctionComponent<AcceptElementaryPupilConditionsProps> = ({
+const AcceptElementaryPupilConditions: FC<AcceptElementaryPupilConditionsProps> = ({
 	user,
 	acceptConditions,
 }) => {

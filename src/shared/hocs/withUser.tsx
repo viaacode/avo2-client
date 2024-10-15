@@ -1,12 +1,12 @@
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 import { selectCommonUser, selectUser } from '../../authentication/store/selectors';
 import { type AppState } from '../../store';
 
-const withUser = (WrappedComponent: FunctionComponent) => {
+const withUser = (WrappedComponent: FC) => {
 	return React.memo(function withUser(props: any) {
 		return <WrappedComponent {...props} />;
 	});

@@ -9,7 +9,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { noop } from 'lodash-es';
-import React, { type FunctionComponent, useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { type PickerItem } from '../../types';
@@ -22,7 +22,7 @@ interface ChangeAuthorModalProps {
 	callback: (authorProfileId: PickerItem) => void;
 }
 
-const ChangeAuthorModal: FunctionComponent<ChangeAuthorModalProps> = ({
+const ChangeAuthorModal: FC<ChangeAuthorModalProps> = ({
 	onClose = noop,
 	isOpen,
 	initialAuthor,

@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Container,
@@ -6,7 +6,6 @@ import {
 	DropdownButton,
 	DropdownContent,
 	IconName,
-	// Flex,
 	MenuSearchResultContent,
 	type MenuSearchResultItemInfo,
 	Spacer,
@@ -15,7 +14,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { find, get, isNil } from 'lodash-es';
-import React, { type FunctionComponent, type KeyboardEvent, useEffect, useState } from 'react';
+import React, { type FC, type KeyboardEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
@@ -48,7 +47,7 @@ interface BlockSearchProps {
 
 const ITEMS_IN_AUTOCOMPLETE = 5;
 
-const BlockSearch: FunctionComponent<BlockSearchProps & DefaultSecureRouteProps> = ({
+const BlockSearch: FC<BlockSearchProps & DefaultSecureRouteProps> = ({
 	searchResults,
 	searchResultsLoading,
 	search,
@@ -216,4 +215,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 export default withRouter(
 	connect(mapStateToProps, mapDispatchToProps)(BlockSearch)
-) as unknown as FunctionComponent<BlockSearchProps>;
+) as unknown as FC<BlockSearchProps>;

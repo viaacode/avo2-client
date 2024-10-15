@@ -26,14 +26,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
-import React, {
-	type FC,
-	type FunctionComponent,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { compose } from 'redux';
 
 import { CollectionService } from '../../collection/collection.service';
@@ -113,8 +106,8 @@ enum AddCollectionTab {
 	bookmarkedCollections = 'bookmarkedcollections',
 }
 
-const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
-	user,
+const AddCollectionModal: FC<AddCollectionModalProps> = ({
+	commonUser,
 	isOpen,
 	onClose = noop,
 	addCollectionCallback,
@@ -134,7 +127,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 
 	const fetchCollections = useCallback(async () => {
 		try {
-			if (!user) {
+			if (!commonUser) {
 				throw new CustomError('Could not determine authenticated user.');
 			}
 
@@ -147,7 +140,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 			let collections: Partial<Avo.Collection.Collection>[];
 			if (activeView === AddCollectionTab.myCollections) {
 				collections = await CollectionService.fetchCollectionsByOwnerOrContributorProfileId(
-					user,
+					commonUser,
 					0,
 					null,
 					getOrderObject(
@@ -162,7 +155,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 				);
 			} else {
 				collections = await CollectionService.fetchBookmarkedCollectionsByOwner(
-					user,
+					commonUser,
 					0,
 					null,
 					getOrderObject(
@@ -184,7 +177,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 				),
 			});
 		}
-	}, [tableColumns, activeView, user, filterString, sortColumn, sortOrder, tText]);
+	}, [commonUser, tableColumns, activeView, sortColumn, sortOrder, filterString, tHtml]);
 
 	useEffect(() => {
 		if (collections) {
@@ -196,7 +189,7 @@ const AddCollectionModal: FunctionComponent<AddCollectionModalProps> = ({
 
 	useEffect(() => {
 		if (isOpen) {
-			fetchCollections();
+			fetchCollections().then(noop);
 		}
 	}, [isOpen, fetchCollections]);
 

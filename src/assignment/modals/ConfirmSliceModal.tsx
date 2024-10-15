@@ -10,7 +10,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { BLOCK_ITEM_LABELS } from '../../shared/components/BlockList/BlockList.consts';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -23,7 +23,7 @@ export interface ConfirmSliceModalProps extends Pick<ModalProps, 'isOpen' | 'onC
 	onConfirm?: () => void;
 }
 
-const ConfirmSliceModal: FunctionComponent<ConfirmSliceModalProps> = ({
+const ConfirmSliceModal: FC<ConfirmSliceModalProps> = ({
 	responses = [],
 	block,
 	isPupilCollection,

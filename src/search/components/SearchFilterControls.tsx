@@ -2,7 +2,7 @@ import { Accordion, AccordionBody, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, forEach, get, omit, uniqBy } from 'lodash-es';
-import React, { type FunctionComponent, type ReactNode, useMemo } from 'react';
+import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import {
 	CheckboxDropdownModal,
@@ -21,7 +21,7 @@ const languageCodeToLabel = (code: string): string => {
 	return LANGUAGES.nl[code] || code;
 };
 
-const SearchFilterControls: FunctionComponent<SearchFilterControlsProps> = ({
+const SearchFilterControls: FC<SearchFilterControlsProps> = ({
 	filterState,
 	handleFilterFieldChange,
 	multiOptions,

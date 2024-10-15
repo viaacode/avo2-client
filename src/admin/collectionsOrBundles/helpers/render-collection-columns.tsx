@@ -133,10 +133,12 @@ export const renderCollectionOverviewColumns = (
 
 		case 'education_levels': {
 			const groupedLoms = groupLomLinks(rowData.loms);
-			return (
-				lomsToTagList([...groupedLoms.educationLevel, ...groupedLoms.educationDegree]) ||
-				'-'
-			);
+			return lomsToTagList(groupedLoms.educationLevel) || '-';
+		}
+
+		case 'education_degrees': {
+			const groupedLoms = groupLomLinks(rowData.loms);
+			return lomsToTagList(groupedLoms.educationDegree) || '-';
 		}
 
 		case 'subjects': {

@@ -1,4 +1,4 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Column,
@@ -13,10 +13,9 @@ import {
 	Spinner,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import React, {
 	type Dispatch,
-	type FunctionComponent,
+	type FC,
 	type ReactNode,
 	type SetStateAction,
 	useState,
@@ -54,7 +53,7 @@ interface DeleteModalToggle {
 }
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
-const LinkedAccounts: FunctionComponent<AccountProps> = ({ location, user }) => {
+const LinkedAccounts: FC<AccountProps> = ({ location, user }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] =

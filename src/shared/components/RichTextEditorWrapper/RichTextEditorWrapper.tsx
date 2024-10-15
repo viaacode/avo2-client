@@ -6,7 +6,7 @@ import {
 } from '@meemoo/react-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isEqual } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { CustomError } from '../../helpers';
@@ -28,7 +28,7 @@ export type RichTextEditorWrapperProps = RichTextEditorProps & {
  * @param props
  * @constructor
  */
-const RichTextEditorWrapper: FunctionComponent<RichTextEditorWrapperProps> = (props) => {
+const RichTextEditorWrapper: FC<RichTextEditorWrapperProps> = (props) => {
 	const { tText, tHtml } = useTranslation();
 
 	const { controls, fileType, ownerId, state, onChange, ...rest } = props;

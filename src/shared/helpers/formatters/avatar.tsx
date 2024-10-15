@@ -1,6 +1,5 @@
 import { Avatar, type AvatarProps } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get } from 'lodash-es';
 import React, { type ReactNode } from 'react';
 
 export const getProfile = (
@@ -25,40 +24,97 @@ export const getProfile = (
 
 export const getInitialChar = (value: string | undefined | null): string => (value ? value[0] : '');
 
-export const getInitials = (profile: Avo.User.Profile | null): string =>
-	getInitialChar(get(profile, 'user.first_name')) +
-	getInitialChar(get(profile, 'user.last_name'));
+export const getInitials = (profile: Avo.User.Profile | Avo.User.CommonUser | null): string => {
+	if ((profile as Avo.User.CommonUser)?.profileId) {
+		return (
+			getInitialChar((profile as Avo.User.CommonUser).firstName) +
+			getInitialChar((profile as Avo.User.CommonUser).lastName)
+		);
+	}
+	return (
+		getInitialChar((profile as Avo.User.Profile)?.user?.first_name) +
+		getInitialChar((profile as Avo.User.Profile)?.user?.last_name)
+	);
+};
 
+/**
+ * @deprecated Use getFullNameCommonUser instead
+ * @param userOrProfile
+ * @param includeCompany
+ * @param includeEmail
+ */
 export const getFullName = (
-	userOrProfile: Avo.User.Profile | { profile: Avo.User.Profile } | null | undefined,
+	userOrProfile:
+		| Avo.User.Profile
+		| { profile: Avo.User.Profile }
+		| Avo.User.CommonUser
+		| null
+		| undefined,
 	includeCompany: boolean,
 	includeEmail: boolean
 ): string | null => {
 	if (!userOrProfile) {
 		return null;
 	}
+	if ((userOrProfile as Avo.User.CommonUser).profileId) {
+		return getFullNameCommonUser(
+			userOrProfile as Avo.User.CommonUser,
+			includeCompany,
+			includeEmail
+		);
+	}
 
-	const profile = getProfile(userOrProfile);
+	const profile = getProfile(userOrProfile as Avo.User.Profile | { profile: Avo.User.Profile });
 
-	const firstName = get(profile, 'user.first_name');
-	const lastName = get(profile, 'user.last_name');
-	const fullName = get(profile, 'user.full_name') || `${firstName} ${lastName}`;
-	const email = includeEmail ? get(profile, 'user.mail') : '';
-	const organisationName = includeCompany ? get(profile, 'organisation.name') : '';
+	const firstName = profile?.user?.first_name;
+	const lastName = profile?.user?.last_name;
+	const fullName = profile?.user?.full_name || `${firstName} ${lastName}`;
+	const email = includeEmail ? profile?.user?.mail : '';
+	const organisationName = includeCompany ? profile?.organisation?.name : '';
 
 	return `${fullName}${organisationName ? ` (${organisationName})` : ''}${
 		includeEmail ? ` (${email})` : ''
 	}`;
 };
 
-export const getAbbreviatedFullName = (profile: Avo.User.Profile | null): string =>
-	`${(profile?.user?.first_name || '')[0]}. ${profile?.user?.last_name || ''}`;
+export const getFullNameCommonUser = (
+	commonUser: Avo.User.CommonUser | null | undefined,
+	includeCompany: boolean,
+	includeEmail: boolean
+): string | null => {
+	if (!commonUser) {
+		return null;
+	}
 
-export const getAvatarImage = (profile: Avo.User.Profile | null): string =>
-	get(profile, 'organisation.logo_url') || get(profile, 'avatar') || '';
+	const firstName = commonUser.firstName;
+	const lastName = commonUser.lastName;
+	const fullName = commonUser.fullName || `${firstName} ${lastName}`;
+	const email = includeEmail ? commonUser.email : '';
+	const organisationName = includeCompany ? commonUser.organisation?.name || '' : '';
+
+	return `${fullName}${organisationName ? ` (${organisationName})` : ''}${
+		includeEmail ? ` (${email})` : ''
+	}`;
+};
+
+export const getAbbreviatedFullName = (
+	profile: Avo.User.Profile | Avo.User.CommonUser | null
+): string => {
+	if ((profile as Avo.User.CommonUser)?.profileId) {
+		return `${(profile as Avo.User.CommonUser).firstName?.[0] || 'x'}. ${
+			(profile as Avo.User.CommonUser).lastName
+		}`;
+	}
+	return `${((profile as Avo.User.Profile)?.user?.first_name || '')[0]}. ${
+		(profile as Avo.User.Profile)?.user?.last_name || ''
+	}`;
+};
+
+export const getAvatarImage = (profile: Avo.User.Profile | Avo.User.CommonUser | null): string =>
+	profile?.organisation?.logo_url || profile?.avatar || '';
 
 export const getAvatarProps = (
-	profile: Avo.User.Profile | null,
+	profile: Avo.User.Profile | Avo.User.CommonUser | null,
 	options: {
 		small?: boolean;
 		abbreviatedName?: boolean;

@@ -1,7 +1,9 @@
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { get, isNil, truncate } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
@@ -9,6 +11,7 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import { buildLink, CustomError, formatTimestamp } from '../../../shared/helpers';
+import withUser from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -23,9 +26,7 @@ import {
 	type UnpublishedItemsTableState,
 } from '../items.types';
 
-type PublishItemsOverviewProps = DefaultSecureRouteProps;
-
-const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ history }) => {
+const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [items, setItems] = useState<UnpublishedItem[] | null>(null);
@@ -376,4 +377,4 @@ const PublishItemsOverview: FunctionComponent<PublishItemsOverviewProps> = ({ hi
 	);
 };
 
-export default PublishItemsOverview;
+export default compose(withRouter, withUser)(PublishItemsOverview) as FC;

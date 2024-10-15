@@ -5,7 +5,7 @@ import { isUserSecondaryElementary } from '../../shared/helpers';
 import { isUserAssignmentOwner } from '../assignment.helper';
 
 export function useEducationLevelModal(
-	commonUser: Avo.User.CommonUser,
+	commonUser: Avo.User.CommonUser | null,
 	assignment: Partial<Avo.Assignment.Assignment> | undefined,
 	assignmentLoading = false
 ): [boolean, Dispatch<SetStateAction<boolean>>] {

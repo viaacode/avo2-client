@@ -1,8 +1,8 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { Container, Icon, IconName } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
-import React, { type FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
+import { noop } from 'lodash-es';
+import React, { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError } from '../../shared/helpers';
+import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentService } from '../assignment.service';
 import AssignmentHeading from '../components/AssignmentHeading';
@@ -25,9 +26,9 @@ type AssignmentPupilCollectionDetailProps = DefaultSecureRouteProps<{
 	assignmentId: string;
 }>;
 
-const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollectionDetailProps> = ({
+const AssignmentPupilCollectionDetail: FC<AssignmentPupilCollectionDetailProps> = ({
 	match,
-	user,
+	commonUser,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
@@ -45,7 +46,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 					PermissionName.EDIT_ANY_ASSIGNMENTS,
 					{ name: PermissionName.EDIT_OWN_ASSIGNMENTS, obj: tempAssignment },
 				],
-				user
+				commonUser
 			);
 			if (!canViewAssignmentResponses) {
 				setLoadingInfo({
@@ -73,7 +74,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch assignment and response', err, {
-					user,
+					commonUser,
 					id: assignmentResponseId,
 				})
 			);
@@ -84,13 +85,13 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 				),
 			});
 		}
-	}, [setAssignment, setLoadingInfo, assignmentResponseId, tText, user]);
+	}, [setAssignment, setLoadingInfo, assignmentResponseId, tText, commonUser]);
 
 	// Effects
 
 	useEffect(() => {
-		fetchAssignment();
-	}, [fetchAssignment, user, tText]);
+		fetchAssignment().then(noop);
+	}, [fetchAssignment, commonUser, tText]);
 
 	useEffect(() => {
 		if (assignment && assignmentResponse) {
@@ -110,7 +111,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 					{tText('assignment/views/assignment-pupil-collection-detail___alle-responsen')}
 				</Link>
 			),
-		[tText, toAssignmentResponsesOverview, assignment]
+		[tText, assignment]
 	);
 
 	const renderReadOnlyPupilCollectionBlocks = () => {
@@ -146,7 +147,7 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 								ITEM: {
 									title: {
 										canClickHeading: PermissionService.hasPerm(
-											user,
+											commonUser,
 											PermissionName.VIEW_ANY_PUBLISHED_ITEMS
 										),
 									},
@@ -196,4 +197,6 @@ const AssignmentPupilCollectionDetail: FunctionComponent<AssignmentPupilCollecti
 	);
 };
 
-export default AssignmentPupilCollectionDetail;
+export default withUser(
+	AssignmentPupilCollectionDetail
+) as FC<AssignmentPupilCollectionDetailProps>;

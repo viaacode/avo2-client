@@ -1,4 +1,3 @@
-import { BlockHeading } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Icon,
@@ -10,13 +9,14 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import classNames from 'classnames';
-import React, { type FunctionComponent, type ReactNode, useMemo } from 'react';
+import React, { type FC, type ReactNode, useMemo } from 'react';
 
 import { BLOCK_ITEM_ICONS } from '../../shared/components/BlockList/BlockList.consts';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentBlockType } from '../assignment.types';
 
 import './AddBlockModal.scss';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 type AddBlockModalType =
 	| AssignmentBlockType.ITEM
@@ -37,12 +37,7 @@ export interface AddBlockModalProps extends Pick<ModalProps, 'isOpen' | 'onClose
 	onConfirm?: (type: AddBlockModalType) => void;
 }
 
-const AddBlockModal: FunctionComponent<AddBlockModalProps> = ({
-	blocks,
-	isOpen,
-	onClose,
-	onConfirm,
-}) => {
+const AddBlockModal: FC<AddBlockModalProps> = ({ blocks, isOpen, onClose, onConfirm }) => {
 	const { tHtml } = useTranslation();
 
 	const disableSearchBlock = !!blocks.find(

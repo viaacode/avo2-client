@@ -1,4 +1,4 @@
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { NULL_FILTER } from '../../../admin/shared/helpers/filters';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -20,7 +20,7 @@ export interface BooleanCheckboxDropdownProps {
 	onChange: (value: string[], id: string) => void;
 }
 
-const BooleanCheckboxDropdown: FunctionComponent<BooleanCheckboxDropdownProps> = ({
+const BooleanCheckboxDropdown: FC<BooleanCheckboxDropdownProps> = ({
 	label,
 	id,
 	disabled,

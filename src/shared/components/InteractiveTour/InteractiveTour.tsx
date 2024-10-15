@@ -1,8 +1,7 @@
-import { Color } from '@meemoo/admin-core-ui';
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { compact, debounce } from 'lodash-es';
-import React, { type FunctionComponent, useCallback, useEffect, useState } from 'react';
+import React, { type FC, useCallback, useEffect, useState } from 'react';
 import Joyride, { type CallBackProps } from 'react-joyride';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -20,6 +19,8 @@ import Html from '../Html/Html';
 import './InteractiveTour.scss';
 import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
 
+import { TEAL_BRIGHT } from '../../constants';
+
 export const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
 
 export interface InteractiveTourProps {
@@ -32,9 +33,12 @@ interface UiStateProps {
 
 const INTERACTIVE_TOUR_IN_PROGRESS_CLASS = 'c-interactive-tour--in-progress';
 
-const InteractiveTour: FunctionComponent<
-	InteractiveTourProps & SecuredRouteProps & UiStateProps
-> = ({ showButton, commonUser, location, showNudgingModal }) => {
+const InteractiveTour: FC<InteractiveTourProps & SecuredRouteProps & UiStateProps> = ({
+	showButton,
+	commonUser,
+	location,
+	showNudgingModal,
+}) => {
 	const { tText } = useTranslation();
 
 	// Sometimes we render things with displayDesktopMobile so elements can be loaded but should not initialize since they are hidden for that media query (eg: mobile)
@@ -44,7 +48,7 @@ const InteractiveTour: FunctionComponent<
 	const { data: interactiveTourInfo } = useGetInteractiveTourForPage(
 		location.pathname,
 		tourDisplayDates,
-		commonUser.profileId
+		commonUser?.profileId
 	);
 	const tour = interactiveTourInfo?.tour;
 	const routeId = interactiveTourInfo?.routeId;
@@ -136,7 +140,7 @@ const InteractiveTour: FunctionComponent<
 				}
 				await InteractiveTourService.setInteractiveTourSeen(
 					routeId,
-					commonUser.profileId,
+					commonUser?.profileId,
 					(tour as TourInfo).id
 				);
 				setSeen(true);
@@ -144,7 +148,7 @@ const InteractiveTour: FunctionComponent<
 				console.error(
 					new CustomError('Failed to store interactive tour seen status', err, {
 						routeId,
-						profileId: commonUser.profileId,
+						profileId: commonUser?.profileId,
 						tourId: (tour as TourInfo).id,
 					})
 				);
@@ -207,7 +211,7 @@ const InteractiveTour: FunctionComponent<
 					floaterProps={{ disableAnimation: true }}
 					styles={{
 						options: {
-							primaryColor: Color.TealBright,
+							primaryColor: TEAL_BRIGHT,
 						},
 					}}
 				/>
@@ -241,4 +245,4 @@ export default compose(
 	connect(mapStateToProps),
 	withRouter,
 	withUser
-)(InteractiveTour) as FunctionComponent<InteractiveTourProps>;
+)(InteractiveTour) as FC<InteractiveTourProps>;

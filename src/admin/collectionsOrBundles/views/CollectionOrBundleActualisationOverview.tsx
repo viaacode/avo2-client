@@ -1,15 +1,11 @@
+import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, {
-	type FunctionComponent,
-	type ReactNode,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import { noop } from 'lodash-es';
+import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
 import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
@@ -22,8 +18,10 @@ import {
 } from '../../../shared/components';
 import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
 import { buildLink, CustomError } from '../../../shared/helpers';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
-import { useLomEducationLevels } from '../../../shared/hooks/useLomEducationLevels';
+import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
 import { useLomSubjects } from '../../../shared/hooks/useLomSubjects';
 import { useQualityLabels } from '../../../shared/hooks/useQualityLabels';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -43,17 +41,18 @@ import {
 } from '../collections-or-bundles.const';
 import { CollectionsOrBundlesService } from '../collections-or-bundles.service';
 import {
+	CollectionBulkAction,
 	type CollectionOrBundleActualisationOverviewTableCols,
 	type CollectionOrBundleActualisationTableState,
+	type CollectionsOrBundlesOverviewTableCols,
 } from '../collections-or-bundles.types';
 import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
-type CollectionOrBundleActualisationOverviewProps = DefaultSecureRouteProps;
-
-const CollectionOrBundleActualisationOverview: FunctionComponent<
-	CollectionOrBundleActualisationOverviewProps
-> = ({ location, user }) => {
+const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
+	location,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [collections, setCollections] = useState<Avo.Collection.Collection[] | null>(null);
@@ -63,12 +62,13 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 		Partial<CollectionOrBundleActualisationTableState>
 	>({});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
 
 	const [selectedCollectionIds, setSelectedCollectionIds] = useState<string[]>([]);
 
 	const [userGroups] = useUserGroups(false);
 	const [subjects] = useLomSubjects();
-	const [educationLevels] = useLomEducationLevels();
+	const { data: educationLevelsAndDegrees } = useLomEducationLevelsAndDegrees();
 	const [collectionLabels] = useQualityLabels(true);
 	const [organisations] = useCompaniesWithUsers();
 
@@ -143,10 +143,16 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 				userGroupOptions,
 				collectionLabelOptions,
 				subjects,
-				educationLevels,
+				educationLevelsAndDegrees || [],
 				organisationOptions
 			),
-		[collectionLabelOptions, educationLevels, subjects, userGroupOptions, organisationOptions]
+		[
+			collectionLabelOptions,
+			educationLevelsAndDegrees,
+			subjects,
+			userGroupOptions,
+			organisationOptions,
+		]
 	);
 
 	const isCollection =
@@ -157,34 +163,37 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 		(filters: Partial<CollectionOrBundleActualisationTableState>) => {
 			const andFilters: any[] = generateCollectionWhereObject(
 				filters,
-				user,
+				commonUser,
 				isCollection,
 				true,
 				false,
-				'view'
+				'view',
+				educationLevelsAndDegrees || []
 			);
 
 			return { _and: andFilters };
 		},
-		[isCollection, user]
+		[commonUser, isCollection, educationLevelsAndDegrees]
 	);
+
+	const getColumnDataType = () => {
+		const column = tableColumns.find(
+			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
+		);
+		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
+	};
 
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
 
 		try {
-			const column = tableColumns.find(
-				(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
-			);
-			const columnDataType = (column?.dataType ||
-				TableColumnDataType.string) as TableColumnDataType;
 			const [collectionsTemp, collectionsCountTemp] =
 				await CollectionsOrBundlesService.getCollectionEditorial(
 					tableState.page || 0,
 					(tableState.sort_column ||
 						'created_at') as CollectionOrBundleActualisationOverviewTableCols,
 					tableState.sort_order || 'desc',
-					columnDataType,
+					getColumnDataType(),
 					generateWhereObject(getFilters(tableState)),
 					'actualisation'
 				);
@@ -211,8 +220,10 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
-		fetchCollectionsOrBundles();
-	}, [fetchCollectionsOrBundles]);
+		if (commonUser && educationLevelsAndDegrees?.length) {
+			fetchCollectionsOrBundles().then(noop);
+		}
+	}, [fetchCollectionsOrBundles, commonUser, educationLevelsAndDegrees]);
 
 	useEffect(() => {
 		if (collections) {
@@ -380,6 +391,78 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 					onSelectionChanged={setSelectedCollectionIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
+					bulkActions={[
+						{
+							label: tText(
+								'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___exporteer-alles'
+							),
+							value: CollectionBulkAction.EXPORT_ALL,
+						},
+					]}
+					onSelectBulkAction={async (action: string) => {
+						if (action === CollectionBulkAction.EXPORT_ALL) {
+							setIsExportAllToCsvModalOpen(true);
+						}
+					}}
+				/>
+				<ExportAllToCsvModal
+					title={
+						isCollection
+							? tText(
+									'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___exporteren-van-alle-collecties-naar-csv'
+							  )
+							: tText(
+									'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___exporteren-van-alle-bundels-naar-csv'
+							  )
+					}
+					isOpen={isExportAllToCsvModalOpen}
+					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					fetchingItemsLabel={tText(
+						'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___bezig-met-ophalen-van-media-items'
+					)}
+					generatingCsvLabel={tText(
+						'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___bezig-met-genereren-van-de-csv'
+					)}
+					fetchTotalItems={async () => {
+						const response = await CollectionsOrBundlesService.getCollections(
+							0,
+							0,
+							(tableState.sort_column ||
+								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							generateWhereObject(getFilters(tableState))
+						);
+						return response[1];
+					}}
+					fetchMoreItems={async (offset: number, limit: number) => {
+						const response = await CollectionsOrBundlesService.getCollections(
+							offset,
+							limit,
+							(tableState.sort_column ||
+								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							generateWhereObject(getFilters(tableState))
+						);
+						return response[0];
+					}}
+					renderValue={(value: any, columnId: string) =>
+						renderTableCell(
+							value as any,
+							columnId as CollectionOrBundleActualisationOverviewTableCols
+						)
+					}
+					columns={tableColumnListToCsvColumnList(tableColumns)}
+					exportFileName={
+						isCollection
+							? tText(
+									'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___collecties-actualisatie-csv'
+							  )
+							: tText(
+									'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___bundels-actualisatie-csv'
+							  )
+					}
 				/>
 			</>
 		);
@@ -434,4 +517,4 @@ const CollectionOrBundleActualisationOverview: FunctionComponent<
 	);
 };
 
-export default CollectionOrBundleActualisationOverview;
+export default compose(withRouter, withUser)(CollectionOrBundleActualisationOverview) as FC;

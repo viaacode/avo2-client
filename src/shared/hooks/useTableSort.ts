@@ -1,6 +1,8 @@
 import { type Avo } from '@viaa/avo2-types';
 import { type Dispatch, type SetStateAction, useState } from 'react';
 
+import { toggleSortOrder } from '../helpers/toggle-sort-order';
+
 type UseTableSortTuple<T> = [
 	T,
 	Avo.Search.OrderDirection,
@@ -21,13 +23,13 @@ export const useTableSort = <T>(
 	): { sortColumn: T; sortOrder: Avo.Search.OrderDirection } => {
 		if (sortColumn === columnId) {
 			// Change column sort order
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+			setSortOrder(toggleSortOrder(sortOrder));
 		} else {
 			// Initial column sort order
 			setSortColumn(columnId);
 			setSortOrder(initialSortOrder);
 		}
-		return { sortColumn: columnId, sortOrder: sortOrder === 'asc' ? 'desc' : 'asc' };
+		return { sortColumn: columnId, sortOrder: toggleSortOrder(sortOrder) };
 	};
 
 	return [sortColumn, sortOrder, handleTableSortClick, setSortColumn, setSortOrder];

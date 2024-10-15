@@ -1,13 +1,10 @@
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 import { Prompt, useLocation } from 'react-router-dom';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ROUTE_PARTS } from '../../constants';
 
-export const BeforeUnloadPrompt: FunctionComponent<{ when: boolean; message?: string }> = ({
-	when,
-	message,
-}) => {
+export const BeforeUnloadPrompt: FC<{ when: boolean; message?: string }> = ({ when, message }) => {
 	const { tText } = useTranslation();
 	const current = useLocation();
 

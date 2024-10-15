@@ -1,12 +1,11 @@
 import './QuickLaneDetail.scss';
 
-import { BlockHeading, stripRichTextParagraph } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	Container,
 	Flex,
 	FlexItem,
-	HeaderAvatar,
 	IconName,
 	Navbar,
 	Toolbar,
@@ -14,17 +13,11 @@ import {
 	ToolbarLeft,
 	ToolbarRight,
 } from '@viaa/avo2-components';
-import { PermissionName } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { HeaderBottomRowLeft } from '@viaa/avo2-components/src/components/Header/Header.slots';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import classnames from 'classnames';
-import { get } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactElement,
-	useCallback,
-	useEffect,
-	useState,
-} from 'react';
+import { get, noop } from 'lodash-es';
+import React, { type FC, type ReactElement, useCallback, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { generatePath } from 'react-router';
 
@@ -38,18 +31,16 @@ import { ItemVideoDescription } from '../../item/components';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../shared/components';
 import { CustomError, isMobileWidth, renderAvatar, toSeconds } from '../../shared/helpers';
 import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
+import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
+import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
 
 type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
-const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
-	history,
-	match,
-	user,
-	...rest
-}) => {
+const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser, ...rest }) => {
 	const { tText, tHtml } = useTranslation();
 
 	// State
@@ -125,7 +116,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 			}
 
 			if (permissionName !== undefined) {
-				setCanReadOriginal(await PermissionService.hasPerm(user, permissionName));
+				setCanReadOriginal(PermissionService.hasPerm(commonUser, permissionName));
 			}
 
 			// Update state
@@ -146,7 +137,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch quick lane and content for detail page', err, {
-					user,
+					commonUser,
 					id: match.params.id,
 				})
 			);
@@ -158,11 +149,11 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				),
 			});
 		}
-	}, [setQuickLane, setLoadingInfo, match.params.id, tHtml, user]);
+	}, [setQuickLane, setLoadingInfo, match.params.id, tHtml, commonUser]);
 
 	useEffect(() => {
-		if (PermissionService.hasPerm(user, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
-			fetchQuickLaneAndContent();
+		if (PermissionService.hasPerm(commonUser, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
+			fetchQuickLaneAndContent().then(noop);
 		} else {
 			setLoadingInfo({
 				state: 'error',
@@ -172,7 +163,7 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				icon: IconName.lock,
 			});
 		}
-	}, [fetchQuickLaneAndContent, user, tHtml]);
+	}, [fetchQuickLaneAndContent, commonUser, tHtml]);
 
 	useEffect(() => {
 		if (quickLane) {
@@ -205,8 +196,10 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 							(quickLane.content as Avo.Collection.Collection).collection_fragments
 						}
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
+						showMetadata={true}
 						linkToItems={false}
 						collection={quickLane.content as Avo.Collection.Collection}
+						sourcePage={SourcePage.quickLanePage}
 						{...rest}
 					/>
 				);
@@ -214,10 +207,12 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 				return (
 					<ItemVideoDescription
 						itemMetaData={quickLane.content as Avo.Item.Item}
+						showMetadata={true}
 						showDescription={contentLayout === AssignmentLayout.PlayerAndText}
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}
 						cuePointsVideo={{ start, end }}
+						sourcePage={SourcePage.quickLanePage}
 					/>
 				);
 			default:
@@ -270,9 +265,9 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 										<ToolbarRight>
 											{!!profile && (
 												<ToolbarItem>
-													<HeaderAvatar>
+													<HeaderBottomRowLeft>
 														{renderAvatar(profile, { dark: true })}
-													</HeaderAvatar>
+													</HeaderBottomRowLeft>
 												</ToolbarItem>
 											)}
 											{canReadOriginal && (
@@ -366,4 +361,4 @@ const QuickLaneDetail: FunctionComponent<QuickLaneDetailProps> = ({
 	);
 };
 
-export default QuickLaneDetail;
+export default withUser(QuickLaneDetail) as FC<QuickLaneDetailProps>;

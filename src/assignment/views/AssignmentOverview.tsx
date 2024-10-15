@@ -1,5 +1,6 @@
 import './AssignmentOverview.scss';
 
+import { PaginationBar } from '@meemoo/react-components';
 import {
 	Button,
 	ButtonGroup,
@@ -10,9 +11,9 @@ import {
 	Icon,
 	IconName,
 	MoreOptionsDropdown,
-	Pagination,
 	Select,
 	Spacer,
+	Spinner,
 	Table,
 	TagList,
 	TextInput,
@@ -22,12 +23,11 @@ import {
 	ToolbarRight,
 	useKeyPress,
 } from '@viaa/avo2-components';
-import { PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, PermissionName, ShareWithColleagueTypeEnum } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { cloneDeep, compact, isArray, isNil, noop } from 'lodash-es';
 import React, {
-	type FunctionComponent,
+	type FC,
 	type KeyboardEvent,
 	type ReactNode,
 	useCallback,
@@ -47,16 +47,13 @@ import {
 } from 'use-query-params';
 
 import { cleanupObject } from '../../admin/shared/components/FilterTable/FilterTable.utils';
+import { GET_DEFAULT_PAGINATION_BAR_PROPS } from '../../admin/shared/components/PaginationBar/PaginationBar.consts';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
-import {
-	CheckboxDropdownModal,
-	type CheckboxOption,
-	LoadingErrorLoadedComponent,
-	type LoadingInfo,
-} from '../../shared/components';
+import { type OrderDirection } from '../../search/search.const';
+import { CheckboxDropdownModal, type CheckboxOption } from '../../shared/components';
 import { ContributorInfoRight } from '../../shared/components/ShareWithColleagues/ShareWithColleagues.types';
 import {
 	ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS,
@@ -65,7 +62,6 @@ import {
 import {
 	buildLink,
 	createDropdownMenuItem,
-	CustomError,
 	formatDate,
 	isMobileWidth,
 	navigate,
@@ -74,9 +70,9 @@ import {
 import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
+import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
-import { useTableSort } from '../../shared/hooks/useTableSort';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { AssignmentLabelsService } from '../../shared/services/assignment-labels-service';
 import { ToastService } from '../../shared/services/toast-service';
@@ -98,6 +94,7 @@ import {
 import AssignmentDeadline from '../components/AssignmentDeadline';
 import { deleteAssignment, deleteSelfFromAssignment } from '../helpers/delete-assignment';
 import { duplicateAssignment } from '../helpers/duplicate-assignment';
+import { useGetAssignments } from '../hooks/useGetAssignments';
 import DeleteAssignmentModal from '../modals/DeleteAssignmentModal';
 
 interface AssignmentOverviewProps {
@@ -117,14 +114,13 @@ const defaultFiltersAndSort = {
 	sort_order: DEFAULT_SORT_ORDER,
 };
 
-const AssignmentOverview: FunctionComponent<
-	AssignmentOverviewProps & RouteComponentProps & UserProps
-> = ({ onUpdate = noop, history, commonUser, user }) => {
+const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & UserProps> = ({
+	onUpdate = noop,
+	history,
+	commonUser,
+}) => {
 	const { tText, tHtml } = useTranslation();
 
-	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
-	const [assignments, setAssignments] = useState<Avo.Assignment.Assignment[] | null>(null);
-	const [assignmentCount, setAssignmentCount] = useState<number>(0);
 	const [allAssignmentLabels, setAllAssignmentLabels] = useState<Avo.Assignment.Label[]>([]);
 	const [filterString, setFilterString] = useState<string | undefined>(undefined);
 	const [dropdownOpenForAssignmentId, setDropdownOpenForAssignmentId] = useState<string | null>(
@@ -134,8 +130,18 @@ const AssignmentOverview: FunctionComponent<
 	const [markedAssignment, setMarkedAssignment] = useState<Avo.Assignment.Assignment | null>(
 		null
 	);
-	const [canEditAssignments, setCanEditAssignments] = useState<boolean | null>(null);
-	const [showPublicState, setShowPublicState] = useState<boolean | null>(null);
+	const canEditAssignments = useMemo(
+		() =>
+			PermissionService.hasPerm(commonUser, PermissionName.EDIT_ANY_ASSIGNMENTS) ||
+			PermissionService.hasPerm(commonUser, PermissionName.EDIT_OWN_ASSIGNMENTS),
+		[commonUser]
+	);
+	const showPublicState = useMemo(
+		() =>
+			PermissionService.hasPerm(commonUser, PermissionName.PUBLISH_ANY_ASSIGNMENTS) ||
+			PermissionService.hasPerm(commonUser, PermissionName.PUBLISH_OWN_ASSIGNMENTS),
+		[commonUser]
+	);
 
 	const isOwner =
 		markedAssignment?.share_type === ShareWithColleagueTypeEnum.GEDEELD_MET_ANDERE ||
@@ -152,9 +158,6 @@ const AssignmentOverview: FunctionComponent<
 		commonUser?.permissions?.includes(PermissionName.DELETE_ANY_ASSIGNMENTS) || false;
 	const shouldDeleteSelfFromAssignment = isContributor && !hasDeleteRightsForAllAssignments;
 
-	const [sortColumn, sortOrder, handleColumnClick, setSortColumn, setSortOrder] =
-		useTableSort<AssignmentOverviewTableColumns>(DEFAULT_SORT_COLUMN);
-
 	const tableColumns = useMemo(
 		() => GET_ASSIGNMENT_OVERVIEW_COLUMNS(canEditAssignments, showPublicState),
 		[canEditAssignments, showPublicState]
@@ -167,25 +170,44 @@ const AssignmentOverview: FunctionComponent<
 		filter: StringParam,
 		view: withDefault(StringParam, AssignmentView.ACTIVE),
 		page: NumberParam,
-		sort_column: StringParam,
-		sort_order: StringParam,
+		sortColumn: StringParam,
+		sortOrder: StringParam,
 	});
+
+	const getColumnDataType = (): TableColumnDataType => {
+		const column = tableColumns.find(
+			(tableColumn: any) => (tableColumn.id || '') === query.sortColumn
+		);
+		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
+	};
+
+	const {
+		data: assignmentResponse,
+		isLoading: isLoadingAssignments,
+		refetch: refetchAssignments,
+	} = useGetAssignments(
+		{
+			pastDeadline: query.view === AssignmentView.FINISHED, // true === past deadline
+			sortColumn: (query.sortColumn || DEFAULT_SORT_COLUMN) as AssignmentOverviewTableColumns,
+			sortOrder: (query.sortOrder || DEFAULT_SORT_ORDER) as Avo.Search.OrderDirection,
+			tableColumnDataType: getColumnDataType(),
+			offset: query.page || 0,
+			limit: ITEMS_PER_PAGE,
+			filterString: query.filter || '',
+			labelIds: (query.selectedAssignmentLabelIds as string[]) || [],
+			classIds: (query.selectedClassLabelIds as string[]) || [],
+			shareTypeIds: (query.selectedShareTypeLabelIds as string[]) || [],
+		},
+		{
+			enabled: !!commonUser,
+		}
+	);
+	const assignments = useMemo(() => assignmentResponse?.assignments || [], [assignmentResponse]);
+	const assignmentCount = assignmentResponse?.count || 0;
 
 	useEffect(() => {
 		localStorage.setItem(ASSIGNMENT_OVERVIEW_BACK_BUTTON_FILTERS, JSON.stringify(query));
 	}, [query]);
-
-	useEffect(() => {
-		if (query.filter) {
-			setFilterString(query.filter);
-		}
-		if (query.sort_column) {
-			setSortColumn(query.sort_column as AssignmentOverviewTableColumns);
-		}
-		if (query.sort_order) {
-			setSortOrder(query.sort_order as Avo.Search.OrderDirection);
-		}
-	}, []);
 
 	const handleQueryChanged = (value: string | string[] | number | undefined, id: string) => {
 		let newQuery: any = cloneDeep(query);
@@ -212,16 +234,12 @@ const AssignmentOverview: FunctionComponent<
 	useKeyPress('Enter', copySearchTermsToQueryState);
 
 	const handleSortOrderChange = (columnId: string) => {
-		const { sortColumn: newSortColumn, sortOrder: newSortOrder } = handleColumnClick(
-			columnId as AssignmentOverviewTableColumns
-		);
-
 		let newQuery: any = cloneDeep(query);
 
 		newQuery = cleanupObject({
 			...newQuery,
-			sort_column: newSortColumn,
-			sort_order: newSortOrder,
+			sortColumn: columnId,
+			sortOrder: toggleSortOrder(query.sortOrder),
 		});
 
 		setQuery(newQuery, 'pushIn');
@@ -229,133 +247,31 @@ const AssignmentOverview: FunctionComponent<
 
 	const resetFiltersAndSort = () => {
 		setFilterString('');
-		setSortColumn(DEFAULT_SORT_COLUMN);
-		setSortOrder(DEFAULT_SORT_ORDER);
+		setQuery({ ...query, sortColumn: DEFAULT_SORT_COLUMN, sortOrder: DEFAULT_SORT_ORDER });
 
 		setQuery(defaultFiltersAndSort);
 	};
 
 	const updateAndReset = async () => {
 		onUpdate();
-		await fetchAssignments();
+		await refetchAssignments();
 		resetFiltersAndSort();
 	};
 
-	const checkPermissions = useCallback(async () => {
-		try {
-			if (commonUser) {
-				setCanEditAssignments(
-					await PermissionService.hasPermissions(
-						[PermissionName.EDIT_ANY_ASSIGNMENTS, PermissionName.EDIT_OWN_ASSIGNMENTS],
-						commonUser
-					)
-				);
-
-				setShowPublicState(
-					await PermissionService.hasPermissions(
-						[
-							PermissionName.PUBLISH_ANY_ASSIGNMENTS,
-							PermissionName.PUBLISH_OWN_ASSIGNMENTS,
-						],
-						commonUser
-					)
-				);
-			}
-		} catch (err) {
-			console.error('Failed to check permissions', err, {
-				commonUser,
-				permissions: [
-					PermissionName.EDIT_ANY_ASSIGNMENTS,
-					PermissionName.EDIT_OWN_ASSIGNMENTS,
-				],
-			});
-			ToastService.danger(
-				tHtml(
-					'shared/components/loading-error-loaded-component/loading-error-loaded-component___er-ging-iets-mis-tijdens-het-controleren-van-de-rechten-van-je-account'
-				)
-			);
-		}
-	}, [setCanEditAssignments, commonUser, tText]);
-
-	const fetchAssignments = useCallback(async () => {
-		try {
-			if (isNil(canEditAssignments)) {
-				return;
-			}
-
-			setLoadingInfo({ state: 'loading' });
-			setAssignments(null);
-			setAssignmentCount(0);
-
-			const column = tableColumns.find(
-				(tableColumn: any) => tableColumn.id || '' === (sortColumn as any)
-			);
-			const columnDataType = (column?.dataType ||
-				TableColumnDataType.string) as TableColumnDataType;
-
-			const response = await AssignmentService.fetchAssignments(
-				canEditAssignments,
-				user as Avo.User.User,
-				query.view === AssignmentView.FINISHED, // true === past deadline
-				sortColumn,
-				sortOrder,
-				columnDataType,
-				query.page || 0,
-				query.filter || '',
-				(query.selectedAssignmentLabelIds as string[]) || [],
-				(query.selectedClassLabelIds as string[]) || [],
-				(query.selectedShareTypeLabelIds as string[]) || []
-			);
-			setAssignments(response.assignments);
-			setAssignmentCount(response.count);
-
-			setLoadingInfo({ state: 'loaded' });
-		} catch (err) {
-			console.error(new CustomError('Failed to fetch assignments from the database', err));
-			setLoadingInfo({
-				state: 'error',
-				message: tHtml(
-					'assignment/views/assignment-overview___het-ophalen-van-je-opdrachten-is-mislukt'
-				),
-			});
-		}
-	}, [
-		tableColumns,
-		tText,
-		canEditAssignments,
-		setLoadingInfo,
-		query,
-		sortColumn,
-		sortOrder,
-		commonUser,
-	]);
-
 	const fetchAssignmentLabels = useCallback(async () => {
 		if (commonUser?.profileId) {
-			// Fetch all labels for th current user
+			// Fetch all labels for the current user
 			const labels = await AssignmentLabelsService.getLabelsForProfile(commonUser.profileId);
 			setAllAssignmentLabels(labels);
 		}
-	}, [user, setAllAssignmentLabels]);
-
-	useEffect(() => {
-		checkPermissions();
-	}, [checkPermissions]);
+	}, [commonUser, setAllAssignmentLabels]);
 
 	useEffect(() => {
 		if (!isNil(canEditAssignments)) {
-			fetchAssignments();
+			refetchAssignments();
 			fetchAssignmentLabels();
 		}
-	}, [canEditAssignments, fetchAssignments, fetchAssignmentLabels]);
-
-	useEffect(() => {
-		if (!isNil(assignments) && !isNil(assignmentCount)) {
-			setLoadingInfo({
-				state: 'loaded',
-			});
-		}
-	}, [assignments, assignmentCount]);
+	}, [canEditAssignments, refetchAssignments, fetchAssignmentLabels]);
 
 	const handleSearchFieldKeyUp = (evt: KeyboardEvent<HTMLInputElement>) => {
 		if (evt.keyCode === KeyCode.Enter) {
@@ -387,7 +303,7 @@ const AssignmentOverview: FunctionComponent<
 				break;
 			case AssignmentAction.duplicate:
 				try {
-					if (!user?.profile?.id) {
+					if (!commonUser?.profileId) {
 						ToastService.danger(
 							tHtml(
 								'assignment/views/assignment-overview___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-dupliceren'
@@ -400,7 +316,7 @@ const AssignmentOverview: FunctionComponent<
 							assignmentRow.id as unknown as string
 						);
 
-					await duplicateAssignment(latest, user);
+					await duplicateAssignment(latest, commonUser);
 					await updateAndReset();
 				} catch (err) {
 					console.error('Failed to duplicate assignment', err, {
@@ -430,12 +346,12 @@ const AssignmentOverview: FunctionComponent<
 
 	const handleDeleteAssignmentConfirm = async () => {
 		if (!markedAssignment) return;
-		await deleteAssignment(markedAssignment, user as Avo.User.User, updateAndReset);
+		await deleteAssignment(markedAssignment, commonUser, updateAndReset);
 		handleDeleteModalClose();
 	};
 
 	const handleDeleteSelfFromAssignmentConfirm = async () => {
-		await deleteSelfFromAssignment(markedAssignment?.id, user as Avo.User.User, updateAndReset);
+		await deleteSelfFromAssignment(markedAssignment?.id, commonUser, updateAndReset);
 		handleDeleteModalClose();
 	};
 
@@ -552,7 +468,7 @@ const AssignmentOverview: FunctionComponent<
 						'assignment/views/assignment-overview___aantal-leerlingen-dat-de-opdracht-heeft-aangeklikt'
 					)}
 				>
-					{responsesCount}
+					-
 				</span>,
 				tText('assignment/views/assignment-overview___responses')
 			);
@@ -998,16 +914,20 @@ const AssignmentOverview: FunctionComponent<
 				rowKey="id"
 				variant="styled"
 				onColumnClick={handleSortOrderChange}
-				sortColumn={sortColumn}
-				sortOrder={sortOrder}
+				sortColumn={query.sortColumn as AssignmentOverviewTableColumns}
+				sortOrder={query.sortOrder as OrderDirection}
 				useCards={isMobileWidth()}
 			/>
 		);
 	};
 
 	const renderAssignmentsView = () => {
-		if (!assignments) {
-			return null;
+		if (isLoadingAssignments) {
+			return (
+				<Flex orientation="horizontal" center>
+					<Spinner size="large" />
+				</Flex>
+			);
 		}
 		if (!assignments.length) {
 			return renderEmptyFallback();
@@ -1017,9 +937,11 @@ const AssignmentOverview: FunctionComponent<
 				{renderHeader()}
 				{renderTable()}
 				<Spacer margin="top-large">
-					<Pagination
-						pageCount={Math.ceil(assignmentCount / ITEMS_PER_PAGE)}
-						currentPage={query.page || 0}
+					<PaginationBar
+						{...GET_DEFAULT_PAGINATION_BAR_PROPS()}
+						startItem={(query.page || 0) * ITEMS_PER_PAGE}
+						itemsPerPage={ITEMS_PER_PAGE}
+						totalItems={assignmentCount}
 						onPageChange={(newPage: number) => handleQueryChanged(newPage, 'page')}
 					/>
 				</Spacer>
@@ -1042,18 +964,7 @@ const AssignmentOverview: FunctionComponent<
 		);
 	};
 
-	return canEditAssignments !== null ? (
-		<div className="m-assignment-overview">
-			<LoadingErrorLoadedComponent
-				loadingInfo={loadingInfo}
-				dataObject={assignments}
-				render={renderAssignmentsView}
-			/>
-		</div>
-	) : null;
+	return <div className="m-assignment-overview">{renderAssignmentsView()}</div>;
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(AssignmentOverview) as FunctionComponent<AssignmentOverviewProps>;
+export default compose(withRouter, withUser)(AssignmentOverview) as FC<AssignmentOverviewProps>;

@@ -1,5 +1,4 @@
-import { type Avo } from '@viaa/avo2-types';
-import { PermissionName } from '@viaa/avo2-types';
+import { type Avo, PermissionName } from '@viaa/avo2-types';
 import { first, get, isNil, without } from 'lodash-es';
 
 import { PermissionService } from '../../../authentication/helpers/permission-service';
@@ -7,6 +6,7 @@ import { ContentTypeNumber } from '../../../collection/collection.types';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { EducationLevelType } from '../../../shared/helpers/lom';
 import {
+	generateEducationLomFilter,
 	generateLomFilter,
 	getBooleanFilters,
 	getDateRangeFilters,
@@ -23,19 +23,21 @@ import {
 /**
  * Generates the filters for the collections and bundles screens and the actualisation, quality check and marcom screens
  * @param filters the filter object containing the selected values. this is also stored in the url of the overview page
- * @param user
+ * @param commonUser
  * @param isCollection switch between collection and bundles since they are loaded from the same table
  * @param includeDeleted determines of a filter for omitting deleted collections should be added or not
  * @param checkPermissions for the collection and bundle overview you need a specific permission
  * @param isCollectionTableOrView small differences between the editorial views and the collection/bundle table are switched using this boolean
+ * @param allEducationLevelsAndDegrees All possible education levels and degrees, so we can explicitly filter by not any of these values if the NULL_FILTER option is checked
  */
 export function generateCollectionWhereObject(
 	filters: Partial<CollectionTableStates>,
-	user: Avo.User.User,
+	commonUser: Avo.User.CommonUser | null,
 	isCollection: boolean,
 	includeDeleted: boolean,
 	checkPermissions: boolean,
-	isCollectionTableOrView: 'collectionTable' | 'view'
+	isCollectionTableOrView: 'collectionTable' | 'view',
+	allEducationLevelsAndDegrees: Avo.Lom.LomField[]
 ): any {
 	const isCollectionTable: boolean = isCollectionTableOrView === 'collectionTable';
 	const andFilters: any[] = [];
@@ -112,8 +114,22 @@ export function generateCollectionWhereObject(
 	// 	);
 	// }
 
-	if (filters.education_levels && filters.education_levels.length) {
-		andFilters.push(generateLomFilter(filters.education_levels, EducationLevelType.structuur));
+	if (filters.education_levels?.length) {
+		andFilters.push(
+			generateEducationLomFilter(
+				filters.education_levels,
+				allEducationLevelsAndDegrees.filter((item) => !item.broader).map((item) => item.id)
+			)
+		);
+	}
+
+	if (filters.education_degrees?.length) {
+		andFilters.push(
+			generateEducationLomFilter(
+				filters.education_degrees,
+				allEducationLevelsAndDegrees.filter((item) => !!item.broader).map((item) => item.id)
+			)
+		);
 	}
 
 	if (filters.organisation && filters.organisation.length) {
@@ -134,20 +150,23 @@ export function generateCollectionWhereObject(
 		// Only show published/unpublished collections/bundles based on permissions
 		if (
 			(isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS)) ||
+				!PermissionService.hasPerm(
+					commonUser,
+					PermissionName.VIEW_ANY_PUBLISHED_COLLECTIONS
+				)) ||
 			(!isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
+				!PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_PUBLISHED_BUNDLES))
 		) {
 			andFilters.push({ is_public: { _eq: false } });
 		}
 		if (
 			(isCollection &&
 				!PermissionService.hasPerm(
-					user,
+					commonUser,
 					PermissionName.VIEW_ANY_UNPUBLISHED_COLLECTIONS
 				)) ||
 			(!isCollection &&
-				!PermissionService.hasPerm(user, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
+				!PermissionService.hasPerm(commonUser, PermissionName.VIEW_ANY_UNPUBLISHED_BUNDLES))
 		) {
 			andFilters.push({ is_public: { _eq: true } });
 		}

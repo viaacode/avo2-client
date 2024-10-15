@@ -10,7 +10,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import React, { type FunctionComponent, type ReactNode, useState } from 'react';
+import React, { type FC, type ReactNode, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import stamboekExampleImage from '../../assets/images/leerkrachten-kaart-voorbeeld-nummer.png';
@@ -27,7 +27,7 @@ export interface StamboekInputProps {
 	onChange: (validStamboekNumber: string) => void;
 }
 
-export const StamboekInput: FunctionComponent<StamboekInputProps> = ({ onChange, value = '' }) => {
+export const StamboekInput: FC<StamboekInputProps> = ({ onChange, value = '' }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [stamboekValidationStatus, setStamboekValidationStatus] =

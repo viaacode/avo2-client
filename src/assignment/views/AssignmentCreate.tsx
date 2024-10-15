@@ -19,7 +19,7 @@ import {
 import { type Avo } from '@viaa/avo2-types';
 import React, {
 	type Dispatch,
-	type FunctionComponent,
+	type FC,
 	type SetStateAction,
 	useCallback,
 	useEffect,
@@ -81,13 +81,9 @@ import {
 import { type AssignmentFields } from '../hooks/assignment-form';
 import { useEducationLevelModal } from '../hooks/use-education-level-modal';
 
-const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
-	commonUser,
-	history,
-	location,
-	user,
-}) => {
+const AssignmentCreate: FC<DefaultSecureRouteProps> = ({ commonUser, user, history, location }) => {
 	const { tText, tHtml } = useTranslation();
+	const [isSaving, setIsSaving] = useState(false);
 
 	// Data
 
@@ -127,12 +123,14 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 
 	const submit = async () => {
 		try {
-			if (!user.profile?.id) {
+			setIsSaving(true);
+			if (!commonUser?.profileId) {
 				ToastService.danger(
 					tText(
 						'assignment/views/assignment-create___je-moet-ingelogd-zijn-om-een-opdracht-te-kunnen-aanmaken'
 					)
 				);
+				setIsSaving(false);
 				return;
 			}
 			const created = await AssignmentService.insertAssignment(
@@ -141,9 +139,9 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					blocks: cleanupTitleAndDescriptions(
 						assignment?.blocks || []
 					) as Avo.Assignment.Block[],
-					owner_profile_id: user.profile?.id,
+					owner_profile_id: commonUser?.profileId,
 				} as Partial<Avo.Assignment.Assignment>,
-				user.profile?.id
+				commonUser?.profileId
 			);
 
 			if (created) {
@@ -152,11 +150,13 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						object: String(created.id),
 						object_type: 'assignment',
 						action: 'create',
-						resource: {
-							education_level: created.education_level_id,
-						},
+						resource: created.education_level_id
+							? {
+									education_level: created.education_level_id,
+							  }
+							: {},
 					},
-					user
+					commonUser
 				);
 
 				ToastService.success(
@@ -166,6 +166,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				);
 
 				resetForm();
+				setIsSaving(false);
 
 				// Delay navigation, until isDirty state becomes false, otherwise the "unsaved changes" modal will popup
 				setTimeout(() => {
@@ -173,6 +174,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 				}, 100);
 			}
 		} catch (err) {
+			setIsSaving(false);
 			console.error(err);
 			ToastService.danger(
 				tHtml(
@@ -231,7 +233,7 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 								education_level: String(assignment?.education_level_id),
 							},
 						},
-						user
+						commonUser
 					);
 				},
 			},
@@ -327,12 +329,12 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 			assignment && (
 				<Flex align="start">
 					<HeaderOwnerAndContributors
-						subject={{ ...assignment, profile: user.profile || undefined }}
-						user={user}
+						subject={{ ...assignment, profile: user?.profile || undefined }}
+						commonUser={commonUser}
 					/>
 				</Flex>
 			),
-		[assignment, user]
+		[assignment, commonUser]
 	);
 
 	const renderMeta = useMemo(() => {
@@ -473,7 +475,6 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 						}
 						actions={
 							<AssignmentActions
-								duplicate={{ disabled: true }}
 								preview={{ onClick: () => setIsViewAsPupilEnabled(true) }}
 								remove={{ button: { disabled: true } }}
 								route={location.pathname}
@@ -508,10 +509,11 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 					isVisible={true}
 					onSave={handleSubmit(submit, (...args) => console.error(args))}
 					onCancel={() => reset()}
+					isSaving={isSaving}
 				/>
 			</div>
 
-			{!!user && (
+			{!!commonUser && (
 				<SelectEducationLevelModal
 					isOpen={isSelectEducationLevelModalOpen}
 					onConfirm={selectEducationLevel}
@@ -564,4 +566,4 @@ const AssignmentCreate: FunctionComponent<DefaultSecureRouteProps> = ({
 	);
 };
 
-export default withUser(AssignmentCreate) as FunctionComponent<DefaultSecureRouteProps>;
+export default withUser(AssignmentCreate) as FC<DefaultSecureRouteProps>;

@@ -1,6 +1,6 @@
 import './AssignmentBlockTypeSearch.scss';
 
-import { BlockHeading } from '@meemoo/admin-core-ui';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Button,
 	convertToHtml,

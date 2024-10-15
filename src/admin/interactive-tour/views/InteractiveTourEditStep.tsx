@@ -1,4 +1,3 @@
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui';
 import {
 	Button,
 	Form,
@@ -19,7 +18,7 @@ import {
 	TooltipTrigger,
 } from '@viaa/avo2-components';
 import { get, isEqual } from 'lodash-es';
-import React, { type FunctionComponent } from 'react';
+import React, { type FC } from 'react';
 
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
 import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrapper/RichTextEditorWrapper';
@@ -38,7 +37,7 @@ export interface InteractiveTourEditStepProps {
 	changeInteractiveTourState: (action: InteractiveTourAction) => void;
 }
 
-const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> = ({
+const InteractiveTourEditStep: FC<InteractiveTourEditStepProps> = ({
 	step,
 	index,
 	numberOfSteps,
@@ -164,12 +163,7 @@ const InteractiveTourEditStep: FunctionComponent<InteractiveTourEditStepProps> =
 						<Spacer margin="top-small">
 							{
 								(step.contentState
-									? stripHtml(
-											sanitizeHtml(
-												step.contentState.toHTML(),
-												SanitizePreset.link
-											)
-									  )
+									? stripHtml(step.contentState.toHTML())
 									: step.content || ''
 								).length
 							}{' '}

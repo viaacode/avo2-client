@@ -1,14 +1,8 @@
+import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
 import { Button, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { get, isNil } from 'lodash-es';
-import React, {
-	type FunctionComponent,
-	type ReactText,
-	useCallback,
-	useEffect,
-	useMemo,
-	useState,
-} from 'react';
+import React, { type FC, type ReactText, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link, type RouteComponentProps, withRouter } from 'react-router-dom';
 import { compose } from 'redux';
@@ -18,15 +12,17 @@ import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import { PupilCollectionService } from '../../../pupil-collection/pupil-collection.service';
 import { type PupilCollectionOverviewTableColumns } from '../../../pupil-collection/pupil-collection.types';
+import { OrderDirection } from '../../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { TableColumnDataType } from '../../../shared/types/table-column-data-type';
-import { type AssignmentsBulkAction } from '../../assignments/assignments.types';
+import { AssignmentsBulkAction } from '../../assignments/assignments.types';
 import ChangeAuthorModal from '../../shared/components/ChangeAuthorModal/ChangeAuthorModal';
 import FilterTable, {
 	type FilterableColumn,
@@ -42,7 +38,7 @@ import {
 } from '../pupil-collection.const';
 import { type PupilCollectionsOverviewTableState } from '../pupil-collection.types';
 
-const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProps> = ({ user }) => {
+const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [pupilCollections, setPupilCollections] = useState<Avo.Assignment.Response[] | null>(
@@ -55,12 +51,13 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 		sort_order: 'desc',
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isExportAllToCsvModalOpen, setIsExportAllToCsvModalOpen] = useState(false);
 	const [selectedPupilCollectionIds, setSelectedPupilCollectionIds] = useState<string[]>([]);
 	const [pupilCollectionsDeleteModalOpen, setPupilCollectionsDeleteModalOpen] =
 		useState<boolean>(false);
 	const [isChangeAuthorModalOpen, setIsChangeAuthorModalOpen] = useState<boolean>(false);
 
-	const columns = useMemo(() => GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS(), []);
+	const tableColumns = useMemo(() => GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS(), []);
 
 	const generateWhereObject = useCallback(
 		(filters: Partial<PupilCollectionsOverviewTableState>) => {
@@ -126,21 +123,24 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 		[]
 	);
 
+	const getColumnDataType = () => {
+		const column = tableColumns.find((tableColumn: FilterableColumn) => {
+			return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
+		});
+		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
+	};
+
 	const fetchPupilCollections = useCallback(async () => {
 		try {
 			setIsLoading(true);
 
-			const column = columns.find((tableColumn: FilterableColumn) => {
-				return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
-			});
-			const columnDataType = (column?.dataType ||
-				TableColumnDataType.string) as TableColumnDataType;
 			const [pupilCollectionsTemp, pupilCollectionsCountTemp] =
 				await PupilCollectionService.fetchPupilCollectionsForAdmin(
-					tableState.page || 0,
+					(tableState.page || 0) * ITEMS_PER_PAGE,
+					ITEMS_PER_PAGE,
 					(tableState.sort_column || 'created_at') as PupilCollectionOverviewTableColumns,
 					tableState.sort_order || 'desc',
-					columnDataType,
+					getColumnDataType(),
 					generateWhereObject(getFilters(tableState))
 				);
 
@@ -160,7 +160,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 			});
 		}
 		setIsLoading(false);
-	}, [columns, tableState, generateWhereObject, tText]);
+	}, [tableColumns, tableState, generateWhereObject, tText]);
 
 	useEffect(() => {
 		fetchPupilCollections();
@@ -208,16 +208,22 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 	};
 
 	const handleBulkAction = async (action: AssignmentsBulkAction): Promise<void> => {
-		if (!selectedPupilCollectionIds || !selectedPupilCollectionIds.length) {
-			return;
-		}
+		const areRowsSelected = selectedPupilCollectionIds.length > 0;
+
 		switch (action) {
-			case 'delete':
+			case AssignmentsBulkAction.DELETE:
+				if (!areRowsSelected) return;
 				setPupilCollectionsDeleteModalOpen(true);
 				return;
 
-			case 'change_author':
+			case AssignmentsBulkAction.CHANGE_AUTHOR:
+				if (!areRowsSelected) return;
 				setIsChangeAuthorModalOpen(true);
+				return;
+
+			case AssignmentsBulkAction.EXPORT_ALL:
+				// No rows need to be selected, since we are exporting everything
+				setIsExportAllToCsvModalOpen(true);
 				return;
 		}
 	};
@@ -383,7 +389,7 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 		return (
 			<>
 				<FilterTable
-					columns={columns}
+					columns={tableColumns}
 					data={pupilCollections}
 					dataCount={pupilCollectionsCount}
 					renderCell={(rowData: Partial<Avo.Assignment.Response>, columnId: string) =>
@@ -407,11 +413,14 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 						setSelectedPupilCollectionIds(ids as string[]);
 					}}
 					onSelectAll={setAllPupilCollectionsAsSelected}
+					bulkActions={GET_PUPIL_COLLECTION_BULK_ACTIONS(
+						commonUser,
+						selectedPupilCollectionIds.length > 0
+					)}
 					onSelectBulkAction={handleBulkAction as any}
-					bulkActions={GET_PUPIL_COLLECTION_BULK_ACTIONS(user as Avo.User.User)}
 					rowKey="id"
 					defaultOrderProp={'created_at'}
-					defaultOrderDirection={'desc'}
+					defaultOrderDirection={OrderDirection.desc}
 				/>
 				<ConfirmModal
 					body={tHtml(
@@ -428,6 +437,53 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 					callback={(newAuthor: PickerItem) =>
 						changeAuthorForSelectedPupilCollections(newAuthor.value)
 					}
+				/>{' '}
+				<ExportAllToCsvModal
+					title={tText(
+						'admin/pupil-collection/views/pupil-collections-overview___exporteren-van-alle-leerling-collecties-naar-csv'
+					)}
+					isOpen={isExportAllToCsvModalOpen}
+					onClose={() => setIsExportAllToCsvModalOpen(false)}
+					fetchingItemsLabel={tText(
+						'admin/pupil-collection/views/pupil-collections-overview___bezig-met-ophalen-van-leerling-collecties'
+					)}
+					generatingCsvLabel={tText(
+						'admin/pupil-collection/views/pupil-collections-overview___bezig-met-genereren-van-de-csv'
+					)}
+					fetchTotalItems={async () => {
+						const response = await PupilCollectionService.fetchPupilCollectionsForAdmin(
+							0,
+							0,
+							(tableState.sort_column ||
+								'created_at') as PupilCollectionOverviewTableColumns,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							{}
+						);
+						return response[1];
+					}}
+					fetchMoreItems={async (offset: number, limit: number) => {
+						const response = await PupilCollectionService.fetchPupilCollectionsForAdmin(
+							offset,
+							limit,
+							(tableState.sort_column ||
+								'created_at') as PupilCollectionOverviewTableColumns,
+							tableState.sort_order || 'desc',
+							getColumnDataType(),
+							generateWhereObject(getFilters(tableState))
+						);
+						return response[0];
+					}}
+					renderValue={(value: any, columnId: string) =>
+						renderTableCell(
+							value as any,
+							columnId as PupilCollectionOverviewTableColumns
+						)
+					}
+					columns={tableColumnListToCsvColumnList(tableColumns)}
+					exportFileName={tText(
+						'admin/pupil-collection/views/pupil-collections-overview___leerling-collecties-csv'
+					)}
 				/>
 			</>
 		);
@@ -466,7 +522,4 @@ const PupilCollectionsOverview: FunctionComponent<RouteComponentProps & UserProp
 	);
 };
 
-export default compose(
-	withRouter,
-	withUser
-)(PupilCollectionsOverview) as unknown as FunctionComponent;
+export default compose(withRouter, withUser)(PupilCollectionsOverview) as unknown as FC;

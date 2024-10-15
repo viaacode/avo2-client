@@ -1,4 +1,4 @@
-import { fetchWithLogoutJson } from '@meemoo/admin-core-ui';
+import { fetchWithLogoutJson } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type ButtonAction } from '@viaa/avo2-components';
 
 import { CustomError, getEnv } from '../../../shared/helpers';

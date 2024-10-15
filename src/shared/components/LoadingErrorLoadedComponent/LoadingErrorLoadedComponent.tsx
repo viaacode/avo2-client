@@ -1,5 +1,5 @@
 import { Container, Flex, IconName, Spinner } from '@viaa/avo2-components';
-import React, { type FunctionComponent, type ReactElement } from 'react';
+import React, { type FC, type ReactElement } from 'react';
 
 import { ErrorView } from '../../../error/views';
 import { type ErrorViewQueryParams } from '../../../error/views/ErrorView';
@@ -19,7 +19,7 @@ export interface LoadingErrorLoadedComponentProps {
 	render: () => ReactElement | null;
 }
 
-export const LoadingErrorLoadedComponent: FunctionComponent<LoadingErrorLoadedComponentProps> = ({
+export const LoadingErrorLoadedComponent: FC<LoadingErrorLoadedComponentProps> = ({
 	loadingInfo = { state: 'loading' },
 	notFoundError,
 	showSpinner = true,
