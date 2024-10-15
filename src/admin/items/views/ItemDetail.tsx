@@ -22,7 +22,6 @@ import { StringParam, useQueryParams } from 'use-query-params';
 
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
-import { OrderDirection } from '../../../search/search.const';
 import { DeleteObjectModal } from '../../../shared/components';
 import QuickLaneFilterTableCell from '../../../shared/components/QuickLaneFilterTableCell/QuickLaneFilterTableCell';
 import { RICH_TEXT_EDITOR_OPTIONS_FULL } from '../../../shared/components/RichTextEditorWrapper/RichTextEditor.consts';
@@ -30,6 +29,7 @@ import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrap
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, navigate } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
+import { toggleSortOrder } from '../../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
@@ -136,14 +136,9 @@ const ItemDetail: FunctionComponent<ItemDetailProps> = ({ history, match }) => {
 	};
 
 	const handleColumnClick = (columnId: string) => {
-		const sortDirection =
-			queryParams.sortDirection === OrderDirection.asc
-				? OrderDirection.desc
-				: OrderDirection.asc; // toggle
-
 		setQueryParams({
 			sortProp: columnId,
-			sortDirection,
+			sortDirection: toggleSortOrder(queryParams.sortDirection),
 		});
 	};
 
