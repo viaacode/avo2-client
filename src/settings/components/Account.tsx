@@ -17,32 +17,27 @@ import React, { type FC } from 'react';
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { redirectToExternalPage } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { Users_Idps_Enum } from '../../shared/generated/graphql-db-types';
 import { formatDate, getEnv } from '../../shared/helpers';
+import { isPupil } from '../../shared/helpers/is-pupil';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 // const ssumAccountEditPage = getEnv('SSUM_ACCOUNT_EDIT_URL') as string;
 const ssumPasswordEditPage = getEnv('SSUM_PASSWORD_EDIT_URL') as string;
 
 export interface AccountProps extends RouteComponentProps {
-	user: Avo.User.User;
+	commonUser: Avo.User.CommonUser;
 }
 
-const Account: FC<AccountProps> = ({ user }) => {
+const Account: FC<AccountProps> = ({ commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
-	const isPupil =
-		user?.profile?.userGroupIds[0] &&
-		[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
-			.map(String)
-			.includes(String(user.profile.userGroupIds[0]));
+	const hasTempAccess = commonUser?.tempAccess?.current?.status === 1;
 
-	const hasTempAccess = user?.temp_access?.current?.status === 1;
-
-	if (!user) {
+	if (!commonUser) {
 		return (
 			<Flex center>
 				<Spinner size="large" />
@@ -50,10 +45,7 @@ const Account: FC<AccountProps> = ({ user }) => {
 		);
 	}
 
-	if (
-		isPupil &&
-		!(user?.idpmaps ?? []).find((idpMap: Avo.Auth.IdpType) => idpMap === 'HETARCHIEF')
-	) {
+	if (isPupil(commonUser.userGroup?.id) && !commonUser.idps?.[Users_Idps_Enum.Hetarchief]) {
 		return (
 			<ErrorView
 				message={tHtml(
@@ -86,7 +78,7 @@ const Account: FC<AccountProps> = ({ user }) => {
 										{tText('settings/components/account___account')}
 									</BlockHeading>
 									<FormGroup label={tText('settings/components/account___email')}>
-										<span>{user?.mail || '-'}</span>
+										<span>{commonUser?.email || '-'}</span>
 									</FormGroup>
 									{/* TODO re-enable when summ allows you to change your email address */}
 									{/*<Spacer margin="bottom">*/}
@@ -103,13 +95,13 @@ const Account: FC<AccountProps> = ({ user }) => {
 									<BlockHeading type="h3">
 										{tText('settings/components/account___wachtwoord')}
 									</BlockHeading>
-									{!!user?.mail && (
+									{!!commonUser?.email && (
 										<Spacer margin="top">
 											<Button
 												type="secondary"
 												onClick={() =>
 													redirectToExternalPage(
-														`${ssumPasswordEditPage}&email=${user?.mail}`,
+														`${ssumPasswordEditPage}&email=${commonUser?.email}`,
 														null
 													)
 												}
@@ -140,7 +132,7 @@ const Account: FC<AccountProps> = ({ user }) => {
 											<span>
 												{`${tText(
 													'settings/components/account___dit-is-een-tijdelijk-account-de-toegang-van-je-account-verloopt-op'
-												)} ${formatDate(user?.temp_access?.until)}`}
+												)} ${formatDate(commonUser?.tempAccess?.until)}`}
 												.
 											</span>
 										</Spacer>

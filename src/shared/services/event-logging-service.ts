@@ -1,6 +1,7 @@
 import { fetchWithLogout } from '@meemoo/admin-core-ui/dist/client.mjs';
 import { type Avo } from '@viaa/avo2-types';
 
+import store, { type AppState } from '../../store';
 import { getEnv } from '../helpers';
 
 export interface MinimalClientEvent {
@@ -25,6 +26,8 @@ export function trackEvents(
 
 		const eventLogEntries = eventsArray.map(
 			(event: MinimalClientEvent): Avo.EventLogging.Event => {
+				const history =
+					(store.getState() as unknown as AppState)?.uiState?.historyLocations || [];
 				return {
 					occurred_at: new Date().toISOString(),
 					source_url: window.location.origin + window.location.pathname, // url when the event was triggered
@@ -36,6 +39,10 @@ export function trackEvents(
 					source_querystring: window.location.search,
 					...event,
 					message: '', // AVO-1675: message should be anonymous and is redundant: leave it empty
+					resource: {
+						...event.resource,
+						history,
+					},
 				};
 			}
 		);

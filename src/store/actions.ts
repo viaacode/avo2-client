@@ -1,4 +1,5 @@
 import {
+	type SetHistoryLocationsAction,
 	type SetLastVideoPlayedAtAction,
 	type SetShowNudgingModalAction,
 	UiStateActionTypes,
@@ -12,4 +13,9 @@ export const setShowNudgingModalAction = (data: boolean): SetShowNudgingModalAct
 export const setLastVideoPlayedAtAction = (data: Date | null): SetLastVideoPlayedAtAction => ({
 	data,
 	type: UiStateActionTypes.SET_LAST_VIDEO_PLAYED_AT_ACTION,
+});
+
+export const setHistoryLocationsAction = (data: string[]): SetHistoryLocationsAction => ({
+	data,
+	type: UiStateActionTypes.SET_HISTORY_LOCATIONS,
 });

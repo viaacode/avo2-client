@@ -13,7 +13,7 @@ import {
 	ToolbarRight,
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, last } from 'lodash-es';
+import { last } from 'lodash-es';
 import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
@@ -21,7 +21,6 @@ import { Link, type RouteComponentProps } from 'react-router-dom';
 import { type Dispatch } from 'redux';
 
 import {
-	getFirstName,
 	getProfileAvatar,
 	getProfileInitials,
 } from '../../../authentication/helpers/get-profile-info';
@@ -84,7 +83,11 @@ const Navigation: FC<
 	const [primaryNavItems, setPrimaryNavItems] = useState<AppContentNavElement[]>([]);
 	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
 
-	const user = get(loginState, 'userInfo');
+	/**
+	 * @deprecated
+	 */
+	const user = (loginState as Avo.Auth.LoginResponseLoggedIn)?.userInfo;
+	const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -148,14 +151,14 @@ const Navigation: FC<
 
 		if (
 			// (user && logoutNavItem.location !== APP_PATH.LOGOUT.route) ||
-			!user &&
+			!commonUser &&
 			logoutNavItem.location === APP_PATH.LOGOUT.route
 		) {
 			// Avoid flashing the menu items for a second without them being in a dropdown menu
 			return [];
 		}
 
-		if (user) {
+		if (commonUser) {
 			if (isMobileMenuOpen) {
 				return dynamicNavItems;
 			}
@@ -165,9 +168,9 @@ const Navigation: FC<
 					label: (
 						<div className="c-navbar-profile-dropdown-button">
 							<Avatar
-								initials={getProfileInitials(user)}
-								name={getFirstName(user) || ''}
-								image={getProfileAvatar(user)}
+								initials={getProfileInitials(commonUser)}
+								name={commonUser?.firstName || ''}
+								image={getProfileAvatar(commonUser)}
 							/>
 							<Icon name={IconName.caretDown} size="small" />
 						</div>

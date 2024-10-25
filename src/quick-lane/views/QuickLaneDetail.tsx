@@ -35,6 +35,7 @@ import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-par
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
 
@@ -126,14 +127,20 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 			// Analytics
 
 			// TODO re-enable this once task https://meemoo.atlassian.net/browse/AVO-2177 is fixed
-			// trackEvents(
-			// 	{
-			// 		object: String(response.id),
-			// 		object_type: 'quick_lane',
-			// 		action: 'view',
-			// 	},
-			// 	user
-			// );
+			const content_type =
+				{ ITEM: 'item', COLLECTIE: 'collection' }[response.content_label as string] ||
+				'unknown';
+			trackEvents(
+				{
+					object: String(response.id),
+					object_type: 'quick_lane',
+					action: 'view',
+					resource: {
+						content_type,
+					},
+				},
+				commonUser
+			);
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch quick lane and content for detail page', err, {

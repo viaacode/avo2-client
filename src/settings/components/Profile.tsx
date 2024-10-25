@@ -25,10 +25,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { SERVER_LOGOUT_PAGE } from '../../authentication/authentication.const';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import {
 	getLoginResponse,
 	getLoginStateAction,
@@ -79,7 +78,7 @@ const Profile: FC<
 		getLoginState: (forceRefetch: boolean) => Dispatch;
 	} & UserProps &
 		DefaultSecureRouteProps
-> = ({ user, commonUser, getLoginState }) => {
+> = ({ commonUser, getLoginState }) => {
 	const { tText, tHtml } = useTranslation();
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
@@ -108,7 +107,7 @@ const Profile: FC<
 
 	const isExceptionAccount = commonUser?.isException || false;
 
-	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+	const isPupil = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
 		.includes(String(commonUser.userGroup?.id));
 
@@ -145,7 +144,7 @@ const Profile: FC<
 					) &&
 					(!isExceptionAccount ||
 						groupLomLinks(commonUser?.loms)?.educationLevel?.length > 0 ||
-						commonUser?.userGroup?.id !== SpecialUserGroup.Teacher),
+						commonUser?.userGroup?.id !== SpecialUserGroupId.Teacher),
 				EDIT:
 					!!commonUser?.permissions?.includes(
 						PermissionName.EDIT_EDUCATION_LEVEL_ON_PROFILE_PAGE
@@ -184,7 +183,7 @@ const Profile: FC<
 			},
 		};
 		setUiPermissions(tempUiPermissions);
-	}, [isExceptionAccount, user]);
+	}, [isExceptionAccount, commonUser]);
 
 	useEffect(() => {
 		if (!uiPermissions) {
@@ -229,7 +228,7 @@ const Profile: FC<
 					);
 				});
 		}
-	}, [uiPermissions, tText, user, setAllOrganisations]);
+	}, [uiPermissions, tText, commonUser, setAllOrganisations, tHtml]);
 
 	const areRequiredFieldsFilledIn = (profileInfo: Partial<Avo.User.UpdateProfileValues>) => {
 		if (!uiPermissions) {
@@ -288,14 +287,14 @@ const Profile: FC<
 	const saveProfileChanges = async () => {
 		try {
 			setIsSaving(true);
-			const profileId: string = getProfileId(user);
+			const profileId: string = commonUser?.profileId;
 			const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {
 				firstName,
 				lastName,
 				alias,
 				title,
 				bio,
-				userId: user.uid,
+				userId: commonUser.userId,
 				avatar: avatar || null,
 				loms: (selectedLoms || []).map((lom) => ({
 					profile_id: profileId,
@@ -613,7 +612,7 @@ const Profile: FC<
 																lom: lomField,
 															}) as Avo.Lom.Lom
 													),
-													id: user.profile?.id as string,
+													id: commonUser.profileId,
 												}}
 												renderSearchLink={(content) => content}
 											/>

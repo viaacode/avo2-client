@@ -2,24 +2,25 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { type Avo } from '@viaa/avo2-types';
 import classnames from 'classnames';
 import { createBrowserHistory } from 'history';
-import { noop } from 'lodash-es';
+import { isEqual, noop, uniq } from 'lodash-es';
 import { wrapHistory } from 'oaf-react-router';
 import React, { type FC, useEffect, useState } from 'react';
-import { Provider } from 'react-redux';
+import { connect, Provider } from 'react-redux';
 import {
 	Route,
 	type RouteComponentProps,
 	BrowserRouter as Router,
+	useLocation,
 	withRouter,
 } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
-import { compose } from 'redux';
+import { compose, type Dispatch } from 'redux';
 import { QueryParamProvider } from 'use-query-params';
 
 import Admin from './admin/Admin';
 import { ADMIN_PATH } from './admin/admin.const';
 import { withAdminCoreConfig } from './admin/shared/hoc/with-admin-core-config';
-import { SpecialUserGroup } from './admin/user-groups/user-group.const';
+import { SpecialUserGroupId } from './admin/user-groups/user-group.const';
 import { SecuredRoute } from './authentication/components';
 import { APP_PATH } from './constants';
 import { renderRoutes } from './routes';
@@ -35,15 +36,17 @@ import ZendeskWrapper from './shared/components/ZendeskWrapper/ZendeskWrapper';
 import { ROUTE_PARTS } from './shared/constants';
 import { CustomError } from './shared/helpers';
 import withUser, { type UserProps } from './shared/hocs/withUser';
+import { usePageLoaded } from './shared/hooks/usePageLoaded';
 import useTranslation from './shared/hooks/useTranslation';
 import { ToastService } from './shared/services/toast-service';
 import { waitForTranslations } from './shared/translations/i18n';
-import store from './store';
+import store, { type AppState } from './store';
+import { setHistoryLocationsAction } from './store/actions';
+import { selectHistoryLocations } from './store/selectors';
 
 import 'react-datepicker/dist/react-datepicker.css'; // TODO: lazy-load
 import './styles/main.scss';
 import './App.scss';
-import { usePageLoaded } from './shared/hooks/usePageLoaded';
 
 const history = createBrowserHistory();
 wrapHistory(history, {
@@ -60,21 +63,33 @@ wrapHistory(history, {
 	},
 });
 
-const App: FC<RouteComponentProps & UserProps> = (props) => {
+const App: FC<
+	RouteComponentProps &
+		UserProps & {
+			historyLocations: string[];
+			setHistoryLocations: (locations: string[]) => void;
+		}
+> = (props) => {
 	const { tHtml } = useTranslation();
+	const location = useLocation();
 	const isAdminRoute = new RegExp(`^/${ROUTE_PARTS.admin}`, 'g').test(props.location.pathname);
-	const isPupilUser = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+	const isPupilUser = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
 		.includes(String(props.commonUser?.userGroup?.id));
 
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 
+	/**
+	 * Scroll to the element with the id that is in the hash of the url
+	 */
 	const handlePageLoaded = () => {
 		document.querySelector(props.location.hash)?.scrollIntoView({ behavior: 'smooth' });
 	};
-
 	usePageLoaded(handlePageLoaded, !!props.location.hash);
 
+	/**
+	 * Wait for translations to be loaded before rendering the app
+	 */
 	useEffect(() => {
 		waitForTranslations
 			.then(() => {
@@ -85,8 +100,10 @@ const App: FC<RouteComponentProps & UserProps> = (props) => {
 			});
 	}, [setLoadingInfo]);
 
+	/**
+	 * Hide zendesk when a pupil is logged in
+	 */
 	useEffect(() => {
-		// Hide zendesk when a pupil is logged in
 		if (isPupilUser || isAdminRoute) {
 			document.body.classList.add('hide-zendesk-widget');
 		} else {
@@ -94,6 +111,9 @@ const App: FC<RouteComponentProps & UserProps> = (props) => {
 		}
 	}, [isPupilUser, isAdminRoute]);
 
+	/**
+	 * Redirect after linking an account the the hetarchief account (eg: leerid, smartschool, klascement)
+	 */
 	useEffect(() => {
 		if (loadingInfo.state === 'loaded') {
 			const url = new URL(window.location.href);
@@ -106,6 +126,21 @@ const App: FC<RouteComponentProps & UserProps> = (props) => {
 			}
 		}
 	}, [loadingInfo, tHtml]);
+
+	/**
+	 * Keep track of route changes and track the 3 last visited pages for tracking events
+	 * Store them in the redux store
+	 */
+	useEffect(() => {
+		const existingHistoryLocations = props.historyLocations;
+		const newHistoryLocations = uniq([...existingHistoryLocations, location.pathname]).slice(
+			-3
+		);
+		console.log(newHistoryLocations);
+		if (!isEqual(existingHistoryLocations, newHistoryLocations)) {
+			props.setHistoryLocations(newHistoryLocations);
+		}
+	}, [location, props]);
 
 	// Render
 	const renderApp = () => {
@@ -152,7 +187,21 @@ const App: FC<RouteComponentProps & UserProps> = (props) => {
 	);
 };
 
-const AppWithRouter = compose(withRouter, withUser, withAdminCoreConfig)(App) as FC;
+const mapStateToProps = (state: AppState) => ({
+	historyLocations: selectHistoryLocations(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	setHistoryLocations: (locations: string[]) =>
+		dispatch(setHistoryLocationsAction(locations) as any),
+});
+
+const AppWithRouter = compose(
+	connect(mapStateToProps, mapDispatchToProps),
+	withRouter,
+	withUser,
+	withAdminCoreConfig
+)(App) as FC;
 
 let confirmUnsavedChangesCallback: ((navigateAway: boolean) => void) | null;
 

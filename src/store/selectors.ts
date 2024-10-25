@@ -7,3 +7,7 @@ export const selectShowNudgingModal = ({ uiState }: AppState) => {
 export const selectLastVideoPlayedAt = ({ uiState }: AppState) => {
 	return uiState?.lastVideoPlayedAt;
 };
+
+export const selectHistoryLocations = ({ uiState }: AppState) => {
+	return uiState?.historyLocations || [];
+};

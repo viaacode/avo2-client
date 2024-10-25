@@ -1,7 +1,7 @@
 import { Flex, Spacer, Spinner } from '@viaa/avo2-components';
 import React, { type FC } from 'react';
 
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { ALL_SEARCH_FILTERS } from '../../search/search.const';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -27,7 +27,7 @@ const AssignmentDetailSwitcher: FC<UserProps> = (props) => {
 		);
 	}
 	if (
-		[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+		[SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 			.map(String)
 			.includes(String(props.commonUser?.userGroup?.id))
 	) {

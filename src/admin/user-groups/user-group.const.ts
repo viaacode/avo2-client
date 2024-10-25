@@ -23,10 +23,12 @@ export const GET_SPECIAL_USER_GROUPS: () => Partial<UserGroup>[] = () => [
 	},
 ];
 
-export enum SpecialUserGroup {
+export enum SpecialUserGroupId {
 	Admin = '1',
 	Teacher = '2',
+	TeacherElementary = '25',
 	TeacherSecondary = '3',
+	PupilElementary = '29',
 	PupilSecondary = '4',
 	Editor = '7',
 	EditorInChief = '8',
@@ -34,5 +36,8 @@ export enum SpecialUserGroup {
 	EducativeAuthor = '10',
 	EducativePublisher = '11',
 	EducativePartner = '12',
-	PupilElementary = '29',
+	StudentTeacher = '23',
+	MeemooEmployee = '6',
+	StudentTeacherSecondary = '5',
+	StudentTeacherElementary = '26',
 }

@@ -31,20 +31,10 @@ import {
 	type IncrementAssignmentViewsMutationVariables,
 	type IncrementCollectionPlaysMutation,
 	type IncrementCollectionPlaysMutationVariables,
-	type IncrementCollectionViewsViaCollectionPageMutation,
-	type IncrementCollectionViewsViaCollectionPageMutationVariables,
-	type IncrementCollectionViewsViaQuickLanePageMutation,
-	type IncrementCollectionViewsViaQuickLanePageMutationVariables,
-	type IncrementItemPlaysViaAssignmentPageMutation,
-	type IncrementItemPlaysViaAssignmentPageMutationVariables,
-	type IncrementItemPlaysViaCollectionPageMutation,
-	type IncrementItemPlaysViaCollectionPageMutationVariables,
-	type IncrementItemPlaysViaContentPageMutation,
-	type IncrementItemPlaysViaContentPageMutationVariables,
-	type IncrementItemPlaysViaItemPageMutation,
-	type IncrementItemPlaysViaItemPageMutationVariables,
-	type IncrementItemPlaysViaQuickLanePageMutation,
-	type IncrementItemPlaysViaQuickLanePageMutationVariables,
+	type IncrementCollectionViewsMutation,
+	type IncrementCollectionViewsMutationVariables,
+	type IncrementItemPlaysMutation,
+	type IncrementItemPlaysMutationVariables,
 	type IncrementItemViewsMutation,
 	type IncrementItemViewsMutationVariables,
 	type InsertCollectionBookmarkMutation,
@@ -473,23 +463,13 @@ export class BookmarksViewsPlaysService {
 			await dataService.query<
 				| IncrementAssignmentViewsMutation
 				| IncrementCollectionPlaysMutation
-				| IncrementCollectionViewsViaCollectionPageMutation
-				| IncrementCollectionViewsViaQuickLanePageMutation
-				| IncrementItemPlaysViaAssignmentPageMutation
-				| IncrementItemPlaysViaCollectionPageMutation
-				| IncrementItemPlaysViaContentPageMutation
-				| IncrementItemPlaysViaItemPageMutation
-				| IncrementItemPlaysViaQuickLanePageMutation
+				| IncrementCollectionViewsMutation
+				| IncrementItemPlaysMutation
 				| IncrementItemViewsMutation,
 				| IncrementAssignmentViewsMutationVariables
 				| IncrementCollectionPlaysMutationVariables
-				| IncrementCollectionViewsViaCollectionPageMutationVariables
-				| IncrementCollectionViewsViaQuickLanePageMutationVariables
-				| IncrementItemPlaysViaAssignmentPageMutationVariables
-				| IncrementItemPlaysViaCollectionPageMutationVariables
-				| IncrementItemPlaysViaContentPageMutationVariables
-				| IncrementItemPlaysViaItemPageMutationVariables
-				| IncrementItemPlaysViaQuickLanePageMutationVariables
+				| IncrementCollectionViewsMutationVariables
+				| IncrementItemPlaysMutationVariables
 				| IncrementItemViewsMutationVariables
 			>({
 				query,

@@ -42,7 +42,7 @@ import { JsonParam, StringParam, useQueryParam, useQueryParams } from 'use-query
 
 import { ITEMS_PATH } from '../../admin/items/items.const';
 import { ItemsService } from '../../admin/items/items.service';
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
@@ -230,7 +230,10 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 						location.pathname.includes(`/${ROUTE_PARTS.assignments}/`))
 				)
 			) {
-				const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+				const isPupil = [
+					SpecialUserGroupId.PupilSecondary,
+					SpecialUserGroupId.PupilElementary,
+				]
 					.map(String)
 					.includes(String(commonUser?.userGroup?.id));
 

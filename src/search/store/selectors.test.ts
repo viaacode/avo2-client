@@ -33,6 +33,7 @@ describe('search > store > selectors', () => {
 		uiState: {
 			showNudgingModal: null,
 			lastVideoPlayedAt: null,
+			historyLocations: [],
 		},
 	};
 
