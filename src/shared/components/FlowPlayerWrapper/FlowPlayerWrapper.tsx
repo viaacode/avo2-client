@@ -71,6 +71,7 @@ export type FlowPlayerWrapperProps = {
 	ui?: Config['ui'];
 	controls?: Config['controls'];
 	speed?: unknown | null;
+	trackPlayEvent: boolean;
 
 	/**
 	 * The page type where the video is played from
@@ -147,12 +148,19 @@ const FlowPlayerWrapper: FC<
 
 	const handlePlay = (playingSrc: string) => {
 		// Only trigger once per video
-		if (item && item.uid && !triggeredForUrlRef.current[playingSrc] && props.commonUser) {
+		if (
+			item &&
+			item.uid &&
+			!triggeredForUrlRef.current[playingSrc] &&
+			props.commonUser &&
+			props.trackPlayEvent
+		) {
 			BookmarksViewsPlaysService.action(
 				'play',
 				'item',
 				props.sourcePage,
 				item.uid,
+				item.external_id,
 				props.commonUser
 			).catch((err: unknown) => {
 				console.error(

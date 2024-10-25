@@ -68,6 +68,7 @@ const BlockList: FC<BlockListProps> = ({ blocks, config }) => {
 							...config?.ITEM?.flowPlayer,
 							block,
 							sourcePage: SourcePage.collectionPage,
+							trackPlayEvent: true,
 						}}
 						meta={{ ...config?.ITEM?.meta }}
 					/>

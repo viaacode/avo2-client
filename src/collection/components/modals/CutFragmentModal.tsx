@@ -186,6 +186,7 @@ const CutFragmentModal: FC<CutFragmentModalProps> = ({
 					verticalLayout={isMobileWidth()}
 					onPlay={startStartTimeOnce}
 					sourcePage={SourcePage.collectionPage}
+					trackPlayEvent={false}
 				/>
 				<TimeCropControls
 					className="u-spacer-top-l u-spacer-bottom-l"

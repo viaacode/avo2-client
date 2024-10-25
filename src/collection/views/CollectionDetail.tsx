@@ -283,19 +283,11 @@ const CollectionDetail: FC<
 	const triggerEvents = useCallback(async () => {
 		// Do not trigger events when a search engine loads this page
 		if (collection?.id && commonUser && !showLoginPopup) {
-			trackEvents(
-				{
-					object: collectionId,
-					object_type: 'collection',
-					action: 'view',
-				},
-				commonUser
-			);
-
 			BookmarksViewsPlaysService.action(
 				'view',
 				'collection',
 				SourcePage.collectionPage,
+				collection.id,
 				collection.id,
 				commonUser
 			).then(noop);
@@ -639,6 +631,14 @@ const CollectionDetail: FC<
 				onEditCollection();
 				break;
 			case CollectionMenuAction.openAutoplayCollectionModal:
+				BookmarksViewsPlaysService.action(
+					'play',
+					'collection',
+					SourcePage.collectionPage,
+					collectionId,
+					collectionId,
+					commonUser
+				).then(noop);
 				setIsAutoplayCollectionModalOpen(!isAutoplayCollectionModalOpen);
 				break;
 

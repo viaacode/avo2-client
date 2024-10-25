@@ -488,6 +488,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 								collapseDescription={false}
 								renderButtons={renderBookmarkButton}
 								sourcePage={SourcePage.contentPage}
+								trackPlayEvent={true}
 							/>
 						)}
 					</ModalBody>

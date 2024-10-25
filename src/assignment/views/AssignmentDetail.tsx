@@ -75,7 +75,6 @@ import {
 	type BookmarkViewPlayCounts,
 	SourcePage,
 } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
-import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
 	ObjectTypes,
@@ -357,24 +356,16 @@ const AssignmentDetail: FC<
 	const triggerEvents = useCallback(async () => {
 		// Do not trigger events when a search engine loads this page
 		if (assignmentId && commonUser && permissions) {
-			trackEvents(
-				{
-					object: assignmentId,
-					object_type: 'assignment',
-					action: 'view',
-					resource: {
-						education_level: String(assignment?.education_level_id),
-					},
-				},
-				commonUser
-			);
-
 			BookmarksViewsPlaysService.action(
 				'view',
 				'assignment',
 				SourcePage.assignmentPage,
 				assignmentId,
-				commonUser
+				assignmentId,
+				commonUser,
+				{
+					education_level: String(assignment?.education_level_id),
+				}
 			).then(noop);
 
 			if (permissions?.canFetchBookmarkAndViewCounts) {
@@ -808,6 +799,7 @@ const AssignmentDetail: FC<
 						flowPlayer: {
 							canPlay: true,
 							sourcePage: SourcePage.assignmentPage,
+							trackPlayEvent: true,
 						},
 					},
 					ZOEK: {

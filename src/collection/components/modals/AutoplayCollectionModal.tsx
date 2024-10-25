@@ -78,6 +78,7 @@ const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 				canPlay
 				autoplay
 				sourcePage={SourcePage.collectionPage}
+				trackPlayEvent={true}
 			/>
 		);
 	};

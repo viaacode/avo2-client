@@ -54,6 +54,7 @@ interface ItemVideoDescriptionProps {
 	titleLink?: string;
 	onPlay?: () => void;
 	sourcePage: SourcePage;
+	trackPlayEvent: boolean;
 }
 
 const DEFAULT_VIDEO_HEIGHT = 421;
@@ -76,6 +77,7 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 	titleLink,
 	onPlay,
 	sourcePage,
+	trackPlayEvent,
 }) => {
 	const { tText } = useTranslation();
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
@@ -120,6 +122,7 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 				duration={itemMetaData.duration}
 				title={title || undefined}
 				sourcePage={sourcePage}
+				trackPlayEvent={trackPlayEvent}
 			/>
 		);
 	};

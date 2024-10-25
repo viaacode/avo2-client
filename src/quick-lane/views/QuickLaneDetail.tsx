@@ -34,6 +34,7 @@ import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
 import { SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { type QuickLaneUrlObject } from '../../shared/types';
@@ -43,6 +44,7 @@ type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
 const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser, ...rest }) => {
 	const { tText, tHtml } = useTranslation();
+	const quickLaneId = match.params.id;
 
 	// State
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>();
@@ -52,8 +54,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 	// Retrieve data from GraphQL
 	const fetchQuickLaneAndContent = useCallback(async () => {
 		try {
-			const quickLaneId = match.params.id;
-
 			const response = await QuickLaneService.fetchQuickLaneById(quickLaneId);
 
 			// Handle edge cases
@@ -145,7 +145,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 			console.error(
 				new CustomError('Failed to fetch quick lane and content for detail page', err, {
 					commonUser,
-					id: match.params.id,
+					id: quickLaneId,
 				})
 			);
 
@@ -156,7 +156,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 				),
 			});
 		}
-	}, [setQuickLane, setLoadingInfo, match.params.id, tHtml, commonUser]);
+	}, [setQuickLane, setLoadingInfo, quickLaneId, tHtml, commonUser]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(commonUser, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
@@ -177,8 +177,16 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 			setLoadingInfo({
 				state: 'loaded',
 			});
+			BookmarksViewsPlaysService.action(
+				'view',
+				'quick_lane',
+				SourcePage.quickLanePage,
+				quickLaneId,
+				quickLaneId,
+				commonUser
+			).then(noop);
 		}
-	}, [quickLane]);
+	}, [commonUser, quickLane, quickLaneId]);
 
 	// Render methods
 	const renderContent = () => {
@@ -220,6 +228,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 						cuePointsLabel={{ start, end }}
 						cuePointsVideo={{ start, end }}
 						sourcePage={SourcePage.quickLanePage}
+						trackPlayEvent={true}
 					/>
 				);
 			default:

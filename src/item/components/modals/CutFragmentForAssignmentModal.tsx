@@ -102,6 +102,7 @@ const CutFragmentForAssignmentModal: FC<
 										cuePointsLabel={{ start, end }}
 										verticalLayout={isMobileWidth()}
 										sourcePage={SourcePage.assignmentPage}
+										trackPlayEvent={false}
 									/>
 								}
 								<Grid>

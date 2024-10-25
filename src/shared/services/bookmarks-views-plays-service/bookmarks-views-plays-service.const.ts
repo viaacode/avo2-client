@@ -90,6 +90,10 @@ export const GET_EVENT_QUERIES: () => {
 				},
 			}),
 		},
+		quick_lane: {
+			// We can't bookmark quick lanes
+			variables: () => ({}),
+		},
 	},
 	unbookmark: {
 		item: {
@@ -122,6 +126,10 @@ export const GET_EVENT_QUERIES: () => {
 				profileId: commonUser?.profileId || null,
 			}),
 		},
+		quick_lane: {
+			// We can't unbookmark quick lanes
+			variables: () => ({}),
+		},
 	},
 	view: {
 		item: {
@@ -151,6 +159,11 @@ export const GET_EVENT_QUERIES: () => {
 			getResponseCount: (response: GetAssignmentViewCountQuery): number =>
 				response.app_assignments_v2[0]?.view_count?.count || 0,
 		},
+		quick_lane: {
+			// We don't track totals for quick lanes, only tracking view events
+			// https://meemoo.atlassian.net/browse/AVO-1827
+			variables: () => ({}),
+		},
 	},
 	play: {
 		item: {
@@ -175,6 +188,11 @@ export const GET_EVENT_QUERIES: () => {
 			variables: (assignmentUuid: string) => ({
 				assignmentUuid,
 			}),
+		},
+		quick_lane: {
+			// We don't track totals for quick lanes, only tracking view events
+			// https://meemoo.atlassian.net/browse/AVO-1827
+			variables: () => ({}),
 		},
 	},
 });

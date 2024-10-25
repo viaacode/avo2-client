@@ -49,6 +49,7 @@ const AssignmentResponseAssignmentTab: FC<AssignmentResponseAssignmentTabProps> 
 						flowPlayer: {
 							canPlay: true,
 							sourcePage: SourcePage.assignmentPage,
+							trackPlayEvent: true,
 						},
 					},
 					ZOEK: {

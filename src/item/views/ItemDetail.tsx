@@ -287,20 +287,12 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 				return;
 			}
 
-			trackEvents(
-				{
-					object: itemId,
-					object_type: 'item',
-					action: 'view',
-				},
-				commonUser
-			);
-
 			BookmarksViewsPlaysService.action(
 				'view',
 				'item',
 				SourcePage.itemPage,
 				itemObj.uid,
+				itemId,
 				commonUser
 			).then(noop);
 
@@ -976,6 +968,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
 							}}
 							sourcePage={SourcePage.itemPage}
+							trackPlayEvent={true}
 						/>
 						<Grid>
 							<Column size="2-7">

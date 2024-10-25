@@ -434,6 +434,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 										}}
 										canPlay={!isCutModalOpen && !isDeleteModalOpen}
 										sourcePage={SourcePage.collectionPage}
+										trackPlayEvent={false}
 									/>
 								) : (
 									<Thumbnail

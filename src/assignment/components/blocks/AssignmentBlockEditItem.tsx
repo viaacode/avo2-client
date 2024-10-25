@@ -119,6 +119,7 @@ export const AssignmentBlockEditItem: FC<
 								end: editableBlock.end_oc || null,
 							}}
 							sourcePage={SourcePage.assignmentPage}
+							trackPlayEvent={false}
 						/>
 
 						{cutButton({

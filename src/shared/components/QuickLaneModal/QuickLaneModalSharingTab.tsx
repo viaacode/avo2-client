@@ -244,6 +244,7 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 									cuePointsVideo={{ start, end }}
 									verticalLayout={isMobileWidth()}
 									sourcePage={SourcePage.quickLanePage}
+									trackPlayEvent={false}
 								/>
 							</div>
 							<TimeCropControls

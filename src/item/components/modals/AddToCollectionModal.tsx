@@ -347,6 +347,7 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 									cuePointsLabel={{ start, end }}
 									verticalLayout={isMobileWidth()}
 									sourcePage={SourcePage.collectionPage}
+									trackPlayEvent={false}
 								/>
 								<Grid>
 									<Column size="2-7" className="u-spacer-top-l u-spacer-bottom-l">

@@ -86,6 +86,7 @@ const FragmentDetail: FC<FragmentDetailProps> = ({
 			}}
 			verticalLayout={isMobileWidth()}
 			sourcePage={SourcePage.collectionPage}
+			trackPlayEvent={true}
 		/>
 	) : (
 		<BlockIntro

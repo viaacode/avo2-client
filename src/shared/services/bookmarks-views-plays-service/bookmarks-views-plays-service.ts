@@ -1,5 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
-import { compact, fromPairs, get, groupBy, isString, noop } from 'lodash-es';
+import { type ClientEvent } from '@viaa/avo2-types/types/event-logging';
+import { compact, fromPairs, get, groupBy, isNil, isString, noop, omitBy } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
@@ -79,7 +80,9 @@ export class BookmarksViewsPlaysService {
 		contentType: EventContentType,
 		sourcePage: SourcePage,
 		contentUuid: string,
-		commonUser: Avo.User.CommonUser | null,
+		contentPid: string,
+		commonUser: Avo.User.CommonUser | null | undefined,
+		resource: ClientEvent['resource'] = {},
 		silent = true
 	): Promise<void> {
 		try {
@@ -88,9 +91,18 @@ export class BookmarksViewsPlaysService {
 					action,
 					contentType,
 					sourcePage,
-					contentUuid,
-					commonUser,
+					contentPid,
+					commonUser || null,
 					silent
+				);
+				trackEvents(
+					{
+						object: contentUuid,
+						object_type: contentType,
+						action,
+						resource: omitBy(resource, isNil) as ClientEvent['resource'],
+					},
+					commonUser
 				);
 			} else {
 				// Bookmark or unbookmark action
@@ -100,7 +112,7 @@ export class BookmarksViewsPlaysService {
 					contentType,
 					sourcePage,
 					contentUuid,
-					commonUser
+					commonUser || null
 				);
 
 				await dataService.query<
@@ -236,7 +248,9 @@ export class BookmarksViewsPlaysService {
 				type,
 				SourcePage.itemPage, // Source page only matters for incrementing views/plays
 				contentId,
+				contentId,
 				commonUser,
+				{},
 				false
 			);
 
@@ -435,6 +449,7 @@ export class BookmarksViewsPlaysService {
 				item: GetMultipleItemViewCountsDocument,
 				collection: GetMultipleCollectionViewCountsDocument,
 				assignment: GetMultipleAssignmentViewCountsDocument,
+				quick_lane: '', // We don't track total view counts for quick lanes
 			}[type],
 			variables,
 		});
@@ -580,6 +595,7 @@ export class BookmarksViewsPlaysService {
 				item: itemBookmarkStatuses,
 				collection: collectionBookmarkStatuses,
 				assignment: assignmentBookmarkStatuses,
+				quick_lane: {}, // Quick lanes cannot be bookmarked
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get bookmark statuses', err, {

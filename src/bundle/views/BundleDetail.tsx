@@ -230,19 +230,11 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 
 			// Do not trigger events when a search engine loads this page
 			if (!showPopup) {
-				trackEvents(
-					{
-						object: bundleId,
-						object_type: 'bundle',
-						action: 'view',
-					},
-					commonUser
-				);
-
 				BookmarksViewsPlaysService.action(
 					'view',
 					'bundle',
 					SourcePage.collectionPage,
+					bundleObj.id,
 					bundleObj.id,
 					commonUser
 				).then(noop);
