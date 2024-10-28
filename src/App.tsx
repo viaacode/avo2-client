@@ -136,7 +136,6 @@ const App: FC<
 		const newHistoryLocations = uniq([...existingHistoryLocations, location.pathname]).slice(
 			-3
 		);
-		console.log(newHistoryLocations);
 		if (!isEqual(existingHistoryLocations, newHistoryLocations)) {
 			props.setHistoryLocations(newHistoryLocations);
 		}
