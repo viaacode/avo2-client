@@ -32,7 +32,6 @@ import { reorderDate, stripHtml } from '../../shared/helpers';
 import { getFlowPlayerPoster } from '../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { type SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 import './ItemVideoDescription.scss';
 
@@ -53,7 +52,6 @@ interface ItemVideoDescriptionProps {
 	verticalLayout?: boolean;
 	titleLink?: string;
 	onPlay?: () => void;
-	sourcePage: SourcePage;
 	trackPlayEvent: boolean;
 }
 
@@ -76,7 +74,6 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 	verticalLayout = false,
 	titleLink,
 	onPlay,
-	sourcePage,
 	trackPlayEvent,
 }) => {
 	const { tText } = useTranslation();
@@ -121,7 +118,6 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 				external_id={itemMetaData.external_id}
 				duration={itemMetaData.duration}
 				title={title || undefined}
-				sourcePage={sourcePage}
 				trackPlayEvent={trackPlayEvent}
 			/>
 		);

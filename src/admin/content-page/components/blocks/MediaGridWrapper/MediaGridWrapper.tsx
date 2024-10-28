@@ -32,7 +32,6 @@ import { parseIntOrDefault } from '../../../../../shared/helpers/parsers/number'
 import withUser, { type UserProps } from '../../../../../shared/hocs/withUser';
 import useTranslation from '../../../../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../../../../shared/services/bookmarks-views-plays-service';
-import { SourcePage } from '../../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ToastService } from '../../../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../../../admin.const';
 import { ContentPageService } from '../../../services/content-page.service';
@@ -487,7 +486,6 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 								}
 								collapseDescription={false}
 								renderButtons={renderBookmarkButton}
-								sourcePage={SourcePage.contentPage}
 								trackPlayEvent={true}
 							/>
 						)}

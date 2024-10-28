@@ -8,7 +8,6 @@ import { isMobileWidth, toSeconds } from '../../../shared/helpers';
 import { getValidStartAndEnd } from '../../../shared/helpers/cut-start-and-end';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { fetchPlayerTickets } from '../../../shared/services/player-ticket-service';
 
 import './AutoplayCollectionModal.scss';
@@ -72,15 +71,7 @@ const AutoplayCollectionModal: FC<AutoplayCollectionModalProps> = ({
 				</Flex>
 			);
 		}
-		return (
-			<FlowPlayerWrapper
-				src={sourceList}
-				canPlay
-				autoplay
-				sourcePage={SourcePage.collectionPage}
-				trackPlayEvent={true}
-			/>
-		);
+		return <FlowPlayerWrapper src={sourceList} canPlay autoplay trackPlayEvent={true} />;
 	};
 
 	const handleClose = () => {

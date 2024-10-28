@@ -92,10 +92,7 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import {
-	type BookmarkViewPlayCounts,
-	SourcePage,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -287,14 +284,15 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 				return;
 			}
 
-			BookmarksViewsPlaysService.action(
-				'view',
-				'item',
-				SourcePage.itemPage,
-				itemObj.uid,
-				itemId,
+			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, commonUser).then(noop);
+			trackEvents(
+				{
+					object: itemId,
+					object_type: 'item',
+					action: 'view',
+				},
 				commonUser
-			).then(noop);
+			);
 
 			retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 
@@ -386,14 +384,16 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 	};
 
 	const trackOnPlay = () => {
-		trackEvents(
-			{
-				object: get(item, 'external_id', ''),
-				object_type: 'item',
-				action: 'play',
-			},
-			commonUser
-		);
+		if (item?.external_id) {
+			trackEvents(
+				{
+					object: item.external_id,
+					object_type: 'item',
+					action: 'play',
+				},
+				commonUser
+			);
+		}
 	};
 
 	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
@@ -967,7 +967,6 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
 								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
 							}}
-							sourcePage={SourcePage.itemPage}
 							trackPlayEvent={true}
 						/>
 						<Grid>

@@ -71,10 +71,8 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import {
-	type BookmarkViewPlayCounts,
-	SourcePage,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
 	ObjectTypes,
@@ -105,7 +103,6 @@ type AssignmentDetailPermissions = Partial<{
 	canEditAssignments: boolean;
 	canPublishAssignments: boolean;
 	canDeleteAnyAssignments: boolean;
-	canFetchBookmarkAndViewCounts: boolean;
 }>;
 
 type AssignmentDetailProps = {
@@ -210,17 +207,11 @@ const AssignmentDetail: FC<
 					],
 
 					canDeleteAnyAssignments: [{ name: PermissionName.DELETE_ANY_ASSIGNMENTS }],
-					canFetchBookmarkAndViewCounts: [
-						PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS,
-						PermissionName.VIEW_ANY_UNPUBLISHED_ASSIGNMENTS,
-						PermissionName.EDIT_OWN_ASSIGNMENTS,
-						PermissionName.EDIT_ANY_ASSIGNMENTS,
-					],
 				},
 				commonUser
 			);
 		},
-		[commonUser, assignment, match.params.id]
+		[]
 	);
 
 	const getRelatedAssignments = useCallback(async () => {
@@ -248,7 +239,7 @@ const AssignmentDetail: FC<
 				)
 			);
 		}
-	}, [setRelatedAssignments, assignmentId]);
+	}, [assignmentId, tHtml]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
@@ -339,7 +330,7 @@ const AssignmentDetail: FC<
 		}
 
 		setAssignmentLoading(false);
-	}, [commonUser, match.params.id, tText, history, setAssignment]);
+	}, [commonUser, getRelatedAssignments, tHtml, assignmentId, inviteToken, getPermissions]);
 
 	const fetchContributors = useCallback(async () => {
 		if (!assignmentId || !assignment) {
@@ -355,42 +346,52 @@ const AssignmentDetail: FC<
 
 	const triggerEvents = useCallback(async () => {
 		// Do not trigger events when a search engine loads this page
-		if (assignmentId && commonUser && permissions) {
-			BookmarksViewsPlaysService.action(
-				'view',
-				'assignment',
-				SourcePage.assignmentPage,
-				assignmentId,
-				assignmentId,
-				commonUser,
-				{
-					education_level: String(assignment?.education_level_id),
-				}
-			).then(noop);
+		if (!assignment || !commonUser) {
+			return;
+		}
 
-			if (permissions?.canFetchBookmarkAndViewCounts) {
-				try {
-					setBookmarkViewCounts(
-						await BookmarksViewsPlaysService.getAssignmentCounts(
-							assignmentId,
-							commonUser
-						)
-					);
-				} catch (err) {
-					console.error(
-						new CustomError('Failed to get getAssignmentCounts', err, {
-							uuid: assignmentId,
-						})
-					);
-					ToastService.danger(
-						tHtml(
-							'assignment/views/assignment-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
-						)
-					);
-				}
+		BookmarksViewsPlaysService.action('view', 'assignment', assignment.id, commonUser).then(
+			noop
+		);
+		trackEvents(
+			{
+				object: assignment?.id,
+				object_type: 'avo_assignment',
+				action: 'view',
+				resource: {
+					is_public: assignment?.is_public || false,
+					education_level: String(assignment?.education_level_id),
+				},
+			},
+			commonUser
+		);
+
+		if (
+			PermissionService.hasAtLeastOnePerm(commonUser, [
+				PermissionName.VIEW_ANY_PUBLISHED_ASSIGNMENTS,
+				PermissionName.VIEW_ANY_UNPUBLISHED_ASSIGNMENTS,
+				PermissionName.EDIT_OWN_ASSIGNMENTS,
+				PermissionName.EDIT_ANY_ASSIGNMENTS,
+			])
+		) {
+			try {
+				setBookmarkViewCounts(
+					await BookmarksViewsPlaysService.getAssignmentCounts(assignment?.id, commonUser)
+				);
+			} catch (err) {
+				console.error(
+					new CustomError('Failed to get getAssignmentCounts', err, {
+						uuid: assignment?.id,
+					})
+				);
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-detail___het-ophalen-van-het-aantal-keer-bekeken-gebookmarked-is-mislukt'
+					)
+				);
 			}
 		}
-	}, [tText, assignmentId, commonUser, permissions]);
+	}, [tHtml, assignment, commonUser]);
 
 	// Fetch initial data
 	useEffect(() => {
@@ -798,7 +799,6 @@ const AssignmentDetail: FC<
 						},
 						flowPlayer: {
 							canPlay: true,
-							sourcePage: SourcePage.assignmentPage,
 							trackPlayEvent: true,
 						},
 					},

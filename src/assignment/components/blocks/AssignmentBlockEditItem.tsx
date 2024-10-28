@@ -10,7 +10,6 @@ import { isRichTextEmpty } from '../../../shared/helpers';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import { useCutModal } from '../../../shared/hooks/use-cut-modal';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { VideoStillService } from '../../../shared/services/video-stills-service';
 import { type EditableAssignmentBlock, type EditBlockProps } from '../../assignment.types';
 import {
@@ -118,7 +117,6 @@ export const AssignmentBlockEditItem: FC<
 								start: editableBlock.start_oc || null,
 								end: editableBlock.end_oc || null,
 							}}
-							sourcePage={SourcePage.assignmentPage}
 							trackPlayEvent={false}
 						/>
 

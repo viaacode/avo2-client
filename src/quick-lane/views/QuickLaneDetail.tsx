@@ -35,7 +35,6 @@ import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-par
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
-import { SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
@@ -126,7 +125,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 
 			// Analytics
 
-			// TODO re-enable this once task https://meemoo.atlassian.net/browse/AVO-2177 is fixed
 			const content_type =
 				{ ITEM: 'item', COLLECTIE: 'collection' }[response.content_label as string] ||
 				'unknown';
@@ -141,6 +139,23 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 				},
 				commonUser
 			);
+
+			// Also increase the view count for the item or collection
+			if (content_type === 'item' && response.content_id) {
+				await BookmarksViewsPlaysService.action(
+					'view',
+					'item',
+					response.content_id,
+					commonUser
+				).then(noop);
+			} else if (content_type === 'collection' && response.content_id) {
+				await BookmarksViewsPlaysService.action(
+					'view',
+					'collection',
+					response.content_id,
+					commonUser
+				).then(noop);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch quick lane and content for detail page', err, {
@@ -172,22 +187,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 		}
 	}, [fetchQuickLaneAndContent, commonUser, tHtml]);
 
-	useEffect(() => {
-		if (quickLane) {
-			setLoadingInfo({
-				state: 'loaded',
-			});
-			BookmarksViewsPlaysService.action(
-				'view',
-				'quick_lane',
-				SourcePage.quickLanePage,
-				quickLaneId,
-				quickLaneId,
-				commonUser
-			).then(noop);
-		}
-	}, [commonUser, quickLane, quickLaneId]);
-
 	// Render methods
 	const renderContent = () => {
 		if (!quickLane || !quickLane.content) {
@@ -214,7 +213,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 						showMetadata={true}
 						linkToItems={false}
 						collection={quickLane.content as Avo.Collection.Collection}
-						sourcePage={SourcePage.quickLanePage}
 						{...rest}
 					/>
 				);
@@ -227,7 +225,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}
 						cuePointsVideo={{ start, end }}
-						sourcePage={SourcePage.quickLanePage}
 						trackPlayEvent={true}
 					/>
 				);

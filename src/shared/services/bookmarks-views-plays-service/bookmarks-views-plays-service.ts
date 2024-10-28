@@ -1,6 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { type ClientEvent } from '@viaa/avo2-types/types/event-logging';
-import { compact, fromPairs, get, groupBy, isNil, isString, noop, omitBy } from 'lodash-es';
+import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
@@ -71,18 +70,14 @@ import {
 	type EventContentType,
 	type EventContentTypeSimplified,
 	type QueryType,
-	SourcePage,
 } from './bookmarks-views-plays-service.types';
 
 export class BookmarksViewsPlaysService {
 	public static async action(
 		action: EventAction,
 		contentType: EventContentType,
-		sourcePage: SourcePage,
 		contentUuid: string,
-		contentPid: string,
 		commonUser: Avo.User.CommonUser | null | undefined,
-		resource: ClientEvent['resource'] = {},
 		silent = true
 	): Promise<void> {
 		try {
@@ -90,19 +85,9 @@ export class BookmarksViewsPlaysService {
 				await this.incrementCount(
 					action,
 					contentType,
-					sourcePage,
-					contentPid,
+					contentUuid,
 					commonUser || null,
 					silent
-				);
-				trackEvents(
-					{
-						object: contentUuid,
-						object_type: contentType,
-						action,
-						resource: omitBy(resource, isNil) as ClientEvent['resource'],
-					},
-					commonUser
 				);
 			} else {
 				// Bookmark or unbookmark action
@@ -110,7 +95,6 @@ export class BookmarksViewsPlaysService {
 					action,
 					'query',
 					contentType,
-					sourcePage,
 					contentUuid,
 					commonUser || null
 				);
@@ -246,11 +230,8 @@ export class BookmarksViewsPlaysService {
 			await BookmarksViewsPlaysService.action(
 				isBookmarked ? 'unbookmark' : 'bookmark',
 				type,
-				SourcePage.itemPage, // Source page only matters for incrementing views/plays
-				contentId,
 				contentId,
 				commonUser,
-				{},
 				false
 			);
 
@@ -401,7 +382,6 @@ export class BookmarksViewsPlaysService {
 		action: EventAction,
 		queryType: QueryType,
 		contentType: EventContentType,
-		sourcePage: SourcePage,
 		contentUuid: string,
 		commonUser: Avo.User.CommonUser | null
 	): { query: string; variables: any; getResponseCount?: (response: any) => number } {
@@ -409,12 +389,7 @@ export class BookmarksViewsPlaysService {
 		const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
 
 		const eventQueries = GET_EVENT_QUERIES();
-		let query = eventQueries?.[action]?.[contentTypeSimplified]?.[queryType];
-		if (query && !isString(query)) {
-			// Increment queries need to know which page they happened on
-			// https://meemoo.atlassian.net/browse/AVO-1827
-			query = (query as Partial<Record<SourcePage, string>>)[sourcePage] as string;
-		}
+		const query = eventQueries?.[action]?.[contentTypeSimplified]?.[queryType];
 		const getVariablesFunc =
 			GET_EVENT_QUERIES()?.[action]?.[contentTypeSimplified]?.variables ?? noop;
 		const variables = getVariablesFunc(contentUuid, commonUser);
@@ -460,7 +435,6 @@ export class BookmarksViewsPlaysService {
 	private static async incrementCount(
 		action: EventAction,
 		contentType: EventContentType,
-		sourcePage: SourcePage,
 		contentUuid: string,
 		commonUser: Avo.User.CommonUser | null,
 		silent = true
@@ -470,7 +444,6 @@ export class BookmarksViewsPlaysService {
 				action,
 				'increment',
 				contentType,
-				sourcePage,
 				contentUuid,
 				commonUser
 			);

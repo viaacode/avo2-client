@@ -78,10 +78,7 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import {
-	type BookmarkViewPlayCounts,
-	SourcePage,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -230,14 +227,17 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 
 			// Do not trigger events when a search engine loads this page
 			if (!showPopup) {
-				BookmarksViewsPlaysService.action(
-					'view',
-					'bundle',
-					SourcePage.collectionPage,
-					bundleObj.id,
-					bundleObj.id,
+				BookmarksViewsPlaysService.action('view', 'bundle', bundleId, commonUser).then(
+					noop
+				);
+				trackEvents(
+					{
+						object: bundleId,
+						object_type: 'bundle',
+						action: 'view',
+					},
 					commonUser
-				).then(noop);
+				);
 
 				// Get view counts for each fragment
 				try {

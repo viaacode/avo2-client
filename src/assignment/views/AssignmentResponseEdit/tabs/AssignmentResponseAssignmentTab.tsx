@@ -6,7 +6,6 @@ import { ErrorView } from '../../../../error/views';
 import { type FilterState } from '../../../../search/search.types';
 import BlockList from '../../../../shared/components/BlockList/BlockList';
 import useTranslation from '../../../../shared/hooks/useTranslation';
-import { SourcePage } from '../../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { ASSIGNMENT_RESPONSE_CREATE_UPDATE_TABS } from '../../../assignment.const';
 
 interface AssignmentResponseAssignmentTabProps {
@@ -48,7 +47,6 @@ const AssignmentResponseAssignmentTab: FC<AssignmentResponseAssignmentTabProps> 
 					ITEM: {
 						flowPlayer: {
 							canPlay: true,
-							sourcePage: SourcePage.assignmentPage,
 							trackPlayEvent: true,
 						},
 					},

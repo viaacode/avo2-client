@@ -25,7 +25,6 @@ import { ContentTypeNumber } from '../../collection.types';
 import { type CollectionAction } from '../CollectionOrBundleEdit';
 
 import './CutFragmentModal.scss';
-import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 
 export interface CutFragmentModalProps {
 	isOpen: boolean;
@@ -185,7 +184,6 @@ const CutFragmentModal: FC<CutFragmentModalProps> = ({
 					}}
 					verticalLayout={isMobileWidth()}
 					onPlay={startStartTimeOnce}
-					sourcePage={SourcePage.collectionPage}
 					trackPlayEvent={false}
 				/>
 				<TimeCropControls

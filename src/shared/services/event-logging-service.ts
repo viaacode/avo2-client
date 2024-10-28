@@ -47,6 +47,8 @@ export function trackEvents(
 			}
 		);
 
+		// No await, since we never want to block the program from continuing
+		// because something is wrong with the event tracking
 		fetchWithLogout(`${getEnv('PROXY_URL')}/event-logging`, {
 			method: 'POST',
 			body: JSON.stringify(eventLogEntries),

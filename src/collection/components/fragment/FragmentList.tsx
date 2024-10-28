@@ -5,7 +5,6 @@ import React, { type FC } from 'react';
 
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { type SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { showReplacementWarning } from '../../helpers/fragment';
 
 import FragmentDetail from './FragmentDetail';
@@ -17,7 +16,6 @@ interface FragmentListProps {
 	linkToItems: boolean;
 	collection: Avo.Collection.Collection;
 	canPlay?: boolean;
-	sourcePage: SourcePage;
 }
 
 /**
