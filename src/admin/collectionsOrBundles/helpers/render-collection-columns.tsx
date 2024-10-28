@@ -20,7 +20,7 @@ import { truncateTableValue } from '../../../shared/helpers/truncate';
 import { getCollectionManagementStatuses } from '../collections-or-bundles.const';
 import { type CollectionTableCols, type ManagementStatus } from '../collections-or-bundles.types';
 
-export const getDisplayTextForManagementStatus = (
+const getDisplayTextForManagementStatus = (
 	status: ManagementStatus | null | undefined
 ): string | null => {
 	return (

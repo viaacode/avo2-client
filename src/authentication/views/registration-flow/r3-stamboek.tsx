@@ -10,7 +10,7 @@ import useTranslation from '../../../shared/hooks/useTranslation';
 import { StamboekInput } from '../../components/StamboekInput';
 import { redirectToServerArchiefRegistrationIdp } from '../../helpers/redirects';
 
-export type RegisterStamboekProps = RouteComponentProps;
+type RegisterStamboekProps = RouteComponentProps;
 
 export type StamboekValidationStatus =
 	| 'INCOMPLETE'

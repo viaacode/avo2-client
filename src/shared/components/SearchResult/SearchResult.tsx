@@ -20,7 +20,7 @@ import React, { type FC, type ReactNode, type ReactText } from 'react';
 
 import './SearchResult.scss';
 
-export interface SearchResultProps extends DefaultProps {
+interface SearchResultProps extends DefaultProps {
 	title: ReactNode;
 	subTitle: ReactNode;
 	thumbnail: ReactNode;

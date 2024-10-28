@@ -33,7 +33,7 @@ import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss';
 
-export type UserItemRequestFormProps = DefaultSecureRouteProps;
+type UserItemRequestFormProps = DefaultSecureRouteProps;
 
 interface FormValues {
 	description: string;

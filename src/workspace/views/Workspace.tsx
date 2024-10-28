@@ -60,7 +60,7 @@ import QuickLaneOverview from './QuickLaneOverview';
 
 import './Workspace.scss';
 
-export interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
+interface WorkspaceProps extends DefaultSecureRouteProps<{ tabId: string }> {
 	collections: Avo.Collection.Collection | null;
 }
 

@@ -5,7 +5,7 @@ import { type DateRange } from '../components/DateRangeDropdown/DateRangeDropdow
 import { type QuickLaneType } from '../components/QuickLaneModal/QuickLaneModal.types';
 import { type GetQuickLanesByContentIdQuery } from '../generated/graphql-db-operations';
 
-export interface QuickLaneUrl {
+interface QuickLaneUrl {
 	id: string;
 	title: string;
 	content?: Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item;

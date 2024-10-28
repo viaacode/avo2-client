@@ -1,7 +1,4 @@
-/// <reference types="react-scripts" />
 declare module 'capture-stack-trace';
-declare module 'recursive-omit-by';
-declare module 'react-copy-to-clipboard';
 declare module 'react-to-string';
 declare module '@flowplayer/player/plugins/chromecast';
 declare module '@flowplayer/player/plugins/airplay';

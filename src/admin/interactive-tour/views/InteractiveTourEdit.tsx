@@ -1,3 +1,4 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Box,
 	Button,
@@ -42,7 +43,11 @@ import { dataService } from '../../../shared/services/data-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
 import { ContentPicker } from '../../shared/components/ContentPicker/ContentPicker';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import {
+	AdminLayoutBody,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { type PickerItem } from '../../shared/types';
 import InteractiveTourAdd from '../components/InteractiveTourStepAdd';
 import {
@@ -70,7 +75,6 @@ import {
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 const BlockHeading = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
@@ -78,7 +82,7 @@ const BlockHeading = lazy(() =>
 	}))
 );
 
-export type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
+type InteractiveTourEditProps = DefaultSecureRouteProps<{ id: string }>;
 
 const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, location }) => {
 	const { tText, tHtml } = useTranslation();

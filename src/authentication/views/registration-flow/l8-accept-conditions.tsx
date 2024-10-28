@@ -13,9 +13,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
+import { SpecialUserGroupId } from '../../../admin/user-groups/user-group.const';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
-import { CustomError, isUserPupilElementary } from '../../../shared/helpers';
+import { CustomError } from '../../../shared/helpers';
 import { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { NotificationService } from '../../../shared/services/notification-service';
@@ -29,10 +30,9 @@ import { selectLogin } from '../../store/selectors';
 
 import AcceptElementaryPupilConditions from './accept-elementary-pupil-conditions';
 
-export const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS =
-	'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
+const ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS = 'ACCEPTED_TERMS_OF_USE_AND_PRIVACY_CONDITIONS';
 
-export interface AcceptConditionsProps {
+interface AcceptConditionsProps {
 	acceptConditions: () => Dispatch;
 	loginState: Avo.Auth.LoginResponse | null;
 }
@@ -50,7 +50,7 @@ const AcceptConditions: FC<AcceptConditionsProps & DefaultSecureRouteProps & Use
 	const [loadingInfo, setLoadingInfo] = useState<LoadingInfo>({ state: 'loading' });
 	const [acceptInProgress, setAcceptInProgress] = useState<boolean>(false);
 	const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
-	const isElementaryPupil = isUserPupilElementary(commonUser);
+	const isElementaryPupil = commonUser?.userGroup?.id === SpecialUserGroupId.PupilElementary;
 	const dataObject = isElementaryPupil ? {} : pages[0];
 
 	const fetchContentPage = useCallback(async () => {

@@ -34,7 +34,7 @@ import { ZendeskService } from '../../../shared/services/zendesk-service';
 
 import './r4-manual-registration.scss';
 
-export type ManualRegistrationProps = RouteComponentProps;
+type ManualRegistrationProps = RouteComponentProps;
 
 const ManualRegistration: FC<ManualRegistrationProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();

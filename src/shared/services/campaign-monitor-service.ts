@@ -9,7 +9,7 @@ import { type MinimalClientEvent, trackEvents } from './event-logging-service';
 
 export type EmailTemplateType = 'item' | 'collection' | 'bundle';
 
-export enum NewsletterPreferenceKey {
+enum NewsletterPreferenceKey {
 	newsletter = 'newsletter',
 	workshop = 'workshop',
 	ambassador = 'ambassador',

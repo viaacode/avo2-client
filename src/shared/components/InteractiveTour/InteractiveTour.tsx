@@ -11,19 +11,19 @@ import { type SecuredRouteProps } from '../../../authentication/components/Secur
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { type AppState } from '../../../store';
 import { selectShowNudgingModal } from '../../../store/selectors';
+import { TEAL_BRIGHT } from '../../constants';
 import { CustomError } from '../../helpers';
 import withUser from '../../hocs/withUser';
 import { InteractiveTourService, type TourInfo } from '../../services/interactive-tour.service';
 import Html from '../Html/Html';
 
-import './InteractiveTour.scss';
 import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPage';
 
-import { TEAL_BRIGHT } from '../../constants';
+import './InteractiveTour.scss';
 
-export const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
+const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
 
-export interface InteractiveTourProps {
+interface InteractiveTourProps {
 	showButton: boolean;
 }
 

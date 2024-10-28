@@ -23,7 +23,7 @@ import ManageAssignmentLabels from './modals/ManageAssignmentLabels';
 
 import './AssignmentLabels.scss';
 
-export type AssignmentLabelsProps = {
+type AssignmentLabelsProps = {
 	labels: { assignment_label: Avo.Assignment.Label }[];
 	id?: string;
 	onChange: (changed: { assignment_label: Avo.Assignment.Label }[]) => void;

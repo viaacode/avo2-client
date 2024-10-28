@@ -10,7 +10,7 @@ import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
 import AssignmentResponseEdit from '../views/AssignmentResponseEdit/AssignmentResponseEdit';
 
-export type AssignmentPupilPreviewProps = {
+type AssignmentPupilPreviewProps = {
 	assignment: Partial<Avo.Assignment.Assignment>;
 	isPreview?: boolean;
 	onClose: () => void;

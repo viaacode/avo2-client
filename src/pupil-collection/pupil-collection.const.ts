@@ -2,8 +2,6 @@ import { type Avo } from '@viaa/avo2-types';
 
 import { type PupilCollectionOverviewTableColumns } from './pupil-collection.types';
 
-export const ITEMS_PER_PAGE = 20;
-
 export const PUPIL_COLLECTIONS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
 	[columnId in PupilCollectionOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
 }> = {

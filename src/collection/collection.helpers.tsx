@@ -252,10 +252,10 @@ export const getValidationErrorsForStartAndEnd = (
 	);
 };
 
-export const getDuplicateTitleOrDescriptionErrors = async (
+const getDuplicateTitleOrDescriptionErrors = async (
 	collection: Partial<Avo.Collection.Collection>
 ): Promise<string[]> => {
-	// Check if title and description is,'t the same as an existing published collection
+	// Check if title and description isn't the same as an existing published collection
 	const duplicates = await CollectionService.getCollectionByTitleOrDescription(
 		collection.title || '',
 		collection.description || '',

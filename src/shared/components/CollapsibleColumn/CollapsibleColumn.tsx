@@ -6,7 +6,7 @@ import useResizeObserver from '../../hooks/useResizeObserver';
 
 import './CollapsibleColumn.scss';
 
-export type CollapsibleColumnProps = DefaultProps & {
+type CollapsibleColumnProps = DefaultProps & {
 	children?: ReactNode;
 	button?: Partial<Omit<ButtonProps, 'icon' | 'label'>> & {
 		icon?: (expanded: boolean) => IconName;

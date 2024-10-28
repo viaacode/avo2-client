@@ -8,7 +8,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 import './AssignmentDetailsForm.scss';
 
-export interface AssignmentDetailsFormReadonlyProps {
+interface AssignmentDetailsFormReadonlyProps {
 	assignment: Avo.Assignment.Assignment;
 }
 

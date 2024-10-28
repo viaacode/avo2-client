@@ -10,7 +10,7 @@ import { retrieveInternalLinks } from './item-providers/internal-link';
 import { retrieveItems } from './item-providers/item';
 import { retrieveProfiles } from './item-providers/profile';
 
-export const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => ({
+const GET_CONTENT_TYPE_LABELS: () => { [type: string]: string } = () => ({
 	CONTENT_PAGE: tText('admin/content/content___content'),
 	INTERNAL_LINK: tText('admin/content/content___statisch'),
 	COLLECTION: tText('admin/content/content___collecties'),

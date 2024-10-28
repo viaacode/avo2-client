@@ -3,12 +3,6 @@ import { type SelectOption, type TableColumn } from '@viaa/avo2-components';
 import { tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
-export const STILL_DIMENSIONS = {
-	width: 177,
-	height: 100,
-};
-
-export const MAX_TITLE_LENGTH = 110;
 export const MAX_SEARCH_DESCRIPTION_LENGTH = 300;
 export const MAX_LONG_DESCRIPTION_LENGTH = 1200;
 

@@ -19,7 +19,7 @@ interface AdminLayoutProps {
 	size: 'small' | 'medium' | 'large' | 'full-width' | 'no-margin'; // TODO move this to a type in the Container component in the components repo
 }
 
-const AdminLayout: FC<AdminLayoutProps> = ({
+export const AdminLayout: FC<AdminLayoutProps> = ({
 	children,
 	className,
 	pageTitle,
@@ -54,5 +54,3 @@ const AdminLayout: FC<AdminLayoutProps> = ({
 		</div>
 	);
 };
-
-export default AdminLayout;

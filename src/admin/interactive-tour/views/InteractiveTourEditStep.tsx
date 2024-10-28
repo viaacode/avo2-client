@@ -29,7 +29,7 @@ import { type EditableStep, InteractiveTourEditActionType } from '../interactive
 
 import './InteractiveTourEdit.scss';
 
-export interface InteractiveTourEditStepProps {
+interface InteractiveTourEditStepProps {
 	step: EditableStep;
 	index: number;
 	numberOfSteps: number;

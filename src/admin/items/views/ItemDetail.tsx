@@ -29,8 +29,8 @@ import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrap
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
-import { toggleSortOrder } from '../../../shared/helpers/toggle-sort-order';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import { toggleSortOrder } from '../../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';
@@ -41,7 +41,11 @@ import {
 	renderDetailRow,
 	renderSimpleDetailRows,
 } from '../../shared/helpers/render-detail-fields';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import {
+	AdminLayoutBody,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import DepublishItemModal from '../components/DepublishItemModal/DepublishItemModal';
 import { mapItemUsedByToQuickLane } from '../helpers';
 import { useGetItemUsedBy } from '../hooks/useGetItemUsedBy';

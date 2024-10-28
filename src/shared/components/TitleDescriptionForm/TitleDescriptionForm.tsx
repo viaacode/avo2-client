@@ -12,7 +12,7 @@ import RichTextEditorWrapper, {
 	type RichTextEditorWrapperProps,
 } from '../RichTextEditorWrapper/RichTextEditorWrapper';
 
-export interface TitleDescriptionFormField {
+interface TitleDescriptionFormField {
 	label?: string;
 }
 
@@ -20,13 +20,13 @@ export type TitleDescriptionFormTitleField = TitleDescriptionFormField & TextInp
 export type TitleDescriptionFormDescriptionField = TitleDescriptionFormField &
 	RichTextEditorWrapperProps;
 
-export interface TitleDescriptionFormProps extends DefaultProps {
+interface TitleDescriptionFormProps extends DefaultProps {
 	id: string | number;
 	title?: TitleDescriptionFormTitleField;
 	description?: TitleDescriptionFormDescriptionField;
 }
 
-export const TitleDescriptionFormIds = {
+const TitleDescriptionFormIds = {
 	title: 'c-title-description-form__title',
 	description: 'c-title-description-form__description',
 };

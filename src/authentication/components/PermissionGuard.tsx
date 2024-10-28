@@ -9,7 +9,7 @@ import { type Permissions, PermissionService } from '../helpers/permission-servi
 
 import { PermissionGuardFail, PermissionGuardPass } from './PermissionGuard.slots';
 
-export interface PermissionGuardProps {
+interface PermissionGuardProps {
 	children: ReactNode;
 	permissions: Permissions;
 	commonUser: Avo.User.CommonUser | null;

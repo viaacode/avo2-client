@@ -12,7 +12,7 @@ export const GET_ASSIGNMENT_GREY = () => ({
 	value: '#EDEFF2',
 });
 
-export const GET_ASSIGNMENT_GREEN = () => ({
+const GET_ASSIGNMENT_GREEN = () => ({
 	label: tText('shared/components/color-select/color-select___groen'),
 	value: '#D2E7EC',
 });

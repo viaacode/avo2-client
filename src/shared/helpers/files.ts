@@ -5,7 +5,7 @@ export const PHOTO_TYPES: string[] = [
 	'image/svg+xml',
 	'image/webp',
 ];
-export const VIDEO_TYPES: string[] = ['video/mp4', 'video/webm'];
+const VIDEO_TYPES: string[] = ['video/mp4', 'video/webm'];
 export const DOC_TYPES: string[] = [
 	'application/pdf',
 	'application/msword',
@@ -14,7 +14,7 @@ export const DOC_TYPES: string[] = [
 	'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 ];
 
-export const EXTENSION_TO_TYPE: { [extension: string]: string } = {
+const EXTENSION_TO_TYPE: { [extension: string]: string } = {
 	jpeg: 'image/jpeg',
 	jpg: 'image/jpeg',
 	png: 'image/png',

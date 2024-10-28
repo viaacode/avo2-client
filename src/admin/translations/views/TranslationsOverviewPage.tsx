@@ -8,7 +8,11 @@ import { CustomError } from '../../../shared/helpers';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { withAdminCoreConfig } from '../../shared/hoc/with-admin-core-config';
-import { AdminLayout, AdminLayoutBody, AdminLayoutTopBarRight } from '../../shared/layouts';
+import { AdminLayout } from '../../shared/layouts/AdminLayout/AdminLayout';
+import {
+	AdminLayoutBody,
+	AdminLayoutTopBarRight,
+} from '../../shared/layouts/AdminLayout/AdminLayout.slots';
 import { fetchTranslations, updateTranslations } from '../translations.service';
 import { type Translation, type TranslationsState } from '../translations.types';
 

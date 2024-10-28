@@ -68,7 +68,7 @@ export type CollectionTableCols =
 
 export type EditorialType = 'actualisation' | 'quality_check' | 'marcom';
 
-export interface CollectionOrBundleTableStateBase extends FilterableTableState {
+interface CollectionOrBundleTableStateBase extends FilterableTableState {
 	title: string;
 	author: string;
 	author_user_group: string;

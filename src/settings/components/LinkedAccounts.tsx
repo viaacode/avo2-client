@@ -34,7 +34,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
 
-export interface AccountProps extends RouteComponentProps {
+interface AccountProps extends RouteComponentProps {
 	commonUser: Avo.User.CommonUser;
 }
 

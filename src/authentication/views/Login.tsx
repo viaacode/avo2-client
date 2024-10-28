@@ -15,7 +15,7 @@ import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
 
-export interface LoginProps extends RouteComponentProps {
+interface LoginProps extends RouteComponentProps {
 	loginState: Avo.Auth.LoginResponse | null;
 	loginStateLoading: boolean;
 	loginStateError: boolean;
