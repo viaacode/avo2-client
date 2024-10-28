@@ -22,13 +22,8 @@ import {
 	GetItemViewCountDocument,
 	IncrementAssignmentViewsDocument,
 	IncrementCollectionPlaysDocument,
-	IncrementCollectionViewsViaCollectionPageDocument,
-	IncrementCollectionViewsViaQuickLanePageDocument,
-	IncrementItemPlaysViaAssignmentPageDocument,
-	IncrementItemPlaysViaCollectionPageDocument,
-	IncrementItemPlaysViaContentPageDocument,
-	IncrementItemPlaysViaItemPageDocument,
-	IncrementItemPlaysViaQuickLanePageDocument,
+	IncrementCollectionViewsDocument,
+	IncrementItemPlaysDocument,
 	IncrementItemViewsDocument,
 	InsertAssignmentBookmarkDocument,
 	InsertCollectionBookmarkDocument,
@@ -40,7 +35,6 @@ import {
 	type EventAction,
 	type EventContentType,
 	type EventContentTypeSimplified,
-	type SourcePage,
 } from './bookmarks-views-plays-service.types';
 
 export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
@@ -53,7 +47,7 @@ export const DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS: BookmarkViewPlayCounts = {
 export interface QueryDefinition {
 	query?: string;
 	get?: string;
-	increment?: Partial<Record<SourcePage, string>>;
+	increment?: string;
 	variables: (uuid: string, commonUser: Avo.User.CommonUser | null) => any;
 	getResponseCount?: (response: any) => number;
 }
@@ -96,6 +90,10 @@ export const GET_EVENT_QUERIES: () => {
 				},
 			}),
 		},
+		quick_lane: {
+			// We can't bookmark quick lanes
+			variables: () => ({}),
+		},
 	},
 	unbookmark: {
 		item: {
@@ -128,13 +126,15 @@ export const GET_EVENT_QUERIES: () => {
 				profileId: commonUser?.profileId || null,
 			}),
 		},
+		quick_lane: {
+			// We can't unbookmark quick lanes
+			variables: () => ({}),
+		},
 	},
 	view: {
 		item: {
 			get: GetItemViewCountDocument,
-			increment: {
-				itemPage: IncrementItemViewsDocument,
-			},
+			increment: IncrementItemViewsDocument,
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
@@ -143,10 +143,7 @@ export const GET_EVENT_QUERIES: () => {
 		},
 		collection: {
 			get: GetCollectionViewCountDocument,
-			increment: {
-				collectionPage: IncrementCollectionViewsViaCollectionPageDocument,
-				quickLanePage: IncrementCollectionViewsViaQuickLanePageDocument,
-			},
+			increment: IncrementCollectionViewsDocument,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
@@ -155,26 +152,23 @@ export const GET_EVENT_QUERIES: () => {
 		},
 		assignment: {
 			get: GetAssignmentViewCountDocument,
-			increment: {
-				assignmentPage: IncrementAssignmentViewsDocument,
-			},
+			increment: IncrementAssignmentViewsDocument,
 			variables: (assignmentUuid: string) => ({
 				assignmentUuid,
 			}),
 			getResponseCount: (response: GetAssignmentViewCountQuery): number =>
 				response.app_assignments_v2[0]?.view_count?.count || 0,
 		},
+		quick_lane: {
+			// We don't track totals for quick lanes, only tracking view events
+			// https://meemoo.atlassian.net/browse/AVO-1827
+			variables: () => ({}),
+		},
 	},
 	play: {
 		item: {
 			get: GetItemPlayCountDocument,
-			increment: {
-				itemPage: IncrementItemPlaysViaItemPageDocument,
-				collectionPage: IncrementItemPlaysViaCollectionPageDocument,
-				assignmentPage: IncrementItemPlaysViaAssignmentPageDocument,
-				contentPage: IncrementItemPlaysViaContentPageDocument,
-				quickLanePage: IncrementItemPlaysViaQuickLanePageDocument,
-			},
+			increment: IncrementItemPlaysDocument,
 			variables: (itemUuid: string) => ({
 				itemUuid,
 			}),
@@ -183,22 +177,22 @@ export const GET_EVENT_QUERIES: () => {
 		},
 		collection: {
 			get: GetCollectionPlayCountDocument,
-			increment: {
-				itemPage: IncrementCollectionPlaysDocument,
-			},
+			increment: IncrementCollectionPlaysDocument,
 			variables: (collectionUuid: string) => ({
 				collectionUuid,
 			}),
 			getResponseCount: (response: GetCollectionPlayCountQuery): number =>
 				response.app_collections[0]?.play_count?.count || 0,
 		},
-		// TODO: Add request plays of an assignment https://meemoo.atlassian.net/browse/AVO-2725
 		assignment: {
-			get: '',
-			increment: {},
 			variables: (assignmentUuid: string) => ({
 				assignmentUuid,
 			}),
+		},
+		quick_lane: {
+			// We don't track totals for quick lanes, only tracking view events
+			// https://meemoo.atlassian.net/browse/AVO-1827
+			variables: () => ({}),
 		},
 	},
 });

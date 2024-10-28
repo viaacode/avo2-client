@@ -40,7 +40,7 @@ import { getValidStartAndEnd } from '../../helpers/cut-start-and-end';
 import { getSubtitles } from '../../helpers/get-subtitles';
 import withUser, { type UserProps } from '../../hocs/withUser';
 import { BookmarksViewsPlaysService } from '../../services/bookmarks-views-plays-service';
-import { type SourcePage } from '../../services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { trackEvents } from '../../services/event-logging-service';
 import { fetchPlayerTicket } from '../../services/player-ticket-service';
 import { ToastService } from '../../services/toast-service';
 
@@ -71,11 +71,7 @@ export type FlowPlayerWrapperProps = {
 	ui?: Config['ui'];
 	controls?: Config['controls'];
 	speed?: unknown | null;
-
-	/**
-	 * The page type where the video is played from
-	 */
-	sourcePage: SourcePage;
+	trackPlayEvent: boolean;
 };
 
 /**
@@ -147,20 +143,31 @@ const FlowPlayerWrapper: FC<
 
 	const handlePlay = (playingSrc: string) => {
 		// Only trigger once per video
-		if (item && item.uid && !triggeredForUrlRef.current[playingSrc] && props.commonUser) {
-			BookmarksViewsPlaysService.action(
-				'play',
-				'item',
-				props.sourcePage,
-				item.uid,
+		if (
+			item &&
+			item.uid &&
+			item.external_id &&
+			!triggeredForUrlRef.current[playingSrc] &&
+			props.commonUser &&
+			props.trackPlayEvent
+		) {
+			BookmarksViewsPlaysService.action('play', 'item', item.uid, props.commonUser).catch(
+				(err: unknown) => {
+					console.error(
+						new CustomError('Failed to track item play event', err, {
+							itemUuid: item.uid,
+						})
+					);
+				}
+			);
+			trackEvents(
+				{
+					object: item.external_id,
+					object_type: 'item',
+					action: 'play',
+				},
 				props.commonUser
-			).catch((err: unknown) => {
-				console.error(
-					new CustomError('Failed to track item play event', err, {
-						itemUuid: item.uid,
-					})
-				);
-			});
+			);
 
 			if (props.onPlay) {
 				props.onPlay(playingSrc);

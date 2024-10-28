@@ -1353,7 +1353,7 @@ export class AssignmentService {
 			trackEvents(
 				{
 					object: assignmentId,
-					object_type: 'assignment',
+					object_type: 'avo_assignment',
 					action: 'share',
 					resource: {
 						education_level: String(assignment.education_level_id),

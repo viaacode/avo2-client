@@ -1,25 +1,25 @@
 import { type Avo } from '@viaa/avo2-types/types';
 
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 
 import { EducationLevelId } from './lom';
 
 type UserLomsAndUserGroup = Pick<Avo.User.CommonUser, 'loms' | 'userGroup'>;
 
-export function isUserGroup(user?: UserLomsAndUserGroup, group?: SpecialUserGroup) {
+export function isUserGroup(user?: UserLomsAndUserGroup, group?: SpecialUserGroupId) {
 	return user?.userGroup?.id === group;
 }
 
 export function isUserPupilSecondary(user: UserLomsAndUserGroup) {
-	return isUserGroup(user, SpecialUserGroup.PupilSecondary);
+	return isUserGroup(user, SpecialUserGroupId.PupilSecondary);
 }
 
 export function isUserPupilElementary(user: UserLomsAndUserGroup) {
-	return isUserGroup(user, SpecialUserGroup.PupilElementary);
+	return isUserGroup(user, SpecialUserGroupId.PupilElementary);
 }
 
 export function isUserTeacherSecondary(user: UserLomsAndUserGroup) {
-	return isUserGroup(user, SpecialUserGroup.TeacherSecondary);
+	return isUserGroup(user, SpecialUserGroupId.TeacherSecondary);
 }
 
 /**

@@ -1,5 +1,5 @@
 import { type Avo } from '@viaa/avo2-types';
-import { compact, fromPairs, get, groupBy, isString, noop } from 'lodash-es';
+import { compact, fromPairs, get, groupBy, noop } from 'lodash-es';
 
 import { ContentTypeNumber } from '../../../collection/collection.types';
 import { DEFAULT_AUDIO_STILL } from '../../constants';
@@ -31,20 +31,10 @@ import {
 	type IncrementAssignmentViewsMutationVariables,
 	type IncrementCollectionPlaysMutation,
 	type IncrementCollectionPlaysMutationVariables,
-	type IncrementCollectionViewsViaCollectionPageMutation,
-	type IncrementCollectionViewsViaCollectionPageMutationVariables,
-	type IncrementCollectionViewsViaQuickLanePageMutation,
-	type IncrementCollectionViewsViaQuickLanePageMutationVariables,
-	type IncrementItemPlaysViaAssignmentPageMutation,
-	type IncrementItemPlaysViaAssignmentPageMutationVariables,
-	type IncrementItemPlaysViaCollectionPageMutation,
-	type IncrementItemPlaysViaCollectionPageMutationVariables,
-	type IncrementItemPlaysViaContentPageMutation,
-	type IncrementItemPlaysViaContentPageMutationVariables,
-	type IncrementItemPlaysViaItemPageMutation,
-	type IncrementItemPlaysViaItemPageMutationVariables,
-	type IncrementItemPlaysViaQuickLanePageMutation,
-	type IncrementItemPlaysViaQuickLanePageMutationVariables,
+	type IncrementCollectionViewsMutation,
+	type IncrementCollectionViewsMutationVariables,
+	type IncrementItemPlaysMutation,
+	type IncrementItemPlaysMutationVariables,
 	type IncrementItemViewsMutation,
 	type IncrementItemViewsMutationVariables,
 	type InsertCollectionBookmarkMutation,
@@ -80,16 +70,14 @@ import {
 	type EventContentType,
 	type EventContentTypeSimplified,
 	type QueryType,
-	SourcePage,
 } from './bookmarks-views-plays-service.types';
 
 export class BookmarksViewsPlaysService {
 	public static async action(
 		action: EventAction,
 		contentType: EventContentType,
-		sourcePage: SourcePage,
 		contentUuid: string,
-		commonUser: Avo.User.CommonUser | null,
+		commonUser: Avo.User.CommonUser | null | undefined,
 		silent = true
 	): Promise<void> {
 		try {
@@ -97,9 +85,8 @@ export class BookmarksViewsPlaysService {
 				await this.incrementCount(
 					action,
 					contentType,
-					sourcePage,
 					contentUuid,
-					commonUser,
+					commonUser || null,
 					silent
 				);
 			} else {
@@ -108,9 +95,8 @@ export class BookmarksViewsPlaysService {
 					action,
 					'query',
 					contentType,
-					sourcePage,
 					contentUuid,
-					commonUser
+					commonUser || null
 				);
 
 				await dataService.query<
@@ -244,7 +230,6 @@ export class BookmarksViewsPlaysService {
 			await BookmarksViewsPlaysService.action(
 				isBookmarked ? 'unbookmark' : 'bookmark',
 				type,
-				SourcePage.itemPage, // Source page only matters for incrementing views/plays
 				contentId,
 				commonUser,
 				false
@@ -397,7 +382,6 @@ export class BookmarksViewsPlaysService {
 		action: EventAction,
 		queryType: QueryType,
 		contentType: EventContentType,
-		sourcePage: SourcePage,
 		contentUuid: string,
 		commonUser: Avo.User.CommonUser | null
 	): { query: string; variables: any; getResponseCount?: (response: any) => number } {
@@ -405,12 +389,7 @@ export class BookmarksViewsPlaysService {
 		const contentTypeSimplified = contentType === 'bundle' ? 'collection' : contentType;
 
 		const eventQueries = GET_EVENT_QUERIES();
-		let query = eventQueries?.[action]?.[contentTypeSimplified]?.[queryType];
-		if (query && !isString(query)) {
-			// Increment queries need to know which page they happened on
-			// https://meemoo.atlassian.net/browse/AVO-1827
-			query = (query as Partial<Record<SourcePage, string>>)[sourcePage] as string;
-		}
+		const query = eventQueries?.[action]?.[contentTypeSimplified]?.[queryType];
 		const getVariablesFunc =
 			GET_EVENT_QUERIES()?.[action]?.[contentTypeSimplified]?.variables ?? noop;
 		const variables = getVariablesFunc(contentUuid, commonUser);
@@ -445,6 +424,7 @@ export class BookmarksViewsPlaysService {
 				item: GetMultipleItemViewCountsDocument,
 				collection: GetMultipleCollectionViewCountsDocument,
 				assignment: GetMultipleAssignmentViewCountsDocument,
+				quick_lane: '', // We don't track total view counts for quick lanes
 			}[type],
 			variables,
 		});
@@ -455,7 +435,6 @@ export class BookmarksViewsPlaysService {
 	private static async incrementCount(
 		action: EventAction,
 		contentType: EventContentType,
-		sourcePage: SourcePage,
 		contentUuid: string,
 		commonUser: Avo.User.CommonUser | null,
 		silent = true
@@ -465,7 +444,6 @@ export class BookmarksViewsPlaysService {
 				action,
 				'increment',
 				contentType,
-				sourcePage,
 				contentUuid,
 				commonUser
 			);
@@ -473,23 +451,13 @@ export class BookmarksViewsPlaysService {
 			await dataService.query<
 				| IncrementAssignmentViewsMutation
 				| IncrementCollectionPlaysMutation
-				| IncrementCollectionViewsViaCollectionPageMutation
-				| IncrementCollectionViewsViaQuickLanePageMutation
-				| IncrementItemPlaysViaAssignmentPageMutation
-				| IncrementItemPlaysViaCollectionPageMutation
-				| IncrementItemPlaysViaContentPageMutation
-				| IncrementItemPlaysViaItemPageMutation
-				| IncrementItemPlaysViaQuickLanePageMutation
+				| IncrementCollectionViewsMutation
+				| IncrementItemPlaysMutation
 				| IncrementItemViewsMutation,
 				| IncrementAssignmentViewsMutationVariables
 				| IncrementCollectionPlaysMutationVariables
-				| IncrementCollectionViewsViaCollectionPageMutationVariables
-				| IncrementCollectionViewsViaQuickLanePageMutationVariables
-				| IncrementItemPlaysViaAssignmentPageMutationVariables
-				| IncrementItemPlaysViaCollectionPageMutationVariables
-				| IncrementItemPlaysViaContentPageMutationVariables
-				| IncrementItemPlaysViaItemPageMutationVariables
-				| IncrementItemPlaysViaQuickLanePageMutationVariables
+				| IncrementCollectionViewsMutationVariables
+				| IncrementItemPlaysMutationVariables
 				| IncrementItemViewsMutationVariables
 			>({
 				query,
@@ -600,6 +568,7 @@ export class BookmarksViewsPlaysService {
 				item: itemBookmarkStatuses,
 				collection: collectionBookmarkStatuses,
 				assignment: assignmentBookmarkStatuses,
+				quick_lane: {}, // Quick lanes cannot be bookmarked
 			};
 		} catch (err) {
 			throw new CustomError('Failed to get bookmark statuses', err, {

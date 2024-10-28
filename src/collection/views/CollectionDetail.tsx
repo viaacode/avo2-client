@@ -73,10 +73,7 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import {
-	type BookmarkViewPlayCounts,
-	SourcePage,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -278,38 +275,36 @@ const CollectionDetail: FC<
 				contributors: response as Avo.Collection.Contributor[],
 			},
 		} as CollectionInfo);
-	}, [collectionId, collectionInfo]);
+	}, [collectionId, collectionInfo, showLoginPopup]);
 
 	const triggerEvents = useCallback(async () => {
 		// Do not trigger events when a search engine loads this page
-		if (collection?.id && commonUser && !showLoginPopup) {
+		if (collectionId && commonUser && !showLoginPopup) {
+			BookmarksViewsPlaysService.action('view', 'collection', collectionId, commonUser).then(
+				noop
+			);
 			trackEvents(
 				{
 					object: collectionId,
 					object_type: 'collection',
 					action: 'view',
+					resource: {
+						is_public: collection?.is_public || false,
+					},
 				},
 				commonUser
 			);
-
-			BookmarksViewsPlaysService.action(
-				'view',
-				'collection',
-				SourcePage.collectionPage,
-				collection.id,
-				commonUser
-			).then(noop);
 			try {
 				setBookmarkViewPlayCounts(
 					await BookmarksViewsPlaysService.getCollectionCounts(
-						collection.id,
+						collectionId,
 						commonUser || null
 					)
 				);
 			} catch (err) {
 				console.error(
 					new CustomError('Failed to get getCollectionCounts', err, {
-						uuid: collection.id,
+						uuid: collectionId,
 					})
 				);
 				ToastService.danger(
@@ -319,7 +314,7 @@ const CollectionDetail: FC<
 				);
 			}
 		}
-	}, [setPublishedBundles, tText, collection?.id, commonUser, showLoginPopup]);
+	}, [collectionId, commonUser, showLoginPopup, tHtml]);
 
 	useEffect(() => {
 		setCollectionId(id || match.params.id);
@@ -639,6 +634,23 @@ const CollectionDetail: FC<
 				onEditCollection();
 				break;
 			case CollectionMenuAction.openAutoplayCollectionModal:
+				BookmarksViewsPlaysService.action(
+					'play',
+					'collection',
+					collectionId,
+					commonUser
+				).then(noop);
+				trackEvents(
+					{
+						object: collectionId,
+						object_type: 'collection',
+						action: 'play',
+						resource: {
+							is_public: collection?.is_public || false,
+						},
+					},
+					commonUser
+				);
 				setIsAutoplayCollectionModalOpen(!isAutoplayCollectionModalOpen);
 				break;
 
@@ -1179,7 +1191,6 @@ const CollectionDetail: FC<
 									!isAutoplayCollectionModalOpen
 								}
 								collection={collection}
-								sourcePage={SourcePage.collectionPage}
 							/>
 						)}
 					</Container>

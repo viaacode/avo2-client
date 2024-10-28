@@ -12,7 +12,7 @@ import {
 	Spacer,
 	Spinner,
 } from '@viaa/avo2-components';
-import { type Avo } from '@viaa/avo2-types';
+import { type Avo, Idp } from '@viaa/avo2-types';
 import React, {
 	type Dispatch,
 	type FC,
@@ -23,20 +23,19 @@ import React, {
 import { Helmet } from 'react-helmet';
 import { type RouteComponentProps } from 'react-router';
 
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
-import { hasIdpLinked } from '../../authentication/helpers/get-profile-info';
 import {
 	redirectToServerLinkAccount,
 	redirectToServerUnlinkAccount,
 } from '../../authentication/helpers/redirects';
 import { GENERATE_SITE_TITLE } from '../../constants';
 import { DeleteObjectModal } from '../../shared/components';
+import { isPupil } from '../../shared/helpers/is-pupil';
 import useTranslation from '../../shared/hooks/useTranslation';
 
 import './LinkedAccounts.scss';
 
 export interface AccountProps extends RouteComponentProps {
-	user: Avo.User.User;
+	commonUser: Avo.User.CommonUser;
 }
 
 interface IdpProps {
@@ -53,7 +52,7 @@ interface DeleteModalToggle {
 }
 
 // This tab is only loaded if user is NOT a pupil (see Settings.tsx) -- no more checks here
-const LinkedAccounts: FC<AccountProps> = ({ location, user }) => {
+const LinkedAccounts: FC<AccountProps> = ({ location, commonUser }) => {
 	const { tText, tHtml } = useTranslation();
 
 	const [isDeleteVlaamseOverheidModalOpen, setIsDeleteVlaamseOverheidModalOpen] =
@@ -62,9 +61,7 @@ const LinkedAccounts: FC<AccountProps> = ({ location, user }) => {
 	const [isDeleteKlascementModalOpen, setIsDeleteKlascementModalOpen] = useState<boolean>(false);
 	const [isDeleteLeerIDModalOpen, setIsDeleteLeerIDModalOpen] = useState<boolean>(false);
 
-	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
-		.map(String)
-		.includes(String(user.profile?.userGroupIds[0]));
+	const isUserAPupil = isPupil(commonUser.userGroup?.id);
 
 	const deleteIdpModals: Record<string, DeleteModalToggle> = {
 		VLAAMSEOVERHEID: {
@@ -78,14 +75,14 @@ const LinkedAccounts: FC<AccountProps> = ({ location, user }) => {
 
 	const idpProps: Record<string, IdpProps> = {
 		VLAAMSEOVERHEID: {
-			label: isPupil
+			label: isUserAPupil
 				? tHtml('settings/components/linked-accounts___leer-id')
 				: tHtml('settings/components/linked-accounts___burgerprofiel'),
-			description: isPupil
+			description: isUserAPupil
 				? tHtml('settings/components/linked-accounts___aanmelden-met-je-leer-id')
 				: tHtml('settings/components/linked-accounts___itsme-e-id-of-een-digitale-sleutel'),
-			iconNames: isPupil ? [IconName.leerid] : [IconName.itsme, IconName.eid],
-			idpParameters: isPupil ? 'authMech=leerid' : 'authMech=itsme',
+			iconNames: isUserAPupil ? [IconName.leerid] : [IconName.itsme, IconName.eid],
+			idpParameters: isUserAPupil ? 'authMech=leerid' : 'authMech=itsme',
 		},
 		SMARTSCHOOL: {
 			label: tHtml('settings/components/linked-accounts___smartschool'),
@@ -98,15 +95,18 @@ const LinkedAccounts: FC<AccountProps> = ({ location, user }) => {
 		},
 	};
 
-	const renderIdpLinkControls = (idpType: Avo.Auth.IdpType) => {
-		const linked = hasIdpLinked(user, idpType);
+	const renderIdpLinkControls = (idpType: Idp) => {
+		let linked = !!commonUser.idps?.[idpType];
+		if (!linked && idpType === Idp.VLAAMSEOVERHEID__SUB_ID) {
+			linked = !!commonUser.idps?.VLAAMSEOVERHEID__ACCOUNT_ID;
+		}
 		const currentIdp = idpProps[idpType];
 		const { open: confirmModalOpen, setter: setConfirmModalOpen } = deleteIdpModals[idpType];
 		const className = `c-account-link__column--${currentIdp.iconNames.join('-')}`;
 
 		return (
 			<Spacer margin="top">
-				{!(isPupil && currentIdp.hideForPupil) && (
+				{!(isUserAPupil && currentIdp.hideForPupil) && (
 					<Grid className="c-account-link">
 						<Column className={`c-account-link__column ${className}`} size="3-2">
 							{currentIdp.iconNames.map((iconName: string) => (
@@ -191,7 +191,7 @@ const LinkedAccounts: FC<AccountProps> = ({ location, user }) => {
 		);
 	};
 
-	if (!user) {
+	if (!commonUser) {
 		return (
 			<Flex center>
 				<Spinner size="large" />
@@ -230,9 +230,9 @@ const LinkedAccounts: FC<AccountProps> = ({ location, user }) => {
 									)}
 								>
 									{/* Previously disabled for pupils due to https://meemoo.atlassian.net/browse/AVO-2062 */}
-									<div>{renderIdpLinkControls('VLAAMSEOVERHEID')}</div>
-									<div>{renderIdpLinkControls('SMARTSCHOOL')}</div>
-									<div>{renderIdpLinkControls('KLASCEMENT')}</div>
+									<div>{renderIdpLinkControls(Idp.VLAAMSEOVERHEID__SUB_ID)}</div>
+									<div>{renderIdpLinkControls(Idp.SMARTSCHOOL)}</div>
+									<div>{renderIdpLinkControls(Idp.KLASCEMENT)}</div>
 								</FormGroup>
 							</Form>
 						</Column>

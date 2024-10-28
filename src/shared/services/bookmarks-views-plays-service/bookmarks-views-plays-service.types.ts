@@ -84,13 +84,5 @@ export interface AppAssignmentBookmark {
 
 export type EventAction = 'bookmark' | 'unbookmark' | 'view' | 'play';
 export type QueryType = 'query' | 'get' | 'increment';
-export type EventContentTypeSimplified = 'item' | 'collection' | 'assignment';
+export type EventContentTypeSimplified = 'item' | 'collection' | 'assignment' | 'quick_lane';
 export type EventContentType = EventContentTypeSimplified | 'bundle';
-
-export enum SourcePage {
-	itemPage = 'itemPage',
-	collectionPage = 'collectionPage',
-	assignmentPage = 'assignmentPage',
-	contentPage = 'contentPage',
-	quickLanePage = 'quickLanePage',
-}

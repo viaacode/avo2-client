@@ -19,7 +19,6 @@ import { withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
-import { getProfileId } from '../../authentication/helpers/get-profile-id';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
 import {
 	getLoginResponse,
@@ -40,6 +39,7 @@ import { useUpdateEmailPreferences } from '../hooks/useUpdateEmailPreferences';
 import { SettingsService } from '../settings.service';
 
 import './Profile.scss';
+import { isTeacher } from '../../shared/helpers/is-teacher';
 
 export interface CompleteProfileStepProps {
 	redirectTo?: string;
@@ -50,7 +50,7 @@ const CompleteProfileStep: FC<
 		getLoginState: (forceRefetch: boolean) => Dispatch;
 	} & UserProps &
 		DefaultSecureRouteProps
-> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, user, commonUser, getLoginState }) => {
+> = ({ redirectTo = APP_PATH.LOGGED_IN_HOME.route, history, commonUser, getLoginState }) => {
 	const { tText, tHtml } = useTranslation();
 	const [selectedOrganisations, setSelectedOrganisations] = useState<
 		Avo.EducationOrganization.Organization[]
@@ -76,7 +76,7 @@ const CompleteProfileStep: FC<
 
 	// Only show the subscribe checkbox to teachers and only if they are currently unsubscribed
 	const shouldShowSubscribeCheckbox =
-		user?.role?.name === 'lesgever' &&
+		isTeacher(commonUser.userGroup?.id) &&
 		!isLoadingExistingEmailPreferences &&
 		!existingEmailPreferences?.newsletter;
 
@@ -141,11 +141,11 @@ const CompleteProfileStep: FC<
 	const saveProfileChanges = async () => {
 		try {
 			setIsSaving(true);
-			const profileId: string = getProfileId(user);
+			const profileId: string = commonUser.profileId;
 			const newProfileInfo: Partial<Avo.User.UpdateProfileValues> = {
 				firstName,
 				lastName,
-				userId: user.uid,
+				userId: commonUser.userId,
 				loms: (selectedLoms || []).map((lom) => ({
 					profile_id: profileId,
 					lom_id: lom.id,

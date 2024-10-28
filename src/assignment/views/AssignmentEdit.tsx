@@ -498,7 +498,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 				trackEvents(
 					{
 						object: String(assignment.id),
-						object_type: 'assignment',
+						object_type: 'avo_assignment',
 						action: 'edit',
 						resource: {
 							is_public: assignment.is_public || false,

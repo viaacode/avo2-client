@@ -11,7 +11,7 @@ import {
 import { PermissionName } from '@viaa/avo2-types';
 import React, { type FC, type ReactElement, type ReactText, useState } from 'react';
 
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { type DefaultSecureRouteProps } from '../../authentication/components/SecuredRoute';
 import { PermissionService } from '../../authentication/helpers/permission-service';
 import { redirectToClientPage } from '../../authentication/helpers/redirects';
@@ -43,7 +43,7 @@ const Settings: FC<ForPupilsProps & UserProps> = (props) => {
 		(props.match.params.tabId as SettingsTab) || PROFILE_ID
 	);
 
-	const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+	const isPupil = [SpecialUserGroupId.PupilSecondary, SpecialUserGroupId.PupilElementary]
 		.map(String)
 		.includes(String(props.commonUser?.userGroup?.id));
 

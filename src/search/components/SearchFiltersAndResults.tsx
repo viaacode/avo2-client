@@ -370,6 +370,7 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 				item: {},
 				collection: {},
 				assignment: {},
+				quick_lane: {},
 			};
 			set(bookmarkStatusesTemp, `[${type}][${uuid}]`, active);
 			setBookmarkStatuses(bookmarkStatusesTemp);

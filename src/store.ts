@@ -14,6 +14,7 @@ export interface AppState {
 	uiState: {
 		showNudgingModal: boolean | null;
 		lastVideoPlayedAt: Date | null;
+		historyLocations: string[];
 	};
 }
 

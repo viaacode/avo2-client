@@ -101,7 +101,7 @@ export const getLoginStateAction = (forceRefetch = false) => {
 				const event = {
 					event: 'visit',
 					userData: {
-						userGroup: userInfo?.role?.label,
+						userGroup: userInfo?.profile?.userGroupIds[0],
 						educationLevels: compact(
 							(userInfo?.profile?.loms || []).map((lom) => lom?.lom?.label)
 						),

@@ -38,7 +38,6 @@ import { createDropdownMenuItem } from '../../../shared/helpers';
 import { getFlowPlayerPoster } from '../../../shared/helpers/get-poster';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { SourcePage } from '../../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../../shared/services/event-logging-service';
 import { ToastService } from '../../../shared/services/toast-service';
 import { CollectionBlockType } from '../../collection.const';
@@ -433,7 +432,7 @@ const FragmentEdit: FC<FragmentEditProps & UserProps> = ({
 											end: fragment.end_oc,
 										}}
 										canPlay={!isCutModalOpen && !isDeleteModalOpen}
-										sourcePage={SourcePage.collectionPage}
+										trackPlayEvent={false}
 									/>
 								) : (
 									<Thumbnail

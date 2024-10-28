@@ -1041,54 +1041,19 @@ export type IncrementCollectionPlaysMutationVariables = Exact<{
 
 export type IncrementCollectionPlaysMutation = { __typename?: 'mutation_root', update_app_collection_plays?: { __typename?: 'app_collection_plays_mutation_response', affected_rows: number } | null };
 
-export type IncrementCollectionViewsViaCollectionPageMutationVariables = Exact<{
+export type IncrementCollectionViewsMutationVariables = Exact<{
   collectionUuid: Scalars['uuid'];
 }>;
 
 
-export type IncrementCollectionViewsViaCollectionPageMutation = { __typename?: 'mutation_root', update_app_collection_views?: { __typename?: 'app_collection_views_mutation_response', affected_rows: number } | null };
+export type IncrementCollectionViewsMutation = { __typename?: 'mutation_root', update_app_collection_views?: { __typename?: 'app_collection_views_mutation_response', affected_rows: number } | null };
 
-export type IncrementCollectionViewsViaQuickLanePageMutationVariables = Exact<{
-  collectionUuid: Scalars['uuid'];
-}>;
-
-
-export type IncrementCollectionViewsViaQuickLanePageMutation = { __typename?: 'mutation_root', update_app_collection_views?: { __typename?: 'app_collection_views_mutation_response', affected_rows: number } | null };
-
-export type IncrementItemPlaysViaAssignmentPageMutationVariables = Exact<{
+export type IncrementItemPlaysMutationVariables = Exact<{
   itemUuid: Scalars['uuid'];
 }>;
 
 
-export type IncrementItemPlaysViaAssignmentPageMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
-
-export type IncrementItemPlaysViaCollectionPageMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-}>;
-
-
-export type IncrementItemPlaysViaCollectionPageMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
-
-export type IncrementItemPlaysViaContentPageMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-}>;
-
-
-export type IncrementItemPlaysViaContentPageMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
-
-export type IncrementItemPlaysViaItemPageMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-}>;
-
-
-export type IncrementItemPlaysViaItemPageMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
-
-export type IncrementItemPlaysViaQuickLanePageMutationVariables = Exact<{
-  itemUuid: Scalars['uuid'];
-}>;
-
-
-export type IncrementItemPlaysViaQuickLanePageMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
+export type IncrementItemPlaysMutation = { __typename?: 'mutation_root', update_app_item_plays?: { __typename?: 'app_item_plays_mutation_response', affected_rows: number } | null };
 
 export type IncrementItemViewsMutationVariables = Exact<{
   itemUuid: Scalars['uuid'];

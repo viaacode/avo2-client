@@ -34,7 +34,8 @@ import { getValidStartAndEnd } from '../../shared/helpers/cut-start-and-end';
 import { stripRichTextParagraph } from '../../shared/helpers/strip-rich-text-paragraph';
 import withUser from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
-import { SourcePage } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { BookmarksViewsPlaysService } from '../../shared/services/bookmarks-views-plays-service';
+import { trackEvents } from '../../shared/services/event-logging-service';
 import { type QuickLaneUrlObject } from '../../shared/types';
 import { QuickLaneService } from '../quick-lane.service';
 
@@ -42,6 +43,7 @@ type QuickLaneDetailProps = DefaultSecureRouteProps<{ id: string }>;
 
 const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser, ...rest }) => {
 	const { tText, tHtml } = useTranslation();
+	const quickLaneId = match.params.id;
 
 	// State
 	const [quickLane, setQuickLane] = useState<QuickLaneUrlObject>();
@@ -51,8 +53,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 	// Retrieve data from GraphQL
 	const fetchQuickLaneAndContent = useCallback(async () => {
 		try {
-			const quickLaneId = match.params.id;
-
 			const response = await QuickLaneService.fetchQuickLaneById(quickLaneId);
 
 			// Handle edge cases
@@ -125,20 +125,42 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 
 			// Analytics
 
-			// TODO re-enable this once task https://meemoo.atlassian.net/browse/AVO-2177 is fixed
-			// trackEvents(
-			// 	{
-			// 		object: String(response.id),
-			// 		object_type: 'quick_lane',
-			// 		action: 'view',
-			// 	},
-			// 	user
-			// );
+			const content_type =
+				{ ITEM: 'item', COLLECTIE: 'collection' }[response.content_label as string] ||
+				'unknown';
+			trackEvents(
+				{
+					object: String(response.id),
+					object_type: 'quick_lane',
+					action: 'view',
+					resource: {
+						content_type,
+					},
+				},
+				commonUser
+			);
+
+			// Also increase the view count for the item or collection
+			if (content_type === 'item' && response.content_id) {
+				await BookmarksViewsPlaysService.action(
+					'view',
+					'item',
+					response.content_id,
+					commonUser
+				).then(noop);
+			} else if (content_type === 'collection' && response.content_id) {
+				await BookmarksViewsPlaysService.action(
+					'view',
+					'collection',
+					response.content_id,
+					commonUser
+				).then(noop);
+			}
 		} catch (err) {
 			console.error(
 				new CustomError('Failed to fetch quick lane and content for detail page', err, {
 					commonUser,
-					id: match.params.id,
+					id: quickLaneId,
 				})
 			);
 
@@ -149,7 +171,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 				),
 			});
 		}
-	}, [setQuickLane, setLoadingInfo, match.params.id, tHtml, commonUser]);
+	}, [setQuickLane, setLoadingInfo, quickLaneId, tHtml, commonUser]);
 
 	useEffect(() => {
 		if (PermissionService.hasPerm(commonUser, PermissionName.VIEW_QUICK_LANE_DETAIL)) {
@@ -164,14 +186,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 			});
 		}
 	}, [fetchQuickLaneAndContent, commonUser, tHtml]);
-
-	useEffect(() => {
-		if (quickLane) {
-			setLoadingInfo({
-				state: 'loaded',
-			});
-		}
-	}, [quickLane]);
 
 	// Render methods
 	const renderContent = () => {
@@ -199,7 +213,6 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 						showMetadata={true}
 						linkToItems={false}
 						collection={quickLane.content as Avo.Collection.Collection}
-						sourcePage={SourcePage.quickLanePage}
 						{...rest}
 					/>
 				);
@@ -212,7 +225,7 @@ const QuickLaneDetail: FC<QuickLaneDetailProps> = ({ history, match, commonUser,
 						verticalLayout={isMobileWidth()}
 						cuePointsLabel={{ start, end }}
 						cuePointsVideo={{ start, end }}
-						sourcePage={SourcePage.quickLanePage}
+						trackPlayEvent={true}
 					/>
 				);
 			default:

@@ -19,6 +19,10 @@ const uiStateReducer = createReducer(initialState, {
 		...state,
 		lastVideoPlayedAt: action.data,
 	}),
+	[UiStateActionTypes.SET_HISTORY_LOCATIONS]: (state, action) => ({
+		...state,
+		historyLocations: action.data || [],
+	}),
 });
 
 export default uiStateReducer;

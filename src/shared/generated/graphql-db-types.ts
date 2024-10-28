@@ -9425,10 +9425,7 @@ export type App_Collection_Relations_View_Stream_Cursor_Value_Input = {
 export type App_Collection_Views = {
   __typename?: 'app_collection_views';
   collection_uuid: Scalars['uuid'];
-  /** calculates the sum of the partial view counts for each page a collection can be viewed from */
   count?: Maybe<Scalars['Int']>;
-  count_via_detail_page?: Maybe<Scalars['Int']>;
-  count_via_quick_lane_page: Scalars['Int'];
   created_at: Scalars['timestamptz'];
   id: Scalars['Int'];
   updated_at: Scalars['timestamptz'];
@@ -9469,8 +9466,7 @@ export type App_Collection_Views_Aggregate_FieldsCountArgs = {
 /** aggregate avg on columns */
 export type App_Collection_Views_Avg_Fields = {
   __typename?: 'app_collection_views_avg_fields';
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
@@ -9481,8 +9477,6 @@ export type App_Collection_Views_Bool_Exp = {
   _or?: InputMaybe<Array<App_Collection_Views_Bool_Exp>>;
   collection_uuid?: InputMaybe<Uuid_Comparison_Exp>;
   count?: InputMaybe<Int_Comparison_Exp>;
-  count_via_detail_page?: InputMaybe<Int_Comparison_Exp>;
-  count_via_quick_lane_page?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   updated_at?: InputMaybe<Timestamptz_Comparison_Exp>;
@@ -9499,16 +9493,14 @@ export enum App_Collection_Views_Constraint {
 
 /** input type for incrementing numeric columns in table "app.collection_views" */
 export type App_Collection_Views_Inc_Input = {
-  count_via_detail_page?: InputMaybe<Scalars['Int']>;
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "app.collection_views" */
 export type App_Collection_Views_Insert_Input = {
   collection_uuid?: InputMaybe<Scalars['uuid']>;
-  count_via_detail_page?: InputMaybe<Scalars['Int']>;
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -9519,8 +9511,7 @@ export type App_Collection_Views_Insert_Input = {
 export type App_Collection_Views_Max_Fields = {
   __typename?: 'app_collection_views_max_fields';
   collection_uuid?: Maybe<Scalars['uuid']>;
-  count_via_detail_page?: Maybe<Scalars['Int']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
@@ -9530,8 +9521,7 @@ export type App_Collection_Views_Max_Fields = {
 export type App_Collection_Views_Min_Fields = {
   __typename?: 'app_collection_views_min_fields';
   collection_uuid?: Maybe<Scalars['uuid']>;
-  count_via_detail_page?: Maybe<Scalars['Int']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
@@ -9564,8 +9554,6 @@ export type App_Collection_Views_On_Conflict = {
 export type App_Collection_Views_Order_By = {
   collection_uuid?: InputMaybe<Order_By>;
   count?: InputMaybe<Order_By>;
-  count_via_detail_page?: InputMaybe<Order_By>;
-  count_via_quick_lane_page?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
@@ -9582,9 +9570,7 @@ export enum App_Collection_Views_Select_Column {
   /** column name */
   CollectionUuid = 'collection_uuid',
   /** column name */
-  CountViaDetailPage = 'count_via_detail_page',
-  /** column name */
-  CountViaQuickLanePage = 'count_via_quick_lane_page',
+  Count = 'count',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -9596,8 +9582,7 @@ export enum App_Collection_Views_Select_Column {
 /** input type for updating data in table "app.collection_views" */
 export type App_Collection_Views_Set_Input = {
   collection_uuid?: InputMaybe<Scalars['uuid']>;
-  count_via_detail_page?: InputMaybe<Scalars['Int']>;
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -9606,24 +9591,21 @@ export type App_Collection_Views_Set_Input = {
 /** aggregate stddev on columns */
 export type App_Collection_Views_Stddev_Fields = {
   __typename?: 'app_collection_views_stddev_fields';
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate stddev_pop on columns */
 export type App_Collection_Views_Stddev_Pop_Fields = {
   __typename?: 'app_collection_views_stddev_pop_fields';
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate stddev_samp on columns */
 export type App_Collection_Views_Stddev_Samp_Fields = {
   __typename?: 'app_collection_views_stddev_samp_fields';
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
@@ -9638,8 +9620,7 @@ export type App_Collection_Views_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type App_Collection_Views_Stream_Cursor_Value_Input = {
   collection_uuid?: InputMaybe<Scalars['uuid']>;
-  count_via_detail_page?: InputMaybe<Scalars['Int']>;
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   updated_at?: InputMaybe<Scalars['timestamptz']>;
@@ -9648,8 +9629,7 @@ export type App_Collection_Views_Stream_Cursor_Value_Input = {
 /** aggregate sum on columns */
 export type App_Collection_Views_Sum_Fields = {
   __typename?: 'app_collection_views_sum_fields';
-  count_via_detail_page?: Maybe<Scalars['Int']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
 };
 
@@ -9658,9 +9638,7 @@ export enum App_Collection_Views_Update_Column {
   /** column name */
   CollectionUuid = 'collection_uuid',
   /** column name */
-  CountViaDetailPage = 'count_via_detail_page',
-  /** column name */
-  CountViaQuickLanePage = 'count_via_quick_lane_page',
+  Count = 'count',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -9680,24 +9658,21 @@ export type App_Collection_Views_Updates = {
 /** aggregate var_pop on columns */
 export type App_Collection_Views_Var_Pop_Fields = {
   __typename?: 'app_collection_views_var_pop_fields';
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate var_samp on columns */
 export type App_Collection_Views_Var_Samp_Fields = {
   __typename?: 'app_collection_views_var_samp_fields';
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate variance on columns */
 export type App_Collection_Views_Variance_Fields = {
   __typename?: 'app_collection_views_variance_fields';
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
@@ -16897,13 +16872,7 @@ export type App_Item_Meta_Variance_Fields = {
 /** columns and relationships of "app.item_plays" */
 export type App_Item_Plays = {
   __typename?: 'app_item_plays';
-  /** sums the partial counts of various pages the video was played on */
   count?: Maybe<Scalars['Int']>;
-  count_via_assignment_page: Scalars['Int'];
-  count_via_collection_page: Scalars['Int'];
-  count_via_content_page: Scalars['Int'];
-  count_via_detail_page?: Maybe<Scalars['Int']>;
-  count_via_quick_lane_page: Scalars['Int'];
   created_at: Scalars['timestamptz'];
   id: Scalars['Int'];
   item_id?: Maybe<Scalars['uuid']>;
@@ -16945,11 +16914,7 @@ export type App_Item_Plays_Aggregate_FieldsCountArgs = {
 /** aggregate avg on columns */
 export type App_Item_Plays_Avg_Fields = {
   __typename?: 'app_item_plays_avg_fields';
-  count_via_assignment_page?: Maybe<Scalars['Float']>;
-  count_via_collection_page?: Maybe<Scalars['Float']>;
-  count_via_content_page?: Maybe<Scalars['Float']>;
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
@@ -16959,11 +16924,6 @@ export type App_Item_Plays_Bool_Exp = {
   _not?: InputMaybe<App_Item_Plays_Bool_Exp>;
   _or?: InputMaybe<Array<App_Item_Plays_Bool_Exp>>;
   count?: InputMaybe<Int_Comparison_Exp>;
-  count_via_assignment_page?: InputMaybe<Int_Comparison_Exp>;
-  count_via_collection_page?: InputMaybe<Int_Comparison_Exp>;
-  count_via_content_page?: InputMaybe<Int_Comparison_Exp>;
-  count_via_detail_page?: InputMaybe<Int_Comparison_Exp>;
-  count_via_quick_lane_page?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Timestamptz_Comparison_Exp>;
   id?: InputMaybe<Int_Comparison_Exp>;
   item_id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -16981,21 +16941,13 @@ export enum App_Item_Plays_Constraint {
 
 /** input type for incrementing numeric columns in table "app.item_plays" */
 export type App_Item_Plays_Inc_Input = {
-  count_via_assignment_page?: InputMaybe<Scalars['Int']>;
-  count_via_collection_page?: InputMaybe<Scalars['Int']>;
-  count_via_content_page?: InputMaybe<Scalars['Int']>;
-  count_via_detail_page?: InputMaybe<Scalars['Int']>;
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "app.item_plays" */
 export type App_Item_Plays_Insert_Input = {
-  count_via_assignment_page?: InputMaybe<Scalars['Int']>;
-  count_via_collection_page?: InputMaybe<Scalars['Int']>;
-  count_via_content_page?: InputMaybe<Scalars['Int']>;
-  count_via_detail_page?: InputMaybe<Scalars['Int']>;
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   item_id?: InputMaybe<Scalars['uuid']>;
@@ -17006,11 +16958,7 @@ export type App_Item_Plays_Insert_Input = {
 /** aggregate max on columns */
 export type App_Item_Plays_Max_Fields = {
   __typename?: 'app_item_plays_max_fields';
-  count_via_assignment_page?: Maybe<Scalars['Int']>;
-  count_via_collection_page?: Maybe<Scalars['Int']>;
-  count_via_content_page?: Maybe<Scalars['Int']>;
-  count_via_detail_page?: Maybe<Scalars['Int']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
   item_id?: Maybe<Scalars['uuid']>;
@@ -17020,11 +16968,7 @@ export type App_Item_Plays_Max_Fields = {
 /** aggregate min on columns */
 export type App_Item_Plays_Min_Fields = {
   __typename?: 'app_item_plays_min_fields';
-  count_via_assignment_page?: Maybe<Scalars['Int']>;
-  count_via_collection_page?: Maybe<Scalars['Int']>;
-  count_via_content_page?: Maybe<Scalars['Int']>;
-  count_via_detail_page?: Maybe<Scalars['Int']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['Int']>;
   item_id?: Maybe<Scalars['uuid']>;
@@ -17057,11 +17001,6 @@ export type App_Item_Plays_On_Conflict = {
 /** Ordering options when selecting data from "app.item_plays". */
 export type App_Item_Plays_Order_By = {
   count?: InputMaybe<Order_By>;
-  count_via_assignment_page?: InputMaybe<Order_By>;
-  count_via_collection_page?: InputMaybe<Order_By>;
-  count_via_content_page?: InputMaybe<Order_By>;
-  count_via_detail_page?: InputMaybe<Order_By>;
-  count_via_quick_lane_page?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
   item_id?: InputMaybe<Order_By>;
@@ -17077,15 +17016,7 @@ export type App_Item_Plays_Pk_Columns_Input = {
 /** select columns of table "app.item_plays" */
 export enum App_Item_Plays_Select_Column {
   /** column name */
-  CountViaAssignmentPage = 'count_via_assignment_page',
-  /** column name */
-  CountViaCollectionPage = 'count_via_collection_page',
-  /** column name */
-  CountViaContentPage = 'count_via_content_page',
-  /** column name */
-  CountViaDetailPage = 'count_via_detail_page',
-  /** column name */
-  CountViaQuickLanePage = 'count_via_quick_lane_page',
+  Count = 'count',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -17098,11 +17029,7 @@ export enum App_Item_Plays_Select_Column {
 
 /** input type for updating data in table "app.item_plays" */
 export type App_Item_Plays_Set_Input = {
-  count_via_assignment_page?: InputMaybe<Scalars['Int']>;
-  count_via_collection_page?: InputMaybe<Scalars['Int']>;
-  count_via_content_page?: InputMaybe<Scalars['Int']>;
-  count_via_detail_page?: InputMaybe<Scalars['Int']>;
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   item_id?: InputMaybe<Scalars['uuid']>;
@@ -17112,33 +17039,21 @@ export type App_Item_Plays_Set_Input = {
 /** aggregate stddev on columns */
 export type App_Item_Plays_Stddev_Fields = {
   __typename?: 'app_item_plays_stddev_fields';
-  count_via_assignment_page?: Maybe<Scalars['Float']>;
-  count_via_collection_page?: Maybe<Scalars['Float']>;
-  count_via_content_page?: Maybe<Scalars['Float']>;
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate stddev_pop on columns */
 export type App_Item_Plays_Stddev_Pop_Fields = {
   __typename?: 'app_item_plays_stddev_pop_fields';
-  count_via_assignment_page?: Maybe<Scalars['Float']>;
-  count_via_collection_page?: Maybe<Scalars['Float']>;
-  count_via_content_page?: Maybe<Scalars['Float']>;
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate stddev_samp on columns */
 export type App_Item_Plays_Stddev_Samp_Fields = {
   __typename?: 'app_item_plays_stddev_samp_fields';
-  count_via_assignment_page?: Maybe<Scalars['Float']>;
-  count_via_collection_page?: Maybe<Scalars['Float']>;
-  count_via_content_page?: Maybe<Scalars['Float']>;
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
@@ -17152,11 +17067,7 @@ export type App_Item_Plays_Stream_Cursor_Input = {
 
 /** Initial value of the column from where the streaming should start */
 export type App_Item_Plays_Stream_Cursor_Value_Input = {
-  count_via_assignment_page?: InputMaybe<Scalars['Int']>;
-  count_via_collection_page?: InputMaybe<Scalars['Int']>;
-  count_via_content_page?: InputMaybe<Scalars['Int']>;
-  count_via_detail_page?: InputMaybe<Scalars['Int']>;
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
+  count?: InputMaybe<Scalars['Int']>;
   created_at?: InputMaybe<Scalars['timestamptz']>;
   id?: InputMaybe<Scalars['Int']>;
   item_id?: InputMaybe<Scalars['uuid']>;
@@ -17166,26 +17077,14 @@ export type App_Item_Plays_Stream_Cursor_Value_Input = {
 /** aggregate sum on columns */
 export type App_Item_Plays_Sum_Fields = {
   __typename?: 'app_item_plays_sum_fields';
-  count_via_assignment_page?: Maybe<Scalars['Int']>;
-  count_via_collection_page?: Maybe<Scalars['Int']>;
-  count_via_content_page?: Maybe<Scalars['Int']>;
-  count_via_detail_page?: Maybe<Scalars['Int']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
+  count?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
 };
 
 /** update columns of table "app.item_plays" */
 export enum App_Item_Plays_Update_Column {
   /** column name */
-  CountViaAssignmentPage = 'count_via_assignment_page',
-  /** column name */
-  CountViaCollectionPage = 'count_via_collection_page',
-  /** column name */
-  CountViaContentPage = 'count_via_content_page',
-  /** column name */
-  CountViaDetailPage = 'count_via_detail_page',
-  /** column name */
-  CountViaQuickLanePage = 'count_via_quick_lane_page',
+  Count = 'count',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -17207,33 +17106,21 @@ export type App_Item_Plays_Updates = {
 /** aggregate var_pop on columns */
 export type App_Item_Plays_Var_Pop_Fields = {
   __typename?: 'app_item_plays_var_pop_fields';
-  count_via_assignment_page?: Maybe<Scalars['Float']>;
-  count_via_collection_page?: Maybe<Scalars['Float']>;
-  count_via_content_page?: Maybe<Scalars['Float']>;
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate var_samp on columns */
 export type App_Item_Plays_Var_Samp_Fields = {
   __typename?: 'app_item_plays_var_samp_fields';
-  count_via_assignment_page?: Maybe<Scalars['Float']>;
-  count_via_collection_page?: Maybe<Scalars['Float']>;
-  count_via_content_page?: Maybe<Scalars['Float']>;
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
 /** aggregate variance on columns */
 export type App_Item_Plays_Variance_Fields = {
   __typename?: 'app_item_plays_variance_fields';
-  count_via_assignment_page?: Maybe<Scalars['Float']>;
-  count_via_collection_page?: Maybe<Scalars['Float']>;
-  count_via_content_page?: Maybe<Scalars['Float']>;
-  count_via_detail_page?: Maybe<Scalars['Float']>;
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
+  count?: Maybe<Scalars['Float']>;
   id?: Maybe<Scalars['Float']>;
 };
 
@@ -18653,240 +18540,6 @@ export type App_Pupil_Collection_Blocks_Variance_Order_By = {
   end_oc?: InputMaybe<Order_By>;
   position?: InputMaybe<Order_By>;
   start_oc?: InputMaybe<Order_By>;
-};
-
-/** columns and relationships of "app.quick_lane_views" */
-export type App_Quick_Lane_Views = {
-  __typename?: 'app_quick_lane_views';
-  count_via_quick_lane_page: Scalars['Int'];
-  created_at: Scalars['timestamp'];
-  id: Scalars['uuid'];
-  quick_lane_id: Scalars['uuid'];
-  updated_at: Scalars['timestamp'];
-};
-
-/** aggregated selection of "app.quick_lane_views" */
-export type App_Quick_Lane_Views_Aggregate = {
-  __typename?: 'app_quick_lane_views_aggregate';
-  aggregate?: Maybe<App_Quick_Lane_Views_Aggregate_Fields>;
-  nodes: Array<App_Quick_Lane_Views>;
-};
-
-/** aggregate fields of "app.quick_lane_views" */
-export type App_Quick_Lane_Views_Aggregate_Fields = {
-  __typename?: 'app_quick_lane_views_aggregate_fields';
-  avg?: Maybe<App_Quick_Lane_Views_Avg_Fields>;
-  count: Scalars['Int'];
-  max?: Maybe<App_Quick_Lane_Views_Max_Fields>;
-  min?: Maybe<App_Quick_Lane_Views_Min_Fields>;
-  stddev?: Maybe<App_Quick_Lane_Views_Stddev_Fields>;
-  stddev_pop?: Maybe<App_Quick_Lane_Views_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<App_Quick_Lane_Views_Stddev_Samp_Fields>;
-  sum?: Maybe<App_Quick_Lane_Views_Sum_Fields>;
-  var_pop?: Maybe<App_Quick_Lane_Views_Var_Pop_Fields>;
-  var_samp?: Maybe<App_Quick_Lane_Views_Var_Samp_Fields>;
-  variance?: Maybe<App_Quick_Lane_Views_Variance_Fields>;
-};
-
-
-/** aggregate fields of "app.quick_lane_views" */
-export type App_Quick_Lane_Views_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<App_Quick_Lane_Views_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']>;
-};
-
-/** aggregate avg on columns */
-export type App_Quick_Lane_Views_Avg_Fields = {
-  __typename?: 'app_quick_lane_views_avg_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
-};
-
-/** Boolean expression to filter rows from the table "app.quick_lane_views". All fields are combined with a logical 'AND'. */
-export type App_Quick_Lane_Views_Bool_Exp = {
-  _and?: InputMaybe<Array<App_Quick_Lane_Views_Bool_Exp>>;
-  _not?: InputMaybe<App_Quick_Lane_Views_Bool_Exp>;
-  _or?: InputMaybe<Array<App_Quick_Lane_Views_Bool_Exp>>;
-  count_via_quick_lane_page?: InputMaybe<Int_Comparison_Exp>;
-  created_at?: InputMaybe<Timestamp_Comparison_Exp>;
-  id?: InputMaybe<Uuid_Comparison_Exp>;
-  quick_lane_id?: InputMaybe<Uuid_Comparison_Exp>;
-  updated_at?: InputMaybe<Timestamp_Comparison_Exp>;
-};
-
-/** unique or primary key constraints on table "app.quick_lane_views" */
-export enum App_Quick_Lane_Views_Constraint {
-  /** unique or primary key constraint on columns "id" */
-  QuickLaneViewsPkey = 'quick_lane_views_pkey',
-  /** unique or primary key constraint on columns "quick_lane_id" */
-  QuickLaneViewsQuickLaneIdKey = 'quick_lane_views_quick_lane_id_key'
-}
-
-/** input type for incrementing numeric columns in table "app.quick_lane_views" */
-export type App_Quick_Lane_Views_Inc_Input = {
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
-};
-
-/** input type for inserting data into table "app.quick_lane_views" */
-export type App_Quick_Lane_Views_Insert_Input = {
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  quick_lane_id?: InputMaybe<Scalars['uuid']>;
-  updated_at?: InputMaybe<Scalars['timestamp']>;
-};
-
-/** aggregate max on columns */
-export type App_Quick_Lane_Views_Max_Fields = {
-  __typename?: 'app_quick_lane_views_max_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
-  quick_lane_id?: Maybe<Scalars['uuid']>;
-  updated_at?: Maybe<Scalars['timestamp']>;
-};
-
-/** aggregate min on columns */
-export type App_Quick_Lane_Views_Min_Fields = {
-  __typename?: 'app_quick_lane_views_min_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
-  created_at?: Maybe<Scalars['timestamp']>;
-  id?: Maybe<Scalars['uuid']>;
-  quick_lane_id?: Maybe<Scalars['uuid']>;
-  updated_at?: Maybe<Scalars['timestamp']>;
-};
-
-/** response of any mutation on the table "app.quick_lane_views" */
-export type App_Quick_Lane_Views_Mutation_Response = {
-  __typename?: 'app_quick_lane_views_mutation_response';
-  /** number of rows affected by the mutation */
-  affected_rows: Scalars['Int'];
-  /** data from the rows affected by the mutation */
-  returning: Array<App_Quick_Lane_Views>;
-};
-
-/** on_conflict condition type for table "app.quick_lane_views" */
-export type App_Quick_Lane_Views_On_Conflict = {
-  constraint: App_Quick_Lane_Views_Constraint;
-  update_columns?: Array<App_Quick_Lane_Views_Update_Column>;
-  where?: InputMaybe<App_Quick_Lane_Views_Bool_Exp>;
-};
-
-/** Ordering options when selecting data from "app.quick_lane_views". */
-export type App_Quick_Lane_Views_Order_By = {
-  count_via_quick_lane_page?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  quick_lane_id?: InputMaybe<Order_By>;
-  updated_at?: InputMaybe<Order_By>;
-};
-
-/** primary key columns input for table: app.quick_lane_views */
-export type App_Quick_Lane_Views_Pk_Columns_Input = {
-  id: Scalars['uuid'];
-};
-
-/** select columns of table "app.quick_lane_views" */
-export enum App_Quick_Lane_Views_Select_Column {
-  /** column name */
-  CountViaQuickLanePage = 'count_via_quick_lane_page',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  QuickLaneId = 'quick_lane_id',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-/** input type for updating data in table "app.quick_lane_views" */
-export type App_Quick_Lane_Views_Set_Input = {
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  quick_lane_id?: InputMaybe<Scalars['uuid']>;
-  updated_at?: InputMaybe<Scalars['timestamp']>;
-};
-
-/** aggregate stddev on columns */
-export type App_Quick_Lane_Views_Stddev_Fields = {
-  __typename?: 'app_quick_lane_views_stddev_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type App_Quick_Lane_Views_Stddev_Pop_Fields = {
-  __typename?: 'app_quick_lane_views_stddev_pop_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type App_Quick_Lane_Views_Stddev_Samp_Fields = {
-  __typename?: 'app_quick_lane_views_stddev_samp_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
-};
-
-/** Streaming cursor of the table "app_quick_lane_views" */
-export type App_Quick_Lane_Views_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: App_Quick_Lane_Views_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type App_Quick_Lane_Views_Stream_Cursor_Value_Input = {
-  count_via_quick_lane_page?: InputMaybe<Scalars['Int']>;
-  created_at?: InputMaybe<Scalars['timestamp']>;
-  id?: InputMaybe<Scalars['uuid']>;
-  quick_lane_id?: InputMaybe<Scalars['uuid']>;
-  updated_at?: InputMaybe<Scalars['timestamp']>;
-};
-
-/** aggregate sum on columns */
-export type App_Quick_Lane_Views_Sum_Fields = {
-  __typename?: 'app_quick_lane_views_sum_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Int']>;
-};
-
-/** update columns of table "app.quick_lane_views" */
-export enum App_Quick_Lane_Views_Update_Column {
-  /** column name */
-  CountViaQuickLanePage = 'count_via_quick_lane_page',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  QuickLaneId = 'quick_lane_id',
-  /** column name */
-  UpdatedAt = 'updated_at'
-}
-
-export type App_Quick_Lane_Views_Updates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<App_Quick_Lane_Views_Inc_Input>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<App_Quick_Lane_Views_Set_Input>;
-  where: App_Quick_Lane_Views_Bool_Exp;
-};
-
-/** aggregate var_pop on columns */
-export type App_Quick_Lane_Views_Var_Pop_Fields = {
-  __typename?: 'app_quick_lane_views_var_pop_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate var_samp on columns */
-export type App_Quick_Lane_Views_Var_Samp_Fields = {
-  __typename?: 'app_quick_lane_views_var_samp_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
-};
-
-/** aggregate variance on columns */
-export type App_Quick_Lane_Views_Variance_Fields = {
-  __typename?: 'app_quick_lane_views_variance_fields';
-  count_via_quick_lane_page?: Maybe<Scalars['Float']>;
 };
 
 /** Quick lane shared URL's */
@@ -23686,10 +23339,6 @@ export type Mutation_Root = {
   delete_app_pupil_collection_blocks?: Maybe<App_Pupil_Collection_Blocks_Mutation_Response>;
   /** delete single row from the table: "app.pupil_collection_blocks" */
   delete_app_pupil_collection_blocks_by_pk?: Maybe<App_Pupil_Collection_Blocks>;
-  /** delete data from the table: "app.quick_lane_views" */
-  delete_app_quick_lane_views?: Maybe<App_Quick_Lane_Views_Mutation_Response>;
-  /** delete single row from the table: "app.quick_lane_views" */
-  delete_app_quick_lane_views_by_pk?: Maybe<App_Quick_Lane_Views>;
   /** delete data from the table: "app.quick_lanes" */
   delete_app_quick_lanes?: Maybe<App_Quick_Lanes_Mutation_Response>;
   /** delete single row from the table: "app.quick_lanes" */
@@ -24052,10 +23701,6 @@ export type Mutation_Root = {
   insert_app_pupil_collection_blocks?: Maybe<App_Pupil_Collection_Blocks_Mutation_Response>;
   /** insert a single row into the table: "app.pupil_collection_blocks" */
   insert_app_pupil_collection_blocks_one?: Maybe<App_Pupil_Collection_Blocks>;
-  /** insert data into the table: "app.quick_lane_views" */
-  insert_app_quick_lane_views?: Maybe<App_Quick_Lane_Views_Mutation_Response>;
-  /** insert a single row into the table: "app.quick_lane_views" */
-  insert_app_quick_lane_views_one?: Maybe<App_Quick_Lane_Views>;
   /** insert data into the table: "app.quick_lanes" */
   insert_app_quick_lanes?: Maybe<App_Quick_Lanes_Mutation_Response>;
   /** insert a single row into the table: "app.quick_lanes" */
@@ -24498,12 +24143,6 @@ export type Mutation_Root = {
   update_app_pupil_collection_blocks_by_pk?: Maybe<App_Pupil_Collection_Blocks>;
   /** update multiples rows of table: "app.pupil_collection_blocks" */
   update_app_pupil_collection_blocks_many?: Maybe<Array<Maybe<App_Pupil_Collection_Blocks_Mutation_Response>>>;
-  /** update data of the table: "app.quick_lane_views" */
-  update_app_quick_lane_views?: Maybe<App_Quick_Lane_Views_Mutation_Response>;
-  /** update single row of the table: "app.quick_lane_views" */
-  update_app_quick_lane_views_by_pk?: Maybe<App_Quick_Lane_Views>;
-  /** update multiples rows of table: "app.quick_lane_views" */
-  update_app_quick_lane_views_many?: Maybe<Array<Maybe<App_Quick_Lane_Views_Mutation_Response>>>;
   /** update data of the table: "app.quick_lanes" */
   update_app_quick_lanes?: Maybe<App_Quick_Lanes_Mutation_Response>;
   /** update single row of the table: "app.quick_lanes" */
@@ -25281,18 +24920,6 @@ export type Mutation_RootDelete_App_Pupil_Collection_BlocksArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_App_Pupil_Collection_Blocks_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Quick_Lane_ViewsArgs = {
-  where: App_Quick_Lane_Views_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDelete_App_Quick_Lane_Views_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -26464,20 +26091,6 @@ export type Mutation_RootInsert_App_Pupil_Collection_BlocksArgs = {
 export type Mutation_RootInsert_App_Pupil_Collection_Blocks_OneArgs = {
   object: App_Pupil_Collection_Blocks_Insert_Input;
   on_conflict?: InputMaybe<App_Pupil_Collection_Blocks_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Quick_Lane_ViewsArgs = {
-  objects: Array<App_Quick_Lane_Views_Insert_Input>;
-  on_conflict?: InputMaybe<App_Quick_Lane_Views_On_Conflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsert_App_Quick_Lane_Views_OneArgs = {
-  object: App_Quick_Lane_Views_Insert_Input;
-  on_conflict?: InputMaybe<App_Quick_Lane_Views_On_Conflict>;
 };
 
 
@@ -28124,28 +27737,6 @@ export type Mutation_RootUpdate_App_Pupil_Collection_Blocks_ManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdate_App_Quick_Lane_ViewsArgs = {
-  _inc?: InputMaybe<App_Quick_Lane_Views_Inc_Input>;
-  _set?: InputMaybe<App_Quick_Lane_Views_Set_Input>;
-  where: App_Quick_Lane_Views_Bool_Exp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Quick_Lane_Views_By_PkArgs = {
-  _inc?: InputMaybe<App_Quick_Lane_Views_Inc_Input>;
-  _set?: InputMaybe<App_Quick_Lane_Views_Set_Input>;
-  pk_columns: App_Quick_Lane_Views_Pk_Columns_Input;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdate_App_Quick_Lane_Views_ManyArgs = {
-  updates: Array<App_Quick_Lane_Views_Updates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdate_App_Quick_LanesArgs = {
   _inc?: InputMaybe<App_Quick_Lanes_Inc_Input>;
   _set?: InputMaybe<App_Quick_Lanes_Set_Input>;
@@ -29603,12 +29194,6 @@ export type Query_Root = {
   app_pupil_collection_blocks_aggregate: App_Pupil_Collection_Blocks_Aggregate;
   /** fetch data from the table: "app.pupil_collection_blocks" using primary key columns */
   app_pupil_collection_blocks_by_pk?: Maybe<App_Pupil_Collection_Blocks>;
-  /** fetch data from the table: "app.quick_lane_views" */
-  app_quick_lane_views: Array<App_Quick_Lane_Views>;
-  /** fetch aggregated fields from the table: "app.quick_lane_views" */
-  app_quick_lane_views_aggregate: App_Quick_Lane_Views_Aggregate;
-  /** fetch data from the table: "app.quick_lane_views" using primary key columns */
-  app_quick_lane_views_by_pk?: Maybe<App_Quick_Lane_Views>;
   /** fetch data from the table: "app.quick_lanes" */
   app_quick_lanes: Array<App_Quick_Lanes>;
   /** fetch aggregated fields from the table: "app.quick_lanes" */
@@ -31133,29 +30718,6 @@ export type Query_RootApp_Pupil_Collection_Blocks_AggregateArgs = {
 
 
 export type Query_RootApp_Pupil_Collection_Blocks_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Query_RootApp_Quick_Lane_ViewsArgs = {
-  distinct_on?: InputMaybe<Array<App_Quick_Lane_Views_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Quick_Lane_Views_Order_By>>;
-  where?: InputMaybe<App_Quick_Lane_Views_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Quick_Lane_Views_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Quick_Lane_Views_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Quick_Lane_Views_Order_By>>;
-  where?: InputMaybe<App_Quick_Lane_Views_Bool_Exp>;
-};
-
-
-export type Query_RootApp_Quick_Lane_Views_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -36382,14 +35944,6 @@ export type Subscription_Root = {
   app_pupil_collection_blocks_by_pk?: Maybe<App_Pupil_Collection_Blocks>;
   /** fetch data from the table in a streaming manner: "app.pupil_collection_blocks" */
   app_pupil_collection_blocks_stream: Array<App_Pupil_Collection_Blocks>;
-  /** fetch data from the table: "app.quick_lane_views" */
-  app_quick_lane_views: Array<App_Quick_Lane_Views>;
-  /** fetch aggregated fields from the table: "app.quick_lane_views" */
-  app_quick_lane_views_aggregate: App_Quick_Lane_Views_Aggregate;
-  /** fetch data from the table: "app.quick_lane_views" using primary key columns */
-  app_quick_lane_views_by_pk?: Maybe<App_Quick_Lane_Views>;
-  /** fetch data from the table in a streaming manner: "app.quick_lane_views" */
-  app_quick_lane_views_stream: Array<App_Quick_Lane_Views>;
   /** fetch data from the table: "app.quick_lanes" */
   app_quick_lanes: Array<App_Quick_Lanes>;
   /** fetch aggregated fields from the table: "app.quick_lanes" */
@@ -38420,36 +37974,6 @@ export type Subscription_RootApp_Pupil_Collection_Blocks_StreamArgs = {
   batch_size: Scalars['Int'];
   cursor: Array<InputMaybe<App_Pupil_Collection_Blocks_Stream_Cursor_Input>>;
   where?: InputMaybe<App_Pupil_Collection_Blocks_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Quick_Lane_ViewsArgs = {
-  distinct_on?: InputMaybe<Array<App_Quick_Lane_Views_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Quick_Lane_Views_Order_By>>;
-  where?: InputMaybe<App_Quick_Lane_Views_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Quick_Lane_Views_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<App_Quick_Lane_Views_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  order_by?: InputMaybe<Array<App_Quick_Lane_Views_Order_By>>;
-  where?: InputMaybe<App_Quick_Lane_Views_Bool_Exp>;
-};
-
-
-export type Subscription_RootApp_Quick_Lane_Views_By_PkArgs = {
-  id: Scalars['uuid'];
-};
-
-
-export type Subscription_RootApp_Quick_Lane_Views_StreamArgs = {
-  batch_size: Scalars['Int'];
-  cursor: Array<InputMaybe<App_Quick_Lane_Views_Stream_Cursor_Input>>;
-  where?: InputMaybe<App_Quick_Lane_Views_Bool_Exp>;
 };
 
 

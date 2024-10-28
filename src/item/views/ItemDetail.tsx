@@ -42,7 +42,7 @@ import { JsonParam, StringParam, useQueryParam, useQueryParams } from 'use-query
 
 import { ITEMS_PATH } from '../../admin/items/items.const';
 import { ItemsService } from '../../admin/items/items.service';
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
+import { SpecialUserGroupId } from '../../admin/user-groups/user-group.const';
 import { AssignmentService } from '../../assignment/assignment.service';
 import ConfirmImportToAssignmentWithResponsesModal from '../../assignment/modals/ConfirmImportToAssignmentWithResponsesModal';
 import ImportToAssignmentModal from '../../assignment/modals/ImportToAssignmentModal';
@@ -92,10 +92,7 @@ import {
 	BookmarksViewsPlaysService,
 	DEFAULT_BOOKMARK_VIEW_PLAY_COUNTS,
 } from '../../shared/services/bookmarks-views-plays-service';
-import {
-	type BookmarkViewPlayCounts,
-	SourcePage,
-} from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
+import { type BookmarkViewPlayCounts } from '../../shared/services/bookmarks-views-plays-service/bookmarks-views-plays-service.types';
 import { trackEvents } from '../../shared/services/event-logging-service';
 import {
 	getRelatedItems,
@@ -230,7 +227,10 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 						location.pathname.includes(`/${ROUTE_PARTS.assignments}/`))
 				)
 			) {
-				const isPupil = [SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
+				const isPupil = [
+					SpecialUserGroupId.PupilSecondary,
+					SpecialUserGroupId.PupilElementary,
+				]
 					.map(String)
 					.includes(String(commonUser?.userGroup?.id));
 
@@ -284,6 +284,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 				return;
 			}
 
+			BookmarksViewsPlaysService.action('view', 'item', itemObj.uid, commonUser).then(noop);
 			trackEvents(
 				{
 					object: itemId,
@@ -292,14 +293,6 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 				},
 				commonUser
 			);
-
-			BookmarksViewsPlaysService.action(
-				'view',
-				'item',
-				SourcePage.itemPage,
-				itemObj.uid,
-				commonUser
-			).then(noop);
 
 			retrieveRelatedItems(itemId, RELATED_ITEMS_AMOUNT);
 
@@ -391,14 +384,16 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 	};
 
 	const trackOnPlay = () => {
-		trackEvents(
-			{
-				object: get(item, 'external_id', ''),
-				object_type: 'item',
-				action: 'play',
-			},
-			commonUser
-		);
+		if (item?.external_id) {
+			trackEvents(
+				{
+					object: item.external_id,
+					object_type: 'item',
+					action: 'play',
+				},
+				commonUser
+			);
+		}
 	};
 
 	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
@@ -972,7 +967,7 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,
 								end: cuePoint ? parseInt(cuePoint.split(',')[1], 10) : null,
 							}}
-							sourcePage={SourcePage.itemPage}
+							trackPlayEvent={true}
 						/>
 						<Grid>
 							<Column size="2-7">

@@ -148,7 +148,7 @@ const AssignmentCreate: FC<DefaultSecureRouteProps> = ({ commonUser, user, histo
 				trackEvents(
 					{
 						object: String(created.id),
-						object_type: 'assignment',
+						object_type: 'avo_assignment',
 						action: 'create',
 						resource: created.education_level_id
 							? {

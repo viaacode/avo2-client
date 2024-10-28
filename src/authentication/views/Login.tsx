@@ -5,13 +5,12 @@ import { connect } from 'react-redux';
 import { type RouteComponentProps, withRouter } from 'react-router';
 import { type Dispatch } from 'redux';
 
-import { SpecialUserGroup } from '../../admin/user-groups/user-group.const';
 import { APP_PATH } from '../../constants';
 import { ErrorView } from '../../error/views';
+import { isPupil } from '../../shared/helpers/is-pupil';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { type AppState } from '../../store';
 import { LoginMessage } from '../authentication.types';
-import { getUserGroupId } from '../helpers/get-profile-info';
 import { redirectToServerLoginPage } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import { selectLogin, selectLoginError, selectLoginLoading } from '../store/selectors';
@@ -46,11 +45,7 @@ const Login: FC<LoginProps> = ({
 			let path: string | undefined = (location?.state as any)?.from?.pathname;
 
 			if (!path) {
-				if (
-					[SpecialUserGroup.PupilSecondary, SpecialUserGroup.PupilElementary]
-						.map(String)
-						.includes(getUserGroupId(loginState?.userInfo?.profile))
-				) {
+				if (isPupil(loginState?.commonUserInfo?.userGroup?.id)) {
 					path = APP_PATH.WORKSPACE_ASSIGNMENTS.route;
 				} else {
 					path = APP_PATH.LOGGED_IN_HOME.route;

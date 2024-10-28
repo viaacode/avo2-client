@@ -60,6 +60,7 @@ const SecuredRoute: FC<SecuredRouteProps> = ({
 	path,
 	history,
 	user,
+	commonUser,
 }) => {
 	const { tText } = useTranslation();
 
@@ -116,7 +117,7 @@ const SecuredRoute: FC<SecuredRouteProps> = ({
 							/>
 						);
 					}
-					if (!isProfileComplete(user)) {
+					if (!isProfileComplete(commonUser)) {
 						// Redirect to the complete profile route
 						// So we can redirect to the originally requested route once the user completes their profile info
 						return (
