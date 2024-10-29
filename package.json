@@ -17,6 +17,7 @@
     "lint": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --cache",
     "lint:fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,scss,graphql}\"",
+    "format:fix": "prettier --write \"src/**/*.{ts,tsx,scss,graphql}\"",
     "type-check": "tsc --noEmit",
     "translations:extract": "npx ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format:fix",
     "whitelist-queries": "npx ts-node  --transpile-only --require dotenv/config  --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts && cp scripts/client-whitelist.json ../avo2-proxy/server/scripts && echo Copied client-whitelist.json to proxy",
