@@ -41,7 +41,7 @@ const TranslationsOverviewPage: FC = () => {
 					)
 				);
 			});
-	}, [tText]);
+	}, [tHtml]);
 
 	const onSaveTranslations = async () => {
 		// convert translations to db format and save translations

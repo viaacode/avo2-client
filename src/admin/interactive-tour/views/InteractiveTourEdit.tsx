@@ -1,3 +1,4 @@
+import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Box,
 	Button,
@@ -70,7 +71,6 @@ import {
 import InteractiveTourEditStep from './InteractiveTourEditStep';
 
 import './InteractiveTourEdit.scss';
-import { sanitizeHtml, SanitizePreset } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 const BlockHeading = lazy(() =>
 	import('@meemoo/admin-core-ui/dist/admin.mjs').then((adminCoreModule) => ({
@@ -178,7 +178,6 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 	}, [
 		setLoadingInfo,
 		changeInteractiveTourState,
-		tText,
 		tHtml,
 		isCreatePage,
 		getPageType,

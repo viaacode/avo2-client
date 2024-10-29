@@ -43,7 +43,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 
 	useEffect(() => {
 		onChange(fragmentStartTime, fragmentEndTime);
-	}, [fragmentStartTime, fragmentEndTime]);
+	}, [fragmentStartTime, fragmentEndTime, onChange]);
 
 	useEffect(() => {
 		setFragmentStartTime(startTime);

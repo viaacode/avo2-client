@@ -314,7 +314,15 @@ const AssignmentResponseSearchTab: FC<
 				/>
 			</Spacer>
 		);
-	}, [filterState, handleNewFilterState, renderDetailLink, renderSearchLink, commonUser]);
+	}, [
+		filterState,
+		handleNewFilterState,
+		renderDetailLink,
+		renderSearchLink,
+		commonUser,
+		tText,
+		tHtml,
+	]);
 
 	return (
 		<>

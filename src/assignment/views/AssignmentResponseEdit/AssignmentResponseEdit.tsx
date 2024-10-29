@@ -1,4 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 import {
 	Alert,
 	Box,
@@ -66,7 +67,6 @@ import AssignmentResponseSearchTab from './tabs/AssignmentResponseSearchTab';
 
 import '../AssignmentPage.scss';
 import './AssignmentResponseEdit.scss';
-import { BlockHeading } from '@meemoo/admin-core-ui/dist/client.mjs';
 
 interface AssignmentResponseEditProps {
 	assignment: Avo.Assignment.Assignment;
@@ -283,7 +283,7 @@ const AssignmentResponseEdit: FC<AssignmentResponseEditProps & UserProps> = ({
 				{tText('assignment/views/assignment-edit___mijn-opdrachten')}
 			</Link>
 		),
-		[tText, backToOverview]
+		[tText]
 	);
 
 	const renderedTitle = useMemo(

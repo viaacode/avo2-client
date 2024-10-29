@@ -84,7 +84,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 			});
 		}
 		setIsLoading(false);
-	}, [setInteractiveTours, setLoadingInfo, tText, tableState]);
+	}, [tHtml, tableState]);
 
 	useEffect(() => {
 		fetchInteractiveTours();

@@ -212,7 +212,6 @@ const DynamicRouteResolver: FC<DynamicRouteResolverProps> = ({
 		setRouteInfo,
 		setLoadingInfo,
 		history,
-		tText,
 		tHtml,
 	]);
 
