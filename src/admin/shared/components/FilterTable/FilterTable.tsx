@@ -42,6 +42,7 @@ import {
 import { MultiEducationalOrganisationSelectModal } from '../../../../shared/components/MultiEducationalOrganisationSelectModal/MultiEducationalOrganisationSelectModal';
 import { MultiUserSelectDropdown } from '../../../../shared/components/MultiUserSelectDropdown/MultiUserSelectDropdown';
 import { eduOrgToClientOrg } from '../../../../shared/helpers/edu-org-string-to-client-org';
+import { toggleSortOrder } from '../../../../shared/helpers/toggle-sort-order';
 import { tHtml } from '../../../../shared/helpers/translate';
 import useTranslation from '../../../../shared/hooks/useTranslation';
 import { KeyCode } from '../../../../shared/types';
@@ -51,7 +52,6 @@ import { FILTER_TABLE_QUERY_PARAM_CONFIG } from './FilterTable.const';
 import { cleanupObject } from './FilterTable.utils';
 
 import './FilterTable.scss';
-import { toggleSortOrder } from '../../../../shared/helpers/toggle-sort-order';
 
 export interface FilterableTableState {
 	query?: string;
@@ -125,7 +125,7 @@ const FilterTable: FC<FilterTableProps> = ({
 	isLoading = false,
 	bulkActions,
 	onSelectBulkAction,
-	showCheckboxes,
+	showCheckboxes = false,
 	selectedItemIds,
 	onSelectionChanged,
 	onSelectAll,
@@ -442,9 +442,7 @@ const FilterTable: FC<FilterTableProps> = ({
 										defaultOrderDirection ||
 										undefined) as any // TODO add asc_nulls_first to table sort orders
 								}
-								showCheckboxes={
-									(!!bulkActions && !!bulkActions.length) || showCheckboxes
-								}
+								showCheckboxes={showCheckboxes}
 								selectedItemIds={selectedItemIds || undefined}
 								onSelectionChanged={onSelectionChanged}
 								onSelectAll={onSelectAll}

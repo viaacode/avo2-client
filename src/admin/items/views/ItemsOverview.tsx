@@ -354,6 +354,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 					renderNoResults={renderNoResults}
 					rowKey="uid"
 					isLoading={isLoading}
+					showCheckboxes={false}
 					bulkActions={[
 						{
 							label: tText('admin/items/views/items-overview___exporteer-alles'),

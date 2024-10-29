@@ -272,6 +272,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 						'admin/interactive-tour/views/interactive-tour-overview___er-zijn-geen-interactieve-tours-die-voldoen-aan-de-filters'
 					)}
 					isLoading={isLoading}
+					showCheckboxes={false}
 				/>
 				<DeleteObjectModal
 					confirmCallback={handleDelete}

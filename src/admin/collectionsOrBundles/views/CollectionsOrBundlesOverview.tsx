@@ -678,6 +678,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 					onTableStateChanged={setTableState}
 					renderNoResults={renderNoResults}
 					rowKey="id"
+					showCheckboxes={true}
 					bulkActions={GET_COLLECTION_BULK_ACTIONS(selectedCollectionIds.length > 0)}
 					onSelectBulkAction={handleBulkAction as any}
 					selectedItemIds={selectedCollectionIds}

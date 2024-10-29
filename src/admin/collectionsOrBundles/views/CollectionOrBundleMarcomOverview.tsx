@@ -432,6 +432,7 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 					onSelectionChanged={setSelectedCollectionIds as (ids: ReactNode[]) => void}
 					onSelectAll={setAllCollectionsAsSelected}
 					isLoading={isLoading}
+					showCheckboxes={true}
 					bulkActions={[
 						{
 							label: tText(
