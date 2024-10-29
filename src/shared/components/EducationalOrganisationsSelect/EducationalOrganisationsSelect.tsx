@@ -98,6 +98,7 @@ export const EducationalOrganisationsSelect: FC<EducationalOrganisationsSelectPr
 		setOrganizationsLoadingState,
 		onChange,
 		tText,
+		tHtml,
 	]);
 
 	const onSelectedCityChanged = async (cityAndZipCode: string) => {

@@ -439,7 +439,7 @@ const AssignmentCreate: FC<DefaultSecureRouteProps> = ({ commonUser, user, histo
 			default:
 				return tab;
 		}
-	}, [tab, renderedListSorter]);
+	}, [tab, renderedListSorter, tText, tHtml]);
 
 	// Effects
 

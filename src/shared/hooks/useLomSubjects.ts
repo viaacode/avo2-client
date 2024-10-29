@@ -30,7 +30,7 @@ export const useLomSubjects = (): UseLomSubjectsTuple => {
 			.finally(() => {
 				setIsLoading(false);
 			});
-	}, [tText]);
+	}, [tHtml, tText]);
 
 	return [subjects, isLoading];
 };

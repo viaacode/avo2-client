@@ -29,8 +29,8 @@ import RichTextEditorWrapper from '../../../shared/components/RichTextEditorWrap
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError } from '../../../shared/helpers';
 import { getSubtitles } from '../../../shared/helpers/get-subtitles';
-import { toggleSortOrder } from '../../../shared/helpers/toggle-sort-order';
 import { goBrowserBackWithFallback } from '../../../shared/helpers/go-browser-back-with-fallback';
+import { toggleSortOrder } from '../../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { RelationService } from '../../../shared/services/relation-service/relation.service';

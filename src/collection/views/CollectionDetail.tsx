@@ -260,7 +260,7 @@ const CollectionDetail: FC<
 				)
 			);
 		}
-	}, [setPublishedBundles, tText, collectionId]);
+	}, [showLoginPopup, collectionId, tHtml]);
 
 	const fetchContributors = useCallback(async () => {
 		if (!collectionId || !collectionInfo || showLoginPopup) {

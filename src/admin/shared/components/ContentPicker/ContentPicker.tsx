@@ -118,7 +118,7 @@ const ContentPickerComponent: FC<ContentPickerProps & UserProps> = ({
 				return [];
 			}
 		},
-		[selectedType, hasAppliedInitialItem, initialValue]
+		[selectedType, hasAppliedInitialItem, initialValue, tHtml]
 	);
 
 	// when selecting a type, reset `selectedItem` and retrieve new item options

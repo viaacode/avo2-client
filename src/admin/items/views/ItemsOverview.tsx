@@ -72,12 +72,12 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 		[companyOptions, seriesOptions]
 	);
 
-	const getColumnDataType = (): TableColumnDataType => {
+	const getColumnDataType = useCallback((): TableColumnDataType => {
 		const column = tableColumns.find(
 			(tableColumn: FilterableColumn) => tableColumn.id || '' === tableState.sort_column
 		);
 		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	};
+	}, [tableColumns, tableState.sort_column]);
 
 	// methods
 	const fetchItems = useCallback(async () => {
@@ -179,7 +179,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 			});
 		}
 		setIsLoading(false);
-	}, [tableColumns, setLoadingInfo, setItems, setItemCount, tableState, commonUser, tText]);
+	}, [commonUser, tableState, getColumnDataType, tHtml]);
 
 	const fetchAllSeries = useCallback(async () => {
 		try {
@@ -196,7 +196,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 				)
 			);
 		}
-	}, [setSeriesOptions, tText]);
+	}, [tHtml]);
 
 	useEffect(() => {
 		fetchItems();

@@ -77,7 +77,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 				)
 			);
 		}
-	}, [commonUser, setAssignmentLabels, tText, type]);
+	}, [commonUser, setAssignmentLabels, tText, type, tHtml]);
 
 	const fetchAssignmentColors = useCallback(async () => {
 		try {
@@ -90,7 +90,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 				)
 			);
 		}
-	}, [setAssignmentLabelColors, tText]);
+	}, [setAssignmentLabelColors, tHtml]);
 
 	useEffect(() => {
 		if (isOpen) {

@@ -218,11 +218,13 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 		workspaceCounts,
 		permissions,
 		tText,
+		tHtml,
 		history,
 		location,
 		match,
 		commonUser,
 		updatePermissions,
+		refetchWorkspaceCounts,
 	]);
 
 	const goToTab = useCallback(
@@ -270,7 +272,7 @@ const Workspace: FC<WorkspaceProps & UserProps> = ({ history, match, location, c
 				});
 			}
 		}
-	}, [setLoadingInfo, getActiveTab, tText, permissions, tabs]);
+	}, [setLoadingInfo, getActiveTab, tText, tHtml, permissions, tabs]);
 
 	const getNavTabs = useCallback(() => {
 		return compact(

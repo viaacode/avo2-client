@@ -200,7 +200,21 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		updateBlocksInAssignmentState
 	);
 
-	const updateAssignmentEditor = async () => {
+	const releaseAssignmentEditStatus = useCallback(async () => {
+		try {
+			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
+		} catch (err) {
+			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
+				ToastService.danger(
+					tHtml(
+						'assignment/views/assignment-edit___er-liep-iets-fout-met-het-updaten-van-de-opdracht-bewerk-status'
+					)
+				);
+			}
+		}
+	}, [assignmentId, tHtml]);
+
+	const updateAssignmentEditor = useCallback(async () => {
 		try {
 			await AssignmentService.updateAssignmentEditor(assignmentId);
 		} catch (err) {
@@ -226,7 +240,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 				);
 			}
 		}
-	};
+	}, [assignmentId, history, releaseAssignmentEditStatus, tHtml]);
 
 	const updateAssignmentEditorWithLoading = useCallback(async () => {
 		setIsAssignmentLoading(true);
@@ -402,7 +416,7 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			});
 		}
 		setIsAssignmentLoading(false);
-	}, [match.params.id, commonUser?.permissions, assignmentId, commonUser, setAssignment, tHtml]);
+	}, [match.params.id, assignmentId, commonUser, setAssignment, tHtml]);
 
 	// Events
 
@@ -541,20 +555,6 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 		},
 		[assignment]
 	);
-
-	const releaseAssignmentEditStatus = async () => {
-		try {
-			await AssignmentService.releaseAssignmentEditStatus(assignmentId);
-		} catch (err) {
-			if ((err as CustomError)?.innerException?.additionalInfo?.statusCode !== 409) {
-				ToastService.danger(
-					tHtml(
-						'assignment/views/assignment-edit___er-liep-iets-fout-met-het-updaten-van-de-opdracht-bewerk-status'
-					)
-				);
-			}
-		}
-	};
 
 	const onForcedExitPage = async () => {
 		setIsForcedExit(true);

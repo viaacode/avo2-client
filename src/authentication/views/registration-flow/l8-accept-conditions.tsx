@@ -100,7 +100,7 @@ const AcceptConditions: FC<AcceptConditionsProps & DefaultSecureRouteProps & Use
 				});
 			}
 		}
-	}, [pages, tText]);
+	}, [pages, tText, tHtml]);
 
 	useEffect(() => {
 		if (get(loginState, 'acceptedConditions')) {

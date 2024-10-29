@@ -133,7 +133,7 @@ const FlowPlayerWrapper: FC<
 				)
 			);
 		}
-	}, [item, setSrc, tText]);
+	}, [item, setSrc, tText, tHtml]);
 
 	useEffect(() => {
 		if (item && (props.autoplay || autoplayVideo === item.external_id)) {

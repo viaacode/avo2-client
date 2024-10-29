@@ -340,7 +340,7 @@ const ShareWithColleagues: FC<ShareWithColleaguesProps & UserProps> = ({
 			});
 		}
 		return options;
-	}, [commonUser?.permissions, currentUser.rights, getContributorRightLabel]);
+	}, [commonUser?.permissions, currentUser.rights, getContributorRightLabel, tText]);
 
 	const rightsDropdownOptions = [
 		...(commonUser?.permissions?.includes(availableRights.CONTRIBUTOR)
