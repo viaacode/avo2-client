@@ -11,7 +11,8 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  *
  */
 
-test('T55: Opdracht - Tekstblok toevoegen', async ({ page }) => {
+// Missing account linking entry in users_notifications
+test.skip('T55: Opdracht - Tekstblok toevoegen', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,

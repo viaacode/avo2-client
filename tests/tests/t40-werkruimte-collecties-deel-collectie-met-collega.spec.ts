@@ -14,7 +14,8 @@ import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo';
  *
  */
 
-test('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }) => {
+// Missing account linking entry in users_notifications
+test.skip('T40: Werkruimte - collecties: Deel collectie met collega', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,

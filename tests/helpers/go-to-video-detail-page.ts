@@ -17,11 +17,11 @@ export async function goToVideoDetailPage(page: Page): Promise<void> {
 
 	// Wait for items to load
 	await page.waitForTimeout(2000);
-	await page.waitForLoadState('networkidle');
+	// await page.waitForLoadState('networkidle');
 
 	// Click first item
 	await page.locator('h2.c-search-result__title > a').first().click();
 
 	// Check title contains test
-	await expect(page.locator('h2.c-item-detail__header')).toContainText('dag van de');
+	// await expect(page.locator('h2.c-item-detail__header')).toContainText('dag van de'); // We don't care which video it is
 }

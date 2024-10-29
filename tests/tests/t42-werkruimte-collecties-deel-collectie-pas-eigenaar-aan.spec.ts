@@ -14,7 +14,8 @@ import { logoutOnderwijsAvo } from '../helpers/logout-onderwijs-avo';
  *
  */
 
-test('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async ({ page }) => {
+// Missing account linking entry in users_notifications
+test.skip('T42: Werkruimte - collecties: Deel collectie en pas eigenaar aan', async ({ page }) => {
 	const clientEndpoint = process.env.TEST_CLIENT_ENDPOINT as string;
 	const educatieveAuteur = process.env.TEST_EDUCATIEVE_AUTEUR_USER as string;
 	const educatieveAuteurPass = process.env.TEST_EDUCATIEVE_AUTEUR_PASS as string;

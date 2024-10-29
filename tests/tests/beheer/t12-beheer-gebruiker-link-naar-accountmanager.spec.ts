@@ -22,14 +22,15 @@ test('T12: Beheer - Gebruiker link naar accountmanager', async ({ page, context 
 	// Search user
 	await page
 		.locator('input[placeholder="Zoek op naam, e-mail, organisatie, groep, stamboeknummer"]')
-		.fill('admin test');
+		.fill('Admin Meemoo Testje');
 	await page.waitForTimeout(1000);
 	await page.getByRole('button', { name: 'Zoeken' }).click();
 
 	await page.waitForTimeout(1000);
 
 	// Click on a user
-	await page.getByRole('link', { name: 'Meemoo admin Test' }).click();
+	// See: seeds/028___shared_users.sql:11
+	await page.getByRole('link', { name: 'Admin Meemoo Testje' }).click();
 	await page.waitForTimeout(1000);
 
 	// Check we are on admin user detail page

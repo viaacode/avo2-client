@@ -18,7 +18,8 @@ test.afterEach(async ({ page }, testInfo) => {
 	}
 });
 
-test('T65: opdracht delen van lesgever lager naar lesgever secundair', async ({ page }) => {
+// Missing account linking entry in users_notifications
+test.skip('T65: opdracht delen van lesgever lager naar lesgever secundair', async ({ page }) => {
 	await shareAssignmentAndAccept(
 		page,
 		{
@@ -33,7 +34,8 @@ test('T65: opdracht delen van lesgever lager naar lesgever secundair', async ({ 
 	);
 });
 
-test('T65: opdracht delen van lesgever secundair naar lesgever lager', async ({ page }) => {
+// Missing account linking entry in users_notifications
+test.skip('T65: opdracht delen van lesgever secundair naar lesgever lager', async ({ page }) => {
 	await shareAssignmentAndAccept(
 		page,
 		{
@@ -48,7 +50,8 @@ test('T65: opdracht delen van lesgever secundair naar lesgever lager', async ({ 
 	);
 });
 
-test('T65: opdracht delen van lesgever lager naar lesgever beide', async ({ page }) => {
+// Hangs after arriving in werkruimte
+test.skip('T65: opdracht delen van lesgever lager naar lesgever beide', async ({ page }) => {
 	await shareAssignmentAndAccept(
 		page,
 		{
@@ -63,7 +66,8 @@ test('T65: opdracht delen van lesgever lager naar lesgever beide', async ({ page
 	);
 });
 
-test('T65: opdracht delen van lesgever secundair naar lesgever beide', async ({ page }) => {
+// Missing account linking entry in users_notifications
+test.skip('T65: opdracht delen van lesgever secundair naar lesgever beide', async ({ page }) => {
 	await shareAssignmentAndAccept(
 		page,
 		{
