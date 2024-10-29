@@ -28,7 +28,10 @@ import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
 import { EducationLevelType, groupLomLinks } from '../../../shared/helpers/lom';
 import { lomsToTagList } from '../../../shared/helpers/strings-to-taglist';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import {
+	ACTIONS_TABLE_COLUMN_ID,
+	tableColumnListToCsvColumnList,
+} from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
@@ -693,7 +696,7 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 			case 'contributors':
 				return assignment?.counts?.contributors || '0';
 
-			case 'actions': {
+			case ACTIONS_TABLE_COLUMN_ID: {
 				if (!editStatuses) {
 					return null;
 				}

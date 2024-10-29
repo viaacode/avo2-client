@@ -1,5 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 import { flatten } from 'lodash-es';
+import { stringifyUrl } from 'query-string';
 
 import {
 	type BulkAddLabelsToCollectionsMutation,
@@ -14,16 +15,6 @@ import {
 	type BulkUpdateDateAndLastAuthorCollectionsMutationVariables,
 	type BulkUpdatePublishStateForCollectionsMutation,
 	type BulkUpdatePublishStateForCollectionsMutationVariables,
-	type GetCollectionActualisationsQuery,
-	type GetCollectionActualisationsQueryVariables,
-	type GetCollectionMarcomQuery,
-	type GetCollectionMarcomQueryVariables,
-	type GetCollectionQualityCheckQuery,
-	type GetCollectionQualityCheckQueryVariables,
-	type GetCollectionsByIdsQuery,
-	type GetCollectionsByIdsQueryVariables,
-	type GetCollectionsQuery,
-	type GetCollectionsQueryVariables,
 } from '../../shared/generated/graphql-db-operations';
 import {
 	BulkAddLabelsToCollectionsDocument,
@@ -32,22 +23,10 @@ import {
 	BulkUpdateAuthorForCollectionsDocument,
 	BulkUpdateDateAndLastAuthorCollectionsDocument,
 	BulkUpdatePublishStateForCollectionsDocument,
-	GetCollectionsByIdsDocument,
-	GetCollectionsDocument,
 } from '../../shared/generated/graphql-db-react-query';
-import { Lookup_Enum_Relation_Types_Enum } from '../../shared/generated/graphql-db-types';
-import { CustomError } from '../../shared/helpers';
-import { getOrderObject } from '../../shared/helpers/generate-order-gql-query';
+import { CustomError, getEnv } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
-import { RelationService } from '../../shared/services/relation-service/relation.service';
-import { type TableColumnDataType } from '../../shared/types/table-column-data-type';
 
-import {
-	EDITORIAL_QUERIES,
-	EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-	ITEMS_PER_PAGE,
-	TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT,
-} from './collections-or-bundles.const';
 import {
 	type CollectionOrBundleActualisationOverviewTableCols,
 	type CollectionOrBundleMarcomOverviewTableCols,
@@ -62,172 +41,110 @@ export class CollectionsOrBundlesService {
 		limit: number,
 		sortColumn: CollectionsOrBundlesOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: TableColumnDataType,
-		where: GetCollectionsQueryVariables['where']
-	): Promise<[Avo.Collection.Collection[], number]> {
-		let variables: any;
-
+		filters: any,
+		isCollection: boolean,
+		includeRelations: boolean
+	): Promise<{ collections: Avo.Collection.Collection[]; total: number }> {
 		try {
-			variables = {
-				where,
-				offset,
-				limit,
-				orderBy: getOrderObject(
-					sortColumn,
-					sortOrder,
-					tableColumnDataType,
-					TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
-				),
-			};
-
-			const response = await dataService.query<
-				GetCollectionsQuery,
-				GetCollectionsQueryVariables
-			>({
-				variables,
-				query: GetCollectionsDocument,
-			});
-
-			const collections = response.app_collections;
-
-			const collectionsCount = response.app_collections_aggregate.aggregate?.count || 0;
-
-			if (!collections) {
-				throw new CustomError('Response does not contain any collections', null, {
-					response,
-				});
-			}
-
-			// also fetch if the collection is a copy in a separate query to avoid making the main query slower
-			const relations = (await RelationService.fetchRelationsBySubject(
-				'collection',
-				collections.map((coll) => coll.id),
-				Lookup_Enum_Relation_Types_Enum.IsCopyOf
-			)) as Avo.Collection.RelationEntry<Avo.Collection.Collection>[];
-
-			relations.forEach((relation) => {
-				const collection = collections.find((coll) => coll.id === relation.subject);
-				if (collection) {
-					(collection as Avo.Collection.Collection).relations = [relation];
-				}
-			});
-
-			return [collections as Avo.Collection.Collection[], collectionsCount];
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			return await fetchWithLogoutJson<{
+				collections: Avo.Collection.Collection[];
+				total: number;
+			}>(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/admin-overview/general`,
+					query: {
+						offset,
+						limit,
+						sortColumn,
+						sortOrder,
+						filters: JSON.stringify(filters),
+						isCollection,
+						includeRelations,
+					},
+				})
+			);
 		} catch (err) {
 			throw new CustomError('Failed to get collections from the database', err, {
-				variables,
-				query: 'GET_COLLECTIONS',
-			});
-		}
-	}
-
-	static async getCollectionIds(
-		where: GetCollectionsByIdsQueryVariables['where']
-	): Promise<string[]> {
-		try {
-			const response = await dataService.query<
-				GetCollectionsByIdsQuery,
-				GetCollectionsByIdsQueryVariables
-			>({
-				variables: {
-					where,
-				},
-				query: GetCollectionsByIdsDocument,
-			});
-
-			return (response.app_collections ?? []).map((coll) => coll.id);
-		} catch (err) {
-			throw new CustomError('Failed to get collection ids from the database', err, {
-				variables: {
-					where,
-				},
-				query: 'GET_COLLECTIONS_BY_IDS',
+				offset,
+				limit,
+				sortColumn,
+				sortOrder,
+				filters,
+				isCollection,
 			});
 		}
 	}
 
 	static async getCollectionEditorial(
-		page: number,
+		offset: number,
+		limit: number,
 		sortColumn:
 			| CollectionOrBundleActualisationOverviewTableCols
 			| CollectionOrBundleQualityCheckOverviewTableCols
 			| CollectionOrBundleMarcomOverviewTableCols,
 		sortOrder: Avo.Search.OrderDirection,
-		tableColumnDataType: TableColumnDataType,
-		where:
-			| GetCollectionActualisationsQueryVariables['where']
-			| GetCollectionQualityCheckQueryVariables['where']
-			| GetCollectionMarcomQueryVariables['where'],
-		editorialType: EditorialType
-	): Promise<[Avo.Collection.Collection[], number]> {
-		let variables:
-			| GetCollectionActualisationsQueryVariables
-			| GetCollectionQualityCheckQueryVariables
-			| GetCollectionMarcomQueryVariables
-			| null = null;
-
+		filters: any,
+		editorialType: EditorialType,
+		isCollection: boolean,
+		includeRelations: boolean
+	): Promise<{ collections: Avo.Collection.Collection[]; total: number }> {
 		try {
-			variables = {
-				where: {
-					...where,
-				},
-				offset: ITEMS_PER_PAGE * page,
-				limit: ITEMS_PER_PAGE,
-				orderBy: getOrderObject(
-					sortColumn,
-					sortOrder,
-					tableColumnDataType,
-					EDITORIAL_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT
-				),
-			};
-
-			const response = await dataService.query<
-				| GetCollectionActualisationsQuery
-				| GetCollectionQualityCheckQuery
-				| GetCollectionMarcomQuery,
-				| GetCollectionActualisationsQueryVariables
-				| GetCollectionQualityCheckQueryVariables
-				| GetCollectionMarcomQueryVariables
-			>({
-				query: EDITORIAL_QUERIES[editorialType],
-				variables,
-			});
-
-			const collections = response.app_collections as Avo.Collection.Collection[];
-
-			// also fetch if the collection is a copy in a separate query to avoid making the main query slower
-			const relations = (await RelationService.fetchRelationsBySubject(
-				'collection',
-				collections.map((coll) => coll.id),
-				Lookup_Enum_Relation_Types_Enum.IsCopyOf
-			)) as Avo.Collection.RelationEntry<Avo.Collection.Collection>[];
-
-			relations.forEach((relation) => {
-				const collection = collections.find((coll) => coll.id === relation.subject);
-				if (collection) {
-					(collection as Avo.Collection.Collection).relations = [relation];
-				}
-			});
-
-			const collectionsCount = response.app_collections_aggregate.aggregate?.count ?? 0;
-
-			if (!collections) {
-				throw new CustomError('Response does not contain any collections', null, {
-					response,
-				});
-			}
-
-			return [collections, collectionsCount];
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			return await fetchWithLogoutJson<{
+				collections: Avo.Collection.Collection[];
+				total: number;
+			}>(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/admin-overview/${editorialType}`,
+					query: {
+						offset,
+						limit,
+						sortColumn,
+						sortOrder,
+						filters: JSON.stringify(filters),
+						isCollection,
+						includeRelations,
+					},
+				})
+			);
 		} catch (err) {
 			throw new CustomError(
 				'Failed to get collection editorial entries from the database',
 				err,
 				{
-					variables,
+					offset,
+					limit,
+					sortColumn,
+					sortOrder,
+					filters,
 					editorialType,
-					query: 'GET_COLLECTION_ACTUALISATIONS | GET_COLLECTION_QUALITY_CHECK | GET_COLLECTION_MARCOM',
+					isCollection,
 				}
 			);
+		}
+	}
+
+	static async getCollectionIds(filters: any, isCollection: boolean): Promise<string[]> {
+		try {
+			const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
+			const response = await fetchWithLogoutJson<{
+				collectionIds: string[];
+			}>(
+				stringifyUrl({
+					url: `${getEnv('PROXY_URL')}/collections/admin-overview/ids`,
+					query: {
+						filters: JSON.stringify(filters),
+						isCollection,
+					},
+				})
+			);
+			return response?.collectionIds || [];
+		} catch (err) {
+			throw new CustomError('Failed to get collection ids from the database', err, {
+				filters,
+				isCollection,
+			});
 		}
 	}
 

@@ -16,7 +16,10 @@ import { OrderDirection } from '../../../search/search.const';
 import { LoadingErrorLoadedComponent, type LoadingInfo } from '../../../shared/components';
 import ConfirmModal from '../../../shared/components/ConfirmModal/ConfirmModal';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import {
+	ACTIONS_TABLE_COLUMN_ID,
+	tableColumnListToCsvColumnList,
+} from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -341,7 +344,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 					? tText('admin/pupil-collection/views/pupil-collections-overview___afgelopen')
 					: tText('admin/pupil-collection/views/pupil-collections-overview___actief');
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 			default:
 				// TODO link to correct edit page for pupil collection
 				//localhost:8080/werkruimte/opdrachten/de61d05b-ab4c-4651-a631-d97f76e9f280/antwoorden/6b7ebe33-6cdf-4e7f-b5d4-a38b8e2fa8b8

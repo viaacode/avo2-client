@@ -73,6 +73,7 @@ import { COLLECTIONS_OR_BUNDLES_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT } from './
 import DeleteCollectionModal from './modals/DeleteCollectionModal';
 
 import './CollectionOrBundleOverview.scss';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 
 interface CollectionOrBundleOverviewProps extends DefaultSecureRouteProps {
 	numberOfItems: number;
@@ -614,7 +615,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 			//
 			// 	return userProfiles && <AvatarList avatars={avatarProps} isOpen={false} />;
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return renderActions(id);
 
 			case 'created_at':
@@ -650,7 +651,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 				dataType: TableColumnDataType.string,
 			},
 			{
-				id: 'actions',
+				id: ACTIONS_TABLE_COLUMN_ID,
 				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
 				col: '1',
 			},
@@ -718,7 +719,7 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 			// 	col: '2',
 			// },
 			{
-				id: 'actions',
+				id: ACTIONS_TABLE_COLUMN_ID,
 				tooltip: tText('collection/components/collection-or-bundle-overview___acties'),
 				col: '1',
 			},

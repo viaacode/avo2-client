@@ -7,6 +7,7 @@ import { ContentTypeString } from '../collection/collection.types';
 import { SearchFilter, SearchOrderAndDirectionProperty } from '../search/search.const';
 import { ROUTE_PARTS } from '../shared/constants';
 import { EducationLevelId } from '../shared/helpers/lom';
+import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 import { tHtml, tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
@@ -106,7 +107,7 @@ const getResponseColumn = (canEditAssignments: boolean | null): AssignmentColumn
 
 const getActionsColumn = (canEditAssignments: boolean | null): AssignmentColumn[] => {
 	return canEditAssignments
-		? [{ id: 'actions' as AssignmentOverviewTableColumns, label: '' }]
+		? [{ id: ACTIONS_TABLE_COLUMN_ID as AssignmentOverviewTableColumns, label: '' }]
 		: [];
 };
 
@@ -298,19 +299,19 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 	...(assignmentTypes.includes(AssignmentType.BOUW)
 		? [
 				{
-					id: 'collection_title' as AssignmentResponseTableColumns,
+					id: 'collection_title' as const,
 					label: tText('assignment/assignment___leerlingencollectie'),
 					sortable: true,
 					dataType: TableColumnDataType.string as ColumnDataType,
 				},
 				{
-					id: 'pupil_collection_block_count' as AssignmentResponseTableColumns,
+					id: 'pupil_collection_block_count' as const,
 					label: tText('assignment/assignment___fragmenten'),
 					sortable: true,
 					dataType: TableColumnDataType.number as ColumnDataType,
 				},
 				{
-					id: 'updated_at' as AssignmentResponseTableColumns,
+					id: 'updated_at' as const,
 					label: tText('assignment/assignment___laatst-bewerkt'),
 					sortable: true,
 					dataType: TableColumnDataType.dateTime as ColumnDataType,
@@ -318,13 +319,13 @@ export const GET_ASSIGNMENT_RESPONSE_OVERVIEW_COLUMNS = (
 		  ]
 		: [
 				{
-					id: 'updated_at' as AssignmentResponseTableColumns,
+					id: 'updated_at' as const,
 					label: tText('assignment/assignment___laatst-bekeken'),
 					sortable: true,
 					dataType: TableColumnDataType.dateTime as ColumnDataType,
 				},
 		  ]),
-	{ id: 'actions' as AssignmentResponseTableColumns, label: '' },
+	{ id: ACTIONS_TABLE_COLUMN_ID, label: '' },
 ];
 
 export const RESPONSE_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{

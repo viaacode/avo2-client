@@ -32,6 +32,7 @@ import AssociatedQuickLaneTable, {
 import { OrderDirection } from '../../search/search.const';
 import { QUICK_LANE_DEFAULTS } from '../../shared/constants/quick-lane';
 import { buildLink, CustomError, formatTimestamp, getFullName } from '../../shared/helpers';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -46,7 +47,12 @@ import { type QualityLabel } from '../collection.types';
 
 import { type CollectionAction } from './CollectionOrBundleEdit';
 
-type BundleColumnId = 'title' | 'author' | 'is_public' | 'organization' | 'actions';
+type BundleColumnId =
+	| 'title'
+	| 'author'
+	| 'is_public'
+	| 'organization'
+	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const columnIdToBundlePath: { [columnId in BundleColumnId]: string } = {
@@ -257,7 +263,7 @@ const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps & UserPro
 					</div>
 				);
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return (
 					<Button
 						type="borderless"
@@ -323,7 +329,7 @@ const CollectionOrBundleEditAdmin: FC<CollectionOrBundleEditAdminProps & UserPro
 							tooltip: tText(
 								'collection/components/collection-or-bundle-edit-admin___acties'
 							),
-							id: 'actions',
+							id: ACTIONS_TABLE_COLUMN_ID,
 							sortable: false,
 						},
 					]}

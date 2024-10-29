@@ -1,3 +1,4 @@
+import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export enum CollectionBulkAction {
@@ -22,7 +23,7 @@ type CollectionsOrBundlesOverviewTableColsBase =
 	| 'themas'
 	| 'education_levels'
 	| 'education_degrees'
-	| 'actions';
+	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export type CollectionsOrBundlesOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase

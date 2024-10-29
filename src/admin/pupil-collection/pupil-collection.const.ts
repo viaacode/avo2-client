@@ -4,6 +4,7 @@ import { PermissionService } from '../../authentication/helpers/permission-servi
 import { type PupilCollectionOverviewTableColumns } from '../../pupil-collection/pupil-collection.types';
 import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate';
 import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type AssignmentBulkActionOption } from '../assignments/assignments.const';
@@ -119,8 +120,8 @@ export const GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS: () => FilterableColumn<P
 			dataType: TableColumnDataType.boolean,
 		},
 		{
-			id: 'actions',
-			tooltip: 'actions',
+			id: ACTIONS_TABLE_COLUMN_ID,
+			tooltip: tText('acties'),
 			sortable: false,
 			visibleByDefault: true,
 		},

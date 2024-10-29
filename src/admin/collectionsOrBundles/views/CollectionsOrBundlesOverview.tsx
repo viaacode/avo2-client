@@ -21,7 +21,10 @@ import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/c
 import { EDIT_STATUS_REFETCH_TIME } from '../../../shared/constants';
 import { buildLink, CustomError, getFullNameCommonUser } from '../../../shared/helpers';
 import { isContentBeingEdited } from '../../../shared/helpers/is-content-being-edited';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import {
+	ACTIONS_TABLE_COLUMN_ID,
+	tableColumnListToCsvColumnList,
+} from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
@@ -55,7 +58,6 @@ import {
 	type CollectionsOrBundlesOverviewTableCols,
 	type CollectionsOrBundlesTableState,
 } from '../collections-or-bundles.types';
-import { generateCollectionWhereObject } from '../helpers/collection-filters';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
 const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, commonUser }) => {
@@ -179,23 +181,6 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 	);
 
 	// methods
-	const generateWhereObject = useCallback(
-		(filters: Partial<CollectionsOrBundlesTableState>) => {
-			const andFilters: any[] = generateCollectionWhereObject(
-				filters,
-				commonUser,
-				isCollection,
-				false,
-				true,
-				'collectionTable',
-				educationLevelsAndDegrees || []
-			);
-
-			return { _and: andFilters };
-		},
-		[commonUser, isCollection, educationLevelsAndDegrees]
-	);
-
 	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find(
 			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
@@ -207,15 +192,16 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 		setIsLoading(true);
 
 		try {
-			const [collectionsTemp, collectionsCountTemp] =
+			const { collections: collectionsTemp, total: collectionsCountTemp } =
 				await CollectionsOrBundlesService.getCollections(
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
 					(tableState.sort_column ||
 						'created_at') as CollectionsOrBundlesOverviewTableCols,
 					tableState.sort_order || 'desc',
-					getColumnDataType(),
-					generateWhereObject(getFilters(tableState))
+					getFilters(tableState),
+					isCollection,
+					true
 				);
 
 			setCollections(collectionsTemp);
@@ -238,7 +224,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 		}
 
 		setIsLoading(false);
-	}, [tableState, getColumnDataType, generateWhereObject, isCollection, tText]);
+	}, [tableState, getColumnDataType, isCollection, tText]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {
@@ -269,7 +255,8 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 
 		try {
 			const collectionIds = await CollectionsOrBundlesService.getCollectionIds(
-				generateWhereObject(getFilters(tableState))
+				getFilters(tableState),
+				isCollection
 			);
 			ToastService.info(
 				tHtml(
@@ -557,7 +544,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 				);
 			}
 
-			case 'actions': {
+			case ACTIONS_TABLE_COLUMN_ID: {
 				if (!editStatuses) {
 					return null;
 				}
@@ -777,10 +764,11 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 							(tableState.sort_column ||
 								'created_at') as CollectionsOrBundlesOverviewTableCols,
 							tableState.sort_order || 'desc',
-							getColumnDataType(),
-							generateWhereObject(getFilters(tableState))
+							getFilters(tableState),
+							isCollection,
+							false
 						);
-						return response[1];
+						return response.total;
 					}}
 					fetchMoreItems={async (offset: number, limit: number) => {
 						const response = await CollectionsOrBundlesService.getCollections(
@@ -789,10 +777,11 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 							(tableState.sort_column ||
 								'created_at') as CollectionsOrBundlesOverviewTableCols,
 							tableState.sort_order || 'desc',
-							getColumnDataType(),
-							generateWhereObject(getFilters(tableState))
+							getFilters(tableState),
+							isCollection,
+							false
 						);
-						return response[0];
+						return response.collections;
 					}}
 					renderValue={(value: any, columnId: string) =>
 						renderTableCell(

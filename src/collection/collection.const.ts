@@ -1,5 +1,6 @@
 import { type SelectOption, type TableColumn } from '@viaa/avo2-components';
 
+import { ACTIONS_TABLE_COLUMN_ID } from '../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../shared/helpers/translate';
 import { TableColumnDataType } from '../shared/types/table-column-data-type';
 
@@ -82,6 +83,6 @@ export const GET_MARCOM_ENTRY_TABLE_COLUMNS: (isCollection: boolean) => TableCol
 		: []),
 	{
 		label: '',
-		id: 'actions',
+		id: ACTIONS_TABLE_COLUMN_ID,
 	},
 ];

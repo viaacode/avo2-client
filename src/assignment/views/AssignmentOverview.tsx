@@ -70,6 +70,7 @@ import {
 import { getContributorType } from '../../shared/helpers/contributors';
 import { renderMobileDesktop } from '../../shared/helpers/renderMobileDesktop';
 import { createShareIconTableOverview } from '../../shared/helpers/share-icon-table-overview';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -602,7 +603,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 			case 'responses':
 				return renderResponsesCell(cellData, assignment);
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return (
 					<div className="c-assignment-overview__actions">
 						{renderActions(assignment)}

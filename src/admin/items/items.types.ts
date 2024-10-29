@@ -1,5 +1,6 @@
 import { type Avo } from '@viaa/avo2-types';
 
+import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type PublishedStatus = 'published' | 'unpublished';
@@ -33,14 +34,14 @@ export type ItemsOverviewTableCols =
 	| 'bookmarks'
 	| 'in_assignment'
 	| 'quick_lane_links'
-	| 'actions';
+	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export type UnpublishedItemsOverviewTableCols =
 	| 'title'
 	| 'pid'
 	| 'updated_at'
 	| 'status'
-	| 'actions';
+	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export interface ItemsTableState extends FilterableTableState {
 	depublish_at: string;

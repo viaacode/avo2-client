@@ -14,6 +14,7 @@ import {
 	type LoadingInfo,
 } from '../../../shared/components';
 import { buildLink, CustomError, formatDate, navigate } from '../../../shared/helpers';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { ToastService } from '../../../shared/services/toast-service';
 import { ADMIN_PATH } from '../../admin.const';
@@ -170,7 +171,7 @@ const InteractiveTourGroupOverview: FC<InteractiveTourOverviewProps> = ({ histor
 			case 'updated_at':
 				return formatDate(rowData[columnId]) || '-';
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return (
 					<ButtonToolbar>
 						<Button

@@ -24,6 +24,7 @@ import {
 	type LoadingInfo,
 } from '../../shared/components';
 import { buildLink, CustomError, formatDate, fromNow, isMobileWidth } from '../../shared/helpers';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { toggleSortOrder } from '../../shared/helpers/toggle-sort-order';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
@@ -86,7 +87,11 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 						dataType: TableColumnDataType.dateTime,
 					},
 			  ]),
-		{ id: 'actions', tooltip: tText('workspace/views/bookmarks-overview___acties'), col: '1' },
+		{
+			id: ACTIONS_TABLE_COLUMN_ID,
+			tooltip: tText('workspace/views/bookmarks-overview___acties'),
+			col: '1',
+		},
 	] as TableColumn[];
 
 	const fetchBookmarks = useCallback(async () => {
@@ -253,7 +258,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 	);
 
 	const renderCell = (bookmarkInfo: BookmarkInfo, colKey: string) => {
-		switch (colKey as keyof BookmarkInfo | 'actions') {
+		switch (colKey as keyof BookmarkInfo | typeof ACTIONS_TABLE_COLUMN_ID) {
 			case 'contentThumbnailPath':
 				return renderThumbnail(bookmarkInfo);
 
@@ -268,7 +273,7 @@ const BookmarksOverview: FC<BookmarksOverviewProps & UserProps & RouteComponentP
 					</span>
 				);
 			}
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return renderDeleteAction(bookmarkInfo);
 
 			default:
