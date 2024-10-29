@@ -124,12 +124,12 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 		[]
 	);
 
-	const getColumnDataType = () => {
+	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find((tableColumn: FilterableColumn) => {
 			return get(tableColumn, 'id', '') === get(tableState, 'sort_column', 'empty');
 		});
 		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	};
+	}, [tableColumns, tableState]);
 
 	const fetchPupilCollections = useCallback(async () => {
 		try {
@@ -161,7 +161,7 @@ const PupilCollectionsOverview: FC<RouteComponentProps & UserProps> = ({ commonU
 			});
 		}
 		setIsLoading(false);
-	}, [tableColumns, tableState, generateWhereObject, tText]);
+	}, [tableState, getColumnDataType, generateWhereObject, tHtml]);
 
 	useEffect(() => {
 		fetchPupilCollections();

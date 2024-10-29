@@ -141,7 +141,7 @@ const AddBookmarkFragmentModal: FC<AddBookmarkFragmentModalProps> = ({
 				),
 			});
 		}
-	}, [tableColumns, commonUser, filterString, sortColumn, sortOrder, tText]);
+	}, [tableColumns, commonUser, filterString, sortColumn, sortOrder, tHtml]);
 
 	useEffect(() => {
 		if (bookmarks) {

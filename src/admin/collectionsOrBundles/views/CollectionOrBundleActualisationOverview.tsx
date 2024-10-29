@@ -177,12 +177,12 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 		[commonUser, isCollection, educationLevelsAndDegrees]
 	);
 
-	const getColumnDataType = () => {
+	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find(
 			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
 		);
 		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	};
+	}, [tableColumns, tableState.sort_column]);
 
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
@@ -218,7 +218,7 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 			});
 		}
 		setIsLoading(false);
-	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
+	}, [tableState, getColumnDataType, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {

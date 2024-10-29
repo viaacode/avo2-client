@@ -122,7 +122,7 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 				}
 			}
 		})();
-	}, [content, exists, isOpen]);
+	}, [content, exists, isOpen, tHtml]);
 
 	// When debounced changes occur, synchronise the changes with the database
 	useEffect(() => {
@@ -161,7 +161,7 @@ const QuickLaneModalSharingTab: FC<QuickLaneModalProps & UserProps> = ({
 				}
 			}
 		})();
-	}, [debounced]);
+	}, [debounced, tHtml]);
 
 	// Ensure end_oc is never exactly 0
 	useEffect(() => {

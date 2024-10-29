@@ -114,7 +114,7 @@ const AssignmentResponseAdminEdit: FC<
 			});
 		}
 		setAssignmentLoading(false);
-	}, [assignmentId]);
+	}, [assignmentId, tHtml, tText]);
 
 	// Effects
 

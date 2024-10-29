@@ -97,7 +97,7 @@ const PublishItemsOverview: FC<DefaultSecureRouteProps> = ({ history }) => {
 			});
 		}
 		setIsLoading(false);
-	}, [setLoadingInfo, setItems, setItemCount, tableState, tText, generateWhereObject]);
+	}, [tableState, generateWhereObject, tHtml]);
 
 	useEffect(() => {
 		fetchItems();

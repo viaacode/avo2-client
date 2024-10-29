@@ -323,7 +323,7 @@ const BundleDetail: FC<BundleDetailProps & UserProps & RouteComponentProps<{ id:
 				icon: IconName.alertTriangle,
 			});
 		});
-	}, [commonUser, bundleId, setLoadingInfo, setShowLoginPopup, tText]);
+	}, [commonUser, bundleId, setLoadingInfo, setShowLoginPopup, tText, tHtml]);
 
 	useEffect(() => {
 		if (bundle && !isNil(showLoginPopup)) {

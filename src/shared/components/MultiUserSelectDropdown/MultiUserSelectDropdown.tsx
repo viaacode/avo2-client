@@ -50,6 +50,9 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 
 	const getProfilesByName = useCallback(async () => {
 		try {
+			if (!values.length) {
+				return;
+			}
 			const { UserService } = await import('@meemoo/admin-core-ui/dist/admin.mjs');
 			const users: Partial<Avo.User.CommonUser>[] =
 				await UserService.getNamesByProfileIds(values);
@@ -84,10 +87,8 @@ export const MultiUserSelectDropdown: FC<MultiUserSelectDropdownProps> = ({
 	}, [selectedProfile, setSelectedProfile]);
 
 	useEffect(() => {
-		if (values.length) {
-			getProfilesByName();
-		}
-	}, [values, setSelectedProfiles, tHtml]);
+		getProfilesByName();
+	}, [setSelectedProfiles, tHtml, getProfilesByName]);
 
 	const closeDropdown = () => {
 		setSelectedProfiles([]);

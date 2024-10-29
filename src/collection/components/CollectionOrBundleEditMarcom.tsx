@@ -75,7 +75,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 				)
 			);
 		}
-	}, [collection.id, tText, setMarcomEntries]);
+	}, [collection.id, tHtml]);
 
 	useEffect(() => {
 		fetchMarcomEntries();

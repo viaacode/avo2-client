@@ -197,12 +197,12 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 		[commonUser, isCollection, educationLevelsAndDegrees]
 	);
 
-	const getColumnDataType = () => {
+	const getColumnDataType = useCallback(() => {
 		const column = tableColumns.find(
 			(tableColumn: FilterableColumn) => tableColumn.id === tableState.sort_column
 		);
 		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	};
+	}, [tableColumns, tableState.sort_column]);
 
 	const fetchCollectionsOrBundles = useCallback(async () => {
 		setIsLoading(true);
@@ -239,7 +239,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 		}
 
 		setIsLoading(false);
-	}, [tableColumns, tableState, generateWhereObject, isCollection, tText]);
+	}, [tableState, getColumnDataType, generateWhereObject, isCollection, tText]);
 
 	useEffect(() => {
 		if (commonUser && educationLevelsAndDegrees?.length) {

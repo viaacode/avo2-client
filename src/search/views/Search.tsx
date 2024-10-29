@@ -73,7 +73,7 @@ const Search: FC<UserProps & RouteComponentProps> = ({ commonUser }) => {
 				commonUser
 			);
 		}
-	}, [filterState]);
+	}, [filterState, commonUser]);
 
 	const handleOptionClicked = (optionId: string | number | ReactText) => {
 		setIsOptionsMenuOpen(false);

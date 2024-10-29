@@ -174,12 +174,12 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 		sortOrder: StringParam,
 	});
 
-	const getColumnDataType = (): TableColumnDataType => {
+	const getColumnDataType = useCallback((): TableColumnDataType => {
 		const column = tableColumns.find(
 			(tableColumn: any) => (tableColumn.id || '') === query.sortColumn
 		);
 		return (column?.dataType || TableColumnDataType.string) as TableColumnDataType;
-	};
+	}, [query.sortColumn, tableColumns]);
 
 	const {
 		data: assignmentResponse,

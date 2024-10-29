@@ -1,11 +1,9 @@
 {
   "name": "avo2-client",
-  "version": "1.28.5",
+  "version": "1.28.7",
   "private": true,
   "scripts": {
     "prepare": "husky install",
-    "install-local": "npm i ../react-components ../avo2-components ../react-admin-core-module/ui",
-    "install-online": "npm i @meemoo/react-components @viaa/avo2-components @meemoo/admin-core-ui",
     "prestart": "npm run env",
     "start": "vite",
     "dev": "dotenv -e .env.qas vite",
@@ -18,16 +16,13 @@
     "lint:fix": "eslint \"{src,test}/**/*.{ts,tsx}\" --ignore-pattern 'src/shared/generated/*.ts' --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,scss,graphql}\"",
     "type-check": "tsc --noEmit",
-    "translations:extract": "npx ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/extract-and-replace-translations.ts && npm run format:fix",
     "whitelist-queries": "npx ts-node  --transpile-only --require dotenv/config  --project ./scripts/tsconfig.json -- scripts/whitelist-gql-queries.ts && cp scripts/client-whitelist.json ../avo2-proxy/server/scripts && echo Copied client-whitelist.json to proxy",
     "update-sitemap": "npx ts-node --transpile-only --project ./scripts/tsconfig.json -- scripts/update-sitemap.ts",
     "licenses": "license-checker --csv --out licenses.csv",
     "analyse": "source-map-explorer 'dist/assets/index-*.js'",
     "build-and-analyse": "npm run build && source-map-explorer 'dist/assets/index-*.js' --no-border-checks",
-    "analyse-old": "source-map-explorer '../avo2-client_build-before_vite/static/js/main.a10a3298.js'",
     "generate-database-types": "dotenv -e .env.qas graphql-codegen -- --verbose --config codegen.yml",
-    "bump": "bump-package-versions --part=patch --strategy=highest ./package.json",
-    "list-of-changed-translations": "git diff 296b12bc26a4d5c83b8bb35be5f05115ac6356fe b56c8382a7622a13a7f983c682c1094daa514c94 --no-ext-diff --unified=0 --exit-code -a --no-prefix src/shared/translations/nl.json > translation-changes.txt"
+    "bump": "bump-package-versions --part=patch --strategy=highest ./package.json"
   },
   "contributors": [
     "Bert Verhelst <bert.verhelst@studiohyperdrive.be>",
@@ -39,7 +34,7 @@
   "dependencies": {
     "@flowplayer/player": "3.3.0",
     "@hookform/resolvers": "2.9.11",
-    "@meemoo/admin-core-ui": "4.1.14",
+    "@meemoo/admin-core-ui": "4.2.0",
     "@meemoo/react-components": "4.0.23",
     "@popperjs/core": "2.11.6",
     "@studiohyperdrive/pagination": "1.0.0",

@@ -60,7 +60,7 @@ const AssignmentPupilCollectionDetail: FC<AssignmentPupilCollectionDetailProps> 
 
 			return AssignmentService.getAssignmentResponseById(assignmentResponseId);
 		},
-		[setAssignmentResponse, assignmentResponseId]
+		[setAssignmentResponse, assignmentResponseId, tHtml]
 	);
 
 	const fetchAssignment = useCallback(async () => {
@@ -85,7 +85,7 @@ const AssignmentPupilCollectionDetail: FC<AssignmentPupilCollectionDetailProps> 
 				),
 			});
 		}
-	}, [setAssignment, setLoadingInfo, assignmentResponseId, tText, commonUser]);
+	}, [setAssignment, setLoadingInfo, assignmentResponseId, tText, commonUser, tHtml]);
 
 	// Effects
 

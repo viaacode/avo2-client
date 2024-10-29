@@ -383,19 +383,6 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 		}
 	};
 
-	const trackOnPlay = () => {
-		if (item?.external_id) {
-			trackEvents(
-				{
-					object: item.external_id,
-					object_type: 'item',
-					action: 'play',
-				},
-				commonUser
-			);
-		}
-	};
-
 	const renderRelatedItem = (relatedItem: Avo.Search.ResultItem) => {
 		const englishContentType: Avo.ContentType.English =
 			CONTENT_TYPE_TRANSLATIONS[relatedItem.administrative_type || 'video'];
@@ -957,7 +944,6 @@ const ItemDetail: FC<ItemDetailProps & DefaultSecureRouteProps<{ id: string }>> 
 								!isShareThroughEmailModalOpen &&
 								!isReportItemModalOpen
 							}
-							onPlay={trackOnPlay}
 							verticalLayout={isMobileWidth()}
 							cuePointsVideo={{
 								start: cuePoint ? parseInt(cuePoint.split(',')[0], 10) : null,

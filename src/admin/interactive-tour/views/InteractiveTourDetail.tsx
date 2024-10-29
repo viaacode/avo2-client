@@ -65,7 +65,7 @@ const InteractiveTourDetail: FC<InteractiveTourDetailProps> = ({ history, match 
 				),
 			});
 		}
-	}, [setInteractiveTour, setLoadingInfo, tText, match.params.id]);
+	}, [match.params.id, tHtml]);
 
 	useEffect(() => {
 		fetchInteractiveTourById();

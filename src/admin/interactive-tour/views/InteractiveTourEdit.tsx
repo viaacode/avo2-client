@@ -182,7 +182,6 @@ const InteractiveTourEdit: FC<InteractiveTourEditProps> = ({ history, match, loc
 	}, [
 		setLoadingInfo,
 		changeInteractiveTourState,
-		tText,
 		tHtml,
 		isCreatePage,
 		getPageType,

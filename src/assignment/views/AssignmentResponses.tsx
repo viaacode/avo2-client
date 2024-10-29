@@ -189,7 +189,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 				)
 			);
 		}
-	}, [setCanViewAssignmentResponses, commonUser, tText]);
+	}, [setCanViewAssignmentResponses, commonUser, tHtml]);
 
 	const fetchAssignment = useCallback(async () => {
 		try {
@@ -225,7 +225,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 				),
 			});
 		}
-	}, [match, tText]);
+	}, [match, tText, tHtml]);
 
 	const fetchAssignmentResponses = useCallback(async () => {
 		try {
@@ -280,7 +280,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 		sortOrder,
 		query.page,
 		query.filter,
-		tText,
+		tHtml,
 	]);
 
 	const fetchAssignmentResponsesFragments = async (items: string[]) => {
@@ -327,7 +327,7 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 				state: 'error',
 			});
 		}
-	}, [canViewAssignmentResponses, fetchAssignmentResponses]);
+	}, [canViewAssignmentResponses, fetchAssignmentResponses, tHtml]);
 
 	useEffect(() => {
 		if (!isNil(assignmentResponses) && !isNil(assignmentResponsesCount) && !isNil(assignment)) {

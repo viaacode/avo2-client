@@ -70,7 +70,7 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 						)
 					);
 				}),
-		[tHtml]
+		[commonUser, tHtml]
 	);
 
 	useEffect(() => {
@@ -82,7 +82,7 @@ const AddToBundleModal: FC<AddToBundleModalProps & UserProps> = ({
 				)
 			);
 		});
-	}, [fetchBundles, tText]);
+	}, [fetchBundles, tHtml, tText]);
 
 	useEffect(() => {
 		isOpen && fetchBundles();

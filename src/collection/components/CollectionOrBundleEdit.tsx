@@ -581,7 +581,7 @@ const CollectionOrBundleEdit: FC<
 				icon: IconName.alertTriangle,
 			});
 		}
-	}, [commonUser, collectionId, setLoadingInfo, tText, isCollection, type, contributors]);
+	}, [commonUser, collectionId, setLoadingInfo, tText, tHtml, isCollection, type, contributors]);
 
 	useEffect(() => {
 		checkPermissionsAndGetCollection().then(noop);
