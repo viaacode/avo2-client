@@ -732,7 +732,6 @@ const CollectionOrBundleOverview: FC<CollectionOrBundleOverviewProps & UserProps
 			itemsPerPage={ITEMS_PER_PAGE}
 			totalItems={numberOfItems}
 			onPageChange={setPage}
-			onScrollToTop={() => window.scrollTo(0, 0)}
 		/>
 	);
 

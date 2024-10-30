@@ -241,7 +241,6 @@ const OrganisationContentOverview: FC<OrganisationContentOverviewProps & UserPro
 			itemsPerPage={ITEMS_PER_PAGE}
 			totalItems={numberOfItems}
 			onPageChange={setPage}
-			onScrollToTop={() => window.scrollTo(0, 0)}
 		/>
 	);
 

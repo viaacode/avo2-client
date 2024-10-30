@@ -563,7 +563,6 @@ const AssignmentResponses: FC<AssignmentResponsesProps> = ({
 						itemsPerPage={ITEMS_PER_PAGE}
 						totalItems={assignmentResponsesCount}
 						onPageChange={(newPage: number) => handleQueryChanged(newPage, 'page')}
-						onScrollToTop={() => window.scrollTo(0, 0)}
 					/>
 				</Spacer>
 
