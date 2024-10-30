@@ -97,6 +97,7 @@ const SearchResults: FC<SearchResultsProps & UserProps> = ({
 							itemsPerPage={ITEMS_PER_PAGE}
 							totalItems={pageCount * ITEMS_PER_PAGE}
 							onPageChange={setPage}
+							onScrollToTop={() => window.scrollTo(0, 0)}
 						/>
 					</Spacer>
 				</>

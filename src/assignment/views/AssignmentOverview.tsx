@@ -943,6 +943,7 @@ const AssignmentOverview: FC<AssignmentOverviewProps & RouteComponentProps & Use
 						itemsPerPage={ITEMS_PER_PAGE}
 						totalItems={assignmentCount}
 						onPageChange={(newPage: number) => handleQueryChanged(newPage, 'page')}
+						onScrollToTop={() => window.scrollTo(0, 0)}
 					/>
 				</Spacer>
 
