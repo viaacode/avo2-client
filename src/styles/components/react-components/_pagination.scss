@@ -33,8 +33,14 @@
 			background-color: $color-gray-100;
 		}
 
-		&--active {
-			background-color: $color-gray-700;
+		&.c-pagination__page-button--active {
+			color: black !important;
+		}
+
+		&.c-button--disabled:not(.c-pagination__page-button--active) {
+			background-color: transparent !important;
+			color: $color-gray-200 !important;
+			border: 0 !important;
 		}
 	}
 }
