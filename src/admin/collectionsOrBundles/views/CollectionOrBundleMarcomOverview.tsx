@@ -51,7 +51,8 @@ import {
 	CollectionBulkAction,
 	type CollectionOrBundleMarcomOverviewTableCols,
 	type CollectionOrBundleMarcomTableState,
-	type CollectionsOrBundlesOverviewTableCols,
+	type CollectionSortProps,
+	EditorialType,
 } from '../collections-or-bundles.types';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
@@ -216,11 +217,10 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 				await CollectionsOrBundlesService.getCollectionEditorial(
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
-					(tableState.sort_column ||
-						'updated_at') as CollectionOrBundleMarcomOverviewTableCols,
+					(tableState.sort_column || 'updated_at') as CollectionSortProps,
 					tableState.sort_order || 'desc',
 					getFilters(tableState),
-					'marcom',
+					EditorialType.MARCOM,
 					isCollection,
 					true
 				);
@@ -452,26 +452,26 @@ const CollectionOrBundleMarcomOverview: FC<DefaultSecureRouteProps> = ({
 						'admin/collections-or-bundles/views/collection-or-bundle-marcom-overview___bezig-met-genereren-van-de-csv'
 					)}
 					fetchTotalItems={async () => {
-						const response = await CollectionsOrBundlesService.getCollections(
+						const response = await CollectionsOrBundlesService.getCollectionEditorial(
 							0,
 							0,
-							(tableState.sort_column ||
-								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							(tableState.sort_column || 'created_at') as CollectionSortProps,
 							tableState.sort_order || 'desc',
 							getFilters(tableState),
+							EditorialType.MARCOM,
 							isCollection,
 							false
 						);
 						return response.total;
 					}}
 					fetchMoreItems={async (offset: number, limit: number) => {
-						const response = await CollectionsOrBundlesService.getCollections(
+						const response = await CollectionsOrBundlesService.getCollectionEditorial(
 							offset,
 							limit,
-							(tableState.sort_column ||
-								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							(tableState.sort_column || 'created_at') as CollectionSortProps,
 							tableState.sort_order || 'desc',
 							getFilters(tableState),
+							EditorialType.MARCOM,
 							isCollection,
 							false
 						);

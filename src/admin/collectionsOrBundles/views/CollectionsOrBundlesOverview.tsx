@@ -57,6 +57,7 @@ import {
 	CollectionBulkAction,
 	type CollectionsOrBundlesOverviewTableCols,
 	type CollectionsOrBundlesTableState,
+	type CollectionSortProps,
 } from '../collections-or-bundles.types';
 import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
 
@@ -196,8 +197,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 				await CollectionsOrBundlesService.getCollections(
 					(tableState.page || 0) * ITEMS_PER_PAGE,
 					ITEMS_PER_PAGE,
-					(tableState.sort_column ||
-						'created_at') as CollectionsOrBundlesOverviewTableCols,
+					(tableState.sort_column || 'created_at') as CollectionSortProps,
 					tableState.sort_order || 'desc',
 					getFilters(tableState),
 					isCollection,
@@ -761,8 +761,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 						const response = await CollectionsOrBundlesService.getCollections(
 							0,
 							0,
-							(tableState.sort_column ||
-								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							(tableState.sort_column || 'created_at') as CollectionSortProps,
 							tableState.sort_order || 'desc',
 							getFilters(tableState),
 							isCollection,
@@ -774,8 +773,7 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 						const response = await CollectionsOrBundlesService.getCollections(
 							offset,
 							limit,
-							(tableState.sort_column ||
-								'created_at') as CollectionsOrBundlesOverviewTableCols,
+							(tableState.sort_column || 'created_at') as CollectionSortProps,
 							tableState.sort_order || 'desc',
 							getFilters(tableState),
 							isCollection,

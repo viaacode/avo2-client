@@ -5,11 +5,6 @@ import { type CheckboxDropdownModalProps, type CheckboxOption } from '../../shar
 import { type BooleanCheckboxDropdownProps } from '../../shared/components/BooleanCheckboxDropdown/BooleanCheckboxDropdown';
 import { type DateRangeDropdownProps } from '../../shared/components/DateRangeDropdown/DateRangeDropdown';
 import { ROUTE_PARTS } from '../../shared/constants';
-import {
-	GetCollectionActualisationsDocument,
-	GetCollectionMarcomDocument,
-	GetCollectionQualityCheckDocument,
-} from '../../shared/generated/graphql-db-react-query';
 import { lomToCheckboxOption } from '../../shared/helpers/set-selected-checkboxes';
 import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { tText } from '../../shared/helpers/translate';
@@ -17,11 +12,7 @@ import { TableColumnDataType } from '../../shared/types/table-column-data-type';
 import { type FilterableColumn } from '../shared/components/FilterTable/FilterTable';
 import { NULL_FILTER } from '../shared/helpers/filters';
 
-import {
-	CollectionBulkAction,
-	type CollectionTableCols,
-	type EditorialType,
-} from './collections-or-bundles.types';
+import { CollectionBulkAction, type CollectionTableCols } from './collections-or-bundles.types';
 
 export const COLLECTIONS_OR_BUNDLES_PATH = {
 	COLLECTIONS_OVERVIEW: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.collections}`,
@@ -667,9 +658,3 @@ export const getCollectionManagementStatuses = (): CheckboxOption[] => [
 	{ checked: false, label: 'Gearchiveerd', id: 'GEARCHIVEERD' },
 	{ checked: false, label: tText('admin/users/user___leeg'), id: NULL_FILTER },
 ];
-
-export const EDITORIAL_QUERIES: Record<EditorialType, string> = {
-	actualisation: GetCollectionActualisationsDocument,
-	quality_check: GetCollectionQualityCheckDocument,
-	marcom: GetCollectionMarcomDocument,
-};

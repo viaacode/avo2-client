@@ -27,19 +27,13 @@ import {
 import { CustomError, getEnv } from '../../shared/helpers';
 import { dataService } from '../../shared/services/data-service';
 
-import {
-	type CollectionOrBundleActualisationOverviewTableCols,
-	type CollectionOrBundleMarcomOverviewTableCols,
-	type CollectionOrBundleQualityCheckOverviewTableCols,
-	type CollectionsOrBundlesOverviewTableCols,
-	type EditorialType,
-} from './collections-or-bundles.types';
+import { type CollectionSortProps, type EditorialType } from './collections-or-bundles.types';
 
 export class CollectionsOrBundlesService {
 	static async getCollections(
 		offset: number,
 		limit: number,
-		sortColumn: CollectionsOrBundlesOverviewTableCols,
+		sortColumn: CollectionSortProps,
 		sortOrder: Avo.Search.OrderDirection,
 		filters: any,
 		isCollection: boolean,
@@ -79,10 +73,7 @@ export class CollectionsOrBundlesService {
 	static async getCollectionEditorial(
 		offset: number,
 		limit: number,
-		sortColumn:
-			| CollectionOrBundleActualisationOverviewTableCols
-			| CollectionOrBundleQualityCheckOverviewTableCols
-			| CollectionOrBundleMarcomOverviewTableCols,
+		sortColumn: CollectionSortProps,
 		sortOrder: Avo.Search.OrderDirection,
 		filters: any,
 		editorialType: EditorialType,
