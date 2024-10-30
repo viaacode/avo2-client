@@ -88,11 +88,11 @@ export interface SearchResultItemProps extends SearchResultItemHandlers, RenderL
 }
 
 export interface SearchResultsProps extends SearchResultItemHandlers {
-	currentPage: number;
 	loading: boolean;
-	pageCount: number;
 	data: Avo.Search.Search | null;
-	setPage: (page: number) => void;
+	currentItemIndex: number;
+	totalItemCount: number;
+	setCurrentItemIndex: (newCurrentItemIndex: number) => void;
 	bookmarkStatuses: BookmarkStatusLookup | null;
 	navigateUserRequestForm: () => void;
 	bookmarkButtons: boolean;
