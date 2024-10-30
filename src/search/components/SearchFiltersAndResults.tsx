@@ -113,6 +113,8 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 		} else {
 			navigate(history, APP_PATH.USER_ITEM_REQUEST_FORM.route);
 		}
+
+		window.scrollTo(0, 0);
 	};
 
 	const defaultOrder = `${filterState.orderProperty || 'relevance'}_${
