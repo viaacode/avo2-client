@@ -342,6 +342,7 @@ const QuickLaneOverview: FC<QuickLaneOverviewProps & UserProps> = ({ commonUser 
 				variant="styled"
 				isLoading={loadingInfo.state === 'loading'}
 				hideTableColumnsButton // Hidden due to: https://meemoo.atlassian.net/browse/AVO-1753?focusedCommentId=24892
+				showCheckboxes={false}
 			/>
 
 			<QuickLaneModal

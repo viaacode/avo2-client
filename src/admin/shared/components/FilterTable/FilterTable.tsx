@@ -125,7 +125,7 @@ const FilterTable: FC<FilterTableProps> = ({
 	isLoading = false,
 	bulkActions,
 	onSelectBulkAction,
-	showCheckboxes,
+	showCheckboxes = false,
 	selectedItemIds,
 	onSelectionChanged,
 	onSelectAll,
@@ -442,9 +442,7 @@ const FilterTable: FC<FilterTableProps> = ({
 										defaultOrderDirection ||
 										undefined) as any // TODO add asc_nulls_first to table sort orders
 								}
-								showCheckboxes={
-									(!!bulkActions && !!bulkActions.length) || showCheckboxes
-								}
+								showCheckboxes={showCheckboxes}
 								selectedItemIds={selectedItemIds || undefined}
 								onSelectionChanged={onSelectionChanged}
 								onSelectAll={onSelectAll}
