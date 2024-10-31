@@ -1,6 +1,7 @@
 import { type RichEditorState } from '@meemoo/react-components';
 
 import { type GetInteractiveTourByIdQuery } from '../../shared/generated/graphql-db-operations';
+import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export type InteractiveTourOverviewTableCols =
@@ -8,7 +9,7 @@ export type InteractiveTourOverviewTableCols =
 	| 'page_id'
 	| 'created_at'
 	| 'updated_at'
-	| 'actions';
+	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export interface InteractiveTourEditFormErrorState {
 	name?: string;

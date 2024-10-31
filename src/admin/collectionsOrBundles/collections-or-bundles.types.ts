@@ -1,3 +1,4 @@
+import { type ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
 export enum CollectionBulkAction {
@@ -8,6 +9,37 @@ export enum CollectionBulkAction {
 	CHANGE_LABELS = 'CHANGE_LABELS',
 	EXPORT_ALL = 'EXPORT_ALL',
 }
+
+export type CollectionSortProps =
+	| 'title'
+	| 'owner_profile_id'
+	| 'author_user_group'
+	| 'last_updated_by_profile'
+	| 'created_at'
+	| 'updated_at'
+	| 'is_public'
+	| 'is_managed'
+	| 'views'
+	| 'bookmarks'
+	| 'copies'
+	| 'in_bundle'
+	| 'in_assignment'
+	| 'quick_lane_links'
+	| 'contributors'
+	| 'share_type'
+	| 'share_type_order'
+	| 'actualisation_status'
+	| 'actualisation_last_actualised_at'
+	| 'actualisation_status_valid_until'
+	| 'actualisation_approved_at'
+	| 'actualisation_manager'
+	| 'quality_check_language_check'
+	| 'quality_check_quality_check'
+	| 'quality_check_approved_at'
+	| 'marcom_last_communication_channel_type'
+	| 'marcom_last_communication_channel_name'
+	| 'marcom_last_communication_at'
+	| 'marcom_klascement';
 
 type CollectionsOrBundlesOverviewTableColsBase =
 	| 'title'
@@ -22,7 +54,7 @@ type CollectionsOrBundlesOverviewTableColsBase =
 	| 'themas'
 	| 'education_levels'
 	| 'education_degrees'
-	| 'actions';
+	| typeof ACTIONS_TABLE_COLUMN_ID;
 
 export type CollectionsOrBundlesOverviewTableCols =
 	| CollectionsOrBundlesOverviewTableColsBase
@@ -66,7 +98,12 @@ export type CollectionTableCols =
 	| CollectionOrBundleQualityCheckOverviewTableCols
 	| CollectionOrBundleMarcomOverviewTableCols;
 
-export type EditorialType = 'actualisation' | 'quality_check' | 'marcom';
+export enum EditorialType {
+	GENERAL = 'general',
+	ACTUALISATION = 'actualisation',
+	QUALITY_CHECK = 'quality_check',
+	MARCOM = 'marcom',
+}
 
 export interface CollectionOrBundleTableStateBase extends FilterableTableState {
 	title: string;

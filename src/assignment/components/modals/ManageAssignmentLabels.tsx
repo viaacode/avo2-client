@@ -22,6 +22,7 @@ import React, { type FC, useCallback, useEffect, useState } from 'react';
 import { ColorSelect } from '../../../shared/components';
 import { type Lookup_Enum_Colors_Enum } from '../../../shared/generated/graphql-db-types';
 import { CustomError } from '../../../shared/helpers';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { generateRandomId } from '../../../shared/helpers/uuid';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import useTranslation from '../../../shared/hooks/useTranslation';
@@ -265,7 +266,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 					</Spacer>
 				);
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return (
 					<Button
 						ariaLabel={tText(
@@ -311,7 +312,7 @@ const ManageAssignmentLabels: FC<ManageAssignmentLabelsProps & UserProps> = ({
 							label: getManageAssignmentLabelsTranslations(type).columns.type,
 							id: 'label',
 						},
-						{ label: '', id: 'actions' },
+						{ label: '', id: ACTIONS_TABLE_COLUMN_ID },
 					]}
 					emptyStateMessage={getManageAssignmentLabelsTranslations(type).emptyState}
 					data={assignmentLabels}

@@ -1,5 +1,0 @@
-query getCollectionsByIds($where: app_collections_bool_exp!) {
-	app_collections(where: $where) {
-		id
-	}
-}

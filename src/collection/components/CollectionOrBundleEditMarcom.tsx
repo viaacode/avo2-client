@@ -24,6 +24,7 @@ import { Link, type RouteComponentProps } from 'react-router-dom';
 import { APP_PATH } from '../../constants';
 import { type App_Collection_Marcom_Log_Insert_Input } from '../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../shared/helpers';
+import { ACTIONS_TABLE_COLUMN_ID } from '../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import useTranslation from '../../shared/hooks/useTranslation';
@@ -83,7 +84,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 
 	const renderMarcomTableCell = (
 		rowData: Partial<MarcomEntry>,
-		columnId: keyof MarcomEntry | 'actions'
+		columnId: keyof MarcomEntry | typeof ACTIONS_TABLE_COLUMN_ID
 	): ReactNode => {
 		const value = get(rowData, columnId);
 		switch (columnId) {
@@ -127,7 +128,7 @@ const CollectionOrBundleEditMarcom: FC<CollectionOrBundleEditMarcomProps & UserP
 					''
 				);
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return (
 					<ButtonToolbar>
 						<Button

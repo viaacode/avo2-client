@@ -16,7 +16,10 @@ import {
 } from '../../../shared/components';
 import { Lookup_Enum_Relation_Types_Enum } from '../../../shared/generated/graphql-db-types';
 import { buildLink, CustomError, formatDate } from '../../../shared/helpers';
-import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import {
+	ACTIONS_TABLE_COLUMN_ID,
+	tableColumnListToCsvColumnList,
+} from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import { truncateTableValue } from '../../../shared/helpers/truncate';
 import withUser, { type UserProps } from '../../../shared/hocs/withUser';
 import { useCompanies } from '../../../shared/hooks/useCompanies';
@@ -281,7 +284,7 @@ const ItemsOverview: FC<UserProps> = ({ commonUser }) => {
 				}
 				return tText('admin/items/views/items-overview___gedepubliceerd');
 
-			case 'actions':
+			case ACTIONS_TABLE_COLUMN_ID:
 				return (
 					<ButtonToolbar>
 						<Link to={getItemDetailLink(rowData.external_id)}>

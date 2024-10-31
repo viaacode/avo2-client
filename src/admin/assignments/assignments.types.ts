@@ -1,17 +1,5 @@
 import { type FilterableTableState } from '../shared/components/FilterTable/FilterTable';
 
-export type AssignmentsOverviewTableCols =
-	| 'title'
-	| 'author'
-	| 'created_at'
-	| 'updated_at'
-	| 'deadline_at'
-	| 'status'
-	| 'pupilCollections'
-	| 'views'
-	| 'actions'
-	| 'share_type';
-
 export interface AssignmentsOverviewTableState extends FilterableTableState {
 	title: string;
 	author: string;
