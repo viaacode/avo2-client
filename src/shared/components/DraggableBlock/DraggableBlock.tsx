@@ -12,7 +12,7 @@ import { DRAGGABLE_BLOCK_ICONS } from './DraggableBlock.const';
 
 import './DraggableBlock.scss';
 
-export interface DraggableBlockProps extends DefaultProps {
+interface DraggableBlockProps extends DefaultProps {
 	block?: Avo.Core.BlockItemBase;
 }
 

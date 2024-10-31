@@ -5,7 +5,7 @@ import React, { type FC } from 'react';
 import { AssignmentHelper } from '../../../assignment/assignment.helper';
 import { AssignmentLayout } from '../../../assignment/assignment.types';
 
-export interface LayoutOptionsProps {
+interface LayoutOptionsProps {
 	item: { content_layout?: AssignmentLayout };
 	onChange: (value: string) => void;
 	disabled?: boolean;

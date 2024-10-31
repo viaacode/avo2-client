@@ -36,7 +36,7 @@ import { renderAttachment } from './UserItemRequestForm.helpers';
 
 import './ItemRequestForm.scss';
 
-export type EducationalAuthorItemRequestFormProps = DefaultSecureRouteProps;
+type EducationalAuthorItemRequestFormProps = DefaultSecureRouteProps;
 
 interface FormValues {
 	description: string;

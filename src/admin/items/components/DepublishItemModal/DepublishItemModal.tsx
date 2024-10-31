@@ -27,7 +27,7 @@ import { ItemsService } from '../../items.service';
 
 import './DepublishItemModal.scss';
 
-export type DepublishType = 'depublish' | 'depublish_with_reason' | 'depublish_with_replacement';
+type DepublishType = 'depublish' | 'depublish_with_reason' | 'depublish_with_replacement';
 
 interface DepublishItemModalProps {
 	item: Avo.Item.Item;

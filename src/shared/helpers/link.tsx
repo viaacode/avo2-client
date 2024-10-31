@@ -1,4 +1,3 @@
-import { LinkTarget } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { isArray, isEmpty, isNil } from 'lodash-es';
 import queryString from 'query-string';
@@ -55,40 +54,6 @@ export const navigate = (
 		history.replace(builtLink);
 	}
 };
-
-// TODO see if we can replace this method completely by the new SmartLink component
-export function navigateToAbsoluteOrRelativeUrl(
-	url: string,
-	history: RouteComponentProps['history'],
-	target: LinkTarget = LinkTarget.Self
-): void {
-	let fullUrl = url;
-	if (url.startsWith('www.')) {
-		fullUrl = `//${url}`;
-	}
-	switch (target) {
-		case LinkTarget.Self:
-			if (fullUrl.includes('//')) {
-				// absolute url
-				window.location.href = fullUrl;
-			} else {
-				// relative url
-				history.push(fullUrl);
-			}
-			break;
-
-		case LinkTarget.Blank:
-		default:
-			if (fullUrl.includes('//')) {
-				// absolute fullUrl
-				window.open(fullUrl);
-			} else {
-				// relative url
-				window.open(`${window.location.origin}${fullUrl}`);
-			}
-			break;
-	}
-}
 
 export const renderSearchLinks = (
 	renderSearchLink: (

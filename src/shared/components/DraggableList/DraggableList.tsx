@@ -4,7 +4,7 @@ import React, { type FC, type ReactNode, useState } from 'react';
 
 import './DraggableList.scss';
 
-export interface DraggableListProps {
+interface DraggableListProps {
 	items: any[];
 	renderItem: (item: any) => ReactNode;
 	onListChange: (updatedList: JSX.Element[]) => void;

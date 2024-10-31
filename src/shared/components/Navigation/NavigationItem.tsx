@@ -8,7 +8,7 @@ import { type NavigationItemInfo } from '../../types';
 
 import './Navigation.scss';
 
-export interface NavigationItemProps extends RouteComponentProps {
+interface NavigationItemProps extends RouteComponentProps {
 	item: NavigationItemInfo;
 	className: string;
 	exact: boolean;

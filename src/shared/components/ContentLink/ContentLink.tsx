@@ -12,7 +12,7 @@ type ParentType = {
 	content_id: string;
 };
 
-export interface ContentLinkProps {
+interface ContentLinkProps {
 	parent: ParentType;
 	content: Avo.Assignment.Assignment | Avo.Collection.Collection | Avo.Item.Item;
 }

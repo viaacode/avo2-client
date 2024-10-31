@@ -8,7 +8,7 @@ import { ROUTE_PARTS } from '../../shared/constants';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { redirectToClientPage } from '../helpers/redirects';
 
-export interface PupilOrTeacherDropdownProps {
+interface PupilOrTeacherDropdownProps {
 	closeDropdown?: () => void;
 }
 

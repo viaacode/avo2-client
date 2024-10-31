@@ -21,5 +21,3 @@ export const OrderedList: FC<OrderedListProps> = ({ listItems }) => {
 		</div>
 	);
 };
-
-export default OrderedList;

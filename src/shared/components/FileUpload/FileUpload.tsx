@@ -22,7 +22,7 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 
 import './FileUpload.scss';
 
-export interface FileUploadProps {
+interface FileUploadProps {
 	icon?: IconName;
 	label?: string;
 	allowedTypes?: string[];

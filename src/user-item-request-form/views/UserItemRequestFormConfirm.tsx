@@ -7,7 +7,7 @@ import { type DefaultSecureRouteProps } from '../../authentication/components/Se
 import { GENERATE_SITE_TITLE } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
 
-export type UserItemRequestFormProps = DefaultSecureRouteProps;
+type UserItemRequestFormProps = DefaultSecureRouteProps;
 
 const UserItemRequestFormConfirm: FC<UserItemRequestFormProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();

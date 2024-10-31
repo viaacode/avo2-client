@@ -7,7 +7,7 @@ import { type RouteComponentProps } from 'react-router';
 import { GENERATE_SITE_TITLE } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 
-export type StudentTeacherProps = RouteComponentProps;
+type StudentTeacherProps = RouteComponentProps;
 
 const StudentTeacher: FC<StudentTeacherProps> = ({ history }) => {
 	const { tText, tHtml } = useTranslation();

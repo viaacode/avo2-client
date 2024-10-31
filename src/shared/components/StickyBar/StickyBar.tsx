@@ -3,7 +3,7 @@ import React, { type FC } from 'react';
 
 import './StickyBar.scss';
 
-export interface StickySaveBarProps {
+interface StickySaveBarProps {
 	title: string | React.ReactNode;
 	isVisible: boolean;
 	actionButtonProps?: ButtonProps;

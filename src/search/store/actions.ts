@@ -13,7 +13,7 @@ import {
 	type SetSearchResultsSuccessAction,
 } from './types';
 
-const getSearchResults = (
+export const getSearchResults = (
 	orderProperty: Avo.Search.OrderProperty = 'relevance',
 	orderDirection: Avo.Search.OrderDirection = 'desc',
 	from = 0,
@@ -97,10 +97,3 @@ const setSearchResultsControllerAction = (
 	type: SearchActionTypes.SET_RESULTS_CONTROLLER,
 	controller,
 });
-
-export {
-	setSearchResultsSuccess,
-	setSearchResultsError,
-	setSearchResultsLoading,
-	getSearchResults,
-};

@@ -6,5 +6,3 @@ export const CONTENT_PAGE_LABEL_PATH = {
 	CONTENT_PAGE_LABEL_DETAIL: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.contentPageLabels}/:id`,
 	CONTENT_PAGE_LABEL_EDIT: `/${ROUTE_PARTS.admin}/${ROUTE_PARTS.contentPageLabels}/:id/${ROUTE_PARTS.edit}`,
 };
-
-export const ITEMS_PER_PAGE = 10;

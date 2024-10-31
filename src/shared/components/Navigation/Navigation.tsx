@@ -50,7 +50,7 @@ import { NavigationItem } from './NavigationItem';
 
 import './Navigation.scss';
 
-export type NavigationParams = RouteComponentProps;
+type NavigationParams = RouteComponentProps;
 
 /**
  * Main navigation bar component
@@ -343,8 +343,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 		getLoginState: () => dispatch(getLoginStateAction() as any),
 	};
 };
-
-export const NavigationForTests = Navigation;
 
 export default withRouter(
 	connect(mapStateToProps, mapDispatchToProps)(Navigation)

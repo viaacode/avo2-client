@@ -10,7 +10,7 @@ import useTranslation from '../../shared/hooks/useTranslation';
 
 import AssignmentHeading from './AssignmentHeading';
 
-export type PupilCollectionForTeacherPreviewProps = {
+type PupilCollectionForTeacherPreviewProps = {
 	onClose: () => void;
 	assignmentResponse: Omit<Avo.Assignment.Response, 'assignment'>;
 	metadata: ReactNode;

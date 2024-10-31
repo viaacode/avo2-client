@@ -49,7 +49,7 @@ export type MediaListItem = {
 	buttonAction?: ButtonAction;
 };
 
-export interface BlockMediaGridProps extends DefaultProps {
+interface BlockMediaGridProps extends DefaultProps {
 	title?: string;
 	buttonLabel?: string;
 	buttonAltTitle?: string;

@@ -100,11 +100,6 @@ export interface AssignmentLabelColor {
 	value: Lookup_Enum_Colors_Enum; // BRIGHT_RED
 }
 
-export interface AssignmentLabel {
-	description: string;
-	value: string;
-}
-
 /// Zoek & bouw
 
 export type AssignmentResponseFormState = Pick<

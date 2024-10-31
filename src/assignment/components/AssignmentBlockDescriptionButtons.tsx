@@ -34,7 +34,7 @@ const getButtonTooltips = (): Record<AssignmentBlockItemDescriptionType, string 
 	[AssignmentBlockItemDescriptionType.none]: undefined,
 });
 
-export interface AssignmentBlockDescriptionButtonsProps {
+interface AssignmentBlockDescriptionButtonsProps {
 	block: EditableAssignmentBlock;
 	setBlock: (updatedBlock: EditableAssignmentBlock) => void;
 	types?: AssignmentBlockItemDescriptionType[];

@@ -27,7 +27,7 @@ interface TopbarProps {
 	size?: 'small' | 'medium' | 'large' | 'full-width';
 }
 
-export const TopBarComponent: FC<TopbarProps & RouteComponentProps> = ({
+const TopBarComponent: FC<TopbarProps & RouteComponentProps> = ({
 	onClickBackButton,
 	title,
 	center,

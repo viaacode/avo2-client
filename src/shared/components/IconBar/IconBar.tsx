@@ -3,7 +3,7 @@ import React, { type FC, type ReactNode } from 'react';
 
 import './IconBar.scss';
 
-export interface IconBarProps {
+interface IconBarProps {
 	children?: ReactNode;
 	icon?: IconProps;
 }

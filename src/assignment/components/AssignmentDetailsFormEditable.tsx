@@ -30,7 +30,7 @@ import AssignmentLabels from './AssignmentLabels';
 
 import './AssignmentDetailsForm.scss';
 
-export const AssignmentDetailsFormIds = {
+const AssignmentDetailsFormIds = {
 	classrooms: 'c-assignment-details-form__classrooms', // labels with type 'CLASS'
 	labels: 'c-assignment-details-form__labels', // labels with type 'LABEL'
 	available_at: 'c-assignment-details-form__available_at',
@@ -38,7 +38,7 @@ export const AssignmentDetailsFormIds = {
 	answer_url: 'c-assignment-details-form__answer_url',
 };
 
-export interface AssignmentDetailsFormEditableProps {
+interface AssignmentDetailsFormEditableProps {
 	assignment: Partial<AssignmentFields>;
 	setAssignment: Dispatch<SetStateAction<AssignmentFields>>;
 	setValue: UseFormSetValue<AssignmentFields>;

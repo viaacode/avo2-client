@@ -53,7 +53,7 @@ const getAlertIconNames = (): Partial<Record<IconName, string>> => ({
 	[IconName.book]: tText('admin/shared/hoc/with-admin-core-config___boek'),
 });
 
-export const ALERT_ICON_LIST_CONFIG = (): {
+const ALERT_ICON_LIST_CONFIG = (): {
 	key: IconName;
 	value: IconName;
 	label: string;

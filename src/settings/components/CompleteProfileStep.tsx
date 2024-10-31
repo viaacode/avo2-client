@@ -41,7 +41,7 @@ import { SettingsService } from '../settings.service';
 
 import './Profile.scss';
 
-export interface CompleteProfileStepProps {
+interface CompleteProfileStepProps {
 	redirectTo?: string;
 }
 

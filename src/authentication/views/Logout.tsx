@@ -7,9 +7,9 @@ import { isPupil } from '../../shared/helpers/is-pupil';
 import withUser, { type UserProps } from '../../shared/hocs/withUser';
 import { redirectToServerLogoutPage } from '../helpers/redirects';
 
-export interface LogoutProps extends RouteComponentProps, UserProps {}
+interface LogoutProps extends RouteComponentProps, UserProps {}
 
-export const Logout: FC<LogoutProps> = ({ location, commonUser }) => {
+const Logout: FC<LogoutProps> = ({ location, commonUser }) => {
 	redirectToServerLogoutPage(
 		location,
 		isPupil(commonUser?.userGroup?.id) ? '/' + ROUTE_PARTS.pupils : APP_PATH.HOME.route

@@ -39,7 +39,3 @@ export function getPublishedDate(
 
 	return null;
 }
-
-export function isPublic(contentPage: Partial<ContentPageInfo> | undefined | null): boolean {
-	return !!getPublishedDate(contentPage);
-}

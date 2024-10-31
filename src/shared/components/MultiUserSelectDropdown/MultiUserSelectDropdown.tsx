@@ -23,7 +23,7 @@ import { ToastService } from '../../services/toast-service';
 
 import './MultiUserSelectDropdown.scss';
 
-export interface MultiUserSelectDropdownProps {
+interface MultiUserSelectDropdownProps {
 	label: string;
 	id: string;
 	values: string[];

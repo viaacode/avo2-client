@@ -3,7 +3,7 @@ import React, { type FC, type ReactNode } from 'react';
 
 import './AssignmentBlockToggle.scss';
 
-export type AssignmentBlockToggleProps = ToggleProps & {
+type AssignmentBlockToggleProps = ToggleProps & {
 	heading?: string;
 	description?: ReactNode;
 };

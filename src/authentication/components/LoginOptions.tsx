@@ -20,7 +20,7 @@ import {
 
 import './LoginOptions.scss';
 
-export interface LoginOptionsProps extends RouteComponentProps {
+interface LoginOptionsProps extends RouteComponentProps {
 	onOptionClicked?: () => void;
 }
 

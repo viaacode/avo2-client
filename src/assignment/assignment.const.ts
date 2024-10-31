@@ -170,53 +170,6 @@ export const GET_ASSIGNMENT_OVERVIEW_COLUMNS = (
 	...getActionsColumn(canEditAssignments),
 ];
 
-export const ASSIGNMENTS_TABLE_COLUMN_TO_DATABASE_ORDER_OBJECT: Partial<{
-	[columnId in AssignmentOverviewTableColumns]: (order: Avo.Search.OrderDirection) => any;
-}> = {
-	author: (order: Avo.Search.OrderDirection) => ({
-		owner: {
-			full_name: order,
-		},
-	}),
-	author_user_group: (order: Avo.Search.OrderDirection) => ({
-		owner: { profile: { profile_user_group: { group: { label: order } } } },
-	}),
-	last_user_edit_profile: (order: Avo.Search.OrderDirection) => ({
-		last_user_edit_profile: { usersByuserId: { last_name: order } },
-	}),
-	status: (order: Avo.Search.OrderDirection) => ({
-		deadline_at: order,
-	}),
-	responses: (order: Avo.Search.OrderDirection) => ({
-		responses_aggregate: {
-			count: order,
-		},
-	}),
-	views: (order: Avo.Search.OrderDirection) => ({
-		view_count: {
-			count: order,
-		},
-	}),
-	bookmarks: (order: Avo.Search.OrderDirection) => ({
-		counts: {
-			bookmarks: order,
-		},
-	}),
-	copies: (order: Avo.Search.OrderDirection) => ({
-		counts: {
-			copies: order,
-		},
-	}),
-	contributors: (order: Avo.Search.OrderDirection) => ({
-		counts: {
-			contributors: order,
-		},
-	}),
-	share_type: (order: Avo.Search.OrderDirection) => ({
-		share_type_order: order,
-	}),
-};
-
 /// Zoek & bouw
 export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): Schema<Avo.Assignment.Assignment> => {
 	return object({

@@ -11,7 +11,7 @@ export interface LoadingInfo extends ErrorViewQueryParams {
 	state: LoadingState;
 }
 
-export interface LoadingErrorLoadedComponentProps {
+interface LoadingErrorLoadedComponentProps {
 	loadingInfo: LoadingInfo;
 	notFoundError?: string | null;
 	showSpinner?: boolean;

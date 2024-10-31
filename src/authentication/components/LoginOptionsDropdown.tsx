@@ -5,7 +5,7 @@ import { type RouteComponentProps, withRouter } from 'react-router';
 import LoginOptions from './LoginOptions';
 import './LoginOptionsDropdown.scss';
 
-export interface LoginOptionsDropdownProps {
+interface LoginOptionsDropdownProps {
 	closeDropdown?: () => void;
 }
 

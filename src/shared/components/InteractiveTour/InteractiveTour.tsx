@@ -21,9 +21,9 @@ import { useGetInteractiveTourForPage } from './hooks/useGetInteractiveTourForPa
 
 import './InteractiveTour.scss';
 
-export const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
+const TOUR_DISPLAY_DATES_LOCAL_STORAGE_KEY = 'AVO.tour_display_dates';
 
-export interface InteractiveTourProps {
+interface InteractiveTourProps {
 	showButton: boolean;
 }
 
