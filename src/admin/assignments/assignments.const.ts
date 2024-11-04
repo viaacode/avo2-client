@@ -267,7 +267,7 @@ export const GET_ASSIGNMENT_OVERVIEW_TABLE_COLS = (
 		},
 		{
 			id: ACTIONS_TABLE_COLUMN_ID,
-			tooltip: tText('acties'),
+			tooltip: tText('admin/assignments/assignments___acties'),
 			sortable: false,
 			visibleByDefault: true,
 		},

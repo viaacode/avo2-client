@@ -121,7 +121,7 @@ export const GET_PUPIL_COLLECTIONS_OVERVIEW_TABLE_COLS: () => FilterableColumn<P
 		},
 		{
 			id: ACTIONS_TABLE_COLUMN_ID,
-			tooltip: tText('acties'),
+			tooltip: tText('admin/pupil-collection/pupil-collection___acties'),
 			sortable: false,
 			visibleByDefault: true,
 		},
