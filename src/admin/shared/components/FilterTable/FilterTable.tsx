@@ -460,7 +460,9 @@ const FilterTable: FC<FilterTableProps> = ({
 										const filterTable =
 											document.querySelector('.c-filter-table');
 										const scrollable = filterTable?.closest('.c-scrollable');
+										// Scroll both the window and the scrollable element to the top
 										scrollable?.scrollTo(0, 0);
+										window?.scrollTo(0, 0);
 									}}
 								/>
 							</Spacer>
