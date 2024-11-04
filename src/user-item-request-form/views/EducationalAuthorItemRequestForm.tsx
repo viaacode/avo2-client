@@ -213,6 +213,7 @@ const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps
 								label={tText(
 									'user-item-request-form/views/educational-author-item-request-form___naam-uitgeverij'
 								)}
+								required
 								labelFor="organisation"
 								error={formErrors.organisation}
 							>
@@ -232,6 +233,7 @@ const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps
 								label={tText(
 									'user-item-request-form/views/educational-author-item-request-form___naam-methode'
 								)}
+								required
 								labelFor="method"
 								error={formErrors.method}
 							>
@@ -247,7 +249,7 @@ const EducationalAuthorItemRequestForm: FC<EducationalAuthorItemRequestFormProps
 									}
 								/>
 							</FormGroup>
-							<FormGroup error={formErrors.educationLevels}>
+							<FormGroup error={formErrors.educationLevels} required>
 								<LomFieldsInput
 									loms={formValues.educationLevels}
 									isEducationRequired={true}
