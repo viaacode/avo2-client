@@ -289,6 +289,13 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 	};
 
 	const handleBulkAction = async (action: CollectionBulkAction): Promise<void> => {
+		if (action === CollectionBulkAction.EXPORT_ALL) {
+			// No selection of rows needed since we export all rows
+			// Also, we don't need to check any edit statuses since we're not editing/deleting anything
+			setIsExportAllToCsvModalOpen(true);
+			return;
+		}
+
 		let selectedCollectionsThatAreBeingEdited: Avo.Share.EditStatus[] = [];
 		let selectedCollectionIdsThatAreNotBeingEdited = selectedCollectionIds;
 		if (isCollection) {
@@ -342,11 +349,6 @@ const CollectionsOrBundlesOverview: FC<DefaultSecureRouteProps> = ({ location, c
 				case CollectionBulkAction.CHANGE_LABELS:
 					if (!hasSelectedRows) return;
 					setAddLabelModalOpen(true);
-					return;
-
-				case CollectionBulkAction.EXPORT_ALL:
-					// No selection of rows needed since we export all rows
-					setIsExportAllToCsvModalOpen(true);
 					return;
 			}
 		}

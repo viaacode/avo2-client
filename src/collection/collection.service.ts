@@ -1797,13 +1797,11 @@ export class CollectionService {
 
 	static async getCollectionsEditStatuses(ids: string[]): Promise<Avo.Share.EditStatusResponse> {
 		try {
-			return await fetchWithLogoutJson(
-				stringifyUrl({
-					url: `${getEnv('PROXY_URL')}/collections/share/edit-status`,
-					query: { ids },
-				}),
-				{ method: 'GET' }
-			);
+			const url = stringifyUrl({
+				url: `${getEnv('PROXY_URL')}/collections/share/edit-status`,
+				query: { ids },
+			});
+			return await fetchWithLogoutJson(url);
 		} catch (err) {
 			throw new CustomError('Failed to get collection(s) edit status(es)', err, {
 				assignmentIds: ids,

@@ -422,6 +422,7 @@ const AssignmentOverviewAdmin: FC<RouteComponentProps & UserProps> = ({ commonUs
 	const handleBulkAction = async (action: AssignmentsBulkAction): Promise<void> => {
 		if (action === AssignmentsBulkAction.EXPORT_ALL) {
 			// No rows need to be selected since we export everything
+			// We also don't need to check any edit statuses since we're not editing/deleting anything
 			setIsExportAllToCsvModalOpen(true);
 			return;
 		}
