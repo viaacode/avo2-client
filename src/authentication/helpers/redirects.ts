@@ -1,14 +1,19 @@
 import { type Avo } from '@viaa/avo2-types';
 import { get, isString, omit, trimEnd, trimStart } from 'lodash-es';
-import queryString from 'query-string';
+import queryString, { stringifyUrl } from 'query-string';
 import { type RouteComponentProps } from 'react-router-dom';
 
 import { APP_PATH } from '../../constants';
 import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { getEnv } from '../../shared/helpers';
+import { insideIframe } from '../../shared/helpers/inside-iframe';
 import { SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
+
+// TODO replace this with a page on the avo domain
+const CLOSE_BROWSER_WINDOW_PAGE =
+	'https://bertyhell.s3.eu-central-1.amazonaws.com/projects/meemoo/avo/embed/close-browser.html';
 
 /**
  *
@@ -40,56 +45,75 @@ export function redirectToLoggedInHome(location: RouteComponentProps['location']
  * Server redirect functions
  *
  **/
+function openLoginPageLink(pageUrl: string, queryParams: Record<string, any>): void {
+	const isInsideIframe = insideIframe();
+	const loginPageLink = stringifyUrl({
+		url: pageUrl,
+		query: {
+			...queryParams,
+			returnToUrl: isInsideIframe ? CLOSE_BROWSER_WINDOW_PAGE : queryParams.returnToUrl,
+		},
+	});
+
+	if (isInsideIframe) {
+		// If we're inside an iframe, we need to open the login page in a new window
+		window.open(loginPageLink, '_blank', 'noopener,noreferrer');
+	} else {
+		// Open login page in the current browser tab
+		window.location.href = loginPageLink;
+	}
+}
+
 export function redirectToServerLoginPage(location: RouteComponentProps['location']): void {
 	// Redirect to login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectAfterLogin(location);
 	// Not logged in, we need to redirect the user to the SAML identity server login page
-	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/login?${queryString.stringify({
+	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/hetarchief/login`, {
 		returnToUrl,
 		stamboekNumber: localStorage && localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
-	})}`;
+	});
 }
 
 export function redirectToServerItsmeLogin(location: RouteComponentProps['location']): void {
 	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
+	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/acmidm/login`, {
 		returnToUrl,
 		authMech: 'itsme',
-	})}`;
+	});
 }
 
 export function redirectToServerLeerIDLogin(location: RouteComponentProps['location']): void {
 	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
+	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/acmidm/login`, {
 		returnToUrl,
 		authMech: 'leerid',
-	})}`;
+	});
 }
 
 export function redirectToServerACMIDMLogin(location: RouteComponentProps['location']): void {
 	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/acmidm/login?${queryString.stringify({
+	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/acmidm/login`, {
 		returnToUrl,
-	})}`;
+	});
 }
 
 export function redirectToServerSmartschoolLogin(location: RouteComponentProps['location']): void {
 	// Redirect to smartschool login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/smartschool/login?${queryString.stringify({
+	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/smartschool/login`, {
 		returnToUrl,
-	})}`;
+	});
 }
 
 export function redirectToServerKlascementLogin(location: RouteComponentProps['location']): void {
 	// Redirect to klascement login form
 	// Url to return to after authentication is completed and server stored auth object in session
 	const returnToUrl = getRedirectAfterLogin(location);
-	window.location.href = `${getEnv('PROXY_URL')}/auth/klascement/login?${queryString.stringify({
+	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/klascement/login`, {
 		returnToUrl,
-	})}`;
+	});
 }
 
 export function redirectToServerArchiefRegistrationIdp(
@@ -97,12 +121,10 @@ export function redirectToServerArchiefRegistrationIdp(
 	stamboekNumber: string
 ): void {
 	const returnToUrl = getBaseUrl(location) + APP_PATH.LOGIN.route;
-	window.location.href = `${getEnv('PROXY_URL')}/auth/hetarchief/register?${queryString.stringify(
-		{
-			returnToUrl,
-			stamboekNumber,
-		}
-	)}`;
+	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/hetarchief/register`, {
+		returnToUrl,
+		stamboekNumber,
+	});
 }
 
 export function redirectToServerLogoutPage(
@@ -111,9 +133,9 @@ export function redirectToServerLogoutPage(
 ): void {
 	// Url to return to after logout is completed
 	const returnToUrl = `${getBaseUrl(location)}${routeAfterLogout}`;
-	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
+	openLoginPageLink(`${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}`, {
 		returnToUrl,
-	})}`;
+	});
 }
 
 export function logoutAndRedirectToLogin(location?: RouteComponentProps['location']): void {
@@ -127,9 +149,9 @@ export function logoutAndRedirectToLogin(location?: RouteComponentProps['locatio
 		})}`;
 	}
 
-	window.location.href = `${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}?${queryString.stringify({
+	openLoginPageLink(`${getEnv('PROXY_URL')}/${SERVER_LOGOUT_PAGE}`, {
 		returnToUrl,
-	})}`;
+	});
 }
 
 /**
@@ -178,7 +200,7 @@ export function redirectToExternalPage(
 	}
 }
 
-function getBaseUrl(location: RouteComponentProps['location']): string {
+export function getBaseUrl(location: RouteComponentProps['location']): string {
 	if (location.pathname === '/') {
 		return trimEnd(window.location.href, '/');
 	}
@@ -197,7 +219,7 @@ function getFromPath(
 	return `/${trimStart(fromPath + fromSearch, '/')}`;
 }
 
-function getRedirectAfterLogin(
+export function getRedirectAfterLogin(
 	location: RouteComponentProps['location'],
 	defaultPath: string = APP_PATH.LOGGED_IN_HOME.route
 ): string {

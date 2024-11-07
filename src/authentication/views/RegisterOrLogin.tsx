@@ -1,16 +1,56 @@
 import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components';
-import React, { type FC } from 'react';
+import React, { type ComponentType, type FC, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { type RouteComponentProps, withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { type RouteComponentProps } from 'react-router';
+import { type Dispatch } from 'redux';
 
 import { GENERATE_SITE_TITLE } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
+import type { AppState } from '../../store';
 import LoginOptions from '../components/LoginOptions';
 
 import './RegisterOrLogin.scss';
+import { getBaseUrl, getRedirectAfterLogin } from '../helpers/redirects';
+import { getLoginStateAction } from '../store/actions';
+import {
+	selectCommonUser,
+	selectLogin,
+	selectLoginError,
+	selectLoginLoading,
+	selectUser,
+} from '../store/selectors';
 
-const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) => {
+import type { Avo } from '@viaa/avo2-types';
+
+const RegisterOrLogin: FC<
+	RouteComponentProps & { getLoginState: () => void; loginState: Avo.Auth.LoginResponse }
+> = ({ history, location, match, getLoginState, loginState }) => {
 	const { tText, tHtml } = useTranslation();
+
+	useEffect(() => {
+		// Poll for login state
+		const timerId = window.setInterval(() => {
+			getLoginState();
+		}, 2000);
+
+		// Cleanup function
+		return () => {
+			if (timerId) {
+				window.clearInterval(timerId);
+			}
+		};
+	}, [getLoginState]);
+
+	useEffect(() => {
+		if (loginState?.message === 'LOGGED_IN') {
+			// User was logged in in a different browser window/tab
+			// Continue to the desired page
+			const redirectToUrl = getRedirectAfterLogin(location);
+
+			history.push(redirectToUrl.replace(getBaseUrl(location), ''));
+		}
+	}, [history, location, loginState]);
 
 	return (
 		<Container className="c-register-login-view" mode="horizontal">
@@ -31,7 +71,7 @@ const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) 
 					/>
 				</Helmet>
 
-				<Modal className="c-register-login-view__modal" isOpen size="medium">
+				<Modal className="c-register-login-view__modal" isOpen={true} size="medium">
 					<ModalBody>
 						<Grid className="u-bg-gray-100">
 							<Column size="3-6">
@@ -58,4 +98,21 @@ const RegisterOrLogin: FC<RouteComponentProps> = ({ history, location, match }) 
 	);
 };
 
-export default withRouter(RegisterOrLogin);
+const mapStateToProps = (state: AppState) => ({
+	user: selectUser(state),
+	commonUser: selectCommonUser(state),
+	loginState: selectLogin(state),
+	loginStateLoading: selectLoginLoading(state),
+	loginStateError: selectLoginError(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+	return {
+		getLoginState: () => dispatch(getLoginStateAction() as any),
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(RegisterOrLogin as ComponentType<any>) as FC<RouteComponentProps>;

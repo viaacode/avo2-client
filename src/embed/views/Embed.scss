@@ -1,0 +1,22 @@
+.embed-page {
+	// Hide html element scrollbar
+	overflow: hidden !important;
+
+	.o-app {
+		padding: 0 !important;
+
+		.c-navbar,
+		.c-global-footer {
+			display: none !important;
+		}
+
+		.c-item-video-description__metadata {
+			padding-top: 2rem;
+		}
+	}
+
+	// Hide zendesk widget
+	iframe#launcher {
+		display: none !important;
+	}
+}

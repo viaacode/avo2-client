@@ -53,6 +53,7 @@ interface ItemVideoDescriptionProps {
 	titleLink?: string;
 	onPlay?: () => void;
 	trackPlayEvent: boolean;
+	defaultVideoHeight: number;
 }
 
 const DEFAULT_VIDEO_HEIGHT = 421;
@@ -75,12 +76,13 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 	titleLink,
 	onPlay,
 	trackPlayEvent,
+	defaultVideoHeight = DEFAULT_VIDEO_HEIGHT,
 }) => {
 	const { tText } = useTranslation();
 	const videoRef: RefObject<HTMLVideoElement> = createRef();
 	const descriptionRef = useRef<HTMLDivElement | null>(null);
 
-	const [videoHeight, setVideoHeight] = useState<number>(DEFAULT_VIDEO_HEIGHT); // correct height for desktop screens
+	const [videoHeight, setVideoHeight] = useState<number>(defaultVideoHeight); // correct height for desktop screens
 
 	useEffect(() => {
 		// Register window listener when the component mounts
@@ -90,7 +92,7 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 					const vidHeight = videoRef.current.getBoundingClientRect().height;
 					setVideoHeight(vidHeight);
 				} else {
-					setVideoHeight(DEFAULT_VIDEO_HEIGHT);
+					setVideoHeight(defaultVideoHeight);
 				}
 			},
 			300,
