@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-unresolved
 import AvoLogo from '@assets/images/avo-logo-i.svg';
 import {
 	Avatar,
