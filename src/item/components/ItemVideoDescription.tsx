@@ -107,6 +107,13 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 		};
 	}, [videoRef]);
 
+	function handleDescriptionExpandCollapse(isOpen: boolean) {
+		if (!isOpen) {
+			// Scroll to the top of the description when it is collapsed
+			descriptionRef.current?.children[0]?.scrollTo({ top: 0 });
+		}
+	}
+
 	const renderMedia = () => {
 		return (
 			<FlowPlayerWrapper
@@ -189,9 +196,13 @@ const ItemVideoDescription: FC<ItemVideoDescriptionProps & UserProps & RouteComp
 						width: '100%',
 						height: `${videoHeight}px`, // Height of button
 					}}
+					className="c-scrollable"
 				>
 					{/* TODO: Fix label height - read more button (36) - additional margin (18) */}
-					<ExpandableContainer collapsedHeight={videoHeight - 36 - 18}>
+					<ExpandableContainer
+						collapsedHeight={videoHeight - 36 - 18}
+						onChange={handleDescriptionExpandCollapse}
+					>
 						{renderDescription()}
 					</ExpandableContainer>
 				</PerfectScrollbar>

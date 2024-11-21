@@ -129,10 +129,16 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 			setSelectedCollectionId('');
 			setSelectedCollection(null);
 			setNewCollectionTitle('');
+		}
+	}, [isOpen, collections.length]);
+
+	useEffect(() => {
+		if (isOpen) {
+			// console.log('set start time when opening modal: start time: 0, endtime duration');
 			setFragmentStartTime(0);
 			setFragmentEndTime(toSeconds(itemMetaData.duration) || 0);
 		}
-	}, [isOpen, itemMetaData.duration, collections.length]);
+	}, [isOpen, itemMetaData.duration]);
 
 	const setSelectedCollectionIdAndGetCollectionInfo = async (id: string) => {
 		try {
@@ -318,10 +324,15 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 			fragmentDuration
 		);
 
-		const startStartTimeOnce = once(() => {
+		const setStartTimeOnce = once(() => {
+			// console.log('set start time once', fragmentStartTime);
 			setModalVideoSeekTime(fragmentStartTime);
 		});
 
+		// console.log('render parent page, values: ', {
+		// 	fragmentStartTime,
+		// 	fragmentEndTime,
+		// });
 		return (
 			<Modal
 				title={tHtml(
@@ -342,7 +353,7 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 									showTitle
 									showDescription
 									canPlay={isOpen}
-									onPlay={startStartTimeOnce}
+									onPlay={setStartTimeOnce}
 									cuePointsLabel={{ start, end }}
 									verticalLayout={isMobileWidth()}
 									trackPlayEvent={false}
@@ -363,6 +374,10 @@ const AddToCollectionModal: FC<AddToCollectionModalProps & UserProps> = ({
 												} else if (newEndTime !== fragmentEndTime) {
 													setModalVideoSeekTime(newEndTime);
 												}
+												// console.log('parent page, set values: ', {
+												// 	newStartTime,
+												// 	newEndTime,
+												// });
 												setFragmentStartTime(newStartTime);
 												setFragmentEndTime(newEndTime);
 											}}

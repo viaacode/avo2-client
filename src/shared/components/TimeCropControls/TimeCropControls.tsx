@@ -34,29 +34,28 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 	const [fragmentEndString, setFragmentEndString] = useState<string>(
 		formatDurationHoursMinutesSeconds(endTime)
 	);
-	const [fragmentStartTime, setFragmentStartTime] = useState<number>(startTime || minTime);
-	const [fragmentEndTime, setFragmentEndTime] = useState<number>(endTime || maxTime);
 
 	const clampDuration = (value: number): number => {
 		return clamp(value, minTime, maxTime);
 	};
 
 	useEffect(() => {
-		onChange(fragmentStartTime, fragmentEndTime);
-	}, [fragmentStartTime, fragmentEndTime, onChange]);
-
-	useEffect(() => {
-		setFragmentStartTime(startTime);
+		// console.log('set fragment strings', {
+		// 	startTime,
+		// 	endTime,
+		// 	fragmentStartString: formatDurationHoursMinutesSeconds(startTime),
+		// 	fragmentEndString: formatDurationHoursMinutesSeconds(endTime),
+		// });
 		setFragmentStartString(formatDurationHoursMinutesSeconds(startTime));
-		setFragmentEndTime(endTime);
 		setFragmentEndString(formatDurationHoursMinutesSeconds(endTime));
 	}, [startTime, endTime]);
 
 	const onUpdateMultiRangeValues = (values: number[]) => {
-		setFragmentStartTime(values[0]);
-		setFragmentEndTime(values[1]);
-		setFragmentStartString(formatDurationHoursMinutesSeconds(values[0]));
-		setFragmentEndString(formatDurationHoursMinutesSeconds(values[1]));
+		// console.log('update multirange values', {
+		// 	startTime: values[0],
+		// 	endTime: values[1],
+		// });
+		onChange(values[0], values[1]);
 	};
 	const updateStartAndEnd = (type: 'start' | 'end', value?: string) => {
 		if (value) {
@@ -70,19 +69,19 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 				// full duration
 				if (type === 'start') {
 					const newStartTime = clampDuration(parseDuration(value));
-					setFragmentStartTime(newStartTime);
-					setFragmentStartString(formatDurationHoursMinutesSeconds(newStartTime));
-					if (newStartTime > fragmentEndTime) {
-						setFragmentEndTime(newStartTime);
-						setFragmentEndString(formatDurationHoursMinutesSeconds(newStartTime));
+
+					if (newStartTime > (endTime || maxTime)) {
+						onChange(newStartTime, newStartTime);
+					} else {
+						onChange(newStartTime, endTime);
 					}
 				} else {
 					const newEndTime = clampDuration(parseDuration(value));
-					setFragmentEndTime(newEndTime);
-					setFragmentEndString(formatDurationHoursMinutesSeconds(newEndTime));
-					if (newEndTime < fragmentStartTime) {
-						setFragmentStartTime(newEndTime);
-						setFragmentStartString(formatDurationHoursMinutesSeconds(newEndTime));
+
+					if (newEndTime < (startTime || minTime)) {
+						onChange(newEndTime, newEndTime);
+					} else {
+						onChange(startTime, newEndTime);
 					}
 				}
 			}
@@ -92,15 +91,14 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 			if (type === 'start') {
 				if (/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/.test(fragmentStartString)) {
 					const newStartTime = clampDuration(parseDuration(fragmentStartString));
-					setFragmentStartTime(newStartTime);
-					setFragmentStartString(formatDurationHoursMinutesSeconds(newStartTime));
-					if (newStartTime > fragmentEndTime) {
-						setFragmentEndTime(newStartTime);
-						setFragmentEndString(formatDurationHoursMinutesSeconds(newStartTime));
+
+					if (newStartTime > (endTime || maxTime)) {
+						onChange(newStartTime, newStartTime);
+					} else {
+						onChange(newStartTime, endTime);
 					}
 				} else {
-					setFragmentStartTime(0);
-					setFragmentStartString(formatDurationHoursMinutesSeconds(0));
+					onChange(0, endTime);
 					ToastService.danger(
 						tHtml(
 							'item/components/modals/add-to-collection-modal___de-ingevulde-starttijd-heeft-niet-het-correcte-formaat-uu-mm-ss'
@@ -110,17 +108,14 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 			} else {
 				if (/[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}/.test(fragmentEndString)) {
 					const newEndTime = clampDuration(parseDuration(fragmentEndString));
-					setFragmentEndTime(newEndTime);
-					setFragmentEndString(formatDurationHoursMinutesSeconds(newEndTime));
-					if (newEndTime < fragmentStartTime) {
-						setFragmentStartTime(newEndTime);
-						setFragmentStartString(formatDurationHoursMinutesSeconds(newEndTime));
+
+					if (newEndTime < (startTime || minTime)) {
+						onChange(newEndTime, newEndTime);
+					} else {
+						onChange(startTime, newEndTime);
 					}
 				} else {
-					setFragmentEndTime(toSeconds(endTime) || 0);
-					setFragmentEndString(
-						formatDurationHoursMinutesSeconds(toSeconds(endTime) || 0)
-					);
+					onChange(startTime, toSeconds(endTime) || 0);
 					ToastService.danger(
 						tHtml(
 							'item/components/modals/add-to-collection-modal___de-ingevulde-eidntijd-heeft-niet-het-correcte-formaat-uu-mm-ss'
@@ -131,7 +126,7 @@ const TimeCropControls: FC<TimeCropControlsPops> = ({
 		}
 	};
 
-	const [start, end] = getValidStartAndEnd(fragmentStartTime, fragmentEndTime, maxTime);
+	const [start, end] = getValidStartAndEnd(startTime || minTime, endTime || maxTime, maxTime);
 	return (
 		<Container className={classnames('c-time-crop-controls', className)}>
 			<TextInput
