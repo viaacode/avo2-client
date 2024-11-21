@@ -182,7 +182,9 @@ export const ASSIGNMENT_FORM_SCHEMA = (tText: TFunction): Schema<Avo.Assignment.
 			),
 		description: string().max(
 			300,
-			tText('De korte beschrijving mag maximaal 300 karakters lang zijn.')
+			tText(
+				'assignment/assignment___de-korte-beschrijving-mag-maximaal-300-karakters-lang-zijn'
+			)
 		),
 		labels: array(
 			object({
