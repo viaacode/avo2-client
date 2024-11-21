@@ -463,6 +463,16 @@ const AssignmentEdit: FC<AssignmentEditProps & UserProps> = ({
 			return;
 		}
 
+		if ((assignment?.description?.length || 0) > 300) {
+			ToastService.danger(
+				tHtml(
+					'assignment/views/assignment-edit___de-korte-beschrijving-in-de-publicatie-details-mag-niet-langer-zijn-dan-300-tekens'
+				)
+			);
+			setIsSaving(false);
+			return;
+		}
+
 		await handleSubmit(submit, (...args) => console.error(args))();
 		setIsSaving(false);
 	};

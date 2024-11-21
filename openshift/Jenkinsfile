@@ -249,25 +249,19 @@ pipeline {
 				buildingTag()
 			}
 			steps {
+								container('oc') {
 				script {
-                    // Prompt user for input with a timeout
-                    def userInput = input(
-                        id: 'userApproval',
-                        message: 'Click "Proceed" to start the stage',
-                        parameters: [
-                            [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Proceed with the stage?', name: 'Proceed']
-                        ],
-                        timeout: 3 * 60 // Timeout in seconds (3 minutes)
-                    )
+									// Prompt user for input with a timeout
+								def userInput = input(
+										id: 'userApproval',
+										message: 'Click "Proceed" to start the stage',
+										parameters: [
+												[$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Proceed with the stage?', name: 'Proceed']
+										]
+									)
+									tagNewImage('prd')
+								}
 
-                    // Check user input
-                    if (!userInput.Proceed) {
-                        error('User did not approve. Exiting stage.')
-                    }
-                }
-
-				container('oc') {
-					tagNewImage('prd')
 				}
 			}
 			post {

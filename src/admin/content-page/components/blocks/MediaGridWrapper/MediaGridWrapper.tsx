@@ -283,8 +283,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 				?.label || 'item';
 		const itemDuration = String((itemOrCollectionOrAssignment as Avo.Item.Item)?.duration || 0);
 		const collectionItems =
-			(itemOrCollectionOrAssignment as Avo.Collection.Collection)
-				?.collection_fragments_aggregate?.aggregate?.count || 0; // TODO add fragment count to elasticsearch index
+			(itemOrCollectionOrAssignment as Avo.Collection.Collection)?.item_count || 0;
 		return (
 			{
 				item: itemDuration,
@@ -323,14 +322,14 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 		index: number
 	): MediaListItem => {
 		const itemLabel = itemOrCollectionOrAssignment?.type?.label || 'video';
-		const viewCount = itemOrCollectionOrAssignment?.view_count?.count || 0;
+		const viewCount = itemOrCollectionOrAssignment?.view_count || 0;
 
 		const element: MediaGridBlockComponentState = (elements || [])[index] || ({} as any);
 
 		// Show copy right notice when the block requires it and the user is not logged in, or when they are editing the content page (preview)
 		// https://meemoo.atlassian.net/browse/AVO-3015
 		const showCopyrightNotice =
-			!!itemOrCollectionOrAssignment.copyrightOrganisation &&
+			!!itemOrCollectionOrAssignment.copyright_organisation &&
 			(!commonUser || location.pathname.startsWith(ADMIN_PATH.DASHBOARD));
 
 		return {
@@ -372,7 +371,7 @@ const MediaGridWrapper: FC<MediaGridWrapperProps & UserProps & RouteComponentPro
 						onClick={(evt) =>
 							handleCopyrightClicked(
 								evt,
-								itemOrCollectionOrAssignment.copyrightOrganisation as Avo.Organization.Organization
+								itemOrCollectionOrAssignment.copyright_organisation as Avo.Organization.Organization
 							)
 						}
 						label={tText(

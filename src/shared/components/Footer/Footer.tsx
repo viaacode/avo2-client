@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/no-unresolved
 import meemooLogo from '@assets/images/meemoo-logo.png';
+// eslint-disable-next-line import/no-unresolved
 import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.png';
 import { Container, Spacer } from '@viaa/avo2-components';
 import React, { type FC, useEffect, useState } from 'react';
