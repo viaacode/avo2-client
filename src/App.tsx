@@ -150,6 +150,7 @@ const App: FC<
 				className={classnames('o-app', {
 					'o-app--admin': isAdminRoute,
 				})}
+				data-iframe-size=""
 			>
 				<ToastContainer
 					autoClose={4000}

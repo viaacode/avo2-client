@@ -5,7 +5,7 @@
 .o-app {
 	display: flex;
 	flex-direction: column;
-	min-height: 100vh;
+	//min-height: 100vh; // Disabled for embed code
 	padding-top: 6.4rem;
 
 	> .c-navbar {

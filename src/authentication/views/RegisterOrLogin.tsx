@@ -1,4 +1,5 @@
 import { Column, Container, Grid, Modal, ModalBody } from '@viaa/avo2-components';
+import type { Avo } from '@viaa/avo2-types';
 import React, { type ComponentType, type FC, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
@@ -9,8 +10,6 @@ import { GENERATE_SITE_TITLE } from '../../constants';
 import useTranslation from '../../shared/hooks/useTranslation';
 import type { AppState } from '../../store';
 import LoginOptions from '../components/LoginOptions';
-
-import './RegisterOrLogin.scss';
 import { getBaseUrl, getRedirectAfterLogin } from '../helpers/redirects';
 import { getLoginStateAction } from '../store/actions';
 import {
@@ -21,11 +20,11 @@ import {
 	selectUser,
 } from '../store/selectors';
 
-import type { Avo } from '@viaa/avo2-types';
+import './RegisterOrLogin.scss';
 
 const RegisterOrLogin: FC<
 	RouteComponentProps & { getLoginState: () => void; loginState: Avo.Auth.LoginResponse }
-> = ({ history, location, match, getLoginState, loginState }) => {
+> = ({ history, location, getLoginState, loginState }) => {
 	const { tText, tHtml } = useTranslation();
 
 	useEffect(() => {
@@ -88,7 +87,7 @@ const RegisterOrLogin: FC<
 								</p>
 							</Column>
 							<Column size="3-6" className="u-bg-white">
-								<LoginOptions history={history} location={location} match={match} />
+								<LoginOptions />
 							</Column>
 						</Grid>
 					</ModalBody>

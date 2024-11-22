@@ -1,9 +1,8 @@
 import React, { type ReactNode } from 'react';
+import { Route } from 'react-router';
 
-import { SecuredRoute } from '../authentication/components';
-
-import Embed from './views/Embed';
+import Embed from './views/EmbedChildPage';
 
 export const renderEmbedRoutes = (): ReactNode[] => [
-	<SecuredRoute path={'/embed/item/:pid'} exact component={Embed} key="embed-view" />,
+	<Route path={'/embed/item/:pid'} exact component={Embed} key="embed-view" />,
 ];

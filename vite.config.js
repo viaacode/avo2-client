@@ -7,15 +7,6 @@ import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import svgrPlugin from 'vite-plugin-svgr';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
-const ASSETS_WITHOUT_A_HASH = [
-	// Avoid hashes in the audio still path, since it gets saved in the database
-	// And we don't want it to update the hash everytime the svg file changes
-	// https://meemoo.atlassian.net/browse/AVO-3336
-	'audio-still.svg',
-	// Avoid hashes in the embed.js file, since we want to be able to update this file without updating the embed code urls
-	'embed.js',
-];
-
 export default defineConfig(() => {
 	return {
 		build: {
@@ -26,19 +17,25 @@ export default defineConfig(() => {
 					// eslint-disable-next-line no-undef
 					main: path.resolve(__dirname, 'index.html'),
 					// eslint-disable-next-line no-undef
-					embed: path.resolve(__dirname, 'src/embed/meemoo-embed.ts'),
+					embed: path.resolve(__dirname, 'src/embed/embed-parent-page.ts'),
 				},
 				plugins: [sourcemaps()],
 				output: {
 					entryFileNames: function (file) {
-						return ASSETS_WITHOUT_A_HASH.includes(file.name)
-							? `assets/[name].js`
-							: `assets/[name]-[hash].js`;
+						if (file.name === 'embed') {
+							// Avoid hashes in the embed.mjs file, since we want to be able to update this file without updating the embed code urls
+							return `embed.js`;
+						}
+						return `assets/[name]-[hash].js`;
 					},
 					assetFileNames: function (file) {
-						return ASSETS_WITHOUT_A_HASH.includes(file.name)
-							? `assets/[name].[ext]`
-							: `assets/[name]-[hash].[ext]`;
+						if (file.name === 'audio-still.svg') {
+							// Avoid hashes in the audio still path, since it gets saved in the database
+							// And we don't want it to update the hash everytime the svg file changes
+							// https://meemoo.atlassian.net/browse/AVO-3336
+							return `assets/[name].[ext]`;
+						}
+						return `assets/[name]-[hash].[ext]`;
 					},
 				},
 			},
