@@ -27,6 +27,7 @@ import {
 	isEqual,
 	isNil,
 	isPlainObject,
+	omit,
 	pickBy,
 	set,
 } from 'lodash-es';
@@ -332,12 +333,13 @@ const SearchFiltersAndResults: FC<SearchFiltersAndResultsProps> = ({
 		const copiedFilterState = cloneDeep(filterState);
 
 		// Only remove filters that are user-editable
-		for (const key in copiedFilterState) {
-			if (Object.prototype.hasOwnProperty.call(copiedFilterState, key)) {
-				if (enabledFilters === undefined || enabledFilters.map(String).includes(key)) {
-					delete copiedFilterState[key as keyof typeof copiedFilterState];
-				}
-			}
+		if (enabledFilters) {
+			copiedFilterState.filters = omit(copiedFilterState.filters || {}, enabledFilters);
+		} else {
+			copiedFilterState.filters = {};
+		}
+		if (copiedFilterState.filters) {
+			delete copiedFilterState.filters.query;
 		}
 
 		setSearchTerms('');
