@@ -37,18 +37,6 @@
 				margin-top: 20px;
 			}
 		</style>
-		<script>
-			// Add a message listener to receive messages from the iFrame
-			window.addEventListener("message", function (event) {
-				if (event.data === "EMBED__LOGIN_SUCCESSFUL") {
-					// User logged in in one iframe
-					// Send a refresh login to other iframes
-					document.querySelectorAll("iframe").forEach(function (iframe) {
-						iframe.contentWindow.postMessage("EMBED__REFRESH_LOGIN", "*");
-					});
-				}
-			});
-		</script>
 	</head>
 	<body>
 		<header>
@@ -60,12 +48,13 @@
 			<h2>Main Content Area</h2>
 			<p class="skeleton-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas non nulla vel sapien venenatis laoreet. Proin suscipit volutpat justo.</p>
 
-			<!-- iFrame Demo -->
-			<iframe src="http://localhost:8080/embed/item/qsn58fhr6k" width="1000px" height="320px"></iframe>
+			<!-- iFrame Demo 1 -->
+			<script src="http://localhost:8080/meemoo-embed.js" data-embed-id="qsn58fhr6k"></script>
 
 			<p class="skeleton-text">Mauris sed odio nec elit bibendum luctus. Cras ut nunc ac orci placerat tempor. Donec dictum facilisis augue, nec bibendum erat blandit non.</p>
 
-			<iframe src="http://localhost:8080/embed/item/qs5q4tkt6z" width="1000px" height="320px"></iframe>
+			<!-- iFrame Demo 2 -->
+			<script src="http://localhost:8080/meemoo-embed.js" data-embed-id="qs5q4tkt6z"></script>
 		</main>
 
 		<footer>

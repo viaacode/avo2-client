@@ -12,6 +12,8 @@ const ASSETS_WITHOUT_A_HASH = [
 	// And we don't want it to update the hash everytime the svg file changes
 	// https://meemoo.atlassian.net/browse/AVO-3336
 	'audio-still.svg',
+	// Avoid hashes in the embed.js file, since we want to be able to update this file without updating the embed code urls
+	'embed.js',
 ];
 
 export default defineConfig(() => {
@@ -20,8 +22,19 @@ export default defineConfig(() => {
 			outDir: 'dist',
 			sourcemap: true,
 			rollupOptions: {
+				input: {
+					// eslint-disable-next-line no-undef
+					main: path.resolve(__dirname, 'index.html'),
+					// eslint-disable-next-line no-undef
+					embed: path.resolve(__dirname, 'src/embed/meemoo-embed.ts'),
+				},
 				plugins: [sourcemaps()],
 				output: {
+					entryFileNames: function (file) {
+						return ASSETS_WITHOUT_A_HASH.includes(file.name)
+							? `assets/[name].js`
+							: `assets/[name]-[hash].js`;
+					},
 					assetFileNames: function (file) {
 						return ASSETS_WITHOUT_A_HASH.includes(file.name)
 							? `assets/[name].[ext]`
