@@ -9,7 +9,7 @@ async function bootstrapEmbed() {
 
 	const embedScriptTag = document.currentScript;
 	const embedId = embedScriptTag?.getAttribute('data-embed-id');
-	const token = embedScriptTag?.getAttribute('data-token');
+	const jwtToken = embedScriptTag?.getAttribute('data-token');
 
 	console.log('bootstrapping meemoo embed: ', embedId);
 
@@ -22,7 +22,13 @@ async function bootstrapEmbed() {
 
 	// Boostrap the iframe that will load the avo login / video
 	const iframe = document.createElement('iframe');
-	iframe.setAttribute('src', EMBED_DOMAIN + '/embed/item/' + embedId + '?token=' + token);
+
+	// Should match import { JWT_TOKEN } from '../authentication/authentication.const';
+	const JWT_TOKEN = 'jwtToken';
+	iframe.setAttribute(
+		'src',
+		EMBED_DOMAIN + '/embed/item/' + embedId + `?${JWT_TOKEN}=` + jwtToken
+	);
 	iframe.setAttribute('width', '100%');
 	iframe.setAttribute('height', '100vh');
 	iframe.setAttribute('data-embed-id', 'qsn58fhr6k');
@@ -55,12 +61,17 @@ async function bootstrapEmbed() {
 
 	// Listen for messages from the idp page in a new tab
 	window.addEventListener('message', handlePostMessage);
+	document.addEventListener('visibilitychange', () => sendFocusMessageToIframe(iframe));
+}
+
+function sendFocusMessageToIframe(iframe: HTMLIFrameElement) {
+	iframe.contentWindow?.postMessage('MEEMOO_EMBED__PARENT_FOCUS', '*');
 }
 
 // Forward successful login messages from idp page in new tab to the embeds in this page
 async function handlePostMessage(event: MessageEvent) {
-	console.log('parent page received a post message', event);
 	if (event?.data?.startsWith('MEEMOO_EMBED__')) {
+		console.log('parent page received a post message', event);
 		if (event?.data === 'MEEMOO_EMBED__LOGIN_SUCCESSFUL') {
 			const embedIframes = document.querySelectorAll(
 				'iframe[src^="http://localhost"][data-embed-id]'

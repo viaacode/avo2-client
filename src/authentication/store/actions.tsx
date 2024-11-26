@@ -2,6 +2,7 @@ import { Button, Spacer } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { subMinutes } from 'date-fns';
 import { compact } from 'lodash-es';
+import { stringifyUrl } from 'query-string';
 import React from 'react';
 import { type RouteComponentProps } from 'react-router-dom';
 import { type Action, type Dispatch } from 'redux';
@@ -9,6 +10,7 @@ import { type Action, type Dispatch } from 'redux';
 import { getEnv } from '../../shared/helpers';
 import { tText } from '../../shared/helpers/translate';
 import { ToastService } from '../../shared/services/toast-service';
+import { JWT_TOKEN } from '../authentication.const';
 import { LoginMessage } from '../authentication.types';
 import { logoutAndRedirectToLogin } from '../helpers/redirects';
 
@@ -145,10 +147,17 @@ const setAcceptConditions = (): SetAcceptConditionsAction => ({
 
 export const getLoginResponse = async (force = false): Promise<Avo.Auth.LoginResponse> => {
 	try {
-		const url = `${getEnv('PROXY_URL')}/auth/check-login?force=${force}`;
+		const jwtToken = new URLSearchParams(window.location.search).get(JWT_TOKEN);
+		const url = stringifyUrl({
+			url: `${getEnv('PROXY_URL')}/auth/check-login`,
+			query: {
+				force,
+			},
+		});
 		const { fetchWithLogoutJson } = await import('@meemoo/admin-core-ui/dist/client.mjs');
 		return fetchWithLogoutJson<Avo.Auth.LoginResponse>(url, {
 			forceLogout: false,
+			headers: jwtToken ? { authorization: `Bearer ${jwtToken}` } : undefined,
 		});
 	} catch (err) {
 		console.error('failed to check login state', err);

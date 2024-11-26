@@ -4,13 +4,10 @@
 		<meta charset="UTF-8" />
 		<title>Login successful, close browser</title>
 		<script>
-			// SEnd message to opener to refresh the meemoo embeds
-			console.log("sending message to openen: ", "MEEMOO_EMBED__LOGIN_SUCCESSFUL");
-			window.opener.postMessage("MEEMOO_EMBED__LOGIN_SUCCESSFUL", "*");
 			// Close the browser window after 2 seconds
-			setTimeout(function () {
-				window.close();
-			}, 10000);
+			// setTimeout(function () {
+			window.close();
+			// }, 1000);
 		</script>
 		<style>
 			body {

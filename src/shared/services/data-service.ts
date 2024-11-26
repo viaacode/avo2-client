@@ -1,5 +1,6 @@
 import { goToLoginBecauseOfUnauthorizedError } from '@meemoo/admin-core-ui/dist/client.mjs';
 
+import { JWT_TOKEN } from '../../authentication/authentication.const';
 import { getEnv } from '../helpers';
 
 // Use by graphql codegen in codegen.yml to fetch info from the dataservice and wrap those requests in react-query hooks
@@ -9,10 +10,15 @@ export const fetchData = <TData, TVariables>(
 	options?: RequestInit['headers']
 ): (() => Promise<TData>) => {
 	return async () => {
+		const jwtToken = new URLSearchParams(window.location.search).get(JWT_TOKEN);
 		const res = await fetch(`${getEnv('PROXY_URL')}/data`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				// Add jwtToken to headers
+				// From the jwtToken query param
+				// This is only used for authentication of the avo embed code
+				...(jwtToken ? { Authorization: `Bearer ${jwtToken}` } : {}),
 				...options,
 			},
 			credentials: 'include',

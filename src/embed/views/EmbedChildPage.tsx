@@ -2,9 +2,11 @@ import { Button } from '@meemoo/react-components';
 import { type Avo } from '@viaa/avo2-types';
 import React, { type FC, type MouseEvent, useCallback, useEffect, useState } from 'react';
 
+import { JWT_TOKEN } from '../../authentication/authentication.const';
 import LoginOptions from '../../authentication/components/LoginOptions';
 import { getLoginResponse } from '../../authentication/store/actions';
 import { useGetItemByExternalId } from '../../item/hooks/useGetItem';
+import { useGetItemMediaTicket } from '../../item/hooks/useGetItemMediaTicket';
 import FlowPlayerWrapper from '../../shared/components/FlowPlayerWrapper/FlowPlayerWrapper';
 import TextWithTimestamps from '../../shared/components/TextWithTimestamp/TextWithTimestamps';
 import { reorderDate } from '../../shared/helpers';
@@ -20,20 +22,33 @@ const EmbedChildPage: FC = () => {
 	const embedCodeId = window.location.pathname.split('/').pop();
 	const [isLoginChecked, setIsLoginChecked] = useState(false);
 	const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+	const jwtToken = new URLSearchParams(window.location.search).get(JWT_TOKEN);
 
-	const getLogin = useCallback(async () => {
+	const getLogin = useCallback(async (): Promise<boolean> => {
 		setIsLoginChecked(false);
 		const loginResponse = await getLoginResponse(true);
 		if (loginResponse.message === 'LOGGED_IN') {
 			setCommonUser((loginResponse as Avo.Auth.LoginResponseLoggedIn).commonUserInfo);
+			setIsLoginChecked(true);
+			return true;
+		} else {
+			setIsLoginChecked(true);
+			return false;
 		}
-		setIsLoginChecked(true);
 	}, []);
 
 	const handlePostMessage = useCallback(
 		async (event: MessageEvent) => {
 			if (event?.data === 'MEEMOO_EMBED__LOGIN_SUCCESSFUL') {
+				console.log('received event: MEEMOO_EMBED__LOGIN_SUCCESSFUL');
 				await getLogin();
+			} else if (event?.data === 'MEEMOO_EMBED__PARENT_FOCUS') {
+				console.log('received event: MEEMOO_EMBED__PARENT_FOCUS');
+				// Get the login state again when the user returns to the tab
+				const isLoggedIn = await getLogin();
+				if (isLoggedIn) {
+					window.removeEventListener('message', handlePostMessage); // No need to listen for login events anymore
+				}
 			}
 		},
 		[getLogin]
@@ -56,7 +71,14 @@ const EmbedChildPage: FC = () => {
 		isLoading: isLoadingItem,
 		isError: isErrorItem,
 	} = useGetItemByExternalId(embedCodeId as string, {
-		enabled: !!embedCodeId,
+		enabled: !!embedCodeId && !!commonUser && !!jwtToken,
+	});
+	const {
+		data: itemMediaTicket,
+		isLoading: isLoadingMediaTicket,
+		isError: isErrorMediaTicket,
+	} = useGetItemMediaTicket(item?.external_id as string, {
+		enabled: !!item,
 	});
 
 	useEffect(() => {
@@ -89,15 +111,23 @@ const EmbedChildPage: FC = () => {
 		if (!commonUser) {
 			return <LoginOptions />;
 		}
-		if (isLoadingItem) {
+		if (isLoadingItem || isLoadingMediaTicket) {
 			return renderMessageCentered('Loading media...');
 		}
 		if (isErrorItem) {
 			return renderMessageCentered('Het laden van dit media item is mislukt');
 		}
+		if (isErrorMediaTicket) {
+			return renderMessageCentered('Het ophalen van een media ticket is mislukt');
+		}
 		return (
 			<>
-				<FlowPlayerWrapper item={item} canPlay={true} trackPlayEvent={true} />
+				<FlowPlayerWrapper
+					item={item}
+					src={itemMediaTicket}
+					canPlay={true}
+					trackPlayEvent={true}
+				/>
 				<div style={{ padding: '20px' }}>
 					{!!item.issued && (
 						<div>

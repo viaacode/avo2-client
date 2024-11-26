@@ -21,6 +21,7 @@ import {
 import './LoginOptions.scss';
 
 interface LoginOptionsProps {
+	jwtToken?: string;
 	onOptionClicked?: () => void;
 }
 
@@ -32,9 +33,9 @@ const LoginOptionsTabs = {
 };
 
 const LoginOptions: FC<LoginOptionsProps & RouteComponentProps> = ({
+	onOptionClicked = noop,
 	history,
 	location,
-	onOptionClicked = noop,
 }) => {
 	const { tText, tHtml } = useTranslation();
 	const [tab, setActiveTab, tabs] = useTabs(

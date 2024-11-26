@@ -8,7 +8,7 @@ import { type ErrorViewQueryParams } from '../../error/views/ErrorView';
 import { ROUTE_PARTS } from '../../shared/constants';
 import { getEnv } from '../../shared/helpers';
 import { insideIframe } from '../../shared/helpers/inside-iframe';
-import { SERVER_LOGOUT_PAGE } from '../authentication.const';
+import { JWT_TOKEN, SERVER_LOGOUT_PAGE } from '../authentication.const';
 import { STAMBOEK_LOCAL_STORAGE_KEY } from '../views/registration-flow/r3-stamboek';
 
 // TODO replace this with a page on the avo domain
@@ -72,6 +72,7 @@ export function redirectToServerLoginPage(location: RouteComponentProps['locatio
 	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/hetarchief/login`, {
 		returnToUrl,
 		stamboekNumber: localStorage && localStorage.getItem(STAMBOEK_LOCAL_STORAGE_KEY),
+		jwtToken: new URLSearchParams(window.location.search).get(JWT_TOKEN), // Token from the parent page of the avo embed (smartschool, bookwidgets)
 	});
 }
 
@@ -80,6 +81,7 @@ export function redirectToServerItsmeLogin(location: RouteComponentProps['locati
 	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/acmidm/login`, {
 		returnToUrl,
 		authMech: 'itsme',
+		jwtToken: new URLSearchParams(window.location.search).get(JWT_TOKEN), // Token from the parent page of the avo embed (smartschool, bookwidgets)
 	});
 }
 
@@ -88,6 +90,7 @@ export function redirectToServerLeerIDLogin(location: RouteComponentProps['locat
 	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/acmidm/login`, {
 		returnToUrl,
 		authMech: 'leerid',
+		jwtToken: new URLSearchParams(window.location.search).get(JWT_TOKEN), // Token from the parent page of the avo embed (smartschool, bookwidgets)
 	});
 }
 
@@ -95,6 +98,7 @@ export function redirectToServerACMIDMLogin(location: RouteComponentProps['locat
 	const returnToUrl = getRedirectAfterLogin(location);
 	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/acmidm/login`, {
 		returnToUrl,
+		jwtToken: new URLSearchParams(window.location.search).get(JWT_TOKEN), // Token from the parent page of the avo embed (smartschool, bookwidgets)
 	});
 }
 
@@ -104,6 +108,7 @@ export function redirectToServerSmartschoolLogin(location: RouteComponentProps['
 	const returnToUrl = getRedirectAfterLogin(location);
 	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/smartschool/login`, {
 		returnToUrl,
+		jwtToken: new URLSearchParams(window.location.search).get(JWT_TOKEN), // Token from the parent page of the avo embed (smartschool, bookwidgets)
 	});
 }
 
@@ -113,6 +118,7 @@ export function redirectToServerKlascementLogin(location: RouteComponentProps['l
 	const returnToUrl = getRedirectAfterLogin(location);
 	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/klascement/login`, {
 		returnToUrl,
+		jwtToken: new URLSearchParams(window.location.search).get(JWT_TOKEN), // Token from the parent page of the avo embed (smartschool, bookwidgets)
 	});
 }
 
@@ -124,6 +130,7 @@ export function redirectToServerArchiefRegistrationIdp(
 	openLoginPageLink(`${getEnv('PROXY_URL')}/auth/hetarchief/register`, {
 		returnToUrl,
 		stamboekNumber,
+		jwtToken: new URLSearchParams(window.location.search).get(JWT_TOKEN), // Token from the parent page of the avo embed (smartschool, bookwidgets)
 	});
 }
 

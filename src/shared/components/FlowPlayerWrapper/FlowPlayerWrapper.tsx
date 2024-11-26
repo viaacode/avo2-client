@@ -8,7 +8,7 @@ import {
 } from '@meemoo/react-components';
 import { Icon, IconName, MediaCard, MediaCardThumbnail, Thumbnail } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
-import { get, isNil, isString, noop, throttle } from 'lodash-es';
+import { get, isNil, isString, throttle } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 import React, {
 	type FC,
@@ -27,7 +27,9 @@ import { useQueryParam } from 'use-query-params';
 import { redirectToClientPage } from '../../../authentication/helpers/redirects';
 import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
+import type { AppState } from '../../../store';
 import { setLastVideoPlayedAtAction } from '../../../store/actions';
+import { selectLastVideoPlayedAt } from '../../../store/selectors';
 import {
 	CustomError,
 	formatDurationHoursMinutesSeconds,
@@ -303,6 +305,14 @@ const FlowPlayerWrapper: FC<
 			? window.ga.getAll()[0].get('trackingId')
 			: undefined;
 
+	console.log('flow player: ', {
+		src,
+		autoplay: props.autoplay,
+		clickedThumbnail,
+		item,
+		autoplayVideo,
+		externalId: item?.external_id,
+	});
 	return (
 		<>
 			<div
@@ -424,13 +434,17 @@ const FlowPlayerWrapper: FC<
 	);
 };
 
+const mapStateToProps = (state: AppState) => ({
+	lastVideoPlayedAt: selectLastVideoPlayedAt(state),
+});
+
 const mapDispatchToProps = (dispatch: Dispatch) => ({
 	setLastVideoPlayedAt: (lastVideoPlayedAt: Date | null) =>
 		dispatch(setLastVideoPlayedAtAction(lastVideoPlayedAt) as any),
 });
 
 export default compose(
-	connect(noop, mapDispatchToProps),
+	connect(mapStateToProps, mapDispatchToProps),
 	withRouter,
 	withUser
 )(FlowPlayerWrapper) as FC<FlowPlayerWrapperProps>;
