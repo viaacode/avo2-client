@@ -3,7 +3,7 @@
   "version": "1.28.20",
   "private": true,
   "scripts": {
-    "prepare": "husky install",
+    "__prepare": "husky install",
     "prestart": "npm run env",
     "start": "vite",
     "dev": "dotenv -e .env.qas vite",
@@ -34,7 +34,7 @@
   "dependencies": {
     "@flowplayer/player": "3.3.0",
     "@hookform/resolvers": "2.9.11",
-    "@meemoo/admin-core-ui": "4.2.24",
+    "@meemoo/admin-core-ui": "4.2.25",
     "@meemoo/react-components": "4.0.26",
     "@popperjs/core": "2.11.6",
     "@studiohyperdrive/pagination": "1.0.0",
@@ -93,6 +93,7 @@
     "to-camel-case": "1.0.0",
     "to-slug-case": "1.0.0",
     "use-query-params": "1.2.3",
+    "ts-retry-promise": "0.8.1",
     "yup": "1.4.0"
   },
   "devDependencies": {

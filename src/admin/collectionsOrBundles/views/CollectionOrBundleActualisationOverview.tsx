@@ -1,27 +1,21 @@
 import { ExportAllToCsvModal } from '@meemoo/admin-core-ui/dist/admin.mjs';
-import { Button, ButtonToolbar, IconName } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { noop } from 'lodash-es';
 import React, { type FC, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
 
 import { type DefaultSecureRouteProps } from '../../../authentication/components/SecuredRoute';
-import { CollectionCreateUpdateTab } from '../../../collection/collection.types';
-import { APP_PATH, GENERATE_SITE_TITLE } from '../../../constants';
+import { GENERATE_SITE_TITLE } from '../../../constants';
 import { ErrorView } from '../../../error/views';
 import {
 	type CheckboxOption,
 	LoadingErrorLoadedComponent,
 	type LoadingInfo,
 } from '../../../shared/components';
-import { CollectionOrBundleOrAssignmentTitleAndCopyTag } from '../../../shared/components/CollectionOrBundleOrAssignmentTitleAndCopyTag/CollectionOrBundleOrAssignmentTitleAndCopyTag';
-import { buildLink, CustomError } from '../../../shared/helpers';
-import {
-	ACTIONS_TABLE_COLUMN_ID,
-	tableColumnListToCsvColumnList,
-} from '../../../shared/helpers/table-column-list-to-csv-column-list';
+import { CustomError } from '../../../shared/helpers';
+import { tableColumnListToCsvColumnList } from '../../../shared/helpers/table-column-list-to-csv-column-list';
 import withUser from '../../../shared/hocs/withUser';
 import { useCompaniesWithUsers } from '../../../shared/hooks/useCompanies';
 import { useLomEducationLevelsAndDegrees } from '../../../shared/hooks/useLomEducationLevelsAndDegrees';
@@ -51,7 +45,10 @@ import {
 	type CollectionSortProps,
 	EditorialType,
 } from '../collections-or-bundles.types';
-import { renderCollectionOverviewColumns } from '../helpers/render-collection-columns';
+import {
+	renderCollectionsOrBundleActualisationOverviewTableCellReact,
+	renderCollectionsOrBundleActualisationOverviewTableCellText,
+} from '../helpers/render-collection-columns';
 
 const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 	location,
@@ -263,76 +260,6 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 		setIsLoading(false);
 	};
 
-	const renderTableCell = (
-		collectionOrBundle: Partial<Avo.Collection.Collection>,
-		columnId: CollectionOrBundleActualisationOverviewTableCols
-	) => {
-		const editLink = buildLink(
-			isCollection ? APP_PATH.COLLECTION_EDIT_TAB.route : APP_PATH.BUNDLE_EDIT_TAB.route,
-			{ id: collectionOrBundle.id, tabId: CollectionCreateUpdateTab.ACTUALISATION }
-		);
-		const editLinkOriginal = collectionOrBundle.relations?.[0].object
-			? buildLink(
-					isCollection
-						? APP_PATH.COLLECTION_EDIT_TAB.route
-						: APP_PATH.BUNDLE_EDIT_TAB.route,
-					{
-						id: collectionOrBundle.relations?.[0].object,
-						tabId: CollectionCreateUpdateTab.ACTUALISATION,
-					}
-			  )
-			: null;
-
-		switch (columnId) {
-			case 'title': {
-				return (
-					<CollectionOrBundleOrAssignmentTitleAndCopyTag
-						title={collectionOrBundle.title}
-						editLink={editLink}
-						editLinkOriginal={editLinkOriginal}
-					/>
-				);
-			}
-
-			case ACTIONS_TABLE_COLUMN_ID:
-				return (
-					<ButtonToolbar>
-						<Link to={editLink}>
-							<Button
-								type="secondary"
-								icon={IconName.edit}
-								ariaLabel={
-									isCollection
-										? tText(
-												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-										  )
-										: tText(
-												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-										  )
-								}
-								title={
-									isCollection
-										? tText(
-												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-collectie'
-										  )
-										: tText(
-												'admin/collections-or-bundles/views/collections-or-bundles-overview___bewerk-de-bundel'
-										  )
-								}
-							/>
-						</Link>
-					</ButtonToolbar>
-				);
-
-			default:
-				return renderCollectionOverviewColumns(
-					collectionOrBundle,
-					columnId,
-					collectionLabels
-				);
-		}
-	};
-
 	const renderNoResults = () => {
 		return (
 			<ErrorView
@@ -359,7 +286,16 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 					columns={tableColumns}
 					data={collections}
 					dataCount={collectionCount}
-					renderCell={renderTableCell as any}
+					renderCell={(collectionOrBundle: any, columnId: string) => {
+						return renderCollectionsOrBundleActualisationOverviewTableCellReact(
+							collectionOrBundle as Partial<Avo.Collection.Collection>,
+							columnId as CollectionOrBundleActualisationOverviewTableCols,
+							{
+								isCollection,
+								collectionLabels,
+							}
+						);
+					}}
 					searchTextPlaceholder={tText(
 						'admin/collections-or-bundles/views/collection-or-bundle-actualisation-overview___zoek-op-titel-beschrijving-auteur'
 					)}
@@ -440,9 +376,10 @@ const CollectionOrBundleActualisationOverview: FC<DefaultSecureRouteProps> = ({
 						return response.collections;
 					}}
 					renderValue={(value: any, columnId: string) =>
-						renderTableCell(
+						renderCollectionsOrBundleActualisationOverviewTableCellText(
 							value as any,
-							columnId as CollectionOrBundleActualisationOverviewTableCols
+							columnId as CollectionOrBundleActualisationOverviewTableCols,
+							{ collectionLabels }
 						)
 					}
 					columns={tableColumnListToCsvColumnList(tableColumns)}
