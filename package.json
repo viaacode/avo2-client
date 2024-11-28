@@ -1,6 +1,6 @@
 {
   "name": "avo2-client",
-  "version": "1.28.20",
+  "version": "1.28.21",
   "private": true,
   "scripts": {
     "__prepare": "husky install",
