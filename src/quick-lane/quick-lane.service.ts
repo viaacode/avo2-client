@@ -3,6 +3,7 @@ import { type Avo } from '@viaa/avo2-types';
 import { ItemsService } from '../admin/items/items.service';
 import { AssignmentLayout } from '../assignment/assignment.types';
 import { CollectionService } from '../collection/collection.service';
+import { CollectionOrBundle } from '../collection/collection.types';
 import { type QuickLaneType } from '../shared/components/QuickLaneModal/QuickLaneModal.types';
 import {
 	type GetQuickLaneByContentAndOwnerQuery,
@@ -157,7 +158,7 @@ export class QuickLaneService {
 				case 'COLLECTIE':
 					url.content = (await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 						url.content_id || '',
-						'collection',
+						CollectionOrBundle.COLLECTION,
 						undefined
 					)) as Avo.Collection.Collection;
 					break;

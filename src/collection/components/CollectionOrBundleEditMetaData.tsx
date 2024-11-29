@@ -26,11 +26,12 @@ import { stripHtml } from '../../shared/helpers';
 import useTranslation from '../../shared/hooks/useTranslation';
 import { MAX_LONG_DESCRIPTION_LENGTH } from '../collection.const';
 import { getValidationFeedbackForDescription } from '../collection.helpers';
+import { type CollectionOrBundle } from '../collection.types';
 
 import { type CollectionAction } from './CollectionOrBundleEdit';
 
 interface CollectionOrBundleEditMetaDataProps {
-	type: 'collection' | 'bundle';
+	type: CollectionOrBundle;
 	collection: Avo.Collection.Collection;
 	changeCollectionState: (action: CollectionAction) => void;
 	onFocus?: () => void;

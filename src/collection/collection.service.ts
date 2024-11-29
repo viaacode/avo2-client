@@ -145,6 +145,7 @@ import {
 } from './collection.helpers';
 import {
 	type Collection,
+	CollectionOrBundle,
 	ContentTypeNumber,
 	type MarcomEntry,
 	type QualityLabel,
@@ -952,7 +953,7 @@ export class CollectionService {
 	 * @returns Collections or bundles owned by the user.
 	 */
 	static async fetchCollectionsOrBundlesByUser(
-		type: 'collection' | 'bundle',
+		type: CollectionOrBundle,
 		commonUser: Avo.User.CommonUser | undefined
 	): Promise<Partial<Avo.Collection.Collection>[]> {
 		try {
@@ -997,7 +998,7 @@ export class CollectionService {
 	 */
 	public static async fetchCollectionOrBundleByIdOrInviteToken(
 		collectionId: string,
-		type: 'collection' | 'bundle',
+		type: CollectionOrBundle,
 		inviteToken: string | undefined
 	): Promise<Avo.Collection.Collection | null> {
 		try {
@@ -1149,7 +1150,7 @@ export class CollectionService {
 		commonUser: Avo.User.CommonUser
 	): Promise<string> => {
 		const collections = await CollectionService.fetchCollectionsOrBundlesByUser(
-			'collection',
+			CollectionOrBundle.COLLECTION,
 			commonUser
 		);
 		const titles = collections.map((c) => c.title);

@@ -86,6 +86,7 @@ import { CollectionService } from '../collection.service';
 import {
 	CollectionCreateUpdateTab,
 	CollectionMenuAction,
+	CollectionOrBundle,
 	ContentTypeString,
 	type Relation,
 } from '../collection.types';
@@ -407,7 +408,7 @@ const CollectionDetail: FC<
 					collectionObj =
 						await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 							uuid,
-							'collection',
+							CollectionOrBundle.COLLECTION,
 							undefined
 						);
 				} catch (err) {
@@ -446,7 +447,7 @@ const CollectionDetail: FC<
 
 			const collectionObj = await CollectionService.fetchCollectionOrBundleByIdOrInviteToken(
 				uuid,
-				'collection',
+				CollectionOrBundle.COLLECTION,
 				inviteToken || undefined
 			);
 
