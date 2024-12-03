@@ -52,53 +52,6 @@ export type BulkUpdatePublishStateForCollectionsMutationVariables = Exact<{
 
 export type BulkUpdatePublishStateForCollectionsMutation = { __typename?: 'mutation_root', update_app_collections?: { __typename?: 'app_collections_mutation_response', affected_rows: number } | null };
 
-export type GetCollectionActualisationsQueryVariables = Exact<{
-  where: App_Collection_Actualisation_Overview_Bool_Exp;
-  orderBy: Array<App_Collection_Actualisation_Overview_Order_By> | App_Collection_Actualisation_Overview_Order_By;
-  offset: Scalars['Int'];
-  limit: Scalars['Int'];
-}>;
-
-
-export type GetCollectionActualisationsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_actualisation_overview', created_at?: any | null, is_public?: boolean | null, mgmt_created_at?: any | null, mgmt_current_status?: string | null, mgmt_last_eindcheck_date?: any | null, mgmt_status_expires_at?: any | null, mgmt_updated_at?: any | null, owner_profile_id?: any | null, title?: string | null, type_id?: number | null, updated_at?: any | null, updated_by_profile_id?: any | null, id?: any | null, manager?: { __typename?: 'shared_user_names', full_name?: string | null, mail?: string | null, profile_id?: any | null } | null, type?: { __typename?: 'shared_types', id: number, label: string } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null, last_editor?: { __typename?: 'shared_user_names', profile_id?: any | null, full_name?: string | null } | null, loms: Array<{ __typename?: 'app_collections_lom_links', lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, id?: string | null, label?: string | null, scheme?: string | null } | null }> }>, app_collections_aggregate: { __typename?: 'app_collection_actualisation_overview_aggregate', aggregate?: { __typename?: 'app_collection_actualisation_overview_aggregate_fields', count: number } | null } };
-
-export type GetCollectionMarcomQueryVariables = Exact<{
-  where: App_Collection_Marcom_Overview_Bool_Exp;
-  orderBy: Array<App_Collection_Marcom_Overview_Order_By> | App_Collection_Marcom_Overview_Order_By;
-  offset: Scalars['Int'];
-  limit: Scalars['Int'];
-}>;
-
-
-export type GetCollectionMarcomQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_marcom_overview', channel_name?: string | null, channel_type?: string | null, created_at?: any | null, is_public?: boolean | null, klascement?: boolean | null, last_marcom_date?: any | null, title?: string | null, updated_at?: any | null, id?: any | null, collection_labels: Array<{ __typename?: 'app_collection_labels', label: string, id: number }>, last_editor?: { __typename?: 'shared_user_names', full_name?: string | null } | null, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null, loms: Array<{ __typename?: 'app_collections_lom_links', lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, id?: string | null, label?: string | null, scheme?: string | null } | null }> }>, app_collections_aggregate: { __typename?: 'app_collection_marcom_overview_aggregate', aggregate?: { __typename?: 'app_collection_marcom_overview_aggregate_fields', count: number } | null } };
-
-export type GetCollectionQualityCheckQueryVariables = Exact<{
-  where: App_Collection_Qc_Overview_Bool_Exp;
-  orderBy: Array<App_Collection_Qc_Overview_Order_By> | App_Collection_Qc_Overview_Order_By;
-  offset: Scalars['Int'];
-  limit: Scalars['Int'];
-}>;
-
-
-export type GetCollectionQualityCheckQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collection_qc_overview', is_public?: boolean | null, created_at?: any | null, updated_at?: any | null, title?: string | null, updated_by_profile_id?: any | null, mgmt_quality_check?: boolean | null, mgmt_language_check?: boolean | null, mgmt_eind_check_date?: any | null, id?: any | null, owner?: { __typename?: 'users_summary_view', user_id?: any | null, full_name?: string | null, profile?: { __typename?: 'users_profiles', id: any, organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null, profile_user_group?: { __typename?: 'users_profile_user_groups', group: { __typename?: 'users_groups', label: string, id: number } } | null } | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, last_editor?: { __typename?: 'shared_user_names', full_name?: string | null } | null, loms: Array<{ __typename?: 'app_collections_lom_links', lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, id?: string | null, label?: string | null, scheme?: string | null } | null }> }>, app_collections_aggregate: { __typename?: 'app_collection_qc_overview_aggregate', aggregate?: { __typename?: 'app_collection_qc_overview_aggregate_fields', count: number } | null } };
-
-export type GetCollectionsQueryVariables = Exact<{
-  where: App_Collections_Bool_Exp;
-  orderBy: Array<App_Collections_Order_By> | App_Collections_Order_By;
-  offset: Scalars['Int'];
-  limit: Scalars['Int'];
-}>;
-
-
-export type GetCollectionsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any, type_id: number, title: string, description?: string | null, is_public: boolean, is_managed?: boolean | null, created_at: any, updated_at: any, type: { __typename?: 'shared_types', id: number, label: string }, owner?: { __typename?: 'users_summary_view', full_name?: string | null, group_id?: number | null, group_name?: string | null, profile_id?: any | null, user_id?: any | null, profile?: { __typename?: 'users_profiles', organisation?: { __typename?: 'shared_organisations', name: string, logo_url?: string | null, or_id: string } | null } | null } | null, last_editor?: { __typename?: 'users_summary_view', full_name?: string | null, profile_id?: any | null, user_id?: any | null } | null, collection_labels: Array<{ __typename?: 'app_collection_labels', id: number, label: string }>, counts?: { __typename?: 'app_collection_counts', bookmarks?: any | null, in_assignment?: any | null, in_collection?: any | null, views?: number | null, copies?: any | null, quick_lane_links?: any | null, contributors?: any | null } | null, loms: Array<{ __typename?: 'app_collections_lom_links', lom?: { __typename?: 'lookup_thesaurus', broader?: string | null, id?: string | null, label?: string | null, scheme?: string | null } | null }> }>, app_collections_aggregate: { __typename?: 'app_collections_aggregate', aggregate?: { __typename?: 'app_collections_aggregate_fields', count: number } | null } };
-
-export type GetCollectionsByIdsQueryVariables = Exact<{
-  where: App_Collections_Bool_Exp;
-}>;
-
-
-export type GetCollectionsByIdsQuery = { __typename?: 'query_root', app_collections: Array<{ __typename?: 'app_collections', id: any }> };
-
 export type DeleteInteractiveTourMutationVariables = Exact<{
   interactiveTourId: Scalars['Int'];
 }>;
