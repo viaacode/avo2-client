@@ -200,8 +200,8 @@ const Navigation: FC<
 									})),
 								[
 									{
-										id: logoutNavItem.key as string,
-										label: logoutNavItem.label as string,
+										id: logoutNavItem?.key as string,
+										label: logoutNavItem?.label as string,
 									},
 								],
 							]}
