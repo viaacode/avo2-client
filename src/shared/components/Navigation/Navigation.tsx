@@ -81,14 +81,22 @@ const Navigation: FC<
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-	const [primaryNavItems, setPrimaryNavItems] = useState<AppContentNavElement[]>([]);
-	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
+	const [allNavItems, setAllNavItems] = useState<Record<string, AppContentNavElement[]> | null>(
+		null
+	);
 
 	/**
 	 * @deprecated
 	 */
 	const user = (loginState as Avo.Auth.LoginResponseLoggedIn)?.userInfo;
 	const commonUser = (loginState as Avo.Auth.LoginResponseLoggedIn)?.commonUserInfo;
+
+	/**
+	 * Computed
+	 */
+	const navItemsLeft = allNavItems?.['hoofdnavigatie-links'] || [];
+	const navItemsRight = allNavItems?.['hoofdnavigatie-rechts'] || [];
+	const navItemsProfileDropdown = allNavItems?.['profiel-dropdown'] || [];
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -100,8 +108,7 @@ const Navigation: FC<
 	const updateNavigationItems = useCallback(async () => {
 		try {
 			const navItems: NavItemMap = await getNavigationItems();
-			setPrimaryNavItems(navItems['hoofdnavigatie-links']);
-			setSecondaryNavItems(navItems['hoofdnavigatie-rechts']);
+			setAllNavItems(navItems);
 		} catch (err) {
 			console.error('Failed to get navigation items', err);
 			ToastService.danger(
@@ -135,25 +142,30 @@ const Navigation: FC<
 		));
 	};
 
-	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems, tText);
+	const getNavigationItemsLeft = (): NavigationItemInfo[] => {
+		return mapNavElementsToNavigationItems(navItemsLeft, tText);
 	};
 
-	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
-		if (!secondaryNavItems || !secondaryNavItems.length) {
+	const getNavigationItemsRight = (): NavigationItemInfo[] => {
+		if (
+			(!navItemsRight || !navItemsRight.length) &&
+			(!navItemsProfileDropdown || !navItemsProfileDropdown.length)
+		) {
 			return [];
 		}
-		const dynamicNavItems: NavigationItemInfo[] = mapNavElementsToNavigationItems(
-			secondaryNavItems,
+		const dynamicNavItemsRight: NavigationItemInfo[] = mapNavElementsToNavigationItems(
+			navItemsRight,
 			tText
 		);
+		const dynamicNavItemsProfileDropdown: NavigationItemInfo[] =
+			mapNavElementsToNavigationItems(navItemsProfileDropdown, tText);
 
-		const logoutNavItem = last(dynamicNavItems) as NavigationItemInfo;
+		const logoutNavItem = last(dynamicNavItemsProfileDropdown) as NavigationItemInfo;
 
 		if (
 			// (user && logoutNavItem.location !== APP_PATH.LOGOUT.route) ||
 			!commonUser &&
-			logoutNavItem.location === APP_PATH.LOGOUT.route
+			logoutNavItem?.location === APP_PATH.LOGOUT.route
 		) {
 			// Avoid flashing the menu items for a second without them being in a dropdown menu
 			return [];
@@ -161,10 +173,11 @@ const Navigation: FC<
 
 		if (commonUser) {
 			if (isMobileMenuOpen) {
-				return dynamicNavItems;
+				return [...dynamicNavItemsRight, ...dynamicNavItemsProfileDropdown];
 			}
 			// Navigatie items voor ingelogde gebruikers (dropdown onder profile avatar)
 			return [
+				...dynamicNavItemsRight,
 				{
 					label: (
 						<div className="c-navbar-profile-dropdown-button">
@@ -179,8 +192,8 @@ const Navigation: FC<
 					component: (
 						<MenuContent
 							menuItems={[
-								dynamicNavItems
-									.slice(0, dynamicNavItems.length - 1)
+								dynamicNavItemsProfileDropdown
+									.slice(0, dynamicNavItemsProfileDropdown.length - 1)
 									.map((navItem) => ({
 										id: navItem.key as string,
 										label: navItem.label as string,
@@ -201,7 +214,7 @@ const Navigation: FC<
 		}
 
 		// Navigatie items voor niet ingelogde gebruikers: items naast elkaar
-		return dynamicNavItems;
+		return dynamicNavItemsRight;
 	};
 
 	const onToggleMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
@@ -214,7 +227,9 @@ const Navigation: FC<
 				menuItemId.toString().substring('nav-item-'.length),
 				10
 			);
-			const navItem = secondaryNavItems.find((navItem) => navItem.id === navItemId);
+			const navItem = [...navItemsRight, ...navItemsProfileDropdown].find(
+				(navItem) => navItem.id === navItemId
+			);
 			if (!navItem) {
 				console.error('Could not find navigation item by id', { menuItemId });
 				ToastService.danger(
@@ -267,7 +282,7 @@ const Navigation: FC<
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-has-space">
 									<ul className="c-nav">
-										{mapNavItems(getPrimaryNavigationItems(), false)}
+										{mapNavItems(getNavigationItemsLeft(), false)}
 									</ul>
 								</div>
 							</ToolbarItem>
@@ -276,7 +291,7 @@ const Navigation: FC<
 							<ToolbarItem>
 								<div className="u-mq-switch-main-nav-authentication">
 									<ul className="c-nav">
-										{mapNavItems(getSecondaryNavigationItems(), false)}
+										{mapNavItems(getNavigationItemsRight(), false)}
 									</ul>
 								</div>
 							</ToolbarItem>
@@ -303,10 +318,10 @@ const Navigation: FC<
 				<Container mode="horizontal" className="c-mobile-menu">
 					<Container mode="vertical">
 						<ul className="c-nav-mobile">
-							{mapNavItems(getPrimaryNavigationItems(), true)}
+							{mapNavItems(getNavigationItemsLeft(), true)}
 						</ul>
 						<ul className="c-nav-mobile">
-							{mapNavItems(getSecondaryNavigationItems(), true)}
+							{mapNavItems(getNavigationItemsRight(), true)}
 						</ul>
 					</Container>
 				</Container>
@@ -321,7 +336,7 @@ const Navigation: FC<
 							<ToolbarLeft>
 								<div className="c-toolbar__item">
 									<ul className="c-nav">
-										{mapNavItems(getPrimaryNavigationItems(), false)}
+										{mapNavItems(getNavigationItemsLeft(), false)}
 									</ul>
 								</div>
 							</ToolbarLeft>
