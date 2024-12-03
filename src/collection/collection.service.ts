@@ -758,10 +758,7 @@ export class CollectionService {
 			// update attributes specific to duplicate
 			collectionToInsert.owner_profile_id = commonUser?.profileId;
 			collectionToInsert.is_public = false;
-
-			if (canManageEditorial(commonUser)) {
-				collectionToInsert.is_managed = true;
-			}
+			collectionToInsert.loms = [];
 
 			// remove id from duplicate
 			delete (collectionToInsert as any).id;
@@ -793,9 +790,7 @@ export class CollectionService {
 			// Check is_managed status
 			// Should be copied to new collection if user group is one of [redacteur, eindredacteur, beheerder]
 			// Otherwise should be false
-			if (!canManageEditorial(commonUser)) {
-				collectionToInsert.is_managed = false;
-			}
+			collectionToInsert.is_managed = canManageEditorial(commonUser);
 
 			// insert duplicated collection
 			const duplicatedCollection =

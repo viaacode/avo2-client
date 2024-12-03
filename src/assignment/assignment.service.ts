@@ -429,8 +429,6 @@ export class AssignmentService {
 			labels: [],
 			loms: [],
 			quality_labels: [],
-			description: undefined,
-			note: null,
 			education_level_id: isUserSecondaryElementary(commonUser) ? null : undefined,
 		};
 
