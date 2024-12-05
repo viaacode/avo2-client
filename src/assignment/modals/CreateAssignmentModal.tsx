@@ -71,7 +71,7 @@ const CreateAssignmentModal: FC<CreateAssignmentModalProps> = ({
 				{tHtml(
 					'assignment/modals/create-assignment-modal___wil-je-de-beschrijving-van-de-fragmenten-mee-importeren'
 				)}
-				<Flex>
+				<Flex style={{ marginTop: '1.6rem' }}>
 					<Toggle
 						checked={createWithDescription}
 						onChange={(checked) => setCreateWithDescription(checked)}

@@ -1823,4 +1823,23 @@ export class CollectionService {
 			});
 		}
 	}
+
+	public static async incrementAddCollectionToAssignmentCount(
+		collectionId: string
+	): Promise<void> {
+		try {
+			await fetchWithLogoutJson(
+				stringifyUrl({
+					url: `${getEnv(
+						'PROXY_URL'
+					)}/collections/${collectionId}/increment-added-to-assignment-count`,
+				}),
+				{ method: 'POST' }
+			);
+		} catch (err) {
+			throw new CustomError('Failed to increment collection added to assignment count', err, {
+				assignmentId: collectionId,
+			});
+		}
+	}
 }

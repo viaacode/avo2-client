@@ -4,6 +4,7 @@ import { cloneDeep, compact, isNil } from 'lodash-es';
 import { stringifyUrl } from 'query-string';
 
 import { ItemsService } from '../admin/items/items.service';
+import { CollectionService } from '../collection/collection.service';
 import { type ItemTrimInfo } from '../item/item.types';
 import { PupilCollectionService } from '../pupil-collection/pupil-collection.service';
 import {
@@ -936,6 +937,7 @@ export class AssignmentService {
 						},
 					}),
 					this.updateAssignmentUpdatedAtDate(assignmentId),
+					CollectionService.incrementAddCollectionToAssignmentCount(collection.id),
 				]);
 			} catch (err) {
 				const error = new CustomError('Failed to import collection to assignment', err, {
