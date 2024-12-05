@@ -15,7 +15,7 @@ import {
 } from '@viaa/avo2-components';
 import { type Avo } from '@viaa/avo2-types';
 import { last } from 'lodash-es';
-import React, { type FC, type ReactText, useCallback, useEffect, useState } from 'react';
+import React, { type FC, type ReactText, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Link, type RouteComponentProps } from 'react-router-dom';
@@ -39,14 +39,11 @@ import { APP_PATH } from '../../../constants';
 import useTranslation from '../../../shared/hooks/useTranslation';
 import { type AppState } from '../../../store';
 import { getLocation, mapNavElementsToNavigationItems } from '../../helpers/navigation';
-import {
-	type AppContentNavElement,
-	getNavigationItems,
-	type NavItemMap,
-} from '../../services/navigation-items-service';
+import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
 import { ToastService } from '../../services/toast-service';
 import { type NavigationItemInfo } from '../../types';
 
+import { NavigationBarId } from './Navigation.const';
 import { NavigationItem } from './NavigationItem';
 
 import './Navigation.scss';
@@ -81,9 +78,8 @@ const Navigation: FC<
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<{ [key: string]: boolean }>({});
 	const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-	const [allNavItems, setAllNavItems] = useState<Record<string, AppContentNavElement[]> | null>(
-		null
-	);
+
+	const { data: allNavItems } = useAllGetNavItems();
 
 	/**
 	 * @deprecated
@@ -94,9 +90,9 @@ const Navigation: FC<
 	/**
 	 * Computed
 	 */
-	const navItemsLeft = allNavItems?.['hoofdnavigatie-links'] || [];
-	const navItemsRight = allNavItems?.['hoofdnavigatie-rechts'] || [];
-	const navItemsProfileDropdown = allNavItems?.['profiel-dropdown'] || [];
+	const navItemsLeft = allNavItems?.[NavigationBarId.MAIN_NAVIGATION_LEFT] || [];
+	const navItemsRight = allNavItems?.[NavigationBarId.MAIN_NAVIGATION_RIGHT] || [];
+	const navItemsProfileDropdown = allNavItems?.[NavigationBarId.PROFILE_DROPDOWN] || [];
 
 	useEffect(() => {
 		if (!loginState && !loginStateLoading && !loginStateError) {
@@ -104,24 +100,6 @@ const Navigation: FC<
 			return;
 		}
 	});
-
-	const updateNavigationItems = useCallback(async () => {
-		try {
-			const navItems: NavItemMap = await getNavigationItems();
-			setAllNavItems(navItems);
-		} catch (err) {
-			console.error('Failed to get navigation items', err);
-			ToastService.danger(
-				tHtml(
-					'shared/components/navigation/navigation___het-ophalen-van-de-navigatie-items-is-mislukt-probeer-later-opnieuw'
-				)
-			);
-		}
-	}, [tHtml]);
-
-	useEffect(() => {
-		updateNavigationItems();
-	}, [updateNavigationItems]);
 
 	const mapNavItems = (navItems: NavigationItemInfo[], isMobile: boolean) => {
 		return navItems.map((item) => (

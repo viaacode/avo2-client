@@ -3,57 +3,43 @@ import meemooLogo from '@assets/images/meemoo-logo.png';
 // eslint-disable-next-line import/no-unresolved
 import vlaamseOverheidLogo from '@assets/images/vlaanderen-logo.png';
 import { Container, Spacer } from '@viaa/avo2-components';
-import React, { type FC, useEffect, useState } from 'react';
+import React, { type FC, useState } from 'react';
 import { type RouteComponentProps } from 'react-router';
 
 import useTranslation from '../../../shared/hooks/useTranslation';
-import { type BooleanDictionary, mapNavElementsToNavigationItems } from '../../helpers/navigation';
+import { type BooleanDictionary } from '../../helpers/navigation';
 import withUser, { type UserProps } from '../../hocs/withUser';
-import {
-	type AppContentNavElement,
-	getNavigationItems,
-	type NavItemMap,
-} from '../../services/navigation-items-service';
-import { type NavigationItemInfo } from '../../types';
+import { useAllGetNavItems } from '../../hooks/useAllGetNavItems';
+import { type AppContentNavElement } from '../../services/navigation-items-service';
+import { NavigationBarId } from '../Navigation/Navigation.const';
 import { NavigationItem } from '../Navigation/NavigationItem';
 
 import './Footer.scss';
 
-const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match, commonUser }) => {
+const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match }) => {
 	const { tText } = useTranslation();
 
 	const [areDropdownsOpen, setDropdownsOpen] = useState<BooleanDictionary>({});
-	const [primaryNavItems, setPrimaryNavItems] = useState<AppContentNavElement[]>([]);
-	const [secondaryNavItems, setSecondaryNavItems] = useState<AppContentNavElement[]>([]);
 
-	useEffect(() => {
-		getNavigationItems()
-			.then((navItems: NavItemMap) => {
-				setPrimaryNavItems(navItems['footer-links']);
-				setSecondaryNavItems(navItems['footer-rechts']);
-			})
-			.catch((err) => {
-				console.error('Failed to get navigation items', err);
-				// Do not notify the user, since this will happen in the header navigation component already
-				// And we don't want to show 2 error toast messages
-			});
-	}, [history, tText, commonUser]);
+	const { data: allNavItems } = useAllGetNavItems();
 
-	const getPrimaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(primaryNavItems, tText);
-	};
+	const footerNavItemsColumn1 = allNavItems?.[NavigationBarId.FOOTER_COLUMN_1] || [];
+	const footerNavItemsColumn2 = allNavItems?.[NavigationBarId.FOOTER_COLUMN_2] || [];
+	const footerNavItemsColumn3 = allNavItems?.[NavigationBarId.FOOTER_COLUMN_3] || [];
 
-	const getSecondaryNavigationItems = (): NavigationItemInfo[] => {
-		return mapNavElementsToNavigationItems(secondaryNavItems, tText);
-	};
-
-	const mapNavItems = (navItems: NavigationItemInfo[]) => {
+	const mapNavItems = (navItems: AppContentNavElement[]) => {
 		return navItems.map((item) => (
 			<NavigationItem
-				key={item.key}
-				item={item}
+				key={item.id}
+				item={{
+					label: item.label,
+					location: item.content_path || '',
+					icon: item.icon_name,
+					key: item.id.toString(),
+					tooltip: item.tooltip,
+				}}
 				className="c-nav__item c-nav__item--i"
-				exact={item.location === '/'}
+				exact={item.content_path === '/'}
 				showActive={false}
 				areDropdownsOpen={areDropdownsOpen}
 				setDropdownsOpen={setDropdownsOpen}
@@ -64,10 +50,26 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match,
 		));
 	};
 
+	const columnTitle1 = tText('shared/components/footer/footer___kolom-1');
+	const columnTitle2 = tText('shared/components/footer/footer___kolom-2');
+	const columnTitle3 = tText('shared/components/footer/footer___kolom-3');
 	return (
 		<footer className="c-global-footer">
 			<Container mode="horizontal" className="c-global-footer__inner">
-				<ul>
+				<ul className="c-global-footer__column-1">
+					<li className="c-global-footer__column-header">{columnTitle1}</li>
+					{mapNavItems(footerNavItemsColumn1)}
+				</ul>
+				<ul className="c-global-footer__column-2">
+					<li className="c-global-footer__column-header">{columnTitle2}</li>
+					{mapNavItems(footerNavItemsColumn2)}
+				</ul>
+				<ul className="c-global-footer__column-3">
+					<li className="c-global-footer__column-header">{columnTitle3}</li>
+
+					{mapNavItems(footerNavItemsColumn3)}
+				</ul>
+				<ul className="c-global-footer__column-4">
 					<li>
 						<a
 							href="https://meemoo.be/nl"
@@ -84,10 +86,6 @@ const Footer: FC<RouteComponentProps & UserProps> = ({ history, location, match,
 							</Spacer>
 						</a>
 					</li>
-					{mapNavItems(getPrimaryNavigationItems())}
-				</ul>
-				<ul>
-					{mapNavItems(getSecondaryNavigationItems())}
 					<li>
 						<a
 							href="https://www.vlaanderen.be/"
