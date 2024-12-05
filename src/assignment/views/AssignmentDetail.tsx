@@ -728,6 +728,17 @@ const AssignmentDetail: FC<
 	};
 
 	const renderHeaderEducationLevel = () => {
+		const contributor = assignment?.contributors?.find(
+			(c) => c.profile_id === commonUser?.profileId
+		);
+		if (
+			!permissions?.canEditAssignments ||
+			contributor?.rights === ContributorInfoRight.VIEWER
+		) {
+			// No assignment edit rights, no contributor and no owner
+			return null;
+		}
+
 		const label =
 			GET_EDUCATION_LEVEL_DICT()[assignment?.education_level_id as EducationLevelId];
 		const tooltip =
