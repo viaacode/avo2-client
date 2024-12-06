@@ -102,9 +102,15 @@ const CollectionOrBundleEditMetaData: FC<CollectionOrBundleEditMetaDataProps> = 
 												collectionPropValue: value,
 											})
 										}
-										placeholder={tText(
-											'collection/components/collection-or-bundle-edit-meta-data___short-description-placeholder'
-										)}
+										placeholder={
+											isCollection
+												? tText(
+														'collection/components/collection-or-bundle-edit-meta-data___korte-beschrijving-placeholder-collectie'
+												  )
+												: tText(
+														'collection/components/collection-or-bundle-edit-meta-data___korte-beschrijving-placeholder-bundel'
+												  )
+										}
 										onFocus={onFocus}
 									/>
 									{!isCollection && (
