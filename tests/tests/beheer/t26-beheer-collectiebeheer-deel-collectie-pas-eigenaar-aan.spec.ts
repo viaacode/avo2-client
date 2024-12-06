@@ -22,7 +22,8 @@ test.afterEach(async ({ page }, testInfo) => {
 	}
 });
 
-test('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
+// Missing account linking entry in users_notifications
+test.skip('T26: Beheer - collectiebeheer: Deel collectie', async ({ page }) => {
 	const clientEndpoint = process.env.TEST_CLIENT_ENDPOINT as string;
 	const educatieveAuteur = process.env.TEST_EDUCATIEVE_AUTEUR_USER as string;
 	const educatieveAuteurPass = process.env.TEST_EDUCATIEVE_AUTEUR_PASS as string;

@@ -6,6 +6,7 @@
     "__prepare": "husky install",
     "prestart": "npm run env",
     "start": "vite",
+    "predev": "npm run env",
     "dev": "dotenv -e .env.qas vite",
     "env": "dotenv -e .env.qas node ./scripts/env.js && cp env-config.js ./public",
     "build": "vite build",

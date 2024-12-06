@@ -11,6 +11,7 @@ import { goToPageAndAcceptCookies } from '../helpers/go-to-page-and-accept-cooki
  *
  */
 
+// Broken; certificate of https://ssum-int-iam.private.cloud.meemoo.be/ is expired
 test.skip('T02: Nieuw account aanmaken', async ({ page }) => {
 	const userId = uuid().replace(/-/g, '');
 	const userEmail = `hetarchief2.0+atbasisgebruiker${userId}@meemoo.be`;

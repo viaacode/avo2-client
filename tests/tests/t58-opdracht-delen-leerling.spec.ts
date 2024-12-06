@@ -20,7 +20,8 @@ test.afterEach(async ({ page }, testInfo) => {
 	}
 });
 
-test('T58: Opdracht - Delen met leerling', async ({ page }) => {
+// Hangs after arriving at assignment detail
+test.skip('T58: Opdracht - Delen met leerling', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,

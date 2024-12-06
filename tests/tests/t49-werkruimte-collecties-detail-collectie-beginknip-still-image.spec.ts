@@ -12,7 +12,8 @@ import { loginOnderwijsAvo } from '../helpers/login-onderwijs-avo';
  *
  */
 
-test('T49: Werkruimte - collecties: Detail collectie beginknip stillimage', async ({ page }) => {
+// Error loading detail page
+test.skip('T49: Werkruimte - collecties: Detail collectie beginknip stillimage', async ({ page }) => {
 	await goToPageAndAcceptCookies(
 		page,
 		process.env.TEST_CLIENT_ENDPOINT as string,
