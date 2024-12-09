@@ -22,18 +22,15 @@ async function bootstrapEmbed() {
 
 	// Boostrap the iframe that will load the avo login / video
 	const iframe = document.createElement('iframe');
-
-	// Should match import { JWT_TOKEN } from '../authentication/authentication.const';
-	const JWT_TOKEN = 'jwtToken';
-	iframe.setAttribute(
-		'src',
-		EMBED_DOMAIN + '/embed/item/' + embedId + `?${JWT_TOKEN}=` + jwtToken
-	);
+	iframe.setAttribute('src', EMBED_DOMAIN + '/embed/item/' + embedId + `?jwtToken=` + jwtToken);
 	iframe.setAttribute('width', '100%');
 	iframe.setAttribute('height', '100vh');
 	iframe.setAttribute('data-embed-id', 'qsn58fhr6k');
 	embedScriptTag?.parentNode?.insertBefore(iframe, embedScriptTag);
 
+	/**
+	 * Init iframe-resizer script on parent page
+	 */
 	const embedScripts = document.querySelectorAll(
 		`script[src^="${EMBED_DOMAIN.split(':')[0]}"][data-embed-id]` // TODO replace with EMBED_DOMAIN once it's a real domain and no longer contains a port
 	);
@@ -60,7 +57,6 @@ async function bootstrapEmbed() {
 	}
 
 	// Listen for messages from the idp page in a new tab
-	window.addEventListener('message', handlePostMessage);
 	document.addEventListener('visibilitychange', () => sendFocusMessageToIframe(iframe));
 }
 
@@ -68,24 +64,8 @@ function sendFocusMessageToIframe(iframe: HTMLIFrameElement) {
 	iframe.contentWindow?.postMessage('MEEMOO_EMBED__PARENT_FOCUS', '*');
 }
 
-// Forward successful login messages from idp page in new tab to the embeds in this page
-async function handlePostMessage(event: MessageEvent) {
-	if (event?.data?.startsWith('MEEMOO_EMBED__')) {
-		console.log('parent page received a post message', event);
-		if (event?.data === 'MEEMOO_EMBED__LOGIN_SUCCESSFUL') {
-			const embedIframes = document.querySelectorAll(
-				'iframe[src^="http://localhost"][data-embed-id]'
-			) as NodeListOf<HTMLIFrameElement>;
-			embedIframes.forEach(
-				(iframe) => iframe.contentWindow?.postMessage('MEEMOO_EMBED__LOGIN_SUCCESSFUL')
-			);
-		}
-	}
-}
-
 // Trigger a scroll to the iframe when the description is collapsed inside the embed iframe, so the experience isn't too jarring
 function handleIframeMessage({ iframe, message }: { iframe: HTMLIFrameElement; message: any }) {
-	console.log('parent page a post message from an embed: ', iframe, message);
 	if (message.startsWith('MEEMOO_EMBED__')) {
 		if (message === 'MEEMOO_EMBED__SCROLL_TO_IFRAME') {
 			iframe.scrollIntoView();
